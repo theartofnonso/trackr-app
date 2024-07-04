@@ -23,11 +23,11 @@ class CSearchBar extends StatelessWidget {
       ),
       trailing: [IconButton(onPressed: onClear, icon: const Icon(Icons.cancel, color: Colors.white70), visualDensity: VisualDensity.compact,)],
       hintText: hintText,
-      hintStyle: MaterialStatePropertyAll<TextStyle>(GoogleFonts.montserrat(color: Colors.white70)),
-      textStyle: MaterialStatePropertyAll<TextStyle>(GoogleFonts.montserrat(color: Colors.white)),
-      surfaceTintColor: const MaterialStatePropertyAll<Color>(sapphireLight),
-      backgroundColor: MaterialStatePropertyAll<Color>(sapphireDark.withOpacity(0.8)),
-      shape: MaterialStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
+      hintStyle: WidgetStatePropertyAll<TextStyle>(GoogleFonts.montserrat(color: Colors.white70)),
+      textStyle: WidgetStatePropertyAll<TextStyle>(GoogleFonts.montserrat(color: Colors.white)),
+      surfaceTintColor: const WidgetStatePropertyAll<Color>(sapphireLight),
+      backgroundColor: WidgetStatePropertyAll<Color>(sapphireDark.withOpacity(0.8)),
+      shape: WidgetStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5.0),
       )),
       constraints: const BoxConstraints(minHeight: 50),

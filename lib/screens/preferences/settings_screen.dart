@@ -84,20 +84,20 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       style: ButtonStyle(
                         visualDensity: const VisualDensity(
                             horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity),
-                        shape: MaterialStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
+                        shape: WidgetStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5.0),
                         )),
-                        backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.selected)) {
+                        backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                          (Set<WidgetState> states) {
+                            if (states.contains(WidgetState.selected)) {
                               return Colors.white;
                             }
                             return Colors.transparent;
                           },
                         ),
-                        foregroundColor: MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.selected)) {
+                        foregroundColor: WidgetStateProperty.resolveWith<Color>(
+                          (Set<WidgetState> states) {
+                            if (states.contains(WidgetState.selected)) {
                               return Colors.black;
                             }
                             return Colors.white;

@@ -296,8 +296,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               )),
               MenuAnchor(
                   style: MenuStyle(
-                    backgroundColor: MaterialStateProperty.all(sapphireDark80),
-                    surfaceTintColor: MaterialStateProperty.all(sapphireDark),
+                    backgroundColor: WidgetStateProperty.all(sapphireDark80),
+                    surfaceTintColor: WidgetStateProperty.all(sapphireDark),
                   ),
                   builder: (BuildContext context, MenuController controller, Widget? child) {
                     return IconButton(
@@ -375,7 +375,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   style: ButtonStyle(
                       visualDensity: VisualDensity.compact,
                       shape:
-                          MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
+                          WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
             const Spacer(),
             if (_canAddSets(type: exerciseType))
               IconButton(
@@ -383,8 +383,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 16),
                   style: ButtonStyle(
                       visualDensity: VisualDensity.compact,
-                      backgroundColor: MaterialStateProperty.all(sapphireDark.withOpacity(0.2)),
-                      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))))
+                      backgroundColor: WidgetStateProperty.all(sapphireDark.withOpacity(0.2)),
+                      shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))))
           ])
         ],
       ),

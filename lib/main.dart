@@ -1,17 +1,17 @@
+import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
-import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:timezone/data/latest.dart' as tz;
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
@@ -39,7 +39,6 @@ import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/template/routines_home.dart';
 import 'package:tracker_app/shared_prefs.dart';
-import 'package:timezone/data/latest.dart' as tz;
 
 import 'amplifyconfiguration.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
@@ -61,7 +60,8 @@ void main() async {
 
   const AndroidInitializationSettings androidInitializationSettings = AndroidInitializationSettings("app_icon");
 
-  const initializationSettings = InitializationSettings(iOS: iOSInitializationSettingsDarwin, android: androidInitializationSettings);
+  const initializationSettings =
+      InitializationSettings(iOS: iOSInitializationSettingsDarwin, android: androidInitializationSettings);
 
   await FlutterLocalNotificationsPlugin().initialize(initializationSettings);
 
@@ -122,11 +122,13 @@ class _MyAppState extends State<MyApp> {
     final endOfCurrentYear = now.toIso8601String();
     try {
       await Amplify.addPlugin(AmplifyAuthCognito());
-      await Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
-      await Amplify.addPlugin(AmplifyDataStore(modelProvider: ModelProvider.instance, syncExpressions: [
+      final apiPluginOptions = APIPluginOptions(modelProvider: ModelProvider.instance);
+      await Amplify.addPlugin(AmplifyAPI(options: apiPluginOptions));
+      final datastorePluginOptions = DataStorePluginOptions(syncExpressions: [
         DataStoreSyncExpression(
             RoutineLog.classType, () => RoutineLog.CREATEDAT.between(startOfCurrentYear, endOfCurrentYear)),
-      ]));
+      ]);
+      await Amplify.addPlugin(AmplifyDataStore(modelProvider: ModelProvider.instance, options: datastorePluginOptions));
       await Amplify.configure(amplifyconfig);
     } on Exception catch (e) {
       debugPrint('Could not configure Amplify: $e');
@@ -149,8 +151,6 @@ class _MyAppState extends State<MyApp> {
       onSecondary: Colors.white,
       error: Colors.white,
       onError: Colors.black,
-      background: sapphireDark,
-      onBackground: Colors.white,
       surface: sapphireLighter,
       onSurface: Colors.white,
     ),
@@ -159,8 +159,8 @@ class _MyAppState extends State<MyApp> {
       surfaceTintColor: sapphireDark,
     ),
     scrollbarTheme: ScrollbarThemeData(
-      thumbColor: MaterialStateProperty.all(Colors.green),
-      trackColor: MaterialStateProperty.all(Colors.white.withOpacity(0.2)),
+      thumbColor: WidgetStateProperty.all(Colors.green),
+      trackColor: WidgetStateProperty.all(Colors.white.withOpacity(0.2)),
     ),
     snackBarTheme: const SnackBarThemeData(
         backgroundColor: sapphireDark,
@@ -178,9 +178,9 @@ class _MyAppState extends State<MyApp> {
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: ButtonStyle(
-          foregroundColor: MaterialStateProperty.all(Colors.white),
-          backgroundColor: MaterialStateProperty.all(sapphireLight),
-          shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
+          foregroundColor: WidgetStateProperty.all(Colors.white),
+          backgroundColor: WidgetStateProperty.all(sapphireLight),
+          shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
     ),
     useMaterial3: true,
   );

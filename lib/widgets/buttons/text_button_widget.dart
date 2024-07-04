@@ -33,12 +33,12 @@ class CTextButton extends StatelessWidget {
     return TextButton(
         style: ButtonStyle(
           visualDensity: visualDensity,
-          backgroundColor: MaterialStateProperty.all(buttonColor),
-          shape: MaterialStateProperty.all(RoundedRectangleBorder(
+          backgroundColor: WidgetStateProperty.all(buttonColor),
+          shape: WidgetStateProperty.all(RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5),
               side: BorderSide(color: buttonBorderColor ?? buttonColor.withOpacity(0.3), width: 2))),
-          overlayColor: MaterialStateProperty.resolveWith<Color?>(
-            (Set<MaterialState> states) {
+          overlayColor: WidgetStateProperty.resolveWith<Color?>(
+            (Set<WidgetState> states) {
               return Colors.black.withOpacity(0.3); // Defer to the widget's default.
             },
           ),
