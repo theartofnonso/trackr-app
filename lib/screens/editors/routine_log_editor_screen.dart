@@ -47,6 +47,8 @@ class RoutineLogEditorScreen extends StatefulWidget {
 class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with WidgetsBindingObserver {
   late Function _onDisposeCallback;
 
+  final _minimisedExerciseLogCards = <String>[];
+
   void _selectExercisesInLibrary() async {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
     final preSelectedExercises = controller.exerciseLogs.map((procedure) => procedure.exercise).toList();
@@ -135,9 +137,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     if (template == null) return;
     if (template.scheduleType == RoutineScheduleType.intervals) {
       final scheduledDate = DateTime.now().add(Duration(days: template.scheduleIntervals)).withoutTime();
-      print(scheduledDate);
       final scheduledTemplate = template.copyWith(scheduledDate: scheduledDate);
-      print(scheduledTemplate.scheduledDate);
       await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: scheduledTemplate);
     }
   }
@@ -262,8 +262,20 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   }
 
   /// Handle collapsed ExerciseLogWidget
-  void _handleCollapsedExerciseLogCard() {
-    ///
+  void _handleResizedExerciseLogCard({required String exerciseIdToResize}) {
+    setState(() {
+      final foundExercise =
+          _minimisedExerciseLogCards.firstWhereOrNull((exerciseId) => exerciseId == exerciseIdToResize);
+      if (foundExercise != null) {
+        _minimisedExerciseLogCards.remove(exerciseIdToResize);
+      } else {
+        _minimisedExerciseLogCards.add(exerciseIdToResize);
+      }
+    });
+  }
+
+  bool _isMinimised(String id) {
+    return _minimisedExerciseLogCards.firstWhereOrNull((exerciseId) => exerciseId == id) != null;
   }
 
   @override
@@ -362,19 +374,18 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                     final log = exerciseLog;
                                     final exerciseId = log.id;
 
-                                    final completedSets = log.sets.where((set) => set.checked).length;
-
-                                    final isExerciseCompleted = completedSets == log.sets.length;
+                                    final isExerciseMinimised = _minimisedExerciseLogCards.contains(exerciseId);
 
                                     return Padding(
                                         padding: const EdgeInsets.only(bottom: 20),
-                                        child: isExerciseCompleted
+                                        child: isExerciseMinimised
                                             ? ExerciseLogLiteWidget(
                                                 key: ValueKey(exerciseId),
                                                 exerciseLogDto: log,
                                                 superSet: whereOtherExerciseInSuperSet(
                                                     firstExercise: log, exercises: exerciseLogs),
-                                                onMaximise: () {},
+                                                onMaximise: () =>
+                                                    _handleResizedExerciseLogCard(exerciseIdToResize: exerciseId),
                                               )
                                             : ExerciseLogWidget(
                                                 key: ValueKey(exerciseId),
@@ -393,7 +404,9 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                                 onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: log),
                                                 onCache: _cacheLog,
                                                 onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: log),
-                                                onResize: () {}, isMinimised: false,
+                                                onResize: () =>
+                                                    _handleResizedExerciseLogCard(exerciseIdToResize: exerciseId),
+                                                isMinimised: _isMinimised(exerciseId),
                                               ));
                                   })
                                 ]),
@@ -444,6 +457,19 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     }).toList();
     Provider.of<ExerciseLogController>(context, listen: false)
         .loadExerciseLogs(exerciseLogs: updatedExerciseLogs, mode: widget.mode);
+    _minimiseOrMaximiseCards();
+  }
+
+  void _minimiseOrMaximiseCards() {
+    Provider.of<ExerciseLogController>(context, listen: false).exerciseLogs.forEach((exerciseLog) {
+      final completedSets = exerciseLog.sets.where((set) => set.checked).length;
+      final isExerciseCompleted = completedSets == exerciseLog.sets.length;
+      if (isExerciseCompleted) {
+        setState(() {
+          _minimisedExerciseLogCards.add(exerciseLog.id);
+        });
+      }
+    });
   }
 
   @override
