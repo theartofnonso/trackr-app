@@ -4,25 +4,44 @@ import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../enums/exercise_type_enums.dart';
 import '../screens/exercise/library/exercise_library_screen.dart';
-import '../widgets/routine/editors/superset_exercise_log_picker.dart';
+import '../widgets/routine/editors/pickers/alternate_exercise_picker.dart';
+import '../widgets/routine/editors/pickers/superset_exercise_log_picker.dart';
 import 'dialog_utils.dart';
 
 void showSuperSetExercisePicker(
     {required BuildContext context,
     required ExerciseLogDto firstExerciseLog,
-    required List<ExerciseLogDto> exerciseLogs,
+    required List<ExerciseLogDto> otherExerciseLogs,
     required Function(ExerciseLogDto secondExercise) onSelected,
     required Function() selectExercisesInLibrary}) {
   displayBottomSheet(
     context: context,
     child: SuperSetExerciseLogPicker(
       title: "Superset ${firstExerciseLog.exercise.name} with",
-      exercises: exerciseLogs,
+      exercises: otherExerciseLogs,
       onSelect: onSelected,
       onSelectExercisesInLibrary: selectExercisesInLibrary,
     ),
   );
 }
+
+void showAlternateExercisePicker(
+    {required BuildContext context,
+      required ExerciseLogDto primaryExerciseLog,
+      required List<ExerciseDto> otherExercises,
+      required Function(ExerciseDto secondExercise) onSelected,
+      required Function() selectExercisesInLibrary}) {
+  displayBottomSheet(
+    context: context,
+    child: AlternateExercisePicker(
+      title: "Alternate ${primaryExerciseLog.exercise.name} with",
+      exercises: otherExercises,
+      onSelect: onSelected,
+      onSelectExercisesInLibrary: selectExercisesInLibrary,
+    ),
+  );
+}
+
 
 void showExercisesInLibrary(
     {required BuildContext context,

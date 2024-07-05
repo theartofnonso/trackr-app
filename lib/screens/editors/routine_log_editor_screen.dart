@@ -65,16 +65,32 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   void _showSuperSetExercisePicker({required ExerciseLogDto firstExerciseLog}) {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
-    final exercises = whereOtherExerciseLogsExcept(exerciseLog: firstExerciseLog, others: controller.exerciseLogs);
+    final otherExercises = whereOtherExerciseLogsExcept(exerciseLog: firstExerciseLog, others: controller.exerciseLogs);
     showSuperSetExercisePicker(
         context: context,
         firstExerciseLog: firstExerciseLog,
-        exerciseLogs: exercises,
+        otherExerciseLogs: otherExercises,
         onSelected: (secondExerciseLog) {
           _closeDialog();
           final id = superSetId(firstExerciseLog: firstExerciseLog, secondExerciseLog: secondExerciseLog);
           controller.superSetExerciseLogs(
               firstExerciseLogId: firstExerciseLog.id, secondExerciseLogId: secondExerciseLog.id, superSetId: id);
+          _cacheLog();
+        },
+        selectExercisesInLibrary: () {
+          _closeDialog();
+          _selectExercisesInLibrary();
+        });
+  }
+
+  void _showAlternateExercisePicker({required ExerciseLogDto primaryExerciseLog}) {
+    final controller = Provider.of<ExerciseLogController>(context, listen: false);
+    showAlternateExercisePicker(
+        context: context,
+        primaryExerciseLog: primaryExerciseLog,
+        otherExercises: primaryExerciseLog.alternateExercises,
+        onSelected: (secondaryExerciseLog) {
+          _closeDialog();
           _cacheLog();
         },
         selectExercisesInLibrary: () {
@@ -406,7 +422,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                                 onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: log),
                                                 onResize: () =>
                                                     _handleResizedExerciseLogCard(exerciseIdToResize: exerciseId),
-                                                isMinimised: _isMinimised(exerciseId),
+                                                isMinimised: _isMinimised(exerciseId), onAlternate: () => _showAlternateExercisePicker(primaryExerciseLog: log),
                                               ));
                                   })
                                 ]),

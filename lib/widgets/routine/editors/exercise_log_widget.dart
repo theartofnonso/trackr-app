@@ -39,6 +39,7 @@ class ExerciseLogWidget extends StatefulWidget {
   final VoidCallback onRemoveLog;
   final VoidCallback onReplaceLog;
   final VoidCallback onSuperSet;
+  final VoidCallback onAlternate;
   final void Function(String superSetId) onRemoveSuperSet;
   final VoidCallback? onCache;
   final VoidCallback onResize;
@@ -48,6 +49,7 @@ class ExerciseLogWidget extends StatefulWidget {
       this.editorType = RoutineEditorMode.edit,
       required this.exerciseLogDto,
       this.superSet,
+      required this.onAlternate,
       required this.onSuperSet,
       required this.onRemoveSuperSet,
       required this.onRemoveLog,
@@ -81,15 +83,19 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           style: GoogleFonts.montserrat(color: Colors.white),
         ),
       ),
+      MenuItemButton(
+        onPressed: widget.onSuperSet,
+        child: Text("Alternates", style: GoogleFonts.montserrat()),
+      ),
       widget.exerciseLogDto.superSetId.isNotEmpty
           ? MenuItemButton(
-        onPressed: () => widget.onRemoveSuperSet(widget.exerciseLogDto.superSetId),
-        child: Text("Remove Super-set", style: GoogleFonts.montserrat(color: Colors.red)),
-      )
+              onPressed: () => widget.onRemoveSuperSet(widget.exerciseLogDto.superSetId),
+              child: Text("Remove Super-set", style: GoogleFonts.montserrat(color: Colors.red)),
+            )
           : MenuItemButton(
-        onPressed: widget.onSuperSet,
-        child: Text("Super-set", style: GoogleFonts.montserrat()),
-      ),
+              onPressed: widget.onSuperSet,
+              child: Text("Super-set", style: GoogleFonts.montserrat()),
+            ),
       MenuItemButton(
         onPressed: widget.onRemoveLog,
         child: Text(
@@ -374,8 +380,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   icon: const FaIcon(FontAwesomeIcons.boltLightning, color: Colors.white, size: 16),
                   style: ButtonStyle(
                       visualDensity: VisualDensity.compact,
-                      shape:
-                          WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
+                      shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
             const Spacer(),
             if (_canAddSets(type: exerciseType))
               IconButton(

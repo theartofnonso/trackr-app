@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
@@ -18,6 +19,7 @@ import '../../utils/routine_editors_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/empty_states/exercise_log_empty_state.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
+import '../../widgets/routine/editors/exercise_log_widget_lite.dart';
 
 class RoutineTemplateEditorScreen extends StatefulWidget {
   static const routeName = '/routine-template-editor';
@@ -36,6 +38,8 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
 
   late Function _onDisposeCallback;
 
+  final _minimisedExerciseLogCards = <String>[];
+
   void _selectExercisesInLibrary() async {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
     final preSelectedExercises = controller.exerciseLogs.map((procedure) => procedure.exercise).toList();
@@ -51,16 +55,31 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
 
   void _showSuperSetExercisePicker({required ExerciseLogDto firstExerciseLog}) {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
-    final exercises = whereOtherExerciseLogsExcept(exerciseLog: firstExerciseLog, others: controller.exerciseLogs);
+    final otherExercises = whereOtherExerciseLogsExcept(exerciseLog: firstExerciseLog, others: controller.exerciseLogs);
     showSuperSetExercisePicker(
         context: context,
         firstExerciseLog: firstExerciseLog,
-        exerciseLogs: exercises,
+        otherExerciseLogs: otherExercises,
         onSelected: (secondExerciseLog) {
           _closeDialog();
           final id = superSetId(firstExerciseLog: firstExerciseLog, secondExerciseLog: secondExerciseLog);
           controller.superSetExerciseLogs(
               firstExerciseLogId: firstExerciseLog.id, secondExerciseLogId: secondExerciseLog.id, superSetId: id);
+        },
+        selectExercisesInLibrary: () {
+          _closeDialog();
+          _selectExercisesInLibrary();
+        });
+  }
+
+  void _showAlternateExercisePicker({required ExerciseLogDto primaryExerciseLog}) {
+    final controller = Provider.of<ExerciseLogController>(context, listen: false);
+    showAlternateExercisePicker(
+        context: context,
+        primaryExerciseLog: primaryExerciseLog,
+        otherExercises: primaryExerciseLog.alternateExercises,
+        onSelected: (secondaryExerciseLog) {
+          _closeDialog();
         },
         selectExercisesInLibrary: () {
           _closeDialog();
@@ -199,6 +218,23 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     Navigator.of(context).pop();
   }
 
+  /// Handle collapsed ExerciseLogWidget
+  void _handleResizedExerciseLogCard({required String exerciseIdToResize}) {
+    setState(() {
+      final foundExercise =
+          _minimisedExerciseLogCards.firstWhereOrNull((exerciseId) => exerciseId == exerciseIdToResize);
+      if (foundExercise != null) {
+        _minimisedExerciseLogCards.remove(exerciseIdToResize);
+      } else {
+        _minimisedExerciseLogCards.add(exerciseIdToResize);
+      }
+    });
+  }
+
+  bool _isMinimised(String id) {
+    return _minimisedExerciseLogCards.firstWhereOrNull((exerciseId) => exerciseId == id) != null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final template = widget.template;
@@ -317,17 +353,30 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                                   itemBuilder: (BuildContext context, int index) {
                                     final log = exerciseLogs[index];
                                     final logId = log.id;
-                                    return ExerciseLogWidget(
-                                        key: ValueKey(logId),
-                                        exerciseLogDto: log,
-                                        editorType: RoutineEditorMode.edit,
-                                        superSet:
-                                            whereOtherExerciseInSuperSet(firstExercise: log, exercises: exerciseLogs),
-                                        onRemoveSuperSet: (String superSetId) =>
-                                            exerciseLogController.removeSuperSet(superSetId: log.superSetId),
-                                        onRemoveLog: () => exerciseLogController.removeExerciseLog(logId: logId),
-                                        onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: log),
-                                        onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: log), onResize: () {  }, isMinimised: false,);
+                                    final isExerciseMinimised = _minimisedExerciseLogCards.contains(logId);
+                                    return isExerciseMinimised
+                                        ? ExerciseLogLiteWidget(
+                                            key: ValueKey(logId),
+                                            exerciseLogDto: log,
+                                            superSet: whereOtherExerciseInSuperSet(
+                                                firstExercise: log, exercises: exerciseLogs),
+                                            onMaximise: () => _handleResizedExerciseLogCard(exerciseIdToResize: logId),
+                                          )
+                                        : ExerciseLogWidget(
+                                            key: ValueKey(logId),
+                                            exerciseLogDto: log,
+                                            editorType: RoutineEditorMode.edit,
+                                            superSet: whereOtherExerciseInSuperSet(
+                                                firstExercise: log, exercises: exerciseLogs),
+                                            onRemoveSuperSet: (String superSetId) =>
+                                                exerciseLogController.removeSuperSet(superSetId: log.superSetId),
+                                            onRemoveLog: () => exerciseLogController.removeExerciseLog(logId: logId),
+                                            onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: log),
+                                            onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: log),
+                                            onResize: () => _handleResizedExerciseLogCard(exerciseIdToResize: logId),
+                                            isMinimised: _isMinimised(logId),
+                                            onAlternate: () => _showAlternateExercisePicker(primaryExerciseLog: log),
+                                          );
                                   },
                                   separatorBuilder: (_, __) => const SizedBox(height: 10),
                                   itemCount: exerciseLogs.length))
@@ -368,6 +417,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
       }).toList();
       Provider.of<ExerciseLogController>(context, listen: false)
           .loadExerciseLogs(exerciseLogs: updatedExerciseLogs, mode: RoutineEditorMode.edit);
+      _minimiseOrMaximiseCards();
     }
   }
 
@@ -375,6 +425,18 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     final template = widget.template;
     _templateNameController = TextEditingController(text: template?.name);
     _templateNotesController = TextEditingController(text: template?.notes);
+  }
+
+  void _minimiseOrMaximiseCards() {
+    Provider.of<ExerciseLogController>(context, listen: false).exerciseLogs.forEach((exerciseLog) {
+      final completedSets = exerciseLog.sets.where((set) => set.checked).length;
+      final isExerciseCompleted = completedSets == exerciseLog.sets.length;
+      if (isExerciseCompleted) {
+        setState(() {
+          _minimisedExerciseLogCards.add(exerciseLog.id);
+        });
+      }
+    });
   }
 
   @override

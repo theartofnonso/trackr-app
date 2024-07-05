@@ -43,7 +43,7 @@ void main() {
         const SetDto(100, 8, true),
         const SetDto(100, 6, true),
       ],
-      DateTime(2023, 12, 1));
+      DateTime(2023, 12, 1), []);
 
   final lyingLegCurlExerciseLog2 = ExerciseLogDto(
       lyingLegCurlExercise.id,
@@ -56,7 +56,7 @@ void main() {
         const SetDto(100, 10, true),
         const SetDto(100, 6, true),
       ],
-      DateTime(2023, 12, 1));
+      DateTime(2023, 12, 1), []);
 
   final lyingLegCurlExerciseLog3 = ExerciseLogDto(
       lyingLegCurlExercise.id,
@@ -69,7 +69,7 @@ void main() {
         const SetDto(100, 10, true),
         const SetDto(150, 11, true),
       ],
-      DateTime(2023, 12, 1));
+      DateTime(2023, 12, 1), []);
 
   final plankExerciseLog1 = ExerciseLogDto(
       plankExercise.id,
@@ -82,7 +82,7 @@ void main() {
         const SetDto(180000, 0, true),
         const SetDto(150000, 0, true),
       ],
-      DateTime.now());
+      DateTime.now(), []);
 
   final plankExerciseLog2 = ExerciseLogDto(
       plankExercise.id,
@@ -95,7 +95,7 @@ void main() {
         const SetDto(100000, 0, true),
         const SetDto(120000, 0, true),
       ],
-      DateTime.now());
+      DateTime.now(), []);
 
   group("Test on single ExerciseLogDto", () {
     test("Heaviest set weight for exercise log", () {
@@ -182,7 +182,7 @@ void main() {
             const SetDto(100, 10, true),
             const SetDto(160, 6, true),
           ],
-          DateTime.now());
+          DateTime.now(), []);
 
       final pbs = [PBDto(set: pbLog.sets[2], exercise: lyingLegCurlExercise, pb: PBType.weight)];
 
@@ -209,7 +209,7 @@ void main() {
             const SetDto(150, 20, true),
             const SetDto(100, 10, true),
           ],
-          DateTime.now());
+          DateTime.now(), []);
 
       final pbs = [PBDto(set: pbLog.sets[1], exercise: lyingLegCurlExercise, pb: PBType.volume)];
 
@@ -236,7 +236,7 @@ void main() {
             const SetDto(160, 12, true),
             const SetDto(100, 10, true),
           ],
-          DateTime.now());
+          DateTime.now(), []);
 
       final pbs = [
         PBDto(set: pbLog.sets[1], exercise: lyingLegCurlExercise, pb: PBType.weight),
@@ -269,7 +269,7 @@ void main() {
             const SetDto(100000, 0, true),
             const SetDto(220000, 0, true),
           ],
-          DateTime.now());
+          DateTime.now(), []);
 
       final pbs = [PBDto(set: pbLog.sets[2], exercise: plankExercise, pb: PBType.duration)];
 
@@ -296,7 +296,7 @@ void main() {
             const SetDto(160, 12, true),
             const SetDto(100, 10, true),
           ],
-          DateTime.now());
+          DateTime.now(), []);
 
       final pbLog2 = ExerciseLogDto(
           plankExercise.id,
@@ -309,7 +309,7 @@ void main() {
             const SetDto(100000, 0, true),
             const SetDto(220000, 0, true),
           ],
-          DateTime.now());
+          DateTime.now(), []);
 
       final pbLogs = [pbLog1, pbLog2];
 
@@ -375,7 +375,7 @@ group ("Template changes", () {
           const SetDto(160, 12, true),
           const SetDto(100, 10, true),
         ],
-        DateTime.now());
+        DateTime.now(), []);
 
     final result = hasExercisesChanged(
         exerciseLogs1: [lyingLegCurlExerciseLog1, plankExerciseLog1],

@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../dtos/exercise_log_dto.dart';
-import '../../buttons/text_button_widget.dart';
-import '../../empty_states/list_tile_empty_state.dart';
+import '../../../../dtos/exercise_dto.dart';
+import '../../../buttons/text_button_widget.dart';
+import '../../../empty_states/list_tile_empty_state.dart';
 
-class SuperSetExerciseLogPicker extends StatelessWidget {
+class AlternateExercisePicker extends StatelessWidget {
   final String title;
-  final List<ExerciseLogDto> exercises;
-  final void Function(ExerciseLogDto exericseLog) onSelect;
+  final List<ExerciseDto> exercises;
+  final void Function(ExerciseDto exericse) onSelect;
   final void Function() onSelectExercisesInLibrary;
 
-  const SuperSetExerciseLogPicker(
+  const AlternateExercisePicker(
       {super.key,
       required this.title,
       required this.exercises,
@@ -27,7 +27,7 @@ class SuperSetExerciseLogPicker extends StatelessWidget {
               },
               dense: true,
       contentPadding: EdgeInsets.zero,
-              title: Text(exercise.exercise.name,
+              title: Text(exercise.name,
                   style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 15)),
             ))
         .toList();
@@ -79,7 +79,7 @@ class _EmptyState extends StatelessWidget {
               width: double.infinity,
               child: CTextButton(
                   onPressed: onPressed,
-                  label: "Add more exercises",
+                  label: "Add alternate exercises",
                   buttonColor: Colors.transparent,
                   buttonBorderColor: Colors.transparent),
             ),
