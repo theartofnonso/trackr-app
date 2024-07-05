@@ -63,7 +63,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         multiSelect: true);
   }
 
-  void _selectAlternateExercisesInLibrary({required ExerciseLogDto primaryExerciseLog}) async {
+  void _selectSubstituteExercisesInLibrary({required ExerciseLogDto primaryExerciseLog}) async {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
     final preSelectedExercises = controller.exerciseLogs.map((exercise) => exercise.exercise).toList();
 
@@ -73,7 +73,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         multiSelect: true,
         onSelected: (List<ExerciseDto> selectedExercises) {
           controller.addAlternates(primaryExerciseId: primaryExerciseLog.id, exercises: selectedExercises);
-          _showAlternateExercisePicker(primaryExerciseLog: primaryExerciseLog);
+          _showSubstituteExercisePicker(primaryExerciseLog: primaryExerciseLog);
           _cacheLog();
         });
   }
@@ -98,12 +98,12 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         });
   }
 
-  void _showAlternateExercisePicker({required ExerciseLogDto primaryExerciseLog}) {
+  void _showSubstituteExercisePicker({required ExerciseLogDto primaryExerciseLog}) {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
-    showAlternateExercisePicker(
+    showSubstituteExercisePicker(
         context: context,
         primaryExerciseLog: primaryExerciseLog,
-        otherExercises: primaryExerciseLog.alternateExercises,
+        otherExercises: primaryExerciseLog.substituteExercises,
         onSelected: (secondaryExercise) {
           _closeDialog();
           controller.replaceExerciseLog(oldExerciseId: primaryExerciseLog.id, newExercise: secondaryExercise);
@@ -115,7 +115,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         },
         selectExercisesInLibrary: () {
           _closeDialog();
-          _selectAlternateExercisesInLibrary(primaryExerciseLog: primaryExerciseLog);
+          _selectSubstituteExercisesInLibrary(primaryExerciseLog: primaryExerciseLog);
         });
   }
 
@@ -442,7 +442,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                                 onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: log),
                                                 onResize: () =>
                                                     _handleResizedExerciseLogCard(exerciseIdToResize: exerciseId),
-                                                isMinimised: _isMinimised(exerciseId), onAlternate: () => _showAlternateExercisePicker(primaryExerciseLog: log),
+                                                isMinimised: _isMinimised(exerciseId), onAlternate: () => _showSubstituteExercisePicker(primaryExerciseLog: log),
                                               ));
                                   })
                                 ]),

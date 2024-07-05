@@ -66,12 +66,12 @@ class ExerciseLogController extends ChangeNotifier {
   }
 
   void addAlternates({required String primaryExerciseId, required List<ExerciseDto> exercises}) {
-    _exerciseLogRepository.addAlternateExercises(primaryExerciseId: primaryExerciseId, exercises: exercises);
+    _exerciseLogRepository.addSubstituteExercises(primaryExerciseId: primaryExerciseId, exercises: exercises);
     notifyListeners();
   }
 
   void removeAlternates({required String primaryExerciseId, required String secondaryExerciseId}) {
-    _exerciseLogRepository.removeAlternateExercises(primaryExerciseId: primaryExerciseId, secondaryExerciseId: secondaryExerciseId);
+    _exerciseLogRepository.removeSubstituteExercises(primaryExerciseId: primaryExerciseId, secondaryExerciseId: secondaryExerciseId);
     notifyListeners();
   }
 

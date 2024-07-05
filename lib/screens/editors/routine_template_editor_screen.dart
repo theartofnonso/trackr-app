@@ -53,7 +53,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
         });
   }
 
-  void _selectAlternateExercisesInLibrary({required ExerciseLogDto primaryExerciseLog}) async {
+  void _selectSubstituteExercisesInLibrary({required ExerciseLogDto primaryExerciseLog}) async {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
     final preSelectedExercises = controller.exerciseLogs.map((exercise) => exercise.exercise).toList();
 
@@ -63,7 +63,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
         multiSelect: true,
         onSelected: (List<ExerciseDto> selectedExercises) {
           controller.addAlternates(primaryExerciseId: primaryExerciseLog.id, exercises: selectedExercises);
-          _showAlternateExercisePicker(primaryExerciseLog: primaryExerciseLog);
+          _showSubstituteExercisePicker(primaryExerciseLog: primaryExerciseLog);
         });
   }
 
@@ -86,12 +86,12 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
         });
   }
 
-  void _showAlternateExercisePicker({required ExerciseLogDto primaryExerciseLog}) {
+  void _showSubstituteExercisePicker({required ExerciseLogDto primaryExerciseLog}) {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
-    showAlternateExercisePicker(
+    showSubstituteExercisePicker(
         context: context,
         primaryExerciseLog: primaryExerciseLog,
-        otherExercises: primaryExerciseLog.alternateExercises,
+        otherExercises: primaryExerciseLog.substituteExercises,
         onSelected: (secondaryExercise) {
           _closeDialog();
           controller.replaceExerciseLog(oldExerciseId: primaryExerciseLog.id, newExercise: secondaryExercise);
@@ -101,7 +101,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
         },
         selectExercisesInLibrary: () {
           _closeDialog();
-          _selectAlternateExercisesInLibrary(primaryExerciseLog: primaryExerciseLog);
+          _selectSubstituteExercisesInLibrary(primaryExerciseLog: primaryExerciseLog);
         });
   }
 
@@ -393,7 +393,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                                             onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: log),
                                             onResize: () => _handleResizedExerciseLogCard(exerciseIdToResize: logId),
                                             isMinimised: _isMinimised(logId),
-                                            onAlternate: () => _showAlternateExercisePicker(primaryExerciseLog: log),
+                                            onAlternate: () => _showSubstituteExercisePicker(primaryExerciseLog: log),
                                           );
                                   },
                                   separatorBuilder: (_, __) => const SizedBox(height: 10),

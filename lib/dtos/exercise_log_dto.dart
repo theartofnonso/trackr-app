@@ -9,24 +9,24 @@ class ExerciseLogDto {
   final String? routineLogId;
   final String superSetId;
   final ExerciseDto exercise;
-  final List<ExerciseDto> alternateExercises;
+  final List<ExerciseDto> substituteExercises;
   final String notes;
   final List<SetDto> sets;
   final DateTime createdAt;
 
   const ExerciseLogDto(this.id, this.routineLogId, this.superSetId, this.exercise, this.notes, this.sets,
-      this.createdAt, this.alternateExercises);
+      this.createdAt, this.substituteExercises);
 
   String toJson() {
     final setJsons = sets.map((set) => set.toJson()).toList();
-    final alternateExercisesJsons = alternateExercises.map((exercise) => exercise.toJson()).toList();
+    final substituteExercisesJsons = substituteExercises.map((exercise) => exercise.toJson()).toList();
 
     return jsonEncode({
       "superSetId": superSetId,
       "exercise": exercise.toJson(),
       "notes": notes,
       "sets": setJsons,
-      "alternateExercises": alternateExercisesJsons
+      "substituteExercises": substituteExercisesJsons
     });
   }
 
@@ -39,7 +39,7 @@ class ExerciseLogDto {
       String? notes,
       List<SetDto>? sets,
       DateTime? createdAt,
-      List<ExerciseDto>? alternateExercises}) {
+      List<ExerciseDto>? substituteExercises}) {
     return ExerciseLogDto(
         id ?? this.id,
         routineLogId ?? this.routineLogId,
@@ -48,7 +48,7 @@ class ExerciseLogDto {
         notes ?? this.notes,
         sets ?? this.sets,
         createdAt ?? this.createdAt,
-        alternateExercises ?? this.alternateExercises);
+        substituteExercises ?? this.substituteExercises);
   }
 
   factory ExerciseLogDto.fromJson({String? routineLogId, DateTime? createdAt, required Map<String, dynamic> json}) {
@@ -58,10 +58,10 @@ class ExerciseLogDto {
     final notes = json["notes"] ?? "";
     final setsJsons = json["sets"] as List<dynamic>;
     final sets = setsJsons.map((json) => SetDto.fromJson(jsonDecode(json))).toList();
-    final alternateExercisesJson = json["alternateExercises"] as List<dynamic>? ?? [];
-    final alternateExercises =
-    alternateExercisesJson.map((json) => ExerciseDto.fromJson(json)).toList();
-    return ExerciseLogDto(exercise.id, routineLogId, superSetId, exercise, notes, sets, createdAt ?? DateTime.now(), alternateExercises);
+    final substituteExercisesJson = json["substituteExercises"] as List<dynamic>? ?? [];
+    final substituteExercises =
+    substituteExercisesJson.map((json) => ExerciseDto.fromJson(json)).toList();
+    return ExerciseLogDto(exercise.id, routineLogId, superSetId, exercise, notes, sets, createdAt ?? DateTime.now(), substituteExercises);
   }
 
   @override

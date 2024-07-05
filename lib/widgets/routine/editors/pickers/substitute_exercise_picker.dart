@@ -6,14 +6,14 @@ import '../../../../dtos/exercise_dto.dart';
 import '../../../buttons/text_button_widget.dart';
 import '../../../empty_states/list_tile_empty_state.dart';
 
-class AlternateExercisePicker extends StatelessWidget {
+class SubstituteExercisePicker extends StatelessWidget {
   final String title;
   final List<ExerciseDto> exercises;
   final void Function(ExerciseDto exericse) onSelect;
   final void Function(ExerciseDto exericse) onRemove;
   final void Function() onSelectExercisesInLibrary;
 
-  const AlternateExercisePicker(
+  const SubstituteExercisePicker(
       {super.key,
       required this.title,
       required this.exercises,
@@ -62,7 +62,7 @@ class AlternateExercisePicker extends StatelessWidget {
                     child: CTextButton(
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         onPressed: onSelectExercisesInLibrary,
-                        label: "Add alternate exercises",
+                        label: "Add substitute exercises",
                         buttonColor: sapphireDark,
                         buttonBorderColor: Colors.transparent),
                   ),

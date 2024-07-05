@@ -4,7 +4,7 @@ import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../enums/exercise_type_enums.dart';
 import '../screens/exercise/library/exercise_library_screen.dart';
-import '../widgets/routine/editors/pickers/alternate_exercise_picker.dart';
+import '../widgets/routine/editors/pickers/substitute_exercise_picker.dart';
 import '../widgets/routine/editors/pickers/superset_exercise_log_picker.dart';
 import 'dialog_utils.dart';
 
@@ -25,7 +25,7 @@ void showSuperSetExercisePicker(
   );
 }
 
-void showAlternateExercisePicker(
+void showSubstituteExercisePicker(
     {required BuildContext context,
       required ExerciseLogDto primaryExerciseLog,
       required List<ExerciseDto> otherExercises,
@@ -34,8 +34,8 @@ void showAlternateExercisePicker(
       required Function() selectExercisesInLibrary}) {
   displayBottomSheet(
     context: context,
-    child: AlternateExercisePicker(
-      title: "Alternate ${primaryExerciseLog.exercise.name} with",
+    child: SubstituteExercisePicker(
+      title: "Substitute ${primaryExerciseLog.exercise.name} for",
       exercises: otherExercises,
       onSelect: onSelected,
       onRemove: onRemoved,

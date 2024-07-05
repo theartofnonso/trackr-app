@@ -84,9 +84,9 @@ class ExerciseLogRepository {
 
     _exerciseLogs = [...exerciseLogs];
 
-    removeAlternateExercises(primaryExerciseId: newExercise.id, secondaryExerciseId: newExercise.id);
+    removeSubstituteExercises(primaryExerciseId: newExercise.id, secondaryExerciseId: newExercise.id);
 
-    addAlternateExercises(primaryExerciseId: newExercise.id, exercises: [oldExerciseLog.exercise]);
+    addSubstituteExercises(primaryExerciseId: newExercise.id, exercises: [oldExerciseLog.exercise]);
   }
 
   void _removeAllSetsForExerciseLog({required String exerciseLogId}) {
@@ -133,7 +133,7 @@ class ExerciseLogRepository {
     _exerciseLogs = [...reorderedLogs];
   }
 
-  void addAlternateExercises({required String primaryExerciseId, required List<ExerciseDto> exercises}) {
+  void addSubstituteExercises({required String primaryExerciseId, required List<ExerciseDto> exercises}) {
     final primaryExerciseIndex = _indexWhereExerciseLog(exerciseLogId: primaryExerciseId);
 
     if (primaryExerciseIndex == -1) {
@@ -142,13 +142,13 @@ class ExerciseLogRepository {
 
     List<ExerciseLogDto> updatedExerciseLogs = List<ExerciseLogDto>.from(_exerciseLogs);
 
-    updatedExerciseLogs[primaryExerciseIndex].alternateExercises.addAll(exercises);
+    updatedExerciseLogs[primaryExerciseIndex].substituteExercises.addAll(exercises);
 
     _exerciseLogs = [...updatedExerciseLogs];
 
   }
 
-  void removeAlternateExercises({required String primaryExerciseId, required String secondaryExerciseId}) {
+  void removeSubstituteExercises({required String primaryExerciseId, required String secondaryExerciseId}) {
     final primaryExerciseIndex = _indexWhereExerciseLog(exerciseLogId: primaryExerciseId);
 
     if (primaryExerciseIndex == -1) {
@@ -157,7 +157,7 @@ class ExerciseLogRepository {
 
     List<ExerciseLogDto> updatedExerciseLogs = List<ExerciseLogDto>.from(_exerciseLogs);
 
-    updatedExerciseLogs[primaryExerciseIndex].alternateExercises.removeWhere((exercise) => exercise.id == secondaryExerciseId);
+    updatedExerciseLogs[primaryExerciseIndex].substituteExercises.removeWhere((exercise) => exercise.id == secondaryExerciseId);
 
     _exerciseLogs = [...updatedExerciseLogs];
 
