@@ -63,6 +63,20 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         multiSelect: true);
   }
 
+  void _selectAlternateExercisesInLibrary({required ExerciseLogDto primaryExerciseLog}) async {
+    final controller = Provider.of<ExerciseLogController>(context, listen: false);
+    final preSelectedExercises = controller.exerciseLogs.map((exercise) => exercise.exercise).toList();
+
+    showExercisesInLibrary(
+        context: context,
+        exclude: preSelectedExercises,
+        multiSelect: true,
+        onSelected: (List<ExerciseDto> selectedExercises) {
+          controller.addAlternates(primaryExerciseId: primaryExerciseLog.id, exercises: selectedExercises);
+          _cacheLog();
+        });
+  }
+
   void _showSuperSetExercisePicker({required ExerciseLogDto firstExerciseLog}) {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
     final otherExercises = whereOtherExerciseLogsExcept(exerciseLog: firstExerciseLog, others: controller.exerciseLogs);
@@ -91,12 +105,12 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         otherExercises: primaryExerciseLog.alternateExercises,
         onSelected: (secondaryExercise) {
           _closeDialog();
-          controller.addAlternates(primaryExerciseId: primaryExerciseLog.id, exercises: [secondaryExercise]);
+          controller.replaceExerciseLog(oldExerciseId: primaryExerciseLog.id, newExercise: secondaryExercise);
           _cacheLog();
         },
         selectExercisesInLibrary: () {
           _closeDialog();
-          _selectExercisesInLibrary();
+          _selectAlternateExercisesInLibrary(primaryExerciseLog: primaryExerciseLog);
         });
   }
 

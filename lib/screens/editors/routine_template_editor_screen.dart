@@ -42,7 +42,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
 
   void _selectExercisesInLibrary() async {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
-    final preSelectedExercises = controller.exerciseLogs.map((procedure) => procedure.exercise).toList();
+    final preSelectedExercises = controller.exerciseLogs.map((exercise) => exercise.exercise).toList();
 
     showExercisesInLibrary(
         context: context,
@@ -50,6 +50,19 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
         multiSelect: true,
         onSelected: (List<ExerciseDto> selectedExercises) {
           controller.addExerciseLogs(exercises: selectedExercises);
+        });
+  }
+
+  void _selectAlternateExercisesInLibrary({required ExerciseLogDto primaryExerciseLog}) async {
+    final controller = Provider.of<ExerciseLogController>(context, listen: false);
+    final preSelectedExercises = controller.exerciseLogs.map((exercise) => exercise.exercise).toList();
+
+    showExercisesInLibrary(
+        context: context,
+        exclude: preSelectedExercises,
+        multiSelect: true,
+        onSelected: (List<ExerciseDto> selectedExercises) {
+          controller.addAlternates(primaryExerciseId: primaryExerciseLog.id, exercises: selectedExercises);
         });
   }
 
@@ -80,17 +93,17 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
         otherExercises: primaryExerciseLog.alternateExercises,
         onSelected: (secondaryExercise) {
           _closeDialog();
-          controller.addAlternates(primaryExerciseId: primaryExerciseLog.id, exercises: [secondaryExercise]);
+          controller.replaceExerciseLog(oldExerciseId: primaryExerciseLog.id, newExercise: secondaryExercise);
         },
         selectExercisesInLibrary: () {
           _closeDialog();
-          _selectExercisesInLibrary();
+          _selectAlternateExercisesInLibrary(primaryExerciseLog: primaryExerciseLog);
         });
   }
 
   void _showReplaceExercisePicker({required ExerciseLogDto oldExerciseLog}) {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
-    final preSelectedExercises = controller.exerciseLogs.map((procedure) => procedure.exercise).toList();
+    final preSelectedExercises = controller.exerciseLogs.map((exercise) => exercise.exercise).toList();
 
     showExercisesInLibrary(
         context: context,
@@ -103,14 +116,14 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   }
 
   bool _validateRoutineTemplateInputs() {
-    final procedureProviders = Provider.of<ExerciseLogController>(context, listen: false);
-    final procedures = procedureProviders.exerciseLogs;
+    final exerciseProviders = Provider.of<ExerciseLogController>(context, listen: false);
+    final exercises = exerciseProviders.exerciseLogs;
 
     if (_templateNameController.text.isEmpty) {
       _showSnackbar('Please provide a name for this workout');
       return false;
     }
-    if (procedures.isEmpty) {
+    if (exercises.isEmpty) {
       _showSnackbar("Workout must have exercise(s)");
       return false;
     }
@@ -161,8 +174,8 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
 
   void _doUpdateRoutineTemplate(
       {required RoutineTemplateDto template, List<ExerciseLogDto>? updatedExerciseLogs}) async {
-    final procedureProvider = Provider.of<ExerciseLogController>(context, listen: false);
-    final exerciseLogs = updatedExerciseLogs ?? procedureProvider.mergeExerciseLogsAndSets();
+    final exerciseProvider = Provider.of<ExerciseLogController>(context, listen: false);
+    final exerciseLogs = updatedExerciseLogs ?? exerciseProvider.mergeExerciseLogsAndSets();
     final templateProvider = Provider.of<RoutineTemplateController>(context, listen: false);
 
     final updatedRoutineTemplate = template.copyWith(
@@ -175,9 +188,9 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   }
 
   void _checkForUnsavedChanges() {
-    final procedureProvider = Provider.of<ExerciseLogController>(context, listen: false);
+    final exerciseProvider = Provider.of<ExerciseLogController>(context, listen: false);
     final exerciseLog1 = widget.template?.exerciseTemplates ?? [];
-    final exerciseLog2 = procedureProvider.mergeExerciseLogsAndSets();
+    final exerciseLog2 = exerciseProvider.mergeExerciseLogsAndSets();
     final unsavedChangesMessage = checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
     if (unsavedChangesMessage.isNotEmpty) {
       showBottomSheetWithMultiActions(
