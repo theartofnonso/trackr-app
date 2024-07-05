@@ -102,7 +102,7 @@ class _EmptyState extends StatelessWidget {
               width: double.infinity,
               child: CTextButton(
                   onPressed: onPressed,
-                  label: "Add alternate exercises",
+                  label: "Add substitute exercises",
                   buttonColor: Colors.transparent,
                   buttonBorderColor: Colors.transparent),
             ),
