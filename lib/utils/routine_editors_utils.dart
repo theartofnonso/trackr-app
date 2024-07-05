@@ -30,6 +30,7 @@ void showAlternateExercisePicker(
       required ExerciseLogDto primaryExerciseLog,
       required List<ExerciseDto> otherExercises,
       required Function(ExerciseDto secondaryExercise) onSelected,
+      required Function(ExerciseDto secondaryExercise) onRemoved,
       required Function() selectExercisesInLibrary}) {
   displayBottomSheet(
     context: context,
@@ -37,6 +38,7 @@ void showAlternateExercisePicker(
       title: "Alternate ${primaryExerciseLog.exercise.name} with",
       exercises: otherExercises,
       onSelect: onSelected,
+      onRemove: onRemoved,
       onSelectExercisesInLibrary: selectExercisesInLibrary,
     ),
   );

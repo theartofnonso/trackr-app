@@ -96,6 +96,10 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
           _closeDialog();
           controller.replaceExerciseLog(oldExerciseId: primaryExerciseLog.id, newExercise: secondaryExercise);
         },
+        onRemoved: (ExerciseDto secondaryExercise) {
+          _closeDialog();
+          controller.removeAlternates(primaryExerciseId: primaryExerciseLog.id, secondaryExerciseId: secondaryExercise.id);
+        },
         selectExercisesInLibrary: () {
           _closeDialog();
           _selectAlternateExercisesInLibrary(primaryExerciseLog: primaryExerciseLog);

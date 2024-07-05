@@ -109,6 +109,11 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
           controller.replaceExerciseLog(oldExerciseId: primaryExerciseLog.id, newExercise: secondaryExercise);
           _cacheLog();
         },
+        onRemoved: (ExerciseDto secondaryExercise) {
+          _closeDialog();
+          controller.removeAlternates(primaryExerciseId: primaryExerciseLog.id, secondaryExerciseId: secondaryExercise.id);
+          _cacheLog();
+        },
         selectExercisesInLibrary: () {
           _closeDialog();
           _selectAlternateExercisesInLibrary(primaryExerciseLog: primaryExerciseLog);

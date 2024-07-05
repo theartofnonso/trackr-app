@@ -10,6 +10,7 @@ class AlternateExercisePicker extends StatelessWidget {
   final String title;
   final List<ExerciseDto> exercises;
   final void Function(ExerciseDto exericse) onSelect;
+  final void Function(ExerciseDto exericse) onRemove;
   final void Function() onSelectExercisesInLibrary;
 
   const AlternateExercisePicker(
@@ -17,16 +18,19 @@ class AlternateExercisePicker extends StatelessWidget {
       required this.title,
       required this.exercises,
       required this.onSelect,
+      required this.onRemove,
       required this.onSelectExercisesInLibrary});
 
   @override
   Widget build(BuildContext context) {
     final listTiles = exercises
         .map((exercise) => Dismissible(
-      direction: DismissDirection.endToStart,
-      secondaryBackground: ColoredBox(color: Colors.red),
-          key: ValueKey(exercise.id),
-          child: ListTile(
+              direction: DismissDirection.endToStart,
+              onDismissed: (_) {
+                onRemove(exercise);
+              },
+              key: ValueKey(exercise.id),
+              child: ListTile(
                 onTap: () {
                   onSelect(exercise);
                 },
@@ -35,7 +39,7 @@ class AlternateExercisePicker extends StatelessWidget {
                 title: Text(exercise.name,
                     style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 15)),
               ),
-        ))
+            ))
         .toList();
 
     return exercises.isNotEmpty
@@ -56,7 +60,7 @@ class AlternateExercisePicker extends StatelessWidget {
                   child: SizedBox(
                     width: double.infinity,
                     child: CTextButton(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
+                        padding: const EdgeInsets.symmetric(vertical: 8),
                         onPressed: onSelectExercisesInLibrary,
                         label: "Add alternate exercises",
                         buttonColor: sapphireDark,
