@@ -73,6 +73,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         multiSelect: true,
         onSelected: (List<ExerciseDto> selectedExercises) {
           controller.addAlternates(primaryExerciseId: primaryExerciseLog.id, exercises: selectedExercises);
+          _showAlternateExercisePicker(primaryExerciseLog: primaryExerciseLog);
           _cacheLog();
         });
   }

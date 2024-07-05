@@ -63,6 +63,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
         multiSelect: true,
         onSelected: (List<ExerciseDto> selectedExercises) {
           controller.addAlternates(primaryExerciseId: primaryExerciseLog.id, exercises: selectedExercises);
+          _showAlternateExercisePicker(primaryExerciseLog: primaryExerciseLog);
         });
   }
 

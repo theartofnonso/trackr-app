@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/colors.dart';
 
 import '../../../../dtos/exercise_dto.dart';
 import '../../../buttons/text_button_widget.dart';
@@ -43,7 +44,20 @@ class AlternateExercisePicker extends StatelessWidget {
                   child: Text(title,
                       style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 15)),
                 ),
-                ...listTiles
+                ...listTiles,
+                const SizedBox(height: 12),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: CTextButton(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                        onPressed: onSelectExercisesInLibrary,
+                        label: "Add alternate exercises",
+                        buttonColor: sapphireDark,
+                        buttonBorderColor: Colors.transparent),
+                  ),
+                )
               ],
             ),
           )

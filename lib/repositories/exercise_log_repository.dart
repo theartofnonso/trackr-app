@@ -71,7 +71,7 @@ class ExerciseLogRepository {
     _removeAllSetsForExerciseLog(exerciseLogId: logId);
   }
 
-  void replaceExercise({required String oldExerciseId, required ExerciseDto newExercise}) {
+  void replaceExercise({required String oldExerciseId, required ExerciseDto newExercise, }) {
     final oldExerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: oldExerciseId);
     final oldExerciseLog = _whereExerciseLog(exerciseLogId: oldExerciseId);
     if (oldExerciseLogIndex == -1 || oldExerciseLog == null) {
@@ -83,6 +83,10 @@ class ExerciseLogRepository {
     exerciseLogs[oldExerciseLogIndex] = oldExerciseLog.copyWith(id: newExercise.id, exercise: newExercise);
 
     _exerciseLogs = [...exerciseLogs];
+
+    removeAlternateExercises(primaryExerciseId: newExercise.id, secondaryExerciseId: newExercise.id);
+
+    addAlternateExercises(primaryExerciseId: newExercise.id, exercises: [oldExerciseLog.exercise]);
   }
 
   void _removeAllSetsForExerciseLog({required String exerciseLogId}) {
