@@ -22,15 +22,20 @@ class AlternateExercisePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final listTiles = exercises
-        .map((exercise) => ListTile(
-              onTap: () {
-                onSelect(exercise);
-              },
-              dense: true,
-      contentPadding: EdgeInsets.zero,
-              title: Text(exercise.name,
-                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 15)),
-            ))
+        .map((exercise) => Dismissible(
+      direction: DismissDirection.endToStart,
+      secondaryBackground: ColoredBox(color: Colors.red),
+          key: ValueKey(exercise.id),
+          child: ListTile(
+                onTap: () {
+                  onSelect(exercise);
+                },
+                dense: true,
+                contentPadding: EdgeInsets.zero,
+                title: Text(exercise.name,
+                    style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 15)),
+              ),
+        ))
         .toList();
 
     return exercises.isNotEmpty
