@@ -129,6 +129,36 @@ class ExerciseLogRepository {
     _exerciseLogs = [...reorderedLogs];
   }
 
+  void addAlternateExercises({required String primaryExerciseId, required List<ExerciseDto> exercises}) {
+    final primaryExerciseIndex = _indexWhereExerciseLog(exerciseLogId: primaryExerciseId);
+
+    if (primaryExerciseIndex == -1) {
+      return;
+    }
+
+    List<ExerciseLogDto> updatedExerciseLogs = List<ExerciseLogDto>.from(_exerciseLogs);
+
+    updatedExerciseLogs[primaryExerciseIndex].alternateExercises.addAll(exercises);
+
+    _exerciseLogs = [...updatedExerciseLogs];
+
+  }
+
+  void removeAlternateExercises({required String primaryExerciseId, required String secondaryExerciseId}) {
+    final primaryExerciseIndex = _indexWhereExerciseLog(exerciseLogId: primaryExerciseId);
+
+    if (primaryExerciseIndex == -1) {
+      return;
+    }
+
+    List<ExerciseLogDto> updatedExerciseLogs = List<ExerciseLogDto>.from(_exerciseLogs);
+
+    updatedExerciseLogs[primaryExerciseIndex].alternateExercises.removeWhere((exercise) => exercise.id == secondaryExerciseId);
+
+    _exerciseLogs = [...updatedExerciseLogs];
+
+  }
+
   void removeSuperSet({required String superSetId}) {
     _removeSuperSet(superSetId: superSetId);
   }

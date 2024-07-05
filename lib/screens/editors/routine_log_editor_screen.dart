@@ -89,8 +89,9 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         context: context,
         primaryExerciseLog: primaryExerciseLog,
         otherExercises: primaryExerciseLog.alternateExercises,
-        onSelected: (secondaryExerciseLog) {
+        onSelected: (secondaryExercise) {
           _closeDialog();
+          controller.addAlternates(primaryExerciseId: primaryExerciseLog.id, exercises: [secondaryExercise]);
           _cacheLog();
         },
         selectExercisesInLibrary: () {

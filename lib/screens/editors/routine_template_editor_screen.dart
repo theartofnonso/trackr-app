@@ -78,8 +78,9 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
         context: context,
         primaryExerciseLog: primaryExerciseLog,
         otherExercises: primaryExerciseLog.alternateExercises,
-        onSelected: (secondaryExerciseLog) {
+        onSelected: (secondaryExercise) {
           _closeDialog();
+          controller.addAlternates(primaryExerciseId: primaryExerciseLog.id, exercises: [secondaryExercise]);
         },
         selectExercisesInLibrary: () {
           _closeDialog();

@@ -84,7 +84,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         ),
       ),
       MenuItemButton(
-        onPressed: widget.onSuperSet,
+        onPressed: widget.onAlternate,
         child: Text("Alternates", style: GoogleFonts.montserrat()),
       ),
       widget.exerciseLogDto.superSetId.isNotEmpty

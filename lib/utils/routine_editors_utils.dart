@@ -29,7 +29,7 @@ void showAlternateExercisePicker(
     {required BuildContext context,
       required ExerciseLogDto primaryExerciseLog,
       required List<ExerciseDto> otherExercises,
-      required Function(ExerciseDto secondExercise) onSelected,
+      required Function(ExerciseDto secondaryExercise) onSelected,
       required Function() selectExercisesInLibrary}) {
   displayBottomSheet(
     context: context,
