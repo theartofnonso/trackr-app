@@ -42,7 +42,7 @@ class ExerciseWidget extends StatelessWidget {
                 ),
                 if (exerciseInLibraryDto.exercise.owner)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                     margin: const EdgeInsets.only(left: 8),
                     decoration: BoxDecoration(
                       color: sapphireLighter,
