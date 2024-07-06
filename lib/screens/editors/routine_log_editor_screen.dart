@@ -63,13 +63,28 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         multiSelect: true);
   }
 
+  void _selectSubstituteExercisesInLibrary({required ExerciseLogDto primaryExerciseLog}) async {
+    final controller = Provider.of<ExerciseLogController>(context, listen: false);
+    final preSelectedExercises = controller.exerciseLogs.map((exercise) => exercise.exercise).toList();
+
+    showExercisesInLibrary(
+        context: context,
+        exclude: preSelectedExercises,
+        multiSelect: true,
+        onSelected: (List<ExerciseDto> selectedExercises) {
+          controller.addAlternates(primaryExerciseId: primaryExerciseLog.id, exercises: selectedExercises);
+          _showSubstituteExercisePicker(primaryExerciseLog: primaryExerciseLog);
+          _cacheLog();
+        });
+  }
+
   void _showSuperSetExercisePicker({required ExerciseLogDto firstExerciseLog}) {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
-    final exercises = whereOtherExerciseLogsExcept(exerciseLog: firstExerciseLog, others: controller.exerciseLogs);
+    final otherExercises = whereOtherExerciseLogsExcept(exerciseLog: firstExerciseLog, others: controller.exerciseLogs);
     showSuperSetExercisePicker(
         context: context,
         firstExerciseLog: firstExerciseLog,
-        exerciseLogs: exercises,
+        otherExerciseLogs: otherExercises,
         onSelected: (secondExerciseLog) {
           _closeDialog();
           final id = superSetId(firstExerciseLog: firstExerciseLog, secondExerciseLog: secondExerciseLog);
@@ -83,6 +98,27 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         });
   }
 
+  void _showSubstituteExercisePicker({required ExerciseLogDto primaryExerciseLog}) {
+    final controller = Provider.of<ExerciseLogController>(context, listen: false);
+    showSubstituteExercisePicker(
+        context: context,
+        primaryExerciseLog: primaryExerciseLog,
+        otherExercises: primaryExerciseLog.substituteExercises,
+        onSelected: (secondaryExercise) {
+          _closeDialog();
+          controller.replaceExerciseLog(oldExerciseId: primaryExerciseLog.id, newExercise: secondaryExercise);
+          _cacheLog();
+        },
+        onRemoved: (ExerciseDto secondaryExercise) {
+          controller.removeAlternates(primaryExerciseId: primaryExerciseLog.id, secondaryExerciseId: secondaryExercise.id);
+          _cacheLog();
+        },
+        selectExercisesInLibrary: () {
+          _closeDialog();
+          _selectSubstituteExercisesInLibrary(primaryExerciseLog: primaryExerciseLog);
+        });
+  }
+
   void _showReplaceExercisePicker({required ExerciseLogDto oldExerciseLog}) {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
     final preSelectedExercises = controller.exerciseLogs.map((procedure) => procedure.exercise).toList();
@@ -91,7 +127,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         context: context,
         exclude: preSelectedExercises,
         multiSelect: false,
-        filter: oldExerciseLog.exercise.type,
         onSelected: (List<ExerciseDto> selectedExercises) {
           controller.replaceExerciseLog(oldExerciseId: oldExerciseLog.id, newExercise: selectedExercises.first);
           _cacheLog();
@@ -359,6 +394,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                               Consumer<ExerciseLogController>(
                                   builder: (BuildContext context, ExerciseLogController provider, Widget? child) {
                                 return _RoutineLogOverview(
+                                  exercises: provider.completedExerciseLog().length,
                                   sets: provider.completedSets().length,
                                   timer: RoutineTimer(startTime: widget.log.startTime),
                                 );
@@ -406,7 +442,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                                 onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: log),
                                                 onResize: () =>
                                                     _handleResizedExerciseLogCard(exerciseIdToResize: exerciseId),
-                                                isMinimised: _isMinimised(exerciseId),
+                                                isMinimised: _isMinimised(exerciseId), onAlternate: () => _showSubstituteExercisePicker(primaryExerciseLog: log),
                                               ));
                                   })
                                 ]),
@@ -504,10 +540,11 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 }
 
 class _RoutineLogOverview extends StatelessWidget {
+  final int exercises;
   final int sets;
   final Widget timer;
 
-  const _RoutineLogOverview({required this.sets, required this.timer});
+  const _RoutineLogOverview({required this.exercises, required this.sets, required this.timer});
 
   @override
   Widget build(BuildContext context) {
@@ -516,16 +553,21 @@ class _RoutineLogOverview extends StatelessWidget {
         child: Table(
           columnWidths: const <int, TableColumnWidth>{
             0: FlexColumnWidth(1),
-            1: FlexColumnWidth(2),
+            1: FlexColumnWidth(1),
+            2: FlexColumnWidth(2),
           },
           children: [
             TableRow(children: [
+              Text("Exercises",
+                  style: GoogleFonts.montserrat(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500)),
               Text("Sets",
                   style: GoogleFonts.montserrat(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500)),
               Text("Duration",
                   style: GoogleFonts.montserrat(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500))
             ]),
             TableRow(children: [
+              Text("$exercises",
+                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
               Text("$sets",
                   style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
               timer

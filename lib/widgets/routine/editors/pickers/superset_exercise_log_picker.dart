@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../dtos/exercise_log_dto.dart';
-import '../../buttons/text_button_widget.dart';
-import '../../empty_states/list_tile_empty_state.dart';
+import '../../../../colors.dart';
+import '../../../../dtos/exercise_log_dto.dart';
+import '../../../buttons/text_button_widget.dart';
+import '../../../empty_states/list_tile_empty_state.dart';
 
 class SuperSetExerciseLogPicker extends StatelessWidget {
   final String title;
@@ -72,18 +73,13 @@ class _EmptyState extends StatelessWidget {
             padding: EdgeInsets.only(left: 18.0),
             child: ListTileEmptyState(),
           ),
-          const SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: SizedBox(
-              width: double.infinity,
-              child: CTextButton(
-                  onPressed: onPressed,
-                  label: "Add more exercises",
-                  buttonColor: Colors.transparent,
-                  buttonBorderColor: Colors.transparent),
-            ),
-          )
+          const SizedBox(height: 24),
+          CTextButton(
+              onPressed: onPressed,
+              label: "Add more exercises",
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.black),
+              buttonColor: vibrantGreen)
         ],
       ),
     );

@@ -65,6 +65,16 @@ class ExerciseLogController extends ChangeNotifier {
     notifyListeners();
   }
 
+  void addAlternates({required String primaryExerciseId, required List<ExerciseDto> exercises}) {
+    _exerciseLogRepository.addSubstituteExercises(primaryExerciseId: primaryExerciseId, exercises: exercises);
+    notifyListeners();
+  }
+
+  void removeAlternates({required String primaryExerciseId, required String secondaryExerciseId}) {
+    _exerciseLogRepository.removeSubstituteExercises(primaryExerciseId: primaryExerciseId, secondaryExerciseId: secondaryExerciseId);
+    notifyListeners();
+  }
+
   void removeSetForExerciseLog({required String exerciseLogId, required int index}) {
     _exerciseLogRepository.removeSet(exerciseLogId: exerciseLogId, index: index);
     notifyListeners();
@@ -95,6 +105,10 @@ class ExerciseLogController extends ChangeNotifier {
 
   List<SetDto> completedSets() {
     return _exerciseLogRepository.completedSets();
+  }
+
+  List<ExerciseLogDto> completedExerciseLog() {
+    return _exerciseLogRepository.completedExerciseLogs();
   }
 
   void onClear() {

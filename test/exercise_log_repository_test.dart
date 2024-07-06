@@ -42,7 +42,7 @@ void main() {
         const SetDto(100, 8, true),
         const SetDto(100, 6, true),
       ],
-      DateTime(2023, 12, 1));
+      DateTime(2023, 12, 1), []);
 
   final plankExerciseLog1 = ExerciseLogDto(
       plankExercise.id,
@@ -55,7 +55,7 @@ void main() {
         const SetDto(180000, 0, true),
         const SetDto(150000, 0, true),
       ],
-      DateTime.now());
+      DateTime.now(), []);
 
   final benchPressExerciseLog1 = ExerciseLogDto(
       benchPressExercise.id,
@@ -68,7 +68,7 @@ void main() {
         const SetDto(100, 8, true),
         const SetDto(100, 6, true),
       ],
-      DateTime(2023, 12, 1));
+      DateTime(2023, 12, 1), []);
 
   test("Load Exercise Logs", () {
     final exerciseLogRepository = ExerciseLogRepository();
@@ -245,7 +245,7 @@ void main() {
         plankExercise,
         "notes",
         [],
-        DateTime.now());
+        DateTime.now(), []);
 
     exerciseLogRepository.loadExerciseLogs(
         exerciseLogs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
