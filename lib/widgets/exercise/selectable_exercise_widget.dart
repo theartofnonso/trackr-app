@@ -17,7 +17,7 @@ class SelectableExerciseWidget extends StatelessWidget {
   void _onTap() {
     final selectExercise = onSelect;
     if (selectExercise != null) {
-      HapticFeedback.lightImpact();
+      HapticFeedback.mediumImpact();
       selectExercise(exerciseInLibraryDto, !exerciseInLibraryDto.selected);
     }
   }
