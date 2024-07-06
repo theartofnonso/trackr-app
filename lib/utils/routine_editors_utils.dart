@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
-import '../enums/exercise_type_enums.dart';
 import '../screens/exercise/library/exercise_library_screen.dart';
 import '../widgets/routine/editors/pickers/substitute_exercise_picker.dart';
 import '../widgets/routine/editors/pickers/superset_exercise_log_picker.dart';
@@ -49,11 +48,10 @@ void showExercisesInLibrary(
     {required BuildContext context,
     required List<ExerciseDto> exclude,
     required void Function(List<ExerciseDto> selectedExercises) onSelected,
-    required bool multiSelect,
-    ExerciseType? filter}) async {
+    required bool multiSelect}) async {
   final exercises = await Navigator.of(context).push(MaterialPageRoute(
           builder: (context) =>
-              ExerciseLibraryScreen(preSelectedExercises: exclude, multiSelect: multiSelect, filter: filter)))
+              ExerciseLibraryScreen(preSelectedExercises: exclude, multiSelect: multiSelect)))
       as List<ExerciseDto>?;
 
   if (context.mounted) {

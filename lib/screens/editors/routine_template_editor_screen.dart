@@ -113,7 +113,6 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
         context: context,
         exclude: preSelectedExercises,
         multiSelect: false,
-        filter: oldExerciseLog.exercise.type,
         onSelected: (List<ExerciseDto> selectedExercises) {
           controller.replaceExerciseLog(oldExerciseId: oldExerciseLog.id, newExercise: selectedExercises.first);
         });

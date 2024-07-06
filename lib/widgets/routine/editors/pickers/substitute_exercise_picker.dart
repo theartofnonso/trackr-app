@@ -51,21 +51,18 @@ class SubstituteExercisePicker extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0, bottom: 10),
                   child: Text(title,
+                      textAlign: TextAlign.start,
                       style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 15)),
                 ),
                 ...listTiles,
                 const SizedBox(height: 12),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: CTextButton(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        onPressed: onSelectExercisesInLibrary,
-                        label: "Add substitute exercises",
-                        buttonColor: sapphireDark,
-                        buttonBorderColor: Colors.transparent),
-                  ),
+                Center(
+                  child: CTextButton(
+                      onPressed: onSelectExercisesInLibrary,
+                      label: "Add substitute exercises",
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.black),
+                      buttonColor: vibrantGreen),
                 )
               ],
             ),
@@ -95,18 +92,13 @@ class _EmptyState extends StatelessWidget {
             padding: EdgeInsets.only(left: 18.0),
             child: ListTileEmptyState(),
           ),
-          const SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: SizedBox(
-              width: double.infinity,
-              child: CTextButton(
-                  onPressed: onPressed,
-                  label: "Add substitute exercises",
-                  buttonColor: Colors.transparent,
-                  buttonBorderColor: Colors.transparent),
-            ),
-          )
+          const SizedBox(height: 24),
+          CTextButton(
+              onPressed: onPressed,
+              label: "Add substitute exercises",
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.black),
+              buttonColor: vibrantGreen)
         ],
       ),
     );
