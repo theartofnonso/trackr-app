@@ -37,7 +37,6 @@ class _SubstituteExercisePickerState extends State<SubstituteExercisePicker> {
 
   @override
   Widget build(BuildContext context) {
-    print(_exercises.length);
     final listTiles = widget.exercises
         .map((exercise) => Dismissible(
               direction: DismissDirection.endToStart,

@@ -394,6 +394,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                               Consumer<ExerciseLogController>(
                                   builder: (BuildContext context, ExerciseLogController provider, Widget? child) {
                                 return _RoutineLogOverview(
+                                  exercises: provider.completedExerciseLog().length,
                                   sets: provider.completedSets().length,
                                   timer: RoutineTimer(startTime: widget.log.startTime),
                                 );
@@ -539,10 +540,11 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 }
 
 class _RoutineLogOverview extends StatelessWidget {
+  final int exercises;
   final int sets;
   final Widget timer;
 
-  const _RoutineLogOverview({required this.sets, required this.timer});
+  const _RoutineLogOverview({required this.exercises, required this.sets, required this.timer});
 
   @override
   Widget build(BuildContext context) {
@@ -551,16 +553,21 @@ class _RoutineLogOverview extends StatelessWidget {
         child: Table(
           columnWidths: const <int, TableColumnWidth>{
             0: FlexColumnWidth(1),
-            1: FlexColumnWidth(2),
+            1: FlexColumnWidth(1),
+            2: FlexColumnWidth(2),
           },
           children: [
             TableRow(children: [
+              Text("Exercises",
+                  style: GoogleFonts.montserrat(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500)),
               Text("Sets",
                   style: GoogleFonts.montserrat(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500)),
               Text("Duration",
                   style: GoogleFonts.montserrat(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500))
             ]),
             TableRow(children: [
+              Text("$exercises",
+                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
               Text("$sets",
                   style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
               timer

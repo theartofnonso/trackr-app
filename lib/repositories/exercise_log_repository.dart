@@ -272,6 +272,13 @@ class ExerciseLogRepository {
     return ExerciseLogDto(exercise.id, null, "", exercise, notes ?? "", [], DateTime.now(), []);
   }
 
+  List<ExerciseLogDto> completedExerciseLogs() {
+    return _exerciseLogs.where((exercise) {
+      final numberOfCompletedSets = exercise.sets.where((set) => set.checked);
+      return numberOfCompletedSets.length == exercise.sets.length;
+    }).toList();
+  }
+
   List<SetDto> completedSets() {
     return _exerciseLogs.expand((exerciseLog) => exerciseLog.sets).where((set) => set.checked).toList();
   }

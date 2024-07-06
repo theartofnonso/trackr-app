@@ -107,6 +107,10 @@ class ExerciseLogController extends ChangeNotifier {
     return _exerciseLogRepository.completedSets();
   }
 
+  List<ExerciseLogDto> completedExerciseLog() {
+    return _exerciseLogRepository.completedExerciseLogs();
+  }
+
   void onClear() {
     _exerciseLogRepository.clear();
   }
