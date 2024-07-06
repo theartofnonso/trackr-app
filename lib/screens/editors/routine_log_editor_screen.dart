@@ -110,7 +110,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
           _cacheLog();
         },
         onRemoved: (ExerciseDto secondaryExercise) {
-          controller.removeAlternates(primaryExerciseId: primaryExerciseLog.id, secondaryExerciseId: secondaryExercise.id);
+          controller.removeAlternates(
+              primaryExerciseId: primaryExerciseLog.id, secondaryExerciseId: secondaryExercise.id);
           _cacheLog();
         },
         selectExercisesInLibrary: () {
@@ -394,8 +395,10 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                               Consumer<ExerciseLogController>(
                                   builder: (BuildContext context, ExerciseLogController provider, Widget? child) {
                                 return _RoutineLogOverview(
-                                  exercises: provider.completedExerciseLog().length,
-                                  sets: provider.completedSets().length,
+                                  exercisesSummary:
+                                      "${provider.completedExerciseLog().length}/${provider.exerciseLogs.length}",
+                                  setsSummary:
+                                      "${provider.completedSets().length}/${provider.exerciseLogs.expand((exerciseLog) => exerciseLog.sets).length}",
                                   timer: RoutineTimer(startTime: widget.log.startTime),
                                 );
                               }),
@@ -442,7 +445,9 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                                 onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: log),
                                                 onResize: () =>
                                                     _handleResizedExerciseLogCard(exerciseIdToResize: exerciseId),
-                                                isMinimised: _isMinimised(exerciseId), onAlternate: () => _showSubstituteExercisePicker(primaryExerciseLog: log),
+                                                isMinimised: _isMinimised(exerciseId),
+                                                onAlternate: () =>
+                                                    _showSubstituteExercisePicker(primaryExerciseLog: log),
                                               ));
                                   })
                                 ]),
@@ -540,11 +545,11 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 }
 
 class _RoutineLogOverview extends StatelessWidget {
-  final int exercises;
-  final int sets;
+  final String exercisesSummary;
+  final String setsSummary;
   final Widget timer;
 
-  const _RoutineLogOverview({required this.exercises, required this.sets, required this.timer});
+  const _RoutineLogOverview({required this.exercisesSummary, required this.setsSummary, required this.timer});
 
   @override
   Widget build(BuildContext context) {
@@ -566,9 +571,9 @@ class _RoutineLogOverview extends StatelessWidget {
                   style: GoogleFonts.montserrat(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500))
             ]),
             TableRow(children: [
-              Text("$exercises",
+              Text(exercisesSummary,
                   style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
-              Text("$sets",
+              Text(setsSummary,
                   style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
               timer
             ])
