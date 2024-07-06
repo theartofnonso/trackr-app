@@ -6,7 +6,7 @@ import '../../../../dtos/exercise_dto.dart';
 import '../../../buttons/text_button_widget.dart';
 import '../../../empty_states/list_tile_empty_state.dart';
 
-class SubstituteExercisePicker extends StatelessWidget {
+class SubstituteExercisePicker extends StatefulWidget {
   final String title;
   final List<ExerciseDto> exercises;
   final void Function(ExerciseDto exericse) onSelect;
@@ -22,17 +22,30 @@ class SubstituteExercisePicker extends StatelessWidget {
       required this.onSelectExercisesInLibrary});
 
   @override
+  State<SubstituteExercisePicker> createState() => _SubstituteExercisePickerState();
+}
+
+class _SubstituteExercisePickerState extends State<SubstituteExercisePicker> {
+  List<ExerciseDto> _exercises = [];
+
+  void _onRemoveExercises({required ExerciseDto exercise}) {
+    setState(() {
+      _exercises.removeWhere((exerciseToBeRemoved) => exerciseToBeRemoved.id == exercise.id);
+    });
+    widget.onRemove(exercise);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final listTiles = exercises
+    print(_exercises.length);
+    final listTiles = widget.exercises
         .map((exercise) => Dismissible(
               direction: DismissDirection.endToStart,
-              onDismissed: (_) {
-                onRemove(exercise);
-              },
+              onDismissed: (_) => _onRemoveExercises(exercise: exercise),
               key: ValueKey(exercise.id),
               child: ListTile(
                 onTap: () {
-                  onSelect(exercise);
+                  widget.onSelect(exercise);
                 },
                 dense: true,
                 contentPadding: EdgeInsets.zero,
@@ -42,7 +55,7 @@ class SubstituteExercisePicker extends StatelessWidget {
             ))
         .toList();
 
-    return exercises.isNotEmpty
+    return widget.exercises.isNotEmpty || _exercises.isNotEmpty
         ? SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,7 +63,7 @@ class SubstituteExercisePicker extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0, bottom: 10),
-                  child: Text(title,
+                  child: Text(widget.title,
                       textAlign: TextAlign.start,
                       style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 15)),
                 ),
@@ -58,7 +71,7 @@ class SubstituteExercisePicker extends StatelessWidget {
                 const SizedBox(height: 12),
                 Center(
                   child: CTextButton(
-                      onPressed: onSelectExercisesInLibrary,
+                      onPressed: widget.onSelectExercisesInLibrary,
                       label: "Add substitute exercises",
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                       textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.black),
@@ -67,7 +80,13 @@ class SubstituteExercisePicker extends StatelessWidget {
               ],
             ),
           )
-        : _EmptyState(onPressed: onSelectExercisesInLibrary);
+        : _EmptyState(onPressed: widget.onSelectExercisesInLibrary);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _exercises = widget.exercises;
   }
 }
 
