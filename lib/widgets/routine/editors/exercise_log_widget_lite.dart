@@ -41,7 +41,7 @@ class ExerciseLogLiteWidget extends StatelessWidget {
                 if (superSetExerciseDto != null)
                   Column(children: [
                     Text("with ${superSetExerciseDto.exercise.name}",
-                        style: GoogleFonts.montserrat(color: vibrantGreen, fontWeight: FontWeight.bold, fontSize: 12)),
+                        style: GoogleFonts.montserrat(color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 12)),
                   ]),
               ],
             ),

@@ -293,7 +293,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                         children: [
                           Text("with ${superSetExerciseDto.exercise.name}",
                               style: GoogleFonts.montserrat(
-                                  color: vibrantGreen, fontWeight: FontWeight.bold, fontSize: 12)),
+                                  color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 12)),
                           const SizedBox(height: 10)
                         ],
                       ),
