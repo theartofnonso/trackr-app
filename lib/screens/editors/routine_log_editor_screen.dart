@@ -356,13 +356,14 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
             ),
             floatingActionButton: isKeyboardOpen
                 ? null
-                : FloatingActionButton(
+                : FloatingActionButton.extended(
                     heroTag: UniqueKey(),
                     onPressed: widget.mode == RoutineEditorMode.log ? _saveLog : _updateLog,
-                    backgroundColor: sapphireDark,
+                    backgroundColor: sapphireDark.withOpacity(0.8),
                     enableFeedback: true,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                    child: const FaIcon(FontAwesomeIcons.solidSquareCheck, size: 32, color: vibrantGreen),
+                    label: Text("Finish workout",
+                        style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600)),
                   ),
             body: Container(
               width: double.infinity,
