@@ -336,15 +336,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     }
   }
 
-  Future<void> _doUpdateTemplateSetsOnly() async {
-    final templateToUpdate =
-        Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: widget.log.templateId);
-    if (templateToUpdate != null) {
-      await Provider.of<RoutineTemplateController>(context, listen: false)
-          .updateTemplateSetsOnly(templateId: widget.log.templateId, newExercises: widget.log.exerciseLogs);
-    }
-  }
-
   void _doDeleteLog() async {
     try {
       await Provider.of<RoutineLogController>(context, listen: false).removeLog(log: widget.log);
@@ -377,58 +368,15 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
         isRightActionDestructive: true);
   }
 
-  void _checkForTemplateUpdates() {
-    final templateId = widget.log.templateId;
-
-    if (templateId.isEmpty) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _onShareLog(log: widget.log);
-      });
-      return;
-    }
-
-    final routineTemplate =
-        Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: templateId);
-    if (routineTemplate == null) {
-      return;
-    }
-
-    final exerciseLog1 = routineTemplate.exerciseTemplates;
-    final exerciseLog2 = widget.log.exerciseLogs;
-    final templateChanges = checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2, isEditor: false);
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (templateChanges.isNotEmpty) {
-        showBottomSheetWithMultiActions(
-            context: context,
-            title: "Update ${routineTemplate.name}?",
-            description: "You have made changes to this template. Do you want to update it",
-            leftAction: () {
-              Navigator.of(context).pop();
-              _doUpdateTemplateSetsOnly();
-              _onShareLog(log: widget.log);
-            },
-            rightAction: () {
-              Navigator.of(context).pop();
-              _doUpdateTemplate();
-              _onShareLog(log: widget.log);
-            },
-            leftActionLabel: 'Cancel',
-            rightActionLabel: 'Update Template',
-            isLeftActionDestructive: false);
-      } else {
-        _doUpdateTemplate();
-        _onShareLog(log: widget.log);
-      }
-    });
-  }
-
   @override
   void initState() {
     super.initState();
 
     if (widget.finishedLogging) {
-      _checkForTemplateUpdates();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _doUpdateTemplate();
+        _onShareLog(log: widget.log);
+      });
     }
   }
 }
