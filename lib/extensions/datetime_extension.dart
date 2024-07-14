@@ -87,6 +87,11 @@ extension DateTimeExtension on DateTime {
     return date.month == other.month && date.year == other.year;
   }
 
+  bool isSameDayMonthAndYear(DateTime other) {
+    final date = this;
+    return date.day == other.day && date.month == other.month && date.year == other.year;
+  }
+
   bool isSameYear(DateTime other) {
     final date = this;
     return date.year == other.year;

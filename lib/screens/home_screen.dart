@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
         indicatorColor: Colors.transparent,
         backgroundColor: sapphireDark80,
         surfaceTintColor: Colors.black,
-        overlayColor: MaterialStateColor.resolveWith((states) => Colors.transparent),
+        overlayColor: WidgetStateColor.resolveWith((states) => Colors.transparent),
         destinations: const [
           NavigationDestination(
             icon: FaIcon(FontAwesomeIcons.house, color: Colors.grey),

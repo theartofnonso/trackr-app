@@ -96,6 +96,10 @@ class TrainingAndRestDaysWidget extends StatelessWidget {
 
     List<int> intervals = [];
 
+    final firstLogDate = logs.first.createdAt;
+    final intervalsBeforeFirstLog = firstLogDate.day - 1;
+    intervals.add(intervalsBeforeFirstLog);
+
     for (int i = 0; i < logs.length; i++) {
       final currentLog = logs[i].createdAt.withoutTime();
       if (i == logs.length - 1) break; // Break if we are at the last log (no more intervals to calculate)

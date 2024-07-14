@@ -124,6 +124,7 @@ class _YearAndMonths extends StatelessWidget {
   Widget build(BuildContext context) {
     final monthsAndLogs = monthlyLogs.values.map((logs) {
       final dates = logs.map((log) => log.createdAt.withoutTime()).toList();
+
       return CalendarHeatMap(dates: dates, spacing: 4);
     }).toList();
 

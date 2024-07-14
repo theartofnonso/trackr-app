@@ -71,7 +71,7 @@ class ExerciseLogRepository {
     _removeAllSetsForExerciseLog(exerciseLogId: logId);
   }
 
-  void replaceExercise({required String oldExerciseId, required ExerciseDto newExercise}) {
+  void replaceExercise({required String oldExerciseId, required ExerciseDto newExercise, }) {
     final oldExerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: oldExerciseId);
     final oldExerciseLog = _whereExerciseLog(exerciseLogId: oldExerciseId);
     if (oldExerciseLogIndex == -1 || oldExerciseLog == null) {
@@ -80,9 +80,13 @@ class ExerciseLogRepository {
 
     List<ExerciseLogDto> exerciseLogs = List<ExerciseLogDto>.from(_exerciseLogs);
 
-    exerciseLogs[oldExerciseLogIndex] = oldExerciseLog.copyWith(id: newExercise.id, exercise: newExercise);
+    exerciseLogs[oldExerciseLogIndex] = oldExerciseLog.copyWith(id: newExercise.id, exercise: newExercise, sets: []);
 
     _exerciseLogs = [...exerciseLogs];
+
+    removeSubstituteExercises(primaryExerciseId: newExercise.id, secondaryExerciseId: newExercise.id);
+
+    addSubstituteExercises(primaryExerciseId: newExercise.id, exercises: [oldExerciseLog.exercise]);
   }
 
   void _removeAllSetsForExerciseLog({required String exerciseLogId}) {
@@ -127,6 +131,36 @@ class ExerciseLogRepository {
     final reorderedLogs = _reOrderSuperSets(oldExerciseLogs: updatedExerciseLogs);
 
     _exerciseLogs = [...reorderedLogs];
+  }
+
+  void addSubstituteExercises({required String primaryExerciseId, required List<ExerciseDto> exercises}) {
+    final primaryExerciseIndex = _indexWhereExerciseLog(exerciseLogId: primaryExerciseId);
+
+    if (primaryExerciseIndex == -1) {
+      return;
+    }
+
+    List<ExerciseLogDto> updatedExerciseLogs = List<ExerciseLogDto>.from(_exerciseLogs);
+
+    updatedExerciseLogs[primaryExerciseIndex].substituteExercises.addAll(exercises);
+
+    _exerciseLogs = [...updatedExerciseLogs];
+
+  }
+
+  void removeSubstituteExercises({required String primaryExerciseId, required String secondaryExerciseId}) {
+    final primaryExerciseIndex = _indexWhereExerciseLog(exerciseLogId: primaryExerciseId);
+
+    if (primaryExerciseIndex == -1) {
+      return;
+    }
+
+    List<ExerciseLogDto> updatedExerciseLogs = List<ExerciseLogDto>.from(_exerciseLogs);
+
+    updatedExerciseLogs[primaryExerciseIndex].substituteExercises.removeWhere((exercise) => exercise.id == secondaryExerciseId);
+
+    _exerciseLogs = [...updatedExerciseLogs];
+
   }
 
   void removeSuperSet({required String superSetId}) {
@@ -235,7 +269,14 @@ class ExerciseLogRepository {
   /// Helper functions
 
   ExerciseLogDto _createExerciseLog(ExerciseDto exercise, {String? notes}) {
-    return ExerciseLogDto(exercise.id, null, "", exercise, notes ?? "", [], DateTime.now());
+    return ExerciseLogDto(exercise.id, null, "", exercise, notes ?? "", [], DateTime.now(), []);
+  }
+
+  List<ExerciseLogDto> completedExerciseLogs() {
+    return _exerciseLogs.where((exercise) {
+      final numberOfCompletedSets = exercise.sets.where((set) => set.checked);
+      return numberOfCompletedSets.length == exercise.sets.length;
+    }).toList();
   }
 
   List<SetDto> completedSets() {

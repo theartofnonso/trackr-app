@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
@@ -16,6 +17,7 @@ class SelectableExerciseWidget extends StatelessWidget {
   void _onTap() {
     final selectExercise = onSelect;
     if (selectExercise != null) {
+      HapticFeedback.mediumImpact();
       selectExercise(exerciseInLibraryDto, !exerciseInLibraryDto.selected);
     }
   }
@@ -44,7 +46,7 @@ class SelectableExerciseWidget extends StatelessWidget {
             ),
             if (exerciseInLibraryDto.exercise.owner)
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                 margin: const EdgeInsets.only(left: 8),
                 decoration: BoxDecoration(
                   color: sapphireLighter,

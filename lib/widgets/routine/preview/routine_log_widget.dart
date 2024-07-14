@@ -33,7 +33,7 @@ class RoutineLogWidget extends StatelessWidget {
 
     return SolidListTile(
         title: log.name,
-        subtitle: "${completedExerciseLogsAndSets.length} ${pluralize(word: "exercise", count: log.exerciseLogs.length)}",
+        subtitle: "${completedExerciseLogsAndSets.length} ${pluralize(word: "exercise", count: completedExerciseLogsAndSets.length)}",
         trailing: trailing,
         tileColor: color,
         trailingSubtitle: pbs.isNotEmpty ? PBIcon(color: sapphireLight, label: "${pbs.length}") : null,

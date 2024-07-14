@@ -3,7 +3,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
-import 'package:tracker_app/extensions/week_days_extension.dart';
 
 import '../../../../colors.dart';
 import '../../../../dtos/exercise_log_dto.dart';
@@ -17,10 +16,9 @@ import '../../../utils/dialog_utils.dart';
 import '../../../utils/routine_utils.dart';
 import '../../../dtos/viewmodels/exercise_log_view_model.dart';
 import '../../../utils/navigation_utils.dart';
-import '../../../utils/string_utils.dart';
 import '../../../widgets/backgrounds/overlay_background.dart';
 import '../../../widgets/routine/preview/exercise_log_listview.dart';
-import '../../preferences/routine_schedule_planner.dart';
+import '../../preferences/routine_schedule_planner/routine_schedule_planner_home.dart';
 
 class RoutineTemplate extends StatefulWidget {
   final RoutineTemplateTypeEnum templateType;
@@ -77,7 +75,8 @@ class _RoutineTemplateState extends State<RoutineTemplate> {
       MenuItemButton(
         onPressed: () {
           displayBottomSheet(
-              context: context, child: RoutineSchedulePlanner(template: template), isScrollControlled: true);
+              height: 400,
+              context: context, child: RoutineSchedulePlannerHome(template: template), isScrollControlled: true);
         },
         child: Text("Schedule", style: GoogleFonts.montserrat(color: Colors.white)),
       ),
@@ -101,13 +100,6 @@ class _RoutineTemplateState extends State<RoutineTemplate> {
       )
     ];
 
-    final scheduledDays = template.days;
-
-    final otherScheduledDayNames = scheduledDays.map((day) => day.shortName).toList();
-
-    final otherScheduledDays =
-        scheduledDays.length == 7 ? "Scheduled everyday" : "Scheduled on ${joinWithAnd(items: otherScheduledDayNames)}";
-
     return Scaffold(
         floatingActionButton: FloatingActionButton(
             heroTag: UniqueKey,
@@ -117,7 +109,7 @@ class _RoutineTemplateState extends State<RoutineTemplate> {
             },
             backgroundColor: sapphireDark,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-            child: const Icon(Icons.play_arrow)),
+            child: const FaIcon(FontAwesomeIcons.play, color: Colors.white, size: 24)),
         backgroundColor: sapphireDark,
         appBar: AppBar(
           backgroundColor: sapphireDark80,
@@ -130,8 +122,8 @@ class _RoutineTemplateState extends State<RoutineTemplate> {
           actions: [
             MenuAnchor(
               style: MenuStyle(
-                backgroundColor: MaterialStateProperty.all(sapphireDark80),
-                surfaceTintColor: MaterialStateProperty.all(sapphireDark),
+                backgroundColor: WidgetStateProperty.all(sapphireDark80),
+                surfaceTintColor: WidgetStateProperty.all(sapphireDark),
               ),
               builder: (BuildContext context, MenuController controller, Widget? child) {
                 return IconButton(
@@ -182,20 +174,6 @@ class _RoutineTemplateState extends State<RoutineTemplate> {
                                 fontSize: 14,
                               )),
                           const SizedBox(height: 5),
-                        ],
-                      ),
-                    if (scheduledDays.isNotEmpty)
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const FaIcon(FontAwesomeIcons.solidBell, color: Colors.white, size: 12),
-                          const SizedBox(width: 4),
-                          Text(otherScheduledDays,
-                              style: GoogleFonts.montserrat(
-                                color: Colors.white70,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                              )),
                         ],
                       ),
                     ExerciseLogListView(

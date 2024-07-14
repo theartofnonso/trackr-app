@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/widgets/empty_states/exercise_empty_state.dart';
-import 'package:tracker_app/widgets/information_container.dart';
 import 'package:tracker_app/widgets/search_bar.dart';
 
 import '../../../colors.dart';
@@ -277,13 +276,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                if (widget.filter != null)
-                  InformationContainer(
-                    leadingIcon: const FaIcon(FontAwesomeIcons.circleInfo, color: Colors.white, size: 16),
-                    description: "Only showing exercises with ${widget.filter?.name}",
-                    color: Colors.transparent,
-                    title: 'INFO',
-                  ),
                 _filteredExercises.isNotEmpty
                     ? Expanded(
                         child: ListView.separated(

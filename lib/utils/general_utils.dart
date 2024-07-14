@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
@@ -137,7 +138,11 @@ Future<NotificationsEnabledOptions> checkIosNotificationPermission() async {
           isCriticalEnabled: false);
 }
 
-Future<bool> requestIosNotificationPermission() async {
+Future<bool> requestNotificationPermission() async {
+  return Platform.isIOS ? _requestIosNotificationPermission() : _requestAndroidNotificationPermission();
+}
+
+Future<bool> _requestIosNotificationPermission() async {
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   return await flutterLocalNotificationsPlugin
           .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
@@ -146,6 +151,14 @@ Future<bool> requestIosNotificationPermission() async {
             badge: true,
             sound: true,
           ) ??
+      false;
+}
+
+Future<bool> _requestAndroidNotificationPermission() async {
+  final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  return await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+      ?.requestNotificationsPermission() ??
       false;
 }
 
