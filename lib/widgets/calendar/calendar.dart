@@ -194,6 +194,7 @@ class _Month extends StatelessWidget {
           dateTime: date.dateTime,
           onTap: onTap,
           selected: date.dateTime.isSameDayMonthYear(selectedDateTime),
+          currentDate: date.dateTime.isSameDayMonthAndYear(DateTime.now()),
           showSelector: !readOnly,
           hasLog: date.hasLog,
         );
@@ -224,11 +225,13 @@ class _Day extends StatelessWidget {
   final bool selected;
   final bool showSelector;
   final bool hasLog;
+  final bool currentDate;
   final void Function(DateTime dateTime) onTap;
 
   const _Day(
       {required this.dateTime,
       required this.selected,
+        required this.currentDate,
       required this.onTap,
       required this.showSelector,
       required this.hasLog});
@@ -244,6 +247,15 @@ class _Day extends StatelessWidget {
     return Colors.transparent;
   }
 
+  Border? _dateBorder(){
+    if(selected){
+      return Border.all(color: Colors.blueGrey, width: 2.0);
+    }else if(currentDate){
+      return Border.all(color: Colors.grey, width: 2.0);
+    }
+      return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -252,7 +264,7 @@ class _Day extends StatelessWidget {
         padding: selected && showSelector ? const EdgeInsets.all(2) : null,
         decoration: showSelector
             ? BoxDecoration(
-                border: selected ? Border.all(color: Colors.white70, width: 2.0) : null,
+                border: _dateBorder(),
                 borderRadius: BorderRadius.circular(2),
               )
             : null,
