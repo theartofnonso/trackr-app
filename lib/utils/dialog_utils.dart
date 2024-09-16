@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/widgets/timers/datetime_picker.dart';
+import 'package:tracker_app/widgets/timers/datetime_range_picker.dart';
 
 import '../colors.dart';
 import '../widgets/buttons/text_button_widget.dart';
@@ -98,6 +100,16 @@ void showHourTimerPicker(
           }));
 }
 
+void showDateTimePicker({required BuildContext context, required void Function(DateTime datetime) onChangedDateTime}) {
+  FocusScope.of(context).unfocus();
+  displayBottomSheet(height: 240, context: context, child: DatetimePicker(onSelect: onChangedDateTime));
+}
+
+void showDatetimeRangePicker({required BuildContext context, required void Function(DateTimeRange datetimeRange) onChangedDateTimeRange}) {
+  FocusScope.of(context).unfocus();
+  displayBottomSheet(context: context, child: DateTimeRangePicker(onSelectRange: onChangedDateTimeRange,),isScrollControlled: true);
+}
+
 Future<void> showBottomSheetWithNoAction(
     {required BuildContext context, required String title, required String description}) async {
   displayBottomSheet(
@@ -140,9 +152,8 @@ void showBottomSheetWithMultiActions(
             CTextButton(
                 onPressed: leftAction,
                 label: leftActionLabel,
-                textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.white),
-                buttonColor: Colors.transparent,
-                buttonBorderColor: Colors.transparent),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.white)),
             const SizedBox(width: 10),
             CTextButton(
                 onPressed: rightAction,

@@ -65,8 +65,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                   ? CTextButton(
                       onPressed: _updateExercise,
                       label: "Update",
-                      buttonColor: Colors.transparent,
-                      buttonBorderColor: Colors.transparent)
+                      buttonColor: Colors.transparent,)
                   : const SizedBox.shrink()
             ],
           ),

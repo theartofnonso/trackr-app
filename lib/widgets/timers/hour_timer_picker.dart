@@ -45,7 +45,6 @@ class _HourTimerPickerState extends State<HourTimerPicker> {
             },
             label: "Remind me at this hour",
             buttonColor: Colors.transparent,
-            buttonBorderColor: Colors.transparent,
             textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
             padding: const EdgeInsets.all(10.0))
       ],

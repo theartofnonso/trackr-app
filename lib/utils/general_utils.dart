@@ -39,8 +39,8 @@ void toggleWeightUnit({required WeightUnit unit}) {
   SharedPrefs().weightUnit = unit.name;
 }
 
-String timeOfDay() {
-  var hour = DateTime.now().hour;
+String timeOfDay({DateTime? datetime}) {
+  var hour = datetime?.hour ?? DateTime.now().hour;
   if (hour < 12) {
     return 'Morning';
   }

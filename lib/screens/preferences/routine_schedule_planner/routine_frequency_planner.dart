@@ -65,7 +65,6 @@ class _RoutineFrequencyPlannerState extends State<RoutineFrequencyPlanner> {
             onPressed: _updateRoutineTemplateIntervals,
             label: "Schedule intervals",
             buttonColor: Colors.transparent,
-            buttonBorderColor: Colors.transparent,
             textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
             padding: const EdgeInsets.all(10.0))
       ],

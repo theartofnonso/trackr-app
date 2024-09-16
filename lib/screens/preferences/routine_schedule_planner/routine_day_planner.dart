@@ -94,8 +94,7 @@ class _RoutineDayPlannerState extends State<RoutineDayPlanner> {
               label: "Save Days",
               textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
               padding: const EdgeInsets.all(10.0),
-              buttonColor: Colors.transparent,
-              buttonBorderColor: Colors.transparent),
+              buttonColor: Colors.transparent,),
         )
       ],
     );

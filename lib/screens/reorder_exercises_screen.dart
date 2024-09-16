@@ -64,7 +64,6 @@ class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
                   onPressed: _saveReOrdering,
                   label: "Save",
                   buttonColor: Colors.transparent,
-                  buttonBorderColor: Colors.transparent,
                 )
               : const SizedBox.shrink()
         ],

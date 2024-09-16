@@ -138,8 +138,7 @@ class _ShareableScreenState extends State<ShareableScreen> {
                   },
                   label: "Share",
                   buttonColor: Colors.transparent,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-                  buttonBorderColor: Colors.transparent)
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14))
             ],
           ),
         ),

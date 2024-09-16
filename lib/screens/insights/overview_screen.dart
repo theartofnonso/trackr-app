@@ -4,21 +4,23 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
+import 'package:tracker_app/dtos/routine_template_dto.dart';
+import 'package:tracker_app/dtos/viewmodels/routine_template_arguments.dart';
 import 'package:tracker_app/enums/share_content_type_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/datetime_range_extension.dart';
 import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/screens/insights/streak_screen.dart';
+import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/calendar/calendar_months_navigator.dart';
 
-import '../../dtos/routine_log_dto.dart';
 import '../../controllers/routine_log_controller.dart';
+import '../../dtos/routine_log_dto.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/routine_editor_type_enums.dart';
-import '../../utils/general_utils.dart';
 import '../../utils/app_analytics.dart';
+import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
-import 'package:tracker_app/utils/dialog_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../utils/shareables_utils.dart';
 import '../../widgets/backgrounds/overlay_background.dart';
@@ -161,8 +163,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
             ListTile(
               dense: true,
               contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(FontAwesomeIcons.play, size: 18),
+              horizontalTitleGap: 6,
               title: Text("Start new session",
-                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
                 Navigator.of(context).pop();
                 _logEmptyRoutine(context);
@@ -171,10 +175,26 @@ class _OverviewScreenState extends State<OverviewScreen> {
             ListTile(
               dense: true,
               contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(FontAwesomeIcons.clockRotateLeft, size: 18),
+              horizontalTitleGap: 6,
               title: Text("Log past session",
-                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
                 Navigator.of(context).pop();
+                showDatetimeRangePicker(
+                    context: context,
+                    onChangedDateTimeRange: (DateTimeRange datetimeRange) {
+                      final routineName = "${timeOfDay(datetime: datetimeRange.start)} Session";
+                      final routineTemplate = RoutineTemplateDto(
+                          id: "",
+                          name: routineName,
+                          exerciseTemplates: [],
+                          notes: "",
+                          createdAt: datetimeRange.start,
+                          updatedAt: datetimeRange.end);
+                      final routineTemplateArguments = RoutineTemplateArguments(template: routineTemplate);
+                      navigateToRoutineTemplateEditor(context: context, arguments: routineTemplateArguments);
+                    });
               },
             ),
           ]),
@@ -259,8 +279,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                   },
                   label: "Share",
                   buttonColor: Colors.transparent,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-                  buttonBorderColor: Colors.transparent)
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14))
             ]));
   }
 

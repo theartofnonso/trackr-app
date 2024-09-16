@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class CTextButton extends StatelessWidget {
+class COutlineTextButton extends StatelessWidget {
   final void Function()? onPressed;
   final String label;
   final String loadingLabel;
@@ -11,7 +11,7 @@ class CTextButton extends StatelessWidget {
   final VisualDensity? visualDensity;
   final TextStyle? textStyle;
 
-  const CTextButton(
+  const COutlineTextButton(
       {super.key,
       required this.onPressed,
       required this.label,
@@ -27,9 +27,8 @@ class CTextButton extends StatelessWidget {
     return TextButton(
         style: ButtonStyle(
           visualDensity: visualDensity,
-          backgroundColor: WidgetStateProperty.all(buttonColor?.withOpacity(0.15) ?? Colors.white.withOpacity(0.15)),
           shape: WidgetStateProperty.all(RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5))),
+              borderRadius: BorderRadius.circular(5), side: BorderSide(color: buttonColor?.withOpacity(0.2) ?? Colors.white.withOpacity(0.2), width: 2))),
           overlayColor: WidgetStateProperty.resolveWith<Color?>(
             (Set<WidgetState> states) {
               return Colors.black.withOpacity(0.3); // Defer to the widget's default.
