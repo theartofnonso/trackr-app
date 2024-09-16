@@ -83,10 +83,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         heroTag: "fab_overview_screen",
-        onPressed: () => _logEmptyRoutine(context),
+        onPressed: _showBottomSheet,
         backgroundColor: sapphireDark,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        child: const FaIcon(FontAwesomeIcons.play, color: Colors.white, size: 24),
+        child: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 24),
       ),
       body: Container(
         width: double.infinity,
@@ -151,6 +151,34 @@ class _OverviewScreenState extends State<OverviewScreen> {
         ),
       ),
     );
+  }
+
+  void _showBottomSheet() {
+    displayBottomSheet(
+        context: context,
+        child: SafeArea(
+          child: Column(children: [
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              title: Text("Start new session",
+                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+              onTap: () {
+                Navigator.of(context).pop();
+                _logEmptyRoutine(context);
+              },
+            ),
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              title: Text("Log past session",
+                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ]),
+        ));
   }
 
   void _onChangedDateTimeRange(DateTimeRange? range) {
