@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../colors.dart';
 import '../urls.dart';
 import '../utils/uri_utils.dart';
-import '../widgets/buttons/text_button_widget.dart';
+import '../widgets/buttons/solid_button_widget.dart';
 
 class IntroScreen extends StatelessWidget {
   final ThemeData themeData;
@@ -60,12 +60,12 @@ class IntroScreen extends StatelessWidget {
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: CTextButton(
+                child: SolidButtonWidget(
                   onPressed: onComplete,
                   label: "Start training better",
                   padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
                   buttonColor: vibrantGreen,
-                  textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black),
+                  textColor: Colors.black,
                 ),
               ),
               const SizedBox(height: 10),

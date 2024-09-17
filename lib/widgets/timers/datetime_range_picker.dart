@@ -6,8 +6,8 @@ import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/widgets/information_container_lite.dart';
 
 import '../../strings/workout_log_strings.dart';
-import '../buttons/outline_text_button_widget.dart';
-import '../buttons/text_button_widget.dart';
+import '../buttons/opacity_button_widget.dart';
+import '../buttons/solid_button_widget.dart';
 
 class DateTimeRangePicker extends StatefulWidget {
   final void Function(DateTimeRange range) onSelectRange;
@@ -38,18 +38,15 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
                 "Start Time",
                 style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
               ),
-              trailing: CTextButton(
+              trailing: SolidButtonWidget(
                   onPressed: () {
                     setState(() {
                       _showStartDateTimeRange = !_showStartDateTimeRange;
                       _showEndDateTimeRange = false;
                     });
                   },
-                  buttonColor: _showStartDateTimeRange ? vibrantGreen : null,
-                  textStyle: GoogleFonts.montserrat(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                      color: _showStartDateTimeRange ? sapphireDark : Colors.white),
+                  buttonColor: _showStartDateTimeRange ? vibrantGreen : sapphireLighter,
+                  textColor: _showStartDateTimeRange ? sapphireDark : Colors.white,
                   label: _startDateTime.formattedDayMonthTime())),
           if (_showStartDateTimeRange)
             SizedBox(
@@ -67,18 +64,15 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
                 "End Time",
                 style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
               ),
-              trailing: CTextButton(
+              trailing: SolidButtonWidget(
                   onPressed: () {
                     setState(() {
                       _showStartDateTimeRange = false;
                       _showEndDateTimeRange = !_showEndDateTimeRange;
                     });
                   },
-                  buttonColor: _showEndDateTimeRange ? vibrantGreen : null,
-                  textStyle: GoogleFonts.montserrat(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                      color: _showEndDateTimeRange ? sapphireDark : Colors.white),
+                  buttonColor: _showEndDateTimeRange ? vibrantGreen : sapphireLighter,
+                  textColor: _showEndDateTimeRange ? sapphireDark : Colors.white,
                   label: _endDateTime.formattedDayMonthTime())),
           if (_showEndDateTimeRange)
             SizedBox(
@@ -102,15 +96,13 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
                       )
                     : SizedBox(
                         width: double.infinity,
-                        child: CTextButton(
+                        child: OpacityButtonWidget(
                             onPressed: () {
                               final range = DateTimeRange(start: _startDateTime, end: _endDateTime);
                               widget.onSelectRange(range);
                             },
                             label: "Log session",
                             buttonColor: vibrantGreen,
-                            textStyle:
-                                GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
                             padding: const EdgeInsets.all(10.0)),
                       )),
           ),

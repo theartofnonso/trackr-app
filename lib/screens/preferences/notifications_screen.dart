@@ -8,7 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/enums/daily_notifications_enums.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
-import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
+import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 
 import '../../utils/timezone_utils.dart';
 import '../../utils/dialog_utils.dart';
@@ -129,10 +129,9 @@ class _NotificationSwitch extends StatelessWidget {
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             const SizedBox(height: 8),
             if (enabled)
-              CTextButton(
+              OpacityButtonWidget(
                   onPressed: onPressed,
-                  label: subtitle,
-                  textStyle: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14))
+                  label: subtitle)
           ]),
         ]),
         Switch(

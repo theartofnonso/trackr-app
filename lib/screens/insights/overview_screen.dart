@@ -24,7 +24,7 @@ import '../../utils/navigation_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../utils/shareables_utils.dart';
 import '../../widgets/backgrounds/overlay_background.dart';
-import '../../widgets/buttons/text_button_widget.dart';
+import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/calendar/calendar.dart';
 import '../../widgets/monitors/overview_monitor.dart';
 import 'monthly_insights_screen.dart';
@@ -184,6 +184,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                 showDatetimeRangePicker(
                     context: context,
                     onChangedDateTimeRange: (DateTimeRange datetimeRange) {
+                      Navigator.of(context).pop();
                       final routineName = "${timeOfDay(datetime: datetimeRange.start)} Session";
                       final routineTemplate = RoutineTemplateDto(
                           id: "",
@@ -271,7 +272,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           ],
                         )),
                   )),
-              CTextButton(
+              OpacityButtonWidget(
                   onPressed: () {
                     captureImage(key: calendarKey, pixelRatio: 5);
                     contentShared(contentType: ShareContentType.calender);

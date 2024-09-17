@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
-import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
+import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 
 import '../dtos/exercise_log_dto.dart';
 
@@ -60,7 +60,7 @@ class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
         ),
         actions: [
           _hasReOrdered
-              ? CTextButton(
+              ? OpacityButtonWidget(
                   onPressed: _saveReOrdering,
                   label: "Save",
                   buttonColor: Colors.transparent,

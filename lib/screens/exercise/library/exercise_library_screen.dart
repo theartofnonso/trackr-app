@@ -11,7 +11,6 @@ import 'package:tracker_app/widgets/search_bar.dart';
 import '../../../colors.dart';
 import '../../../dtos/exercise_dto.dart';
 import '../../../enums/muscle_group_enums.dart';
-import '../../../widgets/buttons/text_button_widget.dart';
 import '../../../widgets/exercise/exercise_widget.dart';
 import '../../../widgets/exercise/selectable_exercise_widget.dart';
 import '../../editors/exercise_editor_screen.dart';
@@ -182,12 +181,10 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         ),
         actions: [
           if (_selectedExercises.isNotEmpty)
-            CTextButton(
-              key: const Key("add_exercises_button"),
-              onPressed: _navigateBackWithSelectedExercises,
-              label: "Add (${_selectedExercises.length})",
-              buttonColor: Colors.transparent,
-            )
+            GestureDetector(
+                onTap: _navigateBackWithSelectedExercises,
+                child: Text("Add (${_selectedExercises.length})", style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.white),)),
+          const SizedBox(width: 10)
         ],
       ),
       floatingActionButton: FloatingActionButton(

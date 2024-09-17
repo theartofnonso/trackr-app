@@ -20,7 +20,7 @@ import '../utils/dialog_utils.dart';
 import '../utils/exercise_logs_utils.dart';
 import '../utils/app_analytics.dart';
 import '../utils/shareables_utils.dart';
-import '../widgets/buttons/text_button_widget.dart';
+import '../widgets/buttons/opacity_button_widget.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ShareableScreen extends StatefulWidget {
@@ -129,7 +129,7 @@ class _ShareableScreenState extends State<ShareableScreen> {
                 effect: const ExpandingDotsEffect(activeDotColor: vibrantGreen),
               ),
               const SizedBox(height: 30),
-              CTextButton(
+              OpacityButtonWidget(
                   onPressed: () {
                     final index = _controller.page!.toInt();
                     captureImage(key: pagesKeys[index], pixelRatio: 3.5);

@@ -13,6 +13,7 @@ import 'package:tracker_app/utils/dialog_utils.dart';
 
 import '../../colors.dart';
 import '../../controllers/routine_template_controller.dart';
+import '../../dtos/routine_log_dto.dart';
 import '../../dtos/routine_template_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/routine_editors_utils.dart';
@@ -26,7 +27,9 @@ class RoutineTemplateEditorScreen extends StatefulWidget {
 
   final RoutineTemplateDto? template;
 
-  const RoutineTemplateEditorScreen({super.key, this.template});
+  final bool log;
+
+  const RoutineTemplateEditorScreen({super.key, this.template, this.log = false});
 
   @override
   State<RoutineTemplateEditorScreen> createState() => _RoutineTemplateEditorScreenState();
@@ -97,7 +100,8 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
           controller.replaceExerciseLog(oldExerciseId: primaryExerciseLog.id, newExercise: secondaryExercise);
         },
         onRemoved: (ExerciseDto secondaryExercise) {
-          controller.removeAlternates(primaryExerciseId: primaryExerciseLog.id, secondaryExerciseId: secondaryExercise.id);
+          controller.removeAlternates(
+              primaryExerciseId: primaryExerciseLog.id, secondaryExerciseId: secondaryExercise.id);
         },
         selectExercisesInLibrary: () {
           _closeDialog();
@@ -175,6 +179,27 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     }
   }
 
+  void _logTemplateInstead() async {
+    final log = widget.template?.log();
+    if (log != null) {
+      final createdLog = await Provider.of<RoutineLogController>(context, listen: false).saveLog(logDto: log);
+      _navigateBack(log: createdLog);
+    }
+  }
+
+  void _handleTemplateOrLogInstead() {
+    final template = widget.template;
+    if (template != null) {
+      if(widget.log) {
+        _logTemplateInstead();
+      } else {
+        _updateRoutineTemplate();
+      }
+    } else {
+      _createRoutineTemplate();
+    }
+  }
+
   void _doUpdateRoutineTemplate(
       {required RoutineTemplateDto template, List<ExerciseLogDto>? updatedExerciseLogs}) async {
     final exerciseProvider = Provider.of<ExerciseLogController>(context, listen: false);
@@ -231,8 +256,8 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     Navigator.of(context).pop();
   }
 
-  void _navigateBack() {
-    Navigator.of(context).pop();
+  void _navigateBack({RoutineLogDto? log}) {
+    Navigator.of(context).pop(log);
   }
 
   /// Handle collapsed ExerciseLogWidget
@@ -254,7 +279,6 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
 
   @override
   Widget build(BuildContext context) {
-    final template = widget.template;
 
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
 
@@ -292,7 +316,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
               ? null
               : FloatingActionButton(
                   heroTag: "fab_select_exercise_log_screen",
-                  onPressed: template != null ? _updateRoutineTemplate : _createRoutineTemplate,
+                  onPressed: _handleTemplateOrLogInstead,
                   backgroundColor: sapphireDark,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                   child: const FaIcon(FontAwesomeIcons.check, color: Colors.white, size: 28),

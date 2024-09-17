@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class COutlineTextButton extends StatelessWidget {
+class OpacityButtonWidget extends StatelessWidget {
   final void Function()? onPressed;
   final String label;
   final String loadingLabel;
@@ -9,9 +9,8 @@ class COutlineTextButton extends StatelessWidget {
   final Color? buttonColor;
   final EdgeInsets? padding;
   final VisualDensity? visualDensity;
-  final TextStyle? textStyle;
 
-  const COutlineTextButton(
+  const OpacityButtonWidget(
       {super.key,
       required this.onPressed,
       required this.label,
@@ -19,16 +18,16 @@ class COutlineTextButton extends StatelessWidget {
       this.loading = false,
       this.buttonColor,
       this.padding,
-      this.visualDensity = VisualDensity.compact,
-      this.textStyle});
+      this.visualDensity = VisualDensity.compact});
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
         style: ButtonStyle(
           visualDensity: visualDensity,
+          backgroundColor: WidgetStateProperty.all(buttonColor?.withOpacity(0.15) ?? Colors.white.withOpacity(0.15)),
           shape: WidgetStateProperty.all(RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5), side: BorderSide(color: buttonColor?.withOpacity(0.2) ?? Colors.white.withOpacity(0.2), width: 2))),
+              borderRadius: BorderRadius.circular(5))),
           overlayColor: WidgetStateProperty.resolveWith<Color?>(
             (Set<WidgetState> states) {
               return Colors.black.withOpacity(0.3); // Defer to the widget's default.

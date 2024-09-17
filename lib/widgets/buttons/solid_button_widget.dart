@@ -1,35 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class CTextButton extends StatelessWidget {
+class SolidButtonWidget extends StatelessWidget {
   final void Function()? onPressed;
   final String label;
   final String loadingLabel;
   final bool loading;
   final Color? buttonColor;
+  final Color? textColor;
   final EdgeInsets? padding;
   final VisualDensity? visualDensity;
-  final TextStyle? textStyle;
 
-  const CTextButton(
+  const SolidButtonWidget(
       {super.key,
       required this.onPressed,
       required this.label,
       this.loadingLabel = "loading",
       this.loading = false,
       this.buttonColor,
+      this.textColor,
       this.padding,
-      this.visualDensity = VisualDensity.compact,
-      this.textStyle});
+      this.visualDensity = VisualDensity.compact});
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
         style: ButtonStyle(
           visualDensity: visualDensity,
-          backgroundColor: WidgetStateProperty.all(buttonColor?.withOpacity(0.15) ?? Colors.white.withOpacity(0.15)),
-          shape: WidgetStateProperty.all(RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5))),
+          backgroundColor: WidgetStateProperty.all(buttonColor ?? Colors.transparent),
+          shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
           overlayColor: WidgetStateProperty.resolveWith<Color?>(
             (Set<WidgetState> states) {
               return Colors.black.withOpacity(0.3); // Defer to the widget's default.
@@ -43,7 +42,10 @@ class CTextButton extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(loading ? loadingLabel : label, textAlign: TextAlign.start, style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: buttonColor)),
+              Text(loading ? loadingLabel : label,
+                  textAlign: TextAlign.start,
+                  style: GoogleFonts.montserrat(
+                      fontWeight: FontWeight.w600, fontSize: 16, color: textColor ?? Colors.white)),
               loading
                   ? const Padding(
                       padding: EdgeInsets.only(left: 6.0),
