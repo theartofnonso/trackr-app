@@ -47,10 +47,10 @@ class RoutineTemplateDto {
         name: name,
         exerciseLogs: exerciseTemplates,
         notes: notes,
-        startTime: DateTime.now(),
-        endTime: DateTime.now(),
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now());
+        startTime: createdAt,
+        endTime: updatedAt,
+        createdAt: createdAt,
+        updatedAt: updatedAt);
   }
 
   RoutineTemplateDto copyWith(

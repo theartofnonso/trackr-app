@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/information_container_lite.dart';
 
 import '../../strings/workout_log_strings.dart';
@@ -101,7 +102,7 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
                               final range = DateTimeRange(start: _startDateTime, end: _endDateTime);
                               widget.onSelectRange(range);
                             },
-                            label: "Log session",
+                            label: "Log ${_calculateDuration().hmsAnalog()} session",
                             buttonColor: vibrantGreen,
                             padding: const EdgeInsets.all(10.0)),
                       )),
@@ -120,11 +121,7 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
       return edit_enddate_must_be_after_startdate;
     }
 
-    if (_startDateTime.day > DateTime.now().day || _endDateTime.day > DateTime.now().day) {
-      return edit_future_date_restriction;
-    }
-
-    if (_startDateTime.hour > DateTime.now().hour || _endDateTime.hour > DateTime.now().hour) {
+    if (_endDateTime.day > DateTime.now().day) {
       return edit_future_date_restriction;
     }
 
@@ -135,5 +132,9 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
     }
 
     return null;
+  }
+
+  Duration _calculateDuration() {
+    return _endDateTime.difference(_startDateTime);
   }
 }

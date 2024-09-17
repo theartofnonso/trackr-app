@@ -27,9 +27,9 @@ class RoutineTemplateEditorScreen extends StatefulWidget {
 
   final RoutineTemplateDto? template;
 
-  final bool log;
+  final bool shouldLogTemplate;
 
-  const RoutineTemplateEditorScreen({super.key, this.template, this.log = false});
+  const RoutineTemplateEditorScreen({super.key, this.template, this.shouldLogTemplate = false});
 
   @override
   State<RoutineTemplateEditorScreen> createState() => _RoutineTemplateEditorScreenState();
@@ -169,7 +169,8 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
           leftAction: _closeDialog,
           rightAction: () {
             _closeDialog();
-            _doUpdateRoutineTemplate(template: template);
+            final updatedTemplate = _getUpdatedRoutineTemplate(template: template);
+            _doUpdateRoutineTemplate(updatedTemplate: updatedTemplate);
             _navigateBack();
           },
           leftActionLabel: 'Cancel',
@@ -179,19 +180,19 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     }
   }
 
-  void _logTemplateInstead() async {
-    final log = widget.template?.log();
-    if (log != null) {
-      final createdLog = await Provider.of<RoutineLogController>(context, listen: false).saveLog(logDto: log);
-      _navigateBack(log: createdLog);
-    }
+  void _createLog({required RoutineTemplateDto template}) async {
+    final updatedTemplate = _getUpdatedRoutineTemplate(template: template);
+    final log = updatedTemplate.log();
+    print(log);
+    // final createdLog = await Provider.of<RoutineLogController>(context, listen: false).saveLog(logDto: log);
+    // _navigateBack(log: createdLog);
   }
 
-  void _handleTemplateOrLogInstead() {
+  void _createTemplateOrLog() {
     final template = widget.template;
     if (template != null) {
-      if(widget.log) {
-        _logTemplateInstead();
+      if (widget.shouldLogTemplate) {
+        _createLog(template: template);
       } else {
         _updateRoutineTemplate();
       }
@@ -200,17 +201,22 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     }
   }
 
-  void _doUpdateRoutineTemplate(
-      {required RoutineTemplateDto template, List<ExerciseLogDto>? updatedExerciseLogs}) async {
+  RoutineTemplateDto _getUpdatedRoutineTemplate(
+      {required RoutineTemplateDto template, List<ExerciseLogDto>? updatedExerciseLogs}) {
     final exerciseProvider = Provider.of<ExerciseLogController>(context, listen: false);
     final exerciseLogs = updatedExerciseLogs ?? exerciseProvider.mergeExerciseLogsAndSets();
-    final templateProvider = Provider.of<RoutineTemplateController>(context, listen: false);
 
-    final updatedRoutineTemplate = template.copyWith(
+    return template.copyWith(
         name: _templateNameController.text.trim(),
         notes: _templateNotesController.text.trim(),
         exerciseTemplates: exerciseLogs,
         updatedAt: DateTime.now());
+  }
+
+  void _doUpdateRoutineTemplate({required RoutineTemplateDto updatedTemplate}) async {
+    final templateProvider = Provider.of<RoutineTemplateController>(context, listen: false);
+
+    final updatedRoutineTemplate = _getUpdatedRoutineTemplate(template: updatedTemplate);
 
     await templateProvider.updateTemplate(template: updatedRoutineTemplate);
   }
@@ -279,7 +285,6 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
 
   @override
   Widget build(BuildContext context) {
-
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
 
     final routineTemplateController = Provider.of<RoutineTemplateController>(context, listen: true);
@@ -316,7 +321,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
               ? null
               : FloatingActionButton(
                   heroTag: "fab_select_exercise_log_screen",
-                  onPressed: _handleTemplateOrLogInstead,
+                  onPressed: _createTemplateOrLog,
                   backgroundColor: sapphireDark,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                   child: const FaIcon(FontAwesomeIcons.check, color: Colors.white, size: 28),

@@ -218,6 +218,7 @@ class _MyAppState extends State<MyApp> {
                   return MaterialPageRoute(
                     builder: (context) => RoutineTemplateEditorScreen(
                       template: args?.template,
+                      shouldLogTemplate: args?.shouldLogTemplate ?? false,
                     ),
                   );
                 }

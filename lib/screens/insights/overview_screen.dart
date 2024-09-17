@@ -193,7 +193,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           notes: "",
                           createdAt: datetimeRange.start,
                           updatedAt: datetimeRange.end);
-                      final routineTemplateArguments = RoutineTemplateArguments(template: routineTemplate);
+                      final routineTemplateArguments = RoutineTemplateArguments(template: routineTemplate, shouldLogTemplate: true);
                       navigateToRoutineTemplateEditor(context: context, arguments: routineTemplateArguments);
                     });
               },
