@@ -11,17 +11,18 @@ import '../buttons/opacity_button_widget.dart';
 import '../buttons/solid_button_widget.dart';
 
 class DateTimeRangePicker extends StatefulWidget {
+  final DateTimeRange? initialDateTimeRange;
   final void Function(DateTimeRange range) onSelectRange;
 
-  const DateTimeRangePicker({super.key, required this.onSelectRange});
+  const DateTimeRangePicker({super.key, required this.onSelectRange, this.initialDateTimeRange});
 
   @override
   State<DateTimeRangePicker> createState() => _DateTimeRangePickerState();
 }
 
 class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
-  DateTime _startDateTime = DateTime.now().subtract(const Duration(hours: 1));
-  DateTime _endDateTime = DateTime.now();
+  late DateTime _startDateTime;
+  late DateTime _endDateTime;
 
   bool _showStartDateTimeRange = false;
   bool _showEndDateTimeRange = false;
@@ -138,5 +139,12 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
 
   Duration _calculateDuration() {
     return _endDateTime.difference(_startDateTime);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _startDateTime = widget.initialDateTimeRange?.start ?? DateTime.now().subtract(const Duration(hours: 1));
+    _endDateTime = widget.initialDateTimeRange?.end ?? DateTime.now();
   }
 }

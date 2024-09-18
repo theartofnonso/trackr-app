@@ -147,11 +147,11 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
     final exercises = exerciseLogController.mergeAndCheckExerciseLogsAndSets(datetime: widget.log.startTime);
 
     final updatedLog = widget.log.copyWith(exerciseLogs: exercises);
-    print("Hi");
+
     if(widget.log.id.isEmpty) {
-      print("Hello");
+
       final datetime = TemporalDateTime.withOffset(updatedLog.startTime, Duration.zero);
-      print(datetime);
+
       final createdLog = await Provider.of<RoutineLogController>(context, listen: false).saveLog(logDto: updatedLog, datetime: datetime);
       _navigateBack(log: createdLog);
     } else {

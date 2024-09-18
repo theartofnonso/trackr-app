@@ -106,9 +106,9 @@ void showDateTimePicker({required BuildContext context, required void Function(D
   displayBottomSheet(height: 240, context: context, child: DatetimePicker(onSelect: onChangedDateTime));
 }
 
-void showDatetimeRangePicker({required BuildContext context, required void Function(DateTimeRange datetimeRange) onChangedDateTimeRange}) {
+void showDatetimeRangePicker({required BuildContext context, DateTimeRange? initialDateTimeRange, required void Function(DateTimeRange datetimeRange) onChangedDateTimeRange}) {
   FocusScope.of(context).unfocus();
-  displayBottomSheet(context: context, child: DateTimeRangePicker(onSelectRange: onChangedDateTimeRange,),isScrollControlled: true);
+  displayBottomSheet(context: context, child: DateTimeRangePicker(initialDateTimeRange: initialDateTimeRange, onSelectRange: onChangedDateTimeRange,),isScrollControlled: true);
 }
 
 Future<void> showBottomSheetWithNoAction(

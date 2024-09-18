@@ -5,7 +5,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
-import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
@@ -300,10 +299,11 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     Navigator.of(context).pop();
     showDatetimeRangePicker(
         context: context,
-        onChangedDateTimeRange: (DateTimeRange datetimeRange) {
+        initialDateTimeRange: DateTimeRange(start: widget.log.startTime, end: widget.log.endTime),
+        onChangedDateTimeRange: (DateTimeRange datetimeRange) async {
           Navigator.of(context).pop();
-          final routineLogArguments = PastRoutineLogArguments(log: widget.log);
-          navigateToPastRoutineLogEditor(context: context, arguments: routineLogArguments);
+          final updatedRoutineLog = widget.log.copyWith(startTime: datetimeRange.start, endTime: datetimeRange.end);
+          await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: updatedRoutineLog);
         });
   }
 
