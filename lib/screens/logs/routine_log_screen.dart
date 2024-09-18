@@ -5,9 +5,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
+import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
-import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/chart/muscle_group_family_chart.dart';
@@ -16,15 +17,15 @@ import '../../../colors.dart';
 import '../../../dtos/exercise_log_dto.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../controllers/routine_template_controller.dart';
+import '../../dtos/routine_log_dto.dart';
+import '../../dtos/routine_template_dto.dart';
+import '../../dtos/viewmodels/exercise_log_view_model.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/muscle_group_enums.dart';
+import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/routine_utils.dart';
-import '../../dtos/viewmodels/exercise_log_view_model.dart';
-import '../../dtos/routine_log_dto.dart';
-import '../../dtos/routine_template_dto.dart';
-import '../../enums/routine_editor_type_enums.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
 import '../shareable_screen.dart';
 
@@ -216,32 +217,42 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
             ListTile(
               dense: true,
               contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(FontAwesomeIcons.pen, size: 18),
+              horizontalTitleGap: 6,
               title: Text("Edit Log",
-                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-              onTap: () {
-                Navigator.of(context).pop();
-                _editLog(log: widget.log);
-              },
+                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              onTap: _editLog,
             ),
             ListTile(
               dense: true,
               contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(FontAwesomeIcons.clock, size: 18),
+              horizontalTitleGap: 6,
+              title: Text("Edit duration",
+                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              onTap: _editLogDuration,
+            ),
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(FontAwesomeIcons.floppyDisk, size: 18),
+              horizontalTitleGap: 6,
               title: Text("Save as template",
-                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-              onTap: () {
-                Navigator.of(context).pop();
-                _createTemplate();
-              },
+                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              onTap: _createTemplate,
             ),
             ListTile(
               dense: true,
               contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(
+                FontAwesomeIcons.trash,
+                size: 18,
+                color: Colors.red,
+              ),
+              horizontalTitleGap: 6,
               title: Text("Delete log",
-                  style: GoogleFonts.montserrat(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 14)),
-              onTap: () {
-                Navigator.of(context).pop();
-                _deleteLog();
-              },
+                  style: GoogleFonts.montserrat(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
+              onTap: _deleteLog,
             ),
           ]),
         ));
@@ -279,12 +290,26 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     return completedSets.length;
   }
 
-  void _editLog({required RoutineLogDto log}) {
-    final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.edit);
+  void _editLog() {
+    Navigator.of(context).pop();
+    final arguments = RoutineLogArguments(log: widget.log, editorMode: RoutineEditorMode.edit);
     navigateToRoutineLogEditor(context: context, arguments: arguments);
   }
 
+  void _editLogDuration() {
+    Navigator.of(context).pop();
+    showDatetimeRangePicker(
+        context: context,
+        onChangedDateTimeRange: (DateTimeRange datetimeRange) {
+          Navigator.of(context).pop();
+          final routineLogArguments = PastRoutineLogArguments(log: widget.log);
+          navigateToPastRoutineLogEditor(context: context, arguments: routineLogArguments);
+        });
+  }
+
   void _createTemplate() async {
+    Navigator.of(context).pop();
+
     final log = widget.log;
 
     _toggleLoadingState(message: "Creating template");
@@ -353,6 +378,8 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   }
 
   void _deleteLog() {
+    Navigator.of(context).pop();
+
     showBottomSheetWithMultiActions(
         context: context,
         title: "Delete log?",

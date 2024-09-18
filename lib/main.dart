@@ -21,6 +21,7 @@ import 'package:tracker_app/controllers/routine_template_controller.dart';
 import 'package:tracker_app/controllers/settings_controller.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
+import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/repositories/amplify_exercise_repository.dart';
 import 'package:tracker_app/repositories/amplify_log_repository.dart';
@@ -224,10 +225,10 @@ class _MyAppState extends State<MyApp> {
                 }
 
                 if (settings.name == PastRoutineLogEditorScreen.routeName) {
-                  final args = settings.arguments as RoutineTemplateArguments;
+                  final args = settings.arguments as PastRoutineLogArguments;
                   return MaterialPageRoute(
                     builder: (context) => PastRoutineLogEditorScreen(
-                      template: args.template,
+                      log: args.log,
                     ),
                   );
                 }

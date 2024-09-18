@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
+import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 
 import '../dtos/routine_log_dto.dart';
@@ -21,7 +22,7 @@ void navigateToRoutineTemplateEditor({required BuildContext context, RoutineTemp
   Navigator.of(context).pushNamed(RoutineTemplateEditorScreen.routeName, arguments: arguments);
 }
 
-void navigateToPastRoutineTemplateEditor({required BuildContext context, required RoutineTemplateArguments arguments}) async {
+void navigateToPastRoutineLogEditor({required BuildContext context, required PastRoutineLogArguments arguments}) async {
   final createdLog = await Navigator.of(context).pushNamed(PastRoutineLogEditorScreen.routeName, arguments: arguments) as RoutineLogDto?;
   if(createdLog != null) {
     if(context.mounted) {

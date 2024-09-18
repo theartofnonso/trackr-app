@@ -4,8 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
-import 'package:tracker_app/dtos/routine_template_dto.dart';
-import 'package:tracker_app/dtos/viewmodels/routine_template_arguments.dart';
+import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/enums/share_content_type_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/datetime_range_extension.dart';
@@ -63,7 +62,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           endTime: DateTime.now(),
           createdAt: DateTime.now(),
           updatedAt: DateTime.now());
-      final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log, emptySession: true);
+      final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log);
       navigateToRoutineLogEditor(context: context, arguments: arguments);
     } else {
       showSnackbar(context: context, icon: const Icon(Icons.info_outline_rounded), message: "${log.name} is running");
@@ -185,16 +184,19 @@ class _OverviewScreenState extends State<OverviewScreen> {
                     context: context,
                     onChangedDateTimeRange: (DateTimeRange datetimeRange) {
                       Navigator.of(context).pop();
-                      final routineName = "${timeOfDay(datetime: datetimeRange.start)} Session";
-                      final routineTemplate = RoutineTemplateDto(
+                      final logName = "${timeOfDay(datetime: datetimeRange.start)} Session";
+                      final log = RoutineLogDto(
                           id: "",
-                          name: routineName,
-                          exerciseTemplates: [],
+                          templateId: '',
+                          name: logName,
+                          exerciseLogs: [],
                           notes: "",
+                          startTime: datetimeRange.start,
+                          endTime: datetimeRange.end,
                           createdAt: datetimeRange.start,
                           updatedAt: datetimeRange.end);
-                      final routineTemplateArguments = RoutineTemplateArguments(template: routineTemplate);
-                      navigateToPastRoutineTemplateEditor(context: context, arguments: routineTemplateArguments);
+                      final routineLogArguments = PastRoutineLogArguments(log: log);
+                      navigateToPastRoutineLogEditor(context: context, arguments: routineLogArguments);
                     });
               },
             ),

@@ -14,7 +14,6 @@ import 'package:tracker_app/utils/dialog_utils.dart';
 import '../../colors.dart';
 import '../../controllers/routine_template_controller.dart';
 import '../../dtos/routine_log_dto.dart';
-import '../../dtos/routine_template_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/routine_editors_utils.dart';
 import '../../utils/routine_utils.dart';
@@ -25,9 +24,9 @@ import '../../widgets/routine/editors/exercise_log_widget_lite.dart';
 class PastRoutineLogEditorScreen extends StatefulWidget {
   static const routeName = '/past-routine-log-editor';
 
-  final RoutineTemplateDto template;
+  final RoutineLogDto log;
 
-  const PastRoutineLogEditorScreen({super.key, required this.template});
+  const PastRoutineLogEditorScreen({super.key, required this.log});
 
   @override
   State<PastRoutineLogEditorScreen> createState() => _PastRoutineLogEditorScreenState();
@@ -146,18 +145,16 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
 
     final exercises = exerciseLogController.mergeAndCheckExerciseLogsAndSets();
 
-    final updatedTemplate = widget.template.copyWith(exerciseTemplates: exercises);
+    final updatedLog = widget.log.copyWith(exerciseLogs: exercises);
 
-    final log = updatedTemplate.log();
-
-    final createdLog = await Provider.of<RoutineLogController>(context, listen: false).saveLog(logDto: log);
+    final createdLog = await Provider.of<RoutineLogController>(context, listen: false).saveLog(logDto: updatedLog);
 
     _navigateBack(log: createdLog);
   }
 
   void _checkForUnsavedChanges() {
     final exerciseProvider = Provider.of<ExerciseLogController>(context, listen: false);
-    final exerciseLog1 = widget.template.exerciseTemplates;
+    final exerciseLog1 = widget.log.exerciseLogs;
     final exerciseLog2 = exerciseProvider.mergeAndCheckExerciseLogsAndSets();
     final unsavedChangesMessage = checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
     if (unsavedChangesMessage.isNotEmpty) {
@@ -383,7 +380,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
   }
 
   void _initializeProcedureData() {
-    final exercises = widget.template.exerciseTemplates;
+    final exercises = widget.log.exerciseLogs;
     if (exercises.isNotEmpty) {
       final updatedExerciseLogs = exercises.map((exerciseLog) {
         final previousSets = Provider.of<RoutineLogController>(context, listen: false)
@@ -402,9 +399,9 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
   }
 
   void _initializeTextControllers() {
-    final template = widget.template;
-    _templateNameController = TextEditingController(text: template.name);
-    _templateNotesController = TextEditingController(text: template.notes);
+    final log = widget.log;
+    _templateNameController = TextEditingController(text: log.name);
+    _templateNotesController = TextEditingController(text: log.notes);
   }
 
   void _minimiseOrMaximiseCards() {

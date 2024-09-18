@@ -136,11 +136,11 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   RoutineLogDto _routineLog({required DateTime endTime}) {
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
+
     final exerciseLogs = exerciseLogController.mergeExerciseLogsAndSets();
 
-    final log = widget.log;
+    final routineLog = widget.log.copyWith(exerciseLogs: exerciseLogs, endTime: endTime, updatedAt: DateTime.now());
 
-    final routineLog = log.copyWith(exerciseLogs: exerciseLogs, endTime: endTime, updatedAt: DateTime.now());
     return routineLog;
   }
 
