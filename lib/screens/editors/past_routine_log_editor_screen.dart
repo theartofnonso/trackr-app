@@ -22,18 +22,18 @@ import '../../widgets/empty_states/exercise_log_empty_state.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
 import '../../widgets/routine/editors/exercise_log_widget_lite.dart';
 
-class RoutineTemplateEditorScreen extends StatefulWidget {
-  static const routeName = '/routine-template-editor';
+class PastRoutineLogEditorScreen extends StatefulWidget {
+  static const routeName = '/past-routine-log-editor';
 
-  final RoutineTemplateDto? template;
+  final RoutineTemplateDto template;
 
-  const RoutineTemplateEditorScreen({super.key, this.template});
+  const PastRoutineLogEditorScreen({super.key, required this.template});
 
   @override
-  State<RoutineTemplateEditorScreen> createState() => _RoutineTemplateEditorScreenState();
+  State<PastRoutineLogEditorScreen> createState() => _PastRoutineLogEditorScreenState();
 }
 
-class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScreen> {
+class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen> {
   late TextEditingController _templateNameController;
   late TextEditingController _templateNotesController;
 
@@ -139,69 +139,26 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: message);
   }
 
-  void _createRoutineTemplate() async {
+  void _createLog() async {
     if (!_validateRoutineTemplateInputs()) return;
 
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
-    final exercises = exerciseLogController.mergeExerciseLogsAndSets();
 
-    final template = RoutineTemplateDto(
-        id: "",
-        name: _templateNameController.text,
-        exerciseTemplates: exercises,
-        notes: _templateNotesController.text,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now());
+    final exercises = exerciseLogController.mergeAndCheckExerciseLogsAndSets();
 
-    await Provider.of<RoutineTemplateController>(context, listen: false).saveTemplate(templateDto: template);
-    _navigateBack();
-  }
+    final updatedTemplate = widget.template.copyWith(exerciseTemplates: exercises);
 
-  void _updateRoutineTemplate() {
-    if (!_validateRoutineTemplateInputs()) return;
-    final template = widget.template;
-    if (template != null) {
-      showBottomSheetWithMultiActions(
-          context: context,
-          description: "Update workout?",
-          leftAction: _closeDialog,
-          rightAction: () {
-            _closeDialog();
-            final updatedTemplate = _getUpdatedRoutineTemplate(template: template);
-            _doUpdateRoutineTemplate(updatedTemplate: updatedTemplate);
-            _navigateBack();
-          },
-          leftActionLabel: 'Cancel',
-          rightActionLabel: 'Update',
-          isRightActionDestructive: true,
-          title: "Update workout");
-    }
-  }
+    final log = updatedTemplate.log();
 
-  RoutineTemplateDto _getUpdatedRoutineTemplate(
-      {required RoutineTemplateDto template, List<ExerciseLogDto>? updatedExerciseLogs}) {
-    final exerciseProvider = Provider.of<ExerciseLogController>(context, listen: false);
-    final exerciseLogs = updatedExerciseLogs ?? exerciseProvider.mergeExerciseLogsAndSets();
+    final createdLog = await Provider.of<RoutineLogController>(context, listen: false).saveLog(logDto: log);
 
-    return template.copyWith(
-        name: _templateNameController.text.trim(),
-        notes: _templateNotesController.text.trim(),
-        exerciseTemplates: exerciseLogs,
-        updatedAt: DateTime.now());
-  }
-
-  void _doUpdateRoutineTemplate({required RoutineTemplateDto updatedTemplate}) async {
-    final templateProvider = Provider.of<RoutineTemplateController>(context, listen: false);
-
-    final updatedRoutineTemplate = _getUpdatedRoutineTemplate(template: updatedTemplate);
-
-    await templateProvider.updateTemplate(template: updatedRoutineTemplate);
+    _navigateBack(log: createdLog);
   }
 
   void _checkForUnsavedChanges() {
     final exerciseProvider = Provider.of<ExerciseLogController>(context, listen: false);
-    final exerciseLog1 = widget.template?.exerciseTemplates ?? [];
-    final exerciseLog2 = exerciseProvider.mergeExerciseLogsAndSets();
+    final exerciseLog1 = widget.template.exerciseTemplates;
+    final exerciseLog2 = exerciseProvider.mergeAndCheckExerciseLogsAndSets();
     final unsavedChangesMessage = checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
     if (unsavedChangesMessage.isNotEmpty) {
       showBottomSheetWithMultiActions(
@@ -262,8 +219,6 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
 
   @override
   Widget build(BuildContext context) {
-    final template = widget.template;
-
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
 
     final routineTemplateController = Provider.of<RoutineTemplateController>(context, listen: true);
@@ -300,7 +255,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
               ? null
               : FloatingActionButton(
                   heroTag: "fab_select_exercise_log_screen",
-                  onPressed: template != null ? _updateRoutineTemplate : _createRoutineTemplate,
+                  onPressed: _createLog,
                   backgroundColor: sapphireDark,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                   child: const FaIcon(FontAwesomeIcons.check, color: Colors.white, size: 28),
@@ -428,8 +383,8 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   }
 
   void _initializeProcedureData() {
-    final exercises = widget.template?.exerciseTemplates;
-    if (exercises != null && exercises.isNotEmpty) {
+    final exercises = widget.template.exerciseTemplates;
+    if (exercises.isNotEmpty) {
       final updatedExerciseLogs = exercises.map((exerciseLog) {
         final previousSets = Provider.of<RoutineLogController>(context, listen: false)
             .whereSetsForExercise(exercise: exerciseLog.exercise);
@@ -448,8 +403,8 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
 
   void _initializeTextControllers() {
     final template = widget.template;
-    _templateNameController = TextEditingController(text: template?.name);
-    _templateNotesController = TextEditingController(text: template?.notes);
+    _templateNameController = TextEditingController(text: template.name);
+    _templateNotesController = TextEditingController(text: template.notes);
   }
 
   void _minimiseOrMaximiseCards() {

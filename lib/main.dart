@@ -27,6 +27,7 @@ import 'package:tracker_app/repositories/amplify_log_repository.dart';
 import 'package:tracker_app/repositories/amplify_template_repository.dart';
 import 'package:tracker_app/repositories/exercise_log_repository.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
+import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_log_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_template_editor_screen.dart';
 import 'package:tracker_app/screens/home_screen.dart';
@@ -218,7 +219,15 @@ class _MyAppState extends State<MyApp> {
                   return MaterialPageRoute(
                     builder: (context) => RoutineTemplateEditorScreen(
                       template: args?.template,
-                      shouldLogTemplate: args?.shouldLogTemplate ?? false,
+                    ),
+                  );
+                }
+
+                if (settings.name == PastRoutineLogEditorScreen.routeName) {
+                  final args = settings.arguments as RoutineTemplateArguments;
+                  return MaterialPageRoute(
+                    builder: (context) => PastRoutineLogEditorScreen(
+                      template: args.template,
                     ),
                   );
                 }

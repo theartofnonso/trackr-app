@@ -24,6 +24,10 @@ class ExerciseLogController extends ChangeNotifier {
     return _exerciseLogRepository.mergeExerciseLogsAndSets();
   }
 
+  List<ExerciseLogDto> mergeAndCheckExerciseLogsAndSets() {
+    return _exerciseLogRepository.mergeAndCheckExerciseLogsAndSets();
+  }
+
   void addExerciseLogs({required List<ExerciseDto> exercises}) {
     _exerciseLogRepository.addExerciseLogs(exercises: exercises);
     notifyListeners();
