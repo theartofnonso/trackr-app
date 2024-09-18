@@ -54,6 +54,7 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
               height: 240,
               child: CupertinoDatePicker(
                   use24hFormat: true,
+                  initialDateTime: _startDateTime,
                   onDateTimeChanged: (DateTime value) {
                     setState(() {
                       _startDateTime = value;
@@ -80,6 +81,7 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
               height: 240,
               child: CupertinoDatePicker(
                   use24hFormat: true,
+                  initialDateTime: _endDateTime,
                   onDateTimeChanged: (DateTime value) {
                     setState(() {
                       _endDateTime = value;

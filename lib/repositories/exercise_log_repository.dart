@@ -38,10 +38,10 @@ class ExerciseLogRepository {
     }).toList();
   }
 
-  List<ExerciseLogDto> mergeAndCheckExerciseLogsAndSets() {
+  List<ExerciseLogDto> mergeAndCheckPastExerciseLogsAndSets({required DateTime datetime}) {
     return _exerciseLogs.map((exerciseLog) {
       final sets = _checkSets(exerciseLog.sets);
-      return exerciseLog.copyWith(sets: sets);
+      return exerciseLog.copyWith(sets: sets, createdAt: datetime);
     }).toList();
   }
 

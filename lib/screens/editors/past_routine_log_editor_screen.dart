@@ -1,3 +1,4 @@
+import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -143,19 +144,26 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
 
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
 
-    final exercises = exerciseLogController.mergeAndCheckExerciseLogsAndSets();
+    final exercises = exerciseLogController.mergeAndCheckExerciseLogsAndSets(datetime: widget.log.startTime);
 
     final updatedLog = widget.log.copyWith(exerciseLogs: exercises);
+    print("Hi");
+    if(widget.log.id.isEmpty) {
+      print("Hello");
+      final datetime = TemporalDateTime.withOffset(updatedLog.startTime, Duration.zero);
+      print(datetime);
+      final createdLog = await Provider.of<RoutineLogController>(context, listen: false).saveLog(logDto: updatedLog, datetime: datetime);
+      _navigateBack(log: createdLog);
+    } else {
+      await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: updatedLog);
+    }
 
-    final createdLog = await Provider.of<RoutineLogController>(context, listen: false).saveLog(logDto: updatedLog);
-
-    _navigateBack(log: createdLog);
   }
 
   void _checkForUnsavedChanges() {
     final exerciseProvider = Provider.of<ExerciseLogController>(context, listen: false);
     final exerciseLog1 = widget.log.exerciseLogs;
-    final exerciseLog2 = exerciseProvider.mergeAndCheckExerciseLogsAndSets();
+    final exerciseLog2 = exerciseProvider.mergeAndCheckExerciseLogsAndSets(datetime: widget.log.startTime);
     final unsavedChangesMessage = checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
     if (unsavedChangesMessage.isNotEmpty) {
       showBottomSheetWithMultiActions(

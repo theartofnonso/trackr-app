@@ -83,11 +83,11 @@ class AmplifyLogRepository {
     _normaliseLogs();
   }
 
-  Future<RoutineLogDto> saveLog({required RoutineLogDto logDto}) async {
-    final now = TemporalDateTime.now();
+  Future<RoutineLogDto> saveLog({required RoutineLogDto logDto, TemporalDateTime? datetime}) async {
+    final now = datetime ?? TemporalDateTime.now();
 
     final logToCreate = RoutineLog(data: jsonEncode(logDto), createdAt: now, updatedAt: now);
-
+    print(logToCreate);
     await Amplify.DataStore.save(logToCreate);
 
     final updatedWithId = logDto.copyWith(id: logToCreate.id);
