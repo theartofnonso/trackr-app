@@ -47,8 +47,8 @@ class RoutineTemplateDto {
         name: name,
         exerciseLogs: exerciseTemplates,
         notes: notes,
-        startTime: createdAt,
-        endTime: updatedAt,
+        startTime: DateTime.now(),
+        endTime: DateTime.now(),
         createdAt: createdAt,
         updatedAt: updatedAt);
   }
