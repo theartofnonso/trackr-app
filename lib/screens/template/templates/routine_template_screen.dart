@@ -243,6 +243,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                 const SizedBox(width: 6),
                 OpacityButtonWidget(
                   onPressed: () {
+                    HapticFeedback.heavyImpact();
                     final data = ClipboardData(text: workoutLink);
                     Clipboard.setData(data).then((_) {
                       if (mounted) {
@@ -278,6 +279,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
             ),
             OpacityButtonWidget(
               onPressed: () {
+                HapticFeedback.heavyImpact();
                 final data = ClipboardData(text: workoutText);
                 Clipboard.setData(data).then((_) {
                   if (mounted) {
