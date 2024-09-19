@@ -160,17 +160,15 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
       await _updateRoutineTemplateSchedule(routineTemplateId: routineLog.templateId);
     }
 
-    _navigate(log: createdLog);
+    _endWorkout(log: createdLog);
   }
 
   Future<void> _doUpdateRoutineLog() async {
     final routineLog = _routineLog();
+    final updatedRoutineLog = routineLog.copyWith(endTime: widget.log.endTime);
+    await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: updatedRoutineLog);
 
-    if (mounted) {
-      final updatedRoutineLog = routineLog.copyWith(endTime: widget.log.endTime);
-      await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: updatedRoutineLog);
-    }
-    _navigate();
+    _endWorkout();
   }
 
   Future<void> _updateRoutineTemplateSchedule({required String routineTemplateId}) async {
@@ -198,7 +196,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         leftAction: _closeDialog,
         rightAction: () {
           _closeDialog();
-          _navigate();
+          _navigateBack();
         },
         leftActionLabel: 'Cancel',
         rightActionLabel: 'Discard',
@@ -263,12 +261,12 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
           leftActionLabel: 'Cancel',
           rightAction: () {
             _closeDialog();
-            _navigate();
+            _navigateBack();
           },
           rightActionLabel: 'Discard',
           isRightActionDestructive: true);
     } else {
-      _navigate();
+      _endWorkout();
     }
   }
 
@@ -291,7 +289,13 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     }
   }
 
-  void _navigate({RoutineLogDto? log}) async {
+  void _navigateBack() async {
+    SharedPrefs().remove(key: SharedPrefs().cachedRoutineLogKey);
+    FlutterLocalNotificationsPlugin().cancel(999);
+    context.pop();
+  }
+
+  void _endWorkout({RoutineLogDto? log}) async {
     SharedPrefs().remove(key: SharedPrefs().cachedRoutineLogKey);
     FlutterLocalNotificationsPlugin().cancel(999);
     if (log != null) {
@@ -299,15 +303,11 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         syncWorkoutWithAppleHealth(log: log);
       }
     }
+
+    await _doUpdateTemplate();
     if (mounted) {
-      if (log != null) {
-        await _doUpdateTemplate();
-        if (mounted) {
-          context.go(ShareableScreen.routeName, extra: log);
-        }
-      } else {
-        Navigator.of(context).pop(log);
-      }
+      context.pop();
+      context.push(ShareableScreen.routeName, extra: log);
     }
   }
 

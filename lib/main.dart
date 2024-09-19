@@ -171,7 +171,7 @@ final _router = GoRouter(
       path: ShareableScreen.routeName,
       builder: (context, state) {
         final args = state.extra as RoutineLogDto;
-        return RoutineLogScreen(log: args);
+        return ShareableScreen(log: args);
       },
     ),
     GoRoute(
