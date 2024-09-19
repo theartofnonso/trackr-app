@@ -17,7 +17,7 @@ class InformationContainerLite extends StatelessWidget {
         children: [
           FaIcon(FontAwesomeIcons.exclamation, color: color, size: 16,),
           const SizedBox(width: 14),
-          Expanded(child: Text(content, style: GoogleFonts.montserrat(fontSize: 12, color: color, fontWeight: FontWeight.w600))),
+          Expanded(child: Text(content, style: GoogleFonts.montserrat(fontSize: 12, height: 1.4, color: color, fontWeight: FontWeight.w600))),
         ],
       ),
     );

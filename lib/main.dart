@@ -67,14 +67,14 @@ void main() async {
   const AndroidInitializationSettings androidInitializationSettings = AndroidInitializationSettings("app_icon");
 
   const initializationSettings =
-  InitializationSettings(iOS: iOSInitializationSettingsDarwin, android: androidInitializationSettings);
+      InitializationSettings(iOS: iOSInitializationSettingsDarwin, android: androidInitializationSettings);
 
   await FlutterLocalNotificationsPlugin().initialize(initializationSettings);
 
   tz.initializeTimeZones();
 
   await SentryFlutter.init(
-        (options) {
+    (options) {
       options.dsn = kReleaseMode
           ? 'https://45d4468d9e461dc80082807aea326bd7@o4506338359377920.ingest.sentry.io/4506338360754176'
           : "";
@@ -82,26 +82,25 @@ void main() async {
       // We recommend adjusting this value in production.
       options.tracesSampleRate = 1.0;
     },
-    appRunner: () =>
-        runApp(MultiProvider(providers: [
-          ChangeNotifierProvider<SettingsController>(
-            create: (BuildContext context) => SettingsController(),
-          ),
-          ChangeNotifierProvider<NotificationController>(
-            create: (BuildContext context) => NotificationController(),
-          ),
-          ChangeNotifierProvider<ExerciseController>(
-            create: (BuildContext context) => ExerciseController(AmplifyExerciseRepository()),
-          ),
-          ChangeNotifierProvider<RoutineTemplateController>(
-            create: (BuildContext context) => RoutineTemplateController(AmplifyTemplateRepository()),
-          ),
-          ChangeNotifierProvider<RoutineLogController>(
-            create: (BuildContext context) => RoutineLogController(AmplifyLogRepository()),
-          ),
-          ChangeNotifierProvider<ExerciseLogController>(
-              create: (BuildContext context) => ExerciseLogController(ExerciseLogRepository())),
-        ], child: const MyApp())),
+    appRunner: () => runApp(MultiProvider(providers: [
+      ChangeNotifierProvider<SettingsController>(
+        create: (BuildContext context) => SettingsController(),
+      ),
+      ChangeNotifierProvider<NotificationController>(
+        create: (BuildContext context) => NotificationController(),
+      ),
+      ChangeNotifierProvider<ExerciseController>(
+        create: (BuildContext context) => ExerciseController(AmplifyExerciseRepository()),
+      ),
+      ChangeNotifierProvider<RoutineTemplateController>(
+        create: (BuildContext context) => RoutineTemplateController(AmplifyTemplateRepository()),
+      ),
+      ChangeNotifierProvider<RoutineLogController>(
+        create: (BuildContext context) => RoutineLogController(AmplifyLogRepository()),
+      ),
+      ChangeNotifierProvider<ExerciseLogController>(
+          create: (BuildContext context) => ExerciseLogController(ExerciseLogRepository())),
+    ], child: const MyApp())),
   );
 }
 
@@ -216,19 +215,19 @@ final _router = GoRouter(
       builder: (context, state) => const StreakScreen(),
     ),
     GoRoute(
-      path: "shared-workout/:id",
+      path: "/shared-workout/:id",
       builder: (context, state) {
         final id = state.pathParameters['id'] ?? "";
         return RoutineTemplateScreen(id: id);
       },
     ),
-    GoRoute(
-      path: "shared-workout-log/:id",
-      builder: (context, state) {
-        final id = state.pathParameters['id'] ?? "";
-        return RoutineLogScreen(id: id, log: RoutineLogDto.);
-      },
-    )
+    // GoRoute(
+    //   path: "/shared-workout-log/:id",
+    //   builder: (context, state) {
+    //     final id = state.pathParameters['id'] ?? "";
+    //     return RoutineLogScreen(id: id);
+    //   },
+    // )
   ],
 );
 
@@ -305,7 +304,7 @@ class _MyAppState extends State<MyApp> {
       contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: sapphireLight)),
       enabledBorder:
-      OutlineInputBorder(borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: Colors.black)),
+          OutlineInputBorder(borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: Colors.black)),
       filled: true,
       fillColor: sapphireLighter,
       hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14),
@@ -331,12 +330,12 @@ class _MyAppState extends State<MyApp> {
     return _isFirstLaunch
         ? IntroScreen(themeData: _themeData, onComplete: _completeIntro)
         : Authenticator(
-      child: MaterialApp.router(
-        debugShowCheckedModeBanner: false,
-        builder: Authenticator.builder(),
-        theme: _themeData,
-        routerConfig: _router,
-      ),
-    );
+            child: MaterialApp.router(
+              debugShowCheckedModeBanner: false,
+              builder: Authenticator.builder(),
+              theme: _themeData,
+              routerConfig: _router,
+            ),
+          );
   }
 }
