@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/widgets/timers/datetime_picker.dart';
+import 'package:tracker_app/widgets/timers/datetime_range_picker.dart';
 
 import '../colors.dart';
-import '../widgets/buttons/text_button_widget.dart';
+import '../widgets/buttons/opacity_button_widget.dart';
+import '../widgets/buttons/solid_button_widget.dart';
 import '../widgets/timers/hour_timer_picker.dart';
 import '../widgets/timers/time_picker.dart';
 
@@ -98,6 +101,16 @@ void showHourTimerPicker(
           }));
 }
 
+void showDateTimePicker({required BuildContext context, required void Function(DateTime datetime) onChangedDateTime}) {
+  FocusScope.of(context).unfocus();
+  displayBottomSheet(height: 240, context: context, child: DatetimePicker(onSelect: onChangedDateTime));
+}
+
+void showDatetimeRangePicker({required BuildContext context, DateTimeRange? initialDateTimeRange, required void Function(DateTimeRange datetimeRange) onChangedDateTimeRange}) {
+  FocusScope.of(context).unfocus();
+  displayBottomSheet(context: context, child: DateTimeRangePicker(initialDateTimeRange: initialDateTimeRange, onSelectRange: onChangedDateTimeRange,) ,isScrollControlled: true);
+}
+
 Future<void> showBottomSheetWithNoAction(
     {required BuildContext context, required String title, required String description}) async {
   displayBottomSheet(
@@ -137,18 +150,15 @@ void showBottomSheetWithMultiActions(
               textAlign: TextAlign.start),
           const SizedBox(height: 16),
           Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-            CTextButton(
+            SolidButtonWidget(
                 onPressed: leftAction,
                 label: leftActionLabel,
-                textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.white),
-                buttonColor: Colors.transparent,
-                buttonBorderColor: Colors.transparent),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10)),
             const SizedBox(width: 10),
-            CTextButton(
+            OpacityButtonWidget(
                 onPressed: rightAction,
                 label: rightActionLabel,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.black),
                 buttonColor: vibrantGreen)
           ])
         ],

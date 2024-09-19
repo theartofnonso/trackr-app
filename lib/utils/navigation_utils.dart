@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
+import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 
 import '../dtos/routine_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../dtos/viewmodels/routine_template_arguments.dart';
+import '../screens/editors/past_routine_log_editor_screen.dart';
 import '../screens/editors/routine_template_editor_screen.dart';
 import '../screens/editors/routine_log_editor_screen.dart';
 import '../screens/logs/routine_log_screen.dart';
@@ -18,6 +20,15 @@ Future<Future<Object?>> navigateToExerciseEditor({required BuildContext context,
 
 void navigateToRoutineTemplateEditor({required BuildContext context, RoutineTemplateArguments? arguments}) {
   Navigator.of(context).pushNamed(RoutineTemplateEditorScreen.routeName, arguments: arguments);
+}
+
+void navigateToPastRoutineLogEditor({required BuildContext context, required PastRoutineLogArguments arguments}) async {
+  final createdLog = await Navigator.of(context).pushNamed(PastRoutineLogEditorScreen.routeName, arguments: arguments) as RoutineLogDto?;
+  if(createdLog != null) {
+    if(context.mounted) {
+      navigateToRoutineLogPreview(context: context, log: createdLog, finishedLogging: true);
+    }
+  }
 }
 
 void navigateToRoutineLogEditor({required BuildContext context, required RoutineLogArguments arguments}) async {

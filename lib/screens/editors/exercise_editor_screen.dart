@@ -12,7 +12,7 @@ import 'package:tracker_app/utils/dialog_utils.dart';
 import '../../colors.dart';
 import '../../dtos/exercise_dto.dart';
 import '../../enums/exercise_type_enums.dart';
-import '../../widgets/buttons/text_button_widget.dart';
+import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/information_container.dart';
 import '../exercise/exercise_type_screen.dart';
 
@@ -62,11 +62,10 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
             ),
             actions: [
               exercise != null
-                  ? CTextButton(
+                  ? OpacityButtonWidget(
                       onPressed: _updateExercise,
                       label: "Update",
-                      buttonColor: Colors.transparent,
-                      buttonBorderColor: Colors.transparent)
+                      buttonColor: Colors.transparent,)
                   : const SizedBox.shrink()
             ],
           ),
@@ -119,10 +118,9 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                 if (!_isInputFieldVisible && _exerciseName != null && exercise == null)
                   SizedBox(
                     width: double.infinity,
-                    child: CTextButton(
+                    child: OpacityButtonWidget(
                         onPressed: _createExercise,
                         label: "Create Exercise",
-                        textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.black),
                         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
                         buttonColor: vibrantGreen),
                   ),

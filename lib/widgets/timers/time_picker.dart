@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/colors.dart';
 
-import '../buttons/text_button_widget.dart';
+import '../buttons/opacity_button_widget.dart';
 
 class TimePicker extends StatefulWidget {
   final Duration? initialDuration;
@@ -45,12 +45,10 @@ class _TimerPickerState extends State<TimePicker> {
           ),
         ),
         const SizedBox(height: 10),
-        CTextButton(
+        OpacityButtonWidget(
             onPressed: () => widget.onDurationChanged(_duration),
             label: "Select time",
-            buttonColor: Colors.transparent,
-            buttonBorderColor: Colors.transparent,
-            textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
+            buttonColor: vibrantGreen,
             padding: const EdgeInsets.all(10.0))
       ],
     );

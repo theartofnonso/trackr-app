@@ -77,13 +77,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         ),
       ),
       MenuItemButton(
-        onPressed: widget.onResize,
-        child: Text(
-          widget.isMinimised ? "Expand" : "Minimise",
-          style: GoogleFonts.montserrat(color: Colors.white),
-        ),
-      ),
-      MenuItemButton(
         onPressed: widget.onAlternate,
         child: Text("Substitutes", style: GoogleFonts.montserrat()),
       ),
@@ -382,6 +375,12 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                       visualDensity: VisualDensity.compact,
                       shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
             const Spacer(),
+            IconButton(
+              onPressed: widget.onResize,
+              icon: const Icon(Icons.close_fullscreen_rounded, color: Colors.white),
+              tooltip: 'Maximise card',
+            ),
+            const SizedBox(width: 6,),
             if (_canAddSets(type: exerciseType))
               IconButton(
                   onPressed: _addSet,
@@ -389,7 +388,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   style: ButtonStyle(
                       visualDensity: VisualDensity.compact,
                       backgroundColor: WidgetStateProperty.all(sapphireDark.withOpacity(0.2)),
-                      shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))))
+                      shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
           ])
         ],
       ),

@@ -6,7 +6,7 @@ import 'package:tracker_app/dtos/routine_template_dto.dart';
 import 'package:tracker_app/enums/week_days_enum.dart';
 import 'package:tracker_app/extensions/week_days_extension.dart';
 import 'package:tracker_app/utils/string_utils.dart';
-import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
+import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 
 import '../../../controllers/routine_template_controller.dart';
 import '../../../enums/routine_schedule_type_enums.dart';
@@ -89,13 +89,11 @@ class _RoutineDayPlannerState extends State<RoutineDayPlanner> {
         ),
         const Spacer(),
         Center(
-          child: CTextButton(
+          child: OpacityButtonWidget(
               onPressed: _updateRoutineTemplateDays,
               label: "Save Days",
-              textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
               padding: const EdgeInsets.all(10.0),
-              buttonColor: Colors.transparent,
-              buttonBorderColor: Colors.transparent),
+              buttonColor: Colors.transparent,),
         )
       ],
     );

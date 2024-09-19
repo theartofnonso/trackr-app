@@ -11,7 +11,6 @@ import '../../../dtos/routine_template_dto.dart';
 import '../../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../../dtos/viewmodels/routine_template_arguments.dart';
 import '../../../enums/routine_editor_type_enums.dart';
-import '../../../enums/routine_template_type_enum.dart';
 import '../../../utils/dialog_utils.dart';
 import '../../../utils/routine_utils.dart';
 import '../../../dtos/viewmodels/exercise_log_view_model.dart';
@@ -21,11 +20,9 @@ import '../../../widgets/routine/preview/exercise_log_listview.dart';
 import '../../preferences/routine_schedule_planner/routine_schedule_planner_home.dart';
 
 class RoutineTemplate extends StatefulWidget {
-  final RoutineTemplateTypeEnum templateType;
   final RoutineTemplateDto template;
 
-  const RoutineTemplate(
-      {super.key, this.templateType = RoutineTemplateTypeEnum.customTemplate, required this.template});
+  const RoutineTemplate({super.key, required this.template});
 
   @override
   State<RoutineTemplate> createState() => _RoutineTemplateState();

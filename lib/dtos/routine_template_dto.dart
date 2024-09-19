@@ -49,8 +49,8 @@ class RoutineTemplateDto {
         notes: notes,
         startTime: DateTime.now(),
         endTime: DateTime.now(),
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now());
+        createdAt: createdAt,
+        updatedAt: updatedAt);
   }
 
   RoutineTemplateDto copyWith(

@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
 
 import '../../../../dtos/exercise_dto.dart';
-import '../../../buttons/text_button_widget.dart';
+import '../../../buttons/opacity_button_widget.dart';
 import '../../../empty_states/list_tile_empty_state.dart';
 
 class SubstituteExercisePicker extends StatefulWidget {
@@ -69,11 +69,10 @@ class _SubstituteExercisePickerState extends State<SubstituteExercisePicker> {
                 ...listTiles,
                 const SizedBox(height: 12),
                 Center(
-                  child: CTextButton(
+                  child: OpacityButtonWidget(
                       onPressed: widget.onSelectExercisesInLibrary,
                       label: "Add substitute exercises",
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                      textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.black),
                       buttonColor: vibrantGreen),
                 )
               ],
@@ -111,11 +110,10 @@ class _EmptyState extends StatelessWidget {
             child: ListTileEmptyState(),
           ),
           const SizedBox(height: 24),
-          CTextButton(
+          OpacityButtonWidget(
               onPressed: onPressed,
               label: "Add substitute exercises",
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.black),
               buttonColor: vibrantGreen)
         ],
       ),

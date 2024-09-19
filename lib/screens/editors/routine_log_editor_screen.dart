@@ -134,20 +134,23 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         });
   }
 
-  RoutineLogDto _routineLog({required DateTime endTime}) {
+  RoutineLogDto _routineLog() {
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
+
     final exerciseLogs = exerciseLogController.mergeExerciseLogsAndSets();
 
-    final log = widget.log;
+    final routineLog = widget.log.copyWith(exerciseLogs: exerciseLogs, updatedAt: DateTime.now());
 
-    final routineLog = log.copyWith(exerciseLogs: exerciseLogs, endTime: endTime, updatedAt: DateTime.now());
     return routineLog;
   }
 
   Future<void> _doCreateRoutineLog() async {
-    final routineLog = _routineLog(endTime: DateTime.now());
+    final routineLog = _routineLog();
 
-    final createdLog = await Provider.of<RoutineLogController>(context, listen: false).saveLog(logDto: routineLog);
+    final updatedRoutineLog = routineLog.copyWith(endTime: DateTime.now());
+
+    final createdLog =
+        await Provider.of<RoutineLogController>(context, listen: false).saveLog(logDto: updatedRoutineLog);
 
     workoutSessionLogged();
 
@@ -159,10 +162,11 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   }
 
   Future<void> _doUpdateRoutineLog() async {
-    final routineLog = _routineLog(endTime: widget.log.endTime);
+    final routineLog = _routineLog();
 
     if (mounted) {
-      await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: routineLog);
+      final updatedRoutineLog = routineLog.copyWith(endTime: widget.log.endTime);
+      await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: updatedRoutineLog);
     }
     _navigateBack();
   }
@@ -234,8 +238,9 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   void _cacheLog() {
     if (widget.mode == RoutineEditorMode.edit) return;
-    final routineLog = _routineLog(endTime: DateTime.now());
-    Provider.of<RoutineLogController>(context, listen: false).cacheLog(logDto: routineLog);
+    final routineLog = _routineLog();
+    final updatedRoutineLog = routineLog.copyWith(endTime: DateTime.now());
+    Provider.of<RoutineLogController>(context, listen: false).cacheLog(logDto: updatedRoutineLog);
   }
 
   void _checkForUnsavedChanges() {
@@ -316,6 +321,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   @override
   Widget build(BuildContext context) {
+
     final routineLogEditorController = Provider.of<RoutineLogController>(context, listen: true);
 
     if (routineLogEditorController.errorMessage.isNotEmpty) {

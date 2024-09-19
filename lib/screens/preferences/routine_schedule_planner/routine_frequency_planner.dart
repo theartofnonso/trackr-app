@@ -8,7 +8,7 @@ import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../../controllers/routine_template_controller.dart';
 import '../../../dtos/routine_template_dto.dart';
-import '../../../widgets/buttons/text_button_widget.dart';
+import '../../../widgets/buttons/opacity_button_widget.dart';
 
 class RoutineFrequencyPlanner extends StatefulWidget {
   final RoutineTemplateDto template;
@@ -61,12 +61,10 @@ class _RoutineFrequencyPlannerState extends State<RoutineFrequencyPlanner> {
           ),
         ),
         const SizedBox(height: 10),
-        CTextButton(
+        OpacityButtonWidget(
             onPressed: _updateRoutineTemplateIntervals,
             label: "Schedule intervals",
             buttonColor: Colors.transparent,
-            buttonBorderColor: Colors.transparent,
-            textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
             padding: const EdgeInsets.all(10.0))
       ],
     );

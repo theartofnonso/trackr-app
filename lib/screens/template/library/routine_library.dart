@@ -37,7 +37,6 @@ class RoutineTemplateLibrary extends StatelessWidget {
           const InformationContainerLite(
             content: exploreWorkouts,
             color: Colors.transparent,
-            padding: EdgeInsets.zero,
           ),
           const SizedBox(height: 20),
           Expanded(

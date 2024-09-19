@@ -4,25 +4,26 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
+import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/enums/share_content_type_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/datetime_range_extension.dart';
 import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/screens/insights/streak_screen.dart';
+import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/calendar/calendar_months_navigator.dart';
 
-import '../../dtos/routine_log_dto.dart';
 import '../../controllers/routine_log_controller.dart';
+import '../../dtos/routine_log_dto.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/routine_editor_type_enums.dart';
-import '../../utils/general_utils.dart';
 import '../../utils/app_analytics.dart';
+import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
-import 'package:tracker_app/utils/dialog_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../utils/shareables_utils.dart';
 import '../../widgets/backgrounds/overlay_background.dart';
-import '../../widgets/buttons/text_button_widget.dart';
+import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/calendar/calendar.dart';
 import '../../widgets/monitors/overview_monitor.dart';
 import 'monthly_insights_screen.dart';
@@ -61,7 +62,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           endTime: DateTime.now(),
           createdAt: DateTime.now(),
           updatedAt: DateTime.now());
-      final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log, emptySession: true);
+      final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log);
       navigateToRoutineLogEditor(context: context, arguments: arguments);
     } else {
       showSnackbar(context: context, icon: const Icon(Icons.info_outline_rounded), message: "${log.name} is running");
@@ -83,10 +84,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         heroTag: "fab_overview_screen",
-        onPressed: () => _logEmptyRoutine(context),
+        onPressed: _showBottomSheet,
         backgroundColor: sapphireDark,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        child: const FaIcon(FontAwesomeIcons.play, color: Colors.white, size: 24),
+        child: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 24),
       ),
       body: Container(
         width: double.infinity,
@@ -151,6 +152,56 @@ class _OverviewScreenState extends State<OverviewScreen> {
         ),
       ),
     );
+  }
+
+  void _showBottomSheet() {
+    displayBottomSheet(
+        context: context,
+        child: SafeArea(
+          child: Column(children: [
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(FontAwesomeIcons.play, size: 18),
+              horizontalTitleGap: 6,
+              title: Text("Start new session",
+                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              onTap: () {
+                Navigator.of(context).pop();
+                _logEmptyRoutine(context);
+              },
+            ),
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(FontAwesomeIcons.clockRotateLeft, size: 18),
+              horizontalTitleGap: 6,
+              title: Text("Log past session",
+                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              onTap: () {
+                Navigator.of(context).pop();
+                showDatetimeRangePicker(
+                    context: context,
+                    onChangedDateTimeRange: (DateTimeRange datetimeRange) {
+                      Navigator.of(context).pop();
+                      final logName = "${timeOfDay(datetime: datetimeRange.start)} Session";
+                      final log = RoutineLogDto(
+                          id: "",
+                          templateId: '',
+                          name: logName,
+                          exerciseLogs: [],
+                          notes: "",
+                          startTime: datetimeRange.start,
+                          endTime: datetimeRange.end,
+                          createdAt: datetimeRange.start,
+                          updatedAt: datetimeRange.end);
+                      final routineLogArguments = PastRoutineLogArguments(log: log);
+                      navigateToPastRoutineLogEditor(context: context, arguments: routineLogArguments);
+                    });
+              },
+            ),
+          ]),
+        ));
   }
 
   void _onChangedDateTimeRange(DateTimeRange? range) {
@@ -223,7 +274,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           ],
                         )),
                   )),
-              CTextButton(
+              OpacityButtonWidget(
                   onPressed: () {
                     captureImage(key: calendarKey, pixelRatio: 5);
                     contentShared(contentType: ShareContentType.calender);
@@ -231,8 +282,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                   },
                   label: "Share",
                   buttonColor: Colors.transparent,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-                  buttonBorderColor: Colors.transparent)
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14))
             ]));
   }
 
