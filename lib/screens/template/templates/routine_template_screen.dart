@@ -269,7 +269,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                 ),
                 borderRadius: BorderRadius.circular(5), // Optional: Rounded corners
               ),
-              child: Text(workoutText.substring(0, 150),
+              child: Text("${workoutText.substring(0, 150)}...",
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.montserrat(
                     color: Colors.white70,
