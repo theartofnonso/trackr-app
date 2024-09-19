@@ -11,7 +11,7 @@ class SetCheckButton extends StatelessWidget {
   const SetCheckButton({super.key, required this.setDto, required this.onCheck});
 
   void _handleOnCheck() {
-    HapticFeedback.mediumImpact();
+    HapticFeedback.heavyImpact();
     onCheck();
   }
 
