@@ -162,16 +162,40 @@ final _router = GoRouter(
     ),
     GoRoute(
       path: RoutineLogScreen.routeName,
-      builder: (context, state) {
+      pageBuilder: (context, state) {
         final args = state.extra as RoutineLogDto;
-        return RoutineLogScreen(log: args);
+        return CustomTransitionPage(
+            child: RoutineLogScreen(log: args),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              const begin = Offset(0.0, 1.0);
+              const end = Offset.zero;
+              const curve = Curves.ease;
+              final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+              final offsetAnimation = animation.drive(tween);
+              return SlideTransition(
+                position: offsetAnimation,
+                child: child,
+              );
+            });
       },
     ),
     GoRoute(
       path: ShareableScreen.routeName,
-      builder: (context, state) {
+      pageBuilder: (context, state) {
         final args = state.extra as RoutineLogDto;
-        return ShareableScreen(log: args);
+        return CustomTransitionPage(
+            child: ShareableScreen(log: args),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              const begin = Offset(0.0, 1.0);
+              const end = Offset.zero;
+              const curve = Curves.ease;
+              final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+              final offsetAnimation = animation.drive(tween);
+              return SlideTransition(
+                position: offsetAnimation,
+                child: child,
+              );
+            });
       },
     ),
     GoRoute(

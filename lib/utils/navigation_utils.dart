@@ -41,10 +41,6 @@ void navigateToRoutineLogPreview({required BuildContext context, required Routin
   context.push(RoutineLogScreen.routeName, extra: log);
 }
 
-void goToRoutineLogPreview({required BuildContext context, required RoutineLogDto log}) {
-  context.go(RoutineLogScreen.routeName, extra: log);
-}
-
 void navigateToShareableScreen({required BuildContext context, required RoutineLogDto log}) {
   context.push(ShareableScreen.routeName, extra: log);
 }
@@ -52,24 +48,4 @@ void navigateToShareableScreen({required BuildContext context, required RoutineL
 void navigateToRoutineLogs({required BuildContext context, required List<RoutineLogDto> logs}) {
   final descendingLogs = logs.reversed.toList();
   context.push(RoutineLogsScreen.routeName, extra: descendingLogs);
-}
-
-/// Create a screen on demand
-void navigateWithSlideTransition({required BuildContext context, required Widget child}) {
-  final route = PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => child,
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      const begin = Offset(0.0, 1.0);
-      const end = Offset.zero;
-      const curve = Curves.ease;
-      final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-      final offsetAnimation = animation.drive(tween);
-      return SlideTransition(
-        position: offsetAnimation,
-        child: child,
-      );
-    },
-  );
-
-  Navigator.of(context).push(route);
 }

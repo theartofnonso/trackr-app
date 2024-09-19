@@ -48,10 +48,9 @@ class _ShareableScreenState extends State<ShareableScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final completedExerciseLogsAndSets = exerciseLogsWithCheckedSets(exerciseLogs: widget.log.exerciseLogs);
     final updatedLog = widget.log.copyWith(exerciseLogs: completedExerciseLogsAndSets);
-    
+
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
     final logsByDay = groupBy(routineLogController.routineLogs, (log) => log.createdAt.withoutTime());
@@ -95,7 +94,10 @@ class _ShareableScreenState extends State<ShareableScreen> {
         backgroundColor: sapphireDark80,
         leading: IconButton(
           icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
-          onPressed: () => goToRoutineLogPreview(context: context, log: widget.log),
+          onPressed: () {
+            context.pop();
+            navigateToRoutineLogPreview(context: context, log: widget.log);
+          },
         ),
         actions: [
           IconButton(
