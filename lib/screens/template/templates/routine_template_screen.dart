@@ -246,6 +246,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                     final data = ClipboardData(text: workoutLink);
                     Clipboard.setData(data).then((_) {
                       if (mounted) {
+                        context.pop();
                         showSnackbar(context: context, icon: const Icon(Icons.check), message: "Link copied");
                       }
                     });
@@ -280,6 +281,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                 final data = ClipboardData(text: workoutText);
                 Clipboard.setData(data).then((_) {
                   if (mounted) {
+                    context.pop();
                     showSnackbar(context: context, icon: const Icon(Icons.check), message: "Workout copied");
                   }
                 });
