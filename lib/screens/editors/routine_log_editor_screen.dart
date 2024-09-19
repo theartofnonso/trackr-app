@@ -321,7 +321,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   @override
   Widget build(BuildContext context) {
-    
+
     final routineLogEditorController = Provider.of<RoutineLogController>(context, listen: true);
 
     if (routineLogEditorController.errorMessage.isNotEmpty) {

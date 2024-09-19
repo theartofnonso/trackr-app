@@ -40,16 +40,20 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
                 "Start Time",
                 style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
               ),
-              trailing: SolidButtonWidget(
-                  onPressed: () {
-                    setState(() {
-                      _showStartDateTimeRange = !_showStartDateTimeRange;
-                      _showEndDateTimeRange = false;
-                    });
-                  },
-                  buttonColor: _showStartDateTimeRange ? vibrantGreen : sapphireLighter,
-                  textColor: _showStartDateTimeRange ? sapphireDark : Colors.white,
-                  label: _startDateTime.formattedDayMonthTime())),
+              trailing: SizedBox(
+                width: 150,
+                child: SolidButtonWidget(
+                    padding: const EdgeInsets.symmetric(vertical: 2),
+                    onPressed: () {
+                      setState(() {
+                        _showStartDateTimeRange = !_showStartDateTimeRange;
+                        _showEndDateTimeRange = false;
+                      });
+                    },
+                    buttonColor: _showStartDateTimeRange ? vibrantGreen : sapphireLighter,
+                    textColor: _showStartDateTimeRange ? sapphireDark : Colors.white,
+                    label: _startDateTime.formattedDayMonthTime()),
+              )),
           if (_showStartDateTimeRange)
             SizedBox(
               height: 240,
@@ -67,16 +71,20 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
                 "End Time",
                 style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
               ),
-              trailing: SolidButtonWidget(
-                  onPressed: () {
-                    setState(() {
-                      _showStartDateTimeRange = false;
-                      _showEndDateTimeRange = !_showEndDateTimeRange;
-                    });
-                  },
-                  buttonColor: _showEndDateTimeRange ? vibrantGreen : sapphireLighter,
-                  textColor: _showEndDateTimeRange ? sapphireDark : Colors.white,
-                  label: _endDateTime.formattedDayMonthTime())),
+              trailing: SizedBox(
+                width: 150,
+                child: SolidButtonWidget(
+                    padding: const EdgeInsets.symmetric(vertical: 2),
+                    onPressed: () {
+                      setState(() {
+                        _showStartDateTimeRange = false;
+                        _showEndDateTimeRange = !_showEndDateTimeRange;
+                      });
+                    },
+                    buttonColor: _showEndDateTimeRange ? vibrantGreen : sapphireLighter,
+                    textColor: _showEndDateTimeRange ? sapphireDark : Colors.white,
+                    label: _endDateTime.formattedDayMonthTime()),
+              )),
           if (_showEndDateTimeRange)
             SizedBox(
               height: 240,
