@@ -244,8 +244,11 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                 OpacityButtonWidget(
                   onPressed: () {
                     final data = ClipboardData(text: workoutLink);
-                    Clipboard.setData(data);
-                    showSnackbar(context: context, icon: const Icon(Icons.check), message: "Link copied");
+                    Clipboard.setData(data).then((_) {
+                      if (mounted) {
+                        showSnackbar(context: context, icon: const Icon(Icons.check), message: "Link copied");
+                      }
+                    });
                   },
                   label: "Copy",
                   buttonColor: vibrantGreen,
@@ -275,8 +278,11 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
             OpacityButtonWidget(
               onPressed: () {
                 final data = ClipboardData(text: workoutText);
-                Clipboard.setData(data);
-                showSnackbar(context: context, icon: const Icon(Icons.check), message: "Workout copied");
+                Clipboard.setData(data).then((_) {
+                  if (mounted) {
+                    showSnackbar(context: context, icon: const Icon(Icons.check), message: "Workout copied");
+                  }
+                });
               },
               label: "Copy as text",
               buttonColor: vibrantGreen,
