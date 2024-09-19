@@ -13,8 +13,8 @@ import '../../../utils/general_utils.dart';
 import '../../../utils/navigation_utils.dart';
 import '../../../utils/routine_utils.dart';
 
-class RoutineTemplates extends StatelessWidget {
-  const RoutineTemplates({super.key});
+class RoutineTemplatesScreen extends StatelessWidget {
+  const RoutineTemplatesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

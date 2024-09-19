@@ -87,7 +87,6 @@ class AmplifyLogRepository {
     final now = datetime ?? TemporalDateTime.now();
 
     final logToCreate = RoutineLog(data: jsonEncode(logDto), createdAt: now, updatedAt: now);
-    print(logToCreate);
     await Amplify.DataStore.save(logToCreate);
 
     final updatedWithId = logDto.copyWith(id: logToCreate.id);

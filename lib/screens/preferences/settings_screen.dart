@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mailto/mailto.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -241,7 +242,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               title: Text("On the web",
                   style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
               onTap: () {
-                Navigator.of(context).pop();
+                context.pop();
                 openUrl(url: trackrWebUrl, context: context);
               },
             ),
@@ -251,7 +252,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               title: Text("On Instagram",
                   style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
               onTap: () {
-                Navigator.of(context).pop();
+                context.pop();
                 openUrl(url: instagramUrl, context: context);
               },
             )
@@ -267,7 +268,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         leftAction: Navigator.of(context).pop,
         rightAction: () async {
           _toggleLoadingState(message: "Logging out...");
-          Navigator.of(context).pop();
+          context.pop();
           _clearAppData();
           await Amplify.Auth.signOut();
         },
@@ -283,7 +284,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         description: "Are you sure you want to delete your account? This action cannot be undone.",
         leftAction: Navigator.of(context).pop,
         rightAction: () async {
-          Navigator.of(context).pop();
+          context.pop();
           _toggleLoadingState(message: "Deleting account...");
           final deletedExercises =
               await batchDeleteUserData(document: deleteUserExerciseData, documentKey: "deleteUserExerciseData");

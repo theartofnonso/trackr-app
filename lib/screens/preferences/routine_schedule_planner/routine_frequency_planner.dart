@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/routine_schedule_type_enums.dart';
@@ -98,7 +99,7 @@ class _RoutineFrequencyPlannerState extends State<RoutineFrequencyPlanner> {
       await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: template);
     }
     if (mounted) {
-      Navigator.of(context).pop();
+      context.pop();
     }
   }
 }

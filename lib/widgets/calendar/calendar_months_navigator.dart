@@ -19,17 +19,6 @@ class _CalendarMonthsNavigatorState extends State<CalendarMonthsNavigator> {
   late DateTime _currentDate;
   late DateTimeRange _currentDateTimeRange;
 
-  bool _hasFormerDate() {
-    final formerDate = DateTime.now();
-    int formerMonth = formerDate.month;
-    int formerYear = formerDate.year;
-    if (formerYear == _currentDate.year) {
-      return formerMonth < _currentDate.month;
-    } else {
-      return formerYear < _currentDate.year;
-    }
-  }
-
   bool _hasLaterDate() {
     final laterDate = DateTime.now();
     int laterMonth = laterDate.month;

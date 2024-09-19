@@ -1,7 +1,6 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
@@ -20,27 +19,24 @@ import '../../dtos/routine_log_dto.dart';
 import '../../dtos/routine_template_dto.dart';
 import '../../dtos/viewmodels/exercise_log_view_model.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
-import '../../enums/muscle_group_enums.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
-import '../shareable_screen.dart';
 
-class RoutineLogPreviewScreen extends StatefulWidget {
+class RoutineLogScreen extends StatefulWidget {
+  static const routeName = '/routine_log_screen';
+
   final RoutineLogDto log;
-  final String previousRouteName;
-  final bool finishedLogging;
 
-  const RoutineLogPreviewScreen(
-      {super.key, required this.log, this.previousRouteName = "", this.finishedLogging = false});
+  const RoutineLogScreen({super.key, required this.log});
 
   @override
-  State<RoutineLogPreviewScreen> createState() => _RoutineLogPreviewScreenState();
+  State<RoutineLogScreen> createState() => _RoutineLogScreenState();
 }
 
-class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
+class _RoutineLogScreenState extends State<RoutineLogScreen> {
   bool _loading = false;
 
   @override
@@ -60,7 +56,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
             backgroundColor: sapphireDark80,
             leading: IconButton(
               icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => context.pop(),
             ),
             title: Text(log.name,
                 style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
@@ -174,7 +170,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                     ),
                     const SizedBox(height: 10),
                     MuscleGroupFamilyChart(
-                        frequencyData: _muscleGroupFamilyFrequencies(exerciseLogs: completedExerciseLogsAndSets)),
+                        frequencyData: muscleGroupFamilyFrequency(exerciseLogs: completedExerciseLogsAndSets)),
                     ExerciseLogListView(
                         exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogsAndSets),
                         previewType: RoutinePreviewType.log),
@@ -184,28 +180,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
             ),
           ]),
         ));
-  }
-
-  Map<MuscleGroupFamily, double> _muscleGroupFamilyFrequencies({required List<ExerciseLogDto> exerciseLogs}) {
-    final frequencyMap = <MuscleGroupFamily, int>{};
-
-    // Counting the occurrences of each MuscleGroup
-    for (var log in exerciseLogs) {
-      frequencyMap.update(log.exercise.primaryMuscleGroup.family, (value) => value + 1, ifAbsent: () => 1);
-    }
-
-    int totalCount = exerciseLogs.length;
-    final scaledFrequencyMap = <MuscleGroupFamily, double>{};
-
-    // Scaling the frequencies from 0 to 1
-    frequencyMap.forEach((key, value) {
-      scaledFrequencyMap[key] = value / totalCount;
-    });
-
-    final sortedEntries = scaledFrequencyMap.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
-
-    final sortedFrequencyMap = LinkedHashMap<MuscleGroupFamily, double>.fromEntries(sortedEntries);
-    return sortedFrequencyMap;
   }
 
   void _showBottomSheet() {
@@ -258,13 +232,11 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   }
 
   void _onShareLog({required RoutineLogDto log}) {
-    final completedExerciseLogsAndSets = exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs);
-    final updatedLog = log.copyWith(exerciseLogs: completedExerciseLogsAndSets);
+    navigateToShareableScreen(context: context, log: log);
 
-    navigateWithSlideTransition(
-        context: context,
-        child: ShareableScreen(
-            log: updatedLog, frequencyData: _muscleGroupFamilyFrequencies(exerciseLogs: completedExerciseLogsAndSets)));
+    // navigateWithSlideTransition(
+    //     context: context,
+    //    child: ShareableScreen(log: updatedLog);
   }
 
   void _toggleLoadingState({String message = ""}) {
@@ -290,25 +262,25 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   }
 
   void _editLog() {
-    Navigator.of(context).pop();
+    context.pop();
     final arguments = RoutineLogArguments(log: widget.log, editorMode: RoutineEditorMode.edit);
     navigateToRoutineLogEditor(context: context, arguments: arguments);
   }
 
   void _editLogDuration() {
-    Navigator.of(context).pop();
+    context.pop();
     showDatetimeRangePicker(
         context: context,
         initialDateTimeRange: DateTimeRange(start: widget.log.startTime, end: widget.log.endTime),
         onChangedDateTimeRange: (DateTimeRange datetimeRange) async {
-          Navigator.of(context).pop();
+          context.pop();
           final updatedRoutineLog = widget.log.copyWith(startTime: datetimeRange.start, endTime: datetimeRange.end);
           await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: updatedRoutineLog);
         });
   }
 
   void _createTemplate() async {
-    Navigator.of(context).pop();
+    context.pop();
 
     final log = widget.log;
 
@@ -348,24 +320,11 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     }
   }
 
-  Future<void> _doUpdateTemplate() async {
-    final templateToUpdate =
-        Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: widget.log.templateId);
-    if (templateToUpdate != null) {
-      final exerciseLogs = widget.log.exerciseLogs.map((exerciseLog) {
-        final newSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
-        return exerciseLog.copyWith(sets: newSets);
-      }).toList();
-      final newTemplate = templateToUpdate.copyWith(exerciseTemplates: exerciseLogs);
-      await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: newTemplate);
-    }
-  }
-
   void _doDeleteLog() async {
     try {
       await Provider.of<RoutineLogController>(context, listen: false).removeLog(log: widget.log);
       if (mounted) {
-        Navigator.of(context).pop();
+        context.pop();
       }
     } catch (_) {
       if (mounted) {
@@ -378,7 +337,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   }
 
   void _deleteLog() {
-    Navigator.of(context).pop();
+    context.pop();
 
     showBottomSheetWithMultiActions(
         context: context,
@@ -386,24 +345,12 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
         description: "Are you sure you want to delete this log?",
         leftAction: Navigator.of(context).pop,
         rightAction: () {
-          Navigator.of(context).pop();
+          context.pop();
           _toggleLoadingState(message: "Deleting log");
           _doDeleteLog();
         },
         leftActionLabel: 'Cancel',
         rightActionLabel: 'Delete',
         isRightActionDestructive: true);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    if (widget.finishedLogging) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _doUpdateTemplate();
-        _onShareLog(log: widget.log);
-      });
-    }
   }
 }

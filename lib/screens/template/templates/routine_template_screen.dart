@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
@@ -19,23 +20,26 @@ import '../../../widgets/backgrounds/overlay_background.dart';
 import '../../../widgets/routine/preview/exercise_log_listview.dart';
 import '../../preferences/routine_schedule_planner/routine_schedule_planner_home.dart';
 
-class RoutineTemplate extends StatefulWidget {
+class RoutineTemplateScreen extends StatefulWidget {
+
+  static const routeName = '/routine_template_screen';
+
   final RoutineTemplateDto template;
 
-  const RoutineTemplate({super.key, required this.template});
+  const RoutineTemplateScreen({super.key, required this.template});
 
   @override
-  State<RoutineTemplate> createState() => _RoutineTemplateState();
+  State<RoutineTemplateScreen> createState() => _RoutineTemplateScreenState();
 }
 
-class _RoutineTemplateState extends State<RoutineTemplate> {
+class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   bool _loading = false;
 
   void _deleteRoutine() async {
     try {
       await Provider.of<RoutineTemplateController>(context, listen: false).removeTemplate(template: widget.template);
       if (mounted) {
-        Navigator.of(context).pop();
+        context.pop();
       }
     } catch (e) {
       if (mounted) {
@@ -85,7 +89,7 @@ class _RoutineTemplateState extends State<RoutineTemplate> {
               description: "Are you sure you want to delete this workout?",
               leftAction: Navigator.of(context).pop,
               rightAction: () {
-                Navigator.of(context).pop();
+                context.pop();
                 _toggleLoadingState();
                 _deleteRoutine();
               },
@@ -112,7 +116,7 @@ class _RoutineTemplateState extends State<RoutineTemplate> {
           backgroundColor: sapphireDark80,
           leading: IconButton(
             icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => context.pop(),
           ),
           title: Text(template.name,
               style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),

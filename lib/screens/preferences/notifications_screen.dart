@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/enums/daily_notifications_enums.dart';
@@ -54,7 +55,7 @@ void _displayTimePicker(
       context: context,
       initialDuration: _timeForSchedule(schedule: schedule),
       onChangedDuration: (duration) {
-        Navigator.of(context).pop();
+        context.pop();
         onDurationChanged(duration);
       });
 }
@@ -70,7 +71,7 @@ class NotificationsScreen extends StatelessWidget {
             backgroundColor: sapphireDark80,
             leading: IconButton(
               icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => context.pop(),
             )),
         body: Container(
           width: double.infinity,

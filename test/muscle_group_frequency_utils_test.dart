@@ -258,7 +258,7 @@ void main() {
       ...quadExerciseLogs,
     ];
 
-    final frequencyDistribution = weeklyScaledMuscleGroupFamilyFrequencies(exerciseLogs: exerciseLogs);
+    final frequencyDistribution = weeklyScaledMuscleGroupFamilyFrequency(exerciseLogs: exerciseLogs);
 
     final legMuscleGroup = frequencyDistribution.entries;
 
@@ -272,7 +272,7 @@ void main() {
       ...hamstringExerciseLogs
     ];
 
-    final frequencyDistribution = weeklyScaledMuscleGroupFamilyFrequencies(exerciseLogs: exerciseLogs);
+    final frequencyDistribution = weeklyScaledMuscleGroupFamilyFrequency(exerciseLogs: exerciseLogs);
 
     final legMuscleGroup = frequencyDistribution.entries;
 
@@ -299,7 +299,7 @@ void main() {
       ...abs2ExerciseLogs,
     ];
 
-    final score = cumulativeMuscleGroupFamilyFrequencies(exerciseLogs: exerciseLogs);
+    final score = cumulativeMuscleGroupFamilyFrequency(exerciseLogs: exerciseLogs);
 
     expect(score, 1);
   });

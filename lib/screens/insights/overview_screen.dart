@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
@@ -46,7 +47,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
   bool _loading = false;
 
   void _navigateToAllDaysTracked({required BuildContext context}) {
-    Navigator.of(context).pushNamed(StreakScreen.routeName);
+    context.push(StreakScreen.routeName);
   }
 
   void _logEmptyRoutine(BuildContext context) async {
@@ -167,7 +168,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               title: Text("Start new session",
                   style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
-                Navigator.of(context).pop();
+                context.pop();
                 _logEmptyRoutine(context);
               },
             ),
@@ -179,11 +180,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
               title: Text("Log past session",
                   style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
-                Navigator.of(context).pop();
+                context.pop();
                 showDatetimeRangePicker(
                     context: context,
                     onChangedDateTimeRange: (DateTimeRange datetimeRange) {
-                      Navigator.of(context).pop();
+                      context.pop();
                       final logName = "${timeOfDay(datetime: datetimeRange.start)} Session";
                       final log = RoutineLogDto(
                           id: "",
@@ -278,7 +279,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                   onPressed: () {
                     captureImage(key: calendarKey, pixelRatio: 5);
                     contentShared(contentType: ShareContentType.calender);
-                    Navigator.of(context).pop();
+                    context.pop();
                   },
                   label: "Share",
                   buttonColor: Colors.transparent,

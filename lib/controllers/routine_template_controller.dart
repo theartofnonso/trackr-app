@@ -62,7 +62,6 @@ class RoutineTemplateController extends ChangeNotifier {
     try {
       await _amplifyTemplateRepository.updateTemplate(template: template);
     } catch (e) {
-      print(e);
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {
       isLoading = false;

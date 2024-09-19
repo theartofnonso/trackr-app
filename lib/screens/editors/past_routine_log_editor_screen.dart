@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
@@ -198,7 +199,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
   }
 
   void _closeDialog() {
-    Navigator.of(context).pop();
+    context.pop();
   }
 
   void _navigateBack({RoutineLogDto? log}) {

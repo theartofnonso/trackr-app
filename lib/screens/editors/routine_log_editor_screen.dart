@@ -7,6 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
@@ -14,6 +15,7 @@ import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/enums/routine_schedule_type_enums.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/screens/shareable_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/routine_editors_utils.dart';
@@ -158,7 +160,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
       await _updateRoutineTemplateSchedule(routineTemplateId: routineLog.templateId);
     }
 
-    _navigateBack(log: createdLog);
+    _navigate(log: createdLog);
   }
 
   Future<void> _doUpdateRoutineLog() async {
@@ -168,7 +170,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
       final updatedRoutineLog = routineLog.copyWith(endTime: widget.log.endTime);
       await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: updatedRoutineLog);
     }
-    _navigateBack();
+    _navigate();
   }
 
   Future<void> _updateRoutineTemplateSchedule({required String routineTemplateId}) async {
@@ -196,7 +198,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         leftAction: _closeDialog,
         rightAction: () {
           _closeDialog();
-          _navigateBack();
+          _navigate();
         },
         leftActionLabel: 'Cancel',
         rightActionLabel: 'Discard',
@@ -261,12 +263,12 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
           leftActionLabel: 'Cancel',
           rightAction: () {
             _closeDialog();
-            _navigateBack();
+            _navigate();
           },
           rightActionLabel: 'Discard',
           isRightActionDestructive: true);
     } else {
-      _navigateBack();
+      _navigate();
     }
   }
 
@@ -275,7 +277,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   }
 
   void _closeDialog() {
-    Navigator.of(context).pop();
+    context.pop();
   }
 
   void _reOrderExerciseLogs({required List<ExerciseLogDto> exerciseLogs}) async {
@@ -289,7 +291,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     }
   }
 
-  void _navigateBack({RoutineLogDto? log}) async {
+  void _navigate({RoutineLogDto? log}) async {
     SharedPrefs().remove(key: SharedPrefs().cachedRoutineLogKey);
     FlutterLocalNotificationsPlugin().cancel(999);
     if (log != null) {
@@ -298,7 +300,27 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
       }
     }
     if (mounted) {
-      Navigator.of(context).pop(log);
+      if (log != null) {
+        await _doUpdateTemplate();
+        if (mounted) {
+          context.go(ShareableScreen.routeName, extra: log);
+        }
+      } else {
+        Navigator.of(context).pop(log);
+      }
+    }
+  }
+
+  Future<void> _doUpdateTemplate() async {
+    final templateToUpdate =
+        Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: widget.log.templateId);
+    if (templateToUpdate != null) {
+      final exerciseLogs = widget.log.exerciseLogs.map((exerciseLog) {
+        final newSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
+        return exerciseLog.copyWith(sets: newSets);
+      }).toList();
+      final newTemplate = templateToUpdate.copyWith(exerciseTemplates: exerciseLogs);
+      await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: newTemplate);
     }
   }
 
@@ -321,7 +343,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   @override
   Widget build(BuildContext context) {
-
     final routineLogEditorController = Provider.of<RoutineLogController>(context, listen: true);
 
     if (routineLogEditorController.errorMessage.isNotEmpty) {

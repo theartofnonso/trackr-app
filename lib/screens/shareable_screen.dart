@@ -3,31 +3,33 @@ import 'dart:typed_data';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tracker_app/enums/share_content_type_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
-import 'package:tracker_app/widgets/shareables/session_milestone_shareable.dart';
+import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/shareables/pbs_shareable.dart';
 import 'package:tracker_app/widgets/shareables/routine_log_shareable_lite.dart';
+import 'package:tracker_app/widgets/shareables/session_milestone_shareable.dart';
 
 import '../colors.dart';
 import '../controllers/routine_log_controller.dart';
 import '../dtos/routine_log_dto.dart';
-import '../enums/muscle_group_enums.dart';
+import '../utils/app_analytics.dart';
 import '../utils/dialog_utils.dart';
 import '../utils/exercise_logs_utils.dart';
-import '../utils/app_analytics.dart';
 import '../utils/shareables_utils.dart';
 import '../widgets/buttons/opacity_button_widget.dart';
-import 'package:image_picker/image_picker.dart';
 
 class ShareableScreen extends StatefulWidget {
-  final RoutineLogDto log;
-  final Map<MuscleGroupFamily, double> frequencyData;
+  static const routeName = '/shareable_screen';
 
-  const ShareableScreen({super.key, required this.log, required this.frequencyData});
+  final RoutineLogDto log;
+
+  const ShareableScreen({super.key, required this.log});
 
   @override
   State<ShareableScreen> createState() => _ShareableScreenState();
@@ -46,14 +48,20 @@ class _ShareableScreenState extends State<ShareableScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    final completedExerciseLogsAndSets = exerciseLogsWithCheckedSets(exerciseLogs: widget.log.exerciseLogs);
+    final updatedLog = widget.log.copyWith(exerciseLogs: completedExerciseLogsAndSets);
+    
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
     final logsByDay = groupBy(routineLogController.routineLogs, (log) => log.createdAt.withoutTime());
 
+    final muscleGroupFamilyFrequencyData = muscleGroupFamilyFrequency(exerciseLogs: updatedLog.exerciseLogs);
+
     List<Widget> pbShareAssets = [];
     final pbShareAssetsKeys = [];
 
-    for (final exerciseLog in widget.log.exerciseLogs) {
+    for (final exerciseLog in updatedLog.exerciseLogs) {
       final pastExerciseLogs =
           routineLogController.whereExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
       final pbs = calculatePBs(
@@ -73,7 +81,7 @@ class _ShareableScreenState extends State<ShareableScreen> {
     final pages = [
       if (isMultipleOfFive(logsByDay.length)) SessionMilestoneShareable(label: "${logsByDay.length}th", image: _image),
       ...pbShareAssets,
-      RoutineLogShareableLite(log: widget.log, frequencyData: widget.frequencyData, image: _image),
+      RoutineLogShareableLite(log: updatedLog, frequencyData: muscleGroupFamilyFrequencyData, image: _image),
     ];
 
     final pagesKeys = [
@@ -87,7 +95,7 @@ class _ShareableScreenState extends State<ShareableScreen> {
         backgroundColor: sapphireDark80,
         leading: IconButton(
           icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
-          onPressed: Navigator.of(context).pop,
+          onPressed: () => goToRoutineLogPreview(context: context, log: widget.log),
         ),
         actions: [
           IconButton(
@@ -147,12 +155,11 @@ class _ShareableScreenState extends State<ShareableScreen> {
   }
 
   ShareContentType _shareContentType({required int index}) {
-
-    if(index == 0) {
+    if (index == 0) {
       return ShareContentType.milestoneAchievement;
-    } else if(index == 1) {
+    } else if (index == 1) {
       return ShareContentType.logMilestone;
-    } else if(index == 2) {
+    } else if (index == 2) {
       return ShareContentType.pbs;
     } else {
       return ShareContentType.sessionSummary;
@@ -197,7 +204,7 @@ class _ShareableScreenState extends State<ShareableScreen> {
   }
 
   void _pickFromLibrary({required bool camera}) async {
-    Navigator.of(context).pop();
+    context.pop();
     final ImagePicker picker = ImagePicker();
     final XFile? xFile = await picker.pickImage(source: camera ? ImageSource.camera : ImageSource.gallery);
     if (xFile != null) {
@@ -210,7 +217,7 @@ class _ShareableScreenState extends State<ShareableScreen> {
   }
 
   void _removeImage() {
-    Navigator.of(context).pop();
+    context.pop();
     setState(() {
       _image = null;
       _hasImage = false;

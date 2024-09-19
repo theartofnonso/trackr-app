@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
@@ -111,7 +112,7 @@ class _RoutineDayPlannerState extends State<RoutineDayPlanner> {
     final template = widget.template.copyWith(scheduledDays: _selectedDays, scheduleType: RoutineScheduleType.days, scheduleIntervals: 0, scheduledDate: null);
     await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: template);
     if (mounted) {
-      Navigator.of(context).pop();
+      context.pop();
     }
   }
 }
