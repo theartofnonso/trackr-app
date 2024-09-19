@@ -18,6 +18,7 @@ import '../../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../../dtos/viewmodels/routine_template_arguments.dart';
 import '../../../enums/routine_editor_type_enums.dart';
 import '../../../enums/routine_preview_type_enum.dart';
+import '../../../urls.dart';
 import '../../../utils/dialog_utils.dart';
 import '../../../utils/navigation_utils.dart';
 import '../../../utils/routine_utils.dart';
@@ -216,25 +217,21 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   }
 
   void _showBottomSheet() {
-
+    final workoutLink = "$shareableRoutineUrl/${_template?.id}";
     final workoutText = _copyAsText();
-
-    print(workoutText);
 
     displayBottomSheet(
         context: context,
         isScrollControlled: true,
         child: SafeArea(
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
+          child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const FaIcon(FontAwesomeIcons.link, size: 14, color: Colors.white70),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: Text("TRKR.FIT/shared-workout/JBKbioubvoJSD7",
+                  child: Text(workoutLink,
                       overflow: TextOverflow.ellipsis,
                       softWrap: true,
                       style: GoogleFonts.montserrat(
@@ -245,7 +242,11 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                 ),
                 const SizedBox(width: 6),
                 OpacityButtonWidget(
-                  onPressed: () => Clipboard.getData(workoutText),
+                  onPressed: () {
+                    final data = ClipboardData(text: workoutLink);
+                    Clipboard.setData(data);
+                    showSnackbar(context: context, icon: const Icon(Icons.check), message: "Link copied");
+                  },
                   label: "Copy",
                   buttonColor: vibrantGreen,
                 )
@@ -259,7 +260,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                 color: sapphireDark80,
                 border: Border.all(
                   color: sapphireDark80, // Border color
-                  width: 1.0,         // Border width
+                  width: 1.0, // Border width
                 ),
                 borderRadius: BorderRadius.circular(5), // Optional: Rounded corners
               ),
@@ -272,7 +273,11 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                   )),
             ),
             OpacityButtonWidget(
-              onPressed: () => Clipboard.getData(workoutText),
+              onPressed: () {
+                final data = ClipboardData(text: workoutText);
+                Clipboard.setData(data);
+                showSnackbar(context: context, icon: const Icon(Icons.check), message: "Workout copied");
+              },
               label: "Copy as text",
               buttonColor: vibrantGreen,
             )
