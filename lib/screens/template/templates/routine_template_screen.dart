@@ -248,7 +248,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                     Clipboard.setData(data).then((_) {
                       if (mounted) {
                         context.pop();
-                        showSnackbar(context: context, icon: const Icon(Icons.check), message: "Link copied");
+                        showSnackbar(context: context, icon: const Icon(Icons.check), message: "Workout link copied");
                       }
                     });
                   },
