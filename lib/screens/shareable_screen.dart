@@ -292,6 +292,8 @@ class _ShareableScreenState extends State<ShareableScreen> {
             ListTile(
               dense: true,
               contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(FontAwesomeIcons.camera, size: 18),
+              horizontalTitleGap: 6,
               title: Text("Camera",
                   style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () => _pickFromLibrary(camera: true),
@@ -299,6 +301,8 @@ class _ShareableScreenState extends State<ShareableScreen> {
             ListTile(
               dense: true,
               contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(FontAwesomeIcons.images, size: 18),
+              horizontalTitleGap: 6,
               title: Text("Library",
                   style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () => _pickFromLibrary(camera: false),
