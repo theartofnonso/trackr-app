@@ -196,9 +196,9 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
   }
 
   void _loadData() {
-   final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
-   _log = routineLogController.logWhereId(id: widget.id);
-   if (_log == null) {
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
+    _log = routineLogController.logWhereId(id: widget.id);
+    if (_log == null) {
       _loading = true;
       routineLogController.fetchLog(id: widget.id).then((data) {
         setState(() {
