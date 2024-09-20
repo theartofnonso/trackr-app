@@ -307,7 +307,9 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       StringBuffer workoutText = StringBuffer();
 
       workoutText.writeln(template.name);
-      workoutText.writeln("Notes: ${template.notes}");
+      if(template.notes.isNotEmpty) {
+        workoutText.writeln("Notes: ${template.notes}");
+      }
 
       for (var exerciseLog in template.exerciseTemplates) {
         var exercise = exerciseLog.exercise;

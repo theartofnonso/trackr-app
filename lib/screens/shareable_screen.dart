@@ -1,7 +1,6 @@
-import 'dart:typed_data';
-
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -18,6 +17,8 @@ import 'package:tracker_app/widgets/shareables/session_milestone_shareable.dart'
 import '../colors.dart';
 import '../controllers/routine_log_controller.dart';
 import '../dtos/routine_log_dto.dart';
+import '../enums/exercise_type_enums.dart';
+import '../urls.dart';
 import '../utils/app_analytics.dart';
 import '../utils/dialog_utils.dart';
 import '../utils/exercise_logs_utils.dart';
@@ -90,6 +91,12 @@ class _ShareableScreenState extends State<ShareableScreen> {
     ];
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+          heroTag: "routine_log_screen",
+          onPressed: _showCopyBottomSheet,
+          backgroundColor: sapphireDark,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          child: const FaIcon(Icons.copy)),
       appBar: AppBar(
         backgroundColor: sapphireDark80,
         leading: IconButton(
@@ -154,6 +161,117 @@ class _ShareableScreenState extends State<ShareableScreen> {
         ),
       ),
     );
+  }
+
+  void _showCopyBottomSheet() {
+    final workoutLogLink = "$shareableRoutineLogUrl/${widget.log.id}";
+    final workoutLogText = _copyAsText();
+
+    displayBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        child: SafeArea(
+          child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const FaIcon(FontAwesomeIcons.link, size: 14, color: Colors.white70),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(workoutLogLink,
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: true,
+                      style: GoogleFonts.montserrat(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                      )),
+                ),
+                const SizedBox(width: 6),
+                OpacityButtonWidget(
+                  onPressed: () {
+                    HapticFeedback.heavyImpact();
+                    final data = ClipboardData(text: workoutLogLink);
+                    Clipboard.setData(data).then((_) {
+                      if (mounted) {
+                        context.pop();
+                        showSnackbar(context: context, icon: const Icon(Icons.check), message: "Workout link copied");
+                      }
+                    });
+                  },
+                  label: "Copy",
+                  buttonColor: vibrantGreen,
+                )
+              ],
+            ),
+            const SizedBox(height: 12),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: sapphireDark80,
+                border: Border.all(
+                  color: sapphireDark80, // Border color
+                  width: 1.0, // Border width
+                ),
+                borderRadius: BorderRadius.circular(5), // Optional: Rounded corners
+              ),
+              child: Text("${workoutLogText.substring(0, 150)}...",
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.montserrat(
+                    color: Colors.white70,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                  )),
+            ),
+            OpacityButtonWidget(
+              onPressed: () {
+                HapticFeedback.heavyImpact();
+                final data = ClipboardData(text: workoutLogText);
+                Clipboard.setData(data).then((_) {
+                  if (mounted) {
+                    context.pop();
+                    showSnackbar(context: context, icon: const Icon(Icons.check), message: "Workout log copied");
+                  }
+                });
+              },
+              label: "Copy as text",
+              buttonColor: vibrantGreen,
+            )
+          ]),
+        ));
+  }
+
+  String _copyAsText() {
+    final log = widget.log;
+    StringBuffer workoutLogText = StringBuffer();
+
+    workoutLogText.writeln(log.name);
+    if (log.notes.isNotEmpty) {
+      workoutLogText.writeln("Notes: ${log.notes}");
+    }
+    workoutLogText.writeln(log.createdAt.formattedDayAndMonthAndYear());
+
+    for (var exerciseLog in log.exerciseLogs) {
+      var exercise = exerciseLog.exercise;
+      workoutLogText.writeln("\n- Exercise: ${exercise.name}");
+      workoutLogText.writeln("  Muscle Group: ${exercise.primaryMuscleGroup.name}");
+
+      for (var i = 0; i < exerciseLog.sets.length; i++) {
+        switch (exerciseLog.exercise.type) {
+          case ExerciseType.weights:
+            workoutLogText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].weightsSummary()}");
+            break;
+          case ExerciseType.bodyWeight:
+            workoutLogText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].bodyWeightSummary()}");
+            break;
+          case ExerciseType.duration:
+            workoutLogText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].durationSummary()}");
+            break;
+        }
+      }
+    }
+    return workoutLogText.toString();
   }
 
   ShareContentType _shareContentType({required int index}) {
