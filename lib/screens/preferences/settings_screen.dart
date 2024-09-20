@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mailto/mailto.dart';
@@ -239,8 +240,10 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
             ListTile(
               dense: true,
               contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(FontAwesomeIcons.globe, size: 18),
+              horizontalTitleGap: 6,
               title: Text("On the web",
-                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
                 context.pop();
                 openUrl(url: trackrWebUrl, context: context);
@@ -249,8 +252,10 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
             ListTile(
               dense: true,
               contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(FontAwesomeIcons.instagram, size: 18),
+              horizontalTitleGap: 6,
               title: Text("On Instagram",
-                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
                 context.pop();
                 openUrl(url: instagramUrl, context: context);
