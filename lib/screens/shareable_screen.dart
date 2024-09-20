@@ -103,7 +103,6 @@ class _ShareableScreenState extends State<ShareableScreen> {
           icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
           onPressed: () {
             context.pop();
-            navigateToRoutineLogPreview(context: context, log: widget.log);
           },
         ),
         actions: [
