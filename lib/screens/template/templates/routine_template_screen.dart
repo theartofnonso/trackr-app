@@ -67,9 +67,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final routineTemplateController = Provider.of<RoutineTemplateController>(context, listen: true);
-
-    RoutineTemplateDto? template = routineTemplateController.templateWhere(id: widget.id);
+    RoutineTemplateDto? template =
+        Provider.of<RoutineTemplateController>(context, listen: true).templateWhere(id: widget.id);
 
     if (template == null) {
       Provider.of<RoutineTemplateController>(context, listen: false).fetchTemplate(id: widget.id);
@@ -115,15 +114,17 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     ];
 
     return Scaffold(
-        floatingActionButton: _isOwner ? FloatingActionButton(
-            heroTag: UniqueKey,
-            onPressed: () {
-              final arguments = RoutineLogArguments(log: template.log(), editorMode: RoutineEditorMode.log);
-              navigateToRoutineLogEditor(context: context, arguments: arguments);
-            },
-            backgroundColor: sapphireDark,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-            child: const FaIcon(FontAwesomeIcons.play, color: Colors.white, size: 24)) : null,
+        floatingActionButton: _isOwner
+            ? FloatingActionButton(
+                heroTag: UniqueKey,
+                onPressed: () {
+                  final arguments = RoutineLogArguments(log: template.log(), editorMode: RoutineEditorMode.log);
+                  navigateToRoutineLogEditor(context: context, arguments: arguments);
+                },
+                backgroundColor: sapphireDark,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                child: const FaIcon(FontAwesomeIcons.play, color: Colors.white, size: 24))
+            : null,
         backgroundColor: sapphireDark,
         appBar: AppBar(
           backgroundColor: sapphireDark80,
@@ -134,30 +135,32 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           title: Text(template.name,
               style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
           actions: [
-            _isOwner ? MenuAnchor(
-              style: MenuStyle(
-                backgroundColor: WidgetStateProperty.all(sapphireDark80),
-                surfaceTintColor: WidgetStateProperty.all(sapphireDark),
-              ),
-              builder: (BuildContext context, MenuController controller, Widget? child) {
-                return IconButton(
-                  onPressed: () {
-                    if (controller.isOpen) {
-                      controller.close();
-                    } else {
-                      controller.open();
-                    }
-                  },
-                  icon: const Icon(
-                    Icons.more_vert_rounded,
-                    color: Colors.white,
-                    size: 24,
-                  ),
-                  tooltip: 'Show menu',
-                );
-              },
-              menuChildren: menuActions,
-            ) : const SizedBox.shrink()
+            _isOwner
+                ? MenuAnchor(
+                    style: MenuStyle(
+                      backgroundColor: WidgetStateProperty.all(sapphireDark80),
+                      surfaceTintColor: WidgetStateProperty.all(sapphireDark),
+                    ),
+                    builder: (BuildContext context, MenuController controller, Widget? child) {
+                      return IconButton(
+                        onPressed: () {
+                          if (controller.isOpen) {
+                            controller.close();
+                          } else {
+                            controller.open();
+                          }
+                        },
+                        icon: const Icon(
+                          Icons.more_vert_rounded,
+                          color: Colors.white,
+                          size: 24,
+                        ),
+                        tooltip: 'Show menu',
+                      );
+                    },
+                    menuChildren: menuActions,
+                  )
+                : const SizedBox.shrink()
           ],
         ),
         body: Container(
@@ -205,11 +208,10 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   void _loadData() {
     final routineTemplateController = Provider.of<RoutineTemplateController>(context, listen: false);
-
     _template = routineTemplateController.templateWhere(id: widget.id);
     if (_template == null) {
       _loading = true;
-      Provider.of<RoutineTemplateController>(context, listen: false).fetchTemplate(id: widget.id).then((data) {
+      routineTemplateController.fetchTemplate(id: widget.id).then((data) {
         setState(() {
           _loading = false;
           _template = data?.dto();

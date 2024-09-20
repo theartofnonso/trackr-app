@@ -68,6 +68,24 @@ class AmplifyLogRepository {
     }
   }
 
+  Future<RoutineLog?> fetchLogCloud({required String id}) async {
+    try {
+      final request = ModelQueries.get(
+        RoutineLog.classType,
+        RoutineLogModelIdentifier(id: id),
+      );
+      final response = await Amplify.API.query(request: request).response;
+      final log = response.data;
+      if (log == null) {
+        safePrint('errors: ${response.errors}');
+      }
+      return log;
+    } on ApiException catch (e) {
+      safePrint('Query failed: $e');
+      return null;
+    }
+  }
+
   Future<List<RoutineLog>> queryLogsCloud({required DateTimeRange range}) async {
     final startOfCurrentYear = range.start.toIso8601String();
     final endOfCurrentYear = range.end.toIso8601String();

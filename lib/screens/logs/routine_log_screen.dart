@@ -7,6 +7,7 @@ import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
+import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/chart/muscle_group_family_chart.dart';
@@ -23,27 +24,35 @@ import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/routine_utils.dart';
+import '../../widgets/information_container_lite.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
 
 class RoutineLogScreen extends StatefulWidget {
   static const routeName = '/routine_log_screen';
 
-  final RoutineLogDto log;
+  final String id;
 
-  const RoutineLogScreen({super.key, required this.log});
+  const RoutineLogScreen({super.key, required this.id});
 
   @override
   State<RoutineLogScreen> createState() => _RoutineLogScreenState();
 }
 
 class _RoutineLogScreenState extends State<RoutineLogScreen> {
+  RoutineLogDto? _log;
+
   bool _loading = false;
+
+  bool _isOwner = false;
 
   @override
   Widget build(BuildContext context) {
-    final foundLog = Provider.of<RoutineLogController>(context, listen: true).logWhereId(id: widget.log.id);
+    final log = Provider.of<RoutineLogController>(context, listen: true).logWhereId(id: widget.id);
 
-    final log = foundLog ?? widget.log;
+    if (log == null) {
+      Provider.of<RoutineTemplateController>(context, listen: false).fetchTemplate(id: widget.id);
+      return const _EmptyState();
+    }
 
     final numberOfCompletedSets = _calculateCompletedSets(procedures: log.exerciseLogs);
     final completedSetsSummary = "$numberOfCompletedSets ${pluralize(word: "Set", count: numberOfCompletedSets)}";
@@ -60,17 +69,21 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             ),
             title: Text(log.name,
                 style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
-            actions: [
-              IconButton(
-                  onPressed: () => _onShareLog(log: log),
-                  icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18)),
-            ]),
-        floatingActionButton: FloatingActionButton(
-            heroTag: "routine_log_screen",
-            onPressed: _showBottomSheet,
-            backgroundColor: sapphireDark,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-            child: const FaIcon(FontAwesomeIcons.penToSquare)),
+            actions: _isOwner
+                ? [
+                    IconButton(
+                        onPressed: () => _onShareLog(log: log),
+                        icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18)),
+                  ]
+                : []),
+        floatingActionButton: _isOwner
+            ? FloatingActionButton(
+                heroTag: "routine_log_screen",
+                onPressed: _showBottomSheet,
+                backgroundColor: sapphireDark,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                child: const FaIcon(FontAwesomeIcons.penToSquare))
+            : null,
         body: Container(
           width: double.infinity,
           decoration: const BoxDecoration(
@@ -182,6 +195,28 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         ));
   }
 
+  void _loadData() {
+   final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
+   _log = routineLogController.logWhereId(id: widget.id);
+   if (_log == null) {
+      _loading = true;
+      routineLogController.fetchLog(id: widget.id).then((data) {
+        setState(() {
+          _loading = false;
+          _log = data?.dto();
+        });
+      });
+    } else {
+      _isOwner = _log != null;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
   void _showBottomSheet() {
     displayBottomSheet(
         context: context,
@@ -233,10 +268,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
   void _onShareLog({required RoutineLogDto log}) {
     navigateToShareableScreen(context: context, log: log);
-
-    // navigateWithSlideTransition(
-    //     context: context,
-    //    child: ShareableScreen(log: updatedLog);
   }
 
   void _toggleLoadingState({String message = ""}) {
@@ -263,76 +294,90 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
   void _editLog() {
     context.pop();
-    final arguments = RoutineLogArguments(log: widget.log, editorMode: RoutineEditorMode.edit);
-    navigateToRoutineLogEditor(context: context, arguments: arguments);
+    final log = _log;
+    if (log != null) {
+      final arguments = RoutineLogArguments(log: _log!, editorMode: RoutineEditorMode.edit);
+      navigateToRoutineLogEditor(context: context, arguments: arguments);
+    }
   }
 
   void _editLogDuration() {
     context.pop();
-    showDatetimeRangePicker(
-        context: context,
-        initialDateTimeRange: DateTimeRange(start: widget.log.startTime, end: widget.log.endTime),
-        onChangedDateTimeRange: (DateTimeRange datetimeRange) async {
-          context.pop();
-          final updatedRoutineLog = widget.log.copyWith(startTime: datetimeRange.start, endTime: datetimeRange.end);
-          await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: updatedRoutineLog);
-        });
+    final log = _log;
+    if (log != null) {
+      showDatetimeRangePicker(
+          context: context,
+          initialDateTimeRange: DateTimeRange(start: log.startTime, end: log.endTime),
+          onChangedDateTimeRange: (DateTimeRange datetimeRange) async {
+            context.pop();
+            final updatedRoutineLog = log.copyWith(startTime: datetimeRange.start, endTime: datetimeRange.end);
+            await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: updatedRoutineLog);
+          });
+    }
   }
 
   void _createTemplate() async {
     context.pop();
 
-    final log = widget.log;
+    final log = _log;
+    if (log != null) {
+      _toggleLoadingState(message: "Creating template");
 
-    _toggleLoadingState(message: "Creating template");
+      try {
+        final exercises = log.exerciseLogs.map((exerciseLog) {
+          final uncheckedSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
 
-    try {
-      final exercises = log.exerciseLogs.map((exerciseLog) {
-        final uncheckedSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
+          /// [Exercise.duration] exercises do not have sets in templates
+          /// This is because we only need to store the duration of the exercise in [RoutineEditorType.log] i.e data is log in realtime
+          final sets = withDurationOnly(type: exerciseLog.exercise.type) ? <SetDto>[] : uncheckedSets;
+          return exerciseLog.copyWith(sets: sets);
+        }).toList();
+        final templateToCreate = RoutineTemplateDto(
+            id: "",
+            name: log.name,
+            notes: log.notes,
+            exerciseTemplates: exercises,
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now());
 
-        /// [Exercise.duration] exercises do not have sets in templates
-        /// This is because we only need to store the duration of the exercise in [RoutineEditorType.log] i.e data is log in realtime
-        final sets = withDurationOnly(type: exerciseLog.exercise.type) ? <SetDto>[] : uncheckedSets;
-        return exerciseLog.copyWith(sets: sets);
-      }).toList();
-      final templateToCreate = RoutineTemplateDto(
-          id: "",
-          name: log.name,
-          notes: log.notes,
-          exerciseTemplates: exercises,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now());
-
-      final createdTemplate = await Provider.of<RoutineTemplateController>(context, listen: false)
-          .saveTemplate(templateDto: templateToCreate);
-      if (mounted) {
-        if (createdTemplate != null) {
-          navigateToRoutineTemplatePreview(context: context, template: createdTemplate);
+        final createdTemplate = await Provider.of<RoutineTemplateController>(context, listen: false)
+            .saveTemplate(templateDto: templateToCreate);
+        if (mounted) {
+          if (createdTemplate != null) {
+            navigateToRoutineTemplatePreview(context: context, template: createdTemplate);
+          }
         }
+      } catch (_) {
+        if (mounted) {
+          showSnackbar(
+              context: context,
+              icon: const Icon(Icons.info_outline),
+              message: "Oops, we are unable to create template");
+        }
+      } finally {
+        _toggleLoadingState();
       }
-    } catch (_) {
-      if (mounted) {
-        showSnackbar(
-            context: context, icon: const Icon(Icons.info_outline), message: "Oops, we are unable to create template");
-      }
-    } finally {
-      _toggleLoadingState();
     }
   }
 
   void _doDeleteLog() async {
-    try {
-      await Provider.of<RoutineLogController>(context, listen: false).removeLog(log: widget.log);
-      if (mounted) {
-        context.pop();
+    final log = _log;
+    if (log != null) {
+      try {
+        await Provider.of<RoutineLogController>(context, listen: false).removeLog(log: log);
+        if (mounted) {
+          context.pop();
+        }
+      } catch (_) {
+        if (mounted) {
+          showSnackbar(
+              context: context,
+              icon: const Icon(Icons.info_outline),
+              message: "Oops, we are unable to delete this log");
+        }
+      } finally {
+        _toggleLoadingState();
       }
-    } catch (_) {
-      if (mounted) {
-        showSnackbar(
-            context: context, icon: const Icon(Icons.info_outline), message: "Oops, we are unable to delete this log");
-      }
-    } finally {
-      _toggleLoadingState();
     }
   }
 
@@ -352,5 +397,69 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         leftActionLabel: 'Cancel',
         rightActionLabel: 'Delete',
         isRightActionDestructive: true);
+  }
+}
+
+class _EmptyState extends StatelessWidget {
+  const _EmptyState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: sapphireDark80,
+        leading: IconButton(
+          icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+          onPressed: () => context.pop(),
+        ),
+        title: Text("Workout Log",
+            style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              sapphireDark80,
+              sapphireDark,
+            ],
+          ),
+        ),
+        child: SafeArea(
+            child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              RichText(
+                  text: TextSpan(
+                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.white),
+                      children: [
+                    TextSpan(
+                        text: "Not F",
+                        style:
+                            GoogleFonts.montserrat(fontSize: 48, color: Colors.white70, fontWeight: FontWeight.w900)),
+                    const WidgetSpan(
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 6.0),
+                          child: FaIcon(FontAwesomeIcons.magnifyingGlass, size: 48, color: Colors.white70),
+                        ),
+                        alignment: PlaceholderAlignment.middle),
+                    TextSpan(
+                        text: "und",
+                        style:
+                            GoogleFonts.montserrat(fontSize: 48, color: Colors.white70, fontWeight: FontWeight.w900)),
+                  ])),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+                child: InformationContainerLite(
+                    content: "We can't find this workout log, Please check the link and try again.",
+                    color: Colors.orange),
+              ),
+            ],
+          ),
+        )),
+      ),
+    );
   }
 }

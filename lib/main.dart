@@ -108,25 +108,24 @@ final _router = GoRouter(
   initialLocation: "/",
   routes: [
     GoRoute(
-      path: "/", // Define the path for Home Screen
-      builder: (context, state) => const HomeScreen(),
-      routes: [
-        GoRoute(
-          path: "shared-workout/:id",
-          builder: (context, state) {
-            final id = state.pathParameters['id'] ?? "";
-            return RoutineTemplateScreen(id: id);
-          },
-        ),
-        // GoRoute(
-        //   path: "shared-workout-log/:id",
-        //   builder: (context, state) {
-        //     final id = state.pathParameters['id'] ?? "";
-        //     return RoutineLogScreen(id: id);
-        //   },
-        // )
-      ]
-    ),
+        path: "/", // Define the path for Home Screen
+        builder: (context, state) => const HomeScreen(),
+        routes: [
+          GoRoute(
+            path: "shared-workout/:id",
+            builder: (context, state) {
+              final id = state.pathParameters['id'] ?? "";
+              return RoutineTemplateScreen(id: id);
+            },
+          ),
+          GoRoute(
+            path: "shared-workout-log/:id",
+            builder: (context, state) {
+              final id = state.pathParameters['id'] ?? "";
+              return RoutineLogScreen(id: id);
+            },
+          )
+        ]),
     GoRoute(
       path: OverviewScreen.routeName, // Define the path for OverviewScreen
       builder: (context, state) => const OverviewScreen(),
@@ -180,9 +179,9 @@ final _router = GoRouter(
     GoRoute(
       path: RoutineLogScreen.routeName,
       pageBuilder: (context, state) {
-        final args = state.extra as RoutineLogDto;
+        final log = state.extra as RoutineLogDto;
         return CustomTransitionPage(
-            child: RoutineLogScreen(log: args),
+            child: RoutineLogScreen(id: log.id),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               const begin = Offset(0.0, 1.0);
               const end = Offset.zero;
