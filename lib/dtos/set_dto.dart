@@ -1,6 +1,9 @@
 
 import 'dart:convert';
 
+import 'package:tracker_app/extensions/duration_extension.dart';
+import 'package:tracker_app/utils/general_utils.dart';
+
 class SetDto {
   final num value1;
   final num value2;
@@ -45,6 +48,19 @@ class SetDto {
 
   int repsValue() {
     return value2.toInt();
+  }
+
+  String weightsSummary() {
+    return "${weightValue()}${weightLabel()} x ${repsValue()}";
+  }
+
+  String durationSummary() {
+    final label = Duration(milliseconds: durationValue()).hmsAnalog();
+    return label;
+  }
+
+  String bodyWeightSummary() {
+    return "x${repsValue()}";
   }
 
   @override

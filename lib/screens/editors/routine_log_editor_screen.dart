@@ -7,6 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
@@ -14,6 +15,7 @@ import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/enums/routine_schedule_type_enums.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/screens/shareable_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/routine_editors_utils.dart';
@@ -158,17 +160,15 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
       await _updateRoutineTemplateSchedule(routineTemplateId: routineLog.templateId);
     }
 
-    _navigateBack(log: createdLog);
+    _endWorkout(log: createdLog);
   }
 
   Future<void> _doUpdateRoutineLog() async {
     final routineLog = _routineLog();
+    final updatedRoutineLog = routineLog.copyWith(endTime: widget.log.endTime);
+    await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: updatedRoutineLog);
 
-    if (mounted) {
-      final updatedRoutineLog = routineLog.copyWith(endTime: widget.log.endTime);
-      await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: updatedRoutineLog);
-    }
-    _navigateBack();
+    _endWorkout();
   }
 
   Future<void> _updateRoutineTemplateSchedule({required String routineTemplateId}) async {
@@ -266,7 +266,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
           rightActionLabel: 'Discard',
           isRightActionDestructive: true);
     } else {
-      _navigateBack();
+      _endWorkout();
     }
   }
 
@@ -275,7 +275,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   }
 
   void _closeDialog() {
-    Navigator.of(context).pop();
+    context.pop();
   }
 
   void _reOrderExerciseLogs({required List<ExerciseLogDto> exerciseLogs}) async {
@@ -289,7 +289,13 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     }
   }
 
-  void _navigateBack({RoutineLogDto? log}) async {
+  void _navigateBack() async {
+    SharedPrefs().remove(key: SharedPrefs().cachedRoutineLogKey);
+    FlutterLocalNotificationsPlugin().cancel(999);
+    context.pop();
+  }
+
+  void _endWorkout({RoutineLogDto? log}) async {
     SharedPrefs().remove(key: SharedPrefs().cachedRoutineLogKey);
     FlutterLocalNotificationsPlugin().cancel(999);
     if (log != null) {
@@ -297,8 +303,24 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         syncWorkoutWithAppleHealth(log: log);
       }
     }
+
+    await _doUpdateTemplate();
     if (mounted) {
-      Navigator.of(context).pop(log);
+      context.pop();
+      context.push(ShareableScreen.routeName, extra: log);
+    }
+  }
+
+  Future<void> _doUpdateTemplate() async {
+    final templateToUpdate =
+        Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: widget.log.templateId);
+    if (templateToUpdate != null) {
+      final exerciseLogs = widget.log.exerciseLogs.map((exerciseLog) {
+        final newSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
+        return exerciseLog.copyWith(sets: newSets);
+      }).toList();
+      final newTemplate = templateToUpdate.copyWith(exerciseTemplates: exerciseLogs);
+      await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: newTemplate);
     }
   }
 
@@ -321,7 +343,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   @override
   Widget build(BuildContext context) {
-
     final routineLogEditorController = Provider.of<RoutineLogController>(context, listen: true);
 
     if (routineLogEditorController.errorMessage.isNotEmpty) {

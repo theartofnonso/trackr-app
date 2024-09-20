@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
@@ -19,7 +20,6 @@ import '../../../utils/general_utils.dart';
 import '../../../widgets/buttons/solid_button_widget.dart';
 import '../../../widgets/chart/line_chart_widget.dart';
 import '../../logs/routine_log_screen.dart';
-import 'home_screen.dart';
 
 enum SummaryType {
   weight("Heaviest Weight"),
@@ -175,8 +175,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     if (routineLogId != null) {
       final routineLog = Provider.of<RoutineLogController>(context, listen: false).logWhereId(id: routineLogId);
       if (routineLog != null) {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => RoutineLogPreviewScreen(log: routineLog, previousRouteName: exerciseRouteName)));
+        context.push(RoutineLogScreen.routeName, extra: routineLog);
       }
     }
   }

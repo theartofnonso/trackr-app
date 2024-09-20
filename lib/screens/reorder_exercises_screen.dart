@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
@@ -56,7 +57,7 @@ class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
         backgroundColor: sapphireDark80,
         leading: IconButton(
           icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: context.pop,
         ),
         actions: [
           _hasReOrdered

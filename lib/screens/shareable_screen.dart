@@ -1,33 +1,35 @@
-import 'dart:typed_data';
-
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tracker_app/enums/share_content_type_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
-import 'package:tracker_app/widgets/shareables/session_milestone_shareable.dart';
 import 'package:tracker_app/widgets/shareables/pbs_shareable.dart';
 import 'package:tracker_app/widgets/shareables/routine_log_shareable_lite.dart';
+import 'package:tracker_app/widgets/shareables/session_milestone_shareable.dart';
 
 import '../colors.dart';
 import '../controllers/routine_log_controller.dart';
 import '../dtos/routine_log_dto.dart';
-import '../enums/muscle_group_enums.dart';
+import '../enums/exercise_type_enums.dart';
+import '../urls.dart';
+import '../utils/app_analytics.dart';
 import '../utils/dialog_utils.dart';
 import '../utils/exercise_logs_utils.dart';
-import '../utils/app_analytics.dart';
 import '../utils/shareables_utils.dart';
 import '../widgets/buttons/opacity_button_widget.dart';
-import 'package:image_picker/image_picker.dart';
 
 class ShareableScreen extends StatefulWidget {
-  final RoutineLogDto log;
-  final Map<MuscleGroupFamily, double> frequencyData;
+  static const routeName = '/shareable_screen';
 
-  const ShareableScreen({super.key, required this.log, required this.frequencyData});
+  final RoutineLogDto log;
+
+  const ShareableScreen({super.key, required this.log});
 
   @override
   State<ShareableScreen> createState() => _ShareableScreenState();
@@ -46,14 +48,19 @@ class _ShareableScreenState extends State<ShareableScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final completedExerciseLogsAndSets = exerciseLogsWithCheckedSets(exerciseLogs: widget.log.exerciseLogs);
+    final updatedLog = widget.log.copyWith(exerciseLogs: completedExerciseLogsAndSets);
+
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
     final logsByDay = groupBy(routineLogController.routineLogs, (log) => log.createdAt.withoutTime());
 
+    final muscleGroupFamilyFrequencyData = muscleGroupFamilyFrequency(exerciseLogs: updatedLog.exerciseLogs);
+
     List<Widget> pbShareAssets = [];
     final pbShareAssetsKeys = [];
 
-    for (final exerciseLog in widget.log.exerciseLogs) {
+    for (final exerciseLog in updatedLog.exerciseLogs) {
       final pastExerciseLogs =
           routineLogController.whereExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
       final pbs = calculatePBs(
@@ -73,7 +80,7 @@ class _ShareableScreenState extends State<ShareableScreen> {
     final pages = [
       if (isMultipleOfFive(logsByDay.length)) SessionMilestoneShareable(label: "${logsByDay.length}th", image: _image),
       ...pbShareAssets,
-      RoutineLogShareableLite(log: widget.log, frequencyData: widget.frequencyData, image: _image),
+      RoutineLogShareableLite(log: updatedLog, frequencyData: muscleGroupFamilyFrequencyData, image: _image),
     ];
 
     final pagesKeys = [
@@ -83,11 +90,19 @@ class _ShareableScreenState extends State<ShareableScreen> {
     ];
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+          heroTag: "routine_log_screen",
+          onPressed: _showCopyBottomSheet,
+          backgroundColor: sapphireDark,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          child: const FaIcon(Icons.copy)),
       appBar: AppBar(
         backgroundColor: sapphireDark80,
         leading: IconButton(
           icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
-          onPressed: Navigator.of(context).pop,
+          onPressed: () {
+            context.pop();
+          },
         ),
         actions: [
           IconButton(
@@ -137,7 +152,7 @@ class _ShareableScreenState extends State<ShareableScreen> {
                     contentShared(contentType: contentType);
                   },
                   label: "Share",
-                  buttonColor: Colors.transparent,
+                  buttonColor: vibrantGreen,
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14))
             ],
           ),
@@ -146,13 +161,123 @@ class _ShareableScreenState extends State<ShareableScreen> {
     );
   }
 
-  ShareContentType _shareContentType({required int index}) {
+  void _showCopyBottomSheet() {
+    final workoutLogLink = "$shareableRoutineLogUrl/${widget.log.id}";
+    final workoutLogText = _copyAsText();
 
-    if(index == 0) {
+    displayBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        child: SafeArea(
+          child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const FaIcon(FontAwesomeIcons.link, size: 14, color: Colors.white70),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(workoutLogLink,
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: true,
+                      style: GoogleFonts.montserrat(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                      )),
+                ),
+                const SizedBox(width: 6),
+                OpacityButtonWidget(
+                  onPressed: () {
+                    HapticFeedback.heavyImpact();
+                    final data = ClipboardData(text: workoutLogLink);
+                    Clipboard.setData(data).then((_) {
+                      if (mounted) {
+                        context.pop();
+                        showSnackbar(context: context, icon: const Icon(Icons.check), message: "Workout link copied");
+                      }
+                    });
+                  },
+                  label: "Copy",
+                  buttonColor: vibrantGreen,
+                )
+              ],
+            ),
+            const SizedBox(height: 12),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: sapphireDark80,
+                border: Border.all(
+                  color: sapphireDark80, // Border color
+                  width: 1.0, // Border width
+                ),
+                borderRadius: BorderRadius.circular(5), // Optional: Rounded corners
+              ),
+              child: Text("${workoutLogText.substring(0, 150)}...",
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.montserrat(
+                    color: Colors.white70,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                  )),
+            ),
+            OpacityButtonWidget(
+              onPressed: () {
+                HapticFeedback.heavyImpact();
+                final data = ClipboardData(text: workoutLogText);
+                Clipboard.setData(data).then((_) {
+                  if (mounted) {
+                    context.pop();
+                    showSnackbar(context: context, icon: const Icon(Icons.check), message: "Workout log copied");
+                  }
+                });
+              },
+              label: "Copy as text",
+              buttonColor: vibrantGreen,
+            )
+          ]),
+        ));
+  }
+
+  String _copyAsText() {
+    final log = widget.log;
+    StringBuffer workoutLogText = StringBuffer();
+
+    workoutLogText.writeln(log.name);
+    if (log.notes.isNotEmpty) {
+      workoutLogText.writeln("Notes: ${log.notes}");
+    }
+    workoutLogText.writeln(log.createdAt.formattedDayAndMonthAndYear());
+
+    for (var exerciseLog in log.exerciseLogs) {
+      var exercise = exerciseLog.exercise;
+      workoutLogText.writeln("\n- Exercise: ${exercise.name}");
+      workoutLogText.writeln("  Muscle Group: ${exercise.primaryMuscleGroup.name}");
+
+      for (var i = 0; i < exerciseLog.sets.length; i++) {
+        switch (exerciseLog.exercise.type) {
+          case ExerciseType.weights:
+            workoutLogText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].weightsSummary()}");
+            break;
+          case ExerciseType.bodyWeight:
+            workoutLogText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].bodyWeightSummary()}");
+            break;
+          case ExerciseType.duration:
+            workoutLogText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].durationSummary()}");
+            break;
+        }
+      }
+    }
+    return workoutLogText.toString();
+  }
+
+  ShareContentType _shareContentType({required int index}) {
+    if (index == 0) {
       return ShareContentType.milestoneAchievement;
-    } else if(index == 1) {
+    } else if (index == 1) {
       return ShareContentType.logMilestone;
-    } else if(index == 2) {
+    } else if (index == 2) {
       return ShareContentType.pbs;
     } else {
       return ShareContentType.sessionSummary;
@@ -197,7 +322,7 @@ class _ShareableScreenState extends State<ShareableScreen> {
   }
 
   void _pickFromLibrary({required bool camera}) async {
-    Navigator.of(context).pop();
+    context.pop();
     final ImagePicker picker = ImagePicker();
     final XFile? xFile = await picker.pickImage(source: camera ? ImageSource.camera : ImageSource.gallery);
     if (xFile != null) {
@@ -210,7 +335,7 @@ class _ShareableScreenState extends State<ShareableScreen> {
   }
 
   void _removeImage() {
-    Navigator.of(context).pop();
+    context.pop();
     setState(() {
       _image = null;
       _hasImage = false;

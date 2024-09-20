@@ -6,7 +6,7 @@ import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/information_container_lite.dart';
 
-import '../../strings/workout_log_strings.dart';
+import '../../strings/datetime_range_picker_strings.dart';
 import '../buttons/opacity_button_widget.dart';
 import '../buttons/solid_button_widget.dart';
 
@@ -125,21 +125,21 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
 
   String? _validateDate() {
     if (_startDateTime.isAfter(_endDateTime)) {
-      return edit_startdate_must_be_before_enddate;
+      return editStartDateMustBeBeforeEndDate;
     }
 
     if (_endDateTime.isBefore(_startDateTime)) {
-      return edit_enddate_must_be_after_startdate;
+      return editEndDateMustBeAfterStartDate;
     }
 
     if (_endDateTime.day > DateTime.now().day) {
-      return edit_future_date_restriction;
+      return editFutureDateRestriction;
     }
 
     Duration difference = _endDateTime.difference(_startDateTime);
 
     if (difference.inHours > 24) {
-      return edit_24_hour_restriction;
+      return edit24HourRestriction;
     }
 
     return null;

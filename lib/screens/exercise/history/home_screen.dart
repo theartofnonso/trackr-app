@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
@@ -43,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       await Provider.of<ExerciseController>(context, listen: false).removeExercise(exercise: widget.exercise);
       if (context.mounted) {
-        Navigator.of(context).pop();
+        context.pop();
       }
     } catch (_) {
       if (context.mounted) {
@@ -112,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
             backgroundColor: sapphireDark80,
             leading: IconButton(
               icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: context.pop,
             ),
             title: Text(foundExercise.name,
                 style: GoogleFonts.montserrat(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),

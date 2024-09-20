@@ -30,6 +30,10 @@ class RoutineLogController extends ChangeNotifier {
   UnmodifiableMapView<ExerciseType, List<ExerciseLogDto>> get exerciseLogsByType =>
       _amplifyLogRepository.exerciseLogsByType;
 
+  Future<RoutineLog?> fetchLog({required String id}) async {
+    return await _amplifyLogRepository.fetchLogCloud(id: id);
+  }
+
   Future<void> fetchLogs({bool firstLaunch = false}) async {
     try {
       await _amplifyLogRepository.fetchLogs(firstLaunch: firstLaunch);

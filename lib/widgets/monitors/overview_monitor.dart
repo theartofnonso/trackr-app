@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
@@ -31,7 +32,7 @@ class OverviewMonitor extends StatelessWidget {
     final exerciseLogsForTheMonth = routineLogs.expand((log) => log.exerciseLogs).toList();
 
     final muscleGroupsSplitFrequencyScore =
-        cumulativeMuscleGroupFamilyFrequencies(exerciseLogs: exerciseLogsForTheMonth);
+        cumulativeMuscleGroupFamilyFrequency(exerciseLogs: exerciseLogsForTheMonth);
 
     final splitPercentage = (muscleGroupsSplitFrequencyScore * 100).round();
 
@@ -87,7 +88,7 @@ class OverviewMonitor extends StatelessWidget {
             const SizedBox(width: 20),
             GestureDetector(
               onTap: () {
-                Navigator.of(context).pushNamed(SetsAndRepsVolumeInsightsScreen.routeName);
+                context.push(SetsAndRepsVolumeInsightsScreen.routeName);
               },
               child: Container(
                 color: Colors.transparent,

@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +21,7 @@ import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/controllers/routine_template_controller.dart';
 import 'package:tracker_app/controllers/settings_controller.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
+import 'package:tracker_app/dtos/routine_template_dto.dart';
 import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
 import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
@@ -32,14 +34,16 @@ import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart'
 import 'package:tracker_app/screens/editors/routine_log_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_template_editor_screen.dart';
 import 'package:tracker_app/screens/home_screen.dart';
-import 'package:tracker_app/screens/insights/leaderboard/home_screen.dart';
 import 'package:tracker_app/screens/insights/overview_screen.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
 import 'package:tracker_app/screens/insights/streak_screen.dart';
 import 'package:tracker_app/screens/intro_screen.dart';
+import 'package:tracker_app/screens/logs/routine_log_screen.dart';
 import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
+import 'package:tracker_app/screens/shareable_screen.dart';
 import 'package:tracker_app/screens/template/routines_home.dart';
+import 'package:tracker_app/screens/template/templates/routine_template_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import 'amplifyconfiguration.dart';
@@ -99,6 +103,135 @@ void main() async {
     ], child: const MyApp())),
   );
 }
+
+final _router = GoRouter(
+  initialLocation: "/",
+  routes: [
+    GoRoute(
+        path: "/", // Define the path for Home Screen
+        builder: (context, state) => const HomeScreen(),
+        routes: [
+          GoRoute(
+            path: "shared-workout/:id",
+            builder: (context, state) {
+              final id = state.pathParameters['id'] ?? "";
+              return RoutineTemplateScreen(id: id);
+            },
+          ),
+          GoRoute(
+            path: "shared-workout-log/:id",
+            builder: (context, state) {
+              final id = state.pathParameters['id'] ?? "";
+              return RoutineLogScreen(id: id);
+            },
+          )
+        ]),
+    GoRoute(
+      path: OverviewScreen.routeName, // Define the path for OverviewScreen
+      builder: (context, state) => const OverviewScreen(),
+    ),
+    GoRoute(
+      path: RoutinesHome.routeName,
+      builder: (context, state) => const RoutinesHome(),
+    ),
+    GoRoute(
+      path: RoutineLogEditorScreen.routeName,
+      builder: (context, state) {
+        final args = state.extra as RoutineLogArguments;
+        return RoutineLogEditorScreen(log: args.log, mode: args.editorMode);
+      },
+    ),
+    GoRoute(
+      path: RoutineTemplateEditorScreen.routeName,
+      builder: (context, state) {
+        final args = state.extra as RoutineTemplateArguments?;
+        return RoutineTemplateEditorScreen(template: args?.template);
+      },
+    ),
+    GoRoute(
+      path: PastRoutineLogEditorScreen.routeName,
+      builder: (context, state) {
+        final args = state.extra as PastRoutineLogArguments;
+        return PastRoutineLogEditorScreen(log: args.log);
+      },
+    ),
+    GoRoute(
+      path: ExerciseEditorScreen.routeName,
+      builder: (context, state) {
+        final args = state.extra as ExerciseEditorArguments;
+        return ExerciseEditorScreen(exercise: args.exercise);
+      },
+    ),
+    GoRoute(
+      path: RoutineLogsScreen.routeName,
+      builder: (context, state) {
+        final args = state.extra as List<RoutineLogDto>?;
+        return RoutineLogsScreen(logs: args);
+      },
+    ),
+    GoRoute(
+      path: RoutineTemplateScreen.routeName,
+      builder: (context, state) {
+        final template = state.extra as RoutineTemplateDto;
+        return RoutineTemplateScreen(id: template.id);
+      },
+    ),
+    GoRoute(
+      path: RoutineLogScreen.routeName,
+      pageBuilder: (context, state) {
+        final log = state.extra as RoutineLogDto;
+        return CustomTransitionPage(
+            child: RoutineLogScreen(id: log.id),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              const begin = Offset(0.0, 1.0);
+              const end = Offset.zero;
+              const curve = Curves.ease;
+              final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+              final offsetAnimation = animation.drive(tween);
+              return SlideTransition(
+                position: offsetAnimation,
+                child: child,
+              );
+            });
+      },
+    ),
+    GoRoute(
+      path: ShareableScreen.routeName,
+      pageBuilder: (context, state) {
+        final args = state.extra as RoutineLogDto;
+        return CustomTransitionPage(
+            child: ShareableScreen(log: args),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              const begin = Offset(0.0, 1.0);
+              const end = Offset.zero;
+              const curve = Curves.ease;
+              final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+              final offsetAnimation = animation.drive(tween);
+              return SlideTransition(
+                position: offsetAnimation,
+                child: child,
+              );
+            });
+      },
+    ),
+    GoRoute(
+      path: SettingsScreen.routeName,
+      builder: (context, state) => const SettingsScreen(),
+    ),
+    GoRoute(
+      path: HomeScreen.routeName,
+      builder: (context, state) => const HomeScreen(),
+    ),
+    GoRoute(
+      path: SetsAndRepsVolumeInsightsScreen.routeName,
+      builder: (context, state) => const SetsAndRepsVolumeInsightsScreen(),
+    ),
+    GoRoute(
+      path: StreakScreen.routeName,
+      builder: (context, state) => const StreakScreen(),
+    ),
+  ],
+);
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -199,69 +332,11 @@ class _MyAppState extends State<MyApp> {
     return _isFirstLaunch
         ? IntroScreen(themeData: _themeData, onComplete: _completeIntro)
         : Authenticator(
-            child: MaterialApp(
+            child: MaterialApp.router(
               debugShowCheckedModeBanner: false,
               builder: Authenticator.builder(),
               theme: _themeData,
-              home: const HomeScreen(),
-              onGenerateRoute: (settings) {
-                if (settings.name == RoutineLogEditorScreen.routeName) {
-                  final args = settings.arguments as RoutineLogArguments;
-                  return MaterialPageRoute(
-                    builder: (context) => RoutineLogEditorScreen(
-                      log: args.log,
-                      mode: args.editorMode,
-                    ),
-                  );
-                }
-
-                if (settings.name == RoutineTemplateEditorScreen.routeName) {
-                  final args = settings.arguments as RoutineTemplateArguments?;
-                  return MaterialPageRoute(
-                    builder: (context) => RoutineTemplateEditorScreen(
-                      template: args?.template,
-                    ),
-                  );
-                }
-
-                if (settings.name == PastRoutineLogEditorScreen.routeName) {
-                  final args = settings.arguments as PastRoutineLogArguments;
-                  return MaterialPageRoute(
-                    builder: (context) => PastRoutineLogEditorScreen(
-                      log: args.log,
-                    ),
-                  );
-                }
-
-                if (settings.name == RoutineLogsScreen.routeName) {
-                  final args = settings.arguments as List<RoutineLogDto>?;
-                  return MaterialPageRoute(
-                    builder: (context) => RoutineLogsScreen(
-                      logs: args,
-                    ),
-                  );
-                }
-
-                if (settings.name == ExerciseEditorScreen.routeName) {
-                  final args = settings.arguments as ExerciseEditorArguments?;
-                  return MaterialPageRoute(
-                    builder: (context) => ExerciseEditorScreen(
-                      exercise: args?.exercise,
-                    ),
-                  );
-                }
-
-                return null;
-              },
-              routes: {
-                OverviewScreen.routeName: (context) => const OverviewScreen(),
-                RoutinesHome.routeName: (context) => const RoutinesHome(),
-                SettingsScreen.routeName: (context) => const SettingsScreen(),
-                HomeScreen.routeName: (context) => const HomeScreen(),
-                SetsAndRepsVolumeInsightsScreen.routeName: (context) => const SetsAndRepsVolumeInsightsScreen(),
-                StreakScreen.routeName: (context) => const StreakScreen(),
-                LeaderBoardScreen.routeName: (context) => const LeaderBoardScreen(),
-              },
+              routerConfig: _router,
             ),
           );
   }

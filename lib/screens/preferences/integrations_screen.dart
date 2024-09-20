@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../colors.dart';
 import '../../utils/health_utils.dart';
@@ -24,7 +25,7 @@ class _IntegrationsScreenState extends State<IntegrationsScreen> {
           backgroundColor: sapphireDark80,
           leading: IconButton(
             icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: context.pop,
           )),
       body: Stack(alignment: Alignment.center, children: [
         Container(

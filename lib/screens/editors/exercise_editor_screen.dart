@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
@@ -58,7 +59,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
             backgroundColor: sapphireDark80,
             leading: IconButton(
               icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => context.pop(),
             ),
             actions: [
               exercise != null
@@ -212,7 +213,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
 
       await Provider.of<ExerciseController>(context, listen: false).saveExercise(exerciseDto: exercise);
       if (mounted) {
-        Navigator.of(context).pop();
+        context.pop();
       }
     }
   }
@@ -231,7 +232,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
       final updatedExercise = exercise.copyWith(name: exerciseName.trim(), primaryMuscleGroup: _primaryMuscleGroup);
       await Provider.of<ExerciseController>(context, listen: false).updateExercise(exercise: updatedExercise);
       if (mounted) {
-        Navigator.of(context).pop();
+        context.pop();
       }
     }
   }
