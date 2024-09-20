@@ -105,10 +105,20 @@ void main() async {
 }
 
 final _router = GoRouter(
+  initialLocation: "/",
   routes: [
     GoRoute(
       path: "/", // Define the path for Home Screen
       builder: (context, state) => const HomeScreen(),
+      routes: [
+        GoRoute(
+          path: "shared-workout/:id",
+          builder: (context, state) {
+            final id = state.pathParameters['id'] ?? "";
+            return RoutineTemplateScreen(id: id);
+          },
+        ),
+      ]
     ),
     GoRoute(
       path: OverviewScreen.routeName, // Define the path for OverviewScreen
@@ -213,13 +223,6 @@ final _router = GoRouter(
     GoRoute(
       path: StreakScreen.routeName,
       builder: (context, state) => const StreakScreen(),
-    ),
-    GoRoute(
-      path: "/shared-workout/:id",
-      builder: (context, state) {
-        final id = state.pathParameters['id'] ?? "";
-        return RoutineTemplateScreen(id: id);
-      },
     ),
     // GoRoute(
     //   path: "/shared-workout-log/:id",

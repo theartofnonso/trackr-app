@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
@@ -35,8 +36,9 @@ class RoutineTemplateLibrary extends StatelessWidget {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           const SizedBox(height: 20),
           const InformationContainerLite(
+            icon: FaIcon(FontAwesomeIcons.lightbulb, color: vibrantBlue, size: 16,),
             content: exploreWorkouts,
-            color: Colors.transparent,
+            color: vibrantBlue,
           ),
           const SizedBox(height: 20),
           Expanded(
