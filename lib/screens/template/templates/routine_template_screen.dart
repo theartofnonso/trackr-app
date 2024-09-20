@@ -42,6 +42,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   bool _loading = false;
 
+  bool _isOwner = false;
+
   void _deleteRoutine({required RoutineTemplateDto template}) async {
     try {
       await Provider.of<RoutineTemplateController>(context, listen: false).removeTemplate(template: template);
@@ -113,7 +115,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     ];
 
     return Scaffold(
-        floatingActionButton: FloatingActionButton(
+        floatingActionButton: _isOwner ? FloatingActionButton(
             heroTag: UniqueKey,
             onPressed: () {
               final arguments = RoutineLogArguments(log: template.log(), editorMode: RoutineEditorMode.log);
@@ -121,7 +123,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
             },
             backgroundColor: sapphireDark,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-            child: const FaIcon(FontAwesomeIcons.play, color: Colors.white, size: 24)),
+            child: const FaIcon(FontAwesomeIcons.play, color: Colors.white, size: 24)) : null,
         backgroundColor: sapphireDark,
         appBar: AppBar(
           backgroundColor: sapphireDark80,
@@ -132,7 +134,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           title: Text(template.name,
               style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
           actions: [
-            MenuAnchor(
+            _isOwner ? MenuAnchor(
               style: MenuStyle(
                 backgroundColor: WidgetStateProperty.all(sapphireDark80),
                 surfaceTintColor: WidgetStateProperty.all(sapphireDark),
@@ -155,7 +157,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                 );
               },
               menuChildren: menuActions,
-            )
+            ) : const SizedBox.shrink()
           ],
         ),
         body: Container(
@@ -213,6 +215,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           _template = data?.dto();
         });
       });
+    } else {
+      _isOwner = _template != null;
     }
   }
 

@@ -118,6 +118,13 @@ final _router = GoRouter(
             return RoutineTemplateScreen(id: id);
           },
         ),
+        // GoRoute(
+        //   path: "shared-workout-log/:id",
+        //   builder: (context, state) {
+        //     final id = state.pathParameters['id'] ?? "";
+        //     return RoutineLogScreen(id: id);
+        //   },
+        // )
       ]
     ),
     GoRoute(
@@ -224,13 +231,6 @@ final _router = GoRouter(
       path: StreakScreen.routeName,
       builder: (context, state) => const StreakScreen(),
     ),
-    // GoRoute(
-    //   path: "/shared-workout-log/:id",
-    //   builder: (context, state) {
-    //     final id = state.pathParameters['id'] ?? "";
-    //     return RoutineLogScreen(id: id);
-    //   },
-    // )
   ],
 );
 
