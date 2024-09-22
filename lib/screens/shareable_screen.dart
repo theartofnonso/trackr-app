@@ -214,7 +214,7 @@ class _ShareableScreenState extends State<ShareableScreen> {
                 ),
                 borderRadius: BorderRadius.circular(5), // Optional: Rounded corners
               ),
-              child: Text("${workoutLogText.substring(0, 150)}...",
+              child: Text("${workoutLogText.substring(0, workoutLogText.length >= 150 ? 150 : workoutLogText.length)}...",
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.montserrat(
                     color: Colors.white70,
