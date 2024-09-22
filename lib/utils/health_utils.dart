@@ -1,15 +1,15 @@
 import 'package:health/health.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
 
-void syncWorkoutWithAppleHealth({required RoutineLogDto log}) async {
-  Health().configure();
-  Health().writeWorkoutData(
+Future<Future<bool>> syncWorkoutWithAppleHealth({required RoutineLogDto log}) async {
+  await Health().configure();
+  return Health().writeWorkoutData(
     title: log.name,
       activityType: HealthWorkoutActivityType.TRADITIONAL_STRENGTH_TRAINING, start: log.startTime, end: log.endTime);
 }
 
 Future<bool> connectAppleHealth() async {
-  Health().configure();
+  await Health().configure();
 
   const types = [HealthDataType.WORKOUT];
 
@@ -19,7 +19,7 @@ Future<bool> connectAppleHealth() async {
 }
 
 Future<bool> checkAppleHealthConnectivity() async {
-  Health().configure();
+  await Health().configure();
 
   const types = [HealthDataType.WORKOUT];
 

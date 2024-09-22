@@ -27,7 +27,6 @@ import '../../controllers/routine_template_controller.dart';
 import '../../dtos/exercise_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/app_analytics.dart';
-import '../../utils/exercise_logs_utils.dart';
 import '../../utils/health_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/empty_states/exercise_log_empty_state.dart';
@@ -141,7 +140,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     final exerciseLogs = exerciseLogController.mergeExerciseLogsAndSets();
 
-    final routineLog = widget.log.copyWith(exerciseLogs: exerciseLogs, updatedAt: DateTime.now());
+    final routineLog = widget.log.copyWith(exerciseLogs: exerciseLogs);
 
     return routineLog;
   }
@@ -156,24 +155,19 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     workoutSessionLogged();
 
-    if (routineLog.templateId.isNotEmpty) {
-      await _updateRoutineTemplateSchedule(routineTemplateId: routineLog.templateId);
-    }
-
     _endWorkout(log: createdLog);
   }
 
   Future<void> _doUpdateRoutineLog() async {
     final routineLog = _routineLog();
-    final updatedRoutineLog = routineLog.copyWith(endTime: widget.log.endTime);
-    await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: updatedRoutineLog);
+    await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: routineLog);
 
     _endWorkout();
   }
 
-  Future<void> _updateRoutineTemplateSchedule({required String routineTemplateId}) async {
+  Future<void> _updateRoutineTemplateSchedule() async {
     final template =
-        Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: routineTemplateId);
+        Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: widget.log.templateId);
     if (template == null) return;
     if (template.scheduleType == RoutineScheduleType.intervals) {
       final scheduledDate = DateTime.now().add(Duration(days: template.scheduleIntervals)).withoutTime();
@@ -192,7 +186,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     showBottomSheetWithMultiActions(
         context: context,
         title: "Discard workout?",
-        description: "You have unsaved changes",
+        description: "Do you want to discard this workout",
         leftAction: _closeDialog,
         rightAction: () {
           _closeDialog();
@@ -210,7 +204,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
           context: context,
           title: 'Running Session',
           description: "Do you want to end workout?",
-          leftAction: Navigator.of(context).pop,
+          leftAction: context.pop,
           rightAction: () {
             _closeDialog();
             _doCreateRoutineLog();
@@ -243,33 +237,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     Provider.of<RoutineLogController>(context, listen: false).cacheLog(logDto: updatedRoutineLog);
   }
 
-  void _checkForUnsavedChanges() {
-    final procedureProvider = Provider.of<ExerciseLogController>(context, listen: false);
-    final exerciseLog1 = widget.log.exerciseLogs;
-    final exerciseLog2 = procedureProvider.mergeExerciseLogsAndSets();
-    final unsavedChangesMessage = checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
-    final completedSetsChanged = hasCheckedSetsChanged(exerciseLogs1: exerciseLog1, exerciseLogs2: exerciseLog2);
-    if (completedSetsChanged != null) {
-      unsavedChangesMessage.add(completedSetsChanged);
-    }
-    if (unsavedChangesMessage.isNotEmpty) {
-      showBottomSheetWithMultiActions(
-          context: context,
-          title: 'Unsaved Changes',
-          description: "You have unsaved changes",
-          leftAction: _closeDialog,
-          leftActionLabel: 'Cancel',
-          rightAction: () {
-            _closeDialog();
-            _navigateBack();
-          },
-          rightActionLabel: 'Discard',
-          isRightActionDestructive: true);
-    } else {
-      _endWorkout();
-    }
-  }
-
   void _dismissKeyboard() {
     FocusScope.of(context).unfocus();
   }
@@ -289,22 +256,28 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     }
   }
 
-  void _navigateBack() async {
+  void _cleanUpSession() {
     SharedPrefs().remove(key: SharedPrefs().cachedRoutineLogKey);
     FlutterLocalNotificationsPlugin().cancel(999);
+  }
+
+  void _navigateBack() async {
+    _cleanUpSession();
     context.pop();
   }
 
   void _endWorkout({RoutineLogDto? log}) async {
-    SharedPrefs().remove(key: SharedPrefs().cachedRoutineLogKey);
-    FlutterLocalNotificationsPlugin().cancel(999);
+    _cleanUpSession();
     if (log != null) {
       if (Platform.isIOS) {
-        syncWorkoutWithAppleHealth(log: log);
+        await syncWorkoutWithAppleHealth(log: log);
       }
     }
 
     await _doUpdateTemplate();
+
+    await _updateRoutineTemplateSchedule();
+
     if (mounted) {
       context.pop();
       context.push(ShareableScreen.routeName, extra: log);
@@ -365,7 +338,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
               backgroundColor: sapphireDark80,
               leading: IconButton(
                   icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-                  onPressed: widget.mode == RoutineEditorMode.log ? _discardLog : _checkForUnsavedChanges),
+                  onPressed: _discardLog),
               title: Text(
                 widget.log.name,
                 style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
