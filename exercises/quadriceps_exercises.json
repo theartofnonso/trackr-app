@@ -18,7 +18,10 @@
     "id": "QUD3",
     "name": "Barbell Lunge",
     "primaryMuscleGroup": "Quadriceps",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=Z6i2IQqTuU0",
+    "creditSource": "https://www.youtube.com/@OPEXFitness",
+    "credit": "OPEX Fitness"
   },
   {
     "id": "QUD4",
@@ -36,7 +39,10 @@
     "id": "QUD6",
     "name": "Bodyweight Lunge",
     "primaryMuscleGroup": "Quadriceps",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=krxGoIpg9XQ",
+    "creditSource": "https://www.youtube.com/@OPEXFitness",
+    "credit": "OPEX Fitness"
   },
   {
     "id": "QUD7",

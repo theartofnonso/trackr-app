@@ -194,5 +194,14 @@
     "video": "https://www.youtube.com/watch?v=Ja6ZlIDONac",
     "creditSource": "https://www.youtube.com/@RenaissancePeriodization",
     "credit": "Renaissance Periodization"
+  },
+  {
+    "id": "BIC26",
+    "name": "Bicep Curl",
+    "primaryMuscleGroup": "Biceps",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=cBSD6mQIPQk",
+    "creditSource": "https://www.youtube.com/@nuffieldhealth",
+    "credit": "Nuffield Health"
   }
 ]

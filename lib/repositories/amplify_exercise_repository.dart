@@ -90,7 +90,7 @@ class AmplifyExerciseRepository {
     exerciseDtos.addAll(fullBodyExercises);
 
     // List<String> withNoVideos =
-    //     _exercises.where((exercise) => exercise.video == null).map((exercise) => exercise.name).toList();
+    // exerciseDtos.where((exercise) => exercise.video == null && !exercise.owner).map((exercise) => exercise.name).toList();
     //
     // withNoVideos.forEach((exercise) {
     //   print(exercise);
