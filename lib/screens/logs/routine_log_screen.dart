@@ -54,10 +54,10 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
       return const _EmptyState();
     }
 
-    final numberOfCompletedSets = _calculateCompletedSets(procedures: log.exerciseLogs);
-    final completedSetsSummary = "$numberOfCompletedSets ${pluralize(word: "Set", count: numberOfCompletedSets)}";
-
     final completedExerciseLogsAndSets = exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs);
+
+    final numberOfCompletedSets =  completedExerciseLogsAndSets.expand((exerciseLog) => exerciseLog.sets);
+    final completedSetsSummary = "${numberOfCompletedSets.length} ${pluralize(word: "Set", count: numberOfCompletedSets.length)}";
 
     return Scaffold(
         backgroundColor: sapphireDark,
