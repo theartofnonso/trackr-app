@@ -234,7 +234,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
   void _onShareCalendar({required BuildContext context}) {
     displayBottomSheet(
         context: context,
-        isScrollControlled: false,
+        isScrollControlled: true,
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,

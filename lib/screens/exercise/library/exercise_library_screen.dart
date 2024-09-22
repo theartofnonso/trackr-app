@@ -129,7 +129,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   }
 
   void _navigateToExerciseEditor() async {
-    await context.pushNamed(ExerciseEditorScreen.routeName);
+    await context.push(ExerciseEditorScreen.routeName);
     if (mounted) {
       setState(() {
         _exercisesInLibrary = _updateSelections();
@@ -184,8 +184,8 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
           if (_selectedExercises.isNotEmpty)
             GestureDetector(
                 onTap: _navigateBackWithSelectedExercises,
-                child: Text("Add (${_selectedExercises.length})", style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.white),)),
-          const SizedBox(width: 10)
+                child: Text("Add (${_selectedExercises.length})", style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.white))),
+          const SizedBox(width: 12)
         ],
       ),
       floatingActionButton: FloatingActionButton(

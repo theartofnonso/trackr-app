@@ -158,8 +158,8 @@ final _router = GoRouter(
     GoRoute(
       path: ExerciseEditorScreen.routeName,
       builder: (context, state) {
-        final args = state.extra as ExerciseEditorArguments;
-        return ExerciseEditorScreen(exercise: args.exercise);
+        final args = state.extra as ExerciseEditorArguments?;
+        return ExerciseEditorScreen(exercise: args?.exercise);
       },
     ),
     GoRoute(
