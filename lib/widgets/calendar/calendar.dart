@@ -112,40 +112,6 @@ class _CalendarState extends State<Calendar> {
         if(!widget.readOnly)
           const SizedBox(height: 10),
         if (logsForCurrentDate.isNotEmpty && !widget.readOnly) _RoutineLogListView(logs: logsForCurrentDate),
-        if (logsForCurrentDate.isEmpty && !widget.readOnly)
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              RichText(
-                  text: TextSpan(
-                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.white),
-                      children: const [
-                    TextSpan(text: 'Tap'),
-                    WidgetSpan(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 6.0),
-                          child: FaIcon(
-                            FontAwesomeIcons.play,
-                            color: Colors.white,
-                            size: 14,
-                          ),
-                        ),
-                        alignment: PlaceholderAlignment.middle),
-                    TextSpan(text: 'to start logging or visit the'),
-                    WidgetSpan(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 4.0),
-                          child: FaIcon(
-                            FontAwesomeIcons.dumbbell,
-                            color: Colors.white,
-                            size: 14,
-                          ),
-                        ),
-                        alignment: PlaceholderAlignment.middle),
-                    TextSpan(text: 'tab to create workout templates'),
-                  ]))
-            ],
-          )
       ],
     );
   }
