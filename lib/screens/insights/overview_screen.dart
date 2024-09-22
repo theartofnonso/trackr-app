@@ -10,7 +10,6 @@ import 'package:tracker_app/enums/share_content_type_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/datetime_range_extension.dart';
 import 'package:tracker_app/extensions/routine_log_extension.dart';
-import 'package:tracker_app/screens/insights/streak_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/calendar/calendar_months_navigator.dart';
 
@@ -45,10 +44,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   late DateTimeRange _dateTimeRange;
   bool _loading = false;
-
-  void _navigateToAllDaysTracked({required BuildContext context}) {
-    context.push(StreakScreen.routeName);
-  }
 
   void _logEmptyRoutine(BuildContext context) async {
     final log = Provider.of<RoutineLogController>(context, listen: false).cachedLog();
@@ -111,7 +106,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                   children: [
                     Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                       IconButton(
-                        onPressed: () => _navigateToAllDaysTracked(context: context),
+                        onPressed: null,
                         icon: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
                           const FaIcon(FontAwesomeIcons.fire, color: Colors.white, size: 20),
                           const SizedBox(width: 4),
@@ -130,9 +125,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           controller: widget.scrollController,
                           padding: const EdgeInsets.only(bottom: 150),
                           child: Column(children: [
-                            const SizedBox(height: 4),
+                            const SizedBox(height: 12),
                             OverviewMonitor(routineLogs: logsForTheMonth),
-                            const SizedBox(height: 8),
+                            const SizedBox(height: 16),
                             Calendar(
                               range: _dateTimeRange,
                             ),

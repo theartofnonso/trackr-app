@@ -36,7 +36,6 @@ import 'package:tracker_app/screens/editors/routine_template_editor_screen.dart'
 import 'package:tracker_app/screens/home_screen.dart';
 import 'package:tracker_app/screens/insights/overview_screen.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
-import 'package:tracker_app/screens/insights/streak_screen.dart';
 import 'package:tracker_app/screens/intro_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_screen.dart';
 import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
@@ -225,11 +224,7 @@ final _router = GoRouter(
     GoRoute(
       path: SetsAndRepsVolumeInsightsScreen.routeName,
       builder: (context, state) => const SetsAndRepsVolumeInsightsScreen(),
-    ),
-    GoRoute(
-      path: StreakScreen.routeName,
-      builder: (context, state) => const StreakScreen(),
-    ),
+    )
   ],
 );
 
