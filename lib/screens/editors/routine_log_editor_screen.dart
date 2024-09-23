@@ -150,19 +150,19 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     final updatedRoutineLog = routineLog.copyWith(endTime: DateTime.now());
 
-    final createdLog =
-        await Provider.of<RoutineLogController>(context, listen: false).saveLog(logDto: updatedRoutineLog);
+    await Provider.of<RoutineLogController>(context, listen: false).saveLog(logDto: updatedRoutineLog);
 
     workoutSessionLogged();
 
-    _endWorkout(log: createdLog);
+    _endWorkout(log: updatedRoutineLog);
   }
 
   Future<void> _doUpdateRoutineLog() async {
     final routineLog = _routineLog();
+
     await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: routineLog);
 
-    _endWorkout();
+    _endWorkout(log: routineLog);
   }
 
   Future<void> _updateRoutineTemplateSchedule() async {
@@ -266,15 +266,14 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     context.pop();
   }
 
-  void _endWorkout({RoutineLogDto? log}) async {
+  void _endWorkout({required RoutineLogDto log}) async {
     _cleanUpSession();
-    if (log != null) {
-      if (Platform.isIOS) {
-        await syncWorkoutWithAppleHealth(log: log);
-      }
+
+    if (Platform.isIOS) {
+      await syncWorkoutWithAppleHealth(log: log);
     }
 
-    await _doUpdateTemplate();
+    await _doUpdateTemplate(log: log);
 
     await _updateRoutineTemplateSchedule();
 
@@ -284,11 +283,11 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     }
   }
 
-  Future<void> _doUpdateTemplate() async {
+  Future<void> _doUpdateTemplate({required RoutineLogDto log}) async {
     final templateToUpdate =
-        Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: widget.log.templateId);
+        Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: log.templateId);
     if (templateToUpdate != null) {
-      final exerciseLogs = widget.log.exerciseLogs.map((exerciseLog) {
+      final exerciseLogs = log.exerciseLogs.map((exerciseLog) {
         final newSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
         return exerciseLog.copyWith(sets: newSets);
       }).toList();
