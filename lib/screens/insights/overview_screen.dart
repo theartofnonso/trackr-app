@@ -285,6 +285,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           ],
                         )),
                   )),
+              const SizedBox(height: 20),
               OpacityButtonWidget(
                   onPressed: () {
                     captureImage(key: calendarKey, pixelRatio: 5);
@@ -292,7 +293,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                     context.pop();
                   },
                   label: "Share",
-                  buttonColor: Colors.transparent,
+                  buttonColor: vibrantGreen,
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14))
             ]));
   }
