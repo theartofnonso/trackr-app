@@ -4,12 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
-import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import '../../controllers/settings_controller.dart';
-import '../../dtos/routine_log_dto.dart';
-import '../routine/preview/routine_log_widget.dart';
 
 GlobalKey calendarKey = GlobalKey();
 
@@ -27,10 +24,10 @@ class _DateViewModel {
 }
 
 class Calendar extends StatefulWidget {
-  final bool readOnly;
-  final DateTimeRange range;
+  final void Function(DateTime dateTime)? onSelectDate;
+  final DateTimeRange selectedDateRange;
 
-  const Calendar({super.key, this.readOnly = false, required this.range});
+  const Calendar({super.key, this.onSelectDate, required this.selectedDateRange});
 
   @override
   State<Calendar> createState() => _CalendarState();
@@ -40,13 +37,17 @@ class _CalendarState extends State<Calendar> {
   DateTime _currentDate = DateTime.now();
 
   void _selectDate(DateTime dateTime) {
+    final onSelectDate = widget.onSelectDate;
+    if (onSelectDate != null) {
+      onSelectDate(dateTime);
+    }
     setState(() {
       _currentDate = dateTime;
     });
   }
 
   List<_DateViewModel?> _generateDates() {
-    final startDate = widget.range.start;
+    final startDate = widget.selectedDateRange.start;
 
     int year = startDate.year;
     int month = startDate.month;
@@ -93,10 +94,6 @@ class _CalendarState extends State<Calendar> {
   Widget build(BuildContext context) {
     Provider.of<SettingsController>(context, listen: true);
 
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
-
-    final logsForCurrentDate = routineLogController.logsWhereDate(dateTime: _currentDate).reversed.toList();
-
     final dates = _generateDates();
 
     return Column(
@@ -108,10 +105,7 @@ class _CalendarState extends State<Calendar> {
                 child: _CalendarHeader(),
               )
             : const SizedBox(height: 8),
-        _Month(dates: dates, selectedDateTime: _currentDate.withoutTime(), onTap: _selectDate, readOnly: widget.readOnly),
-        if(!widget.readOnly)
-          const SizedBox(height: 10),
-        if (logsForCurrentDate.isNotEmpty && !widget.readOnly) _RoutineLogListView(logs: logsForCurrentDate),
+        _Month(dates: dates, selectedDateTime: _currentDate.withoutTime(), onTap: _selectDate),
       ],
     );
   }
@@ -145,10 +139,9 @@ class _CalendarHeader extends StatelessWidget {
 class _Month extends StatelessWidget {
   final List<_DateViewModel?> dates;
   final DateTime selectedDateTime;
-  final bool readOnly;
   final void Function(DateTime dateTime) onTap;
 
-  const _Month({required this.dates, required this.selectedDateTime, required this.onTap, required this.readOnly});
+  const _Month({required this.dates, required this.selectedDateTime, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -161,7 +154,6 @@ class _Month extends StatelessWidget {
           onTap: onTap,
           selected: date.dateTime.isSameDayMonthYear(selectedDateTime),
           currentDate: date.dateTime.isSameDayMonthAndYear(DateTime.now()),
-          showSelector: !readOnly,
           hasLog: date.hasLog,
         );
       }
@@ -189,7 +181,6 @@ class _Month extends StatelessWidget {
 class _Day extends StatelessWidget {
   final DateTime dateTime;
   final bool selected;
-  final bool showSelector;
   final bool hasLog;
   final bool currentDate;
   final void Function(DateTime dateTime) onTap;
@@ -197,9 +188,8 @@ class _Day extends StatelessWidget {
   const _Day(
       {required this.dateTime,
       required this.selected,
-        required this.currentDate,
+      required this.currentDate,
       required this.onTap,
-      required this.showSelector,
       required this.hasLog});
 
   Color _getBackgroundColor() {
@@ -213,13 +203,13 @@ class _Day extends StatelessWidget {
     return Colors.transparent;
   }
 
-  Border? _dateBorder(){
-    if(selected){
+  Border? _dateBorder() {
+    if (selected) {
       return Border.all(color: Colors.blueGrey, width: 2.0);
-    }else if(currentDate){
+    } else if (currentDate) {
       return Border.all(color: Colors.grey, width: 2.0);
     }
-      return null;
+    return null;
   }
 
   @override
@@ -227,13 +217,11 @@ class _Day extends StatelessWidget {
     return GestureDetector(
       onTap: () => onTap(dateTime),
       child: Container(
-        padding: selected && showSelector ? const EdgeInsets.all(2) : null,
-        decoration: showSelector
-            ? BoxDecoration(
-                border: _dateBorder(),
-                borderRadius: BorderRadius.circular(2),
-              )
-            : null,
+        padding: selected ? const EdgeInsets.all(2) : null,
+        decoration: BoxDecoration(
+          border: _dateBorder(),
+          borderRadius: BorderRadius.circular(2),
+        ),
         child: Container(
           margin: const EdgeInsets.all(2),
           decoration: BoxDecoration(
@@ -247,23 +235,5 @@ class _Day extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class _RoutineLogListView extends StatelessWidget {
-  final List<RoutineLogDto> logs;
-
-  const _RoutineLogListView({required this.logs});
-
-  @override
-  Widget build(BuildContext context) {
-    final widgets = logs.map((log) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 8.0),
-        child: RoutineLogWidget(log: log, color: sapphireDark80, trailing: log.duration().hmsAnalog()),
-      );
-    }).toList();
-
-    return Column(children: widgets);
   }
 }

@@ -24,6 +24,7 @@ import '../../colors.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../controllers/routine_template_controller.dart';
 import '../../dtos/exercise_dto.dart';
+import '../../dtos/routine_template_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/app_analytics.dart';
 import '../../utils/health_utils.dart';
@@ -153,6 +154,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     workoutSessionLogged();
 
+    _cleanUpSession();
+
     _syncAndUpdateRoutineTemplate(log: updatedRoutineLog);
   }
 
@@ -161,21 +164,14 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: routineLog);
 
-    _cleanUpSession();
-
     _syncAndUpdateRoutineTemplate(log: routineLog);
   }
 
-  Future<void> _updateRoutineTemplateSchedule() async {
-    final template =
-        Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: widget.log.templateId);
-    if (template != null) {
-      if (template.scheduleType == RoutineScheduleType.intervals) {
-        final scheduledDate = DateTime.now().add(Duration(days: template.scheduleIntervals)).withoutTime();
-        final scheduledTemplate = template.copyWith(scheduledDate: scheduledDate);
-        await Provider.of<RoutineTemplateController>(context, listen: false)
-            .updateTemplate(template: scheduledTemplate);
-      }
+  Future<void> _updateRoutineTemplateSchedule({required RoutineTemplateDto templateToUpdate}) async {
+    if (templateToUpdate.scheduleType == RoutineScheduleType.intervals) {
+      final scheduledDate = DateTime.now().add(Duration(days: templateToUpdate.scheduleIntervals)).withoutTime();
+      final scheduledTemplate = templateToUpdate.copyWith(scheduledDate: scheduledDate);
+      await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: scheduledTemplate);
     }
   }
 
@@ -234,9 +230,16 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
       await syncWorkoutWithAppleHealth(log: log);
     }
 
-    await _doUpdateTemplate(log: log);
-
-    await _updateRoutineTemplateSchedule();
+    if (log.templateId.isNotEmpty) {
+      if (mounted) {
+        final template =
+            Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: widget.log.templateId);
+        if (template != null) {
+          await _doUpdateTemplate(log: log, templateToUpdate: template);
+          await _updateRoutineTemplateSchedule(templateToUpdate: template);
+        }
+      }
+    }
 
     if (mounted) {
       context.pop();
@@ -285,16 +288,13 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     context.pop();
   }
 
-  Future<void> _doUpdateTemplate({required RoutineLogDto log}) async {
-    final templateToUpdate = Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: log.templateId);
-    if (templateToUpdate != null) {
-      final exerciseLogs = log.exerciseLogs.map((exerciseLog) {
-        final newSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
-        return exerciseLog.copyWith(sets: newSets);
-      }).toList();
-      final updatedTemplate = templateToUpdate.copyWith(exerciseTemplates: exerciseLogs);
-      await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: updatedTemplate);
-    }
+  Future<void> _doUpdateTemplate({required RoutineLogDto log, required RoutineTemplateDto templateToUpdate}) async {
+    final exerciseLogs = log.exerciseLogs.map((exerciseLog) {
+      final newSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
+      return exerciseLog.copyWith(sets: newSets);
+    }).toList();
+    final updatedTemplate = templateToUpdate.copyWith(exerciseTemplates: exerciseLogs);
+    await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: updatedTemplate);
   }
 
   /// Handle collapsed ExerciseLogWidget

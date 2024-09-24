@@ -14,10 +14,10 @@ import '../../utils/routine_utils.dart';
 import '../routine/preview/set_headers/double_set_header.dart';
 import '../routine/preview/set_headers/single_set_header.dart';
 
-class RoutineLogWidget extends StatelessWidget {
+class ExerciseHistoryLogWidget extends StatelessWidget {
   final ExerciseLogDto exerciseLog;
 
-  const RoutineLogWidget({
+  const ExerciseHistoryLogWidget({
     super.key,
     required this.exerciseLog,
   });
