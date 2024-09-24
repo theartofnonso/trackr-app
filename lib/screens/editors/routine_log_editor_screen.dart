@@ -148,15 +148,18 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   Future<void> _doCreateRoutineLog() async {
     final routineLog = _routineLog();
 
-    final updatedRoutineLog = routineLog.copyWith(endTime: DateTime.now());
+    final routineLogToBeUpdated = routineLog.copyWith(endTime: DateTime.now());
 
-    await Provider.of<RoutineLogController>(context, listen: false).saveLog(logDto: updatedRoutineLog);
+    final updatedRoutineLog =
+        await Provider.of<RoutineLogController>(context, listen: false).saveLog(logDto: routineLogToBeUpdated);
 
     workoutSessionLogged();
 
     _cleanUpSession();
 
-    _syncAndUpdateRoutineTemplate(log: updatedRoutineLog);
+    if (updatedRoutineLog != null) {
+      _syncAndUpdateRoutineTemplate(log: updatedRoutineLog);
+    }
   }
 
   Future<void> _doUpdateRoutineLog() async {
@@ -242,7 +245,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     }
 
     if (mounted) {
-      context.pop();
+      context.pop(log);
     }
   }
 

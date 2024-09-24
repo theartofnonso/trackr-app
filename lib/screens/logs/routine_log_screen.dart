@@ -8,6 +8,7 @@ import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/routine_log_extension.dart';
+import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/chart/muscle_group_family_chart.dart';
@@ -31,8 +32,9 @@ class RoutineLogScreen extends StatefulWidget {
   static const routeName = '/routine_log_screen';
 
   final String id;
+  final bool showSummary;
 
-  const RoutineLogScreen({super.key, required this.id});
+  const RoutineLogScreen({super.key, required this.id, required this.showSummary});
 
   @override
   State<RoutineLogScreen> createState() => _RoutineLogScreenState();
@@ -216,6 +218,14 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
   void initState() {
     super.initState();
     _loadData();
+    if (widget.showSummary) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final log = _log;
+        if (log != null) {
+          navigateWithSlideTransition(context: context, child: RoutineLogSummaryScreen(log: log));
+        }
+      });
+    }
   }
 
   void _showBottomSheet() {

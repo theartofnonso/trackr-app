@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
 import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
-import 'package:tracker_app/screens/shareable_screen.dart';
+import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 
 import '../dtos/routine_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
@@ -29,8 +29,13 @@ void navigateToPastRoutineLogEditor({required BuildContext context, required Pas
   context.push(PastRoutineLogEditorScreen.routeName, extra: arguments);
 }
 
-void navigateToRoutineLogEditor({required BuildContext context, required RoutineLogArguments arguments}) {
-  context.push(RoutineLogEditorScreen.routeName, extra: arguments);
+void navigateToRoutineLogEditor({required BuildContext context, required RoutineLogArguments arguments}) async {
+  final createdLog = await context.push(RoutineLogEditorScreen.routeName, extra: arguments) as RoutineLogDto?;
+  if(createdLog != null) {
+    if (context.mounted) {
+      context.push(RoutineLogScreen.routeName, extra: {"log": createdLog, "showSummary": true});
+    }
+  }
 }
 
 void navigateToRoutineTemplatePreview({required BuildContext context, required RoutineTemplateDto template}) {
@@ -38,14 +43,35 @@ void navigateToRoutineTemplatePreview({required BuildContext context, required R
 }
 
 void navigateToRoutineLogPreview({required BuildContext context, required RoutineLogDto log}) {
-  context.push(RoutineLogScreen.routeName, extra: log);
+  context.push(RoutineLogScreen.routeName, extra: {"log": log, "showSummary": false});
 }
 
 void navigateToShareableScreen({required BuildContext context, required RoutineLogDto log}) {
-  context.push(ShareableScreen.routeName, extra: log);
+  context.push(RoutineLogSummaryScreen.routeName, extra: log);
 }
 
 void navigateToRoutineLogs({required BuildContext context, required List<RoutineLogDto> logs}) {
   final descendingLogs = logs.reversed.toList();
   context.push(RoutineLogsScreen.routeName, extra: descendingLogs);
+}
+
+/// Create a screen on demand
+void navigateWithSlideTransition({required BuildContext context, required Widget child}) {
+  final route = PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => child,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(0.0, 1.0);
+      const end = Offset.zero;
+      const curve = Curves.ease;
+      final tween =
+      Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+      final offsetAnimation = animation.drive(tween);
+      return SlideTransition(
+        position: offsetAnimation,
+        child: child,
+      );
+    },
+  );
+
+  Navigator.of(context).push(route);
 }

@@ -40,7 +40,6 @@ import 'package:tracker_app/screens/intro_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_screen.dart';
 import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
-import 'package:tracker_app/screens/shareable_screen.dart';
 import 'package:tracker_app/screens/template/routines_home.dart';
 import 'package:tracker_app/screens/template/templates/routine_template_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -121,7 +120,7 @@ final _router = GoRouter(
             path: "shared-workout-log/:id",
             builder: (context, state) {
               final id = state.pathParameters['id'] ?? "";
-              return RoutineLogScreen(id: id);
+              return RoutineLogScreen(id: id, showSummary: false,);
             },
           )
         ]),
@@ -178,28 +177,12 @@ final _router = GoRouter(
     GoRoute(
       path: RoutineLogScreen.routeName,
       pageBuilder: (context, state) {
-        final log = state.extra as RoutineLogDto;
+        final extra = state.extra as Map<String, dynamic>;
+        final log = extra["log"] as RoutineLogDto;
+        final showSummary = extra["showSummary"] as bool;
+
         return CustomTransitionPage(
-            child: RoutineLogScreen(id: log.id),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              const begin = Offset(0.0, 1.0);
-              const end = Offset.zero;
-              const curve = Curves.ease;
-              final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-              final offsetAnimation = animation.drive(tween);
-              return SlideTransition(
-                position: offsetAnimation,
-                child: child,
-              );
-            });
-      },
-    ),
-    GoRoute(
-      path: ShareableScreen.routeName,
-      pageBuilder: (context, state) {
-        final args = state.extra as RoutineLogDto;
-        return CustomTransitionPage(
-            child: ShareableScreen(log: args),
+            child: RoutineLogScreen(id: log.id, showSummary: showSummary),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               const begin = Offset(0.0, 1.0);
               const end = Offset.zero;
