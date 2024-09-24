@@ -83,8 +83,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     final logsForCurrentDate = routineLogController.logsWhereDate(dateTime: _selectedDateTime).reversed.toList();
 
-    print(logsForCurrentDate.length);
-
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         heroTag: "fab_overview_screen",
