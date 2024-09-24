@@ -150,9 +150,7 @@ class _RoutineWidget extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                 ),
-                const SizedBox(
-                  height: 6,
-                ),
+                const Spacer(),
                 Text(
                   "${template.exerciseTemplates.length} Exercises",
                   style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w500),
@@ -168,7 +166,9 @@ class _RoutineWidget extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                 ),
-                const Spacer(),
+                const SizedBox(height: 8),
+                const Divider(color: sapphireLighter, endIndent: 10),
+                const SizedBox(height: 8),
                 Text(
                   scheduleSummary,
                   style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w400),
