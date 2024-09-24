@@ -15,7 +15,6 @@ import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/enums/routine_schedule_type_enums.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
-import 'package:tracker_app/screens/shareable_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/routine_editors_utils.dart';
@@ -154,7 +153,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     workoutSessionLogged();
 
-    _endWorkout(log: updatedRoutineLog);
+    _syncAndUpdateRoutineTemplate(log: updatedRoutineLog);
   }
 
   Future<void> _doUpdateRoutineLog() async {
@@ -162,17 +161,21 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: routineLog);
 
-    _endWorkout(log: routineLog);
+    _cleanUpSession();
+
+    _syncAndUpdateRoutineTemplate(log: routineLog);
   }
 
   Future<void> _updateRoutineTemplateSchedule() async {
     final template =
         Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: widget.log.templateId);
-    if (template == null) return;
-    if (template.scheduleType == RoutineScheduleType.intervals) {
-      final scheduledDate = DateTime.now().add(Duration(days: template.scheduleIntervals)).withoutTime();
-      final scheduledTemplate = template.copyWith(scheduledDate: scheduledDate);
-      await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: scheduledTemplate);
+    if (template != null) {
+      if (template.scheduleType == RoutineScheduleType.intervals) {
+        final scheduledDate = DateTime.now().add(Duration(days: template.scheduleIntervals)).withoutTime();
+        final scheduledTemplate = template.copyWith(scheduledDate: scheduledDate);
+        await Provider.of<RoutineTemplateController>(context, listen: false)
+            .updateTemplate(template: scheduledTemplate);
+      }
     }
   }
 
@@ -226,15 +229,30 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     }
   }
 
+  void _syncAndUpdateRoutineTemplate({required RoutineLogDto log}) async {
+    if (Platform.isIOS) {
+      await syncWorkoutWithAppleHealth(log: log);
+    }
+
+    await _doUpdateTemplate(log: log);
+
+    await _updateRoutineTemplateSchedule();
+
+    if (mounted) {
+      context.pop();
+    }
+  }
+
   void _showSnackbar(String message) {
     showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: message);
   }
 
   void _cacheLog() {
-    if (widget.mode == RoutineEditorMode.edit) return;
-    final routineLog = _routineLog();
-    final updatedRoutineLog = routineLog.copyWith(endTime: DateTime.now());
-    Provider.of<RoutineLogController>(context, listen: false).cacheLog(logDto: updatedRoutineLog);
+    if (widget.mode == RoutineEditorMode.log) {
+      final routineLog = _routineLog();
+      final updatedRoutineLog = routineLog.copyWith(endTime: DateTime.now());
+      Provider.of<RoutineLogController>(context, listen: false).cacheLog(logDto: updatedRoutineLog);
+    }
   }
 
   void _dismissKeyboard() {
@@ -247,12 +265,11 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   void _reOrderExerciseLogs({required List<ExerciseLogDto> exerciseLogs}) async {
     final orderedList = await reOrderExerciseLogs(context: context, exerciseLogs: exerciseLogs);
-    if (!mounted) {
-      return;
-    }
-    if (orderedList != null) {
-      Provider.of<ExerciseLogController>(context, listen: false).reOrderExerciseLogs(reOrderedList: orderedList);
-      _cacheLog();
+    if (mounted) {
+      if (orderedList != null) {
+        Provider.of<ExerciseLogController>(context, listen: false).reOrderExerciseLogs(reOrderedList: orderedList);
+        _cacheLog();
+      }
     }
   }
 
@@ -262,37 +279,21 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   }
 
   void _navigateBack() async {
-    _cleanUpSession();
+    if (widget.mode == RoutineEditorMode.log) {
+      _cleanUpSession();
+    }
     context.pop();
   }
 
-  void _endWorkout({required RoutineLogDto log}) async {
-    _cleanUpSession();
-
-    if (Platform.isIOS) {
-      await syncWorkoutWithAppleHealth(log: log);
-    }
-
-    await _doUpdateTemplate(log: log);
-
-    await _updateRoutineTemplateSchedule();
-
-    if (mounted) {
-      context.pop();
-      context.push(ShareableScreen.routeName, extra: log);
-    }
-  }
-
   Future<void> _doUpdateTemplate({required RoutineLogDto log}) async {
-    final templateToUpdate =
-        Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: log.templateId);
+    final templateToUpdate = Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: log.templateId);
     if (templateToUpdate != null) {
       final exerciseLogs = log.exerciseLogs.map((exerciseLog) {
         final newSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
         return exerciseLog.copyWith(sets: newSets);
       }).toList();
-      final newTemplate = templateToUpdate.copyWith(exerciseTemplates: exerciseLogs);
-      await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: newTemplate);
+      final updatedTemplate = templateToUpdate.copyWith(exerciseTemplates: exerciseLogs);
+      await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: updatedTemplate);
     }
   }
 

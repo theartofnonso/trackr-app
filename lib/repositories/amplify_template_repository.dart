@@ -109,13 +109,8 @@ class AmplifyTemplateRepository {
         RoutineTemplateModelIdentifier(id: id),
       );
       final response = await Amplify.API.query(request: request).response;
-      final template = response.data;
-      if (template == null) {
-        safePrint('errors: ${response.errors}');
-      }
-      return template;
-    } on ApiException catch (e) {
-      safePrint('Query failed: $e');
+      return response.data;
+    } on ApiException catch (_) {
       return null;
     }
   }

@@ -75,13 +75,8 @@ class AmplifyLogRepository {
         RoutineLogModelIdentifier(id: id),
       );
       final response = await Amplify.API.query(request: request).response;
-      final log = response.data;
-      if (log == null) {
-        safePrint('errors: ${response.errors}');
-      }
-      return log;
-    } on ApiException catch (e) {
-      safePrint('Query failed: $e');
+      return response.data;
+    } on ApiException catch (_) {
       return null;
     }
   }
@@ -108,10 +103,12 @@ class AmplifyLogRepository {
     await Amplify.DataStore.save(logToCreate);
 
     final updatedWithId = logDto.copyWith(id: logToCreate.id);
-    final updatedWithRoutineIds = updatedWithId.copyWith(
-        exerciseLogs: updatedWithId.exerciseLogs.map((log) => log.copyWith(routineLogId: logToCreate.id)).toList());
+    final updatedWithRoutineIds = updatedWithId.copyWith(exerciseLogs: updatedWithId.exerciseLogs.map((log) => log.copyWith(routineLogId: logToCreate.id)).toList());
+
     _routineLogs.add(updatedWithRoutineIds);
+
     _routineLogs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+
     _normaliseLogs();
 
     return updatedWithRoutineIds;

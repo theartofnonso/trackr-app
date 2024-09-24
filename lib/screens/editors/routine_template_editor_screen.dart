@@ -179,8 +179,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     }
   }
 
-  RoutineTemplateDto _getUpdatedRoutineTemplate(
-      {required RoutineTemplateDto template, List<ExerciseLogDto>? updatedExerciseLogs}) {
+  RoutineTemplateDto _getUpdatedRoutineTemplate({required RoutineTemplateDto template, List<ExerciseLogDto>? updatedExerciseLogs}) {
     final exerciseProvider = Provider.of<ExerciseLogController>(context, listen: false);
     final exerciseLogs = updatedExerciseLogs ?? exerciseProvider.mergeExerciseLogsAndSets();
 
@@ -422,13 +421,13 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   void initState() {
     super.initState();
 
-    _initializeProcedureData();
+    _initializeWorkoutTemplateData();
     _initializeTextControllers();
 
     _onDisposeCallback = Provider.of<ExerciseLogController>(context, listen: false).onClear;
   }
 
-  void _initializeProcedureData() {
+  void _initializeWorkoutTemplateData() {
     final exercises = widget.template?.exerciseTemplates;
     if (exercises != null && exercises.isNotEmpty) {
       final updatedExerciseLogs = exercises.map((exerciseLog) {

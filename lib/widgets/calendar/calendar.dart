@@ -65,7 +65,7 @@ class _CalendarState extends State<Calendar> {
       datesInMonths.addAll(emptyDated);
     }
 
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
     final logsForCurrentDate =
         (routineLogController.monthlyLogs[DateTimeRange(start: firstDayOfMonth, end: lastDayOfMonth)] ?? [])
@@ -92,6 +92,7 @@ class _CalendarState extends State<Calendar> {
   @override
   Widget build(BuildContext context) {
     Provider.of<SettingsController>(context, listen: true);
+
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
     final logsForCurrentDate = routineLogController.logsWhereDate(dateTime: _currentDate).reversed.toList();
