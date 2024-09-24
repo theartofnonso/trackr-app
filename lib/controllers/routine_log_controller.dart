@@ -56,6 +56,7 @@ class RoutineLogController extends ChangeNotifier {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {
       notifyListeners();
+      print("Called");
     }
     return savedLog;
   }

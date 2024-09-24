@@ -8,6 +8,7 @@ import 'package:tracker_app/controllers/routine_template_controller.dart';
 import 'package:tracker_app/extensions/routine_template_dto_extension.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/empty_states/routine_empty_state.dart';
+
 import '../../../dtos/routine_template_dto.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/navigation_utils.dart';
@@ -143,20 +144,31 @@ class _RoutineWidget extends StatelessWidget {
                       : null,
                   boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 5, spreadRadius: 1)]),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                CircleAvatar(
-                  backgroundColor: template.isScheduledToday() ? vibrantGreen : Colors.white70,
-                  foregroundColor: sapphireDark,
-                  child: Text("${template.exerciseTemplates.length}",
-                      style: GoogleFonts.montserrat(fontSize: 28, fontWeight: FontWeight.w700)),
-                ),
-                const Spacer(),
                 Text(
                   template.name,
-                  style: GoogleFonts.montserrat(fontSize: 18, fontWeight: FontWeight.w700),
+                  style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.w700),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(
+                  height: 6,
+                ),
+                Text(
+                  "${template.exerciseTemplates.length} Exercises",
+                  style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w500),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                ),
+                const SizedBox(
+                  height: 6,
+                ),
+                Text(
+                  "${template.exerciseTemplates.expand((exercise) => exercise.sets).length} Sets",
+                  style: GoogleFonts.montserrat(fontSize: 12, fontWeight: FontWeight.w400),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                ),
+                const Spacer(),
                 Text(
                   scheduleSummary,
                   style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w400),
