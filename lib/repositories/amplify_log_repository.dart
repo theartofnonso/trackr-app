@@ -106,7 +106,6 @@ class AmplifyLogRepository {
     final updatedWithRoutineIds = updatedWithId.copyWith(exerciseLogs: updatedWithId.exerciseLogs.map((log) => log.copyWith(routineLogId: logToCreate.id)).toList());
 
     _routineLogs.add(updatedWithRoutineIds);
-
     _routineLogs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
 
     _normaliseLogs();
