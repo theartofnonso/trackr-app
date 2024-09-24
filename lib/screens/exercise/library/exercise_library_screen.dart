@@ -285,7 +285,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                                 onSelectExercise: widget.readOnly ? null : _navigateBackWithSelectedExercise),
                             separatorBuilder: (BuildContext context, int index) => const Divider(
                                   thickness: 1.0,
-                                  color: sapphireLight,
+                                  color: sapphireDark80,
                                 ),
                             itemCount: _filteredExercises.length),
                       )

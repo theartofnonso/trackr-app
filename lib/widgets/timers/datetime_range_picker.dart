@@ -50,7 +50,7 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
                         _showEndDateTimeRange = false;
                       });
                     },
-                    buttonColor: _showStartDateTimeRange ? vibrantGreen : sapphireLighter,
+                    buttonColor: _showStartDateTimeRange ? vibrantGreen : sapphireDark80,
                     textColor: _showStartDateTimeRange ? sapphireDark : Colors.white,
                     label: _startDateTime.formattedDayMonthTime()),
               )),
@@ -81,7 +81,7 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
                         _showEndDateTimeRange = !_showEndDateTimeRange;
                       });
                     },
-                    buttonColor: _showEndDateTimeRange ? vibrantGreen : sapphireLighter,
+                    buttonColor: _showEndDateTimeRange ? vibrantGreen : sapphireDark80,
                     textColor: _showEndDateTimeRange ? sapphireDark : Colors.white,
                     label: _endDateTime.formattedDayMonthTime()),
               )),
