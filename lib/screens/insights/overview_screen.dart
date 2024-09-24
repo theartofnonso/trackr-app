@@ -316,7 +316,7 @@ class _RoutineLogListView extends StatelessWidget {
     final widgets = logs.map((log) {
       return Padding(
         padding: const EdgeInsets.only(bottom: 8.0),
-        child: RoutineLogWidget(log: log, trailing: log.duration().hmsAnalog()),
+        child: RoutineLogWidget(log: log, trailing: log.duration().hmsAnalog(), color: sapphireDark80,),
       );
     }).toList();
 

@@ -12,9 +12,10 @@ import '../../pbs/pb_icon.dart';
 
 class RoutineLogWidget extends StatelessWidget {
   final RoutineLogDto log;
+  final Color color;
   final String trailing;
 
-  const RoutineLogWidget({super.key, required this.log, required this.trailing});
+  const RoutineLogWidget({super.key, required this.log, required this.color, required this.trailing});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,7 @@ class RoutineLogWidget extends StatelessWidget {
         title: log.name,
         subtitle: "${completedExerciseLogsAndSets.length} ${pluralize(word: "exercise", count: completedExerciseLogsAndSets.length)}",
         trailing: trailing,
-        tileColor: sapphireDark80,
+        tileColor: color,
         trailingSubtitle: pbs.isNotEmpty ? PBIcon(color: sapphireLight, label: "${pbs.length}") : null,
         onTap: () => navigateToRoutineLogPreview(context: context, log: log));
   }
