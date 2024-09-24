@@ -56,8 +56,9 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     final completedExerciseLogsAndSets = exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs);
 
-    final numberOfCompletedSets =  completedExerciseLogsAndSets.expand((exerciseLog) => exerciseLog.sets);
-    final completedSetsSummary = "${numberOfCompletedSets.length} ${pluralize(word: "Set", count: numberOfCompletedSets.length)}";
+    final numberOfCompletedSets = completedExerciseLogsAndSets.expand((exerciseLog) => exerciseLog.sets);
+    final completedSetsSummary =
+        "${numberOfCompletedSets.length} ${pluralize(word: "Set", count: numberOfCompletedSets.length)}";
 
     return Scaffold(
         backgroundColor: sapphireDark,
@@ -284,14 +285,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         .toList();
   }
 
-  int _calculateCompletedSets({required List<ExerciseLogDto> procedures}) {
-    List<SetDto> completedSets = [];
-    for (var procedure in procedures) {
-      completedSets.addAll(procedure.sets);
-    }
-    return completedSets.length;
-  }
-
   void _editLog() {
     context.pop();
     final log = _log;
@@ -382,13 +375,11 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
   }
 
   void _deleteLog() {
-    context.pop();
-
     showBottomSheetWithMultiActions(
         context: context,
         title: "Delete log?",
         description: "Are you sure you want to delete this log?",
-        leftAction: Navigator.of(context).pop,
+        leftAction: context.pop,
         rightAction: () {
           context.pop();
           _toggleLoadingState(message: "Deleting log");
