@@ -55,7 +55,6 @@ class RoutineLogController extends ChangeNotifier {
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {
-      print("${logDto.name} has been created");
       notifyListeners();
     }
     return savedLog;
