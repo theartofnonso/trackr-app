@@ -47,7 +47,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final log = Provider.of<RoutineLogController>(context, listen: true).logWhereId(id: widget.id);
+    final log = _log;
 
     if (log == null) {
       Provider.of<RoutineTemplateController>(context, listen: false).fetchTemplate(id: widget.id);
@@ -375,13 +375,14 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
   }
 
   void _deleteLog() {
+    context.pop(); // Close the previous BottomSheet
     showBottomSheetWithMultiActions(
         context: context,
         title: "Delete log?",
         description: "Are you sure you want to delete this log?",
         leftAction: context.pop,
         rightAction: () {
-          context.pop();
+          context.pop(); // Close current BottomSheet
           _toggleLoadingState(message: "Deleting log");
           _doDeleteLog();
         },
