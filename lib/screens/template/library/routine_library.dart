@@ -36,10 +36,12 @@ class RoutineTemplateLibrary extends StatelessWidget {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           const SizedBox(height: 20),
           const InformationContainerLite(
-            icon: FaIcon(FontAwesomeIcons.lightbulb, color: vibrantBlue, size: 16,),
-            content: exploreWorkouts,
-            color: vibrantBlue,
-          ),
+              icon: FaIcon(
+                FontAwesomeIcons.lightbulb,
+                color: Colors.white,
+                size: 16,
+              ),
+              content: exploreWorkouts),
           const SizedBox(height: 20),
           Expanded(
             child: ListView.separated(
@@ -63,9 +65,7 @@ class _WorkoutGridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final children = templateRoutines.map((libraryTemplate) {
-
       return _RoutineWidget(libraryTemplate: libraryTemplate);
     }).toList();
 
@@ -82,7 +82,8 @@ class _WorkoutGridView extends StatelessWidget {
             childAspectRatio: 1,
             mainAxisSpacing: 10.0,
             crossAxisSpacing: 10.0,
-            children: children)],
+            children: children)
+      ],
     );
   }
 }
@@ -107,12 +108,12 @@ class _RoutineWidget extends StatelessWidget {
                 children: [
                   Positioned.fill(
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(5.0),
-                        child: Image.asset(
-                          'images/${libraryTemplate.image}',
-                          fit: BoxFit.cover,
-                        ),
-                      )),
+                    borderRadius: BorderRadius.circular(5.0),
+                    child: Image.asset(
+                      'images/${libraryTemplate.image}',
+                      fit: BoxFit.cover,
+                    ),
+                  )),
                   Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
