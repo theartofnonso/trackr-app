@@ -565,12 +565,12 @@ class _RoutineLogOverview extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
-          color: vibrantGreen.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(100), // rounded border
+          color: Colors.black.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(5), // rounded border
         ),
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
         child: Table(
-          border: TableBorder(verticalInside: BorderSide(color: sapphireDark80.withOpacity(0.5), width: 1)),
+          border: TableBorder(verticalInside: BorderSide(color: Colors.white.withOpacity(0.1), width: 1)),
           columnWidths: const <int, TableColumnWidth>{
             0: FlexColumnWidth(1),
             1: FlexColumnWidth(1),
@@ -580,13 +580,13 @@ class _RoutineLogOverview extends StatelessWidget {
             TableRow(children: [
               Text("EXERCISES",
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.montserrat(fontSize: 10, color: sapphireDark80, fontWeight: FontWeight.w600)),
+                  style: GoogleFonts.montserrat(fontSize: 10, color: Colors.white, fontWeight: FontWeight.w600)),
               Text("SETS",
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.montserrat(fontSize: 10, color: sapphireDark80, fontWeight: FontWeight.w600)),
+                  style: GoogleFonts.montserrat(fontSize: 10, color: Colors.white, fontWeight: FontWeight.w600)),
               Text("DURATION",
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.montserrat(fontSize: 10, color: sapphireDark80, fontWeight: FontWeight.w600))
+                  style: GoogleFonts.montserrat(fontSize: 10, color: Colors.white, fontWeight: FontWeight.w600))
             ]),
             const TableRow(children: [SizedBox(height: 4), SizedBox(height: 4), SizedBox(height: 4)] ),
             TableRow(
