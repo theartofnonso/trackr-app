@@ -407,7 +407,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                         "${provider.completedSets().length}/${provider.exerciseLogs.expand((exerciseLog) => exerciseLog.sets).length}",
                                     timer: RoutineTimer(
                                       startTime: widget.log.startTime,
-                                      color: vibrantGreen,
+                                      color: Colors.white,
                                     ),
                                   ),
                                 );
@@ -580,23 +580,23 @@ class _RoutineLogOverview extends StatelessWidget {
             TableRow(children: [
               Text("EXERCISES",
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.montserrat(fontSize: 10, color: Colors.white, fontWeight: FontWeight.w600)),
+                  style: GoogleFonts.montserrat(fontSize: 10, color: Colors.white70, fontWeight: FontWeight.w600)),
               Text("SETS",
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.montserrat(fontSize: 10, color: Colors.white, fontWeight: FontWeight.w600)),
+                  style: GoogleFonts.montserrat(fontSize: 10, color: Colors.white70, fontWeight: FontWeight.w600)),
               Text("DURATION",
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.montserrat(fontSize: 10, color: Colors.white, fontWeight: FontWeight.w600))
+                  style: GoogleFonts.montserrat(fontSize: 10, color: Colors.white70, fontWeight: FontWeight.w600))
             ]),
             const TableRow(children: [SizedBox(height: 4), SizedBox(height: 4), SizedBox(height: 4)] ),
             TableRow(
                 children: [
               Text(exercisesSummary,
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.montserrat(color: vibrantGreen, fontWeight: FontWeight.w600)),
+                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600)),
               Text(setsSummary,
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.montserrat(color: vibrantGreen, fontWeight: FontWeight.w600)),
+                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600)),
               Center(child: timer)
             ])
           ],
