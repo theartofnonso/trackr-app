@@ -167,7 +167,7 @@ class _RoutineWidget extends StatelessWidget {
                   maxLines: 2,
                 ),
                 const SizedBox(height: 8),
-                const Divider(color: sapphireLighter, endIndent: 10),
+                Divider(color: template.isScheduledToday() ? vibrantGreen.withOpacity(0.2) : sapphireLighter, endIndent: 10),
                 const SizedBox(height: 8),
                 Text(
                   scheduleSummary,
