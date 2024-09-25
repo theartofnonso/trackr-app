@@ -120,7 +120,7 @@ final _router = GoRouter(
             path: "shared-workout-log/:id",
             builder: (context, state) {
               final id = state.pathParameters['id'] ?? "";
-              return RoutineLogScreen(id: id, showSummary: false,);
+              return RoutineLogScreen(id: id, showSummary: false);
             },
           )
         ]),
