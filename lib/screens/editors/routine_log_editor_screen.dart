@@ -564,8 +564,13 @@ class _RoutineLogOverview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 5),
+        decoration: BoxDecoration(
+          color: vibrantGreen.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(100), // rounded border
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
         child: Table(
+          border: TableBorder(verticalInside: BorderSide(color: sapphireDark80.withOpacity(0.5), width: 1)),
           columnWidths: const <int, TableColumnWidth>{
             0: FlexColumnWidth(1),
             1: FlexColumnWidth(1),
@@ -573,23 +578,25 @@ class _RoutineLogOverview extends StatelessWidget {
           },
           children: [
             TableRow(children: [
-              Text("Exercises",
+              Text("EXERCISES",
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.montserrat(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500)),
-              Text("Sets",
+                  style: GoogleFonts.montserrat(fontSize: 10, color: sapphireDark80, fontWeight: FontWeight.w600)),
+              Text("SETS",
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.montserrat(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500)),
-              Text("Duration",
+                  style: GoogleFonts.montserrat(fontSize: 10, color: sapphireDark80, fontWeight: FontWeight.w600)),
+              Text("DURATION",
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.montserrat(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500))
+                  style: GoogleFonts.montserrat(fontSize: 10, color: sapphireDark80, fontWeight: FontWeight.w600))
             ]),
-            TableRow(children: [
+            const TableRow(children: [SizedBox(height: 4), SizedBox(height: 4), SizedBox(height: 4)] ),
+            TableRow(
+                children: [
               Text(exercisesSummary,
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.montserrat(color: vibrantGreen, fontWeight: FontWeight.w600, fontSize: 16)),
+                  style: GoogleFonts.montserrat(color: vibrantGreen, fontWeight: FontWeight.w600)),
               Text(setsSummary,
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.montserrat(color: vibrantGreen, fontWeight: FontWeight.w600, fontSize: 16)),
+                  style: GoogleFonts.montserrat(color: vibrantGreen, fontWeight: FontWeight.w600)),
               Center(child: timer)
             ])
           ],
