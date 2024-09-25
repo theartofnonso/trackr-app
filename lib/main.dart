@@ -43,6 +43,7 @@ import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/template/routines_home.dart';
 import 'package:tracker_app/screens/template/templates/routine_template_screen.dart';
+import 'package:tracker_app/screens/wrapped/storyboard.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import 'amplifyconfiguration.dart';
@@ -108,7 +109,7 @@ final _router = GoRouter(
   routes: [
     GoRoute(
         path: "/", // Define the path for Home Screen
-        builder: (context, state) => const HomeScreen(),
+        builder: (context, state) => const Storyboard(),
         routes: [
           GoRoute(
             path: "shared-workout/:id",
