@@ -130,12 +130,6 @@ class _RoutineWidget extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(18),
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.white70,
-                        foregroundColor: sapphireDark,
-                        child: Text("${libraryTemplate.template.exerciseTemplates.length}",
-                            style: GoogleFonts.montserrat(fontSize: 28, fontWeight: FontWeight.w700)),
-                      ),
                       const Spacer(),
                       Text(
                         libraryTemplate.template.name,
