@@ -109,7 +109,7 @@ final _router = GoRouter(
   routes: [
     GoRoute(
         path: "/", // Define the path for Home Screen
-        builder: (context, state) => const Storyboard(),
+        builder: (context, state) => const HomeScreen(),
         routes: [
           GoRoute(
             path: "shared-workout/:id",
