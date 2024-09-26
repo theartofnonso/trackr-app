@@ -55,16 +55,17 @@ class ExerciseWidget extends StatelessWidget {
                     Text(exercise.name,
                         style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 18)),
                     const SizedBox(
-                      height: 6,
-                    ),
-                    Text(exercise.primaryMuscleGroup.name,
-                        style: GoogleFonts.montserrat(color: Colors.orange, fontWeight: FontWeight.w600, fontSize: 16)),
-                    const SizedBox(
                       height: 10,
                     ),
                     Text(exercise.description ?? "No Description",
                         style: GoogleFonts.montserrat(
                             color: Colors.white70, height: 1.8, fontWeight: FontWeight.w400, fontSize: 14)),
+                    const SizedBox(
+                      height: 6,
+                    ),
+                    Text(exercise.primaryMuscleGroup.name.toUpperCase(),
+                        style: GoogleFonts.montserrat(color: Colors.orange, fontWeight: FontWeight.w600, fontSize: 14)),
+
                   ],
                 ),
               ),
