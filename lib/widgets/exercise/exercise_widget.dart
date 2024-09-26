@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../../screens/exercise/library/exercise_library_screen.dart';
 
@@ -17,43 +18,58 @@ class ExerciseWidget extends StatelessWidget {
     final selectExercise = onSelect;
     final navigateToExercise = onNavigateToExercise;
 
-    return Theme(
-        data: ThemeData(splashColor: sapphireLight),
-        child: ListTile(
-            leading: IconButton(
-              iconSize: 24,
-              onPressed: () => navigateToExercise != null ? navigateToExercise(exerciseInLibraryDto) : null,
-              icon: const Icon(
-                Icons.timeline_rounded,
-                color: Colors.white,
-              ),
-            ),
-            contentPadding: EdgeInsets.zero,
-            horizontalTitleGap: 10,
-            title: Text(exerciseInLibraryDto.exercise.name,
-                style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
-            onTap: () => selectExercise != null ? selectExercise(exerciseInLibraryDto) : null,
-            subtitle: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  "Primary: ${exerciseInLibraryDto.exercise.primaryMuscleGroup.name}",
-                  style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500),
+    final exercise = exerciseInLibraryDto.exercise;
+    final video = exercise.video;
+    final videoUrl = video != null ? video.toString() : "";
+    final videoId = YoutubePlayer.convertUrlToId(videoUrl) ?? "";
+
+    final controller = YoutubePlayerController(
+      initialVideoId: videoId,
+      flags: const YoutubePlayerFlags(
+        autoPlay: false,
+        mute: true,
+      ),
+    );
+
+    return GestureDetector(
+      onTap: () => navigateToExercise != null ? navigateToExercise(exerciseInLibraryDto) : null,
+      child: Theme(
+          data: ThemeData(splashColor: sapphireLight),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(5),
+                child: YoutubePlayer(
+                  controller: controller,
                 ),
-                if (exerciseInLibraryDto.exercise.owner)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                    margin: const EdgeInsets.only(left: 8),
-                    decoration: BoxDecoration(
-                      color: sapphireLighter,
-                      borderRadius: BorderRadius.circular(3),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(exercise.name,
+                        style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 18)),
+                    const SizedBox(
+                      height: 6,
                     ),
-                    child: Text(
-                      "owner",
-                      style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 10),
+                    Text(exercise.primaryMuscleGroup.name,
+                        style: GoogleFonts.montserrat(color: Colors.orange, fontWeight: FontWeight.w600, fontSize: 16)),
+                    const SizedBox(
+                      height: 10,
                     ),
-                  ),
-              ],
-            )));
+                    Text(exercise.description ?? "No Description",
+                        style: GoogleFonts.montserrat(
+                            color: Colors.white70, height: 1.8, fontWeight: FontWeight.w400, fontSize: 14)),
+                  ],
+                ),
+              ),
+            ],
+          )),
+    );
   }
 }

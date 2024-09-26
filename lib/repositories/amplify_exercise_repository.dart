@@ -27,6 +27,7 @@ class AmplifyExerciseRepository {
       final typeString = exerciseJson["type"];
       final video = exerciseJson["video"];
       final videoUri = video != null ? Uri.parse(video) : null;
+      final description = exerciseJson["description"];
       final creditSource = exerciseJson["creditSource"];
       final creditSourceUri = video != null ? Uri.parse(creditSource) : null;
       final credit = exerciseJson["credit"];
@@ -36,6 +37,7 @@ class AmplifyExerciseRepository {
           primaryMuscleGroup: MuscleGroup.fromString(primaryMuscleGroupString),
           type: ExerciseType.fromString(typeString),
           video: videoUri,
+          description: description,
           creditSource: creditSourceUri,
           credit: credit,
           owner: false);

@@ -283,10 +283,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                                 onNavigateToExerciseHistory: _navigateToExerciseHistory,
                                 onMultiSelectExercise: _selectCheckedExercise,
                                 onSelectExercise: widget.readOnly ? null : _navigateBackWithSelectedExercise),
-                            separatorBuilder: (BuildContext context, int index) => const Divider(
-                                  thickness: 1.0,
-                                  color: sapphireDark80,
-                                ),
+                            separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 30,),
                             itemCount: _filteredExercises.length),
                       )
                     : const ExerciseEmptyState(),
