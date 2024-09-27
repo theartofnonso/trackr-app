@@ -3,7 +3,8 @@
     "id": "FOR1",
     "name": "Barbell Wrist Curl",
     "primaryMuscleGroup": "Forearms",
-    "type": "WR"
+    "type": "WR",
+    "description": "Strengthens the forearm flexors and improves grip strength."
   },
   {
     "id": "FOR2",
@@ -12,7 +13,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=LjerEt3Gnyw",
     "creditSource": "https://www.youtube.com/@TheActiveLife",
-    "credit": "The Active Life"
+    "credit": "The Active Life",
+    "description": "Targets forearm flexors and improves grip with an isolated motion."
   },
   {
     "id": "FOR3",
@@ -21,7 +23,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=3VLTzIrnb5g",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "Builds forearm flexor strength and enhances wrist mobility."
   },
   {
     "id": "FOR4",
@@ -30,13 +33,15 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=k3Gsq1pNYUQ",
     "creditSource": "https://www.youtube.com/@thirdspacelondon8746",
-    "credit": "Third Space London"
+    "credit": "Third Space London",
+    "description": "Boosts grip strength and endurance while engaging forearms and shoulders."
   },
   {
     "id": "FOR5",
     "name": "Gripper",
     "primaryMuscleGroup": "Forearms",
-    "type": "WR"
+    "type": "WR",
+    "description": "Targets hand and forearm muscles to improve grip strength."
   },
   {
     "id": "FOR6",
@@ -45,19 +50,22 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=jFTV3DQf3HE",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "Develops grip strength by focusing on pinching strength in the forearms."
   },
   {
     "id": "FOR7",
     "name": "Plate Wrist Curl",
     "primaryMuscleGroup": "Forearms",
-    "type": "WR"
+    "type": "WR",
+    "description": "Engages forearm flexors with a controlled wrist curling movement."
   },
   {
     "id": "FOR8",
     "name": "Barbell Wrist Extension",
     "primaryMuscleGroup": "Forearms",
-    "type": "WR"
+    "type": "WR",
+    "description": "Strengthens the forearm extensors for balanced wrist development."
   },
   {
     "id": "FOR9",
@@ -66,6 +74,7 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=UcwgCTkVvIQ",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "Isolates and builds forearm extensor strength, improving wrist stability."
   }
 ]

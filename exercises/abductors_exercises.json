@@ -4,7 +4,7 @@
     "name": "Hip Abduction Against Band",
     "primaryMuscleGroup": "Abductors",
     "type": "BW",
-    "description": "Targets the hip abductors by resisting lateral leg movements using a resistance band."
+    "description": "Activates and strengthens the hip abductors using resistance bands, focusing on lateral leg movement."
   },
   {
     "id": "ABD2",
@@ -14,6 +14,6 @@
     "video": "https://www.youtube.com/watch?v=G_8LItOiZ0Q",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Focuses on strengthening the outer thighs and glute muscles using the abduction machine."
+    "description": "Strengthens the outer thighs and glutes by performing hip abductions with machine resistance."
   }
 ]
