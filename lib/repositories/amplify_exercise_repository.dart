@@ -27,6 +27,7 @@ class AmplifyExerciseRepository {
       final typeString = exerciseJson["type"];
       final video = exerciseJson["video"];
       final videoUri = video != null ? Uri.parse(video) : null;
+      final description = exerciseJson["description"];
       final creditSource = exerciseJson["creditSource"];
       final creditSourceUri = video != null ? Uri.parse(creditSource) : null;
       final credit = exerciseJson["credit"];
@@ -36,6 +37,7 @@ class AmplifyExerciseRepository {
           primaryMuscleGroup: MuscleGroup.fromString(primaryMuscleGroupString),
           type: ExerciseType.fromString(typeString),
           video: videoUri,
+          description: description,
           creditSource: creditSourceUri,
           credit: credit,
           owner: false);
@@ -89,14 +91,16 @@ class AmplifyExerciseRepository {
     exerciseDtos.addAll(neckExercises);
     exerciseDtos.addAll(fullBodyExercises);
 
-    // List<String> withNoVideos =
-    // exerciseDtos.where((exercise) => exercise.video == null && !exercise.owner).map((exercise) => exercise.name).toList();
-    //
-    // withNoVideos.forEach((exercise) {
-    //   print(exercise);
-    // });
-    //
-    // print(withNoVideos.length);
+    List<String> withNoVideos = exerciseDtos
+        .where((exercise) => exercise.video == null && !exercise.owner)
+        .map((exercise) => exercise.name)
+        .toList();
+
+    withNoVideos.forEach((exercise) {
+      print(exercise);
+    });
+
+    print(withNoVideos.length);
 
     _exercises = exerciseDtos.sorted((a, b) => a.name.compareTo(b.name));
   }

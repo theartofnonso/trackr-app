@@ -13,29 +13,29 @@ import 'package:tracker_app/widgets/shareables/pbs_shareable.dart';
 import 'package:tracker_app/widgets/shareables/routine_log_shareable_lite.dart';
 import 'package:tracker_app/widgets/shareables/session_milestone_shareable.dart';
 
-import '../colors.dart';
-import '../controllers/routine_log_controller.dart';
-import '../dtos/routine_log_dto.dart';
-import '../enums/exercise_type_enums.dart';
-import '../urls.dart';
-import '../utils/app_analytics.dart';
-import '../utils/dialog_utils.dart';
-import '../utils/exercise_logs_utils.dart';
-import '../utils/shareables_utils.dart';
-import '../widgets/buttons/opacity_button_widget.dart';
+import '../../colors.dart';
+import '../../controllers/routine_log_controller.dart';
+import '../../dtos/routine_log_dto.dart';
+import '../../enums/exercise_type_enums.dart';
+import '../../urls.dart';
+import '../../utils/app_analytics.dart';
+import '../../utils/dialog_utils.dart';
+import '../../utils/exercise_logs_utils.dart';
+import '../../utils/shareables_utils.dart';
+import '../../widgets/buttons/opacity_button_widget.dart';
 
-class ShareableScreen extends StatefulWidget {
+class RoutineLogSummaryScreen extends StatefulWidget {
   static const routeName = '/shareable_screen';
 
   final RoutineLogDto log;
 
-  const ShareableScreen({super.key, required this.log});
+  const RoutineLogSummaryScreen({super.key, required this.log});
 
   @override
-  State<ShareableScreen> createState() => _ShareableScreenState();
+  State<RoutineLogSummaryScreen> createState() => _RoutineLogSummaryScreenState();
 }
 
-class _ShareableScreenState extends State<ShareableScreen> {
+class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
   bool _hasImage = false;
 
   Image? _image;

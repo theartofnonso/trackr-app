@@ -94,7 +94,7 @@ class _RoutineDayPlannerState extends State<RoutineDayPlanner> {
               onPressed: _updateRoutineTemplateDays,
               label: "Save Days",
               padding: const EdgeInsets.all(10.0),
-              buttonColor: Colors.transparent,),
+              buttonColor: vibrantGreen),
         )
       ],
     );

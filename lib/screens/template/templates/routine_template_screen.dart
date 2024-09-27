@@ -67,8 +67,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    RoutineTemplateDto? template =
-        Provider.of<RoutineTemplateController>(context, listen: true).templateWhere(id: widget.id);
+    final template = _template;
 
     if (template == null) {
       Provider.of<RoutineTemplateController>(context, listen: false).fetchTemplate(id: widget.id);
@@ -307,7 +306,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       StringBuffer workoutText = StringBuffer();
 
       workoutText.writeln(template.name);
-      if(template.notes.isNotEmpty) {
+      if (template.notes.isNotEmpty) {
         workoutText.writeln("Notes: ${template.notes}");
       }
 

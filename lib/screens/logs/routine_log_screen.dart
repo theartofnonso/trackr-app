@@ -8,6 +8,7 @@ import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/routine_log_extension.dart';
+import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/chart/muscle_group_family_chart.dart';
@@ -31,8 +32,9 @@ class RoutineLogScreen extends StatefulWidget {
   static const routeName = '/routine_log_screen';
 
   final String id;
+  final bool showSummary;
 
-  const RoutineLogScreen({super.key, required this.id});
+  const RoutineLogScreen({super.key, required this.id, required this.showSummary});
 
   @override
   State<RoutineLogScreen> createState() => _RoutineLogScreenState();
@@ -47,17 +49,18 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final log = Provider.of<RoutineLogController>(context, listen: true).logWhereId(id: widget.id);
+    final log = _log;
 
     if (log == null) {
       Provider.of<RoutineTemplateController>(context, listen: false).fetchTemplate(id: widget.id);
       return const _EmptyState();
     }
 
-    final numberOfCompletedSets = _calculateCompletedSets(procedures: log.exerciseLogs);
-    final completedSetsSummary = "$numberOfCompletedSets ${pluralize(word: "Set", count: numberOfCompletedSets)}";
-
     final completedExerciseLogsAndSets = exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs);
+
+    final numberOfCompletedSets = completedExerciseLogsAndSets.expand((exerciseLog) => exerciseLog.sets);
+    final completedSetsSummary =
+        "${numberOfCompletedSets.length} ${pluralize(word: "Set", count: numberOfCompletedSets.length)}";
 
     return Scaffold(
         backgroundColor: sapphireDark,
@@ -215,6 +218,14 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
   void initState() {
     super.initState();
     _loadData();
+    if (widget.showSummary) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final log = _log;
+        if (log != null) {
+          navigateWithSlideTransition(context: context, child: RoutineLogSummaryScreen(log: log));
+        }
+      });
+    }
   }
 
   void _showBottomSheet() {
@@ -282,14 +293,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             exerciseLog: exerciseLog,
             superSet: whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs)))
         .toList();
-  }
-
-  int _calculateCompletedSets({required List<ExerciseLogDto> procedures}) {
-    List<SetDto> completedSets = [];
-    for (var procedure in procedures) {
-      completedSets.addAll(procedure.sets);
-    }
-    return completedSets.length;
   }
 
   void _editLog() {
@@ -382,15 +385,14 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
   }
 
   void _deleteLog() {
-    context.pop();
-
+    context.pop(); // Close the previous BottomSheet
     showBottomSheetWithMultiActions(
         context: context,
         title: "Delete log?",
         description: "Are you sure you want to delete this log?",
-        leftAction: Navigator.of(context).pop,
+        leftAction: context.pop,
         rightAction: () {
-          context.pop();
+          context.pop(); // Close current BottomSheet
           _toggleLoadingState(message: "Deleting log");
           _doDeleteLog();
         },

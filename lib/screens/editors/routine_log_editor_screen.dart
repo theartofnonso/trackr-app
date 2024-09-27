@@ -15,7 +15,6 @@ import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/enums/routine_schedule_type_enums.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
-import 'package:tracker_app/screens/shareable_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/routine_editors_utils.dart';
@@ -25,6 +24,7 @@ import '../../colors.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../controllers/routine_template_controller.dart';
 import '../../dtos/exercise_dto.dart';
+import '../../dtos/routine_template_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/app_analytics.dart';
 import '../../utils/health_utils.dart';
@@ -148,30 +148,32 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   Future<void> _doCreateRoutineLog() async {
     final routineLog = _routineLog();
 
-    final updatedRoutineLog = routineLog.copyWith(endTime: DateTime.now());
+    final routineLogToBeUpdated = routineLog.copyWith(endTime: DateTime.now());
 
-    final createdLog =
-        await Provider.of<RoutineLogController>(context, listen: false).saveLog(logDto: updatedRoutineLog);
+    final updatedRoutineLog =
+        await Provider.of<RoutineLogController>(context, listen: false).saveLog(logDto: routineLogToBeUpdated);
 
     workoutSessionLogged();
 
-    _endWorkout(log: createdLog);
+    _cleanUpSession();
+
+    if (updatedRoutineLog != null) {
+      _syncAndUpdateRoutineTemplate(log: updatedRoutineLog);
+    }
   }
 
   Future<void> _doUpdateRoutineLog() async {
     final routineLog = _routineLog();
+
     await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: routineLog);
 
-    _endWorkout();
+    _syncAndUpdateRoutineTemplate(log: routineLog);
   }
 
-  Future<void> _updateRoutineTemplateSchedule() async {
-    final template =
-        Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: widget.log.templateId);
-    if (template == null) return;
-    if (template.scheduleType == RoutineScheduleType.intervals) {
-      final scheduledDate = DateTime.now().add(Duration(days: template.scheduleIntervals)).withoutTime();
-      final scheduledTemplate = template.copyWith(scheduledDate: scheduledDate);
+  Future<void> _updateRoutineTemplateSchedule({required RoutineTemplateDto templateToUpdate}) async {
+    if (templateToUpdate.scheduleType == RoutineScheduleType.intervals) {
+      final scheduledDate = DateTime.now().add(Duration(days: templateToUpdate.scheduleIntervals)).withoutTime();
+      final scheduledTemplate = templateToUpdate.copyWith(scheduledDate: scheduledDate);
       await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: scheduledTemplate);
     }
   }
@@ -226,15 +228,37 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     }
   }
 
+  void _syncAndUpdateRoutineTemplate({required RoutineLogDto log}) async {
+    if (Platform.isIOS) {
+      await syncWorkoutWithAppleHealth(log: log);
+    }
+
+    if (log.templateId.isNotEmpty) {
+      if (mounted) {
+        final template =
+            Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: widget.log.templateId);
+        if (template != null) {
+          await _doUpdateTemplate(log: log, templateToUpdate: template);
+          await _updateRoutineTemplateSchedule(templateToUpdate: template);
+        }
+      }
+    }
+
+    if (mounted) {
+      context.pop(log);
+    }
+  }
+
   void _showSnackbar(String message) {
     showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: message);
   }
 
   void _cacheLog() {
-    if (widget.mode == RoutineEditorMode.edit) return;
-    final routineLog = _routineLog();
-    final updatedRoutineLog = routineLog.copyWith(endTime: DateTime.now());
-    Provider.of<RoutineLogController>(context, listen: false).cacheLog(logDto: updatedRoutineLog);
+    if (widget.mode == RoutineEditorMode.log) {
+      final routineLog = _routineLog();
+      final updatedRoutineLog = routineLog.copyWith(endTime: DateTime.now());
+      Provider.of<RoutineLogController>(context, listen: false).cacheLog(logDto: updatedRoutineLog);
+    }
   }
 
   void _dismissKeyboard() {
@@ -247,12 +271,11 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   void _reOrderExerciseLogs({required List<ExerciseLogDto> exerciseLogs}) async {
     final orderedList = await reOrderExerciseLogs(context: context, exerciseLogs: exerciseLogs);
-    if (!mounted) {
-      return;
-    }
-    if (orderedList != null) {
-      Provider.of<ExerciseLogController>(context, listen: false).reOrderExerciseLogs(reOrderedList: orderedList);
-      _cacheLog();
+    if (mounted) {
+      if (orderedList != null) {
+        Provider.of<ExerciseLogController>(context, listen: false).reOrderExerciseLogs(reOrderedList: orderedList);
+        _cacheLog();
+      }
     }
   }
 
@@ -262,39 +285,19 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   }
 
   void _navigateBack() async {
-    _cleanUpSession();
+    if (widget.mode == RoutineEditorMode.log) {
+      _cleanUpSession();
+    }
     context.pop();
   }
 
-  void _endWorkout({RoutineLogDto? log}) async {
-    _cleanUpSession();
-    if (log != null) {
-      if (Platform.isIOS) {
-        await syncWorkoutWithAppleHealth(log: log);
-      }
-    }
-
-    await _doUpdateTemplate();
-
-    await _updateRoutineTemplateSchedule();
-
-    if (mounted) {
-      context.pop();
-      context.push(ShareableScreen.routeName, extra: log);
-    }
-  }
-
-  Future<void> _doUpdateTemplate() async {
-    final templateToUpdate =
-        Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: widget.log.templateId);
-    if (templateToUpdate != null) {
-      final exerciseLogs = widget.log.exerciseLogs.map((exerciseLog) {
-        final newSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
-        return exerciseLog.copyWith(sets: newSets);
-      }).toList();
-      final newTemplate = templateToUpdate.copyWith(exerciseTemplates: exerciseLogs);
-      await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: newTemplate);
-    }
+  Future<void> _doUpdateTemplate({required RoutineLogDto log, required RoutineTemplateDto templateToUpdate}) async {
+    final exerciseLogs = log.exerciseLogs.map((exerciseLog) {
+      final newSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
+      return exerciseLog.copyWith(sets: newSets);
+    }).toList();
+    final updatedTemplate = templateToUpdate.copyWith(exerciseTemplates: exerciseLogs);
+    await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: updatedTemplate);
   }
 
   /// Handle collapsed ExerciseLogWidget
@@ -359,11 +362,11 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                 : FloatingActionButton.extended(
                     heroTag: UniqueKey(),
                     onPressed: widget.mode == RoutineEditorMode.log ? _saveLog : _updateLog,
-                    backgroundColor: sapphireDark.withOpacity(0.8),
+                    backgroundColor: vibrantGreen.withOpacity(0.2),
                     enableFeedback: true,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                     label: Text("Finish workout",
-                        style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600)),
+                        style: GoogleFonts.montserrat(color: vibrantGreen, fontWeight: FontWeight.w600)),
                   ),
             body: Container(
               width: double.infinity,
@@ -395,12 +398,18 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                             Column(children: [
                               Consumer<ExerciseLogController>(
                                   builder: (BuildContext context, ExerciseLogController provider, Widget? child) {
-                                return _RoutineLogOverview(
-                                  exercisesSummary:
-                                      "${provider.completedExerciseLog().length}/${provider.exerciseLogs.length}",
-                                  setsSummary:
-                                      "${provider.completedSets().length}/${provider.exerciseLogs.expand((exerciseLog) => exerciseLog.sets).length}",
-                                  timer: RoutineTimer(startTime: widget.log.startTime),
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                  child: _RoutineLogOverview(
+                                    exercisesSummary:
+                                        "${provider.completedExerciseLog().length}/${provider.exerciseLogs.length}",
+                                    setsSummary:
+                                        "${provider.completedSets().length}/${provider.exerciseLogs.expand((exerciseLog) => exerciseLog.sets).length}",
+                                    timer: RoutineTimer(
+                                      startTime: widget.log.startTime,
+                                      color: Colors.white,
+                                    ),
+                                  ),
                                 );
                               }),
                               const SizedBox(height: 20),
@@ -555,28 +564,40 @@ class _RoutineLogOverview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 5),
+        decoration: BoxDecoration(
+          color: Colors.black.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(5), // rounded border
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
         child: Table(
+          border: TableBorder(verticalInside: BorderSide(color: Colors.white.withOpacity(0.1), width: 1)),
           columnWidths: const <int, TableColumnWidth>{
             0: FlexColumnWidth(1),
             1: FlexColumnWidth(1),
-            2: FlexColumnWidth(2),
+            2: FlexColumnWidth(1),
           },
           children: [
             TableRow(children: [
-              Text("Exercises",
-                  style: GoogleFonts.montserrat(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500)),
-              Text("Sets",
-                  style: GoogleFonts.montserrat(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500)),
-              Text("Duration",
-                  style: GoogleFonts.montserrat(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500))
+              Text("EXERCISES",
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.montserrat(fontSize: 10, color: Colors.white70, fontWeight: FontWeight.w600)),
+              Text("SETS",
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.montserrat(fontSize: 10, color: Colors.white70, fontWeight: FontWeight.w600)),
+              Text("DURATION",
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.montserrat(fontSize: 10, color: Colors.white70, fontWeight: FontWeight.w600))
             ]),
-            TableRow(children: [
+            const TableRow(children: [SizedBox(height: 4), SizedBox(height: 4), SizedBox(height: 4)] ),
+            TableRow(
+                children: [
               Text(exercisesSummary,
-                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600)),
               Text(setsSummary,
-                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
-              timer
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600)),
+              Center(child: timer)
             ])
           ],
         ));

@@ -3,19 +3,22 @@
     "id": "GLT1",
     "name": "Banded Side Kicks",
     "primaryMuscleGroup": "Glutes",
-    "type": "BW"
+    "type": "BW",
+    "description": "Targets the gluteus medius to enhance hip stability and lateral strength."
   },
   {
     "id": "GLT2",
     "name": "Cable Pull Through",
     "primaryMuscleGroup": "Glutes",
-    "type": "WR"
+    "type": "WR",
+    "description": "Engages the glutes and hamstrings while focusing on hip hinge movement."
   },
   {
     "id": "GLT3",
     "name": "Clamshells",
     "primaryMuscleGroup": "Glutes",
-    "type": "BW"
+    "type": "BW",
+    "description": "Activates the gluteus medius to improve hip strength and stabilization."
   },
   {
     "id": "GLT4",
@@ -24,13 +27,15 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=N6t2Fv0SKGc",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
-    "credit": "Functional Bodybuilding"
+    "credit": "Functional Bodybuilding",
+    "description": "Targets the gluteus maximus through fast, repetitive hip thrusts."
   },
   {
     "id": "GLT5",
     "name": "Fire Hydrants",
     "primaryMuscleGroup": "Glutes",
-    "type": "BW"
+    "type": "BW",
+    "description": "Focuses on the gluteus medius, improving mobility and hip strength."
   },
   {
     "id": "GLT6",
@@ -39,7 +44,8 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=wklI-e2WpFQ",
     "creditSource": "https://www.youtube.com/@OnnitAcademy",
-    "credit": "Onnit Academy"
+    "credit": "Onnit Academy",
+    "description": "Isolates the gluteus maximus with rapid pumping hip movements."
   },
   {
     "id": "GLT7",
@@ -48,7 +54,18 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=tqp5XQPpTxY",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "Engages the glutes and lower back by lifting hips from the floor."
+  },
+  {
+    "id": "GLT8",
+    "name": "Donkey Kicks",
+    "primaryMuscleGroup": "Glutes",
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=EtSJ8rwm5M8",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym",
+    "description": "Isolates and strengthens the glutes while engaging the lower back for stability."
   },
   {
     "id": "GLT10",
@@ -57,7 +74,8 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=7XuNzi5rcj4",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "Targets the gluteus maximus for strength and size through hip extension."
   },
   {
     "id": "GLT11",
@@ -66,19 +84,22 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=ZSPmIyX9RZs",
     "creditSource": "https://www.youtube.com/@RenaissancePeriodization",
-    "credit": "Renaissance Periodization"
+    "credit": "Renaissance Periodization",
+    "description": "Machine-assisted glute isolation exercise, focusing on hip thrust movement."
   },
   {
     "id": "GLT12",
     "name": "Lateral Walk With Band",
     "primaryMuscleGroup": "Glutes",
-    "type": "BW"
+    "type": "BW",
+    "description": "Targets the gluteus medius with lateral stepping to improve hip stability."
   },
   {
     "id": "GLT13",
     "name": "Machine Glute Kickbacks",
     "primaryMuscleGroup": "Glutes",
-    "type": "WR"
+    "type": "WR",
+    "description": "Isolates the glutes through backward kicking movement on a machine."
   },
   {
     "id": "GLT14",
@@ -87,7 +108,8 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=sVfp4LN9niA",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "Single-leg version of the glute bridge for improved unilateral strength."
   },
   {
     "id": "GLT15",
@@ -96,13 +118,15 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=xRoPfiYGo00",
     "creditSource": "https://www.youtube.com/@OnnitAcademy",
-    "credit": "Onnit Academy"
+    "credit": "Onnit Academy",
+    "description": "Unilateral glute exercise focusing on hip extension and balance."
   },
   {
     "id": "GLT16",
     "name": "Standing Glute Kickback in Machine",
     "primaryMuscleGroup": "Glutes",
-    "type": "WR"
+    "type": "WR",
+    "description": "Targets the glutes by pushing the leg back against resistance in a machine."
   },
   {
     "id": "GLT18",
@@ -111,7 +135,8 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=vzU5xrs1gMQ",
     "creditSource": "https://www.youtube.com/@marcusfilly",
-    "credit": "Marcus Filly"
+    "credit": "Marcus Filly",
+    "description": "Engages glutes and core for stability and coordination through opposite limb extension."
   },
   {
     "id": "GLT20",
@@ -120,13 +145,15 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=aweBS7K71l8",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "Strengthens glutes with heavy resistance through barbell hip thrusts."
   },
   {
     "id": "GLT21",
     "name": "Reverse Hyperextension",
     "primaryMuscleGroup": "Glutes",
-    "type": "BW"
+    "type": "BW",
+    "description": "Engages the glutes and lower back through reverse extension of the legs."
   },
   {
     "id": "GLT23",
@@ -135,13 +162,15 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=ETnhBWeWK74",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "Adds weight to the single-leg hip thrust for greater glute activation."
   },
   {
     "id": "GLT24",
     "name": "Lateral Band Walks",
     "primaryMuscleGroup": "Glutes",
-    "type": "BW"
+    "type": "BW",
+    "description": "Strengthens the glutes and hips by walking laterally with resistance."
   },
   {
     "id": "GLT25",
@@ -150,7 +179,8 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=BNDw4ciQoQI",
     "creditSource": "https://www.youtube.com/@nuffieldhealth",
-    "credit": "Nuffield Health"
+    "credit": "Nuffield Health",
+    "description": "Bodyweight exercise that isolates the glutes with a backward kicking motion."
   },
   {
     "id": "GLT26",
@@ -159,7 +189,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=SqO-VUEak2M",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "Isolates the glutes using a cable machine for added resistance."
   },
   {
     "id": "GLT27",
@@ -168,16 +199,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=1u-b25VJVFU",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
-  },
-  {
-    "id": "GLT28",
-    "name": "Glute Bridge (Barbell)",
-    "primaryMuscleGroup": "Glutes",
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=DQv1IMQDbE4",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "Uses a dumbbell for added resistance to strengthen the glutes."
   },
   {
     "id": "GLT29",
@@ -186,7 +209,7 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=cruqsnAyU6A",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
-
+    "credit": "PureGym",
+    "description": "Strengthens the glutes with added dumbbell resistance during a hip-lifting movement."
   }
 ]

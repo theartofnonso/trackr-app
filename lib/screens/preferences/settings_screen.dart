@@ -6,7 +6,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mailto/mailto.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
@@ -155,8 +154,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                           onTap: _navigateToIntegrations, title: "Integrations", trailing: "sync workout data"),
                     ]),
                   const SizedBox(height: 8),
-                  OutlineListTile(onTap: _sendFeedback, title: "Feedback", trailing: "Help us improve!"),
-                  const SizedBox(height: 8),
                   OutlineListTile(onTap: _visitTRKR, title: "Visit TRKR"),
                   const SizedBox(height: 8),
                   OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
@@ -222,14 +219,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
       Provider.of<RoutineLogController>(context, listen: false).clear();
       Provider.of<ExerciseController>(context, listen: false).clear();
     }
-  }
-
-  void _sendFeedback() async {
-    final mailtoLink = Mailto(
-      to: [email],
-      subject: 'ATTENTION: Feedback for TRKR',
-    );
-    await openUrl(url: mailtoLink.toString(), context: context);
   }
 
   void _visitTRKR() {

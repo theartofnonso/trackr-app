@@ -9,6 +9,7 @@ import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/enums/share_content_type_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/datetime_range_extension.dart';
+import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/calendar/calendar_months_navigator.dart';
@@ -26,6 +27,7 @@ import '../../widgets/backgrounds/overlay_background.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/calendar/calendar.dart';
 import '../../widgets/monitors/overview_monitor.dart';
+import '../../widgets/routine/preview/routine_log_widget.dart';
 import 'monthly_insights_screen.dart';
 
 class OverviewScreen extends StatefulWidget {
@@ -42,7 +44,8 @@ class OverviewScreen extends StatefulWidget {
 class _OverviewScreenState extends State<OverviewScreen> {
   Map<DateTimeRange, List<RoutineLogDto>>? _monthlyLogs;
 
-  late DateTimeRange _dateTimeRange;
+  late DateTime _selectedDateTime;
+  late DateTimeRange _selectedDateTimeRange;
   bool _loading = false;
 
   void _logEmptyRoutine(BuildContext context) async {
@@ -69,13 +72,16 @@ class _OverviewScreenState extends State<OverviewScreen> {
   Widget build(BuildContext context) {
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
-    final logsForTheMonth = _monthlyLogs?[_dateTimeRange] ?? routineLogController.monthlyLogs[_dateTimeRange] ?? [];
+    final logsForTheMonth =
+        _monthlyLogs?[_selectedDateTimeRange] ?? routineLogController.monthlyLogs[_selectedDateTimeRange] ?? [];
 
     Map<DateTimeRange, List<RoutineLogDto>> monthlyLogs = _monthlyLogs ?? routineLogController.monthlyLogs;
 
     final logsForTheYear = monthlyLogs.values.expand((logs) => logs);
 
     final logsForTheYearByDay = groupBy(logsForTheYear, (log) => log.createdAt.formattedDayAndMonth());
+
+    final logsForCurrentDate = routineLogController.logsWhereDate(dateTime: _selectedDateTime).reversed.toList();
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -129,13 +135,16 @@ class _OverviewScreenState extends State<OverviewScreen> {
                             OverviewMonitor(routineLogs: logsForTheMonth),
                             const SizedBox(height: 16),
                             Calendar(
-                              range: _dateTimeRange,
+                              onSelectDate: _onChangedDateTime,
+                              selectedDateRange: _selectedDateTimeRange,
                             ),
+                            const SizedBox(height: 10),
+                            _RoutineLogListView(logs: logsForCurrentDate),
                             const SizedBox(height: 12),
                             MonthlyInsightsScreen(
                               logsForTheMonth: logsForTheMonth,
-                              daysInMonth: _dateTimeRange.datesToNow.length,
-                              dateTimeRange: _dateTimeRange,
+                              daysInMonth: _selectedDateTimeRange.datesToNow.length,
+                              dateTimeRange: _selectedDateTimeRange,
                               monthlyLogs: monthlyLogs,
                             ),
                           ])),
@@ -200,10 +209,16 @@ class _OverviewScreenState extends State<OverviewScreen> {
         ));
   }
 
+  void _onChangedDateTime(DateTime date) {
+    setState(() {
+      _selectedDateTime = date;
+    });
+  }
+
   void _onChangedDateTimeRange(DateTimeRange? range) {
     if (range == null) return;
 
-    final isDifferentYear = !_dateTimeRange.start.isSameYear(range.start);
+    final isDifferentYear = !_selectedDateTimeRange.start.isSameYear(range.start);
 
     setState(() {
       _loading = isDifferentYear;
@@ -222,7 +237,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     }
 
     setState(() {
-      _dateTimeRange = range;
+      _selectedDateTimeRange = range;
     });
   }
 
@@ -255,12 +270,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           children: [
                             Align(
                               alignment: Alignment.center,
-                              child: Text(_dateTimeRange.start.formattedMonthAndYear(),
+                              child: Text(_selectedDateTimeRange.start.formattedMonthAndYear(),
                                   textAlign: TextAlign.left,
                                   style: GoogleFonts.montserrat(
                                       color: Colors.white, fontWeight: FontWeight.w900, fontSize: 20)),
                             ),
-                            Calendar(readOnly: true, range: _dateTimeRange),
+                            Calendar(selectedDateRange: _selectedDateTimeRange),
                             const SizedBox(height: 12),
                             Image.asset(
                               'images/trkr.png',
@@ -270,6 +285,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           ],
                         )),
                   )),
+              const SizedBox(height: 20),
               OpacityButtonWidget(
                   onPressed: () {
                     captureImage(key: calendarKey, pixelRatio: 5);
@@ -277,7 +293,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                     context.pop();
                   },
                   label: "Share",
-                  buttonColor: Colors.transparent,
+                  buttonColor: vibrantGreen,
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14))
             ]));
   }
@@ -285,6 +301,25 @@ class _OverviewScreenState extends State<OverviewScreen> {
   @override
   void initState() {
     super.initState();
-    _dateTimeRange = thisMonthDateRange();
+    _selectedDateTime = DateTime.now();
+    _selectedDateTimeRange = thisMonthDateRange();
+  }
+}
+
+class _RoutineLogListView extends StatelessWidget {
+  final List<RoutineLogDto> logs;
+
+  const _RoutineLogListView({required this.logs});
+
+  @override
+  Widget build(BuildContext context) {
+    final widgets = logs.map((log) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 8.0),
+        child: RoutineLogWidget(log: log, trailing: log.duration().hmsAnalog(), color: sapphireDark80),
+      );
+    }).toList();
+
+    return Column(children: widgets);
   }
 }

@@ -12,10 +12,10 @@ import '../../pbs/pb_icon.dart';
 
 class RoutineLogWidget extends StatelessWidget {
   final RoutineLogDto log;
-  final Color? color;
+  final Color color;
   final String trailing;
 
-  const RoutineLogWidget({super.key, required this.log, this.color, required this.trailing});
+  const RoutineLogWidget({super.key, required this.log, required this.color, required this.trailing});
 
   @override
   Widget build(BuildContext context) {

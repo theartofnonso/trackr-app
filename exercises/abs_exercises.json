@@ -6,7 +6,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=6GMKPQVERzw",
     "creditSource": "https://www.youtube.com/@RenaissancePeriodization",
-    "credit": "Renaissance Periodization"
+    "credit": "Renaissance Periodization",
+    "description": "Engages the upper and lower abs using cable resistance for core strength."
   },
   {
     "id": "ABS2",
@@ -15,7 +16,8 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=NnVhqMQRvmM",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "Targets the upper abdominal muscles through bodyweight crunches."
   },
   {
     "id": "ABS3",
@@ -24,7 +26,8 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=9RK9UUgKIQE",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "Activates deep core muscles and stabilizes the lower back with controlled leg and arm movements."
   },
   {
     "id": "ABS4",
@@ -33,7 +36,8 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=O7iDA3ory-w",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "Strengthens the lower abs by lifting the legs while hanging from a bar."
   },
   {
     "id": "ABS5",
@@ -42,13 +46,15 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=KNzJ3GuIpB8",
     "creditSource": "https://www.youtube.com/@dalmvicky",
-    "credit": "Đạt Đào Vũ"
+    "credit": "Đạt Đào Vũ",
+    "description": "Targets the lower abs by raising the knees toward the chest while hanging."
   },
   {
     "id": "ABS6",
     "name": "Hanging Sit-Up",
     "primaryMuscleGroup": "Abs",
-    "type": "BW"
+    "type": "BW",
+    "description": "Works the entire core by performing sit-ups while hanging from a bar."
   },
   {
     "id": "ABS7",
@@ -57,19 +63,22 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=ivziZev2BzA",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
-    "credit": "Functional Bodybuilding"
+    "credit": "Functional Bodybuilding",
+    "description": "Engages the obliques and core with rotational movements against band resistance."
   },
   {
     "id": "ABS8",
     "name": "Horizontal Wood Chop with Band",
     "primaryMuscleGroup": "Abs",
-    "type": "BW"
+    "type": "BW",
+    "description": "Targets the obliques and core through rotational movements with a resistance band."
   },
   {
     "id": "ABS9",
     "name": "Kneeling Ab Wheel Roll-Out",
     "primaryMuscleGroup": "Abs",
-    "type": "BW"
+    "type": "BW",
+    "description": "Engages the entire core, particularly the abs and lower back, with a controlled rollout movement."
   },
   {
     "id": "ABS10",
@@ -78,13 +87,15 @@
     "type": "DR",
     "video": "https://www.youtube.com/watch?v=iDSHokfXqyA",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "Strengthens the core by holding a plank position on the knees, focusing on abdominal endurance."
   },
   {
     "id": "ABS11",
     "name": "Kneeling Side Plank",
     "primaryMuscleGroup": "Abs",
-    "type": "DR"
+    "type": "DR",
+    "description": "Targets the obliques and core by holding a side plank position on the knees."
   },
   {
     "id": "ABS12",
@@ -93,7 +104,8 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=Zr-PtqcpeWM",
     "creditSource": "https://www.youtube.com/@nuffieldhealth",
-    "credit": "Nuffield Health"
+    "credit": "Nuffield Health",
+    "description": "Engages the lower abs by lifting the legs while lying flat on the ground."
   },
   {
     "id": "ABS13",
@@ -102,19 +114,22 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=M8csHpQrq5o",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
-    "credit": "Functional Bodybuilding"
+    "credit": "Functional Bodybuilding",
+    "description": "Strengthens the core and obliques with controlled side-to-side leg movements."
   },
   {
     "id": "ABS14",
     "name": "Lying Windshield Wiper with Bent Knees",
     "primaryMuscleGroup": "Abs",
-    "type": "BW"
+    "type": "BW",
+    "description": "Focuses on the obliques and core with bent-knee rotational leg movements."
   },
   {
     "id": "ABS15",
     "name": "Machine Crunch",
     "primaryMuscleGroup": "Abs",
-    "type": "WR"
+    "type": "WR",
+    "description": "Targets the upper abs using machine resistance for a controlled crunch movement."
   },
   {
     "id": "ABS16",
@@ -123,7 +138,8 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=qdBkvS0pEVc",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
-    "credit": "TheGymGroup"
+    "credit": "TheGymGroup",
+    "description": "Combines cardio and core strength by rapidly alternating knee drives toward the chest."
   },
   {
     "id": "ABS17",
@@ -132,13 +148,15 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=eEuyL8HN3SA",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
-    "credit": "TheGymGroup"
+    "credit": "TheGymGroup",
+    "description": "Targets the oblique muscles with a crunch movement focused on the sides of the core."
   },
   {
     "id": "ABS18",
     "name": "Oblique Sit-Up",
     "primaryMuscleGroup": "Abs",
-    "type": "BW"
+    "type": "BW",
+    "description": "Engages the obliques and abdominal muscles with a twisting sit-up movement."
   },
   {
     "id": "ABS19",
@@ -147,7 +165,8 @@
     "type": "DR",
     "video": "https://www.youtube.com/watch?v=q4rDeHYMcIg",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "Strengthens the core by holding a static plank position, engaging the entire midsection."
   },
   {
     "id": "ABS20",
@@ -156,7 +175,8 @@
     "type": "DR",
     "video": "https://www.youtube.com/watch?v=Oe9Tp9SvTCE",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "Targets the obliques by holding a static side plank position."
   },
   {
     "id": "ABS21",
@@ -165,7 +185,8 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=Z_BUV-bZ3Zc",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
-    "credit": "TheGymGroup"
+    "credit": "TheGymGroup",
+    "description": "Strengthens the core by lifting the torso from a lying position using bodyweight."
   },
   {
     "id": "ABS22",
@@ -174,7 +195,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=Tau0hsW8iR0",
     "creditSource": "https://www.youtube.com/@marcusfilly",
-    "credit": "Marcus Filly"
+    "credit": "Marcus Filly",
+    "description": "Targets the obliques and core with twisting movements, adding weight for resistance."
   },
   {
     "id": "ABS23",
@@ -183,7 +205,8 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=0vDI5aU402c",
     "creditSource": "https://www.youtube.com/@xhit/videos",
-    "credit": "XHIT Daily"
+    "credit": "XHIT Daily",
+    "description": "Targets the lower abs and hip flexors with scissor-like leg movements."
   },
   {
     "id": "ABS24",
@@ -192,14 +215,15 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=wnuLak2onoA",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
-
+    "credit": "PureGym",
+    "description": "Works the entire core, focusing on the obliques and rectus abdominis."
   },
   {
     "id": "ABS25",
     "name": "Bicycle Crunch Raised Legs",
     "primaryMuscleGroup": "Abs",
-    "type": "BW"
+    "type": "BW",
+    "description": "Targets the abs with a focus on stability and coordination while keeping legs elevated."
   },
   {
     "id": "ABS26",
@@ -208,8 +232,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=HXrLaqNIkTs",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
-
+    "credit": "PureGym",
+    "description": "Engages the entire core, with a focus on anti-rotational stability."
   },
   {
     "id": "ABS27",
@@ -218,7 +242,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=zQJKfN7BU-c",
     "creditSource": "https://www.youtube.com/@TYTAX-Invincible",
-    "credit": "TYTAX"
+    "credit": "TYTAX",
+    "description": "Works the obliques and rotational muscles, moving from a low to high position."
   },
   {
     "id": "ABS28",
@@ -227,13 +252,15 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=tQznClkP0GE",
     "creditSource": "https://www.youtube.com/@TYTAX-Invincible",
-    "credit": "TYTAX"
+    "credit": "TYTAX",
+    "description": "Engages the obliques with a focus on rotational strength, moving from high to low."
   },
   {
     "id": "ABS29",
     "name": "Crunch (Weighted)",
     "primaryMuscleGroup": "Abs",
-    "type": "BW"
+    "type": "BW",
+    "description": "Targets the upper abs with added resistance for increased intensity."
   },
   {
     "id": "ABS30",
@@ -242,13 +269,15 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=jYyA_6UR2lw",
     "creditSource": "https://www.youtube.com/@gymvisual8018",
-    "credit": "Gym visual"
+    "credit": "Gym visual",
+    "description": "Focuses on the upper abs by performing crunches on a decline bench."
   },
   {
     "id": "ABS31",
     "name": "Decline Crunch (Weighted)",
     "primaryMuscleGroup": "Abs",
-    "type": "BW"
+    "type": "BW",
+    "description": "Targets the upper abs with resistance for enhanced muscle engagement."
   },
   {
     "id": "ABS32",
@@ -257,7 +286,8 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=YiTevEYYfCA",
     "creditSource": "https://www.youtube.com/@ensocalisthenics",
-    "credit": "Enso Calisthenics"
+    "credit": "Enso Calisthenics",
+    "description": "Activates the obliques and core through rotational knee-to-elbow movements."
   },
   {
     "id": "ABS33",
@@ -266,7 +296,8 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=cZhLXKHuS74",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
-    "credit": "TheGymGroup"
+    "credit": "TheGymGroup",
+    "description": "Targets the lower abs and hip flexors with small, fast leg movements."
   },
   {
     "id": "ABS34",
@@ -275,7 +306,8 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=U9d5iHfZxOw",
     "creditSource": "https://www.youtube.com/@ensocalisthenics",
-    "credit": "Enso Calisthenics"
+    "credit": "Enso Calisthenics",
+    "description": "Builds core strength and stability through static hold while suspended."
   },
   {
     "id": "ABS35",
@@ -284,7 +316,8 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=YC-2D2JbyyE",
     "creditSource": "https://www.youtube.com/@ensocalisthenics",
-    "credit": "Enso Calisthenics"
+    "credit": "Enso Calisthenics",
+    "description": "Develops core and upper body strength through dynamic front lever movements."
   },
   {
     "id": "ABS36",
@@ -293,7 +326,8 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=w2Um9ULrcBI",
     "creditSource": "https://www.youtube.com/@CSIROTotalWellbeingDiet",
-    "credit": "CSIRO Total Wellbeing Diet"
+    "credit": "CSIRO Total Wellbeing Diet",
+    "description": "Focuses on the obliques and side muscles by reaching towards the heels."
   },
   {
     "id": "ABS37",
@@ -302,19 +336,22 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=HtaO2Rd81Qs",
     "creditSource": "https://www.youtube.com/@WodstarFitness",
-    "credit": "Wodstar"
+    "credit": "Wodstar",
+    "description": "Engages the entire core by maintaining a hollow body position."
   },
   {
     "id": "ABS38",
     "name": "Jackknife (Suspension)",
     "primaryMuscleGroup": "Abs",
-    "type": "BW"
+    "type": "BW",
+    "description": "Targets the entire core with a focus on balance and coordination in a suspended position."
   },
   {
     "id": "ABS39",
     "name": "Jackknife Sit Up",
     "primaryMuscleGroup": "Abs",
-    "type": "BW"
+    "type": "BW",
+    "description": "Engages the upper and lower abs by bringing the upper body and legs together."
   },
   {
     "id": "ABS40",
@@ -323,7 +360,8 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=S7wAEgrUn6s",
     "creditSource": "https://www.youtube.com/@ensocalisthenics",
-    "credit": "Enso Calisthenics"
+    "credit": "Enso Calisthenics",
+    "description": "Targets the lower abs by lifting the knees while suspended on parallel bars."
   },
   {
     "id": "ABS41",
@@ -332,7 +370,8 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=LNYjR0XD1Fg",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "Develops core strength and endurance by holding the legs in an L-position."
   },
   {
     "id": "ABS42",
@@ -341,7 +380,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=4dGj7rES9pY&pp=ygUMTGFuZG1pbmUgMTgw",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
-    "credit": "Functional Bodybuilding"
+    "credit": "Functional Bodybuilding",
+    "description": "Strengthens the obliques and rotational muscles using a landmine setup."
   },
   {
     "id": "ABS43",
@@ -350,7 +390,8 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=oOTjUcz_S2E",
     "creditSource": "https://www.youtube.com/@ensocalisthenics",
-    "credit": "Enso Calisthenics"
+    "credit": "Enso Calisthenics",
+    "description": "Targets the lower abs by lifting the legs while suspended on parallel bars."
   },
   {
     "id": "ABS44",
@@ -359,7 +400,8 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=XY8KzdDcMFg",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "Focuses on the lower abs by curling the hips toward the chest."
   },
   {
     "id": "ABS45",
@@ -368,7 +410,8 @@
     "type": "DR",
     "video": "https://www.youtube.com/watch?v=ZNAxdJ6Bt00",
     "creditSource": "https://www.youtube.com/@xhit/videos",
-    "credit": "XHIT Daily"
+    "credit": "XHIT Daily",
+    "description": "Engages the core, glutes, and lower back by holding a reverse plank position."
   },
   {
     "id": "ABS47",
@@ -377,13 +420,15 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=OiimI-uYPcE",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
-    "credit": "TheGymGroup"
+    "credit": "TheGymGroup",
+    "description": "Targets the obliques and rotational core muscles through twisting motions."
   },
   {
     "id": "ABS48",
     "name": "Side Bend",
     "primaryMuscleGroup": "Abs",
-    "type": "BW"
+    "type": "BW",
+    "description": "Focuses on the obliques through side-to-side bending movements."
   },
   {
     "id": "ABS49",
@@ -392,7 +437,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=M0KGYdsKVPM",
     "creditSource": "https://www.youtube.com/@tnation",
-    "credit": "Testosterone Nation"
+    "credit": "Testosterone Nation",
+    "description": "Targets the obliques with added resistance using a dumbbell."
   },
   {
     "id": "ABS50",
@@ -401,7 +447,8 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=HHjvtdJKMhg",
     "creditSource": "https://www.youtube.com/@WodstarFitness",
-    "credit": "Wodstar"
+    "credit": "Wodstar",
+    "description": "Engages the entire core, focusing on lower abs, as the toes are lifted toward the bar."
   },
   {
     "id": "ABS51",
@@ -410,6 +457,14 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=cSCyyfBti7U",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "Targets both upper and lower abs by bringing the arms and legs together in a V-shape."
+  },
+  {
+    "id": "ABS52",
+    "name": "Ab Roller",
+    "primaryMuscleGroup": "Abs",
+    "type": "BW",
+    "description": "Targets the core, engaging the abs, lower back, and shoulders during the roll-out motion."
   }
 ]

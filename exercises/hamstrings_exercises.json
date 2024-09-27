@@ -6,7 +6,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=nWyx81AfTos",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "Targets the hamstrings and lower back with a hinge motion, building posterior chain strength."
   },
   {
     "id": "HAM2",
@@ -15,7 +16,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=nF_LPuuftfQ",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
-    "credit": "TheGymGroup"
+    "credit": "TheGymGroup",
+    "description": "Engages the hamstrings and glutes through a controlled hinge movement with a barbell."
   },
   {
     "id": "HAM3",
@@ -24,7 +26,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=SbSNUXPRkc8",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "Isolates the hamstrings by curling the legs from a lying position, enhancing muscle development."
   },
   {
     "id": "HAM4",
@@ -33,7 +36,8 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=dTuPuXQY0-Q",
     "creditSource": "https://www.youtube.com/@thirdspacelondon8746",
-    "credit": "Third Space London"
+    "credit": "Third Space London",
+    "description": "Strengthens the hamstrings and glutes by lifting the body from the knees, improving posterior strength."
   },
   {
     "id": "HAM5",
@@ -42,19 +46,22 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=NfBGKhjedD8",
     "creditSource": "https://www.youtube.com/@STYRK_DK",
-    "credit": "STYRK"
+    "credit": "STYRK",
+    "description": "An advanced bodyweight exercise that focuses on eccentric hamstring strength and injury prevention."
   },
   {
     "id": "HAM6",
     "name": "Deadlift (Band)",
     "primaryMuscleGroup": "Hamstrings",
-    "type": "WR"
+    "type": "WR",
+    "description": "Targets the hamstrings and glutes with band resistance, improving stability and muscle activation."
   },
   {
     "id": "HAM7",
     "name": "Deadlift (Smith Machine)",
     "primaryMuscleGroup": "Hamstrings",
-    "type": "WR"
+    "type": "WR",
+    "description": "Engages the hamstrings and back with controlled movement on a Smith machine for added stability."
   },
   {
     "id": "HAM8",
@@ -63,13 +70,15 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=plb5jEO4Unw",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "A variation of the Romanian deadlift using dumbbells, focusing on hamstring and glute activation."
   },
   {
     "id": "HAM9",
     "name": "Seated Leg Curl",
     "primaryMuscleGroup": "Hamstrings",
-    "type": "WR"
+    "type": "WR",
+    "description": "Isolates the hamstrings by curling the legs from a seated position, enhancing muscle development."
   },
   {
     "id": "HAM11",
@@ -78,7 +87,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=0GCPn0VvXLc",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "A compound lift that targets the hamstrings, glutes, and lower back, promoting full-body strength."
   },
   {
     "id": "HAM12",
@@ -87,7 +97,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=PzoxegwRlOw",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
-    "credit": "Functional Bodybuilding"
+    "credit": "Functional Bodybuilding",
+    "description": "Increases the range of motion during deadlifts, enhancing hamstring and glute activation."
   },
   {
     "id": "HAM13",
@@ -96,7 +107,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=ev5Bx5a_mss",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
-    "credit": "Functional Bodybuilding"
+    "credit": "Functional Bodybuilding",
+    "description": "A dumbbell variation of the deadlift, emphasizing hamstring and glute strength."
   },
   {
     "id": "HAM14",
@@ -105,7 +117,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=IGmNuGEpHc0",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
-    "credit": "TheGymGroup"
+    "credit": "TheGymGroup",
+    "description": "A wider stance deadlift that targets the hamstrings and glutes with less stress on the lower back."
   },
   {
     "id": "HAM15",
@@ -114,7 +127,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=CN_7cz3P-1U",
     "creditSource": "https://www.youtube.com/@RenaissancePeriodization",
-    "credit": "Renaissance Periodization"
+    "credit": "Renaissance Periodization",
+    "description": "Stretches and strengthens the hamstrings by performing deadlifts with minimal knee bend."
   },
   {
     "id": "HAM16",
@@ -123,7 +137,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=9tye6frKmg8",
     "creditSource": "https://www.youtube.com/@thirdspacelondon8746",
-    "credit": "Third Space London"
+    "credit": "Third Space London",
+    "description": "Utilizes a trap bar to reduce strain on the lower back while targeting hamstrings and glutes."
   },
   {
     "id": "HAM17",
@@ -132,18 +147,21 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=9tye6frKmg8",
     "creditSource": "https://www.youtube.com/@thirdspacelondon8746",
-    "credit": "Third Space London"
+    "credit": "Third Space London",
+    "description": "A variation of the trap bar deadlift with low handles, engaging hamstrings and glutes more intensely."
   },
   {
     "id": "HAM18",
     "name": "Pause Deadlift",
     "primaryMuscleGroup": "Hamstrings",
-    "type": "WR"
+    "type": "WR",
+    "description": "Improves hamstring strength by pausing at specific points during the deadlift, increasing tension."
   },
   {
     "id": "HAM19",
     "name": "Romanian Deadlift (Smith Machine)",
     "primaryMuscleGroup": "Hamstrings",
-    "type": "WR"
+    "type": "WR",
+    "description": "Targets hamstrings and glutes using the Smith machine for stability and controlled range of motion."
   }
 ]

@@ -47,7 +47,7 @@ class RoutineLogsScreen extends StatelessWidget {
                   ? Expanded(
                       child: ListView.separated(
                           padding: const EdgeInsets.only(bottom: 150),
-                          itemBuilder: (BuildContext context, int index) => RoutineLogWidget(log: routineLogs[index], trailing: routineLogs[index].createdAt.durationSinceOrDate()),
+                          itemBuilder: (BuildContext context, int index) => RoutineLogWidget(log: routineLogs[index], color: Colors.transparent, trailing: routineLogs[index].createdAt.durationSinceOrDate()),
                           separatorBuilder: (BuildContext context, int index) =>
                               Divider(color: Colors.white70.withOpacity(0.1)),
                           itemCount: routineLogs.length),

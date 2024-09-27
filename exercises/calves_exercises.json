@@ -3,13 +3,15 @@
     "id": "CAL1",
     "name": "Eccentric Heel Drop",
     "primaryMuscleGroup": "Calves",
-    "type": "BW"
+    "type": "BW",
+    "description": "Focuses on lengthening the calf muscles to improve strength and mobility."
   },
   {
     "id": "CAL2",
     "name": "Heel Raise",
     "primaryMuscleGroup": "Calves",
-    "type": "BW"
+    "type": "BW",
+    "description": "Targets the calves by raising the heels to build strength and endurance."
   },
   {
     "id": "CAL3",
@@ -18,7 +20,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=3ZRe_QpvRPg",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "Isolates the calves, particularly the soleus muscle, in a seated position."
   },
   {
     "id": "CAL4",
@@ -27,19 +30,22 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=Zep-wKHWkNM",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "Strengthens the calf muscles by raising the heels from a standing position."
   },
   {
     "id": "CAL5",
     "name": "Standing Calf Raise (Machine)",
     "primaryMuscleGroup": "Calves",
-    "type": "WR"
+    "type": "WR",
+    "description": "Targets the calves with added resistance from the machine for increased intensity."
   },
   {
     "id": "CAL6",
     "name": "Standing Calf Raise (Dumbbell)",
     "primaryMuscleGroup": "Calves",
-    "type": "WR"
+    "type": "WR",
+    "description": "Engages the calves using dumbbells to add resistance to the standing raise."
   },
   {
     "id": "CAL7",
@@ -48,13 +54,15 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=Zep-wKHWkNM",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "Stabilized calf raise using the Smith machine for controlled resistance."
   },
   {
     "id": "CAL8",
     "name": "Standing Calf Raise (Barbell)",
     "primaryMuscleGroup": "Calves",
-    "type": "WR"
+    "type": "WR",
+    "description": "Utilizes a barbell for added weight in a standing calf raise, enhancing muscle growth."
   },
   {
     "id": "CAL9",
@@ -63,7 +71,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=rpGCS8AEsAM",
     "creditSource": "https://www.youtube.com/@MatrixFitnessUS",
-    "credit": "Matrix Fitness"
+    "credit": "Matrix Fitness",
+    "description": "Uses a machine to extend the calves and build strength through resistance."
   },
   {
     "id": "CAL10",
@@ -72,12 +81,14 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=dhRz1Ns60Zg",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "Engages the calves using a machine for press movement to develop power."
   },
   {
     "id": "CAL11",
     "name": "Single Standing Calf Raise (Machine)",
     "primaryMuscleGroup": "Calves",
-    "type": "WR"
+    "type": "WR",
+    "description": "Isolates each calf with a single-leg movement for balanced strength development."
   }
 ]
