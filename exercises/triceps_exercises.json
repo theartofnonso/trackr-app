@@ -95,7 +95,10 @@
     "name": "Triceps Dip",
     "primaryMuscleGroup": "Triceps",
     "type": "BW",
-    "description": "Strengthens triceps through bodyweight dips using parallel bars."
+    "video": "https://www.youtube.com/watch?v=2HYAeF6o7Bc",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym",
+    "description": "Strengthens triceps through bodyweight dips using parallel bars.",
   },
   {
     "id": "TRI12",

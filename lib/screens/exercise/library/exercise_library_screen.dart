@@ -222,9 +222,10 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                                 exerciseDto: _filteredExercises[index],
                                 onNavigateToExercise: _navigateToExerciseHistory,
                                 onSelect: widget.readOnly ? null : _navigateBackWithSelectedExercise),
-                            separatorBuilder: (BuildContext context, int index) => const SizedBox(
-                                  height: 30,
-                                ),
+                            separatorBuilder: (BuildContext context, int index) => const Padding(
+                              padding: EdgeInsets.only(top: 20.0, left: 10, bottom: 20),
+                              child: Divider(height: 0.5, color: sapphireLighter,),
+                            ),
                             itemCount: _filteredExercises.length),
                       )
                     : const ExerciseEmptyState(),

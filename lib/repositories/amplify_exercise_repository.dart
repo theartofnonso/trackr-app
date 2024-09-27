@@ -57,48 +57,48 @@ class AmplifyExerciseRepository {
 
     final chestExercises = await loadExercisesFromAssets(file: 'chest_exercises.json');
     final shouldersExercises = await loadExercisesFromAssets(file: 'shoulders_exercises.json');
-    final bicepsExercises = await loadExercisesFromAssets(file: 'biceps_exercises.json');
-    final tricepsExercises = await loadExercisesFromAssets(file: 'triceps_exercises.json');
-    final quadricepsExercises = await loadExercisesFromAssets(file: 'quadriceps_exercises.json');
-    final hamstringsExercises = await loadExercisesFromAssets(file: 'hamstrings_exercises.json');
-    final backExercises = await loadExercisesFromAssets(file: 'back_exercises.json');
-    final trapsExercises = await loadExercisesFromAssets(file: 'traps_exercises.json');
-    final latsExercises = await loadExercisesFromAssets(file: 'lats_exercises.json');
-    final glutesExercises = await loadExercisesFromAssets(file: 'glutes_exercises.json');
-    final adductorsExercises = await loadExercisesFromAssets(file: 'adductors_exercises.json');
-    final abductorsExercises = await loadExercisesFromAssets(file: 'abductors_exercises.json');
-    final absExercises = await loadExercisesFromAssets(file: 'abs_exercises.json');
-    final calvesExercises = await loadExercisesFromAssets(file: 'calves_exercises.json');
-    final forearmsExercises = await loadExercisesFromAssets(file: 'forearms_exercises.json');
-    final neckExercises = await loadExercisesFromAssets(file: 'neck_exercises.json');
-    final fullBodyExercises = await loadExercisesFromAssets(file: 'fullbody_exercises.json');
+    // final bicepsExercises = await loadExercisesFromAssets(file: 'biceps_exercises.json');
+    // final tricepsExercises = await loadExercisesFromAssets(file: 'triceps_exercises.json');
+    // final quadricepsExercises = await loadExercisesFromAssets(file: 'quadriceps_exercises.json');
+    // final hamstringsExercises = await loadExercisesFromAssets(file: 'hamstrings_exercises.json');
+    // final backExercises = await loadExercisesFromAssets(file: 'back_exercises.json');
+    // final trapsExercises = await loadExercisesFromAssets(file: 'traps_exercises.json');
+    // final latsExercises = await loadExercisesFromAssets(file: 'lats_exercises.json');
+    // final glutesExercises = await loadExercisesFromAssets(file: 'glutes_exercises.json');
+    // final adductorsExercises = await loadExercisesFromAssets(file: 'adductors_exercises.json');
+    // final abductorsExercises = await loadExercisesFromAssets(file: 'abductors_exercises.json');
+    // final absExercises = await loadExercisesFromAssets(file: 'abs_exercises.json');
+    // final calvesExercises = await loadExercisesFromAssets(file: 'calves_exercises.json');
+    // final forearmsExercises = await loadExercisesFromAssets(file: 'forearms_exercises.json');
+    // final neckExercises = await loadExercisesFromAssets(file: 'neck_exercises.json');
+    // final fullBodyExercises = await loadExercisesFromAssets(file: 'fullbody_exercises.json');
 
     exerciseDtos.addAll(chestExercises);
     exerciseDtos.addAll(shouldersExercises);
-    exerciseDtos.addAll(bicepsExercises);
-    exerciseDtos.addAll(tricepsExercises);
-    exerciseDtos.addAll(quadricepsExercises);
-    exerciseDtos.addAll(hamstringsExercises);
-    exerciseDtos.addAll(backExercises);
-    exerciseDtos.addAll(trapsExercises);
-    exerciseDtos.addAll(latsExercises);
-    exerciseDtos.addAll(glutesExercises);
-    exerciseDtos.addAll(adductorsExercises);
-    exerciseDtos.addAll(abductorsExercises);
-    exerciseDtos.addAll(absExercises);
-    exerciseDtos.addAll(calvesExercises);
-    exerciseDtos.addAll(forearmsExercises);
-    exerciseDtos.addAll(neckExercises);
-    exerciseDtos.addAll(fullBodyExercises);
+    // exerciseDtos.addAll(bicepsExercises);
+    // exerciseDtos.addAll(tricepsExercises);
+    // exerciseDtos.addAll(quadricepsExercises);
+    // exerciseDtos.addAll(hamstringsExercises);
+    // exerciseDtos.addAll(backExercises);
+    // exerciseDtos.addAll(trapsExercises);
+    // exerciseDtos.addAll(latsExercises);
+    // exerciseDtos.addAll(glutesExercises);
+    // exerciseDtos.addAll(adductorsExercises);
+    // exerciseDtos.addAll(abductorsExercises);
+    // exerciseDtos.addAll(absExercises);
+    // exerciseDtos.addAll(calvesExercises);
+    // exerciseDtos.addAll(forearmsExercises);
+    // exerciseDtos.addAll(neckExercises);
+    // exerciseDtos.addAll(fullBodyExercises);
 
-    // List<String> withNoVideos =
-    // exerciseDtos.where((exercise) => exercise.video == null && !exercise.owner).map((exercise) => exercise.name).toList();
-    //
-    // withNoVideos.forEach((exercise) {
-    //   print(exercise);
-    // });
-    //
-    // print(withNoVideos.length);
+    List<String> withNoVideos =
+    exerciseDtos.where((exercise) => exercise.video == null && !exercise.owner).map((exercise) => exercise.name).toList();
+
+    withNoVideos.forEach((exercise) {
+      print(exercise);
+    });
+
+    print(withNoVideos.length);
 
     _exercises = exerciseDtos.sorted((a, b) => a.name.compareTo(b.name));
   }
