@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../dtos/exercise_dto.dart';
@@ -24,37 +25,51 @@ class ExerciseWidget extends StatelessWidget {
       child: Container(
         color: Colors.transparent,
         width: double.infinity,
-        padding: const EdgeInsets.only(left: 8.0),
-        child: Column(
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(exercise.name,
-                style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 18)),
-            if (description.isNotEmpty)
-              Column(
+            Expanded(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(exercise.name,
+                      style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 18)),
+                  if (description.isNotEmpty)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Text(description,
+                            style: GoogleFonts.montserrat(
+                                color: Colors.white70, height: 1.8, fontWeight: FontWeight.w400, fontSize: 14)),
+                      ],
+                    ),
                   const SizedBox(
-                    height: 10,
+                    height: 6,
                   ),
-                  Text(description,
-                      style: GoogleFonts.montserrat(
-                          color: Colors.white70, height: 1.8, fontWeight: FontWeight.w400, fontSize: 14)),
+                  Text(exercise.primaryMuscleGroup.name.toUpperCase(),
+                      style: GoogleFonts.montserrat(color: Colors.orange, fontWeight: FontWeight.w600, fontSize: 12)),
+                  if (exercise.owner)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4.0),
+                      child: Text("Owner".toUpperCase(),
+                          style: GoogleFonts.montserrat(
+                              color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 8)),
+                    ),
                 ],
               ),
-            const SizedBox(
-              height: 6,
             ),
-            Row(
-              children: [
-                Text(exercise.primaryMuscleGroup.name.toUpperCase(),
-                    style: GoogleFonts.montserrat(color: Colors.orange, fontWeight: FontWeight.w600, fontSize: 12)),
-                const Spacer(),
-                if (exercise.owner)
-                  Text("Owner".toUpperCase(),
-                      style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 10)),
-              ],
-            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: GestureDetector(
+                  onTap: () => navigateToExercise != null ? navigateToExercise(exerciseDto) : null,
+                  child: const FaIcon(
+                    FontAwesomeIcons.circleArrowRight,
+                    color: Colors.white70,
+                  )),
+            )
           ],
         ),
       ),
