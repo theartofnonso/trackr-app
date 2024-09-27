@@ -285,7 +285,7 @@ class _MyAppState extends State<MyApp> {
       onSecondary: Colors.white,
       error: Colors.white,
       onError: Colors.black,
-      surface: sapphireLighter,
+      surface: sapphireDark,
       onSurface: Colors.white,
     ),
     appBarTheme: const AppBarTheme(
