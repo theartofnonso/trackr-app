@@ -58,6 +58,16 @@
     "description": "Engages the glutes and lower back by lifting hips from the floor."
   },
   {
+    "id": "GLT8",
+    "name": "Donkey Kicks",
+    "primaryMuscleGroup": "Glutes",
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=EtSJ8rwm5M8",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym",
+    "description": "Isolates and strengthens the glutes while engaging the lower back for stability."
+  },
+  {
     "id": "GLT10",
     "name": "Hip Thrust",
     "primaryMuscleGroup": "Glutes",

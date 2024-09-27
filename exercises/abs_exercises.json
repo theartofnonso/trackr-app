@@ -459,5 +459,12 @@
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
     "description": "Targets both upper and lower abs by bringing the arms and legs together in a V-shape."
+  },
+  {
+    "id": "ABS52",
+    "name": "Ab Roller",
+    "primaryMuscleGroup": "Abs",
+    "type": "BW",
+    "description": "Targets the core, engaging the abs, lower back, and shoulders during the roll-out motion."
   }
 ]
