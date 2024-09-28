@@ -50,9 +50,9 @@ class _ExerciseTypeScreenState extends State<ExerciseTypeScreen> {
                   itemBuilder: (BuildContext context, int index) => ListTile(
                       onTap: () => _selectExerciseType(type: exerciseTypes[index]),
                       trailing: _TrailingWidget(type: exerciseTypes[index]),
-                      title: Text(exerciseTypes[index].name, style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w600)),
+                      title: Text(exerciseTypes[index].name, style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w600)),
                       subtitle: Text(exerciseTypes[index].description,
-                          style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 13)),
+                          style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 13)),
                       dense: true),
                   separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.1)),
                   itemCount: exerciseTypes.length),
@@ -78,7 +78,7 @@ class _TrailingWidget extends StatelessWidget {
     };
 
     final itemWidgets = measurements
-        .map((measurement) => Text(measurement, style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, color: Colors.white70)))
+        .map((measurement) => Text(measurement, style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white70)))
         .toList();
 
     return SizedBox(

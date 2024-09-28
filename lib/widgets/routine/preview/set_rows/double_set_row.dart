@@ -28,12 +28,12 @@ class DoubleSetRow extends StatelessWidget {
               TableRow(children: [
                 TableCell(
                   verticalAlignment: TableCellVerticalAlignment.middle,
-                  child: Text(first, style: GoogleFonts.montserrat(color: Colors.white), textAlign: TextAlign.center),
+                  child: Text(first, style: GoogleFonts.ubuntu(color: Colors.white), textAlign: TextAlign.center),
                 ),
                 TableCell(
                     verticalAlignment: TableCellVerticalAlignment.middle,
                     child:
-                        Text(second, style: GoogleFonts.montserrat(color: Colors.white), textAlign: TextAlign.center))
+                        Text(second, style: GoogleFonts.ubuntu(color: Colors.white), textAlign: TextAlign.center))
               ]),
             ]));
   }

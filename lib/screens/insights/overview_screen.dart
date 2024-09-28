@@ -117,7 +117,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           const FaIcon(FontAwesomeIcons.fire, color: Colors.white, size: 20),
                           const SizedBox(width: 4),
                           Text("${logsForTheYearByDay.length}",
-                              style: GoogleFonts.montserrat(
+                              style: GoogleFonts.ubuntu(
                                   color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
                         ]),
                       ),
@@ -170,7 +170,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               leading: const FaIcon(FontAwesomeIcons.play, size: 18),
               horizontalTitleGap: 6,
               title: Text("Start new session",
-                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
                 context.pop();
                 _logEmptyRoutine(context);
@@ -182,7 +182,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               leading: const FaIcon(FontAwesomeIcons.clockRotateLeft, size: 18),
               horizontalTitleGap: 6,
               title: Text("Log past session",
-                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
                 context.pop();
                 showDatetimeRangePicker(
@@ -272,7 +272,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                               alignment: Alignment.center,
                               child: Text(_selectedDateTimeRange.start.formattedMonthAndYear(),
                                   textAlign: TextAlign.left,
-                                  style: GoogleFonts.montserrat(
+                                  style: GoogleFonts.ubuntu(
                                       color: Colors.white, fontWeight: FontWeight.w900, fontSize: 20)),
                             ),
                             Calendar(selectedDateRange: _selectedDateTimeRange),

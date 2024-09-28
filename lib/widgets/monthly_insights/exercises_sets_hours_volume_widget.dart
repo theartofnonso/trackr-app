@@ -58,7 +58,7 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text("Summary of Sessions".toUpperCase(),
-            style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+            style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
         const SizedBox(height: 10),
         Container(
             padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
@@ -177,7 +177,7 @@ class _TableItem extends StatelessWidget {
         children: <Widget>[
           Text(
             subTitle,
-            style: GoogleFonts.montserrat(
+            style: GoogleFonts.ubuntu(
               color: titleColor,
               fontSize: 20,
               fontWeight: FontWeight.w900,
@@ -187,7 +187,7 @@ class _TableItem extends StatelessWidget {
           Text(
             title,
             textAlign: TextAlign.center,
-            style: GoogleFonts.montserrat(
+            style: GoogleFonts.ubuntu(
               color: subTitleColor.withOpacity(0.6),
               fontSize: 10,
               fontWeight: FontWeight.bold,

@@ -51,7 +51,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = GoogleFonts.montserrat(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white70);
+    final textStyle = GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white70);
 
     const muscleGroups = MuscleGroup.values;
 
@@ -125,7 +125,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
           onPressed: context.pop,
         ),
         title: Text("Muscle Trend".toUpperCase(),
-            style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+            style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
       ),
       body: Container(
         width: double.infinity,
@@ -162,11 +162,11 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                       value: _selectedMuscleGroup,
                       hint: Text("Muscle group",
                           style:
-                              GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14)),
+                              GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14)),
                       underline: Container(
                         color: Colors.transparent,
                       ),
-                      style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
+                      style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
                       onChanged: (MuscleGroup? value) {
                         if (value != null) {
                           setState(() {
@@ -178,7 +178,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                         return DropdownMenuItem<MuscleGroup>(
                           value: muscleGroup,
                           child: Text(muscleGroup.name,
-                              style: GoogleFonts.montserrat(
+                              style: GoogleFonts.ubuntu(
                                   color: _selectedMuscleGroup == muscleGroup ? Colors.white : Colors.white70,
                                   fontWeight: _selectedMuscleGroup == muscleGroup ? FontWeight.bold : FontWeight.w500,
                                   fontSize: 14)),
@@ -203,17 +203,17 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                             text: TextSpan(
                               text:
                                   "${_metric == SetRepsVolumeReps.volume ? volumeInKOrM(avgValue.toDouble(), showLessThan1k: false) : avgValue}",
-                              style: GoogleFonts.montserrat(
+                              style: GoogleFonts.ubuntu(
                                   color: Colors.white, fontWeight: FontWeight.w700, fontSize: 28),
                               children: [
                                 TextSpan(
                                   text: " ",
-                                  style: GoogleFonts.montserrat(
+                                  style: GoogleFonts.ubuntu(
                                       color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                                 ),
                                 TextSpan(
                                   text: _metricLabel().toUpperCase(),
-                                  style: GoogleFonts.montserrat(
+                                  style: GoogleFonts.ubuntu(
                                       color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                                 ),
                               ],
@@ -221,7 +221,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                           ),
                           Text(
                             "WEEKLY AVERAGE",
-                            style: GoogleFonts.montserrat(
+                            style: GoogleFonts.ubuntu(
                                 color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 10),
                           ),
                         ],
@@ -309,7 +309,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                     Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Text(
                         "${_metric.name} Breakdown".toUpperCase(),
-                        style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 12),
+                        style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 12),
                       ),
                       const SizedBox(height: 14),
                       hasWeights

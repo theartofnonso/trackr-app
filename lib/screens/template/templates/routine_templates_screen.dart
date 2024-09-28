@@ -90,7 +90,7 @@ class RoutineTemplatesScreen extends StatelessWidget {
                         text: TextSpan(
                             text:
                                 "Consider training a variety of muscle groups to avoid muscle imbalances and prevent injury. Start by including",
-                            style: GoogleFonts.montserrat(
+                            style: GoogleFonts.ubuntu(
                                 color: Colors.white70,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
@@ -100,7 +100,7 @@ class RoutineTemplatesScreen extends StatelessWidget {
                           const TextSpan(text: " "),
                           TextSpan(
                               text: untrainedMuscleGroupsNames,
-                              style: GoogleFonts.montserrat(
+                              style: GoogleFonts.ubuntu(
                                   color: Colors.white,
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
@@ -146,14 +146,14 @@ class _RoutineWidget extends StatelessWidget {
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text(
                   template.name,
-                  style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.w700),
+                  style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w700),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                 ),
                 const Spacer(),
                 Text(
                   "${template.exerciseTemplates.length} Exercises",
-                  style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w500),
+                  style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w500),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                 ),
@@ -162,7 +162,7 @@ class _RoutineWidget extends StatelessWidget {
                 ),
                 Text(
                   "${template.exerciseTemplates.expand((exercise) => exercise.sets).length} Sets",
-                  style: GoogleFonts.montserrat(fontSize: 12, fontWeight: FontWeight.w400),
+                  style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w400),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                 ),
@@ -171,7 +171,7 @@ class _RoutineWidget extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   scheduleSummary,
-                  style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w400),
+                  style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400),
                   overflow: TextOverflow.ellipsis,
                 ),
               ])),

@@ -36,11 +36,11 @@ class Legend extends StatelessWidget {
               child: RichText(
                 text: TextSpan(
                   text: title,
-                  style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
+                  style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
                   children: <TextSpan>[
                     TextSpan(
                       text: suffix,
-                      style: GoogleFonts.montserrat(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white),
+                      style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white),
                     ),
                   ],
                 ),
@@ -48,7 +48,7 @@ class Legend extends StatelessWidget {
             ),
             const SizedBox(width: 6),
             Text(subTitle.toUpperCase(),
-                style: GoogleFonts.montserrat(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white60)),
+                style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white60)),
           ],
         ),
       ],

@@ -64,7 +64,7 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text("Muscle Trend".toUpperCase(),
-                    style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.bold)),
+                    style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.bold)),
                 const FaIcon(FontAwesomeIcons.arrowRightLong, color: Colors.white, size: 20),
               ],
             ),

@@ -179,7 +179,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
                   child: Text(workoutLogLink,
                       overflow: TextOverflow.ellipsis,
                       softWrap: true,
-                      style: GoogleFonts.montserrat(
+                      style: GoogleFonts.ubuntu(
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
                         fontSize: 14,
@@ -216,7 +216,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
               ),
               child: Text("${workoutLogText.substring(0, workoutLogText.length >= 150 ? 150 : workoutLogText.length)}...",
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.montserrat(
+                  style: GoogleFonts.ubuntu(
                     color: Colors.white70,
                     fontWeight: FontWeight.w500,
                     fontSize: 14,
@@ -295,7 +295,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
               leading: const FaIcon(FontAwesomeIcons.camera, size: 18),
               horizontalTitleGap: 6,
               title: Text("Camera",
-                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () => _pickFromLibrary(camera: true),
             ),
             ListTile(
@@ -304,7 +304,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
               leading: const FaIcon(FontAwesomeIcons.images, size: 18),
               horizontalTitleGap: 6,
               title: Text("Library",
-                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () => _pickFromLibrary(camera: false),
             ),
             if (_hasImage)
@@ -317,7 +317,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
                   dense: true,
                   contentPadding: EdgeInsets.zero,
                   title: Text("Remove Image",
-                      style: GoogleFonts.montserrat(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
+                      style: GoogleFonts.ubuntu(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
                   onTap: _removeImage,
                 ),
               ])

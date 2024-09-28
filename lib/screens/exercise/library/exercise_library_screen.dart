@@ -125,7 +125,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
             GestureDetector(
                 onTap: _navigateBackWithSelectedExercises,
                 child: Text("Add (${_selectedExercises.length})",
-                    style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.white))),
+                    style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.white))),
           const SizedBox(width: 12)
         ],
       ),
@@ -180,7 +180,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                     value: _selectedMuscleGroup,
                     hint: Text("Filter by muscle group",
                         style:
-                            GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14)),
+                            GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14)),
                     icon: GestureDetector(
                       onTap: () {
                         _selectedMuscleGroup = null;
@@ -196,7 +196,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                     underline: Container(
                       color: Colors.transparent,
                     ),
-                    style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
+                    style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
                     onChanged: (MuscleGroup? value) {
                       _selectedMuscleGroup = value;
                       _runSearch();
@@ -205,7 +205,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                       return DropdownMenuItem<MuscleGroup>(
                         value: muscleGroup,
                         child: Text(muscleGroup.name,
-                            style: GoogleFonts.montserrat(
+                            style: GoogleFonts.ubuntu(
                                 color: _selectedMuscleGroup == muscleGroup ? Colors.white : Colors.white70,
                                 fontWeight: _selectedMuscleGroup == muscleGroup ? FontWeight.bold : FontWeight.w500,
                                 fontSize: 14)),
@@ -213,7 +213,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                     }).toList(),
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 18),
                 _filteredExercises.isNotEmpty
                     ? Expanded(
                         child: ListView.separated(

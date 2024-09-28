@@ -100,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
               rightActionLabel: 'Delete',
               isRightActionDestructive: true);
         },
-        child: Text("Delete", style: GoogleFonts.montserrat(color: Colors.red)),
+        child: Text("Delete", style: GoogleFonts.ubuntu(color: Colors.red)),
       )
     ];
 
@@ -116,21 +116,21 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: context.pop,
             ),
             title: Text(foundExercise.name,
-                style: GoogleFonts.montserrat(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
+                style: GoogleFonts.ubuntu(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
             bottom: TabBar(
               dividerColor: Colors.transparent,
               tabs: [
                 Tab(
                     child: Text("Summary",
-                        style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
+                        style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
                 Tab(
                     child: Text("History",
-                        style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
+                        style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
                 if (hasVideo)
                   Tab(
                       child: Text("Video",
                           style:
-                              GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
+                              GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
               ],
             ),
             actions: foundExercise.owner

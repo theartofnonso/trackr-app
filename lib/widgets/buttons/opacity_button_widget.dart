@@ -41,7 +41,7 @@ class OpacityButtonWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(loading ? loadingLabel : label, textAlign: TextAlign.start, style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: buttonColor)),
+              Text(loading ? loadingLabel : label, textAlign: TextAlign.start, style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, fontSize: 16, color: buttonColor)),
               loading
                   ? const Padding(
                       padding: EdgeInsets.only(left: 6.0),

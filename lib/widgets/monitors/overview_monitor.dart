@@ -128,7 +128,7 @@ class _MonitorScore extends StatelessWidget {
       children: [
         Text(
           value,
-          style: GoogleFonts.montserrat(
+          style: GoogleFonts.ubuntu(
             color: color,
             fontSize: 18,
             fontWeight: FontWeight.w800,
@@ -138,7 +138,7 @@ class _MonitorScore extends StatelessWidget {
         Text(
           title.toUpperCase(),
           textAlign: TextAlign.center,
-          style: GoogleFonts.montserrat(
+          style: GoogleFonts.ubuntu(
             color: color.withOpacity(0.7),
             fontSize: 10,
             fontWeight: FontWeight.w800,

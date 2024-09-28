@@ -94,17 +94,17 @@ class PBsShareable extends StatelessWidget {
                           ? Padding(
                               padding: const EdgeInsets.symmetric(vertical: 20.0),
                               child: Text(value,
-                                  style: GoogleFonts.montserrat(
+                                  style: GoogleFonts.ubuntu(
                                       color: Colors.white, fontSize: 24, fontWeight: FontWeight.w600)),
                             )
                           : const SizedBox(height: 20),
                       Text(pbDto.exercise.name,
                           style:
-                              GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                              GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 4),
                       Text(pbDto.pb.description,
                           style:
-                              GoogleFonts.montserrat(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w600)),
+                              GoogleFonts.ubuntu(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w600)),
                       const SizedBox(height: 30),
                       Image.asset(
                         'images/trkr.png',

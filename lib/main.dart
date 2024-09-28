@@ -308,7 +308,7 @@ class _MyAppState extends State<MyApp> {
           OutlineInputBorder(borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: Colors.black)),
       filled: true,
       fillColor: sapphireLighter,
-      hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14),
+      hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14),
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: ButtonStyle(

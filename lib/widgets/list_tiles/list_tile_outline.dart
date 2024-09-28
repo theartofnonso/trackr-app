@@ -25,8 +25,8 @@ class OutlineListTile extends StatelessWidget {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
           splashColor: sapphireLighter,
           onTap: onTap,
-          title: Text(title, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
-          trailing: trailing != null ? Text(trailing, style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12)) : null),
+          title: Text(title, style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+          trailing: trailing != null ? Text(trailing, style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12)) : null),
     );
   }
 }

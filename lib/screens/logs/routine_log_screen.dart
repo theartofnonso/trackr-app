@@ -71,7 +71,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
               onPressed: () => context.pop(),
             ),
             title: Text(log.name,
-                style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+                style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
             actions: _isOwner
                 ? [
                     IconButton(
@@ -110,7 +110,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 12.0),
                         child: Text(log.notes,
-                            style: GoogleFonts.montserrat(
+                            style: GoogleFonts.ubuntu(
                               color: Colors.white,
                               fontSize: 14,
                             )),
@@ -125,7 +125,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                         ),
                         const SizedBox(width: 1),
                         Text(log.createdAt.formattedDayAndMonthAndYear(),
-                            style: GoogleFonts.montserrat(
+                            style: GoogleFonts.ubuntu(
                                 color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
                         const SizedBox(width: 10),
                         const Icon(
@@ -135,7 +135,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                         ),
                         const SizedBox(width: 1),
                         Text(log.endTime.formattedTime(),
-                            style: GoogleFonts.montserrat(
+                            style: GoogleFonts.ubuntu(
                                 color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
                       ],
                     ),
@@ -159,7 +159,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                               verticalAlignment: TableCellVerticalAlignment.middle,
                               child: Center(
                                 child: Text(completedSetsSummary,
-                                    style: GoogleFonts.montserrat(
+                                    style: GoogleFonts.ubuntu(
                                         color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                               ),
                             ),
@@ -168,7 +168,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                               child: Center(
                                 child: Text(
                                     "${completedExerciseLogsAndSets.length} ${pluralize(word: "Exercise", count: completedExerciseLogsAndSets.length)}",
-                                    style: GoogleFonts.montserrat(
+                                    style: GoogleFonts.ubuntu(
                                         color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                               ),
                             ),
@@ -176,7 +176,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                               verticalAlignment: TableCellVerticalAlignment.middle,
                               child: Center(
                                 child: Text(log.duration().hmsAnalog(),
-                                    style: GoogleFonts.montserrat(
+                                    style: GoogleFonts.ubuntu(
                                         color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                               ),
                             )
@@ -239,7 +239,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
               leading: const FaIcon(FontAwesomeIcons.pen, size: 18),
               horizontalTitleGap: 6,
               title: Text("Edit Log",
-                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: _editLog,
             ),
             ListTile(
@@ -248,7 +248,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
               leading: const FaIcon(FontAwesomeIcons.clock, size: 18),
               horizontalTitleGap: 6,
               title: Text("Edit duration",
-                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: _editLogDuration,
             ),
             ListTile(
@@ -257,7 +257,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
               leading: const FaIcon(FontAwesomeIcons.floppyDisk, size: 18),
               horizontalTitleGap: 6,
               title: Text("Save as template",
-                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: _createTemplate,
             ),
             ListTile(
@@ -270,7 +270,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
               ),
               horizontalTitleGap: 6,
               title: Text("Delete log",
-                  style: GoogleFonts.montserrat(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
+                  style: GoogleFonts.ubuntu(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: _deleteLog,
             ),
           ]),
@@ -415,7 +415,7 @@ class _EmptyState extends StatelessWidget {
           onPressed: () => context.pop(),
         ),
         title: Text("Workout Log",
-            style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+            style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -435,12 +435,12 @@ class _EmptyState extends StatelessWidget {
             children: [
               RichText(
                   text: TextSpan(
-                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.white),
+                      style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.white),
                       children: [
                     TextSpan(
                         text: "Not F",
                         style:
-                            GoogleFonts.montserrat(fontSize: 48, color: Colors.white70, fontWeight: FontWeight.w900)),
+                            GoogleFonts.ubuntu(fontSize: 48, color: Colors.white70, fontWeight: FontWeight.w900)),
                     const WidgetSpan(
                         child: Padding(
                           padding: EdgeInsets.only(left: 6.0),
@@ -450,7 +450,7 @@ class _EmptyState extends StatelessWidget {
                     TextSpan(
                         text: "und",
                         style:
-                            GoogleFonts.montserrat(fontSize: 48, color: Colors.white70, fontWeight: FontWeight.w900)),
+                            GoogleFonts.ubuntu(fontSize: 48, color: Colors.white70, fontWeight: FontWeight.w900)),
                   ])),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),

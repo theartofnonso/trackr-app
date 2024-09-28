@@ -38,7 +38,7 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
           ListTile(
               title: Text(
                 "Start Time",
-                style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
+                style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
               ),
               trailing: SizedBox(
                 width: 150,
@@ -69,7 +69,7 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
           ListTile(
               title: Text(
                 "End Time",
-                style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
+                style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
               ),
               trailing: SizedBox(
                 width: 150,

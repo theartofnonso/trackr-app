@@ -30,8 +30,8 @@ class _RoutinesHomeState extends State<RoutinesHome> {
             bottom: TabBar(
               dividerColor: Colors.transparent,
               tabs: [
-                Tab(child: Text("My Workouts", style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
-                Tab(child: Text("Explore", style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
+                Tab(child: Text("My Workouts", style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
+                Tab(child: Text("Explore", style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
               ],
             ),
           ),

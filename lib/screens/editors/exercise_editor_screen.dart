@@ -48,8 +48,8 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
 
     final exercise = widget.exercise;
 
-    final inactiveStyle = GoogleFonts.montserrat(color: Colors.white70, fontSize: 22, fontWeight: FontWeight.w600);
-    final activeStyle = GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w600);
+    final inactiveStyle = GoogleFonts.ubuntu(color: Colors.white70, fontSize: 22, fontWeight: FontWeight.w600);
+    final activeStyle = GoogleFonts.ubuntu(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w600);
 
     return PopScope(
         canPop: false,
@@ -66,7 +66,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                       onTap: _updateExercise,
                       child: Text("Update",
                           style:
-                              GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.white)))
+                              GoogleFonts.ubuntu(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.white)))
                   : const SizedBox.shrink(),
               const SizedBox(width: 12)
             ],
@@ -189,13 +189,13 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
               filled: true,
               fillColor: sapphireDark,
               hintText: "New Exercise",
-              hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14)),
+              hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14)),
           onChanged: (value) => _updateExerciseName(value),
           cursorColor: Colors.white,
           keyboardType: TextInputType.text,
           textCapitalization: TextCapitalization.words,
           style:
-              GoogleFonts.montserrat(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+              GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
         ));
     _doneTyping();
   }

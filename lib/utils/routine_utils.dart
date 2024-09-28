@@ -94,7 +94,7 @@ List<Widget> setsToWidgets(
     padding: const EdgeInsets.symmetric(vertical: 10.0),
     child: Center(
       child: Text("Timer will be available in log mode",
-          style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white70)),
+          style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white70)),
     ),
   );
 

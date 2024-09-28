@@ -23,7 +23,7 @@ class _RoutineTimerState extends State<RoutineTimer> {
   @override
   Widget build(BuildContext context) {
     return Text(widget.digital ? _elapsedDuration.hmsDigital() : _elapsedDuration.hmsAnalog(),
-        style: GoogleFonts.montserrat(color: widget.color, fontWeight: FontWeight.w600));
+        style: GoogleFonts.ubuntu(color: widget.color, fontWeight: FontWeight.w600));
   }
 
   @override

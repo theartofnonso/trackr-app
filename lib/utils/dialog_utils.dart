@@ -23,7 +23,7 @@ void showSnackbar({required BuildContext context, required Widget icon, required
           Expanded(
             child: Text(
               message,
-              style: GoogleFonts.montserrat(
+              style: GoogleFonts.ubuntu(
                 fontSize: 14.0,
                 fontWeight: FontWeight.w400,
                 color: Colors.white,
@@ -117,10 +117,10 @@ Future<void> showBottomSheetWithNoAction(
       context: context,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(title,
-            style: GoogleFonts.montserrat(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
+            style: GoogleFonts.ubuntu(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
             textAlign: TextAlign.start),
         Text(description,
-            style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white),
+            style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white),
             textAlign: TextAlign.start)
       ]));
 }
@@ -143,10 +143,10 @@ void showBottomSheetWithMultiActions(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(title,
-              style: GoogleFonts.montserrat(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
+              style: GoogleFonts.ubuntu(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
               textAlign: TextAlign.start),
           Text(description,
-              style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white70),
+              style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white70),
               textAlign: TextAlign.start),
           const SizedBox(height: 16),
           Row(mainAxisAlignment: MainAxisAlignment.start, children: [

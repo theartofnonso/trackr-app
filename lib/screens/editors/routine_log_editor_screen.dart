@@ -344,7 +344,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                   onPressed: _discardLog),
               title: Text(
                 widget.log.name,
-                style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+                style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
               ),
               actions: [
                 IconButton(
@@ -366,7 +366,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                     enableFeedback: true,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                     label: Text("Finish workout",
-                        style: GoogleFonts.montserrat(color: vibrantGreen, fontWeight: FontWeight.w600)),
+                        style: GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w600)),
                   ),
             body: Container(
               width: double.infinity,
@@ -580,23 +580,23 @@ class _RoutineLogOverview extends StatelessWidget {
             TableRow(children: [
               Text("EXERCISES",
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.montserrat(fontSize: 10, color: Colors.white70, fontWeight: FontWeight.w600)),
+                  style: GoogleFonts.ubuntu(fontSize: 10, color: Colors.white70, fontWeight: FontWeight.w600)),
               Text("SETS",
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.montserrat(fontSize: 10, color: Colors.white70, fontWeight: FontWeight.w600)),
+                  style: GoogleFonts.ubuntu(fontSize: 10, color: Colors.white70, fontWeight: FontWeight.w600)),
               Text("DURATION",
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.montserrat(fontSize: 10, color: Colors.white70, fontWeight: FontWeight.w600))
+                  style: GoogleFonts.ubuntu(fontSize: 10, color: Colors.white70, fontWeight: FontWeight.w600))
             ]),
             const TableRow(children: [SizedBox(height: 4), SizedBox(height: 4), SizedBox(height: 4)] ),
             TableRow(
                 children: [
               Text(exercisesSummary,
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600)),
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600)),
               Text(setsSummary,
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600)),
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600)),
               Center(child: timer)
             ])
           ],

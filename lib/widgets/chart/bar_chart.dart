@@ -130,7 +130,7 @@ class CustomBarChart extends StatelessWidget {
       }).toList();
 
   Widget _leftTitleWidgets(double value, TitleMeta meta) {
-    final style = GoogleFonts.montserrat(
+    final style = GoogleFonts.ubuntu(
       fontWeight: FontWeight.w600,
       fontSize: 9,
     );
@@ -151,7 +151,7 @@ class CustomBarChart extends StatelessWidget {
 
   Widget _bottomTitleWidgets(double value, TitleMeta meta) {
     final modifiedDateTimes = periods.length == 1 ? [...periods, ...periods] : periods;
-    final style = GoogleFonts.montserrat(
+    final style = GoogleFonts.ubuntu(
       fontWeight: FontWeight.w600,
       fontSize: 10,
       color: Colors.white70,
