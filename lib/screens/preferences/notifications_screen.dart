@@ -90,7 +90,7 @@ class NotificationsScreen extends StatelessWidget {
             child: SingleChildScrollView(
               child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
                 Text("Notifications",
-                    style: GoogleFonts.montserrat(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w900)),
+                    style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w900)),
                 const SizedBox(height: 24),
                 const _NotificationListView()
               ]),
@@ -126,7 +126,7 @@ class _NotificationSwitch extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 10),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(title, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16)),
+          Text(title, style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16)),
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             const SizedBox(height: 8),
             if (enabled)

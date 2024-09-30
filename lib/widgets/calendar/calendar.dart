@@ -129,7 +129,7 @@ class _CalendarHeader extends StatelessWidget {
           itemCount: daysOfWeek.length, // Just an example to vary the number of squares
           itemBuilder: (context, index) {
             return Text(daysOfWeek[index],
-                style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white),
+                style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white),
                 textAlign: TextAlign.center);
           },
         ));
@@ -230,7 +230,7 @@ class _Day extends StatelessWidget {
           ),
           child: Center(
             child: Text("${dateTime.day}",
-                style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold, color: _getTextColor())),
+                style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.bold, color: _getTextColor())),
           ),
         ),
       ),

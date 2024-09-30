@@ -44,7 +44,7 @@ class SolidButtonWidget extends StatelessWidget {
             children: [
               Text(loading ? loadingLabel : label,
                   textAlign: TextAlign.start,
-                  style: GoogleFonts.montserrat(
+                  style: GoogleFonts.ubuntu(
                       fontWeight: FontWeight.w600, fontSize: 16, color: textColor ?? Colors.white)),
               loading
                   ? const Padding(

@@ -43,7 +43,6 @@ import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/template/routines_home.dart';
 import 'package:tracker_app/screens/template/templates/routine_template_screen.dart';
-import 'package:tracker_app/screens/wrapped/storyboard.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import 'amplifyconfiguration.dart';
@@ -308,7 +307,7 @@ class _MyAppState extends State<MyApp> {
           OutlineInputBorder(borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: Colors.black)),
       filled: true,
       fillColor: sapphireLighter,
-      hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14),
+      hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14),
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: ButtonStyle(

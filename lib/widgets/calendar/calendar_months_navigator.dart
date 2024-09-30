@@ -123,7 +123,7 @@ class _CalendarMonthsNavigatorState extends State<CalendarMonthsNavigator> {
                 color: _canNavigate() ? Colors.white : Colors.white60, size: 16)),
         Text(_formattedDate(),
             textAlign: TextAlign.center,
-            style: GoogleFonts.montserrat(
+            style: GoogleFonts.ubuntu(
               fontSize: 12,
               fontWeight: FontWeight.w900,
             )),

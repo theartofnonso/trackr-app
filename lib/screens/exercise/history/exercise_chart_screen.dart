@@ -194,7 +194,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
             width: double.infinity,
             child: Text(
               "Training ${widget.exercise.primaryMuscleGroup.name}",
-              style: GoogleFonts.montserrat(
+              style: GoogleFonts.ubuntu(
                   color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14),
               textAlign: TextAlign.center,
             ),
@@ -367,10 +367,10 @@ class _MetricListTile extends StatelessWidget {
         onTap: enabled ? onTap : () {},
         tileColor: Colors.pinkAccent,
         title:
-            Text(title, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w500)),
-        subtitle: Text(subtitle, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white.withOpacity(0.7))),
+            Text(title, style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w500)),
+        subtitle: Text(subtitle, style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white.withOpacity(0.7))),
         trailing: Text(trailing,
-            style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
+            style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       ),
     );

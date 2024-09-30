@@ -62,9 +62,9 @@ class SessionMilestoneShareable extends StatelessWidget {
                 const FaIcon(FontAwesomeIcons.award, color: vibrantGreen, size: 40),
                 const SizedBox(height: 20),
                 Text(label,
-                    style: GoogleFonts.montserrat(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900)),
+                    style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900)),
                 Text("Session",
-                    style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                    style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 30),
                 Image.asset(
                   'images/trkr.png',

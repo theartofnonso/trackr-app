@@ -49,7 +49,7 @@ class _SubstituteExercisePickerState extends State<SubstituteExercisePicker> {
                 dense: true,
                 contentPadding: EdgeInsets.zero,
                 title: Text(exercise.name,
-                    style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 15)),
+                    style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 15)),
               ),
             ))
         .toList();
@@ -64,7 +64,7 @@ class _SubstituteExercisePickerState extends State<SubstituteExercisePicker> {
                   padding: const EdgeInsets.only(top: 20.0, bottom: 10),
                   child: Text(widget.title,
                       textAlign: TextAlign.start,
-                      style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 15)),
+                      style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 15)),
                 ),
                 ...listTiles,
                 const SizedBox(height: 12),

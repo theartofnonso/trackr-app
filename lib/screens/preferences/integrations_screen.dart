@@ -46,7 +46,7 @@ class _IntegrationsScreenState extends State<IntegrationsScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Text("Integrations",
-                    style: GoogleFonts.montserrat(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w900)),
+                    style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w900)),
                 const SizedBox(height: 24),
                 ListTile(
                   onTap: _hasPermission ? null : _connectAppleHealth,
@@ -57,11 +57,11 @@ class _IntegrationsScreenState extends State<IntegrationsScreen> {
                   ),
                   title: Text(
                     'Apple Health',
-                    style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w700),
+                    style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w700),
                   ),
                   subtitle: Text(
                     _hasPermission ? 'Connected' : 'Connect to sync workouts',
-                    style: GoogleFonts.montserrat(color: Colors.white, fontSize: 12),
+                    style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 12),
                   ),
                   trailing: ClipRRect(
                       borderRadius: BorderRadius.circular(5),

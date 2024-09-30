@@ -33,7 +33,7 @@ class ExerciseWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(exercise.name,
-                      style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 18)),
+                      style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 18)),
                   if (description.isNotEmpty)
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -42,7 +42,7 @@ class ExerciseWidget extends StatelessWidget {
                           height: 10,
                         ),
                         Text(description,
-                            style: GoogleFonts.montserrat(
+                            style: GoogleFonts.ubuntu(
                                 color: Colors.white70, height: 1.8, fontWeight: FontWeight.w400, fontSize: 14)),
                       ],
                     ),
@@ -50,12 +50,12 @@ class ExerciseWidget extends StatelessWidget {
                     height: 6,
                   ),
                   Text(exercise.primaryMuscleGroup.name.toUpperCase(),
-                      style: GoogleFonts.montserrat(color: Colors.orange, fontWeight: FontWeight.w600, fontSize: 12)),
+                      style: GoogleFonts.ubuntu(color: Colors.orange, fontWeight: FontWeight.w600, fontSize: 12)),
                   if (exercise.owner)
                     Padding(
                       padding: const EdgeInsets.only(top: 4.0),
                       child: Text("Owner".toUpperCase(),
-                          style: GoogleFonts.montserrat(
+                          style: GoogleFonts.ubuntu(
                               color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 8)),
                     ),
                 ],

@@ -34,13 +34,13 @@ class WeightRepsSetHeader extends StatelessWidget {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: Text(firstLabel,
-                style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
+                style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
                 textAlign: TextAlign.center),
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: Text(secondLabel,
-                style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
+                style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
                 textAlign: TextAlign.center),
           ),
           if (editorType == RoutineEditorMode.log)

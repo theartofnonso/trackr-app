@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
@@ -25,40 +26,49 @@ class StoryboardOne extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                RichText(
-                  text: TextSpan(
-                    text: 'You spent',
-                    style: GoogleFonts.montserrat(fontSize: 36, fontWeight: FontWeight.w900, color: sapphireLighter),
-                    children: [
-                      const TextSpan(
-                        text: " ",
-                      ),
-                      TextSpan(
-                        text: "600",
-                        style: GoogleFonts.montserrat(fontSize: 40, fontWeight: FontWeight.w900, color: Colors.white70),
-                      ),
-                      const TextSpan(
-                        text: "\n",
-                      ),
-                      TextSpan(
-                        text: "hours training",
-                        style:
-                            GoogleFonts.montserrat(fontSize: 36, fontWeight: FontWeight.w900, color: sapphireLighter),
-                      ),
-                      const TextSpan(
-                        text: "\n",
-                      ),
-                      TextSpan(
-                        text: "this year",
-                        style:
-                            GoogleFonts.montserrat(fontSize: 36, fontWeight: FontWeight.w900, color: sapphireLighter),
-                      )
-                    ],
+                Animate(
+                  delay: const Duration(seconds: 1),
+                  effects: const [FadeEffect(duration: Duration(milliseconds: 500))],
+                  child: RichText(
+                    text: TextSpan(
+                      text: 'You spent',
+                      style: GoogleFonts.ubuntu(fontSize: 36, fontWeight: FontWeight.w900, color: sapphireLighter),
+                      children: [
+                        const TextSpan(
+                          text: " ",
+                        ),
+                        TextSpan(
+                          text: "600",
+                          style:
+                              GoogleFonts.ubuntu(fontSize: 40, fontWeight: FontWeight.w900, color: Colors.white70),
+                        ),
+                        const TextSpan(
+                          text: "\n",
+                        ),
+                        TextSpan(
+                          text: "hours training",
+                          style:
+                              GoogleFonts.ubuntu(fontSize: 36, fontWeight: FontWeight.w900, color: sapphireLighter),
+                        ),
+                        const TextSpan(
+                          text: "\n",
+                        ),
+                        TextSpan(
+                          text: "this year",
+                          style:
+                              GoogleFonts.ubuntu(fontSize: 36, fontWeight: FontWeight.w900, color: sapphireLighter),
+                        )
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(height: 10),
-                Text("This is the total number of hours you log on the TRKR app this year",
-                    style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: sapphireLighter, fontSize: 14)),
+                Animate(
+                  delay: const Duration(seconds: 1),
+                  effects: const [FadeEffect(duration: Duration(milliseconds: 500))],
+                  child: Text("This is the total number of hours you logged on the TRKR app this year.",
+                      style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: sapphireLighter, fontSize: 14)),
+                ),
               ])),
     );
   }
@@ -77,14 +87,14 @@ class StoryboardTwo extends StatelessWidget {
             RichText(
               text: TextSpan(
                 text: 'Your Top',
-                style: GoogleFonts.montserrat(fontSize: 36, fontWeight: FontWeight.w900, color: sapphireLighter),
+                style: GoogleFonts.ubuntu(fontSize: 36, fontWeight: FontWeight.w900, color: sapphireLighter),
                 children: [
                   const TextSpan(
                     text: "\n",
                   ),
                   TextSpan(
                     text: "Exercises",
-                    style: GoogleFonts.montserrat(fontSize: 36, fontWeight: FontWeight.w900, color: sapphireLighter),
+                    style: GoogleFonts.ubuntu(fontSize: 36, fontWeight: FontWeight.w900, color: sapphireLighter),
                   ),
                 ],
               ),
@@ -93,108 +103,113 @@ class StoryboardTwo extends StatelessWidget {
             SingleChildScrollView(
               child: Column(
                 children: [
-                  ListTile(
-                    leading: SizedBox(
-                      width: 50,
-                      child: Row(
-                        children: [
-                          const FaIcon(
-                            FontAwesomeIcons.hashtag,
-                            color: Colors.black,
-                          ),
-                          const SizedBox(width: 2),
-                          Text("1",
-                              style: GoogleFonts.montserrat(
-                                  fontWeight: FontWeight.w500, color: Colors.black, fontSize: 34)),
-                        ],
+                  ...AnimateList(
+                      interval: 800.ms,
+                      effects: [FadeEffect(duration: 500.ms), ScaleEffect(duration: 500.ms)],
+                      children: [
+                    ListTile(
+                      leading: SizedBox(
+                        width: 50,
+                        child: Row(
+                          children: [
+                            const FaIcon(
+                              FontAwesomeIcons.hashtag,
+                              color: Colors.black,
+                            ),
+                            const SizedBox(width: 2),
+                            Text("1",
+                                style: GoogleFonts.ubuntu(
+                                    fontWeight: FontWeight.w500, color: Colors.black, fontSize: 34)),
+                          ],
+                        ),
                       ),
+                      contentPadding: EdgeInsets.zero,
+                      title: Text("Lying Leg Curls",
+                          style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.black, fontSize: 18)),
+                      trailing: Text("85",
+                          style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.black, fontSize: 24)),
                     ),
-                    contentPadding: EdgeInsets.zero,
-                    title: Text("Lying Leg Curls",
-                        style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.black, fontSize: 18)),
-                    trailing: Text("85",
-                        style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.black, fontSize: 24)),
-                  ),
-                  const SizedBox(height: 30),
-                  ListTile(
-                    leading: SizedBox(
-                      width: 50,
-                      child: Row(
-                        children: [
-                          const FaIcon(FontAwesomeIcons.hashtag, color: Colors.black),
-                          const SizedBox(width: 2),
-                          Text("2",
-                              style: GoogleFonts.montserrat(
-                                  fontWeight: FontWeight.w500, color: Colors.black, fontSize: 34)),
-                        ],
+                    const SizedBox(height: 30),
+                    ListTile(
+                      leading: SizedBox(
+                        width: 50,
+                        child: Row(
+                          children: [
+                            const FaIcon(FontAwesomeIcons.hashtag, color: Colors.black),
+                            const SizedBox(width: 2),
+                            Text("2",
+                                style: GoogleFonts.ubuntu(
+                                    fontWeight: FontWeight.w500, color: Colors.black, fontSize: 34)),
+                          ],
+                        ),
                       ),
+                      contentPadding: EdgeInsets.zero,
+                      title: Text("Romanian Deadlift",
+                          style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.black, fontSize: 18)),
+                      trailing: Text("72",
+                          style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.black, fontSize: 24)),
                     ),
-                    contentPadding: EdgeInsets.zero,
-                    title: Text("Romanian Deadlift",
-                        style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.black, fontSize: 18)),
-                    trailing: Text("72",
-                        style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.black, fontSize: 24)),
-                  ),
-                  const SizedBox(height: 30),
-                  ListTile(
-                    leading: SizedBox(
-                      width: 50,
-                      child: Row(
-                        children: [
-                          const FaIcon(FontAwesomeIcons.hashtag, color: Colors.black),
-                          const SizedBox(width: 2),
-                          Text("3",
-                              style: GoogleFonts.montserrat(
-                                  fontWeight: FontWeight.w500, color: Colors.black, fontSize: 34)),
-                        ],
+                    const SizedBox(height: 30),
+                    ListTile(
+                      leading: SizedBox(
+                        width: 50,
+                        child: Row(
+                          children: [
+                            const FaIcon(FontAwesomeIcons.hashtag, color: Colors.black),
+                            const SizedBox(width: 2),
+                            Text("3",
+                                style: GoogleFonts.ubuntu(
+                                    fontWeight: FontWeight.w500, color: Colors.black, fontSize: 34)),
+                          ],
+                        ),
                       ),
+                      contentPadding: EdgeInsets.zero,
+                      title: Text("Plank",
+                          style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.black, fontSize: 18)),
+                      trailing: Text("68",
+                          style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.black, fontSize: 24)),
                     ),
-                    contentPadding: EdgeInsets.zero,
-                    title: Text("Plank",
-                        style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.black, fontSize: 18)),
-                    trailing: Text("68",
-                        style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.black, fontSize: 24)),
-                  ),
-                  const SizedBox(height: 30),
-                  ListTile(
-                    leading: SizedBox(
-                      width: 50,
-                      child: Row(
-                        children: [
-                          const FaIcon(FontAwesomeIcons.hashtag, color: Colors.black),
-                          const SizedBox(width: 2),
-                          Text("4",
-                              style: GoogleFonts.montserrat(
-                                  fontWeight: FontWeight.w500, color: Colors.black, fontSize: 34)),
-                        ],
+                    const SizedBox(height: 30),
+                    ListTile(
+                      leading: SizedBox(
+                        width: 50,
+                        child: Row(
+                          children: [
+                            const FaIcon(FontAwesomeIcons.hashtag, color: Colors.black),
+                            const SizedBox(width: 2),
+                            Text("4",
+                                style: GoogleFonts.ubuntu(
+                                    fontWeight: FontWeight.w500, color: Colors.black, fontSize: 34)),
+                          ],
+                        ),
                       ),
+                      contentPadding: EdgeInsets.zero,
+                      title: Text("Reversed Lunges",
+                          style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.black, fontSize: 18)),
+                      trailing: Text("53",
+                          style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.black, fontSize: 24)),
                     ),
-                    contentPadding: EdgeInsets.zero,
-                    title: Text("Reversed Lunges",
-                        style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.black, fontSize: 18)),
-                    trailing: Text("53",
-                        style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.black, fontSize: 24)),
-                  ),
-                  const SizedBox(height: 30),
-                  ListTile(
-                    leading: SizedBox(
-                      width: 50,
-                      child: Row(
-                        children: [
-                          const FaIcon(FontAwesomeIcons.hashtag, color: Colors.black),
-                          const SizedBox(width: 2),
-                          Text("5",
-                              style: GoogleFonts.montserrat(
-                                  fontWeight: FontWeight.w500, color: Colors.black, fontSize: 34)),
-                        ],
+                    const SizedBox(height: 30),
+                    ListTile(
+                      leading: SizedBox(
+                        width: 50,
+                        child: Row(
+                          children: [
+                            const FaIcon(FontAwesomeIcons.hashtag, color: Colors.black),
+                            const SizedBox(width: 2),
+                            Text("5",
+                                style: GoogleFonts.ubuntu(
+                                    fontWeight: FontWeight.w500, color: Colors.black, fontSize: 34)),
+                          ],
+                        ),
                       ),
+                      contentPadding: EdgeInsets.zero,
+                      title: Text("Incline Bench Press",
+                          style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.black, fontSize: 18)),
+                      trailing: Text("30",
+                          style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.black, fontSize: 24)),
                     ),
-                    contentPadding: EdgeInsets.zero,
-                    title: Text("Incline Bench Press",
-                        style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.black, fontSize: 18)),
-                    trailing: Text("30",
-                        style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.black, fontSize: 24)),
-                  ),
+                  ])
                 ],
               ),
             ),
@@ -216,23 +231,24 @@ class StoryboardThree extends StatelessWidget {
             RichText(
               text: TextSpan(
                 text: 'Consistency',
-                style: GoogleFonts.montserrat(fontSize: 36, fontWeight: FontWeight.w900, color: Colors.white),
+                style: GoogleFonts.ubuntu(fontSize: 36, fontWeight: FontWeight.w900, color: Colors.white),
                 children: [
                   const TextSpan(
                     text: "\n",
                   ),
                   TextSpan(
                     text: "History",
-                    style: GoogleFonts.montserrat(fontSize: 36, fontWeight: FontWeight.w900, color: Colors.white),
+                    style: GoogleFonts.ubuntu(fontSize: 36, fontWeight: FontWeight.w900, color: Colors.white),
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 10),
             Text("See your year in a commit graph week. Saturated colours represent weeks with high intensity",
-                style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white70, fontSize: 14)),
+                style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white70, fontSize: 14)),
             const SizedBox(height: 20),
-            _ConsistencyGraph()])),
+            _ConsistencyGraph()
+          ])),
     );
   }
 }
@@ -248,7 +264,7 @@ class _ConsistencyGraph extends StatelessWidget {
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 7, // 7 days per row (week)
         ),
-        itemCount: 365, // Total number of squares (days)
+        itemCount: 52, // Total number of squares (days)
         itemBuilder: (context, index) {
           return Container(
             margin: const EdgeInsets.all(2),

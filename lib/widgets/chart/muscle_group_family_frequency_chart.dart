@@ -80,7 +80,7 @@ class _LinearBar extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: Text(muscleGroupFamily.name.toUpperCase(),
-                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w700, color: sapphireDark, fontSize: 12)),
+                      style: GoogleFonts.ubuntu(fontWeight: FontWeight.w700, color: sapphireDark, fontSize: 12)),
                 )
               ],
             ),
@@ -92,7 +92,7 @@ class _LinearBar extends StatelessWidget {
                 const SizedBox(width: 10),
                 SizedBox(
                     width: 32,
-                    child: Text("$remainder left", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12))),
+                    child: Text("$remainder left", style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12))),
               ],
             ),
         ],

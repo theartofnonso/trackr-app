@@ -46,7 +46,7 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
           Text("Muscle Groups Frequency".toUpperCase(),
-              style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+              style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
           const Spacer(),
           if (muscleGroupFamilyFrequencies.length > 3)
             FaIcon(_minimized ? FontAwesomeIcons.angleDown : FontAwesomeIcons.angleUp, color: Colors.white70, size: 16),
@@ -54,19 +54,19 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
         const SizedBox(height: 10),
         Text(
             "Train a variety of muscle groups to avoid muscle imbalances and prevent injury. On average each muscle group should be trained at least 2 times a week.",
-            style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
+            style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
         const SizedBox(height: 10),
         MuscleGroupFamilyFrequencyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
         if (untrainedMuscleGroups.isNotEmpty)
           RichText(
               text: TextSpan(
                   text: "You have not trained",
-                  style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500),
+                  style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500),
                   children: [
                 const TextSpan(text: " "),
                 TextSpan(
                     text: untrainedMuscleGroupsNames,
-                    style: GoogleFonts.montserrat(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)),
+                    style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)),
                     const TextSpan(text: " "),
                 const TextSpan(text: "this month", style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
               ])),

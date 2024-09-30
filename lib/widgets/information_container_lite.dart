@@ -27,7 +27,7 @@ class InformationContainerLite extends StatelessWidget {
           const SizedBox(width: 14),
           Expanded(
               child: Text(content,
-                  style: GoogleFonts.montserrat(
+                  style: GoogleFonts.ubuntu(
                       fontSize: 12, height: 1.4, color: color ?? Colors.white, fontWeight: FontWeight.w600))),
         ],
       ),

@@ -79,7 +79,7 @@ class CalendarHeatMap extends StatelessWidget {
       children: [
         if (showMonth)
           Text(dates.first.abbreviatedMonth().toUpperCase(),
-              style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+              style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
         _Month(
           days: datesForMonth,
           spacing: spacing,
@@ -145,7 +145,7 @@ class _Day extends StatelessWidget {
       ),
       child: Center(
         child: Text("${date.dateTime.day}",
-            style: GoogleFonts.montserrat(
+            style: GoogleFonts.ubuntu(
                 fontSize: minifyLabels ? 12 : 16, fontWeight: FontWeight.bold, color: _getTextColor())),
       ),
     );

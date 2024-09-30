@@ -77,9 +77,9 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 children: [
                   ListTile(
                     title: Text("Weight",
-                        style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+                        style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
                     subtitle:
-                        Text("Choose kg or lbs", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14)),
+                        Text("Choose kg or lbs", style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 14)),
                     trailing: SegmentedButton(
                       showSelectedIcon: false,
                       style: ButtonStyle(
@@ -126,7 +126,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       activeColor: vibrantGreen,
                       title: Text('Show calendar dates',
                           style:
-                              GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+                              GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
                       value: SharedPrefs().showCalendarDates,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                       onChanged: (bool value) {
@@ -163,7 +163,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   Center(
                     child: Text(_appVersion,
                         style:
-                            GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+                            GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
                   ),
                 ],
               ),
@@ -232,7 +232,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               leading: const FaIcon(FontAwesomeIcons.globe, size: 18),
               horizontalTitleGap: 6,
               title: Text("On the web",
-                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
                 context.pop();
                 openUrl(url: trackrWebUrl, context: context);
@@ -244,7 +244,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               leading: const FaIcon(FontAwesomeIcons.instagram, size: 18),
               horizontalTitleGap: 6,
               title: Text("On Instagram",
-                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
                 context.pop();
                 openUrl(url: instagramUrl, context: context);

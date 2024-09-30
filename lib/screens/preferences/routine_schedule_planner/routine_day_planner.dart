@@ -54,17 +54,17 @@ class _RoutineDayPlannerState extends State<RoutineDayPlanner> {
             ? RichText(
                 text: TextSpan(
                   text: 'Train ${widget.template.name} ',
-                  style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white70),
+                  style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white70),
                   children: [
                     TextSpan(
                       text: days,
-                      style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.white),
+                      style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.white),
                     )
                   ],
                 ),
               )
             : Text('Select days to train ${widget.template.name}',
-                style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white70)),
+                style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white70)),
         const SizedBox(height: 14),
         Wrap(
           spacing: 8.0,
@@ -72,7 +72,7 @@ class _RoutineDayPlannerState extends State<RoutineDayPlanner> {
           children: DayOfWeek.values.map((day) {
             return ChoiceChip(
               label: Text(day.longName,
-                  style: GoogleFonts.montserrat(
+                  style: GoogleFonts.ubuntu(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                       color: _selectedDays.contains(day) ? sapphireDark : Colors.white)),

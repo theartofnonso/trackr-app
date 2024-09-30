@@ -73,7 +73,7 @@ class _WorkoutGridView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(templateName.name.toUpperCase(),
-            style: GoogleFonts.montserrat(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w700)),
+            style: GoogleFonts.ubuntu(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w700)),
         const SizedBox(height: 12),
         GridView.count(
             shrinkWrap: true,
@@ -133,7 +133,7 @@ class _RoutineWidget extends StatelessWidget {
                       const Spacer(),
                       Text(
                         libraryTemplate.template.name,
-                        style: GoogleFonts.montserrat(fontSize: 18, fontWeight: FontWeight.w700),
+                        style: GoogleFonts.ubuntu(fontSize: 18, fontWeight: FontWeight.w700),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 2,
                       ),

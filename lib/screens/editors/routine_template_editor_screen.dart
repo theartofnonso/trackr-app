@@ -342,11 +342,11 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                                 filled: true,
                                 fillColor: sapphireDark,
                                 hintText: "New workout",
-                                hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14)),
+                                hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14)),
                             cursorColor: Colors.white,
                             keyboardType: TextInputType.text,
                             textCapitalization: TextCapitalization.words,
-                            style: GoogleFonts.montserrat(
+                            style: GoogleFonts.ubuntu(
                                 fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
                           ),
                           const SizedBox(height: 10),
@@ -360,12 +360,12 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                                 filled: true,
                                 fillColor: sapphireDark,
                                 hintText: "Notes",
-                                hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14)),
+                                hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14)),
                             maxLines: null,
                             cursorColor: Colors.white,
                             keyboardType: TextInputType.text,
                             textCapitalization: TextCapitalization.sentences,
-                            style: GoogleFonts.montserrat(
+                            style: GoogleFonts.ubuntu(
                                 fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
                           ),
                         ],

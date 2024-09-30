@@ -34,11 +34,11 @@ class _RoutineFrequencyPlannerState extends State<RoutineFrequencyPlanner> {
         RichText(
           text: TextSpan(
             text: 'Train ${widget.template.name} ',
-            style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white70),
+            style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white70),
             children: [
               TextSpan(
                 text: "every $_intervals ${pluralize(word: "day", count: _intervals)}",
-                style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.white),
+                style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.white),
               )
             ],
           ),
@@ -58,7 +58,7 @@ class _RoutineFrequencyPlannerState extends State<RoutineFrequencyPlanner> {
             children: List<Widget>.generate(31, (int index) {
               return Center(
                   child: Text(index.toString(),
-                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, fontSize: 32, color: Colors.white)));
+                      style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 32, color: Colors.white)));
             }),
           ),
         ),

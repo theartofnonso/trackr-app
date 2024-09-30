@@ -25,7 +25,7 @@ class LogDurationWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text("How many hours did you train?".toUpperCase(),
-            style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+            style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
         const SizedBox(height: 10),
         Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
@@ -81,7 +81,7 @@ class LogDurationWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 26),
                 Text(avgHours.inMinutes < 30 ? lowAverageWorkoutDuration : highAverageWorkoutDuration,
-                    style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500), textAlign: TextAlign.center),
+                    style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500), textAlign: TextAlign.center),
               ],
             )),
       ],
@@ -109,7 +109,7 @@ class SleepTimeColumn extends StatelessWidget {
       children: <Widget>[
         Text(
           subTitle,
-          style: GoogleFonts.montserrat(
+          style: GoogleFonts.ubuntu(
             color: titleColor,
             fontSize: 20,
             fontWeight: FontWeight.w900,
@@ -119,7 +119,7 @@ class SleepTimeColumn extends StatelessWidget {
         Text(
           title,
           textAlign: TextAlign.center,
-          style: GoogleFonts.montserrat(
+          style: GoogleFonts.ubuntu(
             color: subTitleColor.withOpacity(0.6),
             fontSize: 10,
             fontWeight: FontWeight.bold,

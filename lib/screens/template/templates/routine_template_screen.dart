@@ -80,7 +80,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
             final arguments = RoutineTemplateArguments(template: template);
             navigateToRoutineTemplateEditor(context: context, arguments: arguments);
           },
-          child: Text("Edit", style: GoogleFonts.montserrat())),
+          child: Text("Edit", style: GoogleFonts.ubuntu())),
       MenuItemButton(
         onPressed: () {
           displayBottomSheet(
@@ -89,9 +89,9 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
               child: RoutineSchedulePlannerHome(template: template),
               isScrollControlled: true);
         },
-        child: Text("Schedule", style: GoogleFonts.montserrat(color: Colors.white)),
+        child: Text("Schedule", style: GoogleFonts.ubuntu(color: Colors.white)),
       ),
-      MenuItemButton(onPressed: _showBottomSheet, child: Text("Share", style: GoogleFonts.montserrat())),
+      MenuItemButton(onPressed: _showBottomSheet, child: Text("Share", style: GoogleFonts.ubuntu())),
       MenuItemButton(
         onPressed: () {
           showBottomSheetWithMultiActions(
@@ -108,7 +108,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
               rightActionLabel: 'Delete',
               isRightActionDestructive: true);
         },
-        child: Text("Delete", style: GoogleFonts.montserrat(color: Colors.red)),
+        child: Text("Delete", style: GoogleFonts.ubuntu(color: Colors.red)),
       )
     ];
 
@@ -132,7 +132,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
             onPressed: () => context.pop(),
           ),
           title: Text(template.name,
-              style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+              style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
           actions: [
             _isOwner
                 ? MenuAnchor(
@@ -185,7 +185,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                       Column(
                         children: [
                           Text(template.notes,
-                              style: GoogleFonts.montserrat(
+                              style: GoogleFonts.ubuntu(
                                 color: Colors.white,
                                 fontSize: 14,
                               )),
@@ -239,7 +239,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                   child: Text(workoutLink,
                       overflow: TextOverflow.ellipsis,
                       softWrap: true,
-                      style: GoogleFonts.montserrat(
+                      style: GoogleFonts.ubuntu(
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
                         fontSize: 14,
@@ -276,7 +276,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
               ),
               child: Text("${workoutText.substring(0, workoutText.length >= 150 ? 150 : workoutText.length)}...",
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.montserrat(
+                  style: GoogleFonts.ubuntu(
                     color: Colors.white70,
                     fontWeight: FontWeight.w500,
                     fontSize: 14,
@@ -362,7 +362,7 @@ class _EmptyState extends StatelessWidget {
           onPressed: () => context.pop(),
         ),
         title: Text("Workout",
-            style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+            style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -382,12 +382,12 @@ class _EmptyState extends StatelessWidget {
             children: [
               RichText(
                   text: TextSpan(
-                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.white),
+                      style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.white),
                       children: [
                     TextSpan(
                         text: "Not F",
                         style:
-                            GoogleFonts.montserrat(fontSize: 48, color: Colors.white70, fontWeight: FontWeight.w900)),
+                            GoogleFonts.ubuntu(fontSize: 48, color: Colors.white70, fontWeight: FontWeight.w900)),
                     const WidgetSpan(
                         child: Padding(
                           padding: EdgeInsets.only(left: 6.0),
@@ -397,7 +397,7 @@ class _EmptyState extends StatelessWidget {
                     TextSpan(
                         text: "und",
                         style:
-                            GoogleFonts.montserrat(fontSize: 48, color: Colors.white70, fontWeight: FontWeight.w900)),
+                            GoogleFonts.ubuntu(fontSize: 48, color: Colors.white70, fontWeight: FontWeight.w900)),
                   ])),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),

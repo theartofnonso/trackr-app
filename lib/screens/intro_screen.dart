@@ -50,7 +50,7 @@ class IntroScreen extends StatelessWidget {
               const SizedBox(height: 10),
               Text(
                 "Train better".toUpperCase(),
-                style: GoogleFonts.montserrat(
+                style: GoogleFonts.ubuntu(
                   fontWeight: FontWeight.bold,
                   fontSize: 12,
                   color: Colors.white70,
@@ -72,7 +72,7 @@ class IntroScreen extends StatelessWidget {
               RichText(
                 text: TextSpan(
                   text: "Photo by".toUpperCase(),
-                  style: GoogleFonts.montserrat(
+                  style: GoogleFonts.ubuntu(
                     color: Colors.white70,
                     fontWeight: FontWeight.w600,
                     fontSize: 10,
@@ -81,7 +81,7 @@ class IntroScreen extends StatelessWidget {
                     const TextSpan(text: " "),
                     TextSpan(
                       text: "Mikhail Nilov".toUpperCase(),
-                      style: GoogleFonts.montserrat(
+                      style: GoogleFonts.ubuntu(
                         color: Colors.white,
                         fontWeight: FontWeight.w700,
                         fontSize: 10,
@@ -96,7 +96,7 @@ class IntroScreen extends StatelessWidget {
                           openUrl(url: pexelsImageUrl, context: context);
                         },
                       text: "Pexels".toUpperCase(),
-                      style: GoogleFonts.montserrat(
+                      style: GoogleFonts.ubuntu(
                           color: Colors.white,
                           decoration: TextDecoration.underline,
                           fontWeight: FontWeight.w700,
