@@ -54,20 +54,19 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
           pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog);
     }).expand((pbs) => pbs);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text("Summary of Sessions".toUpperCase(),
-            style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 10),
-        Container(
-            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
-            decoration: BoxDecoration(
-              color: sapphireDark80,
-              border: Border.all(color: sapphireDark80.withOpacity(0.8), width: 2),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Table(
+    return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
+        decoration: BoxDecoration(
+          color: sapphireDark80,
+          border: Border.all(color: sapphireDark80.withOpacity(0.8), width: 2),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          children: [
+            Text("Summary of Sessions".toUpperCase(),
+                style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 30),
+            Table(
               border: TableBorder.symmetric(inside: BorderSide(color: sapphireLighter.withOpacity(0.4), width: 2)),
               columnWidths: const <int, TableColumnWidth>{
                 0: FlexColumnWidth(),
@@ -146,9 +145,9 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
                   ),
                 ]),
               ],
-            )),
-      ],
-    );
+            ),
+          ],
+        ));
   }
 }
 

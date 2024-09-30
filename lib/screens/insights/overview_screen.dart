@@ -169,7 +169,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.play, size: 18),
               horizontalTitleGap: 6,
-              title: Text("Start new session",
+              title: Text("Log new session",
                   style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
                 context.pop();

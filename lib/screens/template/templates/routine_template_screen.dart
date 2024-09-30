@@ -215,11 +215,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
         ));
   }
 
-  @override
-  void didUpdateWidget(RoutineTemplateScreen oldWidget) {
-    super.didUpdateWidget(oldWidget);
-  }
-
   void _loadData() {
     final routineTemplateController = Provider.of<RoutineTemplateController>(context, listen: false);
     _template = routineTemplateController.templateWhere(id: widget.id);

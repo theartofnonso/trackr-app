@@ -302,11 +302,14 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     final log = _log;
     if (log != null) {
       final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.edit);
-      final updatedLog = await navigateToRoutineLogEditor(context: context, arguments: arguments);
+      final updatedLog = await navigateAndEditLog(context: context, arguments: arguments);
       if (updatedLog != null) {
         setState(() {
           _log = updatedLog;
         });
+        if (mounted) {
+          navigateWithSlideTransition(context: context, child: RoutineLogSummaryScreen(log: updatedLog));
+        }
       }
     }
   }
@@ -320,8 +323,11 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
           initialDateTimeRange: DateTimeRange(start: log.startTime, end: log.endTime),
           onChangedDateTimeRange: (DateTimeRange datetimeRange) async {
             context.pop();
-            final updatedRoutineLog = log.copyWith(startTime: datetimeRange.start, endTime: datetimeRange.end);
-            await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: updatedRoutineLog);
+            final updatedLog = log.copyWith(startTime: datetimeRange.start, endTime: datetimeRange.end);
+            await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: updatedLog);
+            setState(() {
+              _log = updatedLog;
+            });
           });
     }
   }

@@ -31,15 +31,18 @@ void navigateToPastRoutineLogEditor({required BuildContext context, required Pas
   context.push(PastRoutineLogEditorScreen.routeName, extra: arguments);
 }
 
-Future<RoutineLogDto?> navigateToRoutineLogEditor(
-    {required BuildContext context, required RoutineLogArguments arguments}) async {
+Future<void> navigateToRoutineLogEditor({required BuildContext context, required RoutineLogArguments arguments}) async {
   final log = await context.push(RoutineLogEditorScreen.routeName, extra: arguments) as RoutineLogDto?;
   if (log != null) {
     if (context.mounted) {
       context.push(RoutineLogScreen.routeName, extra: {"log": log, "showSummary": true});
     }
   }
+}
 
+Future<RoutineLogDto?> navigateAndEditLog(
+    {required BuildContext context, required RoutineLogArguments arguments}) async {
+  final log = await context.push(RoutineLogEditorScreen.routeName, extra: arguments) as RoutineLogDto?;
   return log;
 }
 

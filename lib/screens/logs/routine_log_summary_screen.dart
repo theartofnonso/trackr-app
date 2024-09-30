@@ -100,9 +100,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
         backgroundColor: sapphireDark80,
         leading: IconButton(
           icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
-          onPressed: () {
-            context.pop();
-          },
+          onPressed: context.pop,
         ),
         actions: [
           IconButton(

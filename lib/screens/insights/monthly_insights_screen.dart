@@ -21,8 +21,6 @@ class MonthlyInsightsScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TrainingAndRestDaysWidget(logs: logsForTheMonth, daysInMonth: daysInMonth, dateTimeRange: dateTimeRange,),
-        // const SizedBox(height: 28),
-        // LogDurationWidget(logs: logsForTheMonth),
         const SizedBox(height: 24),
         ExercisesSetsHoursVolumeWidget(logs: logsForTheMonth),
         const SizedBox(height: 24),

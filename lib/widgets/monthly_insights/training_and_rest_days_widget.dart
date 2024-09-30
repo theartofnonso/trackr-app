@@ -22,73 +22,69 @@ class TrainingAndRestDaysWidget extends StatelessWidget {
     final totalTrainingDays = groupBy(logs, (log) => log.createdAt.day).length;
     final totalRestDays = daysInMonth - totalTrainingDays;
 
-    final averageRestDays = totalTrainingDays > 0 ? _averageDaysBetween(logs: logs, datesInMonth: dateTimeRange.dates) : totalRestDays;
+    final averageRestDays =
+        totalTrainingDays > 0 ? _averageDaysBetween(logs: logs, datesInMonth: dateTimeRange.dates) : totalRestDays;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text("Training vs Rest Days".toUpperCase(),
-            style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 10),
-        Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-            decoration: BoxDecoration(
-              color: sapphireDark80,
-              border: Border.all(color: sapphireDark80.withOpacity(0.8), width: 2),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+    return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+        decoration: BoxDecoration(
+          color: sapphireDark80,
+          border: Border.all(color: sapphireDark80.withOpacity(0.8), width: 2),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text("Training vs Rest Days".toUpperCase(),
+                style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 30),
+            Table(
+              border: TableBorder.symmetric(inside: BorderSide(color: sapphireLighter.withOpacity(0.4), width: 2)),
+              columnWidths: const <int, TableColumnWidth>{
+                0: FlexColumnWidth(),
+                1: FlexColumnWidth(),
+              },
               children: [
-                Table(
-                  border: TableBorder.symmetric(inside: BorderSide(color: sapphireLighter.withOpacity(0.4), width: 2)),
-                  columnWidths: const <int, TableColumnWidth>{
-                    0: FlexColumnWidth(),
-                    1: FlexColumnWidth(),
-                  },
-                  children: [
-                    TableRow(children: [
-                      TableCell(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                        child: Center(
-                          child: SleepTimeColumn(
-                              title: 'TRAINING',
-                              subTitle: "$totalTrainingDays",
-                              titleColor: logStreakColor(value: totalTrainingDays / 12),
-                              subTitleColor: logStreakColor(value: totalTrainingDays / 12)),
-                        ),
-                      ),
-                      TableCell(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                        child: Center(
-                          child: SleepTimeColumn(
-                              title: 'AVG REST',
-                              subTitle: "$averageRestDays",
-                              titleColor: Colors.white70,
-                              subTitleColor: Colors.white70),
-                        ),
-                      ),
-                      TableCell(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                        child: Center(
-                          child: SleepTimeColumn(
-                              title: 'TOTAL REST',
-                              subTitle: "$totalRestDays",
-                              titleColor: Colors.white,
-                              subTitleColor: Colors.white),
-                        ),
-                      )
-                    ]),
-                  ],
-                ),
-                const SizedBox(height: 26),
-                Text(totalTrainingDays < 12 ? lowStreak : highStreak,
-                    style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500),
-                    textAlign: TextAlign.center),
+                TableRow(children: [
+                  TableCell(
+                    verticalAlignment: TableCellVerticalAlignment.middle,
+                    child: Center(
+                      child: SleepTimeColumn(
+                          title: 'TRAINING',
+                          subTitle: "$totalTrainingDays",
+                          titleColor: logStreakColor(value: totalTrainingDays / 12),
+                          subTitleColor: logStreakColor(value: totalTrainingDays / 12)),
+                    ),
+                  ),
+                  TableCell(
+                    verticalAlignment: TableCellVerticalAlignment.middle,
+                    child: Center(
+                      child: SleepTimeColumn(
+                          title: 'AVG REST',
+                          subTitle: "$averageRestDays",
+                          titleColor: Colors.white70,
+                          subTitleColor: Colors.white70),
+                    ),
+                  ),
+                  TableCell(
+                    verticalAlignment: TableCellVerticalAlignment.middle,
+                    child: Center(
+                      child: SleepTimeColumn(
+                          title: 'TOTAL REST',
+                          subTitle: "$totalRestDays",
+                          titleColor: Colors.white,
+                          subTitleColor: Colors.white),
+                    ),
+                  )
+                ]),
               ],
-            )),
-      ],
-    );
+            ),
+            const SizedBox(height: 26),
+            Text(totalTrainingDays < 12 ? lowStreak : highStreak,
+                style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500),
+                textAlign: TextAlign.center),
+          ],
+        ));
   }
 
   int _averageDaysBetween({required List<RoutineLogDto> logs, required List<DateTime> datesInMonth}) {
