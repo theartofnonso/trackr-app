@@ -91,16 +91,16 @@ class AmplifyExerciseRepository {
     exerciseDtos.addAll(neckExercises);
     exerciseDtos.addAll(fullBodyExercises);
 
-    List<String> withNoVideos = exerciseDtos
-        .where((exercise) => exercise.video == null && !exercise.owner)
-        .map((exercise) => exercise.name)
-        .toList();
-
-    withNoVideos.forEach((exercise) {
-      print(exercise);
-    });
-
-    print(withNoVideos.length);
+    // List<String> withNoVideos = exerciseDtos
+    //     .where((exercise) => exercise.video == null && !exercise.owner)
+    //     .map((exercise) => exercise.name)
+    //     .toList();
+    //
+    // withNoVideos.forEach((exercise) {
+    //   print(exercise);
+    // });
+    //
+    // print(withNoVideos.length);
 
     _exercises = exerciseDtos.sorted((a, b) => a.name.compareTo(b.name));
   }
