@@ -21,21 +21,26 @@ Future<Future<Object?>> navigateToExerciseEditor(
   return context.push(ExerciseEditorScreen.routeName, extra: arguments);
 }
 
-void navigateToRoutineTemplateEditor({required BuildContext context, RoutineTemplateArguments? arguments}) {
-  context.push(RoutineTemplateEditorScreen.routeName, extra: arguments);
+Future<RoutineTemplateDto?> navigateToRoutineTemplateEditor(
+    {required BuildContext context, RoutineTemplateArguments? arguments}) async {
+  final template = await context.push(RoutineTemplateEditorScreen.routeName, extra: arguments) as RoutineTemplateDto?;
+  return template;
 }
 
 void navigateToPastRoutineLogEditor({required BuildContext context, required PastRoutineLogArguments arguments}) {
   context.push(PastRoutineLogEditorScreen.routeName, extra: arguments);
 }
 
-void navigateToRoutineLogEditor({required BuildContext context, required RoutineLogArguments arguments}) async {
-  final createdLog = await context.push(RoutineLogEditorScreen.routeName, extra: arguments) as RoutineLogDto?;
-  if(createdLog != null) {
+Future<RoutineLogDto?> navigateToRoutineLogEditor(
+    {required BuildContext context, required RoutineLogArguments arguments}) async {
+  final log = await context.push(RoutineLogEditorScreen.routeName, extra: arguments) as RoutineLogDto?;
+  if (log != null) {
     if (context.mounted) {
-      context.push(RoutineLogScreen.routeName, extra: {"log": createdLog, "showSummary": true});
+      context.push(RoutineLogScreen.routeName, extra: {"log": log, "showSummary": true});
     }
   }
+
+  return log;
 }
 
 void navigateToRoutineTemplatePreview({required BuildContext context, required RoutineTemplateDto template}) {
@@ -63,8 +68,7 @@ void navigateWithSlideTransition({required BuildContext context, required Widget
       const begin = Offset(0.0, 1.0);
       const end = Offset.zero;
       const curve = Curves.ease;
-      final tween =
-      Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+      final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
       final offsetAnimation = animation.drive(tween);
       return SlideTransition(
         position: offsetAnimation,

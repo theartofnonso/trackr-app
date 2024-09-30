@@ -14,7 +14,6 @@ import 'package:tracker_app/utils/dialog_utils.dart';
 
 import '../../colors.dart';
 import '../../controllers/routine_template_controller.dart';
-import '../../dtos/routine_log_dto.dart';
 import '../../dtos/routine_template_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/routine_editors_utils.dart';
@@ -170,7 +169,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
             _closeDialog();
             final updatedTemplate = _getUpdatedRoutineTemplate(template: template);
             _doUpdateRoutineTemplate(updatedTemplate: updatedTemplate);
-            _navigateBack();
+            _navigateBack(template: updatedTemplate);
           },
           leftActionLabel: 'Cancel',
           rightActionLabel: 'Update',
@@ -239,8 +238,8 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     context.pop();
   }
 
-  void _navigateBack({RoutineLogDto? log}) {
-    Navigator.of(context).pop(log);
+  void _navigateBack({RoutineTemplateDto? template}) {
+    context.pop(template);
   }
 
   /// Handle collapsed ExerciseLogWidget

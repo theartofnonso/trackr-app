@@ -49,10 +49,12 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<RoutineTemplateController>(context, listen: true);
+
     final log = _log;
 
     if (log == null) {
-      Provider.of<RoutineTemplateController>(context, listen: false).fetchTemplate(id: widget.id);
+      provider.fetchTemplate(id: widget.id);
       return const _EmptyState();
     }
 
@@ -295,12 +297,17 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         .toList();
   }
 
-  void _editLog() {
+  void _editLog() async {
     context.pop();
     final log = _log;
     if (log != null) {
-      final arguments = RoutineLogArguments(log: _log!, editorMode: RoutineEditorMode.edit);
-      navigateToRoutineLogEditor(context: context, arguments: arguments);
+      final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.edit);
+      final updatedLog = await navigateToRoutineLogEditor(context: context, arguments: arguments);
+      if (updatedLog != null) {
+        setState(() {
+          _log = updatedLog;
+        });
+      }
     }
   }
 
@@ -439,8 +446,7 @@ class _EmptyState extends StatelessWidget {
                       children: [
                     TextSpan(
                         text: "Not F",
-                        style:
-                            GoogleFonts.ubuntu(fontSize: 48, color: Colors.white70, fontWeight: FontWeight.w900)),
+                        style: GoogleFonts.ubuntu(fontSize: 48, color: Colors.white70, fontWeight: FontWeight.w900)),
                     const WidgetSpan(
                         child: Padding(
                           padding: EdgeInsets.only(left: 6.0),
@@ -449,8 +455,7 @@ class _EmptyState extends StatelessWidget {
                         alignment: PlaceholderAlignment.middle),
                     TextSpan(
                         text: "und",
-                        style:
-                            GoogleFonts.ubuntu(fontSize: 48, color: Colors.white70, fontWeight: FontWeight.w900)),
+                        style: GoogleFonts.ubuntu(fontSize: 48, color: Colors.white70, fontWeight: FontWeight.w900)),
                   ])),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),

@@ -39,7 +39,7 @@ class PBsShareable extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(5),
         child: RepaintBoundary(
           key: globalKey,
           child: Container(

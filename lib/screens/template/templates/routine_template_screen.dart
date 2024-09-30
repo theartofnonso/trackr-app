@@ -65,22 +65,32 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     });
   }
 
+  void _navigateToRoutineTemplateEditor() async {
+    final template = _template;
+    if (template != null) {
+      final arguments = RoutineTemplateArguments(template: template);
+      final updatedTemplate = await navigateToRoutineTemplateEditor(context: context, arguments: arguments);
+      if (updatedTemplate != null) {
+        setState(() {
+          _template = updatedTemplate;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<RoutineTemplateController>(context, listen: false);
+
     final template = _template;
 
     if (template == null) {
-      Provider.of<RoutineTemplateController>(context, listen: false).fetchTemplate(id: widget.id);
+      provider.fetchTemplate(id: widget.id);
       return const _EmptyState();
     }
 
     final menuActions = [
-      MenuItemButton(
-          onPressed: () {
-            final arguments = RoutineTemplateArguments(template: template);
-            navigateToRoutineTemplateEditor(context: context, arguments: arguments);
-          },
-          child: Text("Edit", style: GoogleFonts.ubuntu())),
+      MenuItemButton(onPressed: _navigateToRoutineTemplateEditor, child: Text("Edit", style: GoogleFonts.ubuntu())),
       MenuItemButton(
         onPressed: () {
           displayBottomSheet(
@@ -203,6 +213,11 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
             if (_loading) const OverlayBackground()
           ]),
         ));
+  }
+
+  @override
+  void didUpdateWidget(RoutineTemplateScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
   }
 
   void _loadData() {
@@ -361,8 +376,8 @@ class _EmptyState extends StatelessWidget {
           icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
           onPressed: () => context.pop(),
         ),
-        title: Text("Workout",
-            style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+        title:
+            Text("Workout", style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -386,8 +401,7 @@ class _EmptyState extends StatelessWidget {
                       children: [
                     TextSpan(
                         text: "Not F",
-                        style:
-                            GoogleFonts.ubuntu(fontSize: 48, color: Colors.white70, fontWeight: FontWeight.w900)),
+                        style: GoogleFonts.ubuntu(fontSize: 48, color: Colors.white70, fontWeight: FontWeight.w900)),
                     const WidgetSpan(
                         child: Padding(
                           padding: EdgeInsets.only(left: 6.0),
@@ -396,8 +410,7 @@ class _EmptyState extends StatelessWidget {
                         alignment: PlaceholderAlignment.middle),
                     TextSpan(
                         text: "und",
-                        style:
-                            GoogleFonts.ubuntu(fontSize: 48, color: Colors.white70, fontWeight: FontWeight.w900)),
+                        style: GoogleFonts.ubuntu(fontSize: 48, color: Colors.white70, fontWeight: FontWeight.w900)),
                   ])),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),

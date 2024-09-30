@@ -47,10 +47,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     List<ExerciseDto> searchResults = [];
 
     searchResults = _exercisesInLibrary
-        .where((exercise) => (exercise.name.toLowerCase().contains(query) ||
-            exercise.name.toLowerCase().startsWith(query) ||
-            exercise.name.toLowerCase().endsWith(query) ||
-            exercise.name.toLowerCase() == query))
+        .where((exercise) => exercise.name.toLowerCase().contains(query.toLowerCase()))
         .toList();
 
     if (_selectedMuscleGroup != null) {
