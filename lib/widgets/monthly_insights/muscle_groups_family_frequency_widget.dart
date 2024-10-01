@@ -37,7 +37,7 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
 
     String untrainedMuscleGroupsNames = joinWithAnd(items: untrainedMuscleGroups.map((muscle) => muscle.name).toList());
 
-    if(untrainedMuscleGroups.length == popularMuscleGroupFamilies().length) {
+    if (untrainedMuscleGroups.length == popularMuscleGroupFamilies().length) {
       untrainedMuscleGroupsNames = "any muscle groups";
     }
 
@@ -58,18 +58,24 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
         const SizedBox(height: 10),
         MuscleGroupFamilyFrequencyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
         if (untrainedMuscleGroups.isNotEmpty)
-          RichText(
-              text: TextSpan(
-                  text: "You have not trained",
-                  style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500),
-                  children: [
-                const TextSpan(text: " "),
-                TextSpan(
-                    text: untrainedMuscleGroupsNames,
-                    style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)),
+          Column(
+            children: [
+              RichText(
+                  text: TextSpan(
+                      text: "You have not trained",
+                      style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500),
+                      children: [
                     const TextSpan(text: " "),
-                const TextSpan(text: "this month", style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
-              ])),
+                    TextSpan(
+                        text: untrainedMuscleGroupsNames,
+                        style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)),
+                    const TextSpan(text: " "),
+                    const TextSpan(
+                        text: "this month",
+                        style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
+                  ])),
+            ],
+          ),
       ]),
     );
   }

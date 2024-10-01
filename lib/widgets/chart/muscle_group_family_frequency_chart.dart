@@ -31,15 +31,6 @@ class _HorizontalBarChart extends StatelessWidget {
     List<Widget> children =
         frequencyData.entries.map((entry) => _LinearBar(muscleGroupFamily: entry.key, frequency: entry.value)).toList();
 
-    if (children.isEmpty) {
-      final emptyState = {
-        MuscleGroupFamily.chest: 0.0,
-        MuscleGroupFamily.back: 0.0,
-        MuscleGroupFamily.legs: 0.0,
-      }.entries.map((entry) => _LinearBar(muscleGroupFamily: entry.key, frequency: entry.value));
-      children.addAll(emptyState);
-    }
-
     final count = minimized ? children.take(3) : children;
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: count.toList());

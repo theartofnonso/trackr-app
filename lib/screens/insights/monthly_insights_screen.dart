@@ -13,19 +13,34 @@ class MonthlyInsightsScreen extends StatelessWidget {
   final Map<DateTimeRange, List<RoutineLogDto>> monthlyLogs;
   final int daysInMonth;
 
-  const MonthlyInsightsScreen({super.key, required this.dateTimeRange, required this.logsForTheMonth, required this.monthlyLogs, required this.daysInMonth});
+  const MonthlyInsightsScreen(
+      {super.key,
+      required this.dateTimeRange,
+      required this.logsForTheMonth,
+      required this.monthlyLogs,
+      required this.daysInMonth});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TrainingAndRestDaysWidget(logs: logsForTheMonth, daysInMonth: daysInMonth, dateTimeRange: dateTimeRange,),
+        TrainingAndRestDaysWidget(
+          logs: logsForTheMonth,
+          daysInMonth: daysInMonth,
+          dateTimeRange: dateTimeRange,
+        ),
         const SizedBox(height: 24),
         ExercisesSetsHoursVolumeWidget(logs: logsForTheMonth),
+        if (logsForTheMonth.isNotEmpty)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 24),
+              MuscleGroupFamilyFrequencyWidget(logs: logsForTheMonth),
+            ],
+          ),
         const SizedBox(height: 24),
-        MuscleGroupFamilyFrequencyWidget(logs: logsForTheMonth),
-        const SizedBox(height: 16),
         LogStreakChartWidget(monthlyLogs: monthlyLogs),
         const SizedBox(height: 18),
         MuscleGroupFamilyFrequencyChartWidget(monthlyLogs: monthlyLogs),
