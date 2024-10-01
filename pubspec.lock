@@ -206,14 +206,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "8.9.2"
-  carp_serializable:
-    dependency: transitive
-    description:
-      name: carp_serializable
-      sha256: "39f7d315f49fecd4b7eddfa3c1a08b9416ae3c640dc888de5f798246bcc2d38e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0"
   characters:
     dependency: transitive
     description:
@@ -602,14 +594,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.2"
-  health:
-    dependency: "direct main"
-    description:
-      name: health
-      sha256: "01d6318b2d813d4b87044f9adb5a588f672acd176434ac380259d28de1f321a4"
-      url: "https://pub.dev"
-    source: hosted
-    version: "11.1.0"
   http:
     dependency: transitive
     description:
@@ -794,14 +778,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.2-main.4"
-  mailto:
-    dependency: "direct main"
-    description:
-      name: mailto
-      sha256: f8c5ce39e0eaa94a856795b2855af7f66aac37f7c3b70ac5c26ab00b94685445
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0"
   matcher:
     dependency: transitive
     description:

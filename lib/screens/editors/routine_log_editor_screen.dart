@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +26,6 @@ import '../../dtos/exercise_dto.dart';
 import '../../dtos/routine_template_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/app_analytics.dart';
-import '../../utils/health_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/empty_states/exercise_log_empty_state.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
@@ -158,7 +156,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     _cleanUpSession();
 
     if (updatedRoutineLog != null) {
-      _syncAndUpdateRoutineTemplate(log: updatedRoutineLog);
+      _updateRoutineTemplate(log: updatedRoutineLog);
     }
   }
 
@@ -167,7 +165,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: routineLog);
 
-    _syncAndUpdateRoutineTemplate(log: routineLog);
+    _updateRoutineTemplate(log: routineLog);
   }
 
   Future<void> _updateRoutineTemplateSchedule({required RoutineTemplateDto templateToUpdate}) async {
@@ -228,10 +226,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     }
   }
 
-  void _syncAndUpdateRoutineTemplate({required RoutineLogDto log}) async {
-    if (Platform.isIOS) {
-      await syncWorkoutWithAppleHealth(log: log);
-    }
+  void _updateRoutineTemplate({required RoutineLogDto log}) async {
 
     if (log.templateId.isNotEmpty) {
       if (mounted) {

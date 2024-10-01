@@ -10,7 +10,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/graphQL/queries.dart';
-import 'package:tracker_app/screens/preferences/integrations_screen.dart';
 import 'package:tracker_app/screens/preferences/notifications_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/urls.dart';
@@ -147,12 +146,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                           title: "Notifications",
                           trailing: _notificationEnabled ? "Enabled" : "Disabled"),
                     ]),
-                  if (Platform.isIOS)
-                    Column(children: [
-                      const SizedBox(height: 8),
-                      OutlineListTile(
-                          onTap: _navigateToIntegrations, title: "Integrations", trailing: "sync workout data"),
-                    ]),
                   const SizedBox(height: 8),
                   OutlineListTile(onTap: _visitTRKR, title: "Visit TRKR"),
                   const SizedBox(height: 8),
@@ -181,10 +174,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               multiSelect: false,
               readOnly: true,
             )));
-  }
-
-  void _navigateToIntegrations() {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const IntegrationsScreen()));
   }
 
   void _navigateToNotificationSettings() async {
