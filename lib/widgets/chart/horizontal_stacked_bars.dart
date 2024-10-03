@@ -9,9 +9,8 @@ class HorizontalStackedBars extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     // Define the weights and colors for the bars
-    final List<Bar> bars = weights.mapIndexed((index, value) => Bar(weight: value, color: colors[index])).toList();
+    final List<_Bar> bars = weights.mapIndexed((index, value) => _Bar(weight: value, color: colors[index])).toList();
 
     // Calculate the total weight
     final int totalWeight = bars.fold(0, (previousValue, bar) => previousValue + bar.weight);
@@ -27,16 +26,19 @@ class HorizontalStackedBars extends StatelessWidget {
       );
     }).toList();
 
-    return Row(
-      children: weightedBars,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(2),
+      child: Row(
+        children: weightedBars,
+      ),
     );
   }
 }
 
 // A simple class to hold the weight and color for a bar
-class Bar {
+class _Bar {
   final int weight;
   final Color color;
 
-  Bar({required this.weight, required this.color});
+  _Bar({required this.weight, required this.color});
 }
