@@ -108,7 +108,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const muscleGroups = MuscleGroup.values;
+    final muscleGroups = MuscleGroup.values;
 
     return Scaffold(
       appBar: AppBar(

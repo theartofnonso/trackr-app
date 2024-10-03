@@ -30,13 +30,13 @@ class _ActivityPickerState extends State<ActivityPicker> {
   bool _showStartDateTimeRange = false;
   bool _showEndDateTimeRange = false;
 
+  void _navigateToActivitySelector() {
+    navigateWithSlideTransition(context: context, child: const ActivitySelectorScreen());
+  }
+
   @override
   Widget build(BuildContext context) {
     final errorMessage = _validateDate();
-
-    void _navigateToActivitySelector() {
-      navigateWithSlideTransition(context: context, child: const ActivitySelectorScreen());
-    }
 
     return SingleChildScrollView(
       child: Column(
