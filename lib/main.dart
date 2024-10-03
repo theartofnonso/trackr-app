@@ -25,6 +25,7 @@ import 'package:tracker_app/dtos/routine_template_dto.dart';
 import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
 import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/repositories/amplify_activity_log_repository.dart';
 import 'package:tracker_app/repositories/amplify_exercise_repository.dart';
 import 'package:tracker_app/repositories/amplify_log_repository.dart';
 import 'package:tracker_app/repositories/amplify_template_repository.dart';
@@ -46,6 +47,7 @@ import 'package:tracker_app/screens/template/templates/routine_template_screen.d
 import 'package:tracker_app/shared_prefs.dart';
 
 import 'amplifyconfiguration.dart';
+import 'controllers/activity_log_controller.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
 import 'dtos/viewmodels/routine_template_arguments.dart';
 import 'models/ModelProvider.dart';
@@ -96,6 +98,9 @@ void main() async {
       ),
       ChangeNotifierProvider<RoutineLogController>(
         create: (BuildContext context) => RoutineLogController(AmplifyLogRepository()),
+      ),
+      ChangeNotifierProvider<ActivityLogController>(
+        create: (BuildContext context) => ActivityLogController(AmplifyActivityLogRepository()),
       ),
       ChangeNotifierProvider<ExerciseLogController>(
           create: (BuildContext context) => ExerciseLogController(ExerciseLogRepository())),

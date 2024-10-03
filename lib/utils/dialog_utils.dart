@@ -5,6 +5,7 @@ import 'package:tracker_app/widgets/timers/datetime_picker.dart';
 import 'package:tracker_app/widgets/timers/datetime_range_picker.dart';
 
 import '../colors.dart';
+import '../widgets/activity/activity_picker.dart';
 import '../widgets/buttons/opacity_button_widget.dart';
 import '../widgets/buttons/solid_button_widget.dart';
 import '../widgets/timers/hour_timer_picker.dart';
@@ -109,6 +110,11 @@ void showDateTimePicker({required BuildContext context, required void Function(D
 void showDatetimeRangePicker({required BuildContext context, DateTimeRange? initialDateTimeRange, required void Function(DateTimeRange datetimeRange) onChangedDateTimeRange}) {
   FocusScope.of(context).unfocus();
   displayBottomSheet(context: context, child: DateTimeRangePicker(initialDateTimeRange: initialDateTimeRange, onSelectRange: onChangedDateTimeRange,) ,isScrollControlled: true);
+}
+
+void showActivityPicker({required BuildContext context, DateTimeRange? initialDateTimeRange, required void Function(DateTimeRange datetimeRange) onChangedDateTimeRange}) {
+  FocusScope.of(context).unfocus();
+  displayBottomSheet(context: context, child: ActivityPicker(initialDateTimeRange: initialDateTimeRange, onSelectRange: onChangedDateTimeRange,) ,isScrollControlled: true);
 }
 
 Future<void> showBottomSheetWithNoAction(

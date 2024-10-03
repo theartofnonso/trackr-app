@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
+import 'package:tracker_app/dtos/activity_log_dto.dart';
 import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/enums/share_content_type_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
@@ -202,6 +203,47 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           updatedAt: datetimeRange.end);
                       final routineLogArguments = PastRoutineLogArguments(log: log);
                       navigateToPastRoutineLogEditor(context: context, arguments: routineLogArguments);
+                    });
+              },
+            ),
+            const SizedBox(height: 10,),
+            Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+              Text(
+                "Training outside the gym?".toUpperCase(),
+                style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 10),
+              ),
+              Expanded(
+                child: Container(
+                  height: 0.8, // height of the divider
+                  width: double.infinity, // width of the divider (line thickness)
+                  color: sapphireLighter, // color of the divider
+                  margin: const EdgeInsets.symmetric(horizontal: 10), // add space around the divider
+                ),
+              ),
+            ]),
+            const SizedBox(height: 6,),
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(FontAwesomeIcons.circlePlus, size: 18, color: vibrantBlue,),
+              horizontalTitleGap: 6,
+              title: Text("Add Activity",
+                  style: GoogleFonts.ubuntu(color: vibrantBlue, fontWeight: FontWeight.w500, fontSize: 16)),
+              onTap: () {
+                context.pop();
+                showActivityPicker(
+                    context: context,
+                    onChangedDateTimeRange: (DateTimeRange datetimeRange) {
+                      context.pop();
+                      // final log = ActivityLogDto(
+                      //     id: "",
+                      //     name: logName,
+                      //     notes: "",
+                      //     startTime: datetimeRange.start,
+                      //     endTime: datetimeRange.end,
+                      //     createdAt: datetimeRange.start,
+                      //     updatedAt: datetimeRange.end);
+
                     });
               },
             ),
