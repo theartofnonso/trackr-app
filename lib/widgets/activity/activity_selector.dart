@@ -20,7 +20,7 @@ class ActivitySelectorScreen extends StatelessWidget {
             icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
             onPressed: context.pop,
           ),
-          title: Text("Select Activity".toUpperCase(),
+          title: Text("Select An Activity".toUpperCase(),
               style: GoogleFonts.ubuntu(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
           bottom: TabBar(
             isScrollable: true,
