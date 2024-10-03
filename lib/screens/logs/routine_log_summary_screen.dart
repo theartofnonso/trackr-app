@@ -125,7 +125,8 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 30),
-              Expanded(
+              AspectRatio(
+                aspectRatio: 1,
                 child: PageView.builder(
                   scrollDirection: Axis.horizontal,
                   controller: _controller,
