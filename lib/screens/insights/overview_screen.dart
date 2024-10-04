@@ -103,6 +103,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     final activityLogsForCurrentDate = activityLogController.logsWhereDate(dateTime: _selectedDateTime).reversed.toList();
 
+    //final activities = routineLogsForTheMonth
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -153,7 +154,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           padding: const EdgeInsets.only(bottom: 150),
                           child: Column(children: [
                             const SizedBox(height: 12),
-                            OverviewMonitor(routineLogs: routineLogsForTheMonth),
+                            OverviewMonitor(routineLogs: routineLogsForTheMonth, activityLogs: activityLogsForTheMonth,),
                             const SizedBox(height: 16),
                             Calendar(
                               onSelectDate: _onChangedDateTime,
@@ -252,11 +253,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
               leading: const FaIcon(
                 FontAwesomeIcons.circlePlus,
                 size: 18,
-                color: vibrantBlue,
+                color: vibrantGreen,
               ),
               horizontalTitleGap: 6,
               title: Text("Add Activity",
-                  style: GoogleFonts.ubuntu(color: vibrantBlue, fontWeight: FontWeight.w500, fontSize: 16)),
+                  style: GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
                 Navigator.pop(context);
                 showActivityPicker(

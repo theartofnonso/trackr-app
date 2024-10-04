@@ -144,6 +144,7 @@ Future<void> showBottomSheetWithNoAction(
         Text(title,
             style: GoogleFonts.ubuntu(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
             textAlign: TextAlign.start),
+        const SizedBox(height: 4,),
         Text(description,
             style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white),
             textAlign: TextAlign.start)

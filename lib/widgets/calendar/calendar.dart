@@ -210,10 +210,8 @@ class _Day extends StatelessWidget {
       required this.onTap, this.hasRoutineLog = false, this.hasActivityLog = false});
 
   Color _getBackgroundColor() {
-    if(hasRoutineLog) {
+    if(hasRoutineLog || hasActivityLog) {
       return vibrantGreen;
-    } else if(hasActivityLog) {
-      return vibrantBlue;
     } else {
       return sapphireDark80.withOpacity(0.5);
     }
