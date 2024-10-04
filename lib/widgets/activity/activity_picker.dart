@@ -15,10 +15,11 @@ import '../buttons/opacity_button_widget.dart';
 import '../buttons/solid_button_widget.dart';
 
 class ActivityPicker extends StatefulWidget {
+  final ActivityType? initialActivityType;
   final DateTimeRange? initialDateTimeRange;
   final void Function(ActivityType activity, DateTimeRange range) onSelectActivity;
 
-  const ActivityPicker({super.key, this.initialDateTimeRange, required this.onSelectActivity});
+  const ActivityPicker({super.key, this.initialActivityType, this.initialDateTimeRange, required this.onSelectActivity});
 
   @override
   State<ActivityPicker> createState() => _ActivityPickerState();
@@ -203,6 +204,7 @@ class _ActivityPickerState extends State<ActivityPicker> {
   @override
   void initState() {
     super.initState();
+    _selectedActivity = widget.initialActivityType;
     _startDateTime = widget.initialDateTimeRange?.start ?? DateTime.now().subtract(const Duration(hours: 1));
     _endDateTime = widget.initialDateTimeRange?.end ?? DateTime.now();
   }

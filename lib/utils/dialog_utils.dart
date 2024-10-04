@@ -124,12 +124,14 @@ void showDatetimeRangePicker(
 
 void showActivityPicker(
     {required BuildContext context,
+      ActivityType? initialActivityType,
     DateTimeRange? initialDateTimeRange,
     required void Function(ActivityType activity, DateTimeRange datetimeRange) onChangedActivity}) {
   FocusScope.of(context).unfocus();
   displayBottomSheet(
       context: context,
       child: ActivityPicker(
+        initialActivityType: initialActivityType,
         initialDateTimeRange: initialDateTimeRange,
         onSelectActivity: onChangedActivity,
       ),

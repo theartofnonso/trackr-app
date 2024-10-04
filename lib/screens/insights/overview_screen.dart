@@ -475,7 +475,23 @@ class _LogsListView extends StatelessWidget {
             horizontalTitleGap: 6,
             title:
                 Text("Edit", style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+              showActivityPicker(
+                initialActivityType: activityType,
+                initialDateTimeRange: DateTimeRange(start: activity.startTime, end: activity.endTime),
+                  context: context,
+                  onChangedActivity: (ActivityType activityType, DateTimeRange datetimeRange) {
+                    Navigator.pop(context);
+                    final updatedActivity = activity.copyWith(
+                        name: activityType.name,
+                        startTime: datetimeRange.start,
+                        endTime: datetimeRange.end,
+                        createdAt: datetimeRange.end,
+                        updatedAt: DateTime.now());
+                    Provider.of<ActivityLogController>(context, listen: false).updateLog(log: updatedActivity);
+                  });
+            },
           ),
           ListTile(
             dense: true,
