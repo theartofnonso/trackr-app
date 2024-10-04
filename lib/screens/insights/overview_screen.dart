@@ -378,7 +378,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                   onPressed: () {
                     captureImage(key: calendarKey, pixelRatio: 5);
                     contentShared(contentType: ShareContentType.calender);
-                    context.pop();
+                    Navigator.pop(context);
                   },
                   label: "Share",
                   buttonColor: vibrantGreen,
