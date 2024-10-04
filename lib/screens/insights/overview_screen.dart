@@ -106,7 +106,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     final activityLogsForCurrentDate =
         activityLogController.logsWhereDate(dateTime: _selectedDateTime).reversed.toList();
 
-    //final activities = routineLogsForTheMonth
+    final totalActivities = routineLogsForTheYearByDay.length + activityLogsForTheYearByDay.length;
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -141,7 +141,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                         icon: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
                           const FaIcon(FontAwesomeIcons.fire, color: Colors.white, size: 20),
                           const SizedBox(width: 4),
-                          Text("${routineLogsForTheYearByDay.length}",
+                          Text("$totalActivities",
                               style:
                                   GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
                         ]),
@@ -448,7 +448,9 @@ class _LogsListView extends StatelessWidget {
           Text("You completed ${activity.duration().hmsAnalog()} of ${activity.name}",
               style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white),
               textAlign: TextAlign.start),
-          const SizedBox(height: 16,),
+          const SizedBox(
+            height: 16,
+          ),
           Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
             Text(
               "Want to change activity?".toUpperCase(),
@@ -463,24 +465,30 @@ class _LogsListView extends StatelessWidget {
               ),
             ),
           ]),
-          const SizedBox(height: 4,),
+          const SizedBox(
+            height: 4,
+          ),
           ListTile(
             dense: true,
             contentPadding: EdgeInsets.zero,
             leading: const FaIcon(FontAwesomeIcons.penToSquare, size: 18),
             horizontalTitleGap: 6,
-            title: Text("Edit",
-                style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
-            onTap: (){},
+            title:
+                Text("Edit", style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+            onTap: () {},
           ),
           ListTile(
             dense: true,
             contentPadding: EdgeInsets.zero,
-            leading: const FaIcon(FontAwesomeIcons.trash, size: 18, color: Colors.red,),
+            leading: const FaIcon(
+              FontAwesomeIcons.trash,
+              size: 18,
+              color: Colors.red,
+            ),
             horizontalTitleGap: 6,
-            title: Text("Remove",
-                style: GoogleFonts.ubuntu(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
-            onTap: (){
+            title:
+                Text("Remove", style: GoogleFonts.ubuntu(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
+            onTap: () {
               Navigator.pop(context);
               Provider.of<ActivityLogController>(context, listen: false).removeLog(log: activity);
             },
