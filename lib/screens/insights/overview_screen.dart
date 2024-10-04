@@ -81,7 +81,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
     final routineLogsForTheMonth =
         _monthlyRoutineLogs?[_selectedDateTimeRange] ?? routineLogController.monthlyLogs[_selectedDateTimeRange] ?? [];
 
-    Map<DateTimeRange, List<RoutineLogDto>> monthlyRoutineLogs = _monthlyRoutineLogs ?? routineLogController.monthlyLogs;
+    Map<DateTimeRange, List<RoutineLogDto>> monthlyRoutineLogs =
+        _monthlyRoutineLogs ?? routineLogController.monthlyLogs;
 
     final routineLogsForTheYear = monthlyRoutineLogs.values.expand((logs) => logs);
 
@@ -89,19 +90,21 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     final routineLogsForCurrentDate = routineLogController.logsWhereDate(dateTime: _selectedDateTime).reversed.toList();
 
-
     final activityLogController = Provider.of<ActivityLogController>(context, listen: true);
 
-    final activityLogsForTheMonth =
-        _monthlyActivityLogs?[_selectedDateTimeRange] ?? activityLogController.monthlyLogs[_selectedDateTimeRange] ?? [];
+    final activityLogsForTheMonth = _monthlyActivityLogs?[_selectedDateTimeRange] ??
+        activityLogController.monthlyLogs[_selectedDateTimeRange] ??
+        [];
 
-    Map<DateTimeRange, List<ActivityLogDto>> monthlyActivityLogs = _monthlyActivityLogs ?? activityLogController.monthlyLogs;
+    Map<DateTimeRange, List<ActivityLogDto>> monthlyActivityLogs =
+        _monthlyActivityLogs ?? activityLogController.monthlyLogs;
 
     final activityLogsForTheYear = monthlyActivityLogs.values.expand((logs) => logs);
 
     final activityLogsForTheYearByDay = groupBy(activityLogsForTheYear, (log) => log.createdAt.formattedDayAndMonth());
 
-    final activityLogsForCurrentDate = activityLogController.logsWhereDate(dateTime: _selectedDateTime).reversed.toList();
+    final activityLogsForCurrentDate =
+        activityLogController.logsWhereDate(dateTime: _selectedDateTime).reversed.toList();
 
     //final activities = routineLogsForTheMonth
 
@@ -145,7 +148,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       ),
                       CalendarMonthsNavigator(onChangedDateTimeRange: _onChangedDateTimeRange),
                       IconButton(
-                          onPressed: () => _onShareCalendar(context: context),
+                          onPressed: _onShareCalendar,
                           icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 20)),
                     ]),
                     Expanded(
@@ -154,14 +157,20 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           padding: const EdgeInsets.only(bottom: 150),
                           child: Column(children: [
                             const SizedBox(height: 12),
-                            OverviewMonitor(routineLogs: routineLogsForTheMonth, activityLogs: activityLogsForTheMonth,),
+                            OverviewMonitor(
+                              routineLogs: routineLogsForTheMonth,
+                              activityLogs: activityLogsForTheMonth,
+                            ),
                             const SizedBox(height: 16),
                             Calendar(
                               onSelectDate: _onChangedDateTime,
                               selectedDateRange: _selectedDateTimeRange,
                             ),
                             const SizedBox(height: 10),
-                            _LogsListView(routineLogs: routineLogsForCurrentDate, activityLogs: activityLogsForCurrentDate,),
+                            _LogsListView(
+                              routineLogs: routineLogsForCurrentDate,
+                              activityLogs: activityLogsForCurrentDate,
+                            ),
                             const SizedBox(height: 12),
                             MonthlyInsightsScreen(
                               logsForTheMonth: routineLogsForTheMonth,
@@ -273,7 +282,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           createdAt: datetimeRange.end,
                           updatedAt: datetimeRange.end);
                       Provider.of<ActivityLogController>(context, listen: false).saveLog(logDto: activityLog);
-
                     });
               },
             ),
@@ -321,7 +329,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     });
   }
 
-  void _onShareCalendar({required BuildContext context}) {
+  void _onShareCalendar() {
     displayBottomSheet(
         context: context,
         isScrollControlled: true,
@@ -404,9 +412,9 @@ class _LogsListView extends StatelessWidget {
     final activityChildren = activityLogs.map((log) {
       return Padding(
         padding: const EdgeInsets.only(bottom: 8.0),
-        child: ActivitySolidListTile(
-            activity: log,
-            onTap: () {}),
+        child: ActivitySolidListTile(activity: log, onTap: () {
+          showBottomSheetWithNoAction(context: context, title: "${log.name} Activity".toUpperCase(), description: "You completed ${log.duration().hmsAnalog()} of ${log.name}");
+        }),
       );
     }).toList();
 
