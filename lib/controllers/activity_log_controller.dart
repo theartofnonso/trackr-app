@@ -1,6 +1,5 @@
 import 'dart:collection';
 
-import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/models/ActivityLog.dart';
 

@@ -29,6 +29,7 @@ class ActivitySolidListTile extends StatelessWidget {
       ),
       child: ListTile(
         onTap: onTap,
+        contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 20),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         leading: FaIcon(activityType.icon, color: Colors.white70),
         title: Text(activity.name.toUpperCase(),
