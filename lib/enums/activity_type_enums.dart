@@ -32,7 +32,6 @@ enum ActivityType {
   boxFitness("Box Fitness", FontAwesomeIcons.box),
   other("Other Activity", FontAwesomeIcons.circle),
   hiking("Hiking", FontAwesomeIcons.personHiking),
-  recovery("Recovery", FontAwesomeIcons.person),
   functionalFitness("Functional Fitness", FontAwesomeIcons.dumbbell);
 
   const ActivityType(this.name, this.icon);
