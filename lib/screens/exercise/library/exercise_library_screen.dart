@@ -213,17 +213,20 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                 const SizedBox(height: 18),
                 _filteredExercises.isNotEmpty
                     ? Expanded(
-                        child: ListView.separated(
-                            padding: const EdgeInsets.only(bottom: 250),
-                            itemBuilder: (BuildContext context, int index) => ExerciseWidget(
-                                exerciseDto: _filteredExercises[index],
-                                onNavigateToExercise: _navigateToExerciseHistory,
-                                onSelect: widget.readOnly ? null : _navigateBackWithSelectedExercise),
-                            separatorBuilder: (BuildContext context, int index) => const Padding(
-                              padding: EdgeInsets.only(top: 20.0, right: 10, bottom: 20),
-                              child: Divider(height: 0.5, color: sapphireLighter,),
-                            ),
-                            itemCount: _filteredExercises.length),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: ListView.separated(
+                              padding: const EdgeInsets.only(bottom: 250),
+                              itemBuilder: (BuildContext context, int index) => ExerciseWidget(
+                                  exerciseDto: _filteredExercises[index],
+                                  onNavigateToExercise: _navigateToExerciseHistory,
+                                  onSelect: widget.readOnly ? null : _navigateBackWithSelectedExercise),
+                              separatorBuilder: (BuildContext context, int index) => const Padding(
+                                padding: EdgeInsets.only(top: 20.0, right: 10, bottom: 20),
+                                child: Divider(height: 0.5, color: sapphireLighter,),
+                              ),
+                              itemCount: _filteredExercises.length),
+                        ),
                       )
                     : const ExerciseEmptyState(),
               ],

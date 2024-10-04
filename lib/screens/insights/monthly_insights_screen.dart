@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:tracker_app/widgets/monthly_insights/exercises_sets_hours_volume_widget.dart';
+import 'package:tracker_app/widgets/monthly_insights/month_summary_widget.dart';
 import 'package:tracker_app/widgets/monthly_insights/log_streak_chart_widget.dart';
-import 'package:tracker_app/widgets/monthly_insights/training_and_rest_days_widget.dart';
 
+import '../../dtos/activity_log_dto.dart';
 import '../../dtos/routine_log_dto.dart';
 import '../../widgets/monthly_insights/muscle_group_family_frequency_chart_widget.dart';
 import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
@@ -10,6 +10,7 @@ import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dar
 class MonthlyInsightsScreen extends StatelessWidget {
   final DateTimeRange dateTimeRange;
   final List<RoutineLogDto> logsForTheMonth;
+  final List<ActivityLogDto> activityLogsForTheMonth;
   final Map<DateTimeRange, List<RoutineLogDto>> monthlyLogs;
   final int daysInMonth;
 
@@ -17,6 +18,7 @@ class MonthlyInsightsScreen extends StatelessWidget {
       {super.key,
       required this.dateTimeRange,
       required this.logsForTheMonth,
+      required this.activityLogsForTheMonth,
       required this.monthlyLogs,
       required this.daysInMonth});
 
@@ -25,13 +27,7 @@ class MonthlyInsightsScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TrainingAndRestDaysWidget(
-          logs: logsForTheMonth,
-          daysInMonth: daysInMonth,
-          dateTimeRange: dateTimeRange,
-        ),
-        const SizedBox(height: 24),
-        ExercisesSetsHoursVolumeWidget(logs: logsForTheMonth),
+        MonthSummaryWidget(routineLogs: logsForTheMonth, activityLogs: activityLogsForTheMonth),
         if (logsForTheMonth.isNotEmpty)
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,

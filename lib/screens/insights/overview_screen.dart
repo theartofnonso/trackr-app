@@ -177,6 +177,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                               daysInMonth: _selectedDateTimeRange.datesToNow.length,
                               dateTimeRange: _selectedDateTimeRange,
                               monthlyLogs: monthlyRoutineLogs,
+                              activityLogsForTheMonth: activityLogsForTheMonth,
                             ),
                           ])),
                     )
@@ -478,8 +479,8 @@ class _LogsListView extends StatelessWidget {
             onTap: () {
               Navigator.pop(context);
               showActivityPicker(
-                initialActivityType: activityType,
-                initialDateTimeRange: DateTimeRange(start: activity.startTime, end: activity.endTime),
+                  initialActivityType: activityType,
+                  initialDateTimeRange: DateTimeRange(start: activity.startTime, end: activity.endTime),
                   context: context,
                   onChangedActivity: (ActivityType activityType, DateTimeRange datetimeRange) {
                     Navigator.pop(context);

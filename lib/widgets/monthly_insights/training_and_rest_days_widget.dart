@@ -7,23 +7,30 @@ import 'package:tracker_app/extensions/datetime_range_extension.dart';
 import 'package:tracker_app/strings.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
+import '../../dtos/activity_log_dto.dart';
 import '../../dtos/routine_log_dto.dart';
 
 class TrainingAndRestDaysWidget extends StatelessWidget {
   final DateTimeRange dateTimeRange;
-  final List<RoutineLogDto> logs;
+  final List<RoutineLogDto> routineLogs;
+  final List<ActivityLogDto> activityLogs;
   final int daysInMonth;
 
   const TrainingAndRestDaysWidget(
-      {super.key, required this.dateTimeRange, required this.logs, required this.daysInMonth});
+      {super.key, required this.dateTimeRange, required this.routineLogs, required this.activityLogs, required this.daysInMonth});
 
   @override
   Widget build(BuildContext context) {
-    final totalTrainingDays = groupBy(logs, (log) => log.createdAt.day).length;
-    final totalRestDays = daysInMonth - totalTrainingDays;
+
+    final totalRoutineLogDays = groupBy(routineLogs, (log) => log.createdAt.day);
+    final otherActivitiesDays = groupBy(activityLogs, (log) => log.createdAt.day);
+
+    final totalActivitiesDays = {...totalRoutineLogDays.keys, ...otherActivitiesDays.keys}.toList().length;
+
+    final totalRestDays = daysInMonth - totalActivitiesDays;
 
     final averageRestDays =
-        totalTrainingDays > 0 ? _averageDaysBetween(logs: logs, datesInMonth: dateTimeRange.dates) : totalRestDays;
+    totalActivitiesDays > 0 ? _averageDaysBetween(logs: routineLogs, datesInMonth: dateTimeRange.dates) : totalRestDays;
 
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
@@ -51,9 +58,9 @@ class TrainingAndRestDaysWidget extends StatelessWidget {
                     child: Center(
                       child: SleepTimeColumn(
                           title: 'TRAINING',
-                          subTitle: "$totalTrainingDays",
-                          titleColor: logStreakColor(value: totalTrainingDays / 12),
-                          subTitleColor: logStreakColor(value: totalTrainingDays / 12)),
+                          subTitle: "$totalActivitiesDays",
+                          titleColor: logStreakColor(value: totalActivitiesDays / 12),
+                          subTitleColor: logStreakColor(value: totalActivitiesDays / 12)),
                     ),
                   ),
                   TableCell(
@@ -80,7 +87,7 @@ class TrainingAndRestDaysWidget extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 26),
-            Text(totalTrainingDays < 12 ? lowStreak : highStreak,
+            Text(totalActivitiesDays < 12 ? lowStreak : highStreak,
                 style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500),
                 textAlign: TextAlign.center),
           ],
@@ -92,7 +99,7 @@ class TrainingAndRestDaysWidget extends StatelessWidget {
 
     List<int> intervals = [];
 
-    final firstLogDate = logs.first.createdAt;
+    final firstLogDate = logs.first.createdAt ;
     final intervalsBeforeFirstLog = firstLogDate.day - 1;
     intervals.add(intervalsBeforeFirstLog);
 
