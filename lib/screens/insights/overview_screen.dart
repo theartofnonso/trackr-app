@@ -5,8 +5,10 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
+import 'package:tracker_app/dtos/activity_log_dto.dart';
 import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/enums/share_content_type_enum.dart';
+import 'package:tracker_app/extensions/activity_log_extension.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/datetime_range_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
@@ -14,9 +16,11 @@ import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/calendar/calendar_months_navigator.dart';
 
+import '../../controllers/activity_log_controller.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/routine_log_dto.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
+import '../../enums/activity_type_enums.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/app_analytics.dart';
 import '../../utils/general_utils.dart';
@@ -26,6 +30,7 @@ import '../../utils/shareables_utils.dart';
 import '../../widgets/backgrounds/overlay_background.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/calendar/calendar.dart';
+import '../../widgets/list_tiles/activity_list_tile_solid.dart';
 import '../../widgets/monitors/overview_monitor.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
 import 'monthly_insights_screen.dart';
@@ -42,7 +47,8 @@ class OverviewScreen extends StatefulWidget {
 }
 
 class _OverviewScreenState extends State<OverviewScreen> {
-  Map<DateTimeRange, List<RoutineLogDto>>? _monthlyLogs;
+  Map<DateTimeRange, List<RoutineLogDto>>? _monthlyRoutineLogs;
+  Map<DateTimeRange, List<ActivityLogDto>>? _monthlyActivityLogs;
 
   late DateTime _selectedDateTime;
   late DateTimeRange _selectedDateTimeRange;
@@ -72,16 +78,30 @@ class _OverviewScreenState extends State<OverviewScreen> {
   Widget build(BuildContext context) {
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
-    final logsForTheMonth =
-        _monthlyLogs?[_selectedDateTimeRange] ?? routineLogController.monthlyLogs[_selectedDateTimeRange] ?? [];
+    final routineLogsForTheMonth =
+        _monthlyRoutineLogs?[_selectedDateTimeRange] ?? routineLogController.monthlyLogs[_selectedDateTimeRange] ?? [];
 
-    Map<DateTimeRange, List<RoutineLogDto>> monthlyLogs = _monthlyLogs ?? routineLogController.monthlyLogs;
+    Map<DateTimeRange, List<RoutineLogDto>> monthlyRoutineLogs = _monthlyRoutineLogs ?? routineLogController.monthlyLogs;
 
-    final logsForTheYear = monthlyLogs.values.expand((logs) => logs);
+    final routineLogsForTheYear = monthlyRoutineLogs.values.expand((logs) => logs);
 
-    final logsForTheYearByDay = groupBy(logsForTheYear, (log) => log.createdAt.formattedDayAndMonth());
+    final routineLogsForTheYearByDay = groupBy(routineLogsForTheYear, (log) => log.createdAt.formattedDayAndMonth());
 
-    final logsForCurrentDate = routineLogController.logsWhereDate(dateTime: _selectedDateTime).reversed.toList();
+    final routineLogsForCurrentDate = routineLogController.logsWhereDate(dateTime: _selectedDateTime).reversed.toList();
+
+    final activityLogController = Provider.of<ActivityLogController>(context, listen: true);
+
+    final activityLogsForTheMonth =
+        _monthlyActivityLogs?[_selectedDateTimeRange] ?? activityLogController.monthlyLogs[_selectedDateTimeRange] ?? [];
+
+    Map<DateTimeRange, List<ActivityLogDto>> monthlyActivityLogs = _monthlyActivityLogs ?? activityLogController.monthlyLogs;
+
+    final activityLogsForTheYear = monthlyActivityLogs.values.expand((logs) => logs);
+
+    final activityLogsForTheYearByDay = groupBy(activityLogsForTheYear, (log) => log.createdAt.formattedDayAndMonth());
+
+    final activityLogsForCurrentDate = activityLogController.logsWhereDate(dateTime: _selectedDateTime).reversed.toList();
+
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -116,9 +136,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
                         icon: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
                           const FaIcon(FontAwesomeIcons.fire, color: Colors.white, size: 20),
                           const SizedBox(width: 4),
-                          Text("${logsForTheYearByDay.length}",
-                              style: GoogleFonts.ubuntu(
-                                  color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
+                          Text("${routineLogsForTheYearByDay.length}",
+                              style:
+                                  GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
                         ]),
                       ),
                       CalendarMonthsNavigator(onChangedDateTimeRange: _onChangedDateTimeRange),
@@ -132,20 +152,20 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           padding: const EdgeInsets.only(bottom: 150),
                           child: Column(children: [
                             const SizedBox(height: 12),
-                            OverviewMonitor(routineLogs: logsForTheMonth),
+                            OverviewMonitor(routineLogs: routineLogsForTheMonth),
                             const SizedBox(height: 16),
                             Calendar(
                               onSelectDate: _onChangedDateTime,
                               selectedDateRange: _selectedDateTimeRange,
                             ),
                             const SizedBox(height: 10),
-                            _RoutineLogListView(logs: logsForCurrentDate),
+                            _LogsListView(routineLogs: routineLogsForCurrentDate, activityLogs: activityLogsForCurrentDate,),
                             const SizedBox(height: 12),
                             MonthlyInsightsScreen(
-                              logsForTheMonth: logsForTheMonth,
+                              logsForTheMonth: routineLogsForTheMonth,
                               daysInMonth: _selectedDateTimeRange.datesToNow.length,
                               dateTimeRange: _selectedDateTimeRange,
-                              monthlyLogs: monthlyLogs,
+                              monthlyLogs: monthlyRoutineLogs,
                             ),
                           ])),
                     )
@@ -205,7 +225,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
                     });
               },
             ),
-            const SizedBox(height: 10,),
+            const SizedBox(
+              height: 10,
+            ),
             Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               Text(
                 "Training outside the gym?".toUpperCase(),
@@ -220,28 +242,35 @@ class _OverviewScreenState extends State<OverviewScreen> {
                 ),
               ),
             ]),
-            const SizedBox(height: 6,),
+            const SizedBox(
+              height: 6,
+            ),
             ListTile(
               dense: true,
               contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(FontAwesomeIcons.circlePlus, size: 18, color: vibrantBlue,),
+              leading: const FaIcon(
+                FontAwesomeIcons.circlePlus,
+                size: 18,
+                color: vibrantBlue,
+              ),
               horizontalTitleGap: 6,
               title: Text("Add Activity",
                   style: GoogleFonts.ubuntu(color: vibrantBlue, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
-                context.pop();
+                Navigator.pop(context);
                 showActivityPicker(
                     context: context,
-                    onChangedDateTimeRange: (DateTimeRange datetimeRange) {
-                      context.pop();
-                      // final log = ActivityLogDto(
-                      //     id: "",
-                      //     name: logName,
-                      //     notes: "",
-                      //     startTime: datetimeRange.start,
-                      //     endTime: datetimeRange.end,
-                      //     createdAt: datetimeRange.start,
-                      //     updatedAt: datetimeRange.end);
+                    onChangedActivity: (ActivityType activity, DateTimeRange datetimeRange) {
+                      Navigator.pop(context);
+                      final activityLog = ActivityLogDto(
+                          id: "id",
+                          name: activity.name,
+                          notes: "",
+                          startTime: datetimeRange.start,
+                          endTime: datetimeRange.end,
+                          createdAt: datetimeRange.end,
+                          updatedAt: datetimeRange.end);
+                      Provider.of<ActivityLogController>(context, listen: false).saveLog(logDto: activityLog);
 
                     });
               },
@@ -266,13 +295,21 @@ class _OverviewScreenState extends State<OverviewScreen> {
     });
 
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
+    final activityLogController = Provider.of<ActivityLogController>(context, listen: false);
 
     if (isDifferentYear) {
       routineLogController.fetchLogsCloud(range: range.start.dateTimeRange()).then((logs) {
         setState(() {
           _loading = false;
           final dtos = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
-          _monthlyLogs = groupRoutineLogsByMonth(routineLogs: dtos);
+          _monthlyRoutineLogs = groupRoutineLogsByMonth(routineLogs: dtos);
+        });
+      });
+      activityLogController.fetchLogsCloud(range: range.start.dateTimeRange()).then((logs) {
+        setState(() {
+          _loading = false;
+          final dtos = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
+          _monthlyActivityLogs = groupActivityLogsByMonth(activityLogs: dtos);
         });
       });
     }
@@ -347,20 +384,30 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 }
 
-class _RoutineLogListView extends StatelessWidget {
-  final List<RoutineLogDto> logs;
+class _LogsListView extends StatelessWidget {
+  final List<RoutineLogDto> routineLogs;
+  final List<ActivityLogDto> activityLogs;
 
-  const _RoutineLogListView({required this.logs});
+  const _LogsListView({required this.routineLogs, required this.activityLogs});
 
   @override
   Widget build(BuildContext context) {
-    final widgets = logs.map((log) {
+    final routineChildren = routineLogs.map((log) {
       return Padding(
         padding: const EdgeInsets.only(bottom: 8.0),
         child: RoutineLogWidget(log: log, trailing: log.duration().hmsAnalog(), color: sapphireDark80),
       );
     }).toList();
 
-    return Column(children: widgets);
+    final activityChildren = activityLogs.map((log) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 8.0),
+        child: ActivitySolidListTile(
+            activity: log,
+            onTap: () {}),
+      );
+    }).toList();
+
+    return Column(children: [...routineChildren, ...activityChildren]);
   }
 }

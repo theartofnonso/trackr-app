@@ -26,8 +26,7 @@ class OpacityButtonWidget extends StatelessWidget {
         style: ButtonStyle(
           visualDensity: visualDensity,
           backgroundColor: WidgetStateProperty.all(buttonColor?.withOpacity(0.15) ?? Colors.white.withOpacity(0.15)),
-          shape: WidgetStateProperty.all(RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5))),
+          shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
           overlayColor: WidgetStateProperty.resolveWith<Color?>(
             (Set<WidgetState> states) {
               return Colors.black.withOpacity(0.3); // Defer to the widget's default.
@@ -41,7 +40,12 @@ class OpacityButtonWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(loading ? loadingLabel : label, textAlign: TextAlign.start, style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, fontSize: 16, color: buttonColor)),
+              Text(loading ? loadingLabel : label,
+                  textAlign: TextAlign.start,
+                  style: GoogleFonts.ubuntu(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                      color: onPressed != null ? buttonColor : buttonColor?.withOpacity(0.2))),
               loading
                   ? const Padding(
                       padding: EdgeInsets.only(left: 6.0),

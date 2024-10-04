@@ -35,7 +35,6 @@ class SolidListTile extends StatelessWidget {
       ),
       child: ListTile(
         onTap: onTap,
-        dense: true,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         title: Text(title,
             style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),

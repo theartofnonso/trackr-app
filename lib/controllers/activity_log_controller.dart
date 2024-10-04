@@ -36,10 +36,10 @@ class ActivityLogController extends ChangeNotifier {
     return _amplifyActivityLogRepository.queryLogsCloud(range: range);
   }
 
-  Future<ActivityLogDto?> saveLog({required ActivityLogDto logDto, TemporalDateTime? datetime}) async {
+  Future<ActivityLogDto?> saveLog({required ActivityLogDto logDto}) async {
     ActivityLogDto? savedLog;
     try {
-      savedLog = await _amplifyActivityLogRepository.saveLog(logDto: logDto, datetime: datetime);
+      savedLog = await _amplifyActivityLogRepository.saveLog(logDto: logDto);
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {

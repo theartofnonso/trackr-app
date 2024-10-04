@@ -132,7 +132,7 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
       return editEndDateMustBeAfterStartDate;
     }
 
-    if (_endDateTime.day > DateTime.now().day) {
+    if (_endDateTime.millisecondsSinceEpoch > DateTime.now().millisecondsSinceEpoch) {
       return editFutureDateRestriction;
     }
 

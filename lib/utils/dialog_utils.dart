@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/enums/activity_type_enums.dart';
 import 'package:tracker_app/widgets/timers/datetime_picker.dart';
 import 'package:tracker_app/widgets/timers/datetime_range_picker.dart';
 
@@ -107,14 +108,32 @@ void showDateTimePicker({required BuildContext context, required void Function(D
   displayBottomSheet(height: 240, context: context, child: DatetimePicker(onSelect: onChangedDateTime));
 }
 
-void showDatetimeRangePicker({required BuildContext context, DateTimeRange? initialDateTimeRange, required void Function(DateTimeRange datetimeRange) onChangedDateTimeRange}) {
+void showDatetimeRangePicker(
+    {required BuildContext context,
+    DateTimeRange? initialDateTimeRange,
+    required void Function(DateTimeRange datetimeRange) onChangedDateTimeRange}) {
   FocusScope.of(context).unfocus();
-  displayBottomSheet(context: context, child: DateTimeRangePicker(initialDateTimeRange: initialDateTimeRange, onSelectRange: onChangedDateTimeRange,) ,isScrollControlled: true);
+  displayBottomSheet(
+      context: context,
+      child: DateTimeRangePicker(
+        initialDateTimeRange: initialDateTimeRange,
+        onSelectRange: onChangedDateTimeRange,
+      ),
+      isScrollControlled: true);
 }
 
-void showActivityPicker({required BuildContext context, DateTimeRange? initialDateTimeRange, required void Function(DateTimeRange datetimeRange) onChangedDateTimeRange}) {
+void showActivityPicker(
+    {required BuildContext context,
+    DateTimeRange? initialDateTimeRange,
+    required void Function(ActivityType activity, DateTimeRange datetimeRange) onChangedActivity}) {
   FocusScope.of(context).unfocus();
-  displayBottomSheet(context: context, child: ActivityPicker(initialDateTimeRange: initialDateTimeRange, onSelectRange: onChangedDateTimeRange,) ,isScrollControlled: true);
+  displayBottomSheet(
+      context: context,
+      child: ActivityPicker(
+        initialDateTimeRange: initialDateTimeRange,
+        onSelectActivity: onChangedActivity,
+      ),
+      isScrollControlled: true);
 }
 
 Future<void> showBottomSheetWithNoAction(

@@ -11,6 +11,7 @@ import 'package:tracker_app/extensions/datetime_extension.dart';
 
 import '../models/ActivityLog.dart';
 import '../models/RoutineLog.dart';
+import '../utils/routine_utils.dart';
 
 class AmplifyActivityLogRepository {
   List<ActivityLogDto> _activityLogs = [];
@@ -24,6 +25,11 @@ class AmplifyActivityLogRepository {
   UnmodifiableMapView<DateTimeRange, List<ActivityLogDto>> get weeklyLogs => UnmodifiableMapView(_weeklyLogs);
 
   UnmodifiableMapView<DateTimeRange, List<ActivityLogDto>> get monthlyLogs => UnmodifiableMapView(_monthlyLogs);
+
+  void _groupActivityLogs() {
+    _weeklyLogs = groupActivityLogsByWeek(activityLogs: _activityLogs);
+    _monthlyLogs = groupActivityLogsByMonth(activityLogs: _activityLogs);
+  }
 
   Future<void> fetchLogs({required bool firstLaunch}) async {
     if (firstLaunch) {
@@ -50,12 +56,13 @@ class AmplifyActivityLogRepository {
 
   void _mapLogs({required List<ActivityLog> logs}) {
     _activityLogs = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
+    _groupActivityLogs();
   }
 
-  Future<ActivityLogDto> saveLog({required ActivityLogDto logDto, TemporalDateTime? datetime}) async {
-    final now = datetime ?? TemporalDateTime.now();
+  Future<ActivityLogDto> saveLog({required ActivityLogDto logDto}) async {
+    final datetime = TemporalDateTime.withOffset(logDto.endTime, Duration.zero);
 
-    final logToCreate = ActivityLog(data: jsonEncode(logDto), createdAt: now, updatedAt: now);
+    final logToCreate = ActivityLog(data: jsonEncode(logDto), createdAt: datetime, updatedAt: datetime);
     await Amplify.DataStore.save(logToCreate);
 
     final updatedActivityWithId = logDto.copyWith(id: logToCreate.id);

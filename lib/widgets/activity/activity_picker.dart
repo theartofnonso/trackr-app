@@ -8,6 +8,7 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/activity/activity_selector.dart';
 import 'package:tracker_app/widgets/information_container_lite.dart';
 
+import '../../enums/activity_type_enums.dart';
 import '../../strings/datetime_range_picker_strings.dart';
 import '../../utils/navigation_utils.dart';
 import '../buttons/opacity_button_widget.dart';
@@ -15,9 +16,9 @@ import '../buttons/solid_button_widget.dart';
 
 class ActivityPicker extends StatefulWidget {
   final DateTimeRange? initialDateTimeRange;
-  final void Function(DateTimeRange range) onSelectRange;
+  final void Function(ActivityType activity, DateTimeRange range) onSelectActivity;
 
-  const ActivityPicker({super.key, required this.onSelectRange, this.initialDateTimeRange});
+  const ActivityPicker({super.key, this.initialDateTimeRange, required this.onSelectActivity});
 
   @override
   State<ActivityPicker> createState() => _ActivityPickerState();
@@ -30,13 +31,25 @@ class _ActivityPickerState extends State<ActivityPicker> {
   bool _showStartDateTimeRange = false;
   bool _showEndDateTimeRange = false;
 
+  ActivityType? _selectedActivity;
+
   void _navigateToActivitySelector() {
-    navigateWithSlideTransition(context: context, child: const ActivitySelectorScreen());
+    navigateWithSlideTransition(
+        context: context,
+        child: ActivitySelectorScreen(
+          onSelectActivity: (ActivityType activity) {
+            setState(() {
+              _selectedActivity = activity;
+            });
+          },
+        ));
   }
 
   @override
   Widget build(BuildContext context) {
     final errorMessage = _validateDate();
+
+    final selectedActivity = _selectedActivity;
 
     return SingleChildScrollView(
       child: Column(
@@ -45,10 +58,12 @@ class _ActivityPickerState extends State<ActivityPicker> {
           ListTile(
             onTap: _navigateToActivitySelector,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-            leading: const FaIcon(FontAwesomeIcons.person, color: Colors.white70),
+            leading: FaIcon(selectedActivity != null ? selectedActivity.icon : FontAwesomeIcons.person,
+                color: Colors.white70),
             title: Text(
-              "Select Activity".toUpperCase(),
-              style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 12),
+              selectedActivity != null ? selectedActivity.name : "Select Activity".toUpperCase(),
+              style: GoogleFonts.ubuntu(
+                  color: Colors.white, fontWeight: FontWeight.w600, fontSize: selectedActivity != null ? 16 : 12),
             ),
             trailing: const FaIcon(FontAwesomeIcons.arrowRightLong),
           ),
@@ -141,12 +156,16 @@ class _ActivityPickerState extends State<ActivityPicker> {
                     : SizedBox(
                         width: double.infinity,
                         child: OpacityButtonWidget(
-                            onPressed: () {
-                              final range = DateTimeRange(start: _startDateTime, end: _endDateTime);
-                              widget.onSelectRange(range);
-                            },
-                            label: "Log ${_calculateDuration().hmsAnalog()} session",
-                            buttonColor: vibrantGreen,
+                            onPressed: selectedActivity != null
+                                ? () {
+                                    final range = DateTimeRange(start: _startDateTime, end: _endDateTime);
+                                    widget.onSelectActivity(selectedActivity, range);
+                                  }
+                                : null,
+                            label: selectedActivity != null
+                                ? "Log ${_calculateDuration().hmsAnalog()} of ${selectedActivity.name}"
+                                : "Log ${_calculateDuration().hmsAnalog()} of activity",
+                            buttonColor: vibrantBlue,
                             padding: const EdgeInsets.all(10.0)),
                       )),
           ),
@@ -164,7 +183,7 @@ class _ActivityPickerState extends State<ActivityPicker> {
       return editEndDateMustBeAfterStartDate;
     }
 
-    if (_endDateTime.day > DateTime.now().day) {
+    if (_endDateTime.millisecondsSinceEpoch > DateTime.now().millisecondsSinceEpoch) {
       return editFutureDateRestriction;
     }
 
