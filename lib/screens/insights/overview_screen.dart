@@ -89,6 +89,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     final routineLogsForCurrentDate = routineLogController.logsWhereDate(dateTime: _selectedDateTime).reversed.toList();
 
+
     final activityLogController = Provider.of<ActivityLogController>(context, listen: true);
 
     final activityLogsForTheMonth =

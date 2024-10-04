@@ -70,6 +70,8 @@ class AmplifyActivityLogRepository {
     _activityLogs.add(updatedActivityWithId);
     _activityLogs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
 
+    _groupActivityLogs();
+
     return updatedActivityWithId;
   }
 
@@ -85,6 +87,7 @@ class AmplifyActivityLogRepository {
       await Amplify.DataStore.save(newLog);
       final index = _indexWhereRoutineLog(id: log.id);
       _activityLogs[index] = log;
+      _groupActivityLogs();
     }
   }
 
@@ -99,6 +102,7 @@ class AmplifyActivityLogRepository {
       await Amplify.DataStore.delete(oldTemplate);
       final index = _indexWhereRoutineLog(id: log.id);
       _activityLogs.removeAt(index);
+      _groupActivityLogs();
     }
   }
 
