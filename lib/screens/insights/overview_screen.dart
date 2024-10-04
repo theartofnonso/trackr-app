@@ -412,12 +412,79 @@ class _LogsListView extends StatelessWidget {
     final activityChildren = activityLogs.map((log) {
       return Padding(
         padding: const EdgeInsets.only(bottom: 8.0),
-        child: ActivitySolidListTile(activity: log, onTap: () {
-          showBottomSheetWithNoAction(context: context, title: "${log.name} Activity".toUpperCase(), description: "You completed ${log.duration().hmsAnalog()} of ${log.name}");
-        }),
+        child: ActivitySolidListTile(
+            activity: log,
+            onTap: () {
+              _showActivityBottomSheet(context: context, activity: log);
+            }),
       );
     }).toList();
 
     return Column(children: [...routineChildren, ...activityChildren]);
+  }
+
+  Future<void> _showActivityBottomSheet({required BuildContext context, required ActivityLogDto activity}) async {
+    final activityType = ActivityType.fromString(activity.name);
+    displayBottomSheet(
+        context: context,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(
+            children: [
+              FaIcon(
+                activityType.icon,
+                color: Colors.white70,
+              ),
+              const SizedBox(
+                width: 4,
+              ),
+              Text("${activity.name} Activity".toUpperCase(),
+                  style: GoogleFonts.ubuntu(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
+                  textAlign: TextAlign.start),
+            ],
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Text("You completed ${activity.duration().hmsAnalog()} of ${activity.name}",
+              style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white),
+              textAlign: TextAlign.start),
+          const SizedBox(height: 16,),
+          Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+            Text(
+              "Want to change activity?".toUpperCase(),
+              style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 10),
+            ),
+            Expanded(
+              child: Container(
+                height: 0.8, // height of the divider
+                width: double.infinity, // width of the divider (line thickness)
+                color: sapphireLighter, // color of the divider
+                margin: const EdgeInsets.symmetric(horizontal: 10), // add space around the divider
+              ),
+            ),
+          ]),
+          const SizedBox(height: 4,),
+          ListTile(
+            dense: true,
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(FontAwesomeIcons.penToSquare, size: 18),
+            horizontalTitleGap: 6,
+            title: Text("Edit",
+                style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+            onTap: (){},
+          ),
+          ListTile(
+            dense: true,
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(FontAwesomeIcons.trash, size: 18, color: Colors.red,),
+            horizontalTitleGap: 6,
+            title: Text("Remove",
+                style: GoogleFonts.ubuntu(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
+            onTap: (){
+              Navigator.pop(context);
+              Provider.of<ActivityLogController>(context, listen: false).removeLog(log: activity);
+            },
+          ),
+        ]));
   }
 }

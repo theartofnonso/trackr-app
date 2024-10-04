@@ -10,7 +10,6 @@ import 'package:tracker_app/extensions/activity_log_extension.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 
 import '../models/ActivityLog.dart';
-import '../models/RoutineLog.dart';
 import '../utils/routine_utils.dart';
 
 class AmplifyActivityLogRepository {
@@ -77,8 +76,8 @@ class AmplifyActivityLogRepository {
 
   Future<void> updateLog({required ActivityLogDto log}) async {
     final result = (await Amplify.DataStore.query(
-      RoutineLog.classType,
-      where: RoutineLog.ID.eq(log.id),
+      ActivityLog.classType,
+      where: ActivityLog.ID.eq(log.id),
     ));
 
     if (result.isNotEmpty) {
@@ -93,7 +92,7 @@ class AmplifyActivityLogRepository {
 
   Future<void> removeLog({required ActivityLogDto log}) async {
     final result = (await Amplify.DataStore.query(
-      RoutineLog.classType,
+      ActivityLog.classType,
       where: ActivityLog.ID.eq(log.id),
     ));
 
