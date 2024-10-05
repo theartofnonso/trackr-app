@@ -202,7 +202,8 @@ extension DateTimeExtension on DateTime {
 
   DateTimeRange dateTimeRange() {
     final start = DateTime(year, 1);
-    final end = DateTime(year, 12);
+    final nextMonth = DateTime(year, month + 1, 1);
+    final end = nextMonth.subtract(const Duration(days: 1));
     return DateTimeRange(start: start, end: end);
   }
 }
