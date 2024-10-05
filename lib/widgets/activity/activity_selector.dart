@@ -82,7 +82,7 @@ class _ActivitySelectorScreenState extends State<ActivitySelectorScreen> {
                     );
                                     }, separatorBuilder: (BuildContext context, int index) => const Padding(
                       padding: EdgeInsets.symmetric(vertical: 10.0),
-                      child: Divider(height: 0.5, color: sapphireLighter,),
+                      child: Divider(height: 0.1, color: sapphireLighter,),
                     ),
                                   ),
                   )) : const Expanded(child: Center(child: TextEmptyState(message: "We don't have this activity")))
