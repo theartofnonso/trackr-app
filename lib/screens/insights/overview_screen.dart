@@ -91,7 +91,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     final routineLogsForTheYearByDay = groupBy(routineLogsForTheYear, (log) => log.createdAt.formattedDayAndMonth());
 
-    final routineLogsForCurrentDate = routineLogController.logsWhereDate(dateTime: _selectedDateTime).reversed.toList();
+    final routineLogsForCurrentDate = routineLogController.logsWhereDate(dateTime: _selectedDateTime).toList();
 
     /// Activity Logs
     final activityLogController = Provider.of<ActivityLogController>(context, listen: true);
@@ -108,7 +108,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     final activityLogsForTheYearByDay = groupBy(activityLogsForTheYear, (log) => log.createdAt.formattedDayAndMonth());
 
     final activityLogsForCurrentDate =
-        activityLogController.logsWhereDate(dateTime: _selectedDateTime).reversed.toList();
+        activityLogController.logsWhereDate(dateTime: _selectedDateTime).toList();
 
     /// Aggregates
     final allActivitiesForCurrentDate = [...routineLogsForCurrentDate, ...activityLogsForCurrentDate];
