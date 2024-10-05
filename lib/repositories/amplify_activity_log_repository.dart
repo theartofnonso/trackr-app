@@ -10,6 +10,7 @@ import 'package:tracker_app/extensions/activity_log_extension.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 
 import '../models/ActivityLog.dart';
+import '../utils/date_utils.dart';
 import '../utils/routine_utils.dart';
 
 class AmplifyActivityLogRepository {
@@ -32,10 +33,8 @@ class AmplifyActivityLogRepository {
 
   Future<void> fetchLogs({required bool firstLaunch}) async {
     if (firstLaunch) {
-      final now = DateTime.now().withoutTime();
-      final then = DateTime(now.year - 1);
-      final range = DateTimeRange(start: then, end: now);
-      List<ActivityLog> logs = await queryLogsCloud(range: range);
+      final dateRange = yearToDateTimeRange();
+      List<ActivityLog> logs = await queryLogsCloud(range: dateRange);
       _mapLogs(logs: logs);
     } else {
       List<ActivityLog> logs = await Amplify.DataStore.query(ActivityLog.classType);

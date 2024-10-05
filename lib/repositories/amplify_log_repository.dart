@@ -17,6 +17,7 @@ import '../enums/exercise_type_enums.dart';
 import '../models/RoutineLog.dart';
 import '../models/RoutineTemplate.dart';
 import '../shared_prefs.dart';
+import '../utils/date_utils.dart';
 
 class AmplifyLogRepository {
   List<RoutineLogDto> _routineLogs = [];
@@ -57,10 +58,8 @@ class AmplifyLogRepository {
 
   Future<void> fetchLogs({required bool firstLaunch}) async {
     if (firstLaunch) {
-      final now = DateTime.now().withoutTime();
-      final then = DateTime(now.year - 1);
-      final range = DateTimeRange(start: then, end: now);
-      List<RoutineLog> logs = await queryLogsCloud(range: range);
+      final dateRange = yearToDateTimeRange();
+      List<RoutineLog> logs = await queryLogsCloud(range: dateRange);
       _mapAndNormaliseLogs(logs: logs);
     } else {
       List<RoutineLog> logs = await Amplify.DataStore.query(RoutineLog.classType);
