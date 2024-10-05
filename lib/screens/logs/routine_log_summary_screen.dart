@@ -308,10 +308,21 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
             ),
             if (_hasImage)
               Column(children: [
-                const Divider(
-                  color: sapphireLighter,
-                  thickness: 0.6,
-                ),
+                const SizedBox(height: 10,),
+                Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                  Text(
+                    "Don't like the vibe?".toUpperCase(),
+                    style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 10),
+                  ),
+                  Expanded(
+                    child: Container(
+                      height: 0.8, // height of the divider
+                      width: double.infinity, // width of the divider (line thickness)
+                      color: sapphireLighter, // color of the divider
+                      margin: const EdgeInsets.symmetric(horizontal: 10), // add space around the divider
+                    ),
+                  ),
+                ]),
                 ListTile(
                   dense: true,
                   contentPadding: EdgeInsets.zero,

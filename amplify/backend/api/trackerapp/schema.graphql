@@ -32,6 +32,20 @@ type RoutineLog
   updatedAt: AWSDateTime!
 }
 
+type ActivityLog
+     @model
+     @auth(
+        rules: [
+           { allow: owner },
+        ]
+     ) {
+  id: ID!
+  owner: String
+  data: AWSJSON!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
 type Exercise
      @model
      @auth(

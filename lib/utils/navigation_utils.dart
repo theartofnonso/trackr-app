@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
@@ -5,6 +6,7 @@ import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 
+import '../dtos/interface/log_interface.dart';
 import '../dtos/routine_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
@@ -12,8 +14,8 @@ import '../dtos/viewmodels/routine_template_arguments.dart';
 import '../screens/editors/past_routine_log_editor_screen.dart';
 import '../screens/editors/routine_log_editor_screen.dart';
 import '../screens/editors/routine_template_editor_screen.dart';
+import '../screens/logs/logs_screen.dart';
 import '../screens/logs/routine_log_screen.dart';
-import '../screens/logs/routine_logs_screen.dart';
 import '../screens/template/templates/routine_template_screen.dart';
 
 Future<Future<Object?>> navigateToExerciseEditor(
@@ -58,9 +60,9 @@ void navigateToShareableScreen({required BuildContext context, required RoutineL
   context.push(RoutineLogSummaryScreen.routeName, extra: log);
 }
 
-void navigateToRoutineLogs({required BuildContext context, required List<RoutineLogDto> logs}) {
-  final descendingLogs = logs.reversed.toList();
-  context.push(RoutineLogsScreen.routeName, extra: descendingLogs);
+void navigateToLogs({required BuildContext context, required List<Log> logs}) {
+  final descendingLogs = logs.sorted((a, b) => a.createdAt.compareTo(b.createdAt)).reversed.toList();
+  context.push(LogsScreen.routeName, extra: descendingLogs);
 }
 
 /// Create a screen on demand

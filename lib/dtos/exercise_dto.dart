@@ -51,7 +51,6 @@ class ExerciseDto {
     final creditSource = json["creditSource"];
     final creditSourceUri = creditSource != null ? Uri.parse(creditSource) : null;
     final credit = json["credit"] ?? "";
-
     return ExerciseDto(
         id: id,
         name: name,

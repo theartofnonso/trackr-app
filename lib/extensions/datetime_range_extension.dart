@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tracker_app/extensions/datetime_extension.dart';
 
 extension DateTimeRangeExtension on DateTimeRange {
 
@@ -19,9 +18,8 @@ extension DateTimeRangeExtension on DateTimeRange {
 
   List<DateTime> get datesToNow {
     List<DateTime> dates = [];
-    final now = DateTime.now();
     DateTime startDate = start;
-    DateTime endDateDate = now.isSameMonthYear(end) ? now : end;
+    DateTime endDateDate = end;
 
     while (startDate.isBefore(endDateDate) || startDate.isAtSameMomentAs(endDateDate)) {
       // Add current date to the list

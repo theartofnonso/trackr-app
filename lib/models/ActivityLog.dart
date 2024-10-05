@@ -23,9 +23,9 @@ import 'ModelProvider.dart';
 import 'package:amplify_core/amplify_core.dart' as amplify_core;
 
 
-/** This is an auto generated class representing the RoutineTemplate type in your schema. */
-class RoutineTemplate extends amplify_core.Model {
-  static const classType = const _RoutineTemplateModelType();
+/** This is an auto generated class representing the ActivityLog type in your schema. */
+class ActivityLog extends amplify_core.Model {
+  static const classType = const _ActivityLogModelType();
   final String id;
   final String? _owner;
   final String? _data;
@@ -39,8 +39,8 @@ class RoutineTemplate extends amplify_core.Model {
   @override
   String getId() => id;
   
-  RoutineTemplateModelIdentifier get modelIdentifier {
-      return RoutineTemplateModelIdentifier(
+  ActivityLogModelIdentifier get modelIdentifier {
+      return ActivityLogModelIdentifier(
         id: id
       );
   }
@@ -88,10 +88,10 @@ class RoutineTemplate extends amplify_core.Model {
     }
   }
   
-  const RoutineTemplate._internal({required this.id, owner, required data, required createdAt, required updatedAt}): _owner = owner, _data = data, _createdAt = createdAt, _updatedAt = updatedAt;
+  const ActivityLog._internal({required this.id, owner, required data, required createdAt, required updatedAt}): _owner = owner, _data = data, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory RoutineTemplate({String? id, String? owner, required String data, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
-    return RoutineTemplate._internal(
+  factory ActivityLog({String? id, String? owner, required String data, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
+    return ActivityLog._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       owner: owner,
       data: data,
@@ -106,7 +106,7 @@ class RoutineTemplate extends amplify_core.Model {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is RoutineTemplate &&
+    return other is ActivityLog &&
       id == other.id &&
       _owner == other._owner &&
       _data == other._data &&
@@ -121,7 +121,7 @@ class RoutineTemplate extends amplify_core.Model {
   String toString() {
     var buffer = new StringBuffer();
     
-    buffer.write("RoutineTemplate {");
+    buffer.write("ActivityLog {");
     buffer.write("id=" + "$id" + ", ");
     buffer.write("owner=" + "$_owner" + ", ");
     buffer.write("data=" + "$_data" + ", ");
@@ -132,8 +132,8 @@ class RoutineTemplate extends amplify_core.Model {
     return buffer.toString();
   }
   
-  RoutineTemplate copyWith({String? owner, String? data, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
-    return RoutineTemplate._internal(
+  ActivityLog copyWith({String? owner, String? data, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+    return ActivityLog._internal(
       id: id,
       owner: owner ?? this.owner,
       data: data ?? this.data,
@@ -141,13 +141,13 @@ class RoutineTemplate extends amplify_core.Model {
       updatedAt: updatedAt ?? this.updatedAt);
   }
   
-  RoutineTemplate copyWithModelFieldValues({
+  ActivityLog copyWithModelFieldValues({
     ModelFieldValue<String?>? owner,
     ModelFieldValue<String>? data,
     ModelFieldValue<amplify_core.TemporalDateTime>? createdAt,
     ModelFieldValue<amplify_core.TemporalDateTime>? updatedAt
   }) {
-    return RoutineTemplate._internal(
+    return ActivityLog._internal(
       id: id,
       owner: owner == null ? this.owner : owner.value,
       data: data == null ? this.data : data.value,
@@ -156,7 +156,7 @@ class RoutineTemplate extends amplify_core.Model {
     );
   }
   
-  RoutineTemplate.fromJson(Map<String, dynamic> json)  
+  ActivityLog.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
       _owner = json['owner'],
       _data = json['data'],
@@ -175,15 +175,15 @@ class RoutineTemplate extends amplify_core.Model {
     'updatedAt': _updatedAt
   };
 
-  static final amplify_core.QueryModelIdentifier<RoutineTemplateModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<RoutineTemplateModelIdentifier>();
+  static final amplify_core.QueryModelIdentifier<ActivityLogModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<ActivityLogModelIdentifier>();
   static final ID = amplify_core.QueryField(fieldName: "id");
   static final OWNER = amplify_core.QueryField(fieldName: "owner");
   static final DATA = amplify_core.QueryField(fieldName: "data");
   static final CREATEDAT = amplify_core.QueryField(fieldName: "createdAt");
   static final UPDATEDAT = amplify_core.QueryField(fieldName: "updatedAt");
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
-    modelSchemaDefinition.name = "RoutineTemplate";
-    modelSchemaDefinition.pluralName = "RoutineTemplates";
+    modelSchemaDefinition.name = "ActivityLog";
+    modelSchemaDefinition.pluralName = "ActivityLogs";
     
     modelSchemaDefinition.authRules = [
       amplify_core.AuthRule(
@@ -196,66 +196,60 @@ class RoutineTemplate extends amplify_core.Model {
           amplify_core.ModelOperation.UPDATE,
           amplify_core.ModelOperation.DELETE,
           amplify_core.ModelOperation.READ
-        ]),
-      amplify_core.AuthRule(
-        authStrategy: amplify_core.AuthStrategy.PUBLIC,
-        provider: amplify_core.AuthRuleProvider.IAM,
-        operations: const [
-          amplify_core.ModelOperation.READ
         ])
     ];
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.id());
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: RoutineTemplate.OWNER,
+      key: ActivityLog.OWNER,
       isRequired: false,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: RoutineTemplate.DATA,
+      key: ActivityLog.DATA,
       isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: RoutineTemplate.CREATEDAT,
+      key: ActivityLog.CREATEDAT,
       isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: RoutineTemplate.UPDATEDAT,
+      key: ActivityLog.UPDATEDAT,
       isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
     ));
   });
 }
 
-class _RoutineTemplateModelType extends amplify_core.ModelType<RoutineTemplate> {
-  const _RoutineTemplateModelType();
+class _ActivityLogModelType extends amplify_core.ModelType<ActivityLog> {
+  const _ActivityLogModelType();
   
   @override
-  RoutineTemplate fromJson(Map<String, dynamic> jsonData) {
-    return RoutineTemplate.fromJson(jsonData);
+  ActivityLog fromJson(Map<String, dynamic> jsonData) {
+    return ActivityLog.fromJson(jsonData);
   }
   
   @override
   String modelName() {
-    return 'RoutineTemplate';
+    return 'ActivityLog';
   }
 }
 
 /**
  * This is an auto generated class representing the model identifier
- * of [RoutineTemplate] in your schema.
+ * of [ActivityLog] in your schema.
  */
-class RoutineTemplateModelIdentifier implements amplify_core.ModelIdentifier<RoutineTemplate> {
+class ActivityLogModelIdentifier implements amplify_core.ModelIdentifier<ActivityLog> {
   final String id;
 
-  /** Create an instance of RoutineTemplateModelIdentifier using [id] the primary key. */
-  const RoutineTemplateModelIdentifier({
+  /** Create an instance of ActivityLogModelIdentifier using [id] the primary key. */
+  const ActivityLogModelIdentifier({
     required this.id});
   
   @override
@@ -273,7 +267,7 @@ class RoutineTemplateModelIdentifier implements amplify_core.ModelIdentifier<Rou
   String serializeAsString() => serializeAsMap().values.join('#');
   
   @override
-  String toString() => 'RoutineTemplateModelIdentifier(id: $id)';
+  String toString() => 'ActivityLogModelIdentifier(id: $id)';
   
   @override
   bool operator ==(Object other) {
@@ -281,7 +275,7 @@ class RoutineTemplateModelIdentifier implements amplify_core.ModelIdentifier<Rou
       return true;
     }
     
-    return other is RoutineTemplateModelIdentifier &&
+    return other is ActivityLogModelIdentifier &&
       id == other.id;
   }
   

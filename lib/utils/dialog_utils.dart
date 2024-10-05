@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/enums/activity_type_enums.dart';
 import 'package:tracker_app/widgets/timers/datetime_picker.dart';
 import 'package:tracker_app/widgets/timers/datetime_range_picker.dart';
 
 import '../colors.dart';
+import '../widgets/activity/activity_picker.dart';
 import '../widgets/buttons/opacity_button_widget.dart';
 import '../widgets/buttons/solid_button_widget.dart';
 import '../widgets/timers/hour_timer_picker.dart';
@@ -106,9 +108,34 @@ void showDateTimePicker({required BuildContext context, required void Function(D
   displayBottomSheet(height: 240, context: context, child: DatetimePicker(onSelect: onChangedDateTime));
 }
 
-void showDatetimeRangePicker({required BuildContext context, DateTimeRange? initialDateTimeRange, required void Function(DateTimeRange datetimeRange) onChangedDateTimeRange}) {
+void showDatetimeRangePicker(
+    {required BuildContext context,
+    DateTimeRange? initialDateTimeRange,
+    required void Function(DateTimeRange datetimeRange) onChangedDateTimeRange}) {
   FocusScope.of(context).unfocus();
-  displayBottomSheet(context: context, child: DateTimeRangePicker(initialDateTimeRange: initialDateTimeRange, onSelectRange: onChangedDateTimeRange,) ,isScrollControlled: true);
+  displayBottomSheet(
+      context: context,
+      child: DateTimeRangePicker(
+        initialDateTimeRange: initialDateTimeRange,
+        onSelectRange: onChangedDateTimeRange,
+      ),
+      isScrollControlled: true);
+}
+
+void showActivityPicker(
+    {required BuildContext context,
+      ActivityType? initialActivityType,
+    DateTimeRange? initialDateTimeRange,
+    required void Function(ActivityType activity, DateTimeRange datetimeRange) onChangedActivity}) {
+  FocusScope.of(context).unfocus();
+  displayBottomSheet(
+      context: context,
+      child: ActivityPicker(
+        initialActivityType: initialActivityType,
+        initialDateTimeRange: initialDateTimeRange,
+        onSelectActivity: onChangedActivity,
+      ),
+      isScrollControlled: true);
 }
 
 Future<void> showBottomSheetWithNoAction(
@@ -119,6 +146,7 @@ Future<void> showBottomSheetWithNoAction(
         Text(title,
             style: GoogleFonts.ubuntu(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
             textAlign: TextAlign.start),
+        const SizedBox(height: 4,),
         Text(description,
             style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white),
             textAlign: TextAlign.start)

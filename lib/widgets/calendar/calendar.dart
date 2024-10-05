@@ -6,6 +6,7 @@ import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
+import '../../controllers/activity_log_controller.dart';
 import '../../controllers/settings_controller.dart';
 
 GlobalKey calendarKey = GlobalKey();
@@ -13,13 +14,18 @@ GlobalKey calendarKey = GlobalKey();
 class _DateViewModel {
   final DateTime dateTime;
   final DateTime selectedDateTime;
-  final bool hasLog;
+  final bool hasRoutineLog;
+  final bool hasActivityLog;
 
-  _DateViewModel({required this.dateTime, required this.selectedDateTime, required this.hasLog});
+  _DateViewModel(
+      {required this.dateTime,
+      required this.selectedDateTime,
+      this.hasRoutineLog = false,
+      this.hasActivityLog = false});
 
   @override
   String toString() {
-    return '_DateViewModel{dateTime: $dateTime, selectedDateTime: $selectedDateTime, hasLog: $hasLog}';
+    return '_DateViewModel{dateTime: $dateTime, selectedDateTime: $selectedDateTime, hasLog: $hasRoutineLog, hasActivityLog: $hasActivityLog}';
   }
 }
 
@@ -67,16 +73,26 @@ class _CalendarState extends State<Calendar> {
     }
 
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
+    final activityLogController = Provider.of<ActivityLogController>(context, listen: false);
 
-    final logsForCurrentDate =
+    final monthlyRoutineLogs =
         (routineLogController.monthlyLogs[DateTimeRange(start: firstDayOfMonth, end: lastDayOfMonth)] ?? [])
+            .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day));
+
+    final monthlyActivityLogs =
+        (activityLogController.monthlyLogs[DateTimeRange(start: firstDayOfMonth, end: lastDayOfMonth)] ?? [])
             .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day));
 
     // Add remainder dates
     for (int day = 1; day <= daysInMonth; day++) {
       final date = DateTime(year, month, day);
-      final hasLog = logsForCurrentDate.contains(date);
-      datesInMonths.add(_DateViewModel(dateTime: date, selectedDateTime: _currentDate.withoutTime(), hasLog: hasLog));
+      final hasRoutineLog = monthlyRoutineLogs.contains(date);
+      final hasActivityLog = monthlyActivityLogs.contains(date);
+      datesInMonths.add(_DateViewModel(
+          dateTime: date,
+          selectedDateTime: _currentDate.withoutTime(),
+          hasRoutineLog: hasRoutineLog,
+          hasActivityLog: hasActivityLog));
     }
 
     // Add padding to end of month
@@ -154,7 +170,8 @@ class _Month extends StatelessWidget {
           onTap: onTap,
           selected: date.dateTime.isSameDayMonthYear(selectedDateTime),
           currentDate: date.dateTime.isSameDayMonthAndYear(DateTime.now()),
-          hasLog: date.hasLog,
+          hasRoutineLog: date.hasRoutineLog,
+          hasActivityLog: date.hasActivityLog,
         );
       }
     }).toList();
@@ -181,7 +198,8 @@ class _Month extends StatelessWidget {
 class _Day extends StatelessWidget {
   final DateTime dateTime;
   final bool selected;
-  final bool hasLog;
+  final bool hasRoutineLog;
+  final bool hasActivityLog;
   final bool currentDate;
   final void Function(DateTime dateTime) onTap;
 
@@ -189,16 +207,19 @@ class _Day extends StatelessWidget {
       {required this.dateTime,
       required this.selected,
       required this.currentDate,
-      required this.onTap,
-      required this.hasLog});
+      required this.onTap, this.hasRoutineLog = false, this.hasActivityLog = false});
 
   Color _getBackgroundColor() {
-    return hasLog ? vibrantGreen : sapphireDark80.withOpacity(0.5);
+    if(hasRoutineLog || hasActivityLog) {
+      return vibrantGreen;
+    } else {
+      return sapphireDark80.withOpacity(0.5);
+    }
   }
 
   Color _getTextColor() {
     if (SharedPrefs().showCalendarDates) {
-      return hasLog ? Colors.black : Colors.white70;
+      return hasRoutineLog || hasActivityLog ? Colors.black : Colors.white70;
     }
     return Colors.transparent;
   }

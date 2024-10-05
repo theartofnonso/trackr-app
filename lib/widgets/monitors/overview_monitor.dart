@@ -10,6 +10,7 @@ import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../colors.dart';
+import '../../dtos/activity_log_dto.dart';
 import '../../dtos/routine_log_dto.dart';
 import '../../strings.dart';
 import '../../utils/exercise_logs_utils.dart';
@@ -19,15 +20,19 @@ import 'muscle_group_family_frequency_monitor.dart';
 
 class OverviewMonitor extends StatelessWidget {
   final List<RoutineLogDto> routineLogs;
+  final List<ActivityLogDto> activityLogs;
 
-  const OverviewMonitor({super.key, required this.routineLogs});
+  const OverviewMonitor({super.key, required this.routineLogs, required this.activityLogs});
 
   @override
   Widget build(BuildContext context) {
 
     final routineLogDays = groupBy(routineLogs, (log) => log.createdAt.withoutTime().day);
+    final activityLogDays = groupBy(activityLogs, (log) => log.createdAt.withoutTime().day);
 
-    final monthlyProgress = routineLogDays.length / 12;
+    final totalActivityDays = routineLogDays.length + activityLogDays.length;
+
+    final monthlyProgress = (routineLogDays.length + activityLogDays.length) / 12;
 
     final exerciseLogsForTheMonth = routineLogs.expand((log) => log.exerciseLogs).toList();
 
@@ -51,12 +56,12 @@ class OverviewMonitor extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             GestureDetector(
-                onTap: () => navigateToRoutineLogs(context: context, logs: routineLogs),
+                onTap: () => navigateToLogs(context: context, logs: [...routineLogs, ...activityLogs]),
                 child: Container(
                   color: Colors.transparent,
                   width: 100,
                   child: _MonitorScore(
-                    value: "${routineLogDays.length} ${pluralize(word: "day", count: routineLogDays.length)}",
+                    value: "$totalActivityDays ${pluralize(word: "day", count: totalActivityDays)}",
                     title: "Log Streak",
                     color: logStreakColor(value: monthlyProgress),
                     crossAxisAlignment: CrossAxisAlignment.end,

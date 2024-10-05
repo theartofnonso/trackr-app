@@ -24,7 +24,7 @@ import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/dtos/routine_template_dto.dart';
 import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
 import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
-import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/repositories/amplify_activity_log_repository.dart';
 import 'package:tracker_app/repositories/amplify_exercise_repository.dart';
 import 'package:tracker_app/repositories/amplify_log_repository.dart';
 import 'package:tracker_app/repositories/amplify_template_repository.dart';
@@ -39,13 +39,16 @@ import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.da
 import 'package:tracker_app/screens/intro_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
-import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
+import 'package:tracker_app/screens/logs/logs_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/template/routines_home.dart';
 import 'package:tracker_app/screens/template/templates/routine_template_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
+import 'package:tracker_app/utils/date_utils.dart';
 
 import 'amplifyconfiguration.dart';
+import 'controllers/activity_log_controller.dart';
+import 'dtos/interface/log_interface.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
 import 'dtos/viewmodels/routine_template_arguments.dart';
 import 'models/ModelProvider.dart';
@@ -96,6 +99,9 @@ void main() async {
       ),
       ChangeNotifierProvider<RoutineLogController>(
         create: (BuildContext context) => RoutineLogController(AmplifyLogRepository()),
+      ),
+      ChangeNotifierProvider<ActivityLogController>(
+        create: (BuildContext context) => ActivityLogController(AmplifyActivityLogRepository()),
       ),
       ChangeNotifierProvider<ExerciseLogController>(
           create: (BuildContext context) => ExerciseLogController(ExerciseLogRepository())),
@@ -162,10 +168,10 @@ final _router = GoRouter(
       },
     ),
     GoRoute(
-      path: RoutineLogsScreen.routeName,
+      path: LogsScreen.routeName,
       builder: (context, state) {
-        final args = state.extra as List<RoutineLogDto>?;
-        return RoutineLogsScreen(logs: args);
+        final args = state.extra as List<Log>;
+        return LogsScreen(logs: args);
       },
     ),
     GoRoute(
@@ -249,10 +255,9 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _configureAmplify() async {
     /// Only sync data for this year
-    final now = DateTime.now().withoutTime();
-    final then = DateTime(now.year - 1);
-    final startOfCurrentYear = then.toIso8601String();
-    final endOfCurrentYear = now.toIso8601String();
+    final dateRange = yearToDateTimeRange();
+    final startOfCurrentYear = dateRange.start.toIso8601String();
+    final endOfCurrentYear = dateRange.end.toIso8601String();
     try {
       await Amplify.addPlugin(AmplifyAuthCognito());
       final apiPluginOptions = APIPluginOptions(modelProvider: ModelProvider.instance);

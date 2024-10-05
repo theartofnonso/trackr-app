@@ -7,29 +7,34 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../controllers/routine_log_controller.dart';
+import '../../dtos/activity_log_dto.dart';
 import '../../dtos/routine_log_dto.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/string_utils.dart';
 
-class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
-  final List<RoutineLogDto> logs;
+class MonthSummaryWidget extends StatelessWidget {
+  final List<RoutineLogDto> routineLogs;
+  final List<ActivityLogDto> activityLogs;
 
-  const ExercisesSetsHoursVolumeWidget({
+  const MonthSummaryWidget({
     super.key,
-    required this.logs,
+    required this.routineLogs,
+    required this.activityLogs,
   });
 
   @override
   Widget build(BuildContext context) {
-    final exerciseLogs = logs
+    final exerciseLogs = routineLogs
         .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
         .expand((exerciseLogs) => exerciseLogs);
 
     final sets = exerciseLogs.expand((exercise) => exercise.sets);
-    final numberOfExercises = exerciseLogs.length;
+    final numberOfLogs = routineLogs.length + activityLogs.length;
     final numberOfSets = sets.length;
-    final totalHoursInMilliSeconds = logs.map((log) => log.duration().inMilliseconds).sum;
-    final totalHours = Duration(milliseconds: totalHoursInMilliSeconds);
+    final routineLogHoursInMilliSeconds = routineLogs.map((log) => log.duration().inMilliseconds).sum;
+    final activityHoursInMilliSeconds = activityLogs.map((log) => log.duration().inMilliseconds).sum;
+    final totalHoursInMilliseconds = routineLogHoursInMilliSeconds + activityHoursInMilliSeconds;
+    final totalHours = Duration(milliseconds: totalHoursInMilliseconds);
 
     final tonnage = exerciseLogs.map((log) {
       final volume = log.sets.map((set) => set.volume()).sum;
@@ -63,7 +68,7 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Text("Summary of Sessions".toUpperCase(),
+            Text("Summary of Training & Activities".toUpperCase(),
                 style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
             const SizedBox(height: 30),
             Table(
@@ -79,10 +84,10 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
                     verticalAlignment: TableCellVerticalAlignment.middle,
                     child: Center(
                       child: _TableItem(
-                          title: 'EXERCISES',
-                          subTitle: "$numberOfExercises",
-                          titleColor: Colors.white,
-                          subTitleColor: Colors.white,
+                          title: 'Activities'.toUpperCase(),
+                          subTitle: "$numberOfLogs",
+                          titleColor: logStreakColor(value: numberOfLogs / 12),
+                          subTitleColor: logStreakColor(value: numberOfLogs / 12),
                           padding: const EdgeInsets.only(bottom: 20)),
                     ),
                   ),

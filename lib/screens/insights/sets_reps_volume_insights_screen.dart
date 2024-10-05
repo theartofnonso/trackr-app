@@ -53,7 +53,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   Widget build(BuildContext context) {
     final textStyle = GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white70);
 
-    const muscleGroups = MuscleGroup.values;
+    final muscleGroups = MuscleGroup.values;
 
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 

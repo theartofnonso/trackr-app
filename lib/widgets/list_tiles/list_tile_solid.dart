@@ -35,10 +35,9 @@ class SolidListTile extends StatelessWidget {
       ),
       child: ListTile(
         onTap: onTap,
-        dense: true,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         title: Text(title,
-            style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
+            style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
         subtitle: Row(
           children: [
             if (subtitle != null)
@@ -51,7 +50,7 @@ class SolidListTile extends StatelessWidget {
         ),
         trailing: trailing != null ? Text(trailing,
             style: GoogleFonts.ubuntu(
-                color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12)) : null,
+                color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14)) : null,
       ),
     );
   }

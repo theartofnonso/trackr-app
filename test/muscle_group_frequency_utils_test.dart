@@ -26,8 +26,8 @@ void main() {
 
   final backExercise = ExerciseDto(
       id: "id_back_exercise",
-      name: "Back Exercise",
-      primaryMuscleGroup: MuscleGroup.back,
+        name: "Back Exercise",
+      primaryMuscleGroup: MuscleGroup.lats,
       type: ExerciseType.weights,
       owner: false);
 
