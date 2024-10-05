@@ -64,7 +64,7 @@ class _ActivitySelectorScreenState extends State<ActivitySelectorScreen> {
               ),
               _filteredActivities.isNotEmpty ?
                 Expanded(
-                  child: ListView.builder(
+                  child: ListView.separated(
                 itemCount: _filteredActivities.length,
                 itemBuilder: (context, index) {
                   return ListTile(
@@ -79,7 +79,10 @@ class _ActivitySelectorScreenState extends State<ActivitySelectorScreen> {
                       Navigator.pop(context);
                     },
                   );
-                },
+                }, separatorBuilder: (BuildContext context, int index) => const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                    child: Divider(height: 0.5, color: sapphireLighter,),
+                  ),
               )) : const Expanded(child: Center(child: TextEmptyState(message: "We don't have this activity")))
             ],
           ),

@@ -3,14 +3,19 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 enum ActivityType {
   assaultBike("Assault Bike", FontAwesomeIcons.personBiking),
+  spin("Spin", FontAwesomeIcons.personBiking),
   boxing("Boxing", FontAwesomeIcons.personHarassing),
   football("Football", FontAwesomeIcons.football),
   badminton("Badminton", FontAwesomeIcons.baseball),
+  handball("Handball", FontAwesomeIcons.baseball),
+  hockey("Hockey", FontAwesomeIcons.baseball),
   barre("Barre", FontAwesomeIcons.personDress),
   basketball("Basketball", FontAwesomeIcons.basketball),
   baseball("Baseball", FontAwesomeIcons.baseball),
 
   climber("Climber", FontAwesomeIcons.person),
+  rockclimbing("Rock Climbing", FontAwesomeIcons.person),
+  rugby("Rugby", FontAwesomeIcons.football),
   cycling("Cycling", FontAwesomeIcons.personBiking),
   cricket("Cricket", FontAwesomeIcons.baseball),
   running("Running", FontAwesomeIcons.personRunning),
@@ -24,8 +29,8 @@ enum ActivityType {
   golf("Golf", FontAwesomeIcons.golfBallTee),
   yoga("Yoga", FontAwesomeIcons.personPraying),
   skating("Skating", FontAwesomeIcons.personSkating),
+  skateboarding("Skateboarding", FontAwesomeIcons.personSnowboarding),
   martialArts("Martial Arts", FontAwesomeIcons.person),
-  netBall("Net Ball", FontAwesomeIcons.circle),
   tennis("Tennis", FontAwesomeIcons.tableTennisPaddleBall),
   paintBall("Paint Ball", FontAwesomeIcons.gun),
   parkour("Parkour", FontAwesomeIcons.person),
@@ -38,7 +43,11 @@ enum ActivityType {
   hiking("Hiking", FontAwesomeIcons.personHiking),
   skiing("Skiing", FontAwesomeIcons.personSkiing),
   functionalFitness("Functional Fitness", FontAwesomeIcons.dumbbell),
-  weightlifting("Weight Lifting", FontAwesomeIcons.dumbbell);
+  gymnastics("Gymnastics", FontAwesomeIcons.circle),
+  netball("Netball", FontAwesomeIcons.baseball),
+  padel("Padel", FontAwesomeIcons.baseball),
+  powerlifting("Powerlifting", FontAwesomeIcons.dumbbell),
+  weightlifting("Weightlifting", FontAwesomeIcons.dumbbell);
 
   const ActivityType(this.name, this.icon);
 
