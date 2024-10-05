@@ -82,6 +82,7 @@ class RoutineTemplatesScreen extends StatelessWidget {
                             children: children),
                       )
                     : const RoutineEmptyState(),
+                const SizedBox(height: 6),
                 if (untrainedMuscleGroups.isNotEmpty)
                   Container(
                     width: double.infinity,
