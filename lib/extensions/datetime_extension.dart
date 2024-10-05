@@ -48,6 +48,11 @@ extension DateTimeExtension on DateTime {
   }
 
   /// Get datetime format
+  String formattedFullMonth() {
+    return DateFormat("MMMM", "en").format(this);
+  }
+
+  /// Get datetime format
   String formattedDate() {
     return DateFormat("EE dd, MMM", "en").format(this);
   }

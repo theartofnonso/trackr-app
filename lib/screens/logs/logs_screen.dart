@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
@@ -36,9 +37,13 @@ class LogsScreen extends StatelessWidget {
         .reversed
         .toList();
 
+    final month = range.start.formattedFullMonth();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: sapphireDark80,
+        title: Text("$month Activities".toUpperCase(),
+            style: GoogleFonts.ubuntu(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
         leading: IconButton(
             icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
             onPressed: Navigator.of(context).pop),
