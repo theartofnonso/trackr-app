@@ -86,8 +86,8 @@ class MonthSummaryWidget extends StatelessWidget {
                       child: _TableItem(
                           title: 'Activities'.toUpperCase(),
                           subTitle: "$numberOfLogs",
-                          titleColor: Colors.white,
-                          subTitleColor: Colors.white,
+                          titleColor: logStreakColor(value: numberOfLogs / 12),
+                          subTitleColor: logStreakColor(value: numberOfLogs / 12),
                           padding: const EdgeInsets.only(bottom: 20)),
                     ),
                   ),
