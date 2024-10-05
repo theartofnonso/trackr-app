@@ -8,13 +8,14 @@ import 'package:tracker_app/controllers/routine_template_controller.dart';
 import 'package:tracker_app/extensions/routine_template_dto_extension.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/empty_states/routine_empty_state.dart';
+
 import '../../../dtos/routine_template_dto.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/navigation_utils.dart';
 import '../../../utils/routine_utils.dart';
 
-class RoutineTemplates extends StatelessWidget {
-  const RoutineTemplates({super.key});
+class RoutineTemplatesScreen extends StatelessWidget {
+  const RoutineTemplatesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +81,7 @@ class RoutineTemplates extends StatelessWidget {
                             crossAxisSpacing: 10.0,
                             children: children),
                       )
-                    : const Expanded(child: RoutineEmptyState()),
+                    : const RoutineEmptyState(),
                 if (untrainedMuscleGroups.isNotEmpty)
                   Container(
                     width: double.infinity,
@@ -89,7 +90,7 @@ class RoutineTemplates extends StatelessWidget {
                         text: TextSpan(
                             text:
                                 "Consider training a variety of muscle groups to avoid muscle imbalances and prevent injury. Start by including",
-                            style: GoogleFonts.montserrat(
+                            style: GoogleFonts.ubuntu(
                                 color: Colors.white70,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
@@ -99,7 +100,7 @@ class RoutineTemplates extends StatelessWidget {
                           const TextSpan(text: " "),
                           TextSpan(
                               text: untrainedMuscleGroupsNames,
-                              style: GoogleFonts.montserrat(
+                              style: GoogleFonts.ubuntu(
                                   color: Colors.white,
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
@@ -143,23 +144,34 @@ class _RoutineWidget extends StatelessWidget {
                       : null,
                   boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 5, spreadRadius: 1)]),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                CircleAvatar(
-                  backgroundColor: template.isScheduledToday() ? vibrantGreen : Colors.white70,
-                  foregroundColor: sapphireDark,
-                  child: Text("${template.exerciseTemplates.length}",
-                      style: GoogleFonts.montserrat(fontSize: 28, fontWeight: FontWeight.w700)),
-                ),
-                const Spacer(),
                 Text(
                   template.name,
-                  style: GoogleFonts.montserrat(fontSize: 18, fontWeight: FontWeight.w700),
+                  style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w700),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                 ),
-                const SizedBox(height: 6),
+                const Spacer(),
+                Text(
+                  "${template.exerciseTemplates.length} Exercises",
+                  style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w500),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                ),
+                const SizedBox(
+                  height: 6,
+                ),
+                Text(
+                  "${template.exerciseTemplates.expand((exercise) => exercise.sets).length} Sets",
+                  style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w400),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                ),
+                const SizedBox(height: 8),
+                Divider(color: template.isScheduledToday() ? vibrantGreen.withOpacity(0.2) : sapphireLighter, endIndent: 10),
+                const SizedBox(height: 8),
                 Text(
                   scheduleSummary,
-                  style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w400),
+                  style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400),
                   overflow: TextOverflow.ellipsis,
                 ),
               ])),

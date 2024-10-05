@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -90,27 +89,8 @@ class LineChartWidget extends StatelessWidget {
         : const Center(child: FaIcon(FontAwesomeIcons.chartSimple, color: sapphireDark, size: 120));
   }
 
-  double _interval() {
-    final points = chartPoints.map((point) => point.y).toList();
-    final min = points.min.toDouble();
-    final max = points.max.toDouble();
-    double interval = max - min;
-    if (interval >= 1000) {
-      interval = 1000;
-    } else if (interval >= 500) {
-      interval = 500;
-    } else if (interval >= 100) {
-      interval = 100;
-    } else if (interval >= 50) {
-      interval = 50;
-    } else {
-      interval = 10;
-    }
-    return interval;
-  }
-
   Widget _leftTitleWidgets(double value, TitleMeta meta) {
-    final style = GoogleFonts.montserrat(
+    final style = GoogleFonts.ubuntu(
       fontWeight: FontWeight.w600,
       fontSize: 9,
     );
@@ -134,7 +114,7 @@ class LineChartWidget extends StatelessWidget {
 
   Widget _bottomTitleWidgets(double value, TitleMeta meta) {
     final modifiedDateTimes = periods.length == 1 ? [...periods, ...periods] : periods;
-    final style = GoogleFonts.montserrat(
+    final style = GoogleFonts.ubuntu(
       fontWeight: FontWeight.w600,
       fontSize: 10,
     );

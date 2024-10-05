@@ -26,13 +26,13 @@ class RoutineLogShareable extends StatelessWidget {
               child: RichText(
                   text: TextSpan(
                       text: exerciseLog.exercise.name,
-                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w500),
+                      style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500),
                       children: [
                     const TextSpan(text: " "),
                     TextSpan(
                         text:
                             "x${exerciseLog.sets.length} ${pluralize(word: "Set", count: exerciseLog.sets.length)} ${index == 2 ? "+ ${log.exerciseLogs.length}" : ""}",
-                        style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, color: Colors.white70, fontSize: 12))
+                        style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.white70, fontSize: 12))
                   ])),
             )))
         .take(3)
@@ -61,7 +61,7 @@ class RoutineLogShareable extends StatelessWidget {
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 title: Text(log.name,
-                    style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+                    style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
                 subtitle: Row(
                   children: [
                     const Icon(
@@ -71,7 +71,7 @@ class RoutineLogShareable extends StatelessWidget {
                     ),
                     const SizedBox(width: 1),
                     Text(log.createdAt.formattedDayAndMonth(),
-                        style: GoogleFonts.montserrat(
+                        style: GoogleFonts.ubuntu(
                             color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
                     const SizedBox(width: 10),
                     const Icon(
@@ -81,7 +81,7 @@ class RoutineLogShareable extends StatelessWidget {
                     ),
                     const SizedBox(width: 1),
                     Text(log.duration().hmsAnalog(),
-                        style: GoogleFonts.montserrat(
+                        style: GoogleFonts.ubuntu(
                             color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
                   ],
                 ),

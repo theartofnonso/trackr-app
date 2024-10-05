@@ -4,11 +4,12 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/enums/daily_notifications_enums.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
-import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
+import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 
 import '../../utils/timezone_utils.dart';
 import '../../utils/dialog_utils.dart';
@@ -54,7 +55,7 @@ void _displayTimePicker(
       context: context,
       initialDuration: _timeForSchedule(schedule: schedule),
       onChangedDuration: (duration) {
-        Navigator.of(context).pop();
+        context.pop();
         onDurationChanged(duration);
       });
 }
@@ -70,7 +71,7 @@ class NotificationsScreen extends StatelessWidget {
             backgroundColor: sapphireDark80,
             leading: IconButton(
               icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => context.pop(),
             )),
         body: Container(
           width: double.infinity,
@@ -89,7 +90,7 @@ class NotificationsScreen extends StatelessWidget {
             child: SingleChildScrollView(
               child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
                 Text("Notifications",
-                    style: GoogleFonts.montserrat(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w900)),
+                    style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w900)),
                 const SizedBox(height: 24),
                 const _NotificationListView()
               ]),
@@ -125,14 +126,13 @@ class _NotificationSwitch extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 10),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(title, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16)),
+          Text(title, style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16)),
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             const SizedBox(height: 8),
             if (enabled)
-              CTextButton(
+              OpacityButtonWidget(
                   onPressed: onPressed,
-                  label: subtitle,
-                  textStyle: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14))
+                  label: subtitle)
           ]),
         ]),
         Switch(

@@ -1,13 +1,14 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
-import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/extensions/duration_extension.dart';
+import 'package:tracker_app/extensions/routine_log_extension.dart';
+import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/chart/muscle_group_family_chart.dart';
@@ -16,43 +17,52 @@ import '../../../colors.dart';
 import '../../../dtos/exercise_log_dto.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../controllers/routine_template_controller.dart';
+import '../../dtos/routine_log_dto.dart';
+import '../../dtos/routine_template_dto.dart';
+import '../../dtos/viewmodels/exercise_log_view_model.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
-import '../../enums/muscle_group_enums.dart';
+import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/routine_utils.dart';
-import '../../dtos/viewmodels/exercise_log_view_model.dart';
-import '../../dtos/routine_log_dto.dart';
-import '../../dtos/routine_template_dto.dart';
-import '../../enums/routine_editor_type_enums.dart';
+import '../../widgets/information_container_lite.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
-import '../shareable_screen.dart';
 
-class RoutineLogPreviewScreen extends StatefulWidget {
-  final RoutineLogDto log;
-  final String previousRouteName;
-  final bool finishedLogging;
+class RoutineLogScreen extends StatefulWidget {
+  static const routeName = '/routine_log_screen';
 
-  const RoutineLogPreviewScreen(
-      {super.key, required this.log, this.previousRouteName = "", this.finishedLogging = false});
+  final String id;
+  final bool showSummary;
+
+  const RoutineLogScreen({super.key, required this.id, required this.showSummary});
 
   @override
-  State<RoutineLogPreviewScreen> createState() => _RoutineLogPreviewScreenState();
+  State<RoutineLogScreen> createState() => _RoutineLogScreenState();
 }
 
-class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
+class _RoutineLogScreenState extends State<RoutineLogScreen> {
+  RoutineLogDto? _log;
+
   bool _loading = false;
+
+  bool _isOwner = false;
 
   @override
   Widget build(BuildContext context) {
-    final foundLog = Provider.of<RoutineLogController>(context, listen: true).logWhereId(id: widget.log.id);
+    final provider = Provider.of<RoutineTemplateController>(context, listen: true);
 
-    final log = foundLog ?? widget.log;
+    final log = _log;
 
-    final numberOfCompletedSets = _calculateCompletedSets(procedures: log.exerciseLogs);
-    final completedSetsSummary = "$numberOfCompletedSets ${pluralize(word: "Set", count: numberOfCompletedSets)}";
+    if (log == null) {
+      provider.fetchTemplate(id: widget.id);
+      return const _EmptyState();
+    }
 
     final completedExerciseLogsAndSets = exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs);
+
+    final numberOfCompletedSets = completedExerciseLogsAndSets.expand((exerciseLog) => exerciseLog.sets);
+    final completedSetsSummary =
+        "${numberOfCompletedSets.length} ${pluralize(word: "Set", count: numberOfCompletedSets.length)}";
 
     return Scaffold(
         backgroundColor: sapphireDark,
@@ -60,21 +70,25 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
             backgroundColor: sapphireDark80,
             leading: IconButton(
               icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => context.pop(),
             ),
             title: Text(log.name,
-                style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
-            actions: [
-              IconButton(
-                  onPressed: () => _onShareLog(log: log),
-                  icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18)),
-            ]),
-        floatingActionButton: FloatingActionButton(
-            heroTag: "routine_log_screen",
-            onPressed: _showBottomSheet,
-            backgroundColor: sapphireDark,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-            child: const FaIcon(FontAwesomeIcons.penToSquare)),
+                style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+            actions: _isOwner
+                ? [
+                    IconButton(
+                        onPressed: () => _onShareLog(log: log),
+                        icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18)),
+                  ]
+                : []),
+        floatingActionButton: _isOwner
+            ? FloatingActionButton(
+                heroTag: "routine_log_screen",
+                onPressed: _showBottomSheet,
+                backgroundColor: sapphireDark,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                child: const FaIcon(FontAwesomeIcons.penToSquare))
+            : null,
         body: Container(
           width: double.infinity,
           decoration: const BoxDecoration(
@@ -98,7 +112,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 12.0),
                         child: Text(log.notes,
-                            style: GoogleFonts.montserrat(
+                            style: GoogleFonts.ubuntu(
                               color: Colors.white,
                               fontSize: 14,
                             )),
@@ -113,7 +127,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                         ),
                         const SizedBox(width: 1),
                         Text(log.createdAt.formattedDayAndMonthAndYear(),
-                            style: GoogleFonts.montserrat(
+                            style: GoogleFonts.ubuntu(
                                 color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
                         const SizedBox(width: 10),
                         const Icon(
@@ -123,7 +137,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                         ),
                         const SizedBox(width: 1),
                         Text(log.endTime.formattedTime(),
-                            style: GoogleFonts.montserrat(
+                            style: GoogleFonts.ubuntu(
                                 color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
                       ],
                     ),
@@ -147,7 +161,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                               verticalAlignment: TableCellVerticalAlignment.middle,
                               child: Center(
                                 child: Text(completedSetsSummary,
-                                    style: GoogleFonts.montserrat(
+                                    style: GoogleFonts.ubuntu(
                                         color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                               ),
                             ),
@@ -156,7 +170,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                               child: Center(
                                 child: Text(
                                     "${completedExerciseLogsAndSets.length} ${pluralize(word: "Exercise", count: completedExerciseLogsAndSets.length)}",
-                                    style: GoogleFonts.montserrat(
+                                    style: GoogleFonts.ubuntu(
                                         color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                               ),
                             ),
@@ -164,7 +178,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                               verticalAlignment: TableCellVerticalAlignment.middle,
                               child: Center(
                                 child: Text(log.duration().hmsAnalog(),
-                                    style: GoogleFonts.montserrat(
+                                    style: GoogleFonts.ubuntu(
                                         color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                               ),
                             )
@@ -174,7 +188,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                     ),
                     const SizedBox(height: 10),
                     MuscleGroupFamilyChart(
-                        frequencyData: _muscleGroupFamilyFrequencies(exerciseLogs: completedExerciseLogsAndSets)),
+                        frequencyData: muscleGroupFamilyFrequency(exerciseLogs: completedExerciseLogsAndSets)),
                     ExerciseLogListView(
                         exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogsAndSets),
                         previewType: RoutinePreviewType.log),
@@ -186,26 +200,34 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
         ));
   }
 
-  Map<MuscleGroupFamily, double> _muscleGroupFamilyFrequencies({required List<ExerciseLogDto> exerciseLogs}) {
-    final frequencyMap = <MuscleGroupFamily, int>{};
-
-    // Counting the occurrences of each MuscleGroup
-    for (var log in exerciseLogs) {
-      frequencyMap.update(log.exercise.primaryMuscleGroup.family, (value) => value + 1, ifAbsent: () => 1);
+  void _loadData() {
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
+    _log = routineLogController.logWhereId(id: widget.id);
+    if (_log == null) {
+      _loading = true;
+      routineLogController.fetchLog(id: widget.id).then((data) {
+        setState(() {
+          _loading = false;
+          _log = data?.dto();
+        });
+      });
+    } else {
+      _isOwner = _log != null;
     }
+  }
 
-    int totalCount = exerciseLogs.length;
-    final scaledFrequencyMap = <MuscleGroupFamily, double>{};
-
-    // Scaling the frequencies from 0 to 1
-    frequencyMap.forEach((key, value) {
-      scaledFrequencyMap[key] = value / totalCount;
-    });
-
-    final sortedEntries = scaledFrequencyMap.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
-
-    final sortedFrequencyMap = LinkedHashMap<MuscleGroupFamily, double>.fromEntries(sortedEntries);
-    return sortedFrequencyMap;
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+    if (widget.showSummary) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final log = _log;
+        if (log != null) {
+          navigateWithSlideTransition(context: context, child: RoutineLogSummaryScreen(log: log));
+        }
+      });
+    }
   }
 
   void _showBottomSheet() {
@@ -216,45 +238,49 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
             ListTile(
               dense: true,
               contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(FontAwesomeIcons.pen, size: 18),
+              horizontalTitleGap: 6,
               title: Text("Edit Log",
-                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-              onTap: () {
-                Navigator.of(context).pop();
-                _editLog(log: widget.log);
-              },
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              onTap: _editLog,
             ),
             ListTile(
               dense: true,
               contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(FontAwesomeIcons.clock, size: 18),
+              horizontalTitleGap: 6,
+              title: Text("Edit duration",
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              onTap: _editLogDuration,
+            ),
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(FontAwesomeIcons.floppyDisk, size: 18),
+              horizontalTitleGap: 6,
               title: Text("Save as template",
-                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-              onTap: () {
-                Navigator.of(context).pop();
-                _createTemplate();
-              },
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              onTap: _createTemplate,
             ),
             ListTile(
               dense: true,
               contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(
+                FontAwesomeIcons.trash,
+                size: 18,
+                color: Colors.red,
+              ),
+              horizontalTitleGap: 6,
               title: Text("Delete log",
-                  style: GoogleFonts.montserrat(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 14)),
-              onTap: () {
-                Navigator.of(context).pop();
-                _deleteLog();
-              },
+                  style: GoogleFonts.ubuntu(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
+              onTap: _deleteLog,
             ),
           ]),
         ));
   }
 
   void _onShareLog({required RoutineLogDto log}) {
-    final completedExerciseLogsAndSets = exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs);
-    final updatedLog = log.copyWith(exerciseLogs: completedExerciseLogsAndSets);
-
-    navigateWithSlideTransition(
-        context: context,
-        child: ShareableScreen(
-            log: updatedLog, frequencyData: _muscleGroupFamilyFrequencies(exerciseLogs: completedExerciseLogsAndSets)));
+    navigateToShareableScreen(context: context, log: log);
   }
 
   void _toggleLoadingState({String message = ""}) {
@@ -271,95 +297,115 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
         .toList();
   }
 
-  int _calculateCompletedSets({required List<ExerciseLogDto> procedures}) {
-    List<SetDto> completedSets = [];
-    for (var procedure in procedures) {
-      completedSets.addAll(procedure.sets);
+  void _editLog() async {
+    context.pop();
+    final log = _log;
+    if (log != null) {
+      final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.edit);
+      final updatedLog = await navigateAndEditLog(context: context, arguments: arguments);
+      if (updatedLog != null) {
+        setState(() {
+          _log = updatedLog;
+        });
+        if (mounted) {
+          navigateWithSlideTransition(context: context, child: RoutineLogSummaryScreen(log: updatedLog));
+        }
+      }
     }
-    return completedSets.length;
   }
 
-  void _editLog({required RoutineLogDto log}) {
-    final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.edit);
-    navigateToRoutineLogEditor(context: context, arguments: arguments);
+  void _editLogDuration() {
+    context.pop();
+    final log = _log;
+    if (log != null) {
+      showDatetimeRangePicker(
+          context: context,
+          initialDateTimeRange: DateTimeRange(start: log.startTime, end: log.endTime),
+          onChangedDateTimeRange: (DateTimeRange datetimeRange) async {
+            context.pop();
+            final updatedLog = log.copyWith(startTime: datetimeRange.start, endTime: datetimeRange.end);
+            await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: updatedLog);
+            setState(() {
+              _log = updatedLog;
+            });
+          });
+    }
   }
 
   void _createTemplate() async {
-    final log = widget.log;
+    context.pop();
 
-    _toggleLoadingState(message: "Creating template");
+    final log = _log;
+    if (log != null) {
+      _toggleLoadingState(message: "Creating template");
 
-    try {
-      final exercises = log.exerciseLogs.map((exerciseLog) {
-        final uncheckedSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
+      try {
+        final exercises = log.exerciseLogs.map((exerciseLog) {
+          final uncheckedSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
 
-        /// [Exercise.duration] exercises do not have sets in templates
-        /// This is because we only need to store the duration of the exercise in [RoutineEditorType.log] i.e data is log in realtime
-        final sets = withDurationOnly(type: exerciseLog.exercise.type) ? <SetDto>[] : uncheckedSets;
-        return exerciseLog.copyWith(sets: sets);
-      }).toList();
-      final templateToCreate = RoutineTemplateDto(
-          id: "",
-          name: log.name,
-          notes: log.notes,
-          exerciseTemplates: exercises,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now());
+          /// [Exercise.duration] exercises do not have sets in templates
+          /// This is because we only need to store the duration of the exercise in [RoutineEditorType.log] i.e data is log in realtime
+          final sets = withDurationOnly(type: exerciseLog.exercise.type) ? <SetDto>[] : uncheckedSets;
+          return exerciseLog.copyWith(sets: sets);
+        }).toList();
+        final templateToCreate = RoutineTemplateDto(
+            id: "",
+            name: log.name,
+            notes: log.notes,
+            exerciseTemplates: exercises,
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now());
 
-      final createdTemplate = await Provider.of<RoutineTemplateController>(context, listen: false)
-          .saveTemplate(templateDto: templateToCreate);
-      if (mounted) {
-        if (createdTemplate != null) {
-          navigateToRoutineTemplatePreview(context: context, template: createdTemplate);
+        final createdTemplate = await Provider.of<RoutineTemplateController>(context, listen: false)
+            .saveTemplate(templateDto: templateToCreate);
+        if (mounted) {
+          if (createdTemplate != null) {
+            navigateToRoutineTemplatePreview(context: context, template: createdTemplate);
+          }
         }
+      } catch (_) {
+        if (mounted) {
+          showSnackbar(
+              context: context,
+              icon: const Icon(Icons.info_outline),
+              message: "Oops, we are unable to create template");
+        }
+      } finally {
+        _toggleLoadingState();
       }
-    } catch (_) {
-      if (mounted) {
-        showSnackbar(
-            context: context, icon: const Icon(Icons.info_outline), message: "Oops, we are unable to create template");
-      }
-    } finally {
-      _toggleLoadingState();
-    }
-  }
-
-  Future<void> _doUpdateTemplate() async {
-    final templateToUpdate =
-        Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: widget.log.templateId);
-    if (templateToUpdate != null) {
-      final exerciseLogs = widget.log.exerciseLogs.map((exerciseLog) {
-        final newSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
-        return exerciseLog.copyWith(sets: newSets);
-      }).toList();
-      final newTemplate = templateToUpdate.copyWith(exerciseTemplates: exerciseLogs);
-      await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: newTemplate);
     }
   }
 
   void _doDeleteLog() async {
-    try {
-      await Provider.of<RoutineLogController>(context, listen: false).removeLog(log: widget.log);
-      if (mounted) {
-        Navigator.of(context).pop();
+    final log = _log;
+    if (log != null) {
+      try {
+        await Provider.of<RoutineLogController>(context, listen: false).removeLog(log: log);
+        if (mounted) {
+          context.pop();
+        }
+      } catch (_) {
+        if (mounted) {
+          showSnackbar(
+              context: context,
+              icon: const Icon(Icons.info_outline),
+              message: "Oops, we are unable to delete this log");
+        }
+      } finally {
+        _toggleLoadingState();
       }
-    } catch (_) {
-      if (mounted) {
-        showSnackbar(
-            context: context, icon: const Icon(Icons.info_outline), message: "Oops, we are unable to delete this log");
-      }
-    } finally {
-      _toggleLoadingState();
     }
   }
 
   void _deleteLog() {
+    context.pop(); // Close the previous BottomSheet
     showBottomSheetWithMultiActions(
         context: context,
         title: "Delete log?",
         description: "Are you sure you want to delete this log?",
-        leftAction: Navigator.of(context).pop,
+        leftAction: context.pop,
         rightAction: () {
-          Navigator.of(context).pop();
+          context.pop(); // Close current BottomSheet
           _toggleLoadingState(message: "Deleting log");
           _doDeleteLog();
         },
@@ -367,16 +413,66 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
         rightActionLabel: 'Delete',
         isRightActionDestructive: true);
   }
+}
+
+class _EmptyState extends StatelessWidget {
+  const _EmptyState();
 
   @override
-  void initState() {
-    super.initState();
-
-    if (widget.finishedLogging) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _doUpdateTemplate();
-        _onShareLog(log: widget.log);
-      });
-    }
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: sapphireDark80,
+        leading: IconButton(
+          icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+          onPressed: () => context.pop(),
+        ),
+        title: Text("Workout Log",
+            style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              sapphireDark80,
+              sapphireDark,
+            ],
+          ),
+        ),
+        child: SafeArea(
+            child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              RichText(
+                  text: TextSpan(
+                      style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.white),
+                      children: [
+                    TextSpan(
+                        text: "Not F",
+                        style: GoogleFonts.ubuntu(fontSize: 48, color: Colors.white70, fontWeight: FontWeight.w900)),
+                    const WidgetSpan(
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 6.0),
+                          child: FaIcon(FontAwesomeIcons.magnifyingGlass, size: 48, color: Colors.white70),
+                        ),
+                        alignment: PlaceholderAlignment.middle),
+                    TextSpan(
+                        text: "und",
+                        style: GoogleFonts.ubuntu(fontSize: 48, color: Colors.white70, fontWeight: FontWeight.w900)),
+                  ])),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+                child: InformationContainerLite(
+                    content: "We can't find this workout log, Please check the link and try again.",
+                    color: Colors.orange),
+              ),
+            ],
+          ),
+        )),
+      ),
+    );
   }
 }

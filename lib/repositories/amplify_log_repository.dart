@@ -17,6 +17,7 @@ import '../enums/exercise_type_enums.dart';
 import '../models/RoutineLog.dart';
 import '../models/RoutineTemplate.dart';
 import '../shared_prefs.dart';
+import '../utils/date_utils.dart';
 
 class AmplifyLogRepository {
   List<RoutineLogDto> _routineLogs = [];
@@ -57,14 +58,25 @@ class AmplifyLogRepository {
 
   Future<void> fetchLogs({required bool firstLaunch}) async {
     if (firstLaunch) {
-      final now = DateTime.now().withoutTime();
-      final then = DateTime(now.year - 1);
-      final range = DateTimeRange(start: then, end: now);
-      List<RoutineLog> logs = await queryLogsCloud(range: range);
+      final dateRange = yearToDateTimeRange();
+      List<RoutineLog> logs = await queryLogsCloud(range: dateRange);
       _mapAndNormaliseLogs(logs: logs);
     } else {
       List<RoutineLog> logs = await Amplify.DataStore.query(RoutineLog.classType);
       _mapAndNormaliseLogs(logs: logs);
+    }
+  }
+
+  Future<RoutineLog?> fetchLogCloud({required String id}) async {
+    try {
+      final request = ModelQueries.get(
+        RoutineLog.classType,
+        RoutineLogModelIdentifier(id: id),
+      );
+      final response = await Amplify.API.query(request: request).response;
+      return response.data;
+    } on ApiException catch (_) {
+      return null;
     }
   }
 
@@ -83,21 +95,23 @@ class AmplifyLogRepository {
     _normaliseLogs();
   }
 
-  Future<RoutineLogDto> saveLog({required RoutineLogDto logDto}) async {
-    final now = TemporalDateTime.now();
+  Future<RoutineLogDto> saveLog({required RoutineLogDto logDto, TemporalDateTime? datetime}) async {
+    final now = datetime ?? TemporalDateTime.now();
 
     final logToCreate = RoutineLog(data: jsonEncode(logDto), createdAt: now, updatedAt: now);
-
     await Amplify.DataStore.save(logToCreate);
 
-    final updatedWithId = logDto.copyWith(id: logToCreate.id);
-    final updatedWithRoutineIds = updatedWithId.copyWith(
-        exerciseLogs: updatedWithId.exerciseLogs.map((log) => log.copyWith(routineLogId: logToCreate.id)).toList());
-    _routineLogs.add(updatedWithRoutineIds);
+    final updatedRoutineLogWithId = logDto.copyWith(id: logToCreate.id);
+    final updatedRoutineWithExerciseIds = updatedRoutineLogWithId.copyWith(
+        exerciseLogs:
+            updatedRoutineLogWithId.exerciseLogs.map((log) => log.copyWith(routineLogId: logToCreate.id)).toList());
+
+    _routineLogs.add(updatedRoutineWithExerciseIds);
     _routineLogs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+
     _normaliseLogs();
 
-    return updatedWithRoutineIds;
+    return updatedRoutineWithExerciseIds;
   }
 
   Future<void> updateLog({required RoutineLogDto log}) async {

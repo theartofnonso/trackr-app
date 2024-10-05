@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
 
 import '../../../../dtos/exercise_dto.dart';
-import '../../../buttons/text_button_widget.dart';
+import '../../../buttons/opacity_button_widget.dart';
 import '../../../empty_states/list_tile_empty_state.dart';
 
 class SubstituteExercisePicker extends StatefulWidget {
@@ -49,7 +49,7 @@ class _SubstituteExercisePickerState extends State<SubstituteExercisePicker> {
                 dense: true,
                 contentPadding: EdgeInsets.zero,
                 title: Text(exercise.name,
-                    style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 15)),
+                    style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 15)),
               ),
             ))
         .toList();
@@ -64,16 +64,15 @@ class _SubstituteExercisePickerState extends State<SubstituteExercisePicker> {
                   padding: const EdgeInsets.only(top: 20.0, bottom: 10),
                   child: Text(widget.title,
                       textAlign: TextAlign.start,
-                      style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 15)),
+                      style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 15)),
                 ),
                 ...listTiles,
                 const SizedBox(height: 12),
                 Center(
-                  child: CTextButton(
+                  child: OpacityButtonWidget(
                       onPressed: widget.onSelectExercisesInLibrary,
                       label: "Add substitute exercises",
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                      textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.black),
                       buttonColor: vibrantGreen),
                 )
               ],
@@ -111,11 +110,10 @@ class _EmptyState extends StatelessWidget {
             child: ListTileEmptyState(),
           ),
           const SizedBox(height: 24),
-          CTextButton(
+          OpacityButtonWidget(
               onPressed: onPressed,
               label: "Add substitute exercises",
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.black),
               buttonColor: vibrantGreen)
         ],
       ),

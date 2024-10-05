@@ -19,7 +19,7 @@ class MuscleGroupWidget extends StatelessWidget {
         onTap: onTap,
         dense: true,
         title: Text(muscleGroupDto.muscleGroup.name,
-            style: GoogleFonts.montserrat(
+            style: GoogleFonts.ubuntu(
                 color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
         trailing: muscleGroupDto.selected
             ? const Icon(Icons.check_box_rounded, color: vibrantGreen)

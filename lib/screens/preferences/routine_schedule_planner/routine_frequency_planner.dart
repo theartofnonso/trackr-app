@@ -1,14 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/enums/routine_schedule_type_enums.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../../controllers/routine_template_controller.dart';
 import '../../../dtos/routine_template_dto.dart';
-import '../../../widgets/buttons/text_button_widget.dart';
+import '../../../widgets/buttons/opacity_button_widget.dart';
 
 class RoutineFrequencyPlanner extends StatefulWidget {
   final RoutineTemplateDto template;
@@ -32,11 +34,11 @@ class _RoutineFrequencyPlannerState extends State<RoutineFrequencyPlanner> {
         RichText(
           text: TextSpan(
             text: 'Train ${widget.template.name} ',
-            style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white70),
+            style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white70),
             children: [
               TextSpan(
                 text: "every $_intervals ${pluralize(word: "day", count: _intervals)}",
-                style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.white),
+                style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.white),
               )
             ],
           ),
@@ -56,17 +58,15 @@ class _RoutineFrequencyPlannerState extends State<RoutineFrequencyPlanner> {
             children: List<Widget>.generate(31, (int index) {
               return Center(
                   child: Text(index.toString(),
-                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, fontSize: 32, color: Colors.white)));
+                      style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 32, color: Colors.white)));
             }),
           ),
         ),
         const SizedBox(height: 10),
-        CTextButton(
+        OpacityButtonWidget(
             onPressed: _updateRoutineTemplateIntervals,
             label: "Schedule intervals",
-            buttonColor: Colors.transparent,
-            buttonBorderColor: Colors.transparent,
-            textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
+            buttonColor: vibrantGreen,
             padding: const EdgeInsets.all(10.0))
       ],
     );
@@ -100,7 +100,7 @@ class _RoutineFrequencyPlannerState extends State<RoutineFrequencyPlanner> {
       await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: template);
     }
     if (mounted) {
-      Navigator.of(context).pop();
+      context.pop();
     }
   }
 }

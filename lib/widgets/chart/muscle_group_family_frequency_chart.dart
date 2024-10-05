@@ -31,15 +31,6 @@ class _HorizontalBarChart extends StatelessWidget {
     List<Widget> children =
         frequencyData.entries.map((entry) => _LinearBar(muscleGroupFamily: entry.key, frequency: entry.value)).toList();
 
-    if (children.isEmpty) {
-      final emptyState = {
-        MuscleGroupFamily.chest: 0.0,
-        MuscleGroupFamily.back: 0.0,
-        MuscleGroupFamily.legs: 0.0,
-      }.entries.map((entry) => _LinearBar(muscleGroupFamily: entry.key, frequency: entry.value));
-      children.addAll(emptyState);
-    }
-
     final count = minimized ? children.take(3) : children;
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: count.toList());
@@ -80,7 +71,7 @@ class _LinearBar extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: Text(muscleGroupFamily.name.toUpperCase(),
-                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w700, color: sapphireDark, fontSize: 12)),
+                      style: GoogleFonts.ubuntu(fontWeight: FontWeight.w700, color: sapphireDark, fontSize: 12)),
                 )
               ],
             ),
@@ -92,7 +83,7 @@ class _LinearBar extends StatelessWidget {
                 const SizedBox(width: 10),
                 SizedBox(
                     width: 32,
-                    child: Text("$remainder left", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12))),
+                    child: Text("$remainder left", style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12))),
               ],
             ),
         ],

@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../colors.dart';
 import '../../../../dtos/exercise_log_dto.dart';
-import '../../../buttons/text_button_widget.dart';
+import '../../../buttons/opacity_button_widget.dart';
 import '../../../empty_states/list_tile_empty_state.dart';
 
 class SuperSetExerciseLogPicker extends StatelessWidget {
@@ -29,7 +29,7 @@ class SuperSetExerciseLogPicker extends StatelessWidget {
               dense: true,
       contentPadding: EdgeInsets.zero,
               title: Text(exercise.exercise.name,
-                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 15)),
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 15)),
             ))
         .toList();
 
@@ -42,7 +42,7 @@ class SuperSetExerciseLogPicker extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0, bottom: 10),
                   child: Text(title,
-                      style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 15)),
+                      style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 15)),
                 ),
                 ...listTiles
               ],
@@ -74,11 +74,10 @@ class _EmptyState extends StatelessWidget {
             child: ListTileEmptyState(),
           ),
           const SizedBox(height: 24),
-          CTextButton(
+          OpacityButtonWidget(
               onPressed: onPressed,
               label: "Add more exercises",
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.black),
               buttonColor: vibrantGreen)
         ],
       ),

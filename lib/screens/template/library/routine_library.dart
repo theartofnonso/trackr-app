@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
@@ -35,10 +36,12 @@ class RoutineTemplateLibrary extends StatelessWidget {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           const SizedBox(height: 20),
           const InformationContainerLite(
-            content: exploreWorkouts,
-            color: Colors.transparent,
-            padding: EdgeInsets.zero,
-          ),
+              icon: FaIcon(
+                FontAwesomeIcons.lightbulb,
+                color: Colors.white,
+                size: 16,
+              ),
+              content: exploreWorkouts),
           const SizedBox(height: 20),
           Expanded(
             child: ListView.separated(
@@ -62,9 +65,7 @@ class _WorkoutGridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final children = templateRoutines.map((libraryTemplate) {
-
       return _RoutineWidget(libraryTemplate: libraryTemplate);
     }).toList();
 
@@ -72,7 +73,7 @@ class _WorkoutGridView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(templateName.name.toUpperCase(),
-            style: GoogleFonts.montserrat(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w700)),
+            style: GoogleFonts.ubuntu(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w700)),
         const SizedBox(height: 12),
         GridView.count(
             shrinkWrap: true,
@@ -81,7 +82,8 @@ class _WorkoutGridView extends StatelessWidget {
             childAspectRatio: 1,
             mainAxisSpacing: 10.0,
             crossAxisSpacing: 10.0,
-            children: children)],
+            children: children)
+      ],
     );
   }
 }
@@ -106,12 +108,12 @@ class _RoutineWidget extends StatelessWidget {
                 children: [
                   Positioned.fill(
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(5.0),
-                        child: Image.asset(
-                          'images/${libraryTemplate.image}',
-                          fit: BoxFit.cover,
-                        ),
-                      )),
+                    borderRadius: BorderRadius.circular(5.0),
+                    child: Image.asset(
+                      'images/${libraryTemplate.image}',
+                      fit: BoxFit.cover,
+                    ),
+                  )),
                   Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
@@ -128,16 +130,10 @@ class _RoutineWidget extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(18),
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.white70,
-                        foregroundColor: sapphireDark,
-                        child: Text("${libraryTemplate.template.exerciseTemplates.length}",
-                            style: GoogleFonts.montserrat(fontSize: 28, fontWeight: FontWeight.w700)),
-                      ),
                       const Spacer(),
                       Text(
                         libraryTemplate.template.name,
-                        style: GoogleFonts.montserrat(fontSize: 18, fontWeight: FontWeight.w700),
+                        style: GoogleFonts.ubuntu(fontSize: 18, fontWeight: FontWeight.w700),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 2,
                       ),

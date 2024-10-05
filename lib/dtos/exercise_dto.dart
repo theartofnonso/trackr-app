@@ -6,6 +6,7 @@ class ExerciseDto {
   final String name;
   final MuscleGroup primaryMuscleGroup;
   final Uri? video;
+  final String? description;
   final Uri? creditSource;
   final String? credit;
   final ExerciseType type;
@@ -16,6 +17,7 @@ class ExerciseDto {
       required this.name,
       required this.primaryMuscleGroup,
       required this.type,
+      this.description,
       this.video,
       this.creditSource,
       this.credit,
@@ -28,6 +30,7 @@ class ExerciseDto {
       'primaryMuscleGroup': primaryMuscleGroup.name,
       'type': type.id,
       'owner': owner,
+      'description': description,
       'video': video?.toString(),
       'creditSource': creditSource?.toString(),
       'credit': credit
@@ -43,17 +46,18 @@ class ExerciseDto {
     final type = ExerciseType.fromString(typeJson);
     final owner = json["owner"] ?? false;
     final video = json["video"];
+    final description = json["description"] ?? "";
     final videoUri = video != null ? Uri.parse(video) : null;
     final creditSource = json["creditSource"];
     final creditSourceUri = creditSource != null ? Uri.parse(creditSource) : null;
     final credit = json["credit"] ?? "";
-
     return ExerciseDto(
         id: id,
         name: name,
         primaryMuscleGroup: primaryMuscleGroup,
         type: type,
         video: videoUri,
+        description: description,
         owner: owner,
         creditSource: creditSourceUri,
         credit: credit);
@@ -65,17 +69,19 @@ class ExerciseDto {
     MuscleGroup? primaryMuscleGroup,
     ExerciseType? type,
     bool? owner,
+    String? description,
   }) {
     return ExerciseDto(
         id: id ?? this.id,
         name: name ?? this.name,
         primaryMuscleGroup: primaryMuscleGroup ?? this.primaryMuscleGroup,
         type: type ?? this.type,
-        owner: owner ?? this.owner);
+        owner: owner ?? this.owner,
+        description: description ?? this.description);
   }
 
   @override
   String toString() {
-    return 'ExerciseDto{id: $id, name: $name, primaryMuscleGroup: $primaryMuscleGroup, video: $video, creditSource: $creditSource, credit: $credit, type: $type, owner: $owner}';
+    return 'ExerciseDto{id: $id, name: $name, primaryMuscleGroup: $primaryMuscleGroup, video: $video, description: $description, creditSource: $creditSource, credit: $credit, type: $type, owner: $owner}';
   }
 }

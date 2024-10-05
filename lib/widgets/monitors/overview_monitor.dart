@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
@@ -9,6 +10,7 @@ import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../colors.dart';
+import '../../dtos/activity_log_dto.dart';
 import '../../dtos/routine_log_dto.dart';
 import '../../strings.dart';
 import '../../utils/exercise_logs_utils.dart';
@@ -18,20 +20,24 @@ import 'muscle_group_family_frequency_monitor.dart';
 
 class OverviewMonitor extends StatelessWidget {
   final List<RoutineLogDto> routineLogs;
+  final List<ActivityLogDto> activityLogs;
 
-  const OverviewMonitor({super.key, required this.routineLogs});
+  const OverviewMonitor({super.key, required this.routineLogs, required this.activityLogs});
 
   @override
   Widget build(BuildContext context) {
 
     final routineLogDays = groupBy(routineLogs, (log) => log.createdAt.withoutTime().day);
+    final activityLogDays = groupBy(activityLogs, (log) => log.createdAt.withoutTime().day);
 
-    final monthlyProgress = routineLogDays.length / 12;
+    final totalActivityDays = routineLogDays.length + activityLogDays.length;
+
+    final monthlyProgress = (routineLogDays.length + activityLogDays.length) / 12;
 
     final exerciseLogsForTheMonth = routineLogs.expand((log) => log.exerciseLogs).toList();
 
     final muscleGroupsSplitFrequencyScore =
-        cumulativeMuscleGroupFamilyFrequencies(exerciseLogs: exerciseLogsForTheMonth);
+        cumulativeMuscleGroupFamilyFrequency(exerciseLogs: exerciseLogsForTheMonth);
 
     final splitPercentage = (muscleGroupsSplitFrequencyScore * 100).round();
 
@@ -50,12 +56,12 @@ class OverviewMonitor extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             GestureDetector(
-                onTap: () => navigateToRoutineLogs(context: context, logs: routineLogs),
+                onTap: () => navigateToLogs(context: context, logs: [...routineLogs, ...activityLogs]),
                 child: Container(
                   color: Colors.transparent,
                   width: 100,
                   child: _MonitorScore(
-                    value: "${routineLogDays.length} ${pluralize(word: "day", count: routineLogDays.length)}",
+                    value: "$totalActivityDays ${pluralize(word: "day", count: totalActivityDays)}",
                     title: "Log Streak",
                     color: logStreakColor(value: monthlyProgress),
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -87,7 +93,7 @@ class OverviewMonitor extends StatelessWidget {
             const SizedBox(width: 20),
             GestureDetector(
               onTap: () {
-                Navigator.of(context).pushNamed(SetsAndRepsVolumeInsightsScreen.routeName);
+                context.push(SetsAndRepsVolumeInsightsScreen.routeName);
               },
               child: Container(
                 color: Colors.transparent,
@@ -127,7 +133,7 @@ class _MonitorScore extends StatelessWidget {
       children: [
         Text(
           value,
-          style: GoogleFonts.montserrat(
+          style: GoogleFonts.ubuntu(
             color: color,
             fontSize: 18,
             fontWeight: FontWeight.w800,
@@ -137,7 +143,7 @@ class _MonitorScore extends StatelessWidget {
         Text(
           title.toUpperCase(),
           textAlign: TextAlign.center,
-          style: GoogleFonts.montserrat(
+          style: GoogleFonts.ubuntu(
             color: color.withOpacity(0.7),
             fontSize: 10,
             fontWeight: FontWeight.w800,

@@ -7,29 +7,34 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../controllers/routine_log_controller.dart';
+import '../../dtos/activity_log_dto.dart';
 import '../../dtos/routine_log_dto.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/string_utils.dart';
 
-class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
-  final List<RoutineLogDto> logs;
+class MonthSummaryWidget extends StatelessWidget {
+  final List<RoutineLogDto> routineLogs;
+  final List<ActivityLogDto> activityLogs;
 
-  const ExercisesSetsHoursVolumeWidget({
+  const MonthSummaryWidget({
     super.key,
-    required this.logs,
+    required this.routineLogs,
+    required this.activityLogs,
   });
 
   @override
   Widget build(BuildContext context) {
-    final exerciseLogs = logs
+    final exerciseLogs = routineLogs
         .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
         .expand((exerciseLogs) => exerciseLogs);
 
     final sets = exerciseLogs.expand((exercise) => exercise.sets);
-    final numberOfExercises = exerciseLogs.length;
+    final numberOfLogs = routineLogs.length + activityLogs.length;
     final numberOfSets = sets.length;
-    final totalHoursInMilliSeconds = logs.map((log) => log.duration().inMilliseconds).sum;
-    final totalHours = Duration(milliseconds: totalHoursInMilliSeconds);
+    final routineLogHoursInMilliSeconds = routineLogs.map((log) => log.duration().inMilliseconds).sum;
+    final activityHoursInMilliSeconds = activityLogs.map((log) => log.duration().inMilliseconds).sum;
+    final totalHoursInMilliseconds = routineLogHoursInMilliSeconds + activityHoursInMilliSeconds;
+    final totalHours = Duration(milliseconds: totalHoursInMilliseconds);
 
     final tonnage = exerciseLogs.map((log) {
       final volume = log.sets.map((set) => set.volume()).sum;
@@ -54,20 +59,19 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
           pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog);
     }).expand((pbs) => pbs);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text("Summary of Sessions".toUpperCase(),
-            style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 10),
-        Container(
-            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
-            decoration: BoxDecoration(
-              color: sapphireDark80,
-              border: Border.all(color: sapphireDark80.withOpacity(0.8), width: 2),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Table(
+    return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
+        decoration: BoxDecoration(
+          color: sapphireDark80,
+          border: Border.all(color: sapphireDark80.withOpacity(0.8), width: 2),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          children: [
+            Text("Summary of Training & Activities".toUpperCase(),
+                style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 30),
+            Table(
               border: TableBorder.symmetric(inside: BorderSide(color: sapphireLighter.withOpacity(0.4), width: 2)),
               columnWidths: const <int, TableColumnWidth>{
                 0: FlexColumnWidth(),
@@ -80,10 +84,10 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
                     verticalAlignment: TableCellVerticalAlignment.middle,
                     child: Center(
                       child: _TableItem(
-                          title: 'EXERCISES',
-                          subTitle: "$numberOfExercises",
-                          titleColor: Colors.white,
-                          subTitleColor: Colors.white,
+                          title: 'Activities'.toUpperCase(),
+                          subTitle: "$numberOfLogs",
+                          titleColor: logStreakColor(value: numberOfLogs / 12),
+                          subTitleColor: logStreakColor(value: numberOfLogs / 12),
                           padding: const EdgeInsets.only(bottom: 20)),
                     ),
                   ),
@@ -146,9 +150,9 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
                   ),
                 ]),
               ],
-            )),
-      ],
-    );
+            ),
+          ],
+        ));
   }
 }
 
@@ -177,7 +181,7 @@ class _TableItem extends StatelessWidget {
         children: <Widget>[
           Text(
             subTitle,
-            style: GoogleFonts.montserrat(
+            style: GoogleFonts.ubuntu(
               color: titleColor,
               fontSize: 20,
               fontWeight: FontWeight.w900,
@@ -187,7 +191,7 @@ class _TableItem extends StatelessWidget {
           Text(
             title,
             textAlign: TextAlign.center,
-            style: GoogleFonts.montserrat(
+            style: GoogleFonts.ubuntu(
               color: subTitleColor.withOpacity(0.6),
               fontSize: 10,
               fontWeight: FontWeight.bold,

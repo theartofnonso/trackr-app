@@ -29,7 +29,7 @@ class SetRecordWidget extends StatelessWidget {
           final firstLabel = set.repsValue();
           final secondLabel = weightWithConversion(value: set.weightValue());
           return DoubleSetRow(first: "$firstLabel", second: "$secondLabel", margin: const EdgeInsets.only(bottom: 6.0));
-        }).toList(),
+        }),
       ],
     );
   }

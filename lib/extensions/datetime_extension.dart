@@ -57,6 +57,11 @@ extension DateTimeExtension on DateTime {
     return DateFormat("Hm", "en").format(this);
   }
 
+  /// Get datetime format
+  String formattedDayMonthTime() {
+    return DateFormat("dd MMM 'at' H:mm", "en").format(this);
+  }
+
   bool isAfterOrEqual(DateTime other) {
     return isSameDayMonthYear(other) || isAfter(other);
   }

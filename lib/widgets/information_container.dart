@@ -32,11 +32,11 @@ class InformationContainer extends StatelessWidget {
                 Row(children: [
                   leadingIcon,
                   const SizedBox(width: 6),
-                  Text(title, style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w600)),
+                  Text(title, style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w600)),
                 ]),
                 richDescription ?? Padding(
                   padding: const EdgeInsets.only(top: 6.0),
-                  child: Text(description, style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w500)),
+                  child: Text(description, style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w500)),
                 ),
               ]),
             ),

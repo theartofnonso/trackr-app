@@ -7,6 +7,6 @@ class TextEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(message, style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.white));
+    return Text(message, style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.white));
   }
 }

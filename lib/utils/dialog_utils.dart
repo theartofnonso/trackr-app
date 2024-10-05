@@ -1,9 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/enums/activity_type_enums.dart';
+import 'package:tracker_app/widgets/timers/datetime_picker.dart';
+import 'package:tracker_app/widgets/timers/datetime_range_picker.dart';
 
 import '../colors.dart';
-import '../widgets/buttons/text_button_widget.dart';
+import '../widgets/activity/activity_picker.dart';
+import '../widgets/buttons/opacity_button_widget.dart';
+import '../widgets/buttons/solid_button_widget.dart';
 import '../widgets/timers/hour_timer_picker.dart';
 import '../widgets/timers/time_picker.dart';
 
@@ -20,7 +25,7 @@ void showSnackbar({required BuildContext context, required Widget icon, required
           Expanded(
             child: Text(
               message,
-              style: GoogleFonts.montserrat(
+              style: GoogleFonts.ubuntu(
                 fontSize: 14.0,
                 fontWeight: FontWeight.w400,
                 color: Colors.white,
@@ -98,16 +103,52 @@ void showHourTimerPicker(
           }));
 }
 
+void showDateTimePicker({required BuildContext context, required void Function(DateTime datetime) onChangedDateTime}) {
+  FocusScope.of(context).unfocus();
+  displayBottomSheet(height: 240, context: context, child: DatetimePicker(onSelect: onChangedDateTime));
+}
+
+void showDatetimeRangePicker(
+    {required BuildContext context,
+    DateTimeRange? initialDateTimeRange,
+    required void Function(DateTimeRange datetimeRange) onChangedDateTimeRange}) {
+  FocusScope.of(context).unfocus();
+  displayBottomSheet(
+      context: context,
+      child: DateTimeRangePicker(
+        initialDateTimeRange: initialDateTimeRange,
+        onSelectRange: onChangedDateTimeRange,
+      ),
+      isScrollControlled: true);
+}
+
+void showActivityPicker(
+    {required BuildContext context,
+      ActivityType? initialActivityType,
+    DateTimeRange? initialDateTimeRange,
+    required void Function(ActivityType activity, DateTimeRange datetimeRange) onChangedActivity}) {
+  FocusScope.of(context).unfocus();
+  displayBottomSheet(
+      context: context,
+      child: ActivityPicker(
+        initialActivityType: initialActivityType,
+        initialDateTimeRange: initialDateTimeRange,
+        onSelectActivity: onChangedActivity,
+      ),
+      isScrollControlled: true);
+}
+
 Future<void> showBottomSheetWithNoAction(
     {required BuildContext context, required String title, required String description}) async {
   displayBottomSheet(
       context: context,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(title,
-            style: GoogleFonts.montserrat(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
+            style: GoogleFonts.ubuntu(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
             textAlign: TextAlign.start),
+        const SizedBox(height: 4,),
         Text(description,
-            style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white),
+            style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white),
             textAlign: TextAlign.start)
       ]));
 }
@@ -130,25 +171,22 @@ void showBottomSheetWithMultiActions(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(title,
-              style: GoogleFonts.montserrat(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
+              style: GoogleFonts.ubuntu(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
               textAlign: TextAlign.start),
           Text(description,
-              style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white70),
+              style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white70),
               textAlign: TextAlign.start),
           const SizedBox(height: 16),
           Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-            CTextButton(
+            SolidButtonWidget(
                 onPressed: leftAction,
                 label: leftActionLabel,
-                textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.white),
-                buttonColor: Colors.transparent,
-                buttonBorderColor: Colors.transparent),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10)),
             const SizedBox(width: 10),
-            CTextButton(
+            OpacityButtonWidget(
                 onPressed: rightAction,
                 label: rightActionLabel,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.black),
                 buttonColor: vibrantGreen)
           ])
         ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/screens/template/library/routine_library.dart';
@@ -18,7 +19,7 @@ class RoutineLibraryTemplate extends StatelessWidget {
     final exercises = libraryTemplate.template.exerciseTemplates
         .map((exercise) => ListTile(
               contentPadding: const EdgeInsets.only(left: 10),
-              title: Text(exercise.exercise.name, style: GoogleFonts.montserrat(fontSize: 16, color: Colors.white)),
+              title: Text(exercise.exercise.name, style: GoogleFonts.ubuntu(fontSize: 16, color: Colors.white)),
             ))
         .toList();
 
@@ -75,16 +76,16 @@ class RoutineLibraryTemplate extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(libraryTemplate.template.name.toUpperCase(),
-                          style: GoogleFonts.montserrat(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 16)),
+                          style: GoogleFonts.ubuntu(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 16)),
                       const SizedBox(height: 5),
                       Text(libraryTemplate.template.notes,
-                          style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w500)),
+                          style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w500)),
                       const SizedBox(height: 10),
                       Row(
                         children: [
                           Text("Curated by",
                               style:
-                                  GoogleFonts.montserrat(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w700)),
+                                  GoogleFonts.ubuntu(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w700)),
                           const SizedBox(width: 3),
                           Padding(
                             padding: const EdgeInsets.only(top: 2.0),
@@ -107,7 +108,7 @@ class RoutineLibraryTemplate extends StatelessWidget {
                   child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                     IconButton(
                       icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-                      onPressed: () => Navigator.of(context).pop(),
+                      onPressed: context.pop,
                     )
                   ]),
                 ),

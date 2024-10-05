@@ -28,7 +28,7 @@ class PersonalBestWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text("Personal Best achievements for this exercise",
-              style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500)),
+              style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500)),
           const SizedBox(height: 16),
           SetRecordWidget(exerciseType: exercise.type, sets: sets),
         ],

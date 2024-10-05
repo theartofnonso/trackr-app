@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/screens/template/library/routine_library.dart';
-import 'package:tracker_app/screens/template/templates/routine_templates.dart';
+import 'package:tracker_app/screens/template/templates/routine_templates_screen.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_controller.dart';
@@ -30,8 +30,8 @@ class _RoutinesHomeState extends State<RoutinesHome> {
             bottom: TabBar(
               dividerColor: Colors.transparent,
               tabs: [
-                Tab(child: Text("My Workouts", style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
-                Tab(child: Text("Explore", style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
+                Tab(child: Text("My Workouts", style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
+                Tab(child: Text("Explore", style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
               ],
             ),
           ),
@@ -50,7 +50,7 @@ class _RoutinesHomeState extends State<RoutinesHome> {
             child: const SafeArea(
               child: TabBarView(
                 children: [
-                  RoutineTemplates(),
+                  RoutineTemplatesScreen(),
                   RoutineTemplateLibrary(),
                 ],
               ),

@@ -1,45 +1,68 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
+import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
+import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 
+import '../dtos/interface/log_interface.dart';
 import '../dtos/routine_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../dtos/viewmodels/routine_template_arguments.dart';
-import '../screens/editors/routine_template_editor_screen.dart';
+import '../screens/editors/past_routine_log_editor_screen.dart';
 import '../screens/editors/routine_log_editor_screen.dart';
+import '../screens/editors/routine_template_editor_screen.dart';
+import '../screens/logs/logs_screen.dart';
 import '../screens/logs/routine_log_screen.dart';
-import '../screens/logs/routine_logs_screen.dart';
-import '../screens/template/templates/routine_template.dart';
+import '../screens/template/templates/routine_template_screen.dart';
 
-Future<Future<Object?>> navigateToExerciseEditor({required BuildContext context, ExerciseEditorArguments? arguments}) async {
-  return Navigator.of(context).pushNamed(ExerciseEditorScreen.routeName, arguments: arguments);
+Future<Future<Object?>> navigateToExerciseEditor(
+    {required BuildContext context, ExerciseEditorArguments? arguments}) async {
+  return context.push(ExerciseEditorScreen.routeName, extra: arguments);
 }
 
-void navigateToRoutineTemplateEditor({required BuildContext context, RoutineTemplateArguments? arguments}) {
-  Navigator.of(context).pushNamed(RoutineTemplateEditorScreen.routeName, arguments: arguments);
+Future<RoutineTemplateDto?> navigateToRoutineTemplateEditor(
+    {required BuildContext context, RoutineTemplateArguments? arguments}) async {
+  final template = await context.push(RoutineTemplateEditorScreen.routeName, extra: arguments) as RoutineTemplateDto?;
+  return template;
 }
 
-void navigateToRoutineLogEditor({required BuildContext context, required RoutineLogArguments arguments}) async {
-  final createdLog = await Navigator.of(context).pushNamed(RoutineLogEditorScreen.routeName, arguments: arguments) as RoutineLogDto?;
-  if(createdLog != null) {
-    if(context.mounted) {
-      navigateToRoutineLogPreview(context: context, log: createdLog, finishedLogging: true);
+void navigateToPastRoutineLogEditor({required BuildContext context, required PastRoutineLogArguments arguments}) {
+  context.push(PastRoutineLogEditorScreen.routeName, extra: arguments);
+}
+
+Future<void> navigateToRoutineLogEditor({required BuildContext context, required RoutineLogArguments arguments}) async {
+  final log = await context.push(RoutineLogEditorScreen.routeName, extra: arguments) as RoutineLogDto?;
+  if (log != null) {
+    if (context.mounted) {
+      context.push(RoutineLogScreen.routeName, extra: {"log": log, "showSummary": true});
     }
   }
 }
 
+Future<RoutineLogDto?> navigateAndEditLog(
+    {required BuildContext context, required RoutineLogArguments arguments}) async {
+  final log = await context.push(RoutineLogEditorScreen.routeName, extra: arguments) as RoutineLogDto?;
+  return log;
+}
+
 void navigateToRoutineTemplatePreview({required BuildContext context, required RoutineTemplateDto template}) {
-  Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineTemplate(template: template)));
+  context.push(RoutineTemplateScreen.routeName, extra: template);
 }
 
-void navigateToRoutineLogPreview({required BuildContext context, required RoutineLogDto log, bool finishedLogging = false}) {
-  Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineLogPreviewScreen(log: log, finishedLogging: finishedLogging)));
+void navigateToRoutineLogPreview({required BuildContext context, required RoutineLogDto log}) {
+  context.push(RoutineLogScreen.routeName, extra: {"log": log, "showSummary": false});
 }
 
-void navigateToRoutineLogs({required BuildContext context, required List<RoutineLogDto> logs}) {
-  final descendingLogs = logs.reversed.toList();
-  Navigator.of(context).pushNamed(RoutineLogsScreen.routeName, arguments: descendingLogs);
+void navigateToShareableScreen({required BuildContext context, required RoutineLogDto log}) {
+  context.push(RoutineLogSummaryScreen.routeName, extra: log);
+}
+
+void navigateToLogs({required BuildContext context, required List<Log> logs}) {
+  final descendingLogs = logs.sorted((a, b) => a.createdAt.compareTo(b.createdAt)).reversed.toList();
+  context.push(LogsScreen.routeName, extra: descendingLogs);
 }
 
 /// Create a screen on demand
@@ -50,8 +73,7 @@ void navigateWithSlideTransition({required BuildContext context, required Widget
       const begin = Offset(0.0, 1.0);
       const end = Offset.zero;
       const curve = Curves.ease;
-      final tween =
-      Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+      final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
       final offsetAnimation = animation.drive(tween);
       return SlideTransition(
         position: offsetAnimation,

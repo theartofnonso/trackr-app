@@ -43,7 +43,7 @@ class ExerciseVideoScreen extends StatelessWidget {
           RichText(
             text: TextSpan(
               text: "Video by",
-              style: GoogleFonts.montserrat(
+              style: GoogleFonts.ubuntu(
                 color: Colors.white70,
                 fontWeight: FontWeight.w600,
                 fontSize: 14,
@@ -58,7 +58,7 @@ class ExerciseVideoScreen extends StatelessWidget {
                       }
                     },
                   text: exercise.credit ?? "",
-                  style: GoogleFonts.montserrat(
+                  style: GoogleFonts.ubuntu(
                     color: Colors.white,
                     decoration: TextDecoration.underline,
                     fontWeight: FontWeight.w700,
