@@ -35,7 +35,7 @@ class ActivityLogWidget extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         leading: FaIcon(activityType.icon, color: Colors.white70),
         title: Text(activity.name.toUpperCase(),
-            style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
+            style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
         trailing: Text(trailing,
             style: GoogleFonts.ubuntu(
                 color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14)),
