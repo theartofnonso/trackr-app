@@ -59,7 +59,6 @@ class AmplifyLogRepository {
   Future<void> fetchLogs({required bool firstLaunch}) async {
     if (firstLaunch) {
       final dateRange = yearToDateTimeRange();
-      print(dateRange);
       List<RoutineLog> logs = await queryLogsCloud(range: dateRange);
       _mapAndNormaliseLogs(logs: logs);
     } else {
