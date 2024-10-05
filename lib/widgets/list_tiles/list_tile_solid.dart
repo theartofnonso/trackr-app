@@ -50,7 +50,7 @@ class SolidListTile extends StatelessWidget {
         ),
         trailing: trailing != null ? Text(trailing,
             style: GoogleFonts.ubuntu(
-                color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12)) : null,
+                color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14)) : null,
       ),
     );
   }
