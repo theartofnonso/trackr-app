@@ -6,11 +6,11 @@ import 'package:tracker_app/dtos/activity_log_dto.dart';
 import 'package:tracker_app/enums/activity_type_enums.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 
-class ActivitySolidListTile extends StatelessWidget {
+class ActivityLogWidget extends StatelessWidget {
   final ActivityLogDto activity;
   final void Function()? onTap;
 
-  const ActivitySolidListTile({
+  const ActivityLogWidget({
     super.key,
     required this.activity,
     this.onTap,

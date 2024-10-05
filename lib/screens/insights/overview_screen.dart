@@ -18,6 +18,7 @@ import 'package:tracker_app/widgets/calendar/calendar_months_navigator.dart';
 
 import '../../controllers/activity_log_controller.dart';
 import '../../controllers/routine_log_controller.dart';
+import '../../dtos/interface/log_interface.dart';
 import '../../dtos/routine_log_dto.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/activity_type_enums.dart';
@@ -30,8 +31,8 @@ import '../../utils/shareables_utils.dart';
 import '../../widgets/backgrounds/overlay_background.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/calendar/calendar.dart';
-import '../../widgets/list_tiles/activity_list_tile_solid.dart';
 import '../../widgets/monitors/overview_monitor.dart';
+import '../../widgets/routine/preview/activity_log_widget.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
 import 'monthly_insights_screen.dart';
 
@@ -76,6 +77,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    /// Routine Logs
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
     final routineLogsForTheMonth =
@@ -90,6 +93,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     final routineLogsForCurrentDate = routineLogController.logsWhereDate(dateTime: _selectedDateTime).reversed.toList();
 
+    /// Activity Logs
     final activityLogController = Provider.of<ActivityLogController>(context, listen: true);
 
     final activityLogsForTheMonth = _monthlyActivityLogs?[_selectedDateTimeRange] ??
@@ -106,7 +110,13 @@ class _OverviewScreenState extends State<OverviewScreen> {
     final activityLogsForCurrentDate =
         activityLogController.logsWhereDate(dateTime: _selectedDateTime).reversed.toList();
 
-    final totalActivities = routineLogsForTheYearByDay.length + activityLogsForTheYearByDay.length;
+    /// Aggregates
+    final allActivitiesForCurrentDate = [...routineLogsForCurrentDate, ...activityLogsForCurrentDate];
+
+    final allActivitiesForTheYearByDay = [
+      ...routineLogsForTheYearByDay.entries,
+      ...activityLogsForTheYearByDay.entries
+    ];
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -141,7 +151,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                         icon: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
                           const FaIcon(FontAwesomeIcons.fire, color: Colors.white, size: 20),
                           const SizedBox(width: 4),
-                          Text("$totalActivities",
+                          Text("${allActivitiesForTheYearByDay.length}",
                               style:
                                   GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
                         ]),
@@ -168,8 +178,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                             ),
                             const SizedBox(height: 10),
                             _LogsListView(
-                              routineLogs: routineLogsForCurrentDate,
-                              activityLogs: activityLogsForCurrentDate,
+                              logs: allActivitiesForCurrentDate,
                             ),
                             const SizedBox(height: 12),
                             MonthlyInsightsScreen(
@@ -396,32 +405,36 @@ class _OverviewScreenState extends State<OverviewScreen> {
 }
 
 class _LogsListView extends StatelessWidget {
-  final List<RoutineLogDto> routineLogs;
-  final List<ActivityLogDto> activityLogs;
+  final List<Log> logs;
 
-  const _LogsListView({required this.routineLogs, required this.activityLogs});
+  const _LogsListView({required this.logs});
 
   @override
   Widget build(BuildContext context) {
-    final routineChildren = routineLogs.map((log) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 8.0),
-        child: RoutineLogWidget(log: log, trailing: log.duration().hmsAnalog(), color: sapphireDark80),
-      );
-    }).toList();
 
-    final activityChildren = activityLogs.map((log) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 8.0),
-        child: ActivitySolidListTile(
-            activity: log,
+    final descendingLogs = logs.sorted((a, b) => a.createdAt.compareTo(b.createdAt)).reversed.toList();
+
+    final children = descendingLogs.map((log) {
+      Widget widget;
+
+      if (log.type == LogType.routine) {
+        final routineLog = log as RoutineLogDto;
+        widget = RoutineLogWidget(log: routineLog, trailing: routineLog.duration().hmsAnalog(), color: sapphireDark80);
+      } else {
+        final activityLog = log as ActivityLogDto;
+        widget = ActivityLogWidget(
+            activity: activityLog,
             onTap: () {
-              _showActivityBottomSheet(context: context, activity: log);
-            }),
+              _showActivityBottomSheet(context: context, activity: activityLog);
+            });
+      }
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 8.0),
+        child: widget,
       );
     }).toList();
 
-    return Column(children: [...routineChildren, ...activityChildren]);
+    return Column(children: children);
   }
 
   Future<void> _showActivityBottomSheet({required BuildContext context, required ActivityLogDto activity}) async {

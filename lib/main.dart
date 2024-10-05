@@ -40,7 +40,7 @@ import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.da
 import 'package:tracker_app/screens/intro_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
-import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
+import 'package:tracker_app/screens/logs/logs_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/template/routines_home.dart';
 import 'package:tracker_app/screens/template/templates/routine_template_screen.dart';
@@ -48,6 +48,7 @@ import 'package:tracker_app/shared_prefs.dart';
 
 import 'amplifyconfiguration.dart';
 import 'controllers/activity_log_controller.dart';
+import 'dtos/interface/log_interface.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
 import 'dtos/viewmodels/routine_template_arguments.dart';
 import 'models/ModelProvider.dart';
@@ -167,10 +168,10 @@ final _router = GoRouter(
       },
     ),
     GoRoute(
-      path: RoutineLogsScreen.routeName,
+      path: LogsScreen.routeName,
       builder: (context, state) {
-        final args = state.extra as List<RoutineLogDto>?;
-        return RoutineLogsScreen(logs: args);
+        final args = state.extra as List<Log>;
+        return LogsScreen(logs: args);
       },
     ),
     GoRoute(

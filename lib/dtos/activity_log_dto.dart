@@ -1,10 +1,19 @@
-class ActivityLogDto {
+import 'interface/log_interface.dart';
+
+class ActivityLogDto implements Log {
+  @override
   final String id;
+  @override
   final String name;
+  @override
   final String notes;
+  @override
   final DateTime startTime;
+  @override
   final DateTime endTime;
+  @override
   final DateTime createdAt;
+  @override
   final DateTime updatedAt;
 
   ActivityLogDto({
@@ -17,10 +26,12 @@ class ActivityLogDto {
     required this.updatedAt,
   });
 
+  @override
   Duration duration() {
     return endTime.difference(startTime);
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -40,15 +51,17 @@ class ActivityLogDto {
     final createdAt = DateTime.now();
     final updatedAt = DateTime.now();
     return ActivityLogDto(
-        id: id,
-        name: name,
-        notes: notes,
-        startTime: startTime,
-        endTime: endTime,
-        createdAt: createdAt,
-        updatedAt: updatedAt);
+      id: id,
+      name: name,
+      notes: notes,
+      startTime: startTime,
+      endTime: endTime,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+    );
   }
 
+  @override
   ActivityLogDto copyWith({
     String? id,
     String? name,
@@ -73,4 +86,8 @@ class ActivityLogDto {
   String toString() {
     return 'ActivityLogDto{id: $id, name: $name, notes: $notes, startTime: $startTime, endTime: $endTime, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
+
+  @override
+  // TODO: implement type
+  LogType get type => LogType.activity;
 }
