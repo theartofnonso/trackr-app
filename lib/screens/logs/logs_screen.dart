@@ -59,7 +59,7 @@ class LogsScreen extends StatelessWidget {
                                   trailing: routineLog.createdAt.durationSinceOrDate());
                             } else {
                               final activityLog = log as ActivityLogDto;
-                              return ActivityLogWidget(activity: activityLog, color: Colors.transparent,);
+                              return ActivityLogWidget(activity: activityLog, trailing: activityLog.createdAt.durationSinceOrDate(), color: Colors.transparent,);
                             }
                           },
                           separatorBuilder: (BuildContext context, int index) =>

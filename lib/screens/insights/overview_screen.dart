@@ -424,6 +424,7 @@ class _LogsListView extends StatelessWidget {
         final activityLog = log as ActivityLogDto;
         widget = ActivityLogWidget(
             activity: activityLog,
+            trailing: activityLog.duration().hmsAnalog(),
             onTap: () {
               _showActivityBottomSheet(context: context, activity: activityLog);
             }, color: sapphireDark80,);
