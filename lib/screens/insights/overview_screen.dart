@@ -412,7 +412,7 @@ class _LogsListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final descendingLogs = logs.sorted((a, b) => a.createdAt.compareTo(b.createdAt)).reversed.toList();
+    final descendingLogs = logs.sorted((a, b) => a.createdAt.compareTo(b.createdAt)).toList();
 
     final children = descendingLogs.map((log) {
       Widget widget;
