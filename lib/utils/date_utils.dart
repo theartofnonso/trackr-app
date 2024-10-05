@@ -1,8 +1,8 @@
 
 import 'package:flutter/material.dart';
 
-DateTimeRange yearToDateTimeRange() {
-  final now = DateTime.now();
+DateTimeRange yearToDateTimeRange({DateTime? datetime}) {
+  final now = datetime ?? DateTime.now();
   final start = DateTime(now.year, 1);
   final nextMonth = DateTime(start.year, start.month + 1, 1);
   final end = nextMonth.subtract(const Duration(days: 1));
