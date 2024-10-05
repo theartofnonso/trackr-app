@@ -426,7 +426,7 @@ class _LogsListView extends StatelessWidget {
             activity: activityLog,
             onTap: () {
               _showActivityBottomSheet(context: context, activity: activityLog);
-            });
+            }, color: sapphireDark80,);
       }
       return Padding(
         padding: const EdgeInsets.only(bottom: 8.0),

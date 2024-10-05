@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/dtos/activity_log_dto.dart';
 import 'package:tracker_app/enums/activity_type_enums.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 
 class ActivityLogWidget extends StatelessWidget {
   final ActivityLogDto activity;
+  final Color color;
   final void Function()? onTap;
 
   const ActivityLogWidget({
     super.key,
     required this.activity,
-    this.onTap,
+    this.onTap, required this.color,
   });
 
   @override
@@ -24,11 +24,12 @@ class ActivityLogWidget extends StatelessWidget {
     return Container(
       margin: null,
       decoration: BoxDecoration(
-        color: sapphireDark80,
+        color: color,
         borderRadius: BorderRadius.circular(5),
       ),
       child: ListTile(
         onTap: onTap,
+        tileColor: color,
         contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 20),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         leading: FaIcon(activityType.icon, color: Colors.white70),
