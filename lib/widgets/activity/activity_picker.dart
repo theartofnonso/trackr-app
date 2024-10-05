@@ -68,7 +68,7 @@ class _ActivityPickerState extends State<ActivityPicker> {
             ),
             trailing: const FaIcon(FontAwesomeIcons.arrowRightLong),
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 10),
           Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
             Text(
               "Duration".toUpperCase(),
