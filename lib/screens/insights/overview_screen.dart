@@ -168,6 +168,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           child: Column(children: [
                             const SizedBox(height: 12),
                             OverviewMonitor(
+                              range: _selectedDateTimeRange,
                               routineLogs: routineLogsForTheMonth,
                               activityLogs: activityLogsForTheMonth,
                             ),

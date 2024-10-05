@@ -19,10 +19,12 @@ import 'log_streak_monitor.dart';
 import 'muscle_group_family_frequency_monitor.dart';
 
 class OverviewMonitor extends StatelessWidget {
+
+  final DateTimeRange range;
   final List<RoutineLogDto> routineLogs;
   final List<ActivityLogDto> activityLogs;
 
-  const OverviewMonitor({super.key, required this.routineLogs, required this.activityLogs});
+  const OverviewMonitor({super.key, required this.range, required this.routineLogs, required this.activityLogs});
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +58,7 @@ class OverviewMonitor extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             GestureDetector(
-                onTap: () => navigateToLogs(context: context, logs: [...routineLogs, ...activityLogs]),
+                onTap: () => navigateToLogs(context: context, range: range),
                 child: Container(
                   color: Colors.transparent,
                   width: 100,

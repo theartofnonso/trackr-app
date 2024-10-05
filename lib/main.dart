@@ -48,7 +48,6 @@ import 'package:tracker_app/utils/date_utils.dart';
 
 import 'amplifyconfiguration.dart';
 import 'controllers/activity_log_controller.dart';
-import 'dtos/interface/log_interface.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
 import 'dtos/viewmodels/routine_template_arguments.dart';
 import 'models/ModelProvider.dart';
@@ -170,8 +169,8 @@ final _router = GoRouter(
     GoRoute(
       path: LogsScreen.routeName,
       builder: (context, state) {
-        final args = state.extra as List<Log>;
-        return LogsScreen(logs: args);
+        final args = state.extra as DateTimeRange;
+        return LogsScreen(range: args);
       },
     ),
     GoRoute(
