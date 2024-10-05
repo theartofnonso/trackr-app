@@ -246,55 +246,55 @@ class _OverviewScreenState extends State<OverviewScreen> {
                     });
               },
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-              Text(
-                "Training outside the gym?".toUpperCase(),
-                style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 10),
-              ),
-              Expanded(
-                child: Container(
-                  height: 0.8, // height of the divider
-                  width: double.infinity, // width of the divider (line thickness)
-                  color: sapphireLighter, // color of the divider
-                  margin: const EdgeInsets.symmetric(horizontal: 10), // add space around the divider
-                ),
-              ),
-            ]),
-            const SizedBox(
-              height: 6,
-            ),
-            ListTile(
-              dense: true,
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(
-                FontAwesomeIcons.circlePlus,
-                size: 18,
-                color: vibrantGreen,
-              ),
-              horizontalTitleGap: 6,
-              title: Text("Add Activity",
-                  style: GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 16)),
-              onTap: () {
-                Navigator.pop(context);
-                showActivityPicker(
-                    context: context,
-                    onChangedActivity: (ActivityType activity, DateTimeRange datetimeRange) {
-                      Navigator.pop(context);
-                      final activityLog = ActivityLogDto(
-                          id: "id",
-                          name: activity.name,
-                          notes: "",
-                          startTime: datetimeRange.start,
-                          endTime: datetimeRange.end,
-                          createdAt: datetimeRange.end,
-                          updatedAt: datetimeRange.end);
-                      Provider.of<ActivityLogController>(context, listen: false).saveLog(logDto: activityLog);
-                    });
-              },
-            ),
+            // const SizedBox(
+            //   height: 10,
+            // ),
+            // Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+            //   Text(
+            //     "Training outside the gym?".toUpperCase(),
+            //     style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 10),
+            //   ),
+            //   Expanded(
+            //     child: Container(
+            //       height: 0.8, // height of the divider
+            //       width: double.infinity, // width of the divider (line thickness)
+            //       color: sapphireLighter, // color of the divider
+            //       margin: const EdgeInsets.symmetric(horizontal: 10), // add space around the divider
+            //     ),
+            //   ),
+            // ]),
+            // const SizedBox(
+            //   height: 6,
+            // ),
+            // ListTile(
+            //   dense: true,
+            //   contentPadding: EdgeInsets.zero,
+            //   leading: const FaIcon(
+            //     FontAwesomeIcons.circlePlus,
+            //     size: 18,
+            //     color: vibrantGreen,
+            //   ),
+            //   horizontalTitleGap: 6,
+            //   title: Text("Add Activity",
+            //       style: GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 16)),
+            //   onTap: () {
+            //     Navigator.pop(context);
+            //     showActivityPicker(
+            //         context: context,
+            //         onChangedActivity: (ActivityType activity, DateTimeRange datetimeRange) {
+            //           Navigator.pop(context);
+            //           final activityLog = ActivityLogDto(
+            //               id: "id",
+            //               name: activity.name,
+            //               notes: "",
+            //               startTime: datetimeRange.start,
+            //               endTime: datetimeRange.end,
+            //               createdAt: datetimeRange.end,
+            //               updatedAt: datetimeRange.end);
+            //           Provider.of<ActivityLogController>(context, listen: false).saveLog(logDto: activityLog);
+            //         });
+            //   },
+            // ),
           ]),
         ));
   }
