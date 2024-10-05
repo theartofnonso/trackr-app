@@ -8,6 +8,7 @@ import 'package:tracker_app/widgets/routine/preview/activity_log_widget.dart';
 
 import '../../dtos/activity_log_dto.dart';
 import '../../dtos/interface/log_interface.dart';
+import '../../utils/dialog_utils.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
 
 class LogsScreen extends StatelessWidget {
@@ -47,25 +48,31 @@ class LogsScreen extends StatelessWidget {
             children: [
               logs.isNotEmpty
                   ? Expanded(
-                      child: ListView.separated(
-                          padding: const EdgeInsets.only(bottom: 150),
-                          itemBuilder: (BuildContext context, int index) {
-                            final log = logs[index];
-                            if (log.type == LogType.routine) {
-                              final routineLog = log as RoutineLogDto;
-                              return RoutineLogWidget(
-                                  log: routineLog,
-                                  color: Colors.transparent,
-                                  trailing: routineLog.createdAt.durationSinceOrDate());
-                            } else {
-                              final activityLog = log as ActivityLogDto;
-                              return ActivityLogWidget(activity: activityLog, trailing: activityLog.createdAt.durationSinceOrDate(), color: Colors.transparent,);
-                            }
-                          },
-                          separatorBuilder: (BuildContext context, int index) =>
-                              Divider(color: Colors.white70.withOpacity(0.1)),
-                          itemCount: logs.length),
-                    )
+                child: ListView.separated(
+                    padding: const EdgeInsets.only(bottom: 150),
+                    itemBuilder: (BuildContext context, int index) {
+                      final log = logs[index];
+                      if (log.type == LogType.routine) {
+                        final routineLog = log as RoutineLogDto;
+                        return RoutineLogWidget(
+                            log: routineLog,
+                            color: Colors.transparent,
+                            trailing: routineLog.createdAt.durationSinceOrDate());
+                      } else {
+                        final activityLog = log as ActivityLogDto;
+                        return ActivityLogWidget(
+                            activity: activityLog,
+                            trailing: activityLog.createdAt.durationSinceOrDate(),
+                            color: Colors.transparent,
+                            onTap: () {
+                              showActivityBottomSheet(context: context, activity: activityLog);
+                            });
+                      }
+                    },
+                    separatorBuilder: (BuildContext context, int index) =>
+                        Divider(color: Colors.white70.withOpacity(0.1)),
+                    itemCount: logs.length),
+              )
                   : const RoutineLogEmptyState(),
             ],
           ),

@@ -1,11 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/activity_type_enums.dart';
+import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/timers/datetime_picker.dart';
 import 'package:tracker_app/widgets/timers/datetime_range_picker.dart';
 
 import '../colors.dart';
+import '../controllers/activity_log_controller.dart';
+import '../dtos/activity_log_dto.dart';
 import '../widgets/activity/activity_picker.dart';
 import '../widgets/buttons/opacity_button_widget.dart';
 import '../widgets/buttons/solid_button_widget.dart';
@@ -38,11 +43,11 @@ void showSnackbar({required BuildContext context, required Widget icon, required
 
 Future<void> displayBottomSheet(
     {required BuildContext context,
-    required Widget child,
-    double? height,
-    enabledDrag = true,
-    bool isDismissible = true,
-    bool isScrollControlled = false}) {
+      required Widget child,
+      double? height,
+      enabledDrag = true,
+      bool isDismissible = true,
+      bool isScrollControlled = false}) {
   return showModalBottomSheet(
       isScrollControlled: isScrollControlled,
       isDismissible: isDismissible,
@@ -50,37 +55,37 @@ Future<void> displayBottomSheet(
       backgroundColor: Colors.transparent,
       context: context,
       builder: (BuildContext context) => Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                height: height,
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      sapphireDark80,
-                      sapphireDark,
-                    ],
-                  ),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                  ),
-                ),
-                child: SafeArea(child: child),
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            height: height,
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  sapphireDark80,
+                  sapphireDark,
+                ],
               ),
-            ],
-          ));
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
+            ),
+            child: SafeArea(child: child),
+          ),
+        ],
+      ));
 }
 
 void displayTimePicker(
     {required BuildContext context,
-    required CupertinoTimerPickerMode mode,
-    required Duration initialDuration,
-    required void Function(Duration duration) onChangedDuration}) {
+      required CupertinoTimerPickerMode mode,
+      required Duration initialDuration,
+      required void Function(Duration duration) onChangedDuration}) {
   FocusScope.of(context).unfocus();
   displayBottomSheet(
       height: 240,
@@ -90,8 +95,8 @@ void displayTimePicker(
 
 void showHourTimerPicker(
     {required BuildContext context,
-    required Duration initialDuration,
-    required void Function(Duration duration) onChangedDuration}) {
+      required Duration initialDuration,
+      required void Function(Duration duration) onChangedDuration}) {
   FocusScope.of(context).unfocus();
   displayBottomSheet(
       height: 240,
@@ -110,8 +115,8 @@ void showDateTimePicker({required BuildContext context, required void Function(D
 
 void showDatetimeRangePicker(
     {required BuildContext context,
-    DateTimeRange? initialDateTimeRange,
-    required void Function(DateTimeRange datetimeRange) onChangedDateTimeRange}) {
+      DateTimeRange? initialDateTimeRange,
+      required void Function(DateTimeRange datetimeRange) onChangedDateTimeRange}) {
   FocusScope.of(context).unfocus();
   displayBottomSheet(
       context: context,
@@ -125,8 +130,8 @@ void showDatetimeRangePicker(
 void showActivityPicker(
     {required BuildContext context,
       ActivityType? initialActivityType,
-    DateTimeRange? initialDateTimeRange,
-    required void Function(ActivityType activity, DateTimeRange datetimeRange) onChangedActivity}) {
+      DateTimeRange? initialDateTimeRange,
+      required void Function(ActivityType activity, DateTimeRange datetimeRange) onChangedActivity}) {
   FocusScope.of(context).unfocus();
   displayBottomSheet(
       context: context,
@@ -138,8 +143,97 @@ void showActivityPicker(
       isScrollControlled: true);
 }
 
-Future<void> showBottomSheetWithNoAction(
-    {required BuildContext context, required String title, required String description}) async {
+void showActivityBottomSheet({required BuildContext context, required ActivityLogDto activity}) {
+  final activityType = ActivityType.fromString(activity.name);
+  displayBottomSheet(
+      context: context,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(
+          children: [
+            FaIcon(
+              activityType.icon,
+              color: Colors.white70,
+            ),
+            const SizedBox(
+              width: 4,
+            ),
+            Text("${activity.name} Activity".toUpperCase(),
+                style: GoogleFonts.ubuntu(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
+                textAlign: TextAlign.start),
+          ],
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        Text("You completed ${activity.duration().hmsAnalog()} of ${activity.name}",
+            style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white),
+            textAlign: TextAlign.start),
+        const SizedBox(
+          height: 16,
+        ),
+        Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          Text(
+            "Want to change activity?".toUpperCase(),
+            style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 10),
+          ),
+          Expanded(
+            child: Container(
+              height: 0.8, // height of the divider
+              width: double.infinity, // width of the divider (line thickness)
+              color: sapphireLighter, // color of the divider
+              margin: const EdgeInsets.symmetric(horizontal: 10), // add space around the divider
+            ),
+          ),
+        ]),
+        const SizedBox(
+          height: 4,
+        ),
+        ListTile(
+          dense: true,
+          contentPadding: EdgeInsets.zero,
+          leading: const FaIcon(FontAwesomeIcons.penToSquare, size: 18),
+          horizontalTitleGap: 6,
+          title:
+          Text("Edit", style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+          onTap: () {
+            Navigator.pop(context);
+            showActivityPicker(
+                initialActivityType: activityType,
+                initialDateTimeRange: DateTimeRange(start: activity.startTime, end: activity.endTime),
+                context: context,
+                onChangedActivity: (ActivityType activityType, DateTimeRange datetimeRange) {
+                  Navigator.pop(context);
+                  final updatedActivity = activity.copyWith(
+                      name: activityType.name,
+                      startTime: datetimeRange.start,
+                      endTime: datetimeRange.end,
+                      createdAt: datetimeRange.end,
+                      updatedAt: DateTime.now());
+                  Provider.of<ActivityLogController>(context, listen: false).updateLog(log: updatedActivity);
+                });
+          },
+        ),
+        ListTile(
+          dense: true,
+          contentPadding: EdgeInsets.zero,
+          leading: const FaIcon(
+            FontAwesomeIcons.trash,
+            size: 18,
+            color: Colors.red,
+          ),
+          horizontalTitleGap: 6,
+          title:
+          Text("Remove", style: GoogleFonts.ubuntu(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
+          onTap: () {
+            Navigator.pop(context);
+            Provider.of<ActivityLogController>(context, listen: false).removeLog(log: activity);
+          },
+        ),
+      ]));
+}
+
+void showBottomSheetWithNoAction(
+    {required BuildContext context, required String title, required String description}) {
   displayBottomSheet(
       context: context,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -155,15 +249,15 @@ Future<void> showBottomSheetWithNoAction(
 
 void showBottomSheetWithMultiActions(
     {required BuildContext context,
-    required String title,
-    required String description,
-    required void Function() leftAction,
-    required void Function() rightAction,
-    required String leftActionLabel,
-    required String rightActionLabel,
-    bool isLeftActionDestructive = false,
-    bool isRightActionDestructive = true,
-    Color? rightActionColor}) {
+      required String title,
+      required String description,
+      required void Function() leftAction,
+      required void Function() rightAction,
+      required String leftActionLabel,
+      required String rightActionLabel,
+      bool isLeftActionDestructive = false,
+      bool isRightActionDestructive = true,
+      Color? rightActionColor}) {
   displayBottomSheet(
       context: context,
       child: Column(
@@ -192,3 +286,4 @@ void showBottomSheetWithMultiActions(
         ],
       ));
 }
+

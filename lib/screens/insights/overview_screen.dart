@@ -108,7 +108,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     final activityLogsForTheYearByDay = groupBy(activityLogsForTheYear, (log) => log.createdAt.formattedDayAndMonth());
 
     final activityLogsForCurrentDate =
-        activityLogController.logsWhereDate(dateTime: _selectedDateTime).toList();
+    activityLogController.logsWhereDate(dateTime: _selectedDateTime).toList();
 
     /// Aggregates
     final allActivitiesForCurrentDate = [...routineLogsForCurrentDate, ...activityLogsForCurrentDate];
@@ -153,7 +153,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           const SizedBox(width: 4),
                           Text("${allActivitiesForTheYearByDay.length}",
                               style:
-                                  GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
+                              GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
                         ]),
                       ),
                       CalendarMonthsNavigator(onChangedDateTimeRange: _onChangedDateTimeRange),
@@ -246,55 +246,55 @@ class _OverviewScreenState extends State<OverviewScreen> {
                     });
               },
             ),
-            // const SizedBox(
-            //   height: 10,
-            // ),
-            // Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-            //   Text(
-            //     "Training outside the gym?".toUpperCase(),
-            //     style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 10),
-            //   ),
-            //   Expanded(
-            //     child: Container(
-            //       height: 0.8, // height of the divider
-            //       width: double.infinity, // width of the divider (line thickness)
-            //       color: sapphireLighter, // color of the divider
-            //       margin: const EdgeInsets.symmetric(horizontal: 10), // add space around the divider
-            //     ),
-            //   ),
-            // ]),
-            // const SizedBox(
-            //   height: 6,
-            // ),
-            // ListTile(
-            //   dense: true,
-            //   contentPadding: EdgeInsets.zero,
-            //   leading: const FaIcon(
-            //     FontAwesomeIcons.circlePlus,
-            //     size: 18,
-            //     color: vibrantGreen,
-            //   ),
-            //   horizontalTitleGap: 6,
-            //   title: Text("Add Activity",
-            //       style: GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 16)),
-            //   onTap: () {
-            //     Navigator.pop(context);
-            //     showActivityPicker(
-            //         context: context,
-            //         onChangedActivity: (ActivityType activity, DateTimeRange datetimeRange) {
-            //           Navigator.pop(context);
-            //           final activityLog = ActivityLogDto(
-            //               id: "id",
-            //               name: activity.name,
-            //               notes: "",
-            //               startTime: datetimeRange.start,
-            //               endTime: datetimeRange.end,
-            //               createdAt: datetimeRange.end,
-            //               updatedAt: datetimeRange.end);
-            //           Provider.of<ActivityLogController>(context, listen: false).saveLog(logDto: activityLog);
-            //         });
-            //   },
-            // ),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+              Text(
+                "Training outside the gym?".toUpperCase(),
+                style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 10),
+              ),
+              Expanded(
+                child: Container(
+                  height: 0.8, // height of the divider
+                  width: double.infinity, // width of the divider (line thickness)
+                  color: sapphireLighter, // color of the divider
+                  margin: const EdgeInsets.symmetric(horizontal: 10), // add space around the divider
+                ),
+              ),
+            ]),
+            const SizedBox(
+              height: 6,
+            ),
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(
+                FontAwesomeIcons.circlePlus,
+                size: 18,
+                color: vibrantGreen,
+              ),
+              horizontalTitleGap: 6,
+              title: Text("Add Activity",
+                  style: GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 16)),
+              onTap: () {
+                Navigator.pop(context);
+                showActivityPicker(
+                    context: context,
+                    onChangedActivity: (ActivityType activity, DateTimeRange datetimeRange) {
+                      Navigator.pop(context);
+                      final activityLog = ActivityLogDto(
+                          id: "id",
+                          name: activity.name,
+                          notes: "",
+                          startTime: datetimeRange.start,
+                          endTime: datetimeRange.end,
+                          createdAt: datetimeRange.end,
+                          updatedAt: datetimeRange.end);
+                      Provider.of<ActivityLogController>(context, listen: false).saveLog(logDto: activityLog);
+                    });
+              },
+            ),
           ]),
         ));
   }
@@ -423,11 +423,11 @@ class _LogsListView extends StatelessWidget {
       } else {
         final activityLog = log as ActivityLogDto;
         widget = ActivityLogWidget(
-            activity: activityLog,
-            trailing: activityLog.duration().hmsAnalog(),
-            onTap: () {
-              _showActivityBottomSheet(context: context, activity: activityLog);
-            }, color: sapphireDark80,);
+          activity: activityLog,
+          trailing: activityLog.duration().hmsAnalog(),
+          onTap: () {
+            showActivityBottomSheet(context: context, activity: activityLog);
+          }, color: sapphireDark80,);
       }
       return Padding(
         padding: const EdgeInsets.only(bottom: 8.0),
@@ -436,94 +436,5 @@ class _LogsListView extends StatelessWidget {
     }).toList();
 
     return Column(children: children);
-  }
-
-  Future<void> _showActivityBottomSheet({required BuildContext context, required ActivityLogDto activity}) async {
-    final activityType = ActivityType.fromString(activity.name);
-    displayBottomSheet(
-        context: context,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(
-            children: [
-              FaIcon(
-                activityType.icon,
-                color: Colors.white70,
-              ),
-              const SizedBox(
-                width: 4,
-              ),
-              Text("${activity.name} Activity".toUpperCase(),
-                  style: GoogleFonts.ubuntu(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
-                  textAlign: TextAlign.start),
-            ],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Text("You completed ${activity.duration().hmsAnalog()} of ${activity.name}",
-              style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white),
-              textAlign: TextAlign.start),
-          const SizedBox(
-            height: 16,
-          ),
-          Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-            Text(
-              "Want to change activity?".toUpperCase(),
-              style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 10),
-            ),
-            Expanded(
-              child: Container(
-                height: 0.8, // height of the divider
-                width: double.infinity, // width of the divider (line thickness)
-                color: sapphireLighter, // color of the divider
-                margin: const EdgeInsets.symmetric(horizontal: 10), // add space around the divider
-              ),
-            ),
-          ]),
-          const SizedBox(
-            height: 4,
-          ),
-          ListTile(
-            dense: true,
-            contentPadding: EdgeInsets.zero,
-            leading: const FaIcon(FontAwesomeIcons.penToSquare, size: 18),
-            horizontalTitleGap: 6,
-            title:
-                Text("Edit", style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
-            onTap: () {
-              Navigator.pop(context);
-              showActivityPicker(
-                  initialActivityType: activityType,
-                  initialDateTimeRange: DateTimeRange(start: activity.startTime, end: activity.endTime),
-                  context: context,
-                  onChangedActivity: (ActivityType activityType, DateTimeRange datetimeRange) {
-                    Navigator.pop(context);
-                    final updatedActivity = activity.copyWith(
-                        name: activityType.name,
-                        startTime: datetimeRange.start,
-                        endTime: datetimeRange.end,
-                        createdAt: datetimeRange.end,
-                        updatedAt: DateTime.now());
-                    Provider.of<ActivityLogController>(context, listen: false).updateLog(log: updatedActivity);
-                  });
-            },
-          ),
-          ListTile(
-            dense: true,
-            contentPadding: EdgeInsets.zero,
-            leading: const FaIcon(
-              FontAwesomeIcons.trash,
-              size: 18,
-              color: Colors.red,
-            ),
-            horizontalTitleGap: 6,
-            title:
-                Text("Remove", style: GoogleFonts.ubuntu(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
-            onTap: () {
-              Navigator.pop(context);
-              Provider.of<ActivityLogController>(context, listen: false).removeLog(log: activity);
-            },
-          ),
-        ]));
   }
 }
