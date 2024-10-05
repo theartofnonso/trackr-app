@@ -3,7 +3,8 @@
     "id": "FLB1",
     "name": "Block Snatch",
     "primaryMuscleGroup": "Full Body",
-    "type": "WR"
+    "type": "WR",
+    "description": "Explosive lift targeting the entire body, focusing on power and coordination."
   },
   {
     "id": "FLB2",
@@ -12,7 +13,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=Ty14ogq_Vok",
     "creditSource": "https://www.youtube.com/@crossfit",
-    "credit": "CrossFit"
+    "credit": "CrossFit",
+    "description": "Full-body movement emphasizing legs, back, and shoulder power."
   },
   {
     "id": "FLB3",
@@ -21,7 +23,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=57K1b_PcHKw",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "A combination lift that builds strength in legs, core, shoulders, and arms."
   },
   {
     "id": "FLB4",
@@ -30,7 +33,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=hFXPxXkYr_o",
     "creditSource": "https://www.youtube.com/@WodstarFitness",
-    "credit": "Wodstar"
+    "credit": "Wodstar",
+    "description": "Develops explosive power and coordination in the hips, legs, and back."
   },
   {
     "id": "FLB5",
@@ -39,7 +43,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=GvfFf4xDNqM",
     "creditSource": "https://www.youtube.com/@WodstarFitness",
-    "credit": "Wodstar"
+    "credit": "Wodstar",
+    "description": "Enhances leg drive and upper-body strength while focusing on speed."
   },
   {
     "id": "FLB6",
@@ -48,7 +53,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=TP0fh70I0Jo",
     "creditSource": "https://www.youtube.com/@WodstarFitness",
-    "credit": "Wodstar"
+    "credit": "Wodstar",
+    "description": "Targets shoulders, legs, and core with a focus on explosive lifting power."
   },
   {
     "id": "FLB7",
@@ -57,7 +63,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=IucshEToDyM",
     "creditSource": "https://www.youtube.com/@crossfit",
-    "credit": "CrossFit"
+    "credit": "CrossFit",
+    "description": "Challenges balance and strength in the shoulders, hips, and legs."
   },
   {
     "id": "FLB8",
@@ -66,7 +73,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=0WtJaq2qwqU",
     "creditSource": "https://www.youtube.com/@WodstarFitness",
-    "credit": "Wodstar"
+    "credit": "Wodstar",
+    "description": "Engages hips, glutes, and shoulders for improved power and endurance."
   },
   {
     "id": "FLB9",
@@ -75,7 +83,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=vy-4yChc7-k",
     "creditSource": "https://www.youtube.com/@WodstarFitness",
-    "credit": "Wodstar"
+    "credit": "Wodstar",
+    "description": "Boosts explosive strength and power in the legs, back, and shoulders."
   },
   {
     "id": "FLB10",
@@ -84,7 +93,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=zMjYXpn7trA",
     "creditSource": "https://www.youtube.com/@WodstarFitness",
-    "credit": "Wodstar"
+    "credit": "Wodstar",
+    "description": "Focuses on speed and coordination, targeting shoulders, hips, and core."
   },
   {
     "id": "FLB11",
@@ -93,7 +103,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=V9dJTdolGw8",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "Full-body lift enhancing power in shoulders, hips, and legs."
   },
   {
     "id": "FLB12",
@@ -102,7 +113,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=NMDPXmGJI88",
     "creditSource": "https://www.youtube.com/@WodstarFitness",
-    "credit": "Wodstar"
+    "credit": "Wodstar",
+    "description": "Builds posterior chain strength with emphasis on hips and back."
   },
   {
     "id": "FLB13",
@@ -111,7 +123,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=9Xwivh-28dc",
     "creditSource": "https://www.youtube.com/@WodstarFitness",
-    "credit": "Wodstar"
+    "credit": "Wodstar",
+    "description": "Incorporates legs and shoulders for a cardio and strength challenge."
   },
   {
     "id": "FLB14",
@@ -120,7 +133,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=L219ltL15zk",
     "creditSource": "https://www.youtube.com/@crossfit",
-    "credit": "CrossFit"
+    "credit": "CrossFit",
+    "description": "Combines squats and overhead press, targeting legs, core, and shoulders."
   },
   {
     "id": "FLB15",
@@ -129,7 +143,8 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=PBHUfBzxczU",
     "creditSource": "https://www.youtube.com/@crossfit",
-    "credit": "CrossFit"
+    "credit": "CrossFit",
+    "description": "Cardio exercise engaging the entire body with emphasis on legs and shoulders."
   },
   {
     "id": "FLB16",
@@ -138,7 +153,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=R0mhHuVrLHA",
     "creditSource": "https://www.youtube.com/@crossfit",
-    "credit": "CrossFit"
+    "credit": "CrossFit",
+    "description": "Full-body movement that builds strength and coordination, focusing on hips and shoulders."
   },
   {
     "id": "FLB17",
@@ -147,7 +163,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=ZuTKcP6vtfI",
     "creditSource": "https://www.youtube.com/@WodstarFitness",
-    "credit": "Wodstar"
+    "credit": "Wodstar",
+    "description": "Targets the core, shoulders, and legs through a dynamic kettlebell lift."
   },
   {
     "id": "FLB18",
@@ -156,7 +173,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=Pm-b2XFeABA",
     "creditSource": "https://www.youtube.com/@crossfit",
-    "credit": "CrossFit"
+    "credit": "CrossFit",
+    "description": "Builds power and endurance with emphasis on shoulders, hips, and core."
   },
   {
     "id": "FLB19",
@@ -165,7 +183,8 @@
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=1yPltRIm59E",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "Full-body cardio and strength exercise, targeting legs, core, and arms."
   },
   {
     "id": "FLB20",
@@ -174,7 +193,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=k9W6g9LvXDI",
     "creditSource": "https://www.youtube.com/@crossfit",
-    "credit": "CrossFit"
+    "credit": "CrossFit",
+    "description": "Engages the core, shoulders, and arms while providing explosive cardio."
   },
   {
     "id": "FLB21",
@@ -183,13 +203,15 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=KCe8l86-alA",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "Targets legs, shoulders, and core for strength and explosive power."
   },
   {
     "id": "FLB22",
     "name": "Landmine Squat and Press",
     "primaryMuscleGroup": "Full Body",
-    "type": "WR"
+    "type": "WR",
+    "description": "Strengthens legs, shoulders, and core through dynamic lifting movement."
   },
   {
     "id": "FLB23",
@@ -198,13 +220,15 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=E6mhG8zzYEY",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
+    "credit": "PureGym",
+    "description": "Develops leg power, core stability, and cardiovascular endurance."
   },
   {
     "id": "FLB24",
     "name": "Squat Jerk",
     "primaryMuscleGroup": "Full Body",
-    "type": "WR"
+    "type": "WR",
+    "description": "Combines strength and mobility in the legs, shoulders, and core."
   },
   {
     "id": "FLB25",
@@ -213,7 +237,8 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=GUDkOtraHHY",
     "creditSource": "https://www.youtube.com/@crossfit",
-    "credit": "CrossFit"
+    "credit": "CrossFit",
+    "description": "Focuses on lower body power and upper body strength for explosive movement."
   },
   {
     "id": "FLB26",
@@ -222,6 +247,7 @@
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=o4max7K84vw",
     "creditSource": "https://www.youtube.com/@WodstarFitness",
-    "credit": "Wodstar"
+    "credit": "Wodstar",
+    "description": "Targets shoulders, arms, and core, enhancing coordination and power."
   }
 ]

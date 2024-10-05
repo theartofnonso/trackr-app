@@ -102,13 +102,26 @@ class AmplifyTemplateRepository {
     return response.data?.items.whereType<RoutineTemplate>().toList() ?? [];
   }
 
+  Future<RoutineTemplate?> fetchTemplateCloud({required String id}) async {
+    try {
+      final request = ModelQueries.get(
+        RoutineTemplate.classType,
+        RoutineTemplateModelIdentifier(id: id),
+      );
+      final response = await Amplify.API.query(request: request).response;
+      return response.data;
+    } on ApiException catch (_) {
+      return null;
+    }
+  }
+
   void _mapAndSortTemplates({required List<RoutineTemplate> templates}) {
-    _templates = templates.map((log) {
-      final template = log.dto();
-      if (template.scheduleType == RoutineScheduleType.intervals) {
-        _rescheduleRoutineTemplates(template: template);
+    _templates = templates.map((template) {
+      final templateDto = template.dto();
+      if (templateDto.scheduleType == RoutineScheduleType.intervals) {
+        _rescheduleRoutineTemplates(template: templateDto);
       }
-      return template;
+      return templateDto;
     }).sorted((a, b) => b.createdAt.compareTo(a.createdAt));
   }
 

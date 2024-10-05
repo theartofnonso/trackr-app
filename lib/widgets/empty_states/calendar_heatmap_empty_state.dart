@@ -15,7 +15,7 @@ class CalendarHeatMapEmptyState extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(dates.first.abbreviatedMonth().toUpperCase(),
-            style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+            style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
         GridView.count(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
@@ -132,7 +132,7 @@ class _Day extends StatelessWidget {
       ),
       child: Center(
         child: Text("${date.dateTime.day}",
-            style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white70)),
+            style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white70)),
       ),
     );
   }

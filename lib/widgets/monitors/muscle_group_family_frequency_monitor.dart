@@ -12,13 +12,13 @@ class MuscleGroupFamilyFrequencyMonitor extends StatelessWidget {
   final Decoration? decoration;
 
   const MuscleGroupFamilyFrequencyMonitor({
-    Key? key,
+    super.key,
     required this.value,
     required this.width,
     required this.height,
     required this.strokeWidth,
     this.strokeCap, this.decoration,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

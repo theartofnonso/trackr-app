@@ -3,13 +3,13 @@ import 'dart:io';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mailto/mailto.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/graphQL/queries.dart';
-import 'package:tracker_app/screens/preferences/integrations_screen.dart';
 import 'package:tracker_app/screens/preferences/notifications_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/urls.dart';
@@ -76,9 +76,9 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 children: [
                   ListTile(
                     title: Text("Weight",
-                        style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+                        style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
                     subtitle:
-                        Text("Choose kg or lbs", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14)),
+                        Text("Choose kg or lbs", style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 14)),
                     trailing: SegmentedButton(
                       showSelectedIcon: false,
                       style: ButtonStyle(
@@ -125,7 +125,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       activeColor: vibrantGreen,
                       title: Text('Show calendar dates',
                           style:
-                              GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+                              GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
                       value: SharedPrefs().showCalendarDates,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                       onChanged: (bool value) {
@@ -146,14 +146,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                           title: "Notifications",
                           trailing: _notificationEnabled ? "Enabled" : "Disabled"),
                     ]),
-                  if (Platform.isIOS)
-                    Column(children: [
-                      const SizedBox(height: 8),
-                      OutlineListTile(
-                          onTap: _navigateToIntegrations, title: "Integrations", trailing: "sync workout data"),
-                    ]),
-                  const SizedBox(height: 8),
-                  OutlineListTile(onTap: _sendFeedback, title: "Feedback", trailing: "Help us improve!"),
                   const SizedBox(height: 8),
                   OutlineListTile(onTap: _visitTRKR, title: "Visit TRKR"),
                   const SizedBox(height: 8),
@@ -164,7 +156,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   Center(
                     child: Text(_appVersion,
                         style:
-                            GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+                            GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
                   ),
                 ],
               ),
@@ -182,10 +174,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               multiSelect: false,
               readOnly: true,
             )));
-  }
-
-  void _navigateToIntegrations() {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const IntegrationsScreen()));
   }
 
   void _navigateToNotificationSettings() async {
@@ -222,14 +210,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     }
   }
 
-  void _sendFeedback() async {
-    final mailtoLink = Mailto(
-      to: [email],
-      subject: 'ATTENTION: Feedback for TRKR',
-    );
-    await openUrl(url: mailtoLink.toString(), context: context);
-  }
-
   void _visitTRKR() {
     displayBottomSheet(
         context: context,
@@ -238,20 +218,24 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
             ListTile(
               dense: true,
               contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(FontAwesomeIcons.globe, size: 18),
+              horizontalTitleGap: 6,
               title: Text("On the web",
-                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
-                Navigator.of(context).pop();
+                context.pop();
                 openUrl(url: trackrWebUrl, context: context);
               },
             ),
             ListTile(
               dense: true,
               contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(FontAwesomeIcons.instagram, size: 18),
+              horizontalTitleGap: 6,
               title: Text("On Instagram",
-                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
-                Navigator.of(context).pop();
+                context.pop();
                 openUrl(url: instagramUrl, context: context);
               },
             )
@@ -267,7 +251,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         leftAction: Navigator.of(context).pop,
         rightAction: () async {
           _toggleLoadingState(message: "Logging out...");
-          Navigator.of(context).pop();
+          context.pop();
           _clearAppData();
           await Amplify.Auth.signOut();
         },
@@ -283,7 +267,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         description: "Are you sure you want to delete your account? This action cannot be undone.",
         leftAction: Navigator.of(context).pop,
         rightAction: () async {
-          Navigator.of(context).pop();
+          context.pop();
           _toggleLoadingState(message: "Deleting account...");
           final deletedExercises =
               await batchDeleteUserData(document: deleteUserExerciseData, documentKey: "deleteUserExerciseData");

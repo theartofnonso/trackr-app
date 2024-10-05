@@ -14,10 +14,10 @@ import '../../utils/routine_utils.dart';
 import '../routine/preview/set_headers/double_set_header.dart';
 import '../routine/preview/set_headers/single_set_header.dart';
 
-class RoutineLogWidget extends StatelessWidget {
+class ExerciseHistoryLogWidget extends StatelessWidget {
   final ExerciseLogDto exerciseLog;
 
-  const RoutineLogWidget({
+  const ExerciseHistoryLogWidget({
     super.key,
     required this.exerciseLog,
   });
@@ -39,7 +39,7 @@ class RoutineLogWidget extends StatelessWidget {
           child: ListTile(
             contentPadding: EdgeInsets.zero,
             dense: true,
-            title: Text(routineLog.name, style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
+            title: Text(routineLog.name, style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
             subtitle: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -50,7 +50,7 @@ class RoutineLogWidget extends StatelessWidget {
               ),
               const SizedBox(width: 1),
               Text(exerciseLog.createdAt.formattedDayAndMonthAndYear(),
-                  style: GoogleFonts.montserrat(
+                  style: GoogleFonts.ubuntu(
                       color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12), textAlign: TextAlign.center),
             ]),
           ),
@@ -78,7 +78,7 @@ class _ExerciseLogWidget extends StatelessWidget {
             ? Padding(
           padding: const EdgeInsets.only(bottom: 8.0),
           child: Text(exerciseLog.notes,
-              style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white.withOpacity(0.8), fontSize: 15)),
+              style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white.withOpacity(0.8), fontSize: 15)),
         )
             : const SizedBox.shrink(),
         switch (exerciseType) {

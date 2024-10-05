@@ -6,7 +6,8 @@ type RoutineTemplate
      @model
      @auth(
         rules: [
-          { allow: owner}
+          { allow: owner},
+          { allow: public, operations: [read], provider: iam }
         ]
      ) {
   id: ID!
@@ -20,8 +21,22 @@ type RoutineLog
      @model
      @auth(
         rules: [
-           { allow: owner }
+           { allow: owner },
            { allow: public, operations: [read], provider: iam }
+        ]
+     ) {
+  id: ID!
+  owner: String
+  data: AWSJSON!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type ActivityLog
+     @model
+     @auth(
+        rules: [
+           { allow: owner },
         ]
      ) {
   id: ID!

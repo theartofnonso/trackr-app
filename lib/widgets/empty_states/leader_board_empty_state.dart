@@ -28,9 +28,9 @@ class LeaderBoardEmptyState extends StatelessWidget {
                   ))
             ]),
             title: Text("Anon-1",
-                style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w700)),
+                style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w700)),
             subtitle: Text("No data",
-                style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w400))),
+                style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w400))),
         const SizedBox(height: 20),
         ListTile(
             leading: Stack(alignment: Alignment.center, children: [
@@ -47,9 +47,9 @@ class LeaderBoardEmptyState extends StatelessWidget {
                   ))
             ]),
             title: Text("Anon-1",
-                style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w700)),
+                style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w700)),
             subtitle: Text("No data",
-                style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w400))),
+                style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w400))),
       ],
     );
   }

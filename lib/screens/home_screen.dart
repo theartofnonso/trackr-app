@@ -10,9 +10,10 @@ import 'package:tracker_app/screens/template/routines_home.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 
+import '../controllers/activity_log_controller.dart';
+import '../controllers/exercise_controller.dart';
 import '../controllers/routine_template_controller.dart';
 import '../dtos/routine_log_dto.dart';
-import '../controllers/exercise_controller.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../enums/routine_editor_type_enums.dart';
 import '../utils/app_analytics.dart';
@@ -85,9 +86,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _loadAppData({bool firstLaunch = false}) async {
-    Provider.of<RoutineLogController>(context, listen: false).fetchLogs(firstLaunch: firstLaunch);
     Provider.of<ExerciseController>(context, listen: false).fetchExercises(firstLaunch: firstLaunch);
+    Provider.of<RoutineLogController>(context, listen: false).fetchLogs(firstLaunch: firstLaunch);
     Provider.of<RoutineTemplateController>(context, listen: false).fetchTemplates(firstLaunch: firstLaunch);
+    Provider.of<ActivityLogController>(context, listen: false).fetchLogs(firstLaunch: firstLaunch);
   }
 
   void _loadCachedLog() {

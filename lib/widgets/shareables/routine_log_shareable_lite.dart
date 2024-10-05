@@ -25,7 +25,7 @@ class RoutineLogShareableLite extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(5),
         child: RepaintBoundary(
           key: routineLogShareableLiteKey,
           child: Container(
@@ -72,8 +72,7 @@ class RoutineLogShareableLite extends StatelessWidget {
                       ListTile(
                         contentPadding: EdgeInsets.zero,
                         title: Text(log.name,
-                            style:
-                                GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+                            style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
                         subtitle: Row(
                           children: [
                             const Icon(
@@ -83,7 +82,7 @@ class RoutineLogShareableLite extends StatelessWidget {
                             ),
                             const SizedBox(width: 1),
                             Text(log.createdAt.formattedDayAndMonth(),
-                                style: GoogleFonts.montserrat(
+                                style: GoogleFonts.ubuntu(
                                     color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
                             const SizedBox(width: 10),
                             const Icon(
@@ -93,29 +92,29 @@ class RoutineLogShareableLite extends StatelessWidget {
                             ),
                             const SizedBox(width: 1),
                             Text(log.duration().hmsAnalog(),
-                                style: GoogleFonts.montserrat(
+                                style: GoogleFonts.ubuntu(
                                     color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
                           ],
                         ),
                       ),
-                      MuscleGroupFamilyChart(frequencyData: frequencyData),
+                      RichText(
+                          text: TextSpan(
+                              text:
+                                  "${log.exerciseLogs.length} ${pluralize(word: "Exercise", count: log.exerciseLogs.length)}",
+                              style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500),
+                              children: [
+                            const TextSpan(text: " "),
+                            TextSpan(
+                                text:
+                                    "x${log.exerciseLogs.fold(0, (sum, e) => sum + e.sets.length)} ${pluralize(word: "Set", count: log.exerciseLogs.fold(0, (sum, e) => sum + e.sets.length))}",
+                                style: GoogleFonts.ubuntu(
+                                    fontWeight: FontWeight.w500, color: Colors.white70, fontSize: 12))
+                          ])),
                       const SizedBox(height: 8),
+                      MuscleGroupFamilyChart(frequencyData: frequencyData),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          RichText(
-                              text: TextSpan(
-                                  text:
-                                      "${log.exerciseLogs.length} ${pluralize(word: "Exercise", count: log.exerciseLogs.length)}",
-                                  style: GoogleFonts.montserrat(fontWeight: FontWeight.w500),
-                                  children: [
-                                const TextSpan(text: " "),
-                                TextSpan(
-                                    text:
-                                        "x${log.exerciseLogs.fold(0, (sum, e) => sum + e.sets.length)} ${pluralize(word: "Set", count: log.exerciseLogs.fold(0, (sum, e) => sum + e.sets.length))}",
-                                    style: GoogleFonts.montserrat(
-                                        fontWeight: FontWeight.w500, color: Colors.white70, fontSize: 12))
-                              ])),
                           const Spacer(),
                           Padding(
                             padding: const EdgeInsets.only(top: 6.0),

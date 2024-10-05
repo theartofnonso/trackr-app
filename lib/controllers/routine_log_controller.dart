@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
@@ -29,6 +30,10 @@ class RoutineLogController extends ChangeNotifier {
   UnmodifiableMapView<ExerciseType, List<ExerciseLogDto>> get exerciseLogsByType =>
       _amplifyLogRepository.exerciseLogsByType;
 
+  Future<RoutineLog?> fetchLog({required String id}) async {
+    return await _amplifyLogRepository.fetchLogCloud(id: id);
+  }
+
   Future<void> fetchLogs({bool firstLaunch = false}) async {
     try {
       await _amplifyLogRepository.fetchLogs(firstLaunch: firstLaunch);
@@ -43,10 +48,10 @@ class RoutineLogController extends ChangeNotifier {
     return _amplifyLogRepository.queryLogsCloud(range: range);
   }
 
-  Future<RoutineLogDto?> saveLog({required RoutineLogDto logDto}) async {
+  Future<RoutineLogDto?> saveLog({required RoutineLogDto logDto, TemporalDateTime? datetime}) async {
     RoutineLogDto? savedLog;
     try {
-      savedLog = await _amplifyLogRepository.saveLog(logDto: logDto);
+      savedLog = await _amplifyLogRepository.saveLog(logDto: logDto, datetime: datetime);
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {

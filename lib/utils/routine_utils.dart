@@ -14,6 +14,7 @@ import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/empty_states/double_set_row_empty_state.dart';
 
+import '../dtos/activity_log_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/pb_dto.dart';
 import '../dtos/routine_log_dto.dart';
@@ -94,7 +95,7 @@ List<Widget> setsToWidgets(
     padding: const EdgeInsets.symmetric(vertical: 10.0),
     child: Center(
       child: Text("Timer will be available in log mode",
-          style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white70)),
+          style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white70)),
     ),
   );
 
@@ -168,6 +169,41 @@ Map<DateTimeRange, List<RoutineLogDto>> groupRoutineLogsByMonth({required List<R
 
   for (final monthRange in monthRanges) {
     map[monthRange] = routineLogs.where((log) => log.createdAt.isBetweenRange(range: monthRange)).toList();
+  }
+  return map;
+}
+
+Map<DateTimeRange, List<ActivityLogDto>> groupActivityLogsByWeek(
+    {required List<ActivityLogDto> activityLogs, DateTime? endDate}) {
+  final map = <DateTimeRange, List<ActivityLogDto>>{};
+
+  DateTime startDate = activityLogs.firstOrNull?.createdAt ?? DateTime.now();
+
+  DateTime lastDate = endDate ?? activityLogs.lastOrNull?.createdAt ?? DateTime.now();
+
+  List<DateTimeRange> weekRanges = generateWeekRangesFrom(startDate: startDate, endDate: lastDate);
+
+  for (final weekRange in weekRanges) {
+    map[weekRange] = activityLogs.where((log) => log.createdAt.isBetweenRange(range: weekRange)).toList();
+  }
+
+  return map;
+}
+
+Map<DateTimeRange, List<ActivityLogDto>> groupActivityLogsByMonth({required List<ActivityLogDto> activityLogs}) {
+
+  if(activityLogs.isEmpty) return {};
+
+  final map = <DateTimeRange, List<ActivityLogDto>>{};
+
+  DateTime startDate = activityLogs.first.createdAt;
+
+  DateTime lastDate = activityLogs.last.createdAt;
+
+  List<DateTimeRange> monthRanges = generateMonthRangesFrom(startDate: startDate, endDate: lastDate);
+
+  for (final monthRange in monthRanges) {
+    map[monthRange] = activityLogs.where((log) => log.createdAt.isBetweenRange(range: monthRange)).toList();
   }
   return map;
 }

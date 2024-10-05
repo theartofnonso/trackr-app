@@ -15,7 +15,7 @@ class PBIcon extends StatelessWidget {
     return Row(children: [
       const FaIcon(FontAwesomeIcons.solidStar, color: vibrantGreen, size: 14),
       const SizedBox(width: 4),
-      Text(label, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600))
+      Text(label, style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600))
     ]);
   }
 }

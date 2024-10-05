@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 
 import '../../../widgets/empty_states/list_view_empty_state.dart';
-import '../../../widgets/exercise_history/routine_log_widget.dart';
+import '../../../widgets/exercise_history/exercise_history_log_widget.dart';
 
 class HistoryScreen extends StatelessWidget {
   final List<ExerciseLogDto> exerciseLogs;
@@ -19,7 +19,7 @@ class HistoryScreen extends StatelessWidget {
           exerciseLogs.isNotEmpty
               ? Expanded(
             child: ListView.separated(
-                itemBuilder: (BuildContext context, int index) => RoutineLogWidget(exerciseLog: reversed[index]),
+                itemBuilder: (BuildContext context, int index) => ExerciseHistoryLogWidget(exerciseLog: reversed[index]),
                 separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
                 itemCount: exerciseLogs.length),
           )

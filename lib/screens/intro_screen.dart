@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../colors.dart';
 import '../urls.dart';
 import '../utils/uri_utils.dart';
-import '../widgets/buttons/text_button_widget.dart';
+import '../widgets/buttons/solid_button_widget.dart';
 
 class IntroScreen extends StatelessWidget {
   final ThemeData themeData;
@@ -50,7 +50,7 @@ class IntroScreen extends StatelessWidget {
               const SizedBox(height: 10),
               Text(
                 "Train better".toUpperCase(),
-                style: GoogleFonts.montserrat(
+                style: GoogleFonts.ubuntu(
                   fontWeight: FontWeight.bold,
                   fontSize: 12,
                   color: Colors.white70,
@@ -60,19 +60,19 @@ class IntroScreen extends StatelessWidget {
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: CTextButton(
+                child: SolidButtonWidget(
                   onPressed: onComplete,
                   label: "Start training better",
                   padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
                   buttonColor: vibrantGreen,
-                  textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black),
+                  textColor: Colors.black,
                 ),
               ),
               const SizedBox(height: 10),
               RichText(
                 text: TextSpan(
                   text: "Photo by".toUpperCase(),
-                  style: GoogleFonts.montserrat(
+                  style: GoogleFonts.ubuntu(
                     color: Colors.white70,
                     fontWeight: FontWeight.w600,
                     fontSize: 10,
@@ -81,7 +81,7 @@ class IntroScreen extends StatelessWidget {
                     const TextSpan(text: " "),
                     TextSpan(
                       text: "Mikhail Nilov".toUpperCase(),
-                      style: GoogleFonts.montserrat(
+                      style: GoogleFonts.ubuntu(
                         color: Colors.white,
                         fontWeight: FontWeight.w700,
                         fontSize: 10,
@@ -96,7 +96,7 @@ class IntroScreen extends StatelessWidget {
                           openUrl(url: pexelsImageUrl, context: context);
                         },
                       text: "Pexels".toUpperCase(),
-                      style: GoogleFonts.montserrat(
+                      style: GoogleFonts.ubuntu(
                           color: Colors.white,
                           decoration: TextDecoration.underline,
                           fontWeight: FontWeight.w700,

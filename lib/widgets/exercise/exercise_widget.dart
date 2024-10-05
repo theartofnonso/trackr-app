@@ -1,59 +1,78 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/colors.dart';
 
-import '../../screens/exercise/library/exercise_library_screen.dart';
+import '../../dtos/exercise_dto.dart';
 
 class ExerciseWidget extends StatelessWidget {
-  final ExerciseInLibraryDto exerciseInLibraryDto;
-  final void Function(ExerciseInLibraryDto exerciseInLibraryDto)? onSelect;
-  final void Function(ExerciseInLibraryDto exerciseInLibraryDto)? onNavigateToExercise;
+  final ExerciseDto exerciseDto;
+  final void Function(ExerciseDto exerciseInLibraryDto)? onSelect;
+  final void Function(ExerciseDto exerciseInLibraryDto)? onNavigateToExercise;
 
   const ExerciseWidget(
-      {super.key, required this.exerciseInLibraryDto, required this.onSelect, required this.onNavigateToExercise});
+      {super.key, required this.exerciseDto, required this.onSelect, required this.onNavigateToExercise});
 
   @override
   Widget build(BuildContext context) {
     final selectExercise = onSelect;
     final navigateToExercise = onNavigateToExercise;
 
-    return Theme(
-        data: ThemeData(splashColor: sapphireLight),
-        child: ListTile(
-            leading: IconButton(
-              iconSize: 24,
-              onPressed: () => navigateToExercise != null ? navigateToExercise(exerciseInLibraryDto) : null,
-              icon: const Icon(
-                Icons.timeline_rounded,
-                color: Colors.white,
+    final exercise = exerciseDto;
+    final description = exerciseDto.description ?? "";
+
+    return GestureDetector(
+      onTap: () => selectExercise != null ? selectExercise(exerciseDto) : null,
+      child: Container(
+        color: Colors.transparent,
+        width: double.infinity,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(exercise.name,
+                      style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 18)),
+                  if (description.isNotEmpty)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Text(description,
+                            style: GoogleFonts.ubuntu(
+                                color: Colors.white70, height: 1.8, fontWeight: FontWeight.w400, fontSize: 14)),
+                      ],
+                    ),
+                  const SizedBox(
+                    height: 6,
+                  ),
+                  Text(exercise.primaryMuscleGroup.name.toUpperCase(),
+                      style: GoogleFonts.ubuntu(color: Colors.orange, fontWeight: FontWeight.w600, fontSize: 12)),
+                  if (exercise.owner)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4.0),
+                      child: Text("Owner".toUpperCase(),
+                          style: GoogleFonts.ubuntu(
+                              color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 8)),
+                    ),
+                ],
               ),
             ),
-            contentPadding: EdgeInsets.zero,
-            horizontalTitleGap: 10,
-            title: Text(exerciseInLibraryDto.exercise.name,
-                style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
-            onTap: () => selectExercise != null ? selectExercise(exerciseInLibraryDto) : null,
-            subtitle: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  "Primary: ${exerciseInLibraryDto.exercise.primaryMuscleGroup.name}",
-                  style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500),
-                ),
-                if (exerciseInLibraryDto.exercise.owner)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                    margin: const EdgeInsets.only(left: 8),
-                    decoration: BoxDecoration(
-                      color: sapphireLighter,
-                      borderRadius: BorderRadius.circular(3),
-                    ),
-                    child: Text(
-                      "owner",
-                      style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 10),
-                    ),
-                  ),
-              ],
-            )));
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: GestureDetector(
+                  onTap: () => navigateToExercise != null ? navigateToExercise(exerciseDto) : null,
+                  child: const FaIcon(
+                    FontAwesomeIcons.circleArrowRight,
+                    color: Colors.white70,
+                  )),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }

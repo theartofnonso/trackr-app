@@ -7,88 +7,91 @@ import 'package:tracker_app/extensions/datetime_range_extension.dart';
 import 'package:tracker_app/strings.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
+import '../../dtos/activity_log_dto.dart';
 import '../../dtos/routine_log_dto.dart';
 
 class TrainingAndRestDaysWidget extends StatelessWidget {
   final DateTimeRange dateTimeRange;
-  final List<RoutineLogDto> logs;
+  final List<RoutineLogDto> routineLogs;
+  final List<ActivityLogDto> activityLogs;
   final int daysInMonth;
 
   const TrainingAndRestDaysWidget(
-      {super.key, required this.dateTimeRange, required this.logs, required this.daysInMonth});
+      {super.key, required this.dateTimeRange, required this.routineLogs, required this.activityLogs, required this.daysInMonth});
 
   @override
   Widget build(BuildContext context) {
-    final totalTrainingDays = groupBy(logs, (log) => log.createdAt.day).length;
-    final totalRestDays = daysInMonth - totalTrainingDays;
 
-    final averageRestDays = totalTrainingDays > 0 ? _averageDaysBetween(logs: logs, datesInMonth: dateTimeRange.dates) : totalRestDays;
+    final totalRoutineLogDays = groupBy(routineLogs, (log) => log.createdAt.day);
+    final otherActivitiesDays = groupBy(activityLogs, (log) => log.createdAt.day);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text("Training vs Rest Days".toUpperCase(),
-            style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 10),
-        Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-            decoration: BoxDecoration(
-              color: sapphireDark80,
-              border: Border.all(color: sapphireDark80.withOpacity(0.8), width: 2),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+    final totalActivitiesDays = {...totalRoutineLogDays.keys, ...otherActivitiesDays.keys}.toList().length;
+
+    final totalRestDays = daysInMonth - totalActivitiesDays;
+
+    final averageRestDays =
+    totalActivitiesDays > 0 ? _averageDaysBetween(logs: routineLogs, datesInMonth: dateTimeRange.dates) : totalRestDays;
+
+    return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+        decoration: BoxDecoration(
+          color: sapphireDark80,
+          border: Border.all(color: sapphireDark80.withOpacity(0.8), width: 2),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text("Training vs Rest Days".toUpperCase(),
+                style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 30),
+            Table(
+              border: TableBorder.symmetric(inside: BorderSide(color: sapphireLighter.withOpacity(0.4), width: 2)),
+              columnWidths: const <int, TableColumnWidth>{
+                0: FlexColumnWidth(),
+                1: FlexColumnWidth(),
+              },
               children: [
-                Table(
-                  border: TableBorder.symmetric(inside: BorderSide(color: sapphireLighter.withOpacity(0.4), width: 2)),
-                  columnWidths: const <int, TableColumnWidth>{
-                    0: FlexColumnWidth(),
-                    1: FlexColumnWidth(),
-                  },
-                  children: [
-                    TableRow(children: [
-                      TableCell(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                        child: Center(
-                          child: SleepTimeColumn(
-                              title: 'TRAINING',
-                              subTitle: "$totalTrainingDays",
-                              titleColor: logStreakColor(value: totalTrainingDays / 12),
-                              subTitleColor: logStreakColor(value: totalTrainingDays / 12)),
-                        ),
-                      ),
-                      TableCell(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                        child: Center(
-                          child: SleepTimeColumn(
-                              title: 'AVG REST',
-                              subTitle: "$averageRestDays",
-                              titleColor: Colors.white70,
-                              subTitleColor: Colors.white70),
-                        ),
-                      ),
-                      TableCell(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                        child: Center(
-                          child: SleepTimeColumn(
-                              title: 'TOTAL REST',
-                              subTitle: "$totalRestDays",
-                              titleColor: Colors.white,
-                              subTitleColor: Colors.white),
-                        ),
-                      )
-                    ]),
-                  ],
-                ),
-                const SizedBox(height: 26),
-                Text(totalTrainingDays < 12 ? lowStreak : highStreak,
-                    style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500),
-                    textAlign: TextAlign.center),
+                TableRow(children: [
+                  TableCell(
+                    verticalAlignment: TableCellVerticalAlignment.middle,
+                    child: Center(
+                      child: SleepTimeColumn(
+                          title: 'TRAINING',
+                          subTitle: "$totalActivitiesDays",
+                          titleColor: logStreakColor(value: totalActivitiesDays / 12),
+                          subTitleColor: logStreakColor(value: totalActivitiesDays / 12)),
+                    ),
+                  ),
+                  TableCell(
+                    verticalAlignment: TableCellVerticalAlignment.middle,
+                    child: Center(
+                      child: SleepTimeColumn(
+                          title: 'AVG REST',
+                          subTitle: "$averageRestDays",
+                          titleColor: Colors.white70,
+                          subTitleColor: Colors.white70),
+                    ),
+                  ),
+                  TableCell(
+                    verticalAlignment: TableCellVerticalAlignment.middle,
+                    child: Center(
+                      child: SleepTimeColumn(
+                          title: 'TOTAL REST',
+                          subTitle: "$totalRestDays",
+                          titleColor: Colors.white,
+                          subTitleColor: Colors.white),
+                    ),
+                  )
+                ]),
               ],
-            )),
-      ],
-    );
+            ),
+            const SizedBox(height: 26),
+            Text(totalActivitiesDays < 12 ? lowStreak : highStreak,
+                style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500),
+                textAlign: TextAlign.center),
+          ],
+        ));
   }
 
   int _averageDaysBetween({required List<RoutineLogDto> logs, required List<DateTime> datesInMonth}) {
@@ -96,7 +99,7 @@ class TrainingAndRestDaysWidget extends StatelessWidget {
 
     List<int> intervals = [];
 
-    final firstLogDate = logs.first.createdAt;
+    final firstLogDate = logs.first.createdAt ;
     final intervalsBeforeFirstLog = firstLogDate.day - 1;
     intervals.add(intervalsBeforeFirstLog);
 
@@ -136,7 +139,7 @@ class SleepTimeColumn extends StatelessWidget {
       children: <Widget>[
         Text(
           subTitle,
-          style: GoogleFonts.montserrat(
+          style: GoogleFonts.ubuntu(
             color: titleColor,
             fontSize: 20,
             fontWeight: FontWeight.w900,
@@ -146,7 +149,7 @@ class SleepTimeColumn extends StatelessWidget {
         Text(
           title,
           textAlign: TextAlign.center,
-          style: GoogleFonts.montserrat(
+          style: GoogleFonts.ubuntu(
             color: subTitleColor.withOpacity(0.6),
             fontSize: 10,
             fontWeight: FontWeight.bold,

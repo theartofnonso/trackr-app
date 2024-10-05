@@ -2,22 +2,22 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/controllers/exercise_controller.dart';
+import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/screens/exercise/muscle_groups_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 
 import '../../colors.dart';
 import '../../dtos/exercise_dto.dart';
 import '../../enums/exercise_type_enums.dart';
-import '../../widgets/buttons/text_button_widget.dart';
+import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/information_container.dart';
 import '../exercise/exercise_type_screen.dart';
 
 class ExerciseEditorScreen extends StatefulWidget {
-
   static const routeName = '/exercise-editor';
 
   final ExerciseDto? exercise;
@@ -48,8 +48,8 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
 
     final exercise = widget.exercise;
 
-    final inactiveStyle = GoogleFonts.montserrat(color: Colors.white70, fontSize: 22, fontWeight: FontWeight.w600);
-    final activeStyle = GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w600);
+    final inactiveStyle = GoogleFonts.ubuntu(color: Colors.white70, fontSize: 22, fontWeight: FontWeight.w600);
+    final activeStyle = GoogleFonts.ubuntu(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w600);
 
     return PopScope(
         canPop: false,
@@ -58,16 +58,17 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
             backgroundColor: sapphireDark80,
             leading: IconButton(
               icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: context.pop,
             ),
             actions: [
               exercise != null
-                  ? CTextButton(
-                      onPressed: _updateExercise,
-                      label: "Update",
-                      buttonColor: Colors.transparent,
-                      buttonBorderColor: Colors.transparent)
-                  : const SizedBox.shrink()
+                  ? GestureDetector(
+                      onTap: _updateExercise,
+                      child: Text("Update",
+                          style:
+                              GoogleFonts.ubuntu(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.white)))
+                  : const SizedBox.shrink(),
+              const SizedBox(width: 12)
             ],
           ),
           body: Container(
@@ -119,10 +120,9 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                 if (!_isInputFieldVisible && _exerciseName != null && exercise == null)
                   SizedBox(
                     width: double.infinity,
-                    child: CTextButton(
+                    child: OpacityButtonWidget(
                         onPressed: _createExercise,
                         label: "Create Exercise",
-                        textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.black),
                         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
                         buttonColor: vibrantGreen),
                   ),
@@ -189,13 +189,13 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
               filled: true,
               fillColor: sapphireDark,
               hintText: "New Exercise",
-              hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14)),
+              hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14)),
           onChanged: (value) => _updateExerciseName(value),
           cursorColor: Colors.white,
           keyboardType: TextInputType.text,
           textCapitalization: TextCapitalization.words,
           style:
-              GoogleFonts.montserrat(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+              GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
         ));
     _doneTyping();
   }
@@ -208,13 +208,12 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     if (exerciseName.isEmpty) {
       _showSnackbar("Please provide a name for this exercise");
     } else {
-
       final exercise = ExerciseDto(
           id: "", name: exerciseName, primaryMuscleGroup: _primaryMuscleGroup, type: _exerciseType, owner: true);
 
       await Provider.of<ExerciseController>(context, listen: false).saveExercise(exerciseDto: exercise);
       if (mounted) {
-        Navigator.of(context).pop();
+        context.pop();
       }
     }
   }
@@ -233,7 +232,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
       final updatedExercise = exercise.copyWith(name: exerciseName.trim(), primaryMuscleGroup: _primaryMuscleGroup);
       await Provider.of<ExerciseController>(context, listen: false).updateExercise(exercise: updatedExercise);
       if (mounted) {
-        Navigator.of(context).pop();
+        context.pop();
       }
     }
   }
@@ -244,9 +243,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
 
     final previousExercise = widget.exercise;
 
-    _primaryMuscleGroup = previousExercise != null
-        ? previousExercise.primaryMuscleGroup
-        : MuscleGroup.values.first;
+    _primaryMuscleGroup = previousExercise != null ? previousExercise.primaryMuscleGroup : MuscleGroup.values.first;
 
     _exerciseType = previousExercise != null ? previousExercise.type : ExerciseType.weights;
 

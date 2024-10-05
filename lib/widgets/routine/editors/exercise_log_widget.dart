@@ -73,34 +73,27 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         onPressed: widget.onReplaceLog,
         child: Text(
           "Replace",
-          style: GoogleFonts.montserrat(color: Colors.white),
-        ),
-      ),
-      MenuItemButton(
-        onPressed: widget.onResize,
-        child: Text(
-          widget.isMinimised ? "Expand" : "Minimise",
-          style: GoogleFonts.montserrat(color: Colors.white),
+          style: GoogleFonts.ubuntu(color: Colors.white),
         ),
       ),
       MenuItemButton(
         onPressed: widget.onAlternate,
-        child: Text("Substitutes", style: GoogleFonts.montserrat()),
+        child: Text("Substitutes", style: GoogleFonts.ubuntu()),
       ),
       widget.exerciseLogDto.superSetId.isNotEmpty
           ? MenuItemButton(
               onPressed: () => widget.onRemoveSuperSet(widget.exerciseLogDto.superSetId),
-              child: Text("Remove Super-set", style: GoogleFonts.montserrat(color: Colors.red)),
+              child: Text("Remove Super-set", style: GoogleFonts.ubuntu(color: Colors.red)),
             )
           : MenuItemButton(
               onPressed: widget.onSuperSet,
-              child: Text("Super-set", style: GoogleFonts.montserrat()),
+              child: Text("Super-set", style: GoogleFonts.ubuntu()),
             ),
       MenuItemButton(
         onPressed: widget.onRemoveLog,
         child: Text(
           "Remove",
-          style: GoogleFonts.montserrat(color: Colors.red),
+          style: GoogleFonts.ubuntu(color: Colors.red),
         ),
       ),
     ];
@@ -287,12 +280,12 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(widget.exerciseLogDto.exercise.name,
-                        style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+                        style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
                     if (superSetExerciseDto != null)
                       Column(
                         children: [
                           Text("with ${superSetExerciseDto.exercise.name}",
-                              style: GoogleFonts.montserrat(
+                              style: GoogleFonts.ubuntu(
                                   color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 12)),
                           const SizedBox(height: 10)
                         ],
@@ -332,14 +325,14 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               filled: true,
               fillColor: sapphireDark.withOpacity(0.4),
               hintText: "Enter notes",
-              hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14),
+              hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14),
             ),
             maxLines: null,
             cursorColor: Colors.white,
             keyboardType: TextInputType.text,
             textCapitalization: TextCapitalization.sentences,
             style:
-                GoogleFonts.montserrat(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+                GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
           ),
           const SizedBox(height: 12),
           switch (exerciseType) {
@@ -370,7 +363,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           if (withDurationOnly(type: exerciseType) && sets.isEmpty)
             Center(
               child: Text(_timerMessage(),
-                  style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white70)),
+                  style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white70)),
             ),
           const SizedBox(height: 8),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -382,6 +375,12 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                       visualDensity: VisualDensity.compact,
                       shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
             const Spacer(),
+            IconButton(
+              onPressed: widget.onResize,
+              icon: const Icon(Icons.close_fullscreen_rounded, color: Colors.white),
+              tooltip: 'Maximise card',
+            ),
+            const SizedBox(width: 6,),
             if (_canAddSets(type: exerciseType))
               IconButton(
                   onPressed: _addSet,
@@ -389,7 +388,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   style: ButtonStyle(
                       visualDensity: VisualDensity.compact,
                       backgroundColor: WidgetStateProperty.all(sapphireDark.withOpacity(0.2)),
-                      shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))))
+                      shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
           ])
         ],
       ),
@@ -484,37 +483,37 @@ class _OneRepMaxSliderState extends State<_OneRepMaxSlider> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(widget.exercise,
-            style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w800, fontSize: 18)),
+            style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w800, fontSize: 18)),
         const SizedBox(height: 2),
         RichText(
           text: TextSpan(
             text: "Based on your recent progress, consider",
             style:
-                GoogleFonts.montserrat(height: 1.5, color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 14),
+                GoogleFonts.ubuntu(height: 1.5, color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 14),
             children: [
               TextSpan(
                 text: "\n",
-                style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14),
+                style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14),
               ),
               TextSpan(
                 text: "$_weight${weightLabel()}",
-                style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 18),
+                style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 18),
               ),
               TextSpan(
                 text: " ",
-                style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14),
+                style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14),
               ),
               TextSpan(
                 text: "for",
-                style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 18),
+                style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 18),
               ),
               TextSpan(
                 text: " ",
-                style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14),
+                style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14),
               ),
               TextSpan(
                 text: "${_reps.toInt()} ${pluralize(word: "rep", count: _reps.toInt())}",
-                style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 16),
+                style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 16),
               )
             ],
           ),

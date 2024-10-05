@@ -295,7 +295,29 @@ List<ExerciseLogDto> exerciseLogsWithCheckedSets({required List<ExerciseLogDto> 
       .toList();
 }
 
-Map<MuscleGroupFamily, int> _muscleGroupFamilyFrequencies({required List<ExerciseLogDto> exerciseLogs}) {
+Map<MuscleGroupFamily, double> muscleGroupFamilyFrequency({required List<ExerciseLogDto> exerciseLogs}) {
+  final frequencyMap = <MuscleGroupFamily, int>{};
+
+  // Counting the occurrences of each MuscleGroup
+  for (var log in exerciseLogs) {
+    frequencyMap.update(log.exercise.primaryMuscleGroup.family, (value) => value + 1, ifAbsent: () => 1);
+  }
+
+  int totalCount = exerciseLogs.length;
+  final scaledFrequencyMap = <MuscleGroupFamily, double>{};
+
+  // Scaling the frequencies from 0 to 1
+  frequencyMap.forEach((key, value) {
+    scaledFrequencyMap[key] = value / totalCount;
+  });
+
+  final sortedEntries = scaledFrequencyMap.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+
+  final sortedFrequencyMap = LinkedHashMap<MuscleGroupFamily, double>.fromEntries(sortedEntries);
+  return sortedFrequencyMap;
+}
+
+Map<MuscleGroupFamily, int> _muscleGroupFamilyMonthlyFrequency({required List<ExerciseLogDto> exerciseLogs}) {
   final frequencyMap = <MuscleGroupFamily, int>{};
 
   final exerciseLogsByDay = groupBy(exerciseLogs, (log) => log.createdAt.day);
@@ -311,8 +333,8 @@ Map<MuscleGroupFamily, int> _muscleGroupFamilyFrequencies({required List<Exercis
   return frequencyMap;
 }
 
-Map<MuscleGroupFamily, double> weeklyScaledMuscleGroupFamilyFrequencies({required List<ExerciseLogDto> exerciseLogs}) {
-  final frequencyMap = _muscleGroupFamilyFrequencies(exerciseLogs: exerciseLogs);
+Map<MuscleGroupFamily, double> weeklyScaledMuscleGroupFamilyFrequency({required List<ExerciseLogDto> exerciseLogs}) {
+  final frequencyMap = _muscleGroupFamilyMonthlyFrequency(exerciseLogs: exerciseLogs);
 
   final scaledFrequencyMap = <MuscleGroupFamily, double>{};
 
@@ -329,8 +351,8 @@ Map<MuscleGroupFamily, double> weeklyScaledMuscleGroupFamilyFrequencies({require
   return sortedFrequencyMap;
 }
 
-double cumulativeMuscleGroupFamilyFrequencies({required List<ExerciseLogDto> exerciseLogs}) {
-  final frequencyEntries = _muscleGroupFamilyFrequencies(exerciseLogs: exerciseLogs)
+double cumulativeMuscleGroupFamilyFrequency({required List<ExerciseLogDto> exerciseLogs}) {
+  final frequencyEntries = _muscleGroupFamilyMonthlyFrequency(exerciseLogs: exerciseLogs)
       .entries
       .where((entry) => popularMuscleGroupFamilies().contains(entry.key));
 

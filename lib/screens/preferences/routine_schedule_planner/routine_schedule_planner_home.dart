@@ -45,10 +45,10 @@ class _RoutineSchedulePlannerHomeState extends State<RoutineSchedulePlannerHome>
           tabs: [
             Tab(
                 child: Text("Days",
-                    style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
+                    style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
             Tab(
                 child: Text("Frequency",
-                    style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
+                    style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
     ]),
         const SizedBox(height: 30),
         Expanded(

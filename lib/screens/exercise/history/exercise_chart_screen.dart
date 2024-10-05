@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
@@ -9,17 +10,16 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/exercise_history/personal_best_widget.dart';
 
 import '../../../colors.dart';
+import '../../../controllers/routine_log_controller.dart';
 import '../../../dtos/graph/chart_point_dto.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../enums/chart_unit_enum.dart';
 import '../../../enums/exercise_type_enums.dart';
-import '../../../controllers/routine_log_controller.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/general_utils.dart';
-import '../../../widgets/buttons/text_button_widget.dart';
+import '../../../widgets/buttons/solid_button_widget.dart';
 import '../../../widgets/chart/line_chart_widget.dart';
 import '../../logs/routine_log_screen.dart';
-import 'home_screen.dart';
 
 enum SummaryType {
   weight("Heaviest Weight"),
@@ -175,8 +175,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     if (routineLogId != null) {
       final routineLog = Provider.of<RoutineLogController>(context, listen: false).logWhereId(id: routineLogId);
       if (routineLog != null) {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => RoutineLogPreviewScreen(log: routineLog, previousRouteName: exerciseRouteName)));
+        context.push(RoutineLogScreen.routeName, extra: routineLog);
       }
     }
   }
@@ -195,7 +194,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
             width: double.infinity,
             child: Text(
               "Training ${widget.exercise.primaryMuscleGroup.name}",
-              style: GoogleFonts.montserrat(
+              style: GoogleFonts.ubuntu(
                   color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14),
               textAlign: TextAlign.center,
             ),
@@ -224,76 +223,60 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                     if (withWeightsOnly(type: widget.exercise.type))
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
-                        child: CTextButton(
+                        child: SolidButtonWidget(
                             onPressed: _heaviestWeightPerLog,
                             label: SummaryType.weight.label,
-                            textStyle: GoogleFonts.montserrat(
-                                fontWeight: FontWeight.w600, fontSize: 14, color: _textColor(type: SummaryType.weight)),
+                            textColor: _textColor(type: SummaryType.weight),
                             padding: const EdgeInsets.only(right: 5.0),
                             buttonColor: _buttonColor(type: SummaryType.weight)),
                       ),
                     if (withWeightsOnly(type: widget.exercise.type))
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
-                        child: CTextButton(
+                        child: SolidButtonWidget(
                             onPressed: _heaviestSetVolumePerLog,
                             label: SummaryType.setVolume.label,
-                            textStyle: GoogleFonts.montserrat(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14,
-                                color: _textColor(type: SummaryType.setVolume)),
+                            textColor: _textColor(type: SummaryType.setVolume),
                             padding: const EdgeInsets.only(right: 5.0),
                             buttonColor: _buttonColor(type: SummaryType.setVolume)),
                       ),
                     if (withReps(type: widget.exercise.type))
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
-                        child: CTextButton(
+                        child: SolidButtonWidget(
                             onPressed: _highestRepsForLog,
                             label: SummaryType.mostReps.label,
-                            textStyle: GoogleFonts.montserrat(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14,
-                                color: _textColor(type: SummaryType.mostReps)),
+                            textColor: _textColor(type: SummaryType.mostReps),
                             padding: const EdgeInsets.only(right: 5.0),
                             buttonColor: _buttonColor(type: SummaryType.mostReps)),
                       ),
                     if (withReps(type: widget.exercise.type))
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
-                        child: CTextButton(
+                        child: SolidButtonWidget(
                             onPressed: _totalRepsForLog,
                             label: SummaryType.sessionReps.label,
-                            textStyle: GoogleFonts.montserrat(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14,
-                                color: _textColor(type: SummaryType.sessionReps)),
+                            textColor: _textColor(type: SummaryType.sessionReps),
                             padding: const EdgeInsets.only(right: 5.0),
                             buttonColor: _buttonColor(type: SummaryType.sessionReps)),
                       ),
                     if (withDurationOnly(type: widget.exercise.type))
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
-                        child: CTextButton(
+                        child: SolidButtonWidget(
                             onPressed: _longestDurationPerLog,
                             label: SummaryType.bestTime.label,
-                            textStyle: GoogleFonts.montserrat(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14,
-                                color: _textColor(type: SummaryType.bestTime)),
+                            textColor: _textColor(type: SummaryType.bestTime),
                             padding: const EdgeInsets.only(right: 5.0),
                             buttonColor: _buttonColor(type: SummaryType.bestTime)),
                       ),
                     if (withDurationOnly(type: widget.exercise.type))
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
-                        child: CTextButton(
+                        child: SolidButtonWidget(
                             onPressed: _totalTimePerLog,
                             label: SummaryType.sessionTimes.label,
-                            textStyle: GoogleFonts.montserrat(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14,
-                                color: _textColor(type: SummaryType.sessionTimes)),
+                            textColor: _textColor(type: SummaryType.sessionTimes),
                             padding: const EdgeInsets.only(right: 5.0),
                             buttonColor: _buttonColor(type: SummaryType.sessionTimes)),
                       ),
@@ -384,10 +367,10 @@ class _MetricListTile extends StatelessWidget {
         onTap: enabled ? onTap : () {},
         tileColor: Colors.pinkAccent,
         title:
-            Text(title, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w500)),
-        subtitle: Text(subtitle, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white.withOpacity(0.7))),
+            Text(title, style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w500)),
+        subtitle: Text(subtitle, style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white.withOpacity(0.7))),
         trailing: Text(trailing,
-            style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
+            style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       ),
     );

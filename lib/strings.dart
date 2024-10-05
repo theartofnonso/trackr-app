@@ -1,10 +1,10 @@
 const overviewMonitor =
-    "Streak is based on monthly training sessions, "
+    "Streak is based on monthly fitness activities, "
     "with an optimal target of 12 days per month. "
     "Muscle is the frequency of muscle groups trained monthly.";
 
 const exploreWorkouts =
-    "Explore curated workouts, from daily splits to focusing on particular muscle groups and classic routines";
+    "Explore curated workouts, from daily splits to focusing on particular muscle groups and classic routines.";
 
 const lowAverageWorkoutDuration =
     "The recommended minimum workout duration is 30 minutes. "

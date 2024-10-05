@@ -70,7 +70,7 @@ class _LinearBar extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 8.0),
                       child: Text(muscleGroupFamily.name.toUpperCase(),
                           style:
-                              GoogleFonts.montserrat(fontWeight: FontWeight.w700, color: sapphireDark, fontSize: 12)),
+                              GoogleFonts.ubuntu(fontWeight: FontWeight.w700, color: sapphireDark, fontSize: 12)),
                     )
                   ],
                 ),
@@ -79,7 +79,7 @@ class _LinearBar extends StatelessWidget {
               SizedBox(
                 width: 32,
                 child: Text("${(frequency * 100).round()}%",
-                    style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12)),
+                    style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12)),
               ),
             ],
           ),

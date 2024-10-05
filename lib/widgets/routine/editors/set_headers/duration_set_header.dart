@@ -30,7 +30,7 @@ class DurationSetHeader extends StatelessWidget {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: editorType == RoutineEditorMode.log ? Text("TIME",
-                style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
+                style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
                 textAlign: TextAlign.center) : const SizedBox.shrink(),
           ),
           if (editorType == RoutineEditorMode.log)

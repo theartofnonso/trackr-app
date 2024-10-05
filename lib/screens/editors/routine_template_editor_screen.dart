@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
@@ -97,7 +98,8 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
           controller.replaceExerciseLog(oldExerciseId: primaryExerciseLog.id, newExercise: secondaryExercise);
         },
         onRemoved: (ExerciseDto secondaryExercise) {
-          controller.removeAlternates(primaryExerciseId: primaryExerciseLog.id, secondaryExerciseId: secondaryExercise.id);
+          controller.removeAlternates(
+              primaryExerciseId: primaryExerciseLog.id, secondaryExerciseId: secondaryExercise.id);
         },
         selectExercisesInLibrary: () {
           _closeDialog();
@@ -165,8 +167,9 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
           leftAction: _closeDialog,
           rightAction: () {
             _closeDialog();
-            _doUpdateRoutineTemplate(template: template);
-            _navigateBack();
+            final updatedTemplate = _getUpdatedRoutineTemplate(template: template);
+            _doUpdateRoutineTemplate(updatedTemplate: updatedTemplate);
+            _navigateBack(template: updatedTemplate);
           },
           leftActionLabel: 'Cancel',
           rightActionLabel: 'Update',
@@ -175,17 +178,21 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     }
   }
 
-  void _doUpdateRoutineTemplate(
-      {required RoutineTemplateDto template, List<ExerciseLogDto>? updatedExerciseLogs}) async {
+  RoutineTemplateDto _getUpdatedRoutineTemplate({required RoutineTemplateDto template, List<ExerciseLogDto>? updatedExerciseLogs}) {
     final exerciseProvider = Provider.of<ExerciseLogController>(context, listen: false);
     final exerciseLogs = updatedExerciseLogs ?? exerciseProvider.mergeExerciseLogsAndSets();
-    final templateProvider = Provider.of<RoutineTemplateController>(context, listen: false);
 
-    final updatedRoutineTemplate = template.copyWith(
+    return template.copyWith(
         name: _templateNameController.text.trim(),
         notes: _templateNotesController.text.trim(),
         exerciseTemplates: exerciseLogs,
         updatedAt: DateTime.now());
+  }
+
+  void _doUpdateRoutineTemplate({required RoutineTemplateDto updatedTemplate}) async {
+    final templateProvider = Provider.of<RoutineTemplateController>(context, listen: false);
+
+    final updatedRoutineTemplate = _getUpdatedRoutineTemplate(template: updatedTemplate);
 
     await templateProvider.updateTemplate(template: updatedRoutineTemplate);
   }
@@ -228,11 +235,11 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   }
 
   void _closeDialog() {
-    Navigator.of(context).pop();
+    context.pop();
   }
 
-  void _navigateBack() {
-    Navigator.of(context).pop();
+  void _navigateBack({RoutineTemplateDto? template}) {
+    context.pop(template);
   }
 
   /// Handle collapsed ExerciseLogWidget
@@ -334,11 +341,11 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                                 filled: true,
                                 fillColor: sapphireDark,
                                 hintText: "New workout",
-                                hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14)),
+                                hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14)),
                             cursorColor: Colors.white,
                             keyboardType: TextInputType.text,
                             textCapitalization: TextCapitalization.words,
-                            style: GoogleFonts.montserrat(
+                            style: GoogleFonts.ubuntu(
                                 fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
                           ),
                           const SizedBox(height: 10),
@@ -352,12 +359,12 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                                 filled: true,
                                 fillColor: sapphireDark,
                                 hintText: "Notes",
-                                hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14)),
+                                hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14)),
                             maxLines: null,
                             cursorColor: Colors.white,
                             keyboardType: TextInputType.text,
                             textCapitalization: TextCapitalization.sentences,
-                            style: GoogleFonts.montserrat(
+                            style: GoogleFonts.ubuntu(
                                 fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
                           ),
                         ],
@@ -413,13 +420,13 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   void initState() {
     super.initState();
 
-    _initializeProcedureData();
+    _initializeWorkoutTemplateData();
     _initializeTextControllers();
 
     _onDisposeCallback = Provider.of<ExerciseLogController>(context, listen: false).onClear;
   }
 
-  void _initializeProcedureData() {
+  void _initializeWorkoutTemplateData() {
     final exercises = widget.template?.exerciseTemplates;
     if (exercises != null && exercises.isNotEmpty) {
       final updatedExerciseLogs = exercises.map((exerciseLog) {

@@ -1,16 +1,24 @@
 import 'dart:convert';
 
 import 'exercise_log_dto.dart';
+import 'interface/log_interface.dart';
 
-class RoutineLogDto {
+class RoutineLogDto implements Log {
+  @override
   final String id;
   final String templateId;
+  @override
   final String name;
+  @override
   final String notes;
+  @override
   final DateTime startTime;
+  @override
   final DateTime endTime;
   final List<ExerciseLogDto> exerciseLogs;
+  @override
   final DateTime createdAt;
+  @override
   final DateTime updatedAt;
 
   RoutineLogDto({
@@ -25,10 +33,12 @@ class RoutineLogDto {
     required this.updatedAt,
   });
 
+  @override
   Duration duration() {
     return endTime.difference(startTime);
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -49,22 +59,25 @@ class RoutineLogDto {
     final startTime = DateTime.parse(json["startTime"]);
     final endTime = DateTime.parse(json["endTime"]);
     final exercisesJsons = json["exercises"] as List<dynamic>;
-    final exercises =
-        exercisesJsons.map((json) => ExerciseLogDto.fromJson(routineLogId: id, json: jsonDecode(json))).toList();
+    final exercises = exercisesJsons
+        .map((json) => ExerciseLogDto.fromJson(routineLogId: id, json: jsonDecode(json)))
+        .toList();
     final createdAt = DateTime.now();
     final updatedAt = DateTime.now();
     return RoutineLogDto(
-        id: id,
-        templateId: templateId,
-        name: name,
-        notes: notes,
-        startTime: startTime,
-        endTime: endTime,
-        exerciseLogs: exercises,
-        createdAt: createdAt,
-        updatedAt: updatedAt);
+      id: id,
+      templateId: templateId,
+      name: name,
+      notes: notes,
+      startTime: startTime,
+      endTime: endTime,
+      exerciseLogs: exercises,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+    );
   }
 
+  @override
   RoutineLogDto copyWith({
     String? id,
     String? templateId,
@@ -93,4 +106,8 @@ class RoutineLogDto {
   String toString() {
     return 'RoutineLogDto{id: $id, templateId: $templateId, name: $name, notes: $notes, startTime: $startTime, endTime: $endTime, exerciseLogs: $exerciseLogs, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
+
+  @override
+  // TODO: implement type
+  LogType get type => LogType.routine;
 }
