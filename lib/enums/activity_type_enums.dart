@@ -36,8 +36,9 @@ enum ActivityType {
   snowboarding("Snow Boarding", FontAwesomeIcons.personSnowboarding),
   other("Other Activity", FontAwesomeIcons.circle),
   hiking("Hiking", FontAwesomeIcons.personHiking),
-  skiing("Box Fitness", FontAwesomeIcons.personSkiing),
-  functionalFitness("Functional Fitness", FontAwesomeIcons.dumbbell);
+  skiing("Skiing", FontAwesomeIcons.personSkiing),
+  functionalFitness("Functional Fitness", FontAwesomeIcons.dumbbell),
+  weightlifting("Weight Lifting", FontAwesomeIcons.dumbbell);
 
   const ActivityType(this.name, this.icon);
 
