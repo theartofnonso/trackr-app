@@ -2,14 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/enums/full_upper_lower_core_type_enums.dart';
 import 'package:tracker_app/widgets/label_divider.dart';
 
 import '../../../../dtos/exercise_log_dto.dart';
 import '../../../colors.dart';
 import '../../../dtos/routine_template_dto.dart';
 import '../../../dtos/viewmodels/exercise_log_view_model.dart';
+import '../../../enums/muscle_group_enums.dart';
 import '../../../enums/routine_preview_type_enum.dart';
+import '../../../enums/strength_endurance_hypertrophy_enums.dart';
+import '../../../utils/dialog_utils.dart';
 import '../../../utils/routine_utils.dart';
+import '../../../widgets/ai_widgets/full_upper_lower_core_picker.dart';
+import '../../../widgets/ai_widgets/muscle_group_family_picker.dart';
+import '../../../widgets/ai_widgets/strength_endurance_hypertrophy_picker.dart';
 import '../../../widgets/backgrounds/overlay_background.dart';
 import '../../../widgets/routine/preview/exercise_log_listview.dart';
 
@@ -87,7 +94,7 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
               ),
               const SizedBox(height: 2),
               ListTile(
-                dense: true,
+                onTap: _showStrengthEnduranceHypertrophyPicker,
                 title: Text("Endurance, Strength, Hypertrophy?",
                     style: GoogleFonts.ubuntu(
                         color: Colors.black.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
@@ -98,6 +105,7 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
                 color: Colors.black.withOpacity(0.2),
               ),
               ListTile(
+                onTap: () {},
                 title: Text("Crunch workout time",
                     style: GoogleFonts.ubuntu(
                         color: Colors.black.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
@@ -108,6 +116,7 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
                 color: Colors.black.withOpacity(0.2),
               ),
               ListTile(
+                onTap: _showFullUpperLowerCorePicker,
                 title: Text("Focus on Full, Upper, Lower or Core",
                     style: GoogleFonts.ubuntu(
                         color: Colors.black.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
@@ -118,6 +127,7 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
                 color: Colors.black.withOpacity(0.2),
               ),
               ListTile(
+                onTap: _showMuscleGroupFamilyPicker,
                 title: Text("Optimise for muscle group",
                     style: GoogleFonts.ubuntu(
                         color: Colors.black.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
@@ -142,5 +152,44 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
           exerciseLog: exerciseLog,
           superSet: whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs));
     }).toList();
+  }
+
+  void _showStrengthEnduranceHypertrophyPicker() {
+    FocusScope.of(context).unfocus();
+    displayBottomSheet(
+        height: 240,
+        context: context,
+        child: StrengthEnduranceHypertrophyPicker(
+          onSelect: (StrengthEnduranceHypertrophyType type) {
+            Navigator.pop(context);
+            _toggleLoadingState();
+          },
+        ));
+  }
+
+  void _showFullUpperLowerCorePicker() {
+    FocusScope.of(context).unfocus();
+    displayBottomSheet(
+        height: 240,
+        context: context,
+        child: FullUpperLowerCorePicker(
+          onSelect: (FullUpperLowerCoreType type) {
+            Navigator.pop(context);
+            _toggleLoadingState();
+          },
+        ));
+  }
+
+  void _showMuscleGroupFamilyPicker() {
+    FocusScope.of(context).unfocus();
+    displayBottomSheet(
+        height: 240,
+        context: context,
+        child: MuscleGroupFamilyPicker(
+          onSelect: (MuscleGroupFamily family) {
+            Navigator.pop(context);
+            _toggleLoadingState();
+          },
+        ));
   }
 }
