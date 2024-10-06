@@ -75,7 +75,7 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
                 ),
                 ExerciseLogListView(
                   exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: widget.template.exerciseTemplates),
-                  previewType: RoutinePreviewType.template,
+                  previewType: RoutinePreviewType.ai,
                 ),
               ],
             ),

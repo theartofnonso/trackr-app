@@ -118,16 +118,16 @@ List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> se
       case ExerciseType.weights:
         final firstLabel = weightWithConversion(value: setDto.weightValue());
         final secondLabel = setDto.repsValue();
-        return DoubleSetRow(first: "$firstLabel", second: "$secondLabel", margin: margin, pbs: pbsForSet);
+        return DoubleSetRow(first: "$firstLabel", second: "$secondLabel", margin: margin, pbs: pbsForSet, routinePreviewType: routinePreviewType);
       case ExerciseType.bodyWeight:
         final label = setDto.repsValue();
-        return SingleSetRow(label: "$label", margin: margin);
+        return SingleSetRow(label: "$label", margin: margin, routinePreviewType: routinePreviewType);
       case ExerciseType.duration:
         if (routinePreviewType == RoutinePreviewType.template) {
           return durationTemplate;
         }
         final label = Duration(milliseconds: setDto.durationValue()).hmsAnalog();
-        return SingleSetRow(label: label, margin: margin, pbs: pbsForSet);
+        return SingleSetRow(label: label, margin: margin, pbs: pbsForSet, routinePreviewType: routinePreviewType);
     }
   })).toList();
 

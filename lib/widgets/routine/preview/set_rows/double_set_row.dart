@@ -4,18 +4,21 @@ import 'package:tracker_app/widgets/routine/preview/set_rows/set_row.dart';
 
 import '../../../../colors.dart';
 import '../../../../dtos/pb_dto.dart';
+import '../../../../enums/routine_preview_type_enum.dart';
 
 class DoubleSetRow extends StatelessWidget {
   final String first;
   final String second;
   final EdgeInsets? margin;
   final List<PBDto> pbs;
+  final RoutinePreviewType routinePreviewType;
 
-  const DoubleSetRow({super.key, required this.first, required this.second, this.margin, this.pbs = const []});
+  const DoubleSetRow({super.key, required this.first, required this.second, this.margin, this.pbs = const [], required this.routinePreviewType});
 
   @override
   Widget build(BuildContext context) {
     return SetRow(
+      routinePreviewType: routinePreviewType,
         margin: margin,
         pbs: pbs,
         child: Table(
