@@ -15,6 +15,9 @@ class SingleSetRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final color = routinePreviewType == RoutinePreviewType.ai ? Colors.black : Colors.white;
+
     return SetRow(
       routinePreviewType: routinePreviewType,
         margin: margin,
@@ -29,7 +32,7 @@ class SingleSetRow extends StatelessWidget {
                   verticalAlignment: TableCellVerticalAlignment.middle,
                   child: Text(
                     label,
-                    style: GoogleFonts.ubuntu(color: Colors.white),
+                    style: GoogleFonts.ubuntu(color: color),
                     textAlign: TextAlign.center,
                   ),
                 ),

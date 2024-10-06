@@ -41,10 +41,10 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
         body: Container(
       width: double.infinity,
       height: double.infinity,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         gradient: SweepGradient(
-          colors: [vibrantBlue.withOpacity(0.9), vibrantGreen.withOpacity(0.9)],
-          stops: const [0, 1],
+          colors: [vibrantBlue, vibrantGreen],
+          stops: [0, 1],
           center: Alignment.topRight,
         ),
       ),
@@ -57,13 +57,13 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
               Row(
                 children: [
                   IconButton(
-                    icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
+                    icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.black, size: 28),
                     onPressed: context.pop,
                   ),
                   Expanded(
                     child: Text("TRKR COACH",
                         textAlign: TextAlign.center,
-                        style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 16)),
+                        style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16)),
                   ),
                   IconButton(
                     icon: const SizedBox.shrink(),
@@ -82,46 +82,46 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
               const SizedBox(height: 20),
               LabelDivider(
                 label: "Optimise ${widget.template.name}",
-                labelColor: Colors.white70,
-                dividerColor: Colors.white70.withOpacity(0.3),
+                labelColor: Colors.black,
+                dividerColor: Colors.black.withOpacity(0.3),
               ),
               const SizedBox(height: 2),
               ListTile(
                 dense: true,
                 title: Text("Endurance, Strength, Hypertrophy?",
                     style: GoogleFonts.ubuntu(
-                        color: Colors.white.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
-                trailing: const FaIcon(FontAwesomeIcons.paperPlane, color: Colors.white, size: 18),
+                        color: Colors.black.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
+                trailing: const FaIcon(FontAwesomeIcons.paperPlane, color: Colors.black, size: 18),
               ),
               Divider(
                 height: 0.5,
-                color: Colors.white70.withOpacity(0.2),
+                color: Colors.black.withOpacity(0.2),
               ),
               ListTile(
                 title: Text("Crunch workout time",
                     style: GoogleFonts.ubuntu(
-                        color: Colors.white.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
-                trailing: const FaIcon(FontAwesomeIcons.paperPlane, color: Colors.white, size: 18),
+                        color: Colors.black.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
+                trailing: const FaIcon(FontAwesomeIcons.paperPlane, color: Colors.black, size: 18),
               ),
               Divider(
                 height: 0.5,
-                color: Colors.white70.withOpacity(0.2),
+                color: Colors.black.withOpacity(0.2),
               ),
               ListTile(
                 title: Text("Focus on Full, Upper, Lower or Core",
                     style: GoogleFonts.ubuntu(
-                        color: Colors.white.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
-                trailing: const FaIcon(FontAwesomeIcons.paperPlane, color: Colors.white, size: 18),
+                        color: Colors.black.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
+                trailing: const FaIcon(FontAwesomeIcons.paperPlane, color: Colors.black, size: 18),
               ),
               Divider(
                 height: 0.5,
-                color: Colors.white70.withOpacity(0.2),
+                color: Colors.black.withOpacity(0.2),
               ),
               ListTile(
                 title: Text("Optimise for muscle group",
                     style: GoogleFonts.ubuntu(
-                        color: Colors.white.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
-                trailing: const FaIcon(FontAwesomeIcons.paperPlane, color: Colors.white, size: 18),
+                        color: Colors.black.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
+                trailing: const FaIcon(FontAwesomeIcons.paperPlane, color: Colors.black, size: 18),
               )
             ],
           ),
