@@ -42,10 +42,19 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
       height: double.infinity,
       decoration: BoxDecoration(
         gradient: SweepGradient(
-          colors: [vibrantBlue.withOpacity(0.8), vibrantGreen.withOpacity(0.8)],
-          stops: [0, 1],
+          colors: [vibrantBlue.withOpacity(0.9), vibrantGreen.withOpacity(0.9)],
+          stops: const [0, 1],
           center: Alignment.topRight,
         ),
+        // gradient: LinearGradient(
+        //   colors: [
+        //     vibrantBlue, // Start color
+        //     vibrantGreen.withOpacity(0.8),
+        //     sapphireDark80
+        //   ],
+        //   begin: Alignment.topLeft, // Gradient starts from top-left
+        //   end: Alignment.bottomRight, // Gradient ends at bottom-right
+        // ),
       ),
       child: Stack(children: [
         SafeArea(

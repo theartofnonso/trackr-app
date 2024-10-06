@@ -22,7 +22,14 @@ class SetRow extends StatelessWidget {
     return Container(
       margin: margin,
       decoration: BoxDecoration(
-        color: sapphireDark80, // Container color
+          gradient: LinearGradient(
+            colors: [
+              Colors.blue.shade900.withOpacity(0.3),
+              Colors.green.shade900.withOpacity(0.3)
+            ],
+            begin: Alignment.topLeft, // Gradient starts from top-left
+            end: Alignment.bottomRight, // Gradient ends at bottom-right
+          ),
         borderRadius: BorderRadius.circular(5.0),
         border: pbs.isNotEmpty ? Border.all(color: sapphireLight, width: 2) : null, // Border color
         // Radius for rounded corners

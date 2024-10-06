@@ -86,11 +86,7 @@ ExerciseLogDto? whereOtherExerciseInSuperSet(
       exercise.exercise.id != firstExercise.exercise.id);
 }
 
-List<Widget> setsToWidgets(
-    {required ExerciseType type,
-    required List<SetDto> sets,
-    List<PBDto> pbs = const [],
-    required RoutinePreviewType routinePreviewType}) {
+List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> sets, List<PBDto> pbs = const [], required RoutinePreviewType routinePreviewType}) {
   final durationTemplate = Padding(
     padding: const EdgeInsets.symmetric(vertical: 10.0),
     child: Center(
