@@ -11,7 +11,7 @@ import 'package:tracker_app/widgets/timers/datetime_range_picker.dart';
 import '../colors.dart';
 import '../controllers/activity_log_controller.dart';
 import '../dtos/activity_log_dto.dart';
-import '../widgets/activity/activity_picker.dart';
+import '../widgets/other_activity/activity_picker.dart';
 import '../widgets/buttons/opacity_button_widget.dart';
 import '../widgets/buttons/solid_button_widget.dart';
 import '../widgets/timers/hour_timer_picker.dart';
