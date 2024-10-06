@@ -8,7 +8,7 @@ import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/extensions/routine_template_extension.dart';
 import 'package:tracker_app/screens/template/templates/routine_template_ai_context_screen.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
-import 'package:tracker_app/widgets/information_container_lite.dart';
+import 'package:tracker_app/widgets/information_containers/information_container_lite.dart';
 
 import '../../../../dtos/exercise_log_dto.dart';
 import '../../../colors.dart';

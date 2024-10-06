@@ -25,7 +25,7 @@ import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/routine_utils.dart';
-import '../../widgets/information_container_lite.dart';
+import '../../widgets/information_containers/information_container_lite.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
 
 class RoutineLogScreen extends StatefulWidget {

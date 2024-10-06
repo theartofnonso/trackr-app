@@ -9,7 +9,7 @@ import 'package:tracker_app/strings.dart';
 
 import '../../../dtos/routine_template_dto.dart';
 import '../../../enums/routine_template_library_workout_enum.dart';
-import '../../../widgets/information_container_lite.dart';
+import '../../../widgets/information_containers/information_container_lite.dart';
 
 class RoutineLibrary {
   final RoutineTemplateDto template;

@@ -6,7 +6,7 @@ import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/other_activity/activity_selector.dart';
-import 'package:tracker_app/widgets/information_container_lite.dart';
+import 'package:tracker_app/widgets/information_containers/information_container_lite.dart';
 
 import '../../enums/activity_type_enums.dart';
 import '../../strings/datetime_range_picker_strings.dart';

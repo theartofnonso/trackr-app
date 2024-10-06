@@ -14,7 +14,7 @@ import '../../colors.dart';
 import '../../dtos/exercise_dto.dart';
 import '../../enums/exercise_type_enums.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
-import '../../widgets/information_container.dart';
+import '../../widgets/information_containers/information_container.dart';
 import '../exercise/exercise_type_screen.dart';
 
 class ExerciseEditorScreen extends StatefulWidget {
