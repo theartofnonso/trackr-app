@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/extensions/routine_template_extension.dart';
+import 'package:tracker_app/screens/template/templates/routine_template_ai_context_screen.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:tracker_app/widgets/information_container_lite.dart';
 
@@ -24,6 +25,7 @@ import '../../../utils/navigation_utils.dart';
 import '../../../utils/routine_utils.dart';
 import '../../../widgets/backgrounds/overlay_background.dart';
 import '../../../widgets/routine/preview/exercise_log_listview.dart';
+import '../../../widgets/trkr_widgets/trkr_coach_widget.dart';
 import '../../preferences/routine_schedule_planner/routine_schedule_planner_home.dart';
 
 class RoutineTemplateScreen extends StatefulWidget {
@@ -139,11 +141,19 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           backgroundColor: sapphireDark80,
           leading: IconButton(
             icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-            onPressed: () => context.pop(),
+            onPressed: context.pop,
           ),
+          centerTitle: true,
           title: Text(template.name,
               style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
           actions: [
+            GestureDetector(
+              onTap: () {
+                navigateWithSlideTransition(
+                    context: context, child: RoutineTemplateAIContextScreen(template: template));
+              },
+              child: const TRKRCoachWidget(),
+            ),
             _isOwner
                 ? MenuAnchor(
                     style: MenuStyle(
