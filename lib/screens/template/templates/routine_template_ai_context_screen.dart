@@ -157,7 +157,7 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
   void _showStrengthEnduranceHypertrophyPicker() {
     FocusScope.of(context).unfocus();
     displayBottomSheet(
-        height: 240,
+        isScrollControlled: true,
         context: context,
         child: StrengthEnduranceHypertrophyPicker(
           onSelect: (StrengthEnduranceHypertrophyType type) {
@@ -170,7 +170,7 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
   void _showFullUpperLowerCorePicker() {
     FocusScope.of(context).unfocus();
     displayBottomSheet(
-        height: 240,
+        isScrollControlled: true,
         context: context,
         child: FullUpperLowerCorePicker(
           onSelect: (FullUpperLowerCoreType type) {
@@ -183,7 +183,7 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
   void _showMuscleGroupFamilyPicker() {
     FocusScope.of(context).unfocus();
     displayBottomSheet(
-        height: 240,
+        isScrollControlled: true,
         context: context,
         child: MuscleGroupFamilyPicker(
           onSelect: (MuscleGroupFamily family) {

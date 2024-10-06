@@ -2,9 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
-import 'package:tracker_app/enums/full_upper_lower_core_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
-import 'package:tracker_app/enums/strength_endurance_hypertrophy_enums.dart';
 
 import '../buttons/opacity_button_widget.dart';
 
@@ -35,7 +33,74 @@ class _MuscleGroupFamilyPickerState extends State<MuscleGroupFamilyPicker> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Expanded(
+        const SizedBox(height: 8),
+        RichText(
+            text:
+                TextSpan(text: "Legs".toUpperCase(), style: GoogleFonts.ubuntu(fontWeight: FontWeight.w700), children: [
+          const TextSpan(text: " "),
+          TextSpan(
+              text: "builds strength, stability, and power for improved daily movement",
+              style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white70)),
+          const TextSpan(text: "\n"),
+          const TextSpan(text: "\n"),
+          TextSpan(text: "Back".toUpperCase()),
+          const TextSpan(text: " "),
+          TextSpan(
+              text: "enhance posture, support spine health, and improve pulling strength.",
+              style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white70)),
+          const TextSpan(text: "\n"),
+          const TextSpan(text: "\n"),
+          TextSpan(text: "Arms".toUpperCase()),
+          const TextSpan(text: " "),
+          TextSpan(
+              text: "boost upper body strength and endurance for functional tasks.",
+              style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white70)),
+          const TextSpan(text: "\n"),
+          const TextSpan(text: "\n"),
+          TextSpan(text: "Chest".toUpperCase()),
+          const TextSpan(text: " "),
+          TextSpan(
+              text: "strengthens pushing power and improves upper body balance.",
+              style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white70)),
+          const TextSpan(text: "\n"),
+          const TextSpan(text: "\n"),
+          TextSpan(text: "Shoulders".toUpperCase()),
+          const TextSpan(text: " "),
+          TextSpan(
+              text: "improves mobility, stability, and upper body strength.",
+              style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white70)),
+          const TextSpan(text: "\n"),
+          const TextSpan(text: "\n"),
+          TextSpan(text: "Core".toUpperCase()),
+          const TextSpan(text: " "),
+          TextSpan(
+              text: "boosts balance, posture, and injury prevention.",
+              style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white70)),
+          const TextSpan(text: "\n"),
+          const TextSpan(text: "\n"),
+          TextSpan(text: "Neck".toUpperCase()),
+          const TextSpan(text: " "),
+          TextSpan(
+              text: "improves posture and reduces risk of neck strain.",
+              style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white70)),
+          const TextSpan(text: "\n"),
+          const TextSpan(text: "\n"),
+          TextSpan(text: "Full Body".toUpperCase()),
+          const TextSpan(text: " "),
+          TextSpan(
+              text: "promotes balanced muscle development and calorie burn.",
+              style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white70)),
+          const TextSpan(text: "\n"),
+          const TextSpan(text: "\n"),
+          TextSpan(text: "Cardio".toUpperCase()),
+          const TextSpan(text: " "),
+          TextSpan(
+              text: "improves heart health, endurance, and boosting energy levels.",
+              style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white70)),
+        ])),
+        const SizedBox(height: 6),
+        SizedBox(
+          height: 140,
           child: CupertinoPicker(
             scrollController: _scrollController,
             itemExtent: 38.0,
@@ -49,8 +114,8 @@ class _MuscleGroupFamilyPickerState extends State<MuscleGroupFamilyPicker> {
         const SizedBox(height: 10),
         OpacityButtonWidget(
             onPressed: () {
-                    widget.onSelect(type);
-                  },
+              widget.onSelect(type);
+            },
             label: "Select",
             buttonColor: vibrantGreen,
             padding: const EdgeInsets.all(10.0))

@@ -33,7 +33,35 @@ class _StrengthEnduranceHypertrophyPickerState extends State<StrengthEnduranceHy
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Expanded(
+        const SizedBox(height: 8),
+        RichText(
+            text: TextSpan(
+                text: "Strength".toUpperCase(),
+                style: GoogleFonts.ubuntu(fontWeight: FontWeight.w700),
+                children: [
+              const TextSpan(text: " "),
+              TextSpan(
+                  text:
+                      "exercises boosts muscle growth, strengthens bones, enhances metabolism, improves functional fitness, and reduces injury risk.",
+                  style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white70)),
+              const TextSpan(text: "\n"),
+              const TextSpan(text: "\n"),
+              TextSpan(text: "Endurance".toUpperCase()),
+              const TextSpan(text: " "),
+              TextSpan(
+                  text: "improves stamina, cardiovascular health, and overall fitness",
+                  style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white70)),
+              const TextSpan(text: "\n"),
+              const TextSpan(text: "\n"),
+              TextSpan(text: "Hypertrophy".toUpperCase()),
+              const TextSpan(text: " "),
+              TextSpan(
+                  text: "improves functional fitness, and reduces injury risk.",
+                  style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white70)),
+            ])),
+        const SizedBox(height: 6),
+        SizedBox(
+          height: 100,
           child: CupertinoPicker(
             scrollController: _scrollController,
             itemExtent: 38.0,
@@ -47,8 +75,8 @@ class _StrengthEnduranceHypertrophyPickerState extends State<StrengthEnduranceHy
         const SizedBox(height: 10),
         OpacityButtonWidget(
             onPressed: () {
-                    widget.onSelect(type);
-                  },
+              widget.onSelect(type);
+            },
             label: "Select",
             buttonColor: vibrantGreen,
             padding: const EdgeInsets.all(10.0))
