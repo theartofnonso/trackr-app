@@ -153,7 +153,7 @@ class _RoutineWidget extends StatelessWidget {
                 ),
                 const Spacer(),
                 Text(
-                  "${template.exerciseTemplates.length} Exercises",
+                  "${template.exerciseTemplates.length} ${pluralize(word: "Exercise", count: template.exerciseTemplates.length)}",
                   style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w500),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
