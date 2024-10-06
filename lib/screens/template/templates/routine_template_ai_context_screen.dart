@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/widgets/label_divider.dart';
 
 import '../../../../dtos/exercise_log_dto.dart';
 import '../../../colors.dart';
@@ -55,20 +56,18 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
             children: [
               Row(
                 children: [
-                  SizedBox(
-                    width: 20,
-                    child: IconButton(
-                      icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
-                      onPressed: context.pop,
-                    ),
+                  IconButton(
+                    icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
+                    onPressed: context.pop,
                   ),
                   Expanded(
                     child: Text("TRKR COACH",
                         textAlign: TextAlign.center,
                         style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 16)),
                   ),
-                  const SizedBox(
-                    width: 20,
+                  IconButton(
+                    icon: const SizedBox.shrink(),
+                    onPressed: context.pop,
                   )
                 ],
               ),
@@ -80,9 +79,16 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
                   ),
                 ),
               ),
+              const SizedBox(height: 20),
+              LabelDivider(
+                label: "Optimise ${widget.template.name}",
+                labelColor: Colors.white70,
+                dividerColor: Colors.white70.withOpacity(0.3),
+              ),
+              const SizedBox(height: 2),
               ListTile(
                 dense: true,
-                title: Text("Optimise for Endurance",
+                title: Text("Endurance, Strength, Hypertrophy?",
                     style: GoogleFonts.ubuntu(
                         color: Colors.white.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
                 trailing: const FaIcon(FontAwesomeIcons.paperPlane, color: Colors.white, size: 18),
@@ -92,7 +98,7 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
                 color: Colors.white70.withOpacity(0.2),
               ),
               ListTile(
-                title: Text("Optimise for Strength",
+                title: Text("Crunch workout time",
                     style: GoogleFonts.ubuntu(
                         color: Colors.white.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
                 trailing: const FaIcon(FontAwesomeIcons.paperPlane, color: Colors.white, size: 18),
@@ -102,7 +108,17 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
                 color: Colors.white70.withOpacity(0.2),
               ),
               ListTile(
-                title: Text("Optimise for Hypertrophy",
+                title: Text("Focus on Full, Upper, Lower or Core",
+                    style: GoogleFonts.ubuntu(
+                        color: Colors.white.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
+                trailing: const FaIcon(FontAwesomeIcons.paperPlane, color: Colors.white, size: 18),
+              ),
+              Divider(
+                height: 0.5,
+                color: Colors.white70.withOpacity(0.2),
+              ),
+              ListTile(
+                title: Text("Optimise for muscle group",
                     style: GoogleFonts.ubuntu(
                         color: Colors.white.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
                 trailing: const FaIcon(FontAwesomeIcons.paperPlane, color: Colors.white, size: 18),

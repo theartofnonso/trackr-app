@@ -31,6 +31,7 @@ import '../../utils/shareables_utils.dart';
 import '../../widgets/backgrounds/overlay_background.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/calendar/calendar.dart';
+import '../../widgets/label_divider.dart';
 import '../../widgets/monitors/overview_monitor.dart';
 import '../../widgets/routine/preview/activity_log_widget.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
@@ -77,7 +78,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     /// Routine Logs
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
@@ -107,8 +107,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     final activityLogsForTheYearByDay = groupBy(activityLogsForTheYear, (log) => log.createdAt.formattedDayAndMonth());
 
-    final activityLogsForCurrentDate =
-    activityLogController.logsWhereDate(dateTime: _selectedDateTime).toList();
+    final activityLogsForCurrentDate = activityLogController.logsWhereDate(dateTime: _selectedDateTime).toList();
 
     /// Aggregates
     final allActivitiesForCurrentDate = [...routineLogsForCurrentDate, ...activityLogsForCurrentDate];
@@ -153,7 +152,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           const SizedBox(width: 4),
                           Text("${allActivitiesForTheYearByDay.length}",
                               style:
-                              GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
+                                  GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
                         ]),
                       ),
                       CalendarMonthsNavigator(onChangedDateTimeRange: _onChangedDateTimeRange),
@@ -250,20 +249,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
             const SizedBox(
               height: 10,
             ),
-            Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-              Text(
-                "Training outside the gym?".toUpperCase(),
-                style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 10),
-              ),
-              Expanded(
-                child: Container(
-                  height: 0.8, // height of the divider
-                  width: double.infinity, // width of the divider (line thickness)
-                  color: sapphireLighter, // color of the divider
-                  margin: const EdgeInsets.symmetric(horizontal: 10), // add space around the divider
-                ),
-              ),
-            ]),
+            const LabelDivider(
+              label: "Training outside the gym?",
+              labelColor: Colors.white70,
+              dividerColor: sapphireLighter,
+            ),
             const SizedBox(
               height: 6,
             ),
@@ -412,7 +402,6 @@ class _LogsListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final descendingLogs = logs.sorted((a, b) => a.createdAt.compareTo(b.createdAt)).toList();
 
     final children = descendingLogs.map((log) {
@@ -428,7 +417,9 @@ class _LogsListView extends StatelessWidget {
           trailing: activityLog.duration().hmsAnalog(),
           onTap: () {
             showActivityBottomSheet(context: context, activity: activityLog);
-          }, color: sapphireDark80,);
+          },
+          color: sapphireDark80,
+        );
       }
       return Padding(
         padding: const EdgeInsets.only(bottom: 8.0),
