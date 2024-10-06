@@ -80,6 +80,33 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
                   ),
                 ),
               ),
+              ListTile(
+                dense: true,
+                title: Text("Optimise for Endurance",
+                    style: GoogleFonts.ubuntu(
+                        color: Colors.white.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
+                trailing: const FaIcon(FontAwesomeIcons.paperPlane, color: Colors.white, size: 18),
+              ),
+              Divider(
+                height: 0.5,
+                color: Colors.white70.withOpacity(0.2),
+              ),
+              ListTile(
+                title: Text("Optimise for Strength",
+                    style: GoogleFonts.ubuntu(
+                        color: Colors.white.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
+                trailing: const FaIcon(FontAwesomeIcons.paperPlane, color: Colors.white, size: 18),
+              ),
+              Divider(
+                height: 0.5,
+                color: Colors.white70.withOpacity(0.2),
+              ),
+              ListTile(
+                title: Text("Optimise for Hypertrophy",
+                    style: GoogleFonts.ubuntu(
+                        color: Colors.white.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
+                trailing: const FaIcon(FontAwesomeIcons.paperPlane, color: Colors.white, size: 18),
+              )
             ],
           ),
         ),
