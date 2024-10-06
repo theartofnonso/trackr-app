@@ -50,35 +50,37 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
       child: Stack(children: [
         SafeArea(
           minimum: const EdgeInsets.all(10.0),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 20,
-                      child: IconButton(
-                        icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
-                        onPressed: context.pop,
-                      ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  SizedBox(
+                    width: 20,
+                    child: IconButton(
+                      icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
+                      onPressed: context.pop,
                     ),
-                    Expanded(
-                      child: Text("TRKR COACH",
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 16)),
-                    ),
-                    const SizedBox(
-                      width: 20,
-                    )
-                  ],
+                  ),
+                  Expanded(
+                    child: Text("TRKR COACH",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 16)),
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  )
+                ],
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: ExerciseLogListView(
+                    exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: widget.template.exerciseTemplates),
+                    previewType: RoutinePreviewType.ai,
+                  ),
                 ),
-                ExerciseLogListView(
-                  exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: widget.template.exerciseTemplates),
-                  previewType: RoutinePreviewType.ai,
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
         if (_loading) const OverlayBackground()
