@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../colors.dart';
-
 class LabelDivider extends StatelessWidget {
   final String label;
   final Color labelColor;
