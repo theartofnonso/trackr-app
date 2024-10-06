@@ -46,15 +46,6 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
           stops: const [0, 1],
           center: Alignment.topRight,
         ),
-        // gradient: LinearGradient(
-        //   colors: [
-        //     vibrantBlue, // Start color
-        //     vibrantGreen.withOpacity(0.8),
-        //     sapphireDark80
-        //   ],
-        //   begin: Alignment.topLeft, // Gradient starts from top-left
-        //   end: Alignment.bottomRight, // Gradient ends at bottom-right
-        // ),
       ),
       child: Stack(children: [
         SafeArea(
