@@ -41,13 +41,10 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
       width: double.infinity,
       height: double.infinity,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            vibrantBlue.withOpacity(0.6),
-            vibrantGreen.withOpacity(0.6),
-          ],
-          begin: Alignment.center, // Gradient starts from top-left
-          end: Alignment.bottomRight, // Gradient ends at bottom-right
+        gradient: SweepGradient(
+          colors: [vibrantBlue.withOpacity(0.8), vibrantGreen.withOpacity(0.8)],
+          stops: [0, 1],
+          center: Alignment.topRight,
         ),
       ),
       child: Stack(children: [
@@ -69,7 +66,7 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
                     Expanded(
                       child: Text("TRKR COACH",
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+                          style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 16)),
                     ),
                     const SizedBox(
                       width: 20,
