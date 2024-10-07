@@ -22,7 +22,7 @@ import '../dtos/routine_template_dto.dart';
 import '../dtos/set_dto.dart';
 import '../enums/routine_schedule_type_enums.dart';
 import '../enums/template_changes_type_message_enums.dart';
-import '../screens/reorder_exercises_screen.dart';
+import '../screens/exercise/reorder_exercises_screen.dart';
 import 'exercise_logs_utils.dart';
 import 'general_utils.dart';
 import '../widgets/empty_states/single_set_row_empty_state.dart';
