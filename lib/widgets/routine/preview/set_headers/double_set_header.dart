@@ -12,8 +12,6 @@ class DoubleSetHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final color = routinePreviewType == RoutinePreviewType.ai ? Colors.black : Colors.white;
-
     return Table(
       columnWidths: const <int, TableColumnWidth>{
         0: FlexColumnWidth(),
@@ -23,13 +21,13 @@ class DoubleSetHeader extends StatelessWidget {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: Text(firstLabel,
-                style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: color, fontSize: 12),
+                style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 12),
                 textAlign: TextAlign.center),
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: Text(secondLabel,
-                style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: color, fontSize: 12),
+                style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 12),
                 textAlign: TextAlign.center),
           ),
         ]),

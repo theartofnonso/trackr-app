@@ -13,8 +13,6 @@ class SingleSetHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final color = routinePreviewType == RoutinePreviewType.ai ? Colors.black : Colors.white;
-
     return Table(
       columnWidths: const <int, TableColumnWidth>{
         0: FlexColumnWidth(),
@@ -24,7 +22,7 @@ class SingleSetHeader extends StatelessWidget {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: Text(label,
-                style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: color, fontSize: 12),
+                style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 12),
                 textAlign: textAlign),
           ),
         ]),

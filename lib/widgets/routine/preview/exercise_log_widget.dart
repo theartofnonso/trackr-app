@@ -36,8 +36,6 @@ class ExerciseLogWidget extends StatelessWidget {
 
     final pbs = calculatePBs(pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseType, exerciseLog: exerciseLog);
 
-    final color = previewType == RoutinePreviewType.ai ? Colors.black : Colors.white;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -49,7 +47,7 @@ class ExerciseLogWidget extends StatelessWidget {
                 .push(MaterialPageRoute(builder: (context) => HomeScreen(exercise: exerciseLog.exercise)));
           },
           title: Text(exerciseLog.exercise.name,
-              style: GoogleFonts.ubuntu(color: color, fontSize: 14, fontWeight: FontWeight.w500),
+              style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
               textAlign: TextAlign.center),
           subtitle: otherSuperSet != null
               ? Padding(

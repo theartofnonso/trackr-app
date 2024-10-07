@@ -17,7 +17,7 @@ class DoubleSetRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = routinePreviewType == RoutinePreviewType.ai ? Colors.black : Colors.white;
+
     return SetRow(
       routinePreviewType: routinePreviewType,
         margin: margin,
@@ -32,12 +32,12 @@ class DoubleSetRow extends StatelessWidget {
               TableRow(children: [
                 TableCell(
                   verticalAlignment: TableCellVerticalAlignment.middle,
-                  child: Text(first, style: GoogleFonts.ubuntu(color: color), textAlign: TextAlign.center),
+                  child: Text(first, style: GoogleFonts.ubuntu(color: Colors.white), textAlign: TextAlign.center),
                 ),
                 TableCell(
                     verticalAlignment: TableCellVerticalAlignment.middle,
                     child:
-                        Text(second, style: GoogleFonts.ubuntu(color: color), textAlign: TextAlign.center))
+                        Text(second, style: GoogleFonts.ubuntu(color: Colors.white), textAlign: TextAlign.center))
               ]),
             ]));
   }

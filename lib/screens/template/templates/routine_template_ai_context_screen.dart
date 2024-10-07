@@ -6,7 +6,6 @@ import 'package:tracker_app/enums/full_upper_lower_core_type_enums.dart';
 import 'package:tracker_app/widgets/label_divider.dart';
 
 import '../../../../dtos/exercise_log_dto.dart';
-import '../../../colors.dart';
 import '../../../dtos/routine_template_dto.dart';
 import '../../../dtos/viewmodels/exercise_log_view_model.dart';
 import '../../../enums/muscle_group_enums.dart';
@@ -48,10 +47,10 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
         body: Container(
       width: double.infinity,
       height: double.infinity,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: SweepGradient(
-          colors: [vibrantBlue, vibrantGreen],
-          stops: [0, 1],
+          colors: [Colors.green.shade900, Colors.blue.shade900],
+          stops: const [0, 1],
           center: Alignment.topRight,
         ),
       ),
@@ -64,13 +63,13 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
               Row(
                 children: [
                   IconButton(
-                    icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.black, size: 28),
+                    icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
                     onPressed: context.pop,
                   ),
                   Expanded(
                     child: Text("TRKR COACH",
                         textAlign: TextAlign.center,
-                        style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16)),
+                        style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 16)),
                   ),
                   IconButton(
                     icon: const SizedBox.shrink(),
@@ -89,49 +88,49 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
               const SizedBox(height: 20),
               LabelDivider(
                 label: "Optimise ${widget.template.name}",
-                labelColor: Colors.black,
-                dividerColor: Colors.black.withOpacity(0.3),
+                labelColor: Colors.white,
+                dividerColor: Colors.white.withOpacity(0.3),
               ),
               const SizedBox(height: 2),
               ListTile(
                 onTap: _showStrengthEnduranceHypertrophyPicker,
                 title: Text("Endurance, Strength, Hypertrophy?",
                     style: GoogleFonts.ubuntu(
-                        color: Colors.black.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
-                trailing: const FaIcon(FontAwesomeIcons.paperPlane, color: Colors.black, size: 18),
+                        color: Colors.white.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
+                trailing: const FaIcon(FontAwesomeIcons.paperPlane, color: Colors.white, size: 18),
               ),
               Divider(
                 height: 0.5,
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.white.withOpacity(0.2),
               ),
               ListTile(
                 onTap: () {},
                 title: Text("Crunch workout time",
                     style: GoogleFonts.ubuntu(
-                        color: Colors.black.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
-                trailing: const FaIcon(FontAwesomeIcons.paperPlane, color: Colors.black, size: 18),
+                        color: Colors.white.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
+                trailing: const FaIcon(FontAwesomeIcons.paperPlane, color: Colors.white, size: 18),
               ),
               Divider(
                 height: 0.5,
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.white.withOpacity(0.2),
               ),
               ListTile(
                 onTap: _showFullUpperLowerCorePicker,
                 title: Text("Focus on Full, Upper, Lower or Core",
                     style: GoogleFonts.ubuntu(
-                        color: Colors.black.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
-                trailing: const FaIcon(FontAwesomeIcons.paperPlane, color: Colors.black, size: 18),
+                        color: Colors.white.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
+                trailing: const FaIcon(FontAwesomeIcons.paperPlane, color: Colors.white, size: 18),
               ),
               Divider(
                 height: 0.5,
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.white.withOpacity(0.2),
               ),
               ListTile(
                 onTap: _showMuscleGroupFamilyPicker,
                 title: Text("Optimise for muscle group",
                     style: GoogleFonts.ubuntu(
-                        color: Colors.black.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
-                trailing: const FaIcon(FontAwesomeIcons.paperPlane, color: Colors.black, size: 18),
+                        color: Colors.white.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
+                trailing: const FaIcon(FontAwesomeIcons.paperPlane, color: Colors.white, size: 18),
               )
             ],
           ),

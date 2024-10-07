@@ -15,24 +15,17 @@ class SetRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    final pbsForSet = pbs.map((pb) => Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 6.0),
-      child: PBIcon(color: sapphireLight, label: pb.pb.name),
-    )).toList();
+    final pbsForSet = pbs
+        .map((pb) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6.0),
+              child: PBIcon(color: sapphireLight, label: pb.pb.name),
+            ))
+        .toList();
 
     return Container(
       margin: margin,
       decoration: BoxDecoration(
-        color: routinePreviewType != RoutinePreviewType.ai ? sapphireDark80 : null,
-          gradient: routinePreviewType == RoutinePreviewType.ai ? LinearGradient(
-            colors: [
-              Colors.blue.shade900.withOpacity(0.3),
-              Colors.green.shade900.withOpacity(0.3)
-            ],
-            begin: Alignment.topLeft, // Gradient starts from top-left
-            end: Alignment.bottomRight, // Gradient ends at bottom-right
-          ) : null,
+        color: routinePreviewType != RoutinePreviewType.ai ? sapphireDark80 : Colors.white.withOpacity(0.1),
         borderRadius: BorderRadius.circular(5.0),
         border: pbs.isNotEmpty ? Border.all(color: sapphireLight, width: 2) : null, // Border color
         // Radius for rounded corners
