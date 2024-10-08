@@ -73,16 +73,19 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
                 ],
               ),
               const SizedBox(height: 8,),
-              Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                const TRKRCoachWidget(),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    "Hey Nonso, it looks like TRKR couldn't find your Recovery score for today. Is there a specific time or metric you're curious about? Let TRKR know so it can help you better.",
-                    style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w500),
-                  ),
-                )
-              ]),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  const TRKRCoachWidget(),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      "Hey Nonso, it looks like TRKR couldn't find your Recovery score for today. Is there a specific time or metric you're curious about? Let TRKR know so it can help you better.",
+                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400),
+                    ),
+                  )
+                ]),
+              ),
               const Spacer(),
               ExpandableTextFieldWidget(
                 onChanged: (String) {},
