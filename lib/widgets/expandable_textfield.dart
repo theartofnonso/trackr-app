@@ -17,7 +17,7 @@ class ExpandableTextFieldWidget extends StatelessWidget {
     return TextField(
       controller: controller,
       decoration: InputDecoration(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20),
               borderSide: const BorderSide(color: Colors.white10)),
@@ -27,14 +27,14 @@ class ExpandableTextFieldWidget extends StatelessWidget {
           filled: true,
           fillColor: Colors.white10,
           hintText: "Ask TRKR Coach",
-          hintStyle: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14)),
+          hintStyle: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w400)),
       maxLines: null,
       cursorColor: Colors.white,
       showCursor: true,
       keyboardType: TextInputType.text,
       textCapitalization: TextCapitalization.sentences,
       style: GoogleFonts.ubuntu(
-          fontWeight: FontWeight.w500, color: Colors.white, fontSize: 14),
+          fontWeight: FontWeight.w400, color: Colors.white, fontSize: 16),
     );
   }
 }
