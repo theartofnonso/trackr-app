@@ -15,6 +15,7 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/calendar/calendar_months_navigator.dart';
+import 'package:tracker_app/widgets/trkr_widgets/trkr_coach_widget.dart';
 
 import '../../controllers/activity_log_controller.dart';
 import '../../controllers/routine_log_controller.dart';
@@ -176,7 +177,25 @@ class _OverviewScreenState extends State<OverviewScreen> {
                               onSelectDate: _onChangedDateTime,
                               selectedDateRange: _selectedDateTimeRange,
                             ),
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                                decoration: BoxDecoration(
+                                  color: sapphireDark, // Background color of the container
+                                  borderRadius: BorderRadius.circular(5),
+                                  border: Border.all(
+                                    color: sapphireLighter, // Border color
+                                    width: 0.5, // Border width
+                                  ),// Border radius of 20
+                                ),
+                                child: Row(children: [
+                                  const TRKRCoachWidget(),
+                                  const SizedBox(width: 10),
+                                  Text("Ask TRKR coach anything",
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.ubuntu(
+                                          fontWeight: FontWeight.w400, color: Colors.white, fontSize: 14))
+                                ])),
                             _LogsListView(
                               logs: allActivitiesForCurrentDate,
                             ),
