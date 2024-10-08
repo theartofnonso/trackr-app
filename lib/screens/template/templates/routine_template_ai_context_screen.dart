@@ -152,17 +152,21 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
   }
 
   void _addMessage() {
-    _toggleLoadingState();
-
-    final exercises = _template.exerciseTemplates.map((template) => template.exercise.id);
 
     final userInstructions = _textEditingController.text.trim();
-    final additionalInstructions = "Strictly consider ${exercises.join(",")} when providing suggestions.";
-    final messageInstructions = '$userInstructions. $additionalInstructions';
 
-    Provider.of<OpenAIController>(context, listen: false).addMessage(prompt: messageInstructions).then((_) {
-      _runAI();
-    });
+    if(userInstructions.isNotEmpty) {
+      _toggleLoadingState();
+
+      final exercises = _template.exerciseTemplates.map((template) => template.exercise.id);
+
+      final additionalInstructions = "Strictly consider ${exercises.join(",")} when providing suggestions.";
+      final messageInstructions = '$userInstructions. $additionalInstructions';
+
+      Provider.of<OpenAIController>(context, listen: false).addMessage(prompt: messageInstructions).then((_) {
+        _runAI();
+      });
+    }
   }
 
   void _runAI() {
@@ -171,6 +175,7 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
       if (controller.isRunComplete) {
         _timer?.cancel();
         _toggleLoadingState();
+        controller.processMessages();
       } else {
         Provider.of<OpenAIController>(context, listen: false).checkRunStatus();
       }

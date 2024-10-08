@@ -60,11 +60,6 @@ class OpenAIRepository {
         headers: headers,
         body: body,
       );
-
-      // Check for successful response
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-      }
     } catch (e) {
       print('Request failed: $e');
     }
@@ -126,25 +121,27 @@ class OpenAIRepository {
     return isComplete;
   }
 
-  Future<List<dynamic>> listMessages({required String threadId, required String runId}) async {
+  Future<List<dynamic>> listMessages({required String threadId}) async {
     List<dynamic> messages = [];
 
     final messagesEndpoint = "https://api.openai.com/v1/threads/$threadId/messages";
 
     try {
-      // Send POST request
+
+      final Map<String, String> queryParameters = {
+        'order': 'desc',
+      };
+
+      // Send GET request
       final response = await http.get(
-        Uri.parse(messagesEndpoint),
+        Uri.parse(messagesEndpoint).replace(queryParameters: queryParameters),
         headers: headers,
       );
 
       // Check for successful response
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        messages = data["status"] as List<dynamic>;
-        print(messages);
-        print('Error: ${response.statusCode}');
-        print('Response: ${response.body}');
+        messages = data["data"] as List<dynamic>;
       }
     } catch (e) {
       print('Request failed: $e');
