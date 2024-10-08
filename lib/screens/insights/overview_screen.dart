@@ -36,6 +36,7 @@ import '../../widgets/label_divider.dart';
 import '../../widgets/monitors/overview_monitor.dart';
 import '../../widgets/routine/preview/activity_log_widget.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
+import '../template/templates/routine_template_ai_context_screen.dart';
 import 'monthly_insights_screen.dart';
 
 class OverviewScreen extends StatefulWidget {
@@ -179,16 +180,17 @@ class _OverviewScreenState extends State<OverviewScreen> {
                             ),
                             const SizedBox(height: 8),
                             GestureDetector(
-
+                              onTap: () => navigateWithSlideTransition(
+                                  context: context, child: const RoutineTemplateAIContextScreen()),
                               child: Container(
-                                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
                                   decoration: BoxDecoration(
                                     color: sapphireDark, // Background color of the container
                                     borderRadius: BorderRadius.circular(5),
                                     border: Border.all(
                                       color: sapphireLighter, // Border color
                                       width: 0.5, // Border width
-                                    ),// Border radius of 20
+                                    ), // Border radius of 20
                                   ),
                                   child: Row(children: [
                                     const TRKRCoachWidget(),

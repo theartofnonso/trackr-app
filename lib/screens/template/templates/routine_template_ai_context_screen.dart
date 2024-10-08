@@ -7,20 +7,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/open_ai_controller.dart';
 
-import '../../../../dtos/exercise_log_dto.dart';
 import '../../../dtos/routine_template_dto.dart';
-import '../../../dtos/viewmodels/exercise_log_view_model.dart';
-import '../../../enums/routine_preview_type_enum.dart';
-import '../../../utils/routine_utils.dart';
 import '../../../widgets/backgrounds/overlay_background.dart';
-import '../../../widgets/routine/preview/exercise_log_listview.dart';
+import '../../../widgets/expandable_textfield.dart';
 
 class RoutineTemplateAIContextScreen extends StatefulWidget {
-  static const routeName = '/routine_template_ai_context_screen';
+  static const routeName = '/routine_ai_context_screen';
 
-  final RoutineTemplateDto template;
-
-  const RoutineTemplateAIContextScreen({super.key, required this.template});
+  const RoutineTemplateAIContextScreen({super.key});
 
   @override
   State<RoutineTemplateAIContextScreen> createState() => _RoutineTemplateAIContextScreenState();
@@ -77,56 +71,13 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
                   )
                 ],
               ),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: ExerciseLogListView(
-                    exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: widget.template.exerciseTemplates),
-                    previewType: RoutinePreviewType.ai,
-                  ),
-                ),
+              const Spacer(),
+              ExpandableTextFieldWidget(
+                onChanged: (String) {},
+                onClear: () {},
+                hintText: '',
+                controller: TextEditingController(),
               ),
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _textEditingController,
-                        maxLines: null,
-                        decoration: InputDecoration(
-                            fillColor: Colors.transparent,
-                            enabledBorder: const UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white70), // Customize the color
-                            ),
-                            focusedBorder: const UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white), // Customize the color for the focused state
-                            ),
-                            contentPadding: EdgeInsets.zero,
-                            hintText: "Ask TRKR Coach anything",
-                            hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14)),
-                        cursorColor: Colors.white,
-                        keyboardType: TextInputType.text,
-                        textCapitalization: TextCapitalization.sentences,
-                        style: GoogleFonts.ubuntu(
-                            fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 8,
-                    ),
-                    IconButton(
-                      icon: const FaIcon(
-                        FontAwesomeIcons.paperPlane,
-                        color: Colors.white70,
-                        size: 20,
-                      ),
-                      onPressed: _addMessage,
-                    ),
-                  ],
-                ),
-              )
             ],
           ),
         ),
@@ -140,22 +91,12 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
     super.initState();
     _textEditingController = TextEditingController();
     Provider.of<OpenAIController>(context, listen: false).createThread();
-    _template = widget.template;
-  }
-
-  List<ExerciseLogViewModel> _exerciseLogsToViewModels({required List<ExerciseLogDto> exerciseLogs}) {
-    return exerciseLogs.map((exerciseLog) {
-      return ExerciseLogViewModel(
-          exerciseLog: exerciseLog,
-          superSet: whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs));
-    }).toList();
   }
 
   void _addMessage() {
-
     final userInstructions = _textEditingController.text.trim();
 
-    if(userInstructions.isNotEmpty) {
+    if (userInstructions.isNotEmpty) {
       _toggleLoadingState();
 
       final exercises = _template.exerciseTemplates.map((template) => template.exercise.id);
