@@ -129,7 +129,7 @@ class OpenAIRepository {
     try {
 
       final Map<String, String> queryParameters = {
-        'order': 'desc',
+        'order': 'asc',
       };
 
       // Send GET request

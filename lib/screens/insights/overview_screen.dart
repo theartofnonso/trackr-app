@@ -201,6 +201,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
                                             fontWeight: FontWeight.w400, color: Colors.white70, fontSize: 14))
                                   ])),
                             ),
+                            if(allActivitiesForCurrentDate.isNotEmpty)
+                              const SizedBox(height: 16),
                             _LogsListView(
                               logs: allActivitiesForCurrentDate,
                             ),

@@ -49,8 +49,7 @@ class OpenAIController extends ChangeNotifier {
       final threadId = _threadId;
       if (threadId != null) {
         final messages = await _openAIRepository.listMessages(threadId: threadId);
-        final firstMessage = messages.first as dynamic;
-        print(firstMessage);
+        print(messages);
       }
     }
   }
