@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:tracker_app/controllers/open_ai_controller.dart';
 import 'package:tracker_app/enums/full_upper_lower_core_type_enums.dart';
 import 'package:tracker_app/widgets/label_divider.dart';
 
@@ -43,6 +47,7 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         body: Container(
       width: double.infinity,
@@ -154,16 +159,30 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
   }
 
   void _showStrengthEnduranceHypertrophyPicker() {
-    FocusScope.of(context).unfocus();
-    displayBottomSheet(
-        isScrollControlled: true,
-        context: context,
-        child: StrengthEnduranceHypertrophyPicker(
-          onSelect: (StrengthEnduranceHypertrophyType type) {
-            Navigator.pop(context);
-            _toggleLoadingState();
-          },
-        ));
+
+    final exerciseTemplates = widget.template.exerciseTemplates.map((template) {
+      final exercise = {
+        'id': template.id,
+        'name': template.exercise.name,
+        'primaryMuscleGroup': template.exercise.primaryMuscleGroup.name
+      };
+      return jsonEncode(exercise);
+    });
+    print(exerciseTemplates);
+
+    Provider.of<OpenAIController>(context, listen: false).createThread();
+
+    // FocusScope.of(context).unfocus();
+    // displayBottomSheet(
+    //     isScrollControlled: true,
+    //     context: context,
+    //     child: StrengthEnduranceHypertrophyPicker(
+    //       onSelect: (StrengthEnduranceHypertrophyType type) {
+    //         Navigator.pop(context);
+    //
+    //         _toggleLoadingState();
+    //       },
+    //     ));
   }
 
   void _showFullUpperLowerCorePicker() {
