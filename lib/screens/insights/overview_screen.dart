@@ -178,24 +178,27 @@ class _OverviewScreenState extends State<OverviewScreen> {
                               selectedDateRange: _selectedDateTimeRange,
                             ),
                             const SizedBox(height: 8),
-                            Container(
-                              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-                                decoration: BoxDecoration(
-                                  color: sapphireDark, // Background color of the container
-                                  borderRadius: BorderRadius.circular(5),
-                                  border: Border.all(
-                                    color: sapphireLighter, // Border color
-                                    width: 0.5, // Border width
-                                  ),// Border radius of 20
-                                ),
-                                child: Row(children: [
-                                  const TRKRCoachWidget(),
-                                  const SizedBox(width: 10),
-                                  Text("Ask TRKR coach anything",
-                                      textAlign: TextAlign.center,
-                                      style: GoogleFonts.ubuntu(
-                                          fontWeight: FontWeight.w400, color: Colors.white, fontSize: 14))
-                                ])),
+                            GestureDetector(
+
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                                  decoration: BoxDecoration(
+                                    color: sapphireDark, // Background color of the container
+                                    borderRadius: BorderRadius.circular(5),
+                                    border: Border.all(
+                                      color: sapphireLighter, // Border color
+                                      width: 0.5, // Border width
+                                    ),// Border radius of 20
+                                  ),
+                                  child: Row(children: [
+                                    const TRKRCoachWidget(),
+                                    const SizedBox(width: 10),
+                                    Text("Ask TRKR coach",
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.ubuntu(
+                                            fontWeight: FontWeight.w400, color: Colors.white, fontSize: 14))
+                                  ])),
+                            ),
                             _LogsListView(
                               logs: allActivitiesForCurrentDate,
                             ),
