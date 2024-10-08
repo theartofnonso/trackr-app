@@ -4,8 +4,8 @@ import 'package:http/http.dart' as http;
 
 class OpenAIRepository {
 
-  static const String _threadsEndpoint = 'https://api.openai.com/v1/threads/';
-  static const String _apiKey = 'sk-svcacct-pnzvz5NSbY4mLDkP1muT-a4_8v0UfD95czIgX6vHU5gpaiavzEtp12GMImS-BQUNFylur-UXsT3BlbkFJvSMVC_-hclGK-kDxTYVVGo9BKmJj967g2098Q_bYEh_pXlDIjzqN5270PWSRRqqq_5kWusFAA';
+  static const String _threadsEndpoint = 'https://api.openai.com/v1/threads';
+  static const String _apiKey = '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';
 
   final headers = {
     'Authorization': 'Bearer $_apiKey',
@@ -18,7 +18,9 @@ class OpenAIRepository {
 
     final body = jsonEncode({
       'tool_resources': {
-        'file_search': ['asst_abc123'],
+        'file_search': {
+          'vector_store_ids': ['vs_HySuyyIKYlokbO3g7abXwdg3']
+        },
       }
     });
 
