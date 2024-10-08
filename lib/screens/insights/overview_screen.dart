@@ -189,7 +189,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                                     borderRadius: BorderRadius.circular(5),
                                     border: Border.all(
                                       color: sapphireLighter, // Border color
-                                      width: 0.5, // Border width
+                                      width: 1, // Border width
                                     ), // Border radius of 20
                                   ),
                                   child: Row(children: [
