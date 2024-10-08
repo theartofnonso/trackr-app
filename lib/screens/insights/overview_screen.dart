@@ -178,7 +178,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                               onSelectDate: _onChangedDateTime,
                               selectedDateRange: _selectedDateTimeRange,
                             ),
-                            const SizedBox(height: 8),
+                            const SizedBox(height: 10),
                             GestureDetector(
                               onTap: () => navigateWithSlideTransition(
                                   context: context, child: const RoutineTemplateAIContextScreen()),
