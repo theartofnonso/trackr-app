@@ -80,7 +80,7 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
                   Expanded(
                     child: Text(
                       "Hey Nonso, it looks like TRKR couldn't find your Recovery score for today. Is there a specific time or metric you're curious about? Let TRKR know so it can help you better.",
-                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400),
+                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white),
                     ),
                   )
                 ]),
