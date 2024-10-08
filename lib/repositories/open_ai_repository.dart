@@ -1,11 +1,13 @@
 import 'dart:convert';
 
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:http/http.dart' as http;
 
-class OpenAIRepository {
+import '../strings.dart';
 
-  static const String _threadsEndpoint = 'https://api.openai.com/v1/threads';
-  static const String _apiKey = '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';
+class OpenAIRepository {
+  static const String _apiKey =
+      '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';
 
   final headers = {
     'Authorization': 'Bearer $_apiKey',
@@ -14,6 +16,8 @@ class OpenAIRepository {
   };
 
   Future<String?> createThread() async {
+    const threadsEndpoint = 'https://api.openai.com/v1/threads';
+
     String? threadId;
 
     final body = jsonEncode({
@@ -27,7 +31,7 @@ class OpenAIRepository {
     try {
       // Send POST request
       final response = await http.post(
-        Uri.parse(_threadsEndpoint),
+        Uri.parse(threadsEndpoint),
         headers: headers,
         body: body,
       );
@@ -35,32 +39,24 @@ class OpenAIRepository {
       // Check for successful response
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        print('Success: $data');
-      } else {
-        print(response);
-        print('Error: ${response.statusCode}');
-        print('Response: ${response.body}');
+        threadId = data["id"];
       }
     } catch (e) {
-      print('Request failed: $e');
+      safePrint('Request failed: $e');
     }
 
     return threadId;
   }
 
-  Future<void> addMessage({required String threadId, required String messagePrompt}) async {
+  Future<void> addMessage({required String threadId, required String prompt}) async {
+    final messagesEndpoint = "https://api.openai.com/v1/threads/$threadId/messages";
 
-    final threadsEndpoint = "https://api.openai.com/v1/threads/$threadId/messages";
-
-    final body = jsonEncode({
-      'role': 'user',
-      'content': messagePrompt
-    });
+    final body = jsonEncode({'role': 'user', 'content': prompt});
 
     try {
       // Send POST request
       final response = await http.post(
-        Uri.parse(threadsEndpoint),
+        Uri.parse(messagesEndpoint),
         headers: headers,
         body: body,
       );
@@ -68,30 +64,27 @@ class OpenAIRepository {
       // Check for successful response
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        print('Success: $data');
       }
     } catch (e) {
       print('Request failed: $e');
     }
-
   }
 
-  Future<String?> run({required String threadId, required Map<String, String> json}) async {
+  Future<String?> runThread({required String threadId}) async {
     String? runId;
 
-    final threadsEndpoint = "https://api.openai.com/v1/threads/$threadId/messages";
+    final runsEndpoint = "https://api.openai.com/v1/threads/$threadId/runs";
 
     final body = jsonEncode({
       'assistant_id': 'asst_dye87dwWWqq5tU7VHOkPi3hb',
       'tool_choice': {"type": "file_search"},
-      'response_format': { "type": "json_schema", "json_schema": json},
-      'instructions': ''
+      'instructions': openAIAssistantInstructions
     });
 
     try {
       // Send POST request
       final response = await http.post(
-        Uri.parse(threadsEndpoint),
+        Uri.parse(runsEndpoint),
         headers: headers,
         body: body,
       );
@@ -99,7 +92,7 @@ class OpenAIRepository {
       // Check for successful response
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        print('Success: $data');
+        runId = data["id"];
       }
     } catch (e) {
       print('Request failed: $e');
@@ -108,4 +101,55 @@ class OpenAIRepository {
     return runId;
   }
 
+  Future<bool> checkRunStatus({required String threadId, required String runId}) async {
+    bool isComplete = false;
+
+    final runEndpoint = "https://api.openai.com/v1/threads/$threadId/runs/$runId";
+
+    try {
+      // Send POST request
+      final response = await http.get(
+        Uri.parse(runEndpoint),
+        headers: headers,
+      );
+
+      // Check for successful response
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final status = data["status"] as String;
+        isComplete = status == "completed";
+      }
+    } catch (e) {
+      print('Request failed: $e');
+    }
+
+    return isComplete;
+  }
+
+  Future<List<dynamic>> listMessages({required String threadId, required String runId}) async {
+    List<dynamic> messages = [];
+
+    final messagesEndpoint = "https://api.openai.com/v1/threads/$threadId/messages";
+
+    try {
+      // Send POST request
+      final response = await http.get(
+        Uri.parse(messagesEndpoint),
+        headers: headers,
+      );
+
+      // Check for successful response
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        messages = data["status"] as List<dynamic>;
+        print(messages);
+        print('Error: ${response.statusCode}');
+        print('Response: ${response.body}');
+      }
+    } catch (e) {
+      print('Request failed: $e');
+    }
+
+    return messages;
+  }
 }

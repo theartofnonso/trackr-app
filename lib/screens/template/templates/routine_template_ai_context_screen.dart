@@ -1,4 +1,4 @@
-import 'dart:convert';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -6,20 +6,12 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/open_ai_controller.dart';
-import 'package:tracker_app/enums/full_upper_lower_core_type_enums.dart';
-import 'package:tracker_app/widgets/label_divider.dart';
 
 import '../../../../dtos/exercise_log_dto.dart';
 import '../../../dtos/routine_template_dto.dart';
 import '../../../dtos/viewmodels/exercise_log_view_model.dart';
-import '../../../enums/muscle_group_enums.dart';
 import '../../../enums/routine_preview_type_enum.dart';
-import '../../../enums/strength_endurance_hypertrophy_enums.dart';
-import '../../../utils/dialog_utils.dart';
 import '../../../utils/routine_utils.dart';
-import '../../../widgets/ai_widgets/full_upper_lower_core_picker.dart';
-import '../../../widgets/ai_widgets/muscle_group_family_picker.dart';
-import '../../../widgets/ai_widgets/strength_endurance_hypertrophy_picker.dart';
 import '../../../widgets/backgrounds/overlay_background.dart';
 import '../../../widgets/routine/preview/exercise_log_listview.dart';
 
@@ -35,9 +27,13 @@ class RoutineTemplateAIContextScreen extends StatefulWidget {
 }
 
 class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContextScreen> {
-  RoutineTemplateDto? _template;
+  late RoutineTemplateDto _template;
 
   bool _loading = false;
+
+  late TextEditingController _textEditingController;
+
+  Timer? _timer;
 
   void _toggleLoadingState() {
     setState(() {
@@ -47,7 +43,6 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         body: Container(
       width: double.infinity,
@@ -90,52 +85,47 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
-              LabelDivider(
-                label: "Optimise ${widget.template.name}",
-                labelColor: Colors.white,
-                dividerColor: Colors.white.withOpacity(0.3),
-              ),
-              const SizedBox(height: 2),
-              ListTile(
-                onTap: _showStrengthEnduranceHypertrophyPicker,
-                title: Text("Endurance, Strength, Hypertrophy?",
-                    style: GoogleFonts.ubuntu(
-                        color: Colors.white.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
-                trailing: const FaIcon(FontAwesomeIcons.paperPlane, color: Colors.white, size: 18),
-              ),
-              Divider(
-                height: 0.5,
-                color: Colors.white.withOpacity(0.2),
-              ),
-              ListTile(
-                onTap: () {},
-                title: Text("Crunch workout time",
-                    style: GoogleFonts.ubuntu(
-                        color: Colors.white.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
-                trailing: const FaIcon(FontAwesomeIcons.paperPlane, color: Colors.white, size: 18),
-              ),
-              Divider(
-                height: 0.5,
-                color: Colors.white.withOpacity(0.2),
-              ),
-              ListTile(
-                onTap: _showFullUpperLowerCorePicker,
-                title: Text("Focus on Full, Upper, Lower or Core",
-                    style: GoogleFonts.ubuntu(
-                        color: Colors.white.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
-                trailing: const FaIcon(FontAwesomeIcons.paperPlane, color: Colors.white, size: 18),
-              ),
-              Divider(
-                height: 0.5,
-                color: Colors.white.withOpacity(0.2),
-              ),
-              ListTile(
-                onTap: _showMuscleGroupFamilyPicker,
-                title: Text("Optimise for muscle group",
-                    style: GoogleFonts.ubuntu(
-                        color: Colors.white.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
-                trailing: const FaIcon(FontAwesomeIcons.paperPlane, color: Colors.white, size: 18),
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _textEditingController,
+                        maxLines: null,
+                        decoration: InputDecoration(
+                            fillColor: Colors.transparent,
+                            enabledBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white70), // Customize the color
+                            ),
+                            focusedBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white), // Customize the color for the focused state
+                            ),
+                            contentPadding: EdgeInsets.zero,
+                            hintText: "Ask TRKR Coach anything",
+                            hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14)),
+                        cursorColor: Colors.white,
+                        keyboardType: TextInputType.text,
+                        textCapitalization: TextCapitalization.sentences,
+                        style: GoogleFonts.ubuntu(
+                            fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    IconButton(
+                      icon: const FaIcon(
+                        FontAwesomeIcons.paperPlane,
+                        color: Colors.white70,
+                        size: 20,
+                      ),
+                      onPressed: _addMessage,
+                    ),
+                  ],
+                ),
               )
             ],
           ),
@@ -148,6 +138,9 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
   @override
   void initState() {
     super.initState();
+    _textEditingController = TextEditingController();
+    Provider.of<OpenAIController>(context, listen: false).createThread();
+    _template = widget.template;
   }
 
   List<ExerciseLogViewModel> _exerciseLogsToViewModels({required List<ExerciseLogDto> exerciseLogs}) {
@@ -158,56 +151,35 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
     }).toList();
   }
 
-  void _showStrengthEnduranceHypertrophyPicker() {
+  void _addMessage() {
+    _toggleLoadingState();
 
-    final exerciseTemplates = widget.template.exerciseTemplates.map((template) {
-      final exercise = {
-        'id': template.id,
-        'name': template.exercise.name,
-        'primaryMuscleGroup': template.exercise.primaryMuscleGroup.name
-      };
-      return jsonEncode(exercise);
+    final exercises = _template.exerciseTemplates.map((template) => template.exercise.id);
+
+    final userInstructions = _textEditingController.text.trim();
+    final additionalInstructions = "Strictly consider ${exercises.join(",")} when providing suggestions.";
+    final messageInstructions = '$userInstructions. $additionalInstructions';
+
+    Provider.of<OpenAIController>(context, listen: false).addMessage(prompt: messageInstructions).then((_) {
+      _runAI();
     });
-    print(exerciseTemplates);
-
-    Provider.of<OpenAIController>(context, listen: false).createThread();
-
-    // FocusScope.of(context).unfocus();
-    // displayBottomSheet(
-    //     isScrollControlled: true,
-    //     context: context,
-    //     child: StrengthEnduranceHypertrophyPicker(
-    //       onSelect: (StrengthEnduranceHypertrophyType type) {
-    //         Navigator.pop(context);
-    //
-    //         _toggleLoadingState();
-    //       },
-    //     ));
   }
 
-  void _showFullUpperLowerCorePicker() {
-    FocusScope.of(context).unfocus();
-    displayBottomSheet(
-        isScrollControlled: true,
-        context: context,
-        child: FullUpperLowerCorePicker(
-          onSelect: (FullUpperLowerCoreType type) {
-            Navigator.pop(context);
-            _toggleLoadingState();
-          },
-        ));
+  void _runAI() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      final controller = Provider.of<OpenAIController>(context, listen: false);
+      if (controller.isRunComplete) {
+        _timer?.cancel();
+        _toggleLoadingState();
+      } else {
+        Provider.of<OpenAIController>(context, listen: false).checkRunStatus();
+      }
+    });
   }
 
-  void _showMuscleGroupFamilyPicker() {
-    FocusScope.of(context).unfocus();
-    displayBottomSheet(
-        isScrollControlled: true,
-        context: context,
-        child: MuscleGroupFamilyPicker(
-          onSelect: (MuscleGroupFamily family) {
-            Navigator.pop(context);
-            _toggleLoadingState();
-          },
-        ));
+  @override
+  void dispose() {
+    super.dispose();
+    _timer?.cancel();
   }
 }

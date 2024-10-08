@@ -3,13 +3,16 @@ import 'package:flutter/material.dart';
 import '../repositories/open_ai_repository.dart';
 
 class OpenAIController extends ChangeNotifier {
-  String errorMessage = '';
 
   late OpenAIRepository _openAIRepository;
 
   String? _threadId;
 
   String? _runId;
+
+  bool _isRunComplete = false;
+
+  bool get isRunComplete => _isRunComplete;
 
   OpenAIController(OpenAIRepository amplifyLogRepository) {
     _openAIRepository = amplifyLogRepository;
@@ -18,21 +21,26 @@ class OpenAIController extends ChangeNotifier {
   void createThread() async {
     final threadId = await _openAIRepository.createThread();
     _threadId = threadId;
-    notifyListeners();
   }
 
-  void addMessage({required String messagePrompt}) async {
+  Future<void> addMessage({required String prompt}) async {
     final threadId = _threadId;
     if (threadId != null) {
-      await _openAIRepository.addMessage(threadId: threadId, messagePrompt: messagePrompt);
+      await _openAIRepository.addMessage(threadId: threadId, prompt: prompt);
+      final runId = await _openAIRepository.runThread(threadId: threadId);
+      _runId = runId;
     }
   }
 
-  void run({required Map<String, String> json}) async {
+  void checkRunStatus() async {
     final threadId = _threadId;
+    final runId = _runId;
     if (threadId != null) {
-      final runId = await _openAIRepository.run(threadId: threadId, json: json);
-      _runId = runId;
+      if (runId != null) {
+        final status = await _openAIRepository.checkRunStatus(threadId: threadId, runId: runId);
+        _isRunComplete = status;
+        notifyListeners();
+      }
     }
   }
 }
