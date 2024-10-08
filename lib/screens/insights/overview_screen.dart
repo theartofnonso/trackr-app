@@ -188,7 +188,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                                     color: sapphireDark, // Background color of the container
                                     borderRadius: BorderRadius.circular(5),
                                     border: Border.all(
-                                      color: sapphireLighter, // Border color
+                                      color: sapphireLight, // Border color
                                       width: 1, // Border width
                                     ), // Border radius of 20
                                   ),
