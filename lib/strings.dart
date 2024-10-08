@@ -18,4 +18,4 @@ const lowStreak =
 
 const highStreak = "You are doing great!";
 
-const openAIAssistantInstructions = "Provide exercise suggestions based solely on your knowledge base. The response should be a JSON object containing only the exercise IDs, with no additional text or filler.";
+const openAIAssistantInstructions = "Provide exercise suggestions based solely on your knowledge base.";

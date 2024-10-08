@@ -8,9 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/open_ai_controller.dart';
 import 'package:tracker_app/widgets/trkr_widgets/trkr_coach_widget.dart';
 
-import '../../../dtos/routine_template_dto.dart';
 import '../../../widgets/backgrounds/overlay_background.dart';
-import '../../../widgets/expandable_textfield.dart';
 
 class RoutineTemplateAIContextScreen extends StatefulWidget {
   static const routeName = '/routine_ai_context_screen';
@@ -22,7 +20,6 @@ class RoutineTemplateAIContextScreen extends StatefulWidget {
 }
 
 class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContextScreen> {
-  late RoutineTemplateDto _template;
 
   bool _loading = false;
 
@@ -72,7 +69,9 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
                   )
                 ],
               ),
-              const SizedBox(height: 8,),
+              const SizedBox(
+                height: 8,
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -87,11 +86,38 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
                 ]),
               ),
               const Spacer(),
-              ExpandableTextFieldWidget(
-                onChanged: (String) {},
-                onClear: () {},
-                hintText: '',
-                controller: TextEditingController(),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _textEditingController,
+                      decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              borderSide: const BorderSide(color: Colors.white10)),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              borderSide: const BorderSide(color: Colors.white30)),
+                          filled: true,
+                          fillColor: Colors.white10,
+                          hintText: "Ask TRKR Coach",
+                          hintStyle: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w400)),
+                      maxLines: null,
+                      cursorColor: Colors.white,
+                      showCursor: true,
+                      keyboardType: TextInputType.text,
+                      textCapitalization: TextCapitalization.sentences,
+                      style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white, fontSize: 16),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: _addMessage,
+                    icon: const FaIcon(FontAwesomeIcons.paperPlane),
+                    color: Colors.white,
+                  )
+                ],
               ),
             ],
           ),
@@ -109,18 +135,19 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
   }
 
   void _addMessage() {
+    _dismissKeyboard();
+
     final userInstructions = _textEditingController.text.trim();
 
     if (userInstructions.isNotEmpty) {
       _toggleLoadingState();
 
-      final exercises = _template.exerciseTemplates.map((template) => template.exercise.id);
-
-      final additionalInstructions = "Strictly consider ${exercises.join(",")} when providing suggestions.";
-      final messageInstructions = '$userInstructions. $additionalInstructions';
-
-      Provider.of<OpenAIController>(context, listen: false).addMessage(prompt: messageInstructions).then((_) {
+      Provider.of<OpenAIController>(context, listen: false).addMessage(prompt: userInstructions).then((_) {
         _runAI();
+      });
+
+      setState(() {
+        _textEditingController.clear();
       });
     }
   }
@@ -136,6 +163,10 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
         Provider.of<OpenAIController>(context, listen: false).checkRunStatus();
       }
     });
+  }
+
+  void _dismissKeyboard() {
+    FocusScope.of(context).unfocus();
   }
 
   @override
