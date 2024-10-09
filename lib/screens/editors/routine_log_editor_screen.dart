@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -276,7 +277,9 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   void _cleanUpSession() {
     SharedPrefs().remove(key: SharedPrefs().cachedRoutineLogKey);
-    FlutterLocalNotificationsPlugin().cancel(999);
+    if(Platform.isIOS) {
+      FlutterLocalNotificationsPlugin().cancel(999);
+    }
   }
 
   void _navigateBack() async {
@@ -528,23 +531,27 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      FlutterLocalNotificationsPlugin().cancel(999);
+      if(Platform.isIOS) {
+        FlutterLocalNotificationsPlugin().cancel(999);
+      }
     }
 
     if (state == AppLifecycleState.paused) {
-      FlutterLocalNotificationsPlugin().periodicallyShow(
-          999,
-          "${widget.log.name} is still running",
-          "Tap to continue training",
-          RepeatInterval.hourly,
-          const NotificationDetails(
-            iOS: DarwinNotificationDetails(
-              presentAlert: false,
-              presentBadge: false,
-              presentSound: false,
-              presentBanner: false,
-            ),
-          ));
+      if (Platform.isIOS) {
+        FlutterLocalNotificationsPlugin().periodicallyShow(
+            999,
+            "${widget.log.name} is still running",
+            "Tap to continue training",
+            RepeatInterval.hourly,
+            const NotificationDetails(
+              iOS: DarwinNotificationDetails(
+                presentAlert: false,
+                presentBadge: false,
+                presentSound: false,
+                presentBanner: false,
+              ),
+            ));
+      }
     }
   }
 }
