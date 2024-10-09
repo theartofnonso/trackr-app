@@ -121,7 +121,7 @@ class OpenAIRepository {
     return isComplete;
   }
 
-  Future<List<dynamic>> listMessages({required String threadId}) async {
+  Future<List<dynamic>> listMessages({required String threadId, required String runId}) async {
     List<dynamic> messages = [];
 
     final messagesEndpoint = "https://api.openai.com/v1/threads/$threadId/messages";
@@ -130,6 +130,7 @@ class OpenAIRepository {
 
       final Map<String, String> queryParameters = {
         'order': 'desc',
+        'run_id': runId
       };
 
       // Send GET request

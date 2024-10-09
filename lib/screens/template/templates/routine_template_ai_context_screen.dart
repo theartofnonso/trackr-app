@@ -10,7 +10,9 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/open_ai_controller.dart';
 import 'package:tracker_app/dtos/routine_template_dto.dart';
 import 'package:tracker_app/widgets/trkr_widgets/trkr_coach_widget.dart';
+import 'package:tracker_app/widgets/video_bottom_sheet.dart';
 
+import '../../../utils/dialog_utils.dart';
 import '../../../widgets/backgrounds/overlay_background.dart';
 
 class RoutineTemplateAIContextScreen extends StatefulWidget {
@@ -25,6 +27,9 @@ class RoutineTemplateAIContextScreen extends StatefulWidget {
 }
 
 class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContextScreen> {
+
+  late Function _onDisposeCallback;
+
   bool _loading = false;
 
   late TextEditingController _textEditingController;
@@ -76,7 +81,6 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
                     child: TextField(
                       controller: _textEditingController,
                       decoration: InputDecoration(
-                          suffixText: "${widget.template?.name}",
                           contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                           enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(20),
@@ -117,6 +121,7 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
     super.initState();
     _textEditingController = TextEditingController();
     Provider.of<OpenAIController>(context, listen: false).createThread();
+    _onDisposeCallback = Provider.of<OpenAIController>(context, listen: false).onClear;
   }
 
   void _addMessage() {
@@ -138,6 +143,7 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
       _toggleLoadingState();
 
       Provider.of<OpenAIController>(context, listen: false).addMessage(prompt: completeInstructions).then((_) {
+        print("About to check run status");
         _runAI();
       });
 
@@ -149,12 +155,15 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
 
   void _runAI() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      print("Starting timer");
       final controller = Provider.of<OpenAIController>(context, listen: false);
       if (controller.isRunComplete) {
+        print("Timer has ended");
         _timer?.cancel();
         _toggleLoadingState();
         controller.processMessages();
       } else {
+        print("Timer is still running");
         Provider.of<OpenAIController>(context, listen: false).checkRunStatus();
       }
     });
@@ -168,6 +177,7 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
   void dispose() {
     super.dispose();
     _timer?.cancel();
+    _onDisposeCallback();
   }
 }
 
@@ -230,25 +240,36 @@ class _OptimiseHeroWidget extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               decoration: BoxDecoration(
                 color: Colors.white10.withOpacity(0.1), // Background color of the container
                 borderRadius: BorderRadius.circular(5), // Rounded corners
               ),
-              child: Text("Optimise workout for a specific goal",
+              child: Text("Optimise for a specific goal ",
                   style: GoogleFonts.ubuntu(
-                      color: Colors.white.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
+                      color: Colors.white.withOpacity(0.8), fontSize: 12, fontWeight: FontWeight.w600)),
             ),
             const SizedBox(height: 10),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               decoration: BoxDecoration(
                 color: Colors.white10.withOpacity(0.1), // Background color of the container
                 borderRadius: BorderRadius.circular(5), // Rounded corners
               ),
               child: Text("Reduce time spent when training",
                   style: GoogleFonts.ubuntu(
-                      color: Colors.white.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
+                      color: Colors.white.withOpacity(0.8), fontSize: 12, fontWeight: FontWeight.w600)),
+            ),
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.white10.withOpacity(0.1), // Background color of the container
+                borderRadius: BorderRadius.circular(5), // Rounded corners
+              ),
+              child: Text("Focus on particular muscle group",
+                  style: GoogleFonts.ubuntu(
+                      color: Colors.white.withOpacity(0.8), fontSize: 12, fontWeight: FontWeight.w600)),
             ),
           ]),
         )
@@ -316,9 +337,35 @@ class _TRKRCoachMessageWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [const TRKRCoachWidget(), const SizedBox(width: 10), Expanded(child: MarkdownBody(data: message))]),
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        const TRKRCoachWidget(),
+        const SizedBox(width: 10),
+        Expanded(
+            child: MarkdownBody(
+          data: message,
+          onTapLink: (text, href, title) {
+            if(href != null) {
+              displayBottomSheet(context: context, child: VideoBottomSheet(url: href));
+            }
+          },
+          styleSheet: MarkdownStyleSheet(
+            h1: GoogleFonts.ubuntu(
+                color: Colors.red, fontSize: 14, fontWeight: FontWeight.w600),
+              h2: GoogleFonts.ubuntu(
+                  color: Colors.green, fontSize: 14, fontWeight: FontWeight.w600),
+              h3: GoogleFonts.ubuntu(
+                  color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700),
+              h4: GoogleFonts.ubuntu(
+                  color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600),
+              h5: GoogleFonts.ubuntu(
+                  color: Colors.pink, fontSize: 14, fontWeight: FontWeight.w600),
+              h6: GoogleFonts.ubuntu(
+                  color: Colors.black, fontSize: 14, fontWeight: FontWeight.w600),
+              p: GoogleFonts.ubuntu(
+                  color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
+          ),
+        ))
+      ]),
     );
   }
 }
