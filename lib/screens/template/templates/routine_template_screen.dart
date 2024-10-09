@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/extensions/routine_template_extension.dart';
+import 'package:tracker_app/screens/template/templates/routine_template_ai_context_screen.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:tracker_app/widgets/information_containers/information_container_lite.dart';
 
@@ -24,6 +25,7 @@ import '../../../utils/navigation_utils.dart';
 import '../../../utils/routine_utils.dart';
 import '../../../widgets/backgrounds/overlay_background.dart';
 import '../../../widgets/routine/preview/exercise_log_listview.dart';
+import '../../../widgets/trkr_widgets/trkr_coach_widget.dart';
 import '../../preferences/routine_schedule_planner/routine_schedule_planner_home.dart';
 
 class RoutineTemplateScreen extends StatefulWidget {
@@ -188,27 +190,60 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           child: Stack(children: [
             SafeArea(
               minimum: const EdgeInsets.all(10.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    if (template.notes.isNotEmpty)
-                      Column(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  GestureDetector(
+                    onTap: () => navigateWithSlideTransition(
+                        context: context,
+                        child: RoutineTemplateAIContextScreen(
+                          template: template,
+                        )),
+                    child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                        decoration: BoxDecoration(
+                          color: sapphireDark, // Background color of the container
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(
+                            color: sapphireLight, // Border color
+                            width: 1, // Border width
+                          ), // Border radius of 20
+                        ),
+                        child: Row(children: [
+                          const TRKRCoachWidget(),
+                          const SizedBox(width: 10),
+                          Text("Ask TRKR coach",
+                              textAlign: TextAlign.center,
+                              style:
+                                  GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white70, fontSize: 14))
+                        ])),
+                  ),
+                  const SizedBox(height: 10),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text(template.notes,
-                              style: GoogleFonts.ubuntu(
-                                color: Colors.white,
-                                fontSize: 14,
-                              )),
-                          const SizedBox(height: 5),
+                          if (template.notes.isNotEmpty)
+                            Column(
+                              children: [
+                                Text(template.notes,
+                                    style: GoogleFonts.ubuntu(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                    )),
+                                const SizedBox(height: 5),
+                              ],
+                            ),
+                          ExerciseLogListView(
+                            exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
+                            previewType: RoutinePreviewType.template,
+                          ),
                         ],
                       ),
-                    ExerciseLogListView(
-                      exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
-                      previewType: RoutinePreviewType.template,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
             if (_loading) const OverlayBackground()

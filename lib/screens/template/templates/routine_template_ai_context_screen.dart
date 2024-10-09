@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/open_ai_controller.dart';
+import 'package:tracker_app/dtos/routine_template_dto.dart';
 import 'package:tracker_app/widgets/trkr_widgets/trkr_coach_widget.dart';
 
 import '../../../widgets/backgrounds/overlay_background.dart';
@@ -13,14 +14,15 @@ import '../../../widgets/backgrounds/overlay_background.dart';
 class RoutineTemplateAIContextScreen extends StatefulWidget {
   static const routeName = '/routine_ai_context_screen';
 
-  const RoutineTemplateAIContextScreen({super.key});
+  final RoutineTemplateDto? template;
+
+  const RoutineTemplateAIContextScreen({super.key, this.template});
 
   @override
   State<RoutineTemplateAIContextScreen> createState() => _RoutineTemplateAIContextScreenState();
 }
 
 class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContextScreen> {
-
   bool _loading = false;
 
   late TextEditingController _textEditingController;
@@ -35,6 +37,9 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
 
   @override
   Widget build(BuildContext context) {
+
+    final template = widget.template;
+
     return Scaffold(
         body: Container(
       width: double.infinity,
@@ -59,7 +64,7 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
                     onPressed: context.pop,
                   ),
                   Expanded(
-                    child: Text("TRKR COACH",
+                    child: Text("TRKR Coach".toUpperCase(),
                         textAlign: TextAlign.center,
                         style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 16)),
                   ),
@@ -73,15 +78,54 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
                 height: 8,
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   const TRKRCoachWidget(),
                   const SizedBox(width: 10),
                   Expanded(
-                    child: Text(
-                      "Hey Nonso, it looks like TRKR couldn't find your Recovery score for today. Is there a specific time or metric you're curious about? Let TRKR know so it can help you better.",
-                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white),
-                    ),
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      RichText(
+                        text: TextSpan(
+                          text: "Hey there! TRKR Coach can help you optimise",
+                          style: GoogleFonts.ubuntu(
+                              fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white, height: 1.5),
+                          children: <TextSpan>[
+                            const TextSpan(text: " "),
+                            TextSpan(
+                                text: template != null ? "${widget.template?.name}" : "your workout",
+                                style:
+                                    GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                            const TextSpan(text: ". "),
+                            TextSpan(
+                                text: "Start with the suggestions below.",
+                                style:
+                                    GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.white10.withOpacity(0.1), // Background color of the container
+                          borderRadius: BorderRadius.circular(5), // Rounded corners
+                        ),
+                        child: Text("Optimise workout for a specific goal",
+                            style: GoogleFonts.ubuntu(
+                                color: Colors.white.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
+                      ),
+                      const SizedBox(height: 10),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.white10.withOpacity(0.1), // Background color of the container
+                          borderRadius: BorderRadius.circular(5), // Rounded corners
+                        ),
+                        child: Text("Reduce time spent when training",
+                            style: GoogleFonts.ubuntu(
+                                color: Colors.white.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
+                      ),
+                    ]),
                   )
                 ]),
               ),
@@ -102,8 +146,9 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
                               borderSide: const BorderSide(color: Colors.white30)),
                           filled: true,
                           fillColor: Colors.white10,
-                          hintText: "Ask TRKR Coach",
-                          hintStyle: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w400)),
+                          hintText: "Ask questions about ${widget.template?.name}",
+                          hintStyle:
+                              GoogleFonts.ubuntu(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w400)),
                       maxLines: null,
                       cursorColor: Colors.white,
                       showCursor: true,
