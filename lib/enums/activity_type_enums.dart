@@ -23,7 +23,7 @@ enum ActivityType {
   dancing("Dancing", FontAwesomeIcons.personDress),
   diving("Diving", FontAwesomeIcons.personDrowning),
 
-  hiit("HIIT", FontAwesomeIcons.dumbbell),
+  hiit("HIIT", FontAwesomeIcons.dumbbell, image: 'dumbbells'),
   elliptical("Elliptical", FontAwesomeIcons.personBiking),
   fencing("Fencing", FontAwesomeIcons.chessKnight, image: "fencing"),
   golf("Golf", FontAwesomeIcons.golfBallTee),
@@ -44,12 +44,12 @@ enum ActivityType {
   other("Other Activity", FontAwesomeIcons.circle),
   hiking("Hiking", FontAwesomeIcons.personHiking),
   skiing("Skiing", FontAwesomeIcons.personSkiing),
-  functionalFitness("Functional Fitness", FontAwesomeIcons.dumbbell),
+  functionalFitness("Functional Fitness", FontAwesomeIcons.dumbbell, image: 'dumbbells'),
   gymnastics("Gymnastics", FontAwesomeIcons.circle),
   netball("Netball", FontAwesomeIcons.baseball),
   padel("Padel", FontAwesomeIcons.baseball),
-  powerlifting("Powerlifting", FontAwesomeIcons.dumbbell),
-  weightlifting("Weightlifting", FontAwesomeIcons.dumbbell);
+  powerlifting("Powerlifting", FontAwesomeIcons.dumbbell, image: 'dumbbells'),
+  weightlifting("Weightlifting", FontAwesomeIcons.dumbbell, image: 'dumbbells');
 
   const ActivityType(this.name, this.icon, {this.image});
 
