@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 enum ActivityType {
-  assaultBike("Assault Bike", FontAwesomeIcons.personBiking),
+  assaultBike("Assault Bike", FontAwesomeIcons.circle, image: "assault"),
   spin("Spin", FontAwesomeIcons.personBiking),
   boxing("Boxing", FontAwesomeIcons.personHarassing, image: "boxing"),
   football("Football", FontAwesomeIcons.football),
