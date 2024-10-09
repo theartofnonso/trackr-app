@@ -50,7 +50,7 @@ enum ActivityType {
   functionalFitness("Functional Fitness", FontAwesomeIcons.dumbbell, image: 'dumbbells'),
   gymnastics("Gymnastics", FontAwesomeIcons.person),
   netball("Netball", FontAwesomeIcons.baseball),
-  padel("Padel", FontAwesomeIcons.baseball),
+  padel("Padel", FontAwesomeIcons.tableTennisPaddleBall),
   powerlifting("Powerlifting", FontAwesomeIcons.dumbbell, image: 'dumbbells'),
   weightlifting("Weightlifting", FontAwesomeIcons.dumbbell, image: 'dumbbells');
 
