@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../repositories/open_ai_repository.dart';
@@ -12,7 +11,11 @@ class OpenAIController extends ChangeNotifier {
 
   bool _isRunComplete = false;
 
+  String _message = "";
+
   bool get isRunComplete => _isRunComplete;
+
+  String get message => _message;
 
   OpenAIController(OpenAIRepository amplifyLogRepository) {
     _openAIRepository = amplifyLogRepository;
@@ -49,7 +52,14 @@ class OpenAIController extends ChangeNotifier {
       final threadId = _threadId;
       if (threadId != null) {
         final messages = await _openAIRepository.listMessages(threadId: threadId);
-        print(messages);
+        final mostRecentMessage = messages.first as dynamic;
+        final contents = mostRecentMessage["content"] as List<dynamic>;
+        final firstContent = contents.first as dynamic;
+        final text = firstContent["text"] as dynamic;
+        final value = text["value"] as dynamic;
+        _message = value;
+        print(_message);
+        notifyListeners();
       }
     }
   }

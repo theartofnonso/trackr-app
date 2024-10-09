@@ -129,7 +129,7 @@ class OpenAIRepository {
     try {
 
       final Map<String, String> queryParameters = {
-        'order': 'asc',
+        'order': 'desc',
       };
 
       // Send GET request
@@ -142,6 +142,8 @@ class OpenAIRepository {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         messages = data["data"] as List<dynamic>;
+      } else {
+
       }
     } catch (e) {
       print('Request failed: $e');
