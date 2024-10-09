@@ -60,12 +60,12 @@ class _HomeScreenState extends State<HomeScreen> {
               'icons/dumbbells.png',
               fit: BoxFit.contain,
               color: Colors.grey,
-              height: 32, // Adjust the height as needed
+              height: 34, // Adjust the height as needed
             ),
             selectedIcon: Image.asset(
               'icons/dumbbells.png',
               fit: BoxFit.contain,
-              height: 32, // Adjust the height as needed
+              height: 34, // Adjust the height as needed
             ),
             label: 'Workouts',
           ),
