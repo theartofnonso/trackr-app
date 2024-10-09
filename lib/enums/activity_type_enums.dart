@@ -29,6 +29,7 @@ enum ActivityType {
   golf("Golf", FontAwesomeIcons.golfBallTee),
   yoga("Yoga", FontAwesomeIcons.personPraying),
   skating("Skating", FontAwesomeIcons.personSkating),
+  kegels("Kegels", FontAwesomeIcons.person),
   skateboarding("Skateboarding", FontAwesomeIcons.personSnowboarding),
   martialArts("Martial Arts", FontAwesomeIcons.person),
   tennis("Tennis", FontAwesomeIcons.tableTennisPaddleBall),

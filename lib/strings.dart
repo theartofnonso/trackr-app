@@ -18,4 +18,5 @@ const lowStreak =
 
 const highStreak = "You are doing great!";
 
-const openAIAssistantInstructions = "Use only your knowledge base for exercise recommendations. Respond with concise, relevant suggestions that align with the user’s workout goals. Return your answers in markdown format";
+const openAITemplateAssistantInstructions = "Use only your knowledge base for exercise recommendations. Respond with concise, relevant suggestions that align with the user’s workout goals. Add exercise suggestion if user's workout is does not have it. Return your answers in markdown format";
+const openAIGenericAssistantInstructions = "Use only your knowledge base for exercise recommendations. Respond with concise, relevant suggestions. Return your answers in markdown format";

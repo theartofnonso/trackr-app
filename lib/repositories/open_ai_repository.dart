@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:http/http.dart' as http;
 
+import '../enums/open_ai_enums.dart';
 import '../strings.dart';
 
 class OpenAIRepository {
@@ -48,24 +49,36 @@ class OpenAIRepository {
     return threadId;
   }
 
-  Future<void> addMessage({required String threadId, required String prompt}) async {
+  Future<String?> addMessage({required String threadId, required String prompt, required OpenAiEnums mode}) async {
+
+    String? runId;
+
     final messagesEndpoint = "https://api.openai.com/v1/threads/$threadId/messages";
 
     final body = jsonEncode({'role': 'user', 'content': prompt});
 
     try {
       // Send POST request
-      await http.post(
+      final response = await http.post(
         Uri.parse(messagesEndpoint),
         headers: headers,
         body: body,
       );
+      if (response.statusCode == 200) {
+        final instructions = mode == OpenAiEnums.template
+            ? openAITemplateAssistantInstructions
+            : openAIGenericAssistantInstructions;
+
+        runId =  await _runThread(threadId: threadId, instructions: instructions);
+      }
     } catch (e) {
       print('Request failed: $e');
     }
+
+    return runId;
   }
 
-  Future<String?> runThread({required String threadId}) async {
+  Future<String?> _runThread({required String threadId, required String instructions}) async {
     String? runId;
 
     final runsEndpoint = "https://api.openai.com/v1/threads/$threadId/runs";
@@ -73,7 +86,7 @@ class OpenAIRepository {
     final body = jsonEncode({
       'assistant_id': 'asst_dye87dwWWqq5tU7VHOkPi3hb',
       'tool_choice': {"type": "file_search"},
-      'instructions': openAIAssistantInstructions
+      'instructions': instructions
     });
 
     try {
@@ -127,7 +140,6 @@ class OpenAIRepository {
     final messagesEndpoint = "https://api.openai.com/v1/threads/$threadId/messages";
 
     try {
-
       final Map<String, String> queryParameters = {
         'order': 'desc',
         'run_id': runId
