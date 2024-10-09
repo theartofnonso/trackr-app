@@ -1,11 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:markdown/markdown.dart' as md;
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/open_ai_controller.dart';
 import 'package:tracker_app/dtos/routine_template_dto.dart';
@@ -68,7 +68,7 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
                 template != null ? _OptimiseHeroWidget(template: template) : _HeroWidget(),
               if (controller.message.isNotEmpty)
                 Expanded(child: SingleChildScrollView(child: _TRKRCoachMessageWidget(message: controller.message))),
-              const SizedBox(height: 16),
+              controller.message.isNotEmpty ? const SizedBox(height: 16) : const Spacer(),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -124,12 +124,20 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
 
     final userInstructions = _textEditingController.text.trim();
 
-    final additionalInstructions = "Use this workout to ";
+    final templateJson = jsonEncode(widget.template?.toJson());
+
+    final StringBuffer buffer = StringBuffer();
+
+    buffer.writeln("Using the following workout");
+    buffer.writeln(templateJson);
+    buffer.writeln(userInstructions);
+
+    final completeInstructions = buffer.toString();
 
     if (userInstructions.isNotEmpty) {
       _toggleLoadingState();
 
-      Provider.of<OpenAIController>(context, listen: false).addMessage(prompt: userInstructions).then((_) {
+      Provider.of<OpenAIController>(context, listen: false).addMessage(prompt: completeInstructions).then((_) {
         _runAI();
       });
 
@@ -164,9 +172,7 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
 }
 
 class _AppBar extends StatelessWidget {
-  const _AppBar({
-    super.key,
-  });
+  const _AppBar();
 
   @override
   Widget build(BuildContext context) {
@@ -310,17 +316,9 @@ class _TRKRCoachMessageWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        const TRKRCoachWidget(),
-        const SizedBox(width: 10),
-        Expanded(
-            child: MarkdownBody(
-                extensionSet: md.ExtensionSet(
-                  md.ExtensionSet.gitHubFlavored.blockSyntaxes,
-                  <md.InlineSyntax>[md.EmojiSyntax(), ...md.ExtensionSet.gitHubFlavored.inlineSyntaxes],
-                ),
-                data: message))
-      ]),
+      child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [const TRKRCoachWidget(), const SizedBox(width: 10), Expanded(child: MarkdownBody(data: message))]),
     );
   }
 }
