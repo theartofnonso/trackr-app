@@ -27,8 +27,8 @@ enum ActivityType {
   diving("Diving", FontAwesomeIcons.personDrowning),
 
   hiit("HIIT", FontAwesomeIcons.dumbbell, image: 'dumbbells'),
-  elliptical("Elliptical", FontAwesomeIcons.personBiking),
-  fencing("Fencing", FontAwesomeIcons.chessKnight, image: "fencing"),
+  elliptical("Elliptical", FontAwesomeIcons.personBiking, image: "assault"),
+  fencing("Fencing", FontAwesomeIcons.circle, image: "fencing"),
   golf("Golf", FontAwesomeIcons.golfBallTee),
   yoga("Yoga", FontAwesomeIcons.personPraying, image: 'yoga'),
   skating("Skating", FontAwesomeIcons.personSkating),
