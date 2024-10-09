@@ -65,10 +65,15 @@ class _ActivitySelectorScreenState extends State<ActivitySelectorScreen> {
                       child: ListView.separated(
                         itemCount: _filteredActivities.length,
                         itemBuilder: (context, index) {
+                          final image = _filteredActivities[index].image;
                           return ListTile(
-                            leading: Icon(
+                            leading: image != null ? Image.asset(
+                              'icons/$image.png',
+                              fit: BoxFit.contain,
+                              height: 24, // Adjust the height as needed
+                            ) : Icon(
                               _filteredActivities[index].icon,
-                              color: Colors.white70,
+                              color: Colors.white,
                             ), // Placeholder icon
                             title: Text(_filteredActivities[index].name.toUpperCase(),
                                 style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400)),
