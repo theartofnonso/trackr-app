@@ -55,7 +55,7 @@ class OpenAIRepository {
 
     try {
       // Send POST request
-      final response = await http.post(
+      await http.post(
         Uri.parse(messagesEndpoint),
         headers: headers,
         body: body,

@@ -92,7 +92,7 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
                           children: <TextSpan>[
                             const TextSpan(text: " "),
                             TextSpan(
-                                text: template != null ? "${widget.template?.name}" : "your workout",
+                                text: template != null ? "${widget.template?.name}" : "your fitness",
                                 style:
                                     GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
                             const TextSpan(text: ". "),
@@ -146,7 +146,7 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
                               borderSide: const BorderSide(color: Colors.white30)),
                           filled: true,
                           fillColor: Colors.white10,
-                          hintText: "Ask questions about ${widget.template?.name}",
+                          hintText: "Start typing",
                           hintStyle:
                               GoogleFonts.ubuntu(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w400)),
                       maxLines: null,
