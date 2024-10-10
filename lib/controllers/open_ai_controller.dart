@@ -57,14 +57,18 @@ class OpenAIController extends ChangeNotifier {
         final runId = _runId;
         if (runId != null) {
           final messages = await _openAIRepository.listMessages(threadId: threadId, runId: runId);
-          final mostRecentMessage = messages.first as dynamic;
-          final contents = mostRecentMessage["content"] as List<dynamic>;
-          final firstContent = contents.first as dynamic;
-          final text = firstContent["text"] as dynamic;
-          final value = text["value"] as dynamic;
-          _message = value;
-          print(_message);
-          notifyListeners();
+          final mostRecentMessage = messages.firstOrNull as dynamic;
+          if(mostRecentMessage != null) {
+            final contents = mostRecentMessage["content"] as List<dynamic>;
+            final firstContent = contents.firstOrNull as dynamic;
+            if(firstContent != null) {
+              final text = firstContent["text"] as dynamic;
+              final value = text["value"] as dynamic;
+              _message = value;
+              print(_message);
+              notifyListeners();
+            }
+          }
         }
       }
     }
