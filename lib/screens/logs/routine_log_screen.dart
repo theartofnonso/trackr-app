@@ -25,6 +25,7 @@ import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/routine_utils.dart';
+import '../../widgets/ai_widgets/outline_container.dart';
 import '../../widgets/ai_widgets/trkr_coach_button.dart';
 import '../../widgets/information_containers/information_container_lite.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
@@ -191,7 +192,9 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                     MuscleGroupFamilyChart(
                         frequencyData: muscleGroupFamilyFrequency(exerciseLogs: completedExerciseLogsAndSets)),
                     const SizedBox(height: 12),
-                    const TRKRCoachButton(label: "Great session! Ask TRKR for feedback"),
+                    log.summary != null
+                        ? const AIOutlineContainer()
+                        : const TRKRCoachButton(label: "Great session! Ask TRKR for feedback"),
                     const SizedBox(height: 12),
                     ExerciseLogListView(
                         exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogsAndSets),
@@ -327,7 +330,11 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
           initialDateTimeRange: DateTimeRange(start: log.startTime, end: log.endTime),
           onChangedDateTimeRange: (DateTimeRange datetimeRange) async {
             Navigator.pop(context);
-            final updatedLog = log.copyWith(startTime: datetimeRange.start, endTime: datetimeRange.end, createdAt: datetimeRange.end, updatedAt: datetimeRange.end);
+            final updatedLog = log.copyWith(
+                startTime: datetimeRange.start,
+                endTime: datetimeRange.end,
+                createdAt: datetimeRange.end,
+                updatedAt: datetimeRange.end);
             await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: updatedLog);
             setState(() {
               _log = updatedLog;

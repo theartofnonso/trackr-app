@@ -8,10 +8,7 @@ class TRKRCoachButton extends StatelessWidget {
 
   final String label;
 
-  const TRKRCoachButton({
-    super.key,
-    required this.label
-  });
+  const TRKRCoachButton({super.key, required this.label});
 
   @override
   Widget build(BuildContext context) {
