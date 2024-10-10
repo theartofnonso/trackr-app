@@ -11,6 +11,7 @@ class RoutineLogDto implements Log {
   final String name;
   @override
   final String notes;
+  final String? summary;
   @override
   final DateTime startTime;
   @override
@@ -27,6 +28,7 @@ class RoutineLogDto implements Log {
     required this.name,
     required this.exerciseLogs,
     required this.notes,
+    this.summary,
     required this.startTime,
     required this.endTime,
     required this.createdAt,
@@ -45,6 +47,7 @@ class RoutineLogDto implements Log {
       'templateId': templateId,
       'name': name,
       'notes': notes,
+      'summary': notes,
       'startTime': startTime.toIso8601String(),
       'endTime': endTime.toIso8601String(),
       'exercises': exerciseLogs.map((exercise) => exercise.toJson()).toList(),
@@ -56,12 +59,12 @@ class RoutineLogDto implements Log {
     final templateId = json["templateId"] ?? "";
     final name = json["name"] ?? "";
     final notes = json["notes"] ?? "";
+    final summary = json["summary"] ?? "";
     final startTime = DateTime.parse(json["startTime"]);
     final endTime = DateTime.parse(json["endTime"]);
     final exercisesJsons = json["exercises"] as List<dynamic>;
-    final exercises = exercisesJsons
-        .map((json) => ExerciseLogDto.fromJson(routineLogId: id, json: jsonDecode(json)))
-        .toList();
+    final exercises =
+        exercisesJsons.map((json) => ExerciseLogDto.fromJson(routineLogId: id, json: jsonDecode(json))).toList();
     final createdAt = DateTime.now();
     final updatedAt = DateTime.now();
     return RoutineLogDto(
@@ -69,6 +72,7 @@ class RoutineLogDto implements Log {
       templateId: templateId,
       name: name,
       notes: notes,
+      summary: summary,
       startTime: startTime,
       endTime: endTime,
       exerciseLogs: exercises,
@@ -83,6 +87,7 @@ class RoutineLogDto implements Log {
     String? templateId,
     String? name,
     String? notes,
+    String? summary,
     DateTime? startTime,
     DateTime? endTime,
     List<ExerciseLogDto>? exerciseLogs,
@@ -94,6 +99,7 @@ class RoutineLogDto implements Log {
       templateId: templateId ?? this.templateId,
       name: name ?? this.name,
       notes: notes ?? this.notes,
+      summary: summary ?? this.summary,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
       exerciseLogs: exerciseLogs ?? this.exerciseLogs,
@@ -104,10 +110,9 @@ class RoutineLogDto implements Log {
 
   @override
   String toString() {
-    return 'RoutineLogDto{id: $id, templateId: $templateId, name: $name, notes: $notes, startTime: $startTime, endTime: $endTime, exerciseLogs: $exerciseLogs, createdAt: $createdAt, updatedAt: $updatedAt}';
+    return 'RoutineLogDto{id: $id, templateId: $templateId, name: $name, notes: $notes, summary: $summary, startTime: $startTime, endTime: $endTime, exerciseLogs: $exerciseLogs, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
 
   @override
-  // TODO: implement type
   LogType get type => LogType.routine;
 }

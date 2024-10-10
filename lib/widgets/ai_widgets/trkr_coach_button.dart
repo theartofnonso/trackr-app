@@ -5,8 +5,12 @@ import '../../colors.dart';
 import '../trkr_widgets/trkr_coach_widget.dart';
 
 class TRKRCoachButton extends StatelessWidget {
+
+  final String label;
+
   const TRKRCoachButton({
     super.key,
+    required this.label
   });
 
   @override
@@ -38,7 +42,7 @@ class TRKRCoachButton extends StatelessWidget {
           child: Row(children: [
             const TRKRCoachWidget(),
             const SizedBox(width: 10),
-            Text("Ask TRKR coach",
+            Text(label,
                 textAlign: TextAlign.center,
                 style:
                 GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white70, fontSize: 14))

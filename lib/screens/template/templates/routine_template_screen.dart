@@ -199,7 +199,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                         child: RoutineTemplateAIContextScreen(
                           template: template,
                         )),
-                    child: const TRKRCoachButton(),
+                    child: const TRKRCoachButton(label: "TRKR Coach can optimse your workout"),
                   ),
                   const SizedBox(height: 10),
                   Expanded(

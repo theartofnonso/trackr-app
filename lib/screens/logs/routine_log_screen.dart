@@ -191,7 +191,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                     MuscleGroupFamilyChart(
                         frequencyData: muscleGroupFamilyFrequency(exerciseLogs: completedExerciseLogsAndSets)),
                     const SizedBox(height: 12),
-                    const TRKRCoachButton(),
+                    const TRKRCoachButton(label: "Great session! Ask TRKR for feedback"),
                     const SizedBox(height: 12),
                     ExerciseLogListView(
                         exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogsAndSets),
