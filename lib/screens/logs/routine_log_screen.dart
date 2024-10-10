@@ -194,7 +194,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                     const SizedBox(height: 12),
                     log.summary != null
                         ? const TRKRSummaryButton()
-                        : const TRKRCoachButton(label: "Want to know how you did?"),
+                        : const TRKRCoachButton(label: "Want to know how you did today?"),
                     const SizedBox(height: 12),
                     ExerciseLogListView(
                         exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogsAndSets),
