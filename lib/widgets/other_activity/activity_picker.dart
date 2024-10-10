@@ -5,8 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
-import 'package:tracker_app/widgets/other_activity/activity_selector.dart';
 import 'package:tracker_app/widgets/information_containers/information_container_lite.dart';
+import 'package:tracker_app/widgets/other_activity/activity_selector.dart';
 
 import '../../enums/activity_type_enums.dart';
 import '../../strings/datetime_range_picker_strings.dart';
@@ -19,7 +19,8 @@ class ActivityPicker extends StatefulWidget {
   final DateTimeRange? initialDateTimeRange;
   final void Function(ActivityType activity, DateTimeRange range) onSelectActivity;
 
-  const ActivityPicker({super.key, this.initialActivityType, this.initialDateTimeRange, required this.onSelectActivity});
+  const ActivityPicker(
+      {super.key, this.initialActivityType, this.initialDateTimeRange, required this.onSelectActivity});
 
   @override
   State<ActivityPicker> createState() => _ActivityPickerState();
@@ -52,6 +53,16 @@ class _ActivityPickerState extends State<ActivityPicker> {
 
     final selectedActivity = _selectedActivity;
 
+    final image = selectedActivity?.image;
+
+    final leadingWidget = image != null
+        ? Image.asset(
+            'icons/$image.png',
+            fit: BoxFit.contain,
+            height: 24, // Adjust the height as needed
+          )
+        : FaIcon(selectedActivity?.icon, color: Colors.white);
+
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -59,8 +70,8 @@ class _ActivityPickerState extends State<ActivityPicker> {
           ListTile(
             onTap: _navigateToActivitySelector,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-            leading: FaIcon(selectedActivity != null ? selectedActivity.icon : FontAwesomeIcons.person,
-                color: Colors.white70),
+            leading:
+                selectedActivity != null ? leadingWidget : const FaIcon(FontAwesomeIcons.person, color: Colors.white70),
             title: Text(
               selectedActivity != null ? selectedActivity.name : "Select Activity".toUpperCase(),
               style: GoogleFonts.ubuntu(
