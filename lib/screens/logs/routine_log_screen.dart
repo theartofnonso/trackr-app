@@ -31,7 +31,6 @@ import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_button.dart';
-import '../../widgets/ai_widgets/trkr_summary_button.dart';
 import '../../widgets/information_containers/information_container_lite.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
 
@@ -200,7 +199,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                         frequencyData: muscleGroupFamilyFrequency(exerciseLogs: completedExerciseLogsAndSets)),
                     const SizedBox(height: 12),
                     log.summary != null
-                        ? const TRKRSummaryButton()
+                        ? _TRKRSummaryWidget(onTap: () { },)
                         : TRKRCoachButton(label: label, onTap: _generateSummary),
                     const SizedBox(height: 12),
                     ExerciseLogListView(
@@ -527,6 +526,65 @@ class _EmptyState extends StatelessWidget {
             ],
           ),
         )),
+      ),
+    );
+  }
+}
+
+class _TRKRSummaryWidget extends StatelessWidget {
+  final VoidCallback? onTap;
+
+  const _TRKRSummaryWidget({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        shape: BoxShape.rectangle, // Use BoxShape.circle for circular borders
+        gradient: const LinearGradient(
+          colors: [Colors.blue, Colors.green], // Gradient colors
+        ),
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: Container(
+        margin: const EdgeInsets.all(1), // Border width
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              sapphireDark80,
+              sapphireDark,
+            ],
+          ),
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                  "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
+                  textAlign: TextAlign.left,
+                  style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white, fontSize: 14)),
+              const SizedBox(height: 6),
+              GestureDetector(
+                onTap: onTap,
+                child: ShaderMask(
+                  shaderCallback: (bounds) => const LinearGradient(
+                    colors: [Colors.blue, Colors.green],
+                    tileMode: TileMode.mirror,
+                  ).createShader(Rect.fromLTWH(0.0, 0.0, bounds.width, bounds.height)),
+                  child: Text("Review your feedback",
+                      textAlign: TextAlign.left,
+                      style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 14)),
+                ),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }
