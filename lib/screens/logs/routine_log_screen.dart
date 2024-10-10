@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -11,10 +13,12 @@ import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
+import 'package:tracker_app/widgets/backgrounds/trkr_loading_screen.dart';
 import 'package:tracker_app/widgets/chart/muscle_group_family_chart.dart';
 
 import '../../../colors.dart';
 import '../../../dtos/exercise_log_dto.dart';
+import '../../controllers/open_ai_controller.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../controllers/routine_template_controller.dart';
 import '../../dtos/routine_log_dto.dart';
@@ -22,11 +26,12 @@ import '../../dtos/routine_template_dto.dart';
 import '../../dtos/viewmodels/exercise_log_view_model.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/routine_editor_type_enums.dart';
+import '../../strings/ai_prompts.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/routine_utils.dart';
-import '../../widgets/ai_widgets/trkr_summary_button.dart';
 import '../../widgets/ai_widgets/trkr_coach_button.dart';
+import '../../widgets/ai_widgets/trkr_summary_button.dart';
 import '../../widgets/information_containers/information_container_lite.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
 
@@ -194,7 +199,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                     const SizedBox(height: 12),
                     log.summary != null
                         ? const TRKRSummaryButton()
-                        : const TRKRCoachButton(label: "Want to know how you did today?"),
+                        : TRKRCoachButton(label: "Tap to know how you performed", onTap: _generateSummary),
                     const SizedBox(height: 12),
                     ExerciseLogListView(
                         exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogsAndSets),
@@ -203,8 +208,37 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                 ),
               ),
             ),
+            if (_loading) const TRKRLoadingScreen()
           ]),
         ));
+  }
+
+  void _generateSummary() {
+    final log = _log;
+
+    if (log == null) return;
+
+    const userInstructions = "Review the workout below and provide feedback";
+
+    final templateJson = jsonEncode(log.toJson());
+
+    final StringBuffer buffer = StringBuffer();
+
+    buffer.writeln(userInstructions);
+    buffer.writeln(templateJson);
+
+    final completeInstructions = buffer.toString();
+
+    _toggleLoadingState();
+
+    Provider.of<OpenAIController>(context, listen: false)
+        .runMessage(system: routineLogSystemInstruction, user: completeInstructions)
+        .then((response) {
+      if (response != null) {
+        _saveSummary(response: response, log: log);
+      }
+      _toggleLoadingState();
+    });
   }
 
   void _loadData() {
@@ -258,7 +292,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
               horizontalTitleGap: 6,
               title: Text("Edit duration",
                   style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
-              onTap: _editLogDuration,
+              onTap: _editDuration,
             ),
             ListTile(
               dense: true,
@@ -321,7 +355,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     }
   }
 
-  void _editLogDuration() {
+  void _editDuration() {
     Navigator.pop(context);
     final log = _log;
     if (log != null) {
@@ -341,6 +375,14 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             });
           });
     }
+  }
+
+  void _saveSummary({required RoutineLogDto log, required String response}) async {
+    final updatedLog = log.copyWith(summary: response);
+    await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: updatedLog);
+    setState(() {
+      _log = updatedLog;
+    });
   }
 
   void _createTemplate() async {

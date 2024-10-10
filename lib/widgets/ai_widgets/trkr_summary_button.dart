@@ -32,14 +32,14 @@ class TRKRSummaryButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(5),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                  "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals",
+                  "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
                   textAlign: TextAlign.left,
-                  style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white, fontSize: 16)),
+                  style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white, fontSize: 14)),
               const SizedBox(height: 6),
               GestureDetector(
                 onTap: () {},
@@ -50,7 +50,7 @@ class TRKRSummaryButton extends StatelessWidget {
                   ).createShader(Rect.fromLTWH(0.0, 0.0, bounds.width, bounds.height)),
                   child: Text("Review your feedback",
                       textAlign: TextAlign.left,
-                      style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 16)),
+                      style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 14)),
                 ),
               )
             ],

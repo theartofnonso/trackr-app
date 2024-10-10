@@ -27,6 +27,11 @@ class OpenAIController extends ChangeNotifier {
     _threadId = threadId;
   }
 
+  Future<String?> runMessage({required String system, required String user}) async {
+    final response = await _openAIRepository.runMessage(system: system, user: user);
+    return response;
+  }
+
   Future<void> addMessage({required String prompt, required OpenAiEnums mode}) async {
     final threadId = _threadId;
     if (threadId != null) {

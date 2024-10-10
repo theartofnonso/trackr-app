@@ -22,7 +22,7 @@ import '../../controllers/settings_controller.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/uri_utils.dart';
-import '../../widgets/backgrounds/overlay_background.dart';
+import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../exercise/library/exercise_library_screen.dart';
 
 enum WeightUnit {
@@ -162,7 +162,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               ),
             ),
           ),
-          if (_loading) const OverlayBackground(opacity: 0.9)
+          if (_loading) const TRKRLoadingScreen(opacity: 0.9)
         ]),
       ),
     );

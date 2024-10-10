@@ -22,7 +22,7 @@ import '../../enums/muscle_group_enums.dart';
 import '../../enums/sets_reps_volume_enum.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/routine_utils.dart';
-import '../../widgets/backgrounds/overlay_background.dart';
+import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/calendar/calendar_months_navigator.dart';
 import '../../widgets/chart/bar_chart.dart';
 import '../../widgets/chart/horizontal_stacked_bars.dart';
@@ -342,7 +342,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
               ),
             ),
           ),
-          if (_loading) const OverlayBackground(opacity: 0.9)
+          if (_loading) const TRKRLoadingScreen(opacity: 0.9)
         ]),
       ),
     );

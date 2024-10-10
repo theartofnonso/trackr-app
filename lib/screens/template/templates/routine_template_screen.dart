@@ -24,7 +24,7 @@ import '../../../utils/dialog_utils.dart';
 import '../../../utils/navigation_utils.dart';
 import '../../../utils/routine_utils.dart';
 import '../../../widgets/ai_widgets/trkr_coach_button.dart';
-import '../../../widgets/backgrounds/overlay_background.dart';
+import '../../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../../widgets/routine/preview/exercise_log_listview.dart';
 import '../../preferences/routine_schedule_planner/routine_schedule_planner_home.dart';
 
@@ -229,7 +229,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                 ],
               ),
             ),
-            if (_loading) const OverlayBackground()
+            if (_loading) const TRKRLoadingScreen()
           ]),
         ));
   }

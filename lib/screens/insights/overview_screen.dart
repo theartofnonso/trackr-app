@@ -29,7 +29,7 @@ import '../../utils/navigation_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../utils/shareables_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_button.dart';
-import '../../widgets/backgrounds/overlay_background.dart';
+import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/calendar/calendar.dart';
 import '../../widgets/label_divider.dart';
@@ -202,7 +202,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                     // Add more widgets here for exercise insights
                   ],
                 )),
-            if (_loading) const OverlayBackground(opacity: 0.9)
+            if (_loading) const TRKRLoadingScreen(opacity: 0.9)
           ],
         ),
       ),

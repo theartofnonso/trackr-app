@@ -14,7 +14,7 @@ import 'package:tracker_app/widgets/trkr_widgets/trkr_coach_widget.dart';
 import 'package:tracker_app/widgets/video_bottom_sheet.dart';
 
 import '../../../utils/dialog_utils.dart';
-import '../../../widgets/backgrounds/overlay_background.dart';
+import '../../../widgets/backgrounds/trkr_loading_screen.dart';
 
 class RoutineTemplateAIContextScreen extends StatefulWidget {
   static const routeName = '/routine_ai_context_screen';
@@ -111,7 +111,7 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
             ],
           ),
         ),
-        if (_loading) const OverlayBackground()
+        if (_loading) const TRKRLoadingScreen()
       ]),
     ));
   }
