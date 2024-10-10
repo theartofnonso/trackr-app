@@ -3,9 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../colors.dart';
 
-class AIOutlineContainer extends StatelessWidget {
+class TRKRSummaryButton extends StatelessWidget {
 
-  const AIOutlineContainer({super.key});
+  const TRKRSummaryButton({super.key});
 
   @override
   Widget build(BuildContext context) {

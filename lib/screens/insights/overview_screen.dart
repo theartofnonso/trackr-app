@@ -182,7 +182,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                             GestureDetector(
                               onTap: () => navigateWithSlideTransition(
                                   context: context, child: const RoutineTemplateAIContextScreen()),
-                              child: const TRKRCoachButton(label: "Ask TRKR Coach"),
+                              child: const TRKRCoachButton(label: "Have questions about your fitness?"),
                             ),
                             if(allActivitiesForCurrentDate.isNotEmpty)
                               const SizedBox(height: 16),

@@ -42,7 +42,7 @@ class TRKRCoachButton extends StatelessWidget {
             Text(label,
                 textAlign: TextAlign.center,
                 style:
-                GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white70, fontSize: 14))
+                GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white, fontSize: 14))
           ]),
         ),
       ),

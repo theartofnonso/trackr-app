@@ -25,7 +25,7 @@ import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/routine_utils.dart';
-import '../../widgets/ai_widgets/outline_container.dart';
+import '../../widgets/ai_widgets/trkr_summary_button.dart';
 import '../../widgets/ai_widgets/trkr_coach_button.dart';
 import '../../widgets/information_containers/information_container_lite.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
@@ -193,8 +193,8 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                         frequencyData: muscleGroupFamilyFrequency(exerciseLogs: completedExerciseLogsAndSets)),
                     const SizedBox(height: 12),
                     log.summary != null
-                        ? const AIOutlineContainer()
-                        : const TRKRCoachButton(label: "Great session! Ask TRKR for feedback"),
+                        ? const TRKRSummaryButton()
+                        : const TRKRCoachButton(label: "Want to know how you did?"),
                     const SizedBox(height: 12),
                     ExerciseLogListView(
                         exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogsAndSets),
