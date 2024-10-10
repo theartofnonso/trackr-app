@@ -15,7 +15,6 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/calendar/calendar_months_navigator.dart';
-import 'package:tracker_app/widgets/trkr_widgets/trkr_coach_widget.dart';
 
 import '../../controllers/activity_log_controller.dart';
 import '../../controllers/routine_log_controller.dart';
@@ -29,6 +28,7 @@ import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../utils/shareables_utils.dart';
+import '../../widgets/ai_widgets/trkr_coach_button.dart';
 import '../../widgets/backgrounds/overlay_background.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/calendar/calendar.dart';
@@ -182,24 +182,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                             GestureDetector(
                               onTap: () => navigateWithSlideTransition(
                                   context: context, child: const RoutineTemplateAIContextScreen()),
-                              child: Container(
-                                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-                                  decoration: BoxDecoration(
-                                    color: sapphireDark, // Background color of the container
-                                    borderRadius: BorderRadius.circular(5),
-                                    border: Border.all(
-                                      color: sapphireLight, // Border color
-                                      width: 1, // Border width
-                                    ), // Border radius of 20
-                                  ),
-                                  child: Row(children: [
-                                    const TRKRCoachWidget(),
-                                    const SizedBox(width: 10),
-                                    Text("Ask TRKR coach",
-                                        textAlign: TextAlign.center,
-                                        style: GoogleFonts.ubuntu(
-                                            fontWeight: FontWeight.w400, color: Colors.white70, fontSize: 14))
-                                  ])),
+                              child: const TRKRCoachButton(),
                             ),
                             if(allActivitiesForCurrentDate.isNotEmpty)
                               const SizedBox(height: 16),

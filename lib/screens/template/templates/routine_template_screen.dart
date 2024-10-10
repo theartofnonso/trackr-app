@@ -23,9 +23,9 @@ import '../../../urls.dart';
 import '../../../utils/dialog_utils.dart';
 import '../../../utils/navigation_utils.dart';
 import '../../../utils/routine_utils.dart';
+import '../../../widgets/ai_widgets/trkr_coach_button.dart';
 import '../../../widgets/backgrounds/overlay_background.dart';
 import '../../../widgets/routine/preview/exercise_log_listview.dart';
-import '../../../widgets/trkr_widgets/trkr_coach_widget.dart';
 import '../../preferences/routine_schedule_planner/routine_schedule_planner_home.dart';
 
 class RoutineTemplateScreen extends StatefulWidget {
@@ -199,24 +199,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                         child: RoutineTemplateAIContextScreen(
                           template: template,
                         )),
-                    child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-                        decoration: BoxDecoration(
-                          color: sapphireDark, // Background color of the container
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(
-                            color: sapphireLight, // Border color
-                            width: 1, // Border width
-                          ), // Border radius of 20
-                        ),
-                        child: Row(children: [
-                          const TRKRCoachWidget(),
-                          const SizedBox(width: 10),
-                          Text("Ask TRKR coach",
-                              textAlign: TextAlign.center,
-                              style:
-                                  GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white70, fontSize: 14))
-                        ])),
+                    child: const TRKRCoachButton(),
                   ),
                   const SizedBox(height: 10),
                   Expanded(
