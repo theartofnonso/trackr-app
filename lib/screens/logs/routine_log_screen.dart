@@ -71,6 +71,8 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     final completedSetsSummary =
         "${numberOfCompletedSets.length} ${pluralize(word: "Set", count: numberOfCompletedSets.length)}";
 
+    final label = _loading ? "TRKR is analysing your log" : "Tap to know how you performed";
+
     return Scaffold(
         backgroundColor: sapphireDark,
         appBar: AppBar(
@@ -199,7 +201,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                     const SizedBox(height: 12),
                     log.summary != null
                         ? const TRKRSummaryButton()
-                        : TRKRCoachButton(label: "Tap to know how you performed", onTap: _generateSummary),
+                        : TRKRCoachButton(label: label, onTap: _generateSummary),
                     const SizedBox(height: 12),
                     ExerciseLogListView(
                         exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogsAndSets),
