@@ -175,7 +175,7 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
         const SizedBox(
           height: 12,
         ),
-        Text("You completed ${activity.duration().hmsAnalog()} of ${activity.name} on ${activity.createdAt.formattedDayAndMonthAndYear()}",
+        Text("You completed ${activity.duration().hmsAnalog()} of ${activity.name}",
             style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white),
             textAlign: TextAlign.start),
         const SizedBox(
