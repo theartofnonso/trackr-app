@@ -16,7 +16,7 @@ class TRKRCoachButton extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,  // Use BoxShape.circle for circular borders
         gradient: const LinearGradient(
-          colors: [Colors.green, Colors.blue], // Gradient colors
+          colors: [Colors.blue, Colors.green], // Gradient colors
         ),
         borderRadius: BorderRadius.circular(5),
       ),
