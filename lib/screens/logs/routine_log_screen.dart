@@ -298,7 +298,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
   }
 
   void _editLog() async {
-    context.pop();
+    Navigator.pop(context);
     final log = _log;
     if (log != null) {
       final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.edit);
@@ -315,15 +315,15 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
   }
 
   void _editLogDuration() {
-    context.pop();
+    Navigator.pop(context);
     final log = _log;
     if (log != null) {
       showDatetimeRangePicker(
           context: context,
           initialDateTimeRange: DateTimeRange(start: log.startTime, end: log.endTime),
           onChangedDateTimeRange: (DateTimeRange datetimeRange) async {
-            context.pop();
-            final updatedLog = log.copyWith(startTime: datetimeRange.start, endTime: datetimeRange.end);
+            Navigator.pop(context);
+            final updatedLog = log.copyWith(startTime: datetimeRange.start, endTime: datetimeRange.end, createdAt: datetimeRange.end, updatedAt: datetimeRange.end);
             await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: updatedLog);
             setState(() {
               _log = updatedLog;
@@ -333,7 +333,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
   }
 
   void _createTemplate() async {
-    context.pop();
+    Navigator.pop(context);
 
     final log = _log;
     if (log != null) {
@@ -398,14 +398,14 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
   }
 
   void _deleteLog() {
-    context.pop(); // Close the previous BottomSheet
+    Navigator.pop(context); // Close the previous BottomSheet
     showBottomSheetWithMultiActions(
         context: context,
         title: "Delete log?",
         description: "Are you sure you want to delete this log?",
         leftAction: context.pop,
         rightAction: () {
-          context.pop(); // Close current BottomSheet
+          Navigator.pop(context); // Close current BottomSheet
           _toggleLoadingState(message: "Deleting log");
           _doDeleteLog();
         },
