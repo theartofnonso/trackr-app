@@ -201,25 +201,20 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     if (template.notes.isNotEmpty)
-                      Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Text('"${template.notes}"',
-                                textAlign: TextAlign.start,
-                                style: GoogleFonts.ubuntu(
-                                  color: Colors.white70,
-                                  fontSize: 16,
-                                  fontStyle: FontStyle.italic,
-                                  fontWeight: FontWeight.w700
-                                )),
-                          ),
-                          const SizedBox(height: 5),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
+                        child: Text('"${template.notes}"',
+                            textAlign: TextAlign.start,
+                            style: GoogleFonts.ubuntu(
+                                color: Colors.white70,
+                                fontSize: 16,
+                                fontStyle: FontStyle.italic,
+                                fontWeight: FontWeight.w600)),
                       ),
-                    const SizedBox(
-                      height: 10,
-                    ),
+                    if (template.notes.isEmpty)
+                      const SizedBox(
+                        height: 10,
+                      ),
                     Container(
                       margin: const EdgeInsets.only(bottom: 12),
                       decoration: BoxDecoration(

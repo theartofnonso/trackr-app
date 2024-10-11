@@ -115,15 +115,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (log.notes.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 12.0),
-                        child: Text(log.notes,
-                            style: GoogleFonts.ubuntu(
-                              color: Colors.white,
-                              fontSize: 14,
-                            )),
-                      ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -148,8 +139,22 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                                 color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
                       ],
                     ),
+                    if (log.notes.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
+                        child: Text('"${log.notes}"',
+                            textAlign: TextAlign.start,
+                            style: GoogleFonts.ubuntu(
+                                color: Colors.white70,
+                                fontSize: 16,
+                                fontStyle: FontStyle.italic,
+                                fontWeight: FontWeight.w600)),
+                      ),
+                    if (log.notes.isEmpty)
+                      const SizedBox(
+                        height: 10,
+                      ),
                     Container(
-                      margin: const EdgeInsets.only(top: 24, bottom: 12),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
                         color: sapphireDark.withOpacity(0.4), // Set the background color

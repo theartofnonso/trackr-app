@@ -126,7 +126,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     final logs = periodicalLogs.expand((logs) => logs.value);
 
-    logs.forEach((log) => print(log.name));
+    logs.forEach((log) => print("${log.name} on ${log.createdAt.formattedDayAndMonthAndYear()}"));
 
     return Scaffold(
       appBar: AppBar(
