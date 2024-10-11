@@ -21,7 +21,7 @@ class OpenAIRepository {
     String? message;
 
     final body = jsonEncode({
-      "model": "gpt-4o",
+      "model": "gpt-4o-mini",
       "messages": [
         {"role": "system", "content": system},
         {"role": "user", "content": user}
