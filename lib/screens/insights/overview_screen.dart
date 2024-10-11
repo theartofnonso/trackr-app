@@ -28,7 +28,6 @@ import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../utils/shareables_utils.dart';
-import '../../widgets/ai_widgets/trkr_coach_button.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/calendar/calendar.dart';
@@ -36,7 +35,6 @@ import '../../widgets/label_divider.dart';
 import '../../widgets/monitors/overview_monitor.dart';
 import '../../widgets/routine/preview/activity_log_widget.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
-import '../template/templates/routine_template_ai_context_screen.dart';
 import 'monthly_insights_screen.dart';
 
 class OverviewScreen extends StatefulWidget {
@@ -179,13 +177,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
                               selectedDateRange: _selectedDateTimeRange,
                             ),
                             const SizedBox(height: 10),
-                            GestureDetector(
-                              onTap: () => navigateWithSlideTransition(
-                                  context: context, child: const RoutineTemplateAIContextScreen()),
-                              child: const TRKRCoachButton(label: "Have questions about your fitness?"),
-                            ),
-                            if(allActivitiesForCurrentDate.isNotEmpty)
-                              const SizedBox(height: 16),
                             _LogsListView(
                               logs: allActivitiesForCurrentDate,
                             ),
