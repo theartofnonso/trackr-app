@@ -206,7 +206,9 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                         ctaLabel: log.summary != null ? "Review your feedback" : "Ask for feedback",
                         description:
                             "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
-                        onTap: log.summary != null ? _showSummary : _generateSummary),
+                        onTap: () => log.summary != null
+                            ? _showSummary()
+                            : _generateSummary(logs: completedExerciseLogsAndSets)),
                     const SizedBox(height: 12),
                     ExerciseLogListView(
                         exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogsAndSets),
@@ -235,19 +237,19 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     }
   }
 
-  void _generateSummary() {
+  void _generateSummary({required List<ExerciseLogDto> logs}) {
     final log = _log;
 
     if (log == null) return;
 
-    const userInstructions = "Review the workout log below and provide feedback";
+    final userInstructions = "Review my ${log.name} workout log and provide feedback";
 
-    final logJson = jsonEncode(log.toJson());
+    final logJsons = logs.map((log) => jsonEncode(log.toJson()));
 
     final StringBuffer buffer = StringBuffer();
 
     buffer.writeln(userInstructions);
-    buffer.writeln(logJson);
+    buffer.writeln(logJsons);
 
     final completeInstructions = buffer.toString();
 
