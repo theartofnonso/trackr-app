@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../enums/open_ai_enums.dart';
 import '../repositories/open_ai_repository.dart';
 
 class OpenAIController extends ChangeNotifier {
@@ -32,10 +31,10 @@ class OpenAIController extends ChangeNotifier {
     return response;
   }
 
-  Future<void> addMessage({required String prompt, required OpenAiEnums mode}) async {
+  Future<void> addMessage({required String prompt}) async {
     final threadId = _threadId;
     if (threadId != null) {
-      final runId = await _openAIRepository.addMessage(threadId: threadId, prompt: prompt, mode: mode);
+      final runId = await _openAIRepository.addMessage(threadId: threadId, prompt: prompt);
       print("New message added");
       _runId = runId;
       print("New Run id: $_runId");

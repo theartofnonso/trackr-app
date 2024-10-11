@@ -3,8 +3,7 @@ import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:http/http.dart' as http;
 
-import '../enums/open_ai_enums.dart';
-import '../strings.dart';
+import '../strings/ai_prompts.dart';
 
 class OpenAIRepository {
   static const String _apiKey =
@@ -88,7 +87,7 @@ class OpenAIRepository {
     return threadId;
   }
 
-  Future<String?> addMessage({required String threadId, required String prompt, required OpenAiEnums mode}) async {
+  Future<String?> addMessage({required String threadId, required String prompt}) async {
     String? runId;
 
     final messagesEndpoint = "https://api.openai.com/v1/threads/$threadId/messages";
@@ -103,10 +102,7 @@ class OpenAIRepository {
         body: body,
       );
       if (response.statusCode == 200) {
-        final instructions =
-            mode == OpenAiEnums.template ? openAITemplateAssistantInstructions : openAIGenericAssistantInstructions;
-
-        runId = await _runThread(threadId: threadId, instructions: instructions);
+        runId = await _runThread(threadId: threadId);
       }
     } catch (e) {
       print('Request failed: $e');
@@ -115,7 +111,7 @@ class OpenAIRepository {
     return runId;
   }
 
-  Future<String?> _runThread({required String threadId, required String instructions}) async {
+  Future<String?> _runThread({required String threadId}) async {
     String? runId;
 
     final runsEndpoint = "https://api.openai.com/v1/threads/$threadId/runs";
@@ -123,7 +119,7 @@ class OpenAIRepository {
     final body = jsonEncode({
       'assistant_id': 'asst_dye87dwWWqq5tU7VHOkPi3hb',
       'tool_choice': {"type": "file_search"},
-      'instructions': instructions
+      'instructions': openAITemplateAssistantInstructions
     });
 
     try {

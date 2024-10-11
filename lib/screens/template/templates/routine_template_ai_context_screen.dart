@@ -8,7 +8,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/open_ai_controller.dart';
 import 'package:tracker_app/dtos/routine_template_dto.dart';
-import 'package:tracker_app/enums/open_ai_enums.dart';
 import 'package:tracker_app/widgets/trkr_widgets/trkr_coach_widget.dart';
 
 import '../../../widgets/ai_widgets/trkr_coach_message_widget.dart';
@@ -17,9 +16,9 @@ import '../../../widgets/backgrounds/trkr_loading_screen.dart';
 class RoutineTemplateAIContextScreen extends StatefulWidget {
   static const routeName = '/routine_ai_context_screen';
 
-  final RoutineTemplateDto? template;
+  final RoutineTemplateDto template;
 
-  const RoutineTemplateAIContextScreen({super.key, this.template});
+  const RoutineTemplateAIContextScreen({super.key, required this.template});
 
   @override
   State<RoutineTemplateAIContextScreen> createState() => _RoutineTemplateAIContextScreenState();
@@ -67,8 +66,7 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
               const SizedBox(
                 height: 8,
               ),
-              if (controller.message.isEmpty)
-                template != null ? _OptimiseHeroWidget(template: template) : _HeroWidget(),
+              if (controller.message.isEmpty) _HeroWidget(template: template),
               if (controller.message.isNotEmpty)
                 Expanded(child: SingleChildScrollView(child: TRKRCoachMessageWidget(message: controller.message))),
               controller.message.isNotEmpty ? const SizedBox(height: 16) : const Spacer(),
@@ -122,21 +120,12 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
     _onDisposeCallback = Provider.of<OpenAIController>(context, listen: false).onClear;
   }
 
-  void addMessage() {
-    final template = widget.template;
-    if (template != null) {
-      _addTemplateMessage();
-    } else {
-      _addGenericMessage();
-    }
-  }
-
   void _addTemplateMessage() {
     _dismissKeyboard();
 
     final userInstructions = _textEditingController.text.trim();
 
-    final templateJson = jsonEncode(widget.template?.toJson());
+    final templateJson = jsonEncode(widget.template.toJson());
 
     final StringBuffer buffer = StringBuffer();
 
@@ -150,28 +139,7 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
       _toggleLoadingState();
 
       Provider.of<OpenAIController>(context, listen: false)
-          .addMessage(prompt: completeInstructions, mode: OpenAiEnums.template)
-          .then((_) {
-        print("About to check run status");
-        _runAI();
-      });
-
-      setState(() {
-        _textEditingController.clear();
-      });
-    }
-  }
-
-  void _addGenericMessage() {
-    _dismissKeyboard();
-
-    final userInstructions = _textEditingController.text.trim();
-
-    if (userInstructions.isNotEmpty) {
-      _toggleLoadingState();
-
-      Provider.of<OpenAIController>(context, listen: false)
-          .addMessage(prompt: userInstructions, mode: OpenAiEnums.template)
+          .addMessage(prompt: completeInstructions)
           .then((_) {
         print("About to check run status");
         _runAI();
@@ -236,10 +204,10 @@ class _AppBar extends StatelessWidget {
   }
 }
 
-class _OptimiseHeroWidget extends StatelessWidget {
+class _HeroWidget extends StatelessWidget {
   final RoutineTemplateDto template;
 
-  const _OptimiseHeroWidget({
+  const _HeroWidget({
     required this.template,
   });
 
@@ -300,68 +268,6 @@ class _OptimiseHeroWidget extends StatelessWidget {
               child: Text("Focus on particular muscle group",
                   style: GoogleFonts.ubuntu(
                       color: Colors.white.withOpacity(0.8), fontSize: 12, fontWeight: FontWeight.w600)),
-            ),
-          ]),
-        )
-      ]),
-    );
-  }
-}
-
-class _HeroWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        const TRKRCoachWidget(),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            RichText(
-              text: TextSpan(
-                text: "Hey there! TRKR Coach can help you optimise your fitness.",
-                style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white, height: 1.5),
-                children: <TextSpan>[
-                  const TextSpan(text: " "),
-                  TextSpan(
-                      text: "Start with the suggestions below.",
-                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)),
-                ],
-              ),
-            ),
-            const SizedBox(height: 10),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              decoration: BoxDecoration(
-                color: Colors.white10.withOpacity(0.1), // Background color of the container
-                borderRadius: BorderRadius.circular(5), // Rounded corners
-              ),
-              child: Text("How to train for hypertrophy",
-                  style: GoogleFonts.ubuntu(
-                      color: Colors.white.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
-            ),
-            const SizedBox(height: 10),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              decoration: BoxDecoration(
-                color: Colors.white10.withOpacity(0.1), // Background color of the container
-                borderRadius: BorderRadius.circular(5), // Rounded corners
-              ),
-              child: Text("Optimal rep range to build muscle",
-                  style: GoogleFonts.ubuntu(
-                      color: Colors.white.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
-            ),
-            const SizedBox(height: 10),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              decoration: BoxDecoration(
-                color: Colors.white10.withOpacity(0.1), // Background color of the container
-                borderRadius: BorderRadius.circular(5), // Rounded corners
-              ),
-              child: Text("Recovering from a workout",
-                  style: GoogleFonts.ubuntu(
-                      color: Colors.white.withOpacity(0.8), fontSize: 15, fontWeight: FontWeight.w600)),
             ),
           ]),
         )
