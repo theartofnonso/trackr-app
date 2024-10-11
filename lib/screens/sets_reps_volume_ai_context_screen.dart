@@ -5,12 +5,12 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../widgets/ai_widgets/trkr_coach_message_widget.dart';
 
-class SetsRepsVolumeAiContextScreen extends StatelessWidget {
+class SetsRepsVolumeAIContextScreen extends StatelessWidget {
   static const routeName = '/sets_reps_volume_ai_context_screen';
 
   final String content;
 
-  const SetsRepsVolumeAiContextScreen({super.key, required this.content});
+  const SetsRepsVolumeAIContextScreen({super.key, required this.content});
 
   @override
   Widget build(BuildContext context) {

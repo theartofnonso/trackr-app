@@ -235,14 +235,14 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     if (log == null) return;
 
-    const userInstructions = "Review the workout below and provide feedback";
+    const userInstructions = "Review the workout log below and provide feedback";
 
-    final templateJson = jsonEncode(log.toJson());
+    final logJson = jsonEncode(log.toJson());
 
     final StringBuffer buffer = StringBuffer();
 
     buffer.writeln(userInstructions);
-    buffer.writeln(templateJson);
+    buffer.writeln(logJson);
 
     final completeInstructions = buffer.toString();
 

@@ -32,7 +32,7 @@ class OverviewMonitor extends StatelessWidget {
     final routineLogDays = groupBy(routineLogs, (log) => log.createdAt.withoutTime().day);
     final activityLogDays = groupBy(activityLogs, (log) => log.createdAt.withoutTime().day);
 
-    final totalActivityDays = routineLogDays.length + activityLogDays.length;
+    final totalActivityDays = {...routineLogDays.keys, ...activityLogDays.keys}.length;
 
     final monthlyProgress = (routineLogDays.length + activityLogDays.length) / 12;
 

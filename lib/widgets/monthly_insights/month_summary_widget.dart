@@ -29,6 +29,7 @@ class MonthSummaryWidget extends StatelessWidget {
         .expand((exerciseLogs) => exerciseLogs);
 
     final sets = exerciseLogs.expand((exercise) => exercise.sets);
+    
     final numberOfLogs = routineLogs.length + activityLogs.length;
     final numberOfSets = sets.length;
     final routineLogHoursInMilliSeconds = routineLogs.map((log) => log.duration().inMilliseconds).sum;

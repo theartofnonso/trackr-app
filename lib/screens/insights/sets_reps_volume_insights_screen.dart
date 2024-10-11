@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,11 +10,13 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/chart_period_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/routine_log_extension.dart';
+import 'package:tracker_app/screens/sets_reps_volume_ai_context_screen.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/empty_states/horizontal_stacked_bars_empty_state.dart';
 
 import '../../colors.dart';
+import '../../controllers/open_ai_controller.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../dtos/routine_log_dto.dart';
@@ -20,7 +24,9 @@ import '../../dtos/set_dto.dart';
 import '../../enums/chart_unit_enum.dart';
 import '../../enums/muscle_group_enums.dart';
 import '../../enums/sets_reps_volume_enum.dart';
+import '../../strings/ai_prompts.dart';
 import '../../utils/exercise_logs_utils.dart';
+import '../../utils/navigation_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/ai_widgets/trkr_information_container.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
@@ -118,6 +124,10 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
             : repsTrendColor(reps: value.toInt()))
         .toList();
 
+    final logs = periodicalLogs.expand((logs) => logs.value);
+
+    logs.forEach((log) => print(log.name));
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: sapphireDark80,
@@ -194,7 +204,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                   TRKRInformationContainer(
                     ctaLabel: "Review your ${_selectedMuscleGroup.name} training",
                     description: _selectedMuscleGroup.description,
-                    onTap: () {},
+                    onTap: () => _generateSummary(logs: []),
                   ),
                   const SizedBox(height: 12),
                   Row(
@@ -349,6 +359,38 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
         ]),
       ),
     );
+  }
+
+  void _toggleLoadingState() {
+    setState(() {
+      _loading = !_loading;
+    });
+  }
+
+  void _generateSummary({required List<RoutineLogDto> logs}) {
+    const userInstructions = "Review the workout logs below and provide feedback";
+
+    final logJsons = logs.map((log) => jsonEncode(log.toJson()));
+
+    final StringBuffer buffer = StringBuffer();
+
+    buffer.writeln(userInstructions);
+    buffer.writeln(logJsons);
+
+    final completeInstructions = buffer.toString();
+
+    _toggleLoadingState();
+
+    Provider.of<OpenAIController>(context, listen: false)
+        .runMessage(system: routineLogSystemInstruction, user: completeInstructions)
+        .then((response) {
+      _toggleLoadingState();
+      if (mounted) {
+        if (response != null) {
+          navigateWithSlideTransition(context: context, child: SetsRepsVolumeAIContextScreen(content: response));
+        }
+      }
+    });
   }
 
   void _onChangedDateTimeRange(DateTimeRange? range) {
