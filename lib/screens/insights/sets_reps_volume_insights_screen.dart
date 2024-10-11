@@ -162,6 +162,10 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  CalendarMonthsNavigator(
+                    onChangedDateTimeRange: _onChangedDateTimeRange,
+                    chartPeriod: _period,
+                  ),
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
@@ -202,10 +206,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                     ),
                   ),
                   const SizedBox(height: 10),
-                  CalendarMonthsNavigator(
-                    onChangedDateTimeRange: _onChangedDateTimeRange,
-                    chartPeriod: _period,
-                  ),
+
                   TRKRInformationContainer(
                     ctaLabel: "Review your ${_selectedMuscleGroup.name} training",
                     description: _selectedMuscleGroup.description,
