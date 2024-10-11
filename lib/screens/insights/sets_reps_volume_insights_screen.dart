@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/chart_period_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/routine_log_extension.dart';
@@ -77,6 +78,14 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     List<num> periodicalValues = [];
     List<DateTime> periodicalDates = [];
 
+    final exerciseLogs = periodicalLogs
+        .map((log) => log.value)
+        .expand((logs) => logs)
+        .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
+        .expand((exerciseLogs) => exerciseLogs)
+        .where((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup == _selectedMuscleGroup)
+        .toList();
+
     for (final periodAndLogs in periodicalLogs) {
       final valuesForPeriod = periodAndLogs.value
           .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
@@ -123,10 +132,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
             ? setsTrendColor(sets: value.toInt())
             : repsTrendColor(reps: value.toInt()))
         .toList();
-
-    final logs = periodicalLogs.expand((logs) => logs.value);
-
-    logs.forEach((log) => print("${log.name} on ${log.createdAt.formattedDayAndMonthAndYear()}"));
 
     return Scaffold(
       appBar: AppBar(
@@ -204,7 +209,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                   TRKRInformationContainer(
                     ctaLabel: "Review your ${_selectedMuscleGroup.name} training",
                     description: _selectedMuscleGroup.description,
-                    onTap: () => _generateSummary(logs: []),
+                    onTap: () => _generateSummary(logs: exerciseLogs),
                   ),
                   const SizedBox(height: 12),
                   Row(
@@ -367,8 +372,9 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     });
   }
 
-  void _generateSummary({required List<RoutineLogDto> logs}) {
-    const userInstructions = "Review the workout logs below and provide feedback";
+  void _generateSummary({required List<ExerciseLogDto> logs}) {
+    final userInstructions =
+        "Review my workout logs for ${_selectedMuscleGroup.name} from ${_dateTimeRange.start} to ${_dateTimeRange.end} and provide feedback";
 
     final logJsons = logs.map((log) => jsonEncode(log.toJson()));
 
