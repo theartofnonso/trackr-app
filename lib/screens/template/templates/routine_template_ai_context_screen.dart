@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,9 +10,8 @@ import 'package:tracker_app/controllers/open_ai_controller.dart';
 import 'package:tracker_app/dtos/routine_template_dto.dart';
 import 'package:tracker_app/enums/open_ai_enums.dart';
 import 'package:tracker_app/widgets/trkr_widgets/trkr_coach_widget.dart';
-import 'package:tracker_app/widgets/video_bottom_sheet.dart';
 
-import '../../../utils/dialog_utils.dart';
+import '../../../widgets/ai_widgets/trkr_coach_message_widget.dart';
 import '../../../widgets/backgrounds/trkr_loading_screen.dart';
 
 class RoutineTemplateAIContextScreen extends StatefulWidget {
@@ -72,7 +70,7 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
               if (controller.message.isEmpty)
                 template != null ? _OptimiseHeroWidget(template: template) : _HeroWidget(),
               if (controller.message.isNotEmpty)
-                Expanded(child: SingleChildScrollView(child: _TRKRCoachMessageWidget(message: controller.message))),
+                Expanded(child: SingleChildScrollView(child: TRKRCoachMessageWidget(message: controller.message))),
               controller.message.isNotEmpty ? const SizedBox(height: 16) : const Spacer(),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -367,41 +365,6 @@ class _HeroWidget extends StatelessWidget {
             ),
           ]),
         )
-      ]),
-    );
-  }
-}
-
-class _TRKRCoachMessageWidget extends StatelessWidget {
-  final String message;
-
-  const _TRKRCoachMessageWidget({required this.message});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        const TRKRCoachWidget(),
-        const SizedBox(width: 10),
-        Expanded(
-            child: MarkdownBody(
-          data: message,
-          onTapLink: (text, href, title) {
-            if (href != null) {
-              displayBottomSheet(context: context, child: VideoBottomSheet(url: href));
-            }
-          },
-          styleSheet: MarkdownStyleSheet(
-            h1: GoogleFonts.ubuntu(color: Colors.red, fontSize: 14, fontWeight: FontWeight.w600),
-            h2: GoogleFonts.ubuntu(color: Colors.green, fontSize: 14, fontWeight: FontWeight.w600),
-            h3: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700),
-            h4: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600),
-            h5: GoogleFonts.ubuntu(color: Colors.pink, fontSize: 14, fontWeight: FontWeight.w600),
-            h6: GoogleFonts.ubuntu(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w600),
-            p: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
-          ),
-        ))
       ]),
     );
   }

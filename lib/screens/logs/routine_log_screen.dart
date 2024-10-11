@@ -10,6 +10,7 @@ import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/routine_log_extension.dart';
+import 'package:tracker_app/screens/logs/routine_log_ai_context_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
@@ -199,7 +200,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                         frequencyData: muscleGroupFamilyFrequency(exerciseLogs: completedExerciseLogsAndSets)),
                     const SizedBox(height: 12),
                     log.summary != null
-                        ? _TRKRSummaryWidget(onTap: () { },)
+                        ? _TRKRSummaryWidget(onTap: _showSummary)
                         : TRKRCoachButton(label: label, onTap: _generateSummary),
                     const SizedBox(height: 12),
                     ExerciseLogListView(
@@ -212,6 +213,21 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             if (_loading) const TRKRLoadingScreen()
           ]),
         ));
+  }
+
+  void _showSummary() {
+    final log = _log;
+
+    if (log != null) {
+      final summary = log.summary;
+      if (summary != null) {
+        navigateWithSlideTransition(
+            context: context,
+            child: RoutineLogAIContextScreen(
+              content: summary,
+            ));
+      }
+    }
   }
 
   void _generateSummary() {
