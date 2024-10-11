@@ -37,9 +37,9 @@ class MonthlyInsightsScreen extends StatelessWidget {
             ],
           ),
         const SizedBox(height: 24),
-        LogStreakChartWidget(monthlyLogs: monthlyLogs),
-        const SizedBox(height: 18),
         MuscleGroupFamilyFrequencyChartWidget(monthlyLogs: monthlyLogs),
+        const SizedBox(height: 18),
+        LogStreakChartWidget(monthlyLogs: monthlyLogs),
       ],
     );
   }

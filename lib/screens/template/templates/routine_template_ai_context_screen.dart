@@ -197,7 +197,7 @@ class _AppBar extends StatelessWidget {
         ),
         IconButton(
           icon: const SizedBox.shrink(),
-          onPressed: context.pop,
+          onPressed: () {},
         )
       ],
     );
