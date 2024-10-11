@@ -12,6 +12,7 @@ import 'package:tracker_app/enums/chart_period_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/screens/sets_reps_volume_ai_context_screen.dart';
+import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/empty_states/horizontal_stacked_bars_empty_state.dart';
@@ -206,7 +207,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                     ),
                   ),
                   const SizedBox(height: 10),
-
                   TRKRInformationContainer(
                     ctaLabel: "Review your ${_selectedMuscleGroup.name} training",
                     description: _selectedMuscleGroup.description,
@@ -374,30 +374,35 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   }
 
   void _generateSummary({required List<ExerciseLogDto> logs}) {
-    final userInstructions =
-        "Review my workout logs for ${_selectedMuscleGroup.name} from ${_dateTimeRange.start} to ${_dateTimeRange.end} and provide feedback";
+    if (logs.isEmpty) {
+      showSnackbar(context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: "You don't have any logs");
+    } else {
+      final userInstructions =
+          "Review my workout logs for ${_selectedMuscleGroup.name} from ${_dateTimeRange.start} to ${_dateTimeRange
+          .end} and provide feedback";
 
-    final logJsons = logs.map((log) => jsonEncode(log.toJson()));
+      final logJsons = logs.map((log) => jsonEncode(log.toJson()));
 
-    final StringBuffer buffer = StringBuffer();
+      final StringBuffer buffer = StringBuffer();
 
-    buffer.writeln(userInstructions);
-    buffer.writeln(logJsons);
+      buffer.writeln(userInstructions);
+      buffer.writeln(logJsons);
 
-    final completeInstructions = buffer.toString();
+      final completeInstructions = buffer.toString();
 
-    _toggleLoadingState();
-
-    Provider.of<OpenAIController>(context, listen: false)
-        .runMessage(system: routineLogSystemInstruction, user: completeInstructions)
-        .then((response) {
       _toggleLoadingState();
-      if (mounted) {
-        if (response != null) {
-          navigateWithSlideTransition(context: context, child: SetsRepsVolumeAIContextScreen(content: response));
+
+      Provider.of<OpenAIController>(context, listen: false)
+          .runMessage(system: routineLogSystemInstruction, user: completeInstructions)
+          .then((response) {
+        _toggleLoadingState();
+        if (mounted) {
+          if (response != null) {
+            navigateWithSlideTransition(context: context, child: SetsRepsVolumeAIContextScreen(content: response));
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   void _onChangedDateTimeRange(DateTimeRange? range) {
