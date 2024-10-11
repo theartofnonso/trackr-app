@@ -59,7 +59,7 @@ class RoutineLogDto implements Log {
     final templateId = json["templateId"] ?? "";
     final name = json["name"] ?? "";
     final notes = json["notes"] ?? "";
-    final summary = json["summary"] ?? "";
+    final summary = json["summary"];
     final startTime = DateTime.parse(json["startTime"]);
     final endTime = DateTime.parse(json["endTime"]);
     final exercisesJsons = json["exercises"] as List<dynamic>;

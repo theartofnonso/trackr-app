@@ -14,6 +14,7 @@ class RoutineLogAIContextScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         body: Container(
       width: double.infinity,
@@ -25,15 +26,18 @@ class RoutineLogAIContextScreen extends StatelessWidget {
           center: Alignment.topRight,
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const _AppBar(),
-          const SizedBox(
-            height: 8,
-          ),
-          Expanded(child: SingleChildScrollView(child: TRKRCoachMessageWidget(message: content)))
-        ],
+      child: SafeArea(
+        minimum: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const _AppBar(),
+            const SizedBox(
+              height: 8,
+            ),
+            Expanded(child: SingleChildScrollView(child: TRKRCoachMessageWidget(message: content)))
+          ],
+        ),
       ),
     ));
   }
