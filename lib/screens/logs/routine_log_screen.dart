@@ -167,7 +167,8 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                             TableCell(
                               verticalAlignment: TableCellVerticalAlignment.middle,
                               child: Center(
-                                child: Text(completedSetsSummary,
+                                child: Text(
+                                    "${completedExerciseLogsAndSets.length} ${pluralize(word: "Exercise", count: completedExerciseLogsAndSets.length)}",
                                     style: GoogleFonts.ubuntu(
                                         color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                               ),
@@ -175,8 +176,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                             TableCell(
                               verticalAlignment: TableCellVerticalAlignment.middle,
                               child: Center(
-                                child: Text(
-                                    "${completedExerciseLogsAndSets.length} ${pluralize(word: "Exercise", count: completedExerciseLogsAndSets.length)}",
+                                child: Text(completedSetsSummary,
                                     style: GoogleFonts.ubuntu(
                                         color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                               ),

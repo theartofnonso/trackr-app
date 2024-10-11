@@ -167,7 +167,7 @@ class _RoutineWidget extends StatelessWidget {
                 ),
                 Text(
                   "${sets.length} ${pluralize(word: "Set", count: sets.length)}",
-                  style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w400),
+                  style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w500),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                 ),

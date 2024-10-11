@@ -22,9 +22,12 @@ import '../../../enums/routine_editor_type_enums.dart';
 import '../../../enums/routine_preview_type_enum.dart';
 import '../../../urls.dart';
 import '../../../utils/dialog_utils.dart';
+import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/navigation_utils.dart';
 import '../../../utils/routine_utils.dart';
+import '../../../utils/string_utils.dart';
 import '../../../widgets/backgrounds/trkr_loading_screen.dart';
+import '../../../widgets/chart/muscle_group_family_chart.dart';
 import '../../../widgets/routine/preview/exercise_log_listview.dart';
 import '../../preferences/routine_schedule_planner/routine_schedule_planner_home.dart';
 
@@ -90,6 +93,9 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       provider.fetchTemplate(id: widget.id);
       return const _EmptyState();
     }
+
+    final numberOfSets = template.exerciseTemplates.expand((exerciseTemplate) => exerciseTemplate.sets);
+    final setsSummary = "${numberOfSets.length} ${pluralize(word: "Set", count: numberOfSets.length)}";
 
     final menuActions = [
       MenuItemButton(onPressed: _navigateToRoutineTemplateEditor, child: Text("Edit", style: GoogleFonts.ubuntu())),
@@ -190,45 +196,87 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           child: Stack(children: [
             SafeArea(
               minimum: const EdgeInsets.all(10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TRKRInformationContainer(
-                    ctaLabel: "Ask for a review",
-                    description:
-                        "Having a structured plan is crucial to achieve results in your training. Your plan can be optimised to help you achieve your objective.",
-                    onTap: () => navigateWithSlideTransition(
-                        context: context,
-                        child: RoutineTemplateAIContextScreen(
-                          template: template,
-                        )),
-                  ),
-                  const SizedBox(height: 10),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    if (template.notes.isNotEmpty)
+                      Column(
                         children: [
-                          if (template.notes.isNotEmpty)
-                            Column(
-                              children: [
-                                Text(template.notes,
-                                    style: GoogleFonts.ubuntu(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                    )),
-                                const SizedBox(height: 5),
-                              ],
-                            ),
-                          ExerciseLogListView(
-                            exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
-                            previewType: RoutinePreviewType.template,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Text('"${template.notes}"',
+                                textAlign: TextAlign.start,
+                                style: GoogleFonts.ubuntu(
+                                  color: Colors.white70,
+                                  fontSize: 16,
+                                  fontStyle: FontStyle.italic,
+                                  fontWeight: FontWeight.w700
+                                )),
                           ),
+                          const SizedBox(height: 5),
+                        ],
+                      ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
+                        color: sapphireDark.withOpacity(0.4), // Set the background color
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      child: Table(
+                        border: const TableBorder.symmetric(inside: BorderSide(color: sapphireLighter, width: 2)),
+                        columnWidths: const <int, TableColumnWidth>{
+                          0: FlexColumnWidth(),
+                          1: FlexColumnWidth(),
+                        },
+                        children: [
+                          TableRow(children: [
+                            TableCell(
+                              verticalAlignment: TableCellVerticalAlignment.middle,
+                              child: Center(
+                                child: Text(
+                                    "${template.exerciseTemplates.length} ${pluralize(word: "Exercise", count: template.exerciseTemplates.length)}",
+                                    style: GoogleFonts.ubuntu(
+                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                              ),
+                            ),
+                            TableCell(
+                              verticalAlignment: TableCellVerticalAlignment.middle,
+                              child: Center(
+                                child: Text(setsSummary,
+                                    style: GoogleFonts.ubuntu(
+                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                              ),
+                            ),
+                          ]),
                         ],
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 10),
+                    MuscleGroupFamilyChart(
+                        frequencyData: muscleGroupFamilyFrequency(exerciseLogs: template.exerciseTemplates)),
+                    const SizedBox(height: 12),
+                    TRKRInformationContainer(
+                      ctaLabel: "Ask for a review",
+                      description:
+                          "Having a structured plan is crucial to achieve results in your training. Your plan can be optimised to help you achieve your objective.",
+                      onTap: () => navigateWithSlideTransition(
+                          context: context,
+                          child: RoutineTemplateAIContextScreen(
+                            template: template,
+                          )),
+                    ),
+                    const SizedBox(height: 10),
+                    ExerciseLogListView(
+                      exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
+                      previewType: RoutinePreviewType.template,
+                    ),
+                  ],
+                ),
               ),
             ),
             if (_loading) const TRKRLoadingScreen()
