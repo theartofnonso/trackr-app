@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/extensions/routine_template_extension.dart';
 import 'package:tracker_app/screens/template/templates/routine_template_ai_context_screen.dart';
+import 'package:tracker_app/widgets/ai_widgets/trkr_information_container.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:tracker_app/widgets/information_containers/information_container_lite.dart';
 
@@ -23,7 +24,6 @@ import '../../../urls.dart';
 import '../../../utils/dialog_utils.dart';
 import '../../../utils/navigation_utils.dart';
 import '../../../utils/routine_utils.dart';
-import '../../../widgets/ai_widgets/trkr_coach_button.dart';
 import '../../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../../widgets/routine/preview/exercise_log_listview.dart';
 import '../../preferences/routine_schedule_planner/routine_schedule_planner_home.dart';
@@ -193,13 +193,15 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  GestureDetector(
+                  TRKRInformationContainer(
+                    ctaLabel: "Ask for a review",
+                    description:
+                        "Having a structured plan is crucial to achieve results in your training. Your plan can be optimised to help you achieve your objective.",
                     onTap: () => navigateWithSlideTransition(
                         context: context,
                         child: RoutineTemplateAIContextScreen(
                           template: template,
                         )),
-                    child: const TRKRCoachButton(label: "Want suggestions about your workout?"),
                   ),
                   const SizedBox(height: 10),
                   Expanded(

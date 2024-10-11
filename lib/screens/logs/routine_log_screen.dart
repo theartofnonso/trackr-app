@@ -31,7 +31,7 @@ import '../../strings/ai_prompts.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/routine_utils.dart';
-import '../../widgets/ai_widgets/trkr_coach_button.dart';
+import '../../widgets/ai_widgets/trkr_information_container.dart';
 import '../../widgets/information_containers/information_container_lite.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
 
@@ -70,8 +70,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     final numberOfCompletedSets = completedExerciseLogsAndSets.expand((exerciseLog) => exerciseLog.sets);
     final completedSetsSummary =
         "${numberOfCompletedSets.length} ${pluralize(word: "Set", count: numberOfCompletedSets.length)}";
-
-    final label = _loading ? "TRKR is analysing your log" : "Tap to know how you performed";
 
     return Scaffold(
         backgroundColor: sapphireDark,
@@ -199,9 +197,11 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                     MuscleGroupFamilyChart(
                         frequencyData: muscleGroupFamilyFrequency(exerciseLogs: completedExerciseLogsAndSets)),
                     const SizedBox(height: 12),
-                    log.summary != null
-                        ? _TRKRSummaryWidget(onTap: _showSummary)
-                        : TRKRCoachButton(label: label, onTap: _generateSummary),
+                    TRKRInformationContainer(
+                        ctaLabel: log.summary != null ? "Review your feedback" : "Ask for feedback",
+                        description:
+                            "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
+                        onTap: log.summary != null ? _showSummary : _generateSummary),
                     const SizedBox(height: 12),
                     ExerciseLogListView(
                         exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogsAndSets),
@@ -542,66 +542,6 @@ class _EmptyState extends StatelessWidget {
             ],
           ),
         )),
-      ),
-    );
-  }
-}
-
-class _TRKRSummaryWidget extends StatelessWidget {
-  final VoidCallback? onTap;
-
-  const _TRKRSummaryWidget({required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          shape: BoxShape.rectangle, // Use BoxShape.circle for circular borders
-          gradient: const LinearGradient(
-            colors: [Colors.blue, Colors.green], // Gradient colors
-          ),
-          borderRadius: BorderRadius.circular(5),
-        ),
-        child: Container(
-          margin: const EdgeInsets.all(1), // Border width
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                sapphireDark80,
-                sapphireDark,
-              ],
-            ),
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                    "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
-                    textAlign: TextAlign.left,
-                    style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white, fontSize: 14)),
-                const SizedBox(height: 6),
-                ShaderMask(
-                    shaderCallback: (bounds) => const LinearGradient(
-                      colors: [Colors.blue, Colors.green],
-                      tileMode: TileMode.mirror,
-                    ).createShader(Rect.fromLTWH(0.0, 0.0, bounds.width, bounds.height)),
-                    child: Text("Review your feedback",
-                        textAlign: TextAlign.left,
-                        style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 14)),
-                  ),
-
-              ],
-            ),
-          ),
-        ),
       ),
     );
   }

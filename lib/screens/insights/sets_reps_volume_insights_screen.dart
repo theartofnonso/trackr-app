@@ -22,6 +22,7 @@ import '../../enums/muscle_group_enums.dart';
 import '../../enums/sets_reps_volume_enum.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/routine_utils.dart';
+import '../../widgets/ai_widgets/trkr_information_container.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/calendar/calendar_months_navigator.dart';
 import '../../widgets/chart/bar_chart.dart';
@@ -161,8 +162,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                       isDense: true,
                       value: _selectedMuscleGroup,
                       hint: Text("Muscle group",
-                          style:
-                              GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14)),
+                          style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14)),
                       underline: Container(
                         color: Colors.transparent,
                       ),
@@ -191,7 +191,12 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                     onChangedDateTimeRange: _onChangedDateTimeRange,
                     chartPeriod: _period,
                   ),
-                  const SizedBox(height: 10),
+                  TRKRInformationContainer(
+                    ctaLabel: "Review your ${_selectedMuscleGroup.name} training",
+                    description: _selectedMuscleGroup.description,
+                    onTap: () {},
+                  ),
+                  const SizedBox(height: 12),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -203,8 +208,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                             text: TextSpan(
                               text:
                                   "${_metric == SetRepsVolumeReps.volume ? volumeInKOrM(avgValue.toDouble(), showLessThan1k: false) : avgValue}",
-                              style: GoogleFonts.ubuntu(
-                                  color: Colors.white, fontWeight: FontWeight.w700, fontSize: 28),
+                              style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 28),
                               children: [
                                 TextSpan(
                                   text: " ",
@@ -221,8 +225,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                           ),
                           Text(
                             "WEEKLY AVERAGE",
-                            style: GoogleFonts.ubuntu(
-                                color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 10),
+                            style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 10),
                           ),
                         ],
                       ),
@@ -337,7 +340,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                         subTitle: 'Minimum (<${_sufficientSetsOrRepsValue()} ${_metric.name})',
                         color: Colors.orange,
                       ),
-                    ])
+                    ]),
                 ],
               ),
             ),
@@ -347,13 +350,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       ),
     );
   }
-
-  // void _onChangedDateTimeRange(DateTimeRange? range) {
-  //   if (range == null) return;
-  //   setState(() {
-  //     _dateTimeRange = range;
-  //   });
-  // }
 
   void _onChangedDateTimeRange(DateTimeRange? range) {
     if (range == null) return;
