@@ -89,8 +89,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     final routineLogsForTheYear = monthlyRoutineLogs.values.expand((logs) => logs);
 
-    final routineLogsForTheYearByDay = groupBy(routineLogsForTheYear, (log) => log.createdAt.formattedDayAndMonth());
-
     final routineLogsForCurrentDate = routineLogController.logsWhereDate(dateTime: _selectedDateTime).toList();
 
     /// Activity Logs
@@ -105,17 +103,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     final activityLogsForTheYear = monthlyActivityLogs.values.expand((logs) => logs);
 
-    final activityLogsForTheYearByDay = groupBy(activityLogsForTheYear, (log) => log.createdAt.formattedDayAndMonth());
-
     final activityLogsForCurrentDate = activityLogController.logsWhereDate(dateTime: _selectedDateTime).toList();
 
     /// Aggregates
     final allActivitiesForCurrentDate = [...routineLogsForCurrentDate, ...activityLogsForCurrentDate];
 
-    final allActivitiesForTheYearByDay = [
-      ...routineLogsForTheYearByDay.entries,
-      ...activityLogsForTheYearByDay.entries
-    ];
+    final allActivitiesForTheYear = routineLogsForTheYear.length + activityLogsForTheYear.length;
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -150,7 +143,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                         icon: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
                           const FaIcon(FontAwesomeIcons.fire, color: Colors.white, size: 20),
                           const SizedBox(width: 4),
-                          Text("${allActivitiesForTheYearByDay.length}",
+                          Text("$allActivitiesForTheYear",
                               style:
                                   GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
                         ]),
