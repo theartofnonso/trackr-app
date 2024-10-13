@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tracker_app/widgets/monthly_insights/activities_widget.dart';
 import 'package:tracker_app/widgets/monthly_insights/month_summary_widget.dart';
 import 'package:tracker_app/widgets/monthly_insights/log_streak_chart_widget.dart';
 
@@ -11,7 +12,7 @@ class MonthlyInsightsScreen extends StatelessWidget {
   final DateTimeRange dateTimeRange;
   final List<RoutineLogDto> logsForTheMonth;
   final List<ActivityLogDto> activityLogsForTheMonth;
-  final Map<DateTimeRange, List<RoutineLogDto>> monthlyLogs;
+  final Map<DateTimeRange, List<RoutineLogDto>> monthlyLogsAndDate;
   final int daysInMonth;
 
   const MonthlyInsightsScreen(
@@ -19,7 +20,7 @@ class MonthlyInsightsScreen extends StatelessWidget {
       required this.dateTimeRange,
       required this.logsForTheMonth,
       required this.activityLogsForTheMonth,
-      required this.monthlyLogs,
+      required this.monthlyLogsAndDate,
       required this.daysInMonth});
 
   @override
@@ -27,7 +28,9 @@ class MonthlyInsightsScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        MonthSummaryWidget(routineLogs: logsForTheMonth, activityLogs: activityLogsForTheMonth),
+        MonthSummaryWidget(routineLogs: logsForTheMonth),
+        const SizedBox(height: 14),
+        ActivitiesWidget(activities: activityLogsForTheMonth),
         if (logsForTheMonth.isNotEmpty)
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,9 +40,9 @@ class MonthlyInsightsScreen extends StatelessWidget {
             ],
           ),
         const SizedBox(height: 24),
-        LogStreakChartWidget(monthlyLogs: monthlyLogs),
+        MuscleGroupFamilyFrequencyChartWidget(monthlyLogs: monthlyLogsAndDate),
         const SizedBox(height: 18),
-        MuscleGroupFamilyFrequencyChartWidget(monthlyLogs: monthlyLogs),
+        LogStreakChartWidget(monthlyLogs: monthlyLogsAndDate),
       ],
     );
   }

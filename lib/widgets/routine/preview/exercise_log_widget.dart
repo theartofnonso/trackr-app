@@ -5,13 +5,14 @@ import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
+
 import '../../../controllers/routine_log_controller.dart';
 import '../../../screens/exercise/history/home_screen.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/routine_utils.dart';
-import '../preview/set_headers/single_set_header.dart';
 import '../preview/set_headers/double_set_header.dart';
+import '../preview/set_headers/single_set_header.dart';
 
 class ExerciseLogWidget extends StatelessWidget {
   final ExerciseLogDto exerciseLog;
@@ -35,55 +36,49 @@ class ExerciseLogWidget extends StatelessWidget {
 
     final pbs = calculatePBs(pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseType, exerciseLog: exerciseLog);
 
-    return Container(
-      padding: padding,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Theme(
-            data: ThemeData(splashColor: sapphireLight),
-            child: ListTile(
-              contentPadding: EdgeInsets.zero,
-              dense: true,
-              onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => HomeScreen(exercise: exerciseLog.exercise)));
-              },
-              title: Text(exerciseLog.exercise.name,
-                  style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
-                  textAlign: TextAlign.center),
-              subtitle: otherSuperSet != null
-                  ? Padding(
-                      padding: const EdgeInsets.only(bottom: 10.0),
-                      child: Text("with ${otherSuperSet.exercise.name}",
-                          style: GoogleFonts.ubuntu(color: vibrantGreen, fontSize: 12, fontWeight: FontWeight.w600),
-                          textAlign: TextAlign.center),
-                    )
-                  : null,
-            ),
-          ),
-          exerciseLog.notes.isNotEmpty
-              ? Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Center(
-                    child: Text(exerciseLog.notes,
-                        style: GoogleFonts.ubuntu(color: Colors.white.withOpacity(0.8), fontSize: 15)),
-                  ),
-                )
-              : const SizedBox.shrink(),
-          switch (exerciseType) {
-            ExerciseType.weights => DoubleSetHeader(firstLabel: weightLabel().toUpperCase(), secondLabel: 'REPS'),
-            ExerciseType.bodyWeight => const SingleSetHeader(label: 'REPS'),
-            ExerciseType.duration => const SingleSetHeader(label: 'TIME'),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          dense: true,
+          onTap: () {
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => HomeScreen(exercise: exerciseLog.exercise)));
           },
-          const SizedBox(height: 8),
-          ...setsToWidgets(
-              type: exerciseType,
-              sets: exerciseLog.sets,
-              pbs: previewType == RoutinePreviewType.log ? pbs : [],
-              routinePreviewType: previewType),
-        ],
-      ),
+          title: Text(exerciseLog.exercise.name,
+              style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
+              textAlign: TextAlign.center),
+          subtitle: otherSuperSet != null
+              ? Padding(
+                  padding: const EdgeInsets.only(bottom: 10.0),
+                  child: Text("with ${otherSuperSet.exercise.name}",
+                      style: GoogleFonts.ubuntu(color: vibrantGreen, fontSize: 12, fontWeight: FontWeight.w600),
+                      textAlign: TextAlign.center),
+                )
+              : null,
+        ),
+        exerciseLog.notes.isNotEmpty
+            ? Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Center(
+                  child: Text(exerciseLog.notes,
+                      style: GoogleFonts.ubuntu(color: Colors.white.withOpacity(0.8), fontSize: 15)),
+                ),
+              )
+            : const SizedBox.shrink(),
+        switch (exerciseType) {
+          ExerciseType.weights => DoubleSetHeader(firstLabel: weightLabel().toUpperCase(), secondLabel: 'REPS', routinePreviewType: previewType,),
+          ExerciseType.bodyWeight => SingleSetHeader(label: 'REPS', routinePreviewType: previewType,),
+          ExerciseType.duration => SingleSetHeader(label: 'TIME', routinePreviewType: previewType,),
+        },
+        const SizedBox(height: 8),
+        ...setsToWidgets(
+            type: exerciseType,
+            sets: exerciseLog.sets,
+            pbs: previewType == RoutinePreviewType.log ? pbs : [],
+            routinePreviewType: previewType),
+      ],
     );
   }
 }

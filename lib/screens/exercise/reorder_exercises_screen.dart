@@ -1,13 +1,11 @@
 import 'package:collection/collection.dart';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
-import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 
-import '../dtos/exercise_log_dto.dart';
+import '../../dtos/exercise_log_dto.dart';
 
 class ReOrderExercisesScreen extends StatefulWidget {
   final List<ExerciseLogDto> exercises;
@@ -61,12 +59,12 @@ class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
         ),
         actions: [
           _hasReOrdered
-              ? OpacityButtonWidget(
-                  onPressed: _saveReOrdering,
-                  label: "Save",
-                  buttonColor: Colors.transparent,
-                )
-              : const SizedBox.shrink()
+              ? GestureDetector(
+                  onTap: _saveReOrdering,
+                  child: Text("Save",
+                      style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.white)))
+              : const SizedBox.shrink(),
+          const SizedBox(width: 12)
         ],
       ),
       body: Container(

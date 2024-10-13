@@ -6,8 +6,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/extensions/routine_template_extension.dart';
+import 'package:tracker_app/screens/template/templates/routine_template_ai_context_screen.dart';
+import 'package:tracker_app/widgets/ai_widgets/trkr_information_container.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
-import 'package:tracker_app/widgets/information_container_lite.dart';
+import 'package:tracker_app/widgets/information_containers/information_container_lite.dart';
 
 import '../../../../dtos/exercise_log_dto.dart';
 import '../../../colors.dart';
@@ -20,9 +22,12 @@ import '../../../enums/routine_editor_type_enums.dart';
 import '../../../enums/routine_preview_type_enum.dart';
 import '../../../urls.dart';
 import '../../../utils/dialog_utils.dart';
+import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/navigation_utils.dart';
 import '../../../utils/routine_utils.dart';
-import '../../../widgets/backgrounds/overlay_background.dart';
+import '../../../utils/string_utils.dart';
+import '../../../widgets/backgrounds/trkr_loading_screen.dart';
+import '../../../widgets/chart/muscle_group_family_chart.dart';
 import '../../../widgets/routine/preview/exercise_log_listview.dart';
 import '../../preferences/routine_schedule_planner/routine_schedule_planner_home.dart';
 
@@ -89,6 +94,9 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       return const _EmptyState();
     }
 
+    final numberOfSets = template.exerciseTemplates.expand((exerciseTemplate) => exerciseTemplate.sets);
+    final setsSummary = "${numberOfSets.length} ${pluralize(word: "Set", count: numberOfSets.length)}";
+
     final menuActions = [
       MenuItemButton(onPressed: _navigateToRoutineTemplateEditor, child: Text("Edit", style: GoogleFonts.ubuntu())),
       MenuItemButton(
@@ -139,8 +147,9 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           backgroundColor: sapphireDark80,
           leading: IconButton(
             icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-            onPressed: () => context.pop(),
+            onPressed: context.pop,
           ),
+          centerTitle: true,
           title: Text(template.name,
               style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
           actions: [
@@ -192,16 +201,71 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     if (template.notes.isNotEmpty)
-                      Column(
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0, right: 8, bottom: 10),
+                        child: Text('"${template.notes}"',
+                            textAlign: TextAlign.start,
+                            style: GoogleFonts.ubuntu(
+                                color: Colors.white70,
+                                fontSize: 16,
+                                fontStyle: FontStyle.italic,
+                                fontWeight: FontWeight.w600)),
+                      ),
+                    if (template.notes.isEmpty)
+                      const SizedBox(
+                        height: 10,
+                      ),
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
+                        color: sapphireDark.withOpacity(0.4), // Set the background color
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      child: Table(
+                        border: const TableBorder.symmetric(inside: BorderSide(color: sapphireLighter, width: 2)),
+                        columnWidths: const <int, TableColumnWidth>{
+                          0: FlexColumnWidth(),
+                          1: FlexColumnWidth(),
+                        },
                         children: [
-                          Text(template.notes,
-                              style: GoogleFonts.ubuntu(
-                                color: Colors.white,
-                                fontSize: 14,
-                              )),
-                          const SizedBox(height: 5),
+                          TableRow(children: [
+                            TableCell(
+                              verticalAlignment: TableCellVerticalAlignment.middle,
+                              child: Center(
+                                child: Text(
+                                    "${template.exerciseTemplates.length} ${pluralize(word: "Exercise", count: template.exerciseTemplates.length)}",
+                                    style: GoogleFonts.ubuntu(
+                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                              ),
+                            ),
+                            TableCell(
+                              verticalAlignment: TableCellVerticalAlignment.middle,
+                              child: Center(
+                                child: Text(setsSummary,
+                                    style: GoogleFonts.ubuntu(
+                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                              ),
+                            ),
+                          ]),
                         ],
                       ),
+                    ),
+                    const SizedBox(height: 10),
+                    MuscleGroupFamilyChart(
+                        frequencyData: muscleGroupFamilyFrequency(exerciseLogs: template.exerciseTemplates)),
+                    const SizedBox(height: 12),
+                    TRKRInformationContainer(
+                      ctaLabel: "Ask for a review",
+                      description:
+                          "Having a structured plan is crucial to achieve results in your training. Your plan can be optimised to help you achieve your objective.",
+                      onTap: () => navigateWithSlideTransition(
+                          context: context,
+                          child: RoutineTemplateAIContextScreen(
+                            template: template,
+                          )),
+                    ),
+                    const SizedBox(height: 10),
                     ExerciseLogListView(
                       exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
                       previewType: RoutinePreviewType.template,
@@ -210,7 +274,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                 ),
               ),
             ),
-            if (_loading) const OverlayBackground()
+            if (_loading) const TRKRLoadingScreen()
           ]),
         ));
   }

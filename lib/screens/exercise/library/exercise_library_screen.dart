@@ -222,7 +222,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                                   onNavigateToExercise: _navigateToExerciseHistory,
                                   onSelect: widget.readOnly ? null : _navigateBackWithSelectedExercise),
                               separatorBuilder: (BuildContext context, int index) => const Padding(
-                                padding: EdgeInsets.only(top: 20.0, right: 10, bottom: 20),
+                                padding: EdgeInsets.symmetric(vertical: 20.0),
                                 child: Divider(height: 0.5, color: sapphireLighter,),
                               ),
                               itemCount: _filteredExercises.length),

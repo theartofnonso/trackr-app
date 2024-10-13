@@ -49,18 +49,27 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: sapphireDark80,
         surfaceTintColor: Colors.black,
         overlayColor: WidgetStateColor.resolveWith((states) => Colors.transparent),
-        destinations: const [
-          NavigationDestination(
+        destinations: [
+          const NavigationDestination(
             icon: FaIcon(FontAwesomeIcons.house, color: Colors.grey),
             selectedIcon: FaIcon(FontAwesomeIcons.house, color: Colors.white),
             label: 'Home',
           ),
           NavigationDestination(
-            icon: FaIcon(FontAwesomeIcons.dumbbell, color: Colors.grey, size: 24),
-            selectedIcon: FaIcon(FontAwesomeIcons.dumbbell, color: Colors.white, size: 24),
+            icon: Image.asset(
+              'icons/dumbbells.png',
+              fit: BoxFit.contain,
+              color: Colors.grey,
+              height: 34, // Adjust the height as needed
+            ),
+            selectedIcon: Image.asset(
+              'icons/dumbbells.png',
+              fit: BoxFit.contain,
+              height: 34, // Adjust the height as needed
+            ),
             label: 'Workouts',
           ),
-          NavigationDestination(
+          const NavigationDestination(
             icon: FaIcon(FontAwesomeIcons.gear, color: Colors.grey, size: 26),
             selectedIcon: FaIcon(FontAwesomeIcons.gear, color: Colors.white, size: 26),
             label: 'Settings',

@@ -22,7 +22,7 @@ import '../dtos/routine_template_dto.dart';
 import '../dtos/set_dto.dart';
 import '../enums/routine_schedule_type_enums.dart';
 import '../enums/template_changes_type_message_enums.dart';
-import '../screens/reorder_exercises_screen.dart';
+import '../screens/exercise/reorder_exercises_screen.dart';
 import 'exercise_logs_utils.dart';
 import 'general_utils.dart';
 import '../widgets/empty_states/single_set_row_empty_state.dart';
@@ -86,11 +86,7 @@ ExerciseLogDto? whereOtherExerciseInSuperSet(
       exercise.exercise.id != firstExercise.exercise.id);
 }
 
-List<Widget> setsToWidgets(
-    {required ExerciseType type,
-    required List<SetDto> sets,
-    List<PBDto> pbs = const [],
-    required RoutinePreviewType routinePreviewType}) {
+List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> sets, List<PBDto> pbs = const [], required RoutinePreviewType routinePreviewType}) {
   final durationTemplate = Padding(
     padding: const EdgeInsets.symmetric(vertical: 10.0),
     child: Center(
@@ -122,16 +118,16 @@ List<Widget> setsToWidgets(
       case ExerciseType.weights:
         final firstLabel = weightWithConversion(value: setDto.weightValue());
         final secondLabel = setDto.repsValue();
-        return DoubleSetRow(first: "$firstLabel", second: "$secondLabel", margin: margin, pbs: pbsForSet);
+        return DoubleSetRow(first: "$firstLabel", second: "$secondLabel", margin: margin, pbs: pbsForSet, routinePreviewType: routinePreviewType);
       case ExerciseType.bodyWeight:
         final label = setDto.repsValue();
-        return SingleSetRow(label: "$label", margin: margin);
+        return SingleSetRow(label: "$label", margin: margin, routinePreviewType: routinePreviewType);
       case ExerciseType.duration:
         if (routinePreviewType == RoutinePreviewType.template) {
           return durationTemplate;
         }
         final label = Duration(milliseconds: setDto.durationValue()).hmsAnalog();
-        return SingleSetRow(label: label, margin: margin, pbs: pbsForSet);
+        return SingleSetRow(label: label, margin: margin, pbs: pbsForSet, routinePreviewType: routinePreviewType);
     }
   })).toList();
 

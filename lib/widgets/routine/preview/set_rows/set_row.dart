@@ -2,27 +2,30 @@ import 'package:flutter/material.dart';
 
 import '../../../../colors.dart';
 import '../../../../dtos/pb_dto.dart';
+import '../../../../enums/routine_preview_type_enum.dart';
 import '../../../pbs/pb_icon.dart';
 
 class SetRow extends StatelessWidget {
   final EdgeInsets? margin;
   final List<PBDto> pbs;
   final Widget child;
+  final RoutinePreviewType routinePreviewType;
 
-  const SetRow({super.key, this.margin, this.pbs = const [], required this.child});
+  const SetRow({super.key, this.margin, this.pbs = const [], required this.child, required this.routinePreviewType});
 
   @override
   Widget build(BuildContext context) {
-
-    final pbsForSet = pbs.map((pb) => Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 6.0),
-      child: PBIcon(color: sapphireLight, label: pb.pb.name),
-    )).toList();
+    final pbsForSet = pbs
+        .map((pb) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6.0),
+              child: PBIcon(color: sapphireLight, label: pb.pb.name),
+            ))
+        .toList();
 
     return Container(
       margin: margin,
       decoration: BoxDecoration(
-        color: sapphireDark80, // Container color
+        color: routinePreviewType != RoutinePreviewType.ai ? sapphireDark80 : Colors.white.withOpacity(0.1),
         borderRadius: BorderRadius.circular(5.0),
         border: pbs.isNotEmpty ? Border.all(color: sapphireLight, width: 2) : null, // Border color
         // Radius for rounded corners

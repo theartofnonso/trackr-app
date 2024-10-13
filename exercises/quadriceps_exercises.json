@@ -228,6 +228,9 @@
     "name": "Sissy Squat (Weighted)",
     "primaryMuscleGroup": "Quadriceps",
     "type": "WR",
+    "video": "https://www.youtube.com/watch?v=weDhU3B6YLQ",
+    "creditSource": "https://www.youtube.com/@denvyr",
+    "credit": "Denvyr | Realistic Fitness Dietitian",
     "description": "Targets the quadriceps intensely while using weighted resistance for added challenge."
   },
   {
@@ -252,6 +255,9 @@
     "name": "Sumo Squat (Dumbbell)",
     "primaryMuscleGroup": "Quadriceps",
     "type": "WR",
+    "video": "https://www.youtube.com/watch?v=2SvNjQHHCx8",
+    "creditSource": "https://www.youtube.com/@denvyr",
+    "credit": "Denvyr | Realistic Fitness Dietitian",
     "description": "This squat variation widens the stance to target the quads and inner thighs with dumbbell resistance."
   },
   {
@@ -317,5 +323,15 @@
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
     "description": "Focuses on the quadriceps and outer thigh by stepping up laterally onto an elevated platform."
+  },
+  {
+    "id": "QUD39",
+    "name": "Bulgarian Split Squat (Dumbbells)",
+    "primaryMuscleGroup": "Quadriceps",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=vgn7bSXkgkA",
+    "creditSource": "https://www.youtube.com/@denvyr",
+    "credit": "Denvyr | Realistic Fitness Dietitian",
+    "description": "A single-leg squat variation that isolates the quadriceps and glutes using dumbbells."
   }
 ]

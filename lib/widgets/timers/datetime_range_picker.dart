@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
-import 'package:tracker_app/widgets/information_container_lite.dart';
+import 'package:tracker_app/widgets/information_containers/information_container_lite.dart';
 
 import '../../strings/datetime_range_picker_strings.dart';
 import '../buttons/opacity_button_widget.dart';
