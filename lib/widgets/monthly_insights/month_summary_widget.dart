@@ -7,19 +7,16 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../controllers/routine_log_controller.dart';
-import '../../dtos/activity_log_dto.dart';
 import '../../dtos/routine_log_dto.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/string_utils.dart';
 
 class MonthSummaryWidget extends StatelessWidget {
   final List<RoutineLogDto> routineLogs;
-  final List<ActivityLogDto> activityLogs;
 
   const MonthSummaryWidget({
     super.key,
     required this.routineLogs,
-    required this.activityLogs,
   });
 
   @override
@@ -30,12 +27,9 @@ class MonthSummaryWidget extends StatelessWidget {
 
     final sets = exerciseLogs.expand((exercise) => exercise.sets);
 
-    final numberOfLogs = routineLogs.length + activityLogs.length;
     final numberOfSets = sets.length;
     final routineLogHoursInMilliSeconds = routineLogs.map((log) => log.duration().inMilliseconds).sum;
-    final activityHoursInMilliSeconds = activityLogs.map((log) => log.duration().inMilliseconds).sum;
-    final totalHoursInMilliseconds = routineLogHoursInMilliSeconds + activityHoursInMilliSeconds;
-    final totalHours = Duration(milliseconds: totalHoursInMilliseconds);
+    final totalHours = Duration(milliseconds: routineLogHoursInMilliSeconds);
 
     final tonnage = exerciseLogs.map((log) {
       final volume = log.sets.map((set) => set.volume()).sum;
@@ -69,7 +63,7 @@ class MonthSummaryWidget extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Text("Summary of Training & Activities".toUpperCase(),
+            Text("Summary of Training".toUpperCase(),
                 style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
             const SizedBox(height: 30),
             Table(
@@ -85,10 +79,10 @@ class MonthSummaryWidget extends StatelessWidget {
                     verticalAlignment: TableCellVerticalAlignment.middle,
                     child: Center(
                       child: _TableItem(
-                          title: 'Activities'.toUpperCase(),
-                          subTitle: "$numberOfLogs",
-                          titleColor: logStreakColor(value: numberOfLogs / 12),
-                          subTitleColor: logStreakColor(value: numberOfLogs / 12),
+                          title: 'Training'.toUpperCase(),
+                          subTitle: "${routineLogs.length}",
+                          titleColor: logStreakColor(value: routineLogs.length / 12),
+                          subTitleColor: logStreakColor(value: routineLogs.length / 12),
                           padding: const EdgeInsets.only(bottom: 20)),
                     ),
                   ),

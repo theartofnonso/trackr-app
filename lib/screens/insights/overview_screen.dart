@@ -178,7 +178,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                               logsForTheMonth: routineLogsForTheMonth,
                               daysInMonth: _selectedDateTimeRange.datesToNow.length,
                               dateTimeRange: _selectedDateTimeRange,
-                              monthlyLogs: monthlyRoutineLogs,
+                              monthlyLogsAndDate: monthlyRoutineLogs,
                               activityLogsForTheMonth: activityLogsForTheMonth,
                             ),
                           ])),
@@ -218,11 +218,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
               title: Text("Log past session",
                   style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
-                context.pop();
+                Navigator.pop(context);
                 showDatetimeRangePicker(
                     context: context,
                     onChangedDateTimeRange: (DateTimeRange datetimeRange) {
-                      context.pop();
+                      Navigator.pop(context);
                       final logName = "${timeOfDay(datetime: datetimeRange.start)} Session";
                       final log = RoutineLogDto(
                           id: "",

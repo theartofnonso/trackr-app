@@ -71,7 +71,7 @@ class _ActivityPickerState extends State<ActivityPicker> {
             onTap: _navigateToActivitySelector,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             leading:
-                selectedActivity != null ? leadingWidget : const FaIcon(FontAwesomeIcons.person, color: Colors.white70),
+                selectedActivity != null ? leadingWidget : const FaIcon(FontAwesomeIcons.personWalking, color: Colors.white70),
             title: Text(
               selectedActivity != null ? selectedActivity.name : "Select Activity".toUpperCase(),
               style: GoogleFonts.ubuntu(
