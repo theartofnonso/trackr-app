@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -8,13 +10,16 @@ import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/routine_log_extension.dart';
+import 'package:tracker_app/screens/logs/routine_log_ai_context_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
+import 'package:tracker_app/widgets/backgrounds/trkr_loading_screen.dart';
 import 'package:tracker_app/widgets/chart/muscle_group_family_chart.dart';
 
 import '../../../colors.dart';
 import '../../../dtos/exercise_log_dto.dart';
+import '../../controllers/open_ai_controller.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../controllers/routine_template_controller.dart';
 import '../../dtos/routine_log_dto.dart';
@@ -22,10 +27,12 @@ import '../../dtos/routine_template_dto.dart';
 import '../../dtos/viewmodels/exercise_log_view_model.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/routine_editor_type_enums.dart';
+import '../../strings/ai_prompts.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/routine_utils.dart';
-import '../../widgets/information_container_lite.dart';
+import '../../widgets/ai_widgets/trkr_information_container.dart';
+import '../../widgets/information_containers/information_container_lite.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
 
 class RoutineLogScreen extends StatefulWidget {
@@ -108,15 +115,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (log.notes.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 12.0),
-                        child: Text(log.notes,
-                            style: GoogleFonts.ubuntu(
-                              color: Colors.white,
-                              fontSize: 14,
-                            )),
-                      ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -141,8 +139,22 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                                 color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
                       ],
                     ),
+                    if (log.notes.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
+                        child: Text('"${log.notes}"',
+                            textAlign: TextAlign.start,
+                            style: GoogleFonts.ubuntu(
+                                color: Colors.white70,
+                                fontSize: 16,
+                                fontStyle: FontStyle.italic,
+                                fontWeight: FontWeight.w600)),
+                      ),
+                    if (log.notes.isEmpty)
+                      const SizedBox(
+                        height: 10,
+                      ),
                     Container(
-                      margin: const EdgeInsets.only(top: 24, bottom: 12),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
                         color: sapphireDark.withOpacity(0.4), // Set the background color
@@ -160,7 +172,8 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                             TableCell(
                               verticalAlignment: TableCellVerticalAlignment.middle,
                               child: Center(
-                                child: Text(completedSetsSummary,
+                                child: Text(
+                                    "${completedExerciseLogsAndSets.length} ${pluralize(word: "Exercise", count: completedExerciseLogsAndSets.length)}",
                                     style: GoogleFonts.ubuntu(
                                         color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                               ),
@@ -168,8 +181,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                             TableCell(
                               verticalAlignment: TableCellVerticalAlignment.middle,
                               child: Center(
-                                child: Text(
-                                    "${completedExerciseLogsAndSets.length} ${pluralize(word: "Exercise", count: completedExerciseLogsAndSets.length)}",
+                                child: Text(completedSetsSummary,
                                     style: GoogleFonts.ubuntu(
                                         color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                               ),
@@ -189,6 +201,15 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                     const SizedBox(height: 10),
                     MuscleGroupFamilyChart(
                         frequencyData: muscleGroupFamilyFrequency(exerciseLogs: completedExerciseLogsAndSets)),
+                    // const SizedBox(height: 12),
+                    // TRKRInformationContainer(
+                    //     ctaLabel: log.summary != null ? "Review your feedback" : "Ask for feedback",
+                    //     description:
+                    //         "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
+                    //     onTap: () => log.summary != null
+                    //         ? _showSummary()
+                    //         : _generateSummary(logs: completedExerciseLogsAndSets)),
+                    // const SizedBox(height: 12),
                     ExerciseLogListView(
                         exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogsAndSets),
                         previewType: RoutinePreviewType.log),
@@ -196,8 +217,52 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                 ),
               ),
             ),
+            if (_loading) const TRKRLoadingScreen()
           ]),
         ));
+  }
+
+  void _showSummary() {
+    final log = _log;
+
+    if (log != null) {
+      final summary = log.summary;
+      if (summary != null) {
+        navigateWithSlideTransition(
+            context: context,
+            child: RoutineLogAIContextScreen(
+              content: summary,
+            ));
+      }
+    }
+  }
+
+  void _generateSummary({required List<ExerciseLogDto> logs}) {
+    final log = _log;
+
+    if (log == null) return;
+
+    final userInstructions = "Review my ${log.name} workout log and provide feedback";
+
+    final logJsons = logs.map((log) => jsonEncode(log.toJson()));
+
+    final StringBuffer buffer = StringBuffer();
+
+    buffer.writeln(userInstructions);
+    buffer.writeln(logJsons);
+
+    final completeInstructions = buffer.toString();
+
+    _toggleLoadingState();
+
+    Provider.of<OpenAIController>(context, listen: false)
+        .runMessage(system: routineLogSystemInstruction, user: completeInstructions)
+        .then((response) {
+      if (response != null) {
+        _saveSummary(response: response, log: log);
+      }
+      _toggleLoadingState();
+    });
   }
 
   void _loadData() {
@@ -251,7 +316,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
               horizontalTitleGap: 6,
               title: Text("Edit duration",
                   style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
-              onTap: _editLogDuration,
+              onTap: _editDuration,
             ),
             ListTile(
               dense: true,
@@ -298,7 +363,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
   }
 
   void _editLog() async {
-    context.pop();
+    Navigator.pop(context);
     final log = _log;
     if (log != null) {
       final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.edit);
@@ -314,16 +379,20 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     }
   }
 
-  void _editLogDuration() {
-    context.pop();
+  void _editDuration() {
+    Navigator.pop(context);
     final log = _log;
     if (log != null) {
       showDatetimeRangePicker(
           context: context,
           initialDateTimeRange: DateTimeRange(start: log.startTime, end: log.endTime),
           onChangedDateTimeRange: (DateTimeRange datetimeRange) async {
-            context.pop();
-            final updatedLog = log.copyWith(startTime: datetimeRange.start, endTime: datetimeRange.end);
+            Navigator.pop(context);
+            final updatedLog = log.copyWith(
+                startTime: datetimeRange.start,
+                endTime: datetimeRange.end,
+                createdAt: datetimeRange.end,
+                updatedAt: datetimeRange.end);
             await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: updatedLog);
             setState(() {
               _log = updatedLog;
@@ -332,8 +401,16 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     }
   }
 
+  void _saveSummary({required RoutineLogDto log, required String response}) async {
+    final updatedLog = log.copyWith(summary: response);
+    await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: updatedLog);
+    setState(() {
+      _log = updatedLog;
+    });
+  }
+
   void _createTemplate() async {
-    context.pop();
+    Navigator.pop(context);
 
     final log = _log;
     if (log != null) {
@@ -398,14 +475,14 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
   }
 
   void _deleteLog() {
-    context.pop(); // Close the previous BottomSheet
+    Navigator.pop(context); // Close the previous BottomSheet
     showBottomSheetWithMultiActions(
         context: context,
         title: "Delete log?",
         description: "Are you sure you want to delete this log?",
         leftAction: context.pop,
         rightAction: () {
-          context.pop(); // Close current BottomSheet
+          Navigator.pop(context); // Close current BottomSheet
           _toggleLoadingState(message: "Deleting log");
           _doDeleteLog();
         },

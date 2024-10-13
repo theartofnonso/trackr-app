@@ -22,8 +22,9 @@ class ActivityLogWidget extends StatelessWidget {
 
     final activityType = ActivityType.fromString(activity.name);
 
+    final image = activityType.image;
+
     return Container(
-      margin: null,
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(5),
@@ -33,9 +34,13 @@ class ActivityLogWidget extends StatelessWidget {
         tileColor: color,
         contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 20),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        leading: FaIcon(activityType.icon, color: Colors.white70),
+        leading: image != null ? Image.asset(
+          'icons/$image.png',
+          fit: BoxFit.contain,
+          height: 24, // Adjust the height as needed
+        ) : FaIcon(activityType.icon, color: Colors.white),
         title: Text(activity.name.toUpperCase(),
-            style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+            style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
         trailing: Text(trailing,
             style: GoogleFonts.ubuntu(
                 color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14)),

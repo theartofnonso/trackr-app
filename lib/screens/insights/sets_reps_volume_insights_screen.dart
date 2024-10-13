@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,14 +7,18 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/chart_period_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/routine_log_extension.dart';
+import 'package:tracker_app/screens/sets_reps_volume_ai_context_screen.dart';
+import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/empty_states/horizontal_stacked_bars_empty_state.dart';
 
 import '../../colors.dart';
+import '../../controllers/open_ai_controller.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../dtos/routine_log_dto.dart';
@@ -20,9 +26,12 @@ import '../../dtos/set_dto.dart';
 import '../../enums/chart_unit_enum.dart';
 import '../../enums/muscle_group_enums.dart';
 import '../../enums/sets_reps_volume_enum.dart';
+import '../../strings/ai_prompts.dart';
 import '../../utils/exercise_logs_utils.dart';
+import '../../utils/navigation_utils.dart';
 import '../../utils/routine_utils.dart';
-import '../../widgets/backgrounds/overlay_background.dart';
+import '../../widgets/ai_widgets/trkr_information_container.dart';
+import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/calendar/calendar_months_navigator.dart';
 import '../../widgets/chart/bar_chart.dart';
 import '../../widgets/chart/horizontal_stacked_bars.dart';
@@ -69,6 +78,14 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     List<num> periodicalValues = [];
     List<DateTime> periodicalDates = [];
+
+    final exerciseLogs = periodicalLogs
+        .map((log) => log.value)
+        .expand((logs) => logs)
+        .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
+        .expand((exerciseLogs) => exerciseLogs)
+        .where((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup == _selectedMuscleGroup)
+        .toList();
 
     for (final periodAndLogs in periodicalLogs) {
       final valuesForPeriod = periodAndLogs.value
@@ -146,6 +163,10 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  CalendarMonthsNavigator(
+                    onChangedDateTimeRange: _onChangedDateTimeRange,
+                    chartPeriod: _period,
+                  ),
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
@@ -161,8 +182,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                       isDense: true,
                       value: _selectedMuscleGroup,
                       hint: Text("Muscle group",
-                          style:
-                              GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14)),
+                          style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14)),
                       underline: Container(
                         color: Colors.transparent,
                       ),
@@ -186,12 +206,13 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                       }).toList(),
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  CalendarMonthsNavigator(
-                    onChangedDateTimeRange: _onChangedDateTimeRange,
-                    chartPeriod: _period,
-                  ),
-                  const SizedBox(height: 10),
+                  // const SizedBox(height: 10),
+                  // TRKRInformationContainer(
+                  //   ctaLabel: "Review your ${_selectedMuscleGroup.name} training",
+                  //   description: _selectedMuscleGroup.description,
+                  //   onTap: () => _generateSummary(logs: exerciseLogs),
+                  // ),
+                  const SizedBox(height: 12),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -203,8 +224,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                             text: TextSpan(
                               text:
                                   "${_metric == SetRepsVolumeReps.volume ? volumeInKOrM(avgValue.toDouble(), showLessThan1k: false) : avgValue}",
-                              style: GoogleFonts.ubuntu(
-                                  color: Colors.white, fontWeight: FontWeight.w700, fontSize: 28),
+                              style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 28),
                               children: [
                                 TextSpan(
                                   text: " ",
@@ -221,8 +241,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                           ),
                           Text(
                             "WEEKLY AVERAGE",
-                            style: GoogleFonts.ubuntu(
-                                color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 10),
+                            style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 10),
                           ),
                         ],
                       ),
@@ -337,23 +356,54 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                         subTitle: 'Minimum (<${_sufficientSetsOrRepsValue()} ${_metric.name})',
                         color: Colors.orange,
                       ),
-                    ])
+                    ]),
                 ],
               ),
             ),
           ),
-          if (_loading) const OverlayBackground(opacity: 0.9)
+          if (_loading) const TRKRLoadingScreen(opacity: 0.9)
         ]),
       ),
     );
   }
 
-  // void _onChangedDateTimeRange(DateTimeRange? range) {
-  //   if (range == null) return;
-  //   setState(() {
-  //     _dateTimeRange = range;
-  //   });
-  // }
+  void _toggleLoadingState() {
+    setState(() {
+      _loading = !_loading;
+    });
+  }
+
+  void _generateSummary({required List<ExerciseLogDto> logs}) {
+    if (logs.isEmpty) {
+      showSnackbar(context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: "You don't have any logs");
+    } else {
+      final userInstructions =
+          "Review my workout logs for ${_selectedMuscleGroup.name} from ${_dateTimeRange.start} to ${_dateTimeRange
+          .end} and provide feedback";
+
+      final logJsons = logs.map((log) => jsonEncode(log.toJson()));
+
+      final StringBuffer buffer = StringBuffer();
+
+      buffer.writeln(userInstructions);
+      buffer.writeln(logJsons);
+
+      final completeInstructions = buffer.toString();
+
+      _toggleLoadingState();
+
+      Provider.of<OpenAIController>(context, listen: false)
+          .runMessage(system: routineLogSystemInstruction, user: completeInstructions)
+          .then((response) {
+        _toggleLoadingState();
+        if (mounted) {
+          if (response != null) {
+            navigateWithSlideTransition(context: context, child: SetsRepsVolumeAIContextScreen(content: response));
+          }
+        }
+      });
+    }
+  }
 
   void _onChangedDateTimeRange(DateTimeRange? range) {
     if (range == null) return;

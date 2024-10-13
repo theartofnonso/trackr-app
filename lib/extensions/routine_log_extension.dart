@@ -12,6 +12,7 @@ extension RoutineLogExtension on RoutineLog {
     final templateId = dataJson["templateId"] ?? "";
     final name = dataJson["name"] ?? "";
     final notes = dataJson["notes"] ?? "";
+    final summary = dataJson["summary"];
     final startTime = DateTime.parse(dataJson["startTime"]);
     final endTime = DateTime.parse(dataJson["endTime"]);
     final exerciseLogJsons = dataJson["exercises"] as List<dynamic>;
@@ -22,6 +23,7 @@ extension RoutineLogExtension on RoutineLog {
       name: name,
       exerciseLogs: exerciseLogs,
       notes: notes,
+      summary: summary,
       startTime: startTime,
       endTime: endTime,
       createdAt: createdAt.getDateTimeInUtc(),

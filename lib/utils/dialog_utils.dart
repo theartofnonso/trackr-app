@@ -1,14 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/activity_type_enums.dart';
+import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/timers/datetime_picker.dart';
 import 'package:tracker_app/widgets/timers/datetime_range_picker.dart';
 
 import '../colors.dart';
-import '../widgets/activity/activity_picker.dart';
+import '../controllers/activity_log_controller.dart';
+import '../dtos/activity_log_dto.dart';
 import '../widgets/buttons/opacity_button_widget.dart';
 import '../widgets/buttons/solid_button_widget.dart';
+import '../widgets/other_activity/activity_picker.dart';
 import '../widgets/timers/hour_timer_picker.dart';
 import '../widgets/timers/time_picker.dart';
 
@@ -124,7 +130,7 @@ void showDatetimeRangePicker(
 
 void showActivityPicker(
     {required BuildContext context,
-      ActivityType? initialActivityType,
+    ActivityType? initialActivityType,
     DateTimeRange? initialDateTimeRange,
     required void Function(ActivityType activity, DateTimeRange datetimeRange) onChangedActivity}) {
   FocusScope.of(context).unfocus();
@@ -138,15 +144,120 @@ void showActivityPicker(
       isScrollControlled: true);
 }
 
-Future<void> showBottomSheetWithNoAction(
-    {required BuildContext context, required String title, required String description}) async {
+void showActivityBottomSheet({required BuildContext context, required ActivityLogDto activity}) {
+  final activityType = ActivityType.fromString(activity.name);
+
+  final image = activityType.image;
+
+  displayBottomSheet(
+      context: context,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(
+          children: [
+            image != null
+                ? Image.asset(
+                    'icons/$image.png',
+                    fit: BoxFit.contain,
+                    height: 24, // Adjust the height as needed
+                  )
+                : FaIcon(
+                    activityType.icon,
+                    color: Colors.white,
+                  ),
+            const SizedBox(
+              width: 8,
+            ),
+            Text("${activity.name} Activity".toUpperCase(),
+                style: GoogleFonts.ubuntu(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
+                textAlign: TextAlign.start),
+          ],
+        ),
+        const SizedBox(
+          height: 12,
+        ),
+        Text("You completed ${activity.duration().hmsAnalog()} of ${activity.name}",
+            style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white),
+            textAlign: TextAlign.start),
+        const SizedBox(
+          height: 6,
+        ),
+        Text(activity.createdAt.formattedDayAndMonthAndYear(),
+            style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white70),
+            textAlign: TextAlign.start),
+        const SizedBox(
+          height: 16,
+        ),
+        Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          Text(
+            "Want to change activity?".toUpperCase(),
+            style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 10),
+          ),
+          Expanded(
+            child: Container(
+              height: 0.8, // height of the divider
+              width: double.infinity, // width of the divider (line thickness)
+              color: sapphireLighter, // color of the divider
+              margin: const EdgeInsets.symmetric(horizontal: 10), // add space around the divider
+            ),
+          ),
+        ]),
+        const SizedBox(
+          height: 4,
+        ),
+        ListTile(
+          dense: true,
+          contentPadding: EdgeInsets.zero,
+          leading: const FaIcon(FontAwesomeIcons.penToSquare, size: 18),
+          horizontalTitleGap: 6,
+          title:
+              Text("Edit", style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+          onTap: () {
+            Navigator.pop(context);
+            showActivityPicker(
+                initialActivityType: activityType,
+                initialDateTimeRange: DateTimeRange(start: activity.startTime, end: activity.endTime),
+                context: context,
+                onChangedActivity: (ActivityType activityType, DateTimeRange datetimeRange) {
+                  Navigator.pop(context);
+                  final updatedActivity = activity.copyWith(
+                      name: activityType.name,
+                      startTime: datetimeRange.start,
+                      endTime: datetimeRange.end,
+                      createdAt: datetimeRange.end,
+                      updatedAt: DateTime.now());
+                  Provider.of<ActivityLogController>(context, listen: false).updateLog(log: updatedActivity);
+                });
+          },
+        ),
+        ListTile(
+          dense: true,
+          contentPadding: EdgeInsets.zero,
+          leading: const FaIcon(
+            FontAwesomeIcons.trash,
+            size: 18,
+            color: Colors.red,
+          ),
+          horizontalTitleGap: 6,
+          title:
+              Text("Delete", style: GoogleFonts.ubuntu(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
+          onTap: () {
+            Navigator.pop(context);
+            Provider.of<ActivityLogController>(context, listen: false).removeLog(log: activity);
+          },
+        ),
+      ]));
+}
+
+void showBottomSheetWithNoAction({required BuildContext context, required String title, required String description}) {
   displayBottomSheet(
       context: context,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(title,
             style: GoogleFonts.ubuntu(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
             textAlign: TextAlign.start),
-        const SizedBox(height: 4,),
+        const SizedBox(
+          height: 4,
+        ),
         Text(description,
             style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white),
             textAlign: TextAlign.start)

@@ -1,5 +1,5 @@
 const overviewMonitor =
-    "Streak is based on monthly fitness activities, "
+    "Streak is based on monthly strength training, "
     "with an optimal target of 12 days per month. "
     "Muscle is the frequency of muscle groups trained monthly.";
 

@@ -2,57 +2,63 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 enum ActivityType {
-  assaultBike("Assault Bike", FontAwesomeIcons.personBiking),
+  assaultBike("Assault Bike", FontAwesomeIcons.circle, image: "assault"),
   spin("Spin", FontAwesomeIcons.personBiking),
-  boxing("Boxing", FontAwesomeIcons.personHarassing),
+  boxing("Boxing", FontAwesomeIcons.personHarassing, image: "boxing"),
   football("Football", FontAwesomeIcons.football),
-  badminton("Badminton", FontAwesomeIcons.baseball),
-  handball("Handball", FontAwesomeIcons.baseball),
-  hockey("Hockey", FontAwesomeIcons.baseball),
+  badminton("Badminton", FontAwesomeIcons.baseball, image: "badminton"),
+  handball("Handball", FontAwesomeIcons.baseball, image: "handball"),
+  hockey("Hockey", FontAwesomeIcons.baseball, image: "hockey"),
   barre("Barre", FontAwesomeIcons.personDress),
   basketball("Basketball", FontAwesomeIcons.basketball),
-  baseball("Baseball", FontAwesomeIcons.baseball),
-
-  climber("Climber", FontAwesomeIcons.person),
-  rockclimbing("Rock Climbing", FontAwesomeIcons.person),
+  baseball("Baseball", FontAwesomeIcons.baseball, image: "baseball"),
+  jumpingRope("Jumping Rope", FontAwesomeIcons.circle, image: "jumping_rope"),
+  climber("Climber", FontAwesomeIcons.person, image: "climber"),
+  rockClimbing("Rock Climbing", FontAwesomeIcons.person, image: "rock_climbing"),
+  kayaking("Kayaking", FontAwesomeIcons.circle, image: "kayaking"),
+  stretching("Stretching", FontAwesomeIcons.person, image: "stretching"),
+  volley("Volley Ball", FontAwesomeIcons.person, image: "volley"),
   rugby("Rugby", FontAwesomeIcons.football),
   cycling("Cycling", FontAwesomeIcons.personBiking),
-  cricket("Cricket", FontAwesomeIcons.baseball),
+  cricket("Cricket", FontAwesomeIcons.baseball, image: "cricket"),
   running("Running", FontAwesomeIcons.personRunning),
 
   dancing("Dancing", FontAwesomeIcons.personDress),
   diving("Diving", FontAwesomeIcons.personDrowning),
 
-  hiit("HIIT", FontAwesomeIcons.dumbbell),
-  elliptical("Elliptical", FontAwesomeIcons.personBiking),
-  fencing("Fencing", FontAwesomeIcons.chessKnight),
+  hiit("HIIT", FontAwesomeIcons.dumbbell, image: 'dumbbells'),
+  elliptical("Elliptical", FontAwesomeIcons.personBiking, image: "assault"),
+  fencing("Fencing", FontAwesomeIcons.circle, image: "fencing"),
   golf("Golf", FontAwesomeIcons.golfBallTee),
-  yoga("Yoga", FontAwesomeIcons.personPraying),
+  yoga("Yoga", FontAwesomeIcons.personPraying, image: 'yoga'),
   skating("Skating", FontAwesomeIcons.personSkating),
-  skateboarding("Skateboarding", FontAwesomeIcons.personSnowboarding),
-  martialArts("Martial Arts", FontAwesomeIcons.person),
-  tennis("Tennis", FontAwesomeIcons.tableTennisPaddleBall),
+  kegels("Kegels", FontAwesomeIcons.person),
+  skateboarding("Skateboarding", FontAwesomeIcons.personSnowboarding, image: "skateboarding"),
+  martialArts("Martial Arts", FontAwesomeIcons.person, image: "martial_arts"),
+  tennis("Tennis", FontAwesomeIcons.tableTennisPaddleBall, image: "tennis"),
+  tableTennis("Table Tennis", FontAwesomeIcons.tableTennisPaddleBall),
   paintBall("Paint Ball", FontAwesomeIcons.gun),
   parkour("Parkour", FontAwesomeIcons.person),
-  pilates("Pilates", FontAwesomeIcons.person),
+  pilates("Pilates", FontAwesomeIcons.person, image: 'pilates'),
   walking("Walking", FontAwesomeIcons.personWalking),
-  swimming("Swimming", FontAwesomeIcons.person),
+  swimming("Swimming", FontAwesomeIcons.person, image: "swimming"),
   boxFitness("Box Fitness", FontAwesomeIcons.circle),
   snowboarding("Snow Boarding", FontAwesomeIcons.personSnowboarding),
   other("Other Activity", FontAwesomeIcons.circle),
   hiking("Hiking", FontAwesomeIcons.personHiking),
   skiing("Skiing", FontAwesomeIcons.personSkiing),
-  functionalFitness("Functional Fitness", FontAwesomeIcons.dumbbell),
-  gymnastics("Gymnastics", FontAwesomeIcons.circle),
+  functionalFitness("Functional Fitness", FontAwesomeIcons.dumbbell, image: 'dumbbells'),
+  gymnastics("Gymnastics", FontAwesomeIcons.person),
   netball("Netball", FontAwesomeIcons.baseball),
-  padel("Padel", FontAwesomeIcons.baseball),
-  powerlifting("Powerlifting", FontAwesomeIcons.dumbbell),
-  weightlifting("Weightlifting", FontAwesomeIcons.dumbbell);
+  padel("Padel", FontAwesomeIcons.tableTennisPaddleBall),
+  powerlifting("Powerlifting", FontAwesomeIcons.dumbbell, image: 'dumbbells'),
+  weightlifting("Weightlifting", FontAwesomeIcons.dumbbell, image: 'dumbbells');
 
-  const ActivityType(this.name, this.icon);
+  const ActivityType(this.name, this.icon, {this.image});
 
   final String name;
   final IconData icon;
+  final String? image;
 
   static ActivityType fromString(String string) {
     return ActivityType.values.firstWhere((value) => value.name == string);
