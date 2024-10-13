@@ -254,18 +254,18 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                     const SizedBox(height: 10),
                     MuscleGroupFamilyChart(
                         frequencyData: muscleGroupFamilyFrequency(exerciseLogs: template.exerciseTemplates)),
-                    const SizedBox(height: 12),
-                    TRKRInformationContainer(
-                      ctaLabel: "Ask for a review",
-                      description:
-                          "Having a structured plan is crucial to achieve results in your training. Your plan can be optimised to help you achieve your objective.",
-                      onTap: () => navigateWithSlideTransition(
-                          context: context,
-                          child: RoutineTemplateAIContextScreen(
-                            template: template,
-                          )),
-                    ),
-                    const SizedBox(height: 10),
+                    // const SizedBox(height: 12),
+                    // TRKRInformationContainer(
+                    //   ctaLabel: "Ask for a review",
+                    //   description:
+                    //       "Having a structured plan is crucial to achieve results in your training. Your plan can be optimised to help you achieve your objective.",
+                    //   onTap: () => navigateWithSlideTransition(
+                    //       context: context,
+                    //       child: RoutineTemplateAIContextScreen(
+                    //         template: template,
+                    //       )),
+                    // ),
+                    // const SizedBox(height: 12),
                     ExerciseLogListView(
                       exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
                       previewType: RoutinePreviewType.template,
