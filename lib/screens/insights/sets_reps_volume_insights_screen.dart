@@ -206,12 +206,12 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                       }).toList(),
                     ),
                   ),
-                  // const SizedBox(height: 10),
-                  // TRKRInformationContainer(
-                  //   ctaLabel: "Review your ${_selectedMuscleGroup.name} training",
-                  //   description: _selectedMuscleGroup.description,
-                  //   onTap: () => _generateSummary(logs: exerciseLogs),
-                  // ),
+                  const SizedBox(height: 12),
+                  TRKRInformationContainer(
+                    ctaLabel: "Review your ${_selectedMuscleGroup.name} training",
+                    description: _selectedMuscleGroup.description,
+                    onTap: () => _generateSummary(logs: exerciseLogs),
+                  ),
                   const SizedBox(height: 12),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

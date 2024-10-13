@@ -201,15 +201,15 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                     const SizedBox(height: 10),
                     MuscleGroupFamilyChart(
                         frequencyData: muscleGroupFamilyFrequency(exerciseLogs: completedExerciseLogsAndSets)),
-                    // const SizedBox(height: 12),
-                    // TRKRInformationContainer(
-                    //     ctaLabel: log.summary != null ? "Review your feedback" : "Ask for feedback",
-                    //     description:
-                    //         "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
-                    //     onTap: () => log.summary != null
-                    //         ? _showSummary()
-                    //         : _generateSummary(logs: completedExerciseLogsAndSets)),
-                    // const SizedBox(height: 12),
+                    const SizedBox(height: 12),
+                    TRKRInformationContainer(
+                        ctaLabel: log.summary != null ? "Review your feedback" : "Ask for feedback",
+                        description:
+                            "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
+                        onTap: () => log.summary != null
+                            ? _showSummary()
+                            : _generateSummary(logs: completedExerciseLogsAndSets)),
+                    const SizedBox(height: 12),
                     ExerciseLogListView(
                         exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogsAndSets),
                         previewType: RoutinePreviewType.log),
