@@ -82,6 +82,7 @@ class RoutineTemplatesScreen extends StatelessWidget {
                             children: children),
                       )
                     : const RoutineEmptyState(),
+                const SizedBox(height: 6),
                 if (untrainedMuscleGroups.isNotEmpty)
                   Container(
                     width: double.infinity,
@@ -123,6 +124,10 @@ class _RoutineWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final exercises = template.exerciseTemplates;
+    final sets = template.exerciseTemplates.expand((exercise) => exercise.sets);
+
     return Theme(
         data: ThemeData(splashColor: sapphireLight),
         child: GestureDetector(
@@ -152,7 +157,7 @@ class _RoutineWidget extends StatelessWidget {
                 ),
                 const Spacer(),
                 Text(
-                  "${template.exerciseTemplates.length} Exercises",
+                  "${exercises.length} ${pluralize(word: "Exercise", count: exercises.length)}",
                   style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w500),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
@@ -161,8 +166,8 @@ class _RoutineWidget extends StatelessWidget {
                   height: 6,
                 ),
                 Text(
-                  "${template.exerciseTemplates.expand((exercise) => exercise.sets).length} Sets",
-                  style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w400),
+                  "${sets.length} ${pluralize(word: "Set", count: sets.length)}",
+                  style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w500),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                 ),

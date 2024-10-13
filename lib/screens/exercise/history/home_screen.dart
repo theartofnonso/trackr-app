@@ -20,7 +20,7 @@ import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/dialog_utils.dart';
 import '../../../utils/navigation_utils.dart';
 import '../../../utils/routine_utils.dart';
-import '../../../widgets/backgrounds/overlay_background.dart';
+import '../../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../../widgets/calendar/calendar_years_navigator.dart';
 
 const exerciseRouteName = "/exercise-history-screen";
@@ -202,7 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              if (_loading) const OverlayBackground(opacity: 0.9)
+              if (_loading) const TRKRLoadingScreen(opacity: 0.9)
             ]),
           ),
         ));
