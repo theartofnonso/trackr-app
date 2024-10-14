@@ -162,7 +162,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
                             OverviewMonitor(
                               range: _selectedDateTimeRange,
                               routineLogs: routineLogsForTheMonth,
-                              activityLogs: activityLogsForTheMonth,
                             ),
                             const SizedBox(height: 16),
                             Calendar(

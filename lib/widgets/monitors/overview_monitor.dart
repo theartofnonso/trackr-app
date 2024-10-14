@@ -10,7 +10,6 @@ import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../colors.dart';
-import '../../dtos/activity_log_dto.dart';
 import '../../dtos/routine_log_dto.dart';
 import '../../strings.dart';
 import '../../utils/exercise_logs_utils.dart';
@@ -22,19 +21,15 @@ class OverviewMonitor extends StatelessWidget {
 
   final DateTimeRange range;
   final List<RoutineLogDto> routineLogs;
-  final List<ActivityLogDto> activityLogs;
 
-  const OverviewMonitor({super.key, required this.range, required this.routineLogs, required this.activityLogs});
+  const OverviewMonitor({super.key, required this.range, required this.routineLogs});
 
   @override
   Widget build(BuildContext context) {
 
     final routineLogDays = groupBy(routineLogs, (log) => log.createdAt.withoutTime().day);
-    final activityLogDays = groupBy(activityLogs, (log) => log.createdAt.withoutTime().day);
 
-    final totalActivityDays = {...routineLogDays.keys, ...activityLogDays.keys}.length;
-
-    final monthlyProgress = (routineLogDays.length + activityLogDays.length) / 12;
+    final monthlyProgress = routineLogDays.length / 12;
 
     final exerciseLogsForTheMonth = routineLogs.expand((log) => log.exerciseLogs).toList();
 
@@ -63,7 +58,7 @@ class OverviewMonitor extends StatelessWidget {
                   color: Colors.transparent,
                   width: 100,
                   child: _MonitorScore(
-                    value: "$totalActivityDays ${pluralize(word: "day", count: totalActivityDays)}",
+                    value: "${routineLogDays.length} ${pluralize(word: "day", count: routineLogDays.length)}",
                     title: "Log Streak",
                     color: logStreakColor(value: monthlyProgress),
                     crossAxisAlignment: CrossAxisAlignment.end,
