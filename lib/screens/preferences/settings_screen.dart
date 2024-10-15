@@ -147,6 +147,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                           trailing: _notificationEnabled ? "Enabled" : "Disabled"),
                     ]),
                   const SizedBox(height: 8),
+                  OutlineListTile(onTap: _sendFeedback, title: "Feedback", trailing: "Help us improve!"),
+                  const SizedBox(height: 8),
                   OutlineListTile(onTap: _visitTRKR, title: "Visit TRKR"),
                   const SizedBox(height: 8),
                   OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
@@ -166,6 +168,18 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         ]),
       ),
     );
+  }
+
+  void _sendFeedback() async {
+    final Uri emailUri = Uri(
+      scheme: 'mailto',
+      path: 'hello@trkr.fit',  // Replace with the recipient's email
+      queryParameters: {
+        'subject': 'Feedback for TRKR', // Set the email subject
+      },
+    );
+
+    await openUrl(url: emailUri.toString(), context: context);
   }
 
   void _navigateToExerciseLibrary() {

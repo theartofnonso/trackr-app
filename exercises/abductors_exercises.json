@@ -15,5 +15,12 @@
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
     "description": "Strengthens the outer thighs and glutes by performing hip abductions with machine resistance."
+  },
+  {
+    "id": "ABD3",
+    "name": "Side Lying Hip Abduction",
+    "primaryMuscleGroup": "Abductors",
+    "type": "BW",
+    "description": "Activates and strengthens the hip abductors, focusing on lateral leg movement."
   }
 ]
