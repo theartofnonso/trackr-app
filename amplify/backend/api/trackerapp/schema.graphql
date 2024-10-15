@@ -6,8 +6,9 @@ type RoutineTemplate
      @model
      @auth(
         rules: [
-          { allow: owner},
-          { allow: public, operations: [read], provider: iam }
+          { allow: owner },
+          { allow: private, operations: [read] }
+          { allow: public, operations: [read], provider: iam },
         ]
      ) {
   id: ID!
@@ -22,7 +23,8 @@ type RoutineLog
      @auth(
         rules: [
            { allow: owner },
-           { allow: public, operations: [read], provider: iam }
+           { allow: private, operations: [read] }
+           { allow: public, operations: [read], provider: iam },
         ]
      ) {
   id: ID!

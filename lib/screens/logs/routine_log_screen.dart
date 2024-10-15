@@ -32,8 +32,8 @@ import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/ai_widgets/trkr_information_container.dart';
-import '../../widgets/information_containers/information_container_lite.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
+import '../not_found.dart';
 
 class RoutineLogScreen extends StatefulWidget {
   static const routeName = '/routine_log_screen';
@@ -62,7 +62,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     if (log == null) {
       provider.fetchTemplate(id: widget.id);
-      return const _EmptyState();
+      return const NotFound();
     }
 
     final completedExerciseLogsAndSets = exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs);
@@ -489,67 +489,5 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         leftActionLabel: 'Cancel',
         rightActionLabel: 'Delete',
         isRightActionDestructive: true);
-  }
-}
-
-class _EmptyState extends StatelessWidget {
-  const _EmptyState();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: sapphireDark80,
-        leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-          onPressed: () => context.pop(),
-        ),
-        title: Text("Workout Log",
-            style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              sapphireDark80,
-              sapphireDark,
-            ],
-          ),
-        ),
-        child: SafeArea(
-            child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              RichText(
-                  text: TextSpan(
-                      style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.white),
-                      children: [
-                    TextSpan(
-                        text: "Not F",
-                        style: GoogleFonts.ubuntu(fontSize: 48, color: Colors.white70, fontWeight: FontWeight.w900)),
-                    const WidgetSpan(
-                        child: Padding(
-                          padding: EdgeInsets.only(left: 6.0),
-                          child: FaIcon(FontAwesomeIcons.magnifyingGlass, size: 48, color: Colors.white70),
-                        ),
-                        alignment: PlaceholderAlignment.middle),
-                    TextSpan(
-                        text: "und",
-                        style: GoogleFonts.ubuntu(fontSize: 48, color: Colors.white70, fontWeight: FontWeight.w900)),
-                  ])),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-                child: InformationContainerLite(
-                    content: "We can't find this workout log, Please check the link and try again.",
-                    color: Colors.orange),
-              ),
-            ],
-          ),
-        )),
-      ),
-    );
   }
 }

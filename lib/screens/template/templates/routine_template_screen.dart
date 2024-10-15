@@ -9,7 +9,6 @@ import 'package:tracker_app/extensions/routine_template_extension.dart';
 import 'package:tracker_app/screens/template/templates/routine_template_ai_context_screen.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_information_container.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
-import 'package:tracker_app/widgets/information_containers/information_container_lite.dart';
 
 import '../../../../dtos/exercise_log_dto.dart';
 import '../../../colors.dart';
@@ -29,6 +28,7 @@ import '../../../utils/string_utils.dart';
 import '../../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../../widgets/chart/muscle_group_family_chart.dart';
 import '../../../widgets/routine/preview/exercise_log_listview.dart';
+import '../../not_found.dart';
 import '../../preferences/routine_schedule_planner/routine_schedule_planner_home.dart';
 
 class RoutineTemplateScreen extends StatefulWidget {
@@ -91,7 +91,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
     if (template == null) {
       provider.fetchTemplate(id: widget.id);
-      return const _EmptyState();
+      return const NotFound();
     }
 
     final numberOfSets = template.exerciseTemplates.expand((exerciseTemplate) => exerciseTemplate.sets);
@@ -420,66 +420,5 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           exerciseLog: exerciseLog,
           superSet: whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs));
     }).toList();
-  }
-}
-
-class _EmptyState extends StatelessWidget {
-  const _EmptyState();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: sapphireDark80,
-        leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-          onPressed: () => context.pop(),
-        ),
-        title:
-            Text("Workout", style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              sapphireDark80,
-              sapphireDark,
-            ],
-          ),
-        ),
-        child: SafeArea(
-            child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              RichText(
-                  text: TextSpan(
-                      style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.white),
-                      children: [
-                    TextSpan(
-                        text: "Not F",
-                        style: GoogleFonts.ubuntu(fontSize: 48, color: Colors.white70, fontWeight: FontWeight.w900)),
-                    const WidgetSpan(
-                        child: Padding(
-                          padding: EdgeInsets.only(left: 6.0),
-                          child: FaIcon(FontAwesomeIcons.magnifyingGlass, size: 48, color: Colors.white70),
-                        ),
-                        alignment: PlaceholderAlignment.middle),
-                    TextSpan(
-                        text: "und",
-                        style: GoogleFonts.ubuntu(fontSize: 48, color: Colors.white70, fontWeight: FontWeight.w900)),
-                  ])),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-                child: InformationContainerLite(
-                    content: "We can't find this workout, Please check the link and try again.", color: Colors.orange),
-              ),
-            ],
-          ),
-        )),
-      ),
-    );
   }
 }
