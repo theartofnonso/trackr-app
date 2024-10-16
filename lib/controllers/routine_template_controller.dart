@@ -30,10 +30,6 @@ class RoutineTemplateController extends ChangeNotifier {
     }
   }
 
-  Future<RoutineTemplate?> fetchTemplate({required String id}) async {
-    return await _amplifyTemplateRepository.fetchTemplateCloud(id: id);
-  }
-
   Future<void> fetchTemplates({bool firstLaunch = false}) async {
     isLoading = true;
     try {

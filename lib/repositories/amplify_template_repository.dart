@@ -102,20 +102,6 @@ class AmplifyTemplateRepository {
     return response.data?.items.whereType<RoutineTemplate>().toList() ?? [];
   }
 
-  Future<RoutineTemplate?> fetchTemplateCloud({required String id}) async {
-    try {
-      final request = ModelQueries.get(
-        RoutineTemplate.classType,
-        RoutineTemplateModelIdentifier(id: id),
-      );
-      final response = await Amplify.API.query(request: request).response;
-      print(response);
-      return response.data;
-    } on ApiException catch (_) {
-      return null;
-    }
-  }
-
   void _mapAndSortTemplates({required List<RoutineTemplate> templates}) {
     _templates = templates.map((template) {
       final templateDto = template.dto();
