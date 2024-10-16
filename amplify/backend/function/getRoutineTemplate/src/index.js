@@ -12,7 +12,7 @@ import {HttpRequest} from '@aws-sdk/protocol-http';
 import {default as fetch, Request} from 'node-fetch';
 
 const GRAPHQL_ENDPOINT = process.env.API_TRACKERAPP_GRAPHQLAPIENDPOINTOUTPUT;
-const AWS_REGION = process.env.AWS_REGION || 'us-east-1';
+const AWS_REGION = process.env.AWS_REGION || 'eu-west-2';
 const {Sha256} = crypto;
 
 const query = `query RoutineTemplate($id: ID!) {

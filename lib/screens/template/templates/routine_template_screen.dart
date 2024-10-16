@@ -297,6 +297,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     _template = routineTemplateController.templateWhere(id: widget.id);
     if (_template == null) {
       _loading = true;
+      _isOwner = _template != null;
       getAPI(endpoint: "/routine-template", queryParameters: {"id": widget.id}).then((data) {
         if (data != null) {
           final json = jsonDecode(data);
@@ -309,8 +310,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           });
         }
       });
-    } else {
-      _isOwner = _template != null;
     }
   }
 

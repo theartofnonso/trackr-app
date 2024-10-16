@@ -282,6 +282,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     _log = routineLogController.logWhereId(id: widget.id);
     if (_log == null) {
       _loading = true;
+      _isOwner = _log != null;
       getAPI(endpoint: "/routine-log", queryParameters: {"id": widget.id}).then((data) {
         if (data != null) {
           final json = jsonDecode(data);
@@ -294,8 +295,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
           });
         }
       });
-    } else {
-      _isOwner = _log != null;
     }
   }
 
