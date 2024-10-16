@@ -26,6 +26,7 @@ extension RoutineLogExtension on RoutineLog {
       summary: summary,
       startTime: startTime,
       endTime: endTime,
+      owner: owner ?? "",
       createdAt: createdAt.getDateTimeInUtc(),
       updatedAt: updatedAt.getDateTimeInUtc(),
     );

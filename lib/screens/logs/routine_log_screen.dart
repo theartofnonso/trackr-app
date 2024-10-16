@@ -12,6 +12,7 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/screens/logs/routine_log_ai_context_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
+import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/https_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
@@ -54,8 +55,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
   bool _loading = false;
 
-  bool _isOwner = false;
-
   @override
   Widget build(BuildContext context) {
     final log = _log;
@@ -93,14 +92,14 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             ),
             title: Text(log.name,
                 style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
-            actions: _isOwner
+            actions: log.owner == SharedPrefs().userId
                 ? [
                     IconButton(
                         onPressed: () => _onShareLog(log: log),
                         icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18)),
                   ]
                 : []),
-        floatingActionButton: _isOwner
+        floatingActionButton: log.owner == SharedPrefs().userId
             ? FloatingActionButton(
                 heroTag: "routine_log_screen",
                 onPressed: _showBottomSheet,
@@ -282,7 +281,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     _log = routineLogController.logWhereId(id: widget.id);
     if (_log == null) {
       _loading = true;
-      _isOwner = _log != null;
       getAPI(endpoint: "/routine-log", queryParameters: {"id": widget.id}).then((data) {
         if (data != null) {
           final json = jsonDecode(data);
@@ -447,6 +445,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             name: log.name,
             notes: log.notes,
             exerciseTemplates: exercises,
+            owner: "",
             createdAt: DateTime.now(),
             updatedAt: DateTime.now());
 

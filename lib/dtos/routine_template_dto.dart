@@ -13,6 +13,7 @@ class RoutineTemplateDto {
   final List<DayOfWeek> scheduledDays;
   final int scheduleIntervals;
   final DateTime? scheduledDate;
+  final String owner;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -25,6 +26,7 @@ class RoutineTemplateDto {
       required this.createdAt,
       required this.updatedAt,
       this.scheduledDate,
+      required this.owner,
       this.scheduleType = RoutineScheduleType.none,
       this.scheduleIntervals = 0});
 
@@ -47,6 +49,7 @@ class RoutineTemplateDto {
         name: name,
         exerciseLogs: exerciseTemplates,
         notes: notes,
+        owner: owner,
         startTime: DateTime.now(),
         endTime: DateTime.now(),
         createdAt: DateTime.now(),
@@ -64,6 +67,7 @@ class RoutineTemplateDto {
       DateTime? createdAt,
       DateTime? updatedAt,
       DateTime? scheduledDate,
+      String? owner,
       RoutineScheduleType? scheduleType,
       int? scheduleIntervals}) {
     return RoutineTemplateDto(
@@ -76,11 +80,12 @@ class RoutineTemplateDto {
         updatedAt: updatedAt ?? this.updatedAt,
         scheduledDate: scheduledDate ?? this.scheduledDate,
         scheduleType: scheduleType ?? this.scheduleType,
+        owner: owner ?? this.owner,
         scheduleIntervals: scheduleIntervals ?? this.scheduleIntervals);
   }
 
   @override
   String toString() {
-    return 'RoutineTemplateDto{id: $id, name: $name, notes: $notes, exerciseTemplates: $exerciseTemplates, days: $scheduledDays, schedule: $scheduledDate, scheduleType: $scheduleType, scheduleIntervals: $scheduleIntervals, createdAt: $createdAt, updatedAt: $updatedAt}';
+    return 'RoutineTemplateDto{id: $id, name: $name, notes: $notes, exerciseTemplates: $exerciseTemplates, days: $scheduledDays, schedule: $scheduledDate, scheduleType: $scheduleType, scheduleIntervals: $scheduleIntervals, owner: $owner, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
 }

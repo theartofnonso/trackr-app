@@ -44,6 +44,7 @@ class AmplifyTemplateRepository {
         name: name,
         exerciseTemplates: exerciseLogDtos,
         notes: notes,
+        owner: "",
         createdAt: DateTime.now(),
         updatedAt: DateTime.now());
   }

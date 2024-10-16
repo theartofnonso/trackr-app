@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/extensions/routine_template_extension.dart';
+import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 
 import '../../../../dtos/exercise_log_dto.dart';
@@ -48,8 +49,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   RoutineTemplateDto? _template;
 
   bool _loading = false;
-
-  bool _isOwner = false;
 
   void _deleteRoutine({required RoutineTemplateDto template}) async {
     try {
@@ -144,7 +143,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     ];
 
     return Scaffold(
-        floatingActionButton: _isOwner
+        floatingActionButton: template.owner == SharedPrefs().userId
             ? FloatingActionButton(
                 heroTag: UniqueKey,
                 onPressed: () {
@@ -166,7 +165,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           title: Text(template.name,
               style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
           actions: [
-            _isOwner
+            template.owner == SharedPrefs().userId
                 ? MenuAnchor(
                     style: MenuStyle(
                       backgroundColor: WidgetStateProperty.all(sapphireDark80),
@@ -297,7 +296,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     _template = routineTemplateController.templateWhere(id: widget.id);
     if (_template == null) {
       _loading = true;
-      _isOwner = _template != null;
       getAPI(endpoint: "/routine-template", queryParameters: {"id": widget.id}).then((data) {
         if (data != null) {
           final json = jsonDecode(data);

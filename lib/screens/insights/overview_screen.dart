@@ -67,6 +67,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           notes: "",
           startTime: DateTime.now(),
           endTime: DateTime.now(),
+          owner: "",
           createdAt: DateTime.now(),
           updatedAt: DateTime.now());
       final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log);
@@ -231,6 +232,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           notes: "",
                           startTime: datetimeRange.start,
                           endTime: datetimeRange.end,
+                          owner: "",
                           createdAt: datetimeRange.start,
                           updatedAt: datetimeRange.end);
                       final routineLogArguments = PastRoutineLogArguments(log: log);
