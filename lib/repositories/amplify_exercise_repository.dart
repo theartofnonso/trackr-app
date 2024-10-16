@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
@@ -17,7 +16,7 @@ class AmplifyExerciseRepository {
 
   UnmodifiableListView<ExerciseDto> get exercises => UnmodifiableListView(_exercises);
 
-  Future<List<ExerciseDto>> loadExercisesFromAssets({required String file}) async {
+  Future<List<ExerciseDto>> _loadFromAssets({required String file}) async {
     String jsonString = await rootBundle.loadString('exercises/$file');
     final exerciseJsons = json.decode(jsonString) as List<dynamic>;
     return exerciseJsons.map((exerciseJson) {
@@ -44,34 +43,25 @@ class AmplifyExerciseRepository {
     }).toList();
   }
 
-  Future<void> fetchExercises({required bool firstLaunch}) async {
+  Future<void> loadLocalExercises() async {
     List<ExerciseDto> exerciseDtos = [];
-
-    if (firstLaunch) {
-      final exercises = await _fetchExercisesCloud();
-      exerciseDtos = exercises.map((exercise) => exercise.dto()).toList();
-    } else {
-      final exercises = await Amplify.DataStore.query(Exercise.classType);
-      exerciseDtos = exercises.map((exercise) => exercise.dto()).toList();
-    }
-
-    final chestExercises = await loadExercisesFromAssets(file: 'chest_exercises.json');
-    final shouldersExercises = await loadExercisesFromAssets(file: 'shoulders_exercises.json');
-    final bicepsExercises = await loadExercisesFromAssets(file: 'biceps_exercises.json');
-    final tricepsExercises = await loadExercisesFromAssets(file: 'triceps_exercises.json');
-    final quadricepsExercises = await loadExercisesFromAssets(file: 'quadriceps_exercises.json');
-    final hamstringsExercises = await loadExercisesFromAssets(file: 'hamstrings_exercises.json');
-    final backExercises = await loadExercisesFromAssets(file: 'back_exercises.json');
-    final trapsExercises = await loadExercisesFromAssets(file: 'traps_exercises.json');
-    final latsExercises = await loadExercisesFromAssets(file: 'lats_exercises.json');
-    final glutesExercises = await loadExercisesFromAssets(file: 'glutes_exercises.json');
-    final adductorsExercises = await loadExercisesFromAssets(file: 'adductors_exercises.json');
-    final abductorsExercises = await loadExercisesFromAssets(file: 'abductors_exercises.json');
-    final absExercises = await loadExercisesFromAssets(file: 'abs_exercises.json');
-    final calvesExercises = await loadExercisesFromAssets(file: 'calves_exercises.json');
-    final forearmsExercises = await loadExercisesFromAssets(file: 'forearms_exercises.json');
-    final neckExercises = await loadExercisesFromAssets(file: 'neck_exercises.json');
-    final fullBodyExercises = await loadExercisesFromAssets(file: 'fullbody_exercises.json');
+    final chestExercises = await _loadFromAssets(file: 'chest_exercises.json');
+    final shouldersExercises = await _loadFromAssets(file: 'shoulders_exercises.json');
+    final bicepsExercises = await _loadFromAssets(file: 'biceps_exercises.json');
+    final tricepsExercises = await _loadFromAssets(file: 'triceps_exercises.json');
+    final quadricepsExercises = await _loadFromAssets(file: 'quadriceps_exercises.json');
+    final hamstringsExercises = await _loadFromAssets(file: 'hamstrings_exercises.json');
+    final backExercises = await _loadFromAssets(file: 'back_exercises.json');
+    final trapsExercises = await _loadFromAssets(file: 'traps_exercises.json');
+    final latsExercises = await _loadFromAssets(file: 'lats_exercises.json');
+    final glutesExercises = await _loadFromAssets(file: 'glutes_exercises.json');
+    final adductorsExercises = await _loadFromAssets(file: 'adductors_exercises.json');
+    final abductorsExercises = await _loadFromAssets(file: 'abductors_exercises.json');
+    final absExercises = await _loadFromAssets(file: 'abs_exercises.json');
+    final calvesExercises = await _loadFromAssets(file: 'calves_exercises.json');
+    final forearmsExercises = await _loadFromAssets(file: 'forearms_exercises.json');
+    final neckExercises = await _loadFromAssets(file: 'neck_exercises.json');
+    final fullBodyExercises = await _loadFromAssets(file: 'fullbody_exercises.json');
 
     exerciseDtos.addAll(chestExercises);
     exerciseDtos.addAll(shouldersExercises);
@@ -105,10 +95,9 @@ class AmplifyExerciseRepository {
     _exercises = exerciseDtos.sorted((a, b) => a.name.compareTo(b.name));
   }
 
-  Future<List<Exercise>> _fetchExercisesCloud() async {
-    final request = ModelQueries.list(Exercise.classType, limit: 999);
-    final response = await Amplify.API.query(request: request).response;
-    return response.data?.items.whereType<Exercise>().toList() ?? [];
+  void loadExerciseStream({required List<Exercise> exercises}) async {
+    final snapshot = exercises.map((exercise) => exercise.dto()).toList();
+    _exercises.addAll(snapshot);
   }
 
   Future<void> saveExercise({required ExerciseDto exerciseDto}) async {

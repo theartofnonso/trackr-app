@@ -6,6 +6,7 @@ import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/models/RoutineLog.dart';
 import 'package:tracker_app/repositories/amplify_log_repository.dart';
+
 import '../dtos/exercise_dto.dart';
 import '../dtos/routine_log_dto.dart';
 import '../dtos/set_dto.dart';
@@ -30,14 +31,9 @@ class RoutineLogController extends ChangeNotifier {
   UnmodifiableMapView<ExerciseType, List<ExerciseLogDto>> get exerciseLogsByType =>
       _amplifyLogRepository.exerciseLogsByType;
 
-  Future<void> fetchLogs({bool firstLaunch = false}) async {
-    try {
-      await _amplifyLogRepository.fetchLogs(firstLaunch: firstLaunch);
-    } catch (e) {
-      errorMessage = "Oops! Something went wrong. Please try again later.";
-    } finally {
-      notifyListeners();
-    }
+  void streamLogs({required List<RoutineLog> logs}) {
+    _amplifyLogRepository.loadLogStream(logs: logs);
+    notifyListeners();
   }
 
   Future<List<RoutineLog>> fetchLogsCloud({required DateTimeRange range}) async {
