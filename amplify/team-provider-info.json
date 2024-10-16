@@ -48,8 +48,14 @@
           "deploymentBucketName": "amplify-trackerapp-dev-180230-deployment",
           "s3Key": "amplify-builds/getAllRoutineLogs-6b366c6d6e2b6f426641-build.zip"
         },
-        "getRoutineLog": {},
-        "getRoutineTemplate": {},
+        "getRoutineLog": {
+          "deploymentBucketName": "amplify-trackerapp-dev-180230-deployment",
+          "s3Key": "amplify-builds/getRoutineLog-6c6d794d4b4631787973-build.zip"
+        },
+        "getRoutineTemplate": {
+          "deploymentBucketName": "amplify-trackerapp-dev-180230-deployment",
+          "s3Key": "amplify-builds/getRoutineTemplate-42474b446b382f465737-build.zip"
+        },
         "temp": {}
       },
       "analytics": {
