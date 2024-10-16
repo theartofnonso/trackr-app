@@ -12,6 +12,7 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/screens/logs/routine_log_ai_context_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
+import 'package:tracker_app/utils/https_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/backgrounds/trkr_loading_screen.dart';
@@ -27,6 +28,7 @@ import '../../dtos/routine_template_dto.dart';
 import '../../dtos/viewmodels/exercise_log_view_model.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/routine_editor_type_enums.dart';
+import '../../models/RoutineLog.dart';
 import '../../strings/ai_prompts.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
@@ -56,12 +58,22 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<RoutineTemplateController>(context, listen: true);
-
     final log = _log;
 
     if (log == null) {
-      provider.fetchTemplate(id: widget.id);
+      if (_loading) {
+        return Scaffold(
+            appBar: AppBar(
+              backgroundColor: sapphireDark80,
+              leading: IconButton(
+                icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+                onPressed: context.pop,
+              ),
+              title: Text("Workout Session",
+                  style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+            ),
+            body: const TRKRLoadingScreen());
+      }
       return const NotFound();
     }
 
@@ -77,7 +89,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             backgroundColor: sapphireDark80,
             leading: IconButton(
               icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-              onPressed: () => context.pop(),
+              onPressed: context.pop,
             ),
             title: Text(log.name,
                 style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
@@ -270,11 +282,17 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     _log = routineLogController.logWhereId(id: widget.id);
     if (_log == null) {
       _loading = true;
-      routineLogController.fetchLog(id: widget.id).then((data) {
-        setState(() {
-          _loading = false;
-          _log = data?.dto();
-        });
+      getAPI(endpoint: "/routine-log", queryParameters: {"id": widget.id}).then((data) {
+        if (data != null) {
+          final json = jsonDecode(data);
+          final body = json["data"];
+          final routineLog = body["getRoutineLog"];
+          final routineLogDto = RoutineLog.fromJson(routineLog);
+          setState(() {
+            _loading = false;
+            _log = routineLogDto.dto();
+          });
+        }
       });
     } else {
       _isOwner = _log != null;

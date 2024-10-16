@@ -7,6 +7,20 @@
       "permissions": {
         "setting": "open"
       }
+    },
+    "/routine-log": {
+      "name": "/routine-log",
+      "lambdaFunction": "getRoutineLog",
+      "permissions": {
+        "setting": "open"
+      }
+    },
+    "/routine-template": {
+      "name": "/routine-template",
+      "lambdaFunction": "getRoutineTemplate",
+      "permissions": {
+        "setting": "open"
+      }
     }
   }
 }

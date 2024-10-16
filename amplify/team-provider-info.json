@@ -47,7 +47,10 @@
         "getAllRoutineLogs": {
           "deploymentBucketName": "amplify-trackerapp-dev-180230-deployment",
           "s3Key": "amplify-builds/getAllRoutineLogs-6b366c6d6e2b6f426641-build.zip"
-        }
+        },
+        "getRoutineLog": {},
+        "getRoutineTemplate": {},
+        "temp": {}
       },
       "analytics": {
         "trackerapp": {}
@@ -96,6 +99,14 @@
         "getAllRoutineLogs": {
           "deploymentBucketName": "amplify-trackerapp-prod-223531-deployment",
           "s3Key": "amplify-builds/getAllRoutineLogs-6b366c6d6e2b6f426641-build.zip"
+        },
+        "getRoutineLog": {
+          "deploymentBucketName": "amplify-trackerapp-prod-223531-deployment",
+          "s3Key": "amplify-builds/getRoutineLog-6c6d794d4b4631787973-build.zip"
+        },
+        "getRoutineTemplate": {
+          "deploymentBucketName": "amplify-trackerapp-prod-223531-deployment",
+          "s3Key": "amplify-builds/getRoutineTemplate-32423266653338614756-build.zip"
         }
       },
       "api": {

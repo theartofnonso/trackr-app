@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -6,8 +8,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/extensions/routine_template_extension.dart';
-import 'package:tracker_app/screens/template/templates/routine_template_ai_context_screen.dart';
-import 'package:tracker_app/widgets/ai_widgets/trkr_information_container.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 
 import '../../../../dtos/exercise_log_dto.dart';
@@ -19,9 +19,11 @@ import '../../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../../dtos/viewmodels/routine_template_arguments.dart';
 import '../../../enums/routine_editor_type_enums.dart';
 import '../../../enums/routine_preview_type_enum.dart';
+import '../../../models/RoutineTemplate.dart';
 import '../../../urls.dart';
 import '../../../utils/dialog_utils.dart';
 import '../../../utils/exercise_logs_utils.dart';
+import '../../../utils/https_utils.dart';
 import '../../../utils/navigation_utils.dart';
 import '../../../utils/routine_utils.dart';
 import '../../../utils/string_utils.dart';
@@ -85,12 +87,23 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<RoutineTemplateController>(context, listen: false);
 
     final template = _template;
 
     if (template == null) {
-      provider.fetchTemplate(id: widget.id);
+      if (_loading) {
+        return Scaffold(
+            appBar: AppBar(
+              backgroundColor: sapphireDark80,
+              leading: IconButton(
+                icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+                onPressed: context.pop,
+              ),
+              title: Text("Workout",
+                  style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+            ),
+            body: const TRKRLoadingScreen());
+      }
       return const NotFound();
     }
 
@@ -265,7 +278,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                     //         template: template,
                     //       )),
                     // ),
-                   // const SizedBox(height: 10),
+                    // const SizedBox(height: 10),
                     ExerciseLogListView(
                       exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
                       previewType: RoutinePreviewType.template,
@@ -284,11 +297,17 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     _template = routineTemplateController.templateWhere(id: widget.id);
     if (_template == null) {
       _loading = true;
-      routineTemplateController.fetchTemplate(id: widget.id).then((data) {
-        setState(() {
-          _loading = false;
-          _template = data?.dto();
-        });
+      getAPI(endpoint: "/routine-template", queryParameters: {"id": widget.id}).then((data) {
+        if (data != null) {
+          final json = jsonDecode(data);
+          final body = json["data"];
+          final routineTemplate = body["getRoutineTemplate"];
+          final routineTemplateDto = RoutineTemplate.fromJson(routineTemplate);
+          setState(() {
+            _loading = false;
+            _template = routineTemplateDto.dto();
+          });
+        }
       });
     } else {
       _isOwner = _template != null;
