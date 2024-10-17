@@ -5,6 +5,7 @@ class ExerciseDto {
   final String id;
   final String name;
   final MuscleGroup primaryMuscleGroup;
+  final List<MuscleGroup> secondaryMuscleGroups;
   final Uri? video;
   final String? description;
   final Uri? creditSource;
@@ -16,6 +17,7 @@ class ExerciseDto {
       {required this.id,
       required this.name,
       required this.primaryMuscleGroup,
+      required this.secondaryMuscleGroups,
       required this.type,
       this.description,
       this.video,
@@ -28,6 +30,7 @@ class ExerciseDto {
       'id': id,
       'name': name,
       'primaryMuscleGroup': primaryMuscleGroup.name,
+      'secondaryMuscleGroups': secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name),
       'type': type.id,
       'owner': owner,
       'description': description,
@@ -40,8 +43,11 @@ class ExerciseDto {
   factory ExerciseDto.fromJson(Map<String, dynamic> json) {
     final id = json['id'] ?? "";
     final name = json["name"] ?? "";
-    final primaryMuscleGroupJson = json["primaryMuscleGroup"] ?? "";
-    final primaryMuscleGroup = MuscleGroup.fromString(primaryMuscleGroupJson);
+    final primaryMuscleGroupString = json["primaryMuscleGroup"] ?? "";
+    final primaryMuscleGroup = MuscleGroup.fromString(primaryMuscleGroupString);
+    final secondaryMuscleGroupString = (json["secondaryMuscleGroups"] as List<dynamic>?) ?? [];
+    final secondaryMuscleGroups =
+        secondaryMuscleGroupString.map((muscleGroup) => MuscleGroup.fromString(muscleGroup)).toList();
     final typeJson = json["type"] ?? "";
     final type = ExerciseType.fromString(typeJson);
     final owner = json["owner"] ?? false;
@@ -55,6 +61,7 @@ class ExerciseDto {
         id: id,
         name: name,
         primaryMuscleGroup: primaryMuscleGroup,
+        secondaryMuscleGroups: secondaryMuscleGroups,
         type: type,
         video: videoUri,
         description: description,
@@ -67,6 +74,7 @@ class ExerciseDto {
     String? id,
     String? name,
     MuscleGroup? primaryMuscleGroup,
+    List<MuscleGroup>? secondaryMuscleGroups,
     ExerciseType? type,
     bool? owner,
     String? description,
@@ -75,6 +83,7 @@ class ExerciseDto {
         id: id ?? this.id,
         name: name ?? this.name,
         primaryMuscleGroup: primaryMuscleGroup ?? this.primaryMuscleGroup,
+        secondaryMuscleGroups: secondaryMuscleGroups ?? this.secondaryMuscleGroups,
         type: type ?? this.type,
         owner: owner ?? this.owner,
         description: description ?? this.description);
@@ -82,6 +91,6 @@ class ExerciseDto {
 
   @override
   String toString() {
-    return 'ExerciseDto{id: $id, name: $name, primaryMuscleGroup: $primaryMuscleGroup, video: $video, description: $description, creditSource: $creditSource, credit: $credit, type: $type, owner: $owner}';
+    return 'ExerciseDto{id: $id, name: $name, primaryMuscleGroup: $primaryMuscleGroup, secondaryMuscleGroups: $secondaryMuscleGroups video: $video, description: $description, creditSource: $creditSource, credit: $credit, type: $type, owner: $owner}';
   }
 }

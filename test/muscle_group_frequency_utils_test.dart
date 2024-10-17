@@ -14,6 +14,7 @@ void main() {
       id: "id_hamstring_exercise",
       name: "Hamstring Exercise",
       primaryMuscleGroup: MuscleGroup.hamstrings,
+      secondaryMuscleGroups: [MuscleGroup.hamstrings],
       type: ExerciseType.weights,
       owner: false);
 
@@ -21,6 +22,7 @@ void main() {
       id: "id_quad_exercise",
       name: "Quad Exercise",
       primaryMuscleGroup: MuscleGroup.quadriceps,
+      secondaryMuscleGroups: [MuscleGroup.hamstrings],
       type: ExerciseType.weights,
       owner: false);
 
@@ -28,6 +30,7 @@ void main() {
       id: "id_back_exercise",
         name: "Back Exercise",
       primaryMuscleGroup: MuscleGroup.lats,
+      secondaryMuscleGroups: [MuscleGroup.hamstrings],
       type: ExerciseType.weights,
       owner: false);
 
@@ -35,6 +38,7 @@ void main() {
       id: "id_traps_exercise",
       name: "Traps Exercise",
       primaryMuscleGroup: MuscleGroup.traps,
+      secondaryMuscleGroups: [MuscleGroup.hamstrings],
       type: ExerciseType.weights,
       owner: false);
 
@@ -42,6 +46,7 @@ void main() {
       id: "id_chest_exercise",
       name: "Chest Exercise",
       primaryMuscleGroup: MuscleGroup.chest,
+      secondaryMuscleGroups: [MuscleGroup.hamstrings],
       type: ExerciseType.weights,
       owner: false);
 
@@ -49,6 +54,7 @@ void main() {
       id: "id_shoulders_exercise",
       name: "Shoulders Exercise",
       primaryMuscleGroup: MuscleGroup.shoulders,
+      secondaryMuscleGroups: [MuscleGroup.hamstrings],
       type: ExerciseType.weights,
       owner: false);
 
@@ -56,6 +62,7 @@ void main() {
       id: "id_biceps_exercise",
       name: "Biceps Exercise",
       primaryMuscleGroup: MuscleGroup.biceps,
+      secondaryMuscleGroups: [MuscleGroup.hamstrings],
       type: ExerciseType.weights,
       owner: false);
 
@@ -63,6 +70,7 @@ void main() {
       id: "id_triceps_exercise",
       name: "Triceps Exercise",
       primaryMuscleGroup: MuscleGroup.triceps,
+      secondaryMuscleGroups: [MuscleGroup.hamstrings],
       type: ExerciseType.weights,
       owner: false);
 
@@ -70,6 +78,7 @@ void main() {
       id: "id_abs",
       name: "Abs Exercise",
       primaryMuscleGroup: MuscleGroup.abs,
+      secondaryMuscleGroups: [MuscleGroup.hamstrings],
       type: ExerciseType.duration,
       owner: false);
 

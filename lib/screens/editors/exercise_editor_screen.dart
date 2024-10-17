@@ -209,7 +209,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
       _showSnackbar("Please provide a name for this exercise");
     } else {
       final exercise = ExerciseDto(
-          id: "", name: exerciseName, primaryMuscleGroup: _primaryMuscleGroup, type: _exerciseType, owner: true);
+          id: "", name: exerciseName, primaryMuscleGroup: _primaryMuscleGroup, secondaryMuscleGroups: [], type: _exerciseType, owner: true);
 
       await Provider.of<ExerciseController>(context, listen: false).saveExercise(exerciseDto: exercise);
       if (mounted) {

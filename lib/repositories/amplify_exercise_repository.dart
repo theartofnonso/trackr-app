@@ -19,21 +19,26 @@ class AmplifyExerciseRepository {
   Future<List<ExerciseDto>> _loadFromAssets({required String file}) async {
     String jsonString = await rootBundle.loadString('exercises/$file');
     final exerciseJsons = json.decode(jsonString) as List<dynamic>;
-    return exerciseJsons.map((exerciseJson) {
-      final id = exerciseJson["id"];
-      final name = exerciseJson["name"];
-      final primaryMuscleGroupString = exerciseJson["primaryMuscleGroup"];
-      final typeString = exerciseJson["type"];
-      final video = exerciseJson["video"];
+    return exerciseJsons.map((json) {
+      final id = json["id"];
+      final name = json["name"];
+      final primaryMuscleGroupString = json["primaryMuscleGroup"] ?? "";
+      final primaryMuscleGroup = MuscleGroup.fromString(primaryMuscleGroupString);
+      final secondaryMuscleGroupJson = json["secondaryMuscleGroups"] as List<dynamic>;
+      final secondaryMuscleGroups =
+      secondaryMuscleGroupJson.map((muscleGroup) => MuscleGroup.fromString(muscleGroup)).toList();
+      final typeString = json["type"];
+      final video = json["video"];
       final videoUri = video != null ? Uri.parse(video) : null;
-      final description = exerciseJson["description"];
-      final creditSource = exerciseJson["creditSource"];
+      final description = json["description"];
+      final creditSource = json["creditSource"];
       final creditSourceUri = video != null ? Uri.parse(creditSource) : null;
-      final credit = exerciseJson["credit"];
+      final credit = json["credit"];
       return ExerciseDto(
           id: id,
           name: name,
-          primaryMuscleGroup: MuscleGroup.fromString(primaryMuscleGroupString),
+          primaryMuscleGroup: primaryMuscleGroup,
+          secondaryMuscleGroups: secondaryMuscleGroups,
           type: ExerciseType.fromString(typeString),
           video: videoUri,
           description: description,

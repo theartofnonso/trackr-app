@@ -8,13 +8,23 @@ import '../enums/exercise_type_enums.dart';
 
 extension ExerciseExtension on Exercise {
   ExerciseDto dto() {
-    final dataJson = jsonDecode(data);
-    final name = dataJson["name"] ?? "";
-    final primaryMuscleGroup = dataJson["primaryMuscleGroup"] ?? "";
-    final typeJson = dataJson["type"] ?? "";
+    final json = jsonDecode(data);
+    final name = json["name"] ?? "";
+    final primaryMuscleGroupString = json["primaryMuscleGroup"] ?? "";
+    final primaryMuscleGroup = MuscleGroup.fromString(primaryMuscleGroupString);
+    final secondaryMuscleGroupJson = json["secondaryMuscleGroups"] as List<dynamic>;
+    final secondaryMuscleGroups =
+    secondaryMuscleGroupJson.map((muscleGroup) => MuscleGroup.fromString(muscleGroup)).toList();
+    final typeJson = json["type"] ?? "";
     final type = ExerciseType.fromString(typeJson);
     final user = owner != null;
 
-    return ExerciseDto(id: id, name: name, primaryMuscleGroup: MuscleGroup.fromString(primaryMuscleGroup), type: type, owner: user);
+    return ExerciseDto(
+        id: id,
+        name: name,
+        primaryMuscleGroup: primaryMuscleGroup,
+        secondaryMuscleGroups: secondaryMuscleGroups,
+        type: type,
+        owner: user);
   }
 }

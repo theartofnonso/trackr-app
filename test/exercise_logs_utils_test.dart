@@ -15,6 +15,7 @@ void main() {
       id: "id_exercise1",
       name: "Lying Leg Curl",
       primaryMuscleGroup: MuscleGroup.hamstrings,
+      secondaryMuscleGroups: [MuscleGroup.hamstrings],
       type: ExerciseType.weights,
       owner: false);
 
@@ -22,6 +23,7 @@ void main() {
       id: "id_exercise2",
       name: "Plank",
       primaryMuscleGroup: MuscleGroup.abs,
+      secondaryMuscleGroups: [MuscleGroup.hamstrings],
       type: ExerciseType.duration,
       owner: false);
 
@@ -29,6 +31,7 @@ void main() {
       id: "id_benchPressExercise",
       name: "Bench Press",
       primaryMuscleGroup: MuscleGroup.chest,
+      secondaryMuscleGroups: [MuscleGroup.hamstrings],
       type: ExerciseType.weights,
       owner: false);
 

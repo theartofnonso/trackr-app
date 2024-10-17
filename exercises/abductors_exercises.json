@@ -3,7 +3,7 @@
     "id": "ABD1",
     "name": "Hip Abduction Against Band",
     "primaryMuscleGroup": "abductors",
-    "secondaryMuscleGroup": ["glutes", "quadriceps", "hamstrings", "abs"],
+    "secondaryMuscleGroups": ["glutes", "quadriceps", "hamstrings", "abs"],
     "type": "BW",
     "description": "Activates and strengthens the hip abductors using resistance bands, focusing on lateral leg movement."
   },
@@ -11,7 +11,7 @@
     "id": "ABD2",
     "name": "Hip Abduction Machine",
     "primaryMuscleGroup": "abductors",
-    "secondaryMuscleGroup": ["glutes", "quadriceps", "hamstrings", "abs"],
+    "secondaryMuscleGroups": ["glutes", "quadriceps", "hamstrings", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=G_8LItOiZ0Q",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -22,7 +22,7 @@
     "id": "ABD3",
     "name": "Side Lying Hip Abduction",
     "primaryMuscleGroup": "abductors",
-    "secondaryMuscleGroup": ["glutes", "quadriceps", "hamstrings", "abs"],
+    "secondaryMuscleGroups": ["glutes", "quadriceps", "hamstrings", "abs"],
     "type": "BW",
     "description": "Activates and strengthens the hip abductors, focusing on lateral leg movement."
   }
