@@ -9,6 +9,7 @@ import 'package:tracker_app/extensions/exercise_extension.dart';
 
 import '../enums/exercise_type_enums.dart';
 import '../enums/muscle_group_enums.dart';
+import '../enums/training_position_enum.dart';
 import '../models/Exercise.dart';
 
 class AmplifyExerciseRepository {
@@ -27,6 +28,8 @@ class AmplifyExerciseRepository {
       final secondaryMuscleGroupJson = json["secondaryMuscleGroups"] as List<dynamic>;
       final secondaryMuscleGroups =
       secondaryMuscleGroupJson.map((muscleGroup) => MuscleGroup.fromString(muscleGroup)).toList();
+      final trainingPositionString = json["trainingPosition"] ?? "";
+      final trainingPosition = TrainingPosition.fromString(trainingPositionString);
       final typeString = json["type"];
       final video = json["video"];
       final videoUri = video != null ? Uri.parse(video) : null;
@@ -40,6 +43,7 @@ class AmplifyExerciseRepository {
           primaryMuscleGroup: primaryMuscleGroup,
           secondaryMuscleGroups: secondaryMuscleGroups,
           type: ExerciseType.fromString(typeString),
+          trainingPosition: trainingPosition,
           video: videoUri,
           description: description,
           creditSource: creditSourceUri,

@@ -8,7 +8,8 @@
     "video": "https://www.youtube.com/watch?v=Hi8aC8oZGIE",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
     "credit": "TheGymGroup",
-    "description": "Focuses on building overall biceps mass with a barbell."
+    "description": "Focuses on building overall biceps mass with a barbell.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "BIC2",
@@ -19,7 +20,8 @@
     "video": "https://www.youtube.com/watch?v=Zbs3ko8ycyg",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Isolates the biceps for a more concentrated contraction on a preacher bench."
+    "description": "Isolates the biceps for a more concentrated contraction on a preacher bench.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "BIC3",
@@ -27,7 +29,8 @@
     "primaryMuscleGroup": "biceps",
     "secondaryMuscleGroups": ["back", "forearms", "abs"],
     "type": "BW",
-    "description": "Targets the biceps using body weight as resistance."
+    "description": "Targets the biceps using body weight as resistance.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "BIC4",
@@ -38,7 +41,8 @@
     "video": "https://www.youtube.com/watch?v=GNlopToAZyg",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Provides constant tension to the biceps using a cable and bar."
+    "description": "Provides constant tension to the biceps using a cable and bar.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "BIC5",
@@ -49,7 +53,8 @@
     "video": "https://www.youtube.com/watch?v=GNlopToAZyg",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Engages the biceps with more flexibility and range of motion using a rope attachment."
+    "description": "Engages the biceps with more flexibility and range of motion using a rope attachment.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "BIC6",
@@ -60,7 +65,8 @@
     "video": "https://www.youtube.com/watch?v=llD6MImgqe8",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Isolates each arm individually for maximum focus on the biceps."
+    "description": "Isolates each arm individually for maximum focus on the biceps.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "BIC7",
@@ -71,7 +77,8 @@
     "video": "https://www.youtube.com/watch?v=zH35nk9IYY0",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
     "credit": "TheGymGroup",
-    "description": "A classic exercise for building biceps with dumbbells, offering a versatile range of motion."
+    "description": "A classic exercise for building biceps with dumbbells, offering a versatile range of motion.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "BIC9",
@@ -82,7 +89,8 @@
     "video": "https://www.youtube.com/watch?v=B4RznoFvTl4",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Targets the biceps and brachialis with a neutral grip to add arm thickness."
+    "description": "Targets the biceps and brachialis with a neutral grip to add arm thickness.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "BIC10",
@@ -93,7 +101,8 @@
     "video": "https://www.youtube.com/watch?v=XVQBeug_9LU",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Stretches and isolates the biceps using an incline bench to enhance muscle activation."
+    "description": "Stretches and isolates the biceps using an incline bench to enhance muscle activation.",
+    "trainingPosition": "Lengthened"
   },
   {
     "id": "BIC11",
@@ -101,7 +110,8 @@
     "primaryMuscleGroup": "biceps",
     "secondaryMuscleGroups": ["forearms"],
     "type": "WR",
-    "description": "Offers controlled resistance targeting the biceps through a machine-based curl."
+    "description": "Offers controlled resistance targeting the biceps through a machine-based curl.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "BIC12",
@@ -112,7 +122,8 @@
     "video": "https://www.youtube.com/watch?v=i4qpIy1Zu94",
     "creditSource": "https://www.youtube.com/@progressivetrainingconcepts",
     "credit": "Progressive Training Concepts",
-    "description": "Works the biceps by curling a weight plate for a unique grip challenge."
+    "description": "Works the biceps by curling a weight plate for a unique grip challenge.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "BIC13",
@@ -123,7 +134,8 @@
     "video": "https://www.youtube.com/watch?v=27l5XYDMNYQ",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Combines a regular curl and reverse curl to target both the biceps and forearms."
+    "description": "Combines a regular curl and reverse curl to target both the biceps and forearms.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "BIC14",
@@ -131,7 +143,8 @@
     "primaryMuscleGroup": "biceps",
     "secondaryMuscleGroups": ["forearms"],
     "type": "WR",
-    "description": "Performed on an incline bench to fully isolate the biceps using a barbell."
+    "description": "Performed on an incline bench to fully isolate the biceps using a barbell.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "BIC15",
@@ -142,7 +155,8 @@
     "video": "https://www.youtube.com/watch?v=9Dd8iiEUs_Q",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Targets the biceps with an isolated movement on an incline bench using dumbbells."
+    "description": "Targets the biceps with an isolated movement on an incline bench using dumbbells.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "BIC16",
@@ -153,7 +167,8 @@
     "video": "https://www.youtube.com/watch?v=-gSM-kqNlUw",
     "creditSource": "https://www.youtube.com/@OPEXFitness",
     "credit": "OPEXFitness",
-    "description": "Utilizes the EZ bar to reduce wrist strain while engaging the biceps."
+    "description": "Utilizes the EZ bar to reduce wrist strain while engaging the biceps.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "BIC17",
@@ -164,7 +179,8 @@
     "video": "https://www.youtube.com/watch?v=Du1iXGkkjuY",
     "creditSource": "https://www.youtube.com/@gymvisual8018",
     "credit": "Gym visual",
-    "description": "Targets the brachialis and biceps by curling the dumbbell across the body."
+    "description": "Targets the brachialis and biceps by curling the dumbbell across the body.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "BIC18",
@@ -175,7 +191,8 @@
     "video": "https://www.youtube.com/watch?v=cSvDe6oMFlU",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
     "credit": "Functional Bodybuilding",
-    "description": "Engages the biceps and forearms using resistance bands in a hammer grip position."
+    "description": "Engages the biceps and forearms using resistance bands in a hammer grip position.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "BIC19",
@@ -186,7 +203,8 @@
     "video": "https://www.youtube.com/watch?v=GNlopToAZyg",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Provides continuous tension on the biceps throughout the entire range of motion."
+    "description": "Provides continuous tension on the biceps throughout the entire range of motion.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "BIC20",
@@ -194,7 +212,8 @@
     "primaryMuscleGroup": "biceps",
     "secondaryMuscleGroups": ["forearms", "shoulders"],
     "type": "WR",
-    "description": "Engages the biceps while lifting a barbell in an overhead curl motion."
+    "description": "Engages the biceps while lifting a barbell in an overhead curl motion.",
+    "trainingPosition": "Lengthened"
   },
   {
     "id": "BIC21",
@@ -205,7 +224,8 @@
     "video": "https://www.youtube.com/watch?v=fuK3nFvwgXk",
     "creditSource": "https://www.youtube.com/@RenaissancePeriodization",
     "credit": "Renaissance Periodization",
-    "description": "Isolates the biceps with support from a preacher bench using dumbbells."
+    "description": "Isolates the biceps with support from a preacher bench using dumbbells.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "BIC22",
@@ -213,7 +233,8 @@
     "primaryMuscleGroup": "biceps",
     "secondaryMuscleGroups": ["forearms"],
     "type": "WR",
-    "description": "Strengthens both the biceps and forearms using an overhand grip with a barbell."
+    "description": "Strengthens both the biceps and forearms using an overhand grip with a barbell.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "BIC23",
@@ -224,7 +245,8 @@
     "video": "https://www.youtube.com/watch?v=X5df_LHBVKQ",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Targets the biceps and forearms with a focus on the brachioradialis."
+    "description": "Targets the biceps and forearms with a focus on the brachioradialis.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "BIC24",
@@ -232,7 +254,8 @@
     "primaryMuscleGroup": "biceps",
     "secondaryMuscleGroups": ["forearms"],
     "type": "WR",
-    "description": "Engages the biceps and forearms with constant tension using a cable machine."
+    "description": "Engages the biceps and forearms with constant tension using a cable machine.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "BIC25",
@@ -243,7 +266,8 @@
     "video": "https://www.youtube.com/watch?v=Ja6ZlIDONac",
     "creditSource": "https://www.youtube.com/@RenaissancePeriodization",
     "credit": "Renaissance Periodization",
-    "description": "Isolates the biceps with machine assistance for controlled movement."
+    "description": "Isolates the biceps with machine assistance for controlled movement.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "BIC26",
@@ -254,6 +278,7 @@
     "video": "https://www.youtube.com/watch?v=cBSD6mQIPQk",
     "creditSource": "https://www.youtube.com/@nuffieldhealth",
     "credit": "Nuffield Health",
-    "description": "A fundamental biceps exercise focused on building overall strength and mass."
+    "description": "A fundamental biceps exercise focused on building overall strength and mass.",
+    "trainingPosition": "Shortened"
   }
 ]

@@ -5,7 +5,8 @@
     "primaryMuscleGroup": "calves",
     "secondaryMuscleGroups": ["hamstrings", "quadriceps", "abs"],
     "type": "BW",
-    "description": "Focuses on lengthening the calf muscles to improve strength and mobility."
+    "description": "Focuses on lengthening the calf muscles to improve strength and mobility.",
+    "trainingPosition": "Lengthened"
   },
   {
     "id": "CAL2",
@@ -13,7 +14,8 @@
     "primaryMuscleGroup": "calves",
     "secondaryMuscleGroups": ["hamstrings", "quadriceps", "abs"],
     "type": "BW",
-    "description": "Targets the calves by raising the heels to build strength and endurance."
+    "description": "Targets the calves by raising the heels to build strength and endurance.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "CAL3",
@@ -24,7 +26,8 @@
     "video": "https://www.youtube.com/watch?v=3ZRe_QpvRPg",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Isolates the calves, particularly the soleus muscle, in a seated position."
+    "description": "Isolates the calves, particularly the soleus muscle, in a seated position.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "CAL4",
@@ -35,7 +38,8 @@
     "video": "https://www.youtube.com/watch?v=Zep-wKHWkNM",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Strengthens the calf muscles by raising the heels from a standing position."
+    "description": "Strengthens the calf muscles by raising the heels from a standing position.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "CAL5",
@@ -43,7 +47,8 @@
     "primaryMuscleGroup": "calves",
     "secondaryMuscleGroups": ["hamstrings", "quadriceps", "glutes", "abs"],
     "type": "WR",
-    "description": "Targets the calves with added resistance from the machine for increased intensity."
+    "description": "Targets the calves with added resistance from the machine for increased intensity.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "CAL6",
@@ -51,7 +56,8 @@
     "primaryMuscleGroup": "calves",
     "secondaryMuscleGroups": ["hamstrings", "quadriceps", "glutes", "abs"],
     "type": "WR",
-    "description": "Engages the calves using dumbbells to add resistance to the standing raise."
+    "description": "Engages the calves using dumbbells to add resistance to the standing raise.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "CAL7",
@@ -62,7 +68,8 @@
     "video": "https://www.youtube.com/watch?v=Zep-wKHWkNM",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Stabilized calf raise using the Smith machine for controlled resistance."
+    "description": "Stabilized calf raise using the Smith machine for controlled resistance.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "CAL8",
@@ -70,7 +77,8 @@
     "primaryMuscleGroup": "calves",
     "secondaryMuscleGroups": ["hamstrings", "quadriceps", "glutes", "abs"],
     "type": "WR",
-    "description": "Utilizes a barbell for added weight in a standing calf raise, enhancing muscle growth."
+    "description": "Utilizes a barbell for added weight in a standing calf raise, enhancing muscle growth.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "CAL9",
@@ -81,7 +89,8 @@
     "video": "https://www.youtube.com/watch?v=rpGCS8AEsAM",
     "creditSource": "https://www.youtube.com/@MatrixFitnessUS",
     "credit": "Matrix Fitness",
-    "description": "Uses a machine to extend the calves and build strength through resistance."
+    "description": "Uses a machine to extend the calves and build strength through resistance.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "CAL10",
@@ -92,7 +101,8 @@
     "video": "https://www.youtube.com/watch?v=dhRz1Ns60Zg",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Engages the calves using a machine for press movement to develop power."
+    "description": "Engages the calves using a machine for press movement to develop power.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "CAL11",
@@ -100,6 +110,7 @@
     "primaryMuscleGroup": "calves",
     "secondaryMuscleGroups": ["hamstrings", "quadriceps", "glutes", "abs"],
     "type": "WR",
-    "description": "Isolates each calf with a single-leg movement for balanced strength development."
+    "description": "Isolates each calf with a single-leg movement for balanced strength development.",
+    "trainingPosition": "Shortened"
   }
 ]

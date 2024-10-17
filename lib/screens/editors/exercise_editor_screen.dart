@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
+import 'package:tracker_app/enums/training_position_enum.dart';
 import 'package:tracker_app/screens/exercise/muscle_groups_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 
@@ -65,8 +66,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                   ? GestureDetector(
                       onTap: _updateExercise,
                       child: Text("Update",
-                          style:
-                              GoogleFonts.ubuntu(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.white)))
+                          style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.white)))
                   : const SizedBox.shrink(),
               const SizedBox(width: 12)
             ],
@@ -194,8 +194,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
           cursorColor: Colors.white,
           keyboardType: TextInputType.text,
           textCapitalization: TextCapitalization.words,
-          style:
-              GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+          style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
         ));
     _doneTyping();
   }
@@ -209,7 +208,13 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
       _showSnackbar("Please provide a name for this exercise");
     } else {
       final exercise = ExerciseDto(
-          id: "", name: exerciseName, primaryMuscleGroup: _primaryMuscleGroup, secondaryMuscleGroups: [], type: _exerciseType, owner: true);
+          id: "",
+          name: exerciseName,
+          primaryMuscleGroup: _primaryMuscleGroup,
+          secondaryMuscleGroups: [],
+          trainingPosition: TrainingPosition.none,
+          type: _exerciseType,
+          owner: true);
 
       await Provider.of<ExerciseController>(context, listen: false).saveExercise(exerciseDto: exercise);
       if (mounted) {

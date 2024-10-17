@@ -5,6 +5,7 @@ import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 
 import '../enums/exercise_type_enums.dart';
+import '../enums/training_position_enum.dart';
 
 extension ExerciseExtension on Exercise {
   ExerciseDto dto() {
@@ -16,6 +17,8 @@ extension ExerciseExtension on Exercise {
     final secondaryMuscleGroups =
     secondaryMuscleGroupJson.map((muscleGroup) => MuscleGroup.fromString(muscleGroup)).toList();
     final typeJson = json["type"] ?? "";
+    final trainingPositionString = json["trainingPosition"] ?? "";
+    final trainingPosition = TrainingPosition.fromString(trainingPositionString);
     final type = ExerciseType.fromString(typeJson);
     final user = owner != null;
 
@@ -24,6 +27,7 @@ extension ExerciseExtension on Exercise {
         name: name,
         primaryMuscleGroup: primaryMuscleGroup,
         secondaryMuscleGroups: secondaryMuscleGroups,
+        trainingPosition: trainingPosition,
         type: type,
         owner: user);
   }

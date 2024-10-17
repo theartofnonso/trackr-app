@@ -7,6 +7,7 @@ import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/enums/pb_enums.dart';
 import 'package:tracker_app/enums/template_changes_type_message_enums.dart';
+import 'package:tracker_app/enums/training_position_enum.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 
 void main() {
@@ -15,6 +16,7 @@ void main() {
       id: "id_exercise1",
       name: "Lying Leg Curl",
       primaryMuscleGroup: MuscleGroup.hamstrings,
+      trainingPosition: TrainingPosition.lengthened,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
       type: ExerciseType.weights,
       owner: false);
@@ -23,6 +25,7 @@ void main() {
       id: "id_exercise2",
       name: "Plank",
       primaryMuscleGroup: MuscleGroup.abs,
+      trainingPosition: TrainingPosition.lengthened,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
       type: ExerciseType.duration,
       owner: false);
@@ -31,6 +34,7 @@ void main() {
       id: "id_benchPressExercise",
       name: "Bench Press",
       primaryMuscleGroup: MuscleGroup.chest,
+      trainingPosition: TrainingPosition.lengthened,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
       type: ExerciseType.weights,
       owner: false);

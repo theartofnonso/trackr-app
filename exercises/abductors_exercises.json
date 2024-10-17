@@ -5,7 +5,8 @@
     "primaryMuscleGroup": "abductors",
     "secondaryMuscleGroups": ["glutes", "quadriceps", "hamstrings", "abs"],
     "type": "BW",
-    "description": "Activates and strengthens the hip abductors using resistance bands, focusing on lateral leg movement."
+    "description": "Activates and strengthens the hip abductors using resistance bands, focusing on lateral leg movement.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "ABD2",
@@ -16,7 +17,8 @@
     "video": "https://www.youtube.com/watch?v=G_8LItOiZ0Q",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Strengthens the outer thighs and glutes by performing hip abductions with machine resistance."
+    "description": "Strengthens the outer thighs and glutes by performing hip abductions with machine resistance.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "ABD3",
@@ -24,6 +26,7 @@
     "primaryMuscleGroup": "abductors",
     "secondaryMuscleGroups": ["glutes", "quadriceps", "hamstrings", "abs"],
     "type": "BW",
-    "description": "Activates and strengthens the hip abductors, focusing on lateral leg movement."
+    "description": "Activates and strengthens the hip abductors, focusing on lateral leg movement.",
+    "trainingPosition": "Shortened"
   }
 ]

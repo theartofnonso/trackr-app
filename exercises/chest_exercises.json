@@ -8,7 +8,8 @@
     "video": "https://www.youtube.com/watch?v=2HYAeF6o7Bc",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Targets chest, triceps, and shoulders to build upper body strength."
+    "description": "Targets chest, triceps, and shoulders to build upper body strength.",
+    "trainingPosition": "Lengthened"
   },
   {
     "id": "CHT2",
@@ -19,7 +20,8 @@
     "video": "https://www.youtube.com/watch?v=YjMw-BjQgzY",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
     "credit": "TheGymGroup",
-    "description": "Strengthens the chest, shoulders, and triceps with a pressing motion."
+    "description": "Strengthens the chest, shoulders, and triceps with a pressing motion.",
+    "trainingPosition": "Lengthened"
   },
   {
     "id": "CHT3",
@@ -30,7 +32,8 @@
     "video": "https://www.youtube.com/watch?v=sh92B-_2O48",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Engages the chest muscles with a controlled pressing motion using cables."
+    "description": "Engages the chest muscles with a controlled pressing motion using cables.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "CHT4",
@@ -38,7 +41,8 @@
     "primaryMuscleGroup": "chest",
     "secondaryMuscleGroups": ["triceps", "shoulders", "back", "abs"],
     "type": "WR",
-    "description": "Emphasizes the lower chest, targeting the pectoral muscles from a decline angle."
+    "description": "Emphasizes the lower chest, targeting the pectoral muscles from a decline angle.",
+    "trainingPosition": "Lengthened"
   },
   {
     "id": "CHT5",
@@ -49,7 +53,8 @@
     "video": "https://www.youtube.com/watch?v=Nhvz9EzdJ4U",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Stretches and strengthens the chest muscles with an isolated fly motion."
+    "description": "Stretches and strengthens the chest muscles with an isolated fly motion.",
+    "trainingPosition": "Lengthened"
   },
   {
     "id": "CHT6",
@@ -60,7 +65,8 @@
     "video": "https://www.youtube.com/watch?v=-zbFMDBzQEE",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Targets the chest, shoulders, and triceps using a pressing motion with dumbbells."
+    "description": "Targets the chest, shoulders, and triceps using a pressing motion with dumbbells.",
+    "trainingPosition": "Lengthened"
   },
   {
     "id": "CHT7",
@@ -71,7 +77,8 @@
     "video": "https://www.youtube.com/watch?v=4R_GwRhG0rY",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Focuses on the lower chest, working the pectoral muscles with a decline angle press."
+    "description": "Focuses on the lower chest, working the pectoral muscles with a decline angle press.",
+    "trainingPosition": "Lengthened"
   },
   {
     "id": "CHT8",
@@ -82,7 +89,8 @@
     "video": "https://www.youtube.com/watch?v=T0Y3OBF1bNI",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Targets the chest and triceps, providing stability with reduced shoulder strain."
+    "description": "Targets the chest and triceps, providing stability with reduced shoulder strain.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "CHT9",
@@ -93,7 +101,8 @@
     "video": "https://www.youtube.com/watch?v=MJ8aKjmMZ0c",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
     "credit": "TheGymGroup",
-    "description": "Works the chest and lats, offering a stretch and contraction through the range of motion."
+    "description": "Works the chest and lats, offering a stretch and contraction through the range of motion.",
+    "trainingPosition": "Lengthened"
   },
   {
     "id": "CHT10",
@@ -101,7 +110,8 @@
     "primaryMuscleGroup": "chest",
     "secondaryMuscleGroups": ["triceps", "shoulders", "abs"],
     "type": "WR",
-    "description": "Engages the chest and core, focusing on chest development with feet elevated."
+    "description": "Engages the chest and core, focusing on chest development with feet elevated.",
+    "trainingPosition": "Lengthened"
   },
   {
     "id": "CHT11",
@@ -112,7 +122,8 @@
     "video": "https://www.youtube.com/watch?v=NamiVqVgPTU",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
     "credit": "Functional Bodybuilding",
-    "description": "Strengthens the chest and triceps with limited shoulder involvement."
+    "description": "Strengthens the chest and triceps with limited shoulder involvement.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "CHT12",
@@ -123,7 +134,8 @@
     "video": "https://www.youtube.com/watch?v=2jFFCy8JBU8",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Targets the upper chest and shoulders with an incline pressing motion."
+    "description": "Targets the upper chest and shoulders with an incline pressing motion.",
+    "trainingPosition": "Lengthened"
   },
   {
     "id": "CHT13",
@@ -134,7 +146,8 @@
     "video": "https://www.youtube.com/watch?v=oZVCBM9f8Eo",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Focuses on the upper chest, using a pressing motion with dumbbells at an incline."
+    "description": "Focuses on the upper chest, using a pressing motion with dumbbells at an incline.",
+    "trainingPosition": "Lengthened"
   },
   {
     "id": "CHT14",
@@ -145,7 +158,8 @@
     "video": "https://www.youtube.com/watch?v=yAbg3_pJKvw",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Strengthens the chest and triceps with a bodyweight incline variation."
+    "description": "Strengthens the chest and triceps with a bodyweight incline variation.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "CHT15",
@@ -153,7 +167,8 @@
     "primaryMuscleGroup": "chest",
     "secondaryMuscleGroups": ["triceps", "shoulders", "abs"],
     "type": "BW",
-    "description": "A beginner-friendly version targeting the chest with reduced resistance."
+    "description": "A beginner-friendly version targeting the chest with reduced resistance.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "CHT16",
@@ -164,7 +179,8 @@
     "video": "https://www.youtube.com/watch?v=X9sGmsGYYE0",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "A modified push-up that focuses on chest, shoulders, and triceps for beginners."
+    "description": "A modified push-up that focuses on chest, shoulders, and triceps for beginners.",
+    "trainingPosition": "Lengthened"
   },
   {
     "id": "CHT17",
@@ -175,7 +191,8 @@
     "video": "https://www.youtube.com/watch?v=eGjt4lk6g34",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Isolates and stretches the chest muscles for focused development."
+    "description": "Isolates and stretches the chest muscles for focused development.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "CHT18",
@@ -186,7 +203,8 @@
     "video": "https://www.youtube.com/watch?v=CIykDiF4sfg",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Targets the chest with controlled pressing motion using machine assistance."
+    "description": "Targets the chest with controlled pressing motion using machine assistance.",
+    "trainingPosition": "Lengthened"
   },
   {
     "id": "CHT19",
@@ -194,7 +212,8 @@
     "primaryMuscleGroup": "chest",
     "secondaryMuscleGroups": ["shoulders", "biceps"],
     "type": "WR",
-    "description": "Engages the chest muscles with a machine-assisted fly motion."
+    "description": "Engages the chest muscles with a machine-assisted fly motion.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "CHT20",
@@ -205,7 +224,8 @@
     "video": "https://www.youtube.com/watch?v=Env8gAr_QnE",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Strengthens the chest, triceps, and shoulders with a bodyweight pressing movement."
+    "description": "Strengthens the chest, triceps, and shoulders with a bodyweight pressing movement.",
+    "trainingPosition": "Lengthened"
   },
   {
     "id": "CHT21",
@@ -216,7 +236,8 @@
     "video": "https://www.youtube.com/watch?v=-KVhapnEtuk",
     "creditSource": "https://www.youtube.com/@CSIROTotalWellbeingDiet",
     "credit": "CSIRO Total Wellbeing Diet",
-    "description": "Targets the chest with a focus on form for beginners or warm-ups."
+    "description": "Targets the chest with a focus on form for beginners or warm-ups.",
+    "trainingPosition": "Lengthened"
   },
   {
     "id": "CHT22",
@@ -227,7 +248,8 @@
     "video": "https://www.youtube.com/watch?v=3JtmuKA1Tgg",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
     "credit": "Functional Bodybuilding",
-    "description": "Engages chest and stabilizers with added instability from the rings."
+    "description": "Engages chest and stabilizers with added instability from the rings.",
+    "trainingPosition": "Lengthened"
   },
   {
     "id": "CHT23",
@@ -235,7 +257,8 @@
     "primaryMuscleGroup": "chest",
     "secondaryMuscleGroups": ["shoulders", "biceps"],
     "type": "WR",
-    "description": "Focuses on chest contraction and control using resistance bands."
+    "description": "Focuses on chest contraction and control using resistance bands.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "CHT24",
@@ -246,7 +269,8 @@
     "video": "https://www.youtube.com/watch?v=O5viuEPDXKY",
     "creditSource": "https://www.youtube.com/@RenaissancePeriodization",
     "credit": "Renaissance Periodization",
-    "description": "Targets the chest with added stability from the Smith machine."
+    "description": "Targets the chest with added stability from the Smith machine.",
+    "trainingPosition": "Lengthened"
   },
   {
     "id": "CHT25",
@@ -257,7 +281,8 @@
     "video": "https://www.youtube.com/watch?v=8urE8Z8AMQ4",
     "creditSource": "https://www.youtube.com/@RenaissancePeriodization",
     "credit": "Renaissance Periodization",
-    "description": "Emphasizes upper chest while supported by the Smith machine."
+    "description": "Emphasizes upper chest while supported by the Smith machine.",
+    "trainingPosition": "Lengthened"
   },
   {
     "id": "CHT26",
@@ -268,7 +293,8 @@
     "video": "https://www.youtube.com/watch?v=QcTcWpkn_bw",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Targets the chest with focused isolation using cable resistance."
+    "description": "Targets the chest with focused isolation using cable resistance.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "CHT27",
@@ -279,7 +305,8 @@
     "video": "https://www.youtube.com/watch?v=sVMWoS0OhsI",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
     "credit": "Functional Bodybuilding",
-    "description": "Uses resistance bands for chest activation and mobility."
+    "description": "Uses resistance bands for chest activation and mobility.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "CHT28",
@@ -290,7 +317,8 @@
     "video": "https://www.youtube.com/watch?v=IUpu0oK_lxI",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Builds chest strength with added weight for progression."
+    "description": "Builds chest strength with added weight for progression.",
+    "trainingPosition": "Lengthened"
   },
   {
     "id": "CHT29",
@@ -301,7 +329,8 @@
     "video": "https://www.youtube.com/watch?v=wcQEiZ02fgk",
     "creditSource": "https://www.youtube.com/@thirdspacelondon8746",
     "credit": "Third Space London",
-    "description": "Engages the full chest through a wide range of motion."
+    "description": "Engages the full chest through a wide range of motion.",
+    "trainingPosition": "Lengthened"
   },
   {
     "id": "CHT30",
@@ -309,7 +338,8 @@
     "primaryMuscleGroup": "chest",
     "secondaryMuscleGroups": ["triceps", "shoulders"],
     "type": "WR",
-    "description": "Assisted version of the bar dip for chest development with support."
+    "description": "Assisted version of the bar dip for chest development with support.",
+    "trainingPosition": "Lengthened"
   },
   {
     "id": "CHT31",
@@ -320,7 +350,8 @@
     "video": "https://www.youtube.com/watch?v=VgKCIZgca58",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Targets chest muscles with controlled seated cable movements."
+    "description": "Targets chest muscles with controlled seated cable movements.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "CHT32",
@@ -331,7 +362,8 @@
     "video": "https://www.youtube.com/watch?v=wnFEC_34Bls",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Focuses on the lower chest using low cable tension."
+    "description": "Focuses on the lower chest using low cable tension.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "CHT33",
@@ -339,7 +371,8 @@
     "primaryMuscleGroup": "chest",
     "secondaryMuscleGroups": ["triceps", "shoulders", "abs"],
     "type": "WR",
-    "description": "Emphasizes unilateral chest work with isolated motion."
+    "description": "Emphasizes unilateral chest work with isolated motion.",
+    "trainingPosition": "Lengthened"
   },
   {
     "id": "CHT34",
@@ -347,7 +380,8 @@
     "primaryMuscleGroup": "chest",
     "secondaryMuscleGroups": ["triceps", "shoulders", "abs"],
     "type": "WR",
-    "description": "Targets the lower chest with decline movement on the Smith machine."
+    "description": "Targets the lower chest with decline movement on the Smith machine.",
+    "trainingPosition": "Lengthened"
   },
   {
     "id": "CHT35",
@@ -358,7 +392,8 @@
     "video": "https://www.youtube.com/watch?v=QBlYp-EwHlo",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Challenges the chest with increased intensity from decline angle."
+    "description": "Challenges the chest with increased intensity from decline angle.",
+    "trainingPosition": "Lengthened"
   },
   {
     "id": "CHT36",
@@ -366,7 +401,8 @@
     "primaryMuscleGroup": "chest",
     "secondaryMuscleGroups": ["triceps", "shoulders", "abs"],
     "type": "WR",
-    "description": "Engages the chest with a close-grip dumbbell press variation."
+    "description": "Engages the chest with a close-grip dumbbell press variation.",
+    "trainingPosition": "Shortened"
   },
   {
     "id": "CHT37",
@@ -377,6 +413,7 @@
     "video": "https://www.youtube.com/watch?v=hhruLxo9yZU",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Targets upper chest muscles with high cable tension."
+    "description": "Targets upper chest muscles with high cable tension.",
+    "trainingPosition": "Shortened"
   }
 ]
