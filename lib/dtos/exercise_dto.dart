@@ -55,7 +55,8 @@ class ExerciseDto {
         secondaryMuscleGroupString.map((muscleGroup) => MuscleGroup.fromString(muscleGroup)).toList();
     final typeJson = json["type"] ?? "";
     final type = ExerciseType.fromString(typeJson);
-    final trainingPosition = json["trainingPosition"];
+    final trainingPositionString = json["trainingPosition"] ?? "";
+    final trainingPosition = TrainingPosition.fromString(trainingPositionString);
     final owner = json["owner"] ?? false;
     final video = json["video"];
     final description = json["description"] ?? "";

@@ -27,7 +27,7 @@ class AmplifyExerciseRepository {
       final primaryMuscleGroup = MuscleGroup.fromString(primaryMuscleGroupString);
       final secondaryMuscleGroupJson = json["secondaryMuscleGroups"] as List<dynamic>;
       final secondaryMuscleGroups =
-      secondaryMuscleGroupJson.map((muscleGroup) => MuscleGroup.fromString(muscleGroup)).toList();
+          secondaryMuscleGroupJson.map((muscleGroup) => MuscleGroup.fromString(muscleGroup)).toList();
       final trainingPositionString = json["trainingPosition"] ?? "";
       final trainingPosition = TrainingPosition.fromString(trainingPositionString);
       final typeString = json["type"];

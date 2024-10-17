@@ -63,6 +63,6 @@ enum ActivityType {
   final String? image;
 
   static ActivityType fromString(String string) {
-    return ActivityType.values.firstWhere((value) => value.name == string);
+    return ActivityType.values.firstWhere((value) => value.name.toLowerCase() == string.toLowerCase());
   }
 }
