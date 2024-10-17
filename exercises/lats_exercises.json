@@ -2,7 +2,8 @@
   {
     "id": "LAT1",
     "name": "Straight Arm Lat Pulldown With Bar",
-    "primaryMuscleGroup": "Lats",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroup": ["triceps", "shoulders", "abs", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=ey9Fv3FGrRg",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -12,7 +13,8 @@
   {
     "id": "LAT2",
     "name": "Pull Up (Assisted)",
-    "primaryMuscleGroup": "Lats",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroup": ["biceps", "forearms", "traps", "back", "shoulders", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=wFj808u2HWU",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -22,7 +24,8 @@
   {
     "id": "LAT3",
     "name": "Pull Up (Band)",
-    "primaryMuscleGroup": "Lats",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroup": ["biceps", "forearms", "traps", "back", "shoulders", "abs"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=6yKq9sw1UA0",
     "creditSource": "https://www.youtube.com/@ensocalisthenics",
@@ -32,7 +35,8 @@
   {
     "id": "LAT4",
     "name": "Chin Up",
-    "primaryMuscleGroup": "Lats",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroup": ["biceps", "forearms", "traps", "back", "shoulders", "abs"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=RVS7netnHgQ",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
@@ -42,7 +46,8 @@
   {
     "id": "LAT5",
     "name": "Lat Pulldown With Pronated Grip",
-    "primaryMuscleGroup": "Lats",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroup": ["biceps", "forearms", "traps", "back", "shoulders", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=7JnP8dFbS14",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -52,7 +57,8 @@
   {
     "id": "LAT6",
     "name": "Lat Pulldown With Supinated Grip",
-    "primaryMuscleGroup": "Lats",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroup": ["biceps", "forearms", "traps", "back", "shoulders", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=SNiwpA13ZLU",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -62,7 +68,8 @@
   {
     "id": "LAT7",
     "name": "Single Arm Cable Row",
-    "primaryMuscleGroup": "Lats",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroup": ["biceps", "forearms", "back", "traps", "shoulders", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=KqKsj7ld-VM",
     "creditSource": "https://www.youtube.com/@thirdspacelondon8746",
@@ -72,14 +79,16 @@
   {
     "id": "LAT8",
     "name": "Single Arm Lat Pulldown (Band)",
-    "primaryMuscleGroup": "Lats",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroup": ["biceps", "forearms", "back", "traps", "shoulders", "abs"],
     "type": "WR",
     "description": "Isolates each lat individually using band resistance, promoting balance and unilateral strength."
   },
   {
     "id": "LAT9",
     "name": "Single Arm Lat Pulldown",
-    "primaryMuscleGroup": "Lats",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroup": ["biceps", "forearms", "back", "traps", "shoulders", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=LPahgWM7eUU",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -89,7 +98,8 @@
   {
     "id": "LAT10",
     "name": "Pull Up",
-    "primaryMuscleGroup": "Lats",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroup": ["biceps", "forearms", "back", "traps", "shoulders", "abs"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=gf4YAPyOgvo",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
@@ -99,35 +109,40 @@
   {
     "id": "LAT12",
     "name": "Straight Arm Lat Pulldown With Rope",
-    "primaryMuscleGroup": "Lats",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroup": ["triceps", "shoulders", "abs", "forearms"],
     "type": "WR",
     "description": "Engages the lats with a rope attachment, emphasizing a wide range of motion for full contraction."
   },
   {
     "id": "LAT13",
     "name": "Chin-Up (Weighted)",
-    "primaryMuscleGroup": "Lats",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroup": ["biceps", "forearms", "back", "traps", "shoulders", "abs"],
     "type": "WR",
     "description": "Builds strength in the lats and biceps by adding weight to chin-ups for increased resistance."
   },
   {
     "id": "LAT14",
     "name": "Iso-Lateral High Row",
-    "primaryMuscleGroup": "Lats",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroup": ["biceps", "forearms", "back", "traps", "shoulders", "abs"],
     "type": "WR",
     "description": "Targets the lats and upper back through an isolated, machine-supported rowing movement."
   },
   {
     "id": "LAT15",
     "name": "Iso-Lateral Low Row",
-    "primaryMuscleGroup": "Lats",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroup": ["biceps", "forearms", "back", "traps", "shoulders", "abs"],
     "type": "WR",
     "description": "Isolates the lats and lower back with a low row movement, enhancing pulling strength."
   },
   {
     "id": "LAT16",
     "name": "Kneeling Pulldown",
-    "primaryMuscleGroup": "Lats",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroup": ["biceps", "forearms", "back", "traps", "shoulders", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=VIJPZ8m0EDM",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -137,14 +152,16 @@
   {
     "id": "LAT17",
     "name": "Pull Up (Weighted)",
-    "primaryMuscleGroup": "Lats",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroup": ["biceps", "forearms", "back", "traps", "shoulders", "abs"],
     "type": "WR",
     "description": "Adds weight to traditional pull-ups for advanced lat and upper back strength development."
   },
   {
     "id": "LAT18",
     "name": "Iso-Lateral Row",
-    "primaryMuscleGroup": "Lats",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroup": ["biceps", "forearms", "back", "traps", "shoulders", "abs"],
     "type": "WR",
     "description": "Engages the lats and middle back through an isolated rowing motion, improving pulling power."
   }

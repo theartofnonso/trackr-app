@@ -2,7 +2,8 @@
   {
     "id": "TRP1",
     "name": "Shrug (Barbell)",
-    "primaryMuscleGroup": "Traps",
+    "primaryMuscleGroup": "traps",
+    "secondaryMuscleGroup": ["forearms", "shoulders", "neck"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=larn3Asl6oM",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -12,7 +13,8 @@
   {
     "id": "TRP2",
     "name": "Shrug (Dumbbell)",
-    "primaryMuscleGroup": "Traps",
+    "primaryMuscleGroup": "traps",
+    "secondaryMuscleGroup": ["forearms", "shoulders", "neck"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=GEHe1SQUOeI",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
@@ -22,7 +24,8 @@
   {
     "id": "TRP3",
     "name": "Shrug (Cable)",
-    "primaryMuscleGroup": "Traps",
+    "primaryMuscleGroup": "traps",
+    "secondaryMuscleGroup": ["forearms", "shoulders", "neck"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=YykmcX2b-LY",
     "creditSource": "https://www.youtube.com/@RenaissancePeriodization",
@@ -32,14 +35,16 @@
   {
     "id": "TRP4",
     "name": "Shrug (Machine)",
-    "primaryMuscleGroup": "Traps",
+    "primaryMuscleGroup": "traps",
+    "secondaryMuscleGroup": ["shoulders", "neck"],
     "type": "WR",
     "description": "Uses a machine to isolate the upper traps for controlled shrugs."
   },
   {
     "id": "TRP5",
     "name": "Shrug (Smith Machine)",
-    "primaryMuscleGroup": "Traps",
+    "primaryMuscleGroup": "traps",
+    "secondaryMuscleGroup": ["forearms", "shoulders", "neck"],
     "type": "WR",
     "description": "Targets the traps by shrugging the shoulders using a Smith machine for stability."
   }

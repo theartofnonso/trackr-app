@@ -2,7 +2,8 @@
   {
     "id": "BIC1",
     "name": "Barbell Curl",
-    "primaryMuscleGroup": "Biceps",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroup": ["forearms", "shoulders"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=Hi8aC8oZGIE",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
@@ -12,7 +13,8 @@
   {
     "id": "BIC2",
     "name": "Barbell Preacher Curl",
-    "primaryMuscleGroup": "Biceps",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroup": ["forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=Zbs3ko8ycyg",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -22,14 +24,16 @@
   {
     "id": "BIC3",
     "name": "Bodyweight Curl",
-    "primaryMuscleGroup": "Biceps",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroup": ["back", "forearms", "abs"],
     "type": "BW",
     "description": "Targets the biceps using body weight as resistance."
   },
   {
     "id": "BIC4",
     "name": "Cable Curl With Bar",
-    "primaryMuscleGroup": "Biceps",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroup": ["forearms", "shoulders"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=GNlopToAZyg",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -39,7 +43,8 @@
   {
     "id": "BIC5",
     "name": "Cable Curl With Rope",
-    "primaryMuscleGroup": "Biceps",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroup": ["forearms", "shoulders"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=GNlopToAZyg",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -49,7 +54,8 @@
   {
     "id": "BIC6",
     "name": "Concentration Curl",
-    "primaryMuscleGroup": "Biceps",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroup": ["forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=llD6MImgqe8",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -59,7 +65,8 @@
   {
     "id": "BIC7",
     "name": "Dumbbell Curl",
-    "primaryMuscleGroup": "Biceps",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroup": ["forearms", "shoulders"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=zH35nk9IYY0",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
@@ -69,7 +76,8 @@
   {
     "id": "BIC9",
     "name": "Hammer Curl (Dumbbell)",
-    "primaryMuscleGroup": "Biceps",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroup": ["forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=B4RznoFvTl4",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -79,7 +87,8 @@
   {
     "id": "BIC10",
     "name": "Incline Dumbbell Curl",
-    "primaryMuscleGroup": "Biceps",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroup": ["forearms", "shoulders"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=XVQBeug_9LU",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -89,14 +98,16 @@
   {
     "id": "BIC11",
     "name": "Machine Bicep Curl",
-    "primaryMuscleGroup": "Biceps",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroup": ["forearms"],
     "type": "WR",
     "description": "Offers controlled resistance targeting the biceps through a machine-based curl."
   },
   {
     "id": "BIC12",
     "name": "Plate Curl",
-    "primaryMuscleGroup": "Biceps",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroup": ["forearms", "shoulders"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=i4qpIy1Zu94",
     "creditSource": "https://www.youtube.com/@progressivetrainingconcepts",
@@ -106,7 +117,8 @@
   {
     "id": "BIC13",
     "name": "Zottman Curl",
-    "primaryMuscleGroup": "Biceps",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroup": ["forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=27l5XYDMNYQ",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -116,14 +128,16 @@
   {
     "id": "BIC14",
     "name": "Spider Curl (Barbell)",
-    "primaryMuscleGroup": "Biceps",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroup": ["forearms"],
     "type": "WR",
     "description": "Performed on an incline bench to fully isolate the biceps using a barbell."
   },
   {
     "id": "BIC15",
     "name": "Spider Curl (Dumbbell)",
-    "primaryMuscleGroup": "Biceps",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroup": ["forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=9Dd8iiEUs_Q",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -133,7 +147,8 @@
   {
     "id": "BIC16",
     "name": "EZ Bar Curl",
-    "primaryMuscleGroup": "Biceps",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroup": ["forearms", "shoulders"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=-gSM-kqNlUw",
     "creditSource": "https://www.youtube.com/@OPEXFitness",
@@ -143,7 +158,8 @@
   {
     "id": "BIC17",
     "name": "Cross Body Hammer Curl",
-    "primaryMuscleGroup": "Biceps",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroup": ["forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=Du1iXGkkjuY",
     "creditSource": "https://www.youtube.com/@gymvisual8018",
@@ -153,7 +169,8 @@
   {
     "id": "BIC18",
     "name": "Hammer Curl (Band)",
-    "primaryMuscleGroup": "Biceps",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroup": ["forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=cSvDe6oMFlU",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
@@ -163,7 +180,8 @@
   {
     "id": "BIC19",
     "name": "Cable Curl",
-    "primaryMuscleGroup": "Biceps",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroup": ["forearms", "shoulders"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=GNlopToAZyg",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -173,14 +191,16 @@
   {
     "id": "BIC20",
     "name": "Overhead Curl (Barbell)",
-    "primaryMuscleGroup": "Biceps",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroup": ["forearms", "shoulders"],
     "type": "WR",
     "description": "Engages the biceps while lifting a barbell in an overhead curl motion."
   },
   {
     "id": "BIC21",
     "name": "Preacher Curl (Dumbbell)",
-    "primaryMuscleGroup": "Biceps",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroup": ["forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=fuK3nFvwgXk",
     "creditSource": "https://www.youtube.com/@RenaissancePeriodization",
@@ -190,14 +210,16 @@
   {
     "id": "BIC22",
     "name": "Reverse Curl (Barbell)",
-    "primaryMuscleGroup": "Biceps",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroup": ["forearms"],
     "type": "WR",
     "description": "Strengthens both the biceps and forearms using an overhand grip with a barbell."
   },
   {
     "id": "BIC23",
     "name": "Reverse Curl (Dumbbell)",
-    "primaryMuscleGroup": "Biceps",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroup": ["forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=X5df_LHBVKQ",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -207,14 +229,16 @@
   {
     "id": "BIC24",
     "name": "Reverse Curl (Cable)",
-    "primaryMuscleGroup": "Biceps",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroup": ["forearms"],
     "type": "WR",
     "description": "Engages the biceps and forearms with constant tension using a cable machine."
   },
   {
     "id": "BIC25",
     "name": "Preacher Curl (Machine)",
-    "primaryMuscleGroup": "Biceps",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroup": ["forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=Ja6ZlIDONac",
     "creditSource": "https://www.youtube.com/@RenaissancePeriodization",
@@ -224,7 +248,8 @@
   {
     "id": "BIC26",
     "name": "Bicep Curl",
-    "primaryMuscleGroup": "Biceps",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroup": ["forearms", "shoulders"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=cBSD6mQIPQk",
     "creditSource": "https://www.youtube.com/@nuffieldhealth",

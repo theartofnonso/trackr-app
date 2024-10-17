@@ -3,6 +3,7 @@
     "id": "NEC1",
     "name": "Lying Neck Extension (Weighted)",
     "primaryMuscleGroup": "Neck",
+    "secondaryMuscleGroup": [],
     "type": "WR",
     "description": "Targets the muscles at the back of the neck through weighted extensions."
   },
@@ -10,6 +11,7 @@
     "id": "NEC2",
     "name": "Lying Neck Curls (Weighted)",
     "primaryMuscleGroup": "Neck",
+    "secondaryMuscleGroup": [],
     "type": "WR",
     "description": "Strengthens the front neck muscles by performing weighted curls while lying down."
   }

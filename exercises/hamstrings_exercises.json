@@ -2,7 +2,8 @@
   {
     "id": "HAM1",
     "name": "Good Morning",
-    "primaryMuscleGroup": "Hamstrings",
+    "primaryMuscleGroup": "hamstrings",
+    "secondaryMuscleGroup": ["glutes", "back", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=nWyx81AfTos",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -12,7 +13,8 @@
   {
     "id": "HAM2",
     "name": "Romanian Deadlift (Barbell)",
-    "primaryMuscleGroup": "Hamstrings",
+    "primaryMuscleGroup": "hamstrings",
+    "secondaryMuscleGroup": ["glutes", "back", "forearms", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=nF_LPuuftfQ",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
@@ -22,7 +24,8 @@
   {
     "id": "HAM3",
     "name": "Lying Leg Curl",
-    "primaryMuscleGroup": "Hamstrings",
+    "primaryMuscleGroup": "hamstrings",
+    "secondaryMuscleGroup": ["calves"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=SbSNUXPRkc8",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -32,7 +35,8 @@
   {
     "id": "HAM4",
     "name": "Glute Ham Raise",
-    "primaryMuscleGroup": "Hamstrings",
+    "primaryMuscleGroup": "hamstrings",
+    "secondaryMuscleGroup": ["glutes", "back"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=dTuPuXQY0-Q",
     "creditSource": "https://www.youtube.com/@thirdspacelondon8746",
@@ -42,7 +46,8 @@
   {
     "id": "HAM5",
     "name": "Nordic Hamstring Curls",
-    "primaryMuscleGroup": "Hamstrings",
+    "primaryMuscleGroup": "hamstrings",
+    "secondaryMuscleGroup": ["glutes", "calves"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=NfBGKhjedD8",
     "creditSource": "https://www.youtube.com/@STYRK_DK",
@@ -52,21 +57,24 @@
   {
     "id": "HAM6",
     "name": "Deadlift (Band)",
-    "primaryMuscleGroup": "Hamstrings",
+    "primaryMuscleGroup": "hamstrings",
+    "secondaryMuscleGroup": ["glutes", "back", "forearms", "abs"],
     "type": "WR",
     "description": "Targets the hamstrings and glutes with band resistance, improving stability and muscle activation."
   },
   {
     "id": "HAM7",
     "name": "Deadlift (Smith Machine)",
-    "primaryMuscleGroup": "Hamstrings",
+    "primaryMuscleGroup": "hamstrings",
+    "secondaryMuscleGroup": ["glutes", "back", "forearms", "abs"],
     "type": "WR",
     "description": "Engages the hamstrings and back with controlled movement on a Smith machine for added stability."
   },
   {
     "id": "HAM8",
     "name": "Romanian Deadlift (Dumbbell)",
-    "primaryMuscleGroup": "Hamstrings",
+    "primaryMuscleGroup": "hamstrings",
+    "secondaryMuscleGroup": ["glutes", "back", "forearms", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=plb5jEO4Unw",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -76,14 +84,16 @@
   {
     "id": "HAM9",
     "name": "Seated Leg Curl",
-    "primaryMuscleGroup": "Hamstrings",
+    "primaryMuscleGroup": "hamstrings",
+    "secondaryMuscleGroup": ["calves"],
     "type": "WR",
     "description": "Isolates the hamstrings by curling the legs from a seated position, enhancing muscle development."
   },
   {
     "id": "HAM11",
     "name": "Deadlift (Barbell)",
-    "primaryMuscleGroup": "Hamstrings",
+    "primaryMuscleGroup": "hamstrings",
+    "secondaryMuscleGroup": ["glutes", "back", "forearms", "abs", "quadriceps"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=0GCPn0VvXLc",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -93,7 +103,8 @@
   {
     "id": "HAM12",
     "name": "Deficit Deadlift",
-    "primaryMuscleGroup": "Hamstrings",
+    "primaryMuscleGroup": "hamstrings",
+    "secondaryMuscleGroup": ["glutes", "back", "forearms", "abs", "quadriceps"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=PzoxegwRlOw",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
@@ -103,7 +114,8 @@
   {
     "id": "HAM13",
     "name": "Deadlift (Dumbbell)",
-    "primaryMuscleGroup": "Hamstrings",
+    "primaryMuscleGroup": "hamstrings",
+    "secondaryMuscleGroup": ["glutes", "back", "forearms", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=ev5Bx5a_mss",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
@@ -113,7 +125,8 @@
   {
     "id": "HAM14",
     "name": "Sumo Deadlift",
-    "primaryMuscleGroup": "Hamstrings",
+    "primaryMuscleGroup": "hamstrings",
+    "secondaryMuscleGroup": ["glutes", "quadriceps", "adductors", "back", "forearms", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=IGmNuGEpHc0",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
@@ -123,7 +136,8 @@
   {
     "id": "HAM15",
     "name": "Stiff-Legged Deadlift",
-    "primaryMuscleGroup": "Hamstrings",
+    "primaryMuscleGroup": "hamstrings",
+    "secondaryMuscleGroup": ["glutes", "back", "forearms", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=CN_7cz3P-1U",
     "creditSource": "https://www.youtube.com/@RenaissancePeriodization",
@@ -133,7 +147,8 @@
   {
     "id": "HAM16",
     "name": "Trap Bar Deadlift With High Handles",
-    "primaryMuscleGroup": "Hamstrings",
+    "primaryMuscleGroup": "hamstrings",
+    "secondaryMuscleGroup": ["glutes", "quadriceps", "back", "forearms", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=9tye6frKmg8",
     "creditSource": "https://www.youtube.com/@thirdspacelondon8746",
@@ -143,7 +158,8 @@
   {
     "id": "HAM17",
     "name": "Trap Bar Deadlift With Low Handles",
-    "primaryMuscleGroup": "Hamstrings",
+    "primaryMuscleGroup": "hamstrings",
+    "secondaryMuscleGroup": ["glutes", "quadriceps", "back", "forearms", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=9tye6frKmg8",
     "creditSource": "https://www.youtube.com/@thirdspacelondon8746",
@@ -153,14 +169,16 @@
   {
     "id": "HAM18",
     "name": "Pause Deadlift",
-    "primaryMuscleGroup": "Hamstrings",
+    "primaryMuscleGroup": "hamstrings",
+    "secondaryMuscleGroup": ["glutes", "back", "quadriceps", "forearms", "abs"],
     "type": "WR",
     "description": "Improves hamstring strength by pausing at specific points during the deadlift, increasing tension."
   },
   {
     "id": "HAM19",
     "name": "Romanian Deadlift (Smith Machine)",
-    "primaryMuscleGroup": "Hamstrings",
+    "primaryMuscleGroup": "hamstrings",
+    "secondaryMuscleGroup": ["glutes", "back", "forearms", "abs"],
     "type": "WR",
     "description": "Targets hamstrings and glutes using the Smith machine for stability and controlled range of motion."
   }

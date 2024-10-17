@@ -2,7 +2,8 @@
   {
     "id": "TRI1",
     "name": "Overhead Triceps Extension (Barbell)",
-    "primaryMuscleGroup": "Triceps",
+    "primaryMuscleGroup": "triceps",
+    "secondaryMuscleGroup": ["shoulders"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=q5X9thiKofE",
     "creditSource": "https://www.youtube.com/@RenaissancePeriodization",
@@ -12,7 +13,8 @@
   {
     "id": "TRI2",
     "name": "Skull Crusher (Barbell)",
-    "primaryMuscleGroup": "Triceps",
+    "primaryMuscleGroup": "triceps",
+    "secondaryMuscleGroup": ["forearms", "shoulders"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=UzjDwLeTfmM",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
@@ -22,7 +24,8 @@
   {
     "id": "TRI3",
     "name": "Bench Dip",
-    "primaryMuscleGroup": "Triceps",
+    "primaryMuscleGroup": "triceps",
+    "secondaryMuscleGroup": ["chest", "shoulders"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=qrS6aa0aQ9I",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -32,7 +35,8 @@
   {
     "id": "TRI4",
     "name": "Close-Grip Push-Up",
-    "primaryMuscleGroup": "Triceps",
+    "primaryMuscleGroup": "triceps",
+    "secondaryMuscleGroup": ["chest", "shoulders", "abs"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=faSq4ZzBndU",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
@@ -42,7 +46,8 @@
   {
     "id": "TRI5",
     "name": "Skull Crusher (Dumbbell)",
-    "primaryMuscleGroup": "Triceps",
+    "primaryMuscleGroup": "triceps",
+    "secondaryMuscleGroup": ["forearms", "shoulders"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=UzjDwLeTfmM",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
@@ -52,7 +57,8 @@
   {
     "id": "TRI6",
     "name": "Overhead Triceps Extension (Dumbbell)",
-    "primaryMuscleGroup": "Triceps",
+    "primaryMuscleGroup": "triceps",
+    "secondaryMuscleGroup": ["shoulders"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=9wxRhONFsRA",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -62,21 +68,24 @@
   {
     "id": "TRI7",
     "name": "Overhead Triceps Extension (Cable)",
-    "primaryMuscleGroup": "Triceps",
+    "primaryMuscleGroup": "triceps",
+    "secondaryMuscleGroup": ["shoulders"],
     "type": "WR",
     "description": "Uses a cable machine to focus on triceps extension with continuous resistance."
   },
   {
     "id": "TRI8",
     "name": "Triceps Bodyweight Extension",
-    "primaryMuscleGroup": "Triceps",
+    "primaryMuscleGroup": "triceps",
+    "secondaryMuscleGroup": ["abs", "shoulders"],
     "type": "BW",
     "description": "Uses body weight to target triceps in a plank position while extending the arms."
   },
   {
     "id": "TRI9",
     "name": "Triceps Pushdown With Bar",
-    "primaryMuscleGroup": "Triceps",
+    "primaryMuscleGroup": "triceps",
+    "secondaryMuscleGroup": ["forearms", "shoulders"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=LXkCrxn3caQ",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -86,14 +95,16 @@
   {
     "id": "TRI10",
     "name": "Triceps Pushdown With Rope",
-    "primaryMuscleGroup": "Triceps",
+    "primaryMuscleGroup": "triceps",
+    "secondaryMuscleGroup": ["forearms", "shoulders"],
     "type": "WR",
     "description": "Engages triceps by pulling a rope attachment downward, focusing on arm extension."
   },
   {
     "id": "TRI11",
     "name": "Triceps Dip",
-    "primaryMuscleGroup": "Triceps",
+    "primaryMuscleGroup": "triceps",
+    "secondaryMuscleGroup": ["chest", "shoulders"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=2HYAeF6o7Bc",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -103,28 +114,32 @@
   {
     "id": "TRI12",
     "name": "Triceps Dip (Weighted)",
-    "primaryMuscleGroup": "Triceps",
+    "primaryMuscleGroup": "triceps",
+    "secondaryMuscleGroup": ["chest", "shoulders"],
     "type": "WR",
     "description": "Adds weight to triceps dips for increased resistance and muscle engagement."
   },
   {
     "id": "TRI13",
     "name": "Seated Dip Machine",
-    "primaryMuscleGroup": "Triceps",
+    "primaryMuscleGroup": "triceps",
+    "secondaryMuscleGroup": ["chest", "shoulders"],
     "type": "WR",
     "description": "Utilizes a machine to mimic the dip movement and isolate triceps."
   },
   {
     "id": "TRI14",
     "name": "Triceps Extension (Machine)",
-    "primaryMuscleGroup": "Triceps",
+    "primaryMuscleGroup": "triceps",
+    "secondaryMuscleGroup": ["forearms"],
     "type": "WR",
     "description": "Isolates the triceps using a machine to control resistance during extension."
   },
   {
     "id": "TRI15",
     "name": "Triceps Kickback (Dumbbell)",
-    "primaryMuscleGroup": "Triceps",
+    "primaryMuscleGroup": "triceps",
+    "secondaryMuscleGroup": ["shoulders", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=JPmbMOu4IYw",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -134,35 +149,40 @@
   {
     "id": "TRI16",
     "name": "Triceps Kickback (Cable)",
-    "primaryMuscleGroup": "Triceps",
+    "primaryMuscleGroup": "triceps",
+    "secondaryMuscleGroup": ["shoulders", "forearms"],
     "type": "WR",
     "description": "Targets triceps by extending the arm backward using a cable machine."
   },
   {
     "id": "TRI17",
     "name": "Triceps Dip (Assisted)",
-    "primaryMuscleGroup": "Triceps",
+    "primaryMuscleGroup": "triceps",
+    "secondaryMuscleGroup": ["chest", "shoulders"],
     "type": "WR",
     "description": "Uses assistance to help with dip exercises targeting triceps."
   },
   {
     "id": "TRI18",
     "name": "Floor Triceps Dip (Assisted)",
-    "primaryMuscleGroup": "Triceps",
+    "primaryMuscleGroup": "triceps",
+    "secondaryMuscleGroup": ["chest", "shoulders"],
     "type": "BW",
     "description": "Performs triceps dips on the floor with assistance to reduce difficulty."
   },
   {
     "id": "TRI19",
     "name": "Ring Dip (Assisted)",
-    "primaryMuscleGroup": "Triceps",
+    "primaryMuscleGroup": "triceps",
+    "secondaryMuscleGroup": ["chest", "shoulders", "abs"],
     "type": "BW",
     "description": "Uses gymnastic rings with assistance to perform dips and engage triceps."
   },
   {
     "id": "TRI20",
     "name": "Close-Grip Bench Press",
-    "primaryMuscleGroup": "Triceps",
+    "primaryMuscleGroup": "triceps",
+    "secondaryMuscleGroup": ["chest", "shoulders"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=DzA2xZhDGeo",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -172,7 +192,8 @@
   {
     "id": "TRI21",
     "name": "Close-Grip Feet-Up Bench Press",
-    "primaryMuscleGroup": "Triceps",
+    "primaryMuscleGroup": "triceps",
+    "secondaryMuscleGroup": ["chest", "shoulders", "abs"],
     "type": "WR",
     "description": "Focuses on the triceps with a close-grip bench press while elevating the feet."
   }

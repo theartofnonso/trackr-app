@@ -2,7 +2,8 @@
   {
     "id": "ADD1",
     "name": "Hip Adduction Machine",
-    "primaryMuscleGroup": "Adductors",
+    "primaryMuscleGroup": "adductors",
+    "secondaryMuscleGroup": ["glutes", "hamstrings", "quadriceps"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=CjAVezAggkI",
     "creditSource": "https://www.youtube.com/@PureGymVideo",

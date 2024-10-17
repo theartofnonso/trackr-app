@@ -2,7 +2,8 @@
   {
     "id": "ABS1",
     "name": "Cable Crunch",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["back", "shoulders"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=6GMKPQVERzw",
     "creditSource": "https://www.youtube.com/@RenaissancePeriodization",
@@ -12,7 +13,8 @@
   {
     "id": "ABS2",
     "name": "Crunch",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["back", "neck"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=NnVhqMQRvmM",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -22,7 +24,8 @@
   {
     "id": "ABS3",
     "name": "Dead Bug",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["back", "shoulders"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=9RK9UUgKIQE",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -32,7 +35,8 @@
   {
     "id": "ABS4",
     "name": "Hanging Leg Raise",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["forearms", "lats", "shoulders"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=O7iDA3ory-w",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -42,7 +46,8 @@
   {
     "id": "ABS5",
     "name": "Hanging Knee Raise",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["forearms", "lats", "shoulders"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=KNzJ3GuIpB8",
     "creditSource": "https://www.youtube.com/@dalmvicky",
@@ -52,14 +57,16 @@
   {
     "id": "ABS6",
     "name": "Hanging Sit-Up",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["forearms", "lats", "shoulders", "back"],
     "type": "BW",
     "description": "Works the entire core by performing sit-ups while hanging from a bar."
   },
   {
     "id": "ABS7",
     "name": "High to Low Wood Chop with Band",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["shoulders", "back", "glutes", "quadriceps", "hamstrings"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=ivziZev2BzA",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
@@ -69,21 +76,24 @@
   {
     "id": "ABS8",
     "name": "Horizontal Wood Chop with Band",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["shoulders", "back", "glutes"],
     "type": "BW",
     "description": "Targets the obliques and core through rotational movements with a resistance band."
   },
   {
     "id": "ABS9",
     "name": "Kneeling Ab Wheel Roll-Out",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["shoulders", "back", "triceps"],
     "type": "BW",
     "description": "Engages the entire core, particularly the abs and lower back, with a controlled rollout movement."
   },
   {
     "id": "ABS10",
     "name": "Kneeling Plank",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["shoulders", "back", "glutes"],
     "type": "DR",
     "video": "https://www.youtube.com/watch?v=iDSHokfXqyA",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -93,14 +103,16 @@
   {
     "id": "ABS11",
     "name": "Kneeling Side Plank",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["shoulders", "back", "glutes"],
     "type": "DR",
     "description": "Targets the obliques and core by holding a side plank position on the knees."
   },
   {
     "id": "ABS12",
     "name": "Lying Leg Raise",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["quadriceps", "back"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=Zr-PtqcpeWM",
     "creditSource": "https://www.youtube.com/@nuffieldhealth",
@@ -110,7 +122,8 @@
   {
     "id": "ABS13",
     "name": "Lying Windshield Wiper",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["back", "glutes"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=M8csHpQrq5o",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
@@ -120,21 +133,24 @@
   {
     "id": "ABS14",
     "name": "Lying Windshield Wiper with Bent Knees",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["back", "glutes"],
     "type": "BW",
     "description": "Focuses on the obliques and core with bent-knee rotational leg movements."
   },
   {
     "id": "ABS15",
     "name": "Machine Crunch",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["back", "neck"],
     "type": "WR",
     "description": "Targets the upper abs using machine resistance for a controlled crunch movement."
   },
   {
     "id": "ABS16",
     "name": "Mountain Climbers",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["shoulders", "quadriceps", "hamstrings", "glutes", "triceps", "chest"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=qdBkvS0pEVc",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
@@ -144,7 +160,8 @@
   {
     "id": "ABS17",
     "name": "Oblique Crunch",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["back", "neck"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=eEuyL8HN3SA",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
@@ -154,14 +171,16 @@
   {
     "id": "ABS18",
     "name": "Oblique Sit-Up",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["back", "neck"],
     "type": "BW",
     "description": "Engages the obliques and abdominal muscles with a twisting sit-up movement."
   },
   {
     "id": "ABS19",
     "name": "Plank",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["shoulders", "back", "glutes", "quadriceps", "triceps"],
     "type": "DR",
     "video": "https://www.youtube.com/watch?v=q4rDeHYMcIg",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -171,7 +190,8 @@
   {
     "id": "ABS20",
     "name": "Side Plank",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["shoulders", "back", "glutes"],
     "type": "DR",
     "video": "https://www.youtube.com/watch?v=Oe9Tp9SvTCE",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -181,7 +201,8 @@
   {
     "id": "ABS21",
     "name": "Sit-Up",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["back", "neck", "quadriceps"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=Z_BUV-bZ3Zc",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
@@ -191,7 +212,8 @@
   {
     "id": "ABS22",
     "name": "Russian Twist (Weighted)",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["back", "shoulders", "biceps"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=Tau0hsW8iR0",
     "creditSource": "https://www.youtube.com/@marcusfilly",
@@ -201,7 +223,8 @@
   {
     "id": "ABS23",
     "name": "Ab Scissors",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["quadriceps"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=0vDI5aU402c",
     "creditSource": "https://www.youtube.com/@xhit/videos",
@@ -211,7 +234,8 @@
   {
     "id": "ABS24",
     "name": "Bicycle Crunch",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["quadriceps", "hamstrings", "back"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=wnuLak2onoA",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -221,14 +245,16 @@
   {
     "id": "ABS25",
     "name": "Bicycle Crunch Raised Legs",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["quadriceps", "hamstrings", "back"],
     "type": "BW",
     "description": "Targets the abs with a focus on stability and coordination while keeping legs elevated."
   },
   {
     "id": "ABS26",
     "name": "Cable Core Pallof Press",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["shoulders", "back", "glutes", "quadriceps"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=HXrLaqNIkTs",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -238,7 +264,8 @@
   {
     "id": "ABS27",
     "name": "Cable Twist (Down to up)",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["shoulders", "back", "glutes", "quadriceps", "hamstrings"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=zQJKfN7BU-c",
     "creditSource": "https://www.youtube.com/@TYTAX-Invincible",
@@ -248,7 +275,8 @@
   {
     "id": "ABS28",
     "name": "Cable Twist (Up to down)",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["shoulders", "back", "glutes", "quadriceps", "hamstrings"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=tQznClkP0GE",
     "creditSource": "https://www.youtube.com/@TYTAX-Invincible",
@@ -258,14 +286,16 @@
   {
     "id": "ABS29",
     "name": "Crunch (Weighted)",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["back", "neck"],
     "type": "BW",
     "description": "Targets the upper abs with added resistance for increased intensity."
   },
   {
     "id": "ABS30",
     "name": "Decline Crunch",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["back", "neck"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=jYyA_6UR2lw",
     "creditSource": "https://www.youtube.com/@gymvisual8018",
@@ -275,14 +305,16 @@
   {
     "id": "ABS31",
     "name": "Decline Crunch (Weighted)",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["back", "neck"],
     "type": "BW",
     "description": "Targets the upper abs with resistance for enhanced muscle engagement."
   },
   {
     "id": "ABS32",
     "name": "Elbow to Knee",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["back", "neck", "quadriceps"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=YiTevEYYfCA",
     "creditSource": "https://www.youtube.com/@ensocalisthenics",
@@ -292,7 +324,8 @@
   {
     "id": "ABS33",
     "name": "Flutter Kicks",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["quadriceps"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=cZhLXKHuS74",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
@@ -302,7 +335,8 @@
   {
     "id": "ABS34",
     "name": "Front Lever Hold",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["lats", "back", "shoulders", "biceps", "forearms"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=U9d5iHfZxOw",
     "creditSource": "https://www.youtube.com/@ensocalisthenics",
@@ -312,7 +346,8 @@
   {
     "id": "ABS35",
     "name": "Front Lever Raise",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["lats", "back", "shoulders", "biceps", "forearms"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=YC-2D2JbyyE",
     "creditSource": "https://www.youtube.com/@ensocalisthenics",
@@ -322,7 +357,8 @@
   {
     "id": "ABS36",
     "name": "Heel Taps",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["back"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=w2Um9ULrcBI",
     "creditSource": "https://www.youtube.com/@CSIROTotalWellbeingDiet",
@@ -332,7 +368,8 @@
   {
     "id": "ABS37",
     "name": "Hollow Rock",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["back", "quadriceps", "shoulders"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=HtaO2Rd81Qs",
     "creditSource": "https://www.youtube.com/@WodstarFitness",
@@ -342,21 +379,24 @@
   {
     "id": "ABS38",
     "name": "Jackknife (Suspension)",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["shoulders", "back", "glutes"],
     "type": "BW",
     "description": "Targets the entire core with a focus on balance and coordination in a suspended position."
   },
   {
     "id": "ABS39",
     "name": "Jackknife Sit Up",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["back", "quadriceps", "hamstrings"],
     "type": "BW",
     "description": "Engages the upper and lower abs by bringing the upper body and legs together."
   },
   {
     "id": "ABS40",
     "name": "Knee Raise Parallel Bars",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["shoulders", "lats", "triceps", "forearms"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=S7wAEgrUn6s",
     "creditSource": "https://www.youtube.com/@ensocalisthenics",
@@ -366,7 +406,8 @@
   {
     "id": "ABS41",
     "name": "L-Sit Hold",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["shoulders", "triceps", "quadriceps", "forearms"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=LNYjR0XD1Fg",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -376,7 +417,8 @@
   {
     "id": "ABS42",
     "name": "Landmine 180",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["shoulders", "back", "glutes", "quadriceps", "hamstrings"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=4dGj7rES9pY&pp=ygUMTGFuZG1pbmUgMTgw",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
@@ -386,7 +428,8 @@
   {
     "id": "ABS43",
     "name": "Leg Raise Parallel Bars",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["shoulders", "lats", "triceps", "quadriceps", "forearms"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=oOTjUcz_S2E",
     "creditSource": "https://www.youtube.com/@ensocalisthenics",
@@ -396,7 +439,8 @@
   {
     "id": "ABS44",
     "name": "Reverse Crunch",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["back", "glutes", "quadriceps"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=XY8KzdDcMFg",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -406,7 +450,8 @@
   {
     "id": "ABS45",
     "name": "Reverse Plank",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["back", "glutes", "hamstrings", "shoulders", "triceps"],
     "type": "DR",
     "video": "https://www.youtube.com/watch?v=ZNAxdJ6Bt00",
     "creditSource": "https://www.youtube.com/@xhit/videos",
@@ -416,7 +461,8 @@
   {
     "id": "ABS47",
     "name": "Russian Twist",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["back", "shoulders"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=OiimI-uYPcE",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
@@ -426,14 +472,16 @@
   {
     "id": "ABS48",
     "name": "Side Bend",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["back", "quadriceps"],
     "type": "BW",
     "description": "Focuses on the obliques through side-to-side bending movements."
   },
   {
     "id": "ABS49",
     "name": "Side Bend (Dumbbell)",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["back", "shoulders"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=M0KGYdsKVPM",
     "creditSource": "https://www.youtube.com/@tnation",
@@ -443,7 +491,8 @@
   {
     "id": "ABS50",
     "name": "Toes to Bar",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["forearms", "lats", "back", "shoulders"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=HHjvtdJKMhg",
     "creditSource": "https://www.youtube.com/@WodstarFitness",
@@ -453,7 +502,8 @@
   {
     "id": "ABS51",
     "name": "V Up",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["back", "quadriceps", "hamstrings", "shoulders"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=cSCyyfBti7U",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -463,7 +513,8 @@
   {
     "id": "ABS52",
     "name": "Ab Roller",
-    "primaryMuscleGroup": "Abs",
+    "primaryMuscleGroup": "abs",
+    "secondaryMuscleGroup": ["back", "shoulders", "triceps", "lats", "forearms"],
     "type": "BW",
     "description": "Targets the core, engaging the abs, lower back, and shoulders during the roll-out motion."
   }

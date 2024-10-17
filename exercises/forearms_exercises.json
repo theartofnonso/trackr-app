@@ -2,14 +2,16 @@
   {
     "id": "FOR1",
     "name": "Barbell Wrist Curl",
-    "primaryMuscleGroup": "Forearms",
+    "primaryMuscleGroup": "forearms",
+    "secondaryMuscleGroup": ["biceps", "shoulders"],
     "type": "WR",
     "description": "Strengthens the forearm flexors and improves grip strength."
   },
   {
     "id": "FOR2",
     "name": "Barbell Wrist Curl Behind the Back",
-    "primaryMuscleGroup": "Forearms",
+    "primaryMuscleGroup": "forearms",
+    "secondaryMuscleGroup": ["biceps", "shoulders"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=LjerEt3Gnyw",
     "creditSource": "https://www.youtube.com/@TheActiveLife",
@@ -19,7 +21,8 @@
   {
     "id": "FOR3",
     "name": "Dumbbell Wrist Curl",
-    "primaryMuscleGroup": "Forearms",
+    "primaryMuscleGroup": "forearms",
+    "secondaryMuscleGroup": ["biceps", "shoulders"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=3VLTzIrnb5g",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -29,7 +32,8 @@
   {
     "id": "FOR4",
     "name": "Farmers Walk",
-    "primaryMuscleGroup": "Forearms",
+    "primaryMuscleGroup": "forearms",
+    "secondaryMuscleGroup": ["shoulders", "traps", "back", "abs", "glutes", "quadriceps", "hamstrings", "calves"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=k3Gsq1pNYUQ",
     "creditSource": "https://www.youtube.com/@thirdspacelondon8746",
@@ -39,14 +43,16 @@
   {
     "id": "FOR5",
     "name": "Gripper",
-    "primaryMuscleGroup": "Forearms",
+    "primaryMuscleGroup": "forearms",
+    "secondaryMuscleGroup": [],
     "type": "WR",
     "description": "Targets hand and forearm muscles to improve grip strength."
   },
   {
     "id": "FOR6",
     "name": "Plate Pinch",
-    "primaryMuscleGroup": "Forearms",
+    "primaryMuscleGroup": "forearms",
+    "secondaryMuscleGroup": ["shoulders", "traps"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=jFTV3DQf3HE",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -56,21 +62,24 @@
   {
     "id": "FOR7",
     "name": "Plate Wrist Curl",
-    "primaryMuscleGroup": "Forearms",
+    "primaryMuscleGroup": "forearms",
+    "secondaryMuscleGroup": ["biceps", "shoulders"],
     "type": "WR",
     "description": "Engages forearm flexors with a controlled wrist curling movement."
   },
   {
     "id": "FOR8",
     "name": "Barbell Wrist Extension",
-    "primaryMuscleGroup": "Forearms",
+    "primaryMuscleGroup": "forearms",
+    "secondaryMuscleGroup": ["biceps", "shoulders"],
     "type": "WR",
     "description": "Strengthens the forearm extensors for balanced wrist development."
   },
   {
     "id": "FOR9",
     "name": "Dumbbell Wrist Extension",
-    "primaryMuscleGroup": "Forearms",
+    "primaryMuscleGroup": "forearms",
+    "secondaryMuscleGroup": ["biceps", "shoulders"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=UcwgCTkVvIQ",
     "creditSource": "https://www.youtube.com/@PureGymVideo",

@@ -2,14 +2,16 @@
   {
     "id": "GLT1",
     "name": "Banded Side Kicks",
-    "primaryMuscleGroup": "Glutes",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroup": ["abductors"],
     "type": "BW",
     "description": "Targets the gluteus medius to enhance hip stability and lateral strength."
   },
   {
     "id": "GLT2",
     "name": "Cable Pull Through",
-    "primaryMuscleGroup": "Glutes",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroup": ["hamstrings", "back", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=f2rO8ZCMan8",
     "creditSource": "https://www.youtube.com/@denvyr",
@@ -19,7 +21,8 @@
   {
     "id": "GLT3",
     "name": "Clamshells",
-    "primaryMuscleGroup": "Glutes",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroup": ["abductors"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=T53YCkATff8",
     "creditSource": "https://www.youtube.com/@denvyr",
@@ -29,7 +32,8 @@
   {
     "id": "GLT4",
     "name": "Dumbbell Frog Pumps",
-    "primaryMuscleGroup": "Glutes",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroup": ["hamstrings", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=N6t2Fv0SKGc",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
@@ -39,14 +43,16 @@
   {
     "id": "GLT5",
     "name": "Fire Hydrants",
-    "primaryMuscleGroup": "Glutes",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroup": ["abductors", "abs"],
     "type": "BW",
     "description": "Focuses on the gluteus medius, improving mobility and hip strength."
   },
   {
     "id": "GLT6",
     "name": "Frog Pumps",
-    "primaryMuscleGroup": "Glutes",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroup": ["hamstrings", "abs"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=wklI-e2WpFQ",
     "creditSource": "https://www.youtube.com/@OnnitAcademy",
@@ -56,7 +62,8 @@
   {
     "id": "GLT7",
     "name": "Glute Bridge",
-    "primaryMuscleGroup": "Glutes",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroup": ["hamstrings", "abs", "back"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=tqp5XQPpTxY",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -66,7 +73,8 @@
   {
     "id": "GLT8",
     "name": "Donkey Kicks",
-    "primaryMuscleGroup": "Glutes",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroup": ["hamstrings", "abs", "back"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=EtSJ8rwm5M8",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -76,7 +84,8 @@
   {
     "id": "GLT10",
     "name": "Hip Thrust",
-    "primaryMuscleGroup": "Glutes",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroup": ["hamstrings", "abs", "quadriceps"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=7XuNzi5rcj4",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -86,7 +95,8 @@
   {
     "id": "GLT11",
     "name": "Hip Thrust Machine",
-    "primaryMuscleGroup": "Glutes",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroup": ["hamstrings", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=ZSPmIyX9RZs",
     "creditSource": "https://www.youtube.com/@RenaissancePeriodization",
@@ -96,21 +106,24 @@
   {
     "id": "GLT12",
     "name": "Lateral Walk With Band",
-    "primaryMuscleGroup": "Glutes",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroup": ["abductors", "adductors"],
     "type": "BW",
     "description": "Targets the gluteus medius with lateral stepping to improve hip stability."
   },
   {
     "id": "GLT13",
     "name": "Machine Glute Kickbacks",
-    "primaryMuscleGroup": "Glutes",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroup": ["hamstrings"],
     "type": "WR",
     "description": "Isolates the glutes through backward kicking movement on a machine."
   },
   {
     "id": "GLT14",
     "name": "Single Leg Glute Bridge",
-    "primaryMuscleGroup": "Glutes",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroup": ["hamstrings", "abs", "back"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=sVfp4LN9niA",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -120,7 +133,8 @@
   {
     "id": "GLT15",
     "name": "Single Leg Hip Thrust",
-    "primaryMuscleGroup": "Glutes",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroup": ["hamstrings", "abs", "quadriceps"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=xRoPfiYGo00",
     "creditSource": "https://www.youtube.com/@OnnitAcademy",
@@ -130,14 +144,16 @@
   {
     "id": "GLT16",
     "name": "Standing Glute Kickback in Machine",
-    "primaryMuscleGroup": "Glutes",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroup": ["hamstrings"],
     "type": "WR",
     "description": "Targets the glutes by pushing the leg back against resistance in a machine."
   },
   {
     "id": "GLT18",
     "name": "Bird Dog",
-    "primaryMuscleGroup": "Glutes",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroup": ["abs", "back", "shoulders"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=vzU5xrs1gMQ",
     "creditSource": "https://www.youtube.com/@marcusfilly",
@@ -147,7 +163,8 @@
   {
     "id": "GLT20",
     "name": "Hip Thrust (Barbell)",
-    "primaryMuscleGroup": "Glutes",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroup": ["hamstrings", "abs", "quadriceps"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=aweBS7K71l8",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -157,14 +174,16 @@
   {
     "id": "GLT21",
     "name": "Reverse Hyperextension",
-    "primaryMuscleGroup": "Glutes",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroup": ["hamstrings", "back"],
     "type": "BW",
     "description": "Engages the glutes and lower back through reverse extension of the legs."
   },
   {
     "id": "GLT23",
     "name": "Single Leg Hip Thrust (Dumbbell)",
-    "primaryMuscleGroup": "Glutes",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroup": ["hamstrings", "abs", "quadriceps"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=ETnhBWeWK74",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -174,14 +193,16 @@
   {
     "id": "GLT24",
     "name": "Lateral Band Walks",
-    "primaryMuscleGroup": "Glutes",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroup": ["abductors", "adductors"],
     "type": "BW",
     "description": "Strengthens the glutes and hips by walking laterally with resistance."
   },
   {
     "id": "GLT25",
     "name": "Glute Kickback on Floor",
-    "primaryMuscleGroup": "Glutes",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroup": ["hamstrings"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=BNDw4ciQoQI",
     "creditSource": "https://www.youtube.com/@nuffieldhealth",
@@ -191,7 +212,8 @@
   {
     "id": "GLT26",
     "name": "Glute Kickbacks (Cable)",
-    "primaryMuscleGroup": "Glutes",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroup": ["hamstrings"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=SqO-VUEak2M",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -201,7 +223,8 @@
   {
     "id": "GLT27",
     "name": "Hip Thrust (Dumbbell)",
-    "primaryMuscleGroup": "Glutes",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroup": ["hamstrings", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=1u-b25VJVFU",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -211,7 +234,8 @@
   {
     "id": "GLT29",
     "name": "Glute Bridge (Dumbbell)",
-    "primaryMuscleGroup": "Glutes",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroup": ["hamstrings", "abs", "back"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=cruqsnAyU6A",
     "creditSource": "https://www.youtube.com/@PureGymVideo",

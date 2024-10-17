@@ -2,7 +2,8 @@
   {
     "id": "CHT1",
     "name": "Bar Dip",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["triceps", "shoulders"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=2HYAeF6o7Bc",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -12,7 +13,8 @@
   {
     "id": "CHT2",
     "name": "Bench Press",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["triceps", "shoulders", "back", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=YjMw-BjQgzY",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
@@ -22,7 +24,8 @@
   {
     "id": "CHT3",
     "name": "Cable Chest Press",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["triceps", "shoulders", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=sh92B-_2O48",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -32,14 +35,16 @@
   {
     "id": "CHT4",
     "name": "Decline Bench Press",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["triceps", "shoulders", "back", "abs"],
     "type": "WR",
     "description": "Emphasizes the lower chest, targeting the pectoral muscles from a decline angle."
   },
   {
     "id": "CHT5",
     "name": "Dumbbell Chest Fly",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["shoulders", "biceps"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=Nhvz9EzdJ4U",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -49,7 +54,8 @@
   {
     "id": "CHT6",
     "name": "Dumbbell Chest Press",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["triceps", "shoulders", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=-zbFMDBzQEE",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -59,7 +65,8 @@
   {
     "id": "CHT7",
     "name": "Dumbbell Decline Chest Press",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["triceps", "shoulders", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=4R_GwRhG0rY",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -69,7 +76,8 @@
   {
     "id": "CHT8",
     "name": "Dumbbell Floor Press",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["triceps", "shoulders"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=T0Y3OBF1bNI",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -79,7 +87,8 @@
   {
     "id": "CHT9",
     "name": "Dumbbell Pullover",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["lats", "triceps", "shoulders", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=MJ8aKjmMZ0c",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
@@ -89,14 +98,16 @@
   {
     "id": "CHT10",
     "name": "Feet-Up Bench Press",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["triceps", "shoulders", "abs"],
     "type": "WR",
     "description": "Engages the chest and core, focusing on chest development with feet elevated."
   },
   {
     "id": "CHT11",
     "name": "Barbell Floor Press",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["triceps", "shoulders"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=NamiVqVgPTU",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
@@ -106,7 +117,8 @@
   {
     "id": "CHT12",
     "name": "Incline Bench Press",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["triceps", "shoulders", "back", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=2jFFCy8JBU8",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -116,7 +128,8 @@
   {
     "id": "CHT13",
     "name": "Incline Dumbbell Press",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["triceps", "shoulders", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=oZVCBM9f8Eo",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -126,7 +139,8 @@
   {
     "id": "CHT14",
     "name": "Incline Push-Up",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["triceps", "shoulders", "abs"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=yAbg3_pJKvw",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -136,14 +150,16 @@
   {
     "id": "CHT15",
     "name": "Kneeling Incline Push-Up",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["triceps", "shoulders", "abs"],
     "type": "BW",
     "description": "A beginner-friendly version targeting the chest with reduced resistance."
   },
   {
     "id": "CHT16",
     "name": "Kneeling Push-Up",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["triceps", "shoulders", "abs"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=X9sGmsGYYE0",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -153,7 +169,8 @@
   {
     "id": "CHT17",
     "name": "Machine Chest Fly",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["shoulders", "biceps"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=eGjt4lk6g34",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -163,7 +180,8 @@
   {
     "id": "CHT18",
     "name": "Machine Chest Press",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["triceps", "shoulders"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=CIykDiF4sfg",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -173,14 +191,16 @@
   {
     "id": "CHT19",
     "name": "Pec Deck",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["shoulders", "biceps"],
     "type": "WR",
     "description": "Engages the chest muscles with a machine-assisted fly motion."
   },
   {
     "id": "CHT20",
     "name": "Push-Up",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["triceps", "shoulders", "abs"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=Env8gAr_QnE",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -190,7 +210,8 @@
   {
     "id": "CHT21",
     "name": "Push-Up Against Wall",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["triceps", "shoulders"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=-KVhapnEtuk",
     "creditSource": "https://www.youtube.com/@CSIROTotalWellbeingDiet",
@@ -200,7 +221,8 @@
   {
     "id": "CHT22",
     "name": "Push-Ups With Feet in Rings",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["triceps", "shoulders", "abs", "back"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=3JtmuKA1Tgg",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
@@ -210,14 +232,16 @@
   {
     "id": "CHT23",
     "name": "Seated Resistance Band Chest Fly",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["shoulders", "biceps"],
     "type": "WR",
     "description": "Focuses on chest contraction and control using resistance bands."
   },
   {
     "id": "CHT24",
     "name": "Smith Machine Bench Press",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["triceps", "shoulders", "back", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=O5viuEPDXKY",
     "creditSource": "https://www.youtube.com/@RenaissancePeriodization",
@@ -227,7 +251,8 @@
   {
     "id": "CHT25",
     "name": "Smith Machine Incline Bench Press",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["triceps", "shoulders", "back", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=8urE8Z8AMQ4",
     "creditSource": "https://www.youtube.com/@RenaissancePeriodization",
@@ -237,7 +262,8 @@
   {
     "id": "CHT26",
     "name": "Standing Cable Chest Fly",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["shoulders", "biceps", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=QcTcWpkn_bw",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -247,7 +273,8 @@
   {
     "id": "CHT27",
     "name": "Standing Resistance Band Chest Fly",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["shoulders", "biceps", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=sVMWoS0OhsI",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
@@ -257,7 +284,8 @@
   {
     "id": "CHT28",
     "name": "Bar Dip (Weighted)",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["triceps", "shoulders", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=IUpu0oK_lxI",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -267,7 +295,8 @@
   {
     "id": "CHT29",
     "name": "Around The World",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["shoulders", "abs", "biceps"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=wcQEiZ02fgk",
     "creditSource": "https://www.youtube.com/@thirdspacelondon8746",
@@ -277,14 +306,16 @@
   {
     "id": "CHT30",
     "name": "Bar Dip (Assisted)",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["triceps", "shoulders"],
     "type": "WR",
     "description": "Assisted version of the bar dip for chest development with support."
   },
   {
     "id": "CHT31",
     "name": "Seated Chest Flys (Cable)",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["shoulders", "biceps"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=VgKCIZgca58",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -294,7 +325,8 @@
   {
     "id": "CHT32",
     "name": "Low Cable Chest Fly",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["shoulders", "biceps", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=wnFEC_34Bls",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -304,21 +336,24 @@
   {
     "id": "CHT33",
     "name": "Iso-Lateral Chest Press",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["triceps", "shoulders", "abs"],
     "type": "WR",
     "description": "Emphasizes unilateral chest work with isolated motion."
   },
   {
     "id": "CHT34",
     "name": "Smith Machine Decline Bench Press",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["triceps", "shoulders", "abs"],
     "type": "WR",
     "description": "Targets the lower chest with decline movement on the Smith machine."
   },
   {
     "id": "CHT35",
     "name": "Decline Push-Up",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["triceps", "shoulders", "abs", "back"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=QBlYp-EwHlo",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -328,14 +363,16 @@
   {
     "id": "CHT36",
     "name": "Hex Press",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["triceps", "shoulders", "abs"],
     "type": "WR",
     "description": "Engages the chest with a close-grip dumbbell press variation."
   },
   {
     "id": "CHT37",
     "name": "High Cable Chest Fly",
-    "primaryMuscleGroup": "Chest",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroup": ["shoulders", "biceps", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=hhruLxo9yZU",
     "creditSource": "https://www.youtube.com/@PureGymVideo",

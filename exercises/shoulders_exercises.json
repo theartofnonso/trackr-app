@@ -1,9 +1,9 @@
 [
-
   {
     "id": "SHD1",
     "name": "Band External Shoulder Rotation",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["back", "forearms"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=xeO-6L7YtpI",
     "creditSource": "https://www.youtube.com/@denvyr",
@@ -13,14 +13,16 @@
   {
     "id": "SHD2",
     "name": "Band Internal Shoulder Rotation",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["chest", "lats", "forearms"],
     "type": "BW",
     "description": "Engages the internal rotator muscles to enhance shoulder strength and mobility."
   },
   {
     "id": "SHD3",
     "name": "Band Pull-Apart",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["back", "traps", "forearms"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=MnDpmNYUjbc",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
@@ -30,7 +32,8 @@
   {
     "id": "SHD4",
     "name": "Barbell Front Raise",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["chest", "traps", "abs", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=_od0CCC6DEM",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -40,14 +43,16 @@
   {
     "id": "SHD5",
     "name": "Barbell Rear Delt Row",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["back", "traps", "biceps", "forearms"],
     "type": "WR",
     "description": "Focuses on rear deltoids and upper back for improved posture and strength."
   },
   {
     "id": "SHD6",
     "name": "Barbell Upright Row",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["traps", "biceps", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=8UvsRWUb0YU",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -57,7 +62,8 @@
   {
     "id": "SHD7",
     "name": "Behind the Neck Press",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["triceps", "traps", "abs", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=ADWlvYopJuY",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
@@ -67,7 +73,8 @@
   {
     "id": "SHD8",
     "name": "Cable Lateral Raise",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["traps", "forearms", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=Z5FA9aq3L6A",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -77,14 +84,16 @@
   {
     "id": "SHD9",
     "name": "Cable Rear Delt Row",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["back", "traps", "biceps", "forearms"],
     "type": "WR",
     "description": "Activates the rear deltoids and upper back muscles."
   },
   {
     "id": "SHD10",
     "name": "Dumbbell Front Raise",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["chest", "traps", "abs", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=zkP0MsTcIVU",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -94,21 +103,24 @@
   {
     "id": "SHD11",
     "name": "Dumbbell Horizontal Internal Shoulder Rotation",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["chest", "lats", "forearms"],
     "type": "WR",
     "description": "Targets internal rotator muscles to build shoulder stability."
   },
   {
     "id": "SHD12",
     "name": "Dumbbell Horizontal External Shoulder Rotation",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["back", "traps", "forearms"],
     "type": "WR",
     "description": "Strengthens the external rotator muscles for better shoulder control."
   },
   {
     "id": "SHD13",
     "name": "Dumbbell Lateral Raise",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["traps", "forearms", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=gN1Sc6KkK7Q",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
@@ -118,14 +130,16 @@
   {
     "id": "SHD14",
     "name": "Dumbbell Rear Delt Row",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["back", "traps", "biceps", "forearms"],
     "type": "WR",
     "description": "Activates the rear deltoids and back muscles to improve upper body posture."
   },
   {
     "id": "SHD15",
     "name": "Dumbbell Shoulder Press",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["triceps", "traps", "abs", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=aI2hGzsAMXs",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -135,7 +149,8 @@
   {
     "id": "SHD16",
     "name": "Face Pull",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["back", "traps", "biceps", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=0Po47vvj9g4",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -145,14 +160,16 @@
   {
     "id": "SHd17",
     "name": "Front Hold",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["traps", "abs", "forearms"],
     "type": "WR",
     "description": "Focuses on endurance in the front deltoids for static shoulder strength."
   },
   {
     "id": "SHD18",
     "name": "Lying Dumbbell External Shoulder Rotation",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["back", "traps", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=D6FJe6rFuY0",
     "creditSource": "https://www.youtube.com/@OPEXFitness",
@@ -162,21 +179,24 @@
   {
     "id": "SHD19",
     "name": "Lying Dumbbell Internal Shoulder Rotation",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["chest", "lats", "forearms"],
     "type": "WR",
     "description": "Targets internal rotator muscles to build shoulder stability."
   },
   {
     "id": "SHD20",
     "name": "Machine Lateral Raise",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["traps", "forearms"],
     "type": "WR",
     "description": "Isolates the lateral deltoids to increase shoulder width."
   },
   {
     "id": "SHD21",
     "name": "Machine Shoulder Press",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["triceps", "traps", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=GcY6TZxfS0k",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -186,7 +206,8 @@
   {
     "id": "SHD22",
     "name": "Monkey Row",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["back", "traps", "biceps", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=Xlpn6ylPiW8",
     "creditSource": "https://www.youtube.com/@judithramosvaldes9695",
@@ -196,14 +217,16 @@
   {
     "id": "SHD23",
     "name": "Overhead Press (Dumbbell)",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["triceps", "traps", "abs", "forearms"],
     "type": "WR",
     "description": "Develops shoulder mass and strength with overhead pressing motion."
   },
   {
     "id": "SHD24",
     "name": "Kettlebell Front Raise",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["chest", "traps", "abs", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=HHEmtCuuPss",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
@@ -213,14 +236,16 @@
   {
     "id": "SHD25",
     "name": "Power Jerk",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["triceps", "quadriceps", "glutes", "hamstrings", "calves", "abs", "back"],
     "type": "WR",
     "description": "A full-body movement that primarily targets the shoulders and helps build explosive power."
   },
   {
     "id": "SHD26",
     "name": "Push Press",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["triceps", "quadriceps", "glutes", "hamstrings", "abs", "back", "calves"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=HKx22sWywxc",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -230,7 +255,8 @@
   {
     "id": "SHD27",
     "name": "Reverse Cable Flyes",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["back", "traps", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=LuiunkyM4go",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
@@ -240,7 +266,8 @@
   {
     "id": "SHD28",
     "name": "Reverse Dumbbell Flyes",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["back", "traps", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=ZHiwyJbj8Dw",
     "creditSource": "https://www.youtube.com/@denvyr",
@@ -250,14 +277,16 @@
   {
     "id": "SHD29",
     "name": "Reverse Machine Fly",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["back", "traps"],
     "type": "WR",
     "description": "Isolates the rear deltoids for improved shoulder and upper back strength."
   },
   {
     "id": "SHD30",
     "name": "Seated Dumbbell Shoulder Press",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["triceps", "traps", "abs", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=TsduLWuhlFM",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -267,28 +296,32 @@
   {
     "id": "SHD31",
     "name": "Seated Barbell Overhead Press",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["triceps", "traps", "abs", "forearms"],
     "type": "WR",
     "description": "Focuses on shoulder muscle development with added core stability due to the barbell's weight."
   },
   {
     "id": "SHD32",
     "name": "Seated Smith Machine Shoulder Press",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["triceps", "traps", "forearms"],
     "type": "WR",
     "description": "Provides controlled overhead pressing to target the shoulders without needing balance."
   },
   {
     "id": "SHD33",
     "name": "Snatch Grip Behind the Neck Press",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["triceps", "traps", "back", "abs", "forearms"],
     "type": "WR",
     "description": "Works the shoulders and traps, emphasizing flexibility and mobility in the shoulders."
   },
   {
     "id": "SHD34",
     "name": "Arnold Press",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["triceps", "traps", "abs", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=jeJttN2EWCo",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -298,7 +331,8 @@
   {
     "id": "SHD35",
     "name": "Shoulder Taps",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["abs", "chest", "triceps"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=C6At19Q9i2Q",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
@@ -308,7 +342,8 @@
   {
     "id": "SHD36",
     "name": "Upright Row (Cable)",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["traps", "biceps", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=WNz7O59GORA",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -318,7 +353,8 @@
   {
     "id": "SHD37",
     "name": "Upright Row (Dumbbell)",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["traps", "biceps", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=Rd5AsxOGqss",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -328,7 +364,8 @@
   {
     "id": "SHD38",
     "name": "Single Arm Lateral Raise (Cable)",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["traps", "forearms", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=Z5FA9aq3L6A",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -338,7 +375,8 @@
   {
     "id": "SHD39",
     "name": "Overhead Press (Barbell)",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["triceps", "chest", "traps", "abs", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=Y0Bxr57uPbk",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -348,14 +386,16 @@
   {
     "id": "SHD40",
     "name": "Overhead Press (Smith Machine)",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["triceps", "traps", "abs", "forearms"],
     "type": "WR",
     "description": "Focuses on shoulder development with guided bar movement for safety and control."
   },
   {
     "id": "SHD41",
     "name": "Cable Front Raise",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["chest", "traps", "abs", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=vtH93qBItdk",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -365,7 +405,8 @@
   {
     "id": "SHD42",
     "name": "Chest Supported Y Raise",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["back", "traps", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=gDHQX1iend4",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -375,14 +416,16 @@
   {
     "id": "SHD43",
     "name": "Front Raise (Band)",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["chest", "traps", "abs", "forearms"],
     "type": "WR",
     "description": "Works the anterior deltoid with resistance from a band, enhancing shoulder mobility."
   },
   {
     "id": "SHD44",
     "name": "Plate Front Raise",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["chest", "traps", "abs", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=HN8HYJTOl8c",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -392,7 +435,8 @@
   {
     "id": "SHD45",
     "name": "Seated Dumbbell Lateral Raise",
-    "primaryMuscleGroup": "Shoulders",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroup": ["traps", "forearms", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=xDrYB81QXmY",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
