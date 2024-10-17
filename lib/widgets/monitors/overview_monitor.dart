@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
@@ -10,6 +11,7 @@ import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../colors.dart';
+import '../../controllers/exercise_controller.dart';
 import '../../dtos/routine_log_dto.dart';
 import '../../strings.dart';
 import '../../utils/exercise_logs_utils.dart';
@@ -33,8 +35,16 @@ class OverviewMonitor extends StatelessWidget {
 
     final exerciseLogsForTheMonth = routineLogs.expand((log) => log.exerciseLogs).toList();
 
+    final exerciseController = Provider.of<ExerciseController>(context, listen: false);
+
+    final exercisesFromLibrary = exerciseLogsForTheMonth.map((exerciseTemplate) {
+      final foundExercise = exerciseController.exercises
+          .firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.id == exerciseTemplate.id);
+      return foundExercise != null ? exerciseTemplate.copyWith(exercise: foundExercise) : exerciseTemplate;
+    }).toList();
+
     final muscleGroupsSplitFrequencyScore =
-        cumulativeMuscleGroupFamilyFrequency(exerciseLogs: exerciseLogsForTheMonth);
+        cumulativeMuscleGroupFamilyFrequency(exerciseLogs: exercisesFromLibrary);
 
     final splitPercentage = (muscleGroupsSplitFrequencyScore * 100).round();
 

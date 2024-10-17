@@ -14,6 +14,7 @@ import 'package:tracker_app/widgets/shareables/routine_log_shareable_lite.dart';
 import 'package:tracker_app/widgets/shareables/session_milestone_shareable.dart';
 
 import '../../colors.dart';
+import '../../controllers/exercise_controller.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/routine_log_dto.dart';
 import '../../enums/exercise_type_enums.dart';
@@ -56,7 +57,14 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
 
     final logsByDay = groupBy(routineLogController.routineLogs, (log) => log.createdAt.withoutTime());
 
-    final muscleGroupFamilyFrequencyData = muscleGroupFamilyFrequency(exerciseLogs: updatedLog.exerciseLogs);
+    final exerciseController = Provider.of<ExerciseController>(context, listen: false);
+
+    final exercisesFromLibrary = updatedLog.exerciseLogs.map((exerciseTemplate) {
+      final foundExercise = exerciseController.exercises.firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.id == exerciseTemplate.id);
+      return foundExercise != null ? exerciseTemplate.copyWith(exercise: foundExercise) : exerciseTemplate;
+    }).toList();
+
+    final muscleGroupFamilyFrequencyData = muscleGroupFamilyFrequency(exerciseLogs: exercisesFromLibrary);
 
     List<Widget> pbShareAssets = [];
     final pbShareAssetsKeys = [];

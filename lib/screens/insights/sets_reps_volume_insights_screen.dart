@@ -18,6 +18,7 @@ import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/empty_states/horizontal_stacked_bars_empty_state.dart';
 
 import '../../colors.dart';
+import '../../controllers/exercise_controller.dart';
 import '../../controllers/open_ai_controller.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
@@ -79,20 +80,34 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     List<num> periodicalValues = [];
     List<DateTime> periodicalDates = [];
 
+    final exerciseController = Provider.of<ExerciseController>(context, listen: false);
+
     final exerciseLogs = periodicalLogs
         .map((log) => log.value)
         .expand((logs) => logs)
         .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
         .expand((exerciseLogs) => exerciseLogs)
-        .where((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup == _selectedMuscleGroup)
-        .toList();
+        .map((exerciseLog) {
+      final foundExercise =
+          exerciseController.exercises.firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.id == exerciseLog.id);
+      return foundExercise != null ? exerciseLog.copyWith(exercise: foundExercise) : exerciseLog;
+    }).where((exerciseLog) {
+      final muscleGroups = [exerciseLog.exercise.primaryMuscleGroup, ...exerciseLog.exercise.secondaryMuscleGroups];
+      return muscleGroups.contains(_selectedMuscleGroup);
+    }).toList();
 
     for (final periodAndLogs in periodicalLogs) {
       final valuesForPeriod = periodAndLogs.value
           .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
           .expand((exerciseLogs) => exerciseLogs)
-          .where((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup == _selectedMuscleGroup)
-          .map((log) {
+          .map((exerciseLog) {
+        final foundExercise = exerciseController.exercises
+            .firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.id == exerciseLog.id);
+        return foundExercise != null ? exerciseLog.copyWith(exercise: foundExercise) : exerciseLog;
+      }).where((exerciseLog) {
+        final muscleGroups = [exerciseLog.exercise.primaryMuscleGroup, ...exerciseLog.exercise.secondaryMuscleGroups];
+        return muscleGroups.contains(_selectedMuscleGroup);
+      }).map((log) {
         final values = _calculateMetric(sets: log.sets);
         return values;
       }).sum;
@@ -126,7 +141,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     final hasWeights = weights.any((weight) => weight > 0);
 
-    final weightColors = [vibrantGreen, vibrantBlue, Colors.orange];
+    final weightColors = [vibrantGreen, vibrantBlue, Colors.deepOrangeAccent];
 
     final barColors = periodicalValues
         .map((value) => _metric == SetRepsVolumeReps.sets
@@ -354,7 +369,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                         title: "$totalMinimum", //
                         suffix: "x",
                         subTitle: 'Minimum (<${_sufficientSetsOrRepsValue()} ${_metric.name})',
-                        color: Colors.orange,
+                        color: Colors.deepOrangeAccent,
                       ),
                     ]),
                 ],
@@ -375,11 +390,11 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
   void _generateSummary({required List<ExerciseLogDto> logs}) {
     if (logs.isEmpty) {
-      showSnackbar(context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: "You don't have any logs");
+      showSnackbar(
+          context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: "You don't have any logs");
     } else {
       final userInstructions =
-          "Review my workout logs for ${_selectedMuscleGroup.name} from ${_dateTimeRange.start} to ${_dateTimeRange
-          .end} and provide feedback";
+          "Review my workout logs for ${_selectedMuscleGroup.name} from ${_dateTimeRange.start} to ${_dateTimeRange.end} and provide feedback";
 
       final logJsons = logs.map((log) => jsonEncode(log.toJson()));
 

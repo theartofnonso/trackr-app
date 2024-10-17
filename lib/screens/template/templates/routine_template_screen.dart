@@ -1,11 +1,13 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/extensions/routine_template_extension.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -50,6 +52,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   bool _loading = false;
 
+  bool _minimized = true;
+
   void _deleteRoutine({required RoutineTemplateDto template}) async {
     try {
       await Provider.of<RoutineTemplateController>(context, listen: false).removeTemplate(template: template);
@@ -86,7 +90,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final template = _template;
 
     if (template == null) {
@@ -108,6 +111,16 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
     final numberOfSets = template.exerciseTemplates.expand((exerciseTemplate) => exerciseTemplate.sets);
     final setsSummary = "${numberOfSets.length} ${pluralize(word: "Set", count: numberOfSets.length)}";
+
+    final exerciseController = Provider.of<ExerciseController>(context, listen: true);
+
+    final exercisesFromLibrary = template.exerciseTemplates.map((exerciseTemplate) {
+      final foundExercise = exerciseController.exercises
+          .firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.id == exerciseTemplate.id);
+      return foundExercise != null ? exerciseTemplate.copyWith(exercise: foundExercise) : exerciseTemplate;
+    }).toList();
+
+    final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: exercisesFromLibrary);
 
     final menuActions = [
       MenuItemButton(onPressed: _navigateToRoutineTemplateEditor, child: Text("Edit", style: GoogleFonts.ubuntu())),
@@ -264,8 +277,34 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    MuscleGroupFamilyChart(
-                        frequencyData: muscleGroupFamilyFrequency(exerciseLogs: template.exerciseTemplates)),
+                    GestureDetector(
+                      onTap: _onTap,
+                      child: Container(
+                        color: Colors.transparent,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(children: [
+                              Text("Muscle Groups Split".toUpperCase(),
+                                  style: GoogleFonts.ubuntu(
+                                      color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+                              const Spacer(),
+                              if (muscleGroupFamilyFrequencies.length > 3)
+                                FaIcon(_minimized ? FontAwesomeIcons.angleDown : FontAwesomeIcons.angleUp,
+                                    color: Colors.white70, size: 16),
+                            ]),
+                            const SizedBox(height: 10),
+                            Text("Here's a breakdown of the muscle groups in your ${template.name} workout plan.",
+                                style:
+                                    GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
+                            const SizedBox(height: 10),
+                            MuscleGroupFamilyChart(
+                                frequencyData: muscleGroupFamilyFrequencies,
+                                minimized: _minimized),
+                          ],
+                        ),
+                      ),
+                    ),
                     // const SizedBox(height: 12),
                     // TRKRInformationContainer(
                     //   ctaLabel: "Ask for a review",
@@ -289,6 +328,12 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
             if (_loading) const TRKRLoadingScreen()
           ]),
         ));
+  }
+
+  void _onTap() {
+    setState(() {
+      _minimized = !_minimized;
+    });
   }
 
   void _loadData() {

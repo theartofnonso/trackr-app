@@ -40,19 +40,17 @@ class RoutineTemplatesScreen extends StatelessWidget {
         }
       }
 
-      final exercise =
+      final exerciseTemplates =
           routineTemplates.map((template) => template.exerciseTemplates).expand((exercises) => exercises).toList();
 
-      final exercisesByMuscleGroupFamily = groupBy(exercise, (exercise) => exercise.exercise.primaryMuscleGroup.family);
+      final exercisesByMuscleGroupFamily =
+          groupBy(exerciseTemplates, (exercise) => exercise.exercise.primaryMuscleGroup.family);
 
       final muscleGroupFamilies = exercisesByMuscleGroupFamily.keys.toSet();
 
       final listOfPopularMuscleGroupFamilies = popularMuscleGroupFamilies().toSet();
 
       final untrainedMuscleGroups = listOfPopularMuscleGroupFamilies.difference(muscleGroupFamilies);
-
-      String untrainedMuscleGroupsNames =
-          joinWithAnd(items: untrainedMuscleGroups.map((muscle) => muscle.name).toList());
 
       final children = templates
           .map((template) =>
@@ -82,35 +80,6 @@ class RoutineTemplatesScreen extends StatelessWidget {
                             children: children),
                       )
                     : const RoutineEmptyState(),
-                const SizedBox(height: 6),
-                if (untrainedMuscleGroups.isNotEmpty)
-                  Container(
-                    width: double.infinity,
-                    color: Colors.transparent,
-                    child: RichText(
-                        text: TextSpan(
-                            text:
-                                "Consider training a variety of muscle groups to avoid muscle imbalances and prevent injury. Start by including",
-                            style: GoogleFonts.ubuntu(
-                                color: Colors.white70,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                wordSpacing: 1,
-                                height: 1.5),
-                            children: [
-                          const TextSpan(text: " "),
-                          TextSpan(
-                              text: untrainedMuscleGroupsNames,
-                              style: GoogleFonts.ubuntu(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  wordSpacing: 1,
-                                  height: 1.5)),
-                          const TextSpan(text: " "),
-                          const TextSpan(text: "exercises in your workouts."),
-                        ])),
-                  ),
               ])));
     });
   }
@@ -124,7 +93,6 @@ class _RoutineWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final exercises = template.exerciseTemplates;
     final sets = template.exerciseTemplates.expand((exercise) => exercise.sets);
 
@@ -172,7 +140,9 @@ class _RoutineWidget extends StatelessWidget {
                   maxLines: 2,
                 ),
                 const SizedBox(height: 8),
-                Divider(color: template.isScheduledToday() ? vibrantGreen.withOpacity(0.2) : sapphireLighter, endIndent: 10),
+                Divider(
+                    color: template.isScheduledToday() ? vibrantGreen.withOpacity(0.2) : sapphireLighter,
+                    endIndent: 10),
                 const SizedBox(height: 8),
                 Text(
                   scheduleSummary,

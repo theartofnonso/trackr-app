@@ -18,7 +18,7 @@ class HorizontalStackedBars extends StatelessWidget {
     // Create a list of Expanded widgets based on the weights
     final List<Widget> weightedBars = bars.map((bar) {
       return Expanded(
-        flex: (bar.weight * 10 ~/ totalWeight), // Calculate the flex factor based on the weight
+        flex: (_barWeight((bar.weight * 10) ~/ totalWeight)), // Calculate the flex factor based on the weight
         child: Container(
           height: 10, // Fixed height for all bars
           color: bar.color,
@@ -33,6 +33,10 @@ class HorizontalStackedBars extends StatelessWidget {
       ),
     );
   }
+}
+
+int _barWeight(int value) {
+  return value < 1 ? 1 : value;
 }
 
 // A simple class to hold the weight and color for a bar

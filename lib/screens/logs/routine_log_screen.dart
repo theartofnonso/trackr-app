@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -21,6 +22,7 @@ import 'package:tracker_app/widgets/chart/muscle_group_family_chart.dart';
 
 import '../../../colors.dart';
 import '../../../dtos/exercise_log_dto.dart';
+import '../../controllers/exercise_controller.dart';
 import '../../controllers/open_ai_controller.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../controllers/routine_template_controller.dart';
@@ -55,6 +57,8 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
   bool _loading = false;
 
+  bool _minimized = true;
+
   @override
   Widget build(BuildContext context) {
     final log = _log;
@@ -78,9 +82,19 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     final completedExerciseLogsAndSets = exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs);
 
+    final exerciseController = Provider.of<ExerciseController>(context, listen: true);
+
+    final exercisesFromLibrary = completedExerciseLogsAndSets.map((exerciseTemplate) {
+      final foundExercise = exerciseController.exercises
+          .firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.id == exerciseTemplate.id);
+      return foundExercise != null ? exerciseTemplate.copyWith(exercise: foundExercise) : exerciseTemplate;
+    }).toList();
+
     final numberOfCompletedSets = completedExerciseLogsAndSets.expand((exerciseLog) => exerciseLog.sets);
     final completedSetsSummary =
         "${numberOfCompletedSets.length} ${pluralize(word: "Set", count: numberOfCompletedSets.length)}";
+
+    final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: exercisesFromLibrary);
 
     return Scaffold(
         backgroundColor: sapphireDark,
@@ -209,9 +223,35 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    MuscleGroupFamilyChart(
-                        frequencyData: muscleGroupFamilyFrequency(exerciseLogs: completedExerciseLogsAndSets)),
+                    const SizedBox(height: 12),
+                    GestureDetector(
+                      onTap: _onTap,
+                      child: Container(
+                        color: Colors.transparent,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(children: [
+                              Text("Muscle Groups Split".toUpperCase(),
+                                  style: GoogleFonts.ubuntu(
+                                      color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+                              const Spacer(),
+                              if (muscleGroupFamilyFrequencies.length > 3)
+                                FaIcon(_minimized ? FontAwesomeIcons.angleDown : FontAwesomeIcons.angleUp,
+                                    color: Colors.white70, size: 16),
+                            ]),
+                            const SizedBox(height: 10),
+                            Text("Here's a breakdown of the muscle groups in your ${log.name} workout log.",
+                                style: GoogleFonts.ubuntu(
+                                    color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
+                            const SizedBox(height: 10),
+                            MuscleGroupFamilyChart(
+                                frequencyData: muscleGroupFamilyFrequencies,
+                                minimized: _minimized),
+                          ],
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 12),
                     TRKRInformationContainer(
                         ctaLabel: log.summary != null ? "Review your feedback" : "Ask for feedback",
@@ -231,6 +271,12 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             if (_loading) const TRKRLoadingScreen()
           ]),
         ));
+  }
+
+  void _onTap() {
+    setState(() {
+      _minimized = !_minimized;
+    });
   }
 
   void _showSummary() {

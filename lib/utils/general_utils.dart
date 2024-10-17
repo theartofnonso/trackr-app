@@ -197,7 +197,7 @@ Color logStreakColor({required double value}) {
   if (value < 0.3) {
     return Colors.red;
   } else if (value < 0.5) {
-    return Colors.orange;
+    return Colors.deepOrangeAccent;
   } else if (value < 0.8) {
     return vibrantBlue;
   } else {
@@ -211,7 +211,7 @@ Color setsTrendColor({required int sets}) {
   } else if (sets >= 6) {
     return vibrantBlue;
   } else {
-    return Colors.orange;
+    return Colors.deepOrangeAccent;
   }
 }
 
@@ -221,7 +221,7 @@ Color repsTrendColor({required int reps}) {
   } else if (reps >= 60) {
     return vibrantBlue;
   } else {
-    return Colors.orange;
+    return Colors.deepOrangeAccent;
   }
 }
 
@@ -236,6 +236,7 @@ List<MuscleGroupFamily> popularMuscleGroupFamilies() {
     MuscleGroupFamily.legs,
     MuscleGroupFamily.shoulders,
     MuscleGroupFamily.arms,
-    MuscleGroupFamily.core
+    MuscleGroupFamily.core,
+    MuscleGroupFamily.neck
   ];
 }

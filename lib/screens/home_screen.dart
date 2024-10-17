@@ -147,7 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _loadAppData({bool firstLaunch = false}) async {
+  void _loadAppData() async {
     _observeExerciseQuery();
     _observeRoutineLogQuery();
     _observeRoutineTemplateQuery();
@@ -175,7 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _runSetup() async {
     if (SharedPrefs().firstLaunch) {
       _cacheUser();
-      _loadAppData(firstLaunch: SharedPrefs().firstLaunch);
+      _loadAppData();
       SharedPrefs().firstLaunch = false;
     } else {
       identifyUser(userId: SharedPrefs().userId);
