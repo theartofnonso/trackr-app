@@ -2,14 +2,16 @@
   {
     "id": "FLB1",
     "name": "Block Snatch",
-    "primaryMuscleGroup": "Full Body",
+    "primaryMuscleGroup": ["shoulders", "quadriceps"],
+    "secondaryMuscleGroup": ["hamstrings", "glutes", "traps", "back", "calves", "abs", "forearms"],
     "type": "WR",
     "description": "Explosive lift targeting the entire body, focusing on power and coordination."
   },
   {
     "id": "FLB2",
     "name": "Clean",
-    "primaryMuscleGroup": "Full Body",
+    "primaryMuscleGroup": ["quadriceps", "glutes"],
+    "secondaryMuscleGroup": ["hamstrings", "back", "shoulders", "traps", "calves", "abs", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=Ty14ogq_Vok",
     "creditSource": "https://www.youtube.com/@crossfit",
@@ -19,7 +21,8 @@
   {
     "id": "FLB3",
     "name": "Clean and Jerk",
-    "primaryMuscleGroup": "Full Body",
+    "primaryMuscleGroup": ["quadriceps", "shoulders"],
+    "secondaryMuscleGroup": ["glutes", "hamstrings", "triceps", "back", "traps", "calves", "abs", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=57K1b_PcHKw",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -29,7 +32,8 @@
   {
     "id": "FLB4",
     "name": "Hang Clean",
-    "primaryMuscleGroup": "Full Body",
+    "primaryMuscleGroup": ["quadriceps", "glutes"],
+    "secondaryMuscleGroup": ["hamstrings", "back", "shoulders", "traps", "calves", "abs", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=hFXPxXkYr_o",
     "creditSource": "https://www.youtube.com/@WodstarFitness",
@@ -39,7 +43,8 @@
   {
     "id": "FLB5",
     "name": "Hang Power Clean",
-    "primaryMuscleGroup": "Full Body",
+    "primaryMuscleGroup": ["quadriceps", "glutes"],
+    "secondaryMuscleGroup": ["hamstrings", "back", "shoulders", "traps", "calves", "abs", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=GvfFf4xDNqM",
     "creditSource": "https://www.youtube.com/@WodstarFitness",
@@ -49,7 +54,8 @@
   {
     "id": "FLB6",
     "name": "Hang Power Snatch",
-    "primaryMuscleGroup": "Full Body",
+    "primaryMuscleGroup": ["shoulders", "quadriceps"],
+    "secondaryMuscleGroup": ["hamstrings", "glutes", "traps", "back", "calves", "abs", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=TP0fh70I0Jo",
     "creditSource": "https://www.youtube.com/@WodstarFitness",
@@ -59,7 +65,8 @@
   {
     "id": "FLB7",
     "name": "Hang Snatch",
-    "primaryMuscleGroup": "Full Body",
+    "primaryMuscleGroup": ["shoulders", "quadriceps"],
+    "secondaryMuscleGroup": ["hamstrings", "glutes", "traps", "back", "calves", "abs", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=IucshEToDyM",
     "creditSource": "https://www.youtube.com/@crossfit",
@@ -69,7 +76,8 @@
   {
     "id": "FLB8",
     "name": "Kettlebell Swing",
-    "primaryMuscleGroup": "Full Body",
+    "primaryMuscleGroup": ["glutes", "hamstrings"],
+    "secondaryMuscleGroup": ["quadriceps", "back", "shoulders", "abs", "forearms", "calves"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=0WtJaq2qwqU",
     "creditSource": "https://www.youtube.com/@WodstarFitness",
@@ -79,7 +87,8 @@
   {
     "id": "FLB9",
     "name": "Power Clean",
-    "primaryMuscleGroup": "Full Body",
+    "primaryMuscleGroup": ["quadriceps", "glutes"],
+    "secondaryMuscleGroup": ["hamstrings", "back", "shoulders", "traps", "calves", "abs", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=vy-4yChc7-k",
     "creditSource": "https://www.youtube.com/@WodstarFitness",
@@ -89,7 +98,8 @@
   {
     "id": "FLB10",
     "name": "Power Snatch",
-    "primaryMuscleGroup": "Full Body",
+    "primaryMuscleGroup": ["shoulders", "quadriceps"],
+    "secondaryMuscleGroup": ["hamstrings", "glutes", "traps", "back", "calves", "abs", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=zMjYXpn7trA",
     "creditSource": "https://www.youtube.com/@WodstarFitness",
@@ -99,7 +109,8 @@
   {
     "id": "FLB11",
     "name": "Snatch",
-    "primaryMuscleGroup": "Full Body",
+    "primaryMuscleGroup": ["shoulders", "quadriceps"],
+    "secondaryMuscleGroup": ["hamstrings", "glutes", "traps", "back", "calves", "abs", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=V9dJTdolGw8",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -109,7 +120,8 @@
   {
     "id": "FLB12",
     "name": "Snatch Grip Deadlift",
-    "primaryMuscleGroup": "Full Body",
+    "primaryMuscleGroup": ["back", "hamstrings"],
+    "secondaryMuscleGroup": ["glutes", "quadriceps", "traps", "forearms", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=NMDPXmGJI88",
     "creditSource": "https://www.youtube.com/@WodstarFitness",
@@ -119,7 +131,8 @@
   {
     "id": "FLB13",
     "name": "Wall Ball",
-    "primaryMuscleGroup": "Full Body",
+    "primaryMuscleGroup": ["quadriceps", "shoulders"],
+    "secondaryMuscleGroup": ["glutes", "hamstrings", "abs", "triceps", "back"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=9Xwivh-28dc",
     "creditSource": "https://www.youtube.com/@WodstarFitness",
@@ -129,7 +142,8 @@
   {
     "id": "FLB14",
     "name": "Thruster",
-    "primaryMuscleGroup": "Full Body",
+    "primaryMuscleGroup": ["quadriceps", "shoulders"],
+    "secondaryMuscleGroup": ["glutes", "hamstrings", "triceps", "abs", "back"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=L219ltL15zk",
     "creditSource": "https://www.youtube.com/@crossfit",
@@ -139,7 +153,8 @@
   {
     "id": "FLB15",
     "name": "Jumping Jack",
-    "primaryMuscleGroup": "Full Body",
+    "primaryMuscleGroup": ["quadriceps", "shoulders"],
+    "secondaryMuscleGroup": ["glutes", "hamstrings", "calves", "abs"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=PBHUfBzxczU",
     "creditSource": "https://www.youtube.com/@crossfit",
@@ -149,7 +164,8 @@
   {
     "id": "FLB16",
     "name": "Dumbbell Snatch",
-    "primaryMuscleGroup": "Full Body",
+    "primaryMuscleGroup": ["shoulders", "quadriceps"],
+    "secondaryMuscleGroup": ["hamstrings", "glutes", "traps", "back", "calves", "abs", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=R0mhHuVrLHA",
     "creditSource": "https://www.youtube.com/@crossfit",
@@ -159,7 +175,8 @@
   {
     "id": "FLB17",
     "name": "Kettlebell Clean (Single)",
-    "primaryMuscleGroup": "Full Body",
+    "primaryMuscleGroup": ["shoulders", "glutes"],
+    "secondaryMuscleGroup": ["hamstrings", "quadriceps", "traps", "back", "abs", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=ZuTKcP6vtfI",
     "creditSource": "https://www.youtube.com/@WodstarFitness",
@@ -169,7 +186,8 @@
   {
     "id": "FLB18",
     "name": "Kettlebell Snatch",
-    "primaryMuscleGroup": "Full Body",
+    "primaryMuscleGroup": ["shoulders", "glutes"],
+    "secondaryMuscleGroup": ["hamstrings", "quadriceps", "traps", "back", "abs", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=Pm-b2XFeABA",
     "creditSource": "https://www.youtube.com/@crossfit",
@@ -179,7 +197,8 @@
   {
     "id": "FLB19",
     "name": "Burpee",
-    "primaryMuscleGroup": "Full Body",
+    "primaryMuscleGroup": ["quadriceps", "chest"],
+    "secondaryMuscleGroup": ["glutes", "hamstrings", "shoulders", "triceps", "abs"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=1yPltRIm59E",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -189,7 +208,8 @@
   {
     "id": "FLB20",
     "name": "Ball Slams",
-    "primaryMuscleGroup": "Full Body",
+    "primaryMuscleGroup": ["shoulders", "abs"],
+    "secondaryMuscleGroup": ["triceps", "back", "quadriceps", "glutes", "hamstrings", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=k9W6g9LvXDI",
     "creditSource": "https://www.youtube.com/@crossfit",
@@ -199,7 +219,8 @@
   {
     "id": "FLB21",
     "name": "Clean and Press",
-    "primaryMuscleGroup": "Full Body",
+    "primaryMuscleGroup": ["shoulders", "quadriceps"],
+    "secondaryMuscleGroup": ["glutes", "hamstrings", "triceps", "back", "abs", "traps", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=KCe8l86-alA",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -209,14 +230,16 @@
   {
     "id": "FLB22",
     "name": "Landmine Squat and Press",
-    "primaryMuscleGroup": "Full Body",
+    "primaryMuscleGroup": ["shoulders", "quadriceps"],
+    "secondaryMuscleGroup": ["glutes", "hamstrings", "triceps", "back", "abs"],
     "type": "WR",
     "description": "Strengthens legs, shoulders, and core through dynamic lifting movement."
   },
   {
     "id": "FLB23",
     "name": "Sled Push",
-    "primaryMuscleGroup": "Full Body",
+    "primaryMuscleGroup": ["quadriceps", "glutes"],
+    "secondaryMuscleGroup": ["hamstrings", "calves", "abs", "shoulders", "triceps"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=E6mhG8zzYEY",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -226,14 +249,16 @@
   {
     "id": "FLB24",
     "name": "Squat Jerk",
-    "primaryMuscleGroup": "Full Body",
+    "primaryMuscleGroup": ["shoulders", "quadriceps"],
+    "secondaryMuscleGroup": ["glutes", "hamstrings", "triceps", "back", "abs", "traps"],
     "type": "WR",
     "description": "Combines strength and mobility in the legs, shoulders, and core."
   },
   {
     "id": "FLB25",
     "name": "Split Jerk",
-    "primaryMuscleGroup": "Full Body",
+    "primaryMuscleGroup": ["shoulders", "quadriceps"],
+    "secondaryMuscleGroup": ["glutes", "hamstrings", "triceps", "back", "abs", "traps"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=GUDkOtraHHY",
     "creditSource": "https://www.youtube.com/@crossfit",
@@ -243,7 +268,8 @@
   {
     "id": "FLB26",
     "name": "Kettlebell Clean (Dual)",
-    "primaryMuscleGroup": "Full Body",
+    "primaryMuscleGroup": ["shoulders", "glutes"],
+    "secondaryMuscleGroup": ["hamstrings", "quadriceps", "traps", "back", "abs", "forearms"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=o4max7K84vw",
     "creditSource": "https://www.youtube.com/@WodstarFitness",
