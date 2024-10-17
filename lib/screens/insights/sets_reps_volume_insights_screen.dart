@@ -396,7 +396,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       final userInstructions =
           "Review my workout logs for ${_selectedMuscleGroup.name} from ${_dateTimeRange.start} to ${_dateTimeRange.end} and provide feedback";
 
-      final logJsons = logs.map((log) => jsonEncode(log.toJson()));
+      final logJsons = logs.map((log) => jsonEncode(ExerciseLogDto.toJson(log)));
 
       final StringBuffer buffer = StringBuffer();
 

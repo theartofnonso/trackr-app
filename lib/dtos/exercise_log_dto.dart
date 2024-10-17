@@ -17,17 +17,17 @@ class ExerciseLogDto {
   const ExerciseLogDto(this.id, this.routineLogId, this.superSetId, this.exercise, this.notes, this.sets,
       this.createdAt, this.substituteExercises);
 
-  String toJson() {
-    final setJsons = sets.map((set) => set.toJson()).toList();
-    final substituteExercisesJsons = substituteExercises.map((exercise) => exercise.toJson()).toList();
+  static Map<String, dynamic> toJson(ExerciseLogDto log) {
+    final setJsons = log.sets.map((set) => set.toJson()).toList();
+    final substituteExercisesJsons = log.substituteExercises.map((exercise) => ExerciseDto.toJson(exercise)).toList();
 
-    return jsonEncode({
-      "superSetId": superSetId,
-      "exercise": exercise.toJson(),
-      "notes": notes,
+    return {
+      "superSetId": log.superSetId,
+      "exercise": ExerciseDto.toJson(log.exercise),
+      "notes": log.notes,
       "sets": setJsons,
       "substituteExercises": substituteExercisesJsons
-    });
+    };
   }
 
   ExerciseLogDto copyWith(
@@ -59,9 +59,9 @@ class ExerciseLogDto {
     final setsJsons = json["sets"] as List<dynamic>;
     final sets = setsJsons.map((json) => SetDto.fromJson(jsonDecode(json))).toList();
     final substituteExercisesJson = json["substituteExercises"] as List<dynamic>? ?? [];
-    final substituteExercises =
-    substituteExercisesJson.map((json) => ExerciseDto.fromJson(json)).toList();
-    return ExerciseLogDto(exercise.id, routineLogId, superSetId, exercise, notes, sets, createdAt ?? DateTime.now(), substituteExercises);
+    final substituteExercises = substituteExercisesJson.map((json) => ExerciseDto.fromJson(json)).toList();
+    return ExerciseLogDto(
+        exercise.id, routineLogId, superSetId, exercise, notes, sets, createdAt ?? DateTime.now(), substituteExercises);
   }
 
   @override

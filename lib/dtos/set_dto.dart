@@ -1,6 +1,4 @@
 
-import 'dart:convert';
-
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
@@ -15,8 +13,8 @@ class SetDto {
     return SetDto(value1 ?? this.value1, value2 ?? this.value2, checked ?? this.checked);
   }
 
-  String toJson() {
-    return jsonEncode({"value1": value1, "value2": value2, "checked": checked});
+  Map<String, dynamic> toJson() {
+    return {"value1": value1, "value2": value2, "checked": checked};
   }
 
   factory SetDto.fromJson(Map<String, dynamic> json) {

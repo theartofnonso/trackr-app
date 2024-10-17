@@ -34,7 +34,7 @@ class RoutineTemplateDto {
     return {
       'name': name,
       'notes': notes,
-      'exercises': exerciseTemplates.map((exercise) => exercise.toJson()).toList(),
+      'exercises': exerciseTemplates.map((exercise) => ExerciseLogDto.toJson(exercise)).toList(),
       'days': scheduledDays.map((dayOfWeek) => dayOfWeek.day).toList(),
       "scheduledDate": scheduledDate?.toIso8601String(),
       "scheduleType": scheduleType.name,

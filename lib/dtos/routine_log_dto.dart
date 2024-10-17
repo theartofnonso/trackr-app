@@ -42,17 +42,16 @@ class RoutineLogDto implements Log {
     return endTime.difference(startTime);
   }
 
-  @override
-  Map<String, dynamic> toJson() {
+  static Map<String, dynamic> toJson(RoutineLogDto log) {
     return {
-      'id': id,
-      'templateId': templateId,
-      'name': name,
-      'notes': notes,
-      'summary': summary,
-      'startTime': startTime.toIso8601String(),
-      'endTime': endTime.toIso8601String(),
-      'exercises': exerciseLogs.map((exercise) => exercise.toJson()).toList(),
+      'id': log.id,
+      'templateId': log.templateId,
+      'name': log.name,
+      'notes': log.notes,
+      'summary': log.summary,
+      'startTime': log.startTime.toIso8601String(),
+      'endTime': log.endTime.toIso8601String(),
+      'exercises': log.exerciseLogs.map((exercise) => ExerciseLogDto.toJson(exercise)).toList(),
     };
   }
 
