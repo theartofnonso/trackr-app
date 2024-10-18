@@ -20,6 +20,7 @@ import '../dtos/pb_dto.dart';
 import '../dtos/routine_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
 import '../dtos/set_dto.dart';
+import '../dtos/viewmodels/exercise_log_view_model.dart';
 import '../enums/routine_schedule_type_enums.dart';
 import '../enums/template_changes_type_message_enums.dart';
 import '../screens/exercise/reorder_exercises_screen.dart';
@@ -279,4 +280,12 @@ String scheduledDaysSummary({required RoutineTemplateDto template}) {
     return template.scheduleIntervals == 1 ? "Everyday" : "${template.scheduledDate?.formattedDate()}";
   }
   return "No schedule";
+}
+
+List<ExerciseLogViewModel> exerciseLogsToViewModels({required List<ExerciseLogDto> exerciseLogs}) {
+  return exerciseLogs.map((exerciseLog) {
+    return ExerciseLogViewModel(
+        exerciseLog: exerciseLog,
+        superSet: whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs));
+  }).toList();
 }

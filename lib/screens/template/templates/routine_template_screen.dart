@@ -14,11 +14,9 @@ import 'package:tracker_app/screens/template/templates/trkr_coach_context_screen
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 
-import '../../../../dtos/exercise_log_dto.dart';
 import '../../../colors.dart';
 import '../../../controllers/routine_template_controller.dart';
 import '../../../dtos/routine_template_dto.dart';
-import '../../../dtos/viewmodels/exercise_log_view_model.dart';
 import '../../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../../dtos/viewmodels/routine_template_arguments.dart';
 import '../../../enums/routine_editor_type_enums.dart';
@@ -315,7 +313,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                             child: const TRKRCoachContextScreen())),
                     const SizedBox(height: 12),
                     ExerciseLogListView(
-                      exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
+                      exerciseLogs: exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
                       previewType: RoutinePreviewType.template,
                     ),
                   ],
@@ -470,13 +468,5 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   void initState() {
     super.initState();
     _loadData();
-  }
-
-  List<ExerciseLogViewModel> _exerciseLogsToViewModels({required List<ExerciseLogDto> exerciseLogs}) {
-    return exerciseLogs.map((exerciseLog) {
-      return ExerciseLogViewModel(
-          exerciseLog: exerciseLog,
-          superSet: whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs));
-    }).toList();
   }
 }

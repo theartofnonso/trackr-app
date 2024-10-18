@@ -5,14 +5,19 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/routine_template_dto.dart';
+import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/strings/ai_prompts.dart';
 import 'package:tracker_app/widgets/trkr_widgets/trkr_coach_widget.dart';
 
 import '../../../controllers/exercise_controller.dart';
+import '../../../enums/routine_preview_type_enum.dart';
 import '../../../open_ai.dart';
 import '../../../open_ai_functions.dart';
+import '../../../utils/routine_utils.dart';
 import '../../../widgets/backgrounds/trkr_loading_screen.dart';
+import '../../../widgets/routine/preview/exercise_log_listview.dart';
 
 class TRKRCoachContextScreen extends StatefulWidget {
   static const routeName = '/routine_ai_context_screen';
@@ -27,6 +32,8 @@ class _TRKRCoachContextScreenState extends State<TRKRCoachContextScreen> {
   bool _loading = false;
 
   late TextEditingController _textEditingController;
+
+  List<ExerciseLogDto> _exerciseTemplates = [];
 
   void _toggleLoadingState() {
     setState(() {
@@ -54,7 +61,16 @@ class _TRKRCoachContextScreenState extends State<TRKRCoachContextScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const _AppBar(),
-              const Spacer(),
+              _exerciseTemplates.isNotEmpty
+                  ? Expanded(
+                      child: SingleChildScrollView(
+                        child: ExerciseLogListView(
+                          exerciseLogs: exerciseLogsToViewModels(exerciseLogs: _exerciseTemplates),
+                          previewType: RoutinePreviewType.template,
+                        ),
+                      ),
+                    )
+                  : const Spacer(),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -83,7 +99,7 @@ class _TRKRCoachContextScreenState extends State<TRKRCoachContextScreen> {
                     ),
                   ),
                   IconButton(
-                    onPressed: _runMessageWithFunctionCall,
+                    onPressed: _runMessage,
                     icon: const FaIcon(FontAwesomeIcons.paperPlane),
                     color: Colors.white,
                   )
@@ -103,7 +119,7 @@ class _TRKRCoachContextScreenState extends State<TRKRCoachContextScreen> {
     _textEditingController = TextEditingController();
   }
 
-  void _runMessageWithFunctionCall() async {
+  void _runMessage() async {
     _dismissKeyboard();
     _toggleLoadingState();
 
@@ -119,8 +135,8 @@ class _TRKRCoachContextScreenState extends State<TRKRCoachContextScreen> {
           final function = tool['function']['name'];
           if (function == "list_exercises") {
             if (mounted) {
-              final exercises = Provider.of<ExerciseController>(context, listen: false)
-                  .exercises
+              final exercises = Provider.of<ExerciseController>(context, listen: false).exercises;
+              final listOfExerciseJsons = exercises
                   .map((exercise) => jsonEncode({
                         "id": exercise.id,
                         "name": exercise.name,
@@ -144,7 +160,7 @@ class _TRKRCoachContextScreenState extends State<TRKRCoachContextScreen> {
               final functionCallResultMessage = {
                 "role": "tool",
                 "content": jsonEncode({
-                  "exercises": exercises,
+                  "exercises": listOfExerciseJsons,
                 }),
                 "tool_call_id": tool["id"]
               };
@@ -160,9 +176,20 @@ class _TRKRCoachContextScreenState extends State<TRKRCoachContextScreen> {
                 "response_format": exercisesResponseFormat
               });
 
-              final message = await runMessageWithFunctionCallResult(payload: payload);
-              print(message);
-
+              final jsonString = await runMessageWithFunctionCallResult(payload: payload);
+              if (jsonString != null) {
+                final json = jsonDecode(jsonString);
+                final exerciseIds = json["exercises"] as List<dynamic>;
+                final exerciseTemplates = exerciseIds.map((exerciseId) {
+                  final exerciseInLibrary = exercises.firstWhere((exercise) => exercise.id == exerciseId);
+                  final exerciseTemplate = ExerciseLogDto(exerciseInLibrary.id, "", "", exerciseInLibrary, "",
+                      [const SetDto(0, 0, false)], DateTime.now(), []);
+                  return exerciseTemplate;
+                }).toList();
+                setState(() {
+                  _exerciseTemplates = exerciseTemplates;
+                });
+              }
               _toggleLoadingState();
             }
           }
