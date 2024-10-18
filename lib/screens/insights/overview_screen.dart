@@ -244,7 +244,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               height: 10,
             ),
             const LabelDivider(
-              label: "Training outside the gym?",
+              label: "Log non-resistance training",
               labelColor: Colors.white70,
               dividerColor: sapphireLighter,
             ),
