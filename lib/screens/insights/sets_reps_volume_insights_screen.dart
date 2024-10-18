@@ -104,13 +104,12 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
             .firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.id == exerciseLog.id);
         return foundExercise != null ? exerciseLog.copyWith(exercise: foundExercise) : exerciseLog;
       }).where((exerciseLog) {
-        final muscleGroups = [exerciseLog.exercise.primaryMuscleGroup, ...exerciseLog.exercise.secondaryMuscleGroups];
+        final muscleGroups = {exerciseLog.exercise.primaryMuscleGroup, ...exerciseLog.exercise.secondaryMuscleGroups};
         return muscleGroups.contains(_selectedMuscleGroup);
       }).map((log) {
         final values = _calculateMetric(sets: log.sets);
         return values;
       }).sum;
-
       periodicalValues.add(valuesForPeriod);
       periodicalDates.add(periodAndLogs.key.end);
     }
@@ -129,12 +128,8 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     final months = periodicalDates.map((date) => date.formattedMonth()).toList();
 
     final totalOptimal = _weightWhere(values: nonZeroValues, condition: (value) => value >= _optimalSetsOrRepsValue());
-    final totalSufficient = _weightWhere(
-        values: nonZeroValues,
-        condition: (value) => value >= _sufficientSetsOrRepsValue() && value < _optimalSetsOrRepsValue());
-    final totalMinimum = _weightWhere(
-        values: nonZeroValues,
-        condition: (value) => value >= _minimumSetsOrRepsValue() && value < _sufficientSetsOrRepsValue());
+    final totalSufficient = _weightWhere(values: nonZeroValues, condition: (value) => value >= _sufficientSetsOrRepsValue() && value < _optimalSetsOrRepsValue());
+    final totalMinimum = _weightWhere(values: nonZeroValues, condition: (value) => value < _sufficientSetsOrRepsValue());
 
     final weights = [totalOptimal, totalSufficient, totalMinimum];
 
@@ -470,10 +465,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
   bool _isRepsOrSetsMetric() {
     return _metric == SetRepsVolumeReps.sets || _metric == SetRepsVolumeReps.reps;
-  }
-
-  int _minimumSetsOrRepsValue() {
-    return _metric == SetRepsVolumeReps.sets ? 3 : 30;
   }
 
   int _sufficientSetsOrRepsValue() {
