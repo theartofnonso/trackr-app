@@ -15,7 +15,7 @@ import '../../../controllers/exercise_controller.dart';
 import '../../../controllers/routine_template_controller.dart';
 import '../../../dtos/routine_template_dto.dart';
 import '../../../enums/routine_preview_type_enum.dart';
-import '../../../open_ai.dart';
+import '../../../openAI/open_ai.dart';
 import '../../../open_ai_functions.dart';
 import '../../../utils/routine_utils.dart';
 import '../../../widgets/backgrounds/trkr_loading_screen.dart';

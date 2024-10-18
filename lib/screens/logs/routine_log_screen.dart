@@ -31,7 +31,7 @@ import '../../dtos/viewmodels/exercise_log_view_model.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../models/RoutineLog.dart';
-import '../../open_ai.dart';
+import '../../openAI/open_ai.dart';
 import '../../strings/ai_prompts.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
