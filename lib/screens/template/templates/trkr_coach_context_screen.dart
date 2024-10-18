@@ -274,7 +274,7 @@ class _AppBar extends StatelessWidget {
                 onPressed: positiveAction,
               )
             : const IconButton(
-                icon: const SizedBox.shrink(),
+                icon: SizedBox.shrink(),
                 onPressed: null,
               )
       ],

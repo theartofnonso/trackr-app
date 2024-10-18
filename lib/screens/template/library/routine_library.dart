@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/routine_template_controller.dart';
-import 'package:tracker_app/main.dart';
 import 'package:tracker_app/screens/template/library/routine_library_template.dart';
 import 'package:tracker_app/strings.dart';
 

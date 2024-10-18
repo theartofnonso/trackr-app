@@ -72,7 +72,7 @@ class RoutineTemplatesScreen extends StatelessWidget {
               minimum: const EdgeInsets.all(10.0),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 const SizedBox(height: 16),
-                TRKRCoachButton(label: "Ask TRKR Coach", onTap: () => navigateWithSlideTransition(
+                TRKRCoachButton(label: "Describe a workout", onTap: () => navigateWithSlideTransition(
                     context: context,
                     child: const TRKRCoachContextScreen())),
                 const SizedBox(height: 16),

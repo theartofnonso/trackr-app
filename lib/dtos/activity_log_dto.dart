@@ -31,7 +31,6 @@ class ActivityLogDto implements Log {
     return endTime.difference(startTime);
   }
 
-  @override
   Map<String, dynamic> toJson() {
     return {
       'id': id,
