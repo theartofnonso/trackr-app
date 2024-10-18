@@ -299,7 +299,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     final userInstructions = "Review my ${log.name} workout log and provide feedback";
 
-    final logJsons = logs.map((log) => jsonEncode(ExerciseLogDto.toJson(log)));
+    final logJsons = logs.map((log) => log.toJson());
 
     final StringBuffer buffer = StringBuffer();
 

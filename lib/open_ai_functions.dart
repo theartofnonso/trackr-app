@@ -18,9 +18,11 @@ const exercisesResponseFormat = {
         "exercises": {
           "type": "array",
           "items": {"type": "string", "description": "Id of the exercise"},
-        }
+        },
+        "workout_name": {"type": "string", "description": "The descriptive name of the workout"},
+        "workout_caption": {"type": "string", "description": "A brief caption that summarises the workout"}
       },
-      "required": ["exercises"],
+      "required": ["exercises", "workout_name", "workout_caption"],
       "additionalProperties": false
     },
     "strict": true

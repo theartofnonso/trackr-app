@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
@@ -396,7 +395,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       final userInstructions =
           "Review my workout logs for ${_selectedMuscleGroup.name} from ${_dateTimeRange.start} to ${_dateTimeRange.end} and provide feedback";
 
-      final logJsons = logs.map((log) => jsonEncode(ExerciseLogDto.toJson(log)));
+      final logJsons = logs.map((log) => log.toJson());
 
       final StringBuffer buffer = StringBuffer();
 

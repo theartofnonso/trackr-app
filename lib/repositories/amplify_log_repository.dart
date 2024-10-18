@@ -127,7 +127,7 @@ class AmplifyLogRepository {
   void cacheLog({required RoutineLogDto logDto}) {
     SharedPrefs().cachedRoutineLog = jsonEncode(logDto,
         toEncodable: (Object? value) => value is RoutineLogDto
-            ? RoutineLogDto.toJson(value)
+            ? value.toJson()
             : throw UnsupportedError('Cannot convert to JSON: $value'));
   }
 

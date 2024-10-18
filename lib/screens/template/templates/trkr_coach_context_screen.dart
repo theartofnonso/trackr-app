@@ -35,6 +35,8 @@ class _TRKRCoachContextScreenState extends State<TRKRCoachContextScreen> {
 
   late TextEditingController _textEditingController;
 
+  String _workoutName = "";
+  String _workoutCaption = "";
   List<ExerciseLogDto> _exerciseTemplates = [];
 
   void _toggleLoadingState() {
@@ -133,7 +135,6 @@ class _TRKRCoachContextScreenState extends State<TRKRCoachContextScreen> {
   }
 
   void _runMessage() async {
-
     final userPrompt = _textEditingController.text;
 
     _dismissKeyboard();
@@ -196,6 +197,8 @@ class _TRKRCoachContextScreenState extends State<TRKRCoachContextScreen> {
               if (jsonString != null) {
                 final json = jsonDecode(jsonString);
                 final exerciseIds = json["exercises"] as List<dynamic>;
+                final workoutName = json["workout_name"] ?? "A workout";
+                final workoutCaption = json["workout_caption"] ?? "A workout created by TRKR Coach";
                 final exerciseTemplates = exerciseIds.map((exerciseId) {
                   final exerciseInLibrary = exercises.firstWhere((exercise) => exercise.id == exerciseId);
                   final exerciseTemplate = ExerciseLogDto(exerciseInLibrary.id, "", "", exerciseInLibrary, "",
@@ -203,6 +206,8 @@ class _TRKRCoachContextScreenState extends State<TRKRCoachContextScreen> {
                   return exerciseTemplate;
                 }).toList();
                 setState(() {
+                  _workoutName = workoutName;
+                  _workoutCaption = workoutCaption;
                   _exerciseTemplates = exerciseTemplates;
                 });
               }
@@ -228,9 +233,9 @@ class _TRKRCoachContextScreenState extends State<TRKRCoachContextScreen> {
     final templateController = Provider.of<RoutineTemplateController>(context, listen: false);
     final routineTemplate = RoutineTemplateDto(
         id: "id",
-        name: "A workout",
+        name: _workoutName,
         exerciseTemplates: _exerciseTemplates,
-        notes: "notes",
+        notes: _workoutCaption,
         owner: SharedPrefs().userId,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now());

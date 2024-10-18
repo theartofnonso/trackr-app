@@ -17,17 +17,17 @@ class ExerciseLogDto {
   const ExerciseLogDto(this.id, this.routineLogId, this.superSetId, this.exercise, this.notes, this.sets,
       this.createdAt, this.substituteExercises);
 
-  static Map<String, dynamic> toJson(ExerciseLogDto log) {
-    final setJsons = log.sets.map((set) => set.toJson()).toList();
-    final substituteExercisesJsons = log.substituteExercises.map((exercise) => ExerciseDto.toJson(exercise)).toList();
+  String toJson() {
+    final setJsons = sets.map((set) => set.toJson()).toList();
+    final substituteExercisesJsons = substituteExercises.map((exercise) => exercise.toJson()).toList();
 
-    return {
-      "superSetId": log.superSetId,
-      "exercise": ExerciseDto.toJson(log.exercise),
-      "notes": log.notes,
+    return jsonEncode({
+      "superSetId": superSetId,
+      "exercise": exercise.toJson(),
+      "notes": notes,
       "sets": setJsons,
       "substituteExercises": substituteExercisesJsons
-    };
+    });
   }
 
   ExerciseLogDto copyWith(

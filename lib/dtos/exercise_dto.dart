@@ -29,19 +29,17 @@ class ExerciseDto {
       this.credit,
       required this.owner});
 
-  static Map<String, dynamic> toJson(ExerciseDto exercise) {
+  Map<String, dynamic> toJson() {
     return {
-      'id': exercise.id,
-      'name': exercise.name,
-      'primaryMuscleGroup': exercise.primaryMuscleGroup.name,
-      'secondaryMuscleGroups': exercise.secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name).toList(),
-      'trainingPosition': exercise.trainingPosition.name,
-      'type': exercise.type.id,
-      'owner': exercise.owner,
-      'description': exercise.description,
-      'video': exercise.video?.toString(),
-      'creditSource': exercise.creditSource?.toString(),
-      'credit': exercise.credit
+      'id': id,
+      'name': name,
+      'primaryMuscleGroup': primaryMuscleGroup.name,
+      'type': type.id,
+      'owner': owner,
+      'description': description,
+      'video': video?.toString(),
+      'creditSource': creditSource?.toString(),
+      'credit': credit
     };
   }
 

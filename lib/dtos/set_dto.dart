@@ -1,4 +1,6 @@
 
+import 'dart:convert';
+
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
@@ -13,8 +15,8 @@ class SetDto {
     return SetDto(value1 ?? this.value1, value2 ?? this.value2, checked ?? this.checked);
   }
 
-  Map<String, dynamic> toJson() {
-    return {"value1": value1, "value2": value2, "checked": checked};
+  String toJson() {
+    return jsonEncode({"value1": value1, "value2": value2, "checked": checked});
   }
 
   factory SetDto.fromJson(Map<String, dynamic> json) {
@@ -64,11 +66,11 @@ class SetDto {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is SetDto &&
-          runtimeType == other.runtimeType &&
-          value1 == other.value1 &&
-          value2 == other.value2 &&
-          checked == other.checked;
+          other is SetDto &&
+              runtimeType == other.runtimeType &&
+              value1 == other.value1 &&
+              value2 == other.value2 &&
+              checked == other.checked;
 
   @override
   int get hashCode => value1.hashCode ^ value2.hashCode ^ checked.hashCode;
