@@ -19,7 +19,6 @@ import 'package:tracker_app/widgets/empty_states/horizontal_stacked_bars_empty_s
 
 import '../../colors.dart';
 import '../../controllers/exercise_controller.dart';
-import '../../controllers/open_ai_controller.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../dtos/routine_log_dto.dart';
@@ -27,6 +26,7 @@ import '../../dtos/set_dto.dart';
 import '../../enums/chart_unit_enum.dart';
 import '../../enums/muscle_group_enums.dart';
 import '../../enums/sets_reps_volume_enum.dart';
+import '../../open_ai.dart';
 import '../../strings/ai_prompts.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/navigation_utils.dart';
@@ -407,8 +407,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
       _toggleLoadingState();
 
-      Provider.of<OpenAIController>(context, listen: false)
-          .runMessage(system: routineLogSystemInstruction, user: completeInstructions)
+      runMessage(system: routineLogSystemInstruction, user: completeInstructions)
           .then((response) {
         _toggleLoadingState();
         if (mounted) {

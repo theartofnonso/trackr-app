@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -6,32 +5,28 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/controllers/open_ai_controller.dart';
 import 'package:tracker_app/dtos/routine_template_dto.dart';
+import 'package:tracker_app/strings/ai_prompts.dart';
 import 'package:tracker_app/widgets/trkr_widgets/trkr_coach_widget.dart';
 
-import '../../../widgets/ai_widgets/trkr_coach_message_widget.dart';
+import '../../../controllers/exercise_controller.dart';
+import '../../../open_ai.dart';
+import '../../../open_ai_functions.dart';
 import '../../../widgets/backgrounds/trkr_loading_screen.dart';
 
-class RoutineTemplateAIContextScreen extends StatefulWidget {
+class TRKRCoachContextScreen extends StatefulWidget {
   static const routeName = '/routine_ai_context_screen';
 
-  final RoutineTemplateDto template;
-
-  const RoutineTemplateAIContextScreen({super.key, required this.template});
+  const TRKRCoachContextScreen({super.key});
 
   @override
-  State<RoutineTemplateAIContextScreen> createState() => _RoutineTemplateAIContextScreenState();
+  State<TRKRCoachContextScreen> createState() => _TRKRCoachContextScreenState();
 }
 
-class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContextScreen> {
-  late Function _onDisposeCallback;
-
+class _TRKRCoachContextScreenState extends State<TRKRCoachContextScreen> {
   bool _loading = false;
 
   late TextEditingController _textEditingController;
-
-  Timer? _timer;
 
   void _toggleLoadingState() {
     setState(() {
@@ -41,10 +36,6 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
 
   @override
   Widget build(BuildContext context) {
-    final template = widget.template;
-
-    final controller = Provider.of<OpenAIController>(context, listen: true);
-
     return Scaffold(
         body: Container(
       width: double.infinity,
@@ -63,13 +54,7 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const _AppBar(),
-              const SizedBox(
-                height: 8,
-              ),
-              if (controller.message.isEmpty) _HeroWidget(template: template),
-              if (controller.message.isNotEmpty)
-                Expanded(child: SingleChildScrollView(child: TRKRCoachMessageWidget(message: controller.message))),
-              controller.message.isNotEmpty ? const SizedBox(height: 16) : const Spacer(),
+              const Spacer(),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -98,7 +83,7 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
                     ),
                   ),
                   IconButton(
-                    onPressed: _addTemplateMessage,
+                    onPressed: _runMessageWithFunctionCall,
                     icon: const FaIcon(FontAwesomeIcons.paperPlane),
                     color: Colors.white,
                   )
@@ -116,66 +101,78 @@ class _RoutineTemplateAIContextScreenState extends State<RoutineTemplateAIContex
   void initState() {
     super.initState();
     _textEditingController = TextEditingController();
-    Provider.of<OpenAIController>(context, listen: false).createThread();
-    _onDisposeCallback = Provider.of<OpenAIController>(context, listen: false).onClear;
   }
 
-  void _addTemplateMessage() {
+  void _runMessageWithFunctionCall() async {
     _dismissKeyboard();
+    _toggleLoadingState();
 
-    final userInstructions = _textEditingController.text.trim();
+    final response =
+        await runMessageWithFunctionCall(system: defaultSystemInstruction, user: _textEditingController.text);
+    if (response != null) {
+      final choices = response;
+      if (choices.isNotEmpty) {
+        final choice = choices[0];
+        final toolCalls = choice['message']['tool_calls'] as List<dynamic>;
+        if (toolCalls.isNotEmpty) {
+          final tool = toolCalls[0];
+          final function = tool['function']['name'];
+          if (function == "list_exercises") {
+            if (mounted) {
+              final exercises = Provider.of<ExerciseController>(context, listen: false)
+                  .exercises
+                  .map((exercise) => jsonEncode({
+                        "id": exercise.id,
+                        "name": exercise.name,
+                        "primary_muscle_group": exercise.primaryMuscleGroup.name,
+                        "secondary_muscle_groups":
+                            exercise.secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name).toList()
+                      }))
+                  .toList();
 
-    final templateJson = jsonEncode(widget.template.toJson());
+              final functionCallMessage = {
+                "role": "assistant",
+                "tool_calls": [
+                  {
+                    "id": tool["id"],
+                    "type": "function",
+                    "function": {"arguments": "{}", "name": "list_exercises"}
+                  }
+                ]
+              };
 
-    final StringBuffer buffer = StringBuffer();
+              final functionCallResultMessage = {
+                "role": "tool",
+                "content": jsonEncode({
+                  "exercises": exercises,
+                }),
+                "tool_call_id": tool["id"]
+              };
 
-    buffer.writeln("Using the following workout");
-    buffer.writeln(templateJson);
-    buffer.writeln(userInstructions);
+              final payload = jsonEncode({
+                "model": "gpt-4o-mini",
+                "messages": [
+                  {"role": "system", "content": defaultSystemInstruction},
+                  {"role": "user", "content": _textEditingController.text},
+                  functionCallMessage,
+                  functionCallResultMessage
+                ],
+                "response_format": exercisesResponseFormat
+              });
 
-    final completeInstructions = buffer.toString();
+              final message = await runMessageWithFunctionCallResult(payload: payload);
+              print(message);
 
-    if (userInstructions.isNotEmpty) {
-      _toggleLoadingState();
-
-      Provider.of<OpenAIController>(context, listen: false)
-          .addMessage(prompt: completeInstructions)
-          .then((_) {
-        print("About to check run status");
-        _runAI();
-      });
-
-      setState(() {
-        _textEditingController.clear();
-      });
-    }
-  }
-
-  void _runAI() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      print("Starting timer");
-      final controller = Provider.of<OpenAIController>(context, listen: false);
-      if (controller.isRunComplete) {
-        print("Timer has ended");
-        _timer?.cancel();
-        _toggleLoadingState();
-        controller.processMessages();
-      } else {
-        print("Timer is still running");
-        Provider.of<OpenAIController>(context, listen: false).checkRunStatus();
+              _toggleLoadingState();
+            }
+          }
+        }
       }
-    });
+    }
   }
 
   void _dismissKeyboard() {
     FocusScope.of(context).unfocus();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _timer?.cancel();
-    _onDisposeCallback();
   }
 }
 

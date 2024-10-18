@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/extensions/routine_template_extension.dart';
+import 'package:tracker_app/screens/template/templates/trkr_coach_context_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 
@@ -30,6 +31,7 @@ import '../../../utils/https_utils.dart';
 import '../../../utils/navigation_utils.dart';
 import '../../../utils/routine_utils.dart';
 import '../../../utils/string_utils.dart';
+import '../../../widgets/ai_widgets/trkr_information_container.dart';
 import '../../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../../widgets/chart/muscle_group_family_chart.dart';
 import '../../../widgets/routine/preview/exercise_log_listview.dart';
@@ -295,28 +297,23 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                             ]),
                             const SizedBox(height: 10),
                             Text("Here's a breakdown of the muscle groups in your ${template.name} workout plan.",
-                                style:
-                                    GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
+                                style: GoogleFonts.ubuntu(
+                                    color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
                             const SizedBox(height: 10),
-                            MuscleGroupFamilyChart(
-                                frequencyData: muscleGroupFamilyFrequencies,
-                                minimized: _minimized),
+                            MuscleGroupFamilyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
                           ],
                         ),
                       ),
                     ),
-                    // const SizedBox(height: 12),
-                    // TRKRInformationContainer(
-                    //   ctaLabel: "Ask for a review",
-                    //   description:
-                    //       "Having a structured plan is crucial to achieve results in your training. Your plan can be optimised to help you achieve your objective.",
-                    //   onTap: () => navigateWithSlideTransition(
-                    //       context: context,
-                    //       child: RoutineTemplateAIContextScreen(
-                    //         template: template,
-                    //       )),
-                    // ),
-                    // const SizedBox(height: 10),
+                    const SizedBox(height: 12),
+                    TRKRInformationContainer(
+                        ctaLabel: "Ask for feedback",
+                        description:
+                            "Achieving your fitness goals is easier with a structured plan. Ask the TRKR Coach to optimize your workouts and help you succeed!",
+                        onTap: () => navigateWithSlideTransition(
+                            context: context,
+                            child: const TRKRCoachContextScreen())),
+                    const SizedBox(height: 12),
                     ExerciseLogListView(
                       exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
                       previewType: RoutinePreviewType.template,

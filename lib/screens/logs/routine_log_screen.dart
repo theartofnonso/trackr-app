@@ -23,7 +23,6 @@ import 'package:tracker_app/widgets/chart/muscle_group_family_chart.dart';
 import '../../../colors.dart';
 import '../../../dtos/exercise_log_dto.dart';
 import '../../controllers/exercise_controller.dart';
-import '../../controllers/open_ai_controller.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../controllers/routine_template_controller.dart';
 import '../../dtos/routine_log_dto.dart';
@@ -32,6 +31,7 @@ import '../../dtos/viewmodels/exercise_log_view_model.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../models/RoutineLog.dart';
+import '../../open_ai.dart';
 import '../../strings/ai_prompts.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
@@ -245,9 +245,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                                 style: GoogleFonts.ubuntu(
                                     color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
                             const SizedBox(height: 10),
-                            MuscleGroupFamilyChart(
-                                frequencyData: muscleGroupFamilyFrequencies,
-                                minimized: _minimized),
+                            MuscleGroupFamilyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
                           ],
                         ),
                       ),
@@ -312,9 +310,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     _toggleLoadingState();
 
-    Provider.of<OpenAIController>(context, listen: false)
-        .runMessage(system: routineLogSystemInstruction, user: completeInstructions)
-        .then((response) {
+    runMessage(system: routineLogSystemInstruction, user: completeInstructions).then((response) {
       if (response != null) {
         _saveSummary(response: response, log: log);
       }
