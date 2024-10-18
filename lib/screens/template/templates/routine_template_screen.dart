@@ -305,7 +305,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                     ),
                     const SizedBox(height: 12),
                     TRKRInformationContainer(
-                        ctaLabel: "Ask for feedback",
+                        ctaLabel: "Ask for a review",
                         description:
                             "Achieving your fitness goals is easier with a structured plan. Ask the TRKR Coach to optimize your workouts and help you succeed!",
                         onTap: () => navigateWithSlideTransition(

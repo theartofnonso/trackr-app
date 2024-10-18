@@ -25,9 +25,9 @@ class SetRow extends StatelessWidget {
     return Container(
       margin: margin,
       decoration: BoxDecoration(
-        color: routinePreviewType != RoutinePreviewType.ai ? sapphireDark80 : Colors.white.withOpacity(0.1),
+        color: routinePreviewType != RoutinePreviewType.ai ? sapphireDark80 : Colors.white10.withOpacity(0.1),
         borderRadius: BorderRadius.circular(5.0),
-        border: pbs.isNotEmpty ? Border.all(color: sapphireLight, width: 2) : null, // Border color
+        border: pbs.isNotEmpty ? Border.all(color: Colors.white12, width: 1) : routinePreviewType == RoutinePreviewType.ai ? Border.all(color: Colors.white38, width: 0.5,) : null // Border color
         // Radius for rounded corners
       ),
       padding: pbs.isNotEmpty ? const EdgeInsets.only(top: 16) : const EdgeInsets.symmetric(vertical: 16.0),

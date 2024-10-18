@@ -93,7 +93,6 @@ Future<String?> runMessageWithFunctionCallResult({required String payload}) asyn
       headers: headers,
       body: payload,
     );
-
     // Check for successful response
     if (response.statusCode == 200) {
       final body = jsonDecode(response.body);

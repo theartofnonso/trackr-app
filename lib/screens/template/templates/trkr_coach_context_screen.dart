@@ -6,12 +6,14 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
-import 'package:tracker_app/dtos/routine_template_dto.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
+import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/strings/ai_prompts.dart';
 import 'package:tracker_app/widgets/trkr_widgets/trkr_coach_widget.dart';
 
 import '../../../controllers/exercise_controller.dart';
+import '../../../controllers/routine_template_controller.dart';
+import '../../../dtos/routine_template_dto.dart';
 import '../../../enums/routine_preview_type_enum.dart';
 import '../../../open_ai.dart';
 import '../../../open_ai_functions.dart';
@@ -60,17 +62,28 @@ class _TRKRCoachContextScreenState extends State<TRKRCoachContextScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const _AppBar(),
+              _AppBar(positiveAction: _saveTemplate, canPerformPositiveAction: _exerciseTemplates.isNotEmpty),
               _exerciseTemplates.isNotEmpty
                   ? Expanded(
                       child: SingleChildScrollView(
                         child: ExerciseLogListView(
                           exerciseLogs: exerciseLogsToViewModels(exerciseLogs: _exerciseTemplates),
-                          previewType: RoutinePreviewType.template,
+                          previewType: RoutinePreviewType.ai,
                         ),
                       ),
                     )
-                  : const Spacer(),
+                  : Expanded(
+                      child: Column(
+                        children: [
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          _HeroWidget(),
+                          const Spacer()
+                        ],
+                      ),
+                    ),
+              const SizedBox(height: 12),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -87,7 +100,7 @@ class _TRKRCoachContextScreenState extends State<TRKRCoachContextScreen> {
                               borderSide: const BorderSide(color: Colors.white30)),
                           filled: true,
                           fillColor: Colors.white10,
-                          hintText: "Start typing",
+                          hintText: "Describe your workout",
                           hintStyle:
                               GoogleFonts.ubuntu(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w400)),
                       maxLines: null,
@@ -120,11 +133,14 @@ class _TRKRCoachContextScreenState extends State<TRKRCoachContextScreen> {
   }
 
   void _runMessage() async {
+
+    final userPrompt = _textEditingController.text;
+
     _dismissKeyboard();
     _toggleLoadingState();
+    _clearTextEditing();
 
-    final response =
-        await runMessageWithFunctionCall(system: defaultSystemInstruction, user: _textEditingController.text);
+    final response = await runMessageWithFunctionCall(system: defaultSystemInstruction, user: userPrompt);
     if (response != null) {
       final choices = response;
       if (choices.isNotEmpty) {
@@ -169,7 +185,7 @@ class _TRKRCoachContextScreenState extends State<TRKRCoachContextScreen> {
                 "model": "gpt-4o-mini",
                 "messages": [
                   {"role": "system", "content": defaultSystemInstruction},
-                  {"role": "user", "content": _textEditingController.text},
+                  {"role": "user", "content": userPrompt},
                   functionCallMessage,
                   functionCallResultMessage
                 ],
@@ -198,13 +214,41 @@ class _TRKRCoachContextScreenState extends State<TRKRCoachContextScreen> {
     }
   }
 
+  void _clearTextEditing() {
+    setState(() {
+      _textEditingController.clear();
+    });
+  }
+
   void _dismissKeyboard() {
     FocusScope.of(context).unfocus();
+  }
+
+  void _saveTemplate() async {
+    final templateController = Provider.of<RoutineTemplateController>(context, listen: false);
+    final routineTemplate = RoutineTemplateDto(
+        id: "id",
+        name: "A workout",
+        exerciseTemplates: _exerciseTemplates,
+        notes: "notes",
+        owner: SharedPrefs().userId,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now());
+
+    final template = await templateController.saveTemplate(templateDto: routineTemplate);
+    if (template != null) {
+      if (mounted) {
+        context.pop();
+      }
+    }
   }
 }
 
 class _AppBar extends StatelessWidget {
-  const _AppBar();
+  final VoidCallback positiveAction;
+  final bool canPerformPositiveAction;
+
+  const _AppBar({required this.positiveAction, this.canPerformPositiveAction = false});
 
   @override
   Widget build(BuildContext context) {
@@ -219,22 +263,21 @@ class _AppBar extends StatelessWidget {
               textAlign: TextAlign.center,
               style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 16)),
         ),
-        IconButton(
-          icon: const SizedBox.shrink(),
-          onPressed: () {},
-        )
+        canPerformPositiveAction
+            ? IconButton(
+                icon: const FaIcon(FontAwesomeIcons.check, color: Colors.white, size: 28),
+                onPressed: positiveAction,
+              )
+            : const IconButton(
+                icon: const SizedBox.shrink(),
+                onPressed: null,
+              )
       ],
     );
   }
 }
 
 class _HeroWidget extends StatelessWidget {
-  final RoutineTemplateDto template;
-
-  const _HeroWidget({
-    required this.template,
-  });
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -246,14 +289,27 @@ class _HeroWidget extends StatelessWidget {
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             RichText(
               text: TextSpan(
-                text: "Hey there! TRKR Coach can help you optimise",
+                text: "Hey there! TRKR Coach",
                 style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white, height: 1.5),
                 children: <TextSpan>[
-                  const TextSpan(text: " "),
                   TextSpan(
-                      text: template.name,
-                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
-                  const TextSpan(text: ". "),
+                      text: " ",
+                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)),
+                  TextSpan(
+                      text: "TRKR Coach",
+                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white)),
+                  TextSpan(
+                      text: " ",
+                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)),
+                  TextSpan(
+                      text: "can help you create awesome workouts",
+                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)),
+                  TextSpan(
+                      text: ".",
+                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)),
+                  TextSpan(
+                      text: " ",
+                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)),
                   TextSpan(
                       text: "Start with the suggestions below.",
                       style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)),
@@ -267,7 +323,7 @@ class _HeroWidget extends StatelessWidget {
                 color: Colors.white10.withOpacity(0.1), // Background color of the container
                 borderRadius: BorderRadius.circular(5), // Rounded corners
               ),
-              child: Text("Optimise for a specific goal ",
+              child: Text("Create a fullbody workout",
                   style: GoogleFonts.ubuntu(
                       color: Colors.white.withOpacity(0.8), fontSize: 12, fontWeight: FontWeight.w600)),
             ),
@@ -278,7 +334,7 @@ class _HeroWidget extends StatelessWidget {
                 color: Colors.white10.withOpacity(0.1), // Background color of the container
                 borderRadius: BorderRadius.circular(5), // Rounded corners
               ),
-              child: Text("Reduce time spent when training",
+              child: Text("Help me create a back and biceps workout",
                   style: GoogleFonts.ubuntu(
                       color: Colors.white.withOpacity(0.8), fontSize: 12, fontWeight: FontWeight.w600)),
             ),
@@ -289,7 +345,7 @@ class _HeroWidget extends StatelessWidget {
                 color: Colors.white10.withOpacity(0.1), // Background color of the container
                 borderRadius: BorderRadius.circular(5), // Rounded corners
               ),
-              child: Text("Focus on particular muscle group",
+              child: Text("I need a machine-only workout",
                   style: GoogleFonts.ubuntu(
                       color: Colors.white.withOpacity(0.8), fontSize: 12, fontWeight: FontWeight.w600)),
             ),
