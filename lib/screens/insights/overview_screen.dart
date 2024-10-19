@@ -343,7 +343,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           return Padding(
             padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Container(
-                padding: const EdgeInsets.only(top: 16, right: 16, bottom: 28, left: 16),
+                padding: const EdgeInsets.only(top: 16, right: 16, bottom: 38, left: 16),
                 decoration: BoxDecoration(
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(20),
