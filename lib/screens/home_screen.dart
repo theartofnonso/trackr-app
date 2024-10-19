@@ -23,6 +23,7 @@ import '../enums/routine_editor_type_enums.dart';
 import '../models/RoutineLog.dart';
 import '../models/RoutineTemplate.dart';
 import '../utils/app_analytics.dart';
+import 'communities_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home_screen';
@@ -48,6 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final screens = [
       OverviewScreen(scrollController: _scrollController),
       const RoutinesHome(),
+      const CommunitiesScreen(),
       const SettingsScreen(),
     ];
 
@@ -79,6 +81,20 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 34, // Adjust the height as needed
             ),
             label: 'Workouts',
+          ),
+          NavigationDestination(
+            icon: Image.asset(
+              'icons/people.png',
+              fit: BoxFit.contain,
+              color: Colors.grey,
+              height: 34, // Adjust the height as needed
+            ),
+            selectedIcon: Image.asset(
+              'icons/people.png',
+              fit: BoxFit.contain,
+              height: 34, // Adjust the height as needed
+            ),
+            label: 'TRKD Circles',
           ),
           const NavigationDestination(
             icon: FaIcon(FontAwesomeIcons.gear, color: Colors.grey, size: 26),
