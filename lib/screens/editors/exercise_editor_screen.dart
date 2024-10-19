@@ -178,24 +178,53 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     setState(() {
       _isInputFieldVisible = true;
     });
-    await displayBottomSheet(
+
+    await showModalBottomSheet(
         context: context,
-        child: TextField(
-          controller: TextEditingController(text: _exerciseName),
-          decoration: InputDecoration(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: sapphireLighter)),
-              filled: true,
-              fillColor: sapphireDark,
-              hintText: "New Exercise",
-              hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14)),
-          onChanged: (value) => _updateExerciseName(value),
-          cursorColor: Colors.white,
-          keyboardType: TextInputType.text,
-          textCapitalization: TextCapitalization.words,
-          style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
-        ));
+        builder: (context) {
+          return Padding(
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: Container(
+                padding: const EdgeInsets.only(top: 16, right: 16, bottom: 28, left: 16),
+                decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                    ),
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        sapphireDark80,
+                        sapphireDark,
+                      ],
+                    )),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextField(
+                      controller: TextEditingController(text: _exerciseName),
+                      decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5),
+                              borderSide: const BorderSide(color: sapphireLighter)),
+                          filled: true,
+                          fillColor: sapphireDark,
+                          hintText: "Enter exercise name",
+                          hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14)),
+                      onChanged: (value) => _updateExerciseName(value),
+                      cursorColor: Colors.white,
+                      keyboardType: TextInputType.text,
+                      textCapitalization: TextCapitalization.words,
+                      style: GoogleFonts.ubuntu(
+                          fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+                    )
+                  ],
+                )),
+          );
+        });
     _doneTyping();
   }
 

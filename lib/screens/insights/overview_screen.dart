@@ -335,67 +335,79 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 
   void _showInputTextField() async {
-
     _textEditingController = TextEditingController();
 
-    displayBottomSheet(
+    showModalBottomSheet(
         context: context,
-        gradient: SweepGradient(
-          colors: [Colors.green.shade900, Colors.blue.shade900],
-          stops: const [0, 1],
-          center: Alignment.topRight,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const TRKRCoachWidget(),
-                const SizedBox(width: 8),
-                Text("TRKR Coach".toUpperCase(),
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 14)),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _textEditingController,
-                    decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                        enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: const BorderSide(color: Colors.white10)),
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: const BorderSide(color: Colors.white30)),
-                        filled: true,
-                        fillColor: Colors.white10,
-                        hintText: "Describe your workout",
-                        hintStyle:
-                            GoogleFonts.ubuntu(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w400)),
-                    maxLines: null,
-                    cursorColor: Colors.white,
-                    showCursor: true,
-                    keyboardType: TextInputType.text,
-                    textCapitalization: TextCapitalization.sentences,
-                    style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white, fontSize: 16),
-                  ),
-                ),
-                IconButton(
-                  onPressed: _runMessage,
-                  icon: const FaIcon(
-                    FontAwesomeIcons.paperPlane,
-                    size: 20,
-                  ),
-                  color: Colors.white,
-                )
-              ],
-            ),
-          ],
-        ));
+        builder: (context) {
+          return Padding(
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: Container(
+                padding: const EdgeInsets.only(top: 16, right: 16, bottom: 28, left: 16),
+                decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                    ),
+                    gradient: SweepGradient(
+                      colors: [Colors.green.shade900, Colors.blue.shade900],
+                      stops: const [0, 1],
+                      center: Alignment.topRight,
+                    )),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const TRKRCoachWidget(),
+                        const SizedBox(width: 8),
+                        Text("TRKR Coach".toUpperCase(),
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 14)),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _textEditingController,
+                            decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                    borderSide: const BorderSide(color: Colors.white10)),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                    borderSide: const BorderSide(color: Colors.white30)),
+                                filled: true,
+                                fillColor: Colors.white10,
+                                hintText: "Describe your workout",
+                                hintStyle:
+                                    GoogleFonts.ubuntu(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w400)),
+                            maxLines: null,
+                            cursorColor: Colors.white,
+                            showCursor: true,
+                            keyboardType: TextInputType.text,
+                            textCapitalization: TextCapitalization.sentences,
+                            style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white, fontSize: 16),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: _runMessage,
+                          icon: const FaIcon(
+                            FontAwesomeIcons.paperPlane,
+                            size: 20,
+                          ),
+                          color: Colors.white,
+                        )
+                      ],
+                    ),
+                  ],
+                )),
+          );
+        });
   }
 
   void _runMessage() async {
