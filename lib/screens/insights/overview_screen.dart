@@ -86,7 +86,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
   @override
   Widget build(BuildContext context) {
 
-    if (_loading) return TRKRLoadingScreen(action: _hideLoadingState);
+    if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     /// Routine Logs
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
@@ -199,7 +199,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     );
   }
 
-  void _hideLoadingState() {
+  void _hideLoadingScreen() {
     setState(() {
       _loading = false;
     });

@@ -29,9 +29,9 @@ class OverviewMonitor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final routineLogDays = groupBy(routineLogs, (log) => log.createdAt.withoutTime().day);
+    final routineLogsByDay = groupBy(routineLogs, (log) => log.createdAt.withoutTime().day);
 
-    final monthlyProgress = routineLogDays.length / 12;
+    final monthlyProgress = routineLogsByDay.length / 12;
 
     final exerciseLogsForTheMonth = routineLogs.expand((log) => log.exerciseLogs).toList();
 
@@ -68,7 +68,7 @@ class OverviewMonitor extends StatelessWidget {
                   color: Colors.transparent,
                   width: 100,
                   child: _MonitorScore(
-                    value: "${routineLogDays.length} ${pluralize(word: "day", count: routineLogDays.length)}",
+                    value: "${routineLogsByDay.length} ${pluralize(word: "day", count: routineLogsByDay.length)}",
                     title: "Log Streak",
                     color: logStreakColor(value: monthlyProgress),
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -76,7 +76,6 @@ class OverviewMonitor extends StatelessWidget {
                 )),
             const SizedBox(width: 20),
             GestureDetector(
-              //onTap: () => _navigateToLeaderBoard(context: context),
               child: Stack(alignment: Alignment.center, children: [
                 LogStreakMonitor(
                     value: monthlyProgress,

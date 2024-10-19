@@ -63,12 +63,11 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
   @override
   Widget build(BuildContext context) {
 
-    if (_loading) return TRKRLoadingScreen(action: _cancelLoadingScreen);
+    if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     final log = _log;
 
     if (log == null) return const NotFound();
-
 
     final completedExerciseLogsAndSets = exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs);
 
@@ -297,13 +296,13 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     final completeInstructions = buffer.toString();
 
-    _toggleLoadingState();
+    _showLoadingScreen();
 
     runMessage(system: routineLogSystemInstruction, user: completeInstructions).then((response) {
       if (response != null) {
         _saveSummary(response: response, log: log);
       }
-      _toggleLoadingState();
+      _hideLoadingScreen();
     });
   }
 
@@ -394,13 +393,15 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     navigateToShareableScreen(context: context, log: log);
   }
 
-  void _cancelLoadingScreen() {
-    _toggleLoadingState();
+  void _showLoadingScreen() {
+    setState(() {
+      _loading = true;
+    });
   }
 
-  void _toggleLoadingState({String message = ""}) {
+  void _hideLoadingScreen() {
     setState(() {
-      _loading = !_loading;
+      _loading = false;
     });
   }
 
@@ -460,11 +461,11 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
   }
 
   void _createTemplate() async {
-    Navigator.pop(context);
+    Navigator.of(context).pop();
 
     final log = _log;
     if (log != null) {
-      _toggleLoadingState(message: "Creating template");
+      _showLoadingScreen();
 
       try {
         final exercises = log.exerciseLogs.map((exerciseLog) {
@@ -499,7 +500,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
               message: "Oops, we are unable to create template");
         }
       } finally {
-        _toggleLoadingState();
+        _hideLoadingScreen();
       }
     }
   }
@@ -520,7 +521,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
               message: "Oops, we are unable to delete this log");
         }
       } finally {
-        _toggleLoadingState();
+        _hideLoadingScreen();
       }
     }
   }
@@ -534,7 +535,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         leftAction: context.pop,
         rightAction: () {
           Navigator.pop(context); // Close current BottomSheet
-          _toggleLoadingState(message: "Deleting log");
+          _showLoadingScreen();
           _doDeleteLog();
         },
         leftActionLabel: 'Cancel',

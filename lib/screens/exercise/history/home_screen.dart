@@ -59,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
 
-    if (_loading) return TRKRLoadingScreen(action: _hideLoadingState);
+    if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     final foundExercise =
         Provider.of<ExerciseController>(context, listen: true).whereExercise(exerciseId: widget.exercise.id) ??
@@ -207,13 +207,13 @@ class _HomeScreenState extends State<HomeScreen> {
         ));
   }
 
-  void _showLoadingState() {
+  void _showLoadingScreen() {
     setState(() {
       _loading = true;
     });
   }
 
-  void _hideLoadingState() {
+  void _hideLoadingScreen() {
     setState(() {
       _loading = false;
     });
@@ -222,7 +222,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _onChangedDateTimeRange(DateTimeRange? range) {
     if (range == null) return;
 
-    _showLoadingState();
+    _showLoadingScreen();
 
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 

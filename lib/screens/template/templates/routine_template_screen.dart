@@ -88,7 +88,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_loading) return TRKRLoadingScreen(action: _cancelLoadingScreen);
+    if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     final template = _template;
 
@@ -262,7 +262,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                   ),
                   const SizedBox(height: 10),
                   GestureDetector(
-                    onTap: _onTap,
+                    onTap: _onMinimiseMuscleGroupSplit,
                     child: Container(
                       color: Colors.transparent,
                       child: Column(
@@ -307,11 +307,13 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
         ));
   }
 
-  void _cancelLoadingScreen() {
-    _toggleLoadingState();
+  void _hideLoadingScreen() {
+    setState(() {
+      _loading = false;
+    });
   }
 
-  void _onTap() {
+  void _onMinimiseMuscleGroupSplit() {
     setState(() {
       _minimized = !_minimized;
     });

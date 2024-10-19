@@ -54,7 +54,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   @override
   Widget build(BuildContext context) {
 
-    if (_loading) return TRKRLoadingScreen(action: _hideLoadingState);
+    if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     return Scaffold(
       body: Container(
@@ -166,13 +166,13 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     );
   }
 
-  void _showLoadingState() {
+  void _showLoadingScreen() {
     setState(() {
       _loading = true;
     });
   }
 
-  void _hideLoadingState() {
+  void _hideLoadingScreen() {
     setState(() {
       _loading = false;
     });
@@ -273,7 +273,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         leftAction: Navigator.of(context).pop,
         rightAction: () async {
           Navigator.of(context).pop();
-          _showLoadingState();
+          _showLoadingScreen();
           _clearAppData();
           await Amplify.Auth.signOut();
         },
@@ -290,7 +290,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         leftAction: Navigator.of(context).pop,
         rightAction: () async {
           Navigator.of(context).pop();
-          _showLoadingState();
+          _showLoadingScreen();
           final deletedExercises =
               await batchDeleteUserData(document: deleteUserExerciseData, documentKey: "deleteUserExerciseData");
           final deletedRoutineTemplates = await batchDeleteUserData(
@@ -298,11 +298,11 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
           final deletedRoutineLogs =
               await batchDeleteUserData(document: deleteUserRoutineLogData, documentKey: "deleteUserRoutineLogData");
           if (deletedExercises && deletedRoutineTemplates && deletedRoutineLogs) {
-            _hideLoadingState();
+            _hideLoadingScreen();
             _clearAppData();
             await Amplify.Auth.deleteUser();
           } else {
-            _hideLoadingState();
+            _hideLoadingScreen();
             if (mounted) {
               showSnackbar(
                   context: context,

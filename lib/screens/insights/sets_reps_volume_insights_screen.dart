@@ -60,7 +60,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   @override
   Widget build(BuildContext context) {
 
-    if (_loading) return TRKRLoadingScreen(action: _hideLoadingState);
+    if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     final textStyle = GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white70);
 
@@ -378,13 +378,13 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     );
   }
 
-  void _showLoadingState() {
+  void _showLoadingScreen() {
     setState(() {
       _loading = true;
     });
   }
 
-  void _hideLoadingState() {
+  void _hideLoadingScreen() {
     setState(() {
       _loading = false;
     });
@@ -407,10 +407,10 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
       final completeInstructions = buffer.toString();
 
-      _showLoadingState();
+      _showLoadingScreen();
 
       runMessage(system: routineLogSystemInstruction, user: completeInstructions).then((response) {
-        _hideLoadingState();
+        _hideLoadingScreen();
         if (mounted) {
           if (response != null) {
             navigateWithSlideTransition(context: context, child: SetsRepsVolumeAIContextScreen(content: response));
