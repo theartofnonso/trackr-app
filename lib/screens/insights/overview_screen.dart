@@ -14,6 +14,7 @@ import 'package:tracker_app/extensions/datetime_range_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
+import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 import 'package:tracker_app/widgets/calendar/calendar_months_navigator.dart';
 
 import '../../controllers/activity_log_controller.dart';
@@ -23,11 +24,14 @@ import '../../dtos/routine_log_dto.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/activity_type_enums.dart';
 import '../../enums/routine_editor_type_enums.dart';
+import '../../openAI/open_ai.dart';
+import '../../strings/ai_prompts.dart';
 import '../../utils/app_analytics.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../utils/shareables_utils.dart';
+import '../../widgets/ai_widgets/trkr_coach_text_widget.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/calendar/calendar.dart';
@@ -56,7 +60,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
   late DateTimeRange _selectedDateTimeRange;
   bool _loading = false;
 
-  void _logEmptyRoutine(BuildContext context) async {
+  TextEditingController? _textEditingController;
+
+  void _logEmptyRoutine() async {
     final log = Provider.of<RoutineLogController>(context, listen: false).cachedLog();
     if (log == null) {
       final log = RoutineLogDto(
@@ -207,7 +213,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                   style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
                 context.pop();
-                _logEmptyRoutine(context);
+                _showLogNewSessionBottomSheet();
               },
             ),
             ListTile(
@@ -284,6 +290,138 @@ class _OverviewScreenState extends State<OverviewScreen> {
         ));
   }
 
+  void _showLogNewSessionBottomSheet() {
+    displayBottomSheet(
+        context: context,
+        child: SafeArea(
+          child: Column(children: [
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(FontAwesomeIcons.play, size: 18),
+              horizontalTitleGap: 6,
+              title: Text("Log new session",
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              onTap: () {
+                context.pop();
+                _logEmptyRoutine();
+              },
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            const LabelDivider(
+              label: "Don't know what to train?",
+              labelColor: Colors.white70,
+              dividerColor: sapphireLighter,
+            ),
+            const SizedBox(
+              height: 6,
+            ),
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              leading: const TRKRCoachWidget(),
+              horizontalTitleGap: 10,
+              title: TRKRCoachTextWidget("Describe your workout",
+                  style: GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 16)),
+              onTap: () {
+                Navigator.pop(context);
+                _showInputTextField();
+              },
+            ),
+          ]),
+        ));
+  }
+
+  void _showInputTextField() async {
+
+    _textEditingController = TextEditingController();
+
+    displayBottomSheet(
+        context: context,
+        gradient: SweepGradient(
+          colors: [Colors.green.shade900, Colors.blue.shade900],
+          stops: const [0, 1],
+          center: Alignment.topRight,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const TRKRCoachWidget(),
+                const SizedBox(width: 8),
+                Text("TRKR Coach".toUpperCase(),
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 14)),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _textEditingController,
+                    decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: const BorderSide(color: Colors.white10)),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: const BorderSide(color: Colors.white30)),
+                        filled: true,
+                        fillColor: Colors.white10,
+                        hintText: "Describe your workout",
+                        hintStyle:
+                            GoogleFonts.ubuntu(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w400)),
+                    maxLines: null,
+                    cursorColor: Colors.white,
+                    showCursor: true,
+                    keyboardType: TextInputType.text,
+                    textCapitalization: TextCapitalization.sentences,
+                    style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white, fontSize: 16),
+                  ),
+                ),
+                IconButton(
+                  onPressed: _runMessage,
+                  icon: const FaIcon(
+                    FontAwesomeIcons.paperPlane,
+                    size: 20,
+                  ),
+                  color: Colors.white,
+                )
+              ],
+            ),
+          ],
+        ));
+  }
+
+  void _runMessage() async {
+    final userPrompt = _textEditingController?.text ?? "";
+    if (userPrompt.isNotEmpty) {
+      Navigator.of(context).pop();
+      _toggleLoadingState();
+      _clearTextEditing();
+      final routineTemplate =
+          await runFunctionMessage(system: defaultSystemInstruction, user: userPrompt, context: context);
+      _toggleLoadingState();
+      if (routineTemplate != null) {
+        final arguments = RoutineLogArguments(log: routineTemplate.log(), editorMode: RoutineEditorMode.log);
+        if (mounted) {
+          navigateToRoutineLogEditor(context: context, arguments: arguments);
+        }
+      }
+    }
+  }
+
+  void _clearTextEditing() {
+    setState(() {
+      _textEditingController?.clear();
+    });
+  }
+
   void _onChangedDateTime(DateTime date) {
     setState(() {
       _selectedDateTime = date;
@@ -321,6 +459,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     setState(() {
       _selectedDateTimeRange = range;
+    });
+  }
+
+  void _toggleLoadingState() {
+    setState(() {
+      _loading = !_loading;
     });
   }
 
@@ -386,6 +530,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
     super.initState();
     _selectedDateTime = DateTime.now();
     _selectedDateTimeRange = thisMonthDateRange();
+  }
+
+  @override
+  void dispose() {
+    _textEditingController?.dispose();
+    super.dispose();
   }
 }
 

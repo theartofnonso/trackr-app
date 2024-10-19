@@ -1,22 +1,15 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/dtos/exercise_log_dto.dart';
-import 'package:tracker_app/dtos/set_dto.dart';
-import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/strings/ai_prompts.dart';
-import 'package:tracker_app/widgets/trkr_widgets/trkr_coach_widget.dart';
+import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 
-import '../../../controllers/exercise_controller.dart';
 import '../../../controllers/routine_template_controller.dart';
 import '../../../dtos/routine_template_dto.dart';
 import '../../../enums/routine_preview_type_enum.dart';
 import '../../../openAI/open_ai.dart';
-import '../../../openAI/open_ai_functions.dart';
 import '../../../utils/routine_utils.dart';
 import '../../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../../widgets/routine/preview/exercise_log_listview.dart';
@@ -35,9 +28,7 @@ class _TRKRCoachContextScreenState extends State<TRKRCoachContextScreen> {
 
   late TextEditingController _textEditingController;
 
-  String _workoutName = "";
-  String _workoutCaption = "";
-  List<ExerciseLogDto> _exerciseTemplates = [];
+  RoutineTemplateDto? _routineTemplate;
 
   void _toggleLoadingState() {
     setState(() {
@@ -47,6 +38,8 @@ class _TRKRCoachContextScreenState extends State<TRKRCoachContextScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final routineTemplate = _routineTemplate;
+
     return Scaffold(
         body: Container(
       width: double.infinity,
@@ -64,12 +57,12 @@ class _TRKRCoachContextScreenState extends State<TRKRCoachContextScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _AppBar(positiveAction: _saveTemplate, canPerformPositiveAction: _exerciseTemplates.isNotEmpty),
-              _exerciseTemplates.isNotEmpty
+              _AppBar(positiveAction: _saveTemplate, canPerformPositiveAction: routineTemplate != null),
+              routineTemplate != null
                   ? Expanded(
                       child: SingleChildScrollView(
                         child: ExerciseLogListView(
-                          exerciseLogs: exerciseLogsToViewModels(exerciseLogs: _exerciseTemplates),
+                          exerciseLogs: exerciseLogsToViewModels(exerciseLogs: routineTemplate.exerciseTemplates),
                           previewType: RoutinePreviewType.ai,
                         ),
                       ),
@@ -137,85 +130,18 @@ class _TRKRCoachContextScreenState extends State<TRKRCoachContextScreen> {
   void _runMessage() async {
     final userPrompt = _textEditingController.text;
 
-    _dismissKeyboard();
-    _toggleLoadingState();
-    _clearTextEditing();
+    if(userPrompt.isNotEmpty) {
+      _dismissKeyboard();
+      _toggleLoadingState();
+      _clearTextEditing();
 
-    final response = await runMessageWithFunctionCall(system: defaultSystemInstruction, user: userPrompt);
-    if (response != null) {
-      final choices = response;
-      if (choices.isNotEmpty) {
-        final choice = choices[0];
-        final toolCalls = choice['message']['tool_calls'] as List<dynamic>;
-        if (toolCalls.isNotEmpty) {
-          final tool = toolCalls[0];
-          final function = tool['function']['name'];
-          if (function == "list_exercises") {
-            if (mounted) {
-              final exercises = Provider.of<ExerciseController>(context, listen: false).exercises;
-              final listOfExerciseJsons = exercises
-                  .map((exercise) => jsonEncode({
-                        "id": exercise.id,
-                        "name": exercise.name,
-                        "primary_muscle_group": exercise.primaryMuscleGroup.name,
-                        "secondary_muscle_groups":
-                            exercise.secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name).toList()
-                      }))
-                  .toList();
+      final routineTemplate =
+      await runFunctionMessage(system: defaultSystemInstruction, user: userPrompt, context: context);
+      setState(() {
+        _routineTemplate = routineTemplate;
+      });
 
-              final functionCallMessage = {
-                "role": "assistant",
-                "tool_calls": [
-                  {
-                    "id": tool["id"],
-                    "type": "function",
-                    "function": {"arguments": "{}", "name": "list_exercises"}
-                  }
-                ]
-              };
-
-              final functionCallResultMessage = {
-                "role": "tool",
-                "content": jsonEncode({
-                  "exercises": listOfExerciseJsons,
-                }),
-                "tool_call_id": tool["id"]
-              };
-
-              final payload = jsonEncode({
-                "model": "gpt-4o-mini",
-                "messages": [
-                  {"role": "system", "content": defaultSystemInstruction},
-                  {"role": "user", "content": userPrompt},
-                  functionCallMessage,
-                  functionCallResultMessage
-                ],
-                "response_format": exercisesResponseFormat
-              });
-
-              final jsonString = await runMessageWithFunctionCallResult(payload: payload);
-              if (jsonString != null) {
-                final json = jsonDecode(jsonString);
-                final exerciseIds = json["exercises"] as List<dynamic>;
-                final workoutName = json["workout_name"] ?? "A workout";
-                final workoutCaption = json["workout_caption"] ?? "A workout created by TRKR Coach";
-                final exerciseTemplates = exerciseIds.map((exerciseId) {
-                  final exerciseInLibrary = exercises.firstWhere((exercise) => exercise.id == exerciseId);
-                  final exerciseTemplate = ExerciseLogDto(exerciseInLibrary.id, "", "", exerciseInLibrary, "",
-                      [const SetDto(0, 0, false)], DateTime.now(), []);
-                  return exerciseTemplate;
-                }).toList();
-                setState(() {
-                  _workoutName = workoutName;
-                  _workoutCaption = workoutCaption;
-                  _exerciseTemplates = exerciseTemplates;
-                });
-              }
-              _toggleLoadingState();
-            }
-          }
-        }
-      }
+      _toggleLoadingState();
     }
   }
 
@@ -230,20 +156,14 @@ class _TRKRCoachContextScreenState extends State<TRKRCoachContextScreen> {
   }
 
   void _saveTemplate() async {
-    final templateController = Provider.of<RoutineTemplateController>(context, listen: false);
-    final routineTemplate = RoutineTemplateDto(
-        id: "id",
-        name: _workoutName,
-        exerciseTemplates: _exerciseTemplates,
-        notes: _workoutCaption,
-        owner: SharedPrefs().userId,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now());
-
-    final template = await templateController.saveTemplate(templateDto: routineTemplate);
-    if (template != null) {
-      if (mounted) {
-        context.pop();
+    final routineTemplate = _routineTemplate;
+    if (routineTemplate != null) {
+      final templateController = Provider.of<RoutineTemplateController>(context, listen: false);
+      final template = await templateController.saveTemplate(templateDto: routineTemplate);
+      if (template != null) {
+        if (mounted) {
+          context.pop();
+        }
       }
     }
   }

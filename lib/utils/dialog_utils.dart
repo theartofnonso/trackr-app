@@ -46,6 +46,7 @@ void showSnackbar({required BuildContext context, required Widget icon, required
 Future<void> displayBottomSheet(
     {required BuildContext context,
     required Widget child,
+      Gradient? gradient,
     double? height,
     enabledDrag = true,
     bool isDismissible = true,
@@ -63,8 +64,8 @@ Future<void> displayBottomSheet(
                 height: height,
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
+                decoration: BoxDecoration(
+                  gradient: gradient ?? const LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
@@ -72,7 +73,7 @@ Future<void> displayBottomSheet(
                       sapphireDark,
                     ],
                   ),
-                  borderRadius: BorderRadius.only(
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20),
                   ),

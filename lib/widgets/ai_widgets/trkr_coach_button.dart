@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../colors.dart';
-import '../trkr_widgets/trkr_coach_widget.dart';
+import 'trkr_coach_widget.dart';
 
 class TRKRCoachButton extends StatelessWidget {
   final String label;
