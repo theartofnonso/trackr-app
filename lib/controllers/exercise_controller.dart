@@ -1,6 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
+
+import '../models/Exercise.dart';
 import '../repositories/amplify_exercise_repository.dart';
 
 class ExerciseController extends ChangeNotifier {
@@ -15,17 +17,13 @@ class ExerciseController extends ChangeNotifier {
 
   UnmodifiableListView<ExerciseDto> get exercises => _amplifyExerciseRepository.exercises;
 
-  Future<void> fetchExercises({bool firstLaunch = false}) async {
-    isLoading = true;
-    try {
-      await _amplifyExerciseRepository.fetchExercises(firstLaunch: firstLaunch);
-    } catch (e) {
-      errorMessage = "Oops! Something went wrong. Please try again later.";
-    } finally {
-      isLoading = false;
-      errorMessage = "";
-      notifyListeners();
-    }
+  void loadLocalExercises() {
+    _amplifyExerciseRepository.loadLocalExercises();
+  }
+
+  void streamExercises({required List<Exercise> exercises}) {
+    _amplifyExerciseRepository.loadExerciseStream(exercises: exercises);
+    notifyListeners();
   }
 
   Future<void> saveExercise({required ExerciseDto exerciseDto}) async {

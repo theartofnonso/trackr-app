@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -12,6 +13,8 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/screens/logs/routine_log_ai_context_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
+import 'package:tracker_app/shared_prefs.dart';
+import 'package:tracker_app/utils/https_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/backgrounds/trkr_loading_screen.dart';
@@ -19,7 +22,7 @@ import 'package:tracker_app/widgets/chart/muscle_group_family_chart.dart';
 
 import '../../../colors.dart';
 import '../../../dtos/exercise_log_dto.dart';
-import '../../controllers/open_ai_controller.dart';
+import '../../controllers/exercise_controller.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../controllers/routine_template_controller.dart';
 import '../../dtos/routine_log_dto.dart';
@@ -27,13 +30,15 @@ import '../../dtos/routine_template_dto.dart';
 import '../../dtos/viewmodels/exercise_log_view_model.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/routine_editor_type_enums.dart';
+import '../../models/RoutineLog.dart';
+import '../../openAI/open_ai.dart';
 import '../../strings/ai_prompts.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/ai_widgets/trkr_information_container.dart';
-import '../../widgets/information_containers/information_container_lite.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
+import '../not_found.dart';
 
 class RoutineLogScreen extends StatefulWidget {
   static const routeName = '/routine_log_screen';
@@ -48,28 +53,38 @@ class RoutineLogScreen extends StatefulWidget {
 }
 
 class _RoutineLogScreenState extends State<RoutineLogScreen> {
+
   RoutineLogDto? _log;
 
   bool _loading = false;
 
-  bool _isOwner = false;
+  bool _minimized = true;
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<RoutineTemplateController>(context, listen: true);
+
+    if (_loading) return TRKRLoadingScreen(action: _cancelLoadingScreen);
 
     final log = _log;
 
-    if (log == null) {
-      provider.fetchTemplate(id: widget.id);
-      return const _EmptyState();
-    }
+    if (log == null) return const NotFound();
+
 
     final completedExerciseLogsAndSets = exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs);
+
+    final exerciseController = Provider.of<ExerciseController>(context, listen: true);
+
+    final exercisesFromLibrary = completedExerciseLogsAndSets.map((exerciseTemplate) {
+      final foundExercise = exerciseController.exercises
+          .firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.id == exerciseTemplate.id);
+      return foundExercise != null ? exerciseTemplate.copyWith(exercise: foundExercise) : exerciseTemplate;
+    }).toList();
 
     final numberOfCompletedSets = completedExerciseLogsAndSets.expand((exerciseLog) => exerciseLog.sets);
     final completedSetsSummary =
         "${numberOfCompletedSets.length} ${pluralize(word: "Set", count: numberOfCompletedSets.length)}";
+
+    final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: exercisesFromLibrary);
 
     return Scaffold(
         backgroundColor: sapphireDark,
@@ -77,18 +92,18 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             backgroundColor: sapphireDark80,
             leading: IconButton(
               icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-              onPressed: () => context.pop(),
+              onPressed: context.pop,
             ),
             title: Text(log.name,
                 style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
-            actions: _isOwner
+            actions: log.owner == SharedPrefs().userId
                 ? [
                     IconButton(
                         onPressed: () => _onShareLog(log: log),
                         icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18)),
                   ]
                 : []),
-        floatingActionButton: _isOwner
+        floatingActionButton: log.owner == SharedPrefs().userId
             ? FloatingActionButton(
                 heroTag: "routine_log_screen",
                 onPressed: _showBottomSheet,
@@ -198,18 +213,42 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    MuscleGroupFamilyChart(
-                        frequencyData: muscleGroupFamilyFrequency(exerciseLogs: completedExerciseLogsAndSets)),
-                    // const SizedBox(height: 12),
-                    // TRKRInformationContainer(
-                    //     ctaLabel: log.summary != null ? "Review your feedback" : "Ask for feedback",
-                    //     description:
-                    //         "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
-                    //     onTap: () => log.summary != null
-                    //         ? _showSummary()
-                    //         : _generateSummary(logs: completedExerciseLogsAndSets)),
-                    // const SizedBox(height: 12),
+                    const SizedBox(height: 12),
+                    GestureDetector(
+                      onTap: _onMinimiseMuscleGroupSplit,
+                      child: Container(
+                        color: Colors.transparent,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(children: [
+                              Text("Muscle Groups Split".toUpperCase(),
+                                  style: GoogleFonts.ubuntu(
+                                      color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+                              const Spacer(),
+                              if (muscleGroupFamilyFrequencies.length > 3)
+                                FaIcon(_minimized ? FontAwesomeIcons.angleDown : FontAwesomeIcons.angleUp,
+                                    color: Colors.white70, size: 16),
+                            ]),
+                            const SizedBox(height: 10),
+                            Text("Here's a breakdown of the muscle groups in your ${log.name} workout log.",
+                                style: GoogleFonts.ubuntu(
+                                    color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
+                            const SizedBox(height: 10),
+                            MuscleGroupFamilyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TRKRInformationContainer(
+                        ctaLabel: log.summary != null ? "Review your feedback" : "Ask for feedback",
+                        description:
+                            "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
+                        onTap: () => log.summary != null
+                            ? _showSummary()
+                            : _generateSummary(logs: completedExerciseLogsAndSets)),
+                    const SizedBox(height: 12),
                     ExerciseLogListView(
                         exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogsAndSets),
                         previewType: RoutinePreviewType.log),
@@ -217,9 +256,14 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                 ),
               ),
             ),
-            if (_loading) const TRKRLoadingScreen()
           ]),
         ));
+  }
+
+  void _onMinimiseMuscleGroupSplit() {
+    setState(() {
+      _minimized = !_minimized;
+    });
   }
 
   void _showSummary() {
@@ -244,7 +288,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     final userInstructions = "Review my ${log.name} workout log and provide feedback";
 
-    final logJsons = logs.map((log) => jsonEncode(log.toJson()));
+    final logJsons = logs.map((log) => log.toJson());
 
     final StringBuffer buffer = StringBuffer();
 
@@ -255,9 +299,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     _toggleLoadingState();
 
-    Provider.of<OpenAIController>(context, listen: false)
-        .runMessage(system: routineLogSystemInstruction, user: completeInstructions)
-        .then((response) {
+    runMessage(system: routineLogSystemInstruction, user: completeInstructions).then((response) {
       if (response != null) {
         _saveSummary(response: response, log: log);
       }
@@ -270,14 +312,18 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     _log = routineLogController.logWhereId(id: widget.id);
     if (_log == null) {
       _loading = true;
-      routineLogController.fetchLog(id: widget.id).then((data) {
-        setState(() {
-          _loading = false;
-          _log = data?.dto();
-        });
+      getAPI(endpoint: "/routine-log", queryParameters: {"id": widget.id}).then((data) {
+        if (data.isNotEmpty) {
+          final json = jsonDecode(data);
+          final body = json["data"];
+          final routineLog = body["getRoutineLog"];
+          final routineLogDto = RoutineLog.fromJson(routineLog);
+          setState(() {
+            _loading = false;
+            _log = routineLogDto.dto();
+          });
+        }
       });
-    } else {
-      _isOwner = _log != null;
     }
   }
 
@@ -346,6 +392,10 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
   void _onShareLog({required RoutineLogDto log}) {
     navigateToShareableScreen(context: context, log: log);
+  }
+
+  void _cancelLoadingScreen() {
+    _toggleLoadingState();
   }
 
   void _toggleLoadingState({String message = ""}) {
@@ -430,6 +480,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             name: log.name,
             notes: log.notes,
             exerciseTemplates: exercises,
+            owner: "",
             createdAt: DateTime.now(),
             updatedAt: DateTime.now());
 
@@ -489,67 +540,5 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         leftActionLabel: 'Cancel',
         rightActionLabel: 'Delete',
         isRightActionDestructive: true);
-  }
-}
-
-class _EmptyState extends StatelessWidget {
-  const _EmptyState();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: sapphireDark80,
-        leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-          onPressed: () => context.pop(),
-        ),
-        title: Text("Workout Log",
-            style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              sapphireDark80,
-              sapphireDark,
-            ],
-          ),
-        ),
-        child: SafeArea(
-            child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              RichText(
-                  text: TextSpan(
-                      style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.white),
-                      children: [
-                    TextSpan(
-                        text: "Not F",
-                        style: GoogleFonts.ubuntu(fontSize: 48, color: Colors.white70, fontWeight: FontWeight.w900)),
-                    const WidgetSpan(
-                        child: Padding(
-                          padding: EdgeInsets.only(left: 6.0),
-                          child: FaIcon(FontAwesomeIcons.magnifyingGlass, size: 48, color: Colors.white70),
-                        ),
-                        alignment: PlaceholderAlignment.middle),
-                    TextSpan(
-                        text: "und",
-                        style: GoogleFonts.ubuntu(fontSize: 48, color: Colors.white70, fontWeight: FontWeight.w900)),
-                  ])),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-                child: InformationContainerLite(
-                    content: "We can't find this workout log, Please check the link and try again.",
-                    color: Colors.orange),
-              ),
-            ],
-          ),
-        )),
-      ),
-    );
   }
 }

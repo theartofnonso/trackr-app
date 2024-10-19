@@ -1,3 +1,5 @@
+import 'package:tracker_app/enums/training_position_enum.dart';
+
 import '../enums/exercise_type_enums.dart';
 import '../enums/muscle_group_enums.dart';
 
@@ -5,6 +7,8 @@ class ExerciseDto {
   final String id;
   final String name;
   final MuscleGroup primaryMuscleGroup;
+  final List<MuscleGroup> secondaryMuscleGroups;
+  final TrainingPosition trainingPosition;
   final Uri? video;
   final String? description;
   final Uri? creditSource;
@@ -16,7 +20,9 @@ class ExerciseDto {
       {required this.id,
       required this.name,
       required this.primaryMuscleGroup,
+      required this.secondaryMuscleGroups,
       required this.type,
+      required this.trainingPosition,
       this.description,
       this.video,
       this.creditSource,
@@ -40,10 +46,15 @@ class ExerciseDto {
   factory ExerciseDto.fromJson(Map<String, dynamic> json) {
     final id = json['id'] ?? "";
     final name = json["name"] ?? "";
-    final primaryMuscleGroupJson = json["primaryMuscleGroup"] ?? "";
-    final primaryMuscleGroup = MuscleGroup.fromString(primaryMuscleGroupJson);
+    final primaryMuscleGroupString = json["primaryMuscleGroup"] ?? "";
+    final primaryMuscleGroup = MuscleGroup.fromString(primaryMuscleGroupString);
+    final secondaryMuscleGroupString = (json["secondaryMuscleGroups"] as List<dynamic>?) ?? [];
+    final secondaryMuscleGroups =
+        secondaryMuscleGroupString.map((muscleGroup) => MuscleGroup.fromString(muscleGroup)).toList();
     final typeJson = json["type"] ?? "";
     final type = ExerciseType.fromString(typeJson);
+    final trainingPositionString = json["trainingPosition"] ?? "";
+    final trainingPosition = TrainingPosition.fromString(trainingPositionString);
     final owner = json["owner"] ?? false;
     final video = json["video"];
     final description = json["description"] ?? "";
@@ -55,9 +66,11 @@ class ExerciseDto {
         id: id,
         name: name,
         primaryMuscleGroup: primaryMuscleGroup,
+        secondaryMuscleGroups: secondaryMuscleGroups,
         type: type,
         video: videoUri,
         description: description,
+        trainingPosition: trainingPosition,
         owner: owner,
         creditSource: creditSourceUri,
         credit: credit);
@@ -67,7 +80,9 @@ class ExerciseDto {
     String? id,
     String? name,
     MuscleGroup? primaryMuscleGroup,
+    List<MuscleGroup>? secondaryMuscleGroups,
     ExerciseType? type,
+    TrainingPosition? trainingPosition,
     bool? owner,
     String? description,
   }) {
@@ -75,6 +90,8 @@ class ExerciseDto {
         id: id ?? this.id,
         name: name ?? this.name,
         primaryMuscleGroup: primaryMuscleGroup ?? this.primaryMuscleGroup,
+        secondaryMuscleGroups: secondaryMuscleGroups ?? this.secondaryMuscleGroups,
+        trainingPosition: trainingPosition ?? this.trainingPosition,
         type: type ?? this.type,
         owner: owner ?? this.owner,
         description: description ?? this.description);
@@ -82,6 +99,6 @@ class ExerciseDto {
 
   @override
   String toString() {
-    return 'ExerciseDto{id: $id, name: $name, primaryMuscleGroup: $primaryMuscleGroup, video: $video, description: $description, creditSource: $creditSource, credit: $credit, type: $type, owner: $owner}';
+    return 'ExerciseDto{id: $id, name: $name, primaryMuscleGroup: $primaryMuscleGroup, secondaryMuscleGroups: $secondaryMuscleGroups video: $video, description: $description, trainingPosition: $trainingPosition, creditSource: $creditSource, credit: $credit, type: $type, owner: $owner}';
   }
 }

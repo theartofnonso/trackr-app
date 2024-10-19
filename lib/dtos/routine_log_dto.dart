@@ -17,6 +17,7 @@ class RoutineLogDto implements Log {
   @override
   final DateTime endTime;
   final List<ExerciseLogDto> exerciseLogs;
+  final String? owner;
   @override
   final DateTime createdAt;
   @override
@@ -31,6 +32,7 @@ class RoutineLogDto implements Log {
     this.summary,
     required this.startTime,
     required this.endTime,
+    required this.owner,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -40,7 +42,6 @@ class RoutineLogDto implements Log {
     return endTime.difference(startTime);
   }
 
-  @override
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -54,7 +55,7 @@ class RoutineLogDto implements Log {
     };
   }
 
-  factory RoutineLogDto.fromJson(Map<String, dynamic> json) {
+  factory RoutineLogDto.fromJson(Map<String, dynamic> json, {String? owner}) {
     final id = json["id"] ?? "";
     final templateId = json["templateId"] ?? "";
     final name = json["name"] ?? "";
@@ -76,6 +77,7 @@ class RoutineLogDto implements Log {
       startTime: startTime,
       endTime: endTime,
       exerciseLogs: exercises,
+      owner: owner ?? "",
       createdAt: createdAt,
       updatedAt: updatedAt,
     );
@@ -91,6 +93,7 @@ class RoutineLogDto implements Log {
     DateTime? startTime,
     DateTime? endTime,
     List<ExerciseLogDto>? exerciseLogs,
+    String? owner,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -103,6 +106,7 @@ class RoutineLogDto implements Log {
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
       exerciseLogs: exerciseLogs ?? this.exerciseLogs,
+      owner: owner ?? this.owner,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -110,7 +114,7 @@ class RoutineLogDto implements Log {
 
   @override
   String toString() {
-    return 'RoutineLogDto{id: $id, templateId: $templateId, name: $name, notes: $notes, summary: $summary, startTime: $startTime, endTime: $endTime, exerciseLogs: $exerciseLogs, createdAt: $createdAt, updatedAt: $updatedAt}';
+    return 'RoutineLogDto{id: $id, templateId: $templateId, name: $name, notes: $notes, summary: $summary, startTime: $startTime, endTime: $endTime, exerciseLogs: $exerciseLogs, owner: $owner, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
 
   @override

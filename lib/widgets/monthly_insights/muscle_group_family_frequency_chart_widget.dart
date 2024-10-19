@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../colors.dart';
+import '../../controllers/exercise_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../dtos/routine_log_dto.dart';
 import '../../enums/chart_unit_enum.dart';
@@ -15,21 +17,26 @@ import '../../utils/exercise_logs_utils.dart';
 import '../chart/bar_chart.dart';
 
 class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
-
   final Map<DateTimeRange, List<RoutineLogDto>> monthlyLogs;
 
   const MuscleGroupFamilyFrequencyChartWidget({super.key, required this.monthlyLogs});
 
   @override
   Widget build(BuildContext context) {
-
     List<int> muscleGroupsSplitFrequencyScores = [];
+
+    final exerciseController = Provider.of<ExerciseController>(context, listen: false);
 
     for (var periodAndLogs in monthlyLogs.entries) {
       final exerciseLogsForTheMonth = periodAndLogs.value.expand((log) => log.exerciseLogs).toList();
 
-      final muscleGroupsSplitFrequencyScore =
-          cumulativeMuscleGroupFamilyFrequency(exerciseLogs: exerciseLogsForTheMonth);
+      final exercisesFromLibrary = exerciseLogsForTheMonth.map((exerciseTemplate) {
+        final foundExercise = exerciseController.exercises
+            .firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.id == exerciseTemplate.id);
+        return foundExercise != null ? exerciseTemplate.copyWith(exercise: foundExercise) : exerciseTemplate;
+      }).toList();
+
+      final muscleGroupsSplitFrequencyScore = cumulativeMuscleGroupFamilyFrequency(exerciseLogs: exercisesFromLibrary);
       final percentageScore = (muscleGroupsSplitFrequencyScore * 100).round();
       muscleGroupsSplitFrequencyScores.add(percentageScore);
     }

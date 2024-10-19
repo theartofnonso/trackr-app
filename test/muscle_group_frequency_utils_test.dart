@@ -4,6 +4,7 @@ import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
+import 'package:tracker_app/enums/training_position_enum.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 
 import 'date_utils.dart';
@@ -14,6 +15,8 @@ void main() {
       id: "id_hamstring_exercise",
       name: "Hamstring Exercise",
       primaryMuscleGroup: MuscleGroup.hamstrings,
+      secondaryMuscleGroups: [MuscleGroup.hamstrings],
+      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
       owner: false);
 
@@ -21,6 +24,8 @@ void main() {
       id: "id_quad_exercise",
       name: "Quad Exercise",
       primaryMuscleGroup: MuscleGroup.quadriceps,
+      secondaryMuscleGroups: [MuscleGroup.hamstrings],
+      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
       owner: false);
 
@@ -28,6 +33,8 @@ void main() {
       id: "id_back_exercise",
         name: "Back Exercise",
       primaryMuscleGroup: MuscleGroup.lats,
+      secondaryMuscleGroups: [MuscleGroup.hamstrings],
+      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
       owner: false);
 
@@ -35,6 +42,8 @@ void main() {
       id: "id_traps_exercise",
       name: "Traps Exercise",
       primaryMuscleGroup: MuscleGroup.traps,
+      secondaryMuscleGroups: [MuscleGroup.hamstrings],
+      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
       owner: false);
 
@@ -42,6 +51,8 @@ void main() {
       id: "id_chest_exercise",
       name: "Chest Exercise",
       primaryMuscleGroup: MuscleGroup.chest,
+      secondaryMuscleGroups: [MuscleGroup.hamstrings],
+      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
       owner: false);
 
@@ -49,6 +60,8 @@ void main() {
       id: "id_shoulders_exercise",
       name: "Shoulders Exercise",
       primaryMuscleGroup: MuscleGroup.shoulders,
+      secondaryMuscleGroups: [MuscleGroup.hamstrings],
+      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
       owner: false);
 
@@ -56,6 +69,8 @@ void main() {
       id: "id_biceps_exercise",
       name: "Biceps Exercise",
       primaryMuscleGroup: MuscleGroup.biceps,
+      secondaryMuscleGroups: [MuscleGroup.hamstrings],
+      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
       owner: false);
 
@@ -63,6 +78,8 @@ void main() {
       id: "id_triceps_exercise",
       name: "Triceps Exercise",
       primaryMuscleGroup: MuscleGroup.triceps,
+      secondaryMuscleGroups: [MuscleGroup.hamstrings],
+      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
       owner: false);
 
@@ -70,6 +87,8 @@ void main() {
       id: "id_abs",
       name: "Abs Exercise",
       primaryMuscleGroup: MuscleGroup.abs,
+      secondaryMuscleGroups: [MuscleGroup.hamstrings],
+      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.duration,
       owner: false);
 

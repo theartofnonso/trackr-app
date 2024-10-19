@@ -14,12 +14,14 @@ import 'package:tracker_app/extensions/datetime_range_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
+import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 import 'package:tracker_app/widgets/calendar/calendar_months_navigator.dart';
 
 import '../../controllers/activity_log_controller.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/interface/log_interface.dart';
 import '../../dtos/routine_log_dto.dart';
+import '../../dtos/routine_template_dto.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/activity_type_enums.dart';
 import '../../enums/routine_editor_type_enums.dart';
@@ -28,6 +30,7 @@ import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../utils/shareables_utils.dart';
+import '../../widgets/ai_widgets/trkr_coach_text_widget.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/calendar/calendar.dart';
@@ -35,6 +38,7 @@ import '../../widgets/label_divider.dart';
 import '../../widgets/monitors/overview_monitor.dart';
 import '../../widgets/routine/preview/activity_log_widget.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
+import '../template/templates/trkr_coach_context_screen.dart';
 import 'monthly_insights_screen.dart';
 
 class OverviewScreen extends StatefulWidget {
@@ -56,7 +60,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
   late DateTimeRange _selectedDateTimeRange;
   bool _loading = false;
 
-  void _logEmptyRoutine(BuildContext context) async {
+  TextEditingController? _textEditingController;
+
+  void _logEmptyRoutine() async {
     final log = Provider.of<RoutineLogController>(context, listen: false).cachedLog();
     if (log == null) {
       final log = RoutineLogDto(
@@ -67,6 +73,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           notes: "",
           startTime: DateTime.now(),
           endTime: DateTime.now(),
+          owner: "",
           createdAt: DateTime.now(),
           updatedAt: DateTime.now());
       final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log);
@@ -78,6 +85,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    if (_loading) return TRKRLoadingScreen(action: _hideLoadingState);
+
     /// Routine Logs
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
@@ -111,13 +121,15 @@ class _OverviewScreenState extends State<OverviewScreen> {
     final allActivitiesForTheYear = routineLogsForTheYear.length + activityLogsForTheYear.length;
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        heroTag: "fab_overview_screen",
-        onPressed: _showBottomSheet,
-        backgroundColor: sapphireDark,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        child: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 24),
-      ),
+      floatingActionButton: _loading
+          ? null
+          : FloatingActionButton(
+              heroTag: "fab_overview_screen",
+              onPressed: _showBottomSheet,
+              backgroundColor: sapphireDark,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+              child: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 24),
+            ),
       body: Container(
         width: double.infinity,
         decoration: const BoxDecoration(
@@ -130,67 +142,67 @@ class _OverviewScreenState extends State<OverviewScreen> {
             ],
           ),
         ),
-        child: Stack(
-          children: [
-            SafeArea(
-                minimum: const EdgeInsets.all(10.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      IconButton(
-                        onPressed: null,
-                        icon: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                          const FaIcon(FontAwesomeIcons.fire, color: Colors.white, size: 20),
-                          const SizedBox(width: 4),
-                          Text("$allActivitiesForTheYear",
-                              style:
-                                  GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
-                        ]),
-                      ),
-                      CalendarMonthsNavigator(onChangedDateTimeRange: _onChangedDateTimeRange),
-                      IconButton(
-                          onPressed: _onShareCalendar,
-                          icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 20)),
+        child: SafeArea(
+            minimum: const EdgeInsets.all(10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  IconButton(
+                    onPressed: null,
+                    icon: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                      const FaIcon(FontAwesomeIcons.fire, color: Colors.white, size: 20),
+                      const SizedBox(width: 4),
+                      Text("$allActivitiesForTheYear",
+                          style:
+                          GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
                     ]),
-                    Expanded(
-                      child: SingleChildScrollView(
-                          controller: widget.scrollController,
-                          padding: const EdgeInsets.only(bottom: 150),
-                          child: Column(children: [
-                            const SizedBox(height: 12),
-                            OverviewMonitor(
-                              range: _selectedDateTimeRange,
-                              routineLogs: routineLogsForTheMonth,
-                              activityLogs: activityLogsForTheMonth,
-                            ),
-                            const SizedBox(height: 16),
-                            Calendar(
-                              onSelectDate: _onChangedDateTime,
-                              selectedDateRange: _selectedDateTimeRange,
-                            ),
-                            const SizedBox(height: 10),
-                            _LogsListView(
-                              logs: allActivitiesForCurrentDate,
-                            ),
-                            const SizedBox(height: 12),
-                            MonthlyInsightsScreen(
-                              logsForTheMonth: routineLogsForTheMonth,
-                              daysInMonth: _selectedDateTimeRange.datesToNow.length,
-                              dateTimeRange: _selectedDateTimeRange,
-                              monthlyLogsAndDate: monthlyRoutineLogs,
-                              activityLogsForTheMonth: activityLogsForTheMonth,
-                            ),
-                          ])),
-                    )
-                    // Add more widgets here for exercise insights
-                  ],
-                )),
-            if (_loading) const TRKRLoadingScreen(opacity: 0.9)
-          ],
-        ),
+                  ),
+                  CalendarMonthsNavigator(onChangedDateTimeRange: _onChangedDateTimeRange),
+                  IconButton(
+                      onPressed: _onShareCalendar,
+                      icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 20)),
+                ]),
+                Expanded(
+                  child: SingleChildScrollView(
+                      controller: widget.scrollController,
+                      padding: const EdgeInsets.only(bottom: 150),
+                      child: Column(children: [
+                        const SizedBox(height: 12),
+                        OverviewMonitor(
+                          range: _selectedDateTimeRange,
+                          routineLogs: routineLogsForTheMonth,
+                        ),
+                        const SizedBox(height: 16),
+                        Calendar(
+                          onSelectDate: _onChangedDateTime,
+                          selectedDateRange: _selectedDateTimeRange,
+                        ),
+                        const SizedBox(height: 10),
+                        _LogsListView(
+                          logs: allActivitiesForCurrentDate,
+                        ),
+                        const SizedBox(height: 12),
+                        MonthlyInsightsScreen(
+                          logsForTheMonth: routineLogsForTheMonth,
+                          daysInMonth: _selectedDateTimeRange.datesToNow.length,
+                          dateTimeRange: _selectedDateTimeRange,
+                          monthlyLogsAndDate: monthlyRoutineLogs,
+                          activityLogsForTheMonth: activityLogsForTheMonth,
+                        ),
+                      ])),
+                )
+                // Add more widgets here for exercise insights
+              ],
+            )),
       ),
     );
+  }
+
+  void _hideLoadingState() {
+    setState(() {
+      _loading = false;
+    });
   }
 
   void _showBottomSheet() {
@@ -207,7 +219,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                   style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
                 context.pop();
-                _logEmptyRoutine(context);
+                _showLogNewSessionBottomSheet();
               },
             ),
             ListTile(
@@ -232,6 +244,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           notes: "",
                           startTime: datetimeRange.start,
                           endTime: datetimeRange.end,
+                          owner: "",
                           createdAt: datetimeRange.start,
                           updatedAt: datetimeRange.end);
                       final routineLogArguments = PastRoutineLogArguments(log: log);
@@ -243,7 +256,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               height: 10,
             ),
             const LabelDivider(
-              label: "Training outside the gym?",
+              label: "Log non-resistance training",
               labelColor: Colors.white70,
               dividerColor: sapphireLighter,
             ),
@@ -281,6 +294,63 @@ class _OverviewScreenState extends State<OverviewScreen> {
             ),
           ]),
         ));
+  }
+
+  void _showLogNewSessionBottomSheet() {
+    displayBottomSheet(
+        context: context,
+        child: SafeArea(
+          child: Column(children: [
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(FontAwesomeIcons.play, size: 18),
+              horizontalTitleGap: 6,
+              title: Text("Log new session",
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              onTap: () {
+                context.pop();
+                _logEmptyRoutine();
+              },
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            const LabelDivider(
+              label: "Don't know what to train?",
+              labelColor: Colors.white70,
+              dividerColor: sapphireLighter,
+            ),
+            const SizedBox(
+              height: 6,
+            ),
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              leading: const TRKRCoachWidget(),
+              horizontalTitleGap: 10,
+              title: TRKRCoachTextWidget("Describe your workout",
+                  style: GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 16)),
+              onTap: () {
+                Navigator.pop(context);
+                _switchToAIContext();
+              },
+            ),
+          ]),
+        ));
+  }
+
+  void _switchToAIContext() async {
+    final result = await navigateWithSlideTransition(context: context, child: const TRKRCoachContextScreen())
+        as RoutineTemplateDto?;
+    if (result != null) {
+      if (context.mounted) {
+        final arguments = RoutineLogArguments(log: result.log(), editorMode: RoutineEditorMode.log);
+        if (mounted) {
+          navigateToRoutineLogEditor(context: context, arguments: arguments);
+        }
+      }
+    }
   }
 
   void _onChangedDateTime(DateTime date) {
@@ -385,6 +455,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
     super.initState();
     _selectedDateTime = DateTime.now();
     _selectedDateTimeRange = thisMonthDateRange();
+  }
+
+  @override
+  void dispose() {
+    _textEditingController?.dispose();
+    super.dispose();
   }
 }
 

@@ -17,7 +17,6 @@ import '../enums/exercise_type_enums.dart';
 import '../models/RoutineLog.dart';
 import '../models/RoutineTemplate.dart';
 import '../shared_prefs.dart';
-import '../utils/date_utils.dart';
 
 class AmplifyLogRepository {
   List<RoutineLogDto> _routineLogs = [];
@@ -56,28 +55,8 @@ class AmplifyLogRepository {
     _exerciseLogsByType = groupExerciseLogsByExerciseType(routineLogs: _routineLogs);
   }
 
-  Future<void> fetchLogs({required bool firstLaunch}) async {
-    if (firstLaunch) {
-      final dateRange = yearToDateTimeRange();
-      List<RoutineLog> logs = await queryLogsCloud(range: dateRange);
-      _mapAndNormaliseLogs(logs: logs);
-    } else {
-      List<RoutineLog> logs = await Amplify.DataStore.query(RoutineLog.classType);
-      _mapAndNormaliseLogs(logs: logs);
-    }
-  }
-
-  Future<RoutineLog?> fetchLogCloud({required String id}) async {
-    try {
-      final request = ModelQueries.get(
-        RoutineLog.classType,
-        RoutineLogModelIdentifier(id: id),
-      );
-      final response = await Amplify.API.query(request: request).response;
-      return response.data;
-    } on ApiException catch (_) {
-      return null;
-    }
+  void loadLogStream({required List<RoutineLog> logs}) {
+    _mapAndNormaliseLogs(logs: logs);
   }
 
   Future<List<RoutineLog>> queryLogsCloud({required DateTimeRange range}) async {
@@ -146,7 +125,10 @@ class AmplifyLogRepository {
   }
 
   void cacheLog({required RoutineLogDto logDto}) {
-    SharedPrefs().cachedRoutineLog = jsonEncode(logDto);
+    SharedPrefs().cachedRoutineLog = jsonEncode(logDto,
+        toEncodable: (Object? value) => value is RoutineLogDto
+            ? value.toJson()
+            : throw UnsupportedError('Cannot convert to JSON: $value'));
   }
 
   RoutineLogDto? cachedRoutineLog() {

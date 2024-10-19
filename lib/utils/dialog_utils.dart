@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/activity_type_enums.dart';
@@ -45,6 +46,7 @@ void showSnackbar({required BuildContext context, required Widget icon, required
 Future<void> displayBottomSheet(
     {required BuildContext context,
     required Widget child,
+      Gradient? gradient,
     double? height,
     enabledDrag = true,
     bool isDismissible = true,
@@ -62,8 +64,8 @@ Future<void> displayBottomSheet(
                 height: height,
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
+                decoration: BoxDecoration(
+                  gradient: gradient ?? const LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
@@ -71,7 +73,7 @@ Future<void> displayBottomSheet(
                       sapphireDark,
                     ],
                   ),
-                  borderRadius: BorderRadius.only(
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20),
                   ),
@@ -241,8 +243,19 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
           title:
               Text("Delete", style: GoogleFonts.ubuntu(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
           onTap: () {
-            Navigator.pop(context);
-            Provider.of<ActivityLogController>(context, listen: false).removeLog(log: activity);
+            Navigator.pop(context); // Close the previous BottomSheet
+            showBottomSheetWithMultiActions(
+                context: context,
+                title: "Delete activity?",
+                description: "Are you sure you want to delete this activity?",
+                leftAction: context.pop,
+                rightAction: () {
+                  Navigator.pop(context); // Close current BottomSheet
+                  Provider.of<ActivityLogController>(context, listen: false).removeLog(log: activity);
+                },
+                leftActionLabel: 'Cancel',
+                rightActionLabel: 'Delete',
+                isRightActionDestructive: true);
           },
         ),
       ]));

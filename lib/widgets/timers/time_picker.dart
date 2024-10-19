@@ -47,7 +47,7 @@ class _TimerPickerState extends State<TimePicker> {
         const SizedBox(height: 10),
         OpacityButtonWidget(
             onPressed: () => widget.onDurationChanged(_duration),
-            label: "Select time",
+            label: "Select duration",
             buttonColor: vibrantGreen,
             padding: const EdgeInsets.all(10.0))
       ],

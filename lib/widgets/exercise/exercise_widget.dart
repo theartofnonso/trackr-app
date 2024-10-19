@@ -49,14 +49,26 @@ class ExerciseWidget extends StatelessWidget {
                   const SizedBox(
                     height: 6,
                   ),
-                  Text(exercise.primaryMuscleGroup.name.toUpperCase(),
-                      style: GoogleFonts.ubuntu(color: Colors.orange, fontWeight: FontWeight.w600, fontSize: 12)),
+                  RichText(
+                      text: TextSpan(
+                          text: exercise.primaryMuscleGroup.name.toUpperCase(),
+                          style: GoogleFonts.ubuntu(
+                              color: Colors.deepOrangeAccent, fontWeight: FontWeight.w600, fontSize: 12, height: 1.5),
+                          children: [
+                        if (exercise.secondaryMuscleGroups.isNotEmpty)
+                          [exercise.primaryMuscleGroup, ...exercise.secondaryMuscleGroups].length == 2 ? const TextSpan(text: " & ") : const TextSpan(text: " | "),
+                          TextSpan(
+                              text: exercise.secondaryMuscleGroups
+                                  .map((muscleGroup) => muscleGroup.name.toUpperCase())
+                                  .join(", "),
+                              style: GoogleFonts.ubuntu(
+                                  color: Colors.orange.withOpacity(0.6), fontWeight: FontWeight.w500, fontSize: 11)),
+                      ])),
                   if (exercise.owner)
                     Padding(
                       padding: const EdgeInsets.only(top: 4.0),
                       child: Text("Owner".toUpperCase(),
-                          style: GoogleFonts.ubuntu(
-                              color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 8)),
+                          style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 8)),
                     ),
                 ],
               ),

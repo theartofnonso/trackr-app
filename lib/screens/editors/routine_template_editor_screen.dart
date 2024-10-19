@@ -150,6 +150,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
         name: _templateNameController.text,
         exerciseTemplates: exercises,
         notes: _templateNotesController.text,
+        owner: "",
         createdAt: DateTime.now(),
         updatedAt: DateTime.now());
 

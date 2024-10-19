@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
+import 'package:tracker_app/enums/training_position_enum.dart';
 import 'package:tracker_app/screens/exercise/muscle_groups_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 
@@ -65,8 +66,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                   ? GestureDetector(
                       onTap: _updateExercise,
                       child: Text("Update",
-                          style:
-                              GoogleFonts.ubuntu(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.white)))
+                          style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.white)))
                   : const SizedBox.shrink(),
               const SizedBox(width: 12)
             ],
@@ -178,25 +178,53 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     setState(() {
       _isInputFieldVisible = true;
     });
-    await displayBottomSheet(
+
+    await showModalBottomSheet(
         context: context,
-        child: TextField(
-          controller: TextEditingController(text: _exerciseName),
-          decoration: InputDecoration(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: sapphireLighter)),
-              filled: true,
-              fillColor: sapphireDark,
-              hintText: "New Exercise",
-              hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14)),
-          onChanged: (value) => _updateExerciseName(value),
-          cursorColor: Colors.white,
-          keyboardType: TextInputType.text,
-          textCapitalization: TextCapitalization.words,
-          style:
-              GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
-        ));
+        builder: (context) {
+          return Padding(
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: Container(
+                padding: const EdgeInsets.only(top: 16, right: 16, bottom: 28, left: 16),
+                decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                    ),
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        sapphireDark80,
+                        sapphireDark,
+                      ],
+                    )),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextField(
+                      controller: TextEditingController(text: _exerciseName),
+                      decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5),
+                              borderSide: const BorderSide(color: sapphireLighter)),
+                          filled: true,
+                          fillColor: sapphireDark,
+                          hintText: "Enter exercise name",
+                          hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14)),
+                      onChanged: (value) => _updateExerciseName(value),
+                      cursorColor: Colors.white,
+                      keyboardType: TextInputType.text,
+                      textCapitalization: TextCapitalization.words,
+                      style: GoogleFonts.ubuntu(
+                          fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+                    )
+                  ],
+                )),
+          );
+        });
     _doneTyping();
   }
 
@@ -209,7 +237,13 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
       _showSnackbar("Please provide a name for this exercise");
     } else {
       final exercise = ExerciseDto(
-          id: "", name: exerciseName, primaryMuscleGroup: _primaryMuscleGroup, type: _exerciseType, owner: true);
+          id: "",
+          name: exerciseName,
+          primaryMuscleGroup: _primaryMuscleGroup,
+          secondaryMuscleGroups: [],
+          trainingPosition: TrainingPosition.none,
+          type: _exerciseType,
+          owner: true);
 
       await Provider.of<ExerciseController>(context, listen: false).saveExercise(exerciseDto: exercise);
       if (mounted) {

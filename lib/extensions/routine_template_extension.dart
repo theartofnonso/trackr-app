@@ -31,6 +31,7 @@ extension RoutineTemplateExtension on RoutineTemplate {
       scheduleIntervals: scheduleIntervals,
       scheduledDate: scheduledDate,
       scheduleType: scheduleType,
+      owner: owner ?? "",
       createdAt: createdAt.getDateTimeInUtc(),
       updatedAt: updatedAt.getDateTimeInUtc(),
     );

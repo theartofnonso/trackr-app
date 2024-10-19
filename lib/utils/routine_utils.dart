@@ -1,7 +1,7 @@
-
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
@@ -20,14 +20,16 @@ import '../dtos/pb_dto.dart';
 import '../dtos/routine_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
 import '../dtos/set_dto.dart';
+import '../dtos/viewmodels/exercise_log_view_model.dart';
 import '../enums/routine_schedule_type_enums.dart';
 import '../enums/template_changes_type_message_enums.dart';
 import '../screens/exercise/reorder_exercises_screen.dart';
+import '../widgets/empty_states/single_set_row_empty_state.dart';
+import '../widgets/routine/preview/set_rows/double_set_row.dart';
+import '../widgets/routine/preview/set_rows/set_row.dart';
+import '../widgets/routine/preview/set_rows/single_set_row.dart';
 import 'exercise_logs_utils.dart';
 import 'general_utils.dart';
-import '../widgets/empty_states/single_set_row_empty_state.dart';
-import '../widgets/routine/preview/set_rows/single_set_row.dart';
-import '../widgets/routine/preview/set_rows/double_set_row.dart';
 
 Future<List<ExerciseLogDto>?> reOrderExerciseLogs(
     {required BuildContext context, required List<ExerciseLogDto> exerciseLogs}) async {
@@ -86,14 +88,37 @@ ExerciseLogDto? whereOtherExerciseInSuperSet(
       exercise.exercise.id != firstExercise.exercise.id);
 }
 
-List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> sets, List<PBDto> pbs = const [], required RoutinePreviewType routinePreviewType}) {
-  final durationTemplate = Padding(
-    padding: const EdgeInsets.symmetric(vertical: 10.0),
-    child: Center(
-      child: Text("Timer will be available in log mode",
-          style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white70)),
-    ),
-  );
+List<Widget> setsToWidgets(
+    {required ExerciseType type,
+    required List<SetDto> sets,
+    List<PBDto> pbs = const [],
+    required RoutinePreviewType routinePreviewType}) {
+  final durationTemplate = SetRow(
+      routinePreviewType: routinePreviewType,
+      margin: const EdgeInsets.only(bottom: 6),
+      pbs: const [],
+      child: Table(columnWidths: const <int, TableColumnWidth>{
+        0: FlexColumnWidth(),
+      }, children: <TableRow>[
+        TableRow(children: [
+          TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const FaIcon(
+                  FontAwesomeIcons.clock,
+                  color: Colors.white70,
+                  size: 16,
+                ),
+                const SizedBox(width: 4),
+                Text("Timer will run during workout",
+                    style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white70)),
+              ],
+            ),
+          ),
+        ]),
+      ]));
 
   Widget emptyState;
 
@@ -118,7 +143,12 @@ List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> se
       case ExerciseType.weights:
         final firstLabel = weightWithConversion(value: setDto.weightValue());
         final secondLabel = setDto.repsValue();
-        return DoubleSetRow(first: "$firstLabel", second: "$secondLabel", margin: margin, pbs: pbsForSet, routinePreviewType: routinePreviewType);
+        return DoubleSetRow(
+            first: "$firstLabel",
+            second: "$secondLabel",
+            margin: margin,
+            pbs: pbsForSet,
+            routinePreviewType: routinePreviewType);
       case ExerciseType.bodyWeight:
         final label = setDto.repsValue();
         return SingleSetRow(label: "$label", margin: margin, routinePreviewType: routinePreviewType);
@@ -152,8 +182,7 @@ Map<DateTimeRange, List<RoutineLogDto>> groupRoutineLogsByWeek(
 }
 
 Map<DateTimeRange, List<RoutineLogDto>> groupRoutineLogsByMonth({required List<RoutineLogDto> routineLogs}) {
-
-  if(routineLogs.isEmpty) return {};
+  if (routineLogs.isEmpty) return {};
 
   final map = <DateTimeRange, List<RoutineLogDto>>{};
 
@@ -187,8 +216,7 @@ Map<DateTimeRange, List<ActivityLogDto>> groupActivityLogsByWeek(
 }
 
 Map<DateTimeRange, List<ActivityLogDto>> groupActivityLogsByMonth({required List<ActivityLogDto> activityLogs}) {
-
-  if(activityLogs.isEmpty) return {};
+  if (activityLogs.isEmpty) return {};
 
   final map = <DateTimeRange, List<ActivityLogDto>>{};
 
@@ -219,7 +247,6 @@ String superSetId({required ExerciseLogDto firstExerciseLog, required ExerciseLo
 }
 
 Future<List<RoutineLog>> getAllRoutineLogs() async {
-
   List<RoutineLog> logs = [];
 
   final request = GraphQLRequest<PaginatedResult<RoutineLog>>(
@@ -243,7 +270,7 @@ String scheduledDaysSummary({required RoutineTemplateDto template}) {
 
     if (scheduledDays.isNotEmpty) {
       final scheduledDayNames =
-      scheduledDays.map((day) => template.isScheduledToday() ? day.longName : day.shortName).toList();
+          scheduledDays.map((day) => template.isScheduledToday() ? day.longName : day.shortName).toList();
 
       return scheduledDays.length == 7 ? "Everyday" : "Every ${joinWithAnd(items: scheduledDayNames)}";
     }
@@ -253,4 +280,12 @@ String scheduledDaysSummary({required RoutineTemplateDto template}) {
     return template.scheduleIntervals == 1 ? "Everyday" : "${template.scheduledDate?.formattedDate()}";
   }
   return "No schedule";
+}
+
+List<ExerciseLogViewModel> exerciseLogsToViewModels({required List<ExerciseLogDto> exerciseLogs}) {
+  return exerciseLogs.map((exerciseLog) {
+    return ExerciseLogViewModel(
+        exerciseLog: exerciseLog,
+        superSet: whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs));
+  }).toList();
 }

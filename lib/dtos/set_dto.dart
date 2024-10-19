@@ -66,11 +66,11 @@ class SetDto {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is SetDto &&
-          runtimeType == other.runtimeType &&
-          value1 == other.value1 &&
-          value2 == other.value2 &&
-          checked == other.checked;
+          other is SetDto &&
+              runtimeType == other.runtimeType &&
+              value1 == other.value1 &&
+              value2 == other.value2 &&
+              checked == other.checked;
 
   @override
   int get hashCode => value1.hashCode ^ value2.hashCode ^ checked.hashCode;

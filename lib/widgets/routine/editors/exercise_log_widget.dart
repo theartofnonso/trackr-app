@@ -24,9 +24,6 @@ import '../../../screens/exercise/history/home_screen.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/one_rep_max_calculator.dart';
 
-const _logModeTimerMessage = "Tap + to add a timer";
-const _editModeTimerMessage = "Timer will be available in log mode";
-
 class ExerciseLogWidget extends StatefulWidget {
   final RoutineEditorMode editorType;
 
@@ -237,18 +234,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     }
   }
 
-  String _timerMessage() {
-    if (widget.editorType == RoutineEditorMode.log) {
-      return _logModeTimerMessage;
-    } else {
-      return _editModeTimerMessage;
-    }
-  }
-
-  bool _canAddSets({required ExerciseType type}) {
-    return withWeightsOnly(type: type) || withReps(type: type) || widget.editorType == RoutineEditorMode.log;
-  }
-
   @override
   Widget build(BuildContext context) {
     final sets = widget.exerciseLogDto.sets;
@@ -285,8 +270,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                       Column(
                         children: [
                           Text("with ${superSetExerciseDto.exercise.name}",
-                              style: GoogleFonts.ubuntu(
-                                  color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 12)),
+                              style:
+                                  GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 12)),
                           const SizedBox(height: 10)
                         ],
                       ),
@@ -331,8 +316,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             cursorColor: Colors.white,
             keyboardType: TextInputType.text,
             textCapitalization: TextCapitalization.sentences,
-            style:
-                GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+            style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
           ),
           const SizedBox(height: 12),
           switch (exerciseType) {
@@ -362,7 +346,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           const SizedBox(height: 8),
           if (withDurationOnly(type: exerciseType) && sets.isEmpty)
             Center(
-              child: Text(_timerMessage(),
+              child: Text("Tap + to add a timer",
                   style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white70)),
             ),
           const SizedBox(height: 8),
@@ -380,15 +364,16 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               icon: const Icon(Icons.close_fullscreen_rounded, color: Colors.white),
               tooltip: 'Maximise card',
             ),
-            const SizedBox(width: 6,),
-            if (_canAddSets(type: exerciseType))
-              IconButton(
-                  onPressed: _addSet,
-                  icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 16),
-                  style: ButtonStyle(
-                      visualDensity: VisualDensity.compact,
-                      backgroundColor: WidgetStateProperty.all(sapphireDark.withOpacity(0.2)),
-                      shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
+            const SizedBox(
+              width: 6,
+            ),
+            IconButton(
+                onPressed: _addSet,
+                icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 16),
+                style: ButtonStyle(
+                    visualDensity: VisualDensity.compact,
+                    backgroundColor: WidgetStateProperty.all(sapphireDark.withOpacity(0.2)),
+                    shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
           ])
         ],
       ),
@@ -488,8 +473,7 @@ class _OneRepMaxSliderState extends State<_OneRepMaxSlider> {
         RichText(
           text: TextSpan(
             text: "Based on your recent progress, consider",
-            style:
-                GoogleFonts.ubuntu(height: 1.5, color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 14),
+            style: GoogleFonts.ubuntu(height: 1.5, color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 14),
             children: [
               TextSpan(
                 text: "\n",

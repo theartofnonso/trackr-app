@@ -21,14 +21,9 @@ class ActivityLogController extends ChangeNotifier {
 
   UnmodifiableMapView<DateTimeRange, List<ActivityLogDto>> get monthlyLogs => _amplifyActivityLogRepository.monthlyLogs;
 
-  Future<void> fetchLogs({bool firstLaunch = false}) async {
-    try {
-      await _amplifyActivityLogRepository.fetchLogs(firstLaunch: firstLaunch);
-    } catch (e) {
-      errorMessage = "Oops! Something went wrong. Please try again later.";
-    } finally {
-      notifyListeners();
-    }
+  void streamLogs({required List<ActivityLog> logs}) async {
+    _amplifyActivityLogRepository.loadLogsStream(logs: logs);
+    notifyListeners();
   }
 
   Future<List<ActivityLog>> fetchLogsCloud({required DateTimeRange range}) async {

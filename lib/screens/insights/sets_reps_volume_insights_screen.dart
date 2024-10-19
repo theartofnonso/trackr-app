@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +16,7 @@ import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/empty_states/horizontal_stacked_bars_empty_state.dart';
 
 import '../../colors.dart';
-import '../../controllers/open_ai_controller.dart';
+import '../../controllers/exercise_controller.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../dtos/routine_log_dto.dart';
@@ -26,6 +24,7 @@ import '../../dtos/set_dto.dart';
 import '../../enums/chart_unit_enum.dart';
 import '../../enums/muscle_group_enums.dart';
 import '../../enums/sets_reps_volume_enum.dart';
+import '../../openAI/open_ai.dart';
 import '../../strings/ai_prompts.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/navigation_utils.dart';
@@ -60,6 +59,9 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
   @override
   Widget build(BuildContext context) {
+
+    if (_loading) return TRKRLoadingScreen(action: _hideLoadingState);
+
     final textStyle = GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white70);
 
     final muscleGroups = MuscleGroup.values;
@@ -79,24 +81,37 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     List<num> periodicalValues = [];
     List<DateTime> periodicalDates = [];
 
+    final exerciseController = Provider.of<ExerciseController>(context, listen: false);
+
     final exerciseLogs = periodicalLogs
         .map((log) => log.value)
         .expand((logs) => logs)
         .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
         .expand((exerciseLogs) => exerciseLogs)
-        .where((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup == _selectedMuscleGroup)
-        .toList();
+        .map((exerciseLog) {
+      final foundExercise =
+          exerciseController.exercises.firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.id == exerciseLog.id);
+      return foundExercise != null ? exerciseLog.copyWith(exercise: foundExercise) : exerciseLog;
+    }).where((exerciseLog) {
+      final muscleGroups = [exerciseLog.exercise.primaryMuscleGroup, ...exerciseLog.exercise.secondaryMuscleGroups];
+      return muscleGroups.contains(_selectedMuscleGroup);
+    }).toList();
 
     for (final periodAndLogs in periodicalLogs) {
       final valuesForPeriod = periodAndLogs.value
           .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
           .expand((exerciseLogs) => exerciseLogs)
-          .where((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup == _selectedMuscleGroup)
-          .map((log) {
+          .map((exerciseLog) {
+        final foundExercise = exerciseController.exercises
+            .firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.id == exerciseLog.id);
+        return foundExercise != null ? exerciseLog.copyWith(exercise: foundExercise) : exerciseLog;
+      }).where((exerciseLog) {
+        final muscleGroups = {exerciseLog.exercise.primaryMuscleGroup, ...exerciseLog.exercise.secondaryMuscleGroups};
+        return muscleGroups.contains(_selectedMuscleGroup);
+      }).map((log) {
         final values = _calculateMetric(sets: log.sets);
         return values;
       }).sum;
-
       periodicalValues.add(valuesForPeriod);
       periodicalDates.add(periodAndLogs.key.end);
     }
@@ -118,15 +133,14 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     final totalSufficient = _weightWhere(
         values: nonZeroValues,
         condition: (value) => value >= _sufficientSetsOrRepsValue() && value < _optimalSetsOrRepsValue());
-    final totalMinimum = _weightWhere(
-        values: nonZeroValues,
-        condition: (value) => value >= _minimumSetsOrRepsValue() && value < _sufficientSetsOrRepsValue());
+    final totalMinimum =
+        _weightWhere(values: nonZeroValues, condition: (value) => value < _sufficientSetsOrRepsValue());
 
     final weights = [totalOptimal, totalSufficient, totalMinimum];
 
     final hasWeights = weights.any((weight) => weight > 0);
 
-    final weightColors = [vibrantGreen, vibrantBlue, Colors.orange];
+    final weightColors = [vibrantGreen, vibrantBlue, Colors.deepOrangeAccent];
 
     final barColors = periodicalValues
         .map((value) => _metric == SetRepsVolumeReps.sets
@@ -156,232 +170,235 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
             ],
           ),
         ),
-        child: Stack(children: [
-          SafeArea(
-            minimum: const EdgeInsets.all(10),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  CalendarMonthsNavigator(
-                    onChangedDateTimeRange: _onChangedDateTimeRange,
-                    chartPeriod: _period,
+        child: SafeArea(
+          minimum: const EdgeInsets.all(10),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CalendarMonthsNavigator(
+                  onChangedDateTimeRange: _onChangedDateTimeRange,
+                  chartPeriod: _period,
+                ),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: sapphireDark.withOpacity(0.6), // Background color
+                    borderRadius: BorderRadius.circular(5), // Border radius
                   ),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                    decoration: BoxDecoration(
-                      color: sapphireDark.withOpacity(0.6), // Background color
-                      borderRadius: BorderRadius.circular(5), // Border radius
+                  child: DropdownButton<MuscleGroup>(
+                    menuMaxHeight: 200,
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                    isExpanded: true,
+                    borderRadius: BorderRadius.circular(8),
+                    isDense: true,
+                    value: _selectedMuscleGroup,
+                    hint: Text("Muscle group",
+                        style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14)),
+                    underline: Container(
+                      color: Colors.transparent,
                     ),
-                    child: DropdownButton<MuscleGroup>(
-                      menuMaxHeight: 200,
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                      isExpanded: true,
-                      borderRadius: BorderRadius.circular(8),
-                      isDense: true,
-                      value: _selectedMuscleGroup,
-                      hint: Text("Muscle group",
-                          style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14)),
-                      underline: Container(
-                        color: Colors.transparent,
-                      ),
-                      style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
-                      onChanged: (MuscleGroup? value) {
-                        if (value != null) {
-                          setState(() {
-                            _selectedMuscleGroup = value;
-                          });
-                        }
-                      },
-                      items: muscleGroups.map<DropdownMenuItem<MuscleGroup>>((MuscleGroup muscleGroup) {
-                        return DropdownMenuItem<MuscleGroup>(
-                          value: muscleGroup,
-                          child: Text(muscleGroup.name,
-                              style: GoogleFonts.ubuntu(
-                                  color: _selectedMuscleGroup == muscleGroup ? Colors.white : Colors.white70,
-                                  fontWeight: _selectedMuscleGroup == muscleGroup ? FontWeight.bold : FontWeight.w500,
-                                  fontSize: 14)),
-                        );
-                      }).toList(),
+                    style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
+                    onChanged: (MuscleGroup? value) {
+                      if (value != null) {
+                        setState(() {
+                          _selectedMuscleGroup = value;
+                        });
+                      }
+                    },
+                    items: muscleGroups.map<DropdownMenuItem<MuscleGroup>>((MuscleGroup muscleGroup) {
+                      return DropdownMenuItem<MuscleGroup>(
+                        value: muscleGroup,
+                        child: Text(muscleGroup.name,
+                            style: GoogleFonts.ubuntu(
+                                color: _selectedMuscleGroup == muscleGroup ? Colors.white : Colors.white70,
+                                fontWeight: _selectedMuscleGroup == muscleGroup ? FontWeight.bold : FontWeight.w500,
+                                fontSize: 14)),
+                      );
+                    }).toList(),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TRKRInformationContainer(
+                  ctaLabel: "Review your ${_selectedMuscleGroup.name} training",
+                  description: _selectedMuscleGroup.description,
+                  onTap: () => _generateSummary(logs: exerciseLogs),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            text:
+                                "${_metric == SetRepsVolumeReps.volume ? volumeInKOrM(avgValue.toDouble(), showLessThan1k: false) : avgValue}",
+                            style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 28),
+                            children: [
+                              TextSpan(
+                                text: " ",
+                                style:
+                                    GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                              ),
+                              TextSpan(
+                                text: _metricLabel().toUpperCase(),
+                                style:
+                                    GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Text(
+                          "WEEKLY AVERAGE",
+                          style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 10),
+                        ),
+                      ],
                     ),
-                  ),
-                  // const SizedBox(height: 10),
-                  // TRKRInformationContainer(
-                  //   ctaLabel: "Review your ${_selectedMuscleGroup.name} training",
-                  //   description: _selectedMuscleGroup.description,
-                  //   onTap: () => _generateSummary(logs: exerciseLogs),
-                  // ),
-                  const SizedBox(height: 12),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          RichText(
-                            text: TextSpan(
-                              text:
-                                  "${_metric == SetRepsVolumeReps.volume ? volumeInKOrM(avgValue.toDouble(), showLessThan1k: false) : avgValue}",
-                              style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 28),
-                              children: [
-                                TextSpan(
-                                  text: " ",
-                                  style: GoogleFonts.ubuntu(
-                                      color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
-                                ),
-                                TextSpan(
-                                  text: _metricLabel().toUpperCase(),
-                                  style: GoogleFonts.ubuntu(
-                                      color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Text(
-                            "WEEKLY AVERAGE",
-                            style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 10),
-                          ),
-                        ],
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          CupertinoSlidingSegmentedControl<ChartPeriod>(
-                            backgroundColor: sapphireDark,
-                            thumbColor: sapphireLight,
-                            groupValue: _period,
-                            children: {
-                              ChartPeriod.month: SizedBox(
-                                  width: 40,
-                                  child: Text(ChartPeriod.month.name.toUpperCase(),
-                                      style: textStyle, textAlign: TextAlign.center)),
-                              ChartPeriod.threeMonths: SizedBox(
-                                  width: 40,
-                                  child: Text(ChartPeriod.threeMonths.name.toUpperCase(),
-                                      style: textStyle, textAlign: TextAlign.center)),
-                              ChartPeriod.sixMonths: SizedBox(
-                                  width: 40,
-                                  child: Text(ChartPeriod.sixMonths.name.toUpperCase(),
-                                      style: textStyle, textAlign: TextAlign.center)),
-                            },
-                            onValueChanged: (ChartPeriod? value) {
-                              if (value != null) {
-                                setState(() {
-                                  _period = value;
-                                  _dateTimeRange = _periodDateTimeRange();
-                                });
-                              }
-                            },
-                          ),
-                          const SizedBox(height: 10),
-                          CupertinoSlidingSegmentedControl<SetRepsVolumeReps>(
-                            backgroundColor: sapphireDark,
-                            thumbColor: sapphireLight,
-                            groupValue: _metric,
-                            children: {
-                              SetRepsVolumeReps.sets: SizedBox(
-                                  width: 40,
-                                  child:
-                                      Text(SetRepsVolumeReps.sets.name, style: textStyle, textAlign: TextAlign.center)),
-                              SetRepsVolumeReps.reps: SizedBox(
-                                  width: 40,
-                                  child:
-                                      Text(SetRepsVolumeReps.reps.name, style: textStyle, textAlign: TextAlign.center)),
-                              SetRepsVolumeReps.volume: SizedBox(
-                                  width: 40,
-                                  child: Text(SetRepsVolumeReps.volume.name,
-                                      style: textStyle, textAlign: TextAlign.center)),
-                            },
-                            onValueChanged: (SetRepsVolumeReps? value) {
-                              if (value != null) {
-                                setState(() {
-                                  _metric = value;
-                                });
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 60),
-                  SizedBox(
-                      height: 250,
-                      child: CustomBarChart(
-                        chartPoints: chartPoints,
-                        periods: _period == ChartPeriod.month ? weeks : months,
-                        barColors: _metric != SetRepsVolumeReps.volume ? barColors : null,
-                        unit: _chartUnit(),
-                        bottomTitlesInterval: _period == ChartPeriod.month
-                            ? 1
-                            : weeks.length > 7
-                                ? 4
-                                : 2,
-                        showTopTitles: _period == ChartPeriod.month ? true : false,
-                        showLeftTitles: true,
-                        reservedSize: _reservedSize(),
-                      )),
-                  const SizedBox(height: 10),
-                  if (_isRepsOrSetsMetric())
-                    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text(
-                        "${_metric.name} Breakdown".toUpperCase(),
-                        style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 12),
-                      ),
-                      const SizedBox(height: 14),
-                      hasWeights
-                          ? HorizontalStackedBars(weights: weights, colors: weightColors)
-                          : const HorizontalStackedBarsEmptyState(),
-                      const SizedBox(height: 10),
-                      Legend(
-                        title: "$totalOptimal",
-                        suffix: "x",
-                        subTitle: 'Optimal (>${_optimalSetsOrRepsValue()} ${_metric.name})',
-                        color: vibrantGreen,
-                      ),
-                      const SizedBox(height: 6),
-                      Legend(
-                        title: "$totalSufficient",
-                        suffix: "x",
-                        subTitle:
-                            'Sufficient (${_sufficientSetsOrRepsValue()}-${_optimalSetsOrRepsValue()} ${_metric.name})',
-                        color: vibrantBlue,
-                      ),
-                      const SizedBox(height: 6),
-                      Legend(
-                        title: "$totalMinimum", //
-                        suffix: "x",
-                        subTitle: 'Minimum (<${_sufficientSetsOrRepsValue()} ${_metric.name})',
-                        color: Colors.orange,
-                      ),
-                    ]),
-                ],
-              ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        CupertinoSlidingSegmentedControl<ChartPeriod>(
+                          backgroundColor: sapphireDark,
+                          thumbColor: sapphireLight,
+                          groupValue: _period,
+                          children: {
+                            ChartPeriod.month: SizedBox(
+                                width: 40,
+                                child: Text(ChartPeriod.month.name.toUpperCase(),
+                                    style: textStyle, textAlign: TextAlign.center)),
+                            ChartPeriod.threeMonths: SizedBox(
+                                width: 40,
+                                child: Text(ChartPeriod.threeMonths.name.toUpperCase(),
+                                    style: textStyle, textAlign: TextAlign.center)),
+                            ChartPeriod.sixMonths: SizedBox(
+                                width: 40,
+                                child: Text(ChartPeriod.sixMonths.name.toUpperCase(),
+                                    style: textStyle, textAlign: TextAlign.center)),
+                          },
+                          onValueChanged: (ChartPeriod? value) {
+                            if (value != null) {
+                              setState(() {
+                                _period = value;
+                                _dateTimeRange = _periodDateTimeRange();
+                              });
+                            }
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        CupertinoSlidingSegmentedControl<SetRepsVolumeReps>(
+                          backgroundColor: sapphireDark,
+                          thumbColor: sapphireLight,
+                          groupValue: _metric,
+                          children: {
+                            SetRepsVolumeReps.sets: SizedBox(
+                                width: 40,
+                                child:
+                                    Text(SetRepsVolumeReps.sets.name, style: textStyle, textAlign: TextAlign.center)),
+                            SetRepsVolumeReps.reps: SizedBox(
+                                width: 40,
+                                child:
+                                    Text(SetRepsVolumeReps.reps.name, style: textStyle, textAlign: TextAlign.center)),
+                            SetRepsVolumeReps.volume: SizedBox(
+                                width: 40,
+                                child:
+                                    Text(SetRepsVolumeReps.volume.name, style: textStyle, textAlign: TextAlign.center)),
+                          },
+                          onValueChanged: (SetRepsVolumeReps? value) {
+                            if (value != null) {
+                              setState(() {
+                                _metric = value;
+                              });
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 60),
+                SizedBox(
+                    height: 250,
+                    child: CustomBarChart(
+                      chartPoints: chartPoints,
+                      periods: _period == ChartPeriod.month ? weeks : months,
+                      barColors: _metric != SetRepsVolumeReps.volume ? barColors : null,
+                      unit: _chartUnit(),
+                      bottomTitlesInterval: _period == ChartPeriod.month
+                          ? 1
+                          : weeks.length > 7
+                              ? 4
+                              : 2,
+                      showTopTitles: _period == ChartPeriod.month ? true : false,
+                      showLeftTitles: true,
+                      reservedSize: _reservedSize(),
+                    )),
+                const SizedBox(height: 10),
+                if (_isRepsOrSetsMetric())
+                  Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text(
+                      "${_metric.name} Breakdown".toUpperCase(),
+                      style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 12),
+                    ),
+                    const SizedBox(height: 14),
+                    hasWeights
+                        ? HorizontalStackedBars(weights: weights, colors: weightColors)
+                        : const HorizontalStackedBarsEmptyState(),
+                    const SizedBox(height: 10),
+                    Legend(
+                      title: "$totalOptimal",
+                      suffix: "x",
+                      subTitle: 'Optimal (>${_optimalSetsOrRepsValue()} ${_metric.name})',
+                      color: vibrantGreen,
+                    ),
+                    const SizedBox(height: 6),
+                    Legend(
+                      title: "$totalSufficient",
+                      suffix: "x",
+                      subTitle:
+                          'Sufficient (${_sufficientSetsOrRepsValue()}-${_optimalSetsOrRepsValue()} ${_metric.name})',
+                      color: vibrantBlue,
+                    ),
+                    const SizedBox(height: 6),
+                    Legend(
+                      title: "$totalMinimum", //
+                      suffix: "x",
+                      subTitle: 'Minimum (<${_sufficientSetsOrRepsValue()} ${_metric.name})',
+                      color: Colors.deepOrangeAccent,
+                    ),
+                  ]),
+              ],
             ),
           ),
-          if (_loading) const TRKRLoadingScreen(opacity: 0.9)
-        ]),
+        ),
       ),
     );
   }
 
-  void _toggleLoadingState() {
+  void _showLoadingState() {
     setState(() {
-      _loading = !_loading;
+      _loading = true;
+    });
+  }
+
+  void _hideLoadingState() {
+    setState(() {
+      _loading = false;
     });
   }
 
   void _generateSummary({required List<ExerciseLogDto> logs}) {
     if (logs.isEmpty) {
-      showSnackbar(context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: "You don't have any logs");
+      showSnackbar(
+          context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: "You don't have any logs");
     } else {
       final userInstructions =
-          "Review my workout logs for ${_selectedMuscleGroup.name} from ${_dateTimeRange.start} to ${_dateTimeRange
-          .end} and provide feedback";
+          "Review my workout logs for ${_selectedMuscleGroup.name} from ${_dateTimeRange.start} to ${_dateTimeRange.end} and provide feedback";
 
-      final logJsons = logs.map((log) => jsonEncode(log.toJson()));
+      final logJsons = logs.map((log) => log.toJson());
 
       final StringBuffer buffer = StringBuffer();
 
@@ -390,12 +407,10 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
       final completeInstructions = buffer.toString();
 
-      _toggleLoadingState();
+      _showLoadingState();
 
-      Provider.of<OpenAIController>(context, listen: false)
-          .runMessage(system: routineLogSystemInstruction, user: completeInstructions)
-          .then((response) {
-        _toggleLoadingState();
+      runMessage(system: routineLogSystemInstruction, user: completeInstructions).then((response) {
+        _hideLoadingState();
         if (mounted) {
           if (response != null) {
             navigateWithSlideTransition(context: context, child: SetsRepsVolumeAIContextScreen(content: response));
@@ -457,10 +472,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
   bool _isRepsOrSetsMetric() {
     return _metric == SetRepsVolumeReps.sets || _metric == SetRepsVolumeReps.reps;
-  }
-
-  int _minimumSetsOrRepsValue() {
-    return _metric == SetRepsVolumeReps.sets ? 3 : 30;
   }
 
   int _sufficientSetsOrRepsValue() {

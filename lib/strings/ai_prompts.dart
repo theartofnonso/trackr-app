@@ -5,11 +5,14 @@ const routineLogSystemInstruction =
     "the user’s fitness goals, using evidence-based recommendations to guide their progress.";
 
 const routineTemplateSystemInstruction =
-    "As a personal fitness trainer, you are responsible for analyzing workout plan and providing clear, "
+    "As a personal fitness trainer, you are responsible for analyzing workout plans and providing clear, "
     "constructive feedback. Focus on highlighting what the user did well, identifying areas for improvement, "
     "and offering tailored advice to optimize performance. Ensure feedback is concise, actionable, and aligned with the"
     " user’s fitness goals, using evidence-based recommendations to guide their progress. Use only your knowledge base "
-    "for exercise recommendations. ";
+    "for exercise recommendations.";
+
+const defaultSystemInstructionWorkouts =
+    "As a personal fitness trainer, use the supplied tools to assist the user. Refuse questions that don't relate to creating or suggesting a workout";
 
 const openAITemplateAssistantInstructions =
     "Use only your knowledge base for exercise recommendations. Respond with concise, relevant suggestions"

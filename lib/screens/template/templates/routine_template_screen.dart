@@ -1,34 +1,37 @@
+import 'dart:convert';
+
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/extensions/routine_template_extension.dart';
-import 'package:tracker_app/screens/template/templates/routine_template_ai_context_screen.dart';
-import 'package:tracker_app/widgets/ai_widgets/trkr_information_container.dart';
+import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
-import 'package:tracker_app/widgets/information_containers/information_container_lite.dart';
 
-import '../../../../dtos/exercise_log_dto.dart';
 import '../../../colors.dart';
 import '../../../controllers/routine_template_controller.dart';
 import '../../../dtos/routine_template_dto.dart';
-import '../../../dtos/viewmodels/exercise_log_view_model.dart';
 import '../../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../../dtos/viewmodels/routine_template_arguments.dart';
 import '../../../enums/routine_editor_type_enums.dart';
 import '../../../enums/routine_preview_type_enum.dart';
+import '../../../models/RoutineTemplate.dart';
 import '../../../urls.dart';
 import '../../../utils/dialog_utils.dart';
 import '../../../utils/exercise_logs_utils.dart';
+import '../../../utils/https_utils.dart';
 import '../../../utils/navigation_utils.dart';
 import '../../../utils/routine_utils.dart';
 import '../../../utils/string_utils.dart';
 import '../../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../../widgets/chart/muscle_group_family_chart.dart';
 import '../../../widgets/routine/preview/exercise_log_listview.dart';
+import '../../not_found.dart';
 import '../../preferences/routine_schedule_planner/routine_schedule_planner_home.dart';
 
 class RoutineTemplateScreen extends StatefulWidget {
@@ -47,7 +50,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   bool _loading = false;
 
-  bool _isOwner = false;
+  bool _minimized = true;
 
   void _deleteRoutine({required RoutineTemplateDto template}) async {
     try {
@@ -85,17 +88,24 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<RoutineTemplateController>(context, listen: false);
+    if (_loading) return TRKRLoadingScreen(action: _cancelLoadingScreen);
 
     final template = _template;
 
-    if (template == null) {
-      provider.fetchTemplate(id: widget.id);
-      return const _EmptyState();
-    }
+    if (template == null) return const NotFound();
 
     final numberOfSets = template.exerciseTemplates.expand((exerciseTemplate) => exerciseTemplate.sets);
     final setsSummary = "${numberOfSets.length} ${pluralize(word: "Set", count: numberOfSets.length)}";
+
+    final exerciseController = Provider.of<ExerciseController>(context, listen: true);
+
+    final exercisesFromLibrary = template.exerciseTemplates.map((exerciseTemplate) {
+      final foundExercise = exerciseController.exercises
+          .firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.id == exerciseTemplate.id);
+      return foundExercise != null ? exerciseTemplate.copyWith(exercise: foundExercise) : exerciseTemplate;
+    }).toList();
+
+    final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: exercisesFromLibrary);
 
     final menuActions = [
       MenuItemButton(onPressed: _navigateToRoutineTemplateEditor, child: Text("Edit", style: GoogleFonts.ubuntu())),
@@ -131,7 +141,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     ];
 
     return Scaffold(
-        floatingActionButton: _isOwner
+        floatingActionButton: template.owner == SharedPrefs().userId
             ? FloatingActionButton(
                 heroTag: UniqueKey,
                 onPressed: () {
@@ -153,7 +163,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           title: Text(template.name,
               style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
           actions: [
-            _isOwner
+            template.owner == SharedPrefs().userId
                 ? MenuAnchor(
                     style: MenuStyle(
                       backgroundColor: WidgetStateProperty.all(sapphireDark80),
@@ -193,90 +203,118 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
               ],
             ),
           ),
-          child: Stack(children: [
-            SafeArea(
-              minimum: const EdgeInsets.all(10.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    if (template.notes.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0, right: 8, bottom: 10),
-                        child: Text('"${template.notes}"',
-                            textAlign: TextAlign.start,
-                            style: GoogleFonts.ubuntu(
-                                color: Colors.white70,
-                                fontSize: 16,
-                                fontStyle: FontStyle.italic,
-                                fontWeight: FontWeight.w600)),
-                      ),
-                    if (template.notes.isEmpty)
-                      const SizedBox(
-                        height: 10,
-                      ),
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 12),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
-                        color: sapphireDark.withOpacity(0.4), // Set the background color
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      child: Table(
-                        border: const TableBorder.symmetric(inside: BorderSide(color: sapphireLighter, width: 2)),
-                        columnWidths: const <int, TableColumnWidth>{
-                          0: FlexColumnWidth(),
-                          1: FlexColumnWidth(),
-                        },
+          child: SafeArea(
+            minimum: const EdgeInsets.all(10.0),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  if (template.notes.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0, right: 8, bottom: 10),
+                      child: Text('"${template.notes}"',
+                          textAlign: TextAlign.start,
+                          style: GoogleFonts.ubuntu(
+                              color: Colors.white70,
+                              fontSize: 16,
+                              fontStyle: FontStyle.italic,
+                              fontWeight: FontWeight.w600)),
+                    ),
+                  if (template.notes.isEmpty)
+                    const SizedBox(
+                      height: 10,
+                    ),
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
+                      color: sapphireDark.withOpacity(0.4), // Set the background color
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: Table(
+                      border: const TableBorder.symmetric(inside: BorderSide(color: sapphireLighter, width: 2)),
+                      columnWidths: const <int, TableColumnWidth>{
+                        0: FlexColumnWidth(),
+                        1: FlexColumnWidth(),
+                      },
+                      children: [
+                        TableRow(children: [
+                          TableCell(
+                            verticalAlignment: TableCellVerticalAlignment.middle,
+                            child: Center(
+                              child: Text(
+                                  "${template.exerciseTemplates.length} ${pluralize(word: "Exercise", count: template.exerciseTemplates.length)}",
+                                  style: GoogleFonts.ubuntu(
+                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                            ),
+                          ),
+                          TableCell(
+                            verticalAlignment: TableCellVerticalAlignment.middle,
+                            child: Center(
+                              child: Text(setsSummary,
+                                  style: GoogleFonts.ubuntu(
+                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                            ),
+                          ),
+                        ]),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  GestureDetector(
+                    onTap: _onTap,
+                    child: Container(
+                      color: Colors.transparent,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          TableRow(children: [
-                            TableCell(
-                              verticalAlignment: TableCellVerticalAlignment.middle,
-                              child: Center(
-                                child: Text(
-                                    "${template.exerciseTemplates.length} ${pluralize(word: "Exercise", count: template.exerciseTemplates.length)}",
-                                    style: GoogleFonts.ubuntu(
-                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-                              ),
-                            ),
-                            TableCell(
-                              verticalAlignment: TableCellVerticalAlignment.middle,
-                              child: Center(
-                                child: Text(setsSummary,
-                                    style: GoogleFonts.ubuntu(
-                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-                              ),
-                            ),
+                          Row(children: [
+                            Text("Muscle Groups Split".toUpperCase(),
+                                style: GoogleFonts.ubuntu(
+                                    color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+                            const Spacer(),
+                            if (muscleGroupFamilyFrequencies.length > 3)
+                              FaIcon(_minimized ? FontAwesomeIcons.angleDown : FontAwesomeIcons.angleUp,
+                                  color: Colors.white70, size: 16),
                           ]),
+                          const SizedBox(height: 10),
+                          Text("Here's a breakdown of the muscle groups in your ${template.name} workout plan.",
+                              style:
+                                  GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
+                          const SizedBox(height: 10),
+                          MuscleGroupFamilyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    MuscleGroupFamilyChart(
-                        frequencyData: muscleGroupFamilyFrequency(exerciseLogs: template.exerciseTemplates)),
-                    // const SizedBox(height: 12),
-                    // TRKRInformationContainer(
-                    //   ctaLabel: "Ask for a review",
-                    //   description:
-                    //       "Having a structured plan is crucial to achieve results in your training. Your plan can be optimised to help you achieve your objective.",
-                    //   onTap: () => navigateWithSlideTransition(
-                    //       context: context,
-                    //       child: RoutineTemplateAIContextScreen(
-                    //         template: template,
-                    //       )),
-                    // ),
-                    // const SizedBox(height: 12),
-                    ExerciseLogListView(
-                      exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
-                      previewType: RoutinePreviewType.template,
-                    ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 12),
+                  // TRKRInformationContainer(
+                  //     ctaLabel: "Ask for a review",
+                  //     description:
+                  //         "Achieving your fitness goals is easier with a structured plan. Ask the TRKR Coach to optimize your workouts and help you succeed!",
+                  //     onTap: () => navigateWithSlideTransition(
+                  //         context: context,
+                  //         child: const TRKRCoachContextScreen())),
+                  // const SizedBox(height: 12),
+                  ExerciseLogListView(
+                    exerciseLogs: exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
+                    previewType: RoutinePreviewType.template,
+                  ),
+                ],
               ),
             ),
-            if (_loading) const TRKRLoadingScreen()
-          ]),
+          ),
         ));
+  }
+
+  void _cancelLoadingScreen() {
+    _toggleLoadingState();
+  }
+
+  void _onTap() {
+    setState(() {
+      _minimized = !_minimized;
+    });
   }
 
   void _loadData() {
@@ -284,14 +322,18 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     _template = routineTemplateController.templateWhere(id: widget.id);
     if (_template == null) {
       _loading = true;
-      routineTemplateController.fetchTemplate(id: widget.id).then((data) {
-        setState(() {
-          _loading = false;
-          _template = data?.dto();
-        });
+      getAPI(endpoint: "/routine-template", queryParameters: {"id": widget.id}).then((data) {
+        if (data.isNotEmpty) {
+          final json = jsonDecode(data);
+          final body = json["data"];
+          final routineTemplate = body["getRoutineTemplate"];
+          final routineTemplateDto = RoutineTemplate.fromJson(routineTemplate);
+          setState(() {
+            _loading = false;
+            _template = routineTemplateDto.dto();
+          });
+        }
       });
-    } else {
-      _isOwner = _template != null;
     }
   }
 
@@ -412,74 +454,5 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   void initState() {
     super.initState();
     _loadData();
-  }
-
-  List<ExerciseLogViewModel> _exerciseLogsToViewModels({required List<ExerciseLogDto> exerciseLogs}) {
-    return exerciseLogs.map((exerciseLog) {
-      return ExerciseLogViewModel(
-          exerciseLog: exerciseLog,
-          superSet: whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs));
-    }).toList();
-  }
-}
-
-class _EmptyState extends StatelessWidget {
-  const _EmptyState();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: sapphireDark80,
-        leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-          onPressed: () => context.pop(),
-        ),
-        title:
-            Text("Workout", style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              sapphireDark80,
-              sapphireDark,
-            ],
-          ),
-        ),
-        child: SafeArea(
-            child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              RichText(
-                  text: TextSpan(
-                      style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.white),
-                      children: [
-                    TextSpan(
-                        text: "Not F",
-                        style: GoogleFonts.ubuntu(fontSize: 48, color: Colors.white70, fontWeight: FontWeight.w900)),
-                    const WidgetSpan(
-                        child: Padding(
-                          padding: EdgeInsets.only(left: 6.0),
-                          child: FaIcon(FontAwesomeIcons.magnifyingGlass, size: 48, color: Colors.white70),
-                        ),
-                        alignment: PlaceholderAlignment.middle),
-                    TextSpan(
-                        text: "und",
-                        style: GoogleFonts.ubuntu(fontSize: 48, color: Colors.white70, fontWeight: FontWeight.w900)),
-                  ])),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-                child: InformationContainerLite(
-                    content: "We can't find this workout, Please check the link and try again.", color: Colors.orange),
-              ),
-            ],
-          ),
-        )),
-      ),
-    );
   }
 }

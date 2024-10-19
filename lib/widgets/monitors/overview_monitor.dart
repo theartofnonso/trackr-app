@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
@@ -10,7 +11,7 @@ import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../colors.dart';
-import '../../dtos/activity_log_dto.dart';
+import '../../controllers/exercise_controller.dart';
 import '../../dtos/routine_log_dto.dart';
 import '../../strings.dart';
 import '../../utils/exercise_logs_utils.dart';
@@ -22,24 +23,28 @@ class OverviewMonitor extends StatelessWidget {
 
   final DateTimeRange range;
   final List<RoutineLogDto> routineLogs;
-  final List<ActivityLogDto> activityLogs;
 
-  const OverviewMonitor({super.key, required this.range, required this.routineLogs, required this.activityLogs});
+  const OverviewMonitor({super.key, required this.range, required this.routineLogs});
 
   @override
   Widget build(BuildContext context) {
 
     final routineLogDays = groupBy(routineLogs, (log) => log.createdAt.withoutTime().day);
-    final activityLogDays = groupBy(activityLogs, (log) => log.createdAt.withoutTime().day);
 
-    final totalActivityDays = {...routineLogDays.keys, ...activityLogDays.keys}.length;
-
-    final monthlyProgress = (routineLogDays.length + activityLogDays.length) / 12;
+    final monthlyProgress = routineLogDays.length / 12;
 
     final exerciseLogsForTheMonth = routineLogs.expand((log) => log.exerciseLogs).toList();
 
+    final exerciseController = Provider.of<ExerciseController>(context, listen: false);
+
+    final exercisesFromLibrary = exerciseLogsForTheMonth.map((exerciseTemplate) {
+      final foundExercise = exerciseController.exercises
+          .firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.id == exerciseTemplate.id);
+      return foundExercise != null ? exerciseTemplate.copyWith(exercise: foundExercise) : exerciseTemplate;
+    }).toList();
+
     final muscleGroupsSplitFrequencyScore =
-        cumulativeMuscleGroupFamilyFrequency(exerciseLogs: exerciseLogsForTheMonth);
+        cumulativeMuscleGroupFamilyFrequency(exerciseLogs: exercisesFromLibrary);
 
     final splitPercentage = (muscleGroupsSplitFrequencyScore * 100).round();
 
@@ -63,7 +68,7 @@ class OverviewMonitor extends StatelessWidget {
                   color: Colors.transparent,
                   width: 100,
                   child: _MonitorScore(
-                    value: "$totalActivityDays ${pluralize(word: "day", count: totalActivityDays)}",
+                    value: "${routineLogDays.length} ${pluralize(word: "day", count: routineLogDays.length)}",
                     title: "Log Streak",
                     color: logStreakColor(value: monthlyProgress),
                     crossAxisAlignment: CrossAxisAlignment.end,

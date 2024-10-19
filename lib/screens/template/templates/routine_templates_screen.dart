@@ -6,7 +6,9 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/routine_template_controller.dart';
 import 'package:tracker_app/extensions/routine_template_dto_extension.dart';
+import 'package:tracker_app/screens/template/templates/trkr_coach_context_screen.dart';
 import 'package:tracker_app/utils/string_utils.dart';
+import 'package:tracker_app/widgets/ai_widgets/trkr_coach_button.dart';
 import 'package:tracker_app/widgets/empty_states/routine_empty_state.dart';
 
 import '../../../dtos/routine_template_dto.dart';
@@ -40,19 +42,17 @@ class RoutineTemplatesScreen extends StatelessWidget {
         }
       }
 
-      final exercise =
+      final exerciseTemplates =
           routineTemplates.map((template) => template.exerciseTemplates).expand((exercises) => exercises).toList();
 
-      final exercisesByMuscleGroupFamily = groupBy(exercise, (exercise) => exercise.exercise.primaryMuscleGroup.family);
+      final exercisesByMuscleGroupFamily =
+          groupBy(exerciseTemplates, (exercise) => exercise.exercise.primaryMuscleGroup.family);
 
       final muscleGroupFamilies = exercisesByMuscleGroupFamily.keys.toSet();
 
       final listOfPopularMuscleGroupFamilies = popularMuscleGroupFamilies().toSet();
 
       final untrainedMuscleGroups = listOfPopularMuscleGroupFamilies.difference(muscleGroupFamilies);
-
-      String untrainedMuscleGroupsNames =
-          joinWithAnd(items: untrainedMuscleGroups.map((muscle) => muscle.name).toList());
 
       final children = templates
           .map((template) =>
@@ -72,6 +72,8 @@ class RoutineTemplatesScreen extends StatelessWidget {
               minimum: const EdgeInsets.all(10.0),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 const SizedBox(height: 16),
+                TRKRCoachButton(label: "Describe a workout", onTap: () => _switchToAIContext(context: context)),
+                const SizedBox(height: 16),
                 templates.isNotEmpty
                     ? Expanded(
                         child: GridView.count(
@@ -82,37 +84,24 @@ class RoutineTemplatesScreen extends StatelessWidget {
                             children: children),
                       )
                     : const RoutineEmptyState(),
-                const SizedBox(height: 6),
-                if (untrainedMuscleGroups.isNotEmpty)
-                  Container(
-                    width: double.infinity,
-                    color: Colors.transparent,
-                    child: RichText(
-                        text: TextSpan(
-                            text:
-                                "Consider training a variety of muscle groups to avoid muscle imbalances and prevent injury. Start by including",
-                            style: GoogleFonts.ubuntu(
-                                color: Colors.white70,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                wordSpacing: 1,
-                                height: 1.5),
-                            children: [
-                          const TextSpan(text: " "),
-                          TextSpan(
-                              text: untrainedMuscleGroupsNames,
-                              style: GoogleFonts.ubuntu(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  wordSpacing: 1,
-                                  height: 1.5)),
-                          const TextSpan(text: " "),
-                          const TextSpan(text: "exercises in your workouts."),
-                        ])),
-                  ),
               ])));
     });
+  }
+
+  void _switchToAIContext({required BuildContext context}) async {
+    final result = await navigateWithSlideTransition(context: context, child: const TRKRCoachContextScreen())
+        as RoutineTemplateDto?;
+    if (result != null) {
+      if (context.mounted) {
+        _saveTemplate(context: context, template: result);
+      }
+    }
+  }
+
+  void _saveTemplate({required BuildContext context, required RoutineTemplateDto template}) async {
+    final routineTemplate = template;
+    final templateController = Provider.of<RoutineTemplateController>(context, listen: false);
+    await templateController.saveTemplate(templateDto: routineTemplate);
   }
 }
 
@@ -124,62 +113,60 @@ class _RoutineWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final exercises = template.exerciseTemplates;
     final sets = template.exerciseTemplates.expand((exercise) => exercise.sets);
 
-    return Theme(
-        data: ThemeData(splashColor: sapphireLight),
-        child: GestureDetector(
-          onTap: () => navigateToRoutineTemplatePreview(context: context, template: template),
-          child: Container(
-              padding: const EdgeInsets.all(18),
-              decoration: BoxDecoration(
-                  color: sapphireDark80,
-                  borderRadius: BorderRadius.circular(10),
-                  gradient: template.isScheduledToday()
-                      ? const LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            sapphireDark80,
-                            sapphireDark,
-                          ],
-                        )
-                      : null,
-                  boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 5, spreadRadius: 1)]),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(
-                  template.name,
-                  style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w700),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                ),
-                const Spacer(),
-                Text(
-                  "${exercises.length} ${pluralize(word: "Exercise", count: exercises.length)}",
-                  style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w500),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                ),
-                const SizedBox(
-                  height: 6,
-                ),
-                Text(
-                  "${sets.length} ${pluralize(word: "Set", count: sets.length)}",
-                  style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w500),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                ),
-                const SizedBox(height: 8),
-                Divider(color: template.isScheduledToday() ? vibrantGreen.withOpacity(0.2) : sapphireLighter, endIndent: 10),
-                const SizedBox(height: 8),
-                Text(
-                  scheduleSummary,
-                  style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ])),
-        ));
+    return GestureDetector(
+      onTap: () => navigateToRoutineTemplatePreview(context: context, template: template),
+      child: Container(
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(
+              color: sapphireDark80,
+              borderRadius: BorderRadius.circular(10),
+              gradient: template.isScheduledToday()
+                  ? const LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        sapphireDark80,
+                        sapphireDark,
+                      ],
+                    )
+                  : null,
+              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 5, spreadRadius: 1)]),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(
+              template.name,
+              style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w700),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+            ),
+            const Spacer(),
+            Text(
+              "${exercises.length} ${pluralize(word: "Exercise", count: exercises.length)}",
+              style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w500),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+            ),
+            const SizedBox(
+              height: 6,
+            ),
+            Text(
+              "${sets.length} ${pluralize(word: "Set", count: sets.length)}",
+              style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w500),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+            ),
+            const SizedBox(height: 8),
+            Divider(
+                color: template.isScheduledToday() ? vibrantGreen.withOpacity(0.2) : sapphireLighter, endIndent: 10),
+            const SizedBox(height: 8),
+            Text(
+              scheduleSummary,
+              style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ])),
+    );
   }
 }

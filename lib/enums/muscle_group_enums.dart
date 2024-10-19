@@ -12,7 +12,6 @@ class MuscleGroupFamily {
   static const MuscleGroupFamily core = MuscleGroupFamily._("Core");
   static const MuscleGroupFamily neck = MuscleGroupFamily._("Neck");
   static const MuscleGroupFamily fullBody = MuscleGroupFamily._("Full Body");
-  static const MuscleGroupFamily cardio = MuscleGroupFamily._("Cardio");
   static const MuscleGroupFamily none = MuscleGroupFamily._("None");
 
   // List of all families
@@ -25,7 +24,6 @@ class MuscleGroupFamily {
         core,
         neck,
         fullBody,
-        cardio,
       ];
 }
 
@@ -53,7 +51,6 @@ class MuscleGroup {
   static const MuscleGroup quadriceps = MuscleGroup._("Quadriceps", MuscleGroupFamily.legs, "Quadriceps are key for knee extension, vital for squats, lunges, and running.");
   static const MuscleGroup calves = MuscleGroup._("Calves", MuscleGroupFamily.legs, "Calves enable ankle flexion, essential for running, jumping, and stability in lower-body movements.");
   static const MuscleGroup neck = MuscleGroup._("Neck", MuscleGroupFamily.neck, "Neck muscles help stabilize the head and support posture.");
-  static const MuscleGroup cardio = MuscleGroup._("Cardio", MuscleGroupFamily.cardio, "Cardio improves endurance, heart health, and overall aerobic capacity.");
   static const MuscleGroup fullBody = MuscleGroup._("Full Body", MuscleGroupFamily.fullBody, "Full body exercises engage multiple muscle groups, improving overall strength and endurance.");
   static const MuscleGroup none = MuscleGroup._("None", MuscleGroupFamily.fullBody, "No specific muscle group targeted.");
 
@@ -75,7 +72,6 @@ class MuscleGroup {
         quadriceps,
         calves,
         neck,
-        cardio,
         fullBody,
       ];
 

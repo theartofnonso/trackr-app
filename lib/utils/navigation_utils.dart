@@ -63,7 +63,7 @@ void navigateToLogs({required BuildContext context, required DateTimeRange range
 }
 
 /// Create a screen on demand
-void navigateWithSlideTransition({required BuildContext context, required Widget child}) {
+Future navigateWithSlideTransition({required BuildContext context, required Widget child}) {
   final route = PageRouteBuilder(
     pageBuilder: (context, animation, secondaryAnimation) => child,
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -79,5 +79,5 @@ void navigateWithSlideTransition({required BuildContext context, required Widget
     },
   );
 
-  Navigator.of(context).push(route);
+  return Navigator.of(context).push(route);
 }

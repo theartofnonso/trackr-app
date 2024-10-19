@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
@@ -9,6 +8,7 @@ import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/routine_template_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
+
 import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
@@ -36,7 +36,9 @@ class AmplifyTemplateRepository {
     final exerciseLogs = templateJson["exercises"] as List<dynamic>;
     final exerciseLogDtos = exerciseLogs.map((exerciseLog) {
       final foundExercise = exercises.firstWhere((exercise) => exercise.id == exerciseLog["exercise"]);
-      return ExerciseLogDto(foundExercise.id, id, "", foundExercise, "", [], DateTime.now(), []);
+      return ExerciseLogDto(foundExercise.id, id, "", foundExercise, "", [
+        const SetDto(0, 0, false)
+      ], DateTime.now(), []);
     }).toList();
 
     return RoutineTemplateDto(
@@ -44,6 +46,7 @@ class AmplifyTemplateRepository {
         name: name,
         exerciseTemplates: exerciseLogDtos,
         notes: notes,
+        owner: "",
         createdAt: DateTime.now(),
         updatedAt: DateTime.now());
   }
@@ -86,33 +89,8 @@ class AmplifyTemplateRepository {
     });
   }
 
-  Future<void> fetchTemplates({required bool firstLaunch}) async {
-    if (firstLaunch) {
-      List<RoutineTemplate> templates = await _fetchTemplatesCloud();
-      _mapAndSortTemplates(templates: templates);
-    } else {
-      List<RoutineTemplate> templates = await Amplify.DataStore.query(RoutineTemplate.classType);
-      _mapAndSortTemplates(templates: templates);
-    }
-  }
-
-  Future<List<RoutineTemplate>> _fetchTemplatesCloud() async {
-    final request = ModelQueries.list(RoutineTemplate.classType, limit: 999);
-    final response = await Amplify.API.query(request: request).response;
-    return response.data?.items.whereType<RoutineTemplate>().toList() ?? [];
-  }
-
-  Future<RoutineTemplate?> fetchTemplateCloud({required String id}) async {
-    try {
-      final request = ModelQueries.get(
-        RoutineTemplate.classType,
-        RoutineTemplateModelIdentifier(id: id),
-      );
-      final response = await Amplify.API.query(request: request).response;
-      return response.data;
-    } on ApiException catch (_) {
-      return null;
-    }
+  void loadTemplatesStream({required List<RoutineTemplate> templates}) {
+    _mapAndSortTemplates(templates: templates);
   }
 
   void _mapAndSortTemplates({required List<RoutineTemplate> templates}) {
