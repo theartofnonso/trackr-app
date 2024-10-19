@@ -8,7 +8,7 @@ const openAIFunctionTools = [
   {"type": "function", "function": listExercises}
 ];
 
-const exercisesResponseFormat = {
+const newRoutineTemplateResponseFormat = {
   "type": "json_schema",
   "json_schema": {
     "name": "exercises_response",
@@ -17,7 +17,7 @@ const exercisesResponseFormat = {
       "properties": {
         "exercises": {
           "type": "array",
-          "items": {"type": "string", "description": "Id of the exercise"},
+          "items": {"type": "string", "description": "Id of the exercise found in the list_exercises function call result"},
         },
         "workout_name": {"type": "string", "description": "The descriptive name of the workout"},
         "workout_caption": {"type": "string", "description": "A brief caption that summarises the workout"}

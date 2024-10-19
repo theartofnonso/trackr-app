@@ -72,9 +72,7 @@ class RoutineTemplatesScreen extends StatelessWidget {
               minimum: const EdgeInsets.all(10.0),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 const SizedBox(height: 16),
-                TRKRCoachButton(label: "Describe a workout", onTap: () => navigateWithSlideTransition(
-                    context: context,
-                    child: const TRKRCoachContextScreen())),
+                TRKRCoachButton(label: "Describe a workout", onTap: () => _switchToAIContext(context: context)),
                 const SizedBox(height: 16),
                 templates.isNotEmpty
                     ? Expanded(
@@ -88,6 +86,22 @@ class RoutineTemplatesScreen extends StatelessWidget {
                     : const RoutineEmptyState(),
               ])));
     });
+  }
+
+  void _switchToAIContext({required BuildContext context}) async {
+    final result = await navigateWithSlideTransition(context: context, child: const TRKRCoachContextScreen())
+        as RoutineTemplateDto?;
+    if (result != null) {
+      if (context.mounted) {
+        _saveTemplate(context: context, template: result);
+      }
+    }
+  }
+
+  void _saveTemplate({required BuildContext context, required RoutineTemplateDto template}) async {
+    final routineTemplate = template;
+    final templateController = Provider.of<RoutineTemplateController>(context, listen: false);
+    await templateController.saveTemplate(templateDto: routineTemplate);
   }
 }
 

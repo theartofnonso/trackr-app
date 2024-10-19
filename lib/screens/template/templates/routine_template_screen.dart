@@ -10,7 +10,6 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/extensions/routine_template_extension.dart';
-import 'package:tracker_app/screens/template/templates/trkr_coach_context_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 
@@ -29,7 +28,6 @@ import '../../../utils/https_utils.dart';
 import '../../../utils/navigation_utils.dart';
 import '../../../utils/routine_utils.dart';
 import '../../../utils/string_utils.dart';
-import '../../../widgets/ai_widgets/trkr_information_container.dart';
 import '../../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../../widgets/chart/muscle_group_family_chart.dart';
 import '../../../widgets/routine/preview/exercise_log_listview.dart';
@@ -320,9 +318,13 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                 ),
               ),
             ),
-            if (_loading) const TRKRLoadingScreen()
+            if (_loading) TRKRLoadingScreen(action: _onCancelOperation)
           ]),
         ));
+  }
+
+  void _onCancelOperation() {
+    Navigator.pop(context);
   }
 
   void _onTap() {
@@ -337,7 +339,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     if (_template == null) {
       _loading = true;
       getAPI(endpoint: "/routine-template", queryParameters: {"id": widget.id}).then((data) {
-        if (data != null) {
+        if (data.isNotEmpty) {
           final json = jsonDecode(data);
           final body = json["data"];
           final routineTemplate = body["getRoutineTemplate"];

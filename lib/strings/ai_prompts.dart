@@ -11,8 +11,8 @@ const routineTemplateSystemInstruction =
     " user’s fitness goals, using evidence-based recommendations to guide their progress. Use only your knowledge base "
     "for exercise recommendations.";
 
-const defaultSystemInstruction =
-    "As a personal fitness trainer, use the supplied tools to assist the user.";
+const defaultSystemInstructionWorkouts =
+    "As a personal fitness trainer, use the supplied tools to assist the user. Refuse questions that don't relate to creating or suggesting a workout";
 
 const openAITemplateAssistantInstructions =
     "Use only your knowledge base for exercise recommendations. Respond with concise, relevant suggestions"

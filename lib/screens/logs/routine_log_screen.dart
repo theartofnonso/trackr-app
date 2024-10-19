@@ -225,7 +225,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                     ),
                     const SizedBox(height: 12),
                     GestureDetector(
-                      onTap: _onTap,
+                      onTap: _onMinimiseMuscleGroupSplit,
                       child: Container(
                         color: Colors.transparent,
                         child: Column(
@@ -266,12 +266,16 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                 ),
               ),
             ),
-            if (_loading) const TRKRLoadingScreen()
+            if (_loading) TRKRLoadingScreen(action: _onCancelOperation)
           ]),
         ));
   }
 
-  void _onTap() {
+  void _onCancelOperation() {
+    Navigator.pop(context);
+  }
+
+  void _onMinimiseMuscleGroupSplit() {
     setState(() {
       _minimized = !_minimized;
     });
@@ -324,7 +328,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     if (_log == null) {
       _loading = true;
       getAPI(endpoint: "/routine-log", queryParameters: {"id": widget.id}).then((data) {
-        if (data != null) {
+        if (data.isNotEmpty) {
           final json = jsonDecode(data);
           final body = json["data"];
           final routineLog = body["getRoutineLog"];

@@ -370,10 +370,14 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
               ),
             ),
           ),
-          if (_loading) const TRKRLoadingScreen(opacity: 0.9)
+          if (_loading) TRKRLoadingScreen(action: _onCancelOperation)
         ]),
       ),
     );
+  }
+
+  void _onCancelOperation() {
+    Navigator.pop(context);
   }
 
   void _toggleLoadingState() {
