@@ -16,6 +16,7 @@ import '../../../enums/routine_preview_type_enum.dart';
 import '../../../openAI/open_ai.dart';
 import '../../../openAI/open_ai_functions.dart';
 import '../../../shared_prefs.dart';
+import '../../../utils/dialog_utils.dart';
 import '../../../utils/routine_utils.dart';
 import '../../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../../widgets/routine/preview/exercise_log_listview.dart';
@@ -127,6 +128,10 @@ class _TRKRCoachContextScreenState extends State<TRKRCoachContextScreen> {
     ));
   }
 
+  void _showSnackbar(String message) {
+    showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: message);
+  }
+
   void _cancelLoadingScreen() {
     setState(() {
       _loading = true;
@@ -235,6 +240,8 @@ class _TRKRCoachContextScreenState extends State<TRKRCoachContextScreen> {
                     updatedAt: DateTime.now());
               }
             }
+          } else {
+            _showSnackbar("I'm sorry, I cannot assist with that request.");
           }
         }
       }
