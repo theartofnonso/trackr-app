@@ -21,7 +21,7 @@ class TRKRLoadingScreen extends StatelessWidget {
             children: [
               IconButton(
                 icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => Navigator.of(context).pop,
               ),
             const Spacer(),
             Image.asset(
