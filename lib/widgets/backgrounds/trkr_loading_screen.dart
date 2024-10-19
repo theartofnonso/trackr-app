@@ -13,21 +13,25 @@ class TRKRLoadingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      minimum: const EdgeInsets.all(10.0),
       child: Container(
           width: double.infinity,
           height: double.infinity,
           color: sapphireDark.withOpacity(opacity),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               IconButton(
                 icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
-                onPressed: () => Navigator.of(context).pop,
+                onPressed: Navigator.of(context).pop,
               ),
             const Spacer(),
-            Image.asset(
-              'images/trkr.png',
-              fit: BoxFit.contain,
-              height: 16, // Adjust the height as needed
+            Center(
+              child: Image.asset(
+                'images/trkr.png',
+                fit: BoxFit.contain,
+                height: 16, // Adjust the height as needed
+              ),
             ),
               const Spacer(),
           ],)),
