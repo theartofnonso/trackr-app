@@ -59,6 +59,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
 
+    if (_loading) return TRKRLoadingScreen(action: _hideLoadingState);
+
     final foundExercise =
         Provider.of<ExerciseController>(context, listen: true).whereExercise(exerciseId: widget.exercise.id) ??
             widget.exercise;
@@ -174,46 +176,53 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            child: Stack(children: [
-              SafeArea(
-                child: Column(
-                  children: [
-                    const SizedBox(height: 10),
-                    CalendarYearsNavigator(onChangedDateTimeRange: _onChangedDateTimeRange),
-                    const SizedBox(height: 10),
-                    Expanded(
-                      child: TabBarView(
-                        children: [
-                          ExerciseChartScreen(
-                            key: UniqueKey(),
-                            heaviestWeight: heaviestWeightRecord,
-                            heaviestSet: heaviestSetVolumeRecord,
-                            longestDuration: longestDurationRecord,
-                            mostRepsSet: mostRepsSetRecord,
-                            mostRepsSession: mostRepsSessionRecord,
-                            exercise: foundExercise,
-                            exerciseLogs: completedExerciseLogs,
-                          ),
-                          HistoryScreen(exerciseLogs: completedExerciseLogs),
-                          if (hasVideo) ExerciseVideoScreen(exercise: foundExercise)
-                        ],
-                      ),
+            child:  SafeArea(
+              child: Column(
+                children: [
+                  const SizedBox(height: 10),
+                  CalendarYearsNavigator(onChangedDateTimeRange: _onChangedDateTimeRange),
+                  const SizedBox(height: 10),
+                  Expanded(
+                    child: TabBarView(
+                      children: [
+                        ExerciseChartScreen(
+                          key: UniqueKey(),
+                          heaviestWeight: heaviestWeightRecord,
+                          heaviestSet: heaviestSetVolumeRecord,
+                          longestDuration: longestDurationRecord,
+                          mostRepsSet: mostRepsSetRecord,
+                          mostRepsSession: mostRepsSessionRecord,
+                          exercise: foundExercise,
+                          exerciseLogs: completedExerciseLogs,
+                        ),
+                        HistoryScreen(exerciseLogs: completedExerciseLogs),
+                        if (hasVideo) ExerciseVideoScreen(exercise: foundExercise)
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              if (_loading) const TRKRLoadingScreen(opacity: 0.9)
-            ]),
+            ),
           ),
         ));
+  }
+
+  void _showLoadingState() {
+    setState(() {
+      _loading = true;
+    });
+  }
+
+  void _hideLoadingState() {
+    setState(() {
+      _loading = false;
+    });
   }
 
   void _onChangedDateTimeRange(DateTimeRange? range) {
     if (range == null) return;
 
-    setState(() {
-      _loading = true;
-    });
+    _showLoadingState();
 
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 

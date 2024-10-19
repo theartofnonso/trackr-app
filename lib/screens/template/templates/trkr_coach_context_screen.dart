@@ -44,12 +44,16 @@ class _TRKRCoachContextScreenState extends State<TRKRCoachContextScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    if (_loading) return TRKRLoadingScreen(action: _cancelLoadingScreen);
+
     final routineTemplate = _routineTemplate;
 
     return Scaffold(
         body: Container(
       width: double.infinity,
       height: double.infinity,
+      padding: const EdgeInsets.all(10.0),
       decoration: BoxDecoration(
         gradient: SweepGradient(
           colors: [Colors.green.shade900, Colors.blue.shade900],
@@ -57,78 +61,76 @@ class _TRKRCoachContextScreenState extends State<TRKRCoachContextScreen> {
           center: Alignment.topRight,
         ),
       ),
-      child: Stack(children: [
-        SafeArea(
-          minimum: const EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _AppBar(positiveAction: _navigateBack, canPerformPositiveAction: routineTemplate != null),
-              routineTemplate != null
-                  ? Expanded(
-                      child: SingleChildScrollView(
-                        child: ExerciseLogListView(
-                          exerciseLogs: exerciseLogsToViewModels(exerciseLogs: routineTemplate.exerciseTemplates),
-                          previewType: RoutinePreviewType.ai,
-                        ),
-                      ),
-                    )
-                  : Expanded(
-                      child: Column(
-                        children: [
-                          const SizedBox(
-                            height: 12,
-                          ),
-                          _HeroWidget(),
-                          const Spacer()
-                        ],
+      child: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _AppBar(positiveAction: _navigateBack, canPerformPositiveAction: routineTemplate != null),
+            routineTemplate != null
+                ? Expanded(
+                    child: SingleChildScrollView(
+                      child: ExerciseLogListView(
+                        exerciseLogs: exerciseLogsToViewModels(exerciseLogs: routineTemplate.exerciseTemplates),
+                        previewType: RoutinePreviewType.ai,
                       ),
                     ),
-              const SizedBox(height: 12),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _textEditingController,
-                      decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                          enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              borderSide: const BorderSide(color: Colors.white10)),
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              borderSide: const BorderSide(color: Colors.white30)),
-                          filled: true,
-                          fillColor: Colors.white10,
-                          hintText: "Describe your workout",
-                          hintStyle:
-                              GoogleFonts.ubuntu(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w400)),
-                      maxLines: null,
-                      cursorColor: Colors.white,
-                      showCursor: true,
-                      keyboardType: TextInputType.text,
-                      textCapitalization: TextCapitalization.sentences,
-                      style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white, fontSize: 16),
+                  )
+                : Expanded(
+                    child: Column(
+                      children: [
+                        const SizedBox(
+                          height: 12,
+                        ),
+                        _HeroWidget(),
+                        const Spacer()
+                      ],
                     ),
                   ),
-                  IconButton(
-                    onPressed: _runMessage,
-                    icon: const FaIcon(FontAwesomeIcons.paperPlane),
-                    color: Colors.white,
-                  )
-                ],
-              ),
-            ],
-          ),
+            const SizedBox(height: 12),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _textEditingController,
+                    decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: const BorderSide(color: Colors.white10)),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: const BorderSide(color: Colors.white30)),
+                        filled: true,
+                        fillColor: Colors.white10,
+                        hintText: "Describe your workout",
+                        hintStyle:
+                            GoogleFonts.ubuntu(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w400)),
+                    maxLines: null,
+                    cursorColor: Colors.white,
+                    showCursor: true,
+                    keyboardType: TextInputType.text,
+                    textCapitalization: TextCapitalization.sentences,
+                    style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white, fontSize: 16),
+                  ),
+                ),
+                IconButton(
+                  onPressed: _runMessage,
+                  icon: const FaIcon(FontAwesomeIcons.paperPlane),
+                  color: Colors.white,
+                )
+              ],
+            ),
+          ],
         ),
-        if (_loading) TRKRLoadingScreen(action: _onCancelOperation)
-      ]),
+      ),
     ));
   }
 
-  void _onCancelOperation() {
-    Navigator.pop(context);
+  void _cancelLoadingScreen() {
+    setState(() {
+      _loading = true;
+    });
   }
 
   @override
@@ -140,12 +142,13 @@ class _TRKRCoachContextScreenState extends State<TRKRCoachContextScreen> {
   void _runMessage() async {
     final userPrompt = _textEditingController.text;
 
-    if(userPrompt.isNotEmpty) {
+    if (userPrompt.isNotEmpty) {
       _dismissKeyboard();
       _toggleLoadingState();
       _clearTextEditing();
 
-      final routineTemplate = await _runFunctionMessage(system: defaultSystemInstructionWorkouts, user: userPrompt, context: context);
+      final routineTemplate =
+          await _runFunctionMessage(system: defaultSystemInstructionWorkouts, user: userPrompt, context: context);
       setState(() {
         _routineTemplate = routineTemplate;
       });
@@ -172,12 +175,12 @@ class _TRKRCoachContextScreenState extends State<TRKRCoachContextScreen> {
               final exercises = Provider.of<ExerciseController>(context, listen: false).exercises;
               final listOfExerciseJsons = exercises
                   .map((exercise) => jsonEncode({
-                "id": exercise.id,
-                "name": exercise.name,
-                "primary_muscle_group": exercise.primaryMuscleGroup.name,
-                "secondary_muscle_groups":
-                exercise.secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name).toList()
-              }))
+                        "id": exercise.id,
+                        "name": exercise.name,
+                        "primary_muscle_group": exercise.primaryMuscleGroup.name,
+                        "secondary_muscle_groups":
+                            exercise.secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name).toList()
+                      }))
                   .toList();
 
               final functionCallMessage = {

@@ -4,7 +4,6 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
@@ -19,8 +18,8 @@ import '../../controllers/exercise_controller.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../controllers/routine_template_controller.dart';
 import '../../controllers/settings_controller.dart';
-import '../../utils/general_utils.dart';
 import '../../utils/dialog_utils.dart';
+import '../../utils/general_utils.dart';
 import '../../utils/uri_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../exercise/library/exercise_library_screen.dart';
@@ -54,6 +53,9 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
 
   @override
   Widget build(BuildContext context) {
+
+    if (_loading) return TRKRLoadingScreen(action: _hideLoadingState);
+
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -67,113 +69,119 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
             ],
           ),
         ),
-        child: Stack(children: [
-          SafeArea(
-            minimum: const EdgeInsets.all(10.0),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ListTile(
-                    title: Text("Weight",
-                        style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
-                    subtitle:
-                        Text("Choose kg or lbs", style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 14)),
-                    trailing: SegmentedButton(
-                      showSelectedIcon: false,
-                      style: ButtonStyle(
-                        visualDensity: const VisualDensity(
-                            horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity),
-                        shape: WidgetStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                        )),
-                        backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                          (Set<WidgetState> states) {
-                            if (states.contains(WidgetState.selected)) {
-                              return Colors.white;
-                            }
-                            return Colors.transparent;
-                          },
-                        ),
-                        foregroundColor: WidgetStateProperty.resolveWith<Color>(
-                          (Set<WidgetState> states) {
-                            if (states.contains(WidgetState.selected)) {
-                              return Colors.black;
-                            }
+        child: SafeArea(
+          minimum: const EdgeInsets.all(10.0),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ListTile(
+                  title: Text("Weight",
+                      style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+                  subtitle: Text("Choose kg or lbs", style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 14)),
+                  trailing: SegmentedButton(
+                    showSelectedIcon: false,
+                    style: ButtonStyle(
+                      visualDensity: const VisualDensity(
+                          horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity),
+                      shape: WidgetStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      )),
+                      backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                        (Set<WidgetState> states) {
+                          if (states.contains(WidgetState.selected)) {
                             return Colors.white;
-                          },
-                        ),
+                          }
+                          return Colors.transparent;
+                        },
                       ),
-                      segments: [
-                        ButtonSegment<WeightUnit>(value: WeightUnit.kg, label: Text(WeightUnit.kg.name)),
-                        ButtonSegment<WeightUnit>(value: WeightUnit.lbs, label: Text(WeightUnit.lbs.name)),
-                      ],
-                      selected: <WeightUnit>{_weightUnitType},
-                      onSelectionChanged: (Set<WeightUnit> unitType) {
-                        setState(() {
-                          _weightUnitType = unitType.first;
-                        });
-                        toggleWeightUnit(unit: _weightUnitType);
-                      },
+                      foregroundColor: WidgetStateProperty.resolveWith<Color>(
+                        (Set<WidgetState> states) {
+                          if (states.contains(WidgetState.selected)) {
+                            return Colors.black;
+                          }
+                          return Colors.white;
+                        },
+                      ),
                     ),
+                    segments: [
+                      ButtonSegment<WeightUnit>(value: WeightUnit.kg, label: Text(WeightUnit.kg.name)),
+                      ButtonSegment<WeightUnit>(value: WeightUnit.lbs, label: Text(WeightUnit.lbs.name)),
+                    ],
+                    selected: <WeightUnit>{_weightUnitType},
+                    onSelectionChanged: (Set<WeightUnit> unitType) {
+                      setState(() {
+                        _weightUnitType = unitType.first;
+                      });
+                      toggleWeightUnit(unit: _weightUnitType);
+                    },
                   ),
-                  const SizedBox(height: 8),
-                  Theme(
-                    data: Theme.of(context).copyWith(splashColor: Colors.transparent // Disable the splash effect
-                        ),
-                    child: SwitchListTile(
-                      activeColor: vibrantGreen,
-                      title: Text('Show calendar dates',
-                          style:
-                              GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
-                      value: SharedPrefs().showCalendarDates,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                      onChanged: (bool value) {
-                        setState(() {
-                          SharedPrefs().showCalendarDates = value;
-                          Provider.of<SettingsController>(context, listen: false).notify();
-                        });
-                      },
-                    ),
+                ),
+                const SizedBox(height: 8),
+                Theme(
+                  data: Theme.of(context).copyWith(splashColor: Colors.transparent // Disable the splash effect
+                      ),
+                  child: SwitchListTile(
+                    activeColor: vibrantGreen,
+                    title: Text('Show calendar dates',
+                        style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+                    value: SharedPrefs().showCalendarDates,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                    onChanged: (bool value) {
+                      setState(() {
+                        SharedPrefs().showCalendarDates = value;
+                        Provider.of<SettingsController>(context, listen: false).notify();
+                      });
+                    },
                   ),
-                  const SizedBox(height: 8),
-                  OutlineListTile(onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "manage exercises"),
-                  if (Platform.isIOS)
-                    Column(children: [
-                      const SizedBox(height: 8),
-                      OutlineListTile(
-                          onTap: _navigateToNotificationSettings,
-                          title: "Notifications",
-                          trailing: _notificationEnabled ? "Enabled" : "Disabled"),
-                    ]),
-                  const SizedBox(height: 8),
-                  OutlineListTile(onTap: _sendFeedback, title: "Feedback", trailing: "Help us improve!"),
-                  const SizedBox(height: 8),
-                  OutlineListTile(onTap: _visitTRKR, title: "Visit TRKR"),
-                  const SizedBox(height: 8),
-                  OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
-                  const SizedBox(height: 8),
-                  OutlineListTile(onTap: _delete, title: "Delete Account", trailing: SharedPrefs().userEmail),
-                  const SizedBox(height: 10),
-                  Center(
-                    child: Text(_appVersion,
-                        style:
-                            GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
-                  ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 8),
+                OutlineListTile(onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "manage exercises"),
+                if (Platform.isIOS)
+                  Column(children: [
+                    const SizedBox(height: 8),
+                    OutlineListTile(
+                        onTap: _navigateToNotificationSettings,
+                        title: "Notifications",
+                        trailing: _notificationEnabled ? "Enabled" : "Disabled"),
+                  ]),
+                const SizedBox(height: 8),
+                OutlineListTile(onTap: _sendFeedback, title: "Feedback", trailing: "Help us improve!"),
+                const SizedBox(height: 8),
+                OutlineListTile(onTap: _visitTRKR, title: "Visit TRKR"),
+                const SizedBox(height: 8),
+                OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
+                const SizedBox(height: 8),
+                OutlineListTile(onTap: _delete, title: "Delete Account", trailing: SharedPrefs().userEmail),
+                const SizedBox(height: 10),
+                Center(
+                  child: Text(_appVersion,
+                      style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+                ),
+              ],
             ),
           ),
-          if (_loading) const TRKRLoadingScreen(opacity: 0.9)
-        ]),
+        ),
       ),
     );
+  }
+
+  void _showLoadingState() {
+    setState(() {
+      _loading = true;
+    });
+  }
+
+  void _hideLoadingState() {
+    setState(() {
+      _loading = false;
+    });
   }
 
   void _sendFeedback() async {
     final Uri emailUri = Uri(
       scheme: 'mailto',
-      path: 'hello@trkr.fit',  // Replace with the recipient's email
+      path: 'hello@trkr.fit', // Replace with the recipient's email
       queryParameters: {
         'subject': 'Feedback for TRKR', // Set the email subject
       },
@@ -237,7 +245,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               title: Text("On the web",
                   style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
-                context.pop();
+                Navigator.of(context).pop();
                 openUrl(url: trackrWebUrl, context: context);
               },
             ),
@@ -249,7 +257,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               title: Text("On Instagram",
                   style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
-                context.pop();
+                Navigator.of(context).pop();
                 openUrl(url: instagramUrl, context: context);
               },
             )
@@ -264,8 +272,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         description: "Are you sure you want to log out?",
         leftAction: Navigator.of(context).pop,
         rightAction: () async {
-          _toggleLoadingState(message: "Logging out...");
-          context.pop();
+          Navigator.of(context).pop();
+          _showLoadingState();
           _clearAppData();
           await Amplify.Auth.signOut();
         },
@@ -281,8 +289,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         description: "Are you sure you want to delete your account? This action cannot be undone.",
         leftAction: Navigator.of(context).pop,
         rightAction: () async {
-          context.pop();
-          _toggleLoadingState(message: "Deleting account...");
+          Navigator.of(context).pop();
+          _showLoadingState();
           final deletedExercises =
               await batchDeleteUserData(document: deleteUserExerciseData, documentKey: "deleteUserExerciseData");
           final deletedRoutineTemplates = await batchDeleteUserData(
@@ -290,11 +298,11 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
           final deletedRoutineLogs =
               await batchDeleteUserData(document: deleteUserRoutineLogData, documentKey: "deleteUserRoutineLogData");
           if (deletedExercises && deletedRoutineTemplates && deletedRoutineLogs) {
-            _toggleLoadingState();
+            _hideLoadingState();
             _clearAppData();
             await Amplify.Auth.deleteUser();
           } else {
-            _toggleLoadingState();
+            _hideLoadingState();
             if (mounted) {
               showSnackbar(
                   context: context,
@@ -306,12 +314,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         leftActionLabel: 'Cancel',
         rightActionLabel: 'Delete',
         isRightActionDestructive: true);
-  }
-
-  void _toggleLoadingState({String message = ""}) {
-    setState(() {
-      _loading = !_loading;
-    });
   }
 
   void _checkNotificationPermission() async {

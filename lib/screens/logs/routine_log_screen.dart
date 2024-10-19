@@ -53,6 +53,7 @@ class RoutineLogScreen extends StatefulWidget {
 }
 
 class _RoutineLogScreenState extends State<RoutineLogScreen> {
+
   RoutineLogDto? _log;
 
   bool _loading = false;
@@ -61,24 +62,13 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    if (_loading) return TRKRLoadingScreen(action: _cancelLoadingScreen);
+
     final log = _log;
 
-    if (log == null) {
-      if (_loading) {
-        return Scaffold(
-            appBar: AppBar(
-              backgroundColor: sapphireDark80,
-              leading: IconButton(
-                icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-                onPressed: context.pop,
-              ),
-              title: Text("Workout Session",
-                  style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
-            ),
-            body: const TRKRLoadingScreen());
-      }
-      return const NotFound();
-    }
+    if (log == null) return const NotFound();
+
 
     final completedExerciseLogsAndSets = exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs);
 
@@ -266,13 +256,8 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                 ),
               ),
             ),
-            if (_loading) TRKRLoadingScreen(action: _onCancelOperation)
           ]),
         ));
-  }
-
-  void _onCancelOperation() {
-    Navigator.pop(context);
   }
 
   void _onMinimiseMuscleGroupSplit() {
@@ -407,6 +392,10 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
   void _onShareLog({required RoutineLogDto log}) {
     navigateToShareableScreen(context: context, log: log);
+  }
+
+  void _cancelLoadingScreen() {
+    _toggleLoadingState();
   }
 
   void _toggleLoadingState({String message = ""}) {

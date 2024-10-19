@@ -85,6 +85,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    if (_loading) return TRKRLoadingScreen(action: _hideLoadingState);
+
     /// Routine Logs
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
@@ -139,66 +142,67 @@ class _OverviewScreenState extends State<OverviewScreen> {
             ],
           ),
         ),
-        child: Stack(
-          children: [
-            SafeArea(
-                minimum: const EdgeInsets.all(10.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      IconButton(
-                        onPressed: null,
-                        icon: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                          const FaIcon(FontAwesomeIcons.fire, color: Colors.white, size: 20),
-                          const SizedBox(width: 4),
-                          Text("$allActivitiesForTheYear",
-                              style:
-                                  GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
-                        ]),
-                      ),
-                      CalendarMonthsNavigator(onChangedDateTimeRange: _onChangedDateTimeRange),
-                      IconButton(
-                          onPressed: _onShareCalendar,
-                          icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 20)),
+        child: SafeArea(
+            minimum: const EdgeInsets.all(10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  IconButton(
+                    onPressed: null,
+                    icon: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                      const FaIcon(FontAwesomeIcons.fire, color: Colors.white, size: 20),
+                      const SizedBox(width: 4),
+                      Text("$allActivitiesForTheYear",
+                          style:
+                          GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
                     ]),
-                    Expanded(
-                      child: SingleChildScrollView(
-                          controller: widget.scrollController,
-                          padding: const EdgeInsets.only(bottom: 150),
-                          child: Column(children: [
-                            const SizedBox(height: 12),
-                            OverviewMonitor(
-                              range: _selectedDateTimeRange,
-                              routineLogs: routineLogsForTheMonth,
-                            ),
-                            const SizedBox(height: 16),
-                            Calendar(
-                              onSelectDate: _onChangedDateTime,
-                              selectedDateRange: _selectedDateTimeRange,
-                            ),
-                            const SizedBox(height: 10),
-                            _LogsListView(
-                              logs: allActivitiesForCurrentDate,
-                            ),
-                            const SizedBox(height: 12),
-                            MonthlyInsightsScreen(
-                              logsForTheMonth: routineLogsForTheMonth,
-                              daysInMonth: _selectedDateTimeRange.datesToNow.length,
-                              dateTimeRange: _selectedDateTimeRange,
-                              monthlyLogsAndDate: monthlyRoutineLogs,
-                              activityLogsForTheMonth: activityLogsForTheMonth,
-                            ),
-                          ])),
-                    )
-                    // Add more widgets here for exercise insights
-                  ],
-                )),
-            if (_loading) const TRKRLoadingScreen()
-          ],
-        ),
+                  ),
+                  CalendarMonthsNavigator(onChangedDateTimeRange: _onChangedDateTimeRange),
+                  IconButton(
+                      onPressed: _onShareCalendar,
+                      icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 20)),
+                ]),
+                Expanded(
+                  child: SingleChildScrollView(
+                      controller: widget.scrollController,
+                      padding: const EdgeInsets.only(bottom: 150),
+                      child: Column(children: [
+                        const SizedBox(height: 12),
+                        OverviewMonitor(
+                          range: _selectedDateTimeRange,
+                          routineLogs: routineLogsForTheMonth,
+                        ),
+                        const SizedBox(height: 16),
+                        Calendar(
+                          onSelectDate: _onChangedDateTime,
+                          selectedDateRange: _selectedDateTimeRange,
+                        ),
+                        const SizedBox(height: 10),
+                        _LogsListView(
+                          logs: allActivitiesForCurrentDate,
+                        ),
+                        const SizedBox(height: 12),
+                        MonthlyInsightsScreen(
+                          logsForTheMonth: routineLogsForTheMonth,
+                          daysInMonth: _selectedDateTimeRange.datesToNow.length,
+                          dateTimeRange: _selectedDateTimeRange,
+                          monthlyLogsAndDate: monthlyRoutineLogs,
+                          activityLogsForTheMonth: activityLogsForTheMonth,
+                        ),
+                      ])),
+                )
+                // Add more widgets here for exercise insights
+              ],
+            )),
       ),
     );
+  }
+
+  void _hideLoadingState() {
+    setState(() {
+      _loading = false;
+    });
   }
 
   void _showBottomSheet() {

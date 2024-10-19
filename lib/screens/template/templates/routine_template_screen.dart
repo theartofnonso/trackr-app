@@ -88,24 +88,11 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (_loading) return TRKRLoadingScreen(action: _cancelLoadingScreen);
+
     final template = _template;
 
-    if (template == null) {
-      if (_loading) {
-        return Scaffold(
-            appBar: AppBar(
-              backgroundColor: sapphireDark80,
-              leading: IconButton(
-                icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-                onPressed: context.pop,
-              ),
-              title: Text("Workout",
-                  style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
-            ),
-            body: const TRKRLoadingScreen());
-      }
-      return const NotFound();
-    }
+    if (template == null) return const NotFound();
 
     final numberOfSets = template.exerciseTemplates.expand((exerciseTemplate) => exerciseTemplate.sets);
     final setsSummary = "${numberOfSets.length} ${pluralize(word: "Set", count: numberOfSets.length)}";
@@ -216,115 +203,112 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
               ],
             ),
           ),
-          child: Stack(children: [
-            SafeArea(
-              minimum: const EdgeInsets.all(10.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    if (template.notes.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0, right: 8, bottom: 10),
-                        child: Text('"${template.notes}"',
-                            textAlign: TextAlign.start,
-                            style: GoogleFonts.ubuntu(
-                                color: Colors.white70,
-                                fontSize: 16,
-                                fontStyle: FontStyle.italic,
-                                fontWeight: FontWeight.w600)),
-                      ),
-                    if (template.notes.isEmpty)
-                      const SizedBox(
-                        height: 10,
-                      ),
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 12),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
-                        color: sapphireDark.withOpacity(0.4), // Set the background color
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      child: Table(
-                        border: const TableBorder.symmetric(inside: BorderSide(color: sapphireLighter, width: 2)),
-                        columnWidths: const <int, TableColumnWidth>{
-                          0: FlexColumnWidth(),
-                          1: FlexColumnWidth(),
-                        },
+          child: SafeArea(
+            minimum: const EdgeInsets.all(10.0),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  if (template.notes.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0, right: 8, bottom: 10),
+                      child: Text('"${template.notes}"',
+                          textAlign: TextAlign.start,
+                          style: GoogleFonts.ubuntu(
+                              color: Colors.white70,
+                              fontSize: 16,
+                              fontStyle: FontStyle.italic,
+                              fontWeight: FontWeight.w600)),
+                    ),
+                  if (template.notes.isEmpty)
+                    const SizedBox(
+                      height: 10,
+                    ),
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
+                      color: sapphireDark.withOpacity(0.4), // Set the background color
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: Table(
+                      border: const TableBorder.symmetric(inside: BorderSide(color: sapphireLighter, width: 2)),
+                      columnWidths: const <int, TableColumnWidth>{
+                        0: FlexColumnWidth(),
+                        1: FlexColumnWidth(),
+                      },
+                      children: [
+                        TableRow(children: [
+                          TableCell(
+                            verticalAlignment: TableCellVerticalAlignment.middle,
+                            child: Center(
+                              child: Text(
+                                  "${template.exerciseTemplates.length} ${pluralize(word: "Exercise", count: template.exerciseTemplates.length)}",
+                                  style: GoogleFonts.ubuntu(
+                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                            ),
+                          ),
+                          TableCell(
+                            verticalAlignment: TableCellVerticalAlignment.middle,
+                            child: Center(
+                              child: Text(setsSummary,
+                                  style: GoogleFonts.ubuntu(
+                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                            ),
+                          ),
+                        ]),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  GestureDetector(
+                    onTap: _onTap,
+                    child: Container(
+                      color: Colors.transparent,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          TableRow(children: [
-                            TableCell(
-                              verticalAlignment: TableCellVerticalAlignment.middle,
-                              child: Center(
-                                child: Text(
-                                    "${template.exerciseTemplates.length} ${pluralize(word: "Exercise", count: template.exerciseTemplates.length)}",
-                                    style: GoogleFonts.ubuntu(
-                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-                              ),
-                            ),
-                            TableCell(
-                              verticalAlignment: TableCellVerticalAlignment.middle,
-                              child: Center(
-                                child: Text(setsSummary,
-                                    style: GoogleFonts.ubuntu(
-                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-                              ),
-                            ),
+                          Row(children: [
+                            Text("Muscle Groups Split".toUpperCase(),
+                                style: GoogleFonts.ubuntu(
+                                    color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+                            const Spacer(),
+                            if (muscleGroupFamilyFrequencies.length > 3)
+                              FaIcon(_minimized ? FontAwesomeIcons.angleDown : FontAwesomeIcons.angleUp,
+                                  color: Colors.white70, size: 16),
                           ]),
+                          const SizedBox(height: 10),
+                          Text("Here's a breakdown of the muscle groups in your ${template.name} workout plan.",
+                              style:
+                                  GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
+                          const SizedBox(height: 10),
+                          MuscleGroupFamilyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    GestureDetector(
-                      onTap: _onTap,
-                      child: Container(
-                        color: Colors.transparent,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(children: [
-                              Text("Muscle Groups Split".toUpperCase(),
-                                  style: GoogleFonts.ubuntu(
-                                      color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
-                              const Spacer(),
-                              if (muscleGroupFamilyFrequencies.length > 3)
-                                FaIcon(_minimized ? FontAwesomeIcons.angleDown : FontAwesomeIcons.angleUp,
-                                    color: Colors.white70, size: 16),
-                            ]),
-                            const SizedBox(height: 10),
-                            Text("Here's a breakdown of the muscle groups in your ${template.name} workout plan.",
-                                style: GoogleFonts.ubuntu(
-                                    color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
-                            const SizedBox(height: 10),
-                            MuscleGroupFamilyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    // TRKRInformationContainer(
-                    //     ctaLabel: "Ask for a review",
-                    //     description:
-                    //         "Achieving your fitness goals is easier with a structured plan. Ask the TRKR Coach to optimize your workouts and help you succeed!",
-                    //     onTap: () => navigateWithSlideTransition(
-                    //         context: context,
-                    //         child: const TRKRCoachContextScreen())),
-                    // const SizedBox(height: 12),
-                    ExerciseLogListView(
-                      exerciseLogs: exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
-                      previewType: RoutinePreviewType.template,
-                    ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 12),
+                  // TRKRInformationContainer(
+                  //     ctaLabel: "Ask for a review",
+                  //     description:
+                  //         "Achieving your fitness goals is easier with a structured plan. Ask the TRKR Coach to optimize your workouts and help you succeed!",
+                  //     onTap: () => navigateWithSlideTransition(
+                  //         context: context,
+                  //         child: const TRKRCoachContextScreen())),
+                  // const SizedBox(height: 12),
+                  ExerciseLogListView(
+                    exerciseLogs: exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
+                    previewType: RoutinePreviewType.template,
+                  ),
+                ],
               ),
             ),
-            if (_loading) TRKRLoadingScreen(action: _onCancelOperation)
-          ]),
+          ),
         ));
   }
 
-  void _onCancelOperation() {
-    Navigator.pop(context);
+  void _cancelLoadingScreen() {
+    _toggleLoadingState();
   }
 
   void _onTap() {

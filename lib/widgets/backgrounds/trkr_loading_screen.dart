@@ -13,8 +13,8 @@ class TRKRLoadingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      minimum: const EdgeInsets.all(10.0),
       child: Container(
+        padding: const EdgeInsets.all(10.0),
           width: double.infinity,
           height: double.infinity,
           color: sapphireDark.withOpacity(opacity),
@@ -23,7 +23,7 @@ class TRKRLoadingScreen extends StatelessWidget {
             children: [
               IconButton(
                 icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
-                onPressed: Navigator.of(context).pop,
+                onPressed: action,
               ),
             const Spacer(),
             Center(
