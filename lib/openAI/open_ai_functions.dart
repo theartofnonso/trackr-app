@@ -17,7 +17,7 @@ const newRoutineTemplateResponseFormat = {
       "properties": {
         "exercises": {
           "type": "array",
-          "items": {"type": "string", "description": "Id of the exercise found in the list of exercises provided"},
+          "items": {"type": "string", "description": "Ids of the exercises found in the list of exercises provided"},
         },
         "workout_name": {"type": "string", "description": "The descriptive name of the workout"},
         "workout_caption": {"type": "string", "description": "A brief caption that summarises the workout"}
