@@ -295,14 +295,16 @@ List<ExerciseLogDto> exerciseLogsWithCheckedSets({required List<ExerciseLogDto> 
       .toList();
 }
 
-Map<MuscleGroupFamily, double> muscleGroupFamilyFrequency({required List<ExerciseLogDto> exerciseLogs}) {
+Map<MuscleGroupFamily, double> muscleGroupFamilyFrequency({required List<ExerciseLogDto> exerciseLogs, bool includeSecondaryMuscleGroups = true}) {
   final frequencyMap = <MuscleGroupFamily, int>{};
 
   // Counting the occurrences of each MuscleGroup
   for (var log in exerciseLogs) {
     frequencyMap.update(log.exercise.primaryMuscleGroup.family, (value) => value + 1, ifAbsent: () => 1);
-    for (var muscleGroup in log.exercise.secondaryMuscleGroups) {
-      frequencyMap.update(muscleGroup.family, (value) => value + 1, ifAbsent: () => 1);
+    if(includeSecondaryMuscleGroups) {
+      for (var muscleGroup in log.exercise.secondaryMuscleGroups) {
+        frequencyMap.update(muscleGroup.family, (value) => value + 1, ifAbsent: () => 1);
+      }
     }
   }
 

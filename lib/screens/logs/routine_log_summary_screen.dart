@@ -64,7 +64,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
       return foundExercise != null ? exerciseTemplate.copyWith(exercise: foundExercise) : exerciseTemplate;
     }).toList();
 
-    final muscleGroupFamilyFrequencyData = muscleGroupFamilyFrequency(exerciseLogs: exercisesFromLibrary);
+    final muscleGroupFamilyFrequencyData = muscleGroupFamilyFrequency(exerciseLogs: exercisesFromLibrary, includeSecondaryMuscleGroups: false);
 
     List<Widget> pbShareAssets = [];
     final pbShareAssetsKeys = [];
@@ -200,7 +200,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
                     final data = ClipboardData(text: workoutLogLink);
                     Clipboard.setData(data).then((_) {
                       if (mounted) {
-                        context.pop();
+                        Navigator.of(context).pop();
                         showSnackbar(context: context, icon: const Icon(Icons.check), message: "Workout link copied");
                       }
                     });
@@ -236,7 +236,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
                 final data = ClipboardData(text: workoutLogText);
                 Clipboard.setData(data).then((_) {
                   if (mounted) {
-                    context.pop();
+                    Navigator.of(context).pop();
                     showSnackbar(context: context, icon: const Icon(Icons.check), message: "Workout log copied");
                   }
                 });
@@ -336,7 +336,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
   }
 
   void _pickFromLibrary({required bool camera}) async {
-    context.pop();
+    Navigator.of(context).pop();
     final ImagePicker picker = ImagePicker();
     final XFile? xFile = await picker.pickImage(source: camera ? ImageSource.camera : ImageSource.gallery);
     if (xFile != null) {
@@ -349,7 +349,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
   }
 
   void _removeImage() {
-    context.pop();
+    Navigator.of(context).pop();
     setState(() {
       _image = null;
       _hasImage = false;
