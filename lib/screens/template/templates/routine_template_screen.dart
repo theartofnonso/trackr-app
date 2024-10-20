@@ -10,17 +10,23 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/extensions/routine_template_extension.dart';
+import 'package:tracker_app/screens/AI/trkr_coach_routine_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 
 import '../../../colors.dart';
 import '../../../controllers/routine_template_controller.dart';
+import '../../../dtos/exercise_dto.dart';
 import '../../../dtos/routine_template_dto.dart';
 import '../../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../../dtos/viewmodels/routine_template_arguments.dart';
+import '../../../enums/muscle_group_enums.dart';
 import '../../../enums/routine_editor_type_enums.dart';
 import '../../../enums/routine_preview_type_enum.dart';
 import '../../../models/RoutineTemplate.dart';
+import '../../../openAI/open_ai.dart';
+import '../../../openAI/open_ai_functions.dart';
+import '../../../strings/ai_prompts.dart';
 import '../../../urls.dart';
 import '../../../utils/dialog_utils.dart';
 import '../../../utils/exercise_logs_utils.dart';
@@ -28,6 +34,7 @@ import '../../../utils/https_utils.dart';
 import '../../../utils/navigation_utils.dart';
 import '../../../utils/routine_utils.dart';
 import '../../../utils/string_utils.dart';
+import '../../../widgets/ai_widgets/trkr_information_container.dart';
 import '../../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../../widgets/chart/muscle_group_family_chart.dart';
 import '../../../widgets/routine/preview/exercise_log_listview.dart';
@@ -288,14 +295,12 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  // TRKRInformationContainer(
-                  //     ctaLabel: "Ask for a review",
-                  //     description:
-                  //         "Achieving your fitness goals is easier with a structured plan. Ask the TRKR Coach to optimize your workouts and help you succeed!",
-                  //     onTap: () => navigateWithSlideTransition(
-                  //         context: context,
-                  //         child: const TRKRCoachContextScreen())),
-                  // const SizedBox(height: 12),
+                  TRKRInformationContainer(
+                      ctaLabel: "Ask for a review",
+                      description:
+                          "Achieving your fitness goals is easier with a structured plan. Ask the TRKR Coach to optimize your workouts and help you succeed!",
+                      onTap: _runRoutineAnalysis),
+                  const SizedBox(height: 12),
                   ExerciseLogListView(
                     exerciseLogs: exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
                     previewType: RoutinePreviewType.template,
@@ -305,6 +310,12 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
             ),
           ),
         ));
+  }
+
+  void _showLoadingScreen() {
+    setState(() {
+      _loading = true;
+    });
   }
 
   void _hideLoadingScreen() {
@@ -337,6 +348,86 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
         }
       });
     }
+  }
+
+  void _runRoutineAnalysis() async {
+    final template = _template;
+
+    if (template != null) {
+      _showLoadingScreen();
+
+      final muscleGroupAndExercises = await _runFunctionMessage(template: template);
+
+      _hideLoadingScreen();
+
+      if (mounted) {
+        navigateWithSlideTransition(
+            context: context, child: TRKRCoachRoutineScreen(muscleGroupAndExercises: muscleGroupAndExercises));
+      }
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> _runFunctionMessage({required RoutineTemplateDto template}) async {
+    List<Map<String, dynamic>> muscleGroupAndExercises = [];
+
+    const userInstructions = userInstructionForExerciseRecommendations;
+    final listOfExerciseJsons = template.exerciseTemplates
+        .map((exerciseTemplate) => jsonEncode({
+              "id": exerciseTemplate.exercise.id,
+              "name": exerciseTemplate.exercise.name,
+            }))
+        .toList();
+
+    final StringBuffer buffer = StringBuffer();
+
+    buffer.writeln(userInstructions);
+    buffer.writeln(listOfExerciseJsons);
+
+    final completeUserInstructions = buffer.toString();
+
+    final tool = await runMessageWithTools(
+        systemInstruction: personalTrainerInstructionForWorkouts, userInstruction: completeUserInstructions);
+    if (tool != null) {
+      final toolId = tool['id'];
+      final toolName = tool['name']; // A function
+      if (toolName == "list_exercises") {
+        if (mounted) {
+          final exercises = Provider.of<ExerciseController>(context, listen: false).exercises;
+          final functionCallPayload = await createFunctionCallPayload(
+              toolId: toolId,
+              systemInstruction: personalTrainerInstructionForWorkouts,
+              user: completeUserInstructions,
+              responseFormat: exercisesRecommendationResponseFormat,
+              exercises: exercises);
+          final jsonString = await runMessageWithFunctionCallResult(payload: functionCallPayload);
+          if (jsonString != null) {
+            final json = jsonDecode(jsonString);
+            final exercisesJson = json["exercises"] as List<dynamic>;
+            muscleGroupAndExercises = exercisesJson.map((json) {
+              final muscleGroupString = json["muscle_group"];
+              final recommendedExercises = json["recommended_exercises"] as List<dynamic>;
+              final rationale = json["rationale"];
+              final exerciseTemplates = recommendedExercises.map((exerciseId) {
+                return exercises.firstWhere((exercise) => exercise.id == exerciseId);
+              }).toList();
+              final muscleGroup = MuscleGroup.fromString(muscleGroupString);
+              return {
+                "muscle_group": muscleGroup,
+                "exercises": [exerciseTemplates[0], exerciseTemplates[1]],
+                "rationale": rationale
+              };
+            }).toList();
+          }
+        }
+      } else {
+        _showSnackbar("I'm sorry, I cannot assist with that request.");
+      }
+    }
+    return muscleGroupAndExercises;
+  }
+
+  void _showSnackbar(String message) {
+    showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: message);
   }
 
   void _showBottomSheet() {

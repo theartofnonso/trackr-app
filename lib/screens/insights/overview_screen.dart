@@ -38,7 +38,7 @@ import '../../widgets/label_divider.dart';
 import '../../widgets/monitors/overview_monitor.dart';
 import '../../widgets/routine/preview/activity_log_widget.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
-import '../template/templates/trkr_coach_context_screen.dart';
+import '../AI/trkr_coach_chat_screen.dart';
 import 'monthly_insights_screen.dart';
 
 class OverviewScreen extends StatefulWidget {
@@ -341,7 +341,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 
   void _switchToAIContext() async {
-    final result = await navigateWithSlideTransition(context: context, child: const TRKRCoachContextScreen())
+    final result = await navigateWithSlideTransition(context: context, child: const TRKRCoachChatScreen())
         as RoutineTemplateDto?;
     if (result != null) {
       if (context.mounted) {

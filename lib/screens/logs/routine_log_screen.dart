@@ -11,7 +11,6 @@ import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/routine_log_extension.dart';
-import 'package:tracker_app/screens/logs/routine_log_ai_context_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/https_utils.dart';
@@ -38,6 +37,7 @@ import '../../utils/exercise_logs_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/ai_widgets/trkr_information_container.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
+import '../AI/trkr_coach_summary_screen.dart';
 import '../not_found.dart';
 
 class RoutineLogScreen extends StatefulWidget {
@@ -273,7 +273,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
       if (summary != null) {
         navigateWithSlideTransition(
             context: context,
-            child: RoutineLogAIContextScreen(
+            child: TRKRCoachSummaryScreen(
               content: summary,
             ));
       }

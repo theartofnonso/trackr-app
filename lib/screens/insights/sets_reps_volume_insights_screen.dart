@@ -9,7 +9,6 @@ import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/chart_period_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/routine_log_extension.dart';
-import 'package:tracker_app/screens/sets_reps_volume_ai_context_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
@@ -35,6 +34,7 @@ import '../../widgets/calendar/calendar_months_navigator.dart';
 import '../../widgets/chart/bar_chart.dart';
 import '../../widgets/chart/horizontal_stacked_bars.dart';
 import '../../widgets/chart/legend.dart';
+import '../AI/trkr_coach_summary_screen.dart';
 
 class SetsAndRepsVolumeInsightsScreen extends StatefulWidget {
   static const routeName = '/sets_and_reps_volume_insights_screen';
@@ -413,7 +413,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
         _hideLoadingScreen();
         if (mounted) {
           if (response != null) {
-            navigateWithSlideTransition(context: context, child: SetsRepsVolumeAIContextScreen(content: response));
+            navigateWithSlideTransition(context: context, child: TRKRCoachSummaryScreen(content: response));
           }
         }
       });

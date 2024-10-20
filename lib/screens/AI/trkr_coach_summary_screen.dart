@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../widgets/ai_widgets/trkr_coach_message_widget.dart';
 
-class RoutineLogAIContextScreen extends StatelessWidget {
-  static const routeName = '/routine_log_ai_context_screen';
+class TRKRCoachSummaryScreen extends StatelessWidget {
+  static const routeName = '/trkr_coach_summary_screen';
 
   final String content;
 
-  const RoutineLogAIContextScreen({super.key, required this.content});
+  const TRKRCoachSummaryScreen({super.key, required this.content});
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +51,7 @@ class _AppBar extends StatelessWidget {
       children: [
         IconButton(
           icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
-          onPressed: context.pop,
+          onPressed: Navigator.of(context).pop,
         ),
         Expanded(
           child: Text("TRKR Coach".toUpperCase(),

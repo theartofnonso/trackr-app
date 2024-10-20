@@ -11,10 +11,9 @@ const routineTemplateSystemInstruction =
     " user’s fitness goals, using evidence-based recommendations to guide their progress. Use only your knowledge base "
     "for exercise recommendations.";
 
-const defaultSystemInstructionWorkouts =
-    "As a personal fitness trainer, use the supplied tools to assist the user. Refuse questions that don't relate to creating or suggesting a workout";
+const personalTrainerInstructionForWorkouts =
+    "As a personal fitness trainer, use the supplied tools to assist the user. Refuse questions that are outside the scope of creating, recommending and analysing a workout or exercises in a workout";
 
-const openAITemplateAssistantInstructions =
-    "Use only your knowledge base for exercise recommendations. Respond with concise, relevant suggestions"
-    " that align with the user’s workout goals. Add exercise suggestion if user's workout is does not have"
-    " it.";
+const userInstructionForExerciseRecommendations =
+    "Review my exercise selection and provide recommendations if necessary. Ensure that each muscle group is trained with two exercises targeting it primarily or secondarily. Ensure that both exercises train the muscle group in both lengthened and shortened positions";
+
