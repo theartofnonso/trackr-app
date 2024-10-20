@@ -19,16 +19,17 @@ import '../../utils/general_utils.dart';
 import 'log_streak_monitor.dart';
 import 'muscle_group_family_frequency_monitor.dart';
 
-class OverviewMonitor extends StatelessWidget {
+GlobalKey monitorKey = GlobalKey();
 
+class OverviewMonitor extends StatelessWidget {
   final DateTimeRange range;
   final List<RoutineLogDto> routineLogs;
+  final bool showInfo;
 
-  const OverviewMonitor({super.key, required this.range, required this.routineLogs});
+  const OverviewMonitor({super.key, required this.range, required this.routineLogs, this.showInfo = true});
 
   @override
   Widget build(BuildContext context) {
-
     final routineLogsByDay = groupBy(routineLogs, (log) => log.createdAt.withoutTime().day);
 
     final monthlyProgress = routineLogsByDay.length / 12;
@@ -43,13 +44,12 @@ class OverviewMonitor extends StatelessWidget {
       return foundExercise != null ? exerciseTemplate.copyWith(exercise: foundExercise) : exerciseTemplate;
     }).toList();
 
-    final muscleGroupsSplitFrequencyScore =
-        cumulativeMuscleGroupFamilyFrequency(exerciseLogs: exercisesFromLibrary);
+    final muscleGroupsSplitFrequencyScore = cumulativeMuscleGroupFamilyFrequency(exerciseLogs: exercisesFromLibrary);
 
     final splitPercentage = (muscleGroupsSplitFrequencyScore * 100).round();
 
-    return Center(
-      child: Stack(children: [
+    return Stack(children: [
+      if (showInfo)
         Positioned.fill(
           right: 14,
           child: GestureDetector(
@@ -59,63 +59,62 @@ class OverviewMonitor extends StatelessWidget {
                 child: FaIcon(FontAwesomeIcons.circleInfo, color: Colors.white38, size: 18)),
           ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            GestureDetector(
-                onTap: () => navigateToLogs(context: context, range: range),
-                child: Container(
-                  color: Colors.transparent,
-                  width: 100,
-                  child: _MonitorScore(
-                    value: "${routineLogsByDay.length} ${pluralize(word: "day", count: routineLogsByDay.length)}",
-                    title: "Log Streak",
-                    color: logStreakColor(value: monthlyProgress),
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                  ),
-                )),
-            const SizedBox(width: 20),
-            GestureDetector(
-              child: Stack(alignment: Alignment.center, children: [
-                LogStreakMonitor(
-                    value: monthlyProgress,
-                    width: 100,
-                    height: 100,
-                    strokeWidth: 6,
-                    decoration: BoxDecoration(
-                      color: sapphireDark.withOpacity(0.35),
-                      borderRadius: BorderRadius.circular(100),
-                    )),
-                MuscleGroupFamilyFrequencyMonitor(
-                    value: muscleGroupsSplitFrequencyScore, width: 70, height: 70, strokeWidth: 6),
-                Image.asset(
-                  'images/trkr.png',
-                  fit: BoxFit.contain,
-                  color: Colors.white54,
-                  height: 8, // Adjust the height as needed
-                )
-              ]),
-            ),
-            const SizedBox(width: 20),
-            GestureDetector(
-              onTap: () {
-                context.push(SetsAndRepsVolumeInsightsScreen.routeName);
-              },
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          GestureDetector(
+              onTap: () => navigateToLogs(context: context, range: range),
               child: Container(
                 color: Colors.transparent,
-                width: 100,
+                width: 80,
                 child: _MonitorScore(
-                  value: "$splitPercentage%",
-                  color: Colors.white,
-                  title: "Muscle",
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  value: "${routineLogsByDay.length} ${pluralize(word: "day", count: routineLogsByDay.length)}",
+                  title: "Log Streak",
+                  color: logStreakColor(value: monthlyProgress),
+                  crossAxisAlignment: CrossAxisAlignment.end,
                 ),
+              )),
+          const SizedBox(width: 20),
+          GestureDetector(
+            child: Stack(alignment: Alignment.center, children: [
+              LogStreakMonitor(
+                  value: monthlyProgress,
+                  width: 100,
+                  height: 100,
+                  strokeWidth: 6,
+                  decoration: BoxDecoration(
+                    color: sapphireDark.withOpacity(0.35),
+                    borderRadius: BorderRadius.circular(100),
+                  )),
+              MuscleGroupFamilyFrequencyMonitor(
+                  value: muscleGroupsSplitFrequencyScore, width: 70, height: 70, strokeWidth: 6),
+              Image.asset(
+                'images/trkr.png',
+                fit: BoxFit.contain,
+                color: Colors.white54,
+                height: 8, // Adjust the height as needed
+              )
+            ]),
+          ),
+          const SizedBox(width: 20),
+          GestureDetector(
+            onTap: () {
+              context.push(SetsAndRepsVolumeInsightsScreen.routeName);
+            },
+            child: Container(
+              color: Colors.transparent,
+              width: 80,
+              child: _MonitorScore(
+                value: "$splitPercentage%",
+                color: Colors.white,
+                title: "Muscle",
+                crossAxisAlignment: CrossAxisAlignment.start,
               ),
             ),
-          ],
-        ),
-      ]),
-    );
+          ),
+        ],
+      ),
+    ]);
   }
 
   void _showMonitorInfo({required BuildContext context}) {

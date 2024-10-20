@@ -4,4 +4,5 @@ enum ShareContentType {
   pbs,
   sessionSummary,
   milestoneAchievement,
+  monitor
 }

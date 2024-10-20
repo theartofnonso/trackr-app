@@ -160,7 +160,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                   ),
                   CalendarMonthsNavigator(onChangedDateTimeRange: _onChangedDateTimeRange),
                   IconButton(
-                      onPressed: _onShareCalendar,
+                      onPressed: _showShareBottomSheet,
                       icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 20)),
                 ]),
                 Expanded(
@@ -203,6 +203,39 @@ class _OverviewScreenState extends State<OverviewScreen> {
     setState(() {
       _loading = false;
     });
+  }
+
+  void _showShareBottomSheet() {
+    displayBottomSheet(
+        context: context,
+        child: SafeArea(
+          child: Column(children: [
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(Icons.monitor, size: 18),
+              horizontalTitleGap: 6,
+              title: Text("Share Streak and Muscle Monitor",
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              onTap: () {
+                Navigator.of(context).pop();
+                _onShareMonitor();
+              },
+            ),
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(FontAwesomeIcons.calendar, size: 18),
+              horizontalTitleGap: 6,
+              title: Text("Share Log Calendar",
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              onTap: () {
+                Navigator.of(context).pop();
+                _onShareCalendar();
+              },
+            ),
+          ]),
+        ));
   }
 
   void _showBottomSheet() {
@@ -393,6 +426,53 @@ class _OverviewScreenState extends State<OverviewScreen> {
     });
   }
 
+  void _onShareMonitor() {
+
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
+
+    final routineLogsForTheMonth =
+        _monthlyRoutineLogs?[_selectedDateTimeRange] ?? routineLogController.monthlyLogs[_selectedDateTimeRange] ?? [];
+
+    displayBottomSheet(context: context, child: Column(
+      children: [
+        RepaintBoundary(
+          key: monitorKey,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(5),
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    sapphireDark80,
+                    sapphireDark,
+                  ],
+                ),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
+              child: OverviewMonitor(
+                range: _selectedDateTimeRange,
+                routineLogs: routineLogsForTheMonth,
+                showInfo: false,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+        OpacityButtonWidget(
+            onPressed: () {
+              captureImage(key: monitorKey, pixelRatio: 5);
+              contentShared(contentType: ShareContentType.monitor);
+              Navigator.of(context).pop();
+            },
+            label: "Share",
+            buttonColor: vibrantGreen,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14))
+      ],
+    ),);
+  }
+
   void _onShareCalendar() {
     displayBottomSheet(
         context: context,
@@ -442,7 +522,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                   onPressed: () {
                     captureImage(key: calendarKey, pixelRatio: 5);
                     contentShared(contentType: ShareContentType.calender);
-                    Navigator.pop(context);
+                    Navigator.of(context).pop();
                   },
                   label: "Share",
                   buttonColor: vibrantGreen,
