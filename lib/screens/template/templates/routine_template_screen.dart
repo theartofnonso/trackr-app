@@ -16,7 +16,9 @@ import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 
 import '../../../colors.dart';
 import '../../../controllers/routine_template_controller.dart';
+import '../../../dtos/exercise_log_dto.dart';
 import '../../../dtos/routine_template_dto.dart';
+import '../../../dtos/set_dto.dart';
 import '../../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../../dtos/viewmodels/routine_template_arguments.dart';
 import '../../../enums/muscle_group_enums.dart';
@@ -362,8 +364,26 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       if (mounted) {
         final originalExerciseTemplates = template.exerciseTemplates.map((template) => template.exercise).toList();
         final exerciseIds = await navigateWithSlideTransition(
-            context: context, child: TrkrCoachExerciseRecommendationScreen(muscleGroupAndExercises: muscleGroupAndExercises, originalExerciseTemplates: originalExerciseTemplates)) as List<String>;
-        print(exerciseIds);
+            context: context,
+            child: TrkrCoachExerciseRecommendationScreen(
+                muscleGroupAndExercises: muscleGroupAndExercises,
+                originalExerciseTemplates: originalExerciseTemplates)) as List<String>;
+
+        if (mounted) {
+          final exercises = Provider.of<ExerciseController>(context, listen: false).exercises;
+
+          final exerciseTemplates = exerciseIds.map((exerciseId) {
+            final exerciseInLibrary = exercises.firstWhere((exercise) => exercise.id == exerciseId);
+            final exerciseTemplate = ExerciseLogDto(
+                exerciseInLibrary.id, "", "", exerciseInLibrary, "", [const SetDto(0, 0, false)], DateTime.now(), []);
+            return exerciseTemplate;
+          }).toList();
+          final originalTemplates = template.exerciseTemplates;
+
+          final updatedTemplate = template.copyWith(exerciseTemplates: [...originalTemplates, ...exerciseTemplates]);
+
+          _updateTemplate(template: updatedTemplate);
+        }
       }
     }
   }
@@ -380,15 +400,18 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
     final StringBuffer buffer = StringBuffer();
 
-    buffer.writeln("For Each Exercise in my selection, recommend an alternative exercise that meets the following criteria.");
+    buffer.writeln(
+        "For Each Exercise in my selection, recommend an alternative exercise that meets the following criteria.");
     buffer.writeln("\n");
     buffer.writeln("Criteria 1 - Muscle Group Training Requirements:");
     buffer.writeln("Dual Exercises: Ensure each muscle group is trained with two exercises:");
     buffer.writeln("Primary Exercise: One from my original selection.");
-    buffer.writeln("Secondary Exercise: A recommended alternative if the original selection doesn't adequately target the muscle group.");
+    buffer.writeln(
+        "Secondary Exercise: A recommended alternative if the original selection doesn't adequately target the muscle group.");
     buffer.writeln("\n");
     buffer.writeln("Criteria 2 - Targeting Specifications:");
-    buffer.writeln("Primary or Secondary Focus: Exercises should target the muscle group either primarily or secondarily.");
+    buffer.writeln(
+        "Primary or Secondary Focus: Exercises should target the muscle group either primarily or secondarily.");
     buffer.writeln("Range of Motion: Both exercises must engage the muscle group in:");
     buffer.writeln("Lengthened Position");
     buffer.writeln("Shortened Position");
@@ -437,6 +460,13 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       }
     }
     return muscleGroupAndExercises;
+  }
+
+  void _updateTemplate({required RoutineTemplateDto template}) async {
+    await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: template);
+    setState(() {
+      _template = template;
+    });
   }
 
   void _showSnackbar(String message) {
