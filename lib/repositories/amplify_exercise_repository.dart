@@ -7,9 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/extensions/exercise_extension.dart';
 
-import '../enums/exercise_type_enums.dart';
-import '../enums/muscle_group_enums.dart';
-import '../enums/training_position_enum.dart';
 import '../models/Exercise.dart';
 
 class AmplifyExerciseRepository {
@@ -20,36 +17,7 @@ class AmplifyExerciseRepository {
   Future<List<ExerciseDto>> _loadFromAssets({required String file}) async {
     String jsonString = await rootBundle.loadString('exercises/$file');
     final exerciseJsons = json.decode(jsonString) as List<dynamic>;
-    return exerciseJsons.map((json) {
-      final id = json["id"];
-      final name = json["name"];
-      final primaryMuscleGroupString = json["primaryMuscleGroup"] ?? "";
-      final primaryMuscleGroup = MuscleGroup.fromString(primaryMuscleGroupString);
-      final secondaryMuscleGroupJson = json["secondaryMuscleGroups"] as List<dynamic>;
-      final secondaryMuscleGroups =
-          secondaryMuscleGroupJson.map((muscleGroup) => MuscleGroup.fromString(muscleGroup)).toList();
-      final trainingPositionString = json["trainingPosition"] ?? "";
-      final trainingPosition = TrainingPosition.fromString(trainingPositionString);
-      final typeString = json["type"];
-      final video = json["video"];
-      final videoUri = video != null ? Uri.parse(video) : null;
-      final description = json["description"];
-      final creditSource = json["creditSource"];
-      final creditSourceUri = video != null ? Uri.parse(creditSource) : null;
-      final credit = json["credit"];
-      return ExerciseDto(
-          id: id,
-          name: name,
-          primaryMuscleGroup: primaryMuscleGroup,
-          secondaryMuscleGroups: secondaryMuscleGroups,
-          type: ExerciseType.fromString(typeString),
-          trainingPosition: trainingPosition,
-          video: videoUri,
-          description: description,
-          creditSource: creditSourceUri,
-          credit: credit,
-          owner: false);
-    }).toList();
+    return exerciseJsons.map((json) => ExerciseExtension.dtoLocal(json)).toList();
   }
 
   Future<void> loadLocalExercises() async {
@@ -104,9 +72,10 @@ class AmplifyExerciseRepository {
     _exercises = exerciseDtos.sorted((a, b) => a.name.compareTo(b.name));
   }
 
-  void loadExerciseStream({required List<Exercise> exercises}) async {
-    final snapshot = exercises.map((exercise) => exercise.dto()).toList();
+  void loadExerciseStream({required List<Exercise> exercises}) {
+    final snapshot = exercises.map((exercise) => exercise.dtoUser()).toList();
     _exercises.addAll(snapshot);
+    _exercises.sort((a, b) => a.name.compareTo(b.name));
   }
 
   Future<void> saveExercise({required ExerciseDto exerciseDto}) async {

@@ -49,7 +49,6 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
     showExercisesInLibrary(
         context: context,
         exclude: preSelectedExercises,
-        multiSelect: true,
         onSelected: (List<ExerciseDto> selectedExercises) {
           controller.addExerciseLogs(exercises: selectedExercises);
         });
@@ -62,7 +61,6 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
     showExercisesInLibrary(
         context: context,
         exclude: preSelectedExercises,
-        multiSelect: true,
         onSelected: (List<ExerciseDto> selectedExercises) {
           controller.addAlternates(primaryExerciseId: primaryExerciseLog.id, exercises: selectedExercises);
           _showSubstituteExercisePicker(primaryExerciseLog: primaryExerciseLog);
@@ -115,7 +113,6 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
     showExercisesInLibrary(
         context: context,
         exclude: preSelectedExercises,
-        multiSelect: false,
         onSelected: (List<ExerciseDto> selectedExercises) {
           controller.replaceExerciseLog(oldExerciseId: oldExerciseLog.id, newExercise: selectedExercises.first);
         });

@@ -59,8 +59,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         onSelected: (List<ExerciseDto> selectedExercises) {
           controller.addExerciseLogs(exercises: selectedExercises);
           _cacheLog();
-        },
-        multiSelect: true);
+        });
   }
 
   void _selectSubstituteExercisesInLibrary({required ExerciseLogDto primaryExerciseLog}) async {
@@ -70,7 +69,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     showExercisesInLibrary(
         context: context,
         exclude: preSelectedExercises,
-        multiSelect: true,
         onSelected: (List<ExerciseDto> selectedExercises) {
           controller.addAlternates(primaryExerciseId: primaryExerciseLog.id, exercises: selectedExercises);
           _showSubstituteExercisePicker(primaryExerciseLog: primaryExerciseLog);
@@ -127,7 +125,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     showExercisesInLibrary(
         context: context,
         exclude: preSelectedExercises,
-        multiSelect: false,
         onSelected: (List<ExerciseDto> selectedExercises) {
           controller.replaceExerciseLog(oldExerciseId: oldExerciseLog.id, newExercise: selectedExercises.first);
           _cacheLog();

@@ -113,9 +113,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _observeExerciseQuery() {
+  void _observeExerciseQuery() async {
     final controller = Provider.of<ExerciseController>(context, listen: false);
-    controller.loadLocalExercises();
+    await controller.loadLocalExercises();
     _exerciseStream = Amplify.DataStore.observeQuery(
       Exercise.classType,
     ).listen((QuerySnapshot<Exercise> snapshot) {

@@ -47,11 +47,10 @@ void showSubstituteExercisePicker(
 void showExercisesInLibrary(
     {required BuildContext context,
     required List<ExerciseDto> exclude,
-    required void Function(List<ExerciseDto> selectedExercises) onSelected,
-    required bool multiSelect}) async {
+    required void Function(List<ExerciseDto> selectedExercises) onSelected}) async {
   final exercises = await Navigator.of(context).push(MaterialPageRoute(
           builder: (context) =>
-              ExerciseLibraryScreen(preSelectedExercises: exclude, multiSelect: multiSelect)))
+              ExerciseLibraryScreen(preSelectedExercises: exclude)))
       as List<ExerciseDto>?;
 
   if (context.mounted) {

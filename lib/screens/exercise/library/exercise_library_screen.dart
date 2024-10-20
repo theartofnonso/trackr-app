@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_controller.dart';
-import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/widgets/empty_states/exercise_empty_state.dart';
 import 'package:tracker_app/widgets/search_bar.dart';
 
@@ -16,13 +15,10 @@ import '../../editors/exercise_editor_screen.dart';
 import '../history/home_screen.dart';
 
 class ExerciseLibraryScreen extends StatefulWidget {
-  final bool multiSelect;
   final bool readOnly;
-  final ExerciseType? filter;
   final List<ExerciseDto> preSelectedExercises;
 
-  const ExerciseLibraryScreen(
-      {super.key, this.multiSelect = true, this.readOnly = false, this.preSelectedExercises = const [], this.filter});
+  const ExerciseLibraryScreen({super.key, this.readOnly = false, this.preSelectedExercises = const []});
 
   @override
   State<ExerciseLibraryScreen> createState() => _ExerciseLibraryScreenState();
@@ -249,10 +245,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         .exercises
         .where((exercise) => !preSelectedExerciseIds.contains(exercise.id))
         .toList();
-
-    if (widget.filter != null) {
-      _exercisesInLibrary = _exercisesInLibrary.where((exercise) => exercise.type == widget.filter).toList();
-    }
 
     _filteredExercises = _exercisesInLibrary;
   }

@@ -15,5 +15,5 @@ const personalTrainerInstructionForWorkouts =
     "As a personal fitness trainer, use the supplied tools to assist the user. Refuse questions that are outside the scope of creating, recommending and analysing a workout or exercises in a workout";
 
 const userInstructionForExerciseRecommendations =
-    "Review my exercise selection and provide recommendations if necessary. Ensure that each muscle group is trained with two exercises targeting it primarily or secondarily. Ensure that both exercises train the muscle group in both lengthened and shortened positions";
+    "For each exercise in my selection, recommend another option to satisfy the following requirements. Ensure that each muscle group is trained with two exercises (i.e one from my original selection and another if none in my original selection is suitable) targeting it primarily or secondarily. Ensure that both exercises train the muscle group in both lengthened and shortened positio";
 

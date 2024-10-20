@@ -53,7 +53,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
 
   @override
   Widget build(BuildContext context) {
-
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     return Scaffold(
@@ -192,10 +191,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
 
   void _navigateToExerciseLibrary() {
     Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => const ExerciseLibraryScreen(
-              multiSelect: false,
-              readOnly: true,
-            )));
+        builder: (context) => const ExerciseLibraryScreen(readOnly: true)));
   }
 
   void _navigateToNotificationSettings() async {

@@ -17,13 +17,12 @@ class ExerciseController extends ChangeNotifier {
 
   UnmodifiableListView<ExerciseDto> get exercises => _amplifyExerciseRepository.exercises;
 
-  void loadLocalExercises() {
-    _amplifyExerciseRepository.loadLocalExercises();
+  Future<void> loadLocalExercises() async{
+    return _amplifyExerciseRepository.loadLocalExercises();
   }
 
   void streamExercises({required List<Exercise> exercises}) {
     _amplifyExerciseRepository.loadExerciseStream(exercises: exercises);
-    notifyListeners();
   }
 
   Future<void> saveExercise({required ExerciseDto exerciseDto}) async {

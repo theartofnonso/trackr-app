@@ -370,7 +370,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   Future<List<Map<String, dynamic>>> _runFunctionMessage({required RoutineTemplateDto template}) async {
     List<Map<String, dynamic>> muscleGroupAndExercises = [];
 
-    const userInstructions = userInstructionForExerciseRecommendations;
     final listOfExerciseJsons = template.exerciseTemplates
         .map((exerciseTemplate) => jsonEncode({
               "id": exerciseTemplate.exercise.id,
@@ -380,7 +379,20 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
     final StringBuffer buffer = StringBuffer();
 
-    buffer.writeln(userInstructions);
+    buffer.writeln("For Each Exercise in my selection, recommend an alternative exercise that meets the following criteria.");
+    buffer.writeln("\n");
+    buffer.writeln("Muscle Group Training Requirements:");
+    buffer.writeln("Dual Exercises: Ensure each muscle group is trained with two exercises:");
+    buffer.writeln("Primary Exercise: One from my original selection.");
+    buffer.writeln("Secondary Exercise: A recommended alternative if the original selection doesn’t adequately target the muscle group.");
+    buffer.writeln("\n");
+    buffer.writeln("Targeting Specifications");
+    buffer.writeln("Primary or Secondary Focus: Exercises should target the muscle group either primarily or secondarily.");
+    buffer.writeln("Range of Motion: Both exercises must engage the muscle group in:");
+    buffer.writeln("Lengthened Position");
+    buffer.writeln("Shortened Position");
+    buffer.writeln("\n");
+    buffer.writeln("Exercise Selection:");
     buffer.writeln(listOfExerciseJsons);
 
     final completeUserInstructions = buffer.toString();
