@@ -213,7 +213,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
             ListTile(
               dense: true,
               contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(Icons.monitor, size: 18),
+              leading: const FaIcon(Icons.monitor_heart_rounded, size: 18),
               horizontalTitleGap: 6,
               title: Text("Share Streak and Muscle Monitor",
                   style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
