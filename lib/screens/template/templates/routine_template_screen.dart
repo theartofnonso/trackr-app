@@ -364,25 +364,28 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       if (mounted) {
         final originalExerciseTemplates = template.exerciseTemplates.map((template) => template.exercise).toList();
         final exerciseIds = await navigateWithSlideTransition(
-            context: context,
-            child: TrkrCoachExerciseRecommendationScreen(
-                muscleGroupAndExercises: muscleGroupAndExercises,
-                originalExerciseTemplates: originalExerciseTemplates)) as List<String>;
+                context: context,
+                child: TrkrCoachExerciseRecommendationScreen(
+                    muscleGroupAndExercises: muscleGroupAndExercises,
+                    originalExerciseTemplates: originalExerciseTemplates)) as List<String>? ??
+            [];
 
-        if (mounted) {
-          final exercises = Provider.of<ExerciseController>(context, listen: false).exercises;
+        if (exerciseIds.isNotEmpty) {
+          if (mounted) {
+            final exercises = Provider.of<ExerciseController>(context, listen: false).exercises;
 
-          final exerciseTemplates = exerciseIds.map((exerciseId) {
-            final exerciseInLibrary = exercises.firstWhere((exercise) => exercise.id == exerciseId);
-            final exerciseTemplate = ExerciseLogDto(
-                exerciseInLibrary.id, "", "", exerciseInLibrary, "", [const SetDto(0, 0, false)], DateTime.now(), []);
-            return exerciseTemplate;
-          }).toList();
-          final originalTemplates = template.exerciseTemplates;
+            final exerciseTemplates = exerciseIds.map((exerciseId) {
+              final exerciseInLibrary = exercises.firstWhere((exercise) => exercise.id == exerciseId);
+              final exerciseTemplate = ExerciseLogDto(
+                  exerciseInLibrary.id, "", "", exerciseInLibrary, "", [const SetDto(0, 0, false)], DateTime.now(), []);
+              return exerciseTemplate;
+            }).toList();
+            final originalTemplates = template.exerciseTemplates;
 
-          final updatedTemplate = template.copyWith(exerciseTemplates: [...originalTemplates, ...exerciseTemplates]);
+            final updatedTemplate = template.copyWith(exerciseTemplates: [...originalTemplates, ...exerciseTemplates]);
 
-          _updateTemplate(template: updatedTemplate);
+            _updateTemplate(template: updatedTemplate);
+          }
         }
       }
     }
