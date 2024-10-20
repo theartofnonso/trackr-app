@@ -170,6 +170,15 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
   Future<RoutineTemplateDto?> _runFunctionMessage({required String userInstruction}) async {
     RoutineTemplateDto? templateDto;
 
+    final StringBuffer buffer = StringBuffer();
+
+    buffer.writeln(personalTrainerInstructionForWorkouts);
+    buffer.writeln("For each muscle group, suggest two exercises.");
+    buffer.writeln("Ensure one exercise targets the muscle group primarily or secondarily.");
+    buffer.writeln("Both exercises must engage the muscle group from both the lengthened and shortened positions.");
+
+    final completeSystemInstructions = buffer.toString();
+
     final tool = await runMessageWithTools(systemInstruction: personalTrainerInstructionForWorkouts, userInstruction: userInstruction);
     if (tool != null) {
       final toolId = tool['id'];
@@ -179,7 +188,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
           final exercises = Provider.of<ExerciseController>(context, listen: false).exercises;
           final functionCallPayload = await createFunctionCallPayload(
               toolId: toolId,
-              systemInstruction: personalTrainerInstructionForWorkouts,
+              systemInstruction: completeSystemInstructions,
               user: userInstruction,
               responseFormat: newRoutineTemplateResponseFormat,
               exercises: exercises);
