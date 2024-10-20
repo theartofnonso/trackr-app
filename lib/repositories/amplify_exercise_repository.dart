@@ -74,7 +74,12 @@ class AmplifyExerciseRepository {
 
   void loadExerciseStream({required List<Exercise> exercises}) {
     final snapshot = exercises.map((exercise) => exercise.dtoUser()).toList();
-    _exercises.addAll(snapshot);
+    for (var item in snapshot) {
+      final exercise = _exercises.firstWhereOrNull((exercise) => exercise.id == item.id);
+      if(exercise == null) {
+        _exercises.add(item);
+      }
+    }
     _exercises.sort((a, b) => a.name.compareTo(b.name));
   }
 

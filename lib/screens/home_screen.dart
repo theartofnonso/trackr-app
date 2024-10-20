@@ -49,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final screens = [
       OverviewScreen(scrollController: _scrollController),
       const RoutinesHome(),
-      const CommunitiesScreen(),
+      // const CommunitiesScreen(),
       const SettingsScreen(),
     ];
 
@@ -82,20 +82,20 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             label: 'Workouts',
           ),
-          NavigationDestination(
-            icon: Image.asset(
-              'icons/people.png',
-              fit: BoxFit.contain,
-              color: Colors.grey,
-              height: 34, // Adjust the height as needed
-            ),
-            selectedIcon: Image.asset(
-              'icons/people.png',
-              fit: BoxFit.contain,
-              height: 34, // Adjust the height as needed
-            ),
-            label: 'TRKD Circles',
-          ),
+          // NavigationDestination(
+          //   icon: Image.asset(
+          //     'icons/people.png',
+          //     fit: BoxFit.contain,
+          //     color: Colors.grey,
+          //     height: 34, // Adjust the height as needed
+          //   ),
+          //   selectedIcon: Image.asset(
+          //     'icons/people.png',
+          //     fit: BoxFit.contain,
+          //     height: 34, // Adjust the height as needed
+          //   ),
+          //   label: 'TRKD Circles',
+          // ),
           const NavigationDestination(
             icon: FaIcon(FontAwesomeIcons.gear, color: Colors.grey, size: 26),
             selectedIcon: FaIcon(FontAwesomeIcons.gear, color: Colors.white, size: 26),
