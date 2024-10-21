@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
+import 'package:tracker_app/enums/activity_type_enums.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
@@ -69,42 +70,20 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
-    final logs = _monthlyLogs ?? routineLogController.monthlyLogs[_monthDateTimeRange] ?? [];
+    final logs = _monthlyLogs ?? routineLogController.weeklyLogs.values.expand((items) => items);
+
+    final exerciseLogs = logs
+        .expand((routineLog) => exerciseLogsWithCheckedSets(exerciseLogs: routineLog.exerciseLogs))
+        .where((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup == _selectedMuscleGroup).toList();
 
     List<num> periodicalValues = [];
     List<DateTime> periodicalDates = [];
 
-    final exerciseController = Provider.of<ExerciseController>(context, listen: false);
-
-    final exerciseLogs = logs
-        .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
-        .expand((exerciseLogs) => exerciseLogs)
-        .map((exerciseLog) {
-      final foundExercise =
-          exerciseController.exercises.firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.id == exerciseLog.id);
-      return foundExercise != null ? exerciseLog.copyWith(exercise: foundExercise) : exerciseLog;
-    }).where((exerciseLog) {
-      final muscleGroups = [exerciseLog.exercise.primaryMuscleGroup, ...exerciseLog.exercise.secondaryMuscleGroups];
-      return muscleGroups.contains(_selectedMuscleGroup);
-    }).toList();
-
-    for (final log in logs) {
-      final valuesForPeriod = logs
-          .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
-          .expand((exerciseLogs) => exerciseLogs)
-          .map((exerciseLog) {
-        final foundExercise = exerciseController.exercises
-            .firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.id == exerciseLog.id);
-        return foundExercise != null ? exerciseLog.copyWith(exercise: foundExercise) : exerciseLog;
-      }).where((exerciseLog) {
-        final muscleGroups = {exerciseLog.exercise.primaryMuscleGroup, ...exerciseLog.exercise.secondaryMuscleGroups};
-        return muscleGroups.contains(_selectedMuscleGroup);
-      }).map((log) {
-        final values = _calculateMetric(sets: log.sets);
-        return values;
-      }).sum;
-      periodicalValues.add(valuesForPeriod);
-      periodicalDates.add(log.createdAt);
+    for (final exerciseLog in exerciseLogs) {
+      final value = _calculateMetric(sets: exerciseLog.sets);
+      print(value);
+      periodicalValues.add(value);
+      periodicalDates.add(exerciseLog.createdAt);
     }
 
     final nonZeroValues = periodicalValues.where((value) => value > 0).toList();
@@ -278,7 +257,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                       periods: months,
                       barColors: _metric != SetRepsVolumeReps.volume ? barColors : null,
                       unit: _chartUnit(),
-                      bottomTitlesInterval: 1,
+                      bottomTitlesInterval: 6,
                       showTopTitles: false,
                       showLeftTitles: true,
                       reservedSize: _reservedSize(),
@@ -375,7 +354,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     routineLogController.fetchLogsCloud(range: range.start.dateTimeRange()).then((logs) {
       setState(() {
-        _monthlyLogs = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
+        final AllYear = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
       });
     });
 
