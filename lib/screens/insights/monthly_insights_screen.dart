@@ -6,17 +6,13 @@ import 'package:tracker_app/widgets/monthly_insights/month_summary_widget.dart';
 
 import '../../controllers/activity_log_controller.dart';
 import '../../controllers/routine_log_controller.dart';
-import '../../dtos/routine_log_dto.dart';
 import '../../widgets/monthly_insights/muscle_group_family_frequency_chart_widget.dart';
 import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
 
 class MonthlyInsightsScreen extends StatelessWidget {
   final DateTimeRange dateTimeRange;
-  final Map<DateTimeRange, List<RoutineLogDto>> monthlyLogsAndDate;
-  final int daysInMonth;
 
-  const MonthlyInsightsScreen(
-      {super.key, required this.dateTimeRange, required this.monthlyLogsAndDate, required this.daysInMonth});
+  const MonthlyInsightsScreen({super.key, required this.dateTimeRange});
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +23,8 @@ class MonthlyInsightsScreen extends StatelessWidget {
     final activitiesController = Provider.of<ActivityLogController>(context, listen: true);
 
     final activityLogs = activitiesController.monthlyLogs[dateTimeRange] ?? [];
+
+    final monthlyLogs = routineLogController.monthlyLogs;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,9 +41,9 @@ class MonthlyInsightsScreen extends StatelessWidget {
             ],
           ),
         const SizedBox(height: 24),
-        MuscleGroupFamilyFrequencyChartWidget(monthlyLogs: monthlyLogsAndDate),
+        MuscleGroupFamilyFrequencyChartWidget(monthlyLogs: monthlyLogs),
         const SizedBox(height: 18),
-        LogStreakChartWidget(monthlyLogs: monthlyLogsAndDate),
+        LogStreakChartWidget(monthlyLogs: monthlyLogs),
       ],
     );
   }

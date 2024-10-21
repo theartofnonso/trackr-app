@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/extensions/datetime_extension.dart';
 
 class CalendarNavigator extends StatefulWidget {
   /// Callback when the year changes, providing the date range for the year.
@@ -98,22 +99,34 @@ class _CalendarNavigatorState extends State<CalendarNavigator> {
   /// Returns the month name based on the month number.
   String _monthName(int monthNumber) {
     const List<String> monthNames = [
-      'January', 'February', 'March', 'April',
-      'May', 'June', 'July', 'August',
-      'September', 'October', 'November', 'December'
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December'
     ];
     return monthNames[monthNumber - 1];
   }
 
   @override
   Widget build(BuildContext context) {
+    DateTime today = DateTime.now();
+    DateTime currentMonthStart = DateTime(today.year, today.month, 1);
+    bool canNavigateNext = !_currentDate.monthlyStartDate().isAtSameMomentAs(currentMonthStart);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         IconButton(
             onPressed: _goToPreviousMonth,
-            icon: const FaIcon(FontAwesomeIcons.arrowLeftLong,
-                color: Colors.white, size: 16)),
+            icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 16)),
         Text(_formattedMonthYear(),
             textAlign: TextAlign.center,
             style: GoogleFonts.ubuntu(
@@ -121,9 +134,9 @@ class _CalendarNavigatorState extends State<CalendarNavigator> {
               fontWeight: FontWeight.w900,
             )),
         IconButton(
-            onPressed: _goToNextMonth,
-            icon: const FaIcon(FontAwesomeIcons.arrowRightLong,
-                color: Colors.white, size: 16)),
+            onPressed: canNavigateNext ? _goToNextMonth : null,
+            icon: FaIcon(FontAwesomeIcons.arrowRightLong,
+                color: canNavigateNext ? Colors.white : Colors.white70, size: 16)),
       ],
     );
   }

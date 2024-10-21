@@ -9,7 +9,6 @@ import 'package:tracker_app/dtos/activity_log_dto.dart';
 import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/extensions/activity_log_extension.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
-import 'package:tracker_app/extensions/datetime_range_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
@@ -53,7 +52,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
   Map<DateTimeRange, List<ActivityLogDto>>? _monthlyActivityLogs;
 
   late DateTime _selectedDateTime;
-  late DateTimeRange _selectedDateTimeRange;
 
   late DateTimeRange _monthDateTimeRange;
 
@@ -84,20 +82,21 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     /// Routine Logs
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
-    Map<DateTimeRange, List<RoutineLogDto>> monthlyRoutineLogs = _monthlyRoutineLogs ?? routineLogController.monthlyLogs;
+    Map<DateTimeRange, List<RoutineLogDto>> monthlyRoutineLogs =
+        _monthlyRoutineLogs ?? routineLogController.monthlyLogs;
 
     final routineLogsForTheYear = monthlyRoutineLogs.values.expand((logs) => logs);
 
     /// Activity Logs
     final activityLogController = Provider.of<ActivityLogController>(context, listen: true);
 
-    Map<DateTimeRange, List<ActivityLogDto>> monthlyActivityLogs = _monthlyActivityLogs ?? activityLogController.monthlyLogs;
+    Map<DateTimeRange, List<ActivityLogDto>> monthlyActivityLogs =
+        _monthlyActivityLogs ?? activityLogController.monthlyLogs;
 
     final activityLogsForTheYear = monthlyActivityLogs.values.expand((logs) => logs);
 
@@ -128,9 +127,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                   IconButton(
                     onPressed: null,
                     icon: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
@@ -175,11 +172,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           dateTime: _selectedDateTime,
                         ),
                         const SizedBox(height: 12),
-                        MonthlyInsightsScreen(
-                          daysInMonth: _selectedDateTimeRange.datesToNow.length,
-                          dateTimeRange: _monthDateTimeRange,
-                          monthlyLogsAndDate: monthlyRoutineLogs,
-                        ),
+                        MonthlyInsightsScreen(dateTimeRange: _monthDateTimeRange),
                       ])),
                 )
                 // Add more widgets here for exercise insights
@@ -356,7 +349,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 
   void _onYearChange(DateTimeRange range) {
-
     _showLoadingScreen();
 
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
@@ -389,7 +381,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
   void initState() {
     super.initState();
     _selectedDateTime = DateTime.now();
-    _selectedDateTimeRange = thisMonthDateRange();
     _monthDateTimeRange = thisMonthDateRange();
   }
 
@@ -407,7 +398,6 @@ class _LogsListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     /// Routine Logs
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
     final routineLogsForCurrentDate = routineLogController.logsWhereDate(dateTime: dateTime).toList();
@@ -417,7 +407,9 @@ class _LogsListView extends StatelessWidget {
     final activityLogsForCurrentDate = activityLogController.logsWhereDate(dateTime: dateTime).toList();
 
     /// Aggregates
-    final allLogsForCurrentDate = [...routineLogsForCurrentDate, ...activityLogsForCurrentDate].sorted((a, b) => a.createdAt.compareTo(b.createdAt)).toList();
+    final allLogsForCurrentDate = [...routineLogsForCurrentDate, ...activityLogsForCurrentDate]
+        .sorted((a, b) => a.createdAt.compareTo(b.createdAt))
+        .toList();
 
     final children = allLogsForCurrentDate.map((log) {
       Widget widget;

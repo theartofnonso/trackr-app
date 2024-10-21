@@ -210,4 +210,8 @@ extension DateTimeExtension on DateTime {
     final end = DateTime(year, 12);
     return DateTimeRange(start: start, end: end);
   }
+
+  DateTime monthlyStartDate() {
+    return DateTime(this.year, this.month, 1);
+  }
 }
