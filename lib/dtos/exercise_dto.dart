@@ -101,4 +101,14 @@ class ExerciseDto {
   String toString() {
     return 'ExerciseDto{id: $id, name: $name, primaryMuscleGroup: $primaryMuscleGroup, secondaryMuscleGroups: $secondaryMuscleGroups video: $video, description: $description, trainingPosition: $trainingPosition, creditSource: $creditSource, credit: $credit, type: $type, owner: $owner}';
   }
+
+  @override
+  int get hashCode => id.hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    return other is ExerciseDto &&
+        other.id == id;
+  }
+
 }

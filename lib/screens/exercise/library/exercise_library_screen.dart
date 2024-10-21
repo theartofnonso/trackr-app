@@ -12,7 +12,7 @@ import '../../../dtos/exercise_dto.dart';
 import '../../../enums/muscle_group_enums.dart';
 import '../../../widgets/exercise/exercise_widget.dart';
 import '../../editors/exercise_editor_screen.dart';
-import '../history/home_screen.dart';
+import '../history/exercise_home_screen.dart';
 
 class ExerciseLibraryScreen extends StatefulWidget {
   final bool readOnly;
@@ -27,22 +27,23 @@ class ExerciseLibraryScreen extends StatefulWidget {
 class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   late TextEditingController _searchController;
 
-  List<ExerciseDto> _exercisesInLibrary = [];
-
   MuscleGroup? _selectedMuscleGroup;
 
   /// Holds a list of [ExerciseDto] when filtering through a search
+  final List<String> _preSelectedExercises = [];
   List<ExerciseDto> _filteredExercises = [];
-
-  final List<ExerciseDto> _selectedExercises = [];
 
   /// Search through the list of exercises
   void _runSearch() {
+    final preSelectedExerciseIds = widget.preSelectedExercises.map((exercise) => exercise.id).toList();
+
     final query = _searchController.text.toLowerCase().trim();
 
     List<ExerciseDto> searchResults = [];
 
-    searchResults = _exercisesInLibrary
+    searchResults = Provider.of<ExerciseController>(context, listen: false)
+        .exercises
+        .where((exercise) => !preSelectedExerciseIds.contains(exercise.id))
         .where((exercise) => exercise.name.toLowerCase().contains(query.toLowerCase()))
         .toList();
 
@@ -62,12 +63,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     _runSearch();
   }
 
-  /// Navigate to previous screen
-  void _navigateBackWithSelectedExercises() {
-    final exercisesFromLibrary = _selectedExercises.map((exercise) => exercise).toList();
-    Navigator.of(context).pop(exercisesFromLibrary);
-  }
-
   /// Select an exercise
   void _navigateBackWithSelectedExercise(ExerciseDto selectedExercise) {
     Navigator.of(context).pop([selectedExercise]);
@@ -79,27 +74,16 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   void _navigateToExerciseEditor() async {
     await context.push(ExerciseEditorScreen.routeName);
-    if (mounted) {
-      setState(() {
-        _filteredExercises = _synchronizeFilteredList();
-      });
-    }
+    setState(() {
+      _loadOrSyncExercises();
+    });
   }
 
   void _navigateToExerciseHistory(ExerciseDto exercise) async {
-    await Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomeScreen(exercise: exercise)));
-    if (mounted) {
-      setState(() {
-        _filteredExercises = _synchronizeFilteredList();
-      });
-    }
-  }
-
-  List<ExerciseDto> _synchronizeFilteredList() {
-    var idsInFilteredList = _filteredExercises.map((exercise) => exercise.id).toSet();
-    final filteredExercises = _exercisesInLibrary.where((exercise) => idsInFilteredList.contains(exercise.id)).toList();
-    return _filteredExercises =
-        _searchController.text.isNotEmpty || _selectedMuscleGroup != null ? filteredExercises : _exercisesInLibrary;
+    await Navigator.of(context).push(MaterialPageRoute(builder: (context) => ExerciseHomeScreen(exercise: exercise)));
+    setState(() {
+      _loadOrSyncExercises();
+    });
   }
 
   @override
@@ -113,14 +97,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
           icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
           onPressed: () => context.pop(),
         ),
-        actions: [
-          if (_selectedExercises.isNotEmpty)
-            GestureDetector(
-                onTap: _navigateBackWithSelectedExercises,
-                child: Text("Add (${_selectedExercises.length})",
-                    style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.white))),
-          const SizedBox(width: 12)
-        ],
       ),
       floatingActionButton: FloatingActionButton(
         heroTag: "fab_exercise_library_screen",
@@ -172,8 +148,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                     isDense: true,
                     value: _selectedMuscleGroup,
                     hint: Text("Filter by muscle group",
-                        style:
-                            GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14)),
+                        style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14)),
                     icon: GestureDetector(
                       onTap: () {
                         _selectedMuscleGroup = null;
@@ -218,9 +193,12 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                                   onNavigateToExercise: _navigateToExerciseHistory,
                                   onSelect: widget.readOnly ? null : _navigateBackWithSelectedExercise),
                               separatorBuilder: (BuildContext context, int index) => const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 20.0),
-                                child: Divider(height: 0.5, color: sapphireLighter,),
-                              ),
+                                    padding: EdgeInsets.symmetric(vertical: 20.0),
+                                    child: Divider(
+                                      height: 0.5,
+                                      color: sapphireLighter,
+                                    ),
+                                  ),
                               itemCount: _filteredExercises.length),
                         ),
                       )
@@ -233,20 +211,20 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     );
   }
 
+  void _loadOrSyncExercises() {
+    _filteredExercises = Provider.of<ExerciseController>(context, listen: false)
+        .exercises
+        .where((exercise) => !_preSelectedExercises.contains(exercise.id))
+        .toList();
+  }
+
   @override
   void initState() {
     super.initState();
 
     _searchController = TextEditingController();
 
-    final preSelectedExerciseIds = widget.preSelectedExercises.map((exercise) => exercise.id).toList();
-
-    _exercisesInLibrary = Provider.of<ExerciseController>(context, listen: false)
-        .exercises
-        .where((exercise) => !preSelectedExerciseIds.contains(exercise.id))
-        .toList();
-
-    _filteredExercises = _exercisesInLibrary;
+    _loadOrSyncExercises();
   }
 
   @override

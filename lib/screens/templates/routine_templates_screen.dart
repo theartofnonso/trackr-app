@@ -11,10 +11,10 @@ import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_button.dart';
 import 'package:tracker_app/widgets/empty_states/routine_empty_state.dart';
 
-import '../../../dtos/routine_template_dto.dart';
-import '../../../utils/general_utils.dart';
-import '../../../utils/navigation_utils.dart';
-import '../../../utils/routine_utils.dart';
+import '../../dtos/routine_template_dto.dart';
+import '../../utils/general_utils.dart';
+import '../../utils/navigation_utils.dart';
+import '../../utils/routine_utils.dart';
 
 class RoutineTemplatesScreen extends StatelessWidget {
   const RoutineTemplatesScreen({super.key});
@@ -68,29 +68,41 @@ class RoutineTemplatesScreen extends StatelessWidget {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 28),
           ),
-          body: SafeArea(
-              minimum: const EdgeInsets.all(10.0),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                const SizedBox(height: 16),
-                TRKRCoachButton(label: "Describe a workout", onTap: () => _switchToAIContext(context: context)),
-                const SizedBox(height: 16),
-                templates.isNotEmpty
-                    ? Expanded(
-                        child: GridView.count(
-                            crossAxisCount: 2,
-                            childAspectRatio: 1,
-                            mainAxisSpacing: 10.0,
-                            crossAxisSpacing: 10.0,
-                            children: children),
-                      )
-                    : const RoutineEmptyState(),
-              ])));
+          body: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  sapphireDark80,
+                  sapphireDark,
+                ],
+              ),
+            ),
+            child: SafeArea(
+                minimum: const EdgeInsets.all(10.0),
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  const SizedBox(height: 16),
+                  TRKRCoachButton(label: "Describe a workout", onTap: () => _switchToAIContext(context: context)),
+                  const SizedBox(height: 16),
+                  templates.isNotEmpty
+                      ? Expanded(
+                          child: GridView.count(
+                              crossAxisCount: 2,
+                              childAspectRatio: 1,
+                              mainAxisSpacing: 10.0,
+                              crossAxisSpacing: 10.0,
+                              children: children),
+                        )
+                      : const RoutineEmptyState(),
+                ])),
+          ));
     });
   }
 
   void _switchToAIContext({required BuildContext context}) async {
-    final result = await navigateWithSlideTransition(context: context, child: const TRKRCoachChatScreen())
-        as RoutineTemplateDto?;
+    final result =
+        await navigateWithSlideTransition(context: context, child: const TRKRCoachChatScreen()) as RoutineTemplateDto?;
     if (result != null) {
       if (context.mounted) {
         _saveTemplate(context: context, template: result);

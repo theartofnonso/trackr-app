@@ -21,20 +21,19 @@ import '../../../utils/dialog_utils.dart';
 import '../../../utils/navigation_utils.dart';
 import '../../../utils/routine_utils.dart';
 import '../../../widgets/backgrounds/trkr_loading_screen.dart';
-import '../../../widgets/calendar/calendar_years_navigator.dart';
 
 const exerciseRouteName = "/exercise-history-screen";
 
-class HomeScreen extends StatefulWidget {
+class ExerciseHomeScreen extends StatefulWidget {
   final ExerciseDto exercise;
 
-  const HomeScreen({super.key, required this.exercise});
+  const ExerciseHomeScreen({super.key, required this.exercise});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<ExerciseHomeScreen> createState() => _ExerciseHomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
   Map<String, List<ExerciseLogDto>>? _exerciseLogsById;
 
   bool _loading = false;
@@ -179,9 +178,6 @@ class _HomeScreenState extends State<HomeScreen> {
             child:  SafeArea(
               child: Column(
                 children: [
-                  const SizedBox(height: 10),
-                  CalendarYearsNavigator(onChangedDateTimeRange: _onChangedDateTimeRange),
-                  const SizedBox(height: 10),
                   Expanded(
                     child: TabBarView(
                       children: [

@@ -73,14 +73,9 @@ class AmplifyExerciseRepository {
   }
 
   void loadExerciseStream({required List<Exercise> exercises}) {
-    final snapshot = exercises.map((exercise) => exercise.dtoUser()).toList();
-    for (var item in snapshot) {
-      final exercise = _exercises.firstWhereOrNull((exercise) => exercise.id == item.id);
-      if(exercise == null) {
-        _exercises.add(item);
-      }
-    }
-    _exercises.sort((a, b) => a.name.compareTo(b.name));
+    final snapshot = exercises.map((exercise) => exercise.dtoUser());
+    _exercises.addAll(snapshot);
+    _exercises = _exercises.toSet().sorted((a, b) => a.name.compareTo(b.name));
   }
 
   Future<void> saveExercise({required ExerciseDto exerciseDto}) async {

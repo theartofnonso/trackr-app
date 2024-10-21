@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
-import 'package:tracker_app/enums/chart_period_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
@@ -30,7 +29,7 @@ import '../../utils/navigation_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/ai_widgets/trkr_information_container.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
-import '../../widgets/calendar/calendar_months_navigator.dart';
+import '../../widgets/calendar/calendar_navigator.dart';
 import '../../widgets/chart/bar_chart.dart';
 import '../../widgets/chart/horizontal_stacked_bars.dart';
 import '../../widgets/chart/legend.dart';
@@ -46,16 +45,18 @@ class SetsAndRepsVolumeInsightsScreen extends StatefulWidget {
 }
 
 class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsightsScreen> {
-  Map<DateTimeRange, List<RoutineLogDto>>? _weeklyLogs;
 
-  late DateTimeRange _dateTimeRange;
+  List<RoutineLogDto>? _monthlyLogs;
 
-  ChartPeriod _period = ChartPeriod.month;
   SetRepsVolumeReps _metric = SetRepsVolumeReps.sets;
 
   late MuscleGroup _selectedMuscleGroup;
 
   bool _loading = false;
+
+  late DateTimeRange _yearDateTimeRange;
+
+  late DateTimeRange _monthDateTimeRange;
 
   @override
   Widget build(BuildContext context) {
@@ -68,24 +69,14 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
-    final logsForTheWeek = _weeklyLogs ?? routineLogController.weeklyLogs;
-
-    final periodicalLogs = _period == ChartPeriod.month
-        ? logsForTheWeek.entries.where((weekEntry) =>
-            weekEntry.key.start.month == _dateTimeRange.start.month ||
-            weekEntry.key.end.month == _dateTimeRange.start.month)
-        : logsForTheWeek.entries.where((weekEntry) =>
-            weekEntry.key.start.isAfterOrEqual(_dateTimeRange.start) &&
-            weekEntry.key.end.isBeforeOrEqual(_dateTimeRange.end));
+    final logs = _monthlyLogs ?? routineLogController.monthlyLogs[_monthDateTimeRange] ?? [];
 
     List<num> periodicalValues = [];
     List<DateTime> periodicalDates = [];
 
     final exerciseController = Provider.of<ExerciseController>(context, listen: false);
 
-    final exerciseLogs = periodicalLogs
-        .map((log) => log.value)
-        .expand((logs) => logs)
+    final exerciseLogs = logs
         .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
         .expand((exerciseLogs) => exerciseLogs)
         .map((exerciseLog) {
@@ -97,8 +88,8 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       return muscleGroups.contains(_selectedMuscleGroup);
     }).toList();
 
-    for (final periodAndLogs in periodicalLogs) {
-      final valuesForPeriod = periodAndLogs.value
+    for (final log in logs) {
+      final valuesForPeriod = logs
           .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
           .expand((exerciseLogs) => exerciseLogs)
           .map((exerciseLog) {
@@ -113,7 +104,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
         return values;
       }).sum;
       periodicalValues.add(valuesForPeriod);
-      periodicalDates.add(periodAndLogs.key.end);
+      periodicalDates.add(log.createdAt);
     }
 
     final nonZeroValues = periodicalValues.where((value) => value > 0).toList();
@@ -122,10 +113,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     final chartPoints =
         periodicalValues.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
-
-    final weeks = periodicalValues.mapIndexed((index, _) {
-      return "WK ${index + 1}";
-    }).toList();
 
     final months = periodicalDates.map((date) => date.formattedMonth()).toList();
 
@@ -176,10 +163,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CalendarMonthsNavigator(
-                  onChangedDateTimeRange: _onChangedDateTimeRange,
-                  chartPeriod: _period,
-                ),
+                CalendarNavigator(onYearChange: _onYearChange, onMonthChange: _onMonthChange),
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
@@ -258,64 +242,31 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                         ),
                       ],
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        CupertinoSlidingSegmentedControl<ChartPeriod>(
-                          backgroundColor: sapphireDark,
-                          thumbColor: sapphireLight,
-                          groupValue: _period,
-                          children: {
-                            ChartPeriod.month: SizedBox(
-                                width: 40,
-                                child: Text(ChartPeriod.month.name.toUpperCase(),
-                                    style: textStyle, textAlign: TextAlign.center)),
-                            ChartPeriod.threeMonths: SizedBox(
-                                width: 40,
-                                child: Text(ChartPeriod.threeMonths.name.toUpperCase(),
-                                    style: textStyle, textAlign: TextAlign.center)),
-                            ChartPeriod.sixMonths: SizedBox(
-                                width: 40,
-                                child: Text(ChartPeriod.sixMonths.name.toUpperCase(),
-                                    style: textStyle, textAlign: TextAlign.center)),
-                          },
-                          onValueChanged: (ChartPeriod? value) {
-                            if (value != null) {
-                              setState(() {
-                                _period = value;
-                                _dateTimeRange = _periodDateTimeRange();
-                              });
-                            }
-                          },
-                        ),
-                        const SizedBox(height: 10),
-                        CupertinoSlidingSegmentedControl<SetRepsVolumeReps>(
-                          backgroundColor: sapphireDark,
-                          thumbColor: sapphireLight,
-                          groupValue: _metric,
-                          children: {
-                            SetRepsVolumeReps.sets: SizedBox(
-                                width: 40,
-                                child:
-                                    Text(SetRepsVolumeReps.sets.name, style: textStyle, textAlign: TextAlign.center)),
-                            SetRepsVolumeReps.reps: SizedBox(
-                                width: 40,
-                                child:
-                                    Text(SetRepsVolumeReps.reps.name, style: textStyle, textAlign: TextAlign.center)),
-                            SetRepsVolumeReps.volume: SizedBox(
-                                width: 40,
-                                child:
-                                    Text(SetRepsVolumeReps.volume.name, style: textStyle, textAlign: TextAlign.center)),
-                          },
-                          onValueChanged: (SetRepsVolumeReps? value) {
-                            if (value != null) {
-                              setState(() {
-                                _metric = value;
-                              });
-                            }
-                          },
-                        ),
-                      ],
+                    CupertinoSlidingSegmentedControl<SetRepsVolumeReps>(
+                      backgroundColor: sapphireDark,
+                      thumbColor: sapphireLight,
+                      groupValue: _metric,
+                      children: {
+                        SetRepsVolumeReps.sets: SizedBox(
+                            width: 40,
+                            child:
+                            Text(SetRepsVolumeReps.sets.name, style: textStyle, textAlign: TextAlign.center)),
+                        SetRepsVolumeReps.reps: SizedBox(
+                            width: 40,
+                            child:
+                            Text(SetRepsVolumeReps.reps.name, style: textStyle, textAlign: TextAlign.center)),
+                        SetRepsVolumeReps.volume: SizedBox(
+                            width: 40,
+                            child:
+                            Text(SetRepsVolumeReps.volume.name, style: textStyle, textAlign: TextAlign.center)),
+                      },
+                      onValueChanged: (SetRepsVolumeReps? value) {
+                        if (value != null) {
+                          setState(() {
+                            _metric = value;
+                          });
+                        }
+                      },
                     ),
                   ],
                 ),
@@ -324,15 +275,11 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                     height: 250,
                     child: CustomBarChart(
                       chartPoints: chartPoints,
-                      periods: _period == ChartPeriod.month ? weeks : months,
+                      periods: months,
                       barColors: _metric != SetRepsVolumeReps.volume ? barColors : null,
                       unit: _chartUnit(),
-                      bottomTitlesInterval: _period == ChartPeriod.month
-                          ? 1
-                          : weeks.length > 7
-                              ? 4
-                              : 2,
-                      showTopTitles: _period == ChartPeriod.month ? true : false,
+                      bottomTitlesInterval: 1,
+                      showTopTitles: false,
                       showLeftTitles: true,
                       reservedSize: _reservedSize(),
                     )),
@@ -396,7 +343,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
           context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: "You don't have any logs");
     } else {
       final userInstructions =
-          "Review my workout logs for ${_selectedMuscleGroup.name} from ${_dateTimeRange.start} to ${_dateTimeRange.end} and provide feedback";
+          "Review my workout logs for ${_selectedMuscleGroup.name} from ${_monthDateTimeRange.start} to ${_monthDateTimeRange.end} and provide feedback";
 
       final logJsons = logs.map((log) => log.toJson());
 
@@ -420,31 +367,27 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     }
   }
 
-  void _onChangedDateTimeRange(DateTimeRange? range) {
-    if (range == null) return;
+  void _onYearChange(DateTimeRange range) {
 
-    final isDifferentYear = !_dateTimeRange.start.isSameYear(range.start);
-
-    setState(() {
-      _loading = isDifferentYear;
-    });
+    _showLoadingScreen();
 
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
-    if (isDifferentYear) {
-      routineLogController.fetchLogsCloud(range: range.start.dateTimeRange()).then((logs) {
-        setState(() {
-          _loading = false;
-          final dtos = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
-          _weeklyLogs = groupRoutineLogsByWeek(routineLogs: dtos);
-        });
+    routineLogController.fetchLogsCloud(range: range.start.dateTimeRange()).then((logs) {
+      setState(() {
+        _monthlyLogs = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
       });
-    }
+    });
 
+    _hideLoadingScreen();
+  }
+
+  void _onMonthChange(DateTimeRange range) {
     setState(() {
-      _dateTimeRange = range;
+      _monthDateTimeRange = range;
     });
   }
+
 
   int _weightWhere({required List<num> values, required bool Function(num) condition}) {
     return values.where(condition).length;
@@ -499,15 +442,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     };
   }
 
-  DateTimeRange _periodDateTimeRange() {
-    final now = DateTime.now();
-    return switch (_period) {
-      ChartPeriod.month => thisMonthDateRange(),
-      ChartPeriod.threeMonths => DateTimeRange(start: now.past90Days(), end: now.lastWeekDay().withoutTime()),
-      ChartPeriod.sixMonths => DateTimeRange(start: now.past180Days(), end: now.lastWeekDay().withoutTime()),
-    };
-  }
-
   @override
   void initState() {
     super.initState();
@@ -519,6 +453,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
         ?.exercise
         .primaryMuscleGroup;
     _selectedMuscleGroup = defaultMuscleGroup ?? MuscleGroup.values.first;
-    _dateTimeRange = thisMonthDateRange();
+    _monthDateTimeRange = thisMonthDateRange();
   }
 }

@@ -10,7 +10,7 @@ import 'package:tracker_app/models/ActivityLog.dart';
 import 'package:tracker_app/models/Exercise.dart';
 import 'package:tracker_app/screens/insights/overview_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
-import 'package:tracker_app/screens/template/routines_home.dart';
+import 'package:tracker_app/screens/templates/routine_templates_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 
@@ -48,8 +48,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final screens = [
       OverviewScreen(scrollController: _scrollController),
-      const RoutinesHome(),
-      // const CommunitiesScreen(),
+      const RoutineTemplatesScreen(),
+      const CommunitiesScreen(),
       const SettingsScreen(),
     ];
 
@@ -82,20 +82,20 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             label: 'Workouts',
           ),
-          // NavigationDestination(
-          //   icon: Image.asset(
-          //     'icons/people.png',
-          //     fit: BoxFit.contain,
-          //     color: Colors.grey,
-          //     height: 34, // Adjust the height as needed
-          //   ),
-          //   selectedIcon: Image.asset(
-          //     'icons/people.png',
-          //     fit: BoxFit.contain,
-          //     height: 34, // Adjust the height as needed
-          //   ),
-          //   label: 'TRKD Circles',
-          // ),
+          NavigationDestination(
+            icon: Image.asset(
+              'icons/people.png',
+              fit: BoxFit.contain,
+              color: Colors.grey,
+              height: 34, // Adjust the height as needed
+            ),
+            selectedIcon: Image.asset(
+              'icons/people.png',
+              fit: BoxFit.contain,
+              height: 34, // Adjust the height as needed
+            ),
+            label: 'TRKD Circles',
+          ),
           const NavigationDestination(
             icon: FaIcon(FontAwesomeIcons.gear, color: Colors.grey, size: 26),
             selectedIcon: FaIcon(FontAwesomeIcons.gear, color: Colors.white, size: 26),

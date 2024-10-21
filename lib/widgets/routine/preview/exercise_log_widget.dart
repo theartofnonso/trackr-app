@@ -7,7 +7,7 @@ import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 
 import '../../../controllers/routine_log_controller.dart';
-import '../../../screens/exercise/history/home_screen.dart';
+import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/routine_utils.dart';
@@ -44,7 +44,7 @@ class ExerciseLogWidget extends StatelessWidget {
           dense: true,
           onTap: () {
             Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => HomeScreen(exercise: exerciseLog.exercise)));
+                .push(MaterialPageRoute(builder: (context) => ExerciseHomeScreen(exercise: exerciseLog.exercise)));
           },
           title: Text(exerciseLog.exercise.name,
               style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),

@@ -12,10 +12,15 @@ import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_controller.dart';
-import '../../dtos/routine_log_dto.dart';
+import '../../controllers/routine_log_controller.dart';
+import '../../enums/share_content_type_enum.dart';
 import '../../strings.dart';
+import '../../utils/app_analytics.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
+import '../../utils/shareables_utils.dart';
+import '../buttons/opacity_button_widget.dart';
+import '../calendar/calendar.dart';
 import 'log_streak_monitor.dart';
 import 'muscle_group_family_frequency_monitor.dart';
 
@@ -23,13 +28,16 @@ GlobalKey monitorKey = GlobalKey();
 
 class OverviewMonitor extends StatelessWidget {
   final DateTimeRange range;
-  final List<RoutineLogDto> routineLogs;
   final bool showInfo;
 
-  const OverviewMonitor({super.key, required this.range, required this.routineLogs, this.showInfo = true});
+  const OverviewMonitor({super.key, required this.range, this.showInfo = true});
 
   @override
   Widget build(BuildContext context) {
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
+
+    final routineLogs = routineLogController.monthlyLogs[range] ?? [];
+
     final routineLogsByDay = groupBy(routineLogs, (log) => log.createdAt.withoutTime().day);
 
     final monthlyProgress = routineLogsByDay.length / 12;
@@ -57,6 +65,17 @@ class OverviewMonitor extends StatelessWidget {
             child: const Align(
                 alignment: Alignment.bottomRight,
                 child: FaIcon(FontAwesomeIcons.circleInfo, color: Colors.white38, size: 18)),
+          ),
+        ),
+      if (showInfo)
+        Positioned.fill(
+          right: 15,
+          top: 10,
+          child: GestureDetector(
+            onTap: () => _showShareBottomSheet(context: context),
+            child: const Align(
+                alignment: Alignment.topRight,
+                child: FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 19)),
           ),
         ),
       Row(
@@ -119,6 +138,139 @@ class OverviewMonitor extends StatelessWidget {
 
   void _showMonitorInfo({required BuildContext context}) {
     showBottomSheetWithNoAction(context: context, title: "Streak and Muscle", description: overviewMonitor);
+  }
+
+  void _showShareBottomSheet({required BuildContext context}) {
+    displayBottomSheet(
+        context: context,
+        child: SafeArea(
+          child: Column(children: [
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(Icons.monitor_heart_rounded, size: 18),
+              horizontalTitleGap: 6,
+              title: Text("Share Streak and Muscle Monitor",
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              onTap: () {
+                Navigator.of(context).pop();
+                _onShareMonitor(context: context);
+              },
+            ),
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(FontAwesomeIcons.calendar, size: 18),
+              horizontalTitleGap: 6,
+              title: Text("Share Log Calendar",
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              onTap: () {
+                Navigator.of(context).pop();
+                _onShareCalendar(context: context);
+              },
+            ),
+          ]),
+        ));
+  }
+
+  void _onShareMonitor({required BuildContext context}) {
+    displayBottomSheet(
+      context: context,
+      child: Column(
+        children: [
+          RepaintBoundary(
+            key: monitorKey,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(5),
+              child: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      sapphireDark80,
+                      sapphireDark,
+                    ],
+                  ),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
+                child: OverviewMonitor(
+                  range: range,
+                  showInfo: false,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          OpacityButtonWidget(
+              onPressed: () {
+                captureImage(key: monitorKey, pixelRatio: 5);
+                contentShared(contentType: ShareContentType.monitor);
+                Navigator.of(context).pop();
+              },
+              label: "Share",
+              buttonColor: vibrantGreen,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14))
+        ],
+      ),
+    );
+  }
+
+  void _onShareCalendar({required BuildContext context}) {
+    displayBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              RepaintBoundary(
+                  key: calendarKey,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Container(
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              sapphireDark80,
+                              sapphireDark,
+                            ],
+                          ),
+                        ),
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Align(
+                              alignment: Alignment.center,
+                              child: Text(range.start.formattedMonthAndYear(),
+                                  textAlign: TextAlign.left,
+                                  style: GoogleFonts.ubuntu(
+                                      color: Colors.white, fontWeight: FontWeight.w900, fontSize: 20)),
+                            ),
+                            Calendar(selectedDateRange: range),
+                            const SizedBox(height: 12),
+                            Image.asset(
+                              'images/trkr.png',
+                              fit: BoxFit.contain,
+                              height: 8, // Adjust the height as needed
+                            ),
+                          ],
+                        )),
+                  )),
+              const SizedBox(height: 20),
+              OpacityButtonWidget(
+                  onPressed: () {
+                    captureImage(key: calendarKey, pixelRatio: 5);
+                    contentShared(contentType: ShareContentType.calender);
+                    Navigator.of(context).pop();
+                  },
+                  label: "Share",
+                  buttonColor: vibrantGreen,
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14))
+            ]));
   }
 }
 

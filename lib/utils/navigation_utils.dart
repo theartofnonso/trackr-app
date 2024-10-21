@@ -14,7 +14,7 @@ import '../screens/editors/routine_log_editor_screen.dart';
 import '../screens/editors/routine_template_editor_screen.dart';
 import '../screens/logs/logs_screen.dart';
 import '../screens/logs/routine_log_screen.dart';
-import '../screens/template/templates/routine_template_screen.dart';
+import '../screens/templates/routine_template_screen.dart';
 
 Future<Future<Object?>> navigateToExerciseEditor(
     {required BuildContext context, ExerciseEditorArguments? arguments}) async {

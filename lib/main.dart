@@ -41,8 +41,7 @@ import 'package:tracker_app/screens/logs/logs_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
-import 'package:tracker_app/screens/template/routines_home.dart';
-import 'package:tracker_app/screens/template/templates/routine_template_screen.dart';
+import 'package:tracker_app/screens/templates/routine_template_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/date_utils.dart';
 
@@ -133,10 +132,6 @@ final _router = GoRouter(
     GoRoute(
       path: OverviewScreen.routeName, // Define the path for OverviewScreen
       builder: (context, state) => const OverviewScreen(),
-    ),
-    GoRoute(
-      path: RoutinesHome.routeName,
-      builder: (context, state) => const RoutinesHome(),
     ),
     GoRoute(
       path: RoutineLogEditorScreen.routeName,

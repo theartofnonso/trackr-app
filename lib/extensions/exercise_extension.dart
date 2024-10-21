@@ -46,7 +46,6 @@ extension ExerciseExtension on Exercise {
     final primaryMuscleGroup = MuscleGroup.fromString(primaryMuscleGroupString);
     final typeJson = json["type"] ?? "";
     final type = ExerciseType.fromString(typeJson);
-    final user = owner != null;
 
     return ExerciseDto(
         id: id,
@@ -55,6 +54,6 @@ extension ExerciseExtension on Exercise {
         secondaryMuscleGroups: [],
         trainingPosition: TrainingPosition.none,
         type: type,
-        owner: user);
+        owner: true);
   }
 }

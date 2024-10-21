@@ -26,7 +26,7 @@ class ExerciseWidget extends StatelessWidget {
         color: Colors.transparent,
         width: double.infinity,
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
               child: Column(
@@ -78,7 +78,7 @@ class ExerciseWidget extends StatelessWidget {
               child: GestureDetector(
                   onTap: () => navigateToExercise != null ? navigateToExercise(exerciseDto) : null,
                   child: const FaIcon(
-                    FontAwesomeIcons.circleArrowRight,
+                    FontAwesomeIcons.circleInfo,
                     color: Colors.white70,
                   )),
             )
