@@ -145,7 +145,12 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CalendarNavigator(onYearChange: _onYearChange, onMonthChange: _onMonthChange),
+                CalendarNavigator(
+                  onYearChange: _onYearChange,
+                  onMonthChange: _onMonthChange,
+                  onWeeksInYearChange: (List<DateTimeRange> weeksInYear) {},
+                  onWeeksInMonthChange: (List<DateTimeRange> weeksInMonth) {},
+                ),
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),

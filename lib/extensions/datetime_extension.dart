@@ -155,7 +155,7 @@ extension DateTimeExtension on DateTime {
 
     // Create a DateTime object representing the last moment of the current month
     DateTime endOfMonth =
-        DateTime(lastDayCurrentMonth.year, lastDayCurrentMonth.month, lastDayCurrentMonth.day, 23, 59, 59);
+    DateTime(lastDayCurrentMonth.year, lastDayCurrentMonth.month, lastDayCurrentMonth.day, 23, 59, 59);
 
     return endOfMonth;
   }
@@ -213,5 +213,34 @@ extension DateTimeExtension on DateTime {
 
   DateTime monthlyStartDate() {
     return DateTime(this.year, this.month, 1);
+  }
+
+  DateTime startOfWeek() {
+    return subtract(Duration(days: weekday - 1));
+  }
+
+  /// Returns the end date of the week (Sunday) for the given date.
+  DateTime endOfWeek() {
+    return add(Duration(days: DateTime.daysPerWeek - weekday));
+  }
+
+  /// Returns the start date of the month.
+  DateTime startOfMonth() {
+    return DateTime(year, month, 1);
+  }
+
+  /// Returns the end date of the month.
+  DateTime endOfMonth() {
+    return DateTime(year, month + 1, 0);
+  }
+
+  /// Returns the start date of the year.
+  DateTime startOfYear() {
+    return DateTime(year, 1, 1);
+  }
+
+  /// Returns the end date of the year.
+  DateTime endOfYear() {
+    return DateTime(year, 12, 31);
   }
 }

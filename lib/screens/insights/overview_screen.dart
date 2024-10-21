@@ -143,7 +143,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                   ),
                   CalendarNavigator(
                     onYearChange: _onYearChange,
-                    onMonthChange: _onMonthChange,
+                    onMonthChange: _onMonthChange, onWeeksInYearChange: (List<DateTimeRange> weeksInYear) {  }, onWeeksInMonthChange: (List<DateTimeRange> weeksInMonth) {  },
                   ),
                   IconButton(
                     onPressed: null,
