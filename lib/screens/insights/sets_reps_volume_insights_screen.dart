@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
-import 'package:tracker_app/enums/activity_type_enums.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
@@ -46,8 +45,7 @@ class SetsAndRepsVolumeInsightsScreen extends StatefulWidget {
 }
 
 class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsightsScreen> {
-
-  List<RoutineLogDto>? _monthlyLogs;
+  Map<DateTimeRange, List<RoutineLogDto>>? _monthlyLogs;
 
   SetRepsVolumeReps _metric = SetRepsVolumeReps.sets;
 
@@ -55,13 +53,10 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
   bool _loading = false;
 
-  late DateTimeRange _yearDateTimeRange;
-
   late DateTimeRange _monthDateTimeRange;
 
   @override
   Widget build(BuildContext context) {
-
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     final textStyle = GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white70);
@@ -70,18 +65,26 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
-    final logs = _monthlyLogs ?? routineLogController.weeklyLogs.values.expand((items) => items);
+    final logs = _monthlyLogs?[_monthDateTimeRange] ?? routineLogController.monthlyLogs[_monthDateTimeRange] ?? [];
+
+    final exerciseController = Provider.of<ExerciseController>(context, listen: false);
 
     final exerciseLogs = logs
         .expand((routineLog) => exerciseLogsWithCheckedSets(exerciseLogs: routineLog.exerciseLogs))
-        .where((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup == _selectedMuscleGroup).toList();
+        .map((exerciseLog) {
+      final foundExercise =
+          exerciseController.exercises.firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.id == exerciseLog.id);
+      return foundExercise != null ? exerciseLog.copyWith(exercise: foundExercise) : exerciseLog;
+    }).where((exerciseLog) {
+      final muscleGroups = [exerciseLog.exercise.primaryMuscleGroup, ...exerciseLog.exercise.secondaryMuscleGroups];
+      return muscleGroups.contains(_selectedMuscleGroup);
+    }).toList();
 
     List<num> periodicalValues = [];
     List<DateTime> periodicalDates = [];
 
     for (final exerciseLog in exerciseLogs) {
       final value = _calculateMetric(sets: exerciseLog.sets);
-      print(value);
       periodicalValues.add(value);
       periodicalDates.add(exerciseLog.createdAt);
     }
@@ -228,16 +231,13 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                       children: {
                         SetRepsVolumeReps.sets: SizedBox(
                             width: 40,
-                            child:
-                            Text(SetRepsVolumeReps.sets.name, style: textStyle, textAlign: TextAlign.center)),
+                            child: Text(SetRepsVolumeReps.sets.name, style: textStyle, textAlign: TextAlign.center)),
                         SetRepsVolumeReps.reps: SizedBox(
                             width: 40,
-                            child:
-                            Text(SetRepsVolumeReps.reps.name, style: textStyle, textAlign: TextAlign.center)),
+                            child: Text(SetRepsVolumeReps.reps.name, style: textStyle, textAlign: TextAlign.center)),
                         SetRepsVolumeReps.volume: SizedBox(
                             width: 40,
-                            child:
-                            Text(SetRepsVolumeReps.volume.name, style: textStyle, textAlign: TextAlign.center)),
+                            child: Text(SetRepsVolumeReps.volume.name, style: textStyle, textAlign: TextAlign.center)),
                       },
                       onValueChanged: (SetRepsVolumeReps? value) {
                         if (value != null) {
@@ -347,14 +347,14 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   }
 
   void _onYearChange(DateTimeRange range) {
-
     _showLoadingScreen();
 
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
     routineLogController.fetchLogsCloud(range: range.start.dateTimeRange()).then((logs) {
       setState(() {
-        final AllYear = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
+        final dtos = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
+        _monthlyLogs = groupRoutineLogsByMonth(routineLogs: dtos);
       });
     });
 
@@ -366,7 +366,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       _monthDateTimeRange = range;
     });
   }
-
 
   int _weightWhere({required List<num> values, required bool Function(num) condition}) {
     return values.where(condition).length;

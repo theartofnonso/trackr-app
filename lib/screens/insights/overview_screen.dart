@@ -55,8 +55,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
   late DateTime _selectedDateTime;
   late DateTimeRange _selectedDateTimeRange;
 
-  late DateTimeRange _yearDateTimeRange;
-
   late DateTimeRange _monthDateTimeRange;
 
   bool _loading = false;
@@ -393,7 +391,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
     _selectedDateTime = DateTime.now();
     _selectedDateTimeRange = thisMonthDateRange();
     _monthDateTimeRange = thisMonthDateRange();
-    _yearDateTimeRange = thisYearDateRange();
   }
 
   @override
