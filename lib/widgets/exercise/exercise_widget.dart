@@ -26,7 +26,7 @@ class ExerciseWidget extends StatelessWidget {
         color: Colors.transparent,
         width: double.infinity,
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               child: Column(

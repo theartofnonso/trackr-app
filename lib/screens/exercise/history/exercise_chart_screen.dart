@@ -192,21 +192,22 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
         children: [
           Center(
             child: RichText(
+                textAlign: TextAlign.center,
                 text: TextSpan(
                     text: widget.exercise.primaryMuscleGroup.name.toUpperCase(),
                     style:
                         GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14, height: 1.5),
                     children: [
-                  if (widget.exercise.secondaryMuscleGroups.isNotEmpty)
-                    [widget.exercise.primaryMuscleGroup, ...widget.exercise.secondaryMuscleGroups].length == 2
-                        ? const TextSpan(text: " & ")
-                        : const TextSpan(text: " | "),
-                  TextSpan(
-                      text: widget.exercise.secondaryMuscleGroups
-                          .map((muscleGroup) => muscleGroup.name.toUpperCase())
-                          .join(", "),
-                      style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 13)),
-                ])),
+                      if (widget.exercise.secondaryMuscleGroups.isNotEmpty)
+                        [widget.exercise.primaryMuscleGroup, ...widget.exercise.secondaryMuscleGroups].length == 2
+                            ? const TextSpan(text: " & ")
+                            : const TextSpan(text: " | "),
+                      TextSpan(
+                          text: widget.exercise.secondaryMuscleGroups
+                              .map((muscleGroup) => muscleGroup.name.toUpperCase())
+                              .join(", "),
+                          style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 13)),
+                    ])),
           ),
           const SizedBox(height: 20),
           Padding(
