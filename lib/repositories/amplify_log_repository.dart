@@ -46,7 +46,7 @@ class AmplifyLogRepository {
   }
 
   void _groupRoutineLogs() {
-    _weeklyLogs = groupRoutineLogsByWeek(routineLogs: _routineLogs);
+    _weeklyLogs = groupRoutineLogsByWeek(routineLogs: _routineLogs, year: _routineLogs.first.createdAt.year);
     _monthlyLogs = groupRoutineLogsByMonth(routineLogs: _routineLogs);
   }
 
@@ -126,9 +126,8 @@ class AmplifyLogRepository {
 
   void cacheLog({required RoutineLogDto logDto}) {
     SharedPrefs().cachedRoutineLog = jsonEncode(logDto,
-        toEncodable: (Object? value) => value is RoutineLogDto
-            ? value.toJson()
-            : throw UnsupportedError('Cannot convert to JSON: $value'));
+        toEncodable: (Object? value) =>
+            value is RoutineLogDto ? value.toJson() : throw UnsupportedError('Cannot convert to JSON: $value'));
   }
 
   RoutineLogDto? cachedRoutineLog() {
@@ -165,12 +164,36 @@ class AmplifyLogRepository {
     return _exerciseLogsById[exercise.id]?.where((log) => log.createdAt.isBefore(date)).toList() ?? [];
   }
 
-  List<RoutineLogDto> logsWhereDate({required DateTime dateTime}) {
+  /// RoutineLog for the following [DateTime]
+  /// Day, Month and Year - Looking for a log in the same day, hence the need to match the day, month and year
+  /// Month and Year - Looking for a log in the same month day, hence the need to match the month and year
+  /// Year - Looking for a log in the same year, hence the need to match the year
+  RoutineLogDto? whereLogIsSameDay({required DateTime dateTime}) {
+    return _routineLogs.firstWhereOrNull((log) => log.createdAt.isSameDayMonthYear(dateTime));
+  }
+
+  RoutineLogDto? whereLogIsSameMonth({required DateTime dateTime}) {
+    return _routineLogs.firstWhereOrNull((log) => log.createdAt.isSameMonthYear(dateTime));
+  }
+
+  RoutineLogDto? whereLogIsSameYear({required DateTime dateTime}) {
+    return _routineLogs.firstWhereOrNull((log) => log.createdAt.isSameYear(dateTime));
+  }
+
+  /// RoutineLogs for the following [DateTime]
+  /// Day, Month and Year - Looking for logs in the same day, hence the need to match the day, month and year
+  /// Month and Year - Looking for logs in the same month day, hence the need to match the month and year
+  /// Year - Looking for logs in the same year, hence the need to match the year
+  List<RoutineLogDto> whereLogsIsSameDay({required DateTime dateTime}) {
     return _routineLogs.where((log) => log.createdAt.isSameDayMonthYear(dateTime)).toList();
   }
 
-  RoutineLogDto? logWhereDate({required DateTime dateTime}) {
-    return _routineLogs.firstWhereOrNull((log) => log.createdAt.isSameDayMonthYear(dateTime));
+  List<RoutineLogDto> whereLogsIsSameMonth({required DateTime dateTime}) {
+    return _routineLogs.where((log) => log.createdAt.isSameMonthYear(dateTime)).toList();
+  }
+
+  List<RoutineLogDto> whereLogsIsSameYear({required DateTime dateTime}) {
+    return _routineLogs.where((log) => log.createdAt.isSameYear(dateTime)).toList();
   }
 
   void clear() {

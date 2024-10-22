@@ -68,12 +68,28 @@ class ActivityLogController extends ChangeNotifier {
     return _amplifyActivityLogRepository.logWhereId(id: id);
   }
 
-  ActivityLogDto? logWhereDate({required DateTime dateTime}) {
-    return _amplifyActivityLogRepository.logWhereDate(dateTime: dateTime);
+  ActivityLogDto? whereLogIsSameDay({required DateTime dateTime}) {
+    return _amplifyActivityLogRepository.whereLogIsSameDay(dateTime: dateTime);
   }
 
-  List<ActivityLogDto> logsWhereDate({required DateTime dateTime}) {
-    return _amplifyActivityLogRepository.logsWhereDate(dateTime: dateTime);
+  ActivityLogDto? whereLogIsSameMonth({required DateTime dateTime}) {
+    return _amplifyActivityLogRepository.whereLogIsSameMonth(dateTime: dateTime);
+  }
+
+  ActivityLogDto? whereLogIsSameYear({required DateTime dateTime}) {
+    return _amplifyActivityLogRepository.whereLogIsSameYear(dateTime: dateTime);
+  }
+
+  List<ActivityLogDto> whereLogsIsSameDay({required DateTime dateTime}) {
+    return _amplifyActivityLogRepository.whereLogsIsSameDay(dateTime: dateTime);
+  }
+
+  List<ActivityLogDto> whereLogsIsSameMonth({required DateTime dateTime}) {
+    return _amplifyActivityLogRepository.whereLogsIsSameMonth(dateTime: dateTime);
+  }
+
+  List<ActivityLogDto> whereLogsIsSameYear({required DateTime dateTime}) {
+    return _amplifyActivityLogRepository.whereLogsIsSameYear(dateTime: dateTime);
   }
 
   void clear() {

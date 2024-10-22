@@ -86,12 +86,28 @@ class RoutineLogController extends ChangeNotifier {
     return _amplifyLogRepository.logWhereId(id: id);
   }
 
-  RoutineLogDto? logWhereDate({required DateTime dateTime}) {
-    return _amplifyLogRepository.logWhereDate(dateTime: dateTime);
+  RoutineLogDto? whereLogIsSameDay({required DateTime dateTime}) {
+    return _amplifyLogRepository.whereLogIsSameDay(dateTime: dateTime);
   }
 
-  List<RoutineLogDto> logsWhereDate({required DateTime dateTime}) {
-    return _amplifyLogRepository.logsWhereDate(dateTime: dateTime);
+  RoutineLogDto? whereLogIsSameMonth({required DateTime dateTime}) {
+    return _amplifyLogRepository.whereLogIsSameMonth(dateTime: dateTime);
+  }
+
+  RoutineLogDto? whereLogIsSameYear({required DateTime dateTime}) {
+    return _amplifyLogRepository.whereLogIsSameYear(dateTime: dateTime);
+  }
+
+  List<RoutineLogDto> whereLogsIsSameDay({required DateTime dateTime}) {
+    return _amplifyLogRepository.whereLogsIsSameDay(dateTime: dateTime);
+  }
+
+  List<RoutineLogDto> whereLogsIsSameMonth({required DateTime dateTime}) {
+    return _amplifyLogRepository.whereLogsIsSameMonth(dateTime: dateTime);
+  }
+
+  List<RoutineLogDto> whereLogsIsSameYear({required DateTime dateTime}) {
+    return _amplifyLogRepository.whereLogsIsSameYear(dateTime: dateTime);
   }
 
   List<ExerciseLogDto> whereExerciseLogsBefore({required ExerciseDto exercise, required DateTime date}) {

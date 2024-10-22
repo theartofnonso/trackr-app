@@ -28,6 +28,7 @@ import '../widgets/empty_states/single_set_row_empty_state.dart';
 import '../widgets/routine/preview/set_rows/double_set_row.dart';
 import '../widgets/routine/preview/set_rows/set_row.dart';
 import '../widgets/routine/preview/set_rows/single_set_row.dart';
+import 'date_utils.dart';
 import 'exercise_logs_utils.dart';
 import 'general_utils.dart';
 
@@ -164,15 +165,10 @@ List<Widget> setsToWidgets(
   return widgets.isNotEmpty ? widgets : [emptyState];
 }
 
-Map<DateTimeRange, List<RoutineLogDto>> groupRoutineLogsByWeek(
-    {required List<RoutineLogDto> routineLogs, DateTime? endDate}) {
+Map<DateTimeRange, List<RoutineLogDto>> groupRoutineLogsByWeek({required List<RoutineLogDto> routineLogs, required int year}) {
   final map = <DateTimeRange, List<RoutineLogDto>>{};
 
-  DateTime startDate = routineLogs.firstOrNull?.createdAt ?? DateTime.now();
-
-  DateTime lastDate = endDate ?? routineLogs.lastOrNull?.createdAt ?? DateTime.now();
-
-  List<DateTimeRange> weekRanges = generateWeekRangesFrom(startDate: startDate, endDate: lastDate);
+  List<DateTimeRange> weekRanges = getWeeksInYear(year);
 
   for (final weekRange in weekRanges) {
     map[weekRange] = routineLogs.where((log) => log.createdAt.isBetweenRange(range: weekRange)).toList();

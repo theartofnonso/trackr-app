@@ -75,16 +75,16 @@ extension DateTimeExtension on DateTime {
     return isSameDayMonthYear(other) || isBefore(other);
   }
 
-  bool isBetween({required DateTime from, required DateTime to}) {
+  bool isBetweenInclusive({required DateTime from, required DateTime to}) {
     return isAfterOrEqual(from) && isBeforeOrEqual(to);
-  }
-
-  bool isBetweenRange({required DateTimeRange range}) {
-    return isBetween(from: range.start, to: range.end);
   }
 
   bool isBetweenExclusive({required DateTime from, required DateTime to}) {
     return isAfter(from) && isBefore(to);
+  }
+
+  bool isBetweenRange({required DateTimeRange range}) {
+    return isBetweenInclusive(from: range.start, to: range.end);
   }
 
   bool isSameDayMonthYear(DateTime other) {
@@ -155,7 +155,7 @@ extension DateTimeExtension on DateTime {
 
     // Create a DateTime object representing the last moment of the current month
     DateTime endOfMonth =
-    DateTime(lastDayCurrentMonth.year, lastDayCurrentMonth.month, lastDayCurrentMonth.day, 23, 59, 59);
+        DateTime(lastDayCurrentMonth.year, lastDayCurrentMonth.month, lastDayCurrentMonth.day, 23, 59, 59);
 
     return endOfMonth;
   }
@@ -164,22 +164,8 @@ extension DateTimeExtension on DateTime {
     return DateTime(year, month, day, 0, 0, 0);
   }
 
-  bool withinCurrentYear() {
-    final datetime = DateTime(year, month, day);
-    final now = DateTime.now();
-    final startOfYear = DateTime(now.year, 1, 1);
-    final endOfYear = DateTime(now.year, 12, 31);
-    final currentYearRange = DateTimeRange(start: startOfYear, end: endOfYear);
-
-    return datetime.isBetweenRange(range: currentYearRange);
-  }
-
   DateTime withoutTime() {
     return DateTime(year, month, day);
-  }
-
-  DateTime withHourOnly() {
-    return DateTime(year, month, day, hour);
   }
 
   DateTime past90Days() {
@@ -190,21 +176,6 @@ extension DateTimeExtension on DateTime {
     return subtract(const Duration(days: 180)).withoutTime();
   }
 
-  List<DateTime> datesForWeek() {
-    List<DateTime> weekDates = [];
-    // Subtract the weekday number from the current date to get to the first day of the week
-    // Dart's DateTime.weekday returns 1 for Monday and 7 for Sunday
-    DateTime firstDayOfWeek = subtract(Duration(days: weekday - 1));
-
-    // Iterate from the first day of the week to the next 7 days
-    for (int i = 0; i < 7; i++) {
-      // Add each day to the list
-      weekDates.add(firstDayOfWeek.add(Duration(days: i)).withoutTime());
-    }
-
-    return weekDates;
-  }
-
   DateTimeRange dateTimeRange() {
     final start = DateTime(year, 1);
     final end = DateTime(year, 12);
@@ -212,16 +183,7 @@ extension DateTimeExtension on DateTime {
   }
 
   DateTime monthlyStartDate() {
-    return DateTime(this.year, this.month, 1);
-  }
-
-  DateTime startOfWeek() {
-    return subtract(Duration(days: weekday - 1));
-  }
-
-  /// Returns the end date of the week (Sunday) for the given date.
-  DateTime endOfWeek() {
-    return add(Duration(days: DateTime.daysPerWeek - weekday));
+    return DateTime(year, month, 1);
   }
 
   /// Returns the start date of the month.
@@ -232,15 +194,5 @@ extension DateTimeExtension on DateTime {
   /// Returns the end date of the month.
   DateTime endOfMonth() {
     return DateTime(year, month + 1, 0);
-  }
-
-  /// Returns the start date of the year.
-  DateTime startOfYear() {
-    return DateTime(year, 1, 1);
-  }
-
-  /// Returns the end date of the year.
-  DateTime endOfYear() {
-    return DateTime(year, 12, 31);
   }
 }

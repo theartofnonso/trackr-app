@@ -27,16 +27,16 @@ import 'muscle_group_family_frequency_monitor.dart';
 GlobalKey monitorKey = GlobalKey();
 
 class OverviewMonitor extends StatelessWidget {
-  final DateTimeRange range;
+  final DateTime dateTime;
   final bool showInfo;
 
-  const OverviewMonitor({super.key, required this.range, this.showInfo = true});
+  const OverviewMonitor({super.key, required this.dateTime, this.showInfo = true});
 
   @override
   Widget build(BuildContext context) {
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
-    final routineLogs = routineLogController.monthlyLogs[range] ?? [];
+    final routineLogs = routineLogController.whereLogsIsSameMonth(dateTime: dateTime);
 
     final routineLogsByDay = groupBy(routineLogs, (log) => log.createdAt.withoutTime().day);
 
@@ -82,7 +82,7 @@ class OverviewMonitor extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           GestureDetector(
-              onTap: () => navigateToLogs(context: context, range: range),
+              onTap: () => navigateToLogs(context: context, dateTime: dateTime),
               child: Container(
                 color: Colors.transparent,
                 width: 80,
@@ -195,7 +195,7 @@ class OverviewMonitor extends StatelessWidget {
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
                 child: OverviewMonitor(
-                  range: range,
+                  dateTime: dateTime,
                   showInfo: false,
                 ),
               ),
@@ -245,12 +245,12 @@ class OverviewMonitor extends StatelessWidget {
                           children: [
                             Align(
                               alignment: Alignment.center,
-                              child: Text(range.start.formattedMonthAndYear(),
+                              child: Text(dateTime.formattedMonthAndYear(),
                                   textAlign: TextAlign.left,
                                   style: GoogleFonts.ubuntu(
                                       color: Colors.white, fontWeight: FontWeight.w900, fontSize: 20)),
                             ),
-                            Calendar(selectedDateRange: range),
+                            Calendar(dateTime: dateTime),
                             const SizedBox(height: 12),
                             Image.asset(
                               'images/trkr.png',

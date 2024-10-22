@@ -164,9 +164,9 @@ final _router = GoRouter(
     GoRoute(
       path: LogsScreen.routeName,
       pageBuilder: (context, state) {
-        final args = state.extra as DateTimeRange;
+        final args = state.extra as DateTime;
         return CustomTransitionPage(
-            child: LogsScreen(range: args),
+            child: LogsScreen(dateTime: args),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               const begin = Offset(0.0, 1.0);
               const end = Offset.zero;

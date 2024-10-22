@@ -10,12 +10,6 @@ class CalendarNavigator extends StatefulWidget {
   /// Callback when the month changes, providing the current month as DateTime.
   final void Function(DateTimeRange currentMonth) onMonthChange;
 
-  /// Callback providing all weeks in the current year.
-  final void Function(List<DateTimeRange> weeksInYear) onWeeksInYearChange;
-
-  /// Callback providing all weeks in the current month.
-  final void Function(List<DateTimeRange> weeksInMonth) onWeeksInMonthChange;
-
   /// Optional initial date to set the starting month and year.
   final DateTime? initialDate;
 
@@ -23,8 +17,6 @@ class CalendarNavigator extends StatefulWidget {
     super.key,
     required this.onYearChange,
     required this.onMonthChange,
-    required this.onWeeksInYearChange,
-    required this.onWeeksInMonthChange,
     this.initialDate,
   });
 
@@ -93,8 +85,6 @@ class _CalendarNavigatorState extends State<CalendarNavigator> {
   /// Notifies all callbacks: year range, month range, weeks in year, weeks in month.
   void _notifyAll() {
     _notifyMonthChange();
-    _notifyWeeksInYearChange();
-    _notifyWeeksInMonthChange();
   }
 
   /// Notifies the month change via callback with the date range of the current month.
@@ -111,68 +101,6 @@ class _CalendarNavigatorState extends State<CalendarNavigator> {
     DateTime endDate = DateTime(_currentYear, 12, 31);
     DateTimeRange yearRange = DateTimeRange(start: startDate, end: endDate);
     widget.onYearChange(yearRange);
-  }
-
-  /// Notifies the weeks in the year via callback.
-  void _notifyWeeksInYearChange() {
-    List<DateTimeRange> weeks = _getWeeksInYear(_currentYear);
-    widget.onWeeksInYearChange(weeks);
-  }
-
-  /// Notifies the weeks in the month via callback.
-  void _notifyWeeksInMonthChange() {
-    List<DateTimeRange> weeks = _getWeeksInMonth(_currentDate);
-    widget.onWeeksInMonthChange(weeks);
-  }
-
-  /// Returns a list of DateTimeRange representing each week in the given year.
-  List<DateTimeRange> _getWeeksInYear(int year) {
-    List<DateTimeRange> weeks = [];
-    DateTime firstDayOfYear = DateTime(year, 1, 1);
-    // Find the first Monday of the year
-    DateTime firstMonday = firstDayOfYear.weekday == DateTime.monday
-        ? firstDayOfYear
-        : firstDayOfYear.add(Duration(days: 8 - firstDayOfYear.weekday));
-
-    for (DateTime weekStart = firstMonday;
-    weekStart.year == year;
-    weekStart = weekStart.add(const Duration(days: 7))) {
-      DateTime weekEnd = weekStart.add(const Duration(days: 6));
-      // Adjust weekEnd if it goes beyond the year
-      if (weekEnd.year > year) {
-        weekEnd = DateTime(year, 12, 31);
-      }
-      weeks.add(DateTimeRange(start: weekStart, end: weekEnd));
-    }
-
-    return weeks;
-  }
-
-  /// Returns a list of DateTimeRange representing each week in the given month.
-  List<DateTimeRange> _getWeeksInMonth(DateTime monthDate) {
-    List<DateTimeRange> weeks = [];
-    DateTime firstDayOfMonth = monthDate.startOfMonth();
-    DateTime lastDayOfMonth = monthDate.endOfMonth();
-
-    // Find the first Monday on or before the first day of the month
-    DateTime firstMonday = firstDayOfMonth.weekday == DateTime.monday
-        ? firstDayOfMonth
-        : firstDayOfMonth.subtract(Duration(days: firstDayOfMonth.weekday - DateTime.monday));
-
-    // Iterate through each week
-    for (DateTime weekStart = firstMonday;
-    weekStart.isBefore(lastDayOfMonth);
-    weekStart = weekStart.add(const Duration(days: 7))) {
-      DateTime weekEnd = weekStart.add(const Duration(days: 6));
-
-      // Adjust weekStart and weekEnd to be within the month
-      DateTime actualStart = weekStart.isBefore(firstDayOfMonth) ? firstDayOfMonth : weekStart;
-      DateTime actualEnd = weekEnd.isAfter(lastDayOfMonth) ? lastDayOfMonth : weekEnd;
-
-      weeks.add(DateTimeRange(start: actualStart, end: actualEnd));
-    }
-
-    return weeks;
   }
 
   /// Formats the month and year for display.

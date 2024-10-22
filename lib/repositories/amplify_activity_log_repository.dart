@@ -106,12 +106,36 @@ class AmplifyActivityLogRepository {
     return _activityLogs.firstWhereOrNull((log) => log.id == id);
   }
 
-  List<ActivityLogDto> logsWhereDate({required DateTime dateTime}) {
+  /// RoutineLog for the following [DateTime]
+  /// Day, Month and Year - Looking for a log in the same day, hence the need to match the day, month and year
+  /// Month and Year - Looking for a log in the same month day, hence the need to match the month and year
+  /// Year - Looking for a log in the same year, hence the need to match the year
+  ActivityLogDto? whereLogIsSameDay({required DateTime dateTime}) {
+    return _activityLogs.firstWhereOrNull((log) => log.createdAt.isSameDayMonthYear(dateTime));
+  }
+
+  ActivityLogDto? whereLogIsSameMonth({required DateTime dateTime}) {
+    return _activityLogs.firstWhereOrNull((log) => log.createdAt.isSameMonthYear(dateTime));
+  }
+
+  ActivityLogDto? whereLogIsSameYear({required DateTime dateTime}) {
+    return _activityLogs.firstWhereOrNull((log) => log.createdAt.isSameYear(dateTime));
+  }
+
+  /// RoutineLogs for the following [DateTime]
+  /// Day, Month and Year - Looking for logs in the same day, hence the need to match the day, month and year
+  /// Month and Year - Looking for logs in the same month day, hence the need to match the month and year
+  /// Year - Looking for logs in the same year, hence the need to match the year
+  List<ActivityLogDto> whereLogsIsSameDay({required DateTime dateTime}) {
     return _activityLogs.where((log) => log.createdAt.isSameDayMonthYear(dateTime)).toList();
   }
 
-  ActivityLogDto? logWhereDate({required DateTime dateTime}) {
-    return _activityLogs.firstWhereOrNull((log) => log.createdAt.isSameDayMonthYear(dateTime));
+  List<ActivityLogDto> whereLogsIsSameMonth({required DateTime dateTime}) {
+    return _activityLogs.where((log) => log.createdAt.isSameMonthYear(dateTime)).toList();
+  }
+
+  List<ActivityLogDto> whereLogsIsSameYear({required DateTime dateTime}) {
+    return _activityLogs.where((log) => log.createdAt.isSameYear(dateTime)).toList();
   }
 
   void clear() {

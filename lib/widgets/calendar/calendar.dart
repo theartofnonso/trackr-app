@@ -31,9 +31,9 @@ class _DateViewModel {
 
 class Calendar extends StatefulWidget {
   final void Function(DateTime dateTime)? onSelectDate;
-  final DateTimeRange selectedDateRange;
+  final DateTime dateTime;
 
-  const Calendar({super.key, this.onSelectDate, required this.selectedDateRange});
+  const Calendar({super.key, this.onSelectDate, required this.dateTime});
 
   @override
   State<Calendar> createState() => _CalendarState();
@@ -53,7 +53,7 @@ class _CalendarState extends State<Calendar> {
   }
 
   List<_DateViewModel?> _generateDates() {
-    final startDate = widget.selectedDateRange.start;
+    final startDate = widget.dateTime;
 
     int year = startDate.year;
     int month = startDate.month;
@@ -207,10 +207,12 @@ class _Day extends StatelessWidget {
       {required this.dateTime,
       required this.selected,
       required this.currentDate,
-      required this.onTap, this.hasRoutineLog = false, this.hasActivityLog = false});
+      required this.onTap,
+      this.hasRoutineLog = false,
+      this.hasActivityLog = false});
 
   Color _getBackgroundColor() {
-    if(hasRoutineLog || hasActivityLog) {
+    if (hasRoutineLog || hasActivityLog) {
       return vibrantGreen;
     } else {
       return sapphireDark80.withOpacity(0.5);

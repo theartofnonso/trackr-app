@@ -143,7 +143,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                   ),
                   CalendarNavigator(
                     onYearChange: _onYearChange,
-                    onMonthChange: _onMonthChange, onWeeksInYearChange: (List<DateTimeRange> weeksInYear) {  }, onWeeksInMonthChange: (List<DateTimeRange> weeksInMonth) {  },
+                    onMonthChange: _onMonthChange,
                   ),
                   IconButton(
                     onPressed: null,
@@ -161,16 +161,14 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       padding: const EdgeInsets.only(bottom: 150),
                       child: Column(children: [
                         const SizedBox(height: 12),
-                        OverviewMonitor(range: _monthDateTimeRange),
+                        OverviewMonitor(dateTime: _monthDateTimeRange.start),
                         const SizedBox(height: 16),
                         Calendar(
                           onSelectDate: _onChangedDateTime,
-                          selectedDateRange: _monthDateTimeRange,
+                          dateTime: _monthDateTimeRange.start,
                         ),
                         const SizedBox(height: 10),
-                        _LogsListView(
-                          dateTime: _selectedDateTime,
-                        ),
+                        _LogsListView(dateTime: _selectedDateTime),
                         const SizedBox(height: 12),
                         MonthlyInsightsScreen(dateTimeRange: _monthDateTimeRange),
                       ])),
@@ -400,11 +398,11 @@ class _LogsListView extends StatelessWidget {
   Widget build(BuildContext context) {
     /// Routine Logs
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
-    final routineLogsForCurrentDate = routineLogController.logsWhereDate(dateTime: dateTime).toList();
+    final routineLogsForCurrentDate = routineLogController.whereLogsIsSameDay(dateTime: dateTime).toList();
 
     /// Activity Logs
     final activityLogController = Provider.of<ActivityLogController>(context, listen: true);
-    final activityLogsForCurrentDate = activityLogController.logsWhereDate(dateTime: dateTime).toList();
+    final activityLogsForCurrentDate = activityLogController.whereLogsIsSameDay(dateTime: dateTime).toList();
 
     /// Aggregates
     final allLogsForCurrentDate = [...routineLogsForCurrentDate, ...activityLogsForCurrentDate]

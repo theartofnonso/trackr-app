@@ -19,25 +19,24 @@ import '../../widgets/routine/preview/routine_log_widget.dart';
 class LogsScreen extends StatelessWidget {
   static const routeName = '/logs_screen';
 
-  final DateTimeRange range;
+  final DateTime dateTime;
 
-  const LogsScreen({
-    super.key,
-    required this.range,
-  });
+  const LogsScreen({super.key, required this.dateTime});
 
   @override
   Widget build(BuildContext context) {
-    final routineLogsForMonth = Provider.of<RoutineLogController>(context, listen: true).monthlyLogs[range] ?? [];
+    final routineLogsForMonth =
+        Provider.of<RoutineLogController>(context, listen: true).whereLogsIsSameMonth(dateTime: dateTime);
 
-    final activityLogsForMonth = Provider.of<ActivityLogController>(context, listen: true).monthlyLogs[range] ?? [];
+    final activityLogsForMonth =
+        Provider.of<ActivityLogController>(context, listen: true).whereLogsIsSameMonth(dateTime: dateTime);
 
     final allActivityLogs = [...routineLogsForMonth, ...activityLogsForMonth]
         .sorted((a, b) => a.createdAt.compareTo(b.createdAt))
         .reversed
         .toList();
 
-    final month = range.start.formattedFullMonth();
+    final month = dateTime.formattedFullMonth();
 
     return Scaffold(
       appBar: AppBar(

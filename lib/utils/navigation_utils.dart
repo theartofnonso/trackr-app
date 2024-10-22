@@ -58,8 +58,8 @@ void navigateToShareableScreen({required BuildContext context, required RoutineL
   context.push(RoutineLogSummaryScreen.routeName, extra: log);
 }
 
-void navigateToLogs({required BuildContext context, required DateTimeRange range}) {
-  context.push(LogsScreen.routeName, extra: range);
+void navigateToLogs({required BuildContext context, required DateTime dateTime}) {
+  context.push(LogsScreen.routeName, extra: dateTime);
 }
 
 /// Create a screen on demand
