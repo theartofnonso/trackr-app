@@ -43,26 +43,6 @@ class ActivityLogDto implements Log {
     };
   }
 
-  factory ActivityLogDto.fromJson(Map<String, dynamic> json, {String? owner}) {
-    final id = json["id"] ?? "";
-    final name = json["name"] ?? "";
-    final notes = json["notes"] ?? "";
-    final startTime = DateTime.parse(json["startTime"]);
-    final endTime = DateTime.parse(json["endTime"]);
-    final createdAt = DateTime.now();
-    final updatedAt = DateTime.now();
-    return ActivityLogDto(
-      id: id,
-      name: name,
-      notes: notes,
-      startTime: startTime,
-      endTime: endTime,
-      createdAt: createdAt,
-      updatedAt: updatedAt,
-      owner: owner ?? ""
-    );
-  }
-
   @override
   ActivityLogDto copyWith({
     String? id,
