@@ -14,7 +14,7 @@ class ExerciseDto {
   final Uri? creditSource;
   final String? credit;
   final ExerciseType type;
-  final bool owner;
+  final String owner;
 
   ExerciseDto(
       {required this.id,
@@ -71,7 +71,7 @@ class ExerciseDto {
         video: videoUri,
         description: description,
         trainingPosition: trainingPosition,
-        owner: owner,
+        owner: owner.toString(),
         creditSource: creditSourceUri,
         credit: credit);
   }
@@ -83,7 +83,7 @@ class ExerciseDto {
     List<MuscleGroup>? secondaryMuscleGroups,
     ExerciseType? type,
     TrainingPosition? trainingPosition,
-    bool? owner,
+    String? owner,
     String? description,
   }) {
     return ExerciseDto(

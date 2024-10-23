@@ -243,7 +243,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
           secondaryMuscleGroups: [],
           trainingPosition: TrainingPosition.none,
           type: _exerciseType,
-          owner: true);
+          owner: "");
 
       await Provider.of<ExerciseController>(context, listen: false).saveExercise(exerciseDto: exercise);
       if (mounted) {

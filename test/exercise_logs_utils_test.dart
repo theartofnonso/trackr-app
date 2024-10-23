@@ -19,7 +19,7 @@ void main() {
       trainingPosition: TrainingPosition.lengthened,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
       type: ExerciseType.weights,
-      owner: false);
+      owner: "");
 
   final plankExercise = ExerciseDto(
       id: "id_exercise2",
@@ -28,7 +28,7 @@ void main() {
       trainingPosition: TrainingPosition.lengthened,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
       type: ExerciseType.duration,
-      owner: false);
+      owner: "");
 
   final benchPressExercise = ExerciseDto(
       id: "id_benchPressExercise",
@@ -37,7 +37,7 @@ void main() {
       trainingPosition: TrainingPosition.lengthened,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
       type: ExerciseType.weights,
-      owner: false);
+      owner: "");
 
   final lyingLegCurlExerciseLog1 = ExerciseLogDto(
       lyingLegCurlExercise.id,

@@ -85,7 +85,9 @@ class AmplifyExerciseRepository {
 
     await Amplify.DataStore.save<Exercise>(exerciseToCreate);
 
-    _exercises.add(exerciseDto.copyWith(id: exerciseToCreate.id));
+    final updatedExerciseWithId = exerciseDto.copyWith(id: exerciseToCreate.id, owner: exerciseToCreate.owner);
+
+    _exercises.add(updatedExerciseWithId);
   }
 
   Future<void> updateExercise({required ExerciseDto exercise}) async {

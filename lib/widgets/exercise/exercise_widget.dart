@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../dtos/exercise_dto.dart';
+import '../../shared_prefs.dart';
 
 class ExerciseWidget extends StatelessWidget {
   final ExerciseDto exerciseDto;
@@ -64,7 +65,7 @@ class ExerciseWidget extends StatelessWidget {
                               style: GoogleFonts.ubuntu(
                                   color: Colors.orange.withOpacity(0.6), fontWeight: FontWeight.w500, fontSize: 11)),
                       ])),
-                  if (exercise.owner)
+                  if (exercise.owner == SharedPrefs().userId)
                     Padding(
                       padding: const EdgeInsets.only(top: 4.0),
                       child: Text("Owner".toUpperCase(),

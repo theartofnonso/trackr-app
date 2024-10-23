@@ -55,7 +55,7 @@ class AmplifyTemplateRepository {
 
     await Amplify.DataStore.save<RoutineTemplate>(templateToCreate);
 
-    final updatedWithId = templateDto.copyWith(id: templateToCreate.id);
+    final updatedWithId = templateDto.copyWith(id: templateToCreate.id, owner: templateToCreate.owner);
 
     _templates.insert(0, updatedWithId);
 

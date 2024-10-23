@@ -62,7 +62,7 @@ class AmplifyLogRepository {
     final logToCreate = RoutineLog(data: jsonEncode(logDto), createdAt: now, updatedAt: now);
     await Amplify.DataStore.save(logToCreate);
 
-    final updatedRoutineLogWithId = logDto.copyWith(id: logToCreate.id);
+    final updatedRoutineLogWithId = logDto.copyWith(id: logToCreate.id, owner: logToCreate.owner);
     final updatedRoutineWithExerciseIds = updatedRoutineLogWithId.copyWith(
         exerciseLogs:
             updatedRoutineLogWithId.exerciseLogs.map((log) => log.copyWith(routineLogId: logToCreate.id)).toList());

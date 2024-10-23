@@ -148,17 +148,14 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     ];
 
     return Scaffold(
-        floatingActionButton: template.owner == SharedPrefs().userId
-            ? FloatingActionButton(
-                heroTag: UniqueKey,
-                onPressed: () {
-                  final arguments = RoutineLogArguments(log: template.log(), editorMode: RoutineEditorMode.log);
-                  navigateToRoutineLogEditor(context: context, arguments: arguments);
-                },
-                backgroundColor: sapphireDark,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                child: const FaIcon(FontAwesomeIcons.play, color: Colors.white, size: 24))
-            : null,
+        floatingActionButton: FloatingActionButton(
+            heroTag: UniqueKey,
+            onPressed: template.owner == SharedPrefs().userId ? _launchRoutineLogEditor : _createTemplate,
+            backgroundColor: sapphireDark,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+            child: template.owner == SharedPrefs().userId
+                ? const FaIcon(FontAwesomeIcons.play, color: Colors.white, size: 24)
+                : const FaIcon(FontAwesomeIcons.download)),
         backgroundColor: sapphireDark,
         appBar: AppBar(
           backgroundColor: sapphireDark80,
@@ -241,6 +238,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                               fontStyle: FontStyle.italic,
                               fontWeight: FontWeight.w600)),
                     ),
+
                   /// Keep this spacing for when notes isn't available
                   if (template.notes.isEmpty)
                     const SizedBox(
@@ -343,6 +341,57 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     setState(() {
       _minimized = !_minimized;
     });
+  }
+
+  void _launchRoutineLogEditor() {
+    final template = _template;
+    if (template != null) {
+      final arguments = RoutineLogArguments(log: template.log(), editorMode: RoutineEditorMode.log);
+      navigateToRoutineLogEditor(context: context, arguments: arguments);
+    }
+  }
+
+  void _createTemplate() async {
+    final template = _template;
+    if (template != null) {
+      _showLoadingScreen();
+
+      try {
+        final exercises = template.exerciseTemplates.map((exerciseLog) {
+          final uncheckedSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
+
+          /// [Exercise.duration] exercises do not have sets in templates
+          /// This is because we only need to store the duration of the exercise in [RoutineEditorType.log] i.e data is log in realtime
+          final sets = withDurationOnly(type: exerciseLog.exercise.type) ? <SetDto>[] : uncheckedSets;
+          return exerciseLog.copyWith(sets: sets);
+        }).toList();
+        final templateToCreate = RoutineTemplateDto(
+            id: "",
+            name: template.name,
+            notes: template.notes,
+            exerciseTemplates: exercises,
+            owner: "",
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now());
+
+        final createdTemplate = await Provider.of<RoutineTemplateController>(context, listen: false)
+            .saveTemplate(templateDto: templateToCreate);
+        if (mounted) {
+          if (createdTemplate != null) {
+            navigateToRoutineTemplatePreview(context: context, template: createdTemplate);
+          }
+        }
+      } catch (_) {
+        if (mounted) {
+          showSnackbar(
+              context: context,
+              icon: const Icon(Icons.info_outline),
+              message: "Oops, we are unable to create template");
+        }
+      } finally {
+        _hideLoadingScreen();
+      }
+    }
   }
 
   void _loadData() {

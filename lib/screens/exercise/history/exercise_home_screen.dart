@@ -10,6 +10,7 @@ import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_chart_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_video_screen.dart';
 import 'package:tracker_app/screens/exercise/history/history_screen.dart';
+import 'package:tracker_app/shared_prefs.dart';
 
 import '../../../dtos/exercise_dto.dart';
 import '../../../dtos/exercise_log_dto.dart';
@@ -123,7 +124,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
                           style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
               ],
             ),
-            actions: foundExercise.owner
+            actions: foundExercise.owner == SharedPrefs().userId
                 ? [
                     MenuAnchor(
                       style: MenuStyle(
