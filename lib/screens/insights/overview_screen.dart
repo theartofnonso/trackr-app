@@ -126,31 +126,52 @@ class _OverviewScreenState extends State<OverviewScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  IconButton(
-                    onPressed: null,
-                    icon: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                      Image.asset(
-                        'icons/dumbbells.png',
-                        fit: BoxFit.contain,
-                        height: 24, // Adjust the height as needed
-                      ),
-                      const SizedBox(width: 4),
-                      Text("${routineLogsForTheYear.length}",
-                          style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
-                    ]),
+                  SizedBox(
+                    width: 70,
+                    child: Row(
+                      children: [
+                        IconButton(
+                          onPressed: () => navigateToRoutineLogs(context: context, dateTime: _monthDateTimeRange.start),
+                          icon: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                            Image.asset(
+                              'icons/dumbbells.png',
+                              fit: BoxFit.contain,
+                              height: 24, // Adjust the height as needed
+                            ),
+                            const SizedBox(width: 4),
+                            Text("${routineLogsForTheYear.length}",
+                                style:
+                                    GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
+                          ]),
+                        ),
+                        const Spacer()
+                      ],
+                    ),
                   ),
-                  CalendarNavigator(
-                    onYearChange: _onYearChange,
-                    onMonthChange: _onMonthChange,
+                  Expanded(
+                    child: CalendarNavigator(
+                      onYearChange: _onYearChange,
+                      onMonthChange: _onMonthChange,
+                    ),
                   ),
-                  IconButton(
-                    onPressed: null,
-                    icon: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                      const FaIcon(FontAwesomeIcons.personWalking, color: Colors.white, size: 18),
-                      const SizedBox(width: 4),
-                      Text("${activityLogsForTheYear.length}",
-                          style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
-                    ]),
+                  SizedBox(
+                    width: 70,
+                    child: Row(
+                      children: [
+                        const Spacer(),
+                        IconButton(
+                          onPressed: () =>
+                              navigateToActivityLogs(context: context, dateTime: _monthDateTimeRange.start),
+                          icon: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                            const FaIcon(FontAwesomeIcons.personWalking, color: Colors.white, size: 18),
+                            const SizedBox(width: 4),
+                            Text("${activityLogsForTheYear.length}",
+                                style:
+                                    GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
+                          ]),
+                        ),
+                      ],
+                    ),
                   ),
                 ]),
                 Expanded(
@@ -276,7 +297,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           startTime: datetimeRange.start,
                           endTime: datetimeRange.end,
                           createdAt: datetimeRange.end,
-                          updatedAt: datetimeRange.end, owner: "");
+                          updatedAt: datetimeRange.end,
+                          owner: "");
                       Provider.of<ActivityLogController>(context, listen: false).saveLog(logDto: activityLog);
                     });
               },
@@ -349,7 +371,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 
   void _onYearChange(DateTimeRange range) async {
-
     _yearDateTimeRange = range;
 
     _showLoadingScreen();

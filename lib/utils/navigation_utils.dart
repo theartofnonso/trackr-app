@@ -12,7 +12,8 @@ import '../dtos/viewmodels/routine_template_arguments.dart';
 import '../screens/editors/past_routine_log_editor_screen.dart';
 import '../screens/editors/routine_log_editor_screen.dart';
 import '../screens/editors/routine_template_editor_screen.dart';
-import '../screens/logs/logs_screen.dart';
+import '../screens/logs/activity_logs_screen.dart';
+import '../screens/logs/routine_logs_screen.dart';
 import '../screens/logs/routine_log_screen.dart';
 import '../screens/templates/routine_template_screen.dart';
 
@@ -58,8 +59,12 @@ void navigateToShareableScreen({required BuildContext context, required RoutineL
   context.push(RoutineLogSummaryScreen.routeName, extra: log);
 }
 
-void navigateToLogs({required BuildContext context, required DateTime dateTime}) {
-  context.push(LogsScreen.routeName, extra: dateTime);
+void navigateToRoutineLogs({required BuildContext context, required DateTime dateTime}) {
+  context.push(RoutineLogsScreen.routeName, extra: dateTime);
+}
+
+void navigateToActivityLogs({required BuildContext context, required DateTime dateTime}) {
+  context.push(ActivityLogsScreen.routeName, extra: dateTime);
 }
 
 /// Create a screen on demand

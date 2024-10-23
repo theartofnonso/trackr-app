@@ -82,7 +82,7 @@ class OverviewMonitor extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           GestureDetector(
-              onTap: () => navigateToLogs(context: context, dateTime: dateTime),
+              onTap: () => navigateToRoutineLogs(context: context, dateTime: dateTime),
               child: Container(
                 color: Colors.transparent,
                 width: 80,

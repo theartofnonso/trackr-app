@@ -37,7 +37,8 @@ import 'package:tracker_app/screens/home_screen.dart';
 import 'package:tracker_app/screens/insights/overview_screen.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
 import 'package:tracker_app/screens/intro_screen.dart';
-import 'package:tracker_app/screens/logs/logs_screen.dart';
+import 'package:tracker_app/screens/logs/activity_logs_screen.dart';
+import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
@@ -162,11 +163,30 @@ final _router = GoRouter(
       },
     ),
     GoRoute(
-      path: LogsScreen.routeName,
+      path: RoutineLogsScreen.routeName,
       pageBuilder: (context, state) {
         final args = state.extra as DateTime;
         return CustomTransitionPage(
-            child: LogsScreen(dateTime: args),
+            child: RoutineLogsScreen(dateTime: args),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              const begin = Offset(0.0, 1.0);
+              const end = Offset.zero;
+              const curve = Curves.ease;
+              final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+              final offsetAnimation = animation.drive(tween);
+              return SlideTransition(
+                position: offsetAnimation,
+                child: child,
+              );
+            });
+      },
+    ),
+    GoRoute(
+      path: ActivityLogsScreen.routeName,
+      pageBuilder: (context, state) {
+        final args = state.extra as DateTime;
+        return CustomTransitionPage(
+            child: ActivityLogsScreen(dateTime: args),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               const begin = Offset(0.0, 1.0);
               const end = Offset.zero;
