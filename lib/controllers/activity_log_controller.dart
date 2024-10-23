@@ -15,11 +15,7 @@ class ActivityLogController extends ChangeNotifier {
     _amplifyActivityLogRepository = amplifyLogRepository;
   }
 
-  UnmodifiableListView<ActivityLogDto> get activityLogs => _amplifyActivityLogRepository.activityLogs;
-
-  UnmodifiableMapView<DateTimeRange, List<ActivityLogDto>> get weeklyLogs => _amplifyActivityLogRepository.weeklyLogs;
-
-  UnmodifiableMapView<DateTimeRange, List<ActivityLogDto>> get monthlyLogs => _amplifyActivityLogRepository.monthlyLogs;
+  UnmodifiableListView<ActivityLogDto> get logs => _amplifyActivityLogRepository.logs;
 
   void streamLogs({required List<ActivityLog> logs}) async {
     _amplifyActivityLogRepository.loadLogsStream(logs: logs);

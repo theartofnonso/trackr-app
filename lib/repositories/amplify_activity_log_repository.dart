@@ -10,25 +10,11 @@ import 'package:tracker_app/extensions/activity_log_extension.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 
 import '../models/ActivityLog.dart';
-import '../utils/routine_utils.dart';
 
 class AmplifyActivityLogRepository {
-  List<ActivityLogDto> _activityLogs = [];
+  List<ActivityLogDto> _logs = [];
 
-  Map<DateTimeRange, List<ActivityLogDto>> _weeklyLogs = {};
-
-  Map<DateTimeRange, List<ActivityLogDto>> _monthlyLogs = {};
-
-  UnmodifiableListView<ActivityLogDto> get activityLogs => UnmodifiableListView(_activityLogs);
-
-  UnmodifiableMapView<DateTimeRange, List<ActivityLogDto>> get weeklyLogs => UnmodifiableMapView(_weeklyLogs);
-
-  UnmodifiableMapView<DateTimeRange, List<ActivityLogDto>> get monthlyLogs => UnmodifiableMapView(_monthlyLogs);
-
-  void _groupActivityLogs() {
-    _weeklyLogs = groupActivityLogsByWeek(activityLogs: _activityLogs);
-    _monthlyLogs = groupActivityLogsByMonth(activityLogs: _activityLogs);
-  }
+  UnmodifiableListView<ActivityLogDto> get logs => UnmodifiableListView(_logs);
 
   void loadLogsStream({required List<ActivityLog> logs}) {
     _mapLogs(logs: logs);
@@ -45,8 +31,7 @@ class AmplifyActivityLogRepository {
   }
 
   void _mapLogs({required List<ActivityLog> logs}) {
-    _activityLogs = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
-    _groupActivityLogs();
+    _logs = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
   }
 
   Future<ActivityLogDto> saveLog({required ActivityLogDto logDto}) async {
@@ -57,10 +42,8 @@ class AmplifyActivityLogRepository {
 
     final updatedActivityWithId = logDto.copyWith(id: logToCreate.id);
 
-    _activityLogs.add(updatedActivityWithId);
-    _activityLogs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
-
-    _groupActivityLogs();
+    _logs.add(updatedActivityWithId);
+    _logs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
 
     return updatedActivityWithId;
   }
@@ -76,8 +59,7 @@ class AmplifyActivityLogRepository {
       final newLog = oldLog.copyWith(data: jsonEncode(log));
       await Amplify.DataStore.save(newLog);
       final index = _indexWhereRoutineLog(id: log.id);
-      _activityLogs[index] = log;
-      _groupActivityLogs();
+      _logs[index] = log;
     }
   }
 
@@ -91,19 +73,18 @@ class AmplifyActivityLogRepository {
       final oldTemplate = result.first;
       await Amplify.DataStore.delete(oldTemplate);
       final index = _indexWhereRoutineLog(id: log.id);
-      _activityLogs.removeAt(index);
-      _groupActivityLogs();
+      _logs.removeAt(index);
     }
   }
 
   /// Helper methods
 
   int _indexWhereRoutineLog({required String id}) {
-    return _activityLogs.indexWhere((log) => log.id == id);
+    return _logs.indexWhere((log) => log.id == id);
   }
 
   ActivityLogDto? logWhereId({required String id}) {
-    return _activityLogs.firstWhereOrNull((log) => log.id == id);
+    return _logs.firstWhereOrNull((log) => log.id == id);
   }
 
   /// RoutineLog for the following [DateTime]
@@ -111,15 +92,15 @@ class AmplifyActivityLogRepository {
   /// Month and Year - Looking for a log in the same month day, hence the need to match the month and year
   /// Year - Looking for a log in the same year, hence the need to match the year
   ActivityLogDto? whereLogIsSameDay({required DateTime dateTime}) {
-    return _activityLogs.firstWhereOrNull((log) => log.createdAt.isSameDayMonthYear(dateTime));
+    return _logs.firstWhereOrNull((log) => log.createdAt.isSameDayMonthYear(dateTime));
   }
 
   ActivityLogDto? whereLogIsSameMonth({required DateTime dateTime}) {
-    return _activityLogs.firstWhereOrNull((log) => log.createdAt.isSameMonthYear(dateTime));
+    return _logs.firstWhereOrNull((log) => log.createdAt.isSameMonthYear(dateTime));
   }
 
   ActivityLogDto? whereLogIsSameYear({required DateTime dateTime}) {
-    return _activityLogs.firstWhereOrNull((log) => log.createdAt.isSameYear(dateTime));
+    return _logs.firstWhereOrNull((log) => log.createdAt.isSameYear(dateTime));
   }
 
   /// RoutineLogs for the following [DateTime]
@@ -127,20 +108,18 @@ class AmplifyActivityLogRepository {
   /// Month and Year - Looking for logs in the same month day, hence the need to match the month and year
   /// Year - Looking for logs in the same year, hence the need to match the year
   List<ActivityLogDto> whereLogsIsSameDay({required DateTime dateTime}) {
-    return _activityLogs.where((log) => log.createdAt.isSameDayMonthYear(dateTime)).toList();
+    return _logs.where((log) => log.createdAt.isSameDayMonthYear(dateTime)).toList();
   }
 
   List<ActivityLogDto> whereLogsIsSameMonth({required DateTime dateTime}) {
-    return _activityLogs.where((log) => log.createdAt.isSameMonthYear(dateTime)).toList();
+    return _logs.where((log) => log.createdAt.isSameMonthYear(dateTime)).toList();
   }
 
   List<ActivityLogDto> whereLogsIsSameYear({required DateTime dateTime}) {
-    return _activityLogs.where((log) => log.createdAt.isSameYear(dateTime)).toList();
+    return _logs.where((log) => log.createdAt.isSameYear(dateTime)).toList();
   }
 
   void clear() {
-    _activityLogs.clear();
-    _weeklyLogs.clear();
-    _monthlyLogs.clear();
+    _logs.clear();
   }
 }

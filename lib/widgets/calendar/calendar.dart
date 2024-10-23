@@ -75,13 +75,13 @@ class _CalendarState extends State<Calendar> {
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
     final activityLogController = Provider.of<ActivityLogController>(context, listen: false);
 
-    final monthlyRoutineLogs =
-        (routineLogController.monthlyLogs[DateTimeRange(start: firstDayOfMonth, end: lastDayOfMonth)] ?? [])
-            .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day));
+    final monthlyRoutineLogs = (routineLogController.logs
+            .where((log) => log.createdAt.isBetweenInclusive(from: firstDayOfMonth, to: lastDayOfMonth)))
+        .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day));
 
-    final monthlyActivityLogs =
-        (activityLogController.monthlyLogs[DateTimeRange(start: firstDayOfMonth, end: lastDayOfMonth)] ?? [])
-            .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day));
+    final monthlyActivityLogs = (activityLogController.logs
+            .where((log) => log.createdAt.isBetweenInclusive(from: firstDayOfMonth, to: lastDayOfMonth)))
+        .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day));
 
     // Add remainder dates
     for (int day = 1; day <= daysInMonth; day++) {

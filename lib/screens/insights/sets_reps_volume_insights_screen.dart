@@ -440,7 +440,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   void initState() {
     super.initState();
     final defaultMuscleGroup = Provider.of<RoutineLogController>(context, listen: false)
-        .routineLogs
+        .logs
         .firstOrNull
         ?.exerciseLogs
         .firstOrNull

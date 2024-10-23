@@ -55,7 +55,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
 
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
-    final logsByDay = groupBy(routineLogController.routineLogs, (log) => log.createdAt.withoutTime());
+    final logsByDay = groupBy(routineLogController.logs, (log) => log.createdAt.withoutTime());
 
     final exerciseController = Provider.of<ExerciseController>(context, listen: false);
 

@@ -24,7 +24,6 @@ import '../../enums/activity_type_enums.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
-import '../../utils/routine_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_text_widget.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/calendar/calendar.dart';
@@ -48,8 +47,9 @@ class OverviewScreen extends StatefulWidget {
 }
 
 class _OverviewScreenState extends State<OverviewScreen> {
-  Map<DateTimeRange, List<RoutineLogDto>>? _monthlyRoutineLogs;
-  Map<DateTimeRange, List<ActivityLogDto>>? _monthlyActivityLogs;
+  List<RoutineLogDto>? _routineLogsForTheMonth;
+
+  List<ActivityLogDto>? _activityLogsForTheYear;
 
   late DateTime _selectedDateTime;
 
@@ -86,19 +86,13 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     /// Routine Logs
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
-
-    Map<DateTimeRange, List<RoutineLogDto>> monthlyRoutineLogs =
-        _monthlyRoutineLogs ?? routineLogController.monthlyLogs;
-
-    final routineLogsForTheYear = monthlyRoutineLogs.values.expand((logs) => logs);
+    List<RoutineLogDto> routineLogsForTheYear =
+        _routineLogsForTheMonth ?? routineLogController.whereLogsIsSameYear(dateTime: _monthDateTimeRange.start);
 
     /// Activity Logs
     final activityLogController = Provider.of<ActivityLogController>(context, listen: true);
-
-    Map<DateTimeRange, List<ActivityLogDto>> monthlyActivityLogs =
-        _monthlyActivityLogs ?? activityLogController.monthlyLogs;
-
-    final activityLogsForTheYear = monthlyActivityLogs.values.expand((logs) => logs);
+    final activityLogsForTheYear =
+        _activityLogsForTheYear ?? activityLogController.whereLogsIsSameYear(dateTime: _monthDateTimeRange.start);
 
     return Scaffold(
       floatingActionButton: _loading
@@ -346,25 +340,18 @@ class _OverviewScreenState extends State<OverviewScreen> {
     });
   }
 
-  void _onYearChange(DateTimeRange range) {
+  void _onYearChange(DateTimeRange range) async {
+    print(range.start.year);
     _showLoadingScreen();
 
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
     final activityLogController = Provider.of<ActivityLogController>(context, listen: false);
 
-    routineLogController.fetchLogsCloud(range: range.start.dateTimeRange()).then((logs) {
-      setState(() {
-        final dtos = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
-        _monthlyRoutineLogs = groupRoutineLogsByMonth(routineLogs: dtos);
-      });
-    });
+    final routineLogs = await routineLogController.fetchLogsCloud(range: range.start.dateTimeRange());
+    _routineLogsForTheMonth = routineLogs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
 
-    activityLogController.fetchLogsCloud(range: range.start.dateTimeRange()).then((logs) {
-      setState(() {
-        final dtos = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
-        _monthlyActivityLogs = groupActivityLogsByMonth(activityLogs: dtos);
-      });
-    });
+    final activityLogs = await activityLogController.fetchLogsCloud(range: range.start.dateTimeRange());
+    _activityLogsForTheYear = activityLogs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
 
     _hideLoadingScreen();
   }

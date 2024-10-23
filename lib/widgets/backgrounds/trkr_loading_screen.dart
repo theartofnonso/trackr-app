@@ -5,7 +5,7 @@ import '../../colors.dart';
 
 class TRKRLoadingScreen extends StatelessWidget {
 
-  const TRKRLoadingScreen({super.key, this.opacity = 0.9, this.action});
+  const TRKRLoadingScreen({super.key, this.opacity = 0.6, this.action});
 
   final double opacity;
   final VoidCallback? action;

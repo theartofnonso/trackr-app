@@ -20,11 +20,7 @@ class RoutineLogController extends ChangeNotifier {
     _amplifyLogRepository = amplifyLogRepository;
   }
 
-  UnmodifiableListView<RoutineLogDto> get routineLogs => _amplifyLogRepository.routineLogs;
-
-  UnmodifiableMapView<DateTimeRange, List<RoutineLogDto>> get weeklyLogs => _amplifyLogRepository.weeklyLogs;
-
-  UnmodifiableMapView<DateTimeRange, List<RoutineLogDto>> get monthlyLogs => _amplifyLogRepository.monthlyLogs;
+  UnmodifiableListView<RoutineLogDto> get logs => _amplifyLogRepository.logs;
 
   UnmodifiableMapView<String, List<ExerciseLogDto>> get exerciseLogsById => _amplifyLogRepository.exerciseLogsById;
 

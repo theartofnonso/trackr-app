@@ -12,15 +12,17 @@ import '../chart/bar_chart.dart';
 
 class LogStreakChartWidget extends StatelessWidget {
 
-  final Map<DateTimeRange, List<RoutineLogDto>> monthlyLogs;
+  final List<RoutineLogDto> logs;
 
-  const LogStreakChartWidget({super.key, required this.monthlyLogs});
+  const LogStreakChartWidget({super.key, required this.logs});
 
   @override
   Widget build(BuildContext context) {
     List<int> logsStreak = [];
 
-    for (var periodAndLogs in monthlyLogs.entries) {
+    final logsAndMonths = groupBy(logs, (log) => log.createdAt);
+
+    for (var periodAndLogs in logsAndMonths.entries) {
       final logsByDay = groupBy(periodAndLogs.value, (log) => log.createdAt.day);
       logsStreak.add(logsByDay.values.length);
     }
@@ -31,8 +33,7 @@ class LogStreakChartWidget extends StatelessWidget {
 
     final streakColor = logsStreak.map((streak) => logStreakColor(value: streak / 12)).toList();
 
-    final dateTimes = monthlyLogs.entries.map((monthEntry) => monthEntry.key.end.abbreviatedMonth()).toList();
-
+    final dateTimes = logsAndMonths.entries.map((monthEntry) => monthEntry.key.abbreviatedMonth()).toList();
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(

@@ -17,9 +17,9 @@ import '../../utils/exercise_logs_utils.dart';
 import '../chart/bar_chart.dart';
 
 class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
-  final Map<DateTimeRange, List<RoutineLogDto>> monthlyLogs;
+  final List<RoutineLogDto> logs;
 
-  const MuscleGroupFamilyFrequencyChartWidget({super.key, required this.monthlyLogs});
+  const MuscleGroupFamilyFrequencyChartWidget({super.key, required this.logs});
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +27,8 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
 
     final exerciseController = Provider.of<ExerciseController>(context, listen: false);
 
-    for (var periodAndLogs in monthlyLogs.entries) {
-      final exerciseLogsForTheMonth = periodAndLogs.value.expand((log) => log.exerciseLogs).toList();
+    for (var log in logs) {
+      final exerciseLogsForTheMonth = log.exerciseLogs;
 
       final exercisesFromLibrary = exerciseLogsForTheMonth.map((exerciseTemplate) {
         final foundExercise = exerciseController.exercises
@@ -48,7 +48,7 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
     final scoreColors =
         muscleGroupsSplitFrequencyScores.map((score) => muscleFamilyFrequencyColor(value: score / 100)).toList();
 
-    final dateTimes = monthlyLogs.entries.map((monthEntry) => monthEntry.key.end.abbreviatedMonth()).toList();
+    final dateTimes = logs.map((log) => log.createdAt.abbreviatedMonth()).toList();
 
     return GestureDetector(
       onTap: () {

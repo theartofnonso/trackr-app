@@ -16,15 +16,13 @@ class MonthlyInsightsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
-    final routineLogs = routineLogController.monthlyLogs[dateTimeRange] ?? [];
+    final routineLogs = routineLogController.whereLogsIsSameMonth(dateTime: dateTimeRange.start);
 
-    final activitiesController = Provider.of<ActivityLogController>(context, listen: true);
+    final activitiesController = Provider.of<ActivityLogController>(context, listen: false);
 
-    final activityLogs = activitiesController.monthlyLogs[dateTimeRange] ?? [];
-
-    final monthlyLogs = routineLogController.monthlyLogs;
+    final activityLogs = activitiesController.whereLogsIsSameMonth(dateTime: dateTimeRange.start);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -41,9 +39,9 @@ class MonthlyInsightsScreen extends StatelessWidget {
             ],
           ),
         const SizedBox(height: 24),
-        MuscleGroupFamilyFrequencyChartWidget(monthlyLogs: monthlyLogs),
+        MuscleGroupFamilyFrequencyChartWidget(logs: routineLogs),
         const SizedBox(height: 18),
-        LogStreakChartWidget(monthlyLogs: monthlyLogs),
+        LogStreakChartWidget(logs: routineLogs),
       ],
     );
   }
