@@ -7,6 +7,7 @@ import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/routine_template_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
+import 'package:tracker_app/shared_prefs.dart';
 
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
@@ -55,7 +56,7 @@ class AmplifyTemplateRepository {
 
     await Amplify.DataStore.save<RoutineTemplate>(templateToCreate);
 
-    final updatedWithId = templateDto.copyWith(id: templateToCreate.id, owner: templateToCreate.owner);
+    final updatedWithId = templateDto.copyWith(id: templateToCreate.id, owner: SharedPrefs().userId);
 
     _templates.insert(0, updatedWithId);
 

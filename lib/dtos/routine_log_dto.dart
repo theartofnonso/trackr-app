@@ -17,7 +17,7 @@ class RoutineLogDto implements Log {
   @override
   final DateTime endTime;
   final List<ExerciseLogDto> exerciseLogs;
-  final String? owner;
+  final String owner;
   @override
   final DateTime createdAt;
   @override

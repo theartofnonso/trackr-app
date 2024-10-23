@@ -8,6 +8,7 @@ import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/extensions/exercise_extension.dart';
 
 import '../models/Exercise.dart';
+import '../shared_prefs.dart';
 
 class AmplifyExerciseRepository {
   List<ExerciseDto> _exercises = [];
@@ -85,7 +86,7 @@ class AmplifyExerciseRepository {
 
     await Amplify.DataStore.save<Exercise>(exerciseToCreate);
 
-    final updatedExerciseWithId = exerciseDto.copyWith(id: exerciseToCreate.id, owner: exerciseToCreate.owner);
+    final updatedExerciseWithId = exerciseDto.copyWith(id: exerciseToCreate.id, owner: SharedPrefs().userId);
 
     _exercises.add(updatedExerciseWithId);
   }

@@ -193,10 +193,21 @@ class OverviewMonitor extends StatelessWidget {
                     ],
                   ),
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
-                child: OverviewMonitor(
-                  dateTime: dateTime,
-                  showInfo: false,
+                padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 18),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Monthly Overview".toUpperCase(),
+                        style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 2),
+                    Text(DateTime.now().formattedDayAndMonthAndYear(),
+                        style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w400)),
+                    const SizedBox(height: 20),
+                    OverviewMonitor(
+                      dateTime: dateTime,
+                      showInfo: false,
+                    ),
+                  ],
                 ),
               ),
             ),

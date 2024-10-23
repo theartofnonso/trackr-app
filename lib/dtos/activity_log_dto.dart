@@ -11,6 +11,7 @@ class ActivityLogDto implements Log {
   final DateTime startTime;
   @override
   final DateTime endTime;
+  final String owner;
   @override
   final DateTime createdAt;
   @override
@@ -22,6 +23,7 @@ class ActivityLogDto implements Log {
     required this.notes,
     required this.startTime,
     required this.endTime,
+    required this.owner,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -41,7 +43,7 @@ class ActivityLogDto implements Log {
     };
   }
 
-  factory ActivityLogDto.fromJson(Map<String, dynamic> json) {
+  factory ActivityLogDto.fromJson(Map<String, dynamic> json, {String? owner}) {
     final id = json["id"] ?? "";
     final name = json["name"] ?? "";
     final notes = json["notes"] ?? "";
@@ -57,6 +59,7 @@ class ActivityLogDto implements Log {
       endTime: endTime,
       createdAt: createdAt,
       updatedAt: updatedAt,
+      owner: owner ?? ""
     );
   }
 
@@ -67,6 +70,7 @@ class ActivityLogDto implements Log {
     String? notes,
     DateTime? startTime,
     DateTime? endTime,
+    String? owner,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -76,6 +80,7 @@ class ActivityLogDto implements Log {
       notes: notes ?? this.notes,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
+      owner: owner ?? this.owner,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

@@ -11,14 +11,16 @@ extension ActivityLogExtension on ActivityLog {
     final name = dataJson["name"] ?? "";
     final notes = dataJson["notes"] ?? "";
     final startTime = DateTime.parse(dataJson["startTime"]);
-    final endTime = DateTime.parse(dataJson["endTime"]);return ActivityLogDto(
+    final endTime = DateTime.parse(dataJson["endTime"]);
+
+    return ActivityLogDto(
       id: id,
       name: name,
       notes: notes,
       startTime: startTime,
       endTime: endTime,
       createdAt: createdAt.getDateTimeInUtc(),
-      updatedAt: updatedAt.getDateTimeInUtc(),
+      updatedAt: updatedAt.getDateTimeInUtc(), owner: owner ?? "",
     );
   }
 

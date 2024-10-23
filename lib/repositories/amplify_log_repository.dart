@@ -62,7 +62,7 @@ class AmplifyLogRepository {
     final logToCreate = RoutineLog(data: jsonEncode(logDto), createdAt: now, updatedAt: now);
     await Amplify.DataStore.save(logToCreate);
 
-    final updatedRoutineLogWithId = logDto.copyWith(id: logToCreate.id, owner: logToCreate.owner);
+    final updatedRoutineLogWithId = logDto.copyWith(id: logToCreate.id, owner: SharedPrefs().userId);
     final updatedRoutineWithExerciseIds = updatedRoutineLogWithId.copyWith(
         exerciseLogs:
             updatedRoutineLogWithId.exerciseLogs.map((log) => log.copyWith(routineLogId: logToCreate.id)).toList());
@@ -117,7 +117,7 @@ class AmplifyLogRepository {
     final cache = SharedPrefs().cachedRoutineLog;
     if (cache.isNotEmpty) {
       final json = jsonDecode(cache);
-      routineLog = RoutineLogDto.fromJson(json);
+      routineLog = RoutineLogDto.fromJson(json, owner: SharedPrefs().userId);
     }
     return routineLog;
   }

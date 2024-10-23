@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
-import 'package:tracker_app/shared_prefs.dart';
 
 import '../enums/exercise_type_enums.dart';
 import '../enums/training_position_enum.dart';
@@ -47,7 +46,6 @@ extension ExerciseExtension on Exercise {
     final primaryMuscleGroup = MuscleGroup.fromString(primaryMuscleGroupString);
     final typeJson = json["type"] ?? "";
     final type = ExerciseType.fromString(typeJson);
-    final owner = SharedPrefs().userId;
     return ExerciseDto(
         id: id,
         name: name,
@@ -55,6 +53,6 @@ extension ExerciseExtension on Exercise {
         secondaryMuscleGroups: [],
         trainingPosition: TrainingPosition.none,
         type: type,
-        owner: owner);
+        owner: owner ?? "");
   }
 }

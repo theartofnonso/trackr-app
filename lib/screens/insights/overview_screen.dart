@@ -276,7 +276,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           startTime: datetimeRange.start,
                           endTime: datetimeRange.end,
                           createdAt: datetimeRange.end,
-                          updatedAt: datetimeRange.end);
+                          updatedAt: datetimeRange.end, owner: "");
                       Provider.of<ActivityLogController>(context, listen: false).saveLog(logDto: activityLog);
                     });
               },

@@ -10,6 +10,7 @@ import 'package:tracker_app/extensions/activity_log_extension.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 
 import '../models/ActivityLog.dart';
+import '../shared_prefs.dart';
 
 class AmplifyActivityLogRepository {
   List<ActivityLogDto> _logs = [];
@@ -40,7 +41,7 @@ class AmplifyActivityLogRepository {
     final logToCreate = ActivityLog(data: jsonEncode(logDto), createdAt: datetime, updatedAt: datetime);
     await Amplify.DataStore.save(logToCreate);
 
-    final updatedActivityWithId = logDto.copyWith(id: logToCreate.id);
+    final updatedActivityWithId = logDto.copyWith(id: logToCreate.id, owner: SharedPrefs().userId);
 
     _logs.add(updatedActivityWithId);
     _logs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
