@@ -132,22 +132,22 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(
-                          Icons.date_range_rounded,
+                        const  FaIcon(
+                          FontAwesomeIcons.solidCalendarCheck,
                           color: Colors.white,
                           size: 12,
                         ),
-                        const SizedBox(width: 1),
+                        const SizedBox(width: 3),
                         Text(log.createdAt.formattedDayAndMonthAndYear(),
                             style: GoogleFonts.ubuntu(
                                 color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
                         const SizedBox(width: 10),
-                        const Icon(
-                          Icons.access_time_rounded,
+                        const FaIcon(
+                          FontAwesomeIcons.solidClock,
                           color: Colors.white,
                           size: 12,
                         ),
-                        const SizedBox(width: 1),
+                        const SizedBox(width: 2),
                         Text(log.endTime.formattedTime(),
                             style: GoogleFonts.ubuntu(
                                 color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
@@ -164,6 +164,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                                 fontStyle: FontStyle.italic,
                                 fontWeight: FontWeight.w600)),
                       ),
+                    /// Keep this spacing for when notes isn't available
                     if (log.notes.isEmpty)
                       const SizedBox(
                         height: 10,

@@ -285,3 +285,42 @@ List<ExerciseLogViewModel> exerciseLogsToViewModels({required List<ExerciseLogDt
         superSet: whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs));
   }).toList();
 }
+
+String copyRoutineAsText({required RoutinePreviewType routineType, required String name, required String notes, DateTime? dateTime, required List<ExerciseLogDto> exerciseLogs}) {
+
+  StringBuffer routineText = StringBuffer();
+
+  routineText.writeln(name);
+
+  if (notes.isNotEmpty) {
+    routineText.writeln("\n Notes: $notes");
+  }
+  if(routineType == RoutinePreviewType.log) {
+    if(dateTime != null) {
+      routineText.writeln(dateTime.formattedDayAndMonthAndYear());
+    }
+  }
+
+  for (var exerciseLog in exerciseLogs) {
+    var exercise = exerciseLog.exercise;
+    routineText.writeln("\n- Exercise: ${exercise.name}");
+    routineText.writeln("  Muscle Group: ${exercise.primaryMuscleGroup.name}");
+    if (exerciseLog.notes.isNotEmpty) {
+      routineText.writeln("  Notes: ${exerciseLog.notes}");
+    }
+    for (var i = 0; i < exerciseLog.sets.length; i++) {
+      switch (exerciseLog.exercise.type) {
+        case ExerciseType.weights:
+          routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].weightsSummary()}");
+          break;
+        case ExerciseType.bodyWeight:
+          routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].bodyWeightSummary()}");
+          break;
+        case ExerciseType.duration:
+          routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].durationSummary()}");
+          break;
+      }
+    }
+  }
+  return routineText.toString();
+}

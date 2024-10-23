@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/enums/share_content_type_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/widgets/shareables/pbs_shareable.dart';
@@ -17,11 +18,11 @@ import '../../colors.dart';
 import '../../controllers/exercise_controller.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/routine_log_dto.dart';
-import '../../enums/exercise_type_enums.dart';
 import '../../urls.dart';
 import '../../utils/app_analytics.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
+import '../../utils/routine_utils.dart';
 import '../../utils/shareables_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/label_divider.dart';
@@ -171,7 +172,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
 
   void _showCopyBottomSheet() {
     final workoutLogLink = "$shareableRoutineLogUrl/${widget.log.id}";
-    final workoutLogText = _copyAsText();
+    final workoutLogText = copyRoutineAsText(routineType: RoutinePreviewType.log, name: widget.log.name, notes: widget.log.notes, exerciseLogs: widget.log.exerciseLogs);
 
     displayBottomSheet(
         context: context,
@@ -246,40 +247,6 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
             )
           ]),
         ));
-  }
-
-  String _copyAsText() {
-    final log = widget.log;
-    StringBuffer workoutLogText = StringBuffer();
-
-    workoutLogText.writeln(log.name);
-    if (log.notes.isNotEmpty) {
-      workoutLogText.writeln("\n Notes: ${log.notes}");
-    }
-    workoutLogText.writeln(log.createdAt.formattedDayAndMonthAndYear());
-
-    for (var exerciseLog in log.exerciseLogs) {
-      var exercise = exerciseLog.exercise;
-      workoutLogText.writeln("\n- Exercise: ${exercise.name}");
-      workoutLogText.writeln("  Muscle Group: ${exercise.primaryMuscleGroup.name}");
-      if (exerciseLog.notes.isNotEmpty) {
-        workoutLogText.writeln("  Notes: ${exerciseLog.notes}");
-      }
-      for (var i = 0; i < exerciseLog.sets.length; i++) {
-        switch (exerciseLog.exercise.type) {
-          case ExerciseType.weights:
-            workoutLogText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].weightsSummary()}");
-            break;
-          case ExerciseType.bodyWeight:
-            workoutLogText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].bodyWeightSummary()}");
-            break;
-          case ExerciseType.duration:
-            workoutLogText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].durationSummary()}");
-            break;
-        }
-      }
-    }
-    return workoutLogText.toString();
   }
 
   ShareContentType _shareContentType({required int index}) {

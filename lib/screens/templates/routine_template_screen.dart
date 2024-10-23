@@ -8,7 +8,6 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_controller.dart';
-import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/extensions/routine_template_extension.dart';
 import 'package:tracker_app/screens/AI/trkr_coach_exercise_recommendation_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -217,9 +216,23 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const FaIcon(
+                        FontAwesomeIcons.solidClock,
+                        color: Colors.white,
+                        size: 12,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(scheduledDaysSummary(template: template),
+                          style: GoogleFonts.ubuntu(
+                              color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                    ],
+                  ),
                   if (template.notes.isNotEmpty)
                     Padding(
-                      padding: const EdgeInsets.only(left: 8.0, right: 8, bottom: 10),
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
                       child: Text('"${template.notes}"',
                           textAlign: TextAlign.start,
                           style: GoogleFonts.ubuntu(
@@ -228,6 +241,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                               fontStyle: FontStyle.italic,
                               fontWeight: FontWeight.w600)),
                     ),
+                  /// Keep this spacing for when notes isn't available
                   if (template.notes.isEmpty)
                     const SizedBox(
                       height: 10,
@@ -477,116 +491,90 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   }
 
   void _showBottomSheet() {
-    final workoutLink = "$shareableRoutineUrl/${_template?.id}";
-    final workoutText = _copyAsText();
-
-    displayBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        child: SafeArea(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const FaIcon(FontAwesomeIcons.link, size: 14, color: Colors.white70),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(workoutLink,
-                      overflow: TextOverflow.ellipsis,
-                      softWrap: true,
-                      style: GoogleFonts.ubuntu(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14,
-                      )),
-                ),
-                const SizedBox(width: 6),
-                OpacityButtonWidget(
-                  onPressed: () {
-                    HapticFeedback.heavyImpact();
-                    final data = ClipboardData(text: workoutLink);
-                    Clipboard.setData(data).then((_) {
-                      if (mounted) {
-                        context.pop();
-                        showSnackbar(context: context, icon: const Icon(Icons.check), message: "Workout link copied");
-                      }
-                    });
-                  },
-                  label: "Copy",
-                  buttonColor: vibrantGreen,
-                )
-              ],
-            ),
-            const SizedBox(height: 12),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: sapphireDark80,
-                border: Border.all(
-                  color: sapphireDark80, // Border color
-                  width: 1.0, // Border width
-                ),
-                borderRadius: BorderRadius.circular(5), // Optional: Rounded corners
-              ),
-              child: Text("${workoutText.substring(0, workoutText.length >= 150 ? 150 : workoutText.length)}...",
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.ubuntu(
-                    color: Colors.white70,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14,
-                  )),
-            ),
-            OpacityButtonWidget(
-              onPressed: () {
-                HapticFeedback.heavyImpact();
-                final data = ClipboardData(text: workoutText);
-                Clipboard.setData(data).then((_) {
-                  if (mounted) {
-                    context.pop();
-                    showSnackbar(context: context, icon: const Icon(Icons.check), message: "Workout copied");
-                  }
-                });
-              },
-              label: "Copy as text",
-              buttonColor: vibrantGreen,
-            )
-          ]),
-        ));
-  }
-
-  String _copyAsText() {
     final template = _template;
+
     if (template != null) {
-      StringBuffer workoutText = StringBuffer();
+      final workoutLink = "$shareableRoutineUrl/${template.id}";
+      final workoutText = copyRoutineAsText(
+          routineType: RoutinePreviewType.log,
+          name: template.name,
+          notes: template.notes,
+          exerciseLogs: template.exerciseTemplates);
 
-      workoutText.writeln(template.name);
-      if (template.notes.isNotEmpty) {
-        workoutText.writeln("Notes: ${template.notes}");
-      }
-
-      for (var exerciseLog in template.exerciseTemplates) {
-        var exercise = exerciseLog.exercise;
-        workoutText.writeln("\n- Exercise: ${exercise.name}");
-        workoutText.writeln("  Muscle Group: ${exercise.primaryMuscleGroup.name}");
-
-        for (var i = 0; i < exerciseLog.sets.length; i++) {
-          switch (exerciseLog.exercise.type) {
-            case ExerciseType.weights:
-              workoutText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].weightsSummary()}");
-              break;
-            case ExerciseType.bodyWeight:
-              workoutText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].bodyWeightSummary()}");
-              break;
-            case ExerciseType.duration:
-              workoutText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].durationSummary()}");
-              break;
-          }
-        }
-      }
-      return workoutText.toString();
+      displayBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          child: SafeArea(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const FaIcon(FontAwesomeIcons.link, size: 14, color: Colors.white70),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(workoutLink,
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: true,
+                        style: GoogleFonts.ubuntu(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        )),
+                  ),
+                  const SizedBox(width: 6),
+                  OpacityButtonWidget(
+                    onPressed: () {
+                      HapticFeedback.heavyImpact();
+                      final data = ClipboardData(text: workoutLink);
+                      Clipboard.setData(data).then((_) {
+                        if (mounted) {
+                          context.pop();
+                          showSnackbar(context: context, icon: const Icon(Icons.check), message: "Workout link copied");
+                        }
+                      });
+                    },
+                    label: "Copy",
+                    buttonColor: vibrantGreen,
+                  )
+                ],
+              ),
+              const SizedBox(height: 12),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: sapphireDark80,
+                  border: Border.all(
+                    color: sapphireDark80, // Border color
+                    width: 1.0, // Border width
+                  ),
+                  borderRadius: BorderRadius.circular(5), // Optional: Rounded corners
+                ),
+                child: Text("${workoutText.substring(0, workoutText.length >= 150 ? 150 : workoutText.length)}...",
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.ubuntu(
+                      color: Colors.white70,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                    )),
+              ),
+              OpacityButtonWidget(
+                onPressed: () {
+                  HapticFeedback.heavyImpact();
+                  final data = ClipboardData(text: workoutText);
+                  Clipboard.setData(data).then((_) {
+                    if (mounted) {
+                      context.pop();
+                      showSnackbar(context: context, icon: const Icon(Icons.check), message: "Workout copied");
+                    }
+                  });
+                },
+                label: "Copy as text",
+                buttonColor: vibrantGreen,
+              )
+            ]),
+          ));
     }
-    return "";
   }
 
   @override
