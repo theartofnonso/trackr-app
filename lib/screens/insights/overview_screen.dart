@@ -30,6 +30,8 @@ import '../../widgets/calendar/calendar.dart';
 import '../../widgets/calendar/calendar_navigator.dart';
 import '../../widgets/label_divider.dart';
 import '../../widgets/monitors/overview_monitor.dart';
+import '../../widgets/monthly_insights/log_streak_chart_widget.dart';
+import '../../widgets/monthly_insights/muscle_score_chart_widget.dart';
 import '../../widgets/routine/preview/activity_log_widget.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
 import '../AI/trkr_coach_chat_screen.dart';
@@ -47,13 +49,15 @@ class OverviewScreen extends StatefulWidget {
 }
 
 class _OverviewScreenState extends State<OverviewScreen> {
-  List<RoutineLogDto>? _routineLogsForTheMonth;
+  List<RoutineLogDto>? _routineLogsForTheYear;
 
   List<ActivityLogDto>? _activityLogsForTheYear;
 
   late DateTime _selectedDateTime;
 
   late DateTimeRange _monthDateTimeRange;
+
+  late DateTimeRange _yearDateTimeRange;
 
   bool _loading = false;
 
@@ -87,12 +91,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
     /// Routine Logs
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
     List<RoutineLogDto> routineLogsForTheYear =
-        _routineLogsForTheMonth ?? routineLogController.whereLogsIsSameYear(dateTime: _monthDateTimeRange.start);
+        _routineLogsForTheYear ?? routineLogController.whereLogsIsSameYear(dateTime: _yearDateTimeRange.start);
 
     /// Activity Logs
     final activityLogController = Provider.of<ActivityLogController>(context, listen: true);
     final activityLogsForTheYear =
-        _activityLogsForTheYear ?? activityLogController.whereLogsIsSameYear(dateTime: _monthDateTimeRange.start);
+        _activityLogsForTheYear ?? activityLogController.whereLogsIsSameYear(dateTime: _yearDateTimeRange.start);
 
     return Scaffold(
       floatingActionButton: _loading
@@ -165,6 +169,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
                         _LogsListView(dateTime: _selectedDateTime),
                         const SizedBox(height: 12),
                         MonthlyInsightsScreen(dateTimeRange: _monthDateTimeRange),
+                        const SizedBox(height: 24),
+                        const MuscleScoreChatWidget(),
+                        const SizedBox(height: 18),
+                        const LogStreakChartWidget(),
                       ])),
                 )
                 // Add more widgets here for exercise insights
@@ -341,14 +349,16 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 
   void _onYearChange(DateTimeRange range) async {
-    print(range.start.year);
+
+    _yearDateTimeRange = range;
+
     _showLoadingScreen();
 
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
     final activityLogController = Provider.of<ActivityLogController>(context, listen: false);
 
     final routineLogs = await routineLogController.fetchLogsCloud(range: range.start.dateTimeRange());
-    _routineLogsForTheMonth = routineLogs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
+    _routineLogsForTheYear = routineLogs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
 
     final activityLogs = await activityLogController.fetchLogsCloud(range: range.start.dateTimeRange());
     _activityLogsForTheYear = activityLogs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
@@ -367,6 +377,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     super.initState();
     _selectedDateTime = DateTime.now();
     _monthDateTimeRange = thisMonthDateRange();
+    _yearDateTimeRange = thisYearDateRange();
   }
 
   @override

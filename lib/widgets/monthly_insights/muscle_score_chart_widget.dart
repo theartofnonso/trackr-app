@@ -9,26 +9,31 @@ import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_controller.dart';
+import '../../controllers/routine_log_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
-import '../../dtos/routine_log_dto.dart';
 import '../../enums/chart_unit_enum.dart';
 import '../../screens/insights/sets_reps_volume_insights_screen.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../chart/bar_chart.dart';
 
-class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
-  final List<RoutineLogDto> logs;
-
-  const MuscleGroupFamilyFrequencyChartWidget({super.key, required this.logs});
+class MuscleScoreChatWidget extends StatelessWidget {
+  const MuscleScoreChatWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    List<int> muscleGroupsSplitFrequencyScores = [];
-
     final exerciseController = Provider.of<ExerciseController>(context, listen: false);
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
-    for (var log in logs) {
-      final exerciseLogsForTheMonth = log.exerciseLogs;
+    final logs = routineLogController.logs;
+
+    List<DateTime> scoreMonths = [];
+    List<int> scoreCount = [];
+
+    final logsAndMonths = groupBy(logs, (log) => log.createdAt.month);
+
+    for (var logsAndMonths in logsAndMonths.entries) {
+      final exerciseLogsForTheMonth =
+          logsAndMonths.value.expand((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs)).toList();
 
       final exercisesFromLibrary = exerciseLogsForTheMonth.map((exerciseTemplate) {
         final foundExercise = exerciseController.exercises
@@ -36,19 +41,19 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
         return foundExercise != null ? exerciseTemplate.copyWith(exercise: foundExercise) : exerciseTemplate;
       }).toList();
 
-      final muscleGroupsSplitFrequencyScore = cumulativeMuscleGroupFamilyFrequency(exerciseLogs: exercisesFromLibrary);
-      final percentageScore = (muscleGroupsSplitFrequencyScore * 100).round();
-      muscleGroupsSplitFrequencyScores.add(percentageScore);
+      final score = cumulativeMuscleGroupFamilyFrequency(exerciseLogs: exercisesFromLibrary);
+      final percentageScore = (score * 100).round();
+
+      scoreMonths.add(exerciseLogsForTheMonth.first.createdAt);
+      scoreCount.add(percentageScore);
     }
 
-    final chartPoints = muscleGroupsSplitFrequencyScores
-        .mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble()))
-        .toList();
+    final chartPoints =
+        scoreCount.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
 
-    final scoreColors =
-        muscleGroupsSplitFrequencyScores.map((score) => muscleFamilyFrequencyColor(value: score / 100)).toList();
+    final scoreColors = scoreCount.map((score) => muscleFamilyFrequencyColor(value: score / 100)).toList();
 
-    final dateTimes = logs.map((log) => log.createdAt.abbreviatedMonth()).toList();
+    final dateTimes = scoreMonths.map((month) => month.abbreviatedMonth()).toList();
 
     return GestureDetector(
       onTap: () {
