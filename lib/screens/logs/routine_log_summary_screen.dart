@@ -254,7 +254,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
 
     workoutLogText.writeln(log.name);
     if (log.notes.isNotEmpty) {
-      workoutLogText.writeln("Notes: ${log.notes}");
+      workoutLogText.writeln("\n Notes: ${log.notes}");
     }
     workoutLogText.writeln(log.createdAt.formattedDayAndMonthAndYear());
 
@@ -262,7 +262,9 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
       var exercise = exerciseLog.exercise;
       workoutLogText.writeln("\n- Exercise: ${exercise.name}");
       workoutLogText.writeln("  Muscle Group: ${exercise.primaryMuscleGroup.name}");
-
+      if (exerciseLog.notes.isNotEmpty) {
+        workoutLogText.writeln("  Notes: ${exerciseLog.notes}");
+      }
       for (var i = 0; i < exerciseLog.sets.length; i++) {
         switch (exerciseLog.exercise.type) {
           case ExerciseType.weights:
