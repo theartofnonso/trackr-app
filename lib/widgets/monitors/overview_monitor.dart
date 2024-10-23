@@ -59,7 +59,7 @@ class OverviewMonitor extends StatelessWidget {
     return Stack(children: [
       if (showInfo)
         Positioned.fill(
-          left: 14,
+          left: 12,
           child: GestureDetector(
             onTap: () => _showMonitorInfo(context: context),
             child: const Align(
@@ -69,7 +69,7 @@ class OverviewMonitor extends StatelessWidget {
         ),
       if (showInfo)
         Positioned.fill(
-          right: 14,
+          right: 12,
           child: GestureDetector(
             onTap: () => _showShareBottomSheet(context: context),
             child: const Align(
