@@ -59,22 +59,21 @@ class OverviewMonitor extends StatelessWidget {
     return Stack(children: [
       if (showInfo)
         Positioned.fill(
-          right: 14,
+          left: 14,
           child: GestureDetector(
             onTap: () => _showMonitorInfo(context: context),
             child: const Align(
-                alignment: Alignment.bottomRight,
+                alignment: Alignment.bottomLeft,
                 child: FaIcon(FontAwesomeIcons.circleInfo, color: Colors.white38, size: 18)),
           ),
         ),
       if (showInfo)
         Positioned.fill(
-          right: 15,
-          top: 10,
+          right: 14,
           child: GestureDetector(
             onTap: () => _showShareBottomSheet(context: context),
             child: const Align(
-                alignment: Alignment.topRight,
+                alignment: Alignment.bottomRight,
                 child: FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 19)),
           ),
         ),
