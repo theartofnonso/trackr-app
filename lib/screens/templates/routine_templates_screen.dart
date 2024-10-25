@@ -127,7 +127,6 @@ class _RoutineWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final exercises = template.exerciseTemplates;
     final sets = template.exerciseTemplates.expand((exercise) => exercise.sets);
-
     return GestureDetector(
       onTap: () => navigateToRoutineTemplatePreview(context: context, template: template),
       child: Container(

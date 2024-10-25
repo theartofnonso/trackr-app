@@ -22,24 +22,31 @@ class RoutineFrequencyPlanner extends StatefulWidget {
 }
 
 class _RoutineFrequencyPlannerState extends State<RoutineFrequencyPlanner> {
-  int _intervals = 0;
+  int _interval = 0;
 
   FixedExtentScrollController? _intervalsScrollController;
 
   @override
   Widget build(BuildContext context) {
+    final days = List<Widget>.generate(31, (int index) {
+      return Center(
+          child: Text(index.toString(),
+              style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 32, color: Colors.white)));
+    });
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         RichText(
           text: TextSpan(
-            text: 'Train ${widget.template.name} ',
+            text: _interval > 0 ? 'Train ${widget.template.name} ' : "No schedule",
             style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white70),
             children: [
-              TextSpan(
-                text: "every $_intervals ${pluralize(word: "day", count: _intervals)}",
-                style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.white),
-              )
+              if (_interval > 0)
+                TextSpan(
+                  text: _interval == 1 ? "everyday" : "every $_interval ${pluralize(word: "day", count: _interval)}",
+                  style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.white),
+                )
             ],
           ),
         ),
@@ -51,15 +58,11 @@ class _RoutineFrequencyPlannerState extends State<RoutineFrequencyPlanner> {
             itemExtent: 38.0,
             onSelectedItemChanged: (int index) {
               setState(() {
-                _intervals = index;
+                _interval = index;
               });
             },
             squeeze: 1,
-            children: List<Widget>.generate(31, (int index) {
-              return Center(
-                  child: Text(index.toString(),
-                      style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 32, color: Colors.white)));
-            }),
+            children: days,
           ),
         ),
         const SizedBox(height: 10),
@@ -75,7 +78,7 @@ class _RoutineFrequencyPlannerState extends State<RoutineFrequencyPlanner> {
   @override
   void initState() {
     super.initState();
-    _intervals = widget.template.scheduleIntervals;
+    _interval = widget.template.scheduleIntervals;
     _intervalsScrollController = FixedExtentScrollController(initialItem: widget.template.scheduleIntervals);
   }
 
@@ -86,12 +89,12 @@ class _RoutineFrequencyPlannerState extends State<RoutineFrequencyPlanner> {
   }
 
   void _updateRoutineTemplateIntervals() async {
-    if (_intervals > 0) {
-      final scheduledDate = DateTime.now().add(Duration(days: _intervals)).withoutTime();
+    if (_interval > 0) {
+      final scheduledDate = DateTime.now().add(Duration(days: _interval)).withoutTime();
       final template = widget.template.copyWith(
           scheduledDate: scheduledDate,
           scheduleType: RoutineScheduleType.intervals,
-          scheduleIntervals: _intervals,
+          scheduleIntervals: _interval,
           scheduledDays: []);
       await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: template);
     } else {

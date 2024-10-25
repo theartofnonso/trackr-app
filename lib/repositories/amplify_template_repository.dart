@@ -38,7 +38,10 @@ class AmplifyTemplateRepository {
 
     if (scheduledDate != null) {
       if (scheduledDate.isBefore(DateTime.now().withoutTime())) {
-        final newSchedule = DateTime.now().add(Duration(days: template.scheduleIntervals)).withoutTime();
+        var newSchedule = DateTime.now().add(Duration(days: template.scheduleIntervals)).withoutTime();
+        if(template.scheduleIntervals == 1) {
+          newSchedule = DateTime.now().withoutTime();
+        }
         final modifiedTemplate = template.copyWith(
             scheduledDate: newSchedule,
             scheduleType: RoutineScheduleType.intervals,
