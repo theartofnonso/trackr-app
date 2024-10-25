@@ -266,7 +266,23 @@ void showUserBottomSheet({required BuildContext context}) {
   displayBottomSheet(
       context: context,
       child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-        const FaIcon(FontAwesomeIcons.solidUser, color: Colors.white60, size: 48),
+        Container(
+            width: 60, // Width and height should be equal to make a perfect circle
+            height: 60,
+            decoration: BoxDecoration(
+              color: sapphireDark80,
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(5),// Optional border
+              boxShadow: [
+                BoxShadow(
+                  color: sapphireDark.withOpacity(0.5),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: const Offset(0, 3), // changes position of shadow
+                ),
+              ],
+            ),
+            child: const Center(child: const FaIcon(FontAwesomeIcons.solidUser, color: Colors.white54, size: 22))),
         const SizedBox(
           height: 12,
         ),

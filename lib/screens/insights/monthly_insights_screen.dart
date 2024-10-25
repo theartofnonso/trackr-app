@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/widgets/monthly_insights/activities_widget.dart';
@@ -14,19 +15,25 @@ class MonthlyInsightsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
-    final routineLogs = routineLogController.whereLogsIsSameMonth(dateTime: dateTimeRange.start);
+    final routineLogs = routineLogController
+        .whereLogsIsSameMonth(dateTime: dateTimeRange.start)
+        .sorted((a, b) => b.createdAt.compareTo(a.createdAt));
 
     final activitiesController = Provider.of<ActivityLogController>(context, listen: true);
 
-    final activityLogs = activitiesController.whereLogsIsSameMonth(dateTime: dateTimeRange.start);
+    final activityLogs = activitiesController
+        .whereLogsIsSameMonth(dateTime: dateTimeRange.start)
+        .sorted((a, b) => b.createdAt.compareTo(a.createdAt));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        MonthSummaryWidget(routineLogs: routineLogs, dateTime: dateTimeRange.start,),
+        MonthSummaryWidget(
+          routineLogs: routineLogs,
+          dateTime: dateTimeRange.start,
+        ),
         const SizedBox(height: 14),
         ActivitiesWidget(activities: activityLogs),
         if (routineLogs.isNotEmpty)

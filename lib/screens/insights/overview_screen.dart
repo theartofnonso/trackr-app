@@ -387,7 +387,7 @@ class _LogsListView extends StatelessWidget {
 
     /// Aggregates
     final allLogsForCurrentDate = [...routineLogsForCurrentDate, ...activityLogsForCurrentDate]
-        .sorted((a, b) => a.createdAt.compareTo(b.createdAt))
+        .sorted((a, b) => b.createdAt.compareTo(a.createdAt))
         .toList();
 
     final children = allLogsForCurrentDate.map((log) {
