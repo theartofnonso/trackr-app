@@ -48,7 +48,4 @@ class RoutineUserDto {
     return 'RoutineUserDto{id: $id, cognitoUserId: $cognitoUserId, name: $name, email: $email, owner: $owner}';
   }
 
-  @override
-  int get hashCode => id.hashCode;
-
 }

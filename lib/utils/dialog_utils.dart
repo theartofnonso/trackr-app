@@ -4,9 +4,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/dtos/routine_user_dto.dart';
 import 'package:tracker_app/enums/activity_type_enums.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
+import 'package:tracker_app/widgets/forms/create_routine_user_profile_widget.dart';
 import 'package:tracker_app/widgets/label_divider.dart';
 import 'package:tracker_app/widgets/timers/datetime_picker.dart';
 import 'package:tracker_app/widgets/timers/datetime_range_picker.dart';
@@ -22,7 +24,7 @@ import '../widgets/timers/time_picker.dart';
 
 void showSnackbar({required BuildContext context, required Widget icon, required String message}) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      backgroundColor: sapphireDark80,
+      backgroundColor: sapphireDark,
       behavior: SnackBarBehavior.fixed,
       content: Row(
         children: [
@@ -251,7 +253,7 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
       ]));
 }
 
-void showUserBottomSheet({required BuildContext context}) {
+void showUserBottomSheet({required BuildContext context, required RoutineUserDto user}) {
   displayBottomSheet(
       context: context,
       child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
@@ -271,26 +273,24 @@ void showUserBottomSheet({required BuildContext context}) {
                 ),
               ],
             ),
-            child: const Center(child: const FaIcon(FontAwesomeIcons.solidUser, color: Colors.white54, size: 22))),
+            child: const Center(child: FaIcon(FontAwesomeIcons.solidUser, color: Colors.white54, size: 22))),
         const SizedBox(
           height: 16,
         ),
-        Text("@nonsobiose",
+        Text("@${user.name}",
             style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
-            textAlign: TextAlign.start),
+            textAlign: TextAlign.center),
         const SizedBox(
           height: 20,
         ),
         Text(
             "User profiles enable you to join TRKR communities. Stay tuned for upcoming features that will enhance your user experience.",
-            style: GoogleFonts.ubuntu(fontSize: 18, fontWeight: FontWeight.w400, color: Colors.white38),
+            style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white38),
             textAlign: TextAlign.center),
       ]));
 }
 
 void showCreateProfileBottomSheet({required BuildContext context}) {
-  final editingController = TextEditingController();
-
   showModalBottomSheet(
       isScrollControlled: true,
       isDismissible: false,
@@ -301,108 +301,8 @@ void showCreateProfileBottomSheet({required BuildContext context}) {
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
-          child: SingleChildScrollView(
-            child: Container(
-              padding: const EdgeInsets.only(top: 16, right: 16, bottom: 28, left: 16),
-              decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                  ),
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      sapphireDark80,
-                      sapphireDark,
-                    ],
-                  )),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                Container(
-                    width: 60, // Width and height should be equal to make a perfect circle
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: sapphireDark80,
-                      shape: BoxShape.rectangle,
-                      borderRadius: BorderRadius.circular(5), // Optional border
-                      boxShadow: [
-                        BoxShadow(
-                          color: sapphireDark.withOpacity(0.5),
-                          spreadRadius: 5,
-                          blurRadius: 7,
-                          offset: const Offset(0, 3), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    child: const Center(child: FaIcon(FontAwesomeIcons.solidUser, color: Colors.white54, size: 22))),
-                const SizedBox(
-                  height: 18,
-                ),
-                Text(
-                    "User profiles enable you to join TRKR communities. Stay tuned for upcoming features that will enhance your user experience.",
-                    style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white38),
-                    textAlign: TextAlign.center),
-                const SizedBox(
-                  height: 18,
-                ),
-                ListTile(
-                  leading: const FaIcon(FontAwesomeIcons.solidUser),
-                  titleAlignment: ListTileTitleAlignment.top,
-                  title: Text(
-                      "What are TRKR user profiles",
-                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white)),
-                  subtitle: Text(
-                      "TRKR communities create a safe and interactive space for trainers to encourage one another and take part in competitive challenges..",
-                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white38)),
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                ListTile(
-                  leading: const FaIcon(FontAwesomeIcons.lightbulb),
-                  titleAlignment: ListTileTitleAlignment.top,
-                  title: Text(
-                      "How will communities work ",
-                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white)),
-                  subtitle: Text(
-                      "Communities will be a safe space for trainers on TRKR to motivate each other and compete on challenges.",
-                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white38)),
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: editingController,
-                        decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                            enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: sapphireLighter)),
-                            filled: true,
-                            fillColor: sapphireDark,
-                            hintText: "Enter a username",
-                            hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14)),
-                        cursorColor: Colors.white,
-                        keyboardType: TextInputType.text,
-                        textCapitalization: TextCapitalization.none,
-                        style:
-                        GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
-                      ),
-                    ),
-                    const SizedBox(width: 6,),
-                    OpacityButtonWidget(
-                      onPressed: () {},
-                      label: "Create",
-                      buttonColor: vibrantGreen,
-                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 2),
-                    ),
-                  ],
-                ),
-              ]),
-            ),
+          child: const SingleChildScrollView(
+            child: CreateRoutineUserProfileWidget(),
           ),
         );
       });

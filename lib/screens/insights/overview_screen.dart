@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
@@ -200,7 +199,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
     final user = routineUserController.user;
     if (user != null) {
-      showUserBottomSheet(context: context);
+      showUserBottomSheet(context: context, user: user);
     } else {
       showCreateProfileBottomSheet(context: context);
     }

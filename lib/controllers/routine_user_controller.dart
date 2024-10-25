@@ -20,7 +20,7 @@ class RoutineUserController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<RoutineUserDto?> saveLog({required RoutineUserDto userDto}) async {
+  Future<RoutineUserDto?> saveUser({required RoutineUserDto userDto}) async {
     RoutineUserDto? savedUser;
     try {
       savedUser = await _amplifyRoutineUserRepository.saveUser(userDto: userDto);
