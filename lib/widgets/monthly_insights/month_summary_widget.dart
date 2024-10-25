@@ -138,7 +138,7 @@ class MonthSummaryWidget extends StatelessWidget {
                     verticalAlignment: TableCellVerticalAlignment.middle,
                     child: Center(
                       child: _TableItem(
-                          title: 'Personal Bests',
+                          title: 'Personal Bests'.toUpperCase(),
                           subTitle: "${numberOfPbs.length}",
                           titleColor: Colors.white,
                           subTitleColor: Colors.white,
