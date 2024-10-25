@@ -6,7 +6,6 @@ import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
-import 'package:tracker_app/widgets/calendar/calendar_navigator.dart';
 
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/routine_log_dto.dart';
