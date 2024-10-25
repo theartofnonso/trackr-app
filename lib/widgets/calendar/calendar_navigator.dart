@@ -3,6 +3,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 
+import '../../utils/date_utils.dart';
+
 class CalendarNavigator extends StatefulWidget {
   /// Callback when the month changes, providing the current month as DateTime.
   final void Function(DateTimeRange currentMonth) onMonthChange;
@@ -19,8 +21,10 @@ class _CalendarNavigatorState extends State<CalendarNavigator> {
 
   /// Navigates to the previous month.
   void _goToPreviousMonth() {
+    final dateRange = theLastYearDateTimeRange();
+    final startDate = dateRange.start;
     setState(() {
-      if (_currentDate.month != 1) {
+      if (startDate.isBefore(_currentDate)) {
         _currentDate = DateTime(_currentDate.year, _currentDate.month - 1, 1);
       }
     });
@@ -59,7 +63,9 @@ class _CalendarNavigatorState extends State<CalendarNavigator> {
     DateTime currentMonthStart = DateTime(today.year, today.month, 1);
     bool canNavigateNext = !_currentDate.monthlyStartDate().isAtSameMomentAs(currentMonthStart);
 
-    bool canNavigatePrevious = _currentDate.month != 1;
+    final dateRange = theLastYearDateTimeRange();
+    final startDate = dateRange.start;
+    bool canNavigatePrevious = startDate.isBefore(_currentDate);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,

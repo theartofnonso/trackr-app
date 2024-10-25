@@ -281,7 +281,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _configureAmplify() async {
     /// Only sync data for this year
-    final dateRange = yearToDateTimeRange();
+    final dateRange = theLastYearDateTimeRange();
     final startOfCurrentYear = dateRange.start.toIso8601String();
     final endOfCurrentYear = dateRange.end.toIso8601String();
     try {

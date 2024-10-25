@@ -9,6 +9,14 @@ DateTimeRange yearToDateTimeRange({DateTime? datetime}) {
   return DateTimeRange(start: start, end: end);
 }
 
+DateTimeRange theLastYearDateTimeRange() {
+  DateTime now = DateTime.now().withoutTime();
+  DateTime oneYearAgo = now.subtract(const Duration(days: 365));
+
+  // Create a DateTimeRange from one year ago to now
+  return DateTimeRange(start: oneYearAgo, end: now);
+}
+
 /// Returns a list of DateTimeRange representing each week in the given year.
 List<DateTimeRange> getWeeksInYear(int year) {
   List<DateTimeRange> weeks = [];
