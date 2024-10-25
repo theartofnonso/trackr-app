@@ -8,6 +8,7 @@ import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/dtos/activity_log_dto.dart';
 import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
+import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 
@@ -173,11 +174,14 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       child: Column(children: [
                         const SizedBox(height: 12),
                         OverviewMonitor(dateTime: _monthDateTimeRange.start),
-                        const SizedBox(height: 16),
-                        Calendar(
-                          onSelectDate: _onChangedDateTime,
-                          dateTime: _monthDateTimeRange.start,
-                        ),
+                        if (SharedPrefs().showCalendar)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 16.0),
+                            child: Calendar(
+                              onSelectDate: _onChangedDateTime,
+                              dateTime: _monthDateTimeRange.start,
+                            ),
+                          ),
                         const SizedBox(height: 10),
                         _LogsListView(dateTime: _selectedDateTime),
                         const SizedBox(height: 12),

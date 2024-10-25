@@ -117,22 +117,32 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   ),
                 ),
                 const SizedBox(height: 8),
-                Theme(
-                  data: Theme.of(context).copyWith(splashColor: Colors.transparent // Disable the splash effect
-                      ),
-                  child: SwitchListTile(
-                    activeColor: vibrantGreen,
-                    title: Text('Show calendar dates',
-                        style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
-                    value: SharedPrefs().showCalendarDates,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                    onChanged: (bool value) {
-                      setState(() {
-                        SharedPrefs().showCalendarDates = value;
-                        Provider.of<SettingsController>(context, listen: false).notify();
-                      });
-                    },
-                  ),
+                SwitchListTile(
+                  activeColor: vibrantGreen,
+                  title: Text('Show calendar',
+                      style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+                  value: SharedPrefs().showCalendar,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                  onChanged: (bool value) {
+                    setState(() {
+                      SharedPrefs().showCalendar = value;
+                      Provider.of<SettingsController>(context, listen: false).notify();
+                    });
+                  },
+                ),
+                const SizedBox(height: 8),
+                SwitchListTile(
+                  activeColor: vibrantGreen,
+                  title: Text('Show calendar dates',
+                      style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+                  value: SharedPrefs().showCalendarDates,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                  onChanged: (bool value) {
+                    setState(() {
+                      SharedPrefs().showCalendarDates = value;
+                      Provider.of<SettingsController>(context, listen: false).notify();
+                    });
+                  },
                 ),
                 const SizedBox(height: 8),
                 OutlineListTile(onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "manage exercises"),
