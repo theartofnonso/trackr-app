@@ -4,8 +4,8 @@ import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 
-import '../enums/exercise_type_enums.dart';
-import '../enums/training_position_enum.dart';
+import '../../enums/exercise_type_enums.dart';
+import '../../enums/training_position_enum.dart';
 
 extension ExerciseExtension on Exercise {
   static ExerciseDto dtoLocal(dynamic json) {

@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/extensions/datetime_extension.dart';
-import 'package:tracker_app/extensions/routine_log_extension.dart';
+import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
+import 'package:tracker_app/extensions/amplify_models/routine_log_extension.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 
 import '../colors.dart';

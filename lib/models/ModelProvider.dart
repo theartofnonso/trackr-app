@@ -24,17 +24,19 @@ import 'ActivityLog.dart';
 import 'Exercise.dart';
 import 'RoutineLog.dart';
 import 'RoutineTemplate.dart';
+import 'RoutineUser.dart';
 
 export 'ActivityLog.dart';
 export 'Exercise.dart';
 export 'RoutineLog.dart';
 export 'RoutineTemplate.dart';
+export 'RoutineUser.dart';
 
 class ModelProvider implements amplify_core.ModelProviderInterface {
   @override
-  String version = "e74bd167ebc203f5e6b649a158b60d43";
+  String version = "e3b173f3043865fff795d6a2c19e4d44";
   @override
-  List<amplify_core.ModelSchema> modelSchemas = [ActivityLog.schema, Exercise.schema, RoutineLog.schema, RoutineTemplate.schema];
+  List<amplify_core.ModelSchema> modelSchemas = [ActivityLog.schema, Exercise.schema, RoutineLog.schema, RoutineTemplate.schema, RoutineUser.schema];
   @override
   List<amplify_core.ModelSchema> customTypeSchemas = [];
   static final ModelProvider _instance = ModelProvider();
@@ -51,6 +53,8 @@ class ModelProvider implements amplify_core.ModelProviderInterface {
         return RoutineLog.classType;
       case "RoutineTemplate":
         return RoutineTemplate.classType;
+      case "RoutineUser":
+        return RoutineUser.classType;
       default:
         throw Exception("Failed to find model in model provider for model name: " + modelName);
     }

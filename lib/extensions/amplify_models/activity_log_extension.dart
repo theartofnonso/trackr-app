@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:tracker_app/models/ModelProvider.dart';
 
-import '../dtos/activity_log_dto.dart';
+import '../../dtos/activity_log_dto.dart';
 
 extension ActivityLogExtension on ActivityLog {
 

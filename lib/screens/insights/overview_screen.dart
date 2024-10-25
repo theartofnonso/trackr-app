@@ -47,7 +47,6 @@ class OverviewScreen extends StatefulWidget {
 }
 
 class _OverviewScreenState extends State<OverviewScreen> {
-
   late DateTime _selectedDateTime;
 
   late DateTimeRange _monthDateTimeRange;
@@ -83,7 +82,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     /// Routine Logs
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
-    List<RoutineLogDto> routineLogsForTheYear = routineLogController.whereLogsIsSameYear(dateTime: _monthDateTimeRange.start);
+    List<RoutineLogDto> routineLogsForTheYear =
+        routineLogController.whereLogsIsSameYear(dateTime: _monthDateTimeRange.start);
 
     return Scaffold(
       floatingActionButton: _loading
@@ -146,7 +146,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
                         IconButton(
                           onPressed: () {},
                           icon: const Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                            SizedBox(width: 4,),
+                            SizedBox(
+                              width: 4,
+                            ),
                             FaIcon(FontAwesomeIcons.solidUser, color: Colors.white, size: 18),
                           ]),
                         ),
@@ -262,11 +264,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
               title: Text("Add Activity",
                   style: GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.of(context).pop();
                 showActivityPicker(
                     context: context,
                     onChangedActivity: (ActivityType activity, DateTimeRange datetimeRange) {
-                      Navigator.pop(context);
+                      Navigator.of(context).pop();
                       final activityLog = ActivityLogDto(
                           id: "id",
                           name: activity.name,

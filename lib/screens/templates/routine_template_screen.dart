@@ -8,7 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_controller.dart';
-import 'package:tracker_app/extensions/routine_template_extension.dart';
+import 'package:tracker_app/extensions/amplify_models/routine_template_extension.dart';
 import 'package:tracker_app/screens/AI/trkr_coach_exercise_recommendation_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';

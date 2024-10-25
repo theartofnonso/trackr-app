@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:tracker_app/enums/routine_schedule_type_enums.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 
-import '../dtos/exercise_log_dto.dart';
-import '../dtos/routine_template_dto.dart';
-import '../enums/week_days_enum.dart';
+import '../../dtos/exercise_log_dto.dart';
+import '../../dtos/routine_template_dto.dart';
+import '../../enums/week_days_enum.dart';
 
 extension RoutineTemplateExtension on RoutineTemplate {
   RoutineTemplateDto dto() {

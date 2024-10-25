@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/routine_template_controller.dart';
-import 'package:tracker_app/extensions/routine_template_dto_extension.dart';
+import 'package:tracker_app/extensions/dtos/routine_template_dto_extension.dart';
 import 'package:tracker_app/screens/AI/trkr_coach_chat_screen.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_button.dart';

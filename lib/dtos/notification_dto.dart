@@ -1,4 +1,4 @@
-import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
 class NotificationDto {
   final DateTime dateTime;

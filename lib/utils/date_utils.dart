@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
 DateTimeRange yearToDateTimeRange({DateTime? datetime}) {
   final now = datetime ?? DateTime.now();

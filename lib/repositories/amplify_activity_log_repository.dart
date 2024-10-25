@@ -4,8 +4,8 @@ import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:tracker_app/dtos/activity_log_dto.dart';
-import 'package:tracker_app/extensions/activity_log_extension.dart';
-import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/extensions/amplify_models/activity_log_extension.dart';
+import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
 import '../models/ActivityLog.dart';
 import '../shared_prefs.dart';
