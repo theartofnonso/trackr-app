@@ -23,7 +23,7 @@ class ActivityLogsScreen extends StatelessWidget {
     final activityLogsForMonth =
         Provider.of<ActivityLogController>(context, listen: true).whereLogsIsSameMonth(dateTime: dateTime);
 
-    final logs = activityLogsForMonth.sorted((a, b) => a.createdAt.compareTo(b.createdAt)).reversed.toList();
+    final logs = activityLogsForMonth.sorted((a, b) => b.createdAt.compareTo(a.createdAt));
 
     final month = dateTime.formattedFullMonth();
 

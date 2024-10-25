@@ -22,7 +22,7 @@ class RoutineLogsScreen extends StatelessWidget {
     final routineLogsForMonth =
         Provider.of<RoutineLogController>(context, listen: true).whereLogsIsSameMonth(dateTime: dateTime);
 
-    final logs = routineLogsForMonth.sorted((a, b) => a.createdAt.compareTo(b.createdAt)).reversed.toList();
+    final logs = routineLogsForMonth.sorted((a, b) => b.createdAt.compareTo(a.createdAt));
 
     final month = dateTime.formattedFullMonth();
 
