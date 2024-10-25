@@ -18,11 +18,6 @@ extension DateTimeExtension on DateTime {
   }
 
   /// Get datetime format
-  String formattedDay() {
-    return DateFormat("dd", "en").format(this);
-  }
-
-  /// Get datetime format
   String formattedMonthAndYear() {
     return DateFormat("MMMM yyyy", "en").format(this);
   }
@@ -44,7 +39,7 @@ extension DateTimeExtension on DateTime {
 
   /// Get datetime format
   String formattedMonth() {
-    return DateFormat("MMM", "en").format(this);
+    return DateFormat("MMMM", "en").format(this);
   }
 
   /// Get datetime format
@@ -166,20 +161,6 @@ extension DateTimeExtension on DateTime {
 
   DateTime withoutTime() {
     return DateTime(year, month, day);
-  }
-
-  DateTime past90Days() {
-    return subtract(const Duration(days: 90)).withoutTime();
-  }
-
-  DateTime past180Days() {
-    return subtract(const Duration(days: 180)).withoutTime();
-  }
-
-  DateTimeRange dateTimeRange() {
-    final start = DateTime(year, 1);
-    final end = DateTime(year, 12);
-    return DateTimeRange(start: start, end: end);
   }
 
   DateTime monthlyStartDate() {

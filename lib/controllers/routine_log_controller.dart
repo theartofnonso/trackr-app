@@ -32,10 +32,6 @@ class RoutineLogController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<RoutineLog>> fetchLogsCloud({required DateTimeRange range}) async {
-    return _amplifyLogRepository.queryLogsCloud(range: range);
-  }
-
   Future<RoutineLogDto?> saveLog({required RoutineLogDto logDto, TemporalDateTime? datetime}) async {
     RoutineLogDto? savedLog;
     try {

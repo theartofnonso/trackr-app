@@ -26,7 +26,7 @@ class MonthlyInsightsScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        MonthSummaryWidget(routineLogs: routineLogs),
+        MonthSummaryWidget(routineLogs: routineLogs, dateTime: dateTimeRange.start,),
         const SizedBox(height: 14),
         ActivitiesWidget(activities: activityLogs),
         if (routineLogs.isNotEmpty)

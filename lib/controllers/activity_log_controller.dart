@@ -22,10 +22,6 @@ class ActivityLogController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<ActivityLog>> fetchLogsCloud({required DateTimeRange range}) async {
-    return _amplifyActivityLogRepository.queryLogsCloud(range: range);
-  }
-
   Future<ActivityLogDto?> saveLog({required ActivityLogDto logDto}) async {
     ActivityLogDto? savedLog;
     try {

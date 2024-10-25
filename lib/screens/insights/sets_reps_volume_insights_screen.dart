@@ -7,7 +7,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
-import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/utils/date_utils.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/general_utils.dart';
@@ -155,10 +154,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CalendarNavigator(
-                  onYearChange: _onYearChange,
-                  onMonthChange: _onMonthChange
-                ),
+                CalendarNavigator(onMonthChange: _onMonthChange),
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
@@ -360,21 +356,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
         }
       });
     }
-  }
-
-  void _onYearChange(DateTimeRange range) {
-    _showLoadingScreen();
-
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
-
-    routineLogController.fetchLogsCloud(range: range.start.dateTimeRange()).then((logs) {
-      setState(() {
-        final dtos = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
-        _logs = dtos.where((log) => log.createdAt.isSameMonthYear(range.start)).toList();
-      });
-    });
-
-    _hideLoadingScreen();
   }
 
   void _onMonthChange(DateTimeRange range) {

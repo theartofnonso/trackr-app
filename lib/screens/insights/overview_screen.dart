@@ -7,10 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/dtos/activity_log_dto.dart';
 import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
-import 'package:tracker_app/extensions/activity_log_extension.dart';
-import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
-import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 
@@ -57,8 +54,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   late DateTimeRange _monthDateTimeRange;
 
-  late DateTimeRange _yearDateTimeRange;
-
   bool _loading = false;
 
   TextEditingController? _textEditingController;
@@ -91,12 +86,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
     /// Routine Logs
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
     List<RoutineLogDto> routineLogsForTheYear =
-        _routineLogsForTheYear ?? routineLogController.whereLogsIsSameYear(dateTime: _yearDateTimeRange.start);
+        _routineLogsForTheYear ?? routineLogController.whereLogsIsSameYear(dateTime: _monthDateTimeRange.start);
 
     /// Activity Logs
     final activityLogController = Provider.of<ActivityLogController>(context, listen: true);
     final activityLogsForTheYear =
-        _activityLogsForTheYear ?? activityLogController.whereLogsIsSameYear(dateTime: _yearDateTimeRange.start);
+        _activityLogsForTheYear ?? activityLogController.whereLogsIsSameYear(dateTime: _monthDateTimeRange.start);
 
     return Scaffold(
       floatingActionButton: _loading
@@ -149,10 +144,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                     ),
                   ),
                   Expanded(
-                    child: CalendarNavigator(
-                      onYearChange: _onYearChange,
-                      onMonthChange: _onMonthChange,
-                    ),
+                    child: CalendarNavigator(onMonthChange: _onMonthChange),
                   ),
                   SizedBox(
                     width: 70,
@@ -201,12 +193,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
             )),
       ),
     );
-  }
-
-  void _showLoadingScreen() {
-    setState(() {
-      _loading = true;
-    });
   }
 
   void _hideLoadingScreen() {
@@ -370,23 +356,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
     });
   }
 
-  void _onYearChange(DateTimeRange range) async {
-    _yearDateTimeRange = range;
-
-    _showLoadingScreen();
-
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
-    final activityLogController = Provider.of<ActivityLogController>(context, listen: false);
-
-    final routineLogs = await routineLogController.fetchLogsCloud(range: range.start.dateTimeRange());
-    _routineLogsForTheYear = routineLogs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
-
-    final activityLogs = await activityLogController.fetchLogsCloud(range: range.start.dateTimeRange());
-    _activityLogsForTheYear = activityLogs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
-
-    _hideLoadingScreen();
-  }
-
   void _onMonthChange(DateTimeRange range) {
     setState(() {
       _monthDateTimeRange = range;
@@ -398,7 +367,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
     super.initState();
     _selectedDateTime = DateTime.now();
     _monthDateTimeRange = thisMonthDateRange();
-    _yearDateTimeRange = thisYearDateRange();
   }
 
   @override

@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/activity_log_dto.dart';
 import 'package:tracker_app/extensions/activity_log_extension.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
@@ -19,16 +17,6 @@ class AmplifyActivityLogRepository {
 
   void loadLogsStream({required List<ActivityLog> logs}) {
     _mapLogs(logs: logs);
-  }
-
-  Future<List<ActivityLog>> queryLogsCloud({required DateTimeRange range}) async {
-    final startOfCurrentYear = range.start.toIso8601String();
-    final endOfCurrentYear = range.end.toIso8601String();
-    final whereDate = ActivityLog.CREATEDAT.between(startOfCurrentYear, endOfCurrentYear);
-    final request = ModelQueries.list(ActivityLog.classType, where: whereDate, limit: 999);
-    final response = await Amplify.API.query(request: request).response;
-    final routineLogs = response.data?.items.whereType<ActivityLog>().toList();
-    return routineLogs ?? [];
   }
 
   void _mapLogs({required List<ActivityLog> logs}) {
