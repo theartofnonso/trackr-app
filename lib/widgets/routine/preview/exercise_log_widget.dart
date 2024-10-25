@@ -63,6 +63,7 @@ class ExerciseLogWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: Center(
                   child: Text(exerciseLog.notes,
+                      textAlign: TextAlign.center,
                       style: GoogleFonts.ubuntu(
                           fontSize: 14,
                           color: Colors.white70,

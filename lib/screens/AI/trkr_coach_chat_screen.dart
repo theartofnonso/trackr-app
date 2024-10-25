@@ -201,7 +201,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
             final exerciseTemplates = exerciseIds.map((exerciseId) {
               final exerciseInLibrary = exercises.firstWhere((exercise) => exercise.id == exerciseId);
               final exerciseTemplate = ExerciseLogDto(
-                  exerciseInLibrary.id, "", "", exerciseInLibrary, "", [const SetDto(0, 0, false)], DateTime.now(), []);
+                  exerciseInLibrary.id, "", "", exerciseInLibrary, exerciseInLibrary.description ?? "", [const SetDto(0, 0, false)], DateTime.now(), []);
               return exerciseTemplate;
             }).toList();
             templateDto = RoutineTemplateDto(
