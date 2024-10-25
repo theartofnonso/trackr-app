@@ -139,7 +139,7 @@ class MonthSummaryWidget extends StatelessWidget {
                     child: Center(
                       child: _TableItem(
                           title: 'Personal Bests'.toUpperCase(),
-                          subTitle: "${numberOfPbs.length}",
+                          subTitle: "${numberOfPbs.length} PBs",
                           titleColor: Colors.white,
                           subTitleColor: Colors.white,
                           padding: const EdgeInsets.only(top: 20)),
