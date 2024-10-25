@@ -1,24 +1,23 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
+import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../colors.dart';
-import '../../controllers/routine_log_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../enums/chart_unit_enum.dart';
 import '../chart/bar_chart.dart';
 
 class LogStreakChartWidget extends StatelessWidget {
-  const LogStreakChartWidget({super.key});
+
+  final List<RoutineLogDto> logs;
+
+  const LogStreakChartWidget({super.key, required this.logs});
 
   @override
   Widget build(BuildContext context) {
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
-
-    final logs = routineLogController.logs;
 
     List<DateTime> streakMonths = [];
     List<int> streakCount = [];

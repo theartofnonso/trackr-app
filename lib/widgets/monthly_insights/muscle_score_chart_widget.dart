@@ -9,22 +9,22 @@ import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_controller.dart';
-import '../../controllers/routine_log_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
+import '../../dtos/routine_log_dto.dart';
 import '../../enums/chart_unit_enum.dart';
 import '../../screens/insights/sets_reps_volume_insights_screen.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../chart/bar_chart.dart';
 
 class MuscleScoreChatWidget extends StatelessWidget {
-  const MuscleScoreChatWidget({super.key});
+
+  final List<RoutineLogDto> logs;
+
+  const MuscleScoreChatWidget({super.key, required this.logs});
 
   @override
   Widget build(BuildContext context) {
     final exerciseController = Provider.of<ExerciseController>(context, listen: false);
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
-
-    final logs = routineLogController.logs;
 
     List<DateTime> scoreMonths = [];
     List<int> scoreCount = [];
