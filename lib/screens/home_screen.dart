@@ -8,6 +8,7 @@ import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/models/ActivityLog.dart';
 import 'package:tracker_app/models/Exercise.dart';
+import 'package:tracker_app/models/RoutineUser.dart';
 import 'package:tracker_app/screens/insights/overview_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/templates/routine_templates_screen.dart';
@@ -17,6 +18,7 @@ import 'package:tracker_app/utils/navigation_utils.dart';
 import '../controllers/activity_log_controller.dart';
 import '../controllers/exercise_controller.dart';
 import '../controllers/routine_template_controller.dart';
+import '../controllers/routine_user_controller.dart';
 import '../dtos/routine_log_dto.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../enums/routine_editor_type_enums.dart';
@@ -39,6 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   int _currentScreenIndex = 0;
 
+  StreamSubscription<QuerySnapshot<RoutineUser>>? _routineUserStream;
   StreamSubscription<QuerySnapshot<RoutineLog>>? _routineLogStream;
   StreamSubscription<QuerySnapshot<RoutineTemplate>>? _routineTemplateStream;
   StreamSubscription<QuerySnapshot<ActivityLog>>? _activityLogStream;
@@ -113,6 +116,16 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void _observeRoutineUserQuery() {
+    _routineUserStream = Amplify.DataStore.observeQuery(
+      RoutineUser.classType,
+    ).listen((QuerySnapshot<RoutineUser> snapshot) {
+      if (mounted) {
+        Provider.of<RoutineUserController>(context, listen: false).streamUsers(users: snapshot.items);
+      }
+    });
+  }
+
   void _observeExerciseQuery() async {
     final controller = Provider.of<ExerciseController>(context, listen: false);
     await controller.loadLocalExercises();
@@ -164,6 +177,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _loadAppData() async {
+    _observeRoutineUserQuery();
     _observeExerciseQuery();
     _observeRoutineLogQuery();
     _observeRoutineTemplateQuery();
@@ -212,6 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _routineLogStream?.cancel();
     _routineTemplateStream?.cancel();
     _activityLogStream?.cancel();
+    _routineUserStream?.cancel();
     super.dispose();
   }
 }

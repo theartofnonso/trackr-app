@@ -100,9 +100,9 @@ class AmplifyExerciseRepository {
     if (result.isNotEmpty) {
       final oldExercise = result.first;
       final newExercise = oldExercise.copyWith(data: jsonEncode(exercise));
-      await Amplify.DataStore.save(newExercise);
+      await Amplify.DataStore.save<Exercise>(newExercise);
       final index = _indexWhereExercise(id: exercise.id);
-      if(index > -1) {
+      if (index > -1) {
         _exercises[index] = exercise;
       }
     }
@@ -116,9 +116,9 @@ class AmplifyExerciseRepository {
 
     if (result.isNotEmpty) {
       final oldTemplate = result.first;
-      await Amplify.DataStore.delete(oldTemplate);
+      await Amplify.DataStore.delete<Exercise>(oldTemplate);
       final index = _indexWhereExercise(id: exercise.id);
-      if(index > -1) {
+      if (index > -1) {
         _exercises.removeAt(index);
       }
     }

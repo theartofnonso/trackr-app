@@ -4,15 +4,15 @@ import 'package:tracker_app/models/RoutineTemplate.dart';
 
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
-import '../repositories/amplify_template_repository.dart';
+import '../repositories/amplify_routine_template_repository.dart';
 
 class RoutineTemplateController extends ChangeNotifier {
   bool isLoading = false;
   String errorMessage = '';
 
-  late AmplifyTemplateRepository _amplifyTemplateRepository;
+  late AmplifyRoutineTemplateRepository _amplifyTemplateRepository;
 
-  RoutineTemplateController(AmplifyTemplateRepository amplifyTemplateRepository) {
+  RoutineTemplateController(AmplifyRoutineTemplateRepository amplifyTemplateRepository) {
     _amplifyTemplateRepository = amplifyTemplateRepository;
   }
 

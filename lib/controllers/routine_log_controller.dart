@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/models/RoutineLog.dart';
-import 'package:tracker_app/repositories/amplify_log_repository.dart';
+import 'package:tracker_app/repositories/amplify_routine_log_repository.dart';
 
 import '../dtos/exercise_dto.dart';
 import '../dtos/routine_log_dto.dart';
@@ -14,9 +14,9 @@ import '../dtos/set_dto.dart';
 class RoutineLogController extends ChangeNotifier {
   String errorMessage = '';
 
-  late AmplifyLogRepository _amplifyLogRepository;
+  late AmplifyRoutineLogRepository _amplifyLogRepository;
 
-  RoutineLogController(AmplifyLogRepository amplifyLogRepository) {
+  RoutineLogController(AmplifyRoutineLogRepository amplifyLogRepository) {
     _amplifyLogRepository = amplifyLogRepository;
   }
 

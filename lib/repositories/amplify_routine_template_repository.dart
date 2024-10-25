@@ -4,8 +4,8 @@ import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
-import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/amplify_models/routine_template_extension.dart';
+import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
@@ -13,8 +13,7 @@ import '../dtos/exercise_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
 import '../enums/routine_schedule_type_enums.dart';
 
-class AmplifyTemplateRepository {
-
+class AmplifyRoutineTemplateRepository {
   List<RoutineTemplateDto> _templates = [];
 
   UnmodifiableListView<RoutineTemplateDto> get templates => UnmodifiableListView(_templates);
@@ -39,7 +38,7 @@ class AmplifyTemplateRepository {
     if (scheduledDate != null) {
       if (scheduledDate.isBefore(DateTime.now().withoutTime())) {
         var newSchedule = DateTime.now().add(Duration(days: template.scheduleIntervals)).withoutTime();
-        if(template.scheduleIntervals == 1) {
+        if (template.scheduleIntervals == 1) {
           newSchedule = DateTime.now().withoutTime();
         }
         final modifiedTemplate = template.copyWith(
@@ -75,9 +74,9 @@ class AmplifyTemplateRepository {
     if (result.isNotEmpty) {
       final oldTemplate = result.first;
       final newTemplate = oldTemplate.copyWith(data: jsonEncode(template));
-      await Amplify.DataStore.save(newTemplate);
+      await Amplify.DataStore.save<RoutineTemplate>(newTemplate);
       final index = _indexWhereRoutineTemplate(id: template.id);
-      if(index > -1) {
+      if (index > -1) {
         _templates[index] = template;
       }
     }
@@ -114,9 +113,9 @@ class AmplifyTemplateRepository {
 
       final newLog = oldTemplate.copyWith(data: jsonEncode(newTemplateDto));
 
-      await Amplify.DataStore.save(newLog);
+      await Amplify.DataStore.save<RoutineTemplate>(newLog);
       final index = _indexWhereRoutineTemplate(id: newLog.id);
-      if(index > -1) {
+      if (index > -1) {
         _templates[index] = newTemplateDto;
       }
     }
@@ -130,9 +129,9 @@ class AmplifyTemplateRepository {
 
     if (result.isNotEmpty) {
       final oldTemplate = result.first;
-      await Amplify.DataStore.delete(oldTemplate);
+      await Amplify.DataStore.delete<RoutineTemplate>(oldTemplate);
       final index = _indexWhereRoutineTemplate(id: template.id);
-      if(index > -1) {
+      if (index > -1) {
         _templates.removeAt(index);
       }
     }

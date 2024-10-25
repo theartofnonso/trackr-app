@@ -199,29 +199,22 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                         sapphireDark,
                       ],
                     )),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TextField(
-                      controller: TextEditingController(text: _exerciseName),
-                      decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                          enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5),
-                              borderSide: const BorderSide(color: sapphireLighter)),
-                          filled: true,
-                          fillColor: sapphireDark,
-                          hintText: "Enter exercise name",
-                          hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14)),
-                      onChanged: (value) => _updateExerciseName(value),
-                      cursorColor: Colors.white,
-                      keyboardType: TextInputType.text,
-                      textCapitalization: TextCapitalization.words,
-                      style: GoogleFonts.ubuntu(
-                          fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
-                    )
-                  ],
+                child: TextField(
+                  controller: TextEditingController(text: _exerciseName),
+                  decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: sapphireLighter)),
+                      filled: true,
+                      fillColor: sapphireDark,
+                      hintText: "Enter exercise name",
+                      hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14)),
+                  onChanged: (value) => _updateExerciseName(value),
+                  cursorColor: Colors.white,
+                  keyboardType: TextInputType.text,
+                  textCapitalization: TextCapitalization.words,
+                  style: GoogleFonts.ubuntu(
+                      fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
                 )),
           );
         });

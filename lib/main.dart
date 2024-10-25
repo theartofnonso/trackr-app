@@ -26,8 +26,9 @@ import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
 import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/repositories/amplify_activity_log_repository.dart';
 import 'package:tracker_app/repositories/amplify_exercise_repository.dart';
-import 'package:tracker_app/repositories/amplify_log_repository.dart';
-import 'package:tracker_app/repositories/amplify_template_repository.dart';
+import 'package:tracker_app/repositories/amplify_routine_log_repository.dart';
+import 'package:tracker_app/repositories/amplify_routine_template_repository.dart';
+import 'package:tracker_app/repositories/amplify_routine_user_repository.dart';
 import 'package:tracker_app/repositories/exercise_log_repository.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
@@ -38,9 +39,9 @@ import 'package:tracker_app/screens/insights/overview_screen.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
 import 'package:tracker_app/screens/intro_screen.dart';
 import 'package:tracker_app/screens/logs/activity_logs_screen.dart';
-import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
+import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/templates/routine_template_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -48,6 +49,7 @@ import 'package:tracker_app/utils/date_utils.dart';
 
 import 'amplifyconfiguration.dart';
 import 'controllers/activity_log_controller.dart';
+import 'controllers/routine_user_controller.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
 import 'dtos/viewmodels/routine_template_arguments.dart';
 import 'models/ModelProvider.dart';
@@ -90,14 +92,17 @@ void main() async {
       ChangeNotifierProvider<NotificationController>(
         create: (BuildContext context) => NotificationController(),
       ),
+      ChangeNotifierProvider<RoutineUserController>(
+        create: (BuildContext context) => RoutineUserController(AmplifyRoutineUserRepository()),
+      ),
       ChangeNotifierProvider<ExerciseController>(
         create: (BuildContext context) => ExerciseController(AmplifyExerciseRepository()),
       ),
       ChangeNotifierProvider<RoutineTemplateController>(
-        create: (BuildContext context) => RoutineTemplateController(AmplifyTemplateRepository()),
+        create: (BuildContext context) => RoutineTemplateController(AmplifyRoutineTemplateRepository()),
       ),
       ChangeNotifierProvider<RoutineLogController>(
-        create: (BuildContext context) => RoutineLogController(AmplifyLogRepository()),
+        create: (BuildContext context) => RoutineLogController(AmplifyRoutineLogRepository()),
       ),
       ChangeNotifierProvider<ActivityLogController>(
         create: (BuildContext context) => ActivityLogController(AmplifyActivityLogRepository()),

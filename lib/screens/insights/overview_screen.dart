@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
+import 'package:tracker_app/controllers/routine_user_controller.dart';
 import 'package:tracker_app/dtos/activity_log_dto.dart';
 import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
@@ -144,7 +145,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       children: [
                         const Spacer(),
                         IconButton(
-                          onPressed: () => showUserBottomSheet(context: context),
+                          onPressed: _navigateToUserProfile,
                           icon: const Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
                             FaIcon(FontAwesomeIcons.solidUser, color: Colors.white, size: 18),
                           ]),
@@ -195,6 +196,16 @@ class _OverviewScreenState extends State<OverviewScreen> {
     });
   }
 
+  void _navigateToUserProfile() {
+    final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
+    final user = routineUserController.user;
+    if (user != null) {
+      showUserBottomSheet(context: context);
+    } else {
+      showCreateProfileBottomSheet(context: context);
+    }
+  }
+
   void _showBottomSheet() {
     displayBottomSheet(
         context: context,
@@ -208,7 +219,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               title: Text("Log new session",
                   style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
-                context.pop();
+                Navigator.of(context).pop();
                 _showLogNewSessionBottomSheet();
               },
             ),
@@ -220,11 +231,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
               title: Text("Log past session",
                   style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.of(context).pop();
                 showDatetimeRangePicker(
                     context: context,
                     onChangedDateTimeRange: (DateTimeRange datetimeRange) {
-                      Navigator.pop(context);
+                      Navigator.of(context).pop();
                       final logName = "${timeOfDay(datetime: datetimeRange.start)} Session";
                       final log = RoutineLogDto(
                           id: "",
@@ -300,7 +311,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               title: Text("Log new session",
                   style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
-                context.pop();
+                Navigator.of(context).pop();
                 _logEmptyRoutine();
               },
             ),
@@ -323,7 +334,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               title: TRKRCoachTextWidget("Describe your workout",
                   style: GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.of(context).pop();
                 _switchToAIContext();
               },
             ),

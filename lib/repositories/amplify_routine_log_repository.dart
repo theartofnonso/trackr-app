@@ -4,8 +4,8 @@ import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
-import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/amplify_models/routine_log_extension.dart';
+import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/utils/routine_utils.dart';
 
 import '../dtos/exercise_dto.dart';
@@ -16,7 +16,7 @@ import '../models/RoutineLog.dart';
 import '../models/RoutineTemplate.dart';
 import '../shared_prefs.dart';
 
-class AmplifyLogRepository {
+class AmplifyRoutineLogRepository {
   List<RoutineLogDto> _logs = [];
 
   UnmodifiableListView<RoutineLogDto> get logs => UnmodifiableListView(_logs);
@@ -48,7 +48,7 @@ class AmplifyLogRepository {
     final now = datetime ?? TemporalDateTime.now();
 
     final logToCreate = RoutineLog(data: jsonEncode(logDto), createdAt: now, updatedAt: now);
-    await Amplify.DataStore.save(logToCreate);
+    await Amplify.DataStore.save<RoutineLog>(logToCreate);
 
     final updatedRoutineLogWithId = logDto.copyWith(id: logToCreate.id, owner: SharedPrefs().userId);
     final updatedRoutineWithExerciseIds = updatedRoutineLogWithId.copyWith(
@@ -72,9 +72,9 @@ class AmplifyLogRepository {
     if (result.isNotEmpty) {
       final oldLog = result.first;
       final newLog = oldLog.copyWith(data: jsonEncode(log));
-      await Amplify.DataStore.save(newLog);
+      await Amplify.DataStore.save<RoutineLog>(newLog);
       final index = _indexWhereRoutineLog(id: log.id);
-      if(index > -1) {
+      if (index > -1) {
         _logs[index] = log;
         _normaliseLogs();
       }
@@ -89,9 +89,9 @@ class AmplifyLogRepository {
 
     if (result.isNotEmpty) {
       final oldTemplate = result.first;
-      await Amplify.DataStore.delete(oldTemplate);
+      await Amplify.DataStore.delete<RoutineLog>(oldTemplate);
       final index = _indexWhereRoutineLog(id: log.id);
-      if(index > -1) {
+      if (index > -1) {
         _logs.removeAt(index);
         _normaliseLogs();
       }

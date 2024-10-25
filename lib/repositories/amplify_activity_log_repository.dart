@@ -27,7 +27,7 @@ class AmplifyActivityLogRepository {
     final datetime = TemporalDateTime.withOffset(logDto.endTime, Duration.zero);
 
     final logToCreate = ActivityLog(data: jsonEncode(logDto), createdAt: datetime, updatedAt: datetime);
-    await Amplify.DataStore.save(logToCreate);
+    await Amplify.DataStore.save<ActivityLog>(logToCreate);
 
     final updatedActivityWithId = logDto.copyWith(id: logToCreate.id, owner: SharedPrefs().userId);
 
@@ -46,9 +46,9 @@ class AmplifyActivityLogRepository {
     if (result.isNotEmpty) {
       final oldLog = result.first;
       final newLog = oldLog.copyWith(data: jsonEncode(log));
-      await Amplify.DataStore.save(newLog);
+      await Amplify.DataStore.save<ActivityLog>(newLog);
       final index = _indexWhereRoutineLog(id: log.id);
-      if(index > -1) {
+      if (index > -1) {
         _logs[index] = log;
       }
     }
@@ -62,9 +62,9 @@ class AmplifyActivityLogRepository {
 
     if (result.isNotEmpty) {
       final oldTemplate = result.first;
-      await Amplify.DataStore.delete(oldTemplate);
+      await Amplify.DataStore.delete<ActivityLog>(oldTemplate);
       final index = _indexWhereRoutineLog(id: log.id);
-      if(index > -1) {
+      if (index > -1) {
         _logs.removeAt(index);
       }
     }
