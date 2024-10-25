@@ -212,8 +212,11 @@ class _Day extends StatelessWidget {
       this.hasActivityLog = false});
 
   Color _getBackgroundColor() {
-    if (hasRoutineLog || hasActivityLog) {
+    if (hasRoutineLog) {
       return vibrantGreen;
+    }
+    if (hasActivityLog) {
+      return vibrantBlue;
     } else {
       return sapphireDark80.withOpacity(0.5);
     }
@@ -249,6 +252,11 @@ class _Day extends StatelessWidget {
           margin: const EdgeInsets.all(2),
           decoration: BoxDecoration(
             color: _getBackgroundColor(),
+            gradient: hasActivityLog && hasRoutineLog
+                ? const LinearGradient(
+                    colors: [vibrantGreen, vibrantBlue], // Gradient colors
+                  )
+                : null,
             borderRadius: BorderRadius.circular(2),
           ),
           child: Center(

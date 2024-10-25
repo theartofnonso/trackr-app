@@ -14,7 +14,6 @@ class AmplifyRoutineUserRepository {
   RoutineUserDto? get user => _user;
 
   void loadUserStream({required List<RoutineUser> users}) {
-    print(users);
     if(users.isNotEmpty) {
       final firstUser = users.first;
       _user = firstUser.dto();
