@@ -47,9 +47,6 @@ class OverviewScreen extends StatefulWidget {
 }
 
 class _OverviewScreenState extends State<OverviewScreen> {
-  List<RoutineLogDto>? _routineLogsForTheYear;
-
-  List<ActivityLogDto>? _activityLogsForTheYear;
 
   late DateTime _selectedDateTime;
 
@@ -86,13 +83,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     /// Routine Logs
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
-    List<RoutineLogDto> routineLogsForTheYear =
-        _routineLogsForTheYear ?? routineLogController.whereLogsIsSameYear(dateTime: _monthDateTimeRange.start);
-
-    /// Activity Logs
-    final activityLogController = Provider.of<ActivityLogController>(context, listen: true);
-    final activityLogsForTheYear =
-        _activityLogsForTheYear ?? activityLogController.whereLogsIsSameYear(dateTime: _monthDateTimeRange.start);
+    List<RoutineLogDto> routineLogsForTheYear = routineLogController.whereLogsIsSameYear(dateTime: _monthDateTimeRange.start);
 
     return Scaffold(
       floatingActionButton: _loading
@@ -153,14 +144,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       children: [
                         const Spacer(),
                         IconButton(
-                          onPressed: () =>
-                              navigateToActivityLogs(context: context, dateTime: _monthDateTimeRange.start),
-                          icon: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                            const FaIcon(FontAwesomeIcons.personWalking, color: Colors.white, size: 18),
-                            const SizedBox(width: 4),
-                            Text("${activityLogsForTheYear.length}",
-                                style:
-                                    GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
+                          onPressed: () {},
+                          icon: const Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                            SizedBox(width: 4,),
+                            FaIcon(FontAwesomeIcons.solidUser, color: Colors.white, size: 18),
                           ]),
                         ),
                       ],
