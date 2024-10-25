@@ -144,11 +144,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       children: [
                         const Spacer(),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () => showUserBottomSheet(context: context),
                           icon: const Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                            SizedBox(
-                              width: 4,
-                            ),
                             FaIcon(FontAwesomeIcons.solidUser, color: Colors.white, size: 18),
                           ]),
                         ),

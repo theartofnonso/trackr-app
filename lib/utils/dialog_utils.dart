@@ -46,7 +46,7 @@ void showSnackbar({required BuildContext context, required Widget icon, required
 Future<void> displayBottomSheet(
     {required BuildContext context,
     required Widget child,
-      Gradient? gradient,
+    Gradient? gradient,
     double? height,
     enabledDrag = true,
     bool isDismissible = true,
@@ -65,14 +65,15 @@ Future<void> displayBottomSheet(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 decoration: BoxDecoration(
-                  gradient: gradient ?? const LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      sapphireDark80,
-                      sapphireDark,
-                    ],
-                  ),
+                  gradient: gradient ??
+                      const LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          sapphireDark80,
+                          sapphireDark,
+                        ],
+                      ),
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20),
@@ -258,6 +259,20 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
                 isRightActionDestructive: true);
           },
         ),
+      ]));
+}
+
+void showUserBottomSheet({required BuildContext context}) {
+  displayBottomSheet(
+      context: context,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        const FaIcon(FontAwesomeIcons.solidUser, color: Colors.white60, size: 48),
+        const SizedBox(
+          height: 12,
+        ),
+        Text("@nonsobiose",
+            style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+            textAlign: TextAlign.start),
       ]));
 }
 
