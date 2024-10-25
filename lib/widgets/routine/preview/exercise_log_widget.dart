@@ -63,14 +63,28 @@ class ExerciseLogWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: Center(
                   child: Text(exerciseLog.notes,
-                      style: GoogleFonts.ubuntu(color: Colors.white.withOpacity(0.8), fontSize: 15)),
+                      style: GoogleFonts.ubuntu(
+                          fontSize: 14,
+                          color: Colors.white70,
+                          fontStyle: FontStyle.italic,
+                          fontWeight: FontWeight.w600)),
                 ),
               )
             : const SizedBox.shrink(),
         switch (exerciseType) {
-          ExerciseType.weights => DoubleSetHeader(firstLabel: weightLabel().toUpperCase(), secondLabel: 'REPS', routinePreviewType: previewType,),
-          ExerciseType.bodyWeight => SingleSetHeader(label: 'REPS', routinePreviewType: previewType,),
-          ExerciseType.duration => SingleSetHeader(label: 'TIME', routinePreviewType: previewType,),
+          ExerciseType.weights => DoubleSetHeader(
+              firstLabel: weightLabel().toUpperCase(),
+              secondLabel: 'REPS',
+              routinePreviewType: previewType,
+            ),
+          ExerciseType.bodyWeight => SingleSetHeader(
+              label: 'REPS',
+              routinePreviewType: previewType,
+            ),
+          ExerciseType.duration => SingleSetHeader(
+              label: 'TIME',
+              routinePreviewType: previewType,
+            ),
         },
         const SizedBox(height: 8),
         ...setsToWidgets(
