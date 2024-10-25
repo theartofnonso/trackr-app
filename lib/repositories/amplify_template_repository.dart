@@ -77,7 +77,9 @@ class AmplifyTemplateRepository {
       final newTemplate = oldTemplate.copyWith(data: jsonEncode(template));
       await Amplify.DataStore.save(newTemplate);
       final index = _indexWhereRoutineTemplate(id: template.id);
-      _templates[index] = template;
+      if(index > -1) {
+        _templates[index] = template;
+      }
     }
   }
 
@@ -114,7 +116,9 @@ class AmplifyTemplateRepository {
 
       await Amplify.DataStore.save(newLog);
       final index = _indexWhereRoutineTemplate(id: newLog.id);
-      _templates[index] = newTemplateDto;
+      if(index > -1) {
+        _templates[index] = newTemplateDto;
+      }
     }
   }
 
@@ -128,7 +132,9 @@ class AmplifyTemplateRepository {
       final oldTemplate = result.first;
       await Amplify.DataStore.delete(oldTemplate);
       final index = _indexWhereRoutineTemplate(id: template.id);
-      _templates.removeAt(index);
+      if(index > -1) {
+        _templates.removeAt(index);
+      }
     }
   }
 

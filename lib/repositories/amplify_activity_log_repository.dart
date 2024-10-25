@@ -48,7 +48,9 @@ class AmplifyActivityLogRepository {
       final newLog = oldLog.copyWith(data: jsonEncode(log));
       await Amplify.DataStore.save(newLog);
       final index = _indexWhereRoutineLog(id: log.id);
-      _logs[index] = log;
+      if(index > -1) {
+        _logs[index] = log;
+      }
     }
   }
 
@@ -62,7 +64,9 @@ class AmplifyActivityLogRepository {
       final oldTemplate = result.first;
       await Amplify.DataStore.delete(oldTemplate);
       final index = _indexWhereRoutineLog(id: log.id);
-      _logs.removeAt(index);
+      if(index > -1) {
+        _logs.removeAt(index);
+      }
     }
   }
 
