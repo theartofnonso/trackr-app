@@ -163,13 +163,17 @@ class _OverviewScreenState extends State<OverviewScreen> {
                         if (SharedPrefs().showCalendar)
                           Padding(
                             padding: const EdgeInsets.only(top: 16.0),
-                            child: Calendar(
-                              onSelectDate: _onChangedDateTime,
-                              dateTime: _monthDateTimeRange.start,
+                            child: Column(
+                              children: [
+                                Calendar(
+                                  onSelectDate: _onChangedDateTime,
+                                  dateTime: _monthDateTimeRange.start,
+                                ),
+                                const SizedBox(height: 10),
+                                _LogsListView(dateTime: _selectedDateTime),
+                              ],
                             ),
                           ),
-                        const SizedBox(height: 10),
-                        _LogsListView(dateTime: _selectedDateTime),
                         const SizedBox(height: 12),
                         MonthlyInsightsScreen(dateTimeRange: _monthDateTimeRange),
                         const SizedBox(height: 24),
@@ -258,7 +262,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                 color: vibrantGreen,
               ),
               horizontalTitleGap: 6,
-              title: Text("Add Activity",
+              title: Text("Log Activity",
                   style: GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
                 Navigator.of(context).pop();
