@@ -155,7 +155,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         trailing: _notificationEnabled ? "Enabled" : "Disabled"),
                   ]),
                 const SizedBox(height: 8),
-                OutlineListTile(onTap: _sendFeedback, title: "Feedback", trailing: "Help us improve!"),
+                OutlineListTile(onTap: _sendFeedback, title: "Feedback", trailing: "Help us improve"),
                 const SizedBox(height: 8),
                 OutlineListTile(onTap: _visitTRKR, title: "Visit TRKR"),
                 const SizedBox(height: 8),
