@@ -285,7 +285,7 @@ void showUserBottomSheet({required BuildContext context, required RoutineUserDto
           height: 20,
         ),
         Text(
-            "User profiles enable you to join TRKR communities. Stay tuned for upcoming features that will enhance your user experience.",
+            "User profiles enable you to join TRKR communities. Stay tuned for upcoming features that will enhance your training experience.",
             style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white38),
             textAlign: TextAlign.center),
         const SizedBox(

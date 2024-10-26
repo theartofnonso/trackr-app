@@ -34,7 +34,6 @@ type RoutineTemplate
 
 type RoutineLog
      @model
-     @index(name: "byCreatedAt", fields: ["createdAt"], queryField: "routineLogsByCreatedAt")
      @auth(
         rules: [
            { allow: owner },
@@ -46,6 +45,12 @@ type RoutineLog
   data: AWSJSON!
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
+  type: String @default(value: "RoutineLog")
+      @index(
+        name: "routineLogByDate"
+        queryField: "routineLogByDate"
+        sortKeyFields: ["createdAt"]
+      )
 }
 
 type ActivityLog

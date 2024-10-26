@@ -39,7 +39,7 @@ import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/chart/muscle_group_family_chart.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
 import '../not_found.dart';
-import '../preferences/routine_schedule_planner/routine_schedule_planner_home.dart';
+import 'routine_day_planner.dart';
 
 class RoutineTemplateScreen extends StatefulWidget {
   static const routeName = '/routine_template_screen';
@@ -119,10 +119,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       MenuItemButton(
         onPressed: () {
           displayBottomSheet(
-              height: 400,
               context: context,
-              child: RoutineSchedulePlannerHome(template: template),
-              isScrollControlled: true);
+              child: RoutineDayPlanner(template: template));
         },
         child: Text("Schedule", style: GoogleFonts.ubuntu(color: Colors.white)),
       ),

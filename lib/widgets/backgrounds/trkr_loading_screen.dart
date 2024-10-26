@@ -20,7 +20,8 @@ class TRKRLoadingScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SafeArea(
+            if(action != null)
+              SafeArea(
               child: IconButton(
                 icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
                 onPressed: action,

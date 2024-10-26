@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,8 +14,8 @@ import '../models/RoutineLog.dart';
 import '../utils/date_utils.dart';
 import '../utils/exercise_logs_utils.dart';
 import '../utils/https_utils.dart';
-import '../widgets/backgrounds/trkr_loading_screen.dart';
 import '../widgets/chart/muscle_group_family_chart.dart';
+import 'no_list.dart';
 
 class FeedsScreen extends StatefulWidget {
   const FeedsScreen({super.key});
@@ -26,13 +25,11 @@ class FeedsScreen extends StatefulWidget {
 }
 
 class _FeedsScreenState extends State<FeedsScreen> {
-  bool _loading = false;
-
   List<RoutineLogDto> _routineLogs = [];
 
   @override
   Widget build(BuildContext context) {
-    if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
+    if (_routineLogs.isEmpty) return const NoList();
 
     return Container(
       decoration: const BoxDecoration(
@@ -45,51 +42,42 @@ class _FeedsScreenState extends State<FeedsScreen> {
           ],
         ),
       ),
-      child: SafeArea(
-          minimum: const EdgeInsets.all(10.0),
-          child: ListView.separated(
-              itemCount: _routineLogs.length,
-              itemBuilder: (BuildContext context, int index) {
-                final routineLog = _routineLogs[index];
-                return _FeedListItem(log: routineLog);
-              },
-              separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.1)))),
+      child: RefreshIndicator(
+        onRefresh: _loadData,
+        child: SafeArea(
+            minimum: const EdgeInsets.all(10.0),
+            child: ListView.separated(
+                itemCount: _routineLogs.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final routineLog = _routineLogs[index];
+                  return _FeedListItem(log: routineLog);
+                },
+                separatorBuilder: (BuildContext context, int index) =>
+                    Divider(color: Colors.white70.withOpacity(0.1)))),
+      ),
     );
   }
 
-  void _loadData() {
-    _showLoadingScreen();
+  Future<void> _loadData() async {
     final dateRange = yearToDateTimeRange();
     final startOfCurrentYear = dateRange.start.toIso8601String();
     final endOfCurrentYear = dateRange.end.toIso8601String();
 
-    getAPI(endpoint: "/routine-logs", queryParameters: {"start": startOfCurrentYear, "end": endOfCurrentYear})
-        .then((response) {
+    try {
+      final response = await getAPI(
+          endpoint: "/routine-logs", queryParameters: {"start": startOfCurrentYear, "end": endOfCurrentYear});
       if (response.isNotEmpty) {
         final json = jsonDecode(response);
         final data = json["data"];
-        final body = data["listRoutineLogs"];
+        final body = data["routineLogByDate"];
         final items = body["items"] as List<dynamic>;
-       setState(() {
-         _routineLogs = items.map((item) => RoutineLog.fromJson(item).dto()).sorted((a, b) => b.createdAt.compareTo(a.createdAt));
-       });
+        setState(() {
+          _routineLogs = items.map((item) => RoutineLog.fromJson(item).dto()).toList();
+        });
       }
-      _hideLoadingScreen();
-    }).catchError((onError, _) {
-      print(onError);
-    });
-  }
-
-  void _showLoadingScreen() {
-    setState(() {
-      _loading = true;
-    });
-  }
-
-  void _hideLoadingScreen() {
-    setState(() {
-      _loading = false;
-    });
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -116,7 +104,7 @@ class _FeedListItem extends StatelessWidget {
 
     return Container(
         padding: const EdgeInsets.all(10.0),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
           ListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(log.name,
@@ -162,19 +150,24 @@ class _FeedListItem extends StatelessWidget {
                 ),
                 child: const Center(child: FaIcon(FontAwesomeIcons.solidUser, color: Colors.white54, size: 12))),
           ),
-          RichText(
-              text: TextSpan(
-                  text: "${log.exerciseLogs.length} ${pluralize(word: "Exercise", count: log.exerciseLogs.length)}",
-                  style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500),
-                  children: [
-                const TextSpan(text: " "),
-                TextSpan(
-                    text:
-                        "x${log.exerciseLogs.fold(0, (sum, e) => sum + e.sets.length)} ${pluralize(word: "Set", count: log.exerciseLogs.fold(0, (sum, e) => sum + e.sets.length))}",
-                    style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.white70, fontSize: 12))
-              ])),
+          SizedBox(
+            width: double.infinity,
+            child: RichText(
+                text: TextSpan(
+                    text: "${log.exerciseLogs.length} ${pluralize(word: "Exercise", count: log.exerciseLogs.length)}",
+                    style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500),
+                    children: [
+                  const TextSpan(text: " "),
+                  TextSpan(
+                      text:
+                          "x${log.exerciseLogs.fold(0, (sum, e) => sum + e.sets.length)} ${pluralize(word: "Set", count: log.exerciseLogs.fold(0, (sum, e) => sum + e.sets.length))}",
+                      style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.white70, fontSize: 12))
+                ])),
+          ),
           const SizedBox(height: 8),
           MuscleGroupFamilyChart(frequencyData: muscleGroupFamilyFrequencyData),
+          Text("user-${log.owner.split("-")[0]}",
+              style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white60, fontSize: 12))
         ]));
   }
 }

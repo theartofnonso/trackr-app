@@ -5,13 +5,11 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/extensions/amplify_models/routine_template_extension.dart';
-import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
-import '../enums/routine_schedule_type_enums.dart';
 
 class AmplifyRoutineTemplateRepository {
   List<RoutineTemplateDto> _templates = [];
@@ -25,30 +23,8 @@ class AmplifyRoutineTemplateRepository {
   void _mapAndSortTemplates({required List<RoutineTemplate> templates}) {
     _templates = templates.map((template) {
       final templateDto = template.dto();
-      if (templateDto.scheduleType == RoutineScheduleType.intervals) {
-        _rescheduleRoutineTemplates(template: templateDto);
-      }
       return templateDto;
     }).sorted((a, b) => b.createdAt.compareTo(a.createdAt));
-  }
-
-  void _rescheduleRoutineTemplates({required RoutineTemplateDto template}) {
-    final scheduledDate = template.scheduledDate;
-
-    if (scheduledDate != null) {
-      if (scheduledDate.isBefore(DateTime.now().withoutTime())) {
-        var newSchedule = DateTime.now().add(Duration(days: template.scheduleIntervals)).withoutTime();
-        if (template.scheduleIntervals == 1) {
-          newSchedule = DateTime.now().withoutTime();
-        }
-        final modifiedTemplate = template.copyWith(
-            scheduledDate: newSchedule,
-            scheduleType: RoutineScheduleType.intervals,
-            scheduleIntervals: template.scheduleIntervals,
-            scheduledDays: []);
-        updateTemplate(template: modifiedTemplate);
-      }
-    }
   }
 
   Future<RoutineTemplateDto> saveTemplate({required RoutineTemplateDto templateDto}) async {

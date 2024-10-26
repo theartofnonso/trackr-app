@@ -13,8 +13,6 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
-import 'package:tracker_app/enums/routine_schedule_type_enums.dart';
-import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/routine_editors_utils.dart';
@@ -166,14 +164,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     _updateRoutineTemplate(log: routineLog);
   }
 
-  Future<void> _updateRoutineTemplateSchedule({required RoutineTemplateDto templateToUpdate}) async {
-    if (templateToUpdate.scheduleType == RoutineScheduleType.intervals) {
-      final scheduledDate = DateTime.now().add(Duration(days: templateToUpdate.scheduleIntervals)).withoutTime();
-      final scheduledTemplate = templateToUpdate.copyWith(scheduledDate: scheduledDate);
-      await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: scheduledTemplate);
-    }
-  }
-
   bool _isRoutinePartiallyComplete() {
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
     final exerciseLogs = exerciseLogController.mergeExerciseLogsAndSets();
@@ -232,7 +222,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
             Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: widget.log.templateId);
         if (template != null) {
           await _doUpdateTemplate(log: log, templateToUpdate: template);
-          await _updateRoutineTemplateSchedule(templateToUpdate: template);
         }
       }
     }
