@@ -27,7 +27,7 @@ import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/label_divider.dart';
 
 class RoutineLogSummaryScreen extends StatefulWidget {
-  static const routeName = '/shareable_screen';
+  static const routeName = '/routine_log_summary_screen';
 
   final RoutineLogDto log;
 

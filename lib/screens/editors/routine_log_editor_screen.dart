@@ -149,11 +149,12 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     workoutSessionLogged();
 
-    _cleanUpSession();
-
     if (updatedRoutineLog != null) {
-      _updateRoutineTemplate(log: updatedRoutineLog);
+      if (updatedRoutineLog.templateId.isNotEmpty) {
+        await _updateRoutineTemplate(log: updatedRoutineLog);
+      }
     }
+    _navigateBack(routineLog: updatedRoutineLog);
   }
 
   Future<void> _doUpdateRoutineLog() async {
@@ -214,20 +215,11 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     }
   }
 
-  void _updateRoutineTemplate({required RoutineLogDto log}) async {
-
-    if (log.templateId.isNotEmpty) {
-      if (mounted) {
-        final template =
-            Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: widget.log.templateId);
-        if (template != null) {
-          await _doUpdateTemplate(log: log, templateToUpdate: template);
-        }
-      }
-    }
-
-    if (mounted) {
-      context.pop(log);
+  Future<void> _updateRoutineTemplate({required RoutineLogDto log}) async {
+    final template =
+        Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: widget.log.templateId);
+    if (template != null) {
+      await _doUpdateTemplate(log: log, templateToUpdate: template);
     }
   }
 
@@ -248,7 +240,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   }
 
   void _closeDialog() {
-    context.pop();
+    Navigator.of(context).pop();
   }
 
   void _reOrderExerciseLogs({required List<ExerciseLogDto> exerciseLogs}) async {
@@ -263,16 +255,16 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   void _cleanUpSession() {
     SharedPrefs().remove(key: SharedPrefs().cachedRoutineLogKey);
-    if(Platform.isIOS) {
+    if (Platform.isIOS) {
       FlutterLocalNotificationsPlugin().cancel(999);
     }
   }
 
-  void _navigateBack() async {
+  void _navigateBack({RoutineLogDto? routineLog}) async {
     if (widget.mode == RoutineEditorMode.log) {
       _cleanUpSession();
     }
-    context.pop();
+    context.pop(routineLog);
   }
 
   Future<void> _doUpdateTemplate({required RoutineLogDto log, required RoutineTemplateDto templateToUpdate}) async {
@@ -517,7 +509,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      if(Platform.isIOS) {
+      if (Platform.isIOS) {
         FlutterLocalNotificationsPlugin().cancel(999);
       }
     }
@@ -576,9 +568,8 @@ class _RoutineLogOverview extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: GoogleFonts.ubuntu(fontSize: 10, color: Colors.white70, fontWeight: FontWeight.w600))
             ]),
-            const TableRow(children: [SizedBox(height: 4), SizedBox(height: 4), SizedBox(height: 4)] ),
-            TableRow(
-                children: [
+            const TableRow(children: [SizedBox(height: 4), SizedBox(height: 4), SizedBox(height: 4)]),
+            TableRow(children: [
               Text(exercisesSummary,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600)),

@@ -23,6 +23,7 @@ class NoList extends StatelessWidget {
           ),
         ),
         child: SafeArea(
+            minimum: const EdgeInsets.all(10.0),
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,

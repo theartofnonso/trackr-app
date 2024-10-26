@@ -90,19 +90,10 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             label: 'Workouts',
           ),
-          NavigationDestination(
-            icon: Image.asset(
-              'icons/people.png',
-              fit: BoxFit.contain,
-              color: Colors.grey,
-              height: 34, // Adjust the height as needed
-            ),
-            selectedIcon: Image.asset(
-              'icons/people.png',
-              fit: BoxFit.contain,
-              height: 34, // Adjust the height as needed
-            ),
-            label: 'TRKD Circles',
+          const NavigationDestination(
+            icon: FaIcon(FontAwesomeIcons.trophy, color: Colors.grey),
+            selectedIcon: FaIcon(FontAwesomeIcons.trophy, color: Colors.white),
+            label: 'Statistics',
           ),
         ],
         onDestinationSelected: (int index) {

@@ -22,8 +22,7 @@ Future<Future<Object?>> navigateToExerciseEditor(
   return context.push(ExerciseEditorScreen.routeName, extra: arguments);
 }
 
-Future<RoutineTemplateDto?> navigateToRoutineTemplateEditor(
-    {required BuildContext context, RoutineTemplateArguments? arguments}) async {
+Future<RoutineTemplateDto?> navigateToRoutineTemplateEditor({required BuildContext context, RoutineTemplateArguments? arguments}) async {
   final template = await context.push(RoutineTemplateEditorScreen.routeName, extra: arguments) as RoutineTemplateDto?;
   return template;
 }

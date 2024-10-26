@@ -233,7 +233,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   }
 
   void _closeDialog() {
-    context.pop();
+    Navigator.of(context).pop();
   }
 
   void _navigateBack({RoutineTemplateDto? template}) {
