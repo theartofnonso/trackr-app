@@ -6,7 +6,7 @@ import 'package:tracker_app/colors.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 
-import '../../dtos/exercise_dto.dart';
+import '../../dtos/appsync/exercise_dto.dart';
 
 class TrkrCoachExerciseRecommendationScreen extends StatefulWidget {
   static const routeName = '/trkr_coach_exercise_recommendation_screen';

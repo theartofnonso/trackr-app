@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/models/RoutineTemplate.dart';
 
 import '../dtos/exercise_log_dto.dart';
-import '../dtos/routine_template_dto.dart';
+import '../dtos/appsync/routine_template_dto.dart';
 import '../repositories/amplify_routine_template_repository.dart';
 
 class RoutineTemplateController extends ChangeNotifier {

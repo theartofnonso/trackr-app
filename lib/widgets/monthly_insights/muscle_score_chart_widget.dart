@@ -10,7 +10,7 @@ import 'package:tracker_app/utils/general_utils.dart';
 import '../../colors.dart';
 import '../../controllers/exercise_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
-import '../../dtos/routine_log_dto.dart';
+import '../../dtos/appsync/routine_log_dto.dart';
 import '../../enums/chart_unit_enum.dart';
 import '../../screens/insights/sets_reps_volume_insights_screen.dart';
 import '../../utils/exercise_logs_utils.dart';

@@ -14,11 +14,11 @@ import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/empty_states/double_set_row_empty_state.dart';
 
-import '../dtos/activity_log_dto.dart';
+import '../dtos/appsync/activity_log_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/pb_dto.dart';
-import '../dtos/routine_log_dto.dart';
-import '../dtos/routine_template_dto.dart';
+import '../dtos/appsync/routine_log_dto.dart';
+import '../dtos/appsync/routine_template_dto.dart';
 import '../dtos/set_dto.dart';
 import '../dtos/viewmodels/exercise_log_view_model.dart';
 import '../enums/routine_schedule_type_enums.dart';

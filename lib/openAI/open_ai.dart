@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:http/http.dart' as http;
 
-import '../dtos/exercise_dto.dart';
+import '../dtos/appsync/exercise_dto.dart';
 import '../openAI/open_ai_functions.dart';
 
 const String _apiKey =

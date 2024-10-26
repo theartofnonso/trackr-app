@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../colors.dart';
 import '../../controllers/routine_user_controller.dart';
-import '../../dtos/routine_user_dto.dart';
+import '../../dtos/appsync/routine_user_dto.dart';
 import '../../screens/preferences/settings_screen.dart';
 import '../../shared_prefs.dart';
 import '../../utils/dialog_utils.dart';

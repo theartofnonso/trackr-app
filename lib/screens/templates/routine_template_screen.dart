@@ -16,7 +16,7 @@ import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import '../../colors.dart';
 import '../../controllers/routine_template_controller.dart';
 import '../../dtos/exercise_log_dto.dart';
-import '../../dtos/routine_template_dto.dart';
+import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/set_dto.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../dtos/viewmodels/routine_template_arguments.dart';

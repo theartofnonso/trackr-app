@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
-import 'package:tracker_app/dtos/routine_template_dto.dart';
+import 'package:tracker_app/dtos/appsync/routine_template_dto.dart';
 import 'package:tracker_app/enums/week_days_enum.dart';
 import 'package:tracker_app/extensions/week_days_extension.dart';
 import 'package:tracker_app/utils/string_utils.dart';

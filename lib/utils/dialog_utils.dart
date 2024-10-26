@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/dtos/routine_user_dto.dart';
+import 'package:tracker_app/dtos/appsync/routine_user_dto.dart';
 import 'package:tracker_app/enums/activity_type_enums.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
@@ -16,7 +16,7 @@ import 'package:tracker_app/widgets/timers/datetime_range_picker.dart';
 
 import '../colors.dart';
 import '../controllers/activity_log_controller.dart';
-import '../dtos/activity_log_dto.dart';
+import '../dtos/appsync/activity_log_dto.dart';
 import '../widgets/buttons/opacity_button_widget.dart';
 import '../widgets/buttons/solid_button_widget.dart';
 import '../widgets/other_activity_selector/activity_picker.dart';

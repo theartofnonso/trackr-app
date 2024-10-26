@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/models/ActivityLog.dart';
 
-import '../dtos/activity_log_dto.dart';
+import '../dtos/appsync/activity_log_dto.dart';
 import '../repositories/amplify_activity_log_repository.dart';
 
 class ActivityLogController extends ChangeNotifier {

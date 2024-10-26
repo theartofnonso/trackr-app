@@ -8,7 +8,7 @@ import 'package:tracker_app/utils/string_utils.dart';
 
 import '../colors.dart';
 import '../controllers/routine_log_controller.dart';
-import '../dtos/routine_log_dto.dart';
+import '../dtos/appsync/routine_log_dto.dart';
 import '../utils/exercise_logs_utils.dart';
 import '../widgets/chart/muscle_group_family_chart.dart';
 import 'no_list.dart';

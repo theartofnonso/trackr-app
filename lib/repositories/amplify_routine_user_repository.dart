@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:tracker_app/dtos/routine_user_dto.dart';
+import 'package:tracker_app/dtos/appsync/routine_user_dto.dart';
 import 'package:tracker_app/extensions/amplify_models/routine_user_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 

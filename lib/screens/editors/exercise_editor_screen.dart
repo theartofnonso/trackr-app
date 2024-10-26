@@ -12,7 +12,7 @@ import 'package:tracker_app/screens/exercise/muscle_groups_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 
 import '../../colors.dart';
-import '../../dtos/exercise_dto.dart';
+import '../../dtos/appsync/exercise_dto.dart';
 import '../../enums/exercise_type_enums.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/information_containers/information_container.dart';

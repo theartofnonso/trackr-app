@@ -1,7 +1,7 @@
 import 'package:tracker_app/enums/routine_schedule_type_enums.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
-import '../../dtos/routine_template_dto.dart';
+import '../../dtos/appsync/routine_template_dto.dart';
 import '../../enums/week_days_enum.dart';
 
 extension RoutineTemplateDtoExtension on RoutineTemplateDto {

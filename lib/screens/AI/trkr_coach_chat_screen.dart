@@ -10,7 +10,7 @@ import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 
 import '../../controllers/exercise_controller.dart';
 import '../../dtos/exercise_log_dto.dart';
-import '../../dtos/routine_template_dto.dart';
+import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/set_dto.dart';
 import '../../enums/routine_preview_type_enum.dart';
 import '../../openAI/open_ai.dart';

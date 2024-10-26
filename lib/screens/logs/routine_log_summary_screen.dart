@@ -16,7 +16,7 @@ import 'package:tracker_app/widgets/shareables/session_milestone_shareable.dart'
 
 import '../../colors.dart';
 import '../../controllers/routine_log_controller.dart';
-import '../../dtos/routine_log_dto.dart';
+import '../../dtos/appsync/routine_log_dto.dart';
 import '../../urls.dart';
 import '../../utils/app_analytics.dart';
 import '../../utils/dialog_utils.dart';

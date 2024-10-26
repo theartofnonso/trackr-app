@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../dtos/exercise_dto.dart';
+import '../dtos/appsync/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../screens/exercise/library/exercise_library_screen.dart';
 import '../widgets/routine/editors/pickers/substitute_exercise_picker.dart';

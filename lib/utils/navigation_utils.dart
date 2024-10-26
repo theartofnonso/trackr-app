@@ -5,8 +5,8 @@ import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 
-import '../dtos/routine_log_dto.dart';
-import '../dtos/routine_template_dto.dart';
+import '../dtos/appsync/routine_log_dto.dart';
+import '../dtos/appsync/routine_template_dto.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../dtos/viewmodels/routine_template_arguments.dart';
 import '../screens/editors/past_routine_log_editor_screen.dart';

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../dtos/exercise_dto.dart';
+import '../../dtos/appsync/exercise_dto.dart';
 import '../../shared_prefs.dart';
 
 class ExerciseWidget extends StatelessWidget {

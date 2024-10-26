@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:tracker_app/models/ModelProvider.dart';
 
-import '../../dtos/routine_user_dto.dart';
+import '../../dtos/appsync/routine_user_dto.dart';
 
 extension RoutineUserExtension on RoutineUser {
   RoutineUserDto dto() {

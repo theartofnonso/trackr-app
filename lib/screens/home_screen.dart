@@ -19,7 +19,7 @@ import '../controllers/activity_log_controller.dart';
 import '../controllers/exercise_controller.dart';
 import '../controllers/routine_template_controller.dart';
 import '../controllers/routine_user_controller.dart';
-import '../dtos/routine_log_dto.dart';
+import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../enums/routine_editor_type_enums.dart';
 import '../models/RoutineLog.dart';

@@ -12,7 +12,7 @@ import 'package:tracker_app/screens/exercise/history/exercise_video_screen.dart'
 import 'package:tracker_app/screens/exercise/history/history_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
-import '../../../dtos/exercise_dto.dart';
+import '../../../dtos/appsync/exercise_dto.dart';
 import '../../../dtos/exercise_log_dto.dart';
 import '../../../utils/dialog_utils.dart';
 import '../../../utils/exercise_logs_utils.dart';
