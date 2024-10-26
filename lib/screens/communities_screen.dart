@@ -27,7 +27,7 @@ class _CommunitiesScreenState extends State<CommunitiesScreen> {
 }
 
 class _EmptyState extends StatelessWidget {
-  const _EmptyState({});
+  const _EmptyState();
 
   @override
   Widget build(BuildContext context) {
