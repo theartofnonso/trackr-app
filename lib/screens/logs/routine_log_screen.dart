@@ -281,7 +281,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     }
   }
 
-  void _generateSummary({required List<ExerciseLogDto> logs}) {
+  void _generateSummary({required List<ExerciseLogDto> logs}) async {
     final log = _log;
 
     if (log == null) return;
@@ -299,12 +299,19 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     _showLoadingScreen();
 
-    runMessage(system: routineLogSystemInstruction, user: completeInstructions).then((response) {
-      if (response != null) {
-        _saveSummary(response: response, log: log);
+    final summary = await runMessage(system: routineLogSystemInstruction, user: completeInstructions);
+
+    _hideLoadingScreen();
+
+    if (summary != null) {
+
+      _saveSummary(response: summary, log: log);
+
+      if(mounted) {
+        navigateWithSlideTransition(context: context, child: TRKRCoachSummaryScreen(content: summary));
       }
-      _hideLoadingScreen();
-    });
+    }
+
   }
 
   void _loadData() {

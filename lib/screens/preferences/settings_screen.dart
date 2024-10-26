@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
+import 'package:tracker_app/controllers/activity_log_controller.dart';
 import 'package:tracker_app/graphQL/queries.dart';
 import 'package:tracker_app/screens/preferences/notifications_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -17,6 +18,7 @@ import 'package:tracker_app/widgets/list_tiles/list_tile_outline.dart';
 import '../../controllers/exercise_controller.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../controllers/routine_template_controller.dart';
+import '../../controllers/routine_user_controller.dart';
 import '../../controllers/settings_controller.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/general_utils.dart';
@@ -236,6 +238,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
       Provider.of<RoutineTemplateController>(context, listen: false).clear();
       Provider.of<RoutineLogController>(context, listen: false).clear();
       Provider.of<ExerciseController>(context, listen: false).clear();
+      Provider.of<ActivityLogController>(context, listen: false).clear();
+      Provider.of<RoutineUserController>(context, listen: false).clear();
     }
   }
 

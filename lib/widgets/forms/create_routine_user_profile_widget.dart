@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../../colors.dart';
 import '../../controllers/routine_user_controller.dart';
 import '../../dtos/routine_user_dto.dart';
+import '../../screens/preferences/settings_screen.dart';
 import '../../shared_prefs.dart';
 import '../../utils/dialog_utils.dart';
 import '../buttons/opacity_button_widget.dart';
@@ -98,6 +99,26 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
           Text("Username must not contain symbols and spaces.",
               style: GoogleFonts.ubuntu(fontSize: 10, fontWeight: FontWeight.w400, color: Colors.redAccent),
               textAlign: TextAlign.start),
+        const SizedBox(
+          height: 10,
+        ),
+        ListTile(
+          onTap: () {
+            Navigator.of(context).pop();
+            showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                useSafeArea: true,
+                isDismissible: false,
+                builder: (context) {
+                  return const SettingsScreen();
+                });
+          },
+          leading: Text("Settings",
+              style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+              textAlign: TextAlign.center),
+          trailing: const FaIcon(FontAwesomeIcons.gear, color: Colors.grey),
+        )
       ]),
     );
   }
