@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'exercise_log_dto.dart';
-import 'interface/log_interface.dart';
+import '../exercise_log_dto.dart';
+import '../interface/log_interface.dart';
 
 class RoutineLogDto implements Log {
   @override

@@ -1,8 +1,8 @@
-import 'package:tracker_app/dtos/routine_log_dto.dart';
+import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/enums/routine_schedule_type_enums.dart';
 
-import '../enums/week_days_enum.dart';
-import 'exercise_log_dto.dart';
+import '../../enums/week_days_enum.dart';
+import '../exercise_log_dto.dart';
 
 class RoutineTemplateDto {
   final String id;

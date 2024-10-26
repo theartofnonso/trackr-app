@@ -1,7 +1,7 @@
 import 'package:tracker_app/enums/training_position_enum.dart';
 
-import '../enums/exercise_type_enums.dart';
-import '../enums/muscle_group_enums.dart';
+import '../../enums/exercise_type_enums.dart';
+import '../../enums/muscle_group_enums.dart';
 
 class ExerciseDto {
   final String id;

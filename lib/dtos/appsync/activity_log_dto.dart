@@ -1,4 +1,4 @@
-import 'interface/log_interface.dart';
+import '../interface/log_interface.dart';
 
 class ActivityLogDto implements Log {
   @override

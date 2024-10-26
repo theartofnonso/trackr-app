@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tracker_app/dtos/routine_user_dto.dart';
+import 'package:tracker_app/dtos/appsync/routine_user_dto.dart';
 
 import '../models/RoutineUser.dart';
 import '../repositories/amplify_routine_user_repository.dart';
