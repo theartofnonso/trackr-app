@@ -12,25 +12,12 @@ class CommunitiesScreen extends StatefulWidget {
 }
 
 class _CommunitiesScreenState extends State<CommunitiesScreen> {
-  bool _loading = false;
 
   @override
   Widget build(BuildContext context) {
 
      return const _EmptyState();
 
-  }
-
-  void _showLoadingScreen() {
-    setState(() {
-      _loading = true;
-    });
-  }
-
-  void _hideLoadingScreen() {
-    setState(() {
-      _loading = false;
-    });
   }
 
   @override
@@ -40,7 +27,7 @@ class _CommunitiesScreenState extends State<CommunitiesScreen> {
 }
 
 class _EmptyState extends StatelessWidget {
-  const _EmptyState({super.key});
+  const _EmptyState({});
 
   @override
   Widget build(BuildContext context) {
