@@ -23,18 +23,20 @@ export const handler = async (event) => {
 
     const endpoint = new URL(GRAPHQL_ENDPOINT);
 
+    const id = event.queryStringParameters["id"];
     const startDate = event.queryStringParameters["start"];
     const endDate = event.queryStringParameters["end"];
 
     const query = `query LIST_ROUTINELOGS {
     listRoutineLogs(filter: {createdAt: {le: "${endDate}", ge: "${startDate}"}}) {
-      items {
-        id
-        owner
-        data
-        createdAt
-        updatedAt
-      }
+        items {
+            id
+            data
+            owner
+            createdAt
+            updatedAt
+        }
+        nextToken
     }
   }
 `;

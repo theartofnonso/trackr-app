@@ -252,11 +252,6 @@ class _Day extends StatelessWidget {
           margin: const EdgeInsets.all(2),
           decoration: BoxDecoration(
             color: _getBackgroundColor(),
-            gradient: hasActivityLog && hasRoutineLog
-                ? const LinearGradient(
-                    colors: [vibrantGreen, vibrantBlue], // Gradient colors
-                  )
-                : null,
             borderRadius: BorderRadius.circular(2),
           ),
           child: Center(

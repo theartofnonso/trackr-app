@@ -8,6 +8,7 @@ import 'package:tracker_app/dtos/routine_user_dto.dart';
 import 'package:tracker_app/enums/activity_type_enums.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
+import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/widgets/forms/create_routine_user_profile_widget.dart';
 import 'package:tracker_app/widgets/label_divider.dart';
 import 'package:tracker_app/widgets/timers/datetime_picker.dart';
@@ -206,13 +207,13 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
           title:
               Text("Edit", style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
           onTap: () {
-            Navigator.pop(context);
+            Navigator.of(context).pop();
             showActivityPicker(
                 initialActivityType: activityType,
                 initialDateTimeRange: DateTimeRange(start: activity.startTime, end: activity.endTime),
                 context: context,
                 onChangedActivity: (ActivityType activityType, DateTimeRange datetimeRange) {
-                  Navigator.pop(context);
+                  Navigator.of(context).pop();
                   final updatedActivity = activity.copyWith(
                       name: activityType.name,
                       startTime: datetimeRange.start,
@@ -235,7 +236,7 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
           title:
               Text("Delete", style: GoogleFonts.ubuntu(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
           onTap: () {
-            Navigator.pop(context); // Close the previous BottomSheet
+            Navigator.of(context).pop(); // Close the previous BottomSheet
             showBottomSheetWithMultiActions(
                 context: context,
                 title: "Delete activity?",
@@ -287,6 +288,21 @@ void showUserBottomSheet({required BuildContext context, required RoutineUserDto
             "User profiles enable you to join TRKR communities. Stay tuned for upcoming features that will enhance your user experience.",
             style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white38),
             textAlign: TextAlign.center),
+        const SizedBox(
+          height: 10,
+        ),
+        ListTile(
+          onTap: () {
+            Navigator.of(context).pop();
+            showModalBottomSheet(context: context, isScrollControlled: true, useSafeArea: true, isDismissible: false, builder: (context) {
+              return const SettingsScreen();
+            });
+          },
+          leading: Text("Settings",
+              style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+              textAlign: TextAlign.center),
+          trailing: const FaIcon(FontAwesomeIcons.gear, color: Colors.grey),
+        )
       ]));
 }
 

@@ -1,13 +1,6 @@
 {
   "version": 1,
   "paths": {
-    "/routine-logs": {
-      "name": "/routine-logs",
-      "lambdaFunction": "getAllRoutineLogs",
-      "permissions": {
-        "setting": "open"
-      }
-    },
     "/routine-log": {
       "name": "/routine-log",
       "lambdaFunction": "getRoutineLog",
@@ -18,6 +11,13 @@
     "/routine-template": {
       "name": "/routine-template",
       "lambdaFunction": "getRoutineTemplate",
+      "permissions": {
+        "setting": "open"
+      }
+    },
+    "/routine-logs": {
+      "name": "/routine-logs",
+      "lambdaFunction": "getAllRoutineLogs",
       "permissions": {
         "setting": "open"
       }

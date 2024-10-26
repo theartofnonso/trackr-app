@@ -50,7 +50,7 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
         ),
         Text("TRKR User Profiles",
             textAlign: TextAlign.start,
-            style: GoogleFonts.ubuntu(fontSize: 30, fontWeight: FontWeight.w500, color: Colors.white)),
+            style: GoogleFonts.ubuntu(fontSize: 26, fontWeight: FontWeight.w500, color: Colors.white)),
         const SizedBox(
           height: 10,
         ),

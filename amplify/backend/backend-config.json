@@ -14,14 +14,6 @@
             "Arn"
           ],
           "category": "function",
-          "resourceName": "getAllRoutineLogs"
-        },
-        {
-          "attributes": [
-            "Name",
-            "Arn"
-          ],
-          "category": "function",
           "resourceName": "getRoutineLog"
         },
         {
@@ -31,6 +23,14 @@
           ],
           "category": "function",
           "resourceName": "getRoutineTemplate"
+        },
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "getAllRoutineLogs"
         }
       ],
       "providerPlugin": "awscloudformation",
@@ -195,20 +195,6 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
-    "listAllRoutineLogsByOwner": {
-      "build": true,
-      "dependsOn": [
-        {
-          "attributes": [
-            "GraphQLAPIIdOutput"
-          ],
-          "category": "api",
-          "resourceName": "trackerapp"
-        }
-      ],
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
-    },
     "postAuthentication": {
       "build": true,
       "dependsOn": [],
@@ -326,22 +312,6 @@
         {
           "category": "function",
           "resourceName": "getRoutineTemplate"
-        }
-      ]
-    },
-    "AMPLIFY_function_listAllRoutineLogsByOwner_deploymentBucketName": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "listAllRoutineLogsByOwner"
-        }
-      ]
-    },
-    "AMPLIFY_function_listAllRoutineLogsByOwner_s3Key": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "listAllRoutineLogsByOwner"
         }
       ]
     },

@@ -177,7 +177,7 @@ class _ActivityPickerState extends State<ActivityPicker> {
                             label: selectedActivity != null
                                 ? "Log ${_calculateDuration().hmsAnalog()} of ${selectedActivity.name}"
                                 : "Log ${_calculateDuration().hmsAnalog()} of activity",
-                            buttonColor: vibrantGreen,
+                            buttonColor: vibrantBlue,
                             padding: const EdgeInsets.all(10.0)),
                       )),
           ),

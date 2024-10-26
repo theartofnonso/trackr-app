@@ -13,14 +13,14 @@ const deleteUserRoutineLogData = '''mutation BatchDeleteUserRoutineLogData {
 
 const listRoutineLogsPath = "listRoutineLogs";
 const listRoutineLogs = '''query ListRoutineLogs(
-    \$filter: ModelEventFilterInput
+    \$filter: ModelRoutineLogFilterInput
     \$limit: Int
     \$nextToken: String) {
-    listEvents(filter: \$filter, limit: \$limit, nextToken: \$nextToken) {
+    listRoutineLogs(filter: \$filter, limit: \$limit, nextToken: \$nextToken) {
       items {
         id
-        owner
         data
+        owner
         createdAt
         updatedAt
       }

@@ -58,14 +58,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
 
     final logsByDay = groupBy(routineLogController.logs, (log) => log.createdAt.withoutTime());
 
-    final exerciseController = Provider.of<ExerciseController>(context, listen: false);
-
-    final exercisesFromLibrary = updatedLog.exerciseLogs.map((exerciseTemplate) {
-      final foundExercise = exerciseController.exercises.firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.id == exerciseTemplate.id);
-      return foundExercise != null ? exerciseTemplate.copyWith(exercise: foundExercise) : exerciseTemplate;
-    }).toList();
-
-    final muscleGroupFamilyFrequencyData = muscleGroupFamilyFrequency(exerciseLogs: exercisesFromLibrary, includeSecondaryMuscleGroups: false);
+    final muscleGroupFamilyFrequencyData = muscleGroupFamilyFrequency(exerciseLogs: updatedLog.exerciseLogs, includeSecondaryMuscleGroups: false);
 
     List<Widget> pbShareAssets = [];
     final pbShareAssetsKeys = [];
