@@ -15,11 +15,17 @@ import '../enums/exercise_type_enums.dart';
 import '../models/RoutineLog.dart';
 import '../models/RoutineTemplate.dart';
 import '../shared_prefs.dart';
+import '../utils/date_utils.dart';
+import '../utils/https_utils.dart';
 
 class AmplifyRoutineLogRepository {
   List<RoutineLogDto> _logs = [];
 
+  List<RoutineLogDto> _logsForFeed = [];
+
   UnmodifiableListView<RoutineLogDto> get logs => UnmodifiableListView(_logs);
+
+  UnmodifiableListView<RoutineLogDto> get logsForFeed => UnmodifiableListView(_logsForFeed);
 
   Map<String, List<ExerciseLogDto>> _exerciseLogsById = {};
 
@@ -42,6 +48,26 @@ class AmplifyRoutineLogRepository {
   void _mapAndNormaliseLogs({required List<RoutineLog> logs}) {
     _logs = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
     _normaliseLogs();
+  }
+
+  Future<void> loadLogsForFeed() async {
+    final dateRange = yearToDateTimeRange();
+    final startOfCurrentYear = dateRange.start.toIso8601String();
+    final endOfCurrentYear = dateRange.end.toIso8601String();
+
+    try {
+      final response = await getAPI(
+          endpoint: "/routine-logs", queryParameters: {"start": startOfCurrentYear, "end": endOfCurrentYear});
+      if (response.isNotEmpty) {
+        final json = jsonDecode(response);
+        final data = json["data"];
+        final body = data["routineLogByDate"];
+        final items = body["items"] as List<dynamic>;
+        _logsForFeed = items.map((item) => RoutineLog.fromJson(item).dto()).toList();
+      }
+    } catch (e) {
+      safePrint(e);
+    }
   }
 
   Future<RoutineLogDto> saveLog({required RoutineLogDto logDto, TemporalDateTime? datetime}) async {

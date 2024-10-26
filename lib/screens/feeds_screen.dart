@@ -1,19 +1,15 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/extensions/amplify_models/routine_log_extension.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 
 import '../colors.dart';
+import '../controllers/routine_log_controller.dart';
 import '../dtos/routine_log_dto.dart';
-import '../models/RoutineLog.dart';
-import '../utils/date_utils.dart';
 import '../utils/exercise_logs_utils.dart';
-import '../utils/https_utils.dart';
 import '../widgets/chart/muscle_group_family_chart.dart';
 import 'no_list.dart';
 
@@ -25,11 +21,13 @@ class FeedsScreen extends StatefulWidget {
 }
 
 class _FeedsScreenState extends State<FeedsScreen> {
-  List<RoutineLogDto> _routineLogs = [];
-
   @override
   Widget build(BuildContext context) {
-    if (_routineLogs.isEmpty) return const NoList();
+    final routineLogsProvider = Provider.of<RoutineLogController>(context, listen: true);
+
+    final routineLogs = routineLogsProvider.logsForFeed;
+
+    if (routineLogs.isEmpty) return const NoList();
 
     return Container(
       decoration: const BoxDecoration(
@@ -47,9 +45,9 @@ class _FeedsScreenState extends State<FeedsScreen> {
         child: SafeArea(
             minimum: const EdgeInsets.all(10.0),
             child: ListView.separated(
-                itemCount: _routineLogs.length,
+                itemCount: routineLogs.length,
                 itemBuilder: (BuildContext context, int index) {
-                  final routineLog = _routineLogs[index];
+                  final routineLog = routineLogs[index];
                   return _FeedListItem(log: routineLog);
                 },
                 separatorBuilder: (BuildContext context, int index) =>
@@ -59,25 +57,8 @@ class _FeedsScreenState extends State<FeedsScreen> {
   }
 
   Future<void> _loadData() async {
-    final dateRange = yearToDateTimeRange();
-    final startOfCurrentYear = dateRange.start.toIso8601String();
-    final endOfCurrentYear = dateRange.end.toIso8601String();
-
-    try {
-      final response = await getAPI(
-          endpoint: "/routine-logs", queryParameters: {"start": startOfCurrentYear, "end": endOfCurrentYear});
-      if (response.isNotEmpty) {
-        final json = jsonDecode(response);
-        final data = json["data"];
-        final body = data["routineLogByDate"];
-        final items = body["items"] as List<dynamic>;
-        setState(() {
-          _routineLogs = items.map((item) => RoutineLog.fromJson(item).dto()).toList();
-        });
-      }
-    } catch (e) {
-      print(e);
-    }
+    final routineLogsProvider = Provider.of<RoutineLogController>(context, listen: false);
+    routineLogsProvider.loadLogsForFeed();
   }
 
   @override
