@@ -106,7 +106,7 @@ class ChallengeScreen extends StatelessWidget {
                   ),
                   ListTile(
                     titleAlignment: ListTileTitleAlignment.threeLine,
-                    leading: const FaIcon(FontAwesomeIcons.calendarDays, color: Colors.white70,),
+                    leading: const FaIcon(FontAwesomeIcons.trophy, color: Colors.white70,),
                     title: Text(
                         _targetSummary(dto: challengeDto),
                         style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400)),
@@ -116,10 +116,15 @@ class ChallengeScreen extends StatelessWidget {
                     child: SizedBox(
                         width: double.infinity,
                         height: 50,
-                        child: OpacityButtonWidget(
-                          onPressed: () {},
-                          label: "Join Challenge",
-                          buttonColor: vibrantGreen,
+                        child: GestureDetector(
+                          onLongPress: () {
+                            print("comitted");
+                          },
+                          child: OpacityButtonWidget(
+                            onPressed: () {},
+                            label: "Tap and hold to commit",
+                            buttonColor: vibrantGreen,
+                          ),
                         )),
                   )
                 ],
@@ -137,7 +142,7 @@ class ChallengeScreen extends StatelessWidget {
     }
 
     if(dto is RepsChallengeDto) {
-      return "${dto.target} ${pluralize(word: "Rep", count: dto.target)}";
+      return "${dto.target} ${pluralize(word: "Repetitions", count: dto.target)}";
     }
 
     if(dto is WeightChallengeDto) {
