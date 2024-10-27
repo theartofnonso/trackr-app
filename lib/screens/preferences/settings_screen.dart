@@ -293,6 +293,14 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         isRightActionDestructive: true);
   }
 
+  Future<void> _deleteRoutineUser() async {
+    final controller = Provider.of<RoutineUserController>(context, listen: false);
+    final user = controller.user;
+    if(user != null) {
+      await controller.removeUser(userDto: user);
+    }
+  }
+
   void _delete() async {
     showBottomSheetWithMultiActions(
         context: context,
@@ -309,6 +317,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
           final deletedRoutineLogs =
               await batchDeleteUserData(document: deleteUserRoutineLogData, documentKey: "deleteUserRoutineLogData");
           if (deletedExercises && deletedRoutineTemplates && deletedRoutineLogs) {
+            await _deleteRoutineUser();
             _hideLoadingScreen();
             _clearAppData();
             await Amplify.Auth.deleteUser();
