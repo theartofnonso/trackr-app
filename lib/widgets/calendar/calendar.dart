@@ -216,7 +216,7 @@ class _Day extends StatelessWidget {
       return vibrantGreen;
     }
     if (hasActivityLog) {
-      return vibrantBlue;
+      return Colors.pinkAccent;
     } else {
       return sapphireDark80.withOpacity(0.5);
     }
