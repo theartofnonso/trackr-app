@@ -22,8 +22,6 @@ class RoutineLogController extends ChangeNotifier {
 
   UnmodifiableListView<RoutineLogDto> get logs => _amplifyLogRepository.logs;
 
-  UnmodifiableListView<RoutineLogDto> get logsForFeed => _amplifyLogRepository.logsForFeed;
-
   UnmodifiableMapView<String, List<ExerciseLogDto>> get exerciseLogsById => _amplifyLogRepository.exerciseLogsById;
 
   UnmodifiableMapView<ExerciseType, List<ExerciseLogDto>> get exerciseLogsByType =>
@@ -33,13 +31,7 @@ class RoutineLogController extends ChangeNotifier {
     _amplifyLogRepository.loadLogStream(logs: logs);
     notifyListeners();
   }
-
-  void loadLogsForFeed() async {
-    await _amplifyLogRepository.loadLogsForFeed();
-    notifyListeners();
-  }
-
-
+  
   Future<RoutineLogDto?> saveLog({required RoutineLogDto logDto, TemporalDateTime? datetime}) async {
     RoutineLogDto? savedLog;
     try {

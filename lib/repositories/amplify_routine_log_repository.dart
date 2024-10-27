@@ -21,11 +21,7 @@ import '../utils/https_utils.dart';
 class AmplifyRoutineLogRepository {
   List<RoutineLogDto> _logs = [];
 
-  List<RoutineLogDto> _logsForFeed = [];
-
   UnmodifiableListView<RoutineLogDto> get logs => UnmodifiableListView(_logs);
-
-  UnmodifiableListView<RoutineLogDto> get logsForFeed => UnmodifiableListView(_logsForFeed);
 
   Map<String, List<ExerciseLogDto>> _exerciseLogsById = {};
 
@@ -63,7 +59,6 @@ class AmplifyRoutineLogRepository {
         final data = json["data"];
         final body = data["routineLogByDate"];
         final items = body["items"] as List<dynamic>;
-        _logsForFeed = items.map((item) => RoutineLog.fromJson(item).dto()).toList();
       }
     } catch (e) {
       safePrint(e);
