@@ -1,7 +1,7 @@
-import 'volume_challenge_dto.dart';
+import 'weight_challenge_dto.dart';
 
-class OneMillionTonnesChallengeDto extends VolumeChallengeDto {
-  OneMillionTonnesChallengeDto( {required super.id,
+class FiveHundredThousandTonnesChallengeDto extends WeightChallengeDto {
+  FiveHundredThousandTonnesChallengeDto( {required super.id,
     required super.name,
     required super.caption,
     required super.description,

@@ -8,15 +8,15 @@ import 'package:tracker_app/extensions/amplify_models/routine_log_extension.dart
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/utils/routine_utils.dart';
 
-import '../dtos/appsync/exercise_dto.dart';
-import '../dtos/exercise_log_dto.dart';
-import '../dtos/set_dto.dart';
-import '../enums/exercise_type_enums.dart';
-import '../models/RoutineLog.dart';
-import '../models/RoutineTemplate.dart';
-import '../shared_prefs.dart';
-import '../utils/date_utils.dart';
-import '../utils/https_utils.dart';
+import '../../dtos/appsync/exercise_dto.dart';
+import '../../dtos/exercise_log_dto.dart';
+import '../../dtos/set_dto.dart';
+import '../../enums/exercise_type_enums.dart';
+import '../../models/RoutineLog.dart';
+import '../../models/RoutineTemplate.dart';
+import '../../shared_prefs.dart';
+import '../../utils/date_utils.dart';
+import '../../utils/https_utils.dart';
 
 class AmplifyRoutineLogRepository {
   List<RoutineLogDto> _logs = [];

@@ -1,7 +1,7 @@
-import 'package:tracker_app/dtos/streaks/challenge_dto.dart';
+import 'days_challenge_dto.dart';
 
-class VolumeChallengeDto extends Challenge {
-  VolumeChallengeDto(
+class FiftyDaysChallengeDto extends DaysChallengeDto {
+  FiftyDaysChallengeDto(
       {required super.id,
       required super.name,
       required super.caption,

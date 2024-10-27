@@ -1,14 +1,10 @@
 import 'package:tracker_app/dtos/streaks/challenge_dto.dart';
-import 'package:tracker_app/enums/muscle_group_enums.dart';
 
-class RepsChallengeDto extends Challenge {
-  final MuscleGroup? muscleGroup;
-
-  RepsChallengeDto(
+class WeightChallengeDto extends Challenge {
+  WeightChallengeDto(
       {required super.id,
       required super.name,
       required super.caption,
-      this.muscleGroup,
       required super.description,
       required super.rule,
       required super.target,

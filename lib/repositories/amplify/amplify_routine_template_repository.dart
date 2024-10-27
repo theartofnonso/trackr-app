@@ -8,8 +8,8 @@ import 'package:tracker_app/extensions/amplify_models/routine_template_extension
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
-import '../dtos/exercise_log_dto.dart';
-import '../dtos/appsync/routine_template_dto.dart';
+import '../../dtos/exercise_log_dto.dart';
+import '../../dtos/appsync/routine_template_dto.dart';
 
 class AmplifyRoutineTemplateRepository {
   List<RoutineTemplateDto> _templates = [];

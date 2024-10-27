@@ -9,8 +9,8 @@ import '../../../colors.dart';
 import '../../dtos/streaks/challenge_dto.dart';
 import '../../dtos/streaks/days/days_challenge_dto.dart';
 import '../../dtos/streaks/reps/reps_challenge_dto.dart';
-import '../../dtos/streaks/volume/volume_challenge_dto.dart';
 import '../../dtos/streaks/weekly/weekly_challenge_dto.dart';
+import '../../dtos/streaks/weight/weight_challenge_dto.dart';
 import '../../utils/string_utils.dart';
 
 class ChallengeScreen extends StatelessWidget {
@@ -140,7 +140,7 @@ class ChallengeScreen extends StatelessWidget {
       return "${dto.target} ${pluralize(word: "Rep", count: dto.target)}";
     }
 
-    if(dto is VolumeChallengeDto) {
+    if(dto is WeightChallengeDto) {
       return "${dto.target} ${pluralize(word: "Tonne", count: dto.target)}";
     }
 

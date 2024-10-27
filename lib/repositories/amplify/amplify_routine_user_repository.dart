@@ -6,7 +6,7 @@ import 'package:tracker_app/dtos/appsync/routine_user_dto.dart';
 import 'package:tracker_app/extensions/amplify_models/routine_user_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 
-import '../shared_prefs.dart';
+import '../../shared_prefs.dart';
 
 class AmplifyRoutineUserRepository {
   RoutineUserDto? _user;

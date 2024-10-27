@@ -7,8 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/extensions/amplify_models/exercise_extension.dart';
 
-import '../models/Exercise.dart';
-import '../shared_prefs.dart';
+import '../../models/Exercise.dart';
+import '../../shared_prefs.dart';
 
 class AmplifyExerciseRepository {
   List<ExerciseDto> _exercises = [];

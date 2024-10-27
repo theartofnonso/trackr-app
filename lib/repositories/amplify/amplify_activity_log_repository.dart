@@ -7,8 +7,8 @@ import 'package:tracker_app/dtos/appsync/activity_log_dto.dart';
 import 'package:tracker_app/extensions/amplify_models/activity_log_extension.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
-import '../models/ActivityLog.dart';
-import '../shared_prefs.dart';
+import '../../models/ActivityLog.dart';
+import '../../shared_prefs.dart';
 
 class AmplifyActivityLogRepository {
   List<ActivityLogDto> _logs = [];
