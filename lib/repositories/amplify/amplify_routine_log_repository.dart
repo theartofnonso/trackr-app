@@ -94,7 +94,7 @@ class AmplifyRoutineLogRepository {
       final oldLog = result.first;
       final newLog = oldLog.copyWith(data: jsonEncode(log));
       await Amplify.DataStore.save<RoutineLog>(newLog);
-      final index = _indexWhereRoutineLog(id: log.id);
+      final index = _indexWhereLog(id: log.id);
       if (index > -1) {
         _logs[index] = log;
         _normaliseLogs();
@@ -111,7 +111,7 @@ class AmplifyRoutineLogRepository {
     if (result.isNotEmpty) {
       final oldTemplate = result.first;
       await Amplify.DataStore.delete<RoutineLog>(oldTemplate);
-      final index = _indexWhereRoutineLog(id: log.id);
+      final index = _indexWhereLog(id: log.id);
       if (index > -1) {
         _logs.removeAt(index);
         _normaliseLogs();
@@ -137,7 +137,7 @@ class AmplifyRoutineLogRepository {
 
   /// Helper methods
 
-  int _indexWhereRoutineLog({required String id}) {
+  int _indexWhereLog({required String id}) {
     return _logs.indexWhere((log) => log.id == id);
   }
 

@@ -16,12 +16,14 @@ import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../controllers/activity_log_controller.dart';
+import '../controllers/challenge_log_controller.dart';
 import '../controllers/exercise_controller.dart';
 import '../controllers/routine_template_controller.dart';
 import '../controllers/routine_user_controller.dart';
 import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../enums/routine_editor_type_enums.dart';
+import '../models/ChallengeLog.dart';
 import '../models/RoutineLog.dart';
 import '../models/RoutineTemplate.dart';
 import '../utils/app_analytics.dart';
@@ -41,6 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   int _currentScreenIndex = 0;
 
+  StreamSubscription<QuerySnapshot<ChallengeLog>>? _challengeLogStream;
   StreamSubscription<QuerySnapshot<RoutineUser>>? _routineUserStream;
   StreamSubscription<QuerySnapshot<RoutineLog>>? _routineLogStream;
   StreamSubscription<QuerySnapshot<RoutineTemplate>>? _routineTemplateStream;
@@ -149,6 +152,16 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _observeChallengeLogQuery() {
+    _challengeLogStream = Amplify.DataStore.observeQuery(
+      ChallengeLog.classType,
+    ).listen((QuerySnapshot<ChallengeLog> snapshot) {
+      if (mounted) {
+        Provider.of<ChallengeLogController>(context, listen: false).streamLogs(logs: snapshot.items);
+      }
+    });
+  }
+
   void _observeActivityLogQuery() {
     _activityLogStream = Amplify.DataStore.observeQuery(
       ActivityLog.classType,
@@ -173,6 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _observeRoutineLogQuery();
     _observeRoutineTemplateQuery();
     _observeActivityLogQuery();
+    _observeChallengeLogQuery();
   }
 
   void _loadCachedLog() {
@@ -213,6 +227,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
+    _challengeLogStream?.cancel();
     _exerciseStream?.cancel();
     _routineLogStream?.cancel();
     _routineTemplateStream?.cancel();

@@ -1,4 +1,4 @@
-class Challenge {
+class ChallengeTemplate {
   final String id;
   final String name;
   final String caption;
@@ -10,7 +10,7 @@ class Challenge {
   final bool isCompleted;
   final String image;
 
-  Challenge({
+  ChallengeTemplate({
     required this.id,
     required this.name,
     required this.caption,

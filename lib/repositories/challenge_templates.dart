@@ -1,5 +1,5 @@
 
-import 'package:tracker_app/dtos/streaks/challenge_dto.dart';
+import 'package:tracker_app/dtos/streaks/challenge_template.dart';
 import 'package:tracker_app/dtos/streaks/reps/reps_challenge_dto.dart';
 import 'package:tracker_app/dtos/streaks/weekly/weekly_challenge_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
@@ -7,7 +7,7 @@ import 'package:tracker_app/enums/muscle_group_enums.dart';
 import '../dtos/streaks/weekly/obsessed_challenge_dto.dart';
 import '../dtos/streaks/weight/weight_challenge_dto.dart';
 
-class ChallengesRepository {
+class ChallengeTemplates {
 
   /// Weekly Challenges
   final _legDayChallenge = WeeklyChallengeDto(
@@ -53,7 +53,7 @@ class ChallengesRepository {
   /// Reps Challenges
   final _repsChallenge = RepsChallengeDto(
     id: 'RP_000',
-    name: 'Reps Mastery'.toUpperCase(),
+    name: '10K Reps Marathon'.toUpperCase(),
     description:
     'Focus on building strength and endurance in your chosen muscle group by committing to this challenge. Consistency and dedication will be key as you target your goals each week.',
     caption: "Accumulate 10k reps",
@@ -84,7 +84,7 @@ class ChallengesRepository {
   /// Days Challenges
   final _thirtyDaysChallenge = ObsessedChallengeDto(
     id: 'OBC_30_001',
-    name: 'Newbie Gains'.toUpperCase(),
+    name: '30 Days of Gains'.toUpperCase(),
     description:
     'Start your journey by logging 30 days. Perfect for those beginning their obsession with fitness.',
     caption: 'Train for 30 days',
@@ -98,7 +98,7 @@ class ChallengesRepository {
   );
   final _fiftyDaysChallenge = ObsessedChallengeDto(
     id: 'OBC_50_002',
-    name: 'Gym Bro'.toUpperCase(),
+    name: '50 Days of Gains'.toUpperCase(),
     description:
     'Take your commitment to the next level by logging 50 days of training.',
     caption: 'Train for 50 days',
@@ -112,7 +112,7 @@ class ChallengesRepository {
   );
   final _hundredDaysChallenge = ObsessedChallengeDto(
     id: 'OBC_100_003',
-    name: 'Gandalf The Buff'.toUpperCase(),
+    name: '100 Days of Gains'.toUpperCase(),
     description:
     'Prove your dedication by logging 100 days of training. This challenge is for the truly committed.',
     caption: 'Train for 100 days',
@@ -126,8 +126,8 @@ class ChallengesRepository {
   );
 
 
-  List<Challenge> loadChallenges() {
-    final challenges = <Challenge>[];
+  List<ChallengeTemplate> loadChallenges() {
+    final challenges = <ChallengeTemplate>[];
 
     /// Add Weekly Challenges
     challenges.add(_legDayChallenge);

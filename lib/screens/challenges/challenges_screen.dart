@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
-import 'package:tracker_app/dtos/streaks/challenge_dto.dart';
-import 'package:tracker_app/repositories/challenges_repository.dart';
+import 'package:tracker_app/dtos/streaks/challenge_template.dart';
+import 'package:tracker_app/repositories/challenge_templates.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/challenges/challenge_target_icon.dart';
 
@@ -20,7 +20,7 @@ class ChallengesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final challenges = ChallengesRepository().loadChallenges();
+    final challenges = ChallengeTemplates().loadChallenges();
 
     final children = challenges.map((challenge) => _ChallengeWidget(challenge: challenge)).toList();
 
@@ -64,7 +64,7 @@ class ChallengesScreen extends StatelessWidget {
 }
 
 class _ChallengeWidget extends StatelessWidget {
-  final Challenge challenge;
+  final ChallengeTemplate challenge;
 
   const _ChallengeWidget({required this.challenge});
 
@@ -72,7 +72,7 @@ class _ChallengeWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        navigateWithSlideTransition(context: context, child: ChallengeScreen(challengeDto: challenge));
+        navigateWithSlideTransition(context: context, child: ChallengeScreen(challengeTemplate: challenge));
       },
       child: Container(
           padding: const EdgeInsets.all(18),
@@ -114,7 +114,7 @@ class _ChallengeWidget extends StatelessWidget {
     );
   }
 
-  String _targetSummary({required Challenge dto}) {
+  String _targetSummary({required ChallengeTemplate dto}) {
     if (dto is WeeklyChallengeDto) {
       return "${dto.target} ${pluralize(word: "Week", count: dto.target)}";
     }

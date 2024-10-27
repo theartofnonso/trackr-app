@@ -51,7 +51,7 @@ class AmplifyRoutineTemplateRepository {
       final oldTemplate = result.first;
       final newTemplate = oldTemplate.copyWith(data: jsonEncode(template));
       await Amplify.DataStore.save<RoutineTemplate>(newTemplate);
-      final index = _indexWhereRoutineTemplate(id: template.id);
+      final index = _indexWhereTemplate(id: template.id);
       if (index > -1) {
         _templates[index] = template;
       }
@@ -90,7 +90,7 @@ class AmplifyRoutineTemplateRepository {
       final newLog = oldTemplate.copyWith(data: jsonEncode(newTemplateDto));
 
       await Amplify.DataStore.save<RoutineTemplate>(newLog);
-      final index = _indexWhereRoutineTemplate(id: newLog.id);
+      final index = _indexWhereTemplate(id: newLog.id);
       if (index > -1) {
         _templates[index] = newTemplateDto;
       }
@@ -106,7 +106,7 @@ class AmplifyRoutineTemplateRepository {
     if (result.isNotEmpty) {
       final oldTemplate = result.first;
       await Amplify.DataStore.delete<RoutineTemplate>(oldTemplate);
-      final index = _indexWhereRoutineTemplate(id: template.id);
+      final index = _indexWhereTemplate(id: template.id);
       if (index > -1) {
         _templates.removeAt(index);
       }
@@ -115,7 +115,7 @@ class AmplifyRoutineTemplateRepository {
 
   /// Helper methods
 
-  int _indexWhereRoutineTemplate({required String id}) {
+  int _indexWhereTemplate({required String id}) {
     return _templates.indexWhere((template) => template.id == id);
   }
 

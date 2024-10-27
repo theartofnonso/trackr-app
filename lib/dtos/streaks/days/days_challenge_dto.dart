@@ -1,6 +1,6 @@
-import '../challenge_dto.dart';
+import '../challenge_template.dart';
 
-class DaysChallengeDto extends Challenge {
+class DaysChallengeDto extends ChallengeTemplate {
   DaysChallengeDto(
       {required super.id,
       required super.name,

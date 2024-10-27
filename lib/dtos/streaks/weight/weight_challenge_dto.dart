@@ -1,6 +1,6 @@
-import 'package:tracker_app/dtos/streaks/challenge_dto.dart';
+import 'package:tracker_app/dtos/streaks/challenge_template.dart';
 
-class WeightChallengeDto extends Challenge {
+class WeightChallengeDto extends ChallengeTemplate {
   WeightChallengeDto(
       {required super.id,
       required super.name,
