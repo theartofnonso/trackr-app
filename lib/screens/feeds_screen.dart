@@ -8,24 +8,35 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 
 import '../colors.dart';
+import '../controllers/activity_log_controller.dart';
 import '../controllers/routine_log_controller.dart';
+import '../dtos/appsync/activity_log_dto.dart';
 import '../dtos/appsync/routine_log_dto.dart';
+import '../dtos/interface/log_interface.dart';
+import '../enums/activity_type_enums.dart';
+import '../utils/dialog_utils.dart';
 import '../utils/exercise_logs_utils.dart';
+import '../utils/navigation_utils.dart';
 import '../widgets/chart/muscle_group_family_chart.dart';
 import '../widgets/pbs/pb_icon.dart';
 import 'no_list.dart';
 
 class FeedsScreen extends StatelessWidget {
-
   final ScrollController scrollController;
 
   const FeedsScreen({super.key, required this.scrollController});
 
   @override
   Widget build(BuildContext context) {
-    final routineLogsProvider = Provider.of<RoutineLogController>(context, listen: true);
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
-    final routineLogs = routineLogsProvider.logs.sorted((a, b) => b.createdAt.compareTo(a.createdAt));
+    final routineLogs = routineLogController.logs;
+
+    final activityLogController = Provider.of<ActivityLogController>(context, listen: true);
+
+    final activityLogs = activityLogController.logs;
+
+    final allLogs = [...routineLogs, ...activityLogs].sorted((a, b) => b.createdAt.compareTo(a.createdAt)).toList();
 
     if (routineLogs.isEmpty) return const NoList();
 
@@ -44,24 +55,27 @@ class FeedsScreen extends StatelessWidget {
           minimum: const EdgeInsets.all(10.0),
           child: ListView.separated(
               controller: scrollController,
-              itemCount: routineLogs.length,
+              itemCount: allLogs.length,
               itemBuilder: (BuildContext context, int index) {
-                final routineLog = routineLogs[index];
-                return _FeedListItem(log: routineLog);
+                final log = allLogs[index];
+                final widget = log.type == LogType.routine
+                    ? _RoutineLogFeedListItem(log: log as RoutineLogDto)
+                    : _ActivityLogFeedListItem(log: log as ActivityLogDto);
+                return widget;
               },
               separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.1)))),
     );
   }
 }
 
-class _FeedListItem extends StatelessWidget {
+class _RoutineLogFeedListItem extends StatelessWidget {
   final RoutineLogDto log;
 
-  const _FeedListItem({required this.log});
+  const _RoutineLogFeedListItem({required this.log});
 
   @override
   Widget build(BuildContext context) {
-    final routineLogsController = Provider.of<RoutineLogController>(context, listen: true);
+    final routineLogsController = Provider.of<RoutineLogController>(context, listen: false);
 
     final pbs = log.exerciseLogs.map((exerciseLog) {
       final pastExerciseLogs =
@@ -77,72 +91,143 @@ class _FeedListItem extends StatelessWidget {
     final muscleGroupFamilyFrequencyData =
         muscleGroupFamilyFrequency(exerciseLogs: updatedLog.exerciseLogs, includeSecondaryMuscleGroups: false);
 
-    return Container(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(log.name,
-                style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
-            subtitle: Row(
-              children: [
-                const Icon(
-                  Icons.date_range_rounded,
-                  color: Colors.white,
-                  size: 12,
-                ),
-                const SizedBox(width: 1),
-                Text(log.createdAt.durationSinceOrDate(),
-                    style: GoogleFonts.ubuntu(
-                        color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
-                const SizedBox(width: 10),
-                const Icon(
-                  Icons.access_time_rounded,
-                  color: Colors.white,
-                  size: 12,
-                ),
-                const SizedBox(width: 1),
-                Text(log.duration().hmsAnalog(),
-                    style: GoogleFonts.ubuntu(
-                        color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
-                const SizedBox(width: 10),
-                pbs.isNotEmpty ? PBIcon(color: sapphireLight, label: "${pbs.length}") : const SizedBox.shrink()
-              ],
+    return GestureDetector(
+      onTap: () => navigateToRoutineLogPreview(context: context, log: log),
+      child: Container(
+          color: Colors.transparent,
+          padding: const EdgeInsets.all(10.0),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(log.name,
+                  style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+              subtitle: Row(
+                children: [
+                  const Icon(
+                    Icons.date_range_rounded,
+                    color: Colors.white,
+                    size: 12,
+                  ),
+                  const SizedBox(width: 1),
+                  Text(log.createdAt.durationSinceOrDate(),
+                      style: GoogleFonts.ubuntu(
+                          color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                  const SizedBox(width: 10),
+                  const Icon(
+                    Icons.access_time_rounded,
+                    color: Colors.white,
+                    size: 12,
+                  ),
+                  const SizedBox(width: 1),
+                  Text(log.duration().hmsAnalog(),
+                      style: GoogleFonts.ubuntu(
+                          color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                  const SizedBox(width: 10),
+                  pbs.isNotEmpty ? PBIcon(color: sapphireLight, label: "${pbs.length}") : const SizedBox.shrink()
+                ],
+              ),
+              trailing: const _ProfileIcon(),
             ),
-            trailing: Container(
-                width: 40, // Width and height should be equal to make a perfect circle
-                height: 40,
-                decoration: BoxDecoration(
-                  color: sapphireDark80,
-                  shape: BoxShape.rectangle,
-                  borderRadius: BorderRadius.circular(5), // Optional border
-                  boxShadow: [
-                    BoxShadow(
-                      color: sapphireDark.withOpacity(0.5),
-                      spreadRadius: 5,
-                      blurRadius: 7,
-                      offset: const Offset(0, 3), // changes position of shadow
-                    ),
-                  ],
-                ),
-                child: const Center(child: FaIcon(FontAwesomeIcons.solidUser, color: Colors.white54, size: 12))),
-          ),
-          SizedBox(
-            width: double.infinity,
-            child: RichText(
-                text: TextSpan(
-                    text: "${log.exerciseLogs.length} ${pluralize(word: "Exercise", count: log.exerciseLogs.length)}",
-                    style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500),
-                    children: [
-                  const TextSpan(text: " "),
-                  TextSpan(
-                      text:
-                          "x${log.exerciseLogs.fold(0, (sum, e) => sum + e.sets.length)} ${pluralize(word: "Set", count: log.exerciseLogs.fold(0, (sum, e) => sum + e.sets.length))}",
-                      style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.white70, fontSize: 12))
-                ])),
-          ),
-          const SizedBox(height: 8),
-          MuscleGroupFamilyChart(frequencyData: muscleGroupFamilyFrequencyData),
-        ]));
+            SizedBox(
+              width: double.infinity,
+              child: RichText(
+                  text: TextSpan(
+                      text: "${log.exerciseLogs.length} ${pluralize(word: "Exercise", count: log.exerciseLogs.length)}",
+                      style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500),
+                      children: [
+                    const TextSpan(text: " "),
+                    TextSpan(
+                        text:
+                            "x${log.exerciseLogs.fold(0, (sum, e) => sum + e.sets.length)} ${pluralize(word: "Set", count: log.exerciseLogs.fold(0, (sum, e) => sum + e.sets.length))}",
+                        style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.white70, fontSize: 12))
+                  ])),
+            ),
+            const SizedBox(height: 8),
+            MuscleGroupFamilyChart(frequencyData: muscleGroupFamilyFrequencyData),
+          ])),
+    );
+  }
+}
+
+class _ActivityLogFeedListItem extends StatelessWidget {
+  final ActivityLogDto log;
+
+  const _ActivityLogFeedListItem({required this.log});
+
+  @override
+  Widget build(BuildContext context) {
+    final activityType = ActivityType.fromString(log.name);
+
+    final image = activityType.image;
+
+    return GestureDetector(
+      onTap: () => showActivityBottomSheet(context: context, activity: log),
+      child: Container(
+          color: Colors.transparent,
+          padding: const EdgeInsets.all(10.0),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: image != null
+                  ? Image.asset(
+                      'icons/$image.png',
+                      fit: BoxFit.contain,
+                      height: 24, // Adjust the height as needed
+                    )
+                  : FaIcon(activityType.icon, color: Colors.white),
+              title: Text(log.name,
+                  style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+              subtitle: Row(
+                children: [
+                  const Icon(
+                    Icons.date_range_rounded,
+                    color: Colors.white,
+                    size: 12,
+                  ),
+                  const SizedBox(width: 1),
+                  Text(log.createdAt.durationSinceOrDate(),
+                      style: GoogleFonts.ubuntu(
+                          color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                  const SizedBox(width: 10),
+                  const Icon(
+                    Icons.access_time_rounded,
+                    color: Colors.white,
+                    size: 12,
+                  ),
+                  const SizedBox(width: 1),
+                  Text(log.duration().hmsAnalog(),
+                      style: GoogleFonts.ubuntu(
+                          color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                ],
+              ),
+              trailing: const _ProfileIcon(),
+            ),
+          ])),
+    );
+  }
+}
+
+class _ProfileIcon extends StatelessWidget {
+  const _ProfileIcon();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        width: 40, // Width and height should be equal to make a perfect circle
+        height: 40,
+        decoration: BoxDecoration(
+          color: sapphireDark80,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(5), // Optional border
+          boxShadow: [
+            BoxShadow(
+              color: sapphireDark.withOpacity(0.5),
+              spreadRadius: 5,
+              blurRadius: 7,
+              offset: const Offset(0, 3), // changes position of shadow
+            ),
+          ],
+        ),
+        child: const Center(child: FaIcon(FontAwesomeIcons.solidUser, color: Colors.white54, size: 12)));
   }
 }
