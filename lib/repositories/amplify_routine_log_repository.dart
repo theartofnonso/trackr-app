@@ -58,7 +58,7 @@ class AmplifyRoutineLogRepository {
         final json = jsonDecode(response);
         final data = json["data"];
         final body = data["routineLogByDate"];
-        final items = body["items"] as List<dynamic>;
+        final _ = body["items"] as List<dynamic>;
       }
     } catch (e) {
       safePrint(e);
