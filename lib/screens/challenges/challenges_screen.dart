@@ -141,20 +141,14 @@ class ChallengesScreen extends StatelessWidget {
             ),
           ),
           child: SafeArea(
-              minimum: const EdgeInsets.all(10.0),
+              minimum: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text("Fuel Your Training\nWith TRACKD Challenges",
-                    textAlign: TextAlign.start,
-                    style: GoogleFonts.ubuntu(fontSize: 28, fontWeight: FontWeight.w500, color: Colors.white)),
-                const SizedBox(
-                  height: 10,
-                ),
                 BackgroundInformationContainer(
                     image: 'images/man_woman.jpg',
                     containerColor: Colors.green.shade900,
                     content: "Power up your weekly training sessions with fun challenges that fuel your motivation.",
                     textStyle: GoogleFonts.ubuntu(
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.w400,
                       color: Colors.white.withOpacity(0.9),
                     )),
@@ -185,9 +179,7 @@ class _ChallengeWidget extends StatelessWidget {
       },
       child: Container(
           padding: const EdgeInsets.all(18),
-          decoration: BoxDecoration(color: sapphireDark80, borderRadius: BorderRadius.circular(10), boxShadow: [
-            BoxShadow(color: sapphireDark.withOpacity(0.5), spreadRadius: 5, blurRadius: 7, offset: const Offset(0, 3))
-          ]),
+          decoration: BoxDecoration(color: sapphireDark80, borderRadius: BorderRadius.circular(5)),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Image.asset(
               challenge.image,

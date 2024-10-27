@@ -19,7 +19,7 @@ class BackgroundInformationContainer extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(5),
       child: SizedBox(
-        height: 100,
+        height: 80,
         child: Stack(children: [
           Image.asset(
             image,
@@ -42,11 +42,13 @@ class BackgroundInformationContainer extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-            child: Text(content,
-                style: textStyle ??
-                    GoogleFonts.ubuntu(
-                        fontSize: 12, height: 1.4, color: containerColor ?? Colors.white, fontWeight: FontWeight.w500)),
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: Center(
+              child: Text(content,
+                  style: textStyle ??
+                      GoogleFonts.ubuntu(
+                          fontSize: 12, height: 1.4, color: containerColor ?? Colors.white, fontWeight: FontWeight.w500)),
+            ),
           )
         ]),
       ),
