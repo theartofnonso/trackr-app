@@ -104,7 +104,7 @@ class ChallengesRepository {
     caption: 'Train for 50 days',
     target: 50,
     rule:
-    'Log 30 days of training to complete this 50-Day Challenge.',
+    'Log 50 days of training to complete this 50-Day Challenge.',
     startDate: DateTime.now(),
     endDate: DateTime.now().add(const Duration(days: 50)),
     isCompleted: false,
@@ -118,7 +118,7 @@ class ChallengesRepository {
     caption: 'Train for 100 days',
     target: 100,
     rule:
-    'Log 30 days of training to complete this 100-Day Challenge.',
+    'Log 100 days of training to complete this 100-Day Challenge.',
     startDate: DateTime.now(),
     endDate: DateTime.now().add(const Duration(days: 100)),
     isCompleted: false,
