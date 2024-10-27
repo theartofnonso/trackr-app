@@ -95,6 +95,7 @@ flutter:
     - exercises/
     - images/
     - icons/
+    - challenges_icons/
     - workouts/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg

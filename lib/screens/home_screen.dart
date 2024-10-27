@@ -25,7 +25,7 @@ import '../enums/routine_editor_type_enums.dart';
 import '../models/RoutineLog.dart';
 import '../models/RoutineTemplate.dart';
 import '../utils/app_analytics.dart';
-import 'communities_screen.dart';
+import 'challenges/challenges_home_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home_screen';
@@ -50,10 +50,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final screens = [
-      const FeedsScreen(),
+      FeedsScreen(scrollController: _scrollController),
       OverviewScreen(scrollController: _scrollController),
       const RoutineTemplatesScreen(),
-      const CommunitiesScreen(),
+      const ChallengesHomeScreen(),
     ];
 
     return Scaffold(

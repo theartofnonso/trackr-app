@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
+import 'package:tracker_app/health_and_fitness_stats.dart';
 import 'package:tracker_app/utils/date_utils.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/general_utils.dart';
@@ -393,11 +394,11 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   }
 
   int _sufficientSetsOrRepsValue() {
-    return _metric == SetRepsVolumeReps.sets ? 6 : 60;
+    return _metric == SetRepsVolumeReps.sets ? averageMedianWeeklySets : averageMedianWeeklyReps;
   }
 
   int _optimalSetsOrRepsValue() {
-    return _metric == SetRepsVolumeReps.sets ? 12 : 120;
+    return _metric == SetRepsVolumeReps.sets ? averageMaximumWeeklySets : averageMaximumWeeklyReps;
   }
 
   ChartUnit _chartUnit() {

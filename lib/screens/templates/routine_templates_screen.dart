@@ -144,7 +144,10 @@ class _RoutineWidget extends StatelessWidget {
                       ],
                     )
                   : null,
-              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 5, spreadRadius: 1)]),
+              boxShadow: [
+                BoxShadow(
+                    color: sapphireDark.withOpacity(0.5), spreadRadius: 5, blurRadius: 7, offset: const Offset(0, 3))
+              ]),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(
               template.name,

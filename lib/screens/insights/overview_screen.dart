@@ -41,7 +41,7 @@ class OverviewScreen extends StatefulWidget {
 
   static const routeName = '/overview_screen';
 
-  const OverviewScreen({super.key, this.scrollController});
+  const OverviewScreen({super.key,  this.scrollController});
 
   @override
   State<OverviewScreen> createState() => _OverviewScreenState();
@@ -201,7 +201,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
   void _navigateToUserProfile() {
     final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
     final user = routineUserController.user;
-    showCreateProfileBottomSheet(context: context);
     if (user != null) {
       showUserBottomSheet(context: context, user: user);
     } else {

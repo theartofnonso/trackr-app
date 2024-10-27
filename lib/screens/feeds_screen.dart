@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,21 +12,20 @@ import '../controllers/routine_log_controller.dart';
 import '../dtos/appsync/routine_log_dto.dart';
 import '../utils/exercise_logs_utils.dart';
 import '../widgets/chart/muscle_group_family_chart.dart';
+import '../widgets/pbs/pb_icon.dart';
 import 'no_list.dart';
 
-class FeedsScreen extends StatefulWidget {
-  const FeedsScreen({super.key});
+class FeedsScreen extends StatelessWidget {
 
-  @override
-  State<FeedsScreen> createState() => _FeedsScreenState();
-}
+  final ScrollController scrollController;
 
-class _FeedsScreenState extends State<FeedsScreen> {
+  const FeedsScreen({super.key, required this.scrollController});
+
   @override
   Widget build(BuildContext context) {
     final routineLogsProvider = Provider.of<RoutineLogController>(context, listen: true);
 
-    final routineLogs = routineLogsProvider.logsForFeed;
+    final routineLogs = routineLogsProvider.logs.sorted((a, b) => b.createdAt.compareTo(a.createdAt));
 
     if (routineLogs.isEmpty) return const NoList();
 
@@ -40,33 +40,17 @@ class _FeedsScreenState extends State<FeedsScreen> {
           ],
         ),
       ),
-      child: RefreshIndicator(
-        onRefresh: _loadData,
-        child: SafeArea(
-            minimum: const EdgeInsets.all(10.0),
-            child: ListView.separated(
-                itemCount: routineLogs.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final routineLog = routineLogs[index];
-                  return _FeedListItem(log: routineLog);
-                },
-                separatorBuilder: (BuildContext context, int index) =>
-                    Divider(color: Colors.white70.withOpacity(0.1)))),
-      ),
+      child: SafeArea(
+          minimum: const EdgeInsets.all(10.0),
+          child: ListView.separated(
+              controller: scrollController,
+              itemCount: routineLogs.length,
+              itemBuilder: (BuildContext context, int index) {
+                final routineLog = routineLogs[index];
+                return _FeedListItem(log: routineLog);
+              },
+              separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.1)))),
     );
-  }
-
-  Future<void> _loadData() async {
-    final routineLogsProvider = Provider.of<RoutineLogController>(context, listen: false);
-    routineLogsProvider.loadLogsForFeed();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadData();
-    });
   }
 }
 
@@ -77,6 +61,16 @@ class _FeedListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final routineLogsController = Provider.of<RoutineLogController>(context, listen: true);
+
+    final pbs = log.exerciseLogs.map((exerciseLog) {
+      final pastExerciseLogs =
+          routineLogsController.whereExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
+
+      return calculatePBs(
+          pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog);
+    }).expand((pbs) => pbs);
+
     final completedExerciseLogsAndSets = exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs);
     final updatedLog = log.copyWith(exerciseLogs: completedExerciseLogsAndSets);
 
@@ -98,7 +92,7 @@ class _FeedListItem extends StatelessWidget {
                   size: 12,
                 ),
                 const SizedBox(width: 1),
-                Text(log.createdAt.formattedDayAndMonth(),
+                Text(log.createdAt.durationSinceOrDate(),
                     style: GoogleFonts.ubuntu(
                         color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
                 const SizedBox(width: 10),
@@ -111,6 +105,8 @@ class _FeedListItem extends StatelessWidget {
                 Text(log.duration().hmsAnalog(),
                     style: GoogleFonts.ubuntu(
                         color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                const SizedBox(width: 10),
+                pbs.isNotEmpty ? PBIcon(color: sapphireLight, label: "${pbs.length}") : const SizedBox.shrink()
               ],
             ),
             trailing: Container(
@@ -147,8 +143,6 @@ class _FeedListItem extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           MuscleGroupFamilyChart(frequencyData: muscleGroupFamilyFrequencyData),
-          Text("user-${log.owner.split("-")[0]}",
-              style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white60, fontSize: 12))
         ]));
   }
 }

@@ -23,7 +23,7 @@ class RoutineLogWidget extends StatelessWidget {
 
     final pbs = log.exerciseLogs.map((exerciseLog) {
       final pastExerciseLogs =
-      routineLogController.whereExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
+          routineLogController.whereExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
 
       return calculatePBs(
           pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog);
@@ -33,7 +33,8 @@ class RoutineLogWidget extends StatelessWidget {
 
     return SolidListTile(
         title: log.name,
-        subtitle: "${completedExerciseLogsAndSets.length} ${pluralize(word: "exercise", count: completedExerciseLogsAndSets.length)}",
+        subtitle:
+            "${completedExerciseLogsAndSets.length} ${pluralize(word: "exercise", count: completedExerciseLogsAndSets.length)}",
         trailing: trailing,
         tileColor: color,
         trailingSubtitle: pbs.isNotEmpty ? PBIcon(color: sapphireLight, label: "${pbs.length}") : null,
