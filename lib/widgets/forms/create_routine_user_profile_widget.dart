@@ -134,7 +134,6 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
       final body = json["data"];
       final routineUsers = body["listRoutineUsers"];
       final items = routineUsers["items"] as List<dynamic>;
-      print(items);
       doesExists = items.isNotEmpty;
     }
     return doesExists;
