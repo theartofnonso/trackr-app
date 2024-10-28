@@ -126,11 +126,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     final menuActions = [
       MenuItemButton(onPressed: _navigateToRoutineTemplateEditor, child: Text("Edit", style: GoogleFonts.ubuntu())),
       MenuItemButton(
-        onPressed: () {
-          displayBottomSheet(
-              context: context,
-              child: RoutineDayPlanner(template: template));
-        },
+        onPressed: () => _updateTemplateSchedule(template: template),
         child: Text("Schedule", style: GoogleFonts.ubuntu(color: Colors.white)),
       ),
       MenuItemButton(onPressed: _showBottomSheet, child: Text("Share", style: GoogleFonts.ubuntu())),
@@ -540,6 +536,18 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     setState(() {
       _template = template;
     });
+  }
+
+  void _updateTemplateSchedule({required RoutineTemplateDto template}) async {
+    final updatedTemplate = await displayBottomSheet(
+        context: context,
+        child: RoutineDayPlanner(template: template)) as RoutineTemplateDto?;
+
+    if(updatedTemplate != null) {
+      setState(() {
+        _template = updatedTemplate;
+      });
+    }
   }
 
   void _showSnackbar(String message) {

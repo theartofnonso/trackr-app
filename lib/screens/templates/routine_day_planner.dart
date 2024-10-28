@@ -111,7 +111,7 @@ class _RoutineDayPlannerState extends State<RoutineDayPlanner> {
     final template = widget.template.copyWith(scheduledDays: _selectedDays, scheduleType: RoutineScheduleType.days, scheduleIntervals: 0, scheduledDate: null);
     await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: template);
     if (mounted) {
-      Navigator.of(context).pop();
+      Navigator.of(context).pop(template);
     }
   }
 }
