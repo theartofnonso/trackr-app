@@ -101,8 +101,17 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         otherExercises: primaryExerciseLog.substituteExercises,
         onSelected: (secondaryExercise) {
           _closeDialog();
-          controller.replaceExerciseLog(oldExerciseId: primaryExerciseLog.id, newExercise: secondaryExercise);
-          _cacheLog();
+          final foundExerciseLog = controller.exerciseLogs
+              .firstWhereOrNull((exerciseLog) => exerciseLog.exercise.id == secondaryExercise.id);
+          if (foundExerciseLog == null) {
+            controller.replaceExerciseLog(oldExerciseId: primaryExerciseLog.id, newExercise: secondaryExercise);
+            _cacheLog();
+          } else {
+            showSnackbar(
+                context: context,
+                icon: const FaIcon(FontAwesomeIcons.circleInfo),
+                message: "${foundExerciseLog.exercise.name} has already been added");
+          }
         },
         onRemoved: (ExerciseDto secondaryExercise) {
           controller.removeAlternates(
@@ -299,7 +308,10 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     if (routineLogEditorController.errorMessage.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        showSnackbar(context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: routineLogEditorController.errorMessage);
+        showSnackbar(
+            context: context,
+            icon: const FaIcon(FontAwesomeIcons.circleInfo),
+            message: routineLogEditorController.errorMessage);
       });
     }
 

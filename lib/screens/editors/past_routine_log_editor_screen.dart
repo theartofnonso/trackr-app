@@ -93,7 +93,13 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
         otherExercises: primaryExerciseLog.substituteExercises,
         onSelected: (secondaryExercise) {
           _closeDialog();
-          controller.replaceExerciseLog(oldExerciseId: primaryExerciseLog.id, newExercise: secondaryExercise);
+          final foundExerciseLog = controller.exerciseLogs
+              .firstWhereOrNull((exerciseLog) => exerciseLog.exercise.id == secondaryExercise.id);
+          if (foundExerciseLog == null) {
+            controller.replaceExerciseLog(oldExerciseId: primaryExerciseLog.id, newExercise: secondaryExercise);
+          } else {
+            _showSnackbar("${foundExerciseLog.exercise.name} has already been added");
+          }
         },
         onRemoved: (ExerciseDto secondaryExercise) {
           controller.removeAlternates(
@@ -145,16 +151,15 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
 
     final updatedLog = widget.log.copyWith(exerciseLogs: exercises);
 
-    if(widget.log.id.isEmpty) {
-
+    if (widget.log.id.isEmpty) {
       final datetime = TemporalDateTime.withOffset(updatedLog.startTime, Duration.zero);
 
-      final createdLog = await Provider.of<RoutineLogController>(context, listen: false).saveLog(logDto: updatedLog, datetime: datetime);
+      final createdLog = await Provider.of<RoutineLogController>(context, listen: false)
+          .saveLog(logDto: updatedLog, datetime: datetime);
       _navigateBack(log: createdLog);
     } else {
       await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: updatedLog);
     }
-
   }
 
   void _checkForUnsavedChanges() {

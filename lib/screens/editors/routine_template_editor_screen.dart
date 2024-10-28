@@ -92,7 +92,13 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
         otherExercises: primaryExerciseLog.substituteExercises,
         onSelected: (secondaryExercise) {
           _closeDialog();
-          controller.replaceExerciseLog(oldExerciseId: primaryExerciseLog.id, newExercise: secondaryExercise);
+          final foundExerciseLog = controller.exerciseLogs
+              .firstWhereOrNull((exerciseLog) => exerciseLog.exercise.id == secondaryExercise.id);
+          if (foundExerciseLog == null) {
+            controller.replaceExerciseLog(oldExerciseId: primaryExerciseLog.id, newExercise: secondaryExercise);
+          } else {
+            _showSnackbar("${foundExerciseLog.exercise.name} has already been added");
+          }
         },
         onRemoved: (ExerciseDto secondaryExercise) {
           controller.removeAlternates(
@@ -175,7 +181,8 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     }
   }
 
-  RoutineTemplateDto _getUpdatedRoutineTemplate({required RoutineTemplateDto template, List<ExerciseLogDto>? updatedExerciseLogs}) {
+  RoutineTemplateDto _getUpdatedRoutineTemplate(
+      {required RoutineTemplateDto template, List<ExerciseLogDto>? updatedExerciseLogs}) {
     final exerciseProvider = Provider.of<ExerciseLogController>(context, listen: false);
     final exerciseLogs = updatedExerciseLogs ?? exerciseProvider.mergeExerciseLogsAndSets();
 
