@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
-import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/string_utils.dart';
+import 'package:tracker_app/widgets/routine/preview/date_duration_pb.dart';
 
 import '../colors.dart';
 import '../controllers/activity_log_controller.dart';
@@ -18,7 +17,6 @@ import '../utils/dialog_utils.dart';
 import '../utils/exercise_logs_utils.dart';
 import '../utils/navigation_utils.dart';
 import '../widgets/chart/muscle_group_family_chart.dart';
-import '../widgets/pbs/pb_icon.dart';
 import 'no_list.dart';
 
 class FeedsScreen extends StatelessWidget {
@@ -101,31 +99,7 @@ class _RoutineLogFeedListItem extends StatelessWidget {
               contentPadding: EdgeInsets.zero,
               title: Text(log.name,
                   style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
-              subtitle: Row(
-                children: [
-                  const Icon(
-                    Icons.date_range_rounded,
-                    color: Colors.white,
-                    size: 12,
-                  ),
-                  const SizedBox(width: 1),
-                  Text(log.createdAt.durationSinceOrDate(),
-                      style: GoogleFonts.ubuntu(
-                          color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
-                  const SizedBox(width: 10),
-                  const Icon(
-                    Icons.access_time_rounded,
-                    color: Colors.white,
-                    size: 12,
-                  ),
-                  const SizedBox(width: 1),
-                  Text(log.duration().hmsAnalog(),
-                      style: GoogleFonts.ubuntu(
-                          color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
-                  const SizedBox(width: 10),
-                  pbs.isNotEmpty ? PBIcon(color: sapphireLight, label: "${pbs.length}") : const SizedBox.shrink()
-                ],
-              ),
+              subtitle: DateDurationPBWidget(dateTime: log.createdAt, duration: log.duration(), pbs: pbs.length),
               trailing: const _ProfileIcon(),
             ),
             SizedBox(
@@ -177,29 +151,7 @@ class _ActivityLogFeedListItem extends StatelessWidget {
                   : FaIcon(activityType.icon, color: Colors.white),
               title: Text(log.name,
                   style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
-              subtitle: Row(
-                children: [
-                  const Icon(
-                    Icons.date_range_rounded,
-                    color: Colors.white,
-                    size: 12,
-                  ),
-                  const SizedBox(width: 1),
-                  Text(log.createdAt.durationSinceOrDate(),
-                      style: GoogleFonts.ubuntu(
-                          color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
-                  const SizedBox(width: 10),
-                  const Icon(
-                    Icons.access_time_rounded,
-                    color: Colors.white,
-                    size: 12,
-                  ),
-                  const SizedBox(width: 1),
-                  Text(log.duration().hmsAnalog(),
-                      style: GoogleFonts.ubuntu(
-                          color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
-                ],
-              ),
+              subtitle: DateDurationPBWidget(dateTime: log.createdAt, duration: log.duration(), pbs: 0),
               trailing: const _ProfileIcon(),
             ),
           ])),

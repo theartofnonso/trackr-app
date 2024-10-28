@@ -82,7 +82,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
     final pages = [
       if (isMultipleOfFive(logsByDay.length)) SessionMilestoneShareable(label: "${logsByDay.length}th", image: _image),
       ...pbShareAssets,
-      RoutineLogShareableLite(log: updatedLog, frequencyData: muscleGroupFamilyFrequencyData, image: _image),
+      RoutineLogShareableLite(log: updatedLog, frequencyData: muscleGroupFamilyFrequencyData, pbs: pbShareAssets.length, image: _image),
     ];
 
     final pagesKeys = [

@@ -8,7 +8,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
-import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/amplify_models/routine_log_extension.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
@@ -36,6 +35,7 @@ import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/ai_widgets/trkr_information_container.dart';
+import '../../widgets/routine/preview/date_duration_pb.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
 import '../AI/trkr_coach_summary_screen.dart';
 import '../not_found.dart';
@@ -137,30 +137,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const  FaIcon(
-                          FontAwesomeIcons.solidCalendarCheck,
-                          color: Colors.white,
-                          size: 12,
-                        ),
-                        const SizedBox(width: 3),
-                        Text(log.createdAt.formattedDayAndMonthAndYear(),
-                            style: GoogleFonts.ubuntu(
-                                color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
-                        const SizedBox(width: 10),
-                        const FaIcon(
-                          FontAwesomeIcons.solidClock,
-                          color: Colors.white,
-                          size: 12,
-                        ),
-                        const SizedBox(width: 2),
-                        Text(log.endTime.formattedTime(),
-                            style: GoogleFonts.ubuntu(
-                                color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
-                      ],
-                    ),
+                    Center(child: DateDurationPBWidget(dateTime: log.createdAt, duration: log.duration(), pbs: 0)),
                     if (log.notes.isNotEmpty)
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
