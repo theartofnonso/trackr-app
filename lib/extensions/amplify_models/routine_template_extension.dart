@@ -6,7 +6,6 @@ import 'package:tracker_app/models/ModelProvider.dart';
 import '../../dtos/exercise_log_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../enums/week_days_enum.dart';
-import '../../shared_prefs.dart';
 
 extension RoutineTemplateExtension on RoutineTemplate {
   RoutineTemplateDto dto() {
@@ -32,7 +31,7 @@ extension RoutineTemplateExtension on RoutineTemplate {
       scheduleIntervals: scheduleIntervals,
       scheduledDate: scheduledDate,
       scheduleType: scheduleType,
-      owner: SharedPrefs().userId,
+      owner: owner ?? "",
       createdAt: createdAt.getDateTimeInUtc(),
       updatedAt: updatedAt.getDateTimeInUtc(),
     );

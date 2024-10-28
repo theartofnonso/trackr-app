@@ -16,7 +16,7 @@ extension ExerciseExtension on Exercise {
     final primaryMuscleGroup = MuscleGroup.fromString(primaryMuscleGroupString);
     final secondaryMuscleGroupJson = json["secondaryMuscleGroups"] as List<dynamic>;
     final secondaryMuscleGroups =
-    secondaryMuscleGroupJson.map((muscleGroup) => MuscleGroup.fromString(muscleGroup)).toList();
+        secondaryMuscleGroupJson.map((muscleGroup) => MuscleGroup.fromString(muscleGroup)).toList();
     final trainingPositionString = json["trainingPosition"] ?? "";
     final trainingPosition = TrainingPosition.fromString(trainingPositionString);
     final typeString = json["type"];
@@ -54,6 +54,6 @@ extension ExerciseExtension on Exercise {
         secondaryMuscleGroups: [],
         trainingPosition: TrainingPosition.none,
         type: type,
-        owner: SharedPrefs().userId);
+        owner: owner ?? SharedPrefs().userId);
   }
 }

@@ -21,7 +21,7 @@ extension ActivityLogExtension on ActivityLog {
       startTime: startTime,
       endTime: endTime,
       createdAt: createdAt.getDateTimeInUtc(),
-      updatedAt: updatedAt.getDateTimeInUtc(), owner: SharedPrefs().userId,
+      updatedAt: updatedAt.getDateTimeInUtc(), owner: owner ?? SharedPrefs().userId,
     );
   }
 
