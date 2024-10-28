@@ -91,7 +91,7 @@ class _RoutineDayPlannerState extends State<RoutineDayPlanner> {
         Center(
           child: OpacityButtonWidget(
               onPressed: _updateRoutineTemplateDays,
-              label: "Save Days",
+              label: "Schedule Days",
               padding: const EdgeInsets.all(10.0),
               buttonColor: vibrantGreen),
         )
