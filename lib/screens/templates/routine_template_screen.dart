@@ -15,8 +15,8 @@ import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 
 import '../../colors.dart';
 import '../../controllers/routine_template_controller.dart';
-import '../../dtos/exercise_log_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
+import '../../dtos/exercise_log_dto.dart';
 import '../../dtos/set_dto.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../dtos/viewmodels/routine_template_arguments.dart';
@@ -95,14 +95,16 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     final routineTemplateController = Provider.of<RoutineTemplateController>(context, listen: false);
 
     if (routineTemplateController.errorMessage.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        showSnackbar(context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: routineTemplateController.errorMessage);
+        showSnackbar(
+            context: context,
+            icon: const FaIcon(FontAwesomeIcons.circleInfo),
+            message: routineTemplateController.errorMessage);
       });
     }
 
@@ -407,11 +409,17 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           final json = jsonDecode(data);
           final body = json["data"];
           final routineTemplate = body["getRoutineTemplate"];
-          final routineTemplateDto = RoutineTemplate.fromJson(routineTemplate);
-          setState(() {
-            _loading = false;
-            _template = routineTemplateDto.dto();
-          });
+          if (routineTemplate != null) {
+            final routineTemplateDto = RoutineTemplate.fromJson(routineTemplate);
+            setState(() {
+              _loading = false;
+              _template = routineTemplateDto.dto();
+            });
+          } else {
+            setState(() {
+              _loading = false;
+            });
+          }
         }
       });
     }
@@ -539,11 +547,10 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   }
 
   void _updateTemplateSchedule({required RoutineTemplateDto template}) async {
-    final updatedTemplate = await displayBottomSheet(
-        context: context,
-        child: RoutineDayPlanner(template: template)) as RoutineTemplateDto?;
+    final updatedTemplate =
+        await displayBottomSheet(context: context, child: RoutineDayPlanner(template: template)) as RoutineTemplateDto?;
 
-    if(updatedTemplate != null) {
+    if (updatedTemplate != null) {
       setState(() {
         _template = updatedTemplate;
       });

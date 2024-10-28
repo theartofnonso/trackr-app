@@ -8,8 +8,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
-import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/amplify_models/routine_log_extension.dart';
+import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/https_utils.dart';
@@ -53,7 +53,6 @@ class RoutineLogScreen extends StatefulWidget {
 }
 
 class _RoutineLogScreenState extends State<RoutineLogScreen> {
-
   RoutineLogDto? _log;
 
   bool _loading = false;
@@ -62,14 +61,16 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
     if (routineLogController.errorMessage.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        showSnackbar(context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: routineLogController.errorMessage);
+        showSnackbar(
+            context: context,
+            icon: const FaIcon(FontAwesomeIcons.circleInfo),
+            message: routineLogController.errorMessage);
       });
     }
 
@@ -149,6 +150,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                                 fontStyle: FontStyle.italic,
                                 fontWeight: FontWeight.w600)),
                       ),
+
                     /// Keep this spacing for when notes isn't available
                     if (log.notes.isEmpty)
                       const SizedBox(
@@ -225,15 +227,17 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    TRKRInformationContainer(
-                        ctaLabel: log.summary != null ? "Review your feedback" : "Ask for feedback",
-                        description:
-                            "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
-                        onTap: () => log.summary != null
-                            ? _showSummary()
-                            : _generateSummary(logs: completedExerciseLogsAndSets)),
-                    const SizedBox(height: 12),
+                    if(log.owner == SharedPrefs().userId)
+                      Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12.0),
+                      child: TRKRInformationContainer(
+                          ctaLabel: log.summary != null ? "Review your feedback" : "Ask for feedback",
+                          description:
+                              "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
+                          onTap: () => log.summary != null
+                              ? _showSummary()
+                              : _generateSummary(logs: completedExerciseLogsAndSets)),
+                    ),
                     ExerciseLogListView(
                         exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogsAndSets),
                         previewType: RoutinePreviewType.log),
@@ -289,14 +293,12 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     _hideLoadingScreen();
 
     if (summary != null) {
-
       _saveSummary(response: summary, log: log);
 
-      if(mounted) {
+      if (mounted) {
         navigateWithSlideTransition(context: context, child: TRKRCoachSummaryScreen(content: summary));
       }
     }
-
   }
 
   void _loadData() {
@@ -309,11 +311,17 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
           final json = jsonDecode(data);
           final body = json["data"];
           final routineLog = body["getRoutineLog"];
-          final routineLogDto = RoutineLog.fromJson(routineLog);
-          setState(() {
-            _loading = false;
-            _log = routineLogDto.dto();
-          });
+          if (routineLog != null) {
+            final routineLogDto = RoutineLog.fromJson(routineLog);
+            setState(() {
+              _loading = false;
+              _log = routineLogDto.dto();
+            });
+          } else {
+            setState(() {
+              _loading = false;
+            });
+          }
         }
       });
     }
