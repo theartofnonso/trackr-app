@@ -20,6 +20,7 @@ class ExerciseWidget extends StatelessWidget {
 
     final exercise = exerciseDto;
     final description = exerciseDto.description ?? "";
+    final owner = exercise.owner;
 
     return GestureDetector(
       onTap: () => selectExercise != null ? selectExercise(exerciseDto) : null,
@@ -57,15 +58,17 @@ class ExerciseWidget extends StatelessWidget {
                               color: Colors.deepOrangeAccent, fontWeight: FontWeight.w600, fontSize: 12, height: 1.5),
                           children: [
                         if (exercise.secondaryMuscleGroups.isNotEmpty)
-                          [exercise.primaryMuscleGroup, ...exercise.secondaryMuscleGroups].length == 2 ? const TextSpan(text: " & ") : const TextSpan(text: " | "),
-                          TextSpan(
-                              text: exercise.secondaryMuscleGroups
-                                  .map((muscleGroup) => muscleGroup.name.toUpperCase())
-                                  .join(", "),
-                              style: GoogleFonts.ubuntu(
-                                  color: Colors.orange.withOpacity(0.6), fontWeight: FontWeight.w500, fontSize: 11)),
+                          [exercise.primaryMuscleGroup, ...exercise.secondaryMuscleGroups].length == 2
+                              ? const TextSpan(text: " & ")
+                              : const TextSpan(text: " | "),
+                        TextSpan(
+                            text: exercise.secondaryMuscleGroups
+                                .map((muscleGroup) => muscleGroup.name.toUpperCase())
+                                .join(", "),
+                            style: GoogleFonts.ubuntu(
+                                color: Colors.orange.withOpacity(0.6), fontWeight: FontWeight.w500, fontSize: 11)),
                       ])),
-                  if (exercise.owner == SharedPrefs().userId)
+                  if (owner == SharedPrefs().userId)
                     Padding(
                       padding: const EdgeInsets.only(top: 4.0),
                       child: Text("Owner".toUpperCase(),

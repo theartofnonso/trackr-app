@@ -4,6 +4,7 @@ import 'package:tracker_app/models/ModelProvider.dart';
 
 import '../../dtos/exercise_log_dto.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
+import '../../shared_prefs.dart';
 
 extension RoutineLogExtension on RoutineLog {
 
@@ -26,7 +27,7 @@ extension RoutineLogExtension on RoutineLog {
       summary: summary,
       startTime: startTime,
       endTime: endTime,
-      owner: owner ?? "",
+      owner: SharedPrefs().userId,
       createdAt: createdAt.getDateTimeInUtc(),
       updatedAt: updatedAt.getDateTimeInUtc(),
     );

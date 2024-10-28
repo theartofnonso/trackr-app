@@ -33,7 +33,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
   Map<String, List<ExerciseLogDto>>? _exerciseLogsById;
 
   void _deleteExercise(BuildContext context) async {
-    Navigator.pop(context);
+    context.pop();
     try {
       await Provider.of<ExerciseController>(context, listen: false).removeExercise(exercise: widget.exercise);
       if (context.mounted) {
@@ -173,7 +173,6 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
                     child: TabBarView(
                       children: [
                         ExerciseChartScreen(
-                          key: UniqueKey(),
                           heaviestWeight: heaviestWeightRecord,
                           heaviestSet: heaviestSetVolumeRecord,
                           longestDuration: longestDurationRecord,

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
+import 'package:tracker_app/shared_prefs.dart';
 
 import '../../enums/exercise_type_enums.dart';
 import '../../enums/training_position_enum.dart';
@@ -53,6 +54,6 @@ extension ExerciseExtension on Exercise {
         secondaryMuscleGroups: [],
         trainingPosition: TrainingPosition.none,
         type: type,
-        owner: owner ?? "");
+        owner: SharedPrefs().userId);
   }
 }
