@@ -10,9 +10,9 @@ import 'package:tracker_app/widgets/search_bar.dart';
 import '../../../colors.dart';
 import '../../../dtos/appsync/exercise_dto.dart';
 import '../../../enums/muscle_group_enums.dart';
+import '../../../utils/navigation_utils.dart';
 import '../../../widgets/exercise/exercise_widget.dart';
 import '../../editors/exercise_editor_screen.dart';
-import '../history/exercise_home_screen.dart';
 
 class ExerciseLibraryScreen extends StatefulWidget {
   final bool readOnly;
@@ -80,7 +80,8 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   }
 
   void _navigateToExerciseHistory(ExerciseDto exercise) async {
-    await Navigator.of(context).push(MaterialPageRoute(builder: (context) => ExerciseHomeScreen(exercise: exercise)));
+    _dismissKeyboard(context);
+    await navigateToExerciseHome(context: context, exercise: exercise);
     setState(() {
       _loadOrSyncExercises();
     });

@@ -35,6 +35,7 @@ import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_log_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_template_editor_screen.dart';
+import 'package:tracker_app/screens/exercise/history/exercise_home_screen.dart';
 import 'package:tracker_app/screens/home_screen.dart';
 import 'package:tracker_app/screens/insights/overview_screen.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
@@ -52,6 +53,7 @@ import 'amplifyconfiguration.dart';
 import 'controllers/activity_log_controller.dart';
 import 'controllers/challenge_log_controller.dart';
 import 'controllers/routine_user_controller.dart';
+import 'dtos/appsync/exercise_dto.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
 import 'dtos/viewmodels/routine_template_arguments.dart';
 import 'models/ModelProvider.dart';
@@ -170,6 +172,13 @@ final _router = GoRouter(
       builder: (context, state) {
         final args = state.extra as ExerciseEditorArguments?;
         return ExerciseEditorScreen(exercise: args?.exercise);
+      },
+    ),
+    GoRoute(
+      path: ExerciseHomeScreen.routeName,
+      builder: (context, state) {
+        final args = state.extra as ExerciseDto;
+        return ExerciseHomeScreen(exercise: args);
       },
     ),
     GoRoute(

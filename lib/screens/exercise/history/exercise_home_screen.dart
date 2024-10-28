@@ -18,9 +18,10 @@ import '../../../utils/dialog_utils.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/navigation_utils.dart';
 
-const exerciseRouteName = "/exercise-history-screen";
-
 class ExerciseHomeScreen extends StatefulWidget {
+
+  static const routeName = "/exercise_home_screen";
+
   final ExerciseDto exercise;
 
   const ExerciseHomeScreen({super.key, required this.exercise});
@@ -166,26 +167,19 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
               ),
             ),
             child: SafeArea(
-              child: Column(
+              child: TabBarView(
                 children: [
-                  const SizedBox(height: 22),
-                  Expanded(
-                    child: TabBarView(
-                      children: [
-                        ExerciseChartScreen(
-                          heaviestWeight: heaviestWeightRecord,
-                          heaviestSet: heaviestSetVolumeRecord,
-                          longestDuration: longestDurationRecord,
-                          mostRepsSet: mostRepsSetRecord,
-                          mostRepsSession: mostRepsSessionRecord,
-                          exercise: foundExercise,
-                          exerciseLogs: completedExerciseLogs,
-                        ),
-                        HistoryScreen(exerciseLogs: completedExerciseLogs),
-                        if (hasVideo) ExerciseVideoScreen(exercise: foundExercise)
-                      ],
-                    ),
+                  ExerciseChartScreen(
+                    heaviestWeight: heaviestWeightRecord,
+                    heaviestSet: heaviestSetVolumeRecord,
+                    longestDuration: longestDurationRecord,
+                    mostRepsSet: mostRepsSetRecord,
+                    mostRepsSession: mostRepsSessionRecord,
+                    exercise: foundExercise,
+                    exerciseLogs: completedExerciseLogs,
                   ),
+                  HistoryScreen(exerciseLogs: completedExerciseLogs),
+                  if (hasVideo) ExerciseVideoScreen(exercise: foundExercise)
                 ],
               ),
             ),

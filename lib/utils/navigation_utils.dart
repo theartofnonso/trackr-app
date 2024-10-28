@@ -3,8 +3,10 @@ import 'package:go_router/go_router.dart';
 import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
 import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
+import 'package:tracker_app/screens/exercise/history/exercise_home_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 
+import '../dtos/appsync/exercise_dto.dart';
 import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/appsync/routine_template_dto.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
@@ -52,6 +54,10 @@ void navigateToRoutineTemplatePreview({required BuildContext context, required R
 
 void navigateToRoutineLogPreview({required BuildContext context, required RoutineLogDto log}) {
   context.push(RoutineLogScreen.routeName, extra: {"log": log, "showSummary": false});
+}
+
+Future<void> navigateToExerciseHome({required BuildContext context, required ExerciseDto exercise}) async {
+  context.push(ExerciseHomeScreen.routeName, extra: exercise);
 }
 
 void navigateToShareableScreen({required BuildContext context, required RoutineLogDto log}) {
