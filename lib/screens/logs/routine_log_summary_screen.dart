@@ -57,7 +57,8 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
 
     final logsByDay = groupBy(routineLogController.logs, (log) => log.createdAt.withoutTime());
 
-    final muscleGroupFamilyFrequencyData = muscleGroupFamilyFrequency(exerciseLogs: updatedLog.exerciseLogs, includeSecondaryMuscleGroups: false);
+    final muscleGroupFamilyFrequencyData =
+        muscleGroupFamilyFrequency(exerciseLogs: updatedLog.exerciseLogs, includeSecondaryMuscleGroups: false);
 
     List<Widget> pbShareAssets = [];
     final pbShareAssetsKeys = [];
@@ -82,7 +83,8 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
     final pages = [
       if (isMultipleOfFive(logsByDay.length)) SessionMilestoneShareable(label: "${logsByDay.length}th", image: _image),
       ...pbShareAssets,
-      RoutineLogShareableLite(log: updatedLog, frequencyData: muscleGroupFamilyFrequencyData, pbs: pbShareAssets.length, image: _image),
+      RoutineLogShareableLite(
+          log: updatedLog, frequencyData: muscleGroupFamilyFrequencyData, pbs: pbShareAssets.length, image: _image),
     ];
 
     final pagesKeys = [
@@ -148,7 +150,14 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
               OpacityButtonWidget(
                   onPressed: () {
                     final index = _controller.page!.toInt();
-                    captureImage(key: pagesKeys[index], pixelRatio: 3.5);
+                    captureImage(key: pagesKeys[index], pixelRatio: 3.5).then((_) {
+                      if (context.mounted) {
+                        showSnackbar(
+                            context: context,
+                            icon: const FaIcon(FontAwesomeIcons.circleCheck),
+                            message: "Content Shared");
+                      }
+                    });
                     final contentType = _shareContentType(index: index);
                     contentShared(contentType: contentType);
                   },
@@ -164,7 +173,11 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
 
   void _showCopyBottomSheet() {
     final workoutLogLink = "$shareableRoutineLogUrl/${widget.log.id}";
-    final workoutLogText = copyRoutineAsText(routineType: RoutinePreviewType.log, name: widget.log.name, notes: widget.log.notes, exerciseLogs: widget.log.exerciseLogs);
+    final workoutLogText = copyRoutineAsText(
+        routineType: RoutinePreviewType.log,
+        name: widget.log.name,
+        notes: widget.log.notes,
+        exerciseLogs: widget.log.exerciseLogs);
 
     displayBottomSheet(
         context: context,
@@ -215,13 +228,14 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
                 ),
                 borderRadius: BorderRadius.circular(5), // Optional: Rounded corners
               ),
-              child: Text("${workoutLogText.substring(0, workoutLogText.length >= 150 ? 150 : workoutLogText.length)}...",
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.ubuntu(
-                    color: Colors.white70,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14,
-                  )),
+              child:
+                  Text("${workoutLogText.substring(0, workoutLogText.length >= 150 ? 150 : workoutLogText.length)}...",
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.ubuntu(
+                        color: Colors.white70,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                      )),
             ),
             OpacityButtonWidget(
               onPressed: () {
@@ -278,7 +292,9 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
             ),
             if (_hasImage)
               Column(children: [
-                const SizedBox(height: 10,),
+                const SizedBox(
+                  height: 10,
+                ),
                 const LabelDivider(
                   label: "Don't like the vibe?",
                   labelColor: Colors.white70,
