@@ -141,7 +141,7 @@ class _ActivityLogFeedListItem extends StatelessWidget {
           padding: const EdgeInsets.all(10.0),
           child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
             ListTile(
-              horizontalTitleGap: 3,
+              horizontalTitleGap: 5,
               contentPadding: EdgeInsets.zero,
               leading: image != null
                   ? Image.asset(
