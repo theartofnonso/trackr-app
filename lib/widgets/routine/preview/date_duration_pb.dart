@@ -11,16 +11,21 @@ class DateDurationPBWidget extends StatelessWidget {
   final DateTime dateTime;
   final Duration duration;
   final int pbs;
+  final bool durationSince;
 
   const DateDurationPBWidget({
     super.key,
     required this.dateTime,
     required this.duration,
     required this.pbs,
+    this.durationSince = false,
   });
 
   @override
   Widget build(BuildContext context) {
+
+    final datetimeSummary = durationSince ? dateTime.durationSinceOrDate() : dateTime.formattedDayAndMonth();
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
@@ -34,7 +39,7 @@ class DateDurationPBWidget extends StatelessWidget {
               size: 14,
             ),
             const SizedBox(width: 6),
-            Text(dateTime.formattedDayAndMonth(),
+            Text(datetimeSummary,
                 style:
                     GoogleFonts.ubuntu(color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
           ],

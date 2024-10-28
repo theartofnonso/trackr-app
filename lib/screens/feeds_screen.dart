@@ -99,7 +99,7 @@ class _RoutineLogFeedListItem extends StatelessWidget {
               contentPadding: EdgeInsets.zero,
               title: Text(log.name,
                   style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
-              subtitle: DateDurationPBWidget(dateTime: log.createdAt, duration: log.duration(), pbs: pbs.length),
+              subtitle: DateDurationPBWidget(dateTime: log.createdAt, duration: log.duration(), pbs: pbs.length, durationSince: true,),
               trailing: const _ProfileIcon(),
             ),
             SizedBox(
@@ -141,6 +141,7 @@ class _ActivityLogFeedListItem extends StatelessWidget {
           padding: const EdgeInsets.all(10.0),
           child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
             ListTile(
+              horizontalTitleGap: 3,
               contentPadding: EdgeInsets.zero,
               leading: image != null
                   ? Image.asset(
@@ -151,7 +152,7 @@ class _ActivityLogFeedListItem extends StatelessWidget {
                   : FaIcon(activityType.icon, color: Colors.white),
               title: Text(log.name,
                   style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
-              subtitle: DateDurationPBWidget(dateTime: log.createdAt, duration: log.duration(), pbs: 0),
+              subtitle: DateDurationPBWidget(dateTime: log.createdAt, duration: log.duration(), pbs: 0, durationSince: true),
               trailing: const _ProfileIcon(),
             ),
           ])),
