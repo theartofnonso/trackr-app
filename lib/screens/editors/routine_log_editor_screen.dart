@@ -228,10 +228,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     }
   }
 
-  void _showSnackbar(String message) {
-    showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: message);
-  }
-
   void _cacheLog() {
     if (widget.mode == RoutineEditorMode.log) {
       final routineLog = _routineLog();
@@ -303,8 +299,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     final routineLogEditorController = Provider.of<RoutineLogController>(context, listen: true);
 
     if (routineLogEditorController.errorMessage.isNotEmpty) {
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        _showSnackbar(routineLogEditorController.errorMessage);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showSnackbar(context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: routineLogEditorController.errorMessage);
       });
     }
 

@@ -26,6 +26,7 @@ class RoutineUserController extends ChangeNotifier {
       savedUser = await _amplifyRoutineUserRepository.saveUser(userDto: userDto);
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
+      savedUser = null;
     } finally {
       notifyListeners();
     }

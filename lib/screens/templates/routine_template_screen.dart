@@ -95,7 +95,16 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
+
+    final routineTemplateController = Provider.of<RoutineTemplateController>(context, listen: false);
+
+    if (routineTemplateController.errorMessage.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showSnackbar(context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: routineTemplateController.errorMessage);
+      });
+    }
 
     final template = _template;
 

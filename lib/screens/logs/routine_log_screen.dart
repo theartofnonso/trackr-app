@@ -65,6 +65,14 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
+
+    if (routineLogController.errorMessage.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showSnackbar(context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: routineLogController.errorMessage);
+      });
+    }
+
     final log = _log;
 
     if (log == null) return const NotFound();

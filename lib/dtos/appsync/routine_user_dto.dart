@@ -24,7 +24,7 @@ class RoutineUserDto {
     final cognitoUserId = json["cognitoUserId"] ?? "";
     final name = json["name"] ?? "";
     final email = json["email"] ?? "";
-    final owner = json["owner"] ?? false;
+    final owner = json["owner"] ?? "";
     return RoutineUserDto(id: id, name: name, cognitoUserId: cognitoUserId, email: email, owner: owner.toString());
   }
 

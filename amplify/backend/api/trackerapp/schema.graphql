@@ -11,6 +11,7 @@ type RoutineUser
         ]
      ) {
   id: ID!
+  username: String!
   owner: String
   data: AWSJSON!
   createdAt: AWSDateTime!

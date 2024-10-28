@@ -55,7 +55,7 @@ class ExerciseDto {
     final type = ExerciseType.fromString(typeJson);
     final trainingPositionString = json["trainingPosition"] ?? "";
     final trainingPosition = TrainingPosition.fromString(trainingPositionString);
-    final owner = json["owner"] ?? false;
+    final owner = json["owner"] ?? "";
     final video = json["video"];
     final description = json["description"] ?? "";
     final videoUri = video != null ? Uri.parse(video) : null;

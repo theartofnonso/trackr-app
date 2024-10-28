@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,6 +11,7 @@ import '../../dtos/appsync/routine_user_dto.dart';
 import '../../screens/preferences/settings_screen.dart';
 import '../../shared_prefs.dart';
 import '../../utils/dialog_utils.dart';
+import '../../utils/https_utils.dart';
 import '../buttons/opacity_button_widget.dart';
 
 class CreateRoutineUserProfileWidget extends StatefulWidget {
@@ -21,12 +24,14 @@ class CreateRoutineUserProfileWidget extends StatefulWidget {
 }
 
 class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidget> {
-  bool _hasError = false;
+  bool _hasRegexError = false;
+  bool _usernameExistsError = false;
 
   final _editingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
       padding: const EdgeInsets.only(top: 16, right: 16, bottom: 28, left: 16),
       decoration: const BoxDecoration(
@@ -43,15 +48,9 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
             ],
           )),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text("Follow the trail".toUpperCase(),
-            style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w300, color: Colors.white70),
-            textAlign: TextAlign.start),
-        const SizedBox(
-          height: 8,
-        ),
         Text("TRKR User Profiles",
             textAlign: TextAlign.start,
-            style: GoogleFonts.ubuntu(fontSize: 26, fontWeight: FontWeight.w500, color: Colors.white)),
+            style: GoogleFonts.ubuntu(fontSize: 20, fontWeight: FontWeight.w500, color: Colors.white)),
         const SizedBox(
           height: 10,
         ),
@@ -95,8 +94,12 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
             ),
           ],
         ),
-        if (_hasError)
-          Text("Username must not contain symbols and spaces.",
+        if (_hasRegexError)
+          Text("Username must not contain symbols or spaces.",
+              style: GoogleFonts.ubuntu(fontSize: 10, fontWeight: FontWeight.w400, color: Colors.redAccent),
+              textAlign: TextAlign.start),
+        if (_usernameExistsError)
+          Text("${_editingController.text} already exists.",
               style: GoogleFonts.ubuntu(fontSize: 10, fontWeight: FontWeight.w400, color: Colors.redAccent),
               textAlign: TextAlign.start),
         const SizedBox(
@@ -123,28 +126,63 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
     );
   }
 
+  Future<bool> _doesUsernameExists({required String username}) async {
+    bool doesExists = false;
+    final response = await getAPI(endpoint: "/users/$username");
+    if (response.isNotEmpty) {
+      final json = jsonDecode(response);
+      final body = json["data"];
+      final routineUsers = body["listRoutineUsers"];
+      final items = routineUsers["items"] as List<dynamic>;
+      print(items);
+      doesExists = items.isNotEmpty;
+    }
+    return doesExists;
+  }
+
   void _createUser() async {
     final username = _editingController.text.trim().toLowerCase();
     if (username.isNotEmpty) {
-      final RegExp regex = RegExp(r'^(?=.*[^\w])\S{1,15}$');
-      if (regex.hasMatch(username)) {
+      final RegExp regex = RegExp(r'^[a-zA-Z0-9]+$');
+      if (!regex.hasMatch(username)) {
         setState(() {
-          _hasError = true;
+          _hasRegexError = true;
+          _usernameExistsError = false;
         });
       } else {
         setState(() {
-          _hasError = false;
+          _hasRegexError = false;
         });
-        final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
-        final newUser = RoutineUserDto(
-            id: "", name: username, cognitoUserId: SharedPrefs().userId, email: SharedPrefs().userEmail, owner: "");
-        await routineUserController.saveUser(userDto: newUser);
-        if (mounted) {
-          Navigator.of(context).pop();
-          showSnackbar(
-              context: context,
-              icon: const FaIcon(FontAwesomeIcons.circleInfo),
-              message: "$username profile has been created.");
+        final doesUserAlreadyExists = await _doesUsernameExists(username: username);
+        if (doesUserAlreadyExists) {
+          setState(() {
+            _usernameExistsError = true;
+            _hasRegexError = false;
+          });
+        } else {
+          setState(() {
+            _usernameExistsError = false;
+          });
+          if (mounted) {
+            final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
+            final newUser = RoutineUserDto(
+                id: "", name: username, cognitoUserId: SharedPrefs().userId, email: SharedPrefs().userEmail, owner: "");
+            final createdUser = await routineUserController.saveUser(userDto: newUser);
+            if (mounted) {
+              Navigator.of(context).pop();
+              if (createdUser != null) {
+                showSnackbar(
+                    context: context,
+                    icon: const FaIcon(FontAwesomeIcons.circleInfo),
+                    message: "$username profile has been created.");
+              } else {
+                showSnackbar(
+                    context: context,
+                    icon: const FaIcon(FontAwesomeIcons.circleInfo),
+                    message: "Unable to create $username profile.");
+              }
+            }
+          }
         }
       }
     }

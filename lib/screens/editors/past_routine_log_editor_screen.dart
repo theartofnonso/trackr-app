@@ -134,7 +134,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
   }
 
   void _showSnackbar(String message) {
-    showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: message);
+    showSnackbar(context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: message);
   }
 
   void _createLog() async {
@@ -227,7 +227,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
     final routineTemplateController = Provider.of<RoutineTemplateController>(context, listen: true);
 
     if (routineTemplateController.errorMessage.isNotEmpty) {
-      SchedulerBinding.instance.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         _showSnackbar(routineTemplateController.errorMessage);
       });
     }

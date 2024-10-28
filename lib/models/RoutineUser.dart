@@ -27,6 +27,7 @@ import 'package:amplify_core/amplify_core.dart' as amplify_core;
 class RoutineUser extends amplify_core.Model {
   static const classType = const _RoutineUserModelType();
   final String id;
+  final String? _username;
   final String? _owner;
   final String? _data;
   final amplify_core.TemporalDateTime? _createdAt;
@@ -43,6 +44,19 @@ class RoutineUser extends amplify_core.Model {
       return RoutineUserModelIdentifier(
         id: id
       );
+  }
+  
+  String get username {
+    try {
+      return _username!;
+    } catch(e) {
+      throw amplify_core.AmplifyCodeGenModelException(
+          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
+    }
   }
   
   String? get owner {
@@ -88,11 +102,12 @@ class RoutineUser extends amplify_core.Model {
     }
   }
   
-  const RoutineUser._internal({required this.id, owner, required data, required createdAt, required updatedAt}): _owner = owner, _data = data, _createdAt = createdAt, _updatedAt = updatedAt;
+  const RoutineUser._internal({required this.id, required username, owner, required data, required createdAt, required updatedAt}): _username = username, _owner = owner, _data = data, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory RoutineUser({String? id, String? owner, required String data, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
+  factory RoutineUser({String? id, required String username, String? owner, required String data, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
     return RoutineUser._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
+      username: username,
       owner: owner,
       data: data,
       createdAt: createdAt,
@@ -108,6 +123,7 @@ class RoutineUser extends amplify_core.Model {
     if (identical(other, this)) return true;
     return other is RoutineUser &&
       id == other.id &&
+      _username == other._username &&
       _owner == other._owner &&
       _data == other._data &&
       _createdAt == other._createdAt &&
@@ -123,6 +139,7 @@ class RoutineUser extends amplify_core.Model {
     
     buffer.write("RoutineUser {");
     buffer.write("id=" + "$id" + ", ");
+    buffer.write("username=" + "$_username" + ", ");
     buffer.write("owner=" + "$_owner" + ", ");
     buffer.write("data=" + "$_data" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
@@ -132,9 +149,10 @@ class RoutineUser extends amplify_core.Model {
     return buffer.toString();
   }
   
-  RoutineUser copyWith({String? owner, String? data, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+  RoutineUser copyWith({String? username, String? owner, String? data, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
     return RoutineUser._internal(
       id: id,
+      username: username ?? this.username,
       owner: owner ?? this.owner,
       data: data ?? this.data,
       createdAt: createdAt ?? this.createdAt,
@@ -142,6 +160,7 @@ class RoutineUser extends amplify_core.Model {
   }
   
   RoutineUser copyWithModelFieldValues({
+    ModelFieldValue<String>? username,
     ModelFieldValue<String?>? owner,
     ModelFieldValue<String>? data,
     ModelFieldValue<amplify_core.TemporalDateTime>? createdAt,
@@ -149,6 +168,7 @@ class RoutineUser extends amplify_core.Model {
   }) {
     return RoutineUser._internal(
       id: id,
+      username: username == null ? this.username : username.value,
       owner: owner == null ? this.owner : owner.value,
       data: data == null ? this.data : data.value,
       createdAt: createdAt == null ? this.createdAt : createdAt.value,
@@ -158,17 +178,19 @@ class RoutineUser extends amplify_core.Model {
   
   RoutineUser.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
+      _username = json['username'],
       _owner = json['owner'],
       _data = json['data'],
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'owner': _owner, 'data': _data, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'username': _username, 'owner': _owner, 'data': _data, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
     'id': id,
+    'username': _username,
     'owner': _owner,
     'data': _data,
     'createdAt': _createdAt,
@@ -177,6 +199,7 @@ class RoutineUser extends amplify_core.Model {
 
   static final amplify_core.QueryModelIdentifier<RoutineUserModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<RoutineUserModelIdentifier>();
   static final ID = amplify_core.QueryField(fieldName: "id");
+  static final USERNAME = amplify_core.QueryField(fieldName: "username");
   static final OWNER = amplify_core.QueryField(fieldName: "owner");
   static final DATA = amplify_core.QueryField(fieldName: "data");
   static final CREATEDAT = amplify_core.QueryField(fieldName: "createdAt");
@@ -206,6 +229,12 @@ class RoutineUser extends amplify_core.Model {
     ];
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.id());
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: RoutineUser.USERNAME,
+      isRequired: true,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+    ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: RoutineUser.OWNER,
