@@ -15,9 +15,9 @@ import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../controllers/activity_log_controller.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../controllers/settings_controller.dart';
-import '../../dtos/interface/log_interface.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
+import '../../dtos/interface/log_interface.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/activity_type_enums.dart';
 import '../../enums/routine_editor_type_enums.dart';
@@ -41,7 +41,7 @@ class OverviewScreen extends StatefulWidget {
 
   static const routeName = '/overview_screen';
 
-  const OverviewScreen({super.key,  this.scrollController});
+  const OverviewScreen({super.key, this.scrollController});
 
   @override
   State<OverviewScreen> createState() => _OverviewScreenState();

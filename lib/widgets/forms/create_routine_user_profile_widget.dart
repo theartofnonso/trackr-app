@@ -29,9 +29,10 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
 
   final _editingController = TextEditingController();
 
+  bool _isLoading = false;
+
   @override
   Widget build(BuildContext context) {
-
     return Container(
       padding: const EdgeInsets.only(top: 16, right: 16, bottom: 28, left: 16),
       decoration: const BoxDecoration(
@@ -89,6 +90,7 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
             OpacityButtonWidget(
               onPressed: _createUser,
               label: "Create",
+              loading: _isLoading,
               buttonColor: vibrantGreen,
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 2),
             ),
@@ -150,6 +152,7 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
         });
       } else {
         setState(() {
+          _isLoading = true;
           _hasRegexError = false;
         });
         final doesUserAlreadyExists = await _doesUsernameExists(username: username);
@@ -157,6 +160,7 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
           setState(() {
             _usernameExistsError = true;
             _hasRegexError = false;
+            _isLoading = false;
           });
         } else {
           setState(() {
@@ -181,6 +185,9 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
                     message: "Unable to create $username profile.");
               }
             }
+            setState(() {
+              _isLoading = false;
+            });
           }
         }
       }
