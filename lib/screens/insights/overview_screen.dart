@@ -272,11 +272,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
               leading: const FaIcon(
                 FontAwesomeIcons.circlePlus,
                 size: 18,
-                color: Colors.pinkAccent,
+                color: Colors.greenAccent,
               ),
               horizontalTitleGap: 6,
               title: Text("Log Activity",
-                  style: GoogleFonts.ubuntu(color: Colors.pinkAccent, fontWeight: FontWeight.w500, fontSize: 16)),
+                  style: GoogleFonts.ubuntu(color: Colors.greenAccent, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
                 Navigator.of(context).pop();
                 showActivityPicker(
