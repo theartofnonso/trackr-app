@@ -2,20 +2,19 @@ import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
-import 'package:tracker_app/dtos/exercise_dto.dart';
+import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 
 import '../../colors.dart';
 import '../../controllers/routine_template_controller.dart';
-import '../../dtos/routine_log_dto.dart';
+import '../../dtos/appsync/routine_log_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/routine_editors_utils.dart';
 import '../../utils/routine_utils.dart';
@@ -49,7 +48,6 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
     showExercisesInLibrary(
         context: context,
         exclude: preSelectedExercises,
-        multiSelect: true,
         onSelected: (List<ExerciseDto> selectedExercises) {
           controller.addExerciseLogs(exercises: selectedExercises);
         });
@@ -62,7 +60,6 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
     showExercisesInLibrary(
         context: context,
         exclude: preSelectedExercises,
-        multiSelect: true,
         onSelected: (List<ExerciseDto> selectedExercises) {
           controller.addAlternates(primaryExerciseId: primaryExerciseLog.id, exercises: selectedExercises);
           _showSubstituteExercisePicker(primaryExerciseLog: primaryExerciseLog);
@@ -96,7 +93,13 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
         otherExercises: primaryExerciseLog.substituteExercises,
         onSelected: (secondaryExercise) {
           _closeDialog();
-          controller.replaceExerciseLog(oldExerciseId: primaryExerciseLog.id, newExercise: secondaryExercise);
+          final foundExerciseLog = controller.exerciseLogs
+              .firstWhereOrNull((exerciseLog) => exerciseLog.exercise.id == secondaryExercise.id);
+          if (foundExerciseLog == null) {
+            controller.replaceExerciseLog(oldExerciseId: primaryExerciseLog.id, newExercise: secondaryExercise);
+          } else {
+            _showSnackbar("${foundExerciseLog.exercise.name} has already been added");
+          }
         },
         onRemoved: (ExerciseDto secondaryExercise) {
           controller.removeAlternates(
@@ -115,7 +118,6 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
     showExercisesInLibrary(
         context: context,
         exclude: preSelectedExercises,
-        multiSelect: false,
         onSelected: (List<ExerciseDto> selectedExercises) {
           controller.replaceExerciseLog(oldExerciseId: oldExerciseLog.id, newExercise: selectedExercises.first);
         });
@@ -137,7 +139,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
   }
 
   void _showSnackbar(String message) {
-    showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: message);
+    showSnackbar(context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: message);
   }
 
   void _createLog() async {
@@ -149,16 +151,15 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
 
     final updatedLog = widget.log.copyWith(exerciseLogs: exercises);
 
-    if(widget.log.id.isEmpty) {
-
+    if (widget.log.id.isEmpty) {
       final datetime = TemporalDateTime.withOffset(updatedLog.startTime, Duration.zero);
 
-      final createdLog = await Provider.of<RoutineLogController>(context, listen: false).saveLog(logDto: updatedLog, datetime: datetime);
+      final createdLog = await Provider.of<RoutineLogController>(context, listen: false)
+          .saveLog(logDto: updatedLog, datetime: datetime);
       _navigateBack(log: createdLog);
     } else {
       await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: updatedLog);
     }
-
   }
 
   void _checkForUnsavedChanges() {
@@ -230,7 +231,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
     final routineTemplateController = Provider.of<RoutineTemplateController>(context, listen: true);
 
     if (routineTemplateController.errorMessage.isNotEmpty) {
-      SchedulerBinding.instance.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         _showSnackbar(routineTemplateController.errorMessage);
       });
     }

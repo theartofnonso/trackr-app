@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/utils/uri_utils.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-import '../../../dtos/exercise_dto.dart';
+import '../../../dtos/appsync/exercise_dto.dart';
 
 class ExerciseVideoScreen extends StatelessWidget {
   final ExerciseDto exercise;

@@ -51,6 +51,15 @@ class SharedPrefs {
     _sharedPrefs?.setBool(_showCalendarDatesKey, value);
   }
 
+  /// Show calendar
+  final String _showCalendarKey = "show_calendar_key";
+
+  bool get showCalendar => _sharedPrefs?.getBool(_showCalendarKey) ?? true;
+
+  set showCalendar(bool value) {
+    _sharedPrefs?.setBool(_showCalendarKey, value);
+  }
+
   /// First launch flag
   final String _firstLaunchKey = "first_launch_key";
 

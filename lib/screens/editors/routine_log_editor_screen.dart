@@ -4,17 +4,14 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
+import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
-import 'package:tracker_app/dtos/routine_log_dto.dart';
-import 'package:tracker_app/enums/routine_schedule_type_enums.dart';
-import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/routine_editors_utils.dart';
@@ -23,8 +20,8 @@ import 'package:tracker_app/widgets/routine/editors/exercise_log_widget_lite.dar
 import '../../colors.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../controllers/routine_template_controller.dart';
-import '../../dtos/exercise_dto.dart';
-import '../../dtos/routine_template_dto.dart';
+import '../../dtos/appsync/exercise_dto.dart';
+import '../../dtos/appsync/routine_template_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/app_analytics.dart';
 import '../../utils/routine_utils.dart';
@@ -59,8 +56,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         onSelected: (List<ExerciseDto> selectedExercises) {
           controller.addExerciseLogs(exercises: selectedExercises);
           _cacheLog();
-        },
-        multiSelect: true);
+        });
   }
 
   void _selectSubstituteExercisesInLibrary({required ExerciseLogDto primaryExerciseLog}) async {
@@ -70,7 +66,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     showExercisesInLibrary(
         context: context,
         exclude: preSelectedExercises,
-        multiSelect: true,
         onSelected: (List<ExerciseDto> selectedExercises) {
           controller.addAlternates(primaryExerciseId: primaryExerciseLog.id, exercises: selectedExercises);
           _showSubstituteExercisePicker(primaryExerciseLog: primaryExerciseLog);
@@ -106,8 +101,17 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         otherExercises: primaryExerciseLog.substituteExercises,
         onSelected: (secondaryExercise) {
           _closeDialog();
-          controller.replaceExerciseLog(oldExerciseId: primaryExerciseLog.id, newExercise: secondaryExercise);
-          _cacheLog();
+          final foundExerciseLog = controller.exerciseLogs
+              .firstWhereOrNull((exerciseLog) => exerciseLog.exercise.id == secondaryExercise.id);
+          if (foundExerciseLog == null) {
+            controller.replaceExerciseLog(oldExerciseId: primaryExerciseLog.id, newExercise: secondaryExercise);
+            _cacheLog();
+          } else {
+            showSnackbar(
+                context: context,
+                icon: const FaIcon(FontAwesomeIcons.circleInfo),
+                message: "${foundExerciseLog.exercise.name} has already been added");
+          }
         },
         onRemoved: (ExerciseDto secondaryExercise) {
           controller.removeAlternates(
@@ -127,7 +131,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     showExercisesInLibrary(
         context: context,
         exclude: preSelectedExercises,
-        multiSelect: false,
         onSelected: (List<ExerciseDto> selectedExercises) {
           controller.replaceExerciseLog(oldExerciseId: oldExerciseLog.id, newExercise: selectedExercises.first);
           _cacheLog();
@@ -154,11 +157,12 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     workoutSessionLogged();
 
-    _cleanUpSession();
-
     if (updatedRoutineLog != null) {
-      _updateRoutineTemplate(log: updatedRoutineLog);
+      if (updatedRoutineLog.templateId.isNotEmpty) {
+        await _updateRoutineTemplate(log: updatedRoutineLog);
+      }
     }
+    _navigateBack(routineLog: updatedRoutineLog);
   }
 
   Future<void> _doUpdateRoutineLog() async {
@@ -167,14 +171,11 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: routineLog);
 
     _updateRoutineTemplate(log: routineLog);
-  }
 
-  Future<void> _updateRoutineTemplateSchedule({required RoutineTemplateDto templateToUpdate}) async {
-    if (templateToUpdate.scheduleType == RoutineScheduleType.intervals) {
-      final scheduledDate = DateTime.now().add(Duration(days: templateToUpdate.scheduleIntervals)).withoutTime();
-      final scheduledTemplate = templateToUpdate.copyWith(scheduledDate: scheduledDate);
-      await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: scheduledTemplate);
+    if (routineLog.templateId.isNotEmpty) {
+      await _updateRoutineTemplate(log: routineLog);
     }
+    _navigateBack(routineLog: routineLog);
   }
 
   bool _isRoutinePartiallyComplete() {
@@ -227,26 +228,12 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     }
   }
 
-  void _updateRoutineTemplate({required RoutineLogDto log}) async {
-
-    if (log.templateId.isNotEmpty) {
-      if (mounted) {
-        final template =
-            Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: widget.log.templateId);
-        if (template != null) {
-          await _doUpdateTemplate(log: log, templateToUpdate: template);
-          await _updateRoutineTemplateSchedule(templateToUpdate: template);
-        }
-      }
+  Future<void> _updateRoutineTemplate({required RoutineLogDto log}) async {
+    final template =
+        Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: widget.log.templateId);
+    if (template != null) {
+      await _doUpdateTemplate(log: log, templateToUpdate: template);
     }
-
-    if (mounted) {
-      context.pop(log);
-    }
-  }
-
-  void _showSnackbar(String message) {
-    showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: message);
   }
 
   void _cacheLog() {
@@ -262,7 +249,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   }
 
   void _closeDialog() {
-    context.pop();
+    Navigator.of(context).pop();
   }
 
   void _reOrderExerciseLogs({required List<ExerciseLogDto> exerciseLogs}) async {
@@ -277,16 +264,16 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   void _cleanUpSession() {
     SharedPrefs().remove(key: SharedPrefs().cachedRoutineLogKey);
-    if(Platform.isIOS) {
+    if (Platform.isIOS) {
       FlutterLocalNotificationsPlugin().cancel(999);
     }
   }
 
-  void _navigateBack() async {
+  void _navigateBack({RoutineLogDto? routineLog}) async {
     if (widget.mode == RoutineEditorMode.log) {
       _cleanUpSession();
     }
-    context.pop();
+    context.pop(routineLog);
   }
 
   Future<void> _doUpdateTemplate({required RoutineLogDto log, required RoutineTemplateDto templateToUpdate}) async {
@@ -320,8 +307,11 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     final routineLogEditorController = Provider.of<RoutineLogController>(context, listen: true);
 
     if (routineLogEditorController.errorMessage.isNotEmpty) {
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        _showSnackbar(routineLogEditorController.errorMessage);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showSnackbar(
+            context: context,
+            icon: const FaIcon(FontAwesomeIcons.circleInfo),
+            message: routineLogEditorController.errorMessage);
       });
     }
 
@@ -531,7 +521,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      if(Platform.isIOS) {
+      if (Platform.isIOS) {
         FlutterLocalNotificationsPlugin().cancel(999);
       }
     }
@@ -590,9 +580,8 @@ class _RoutineLogOverview extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: GoogleFonts.ubuntu(fontSize: 10, color: Colors.white70, fontWeight: FontWeight.w600))
             ]),
-            const TableRow(children: [SizedBox(height: 4), SizedBox(height: 4), SizedBox(height: 4)] ),
-            TableRow(
-                children: [
+            const TableRow(children: [SizedBox(height: 4), SizedBox(height: 4), SizedBox(height: 4)]),
+            TableRow(children: [
               Text(exercisesSummary,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600)),

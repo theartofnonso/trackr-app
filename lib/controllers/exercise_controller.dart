@@ -1,9 +1,9 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:tracker_app/dtos/exercise_dto.dart';
+import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 
 import '../models/Exercise.dart';
-import '../repositories/amplify_exercise_repository.dart';
+import '../repositories/amplify/amplify_exercise_repository.dart';
 
 class ExerciseController extends ChangeNotifier {
   bool isLoading = false;
@@ -17,13 +17,12 @@ class ExerciseController extends ChangeNotifier {
 
   UnmodifiableListView<ExerciseDto> get exercises => _amplifyExerciseRepository.exercises;
 
-  void loadLocalExercises() {
-    _amplifyExerciseRepository.loadLocalExercises();
+  Future<void> loadLocalExercises() async{
+    return _amplifyExerciseRepository.loadLocalExercises();
   }
 
   void streamExercises({required List<Exercise> exercises}) {
     _amplifyExerciseRepository.loadExerciseStream(exercises: exercises);
-    notifyListeners();
   }
 
   Future<void> saveExercise({required ExerciseDto exerciseDto}) async {

@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'package:collection/collection.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
-import '../dtos/exercise_dto.dart';
+import '../dtos/appsync/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/pb_dto.dart';
 import '../dtos/set_dto.dart';
@@ -286,22 +286,20 @@ TemplateChange? hasSetValueChanged({
 }
 
 List<ExerciseLogDto> exerciseLogsWithCheckedSets({required List<ExerciseLogDto> exerciseLogs}) {
-  return exerciseLogs
-      .map((exerciseLog) {
-        final completedSets = exerciseLog.sets.where((set) => set.isNotEmpty() && set.checked).toList();
-        return completedSets.isNotEmpty ? exerciseLog.copyWith(sets: completedSets) : null;
-      })
-      .whereType<ExerciseLogDto>()
-      .toList();
+  return exerciseLogs.where((exerciseLog) {
+    final completedSets = exerciseLog.sets.where((set) => set.isNotEmpty() && set.checked);
+    return completedSets.isNotEmpty;
+  }).toList();
 }
 
-Map<MuscleGroupFamily, double> muscleGroupFamilyFrequency({required List<ExerciseLogDto> exerciseLogs, bool includeSecondaryMuscleGroups = true}) {
+Map<MuscleGroupFamily, double> muscleGroupFamilyFrequency(
+    {required List<ExerciseLogDto> exerciseLogs, bool includeSecondaryMuscleGroups = true}) {
   final frequencyMap = <MuscleGroupFamily, int>{};
 
   // Counting the occurrences of each MuscleGroup
   for (var log in exerciseLogs) {
     frequencyMap.update(log.exercise.primaryMuscleGroup.family, (value) => value + 1, ifAbsent: () => 1);
-    if(includeSecondaryMuscleGroups) {
+    if (includeSecondaryMuscleGroups) {
       for (var muscleGroup in log.exercise.secondaryMuscleGroups) {
         frequencyMap.update(muscleGroup.family, (value) => value + 1, ifAbsent: () => 1);
       }

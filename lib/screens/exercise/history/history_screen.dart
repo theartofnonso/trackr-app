@@ -11,6 +11,7 @@ class HistoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     final reversed = exerciseLogs.reversed.toList();
     return Padding(
       padding: const EdgeInsets.only(top: 2, right: 10.0, bottom: 10, left: 10),

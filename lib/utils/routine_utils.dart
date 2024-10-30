@@ -5,20 +5,20 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
-import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
-import 'package:tracker_app/extensions/routine_template_dto_extension.dart';
+import 'package:tracker_app/extensions/dtos/routine_template_dto_extension.dart';
 import 'package:tracker_app/extensions/week_days_extension.dart';
 import 'package:tracker_app/graphQL/queries.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/empty_states/double_set_row_empty_state.dart';
 
-import '../dtos/activity_log_dto.dart';
+import '../dtos/appsync/activity_log_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/pb_dto.dart';
-import '../dtos/routine_log_dto.dart';
-import '../dtos/routine_template_dto.dart';
+import '../dtos/appsync/routine_log_dto.dart';
+import '../dtos/appsync/routine_template_dto.dart';
 import '../dtos/set_dto.dart';
 import '../dtos/viewmodels/exercise_log_view_model.dart';
 import '../enums/routine_schedule_type_enums.dart';
@@ -28,6 +28,7 @@ import '../widgets/empty_states/single_set_row_empty_state.dart';
 import '../widgets/routine/preview/set_rows/double_set_row.dart';
 import '../widgets/routine/preview/set_rows/set_row.dart';
 import '../widgets/routine/preview/set_rows/single_set_row.dart';
+import 'date_utils.dart';
 import 'exercise_logs_utils.dart';
 import 'general_utils.dart';
 
@@ -164,15 +165,10 @@ List<Widget> setsToWidgets(
   return widgets.isNotEmpty ? widgets : [emptyState];
 }
 
-Map<DateTimeRange, List<RoutineLogDto>> groupRoutineLogsByWeek(
-    {required List<RoutineLogDto> routineLogs, DateTime? endDate}) {
+Map<DateTimeRange, List<RoutineLogDto>> groupRoutineLogsByWeek({required List<RoutineLogDto> routineLogs, required int year}) {
   final map = <DateTimeRange, List<RoutineLogDto>>{};
 
-  DateTime startDate = routineLogs.firstOrNull?.createdAt ?? DateTime.now();
-
-  DateTime lastDate = endDate ?? routineLogs.lastOrNull?.createdAt ?? DateTime.now();
-
-  List<DateTimeRange> weekRanges = generateWeekRangesFrom(startDate: startDate, endDate: lastDate);
+  List<DateTimeRange> weekRanges = getWeeksInYear(year);
 
   for (final weekRange in weekRanges) {
     map[weekRange] = routineLogs.where((log) => log.createdAt.isBetweenRange(range: weekRange)).toList();
@@ -288,4 +284,43 @@ List<ExerciseLogViewModel> exerciseLogsToViewModels({required List<ExerciseLogDt
         exerciseLog: exerciseLog,
         superSet: whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs));
   }).toList();
+}
+
+String copyRoutineAsText({required RoutinePreviewType routineType, required String name, required String notes, DateTime? dateTime, required List<ExerciseLogDto> exerciseLogs}) {
+
+  StringBuffer routineText = StringBuffer();
+
+  routineText.writeln(name);
+
+  if (notes.isNotEmpty) {
+    routineText.writeln("\n Notes: $notes");
+  }
+  if(routineType == RoutinePreviewType.log) {
+    if(dateTime != null) {
+      routineText.writeln(dateTime.formattedDayAndMonthAndYear());
+    }
+  }
+
+  for (var exerciseLog in exerciseLogs) {
+    var exercise = exerciseLog.exercise;
+    routineText.writeln("\n- Exercise: ${exercise.name}");
+    routineText.writeln("  Muscle Group: ${exercise.primaryMuscleGroup.name}");
+    if (exerciseLog.notes.isNotEmpty) {
+      routineText.writeln("  Notes: ${exerciseLog.notes}");
+    }
+    for (var i = 0; i < exerciseLog.sets.length; i++) {
+      switch (exerciseLog.exercise.type) {
+        case ExerciseType.weights:
+          routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].weightsSummary()}");
+          break;
+        case ExerciseType.bodyWeight:
+          routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].bodyWeightSummary()}");
+          break;
+        case ExerciseType.duration:
+          routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].durationSummary()}");
+          break;
+      }
+    }
+  }
+  return routineText.toString();
 }

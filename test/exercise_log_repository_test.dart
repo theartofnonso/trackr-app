@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tracker_app/dtos/exercise_dto.dart';
+import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
@@ -18,7 +18,7 @@ void main() {
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
       trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
-      owner: false);
+      owner: "");
 
   final plankExercise = ExerciseDto(
       id: "id_plankExercise",
@@ -27,7 +27,7 @@ void main() {
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
       trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.duration,
-      owner: false);
+      owner: "");
 
   final benchPressExercise = ExerciseDto(
       id: "id_benchPressExercise",
@@ -36,7 +36,7 @@ void main() {
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
       trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
-      owner: false);
+      owner: "");
 
   final lyingLegCurlExerciseLog1 = ExerciseLogDto(
       lyingLegCurlExercise.id,

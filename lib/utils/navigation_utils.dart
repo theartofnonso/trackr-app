@@ -3,26 +3,28 @@ import 'package:go_router/go_router.dart';
 import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
 import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
+import 'package:tracker_app/screens/exercise/history/exercise_home_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 
-import '../dtos/routine_log_dto.dart';
-import '../dtos/routine_template_dto.dart';
+import '../dtos/appsync/exercise_dto.dart';
+import '../dtos/appsync/routine_log_dto.dart';
+import '../dtos/appsync/routine_template_dto.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../dtos/viewmodels/routine_template_arguments.dart';
 import '../screens/editors/past_routine_log_editor_screen.dart';
 import '../screens/editors/routine_log_editor_screen.dart';
 import '../screens/editors/routine_template_editor_screen.dart';
-import '../screens/logs/logs_screen.dart';
+import '../screens/logs/activity_logs_screen.dart';
+import '../screens/logs/routine_logs_screen.dart';
 import '../screens/logs/routine_log_screen.dart';
-import '../screens/template/templates/routine_template_screen.dart';
+import '../screens/templates/routine_template_screen.dart';
 
 Future<Future<Object?>> navigateToExerciseEditor(
     {required BuildContext context, ExerciseEditorArguments? arguments}) async {
   return context.push(ExerciseEditorScreen.routeName, extra: arguments);
 }
 
-Future<RoutineTemplateDto?> navigateToRoutineTemplateEditor(
-    {required BuildContext context, RoutineTemplateArguments? arguments}) async {
+Future<RoutineTemplateDto?> navigateToRoutineTemplateEditor({required BuildContext context, RoutineTemplateArguments? arguments}) async {
   final template = await context.push(RoutineTemplateEditorScreen.routeName, extra: arguments) as RoutineTemplateDto?;
   return template;
 }
@@ -54,12 +56,20 @@ void navigateToRoutineLogPreview({required BuildContext context, required Routin
   context.push(RoutineLogScreen.routeName, extra: {"log": log, "showSummary": false});
 }
 
+Future<void> navigateToExerciseHome({required BuildContext context, required ExerciseDto exercise}) async {
+  context.push(ExerciseHomeScreen.routeName, extra: exercise);
+}
+
 void navigateToShareableScreen({required BuildContext context, required RoutineLogDto log}) {
   context.push(RoutineLogSummaryScreen.routeName, extra: log);
 }
 
-void navigateToLogs({required BuildContext context, required DateTimeRange range}) {
-  context.push(LogsScreen.routeName, extra: range);
+void navigateToRoutineLogs({required BuildContext context, required DateTime dateTime}) {
+  context.push(RoutineLogsScreen.routeName, extra: dateTime);
+}
+
+void navigateToActivityLogs({required BuildContext context, required DateTime dateTime}) {
+  context.push(ActivityLogsScreen.routeName, extra: dateTime);
 }
 
 /// Create a screen on demand

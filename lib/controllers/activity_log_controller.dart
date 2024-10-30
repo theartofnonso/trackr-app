@@ -3,8 +3,8 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/models/ActivityLog.dart';
 
-import '../dtos/activity_log_dto.dart';
-import '../repositories/amplify_activity_log_repository.dart';
+import '../dtos/appsync/activity_log_dto.dart';
+import '../repositories/amplify/amplify_activity_log_repository.dart';
 
 class ActivityLogController extends ChangeNotifier {
   String errorMessage = '';
@@ -15,19 +15,11 @@ class ActivityLogController extends ChangeNotifier {
     _amplifyActivityLogRepository = amplifyLogRepository;
   }
 
-  UnmodifiableListView<ActivityLogDto> get activityLogs => _amplifyActivityLogRepository.activityLogs;
-
-  UnmodifiableMapView<DateTimeRange, List<ActivityLogDto>> get weeklyLogs => _amplifyActivityLogRepository.weeklyLogs;
-
-  UnmodifiableMapView<DateTimeRange, List<ActivityLogDto>> get monthlyLogs => _amplifyActivityLogRepository.monthlyLogs;
+  UnmodifiableListView<ActivityLogDto> get logs => _amplifyActivityLogRepository.logs;
 
   void streamLogs({required List<ActivityLog> logs}) async {
     _amplifyActivityLogRepository.loadLogsStream(logs: logs);
     notifyListeners();
-  }
-
-  Future<List<ActivityLog>> fetchLogsCloud({required DateTimeRange range}) async {
-    return _amplifyActivityLogRepository.queryLogsCloud(range: range);
   }
 
   Future<ActivityLogDto?> saveLog({required ActivityLogDto logDto}) async {
@@ -68,12 +60,28 @@ class ActivityLogController extends ChangeNotifier {
     return _amplifyActivityLogRepository.logWhereId(id: id);
   }
 
-  ActivityLogDto? logWhereDate({required DateTime dateTime}) {
-    return _amplifyActivityLogRepository.logWhereDate(dateTime: dateTime);
+  ActivityLogDto? whereLogIsSameDay({required DateTime dateTime}) {
+    return _amplifyActivityLogRepository.whereLogIsSameDay(dateTime: dateTime);
   }
 
-  List<ActivityLogDto> logsWhereDate({required DateTime dateTime}) {
-    return _amplifyActivityLogRepository.logsWhereDate(dateTime: dateTime);
+  ActivityLogDto? whereLogIsSameMonth({required DateTime dateTime}) {
+    return _amplifyActivityLogRepository.whereLogIsSameMonth(dateTime: dateTime);
+  }
+
+  ActivityLogDto? whereLogIsSameYear({required DateTime dateTime}) {
+    return _amplifyActivityLogRepository.whereLogIsSameYear(dateTime: dateTime);
+  }
+
+  List<ActivityLogDto> whereLogsIsSameDay({required DateTime dateTime}) {
+    return _amplifyActivityLogRepository.whereLogsIsSameDay(dateTime: dateTime);
+  }
+
+  List<ActivityLogDto> whereLogsIsSameMonth({required DateTime dateTime}) {
+    return _amplifyActivityLogRepository.whereLogsIsSameMonth(dateTime: dateTime);
+  }
+
+  List<ActivityLogDto> whereLogsIsSameYear({required DateTime dateTime}) {
+    return _amplifyActivityLogRepository.whereLogsIsSameYear(dateTime: dateTime);
   }
 
   void clear() {

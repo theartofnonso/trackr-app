@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../colors.dart';
 import '../../../controllers/routine_log_controller.dart';
-import '../../../dtos/routine_log_dto.dart';
+import '../../../dtos/appsync/routine_log_dto.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/navigation_utils.dart';
 import '../../../utils/string_utils.dart';
@@ -23,7 +23,7 @@ class RoutineLogWidget extends StatelessWidget {
 
     final pbs = log.exerciseLogs.map((exerciseLog) {
       final pastExerciseLogs =
-      routineLogController.whereExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
+          routineLogController.whereExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
 
       return calculatePBs(
           pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog);
@@ -33,7 +33,8 @@ class RoutineLogWidget extends StatelessWidget {
 
     return SolidListTile(
         title: log.name,
-        subtitle: "${completedExerciseLogsAndSets.length} ${pluralize(word: "exercise", count: completedExerciseLogsAndSets.length)}",
+        subtitle:
+            "${completedExerciseLogsAndSets.length} ${pluralize(word: "exercise", count: completedExerciseLogsAndSets.length)}",
         trailing: trailing,
         tileColor: color,
         trailingSubtitle: pbs.isNotEmpty ? PBIcon(color: sapphireLight, label: "${pbs.length}") : null,

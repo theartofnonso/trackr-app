@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/dtos/activity_log_dto.dart';
+import 'package:tracker_app/dtos/appsync/activity_log_dto.dart';
 import 'package:tracker_app/enums/activity_type_enums.dart';
 
 class ActivityLogWidget extends StatelessWidget {

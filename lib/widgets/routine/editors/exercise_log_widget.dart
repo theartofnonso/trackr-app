@@ -20,7 +20,7 @@ import 'package:tracker_app/widgets/routine/editors/set_rows/weights_set_row.dar
 import '../../../colors.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../enums/routine_editor_type_enums.dart';
-import '../../../screens/exercise/history/home_screen.dart';
+import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/one_rep_max_calculator.dart';
 
@@ -259,7 +259,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 onTap: () {
                   FocusScope.of(context).unfocus();
                   Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => HomeScreen(exercise: widget.exerciseLogDto.exercise)));
+                      MaterialPageRoute(builder: (context) => ExerciseHomeScreen(exercise: widget.exerciseLogDto.exercise)));
                 },
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

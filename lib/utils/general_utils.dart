@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 
 import '../colors.dart';
@@ -157,8 +157,8 @@ Future<bool> _requestIosNotificationPermission() async {
 Future<bool> _requestAndroidNotificationPermission() async {
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   return await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
-      ?.requestNotificationsPermission() ??
+          .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+          ?.requestNotificationsPermission() ??
       false;
 }
 

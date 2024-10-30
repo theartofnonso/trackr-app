@@ -4,24 +4,28 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/dtos/appsync/routine_user_dto.dart';
 import 'package:tracker_app/enums/activity_type_enums.dart';
-import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
+import 'package:tracker_app/screens/preferences/settings_screen.dart';
+import 'package:tracker_app/widgets/forms/create_routine_user_profile_widget.dart';
+import 'package:tracker_app/widgets/label_divider.dart';
 import 'package:tracker_app/widgets/timers/datetime_picker.dart';
 import 'package:tracker_app/widgets/timers/datetime_range_picker.dart';
 
 import '../colors.dart';
 import '../controllers/activity_log_controller.dart';
-import '../dtos/activity_log_dto.dart';
+import '../dtos/appsync/activity_log_dto.dart';
 import '../widgets/buttons/opacity_button_widget.dart';
 import '../widgets/buttons/solid_button_widget.dart';
-import '../widgets/other_activity/activity_picker.dart';
+import '../widgets/other_activity_selector/activity_picker.dart';
 import '../widgets/timers/hour_timer_picker.dart';
 import '../widgets/timers/time_picker.dart';
 
 void showSnackbar({required BuildContext context, required Widget icon, required String message}) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      backgroundColor: sapphireDark80,
+      backgroundColor: sapphireDark,
       behavior: SnackBarBehavior.fixed,
       content: Row(
         children: [
@@ -46,7 +50,7 @@ void showSnackbar({required BuildContext context, required Widget icon, required
 Future<void> displayBottomSheet(
     {required BuildContext context,
     required Widget child,
-      Gradient? gradient,
+    Gradient? gradient,
     double? height,
     enabledDrag = true,
     bool isDismissible = true,
@@ -65,14 +69,15 @@ Future<void> displayBottomSheet(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 decoration: BoxDecoration(
-                  gradient: gradient ?? const LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      sapphireDark80,
-                      sapphireDark,
-                    ],
-                  ),
+                  gradient: gradient ??
+                      const LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          sapphireDark80,
+                          sapphireDark,
+                        ],
+                      ),
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20),
@@ -189,20 +194,8 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
         const SizedBox(
           height: 16,
         ),
-        Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-          Text(
-            "Want to change activity?".toUpperCase(),
-            style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 10),
-          ),
-          Expanded(
-            child: Container(
-              height: 0.8, // height of the divider
-              width: double.infinity, // width of the divider (line thickness)
-              color: sapphireLighter, // color of the divider
-              margin: const EdgeInsets.symmetric(horizontal: 10), // add space around the divider
-            ),
-          ),
-        ]),
+        LabelDivider(
+            label: "Want to change activity?".toUpperCase(), labelColor: Colors.white70, dividerColor: sapphireLighter),
         const SizedBox(
           height: 4,
         ),
@@ -214,13 +207,13 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
           title:
               Text("Edit", style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
           onTap: () {
-            Navigator.pop(context);
+            Navigator.of(context).pop();
             showActivityPicker(
                 initialActivityType: activityType,
                 initialDateTimeRange: DateTimeRange(start: activity.startTime, end: activity.endTime),
                 context: context,
                 onChangedActivity: (ActivityType activityType, DateTimeRange datetimeRange) {
-                  Navigator.pop(context);
+                  Navigator.of(context).pop();
                   final updatedActivity = activity.copyWith(
                       name: activityType.name,
                       startTime: datetimeRange.start,
@@ -243,7 +236,7 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
           title:
               Text("Delete", style: GoogleFonts.ubuntu(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
           onTap: () {
-            Navigator.pop(context); // Close the previous BottomSheet
+            Navigator.of(context).pop(); // Close the previous BottomSheet
             showBottomSheetWithMultiActions(
                 context: context,
                 title: "Delete activity?",
@@ -259,6 +252,76 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
           },
         ),
       ]));
+}
+
+void showUserBottomSheet({required BuildContext context, required RoutineUserDto user}) {
+  displayBottomSheet(
+      context: context,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        Container(
+            width: 60, // Width and height should be equal to make a perfect circle
+            height: 60,
+            decoration: BoxDecoration(
+              color: sapphireDark80,
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(5), // Optional border
+              boxShadow: [
+                BoxShadow(
+                  color: sapphireDark.withOpacity(0.5),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: const Offset(0, 3), // changes position of shadow
+                ),
+              ],
+            ),
+            child: const Center(child: FaIcon(FontAwesomeIcons.solidUser, color: Colors.white54, size: 22))),
+        const SizedBox(
+          height: 16,
+        ),
+        Text("@${user.name}",
+            style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+            textAlign: TextAlign.center),
+        const SizedBox(
+          height: 20,
+        ),
+        Text(
+            "User profiles enable you to join TRKR communities. Stay tuned for upcoming features that will enhance your training experience.",
+            style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white38),
+            textAlign: TextAlign.center),
+        const SizedBox(
+          height: 10,
+        ),
+        ListTile(
+          onTap: () {
+            Navigator.of(context).pop();
+            showModalBottomSheet(context: context, isScrollControlled: true, useSafeArea: true, isDismissible: false, builder: (context) {
+              return const SettingsScreen();
+            });
+          },
+          leading: Text("Settings",
+              style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+              textAlign: TextAlign.center),
+          trailing: const FaIcon(FontAwesomeIcons.gear, color: Colors.grey),
+        )
+      ]));
+}
+
+void showCreateProfileBottomSheet({required BuildContext context}) {
+  showModalBottomSheet(
+      isScrollControlled: true,
+      isDismissible: false,
+      useSafeArea: true,
+      context: context,
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: const SingleChildScrollView(
+            child: CreateRoutineUserProfileWidget(),
+          ),
+        );
+      });
 }
 
 void showBottomSheetWithNoAction({required BuildContext context, required String title, required String description}) {

@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
+import 'package:tracker_app/controllers/activity_log_controller.dart';
 import 'package:tracker_app/graphQL/queries.dart';
 import 'package:tracker_app/screens/preferences/notifications_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -17,6 +18,7 @@ import 'package:tracker_app/widgets/list_tiles/list_tile_outline.dart';
 import '../../controllers/exercise_controller.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../controllers/routine_template_controller.dart';
+import '../../controllers/routine_user_controller.dart';
 import '../../controllers/settings_controller.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/general_utils.dart';
@@ -53,13 +55,17 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
 
   @override
   Widget build(BuildContext context) {
-
-    if (_loading) return TRKRLoadingScreen(action: _hideLoadingState);
+    if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     return Scaffold(
       body: Container(
+        padding: const EdgeInsets.all(10.0),
         width: double.infinity,
         decoration: const BoxDecoration(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -70,7 +76,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
           ),
         ),
         child: SafeArea(
-          minimum: const EdgeInsets.all(10.0),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,22 +123,32 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   ),
                 ),
                 const SizedBox(height: 8),
-                Theme(
-                  data: Theme.of(context).copyWith(splashColor: Colors.transparent // Disable the splash effect
-                      ),
-                  child: SwitchListTile(
-                    activeColor: vibrantGreen,
-                    title: Text('Show calendar dates',
-                        style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
-                    value: SharedPrefs().showCalendarDates,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                    onChanged: (bool value) {
-                      setState(() {
-                        SharedPrefs().showCalendarDates = value;
-                        Provider.of<SettingsController>(context, listen: false).notify();
-                      });
-                    },
-                  ),
+                SwitchListTile(
+                  activeColor: vibrantGreen,
+                  title: Text('Show calendar',
+                      style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+                  value: SharedPrefs().showCalendar,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                  onChanged: (bool value) {
+                    setState(() {
+                      SharedPrefs().showCalendar = value;
+                      Provider.of<SettingsController>(context, listen: false).notify();
+                    });
+                  },
+                ),
+                const SizedBox(height: 8),
+                SwitchListTile(
+                  activeColor: vibrantGreen,
+                  title: Text('Show calendar dates',
+                      style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+                  value: SharedPrefs().showCalendarDates,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                  onChanged: (bool value) {
+                    setState(() {
+                      SharedPrefs().showCalendarDates = value;
+                      Provider.of<SettingsController>(context, listen: false).notify();
+                    });
+                  },
                 ),
                 const SizedBox(height: 8),
                 OutlineListTile(onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "manage exercises"),
@@ -146,7 +161,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         trailing: _notificationEnabled ? "Enabled" : "Disabled"),
                   ]),
                 const SizedBox(height: 8),
-                OutlineListTile(onTap: _sendFeedback, title: "Feedback", trailing: "Help us improve!"),
+                OutlineListTile(onTap: _sendFeedback, title: "Feedback", trailing: "Help us improve"),
                 const SizedBox(height: 8),
                 OutlineListTile(onTap: _visitTRKR, title: "Visit TRKR"),
                 const SizedBox(height: 8),
@@ -166,13 +181,13 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     );
   }
 
-  void _showLoadingState() {
+  void _showLoadingScreen() {
     setState(() {
       _loading = true;
     });
   }
 
-  void _hideLoadingState() {
+  void _hideLoadingScreen() {
     setState(() {
       _loading = false;
     });
@@ -191,11 +206,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   }
 
   void _navigateToExerciseLibrary() {
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => const ExerciseLibraryScreen(
-              multiSelect: false,
-              readOnly: true,
-            )));
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ExerciseLibraryScreen(readOnly: true)));
   }
 
   void _navigateToNotificationSettings() async {
@@ -229,6 +240,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
       Provider.of<RoutineTemplateController>(context, listen: false).clear();
       Provider.of<RoutineLogController>(context, listen: false).clear();
       Provider.of<ExerciseController>(context, listen: false).clear();
+      Provider.of<ActivityLogController>(context, listen: false).clear();
+      Provider.of<RoutineUserController>(context, listen: false).clear();
     }
   }
 
@@ -273,13 +286,21 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         leftAction: Navigator.of(context).pop,
         rightAction: () async {
           Navigator.of(context).pop();
-          _showLoadingState();
+          _showLoadingScreen();
           _clearAppData();
           await Amplify.Auth.signOut();
         },
         leftActionLabel: 'Cancel',
         rightActionLabel: 'Logout',
         isRightActionDestructive: true);
+  }
+
+  Future<void> _deleteRoutineUser() async {
+    final controller = Provider.of<RoutineUserController>(context, listen: false);
+    final user = controller.user;
+    if(user != null) {
+      await controller.removeUser(userDto: user);
+    }
   }
 
   void _delete() async {
@@ -290,7 +311,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         leftAction: Navigator.of(context).pop,
         rightAction: () async {
           Navigator.of(context).pop();
-          _showLoadingState();
+          _showLoadingScreen();
           final deletedExercises =
               await batchDeleteUserData(document: deleteUserExerciseData, documentKey: "deleteUserExerciseData");
           final deletedRoutineTemplates = await batchDeleteUserData(
@@ -298,11 +319,12 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
           final deletedRoutineLogs =
               await batchDeleteUserData(document: deleteUserRoutineLogData, documentKey: "deleteUserRoutineLogData");
           if (deletedExercises && deletedRoutineTemplates && deletedRoutineLogs) {
-            _hideLoadingState();
+            await _deleteRoutineUser();
+            _hideLoadingScreen();
             _clearAppData();
             await Amplify.Auth.deleteUser();
           } else {
-            _hideLoadingState();
+            _hideLoadingScreen();
             if (mounted) {
               showSnackbar(
                   context: context,
