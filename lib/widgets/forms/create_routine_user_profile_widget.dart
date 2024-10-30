@@ -116,7 +116,7 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
                 useSafeArea: true,
                 isDismissible: false,
                 builder: (context) {
-                  return const SettingsScreen();
+                  return const SafeArea(child: SettingsScreen());
                 });
           },
           leading: Text("Settings",

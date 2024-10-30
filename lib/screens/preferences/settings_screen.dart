@@ -75,106 +75,104 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
             ],
           ),
         ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ListTile(
-                  title: Text("Weight",
-                      style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
-                  subtitle: Text("Choose kg or lbs", style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 14)),
-                  trailing: SegmentedButton(
-                    showSelectedIcon: false,
-                    style: ButtonStyle(
-                      visualDensity: const VisualDensity(
-                          horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity),
-                      shape: WidgetStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                      )),
-                      backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                        (Set<WidgetState> states) {
-                          if (states.contains(WidgetState.selected)) {
-                            return Colors.white;
-                          }
-                          return Colors.transparent;
-                        },
-                      ),
-                      foregroundColor: WidgetStateProperty.resolveWith<Color>(
-                        (Set<WidgetState> states) {
-                          if (states.contains(WidgetState.selected)) {
-                            return Colors.black;
-                          }
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ListTile(
+                title: Text("Weight",
+                    style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+                subtitle: Text("Choose kg or lbs", style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 14)),
+                trailing: SegmentedButton(
+                  showSelectedIcon: false,
+                  style: ButtonStyle(
+                    visualDensity: const VisualDensity(
+                        horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity),
+                    shape: WidgetStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    )),
+                    backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                      (Set<WidgetState> states) {
+                        if (states.contains(WidgetState.selected)) {
                           return Colors.white;
-                        },
-                      ),
+                        }
+                        return Colors.transparent;
+                      },
                     ),
-                    segments: [
-                      ButtonSegment<WeightUnit>(value: WeightUnit.kg, label: Text(WeightUnit.kg.name)),
-                      ButtonSegment<WeightUnit>(value: WeightUnit.lbs, label: Text(WeightUnit.lbs.name)),
-                    ],
-                    selected: <WeightUnit>{_weightUnitType},
-                    onSelectionChanged: (Set<WeightUnit> unitType) {
-                      setState(() {
-                        _weightUnitType = unitType.first;
-                      });
-                      toggleWeightUnit(unit: _weightUnitType);
-                    },
+                    foregroundColor: WidgetStateProperty.resolveWith<Color>(
+                      (Set<WidgetState> states) {
+                        if (states.contains(WidgetState.selected)) {
+                          return Colors.black;
+                        }
+                        return Colors.white;
+                      },
+                    ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                SwitchListTile(
-                  activeColor: vibrantGreen,
-                  title: Text('Show calendar',
-                      style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
-                  value: SharedPrefs().showCalendar,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                  onChanged: (bool value) {
+                  segments: [
+                    ButtonSegment<WeightUnit>(value: WeightUnit.kg, label: Text(WeightUnit.kg.name)),
+                    ButtonSegment<WeightUnit>(value: WeightUnit.lbs, label: Text(WeightUnit.lbs.name)),
+                  ],
+                  selected: <WeightUnit>{_weightUnitType},
+                  onSelectionChanged: (Set<WeightUnit> unitType) {
                     setState(() {
-                      SharedPrefs().showCalendar = value;
-                      Provider.of<SettingsController>(context, listen: false).notify();
+                      _weightUnitType = unitType.first;
                     });
+                    toggleWeightUnit(unit: _weightUnitType);
                   },
                 ),
-                const SizedBox(height: 8),
-                SwitchListTile(
-                  activeColor: vibrantGreen,
-                  title: Text('Show calendar dates',
-                      style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
-                  value: SharedPrefs().showCalendarDates,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                  onChanged: (bool value) {
-                    setState(() {
-                      SharedPrefs().showCalendarDates = value;
-                      Provider.of<SettingsController>(context, listen: false).notify();
-                    });
-                  },
-                ),
-                const SizedBox(height: 8),
-                OutlineListTile(onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "manage exercises"),
-                if (Platform.isIOS)
-                  Column(children: [
-                    const SizedBox(height: 8),
-                    OutlineListTile(
-                        onTap: _navigateToNotificationSettings,
-                        title: "Notifications",
-                        trailing: _notificationEnabled ? "Enabled" : "Disabled"),
-                  ]),
-                const SizedBox(height: 8),
-                OutlineListTile(onTap: _sendFeedback, title: "Feedback", trailing: "Help us improve"),
-                const SizedBox(height: 8),
-                OutlineListTile(onTap: _visitTRKR, title: "Visit TRKR"),
-                const SizedBox(height: 8),
-                OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
-                const SizedBox(height: 8),
-                OutlineListTile(onTap: _delete, title: "Delete Account", trailing: SharedPrefs().userEmail),
-                const SizedBox(height: 10),
-                Center(
-                  child: Text(_appVersion,
-                      style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 8),
+              SwitchListTile(
+                activeColor: vibrantGreen,
+                title: Text('Show calendar',
+                    style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+                value: SharedPrefs().showCalendar,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                onChanged: (bool value) {
+                  setState(() {
+                    SharedPrefs().showCalendar = value;
+                    Provider.of<SettingsController>(context, listen: false).notify();
+                  });
+                },
+              ),
+              const SizedBox(height: 8),
+              SwitchListTile(
+                activeColor: vibrantGreen,
+                title: Text('Show calendar dates',
+                    style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+                value: SharedPrefs().showCalendarDates,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                onChanged: (bool value) {
+                  setState(() {
+                    SharedPrefs().showCalendarDates = value;
+                    Provider.of<SettingsController>(context, listen: false).notify();
+                  });
+                },
+              ),
+              const SizedBox(height: 8),
+              OutlineListTile(onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "manage exercises"),
+              if (Platform.isIOS)
+                Column(children: [
+                  const SizedBox(height: 8),
+                  OutlineListTile(
+                      onTap: _navigateToNotificationSettings,
+                      title: "Notifications",
+                      trailing: _notificationEnabled ? "Enabled" : "Disabled"),
+                ]),
+              const SizedBox(height: 8),
+              OutlineListTile(onTap: _sendFeedback, title: "Feedback", trailing: "Help us improve"),
+              const SizedBox(height: 8),
+              OutlineListTile(onTap: _visitTRKR, title: "Visit TRKR"),
+              const SizedBox(height: 8),
+              OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
+              const SizedBox(height: 8),
+              OutlineListTile(onTap: _delete, title: "Delete Account", trailing: SharedPrefs().userEmail),
+              const SizedBox(height: 10),
+              Center(
+                child: Text(_appVersion,
+                    style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+              ),
+            ],
           ),
         ),
       ),
@@ -298,7 +296,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   Future<void> _deleteRoutineUser() async {
     final controller = Provider.of<RoutineUserController>(context, listen: false);
     final user = controller.user;
-    if(user != null) {
+    if (user != null) {
       await controller.removeUser(userDto: user);
     }
   }

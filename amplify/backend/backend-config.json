@@ -14,6 +14,14 @@
             "Arn"
           ],
           "category": "function",
+          "resourceName": "getUser"
+        },
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
           "resourceName": "getRoutineLog"
         },
         {
@@ -23,22 +31,6 @@
           ],
           "category": "function",
           "resourceName": "getRoutineTemplate"
-        },
-        {
-          "attributes": [
-            "Name",
-            "Arn"
-          ],
-          "category": "function",
-          "resourceName": "getAllRoutineLogs"
-        },
-        {
-          "attributes": [
-            "Name",
-            "Arn"
-          ],
-          "category": "function",
-          "resourceName": "getUser"
         }
       ],
       "providerPlugin": "awscloudformation",
@@ -150,21 +142,6 @@
         {
           "attributes": [
             "GraphQLAPIIdOutput"
-          ],
-          "category": "api",
-          "resourceName": "trackerapp"
-        }
-      ],
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
-    },
-    "getAllRoutineLogs": {
-      "build": true,
-      "dependsOn": [
-        {
-          "attributes": [
-            "GraphQLAPIIdOutput",
-            "GraphQLAPIEndpointOutput"
           ],
           "category": "api",
           "resourceName": "trackerapp"
@@ -287,22 +264,6 @@
         {
           "category": "function",
           "resourceName": "deleteUserRoutineTemplateData"
-        }
-      ]
-    },
-    "AMPLIFY_function_getAllRoutineLogs_deploymentBucketName": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "getAllRoutineLogs"
-        }
-      ]
-    },
-    "AMPLIFY_function_getAllRoutineLogs_s3Key": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "getAllRoutineLogs"
         }
       ]
     },

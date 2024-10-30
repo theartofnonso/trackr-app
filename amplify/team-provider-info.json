@@ -102,22 +102,18 @@
           "deploymentBucketName": "amplify-trackerapp-prod-223531-deployment",
           "s3Key": "amplify-builds/deleteUserRoutineTemplateData-46587073444b626a6c65-build.zip"
         },
+        "getRoutineLogs": {},
+        "getUser": {
+          "deploymentBucketName": "amplify-trackerapp-prod-223531-deployment",
+          "s3Key": "amplify-builds/getUser-78786d4d6b44476f6b79-build.zip"
+        },
         "getRoutineLog": {
           "deploymentBucketName": "amplify-trackerapp-prod-223531-deployment",
-          "s3Key": "amplify-builds/getRoutineLog-6c6d794d4b4631787973-build.zip"
+          "s3Key": "amplify-builds/getRoutineLog-78466d6a746965532b75-build.zip"
         },
         "getRoutineTemplate": {
           "deploymentBucketName": "amplify-trackerapp-prod-223531-deployment",
-          "s3Key": "amplify-builds/getRoutineTemplate-42474b446b382f465737-build.zip"
-        },
-        "getRoutineLogs": {},
-        "getAllRoutineLogs": {
-          "deploymentBucketName": "amplify-trackerapp-prod-223531-deployment",
-          "s3Key": "amplify-builds/getAllRoutineLogs-5371414e5051764e4444-build.zip"
-        },
-        "getUser": {
-          "deploymentBucketName": "amplify-trackerapp-prod-223531-deployment",
-          "s3Key": "amplify-builds/getUser-64536f6f4e6f67394336-build.zip"
+          "s3Key": "amplify-builds/getRoutineTemplate-32624746624464553364-build.zip"
         }
       },
       "api": {

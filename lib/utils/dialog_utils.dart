@@ -295,7 +295,7 @@ void showUserBottomSheet({required BuildContext context, required RoutineUserDto
           onTap: () {
             Navigator.of(context).pop();
             showModalBottomSheet(context: context, isScrollControlled: true, useSafeArea: true, isDismissible: false, builder: (context) {
-              return const SettingsScreen();
+              return const SafeArea(child: SettingsScreen());
             });
           },
           leading: Text("Settings",

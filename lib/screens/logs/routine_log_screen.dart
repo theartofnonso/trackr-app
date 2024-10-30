@@ -306,7 +306,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     _log = routineLogController.logWhereId(id: widget.id);
     if (_log == null) {
       _loading = true;
-      getAPI(endpoint: "/routine-log", queryParameters: {"id": widget.id}).then((data) {
+      getAPI(endpoint: "/routine-logs/${widget.id}").then((data) {
         if (data.isNotEmpty) {
           final json = jsonDecode(data);
           final body = json["data"];

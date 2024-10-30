@@ -404,7 +404,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     _template = routineTemplateController.templateWhere(id: widget.id);
     if (_template == null) {
       _loading = true;
-      getAPI(endpoint: "/routine-template", queryParameters: {"id": widget.id}).then((data) {
+      getAPI(endpoint: "/routine-templates/${widget.id}").then((data) {
         if (data.isNotEmpty) {
           final json = jsonDecode(data);
           final body = json["data"];

@@ -57,13 +57,6 @@ export type AmplifyDependentResourcesAttributes = {
       "Name": "string",
       "Region": "string"
     },
-    "getAllRoutineLogs": {
-      "Arn": "string",
-      "LambdaExecutionRole": "string",
-      "LambdaExecutionRoleArn": "string",
-      "Name": "string",
-      "Region": "string"
-    },
     "getRoutineLog": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
