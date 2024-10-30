@@ -124,20 +124,20 @@ class ChallengeScreen extends StatelessWidget {
                         style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400)),
                   ),
                   const SizedBox(height: 16),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: sapphireDark.withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: LinearProgressIndicator(
-                      value: 0.5,
-                      backgroundColor: sapphireDark,
-                      color: vibrantGreen,
-                      minHeight: 25,
-                      borderRadius: BorderRadius.circular(3.0), // Border r
-                    ),
-                  ),
+                  // Container(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  //   decoration: BoxDecoration(
+                  //     color: sapphireDark.withOpacity(0.3),
+                  //     borderRadius: BorderRadius.circular(5),
+                  //   ),
+                  //   child: LinearProgressIndicator(
+                  //     value: 0.5,
+                  //     backgroundColor: sapphireDark,
+                  //     color: vibrantGreen,
+                  //     minHeight: 25,
+                  //     borderRadius: BorderRadius.circular(3.0), // Border r
+                  //   ),
+                  // ),
                   const Spacer(),
                   SafeArea(
                     child: SizedBox(
