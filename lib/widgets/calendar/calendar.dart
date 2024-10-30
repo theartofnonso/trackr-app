@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
-import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import '../../controllers/activity_log_controller.dart';
@@ -31,9 +31,9 @@ class _DateViewModel {
 
 class Calendar extends StatefulWidget {
   final void Function(DateTime dateTime)? onSelectDate;
-  final DateTimeRange selectedDateRange;
+  final DateTime dateTime;
 
-  const Calendar({super.key, this.onSelectDate, required this.selectedDateRange});
+  const Calendar({super.key, this.onSelectDate, required this.dateTime});
 
   @override
   State<Calendar> createState() => _CalendarState();
@@ -53,7 +53,7 @@ class _CalendarState extends State<Calendar> {
   }
 
   List<_DateViewModel?> _generateDates() {
-    final startDate = widget.selectedDateRange.start;
+    final startDate = widget.dateTime;
 
     int year = startDate.year;
     int month = startDate.month;
@@ -75,13 +75,13 @@ class _CalendarState extends State<Calendar> {
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
     final activityLogController = Provider.of<ActivityLogController>(context, listen: false);
 
-    final monthlyRoutineLogs =
-        (routineLogController.monthlyLogs[DateTimeRange(start: firstDayOfMonth, end: lastDayOfMonth)] ?? [])
-            .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day));
+    final monthlyRoutineLogs = (routineLogController.logs
+            .where((log) => log.createdAt.isBetweenInclusive(from: firstDayOfMonth, to: lastDayOfMonth)))
+        .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day));
 
-    final monthlyActivityLogs =
-        (activityLogController.monthlyLogs[DateTimeRange(start: firstDayOfMonth, end: lastDayOfMonth)] ?? [])
-            .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day));
+    final monthlyActivityLogs = (activityLogController.logs
+            .where((log) => log.createdAt.isBetweenInclusive(from: firstDayOfMonth, to: lastDayOfMonth)))
+        .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day));
 
     // Add remainder dates
     for (int day = 1; day <= daysInMonth; day++) {
@@ -207,11 +207,16 @@ class _Day extends StatelessWidget {
       {required this.dateTime,
       required this.selected,
       required this.currentDate,
-      required this.onTap, this.hasRoutineLog = false, this.hasActivityLog = false});
+      required this.onTap,
+      this.hasRoutineLog = false,
+      this.hasActivityLog = false});
 
   Color _getBackgroundColor() {
-    if(hasRoutineLog || hasActivityLog) {
+    if (hasRoutineLog) {
       return vibrantGreen;
+    }
+    if (hasActivityLog) {
+      return Colors.greenAccent;
     } else {
       return sapphireDark80.withOpacity(0.5);
     }

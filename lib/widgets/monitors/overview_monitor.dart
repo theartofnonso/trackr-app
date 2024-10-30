@@ -3,119 +3,284 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:provider/provider.dart';
+import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../colors.dart';
-import '../../dtos/activity_log_dto.dart';
-import '../../dtos/routine_log_dto.dart';
+import '../../controllers/exercise_controller.dart';
+import '../../controllers/routine_log_controller.dart';
+import '../../enums/share_content_type_enum.dart';
 import '../../strings.dart';
+import '../../utils/app_analytics.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
+import '../../utils/shareables_utils.dart';
+import '../buttons/opacity_button_widget.dart';
+import '../calendar/calendar.dart';
 import 'log_streak_monitor.dart';
 import 'muscle_group_family_frequency_monitor.dart';
 
+GlobalKey monitorKey = GlobalKey();
+
 class OverviewMonitor extends StatelessWidget {
+  final DateTime dateTime;
+  final bool showInfo;
 
-  final DateTimeRange range;
-  final List<RoutineLogDto> routineLogs;
-  final List<ActivityLogDto> activityLogs;
-
-  const OverviewMonitor({super.key, required this.range, required this.routineLogs, required this.activityLogs});
+  const OverviewMonitor({super.key, required this.dateTime, this.showInfo = true});
 
   @override
   Widget build(BuildContext context) {
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
-    final routineLogDays = groupBy(routineLogs, (log) => log.createdAt.withoutTime().day);
-    final activityLogDays = groupBy(activityLogs, (log) => log.createdAt.withoutTime().day);
+    final routineLogs = routineLogController.whereLogsIsSameMonth(dateTime: dateTime);
 
-    final totalActivityDays = {...routineLogDays.keys, ...activityLogDays.keys}.length;
+    final routineLogsByDay = groupBy(routineLogs, (log) => log.createdAt.withoutTime().day);
 
-    final monthlyProgress = (routineLogDays.length + activityLogDays.length) / 12;
+    final monthlyProgress = routineLogsByDay.length / 12;
 
     final exerciseLogsForTheMonth = routineLogs.expand((log) => log.exerciseLogs).toList();
 
-    final muscleGroupsSplitFrequencyScore =
-        cumulativeMuscleGroupFamilyFrequency(exerciseLogs: exerciseLogsForTheMonth);
+    final exerciseController = Provider.of<ExerciseController>(context, listen: false);
+
+    final exercisesFromLibrary = exerciseLogsForTheMonth.map((exerciseTemplate) {
+      final foundExercise = exerciseController.exercises
+          .firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.id == exerciseTemplate.id);
+      return foundExercise != null ? exerciseTemplate.copyWith(exercise: foundExercise) : exerciseTemplate;
+    }).toList();
+
+    final muscleGroupsSplitFrequencyScore = cumulativeMuscleGroupFamilyFrequency(exerciseLogs: exercisesFromLibrary);
 
     final splitPercentage = (muscleGroupsSplitFrequencyScore * 100).round();
 
-    return Center(
-      child: Stack(children: [
+    return Stack(children: [
+      if (showInfo)
         Positioned.fill(
-          right: 14,
+          left: 12,
           child: GestureDetector(
             onTap: () => _showMonitorInfo(context: context),
             child: const Align(
-                alignment: Alignment.bottomRight,
+                alignment: Alignment.bottomLeft,
                 child: FaIcon(FontAwesomeIcons.circleInfo, color: Colors.white38, size: 18)),
           ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            GestureDetector(
-                onTap: () => navigateToLogs(context: context, range: range),
-                child: Container(
-                  color: Colors.transparent,
-                  width: 100,
-                  child: _MonitorScore(
-                    value: "$totalActivityDays ${pluralize(word: "day", count: totalActivityDays)}",
-                    title: "Log Streak",
-                    color: logStreakColor(value: monthlyProgress),
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                  ),
-                )),
-            const SizedBox(width: 20),
-            GestureDetector(
-              //onTap: () => _navigateToLeaderBoard(context: context),
-              child: Stack(alignment: Alignment.center, children: [
-                LogStreakMonitor(
-                    value: monthlyProgress,
-                    width: 100,
-                    height: 100,
-                    strokeWidth: 6,
-                    decoration: BoxDecoration(
-                      color: sapphireDark.withOpacity(0.35),
-                      borderRadius: BorderRadius.circular(100),
-                    )),
-                MuscleGroupFamilyFrequencyMonitor(
-                    value: muscleGroupsSplitFrequencyScore, width: 70, height: 70, strokeWidth: 6),
-                Image.asset(
-                  'images/trkr.png',
-                  fit: BoxFit.contain,
-                  color: Colors.white54,
-                  height: 8, // Adjust the height as needed
-                )
-              ]),
-            ),
-            const SizedBox(width: 20),
-            GestureDetector(
-              onTap: () {
-                context.push(SetsAndRepsVolumeInsightsScreen.routeName);
-              },
+      if (showInfo)
+        Positioned.fill(
+          right: 12,
+          child: GestureDetector(
+            onTap: () => _showShareBottomSheet(context: context),
+            child: const Align(
+                alignment: Alignment.bottomRight,
+                child: FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 19)),
+          ),
+        ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          GestureDetector(
+              onTap: () => navigateToRoutineLogs(context: context, dateTime: dateTime),
               child: Container(
                 color: Colors.transparent,
-                width: 100,
+                width: 80,
                 child: _MonitorScore(
-                  value: "$splitPercentage%",
-                  color: Colors.white,
-                  title: "Muscle",
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  value: "${routineLogsByDay.length} ${pluralize(word: "day", count: routineLogsByDay.length)}",
+                  title: "Log Streak",
+                  color: logStreakColor(value: monthlyProgress),
+                  crossAxisAlignment: CrossAxisAlignment.end,
                 ),
+              )),
+          const SizedBox(width: 20),
+          GestureDetector(
+            child: Stack(alignment: Alignment.center, children: [
+              LogStreakMonitor(
+                  value: monthlyProgress,
+                  width: 100,
+                  height: 100,
+                  strokeWidth: 6,
+                  decoration: BoxDecoration(
+                    color: sapphireDark.withOpacity(0.35),
+                    borderRadius: BorderRadius.circular(100),
+                  )),
+              MuscleGroupFamilyFrequencyMonitor(
+                  value: muscleGroupsSplitFrequencyScore, width: 70, height: 70, strokeWidth: 6),
+              Image.asset(
+                'images/trkr.png',
+                fit: BoxFit.contain,
+                color: Colors.white54,
+                height: 8, // Adjust the height as needed
+              )
+            ]),
+          ),
+          const SizedBox(width: 20),
+          GestureDetector(
+            onTap: () {
+              context.push(SetsAndRepsVolumeInsightsScreen.routeName);
+            },
+            child: Container(
+              color: Colors.transparent,
+              width: 80,
+              child: _MonitorScore(
+                value: "$splitPercentage%",
+                color: Colors.white,
+                title: "Muscle",
+                crossAxisAlignment: CrossAxisAlignment.start,
               ),
             ),
-          ],
-        ),
-      ]),
-    );
+          ),
+        ],
+      ),
+    ]);
   }
 
   void _showMonitorInfo({required BuildContext context}) {
     showBottomSheetWithNoAction(context: context, title: "Streak and Muscle", description: overviewMonitor);
+  }
+
+  void _showShareBottomSheet({required BuildContext context}) {
+    displayBottomSheet(
+        context: context,
+        child: SafeArea(
+          child: Column(children: [
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(Icons.monitor_heart_rounded, size: 18),
+              horizontalTitleGap: 6,
+              title: Text("Share Streak and Muscle Monitor",
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              onTap: () {
+                Navigator.of(context).pop();
+                _onShareMonitor(context: context);
+              },
+            ),
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(FontAwesomeIcons.calendar, size: 18),
+              horizontalTitleGap: 6,
+              title: Text("Share Log Calendar",
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              onTap: () {
+                Navigator.of(context).pop();
+                _onShareCalendar(context: context);
+              },
+            ),
+          ]),
+        ));
+  }
+
+  void _onShareMonitor({required BuildContext context}) {
+    displayBottomSheet(
+      context: context,
+      child: Column(
+        children: [
+          RepaintBoundary(
+            key: monitorKey,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(5),
+              child: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      sapphireDark80,
+                      sapphireDark,
+                    ],
+                  ),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 18),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Monthly Overview".toUpperCase(),
+                        style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 2),
+                    Text(DateTime.now().formattedDayAndMonthAndYear(),
+                        style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w400)),
+                    const SizedBox(height: 20),
+                    OverviewMonitor(
+                      dateTime: dateTime,
+                      showInfo: false,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          OpacityButtonWidget(
+              onPressed: () {
+                captureImage(key: monitorKey, pixelRatio: 5);
+                contentShared(contentType: ShareContentType.monitor);
+                Navigator.of(context).pop();
+              },
+              label: "Share",
+              buttonColor: vibrantGreen,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14))
+        ],
+      ),
+    );
+  }
+
+  void _onShareCalendar({required BuildContext context}) {
+    displayBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              RepaintBoundary(
+                  key: calendarKey,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Container(
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              sapphireDark80,
+                              sapphireDark,
+                            ],
+                          ),
+                        ),
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Align(
+                              alignment: Alignment.center,
+                              child: Text(dateTime.formattedMonthAndYear(),
+                                  textAlign: TextAlign.left,
+                                  style: GoogleFonts.ubuntu(
+                                      color: Colors.white, fontWeight: FontWeight.w900, fontSize: 20)),
+                            ),
+                            Calendar(dateTime: dateTime),
+                            const SizedBox(height: 12),
+                            Image.asset(
+                              'images/trkr.png',
+                              fit: BoxFit.contain,
+                              height: 8, // Adjust the height as needed
+                            ),
+                          ],
+                        )),
+                  )),
+              const SizedBox(height: 20),
+              OpacityButtonWidget(
+                  onPressed: () {
+                    captureImage(key: calendarKey, pixelRatio: 5);
+                    contentShared(contentType: ShareContentType.calender);
+                    Navigator.of(context).pop();
+                  },
+                  label: "Share",
+                  buttonColor: vibrantGreen,
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14))
+            ]));
   }
 }
 

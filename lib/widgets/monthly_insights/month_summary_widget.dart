@@ -3,20 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
+import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../controllers/routine_log_controller.dart';
-import '../../dtos/routine_log_dto.dart';
+import '../../dtos/appsync/routine_log_dto.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/string_utils.dart';
 
 class MonthSummaryWidget extends StatelessWidget {
   final List<RoutineLogDto> routineLogs;
+  final DateTime dateTime;
 
   const MonthSummaryWidget({
     super.key,
-    required this.routineLogs,
+    required this.routineLogs, required this.dateTime,
   });
 
   @override
@@ -63,7 +65,7 @@ class MonthSummaryWidget extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Text("Summary of Training".toUpperCase(),
+            Text("Summary of ${dateTime.formattedMonth()} Training".toUpperCase(),
                 style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
             const SizedBox(height: 30),
             Table(
@@ -79,7 +81,7 @@ class MonthSummaryWidget extends StatelessWidget {
                     verticalAlignment: TableCellVerticalAlignment.middle,
                     child: Center(
                       child: _TableItem(
-                          title: 'Training'.toUpperCase(),
+                          title: 'Days'.toUpperCase(),
                           subTitle: "${routineLogs.length}",
                           titleColor: logStreakColor(value: routineLogs.length / 12),
                           subTitleColor: logStreakColor(value: routineLogs.length / 12),
@@ -136,7 +138,7 @@ class MonthSummaryWidget extends StatelessWidget {
                     verticalAlignment: TableCellVerticalAlignment.middle,
                     child: Center(
                       child: _TableItem(
-                          title: 'PBs',
+                          title: 'Personal Bests'.toUpperCase(),
                           subTitle: "${numberOfPbs.length}",
                           titleColor: Colors.white,
                           subTitleColor: Colors.white,

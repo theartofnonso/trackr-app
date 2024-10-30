@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/dtos/exercise_dto.dart';
+import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
-import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/exercise_history/personal_best_widget.dart';
 
@@ -186,18 +186,28 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
 
     return SingleChildScrollView(
         child: Padding(
-      padding: const EdgeInsets.only(top: 2, right: 10.0, bottom: 10, left: 10),
+      padding: const EdgeInsets.only(top: 20, right: 10.0, bottom: 10, left: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: double.infinity,
-            child: Text(
-              "Training ${widget.exercise.primaryMuscleGroup.name}",
-              style: GoogleFonts.ubuntu(
-                  color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14),
-              textAlign: TextAlign.center,
-            ),
+          Center(
+            child: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                    text: widget.exercise.primaryMuscleGroup.name.toUpperCase(),
+                    style:
+                        GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14, height: 1.5),
+                    children: [
+                      if (widget.exercise.secondaryMuscleGroups.isNotEmpty)
+                        [widget.exercise.primaryMuscleGroup, ...widget.exercise.secondaryMuscleGroups].length == 2
+                            ? const TextSpan(text: " & ")
+                            : const TextSpan(text: " | "),
+                      TextSpan(
+                          text: widget.exercise.secondaryMuscleGroups
+                              .map((muscleGroup) => muscleGroup.name.toUpperCase())
+                              .join(", "),
+                          style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 13)),
+                    ])),
           ),
           const SizedBox(height: 20),
           Padding(
@@ -366,11 +376,10 @@ class _MetricListTile extends StatelessWidget {
       child: ListTile(
         onTap: enabled ? onTap : () {},
         tileColor: Colors.pinkAccent,
-        title:
-            Text(title, style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w500)),
+        title: Text(title, style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w500)),
         subtitle: Text(subtitle, style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white.withOpacity(0.7))),
-        trailing: Text(trailing,
-            style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
+        trailing:
+            Text(trailing, style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       ),
     );

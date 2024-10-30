@@ -1,22 +1,34 @@
+import 'dart:async';
+
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
+import 'package:tracker_app/models/ActivityLog.dart';
+import 'package:tracker_app/models/Exercise.dart';
+import 'package:tracker_app/models/RoutineUser.dart';
+import 'package:tracker_app/screens/feeds_screen.dart';
 import 'package:tracker_app/screens/insights/overview_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
-import 'package:tracker_app/screens/template/routines_home.dart';
+import 'package:tracker_app/screens/templates/routine_templates_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../controllers/activity_log_controller.dart';
+import '../controllers/challenge_log_controller.dart';
 import '../controllers/exercise_controller.dart';
 import '../controllers/routine_template_controller.dart';
-import '../dtos/routine_log_dto.dart';
+import '../controllers/routine_user_controller.dart';
+import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../enums/routine_editor_type_enums.dart';
+import '../models/ChallengeLog.dart';
+import '../models/RoutineLog.dart';
+import '../models/RoutineTemplate.dart';
 import '../utils/app_analytics.dart';
+import 'challenges/challenges_home_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home_screen';
@@ -32,11 +44,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   int _currentScreenIndex = 0;
 
+  StreamSubscription<QuerySnapshot<ChallengeLog>>? _challengeLogStream;
+  StreamSubscription<QuerySnapshot<RoutineUser>>? _routineUserStream;
+  StreamSubscription<QuerySnapshot<RoutineLog>>? _routineLogStream;
+  StreamSubscription<QuerySnapshot<RoutineTemplate>>? _routineTemplateStream;
+  StreamSubscription<QuerySnapshot<ActivityLog>>? _activityLogStream;
+  StreamSubscription<QuerySnapshot<Exercise>>? _exerciseStream;
+
   @override
   Widget build(BuildContext context) {
     final screens = [
+      FeedsScreen(scrollController: _scrollController),
       OverviewScreen(scrollController: _scrollController),
-      const RoutinesHome(),
+      const RoutineTemplatesScreen(),
+      //const ChallengesHomeScreen(),
       const SettingsScreen(),
     ];
 
@@ -55,6 +76,11 @@ class _HomeScreenState extends State<HomeScreen> {
             selectedIcon: FaIcon(FontAwesomeIcons.house, color: Colors.white),
             label: 'Home',
           ),
+          const NavigationDestination(
+            icon: FaIcon(FontAwesomeIcons.barsProgress, color: Colors.grey),
+            selectedIcon: FaIcon(FontAwesomeIcons.barsProgress, color: Colors.white),
+            label: 'Statistics',
+          ),
           NavigationDestination(
             icon: Image.asset(
               'icons/dumbbells.png',
@@ -69,11 +95,16 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             label: 'Workouts',
           ),
+          // const NavigationDestination(
+          //   icon: FaIcon(FontAwesomeIcons.trophy, color: Colors.grey),
+          //   selectedIcon: FaIcon(FontAwesomeIcons.trophy, color: Colors.white),
+          //   label: 'Statistics',
+          // ),
           const NavigationDestination(
-            icon: FaIcon(FontAwesomeIcons.gear, color: Colors.grey, size: 26),
-            selectedIcon: FaIcon(FontAwesomeIcons.gear, color: Colors.white, size: 26),
+            icon: FaIcon(FontAwesomeIcons.gear, color: Colors.grey),
+            selectedIcon: FaIcon(FontAwesomeIcons.gear, color: Colors.white),
             label: 'Settings',
-          )
+          ),
         ],
         onDestinationSelected: (int index) {
           setState(() {
@@ -86,6 +117,68 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void _observeRoutineUserQuery() {
+    _routineUserStream = Amplify.DataStore.observeQuery(
+      RoutineUser.classType,
+    ).listen((QuerySnapshot<RoutineUser> snapshot) {
+      if (mounted) {
+        Provider.of<RoutineUserController>(context, listen: false).streamUsers(users: snapshot.items);
+      }
+    });
+  }
+
+  void _observeExerciseQuery() async {
+    final controller = Provider.of<ExerciseController>(context, listen: false);
+    await controller.loadLocalExercises();
+    _exerciseStream = Amplify.DataStore.observeQuery(
+      Exercise.classType,
+    ).listen((QuerySnapshot<Exercise> snapshot) {
+      if (mounted) {
+        Provider.of<ExerciseController>(context, listen: false).streamExercises(exercises: snapshot.items);
+      }
+    });
+  }
+
+  void _observeRoutineLogQuery() {
+    _routineLogStream = Amplify.DataStore.observeQuery(
+      RoutineLog.classType,
+    ).listen((QuerySnapshot<RoutineLog> snapshot) {
+      if (mounted) {
+        Provider.of<RoutineLogController>(context, listen: false).streamLogs(logs: snapshot.items);
+      }
+    });
+  }
+
+  void _observeRoutineTemplateQuery() {
+    _routineTemplateStream = Amplify.DataStore.observeQuery(
+      RoutineTemplate.classType,
+    ).listen((QuerySnapshot<RoutineTemplate> snapshot) {
+      if (mounted) {
+        Provider.of<RoutineTemplateController>(context, listen: false).streamTemplates(templates: snapshot.items);
+      }
+    });
+  }
+
+  void _observeChallengeLogQuery() {
+    _challengeLogStream = Amplify.DataStore.observeQuery(
+      ChallengeLog.classType,
+    ).listen((QuerySnapshot<ChallengeLog> snapshot) {
+      if (mounted) {
+        Provider.of<ChallengeLogController>(context, listen: false).streamLogs(logs: snapshot.items);
+      }
+    });
+  }
+
+  void _observeActivityLogQuery() {
+    _activityLogStream = Amplify.DataStore.observeQuery(
+      ActivityLog.classType,
+    ).listen((QuerySnapshot<ActivityLog> snapshot) {
+      if (mounted) {
+        Provider.of<ActivityLogController>(context, listen: false).streamLogs(logs: snapshot.items);
+      }
+    });
+  }
+
   void _scrollToTop(int index) {
     _scrollController.animateTo(
       0,
@@ -94,11 +187,13 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _loadAppData({bool firstLaunch = false}) async {
-    Provider.of<ExerciseController>(context, listen: false).fetchExercises(firstLaunch: firstLaunch);
-    Provider.of<RoutineLogController>(context, listen: false).fetchLogs(firstLaunch: firstLaunch);
-    Provider.of<RoutineTemplateController>(context, listen: false).fetchTemplates(firstLaunch: firstLaunch);
-    Provider.of<ActivityLogController>(context, listen: false).fetchLogs(firstLaunch: firstLaunch);
+  void _loadAppData() async {
+    _observeRoutineUserQuery();
+    _observeExerciseQuery();
+    _observeRoutineLogQuery();
+    _observeRoutineTemplateQuery();
+    _observeActivityLogQuery();
+    _observeChallengeLogQuery();
   }
 
   void _loadCachedLog() {
@@ -122,7 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _runSetup() async {
     if (SharedPrefs().firstLaunch) {
       _cacheUser();
-      _loadAppData(firstLaunch: SharedPrefs().firstLaunch);
+      _loadAppData();
       SharedPrefs().firstLaunch = false;
     } else {
       identifyUser(userId: SharedPrefs().userId);
@@ -135,5 +230,16 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _runSetup();
+  }
+
+  @override
+  void dispose() {
+    _challengeLogStream?.cancel();
+    _exerciseStream?.cancel();
+    _routineLogStream?.cancel();
+    _routineTemplateStream?.cancel();
+    _activityLogStream?.cancel();
+    _routineUserStream?.cancel();
+    super.dispose();
   }
 }

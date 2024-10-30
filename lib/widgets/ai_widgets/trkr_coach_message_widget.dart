@@ -3,7 +3,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../utils/dialog_utils.dart';
-import '../trkr_widgets/trkr_coach_widget.dart';
+import 'trkr_coach_widget.dart';
 import '../video_bottom_sheet.dart';
 
 class TRKRCoachMessageWidget extends StatelessWidget {

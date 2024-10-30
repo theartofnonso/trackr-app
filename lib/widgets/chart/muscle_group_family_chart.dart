@@ -61,7 +61,7 @@ class _LinearBar extends StatelessWidget {
                   children: [
                     LinearProgressIndicator(
                       value: frequency,
-                      backgroundColor: sapphireDark,
+                      backgroundColor: Colors.white10,
                       color: Colors.white,
                       minHeight: 25,
                       borderRadius: BorderRadius.circular(3.0), // Border r

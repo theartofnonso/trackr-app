@@ -1,50 +1,26 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/models/RoutineTemplate.dart';
-import '../dtos/exercise_dto.dart';
+
 import '../dtos/exercise_log_dto.dart';
-import '../dtos/routine_template_dto.dart';
-import '../enums/routine_template_library_workout_enum.dart';
-import '../repositories/amplify_template_repository.dart';
-import '../screens/template/library/routine_library.dart';
+import '../dtos/appsync/routine_template_dto.dart';
+import '../repositories/amplify/amplify_routine_template_repository.dart';
 
 class RoutineTemplateController extends ChangeNotifier {
   bool isLoading = false;
   String errorMessage = '';
 
-  late AmplifyTemplateRepository _amplifyTemplateRepository;
+  late AmplifyRoutineTemplateRepository _amplifyTemplateRepository;
 
-  RoutineTemplateController(AmplifyTemplateRepository amplifyTemplateRepository) {
+  RoutineTemplateController(AmplifyRoutineTemplateRepository amplifyTemplateRepository) {
     _amplifyTemplateRepository = amplifyTemplateRepository;
   }
 
-  UnmodifiableListView<Map<RoutineTemplateLibraryWorkoutEnum, List<RoutineLibrary>>> get defaultTemplates =>
-      _amplifyTemplateRepository.defaultTemplates;
-
   UnmodifiableListView<RoutineTemplateDto> get templates => _amplifyTemplateRepository.templates;
 
-  void loadTemplatesFromAssets({required List<ExerciseDto> exercises}) async {
-    if (_amplifyTemplateRepository.defaultTemplates.isEmpty) {
-      await _amplifyTemplateRepository.loadTemplatesFromAssets(exercises: exercises);
-      notifyListeners();
-    }
-  }
-
-  Future<RoutineTemplate?> fetchTemplate({required String id}) async {
-    return await _amplifyTemplateRepository.fetchTemplateCloud(id: id);
-  }
-
-  Future<void> fetchTemplates({bool firstLaunch = false}) async {
-    isLoading = true;
-    try {
-      await _amplifyTemplateRepository.fetchTemplates(firstLaunch: firstLaunch);
-    } catch (e) {
-      errorMessage = "Oops! Something went wrong. Please try again later.";
-    } finally {
-      isLoading = false;
-      errorMessage = "";
-      notifyListeners();
-    }
+  void streamTemplates({required List<RoutineTemplate> templates}) {
+    _amplifyTemplateRepository.loadTemplatesStream(templates: templates);
+    notifyListeners();
   }
 
   Future<RoutineTemplateDto?> saveTemplate({required RoutineTemplateDto templateDto}) async {

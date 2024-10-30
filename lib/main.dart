@@ -17,39 +17,43 @@ import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/controllers/notification_controller.dart';
-import 'package:tracker_app/controllers/open_ai_controller.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/controllers/routine_template_controller.dart';
 import 'package:tracker_app/controllers/settings_controller.dart';
-import 'package:tracker_app/dtos/routine_log_dto.dart';
-import 'package:tracker_app/dtos/routine_template_dto.dart';
+import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
+import 'package:tracker_app/dtos/appsync/routine_template_dto.dart';
 import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
 import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
-import 'package:tracker_app/repositories/amplify_activity_log_repository.dart';
-import 'package:tracker_app/repositories/amplify_exercise_repository.dart';
-import 'package:tracker_app/repositories/amplify_log_repository.dart';
-import 'package:tracker_app/repositories/amplify_template_repository.dart';
+import 'package:tracker_app/repositories/amplify/amplify_activity_log_repository.dart';
+import 'package:tracker_app/repositories/amplify/amplify_challenge_log_repository.dart';
+import 'package:tracker_app/repositories/amplify/amplify_exercise_repository.dart';
+import 'package:tracker_app/repositories/amplify/amplify_routine_log_repository.dart';
+import 'package:tracker_app/repositories/amplify/amplify_routine_template_repository.dart';
+import 'package:tracker_app/repositories/amplify/amplify_routine_user_repository.dart';
 import 'package:tracker_app/repositories/exercise_log_repository.dart';
-import 'package:tracker_app/repositories/open_ai_repository.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_log_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_template_editor_screen.dart';
+import 'package:tracker_app/screens/exercise/history/exercise_home_screen.dart';
 import 'package:tracker_app/screens/home_screen.dart';
 import 'package:tracker_app/screens/insights/overview_screen.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
 import 'package:tracker_app/screens/intro_screen.dart';
-import 'package:tracker_app/screens/logs/logs_screen.dart';
+import 'package:tracker_app/screens/logs/activity_logs_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
+import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
-import 'package:tracker_app/screens/template/routines_home.dart';
-import 'package:tracker_app/screens/template/templates/routine_template_screen.dart';
+import 'package:tracker_app/screens/templates/routine_template_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/date_utils.dart';
 
 import 'amplifyconfiguration.dart';
 import 'controllers/activity_log_controller.dart';
+import 'controllers/challenge_log_controller.dart';
+import 'controllers/routine_user_controller.dart';
+import 'dtos/appsync/exercise_dto.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
 import 'dtos/viewmodels/routine_template_arguments.dart';
 import 'models/ModelProvider.dart';
@@ -92,20 +96,23 @@ void main() async {
       ChangeNotifierProvider<NotificationController>(
         create: (BuildContext context) => NotificationController(),
       ),
+      ChangeNotifierProvider<RoutineUserController>(
+        create: (BuildContext context) => RoutineUserController(AmplifyRoutineUserRepository()),
+      ),
       ChangeNotifierProvider<ExerciseController>(
         create: (BuildContext context) => ExerciseController(AmplifyExerciseRepository()),
       ),
       ChangeNotifierProvider<RoutineTemplateController>(
-        create: (BuildContext context) => RoutineTemplateController(AmplifyTemplateRepository()),
+        create: (BuildContext context) => RoutineTemplateController(AmplifyRoutineTemplateRepository()),
       ),
       ChangeNotifierProvider<RoutineLogController>(
-        create: (BuildContext context) => RoutineLogController(AmplifyLogRepository()),
+        create: (BuildContext context) => RoutineLogController(AmplifyRoutineLogRepository()),
       ),
       ChangeNotifierProvider<ActivityLogController>(
         create: (BuildContext context) => ActivityLogController(AmplifyActivityLogRepository()),
       ),
-      ChangeNotifierProvider<OpenAIController>(
-        create: (BuildContext context) => OpenAIController(OpenAIRepository()),
+      ChangeNotifierProvider<ChallengeLogController>(
+        create: (BuildContext context) => ChallengeLogController(AmplifyChallengeLogRepository()),
       ),
       ChangeNotifierProvider<ExerciseLogController>(
           create: (BuildContext context) => ExerciseLogController(ExerciseLogRepository())),
@@ -140,10 +147,6 @@ final _router = GoRouter(
       builder: (context, state) => const OverviewScreen(),
     ),
     GoRoute(
-      path: RoutinesHome.routeName,
-      builder: (context, state) => const RoutinesHome(),
-    ),
-    GoRoute(
       path: RoutineLogEditorScreen.routeName,
       builder: (context, state) {
         final args = state.extra as RoutineLogArguments;
@@ -172,11 +175,37 @@ final _router = GoRouter(
       },
     ),
     GoRoute(
-      path: LogsScreen.routeName,
+      path: ExerciseHomeScreen.routeName,
+      builder: (context, state) {
+        final args = state.extra as ExerciseDto;
+        return ExerciseHomeScreen(exercise: args);
+      },
+    ),
+    GoRoute(
+      path: RoutineLogsScreen.routeName,
       pageBuilder: (context, state) {
-        final args = state.extra as DateTimeRange;
+        final args = state.extra as DateTime;
         return CustomTransitionPage(
-            child: LogsScreen(range: args),
+            child: RoutineLogsScreen(dateTime: args),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              const begin = Offset(0.0, 1.0);
+              const end = Offset.zero;
+              const curve = Curves.ease;
+              final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+              final offsetAnimation = animation.drive(tween);
+              return SlideTransition(
+                position: offsetAnimation,
+                child: child,
+              );
+            });
+      },
+    ),
+    GoRoute(
+      path: ActivityLogsScreen.routeName,
+      pageBuilder: (context, state) {
+        final args = state.extra as DateTime;
+        return CustomTransitionPage(
+            child: ActivityLogsScreen(dateTime: args),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               const begin = Offset(0.0, 1.0);
               const end = Offset.zero;
@@ -271,7 +300,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _configureAmplify() async {
     /// Only sync data for this year
-    final dateRange = yearToDateTimeRange();
+    final dateRange = theLastYearDateTimeRange();
     final startOfCurrentYear = dateRange.start.toIso8601String();
     final endOfCurrentYear = dateRange.end.toIso8601String();
     try {

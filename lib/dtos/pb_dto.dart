@@ -1,7 +1,7 @@
 import 'package:tracker_app/dtos/set_dto.dart';
 
 import '../enums/pb_enums.dart';
-import 'exercise_dto.dart';
+import 'appsync/exercise_dto.dart';
 
 class PBDto {
   final SetDto set;

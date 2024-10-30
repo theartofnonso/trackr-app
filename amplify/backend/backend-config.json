@@ -14,7 +14,31 @@
             "Arn"
           ],
           "category": "function",
+          "resourceName": "getRoutineLog"
+        },
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "getRoutineTemplate"
+        },
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
           "resourceName": "getAllRoutineLogs"
+        },
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "getUser"
         }
       ],
       "providerPlugin": "awscloudformation",
@@ -149,6 +173,51 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "getRoutineLog": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "trackerapp"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "getRoutineTemplate": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "trackerapp"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "getUser": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "trackerapp"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "postAuthentication": {
       "build": true,
       "dependsOn": [],
@@ -234,6 +303,54 @@
         {
           "category": "function",
           "resourceName": "getAllRoutineLogs"
+        }
+      ]
+    },
+    "AMPLIFY_function_getRoutineLog_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "getRoutineLog"
+        }
+      ]
+    },
+    "AMPLIFY_function_getRoutineLog_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "getRoutineLog"
+        }
+      ]
+    },
+    "AMPLIFY_function_getRoutineTemplate_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "getRoutineTemplate"
+        }
+      ]
+    },
+    "AMPLIFY_function_getRoutineTemplate_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "getRoutineTemplate"
+        }
+      ]
+    },
+    "AMPLIFY_function_getUser_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "getUser"
+        }
+      ]
+    },
+    "AMPLIFY_function_getUser_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "getUser"
         }
       ]
     },

@@ -5,7 +5,7 @@ import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/widgets/exercise_history/set_record_widget.dart';
 
-import '../../dtos/exercise_dto.dart';
+import '../../dtos/appsync/exercise_dto.dart';
 import '../../controllers/routine_log_controller.dart';
 
 class PersonalBestWidget extends StatelessWidget {

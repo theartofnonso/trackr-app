@@ -4,6 +4,6 @@ enum RoutineScheduleType {
   none;
 
   static RoutineScheduleType fromString(String string) {
-    return RoutineScheduleType.values.firstWhere((value) => value.name == string);
+    return RoutineScheduleType.values.firstWhere((value) => value.name.toLowerCase() == string.toLowerCase());
   }
 }

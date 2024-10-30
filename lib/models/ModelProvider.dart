@@ -21,20 +21,24 @@
 
 import 'package:amplify_core/amplify_core.dart' as amplify_core;
 import 'ActivityLog.dart';
+import 'ChallengeLog.dart';
 import 'Exercise.dart';
 import 'RoutineLog.dart';
 import 'RoutineTemplate.dart';
+import 'RoutineUser.dart';
 
 export 'ActivityLog.dart';
+export 'ChallengeLog.dart';
 export 'Exercise.dart';
 export 'RoutineLog.dart';
 export 'RoutineTemplate.dart';
+export 'RoutineUser.dart';
 
 class ModelProvider implements amplify_core.ModelProviderInterface {
   @override
-  String version = "e74bd167ebc203f5e6b649a158b60d43";
+  String version = "cafe1a724bfe5b04f26d91983606be6b";
   @override
-  List<amplify_core.ModelSchema> modelSchemas = [ActivityLog.schema, Exercise.schema, RoutineLog.schema, RoutineTemplate.schema];
+  List<amplify_core.ModelSchema> modelSchemas = [ActivityLog.schema, ChallengeLog.schema, Exercise.schema, RoutineLog.schema, RoutineTemplate.schema, RoutineUser.schema];
   @override
   List<amplify_core.ModelSchema> customTypeSchemas = [];
   static final ModelProvider _instance = ModelProvider();
@@ -45,12 +49,16 @@ class ModelProvider implements amplify_core.ModelProviderInterface {
     switch(modelName) {
       case "ActivityLog":
         return ActivityLog.classType;
+      case "ChallengeLog":
+        return ChallengeLog.classType;
       case "Exercise":
         return Exercise.classType;
       case "RoutineLog":
         return RoutineLog.classType;
       case "RoutineTemplate":
         return RoutineTemplate.classType;
+      case "RoutineUser":
+        return RoutineUser.classType;
       default:
         throw Exception("Failed to find model in model provider for model name: " + modelName);
     }

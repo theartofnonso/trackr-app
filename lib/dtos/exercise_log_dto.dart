@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:tracker_app/dtos/set_dto.dart';
 
-import 'exercise_dto.dart';
+import 'appsync/exercise_dto.dart';
 
 class ExerciseLogDto {
   final String id;
@@ -59,9 +59,9 @@ class ExerciseLogDto {
     final setsJsons = json["sets"] as List<dynamic>;
     final sets = setsJsons.map((json) => SetDto.fromJson(jsonDecode(json))).toList();
     final substituteExercisesJson = json["substituteExercises"] as List<dynamic>? ?? [];
-    final substituteExercises =
-    substituteExercisesJson.map((json) => ExerciseDto.fromJson(json)).toList();
-    return ExerciseLogDto(exercise.id, routineLogId, superSetId, exercise, notes, sets, createdAt ?? DateTime.now(), substituteExercises);
+    final substituteExercises = substituteExercisesJson.map((json) => ExerciseDto.fromJson(json)).toList();
+    return ExerciseLogDto(
+        exercise.id, routineLogId, superSetId, exercise, notes, sets, createdAt ?? DateTime.now(), substituteExercises);
   }
 
   @override
