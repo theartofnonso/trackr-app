@@ -144,8 +144,8 @@ class ChallengeScreen extends StatelessWidget {
                       width: double.infinity,
                       height: 50,
                       child: OpacityButtonWidget(
-                        onLongPress: () => foundTemplate != null ? null : _saveChallengeLog(context: context),
-                        label: "Tap and hold to commit",
+                        onLongPress: () {},
+                        label: "Challenge launching soon",
                         buttonColor: vibrantGreen,
                       ),
                     ),

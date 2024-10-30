@@ -17,7 +17,7 @@ import '../utils/dialog_utils.dart';
 import '../utils/exercise_logs_utils.dart';
 import '../utils/navigation_utils.dart';
 import '../widgets/chart/muscle_group_family_chart.dart';
-import 'no_list.dart';
+import 'no_list_empty_state.dart';
 
 class FeedsScreen extends StatelessWidget {
   final ScrollController scrollController;
@@ -36,7 +36,13 @@ class FeedsScreen extends StatelessWidget {
 
     final allLogs = [...routineLogs, ...activityLogs].sorted((a, b) => b.createdAt.compareTo(a.createdAt)).toList();
 
-    if (routineLogs.isEmpty) return const NoList();
+    if (routineLogs.isEmpty) {
+      return const NoListEmptyState(icon: FaIcon(
+      FontAwesomeIcons.house,
+      color: Colors.white12,
+      size: 48,
+    ),message: "It might feel quiet now, but new activities from your training will soon appear here.",);
+    }
 
     return Container(
       decoration: const BoxDecoration(

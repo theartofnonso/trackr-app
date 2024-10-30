@@ -4,8 +4,12 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../colors.dart';
 
-class NoList extends StatelessWidget {
-  const NoList({super.key});
+class NoListEmptyState extends StatelessWidget {
+
+  final Widget icon;
+  final String message;
+
+  const NoListEmptyState({super.key, required this.icon, required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -28,13 +32,9 @@ class NoList extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-              const FaIcon(
-                FontAwesomeIcons.house,
-                color: Colors.white12,
-                size: 48,
-              ),
+              icon,
               const SizedBox(height: 16),
-              Text("It might feel quiet now, but new activities from fellow TRKR trainers will soon appear here.",
+              Text(message,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.ubuntu(
                       color: Colors.white38,
