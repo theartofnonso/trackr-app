@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/exercise_history/personal_best_widget.dart';
+import 'package:tracker_app/widgets/label_divider.dart';
 
 import '../../../colors.dart';
 import '../../../controllers/routine_log_controller.dart';
@@ -65,6 +67,8 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   late ChartUnit _chartUnit;
 
   late SummaryType _summaryType;
+
+  final PageController _controller = PageController(initialPage: 0);
 
   void _heaviestWeightPerLog() {
     final sets = widget.exerciseLogs.map((log) => heaviestSetWeightForExerciseLog(exerciseLog: log)).toList();
@@ -188,8 +192,50 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
         child: Padding(
       padding: const EdgeInsets.only(top: 20, right: 10.0, bottom: 10, left: 10),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          Stack(
+            children: [
+              AspectRatio(
+                aspectRatio: 3,
+                child: PageView(scrollDirection: Axis.vertical, controller: _controller, children: [
+                  Image.asset(
+                    'images/traps.png',
+                    fit: BoxFit.contain,
+                    height: 160, // Adjust the height as needed
+                  ),
+                  Image.asset(
+                    'images/traps.png',
+                    fit: BoxFit.contain,
+                    height: 160, // Adjust the height as needed
+                  ),
+                  Image.asset(
+                    'images/traps.png',
+                    fit: BoxFit.contain,
+                    height: 160, // Adjust the height as needed
+                  ),
+                ]),
+              ),
+              Positioned.fill(
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 2.0),
+                    child: SmoothPageIndicator(
+                        controller: _controller,
+                        count: 3,
+                        effect: const WormEffect(
+                          activeDotColor: Colors.pink,
+                          dotWidth: 10.0,
+                          dotHeight: 10.0,
+                          dotColor: Colors.white38
+                        ),
+                        axisDirection: Axis.vertical),
+                  ),
+                ),
+              ),
+            ],
+          ),
           Center(
             child: RichText(
                 textAlign: TextAlign.center,
