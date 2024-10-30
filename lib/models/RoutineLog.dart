@@ -31,6 +31,7 @@ class RoutineLog extends amplify_core.Model {
   final String? _data;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
+  final String? _type;
 
   @override
   getInstanceType() => classType;
@@ -88,15 +89,20 @@ class RoutineLog extends amplify_core.Model {
     }
   }
   
-  const RoutineLog._internal({required this.id, owner, required data, required createdAt, required updatedAt}): _owner = owner, _data = data, _createdAt = createdAt, _updatedAt = updatedAt;
+  String? get type {
+    return _type;
+  }
   
-  factory RoutineLog({String? id, String? owner, required String data, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
+  const RoutineLog._internal({required this.id, owner, required data, required createdAt, required updatedAt, type}): _owner = owner, _data = data, _createdAt = createdAt, _updatedAt = updatedAt, _type = type;
+  
+  factory RoutineLog({String? id, String? owner, required String data, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt, String? type}) {
     return RoutineLog._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       owner: owner,
       data: data,
       createdAt: createdAt,
-      updatedAt: updatedAt);
+      updatedAt: updatedAt,
+      type: type);
   }
   
   bool equals(Object other) {
@@ -111,7 +117,8 @@ class RoutineLog extends amplify_core.Model {
       _owner == other._owner &&
       _data == other._data &&
       _createdAt == other._createdAt &&
-      _updatedAt == other._updatedAt;
+      _updatedAt == other._updatedAt &&
+      _type == other._type;
   }
   
   @override
@@ -126,33 +133,37 @@ class RoutineLog extends amplify_core.Model {
     buffer.write("owner=" + "$_owner" + ", ");
     buffer.write("data=" + "$_data" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
-    buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
+    buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null") + ", ");
+    buffer.write("type=" + "$_type");
     buffer.write("}");
     
     return buffer.toString();
   }
   
-  RoutineLog copyWith({String? owner, String? data, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+  RoutineLog copyWith({String? owner, String? data, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt, String? type}) {
     return RoutineLog._internal(
       id: id,
       owner: owner ?? this.owner,
       data: data ?? this.data,
       createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt);
+      updatedAt: updatedAt ?? this.updatedAt,
+      type: type ?? this.type);
   }
   
   RoutineLog copyWithModelFieldValues({
     ModelFieldValue<String?>? owner,
     ModelFieldValue<String>? data,
     ModelFieldValue<amplify_core.TemporalDateTime>? createdAt,
-    ModelFieldValue<amplify_core.TemporalDateTime>? updatedAt
+    ModelFieldValue<amplify_core.TemporalDateTime>? updatedAt,
+    ModelFieldValue<String?>? type
   }) {
     return RoutineLog._internal(
       id: id,
       owner: owner == null ? this.owner : owner.value,
       data: data == null ? this.data : data.value,
       createdAt: createdAt == null ? this.createdAt : createdAt.value,
-      updatedAt: updatedAt == null ? this.updatedAt : updatedAt.value
+      updatedAt: updatedAt == null ? this.updatedAt : updatedAt.value,
+      type: type == null ? this.type : type.value
     );
   }
   
@@ -161,10 +172,11 @@ class RoutineLog extends amplify_core.Model {
       _owner = json['owner'],
       _data = json['data'],
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
-      _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
+      _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null,
+      _type = json['type'];
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'owner': _owner, 'data': _data, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'owner': _owner, 'data': _data, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format(), 'type': _type
   };
   
   Map<String, Object?> toMap() => {
@@ -172,7 +184,8 @@ class RoutineLog extends amplify_core.Model {
     'owner': _owner,
     'data': _data,
     'createdAt': _createdAt,
-    'updatedAt': _updatedAt
+    'updatedAt': _updatedAt,
+    'type': _type
   };
 
   static final amplify_core.QueryModelIdentifier<RoutineLogModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<RoutineLogModelIdentifier>();
@@ -181,6 +194,7 @@ class RoutineLog extends amplify_core.Model {
   static final DATA = amplify_core.QueryField(fieldName: "data");
   static final CREATEDAT = amplify_core.QueryField(fieldName: "createdAt");
   static final UPDATEDAT = amplify_core.QueryField(fieldName: "updatedAt");
+  static final TYPE = amplify_core.QueryField(fieldName: "type");
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "RoutineLog";
     modelSchemaDefinition.pluralName = "RoutineLogs";
@@ -203,6 +217,10 @@ class RoutineLog extends amplify_core.Model {
         operations: const [
           amplify_core.ModelOperation.READ
         ])
+    ];
+    
+    modelSchemaDefinition.indexes = [
+      amplify_core.ModelIndex(fields: const ["type", "createdAt"], name: "routineLogByDate")
     ];
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.id());
@@ -229,6 +247,12 @@ class RoutineLog extends amplify_core.Model {
       key: RoutineLog.UPDATEDAT,
       isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: RoutineLog.TYPE,
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
   });
 }

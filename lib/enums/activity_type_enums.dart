@@ -52,6 +52,8 @@ enum ActivityType {
   netball("Netball", FontAwesomeIcons.baseball),
   padel("Padel", FontAwesomeIcons.tableTennisPaddleBall),
   powerlifting("Powerlifting", FontAwesomeIcons.dumbbell, image: 'dumbbells'),
+  heatTherapy("Heat Therapy", FontAwesomeIcons.circleInfo, image: 'heat'),
+  coldTherapy("Cold Therapy", FontAwesomeIcons.circleInfo, image: 'cold'),
   weightlifting("Weightlifting", FontAwesomeIcons.dumbbell, image: 'dumbbells');
 
   const ActivityType(this.name, this.icon, {this.image});
@@ -61,6 +63,6 @@ enum ActivityType {
   final String? image;
 
   static ActivityType fromString(String string) {
-    return ActivityType.values.firstWhere((value) => value.name == string);
+    return ActivityType.values.firstWhere((value) => value.name.toLowerCase() == string.toLowerCase());
   }
 }

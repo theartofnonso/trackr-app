@@ -17,8 +17,6 @@ abstract class Log {
     return endTime.difference(startTime);
   }
 
-  Map<String, dynamic> toJson();
-
   Log copyWith();
 
 }

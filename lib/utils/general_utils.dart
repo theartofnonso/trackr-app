@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 
 import '../colors.dart';
@@ -157,8 +157,8 @@ Future<bool> _requestIosNotificationPermission() async {
 Future<bool> _requestAndroidNotificationPermission() async {
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   return await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
-      ?.requestNotificationsPermission() ??
+          .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+          ?.requestNotificationsPermission() ??
       false;
 }
 
@@ -197,7 +197,7 @@ Color logStreakColor({required double value}) {
   if (value < 0.3) {
     return Colors.red;
   } else if (value < 0.5) {
-    return Colors.orange;
+    return Colors.deepOrangeAccent;
   } else if (value < 0.8) {
     return vibrantBlue;
   } else {
@@ -211,7 +211,7 @@ Color setsTrendColor({required int sets}) {
   } else if (sets >= 6) {
     return vibrantBlue;
   } else {
-    return Colors.orange;
+    return Colors.deepOrangeAccent;
   }
 }
 
@@ -221,7 +221,7 @@ Color repsTrendColor({required int reps}) {
   } else if (reps >= 60) {
     return vibrantBlue;
   } else {
-    return Colors.orange;
+    return Colors.deepOrangeAccent;
   }
 }
 
@@ -236,6 +236,7 @@ List<MuscleGroupFamily> popularMuscleGroupFamilies() {
     MuscleGroupFamily.legs,
     MuscleGroupFamily.shoulders,
     MuscleGroupFamily.arms,
-    MuscleGroupFamily.core
+    MuscleGroupFamily.core,
+    MuscleGroupFamily.neck
   ];
 }

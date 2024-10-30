@@ -1,40 +1,39 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
-import 'package:tracker_app/dtos/activity_log_dto.dart';
+import 'package:tracker_app/controllers/routine_user_controller.dart';
+import 'package:tracker_app/dtos/appsync/activity_log_dto.dart';
 import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
-import 'package:tracker_app/enums/share_content_type_enum.dart';
-import 'package:tracker_app/extensions/activity_log_extension.dart';
-import 'package:tracker_app/extensions/datetime_extension.dart';
-import 'package:tracker_app/extensions/datetime_range_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
-import 'package:tracker_app/extensions/routine_log_extension.dart';
+import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
-import 'package:tracker_app/widgets/calendar/calendar_months_navigator.dart';
+import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 
 import '../../controllers/activity_log_controller.dart';
 import '../../controllers/routine_log_controller.dart';
+import '../../controllers/settings_controller.dart';
+import '../../dtos/appsync/routine_log_dto.dart';
+import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/interface/log_interface.dart';
-import '../../dtos/routine_log_dto.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/activity_type_enums.dart';
 import '../../enums/routine_editor_type_enums.dart';
-import '../../utils/app_analytics.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
-import '../../utils/routine_utils.dart';
-import '../../utils/shareables_utils.dart';
+import '../../widgets/ai_widgets/trkr_coach_text_widget.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
-import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/calendar/calendar.dart';
+import '../../widgets/calendar/calendar_navigator.dart';
 import '../../widgets/label_divider.dart';
 import '../../widgets/monitors/overview_monitor.dart';
+import '../../widgets/monthly_insights/log_streak_chart_widget.dart';
+import '../../widgets/monthly_insights/muscle_score_chart_widget.dart';
 import '../../widgets/routine/preview/activity_log_widget.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
+import '../AI/trkr_coach_chat_screen.dart';
 import 'monthly_insights_screen.dart';
 
 class OverviewScreen extends StatefulWidget {
@@ -49,14 +48,15 @@ class OverviewScreen extends StatefulWidget {
 }
 
 class _OverviewScreenState extends State<OverviewScreen> {
-  Map<DateTimeRange, List<RoutineLogDto>>? _monthlyRoutineLogs;
-  Map<DateTimeRange, List<ActivityLogDto>>? _monthlyActivityLogs;
-
   late DateTime _selectedDateTime;
-  late DateTimeRange _selectedDateTimeRange;
+
+  late DateTimeRange _monthDateTimeRange;
+
   bool _loading = false;
 
-  void _logEmptyRoutine(BuildContext context) async {
+  TextEditingController? _textEditingController;
+
+  void _logEmptyRoutine() async {
     final log = Provider.of<RoutineLogController>(context, listen: false).cachedLog();
     if (log == null) {
       final log = RoutineLogDto(
@@ -67,6 +67,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           notes: "",
           startTime: DateTime.now(),
           endTime: DateTime.now(),
+          owner: "",
           createdAt: DateTime.now(),
           updatedAt: DateTime.now());
       final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log);
@@ -78,46 +79,25 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
+
+    Provider.of<SettingsController>(context, listen: true);
+
     /// Routine Logs
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
-
-    final routineLogsForTheMonth =
-        _monthlyRoutineLogs?[_selectedDateTimeRange] ?? routineLogController.monthlyLogs[_selectedDateTimeRange] ?? [];
-
-    Map<DateTimeRange, List<RoutineLogDto>> monthlyRoutineLogs =
-        _monthlyRoutineLogs ?? routineLogController.monthlyLogs;
-
-    final routineLogsForTheYear = monthlyRoutineLogs.values.expand((logs) => logs);
-
-    final routineLogsForCurrentDate = routineLogController.logsWhereDate(dateTime: _selectedDateTime).toList();
-
-    /// Activity Logs
-    final activityLogController = Provider.of<ActivityLogController>(context, listen: true);
-
-    final activityLogsForTheMonth = _monthlyActivityLogs?[_selectedDateTimeRange] ??
-        activityLogController.monthlyLogs[_selectedDateTimeRange] ??
-        [];
-
-    Map<DateTimeRange, List<ActivityLogDto>> monthlyActivityLogs =
-        _monthlyActivityLogs ?? activityLogController.monthlyLogs;
-
-    final activityLogsForTheYear = monthlyActivityLogs.values.expand((logs) => logs);
-
-    final activityLogsForCurrentDate = activityLogController.logsWhereDate(dateTime: _selectedDateTime).toList();
-
-    /// Aggregates
-    final allActivitiesForCurrentDate = [...routineLogsForCurrentDate, ...activityLogsForCurrentDate];
-
-    final allActivitiesForTheYear = routineLogsForTheYear.length + activityLogsForTheYear.length;
+    List<RoutineLogDto> routineLogsForTheYear =
+        routineLogController.whereLogsIsSameYear(dateTime: _monthDateTimeRange.start);
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        heroTag: "fab_overview_screen",
-        onPressed: _showBottomSheet,
-        backgroundColor: sapphireDark,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        child: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 24),
-      ),
+      floatingActionButton: _loading
+          ? null
+          : FloatingActionButton(
+              heroTag: "fab_overview_screen",
+              onPressed: _showBottomSheet,
+              backgroundColor: sapphireDark,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+              child: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 24),
+            ),
       body: Container(
         width: double.infinity,
         decoration: const BoxDecoration(
@@ -130,67 +110,102 @@ class _OverviewScreenState extends State<OverviewScreen> {
             ],
           ),
         ),
-        child: Stack(
-          children: [
-            SafeArea(
-                minimum: const EdgeInsets.all(10.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      IconButton(
-                        onPressed: null,
-                        icon: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                          const FaIcon(FontAwesomeIcons.fire, color: Colors.white, size: 20),
-                          const SizedBox(width: 4),
-                          Text("$allActivitiesForTheYear",
-                              style:
-                                  GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
-                        ]),
-                      ),
-                      CalendarMonthsNavigator(onChangedDateTimeRange: _onChangedDateTimeRange),
-                      IconButton(
-                          onPressed: _onShareCalendar,
-                          icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 20)),
-                    ]),
-                    Expanded(
-                      child: SingleChildScrollView(
-                          controller: widget.scrollController,
-                          padding: const EdgeInsets.only(bottom: 150),
-                          child: Column(children: [
-                            const SizedBox(height: 12),
-                            OverviewMonitor(
-                              range: _selectedDateTimeRange,
-                              routineLogs: routineLogsForTheMonth,
-                              activityLogs: activityLogsForTheMonth,
+        child: SafeArea(
+            minimum: const EdgeInsets.all(10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  SizedBox(
+                    width: 70,
+                    child: Row(
+                      children: [
+                        IconButton(
+                          onPressed: () => navigateToRoutineLogs(context: context, dateTime: _monthDateTimeRange.start),
+                          icon: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                            Image.asset(
+                              'icons/dumbbells.png',
+                              fit: BoxFit.contain,
+                              height: 24, // Adjust the height as needed
                             ),
-                            const SizedBox(height: 16),
-                            Calendar(
-                              onSelectDate: _onChangedDateTime,
-                              selectedDateRange: _selectedDateTimeRange,
+                            const SizedBox(width: 4),
+                            Text("${routineLogsForTheYear.length}",
+                                style:
+                                    GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
+                          ]),
+                        ),
+                        const Spacer()
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: CalendarNavigator(onMonthChange: _onMonthChange),
+                  ),
+                  SizedBox(
+                    width: 70,
+                    child: Row(
+                      children: [
+                        const Spacer(),
+                        IconButton(
+                          onPressed: _navigateToUserProfile,
+                          icon: const Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                            FaIcon(FontAwesomeIcons.solidUser, color: Colors.white, size: 18),
+                          ]),
+                        ),
+                      ],
+                    ),
+                  ),
+                ]),
+                Expanded(
+                  child: SingleChildScrollView(
+                      controller: widget.scrollController,
+                      padding: const EdgeInsets.only(bottom: 150),
+                      child: Column(children: [
+                        const SizedBox(height: 12),
+                        OverviewMonitor(dateTime: _monthDateTimeRange.start),
+                        if (SharedPrefs().showCalendar)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 16.0),
+                            child: Column(
+                              children: [
+                                Calendar(
+                                  onSelectDate: _onChangedDateTime,
+                                  dateTime: _monthDateTimeRange.start,
+                                ),
+                                const SizedBox(height: 10),
+                                _LogsListView(dateTime: _selectedDateTime),
+                              ],
                             ),
-                            const SizedBox(height: 10),
-                            _LogsListView(
-                              logs: allActivitiesForCurrentDate,
-                            ),
-                            const SizedBox(height: 12),
-                            MonthlyInsightsScreen(
-                              logsForTheMonth: routineLogsForTheMonth,
-                              daysInMonth: _selectedDateTimeRange.datesToNow.length,
-                              dateTimeRange: _selectedDateTimeRange,
-                              monthlyLogsAndDate: monthlyRoutineLogs,
-                              activityLogsForTheMonth: activityLogsForTheMonth,
-                            ),
-                          ])),
-                    )
-                    // Add more widgets here for exercise insights
-                  ],
-                )),
-            if (_loading) const TRKRLoadingScreen(opacity: 0.9)
-          ],
-        ),
+                          ),
+                        const SizedBox(height: 12),
+                        MonthlyInsightsScreen(dateTimeRange: _monthDateTimeRange),
+                        const SizedBox(height: 24),
+                        MuscleScoreChatWidget(logs: routineLogsForTheYear),
+                        const SizedBox(height: 18),
+                        LogStreakChartWidget(logs: routineLogsForTheYear),
+                      ])),
+                )
+                // Add more widgets here for exercise insights
+              ],
+            )),
       ),
     );
+  }
+
+  void _hideLoadingScreen() {
+    setState(() {
+      _loading = false;
+    });
+  }
+
+  void _navigateToUserProfile() {
+    final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
+    final user = routineUserController.user;
+    if (user != null) {
+      showUserBottomSheet(context: context, user: user);
+    } else {
+      showCreateProfileBottomSheet(context: context);
+    }
   }
 
   void _showBottomSheet() {
@@ -206,8 +221,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
               title: Text("Log new session",
                   style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
-                context.pop();
-                _logEmptyRoutine(context);
+                Navigator.of(context).pop();
+                _showLogNewSessionBottomSheet();
               },
             ),
             ListTile(
@@ -218,11 +233,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
               title: Text("Log past session",
                   style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.of(context).pop();
                 showDatetimeRangePicker(
                     context: context,
                     onChangedDateTimeRange: (DateTimeRange datetimeRange) {
-                      Navigator.pop(context);
+                      Navigator.of(context).pop();
                       final logName = "${timeOfDay(datetime: datetimeRange.start)} Session";
                       final log = RoutineLogDto(
                           id: "",
@@ -232,6 +247,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           notes: "",
                           startTime: datetimeRange.start,
                           endTime: datetimeRange.end,
+                          owner: "",
                           createdAt: datetimeRange.start,
                           updatedAt: datetimeRange.end);
                       final routineLogArguments = PastRoutineLogArguments(log: log);
@@ -243,7 +259,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               height: 10,
             ),
             const LabelDivider(
-              label: "Training outside the gym?",
+              label: "Log non-resistance training",
               labelColor: Colors.white70,
               dividerColor: sapphireLighter,
             ),
@@ -256,17 +272,17 @@ class _OverviewScreenState extends State<OverviewScreen> {
               leading: const FaIcon(
                 FontAwesomeIcons.circlePlus,
                 size: 18,
-                color: vibrantGreen,
+                color: Colors.greenAccent,
               ),
               horizontalTitleGap: 6,
-              title: Text("Add Activity",
-                  style: GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 16)),
+              title: Text("Log Activity",
+                  style: GoogleFonts.ubuntu(color: Colors.greenAccent, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.of(context).pop();
                 showActivityPicker(
                     context: context,
                     onChangedActivity: (ActivityType activity, DateTimeRange datetimeRange) {
-                      Navigator.pop(context);
+                      Navigator.of(context).pop();
                       final activityLog = ActivityLogDto(
                           id: "id",
                           name: activity.name,
@@ -274,7 +290,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           startTime: datetimeRange.start,
                           endTime: datetimeRange.end,
                           createdAt: datetimeRange.end,
-                          updatedAt: datetimeRange.end);
+                          updatedAt: datetimeRange.end,
+                          owner: "");
                       Provider.of<ActivityLogController>(context, listen: false).saveLog(logDto: activityLog);
                     });
               },
@@ -283,121 +300,110 @@ class _OverviewScreenState extends State<OverviewScreen> {
         ));
   }
 
+  void _showLogNewSessionBottomSheet() {
+    displayBottomSheet(
+        context: context,
+        child: SafeArea(
+          child: Column(children: [
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(FontAwesomeIcons.play, size: 18),
+              horizontalTitleGap: 6,
+              title: Text("Log new session",
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              onTap: () {
+                Navigator.of(context).pop();
+                _logEmptyRoutine();
+              },
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            const LabelDivider(
+              label: "Don't know what to train?",
+              labelColor: Colors.white70,
+              dividerColor: sapphireLighter,
+            ),
+            const SizedBox(
+              height: 6,
+            ),
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              leading: const TRKRCoachWidget(),
+              horizontalTitleGap: 10,
+              title: TRKRCoachTextWidget("Describe your workout",
+                  style: GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 16)),
+              onTap: () {
+                Navigator.of(context).pop();
+                _switchToAIContext();
+              },
+            ),
+          ]),
+        ));
+  }
+
+  void _switchToAIContext() async {
+    final result =
+        await navigateWithSlideTransition(context: context, child: const TRKRCoachChatScreen()) as RoutineTemplateDto?;
+    if (result != null) {
+      if (context.mounted) {
+        final arguments = RoutineLogArguments(log: result.log(), editorMode: RoutineEditorMode.log);
+        if (mounted) {
+          navigateToRoutineLogEditor(context: context, arguments: arguments);
+        }
+      }
+    }
+  }
+
   void _onChangedDateTime(DateTime date) {
     setState(() {
       _selectedDateTime = date;
     });
   }
 
-  void _onChangedDateTimeRange(DateTimeRange? range) {
-    if (range == null) return;
-
-    final isDifferentYear = !_selectedDateTimeRange.start.isSameYear(range.start);
-
+  void _onMonthChange(DateTimeRange range) {
     setState(() {
-      _loading = isDifferentYear;
+      _monthDateTimeRange = range;
     });
-
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
-    final activityLogController = Provider.of<ActivityLogController>(context, listen: false);
-
-    if (isDifferentYear) {
-      routineLogController.fetchLogsCloud(range: range.start.dateTimeRange()).then((logs) {
-        setState(() {
-          _loading = false;
-          final dtos = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
-          _monthlyRoutineLogs = groupRoutineLogsByMonth(routineLogs: dtos);
-        });
-      });
-      activityLogController.fetchLogsCloud(range: range.start.dateTimeRange()).then((logs) {
-        setState(() {
-          _loading = false;
-          final dtos = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
-          _monthlyActivityLogs = groupActivityLogsByMonth(activityLogs: dtos);
-        });
-      });
-    }
-
-    setState(() {
-      _selectedDateTimeRange = range;
-    });
-  }
-
-  void _onShareCalendar() {
-    displayBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              RepaintBoundary(
-                  key: calendarKey,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: Container(
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              sapphireDark80,
-                              sapphireDark,
-                            ],
-                          ),
-                        ),
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Align(
-                              alignment: Alignment.center,
-                              child: Text(_selectedDateTimeRange.start.formattedMonthAndYear(),
-                                  textAlign: TextAlign.left,
-                                  style: GoogleFonts.ubuntu(
-                                      color: Colors.white, fontWeight: FontWeight.w900, fontSize: 20)),
-                            ),
-                            Calendar(selectedDateRange: _selectedDateTimeRange),
-                            const SizedBox(height: 12),
-                            Image.asset(
-                              'images/trkr.png',
-                              fit: BoxFit.contain,
-                              height: 8, // Adjust the height as needed
-                            ),
-                          ],
-                        )),
-                  )),
-              const SizedBox(height: 20),
-              OpacityButtonWidget(
-                  onPressed: () {
-                    captureImage(key: calendarKey, pixelRatio: 5);
-                    contentShared(contentType: ShareContentType.calender);
-                    Navigator.pop(context);
-                  },
-                  label: "Share",
-                  buttonColor: vibrantGreen,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14))
-            ]));
   }
 
   @override
   void initState() {
     super.initState();
     _selectedDateTime = DateTime.now();
-    _selectedDateTimeRange = thisMonthDateRange();
+    _monthDateTimeRange = thisMonthDateRange();
+  }
+
+  @override
+  void dispose() {
+    _textEditingController?.dispose();
+    super.dispose();
   }
 }
 
 class _LogsListView extends StatelessWidget {
-  final List<Log> logs;
+  final DateTime dateTime;
 
-  const _LogsListView({required this.logs});
+  const _LogsListView({required this.dateTime});
 
   @override
   Widget build(BuildContext context) {
-    final descendingLogs = logs.sorted((a, b) => a.createdAt.compareTo(b.createdAt)).toList();
+    /// Routine Logs
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
+    final routineLogsForCurrentDate = routineLogController.whereLogsIsSameDay(dateTime: dateTime).toList();
 
-    final children = descendingLogs.map((log) {
+    /// Activity Logs
+    final activityLogController = Provider.of<ActivityLogController>(context, listen: true);
+    final activityLogsForCurrentDate = activityLogController.whereLogsIsSameDay(dateTime: dateTime).toList();
+
+    /// Aggregates
+    final allLogsForCurrentDate = [...routineLogsForCurrentDate, ...activityLogsForCurrentDate]
+        .sorted((a, b) => b.createdAt.compareTo(a.createdAt))
+        .toList();
+
+    final children = allLogsForCurrentDate.map((log) {
       Widget widget;
 
       if (log.type == LogType.routine) {

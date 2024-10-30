@@ -1,11 +1,12 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tracker_app/dtos/exercise_dto.dart';
+import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/enums/routine_editor_type_enums.dart';
+import 'package:tracker_app/enums/training_position_enum.dart';
 import 'package:tracker_app/repositories/exercise_log_repository.dart';
 
 void main() {
@@ -14,22 +15,28 @@ void main() {
       id: "id_lyingLegCurlExercise",
       name: "Lying Leg Curl",
       primaryMuscleGroup: MuscleGroup.hamstrings,
+      secondaryMuscleGroups: [MuscleGroup.hamstrings],
+      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
-      owner: false);
+      owner: "");
 
   final plankExercise = ExerciseDto(
       id: "id_plankExercise",
       name: "Plank",
       primaryMuscleGroup: MuscleGroup.abs,
+      secondaryMuscleGroups: [MuscleGroup.hamstrings],
+      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.duration,
-      owner: false);
+      owner: "");
 
   final benchPressExercise = ExerciseDto(
       id: "id_benchPressExercise",
       name: "Bench Press",
       primaryMuscleGroup: MuscleGroup.chest,
+      secondaryMuscleGroups: [MuscleGroup.hamstrings],
+      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
-      owner: false);
+      owner: "");
 
   final lyingLegCurlExerciseLog1 = ExerciseLogDto(
       lyingLegCurlExercise.id,

@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class OpacityButtonWidget extends StatelessWidget {
   final void Function()? onPressed;
+  final void Function()? onLongPress;
   final String label;
   final String loadingLabel;
   final bool loading;
@@ -12,7 +13,8 @@ class OpacityButtonWidget extends StatelessWidget {
 
   const OpacityButtonWidget(
       {super.key,
-      required this.onPressed,
+       this.onPressed,
+        this.onLongPress,
       required this.label,
       this.loadingLabel = "loading",
       this.loading = false,
@@ -22,6 +24,9 @@ class OpacityButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final action = onPressed ?? onLongPress;
+
     return TextButton(
         style: ButtonStyle(
           visualDensity: visualDensity,
@@ -34,6 +39,7 @@ class OpacityButtonWidget extends StatelessWidget {
           ),
         ),
         onPressed: loading ? null : onPressed,
+        onLongPress: loading ? null : onLongPress,
         child: Container(
           padding: padding,
           child: Row(
@@ -45,7 +51,7 @@ class OpacityButtonWidget extends StatelessWidget {
                   style: GoogleFonts.ubuntu(
                       fontWeight: FontWeight.w600,
                       fontSize: 16,
-                      color: onPressed != null ? buttonColor : buttonColor?.withOpacity(0.2))),
+                      color: action != null ? buttonColor : buttonColor?.withOpacity(0.2))),
               loading
                   ? const Padding(
                       padding: EdgeInsets.only(left: 6.0),
