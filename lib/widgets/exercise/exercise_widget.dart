@@ -31,13 +31,16 @@ class ExerciseWidget extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              width: 30,
-              height: 30, // Adjust the height as needed
-              child: Image.asset(
-                'muscles_illustration/${exercise.primaryMuscleGroup.illustration()}.png',
-                fit: BoxFit.cover,
-                filterQuality: FilterQuality.low,
+            Padding(
+              padding: const EdgeInsets.only(top: 4.0),
+              child: SizedBox(
+                width: 35,
+                height: 35, // Adjust the height as needed
+                child: Image.asset(
+                  'muscles_illustration/${exercise.primaryMuscleGroup.illustration()}.png',
+                  fit: BoxFit.cover,
+                  filterQuality: FilterQuality.low,
+                ),
               ),
             ),
             const SizedBox(width: 14),
