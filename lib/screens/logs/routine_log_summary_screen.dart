@@ -108,7 +108,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
         ),
         actions: [
           IconButton(
-            icon: const FaIcon(FontAwesomeIcons.solidImage, color: Colors.white, size: 24),
+            icon: const FaIcon(FontAwesomeIcons.camera, color: Colors.white, size: 24),
             onPressed: _showBottomSheet,
           )
         ],
