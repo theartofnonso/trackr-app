@@ -9,18 +9,17 @@ import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_controller.dart';
-import '../../dtos/graph/chart_point_dto.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
+import '../../dtos/graph/chart_point_dto.dart';
 import '../../enums/chart_unit_enum.dart';
 import '../../screens/insights/sets_reps_volume_insights_screen.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../chart/bar_chart.dart';
 
-class MuscleScoreChatWidget extends StatelessWidget {
-
+class MuscleScoreChartWidget extends StatelessWidget {
   final List<RoutineLogDto> logs;
 
-  const MuscleScoreChatWidget({super.key, required this.logs});
+  const MuscleScoreChartWidget({super.key, required this.logs});
 
   @override
   Widget build(BuildContext context) {
@@ -35,17 +34,11 @@ class MuscleScoreChatWidget extends StatelessWidget {
       final exerciseLogsForTheMonth =
           logsAndMonths.value.expand((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs)).toList();
 
-      final exercisesFromLibrary = exerciseLogsForTheMonth.map((exerciseTemplate) {
-        final foundExercise = exerciseController.exercises
-            .firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.id == exerciseTemplate.id);
-        return foundExercise != null ? exerciseTemplate.copyWith(exercise: foundExercise) : exerciseTemplate;
-      }).toList();
-
-      final score = cumulativeMuscleGroupFamilyFrequency(exerciseLogs: exercisesFromLibrary);
-      final percentageScore = (score * 100).round();
+      final muscleScorePercentage =
+          calculateMuscleScoreForLogs(routineLogs: logsAndMonths.value, exercises: exerciseController.exercises);
 
       scoreMonths.add(exerciseLogsForTheMonth.first.createdAt);
-      scoreCount.add(percentageScore);
+      scoreCount.add(muscleScorePercentage);
     }
 
     final chartPoints =

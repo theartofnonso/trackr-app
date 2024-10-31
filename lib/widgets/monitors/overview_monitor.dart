@@ -42,19 +42,9 @@ class OverviewMonitor extends StatelessWidget {
 
     final monthlyProgress = routineLogsByDay.length / 12;
 
-    final exerciseLogsForTheMonth = routineLogs.expand((log) => log.exerciseLogs).toList();
-
     final exerciseController = Provider.of<ExerciseController>(context, listen: false);
 
-    final exercisesFromLibrary = exerciseLogsForTheMonth.map((exerciseTemplate) {
-      final foundExercise = exerciseController.exercises
-          .firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.id == exerciseTemplate.id);
-      return foundExercise != null ? exerciseTemplate.copyWith(exercise: foundExercise) : exerciseTemplate;
-    }).toList();
-
-    final muscleGroupsSplitFrequencyScore = cumulativeMuscleGroupFamilyFrequency(exerciseLogs: exercisesFromLibrary);
-
-    final splitPercentage = (muscleGroupsSplitFrequencyScore * 100).round();
+    final muscleScorePercentage = calculateMuscleScoreForLogs(routineLogs: routineLogs, exercises: exerciseController.exercises);
 
     return Stack(children: [
       if (showInfo)
@@ -105,7 +95,7 @@ class OverviewMonitor extends StatelessWidget {
                     borderRadius: BorderRadius.circular(100),
                   )),
               MuscleGroupFamilyFrequencyMonitor(
-                  value: muscleGroupsSplitFrequencyScore, width: 70, height: 70, strokeWidth: 6),
+                  value: muscleScorePercentage / 100, width: 70, height: 70, strokeWidth: 6),
               Image.asset(
                 'images/trkr.png',
                 fit: BoxFit.contain,
@@ -123,7 +113,7 @@ class OverviewMonitor extends StatelessWidget {
               color: Colors.transparent,
               width: 80,
               child: _MonitorScore(
-                value: "$splitPercentage%",
+                value: "$muscleScorePercentage%",
                 color: Colors.white,
                 title: "Muscle",
                 crossAxisAlignment: CrossAxisAlignment.start,

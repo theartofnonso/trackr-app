@@ -8,6 +8,7 @@ import 'package:tracker_app/widgets/routine/preview/date_duration_pb.dart';
 
 import '../colors.dart';
 import '../controllers/activity_log_controller.dart';
+import '../controllers/exercise_controller.dart';
 import '../controllers/routine_log_controller.dart';
 import '../dtos/appsync/activity_log_dto.dart';
 import '../dtos/appsync/routine_log_dto.dart';
@@ -37,11 +38,14 @@ class FeedsScreen extends StatelessWidget {
     final allLogs = [...routineLogs, ...activityLogs].sorted((a, b) => b.createdAt.compareTo(a.createdAt)).toList();
 
     if (routineLogs.isEmpty) {
-      return const NoListEmptyState(icon: FaIcon(
-      FontAwesomeIcons.house,
-      color: Colors.white12,
-      size: 48,
-    ),message: "It might feel quiet now, but new activities from your training will soon appear here.",);
+      return const NoListEmptyState(
+        icon: FaIcon(
+          FontAwesomeIcons.house,
+          color: Colors.white12,
+          size: 48,
+        ),
+        message: "It might feel quiet now, but new activities from your training will soon appear here.",
+      );
     }
 
     return Container(
@@ -92,8 +96,13 @@ class _RoutineLogFeedListItem extends StatelessWidget {
     final completedExerciseLogsAndSets = exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs);
     final updatedLog = log.copyWith(exerciseLogs: completedExerciseLogsAndSets);
 
-    final muscleGroupFamilyFrequencyData =
-        muscleGroupFamilyFrequency(exerciseLogs: updatedLog.exerciseLogs, includeSecondaryMuscleGroups: false);
+    final exerciseController = Provider.of<ExerciseController>(context, listen: false);
+
+    final exercisesFromLibrary =
+        updateExercisesFromLibrary(exerciseLogs: updatedLog.exerciseLogs, exercises: exerciseController.exercises);
+
+    final muscleGroupFamilyFrequencies =
+        muscleGroupFamilyFrequency(exerciseLogs: exercisesFromLibrary, includeSecondaryMuscleGroups: false);
 
     return GestureDetector(
       onTap: () => navigateToRoutineLogPreview(context: context, log: log),
@@ -105,7 +114,12 @@ class _RoutineLogFeedListItem extends StatelessWidget {
               contentPadding: EdgeInsets.zero,
               title: Text(log.name,
                   style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
-              subtitle: DateDurationPBWidget(dateTime: log.createdAt, duration: log.duration(), pbs: pbs.length, durationSince: true,),
+              subtitle: DateDurationPBWidget(
+                dateTime: log.createdAt,
+                duration: log.duration(),
+                pbs: pbs.length,
+                durationSince: true,
+              ),
               trailing: const _ProfileIcon(),
             ),
             SizedBox(
@@ -123,7 +137,7 @@ class _RoutineLogFeedListItem extends StatelessWidget {
                   ])),
             ),
             const SizedBox(height: 8),
-            MuscleGroupFamilyChart(frequencyData: muscleGroupFamilyFrequencyData),
+            MuscleGroupFamilyChart(frequencyData: muscleGroupFamilyFrequencies),
           ])),
     );
   }
@@ -158,7 +172,8 @@ class _ActivityLogFeedListItem extends StatelessWidget {
                   : FaIcon(activityType.icon, color: Colors.white),
               title: Text(log.name,
                   style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
-              subtitle: DateDurationPBWidget(dateTime: log.createdAt, duration: log.duration(), pbs: 0, durationSince: true),
+              subtitle:
+                  DateDurationPBWidget(dateTime: log.createdAt, duration: log.duration(), pbs: 0, durationSince: true),
               trailing: const _ProfileIcon(),
             ),
           ])),

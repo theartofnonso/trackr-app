@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -82,15 +81,11 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     final exerciseController = Provider.of<ExerciseController>(context, listen: true);
 
-    final exercisesFromLibrary = completedExerciseLogsAndSets.map((exerciseTemplate) {
-      final foundExercise = exerciseController.exercises
-          .firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.id == exerciseTemplate.id);
-      return foundExercise != null ? exerciseTemplate.copyWith(exercise: foundExercise) : exerciseTemplate;
-    }).toList();
-
     final numberOfCompletedSets = completedExerciseLogsAndSets.expand((exerciseLog) => exerciseLog.sets);
     final completedSetsSummary =
         "${numberOfCompletedSets.length} ${pluralize(word: "Set", count: numberOfCompletedSets.length)}";
+
+    final exercisesFromLibrary = updateExercisesFromLibrary(exerciseLogs: log.exerciseLogs, exercises: exerciseController.exercises);
 
     final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: exercisesFromLibrary);
 

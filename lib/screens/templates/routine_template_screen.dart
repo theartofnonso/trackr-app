@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -117,11 +116,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
     final exerciseController = Provider.of<ExerciseController>(context, listen: true);
 
-    final exercisesFromLibrary = template.exerciseTemplates.map((exerciseTemplate) {
-      final foundExercise = exerciseController.exercises
-          .firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.id == exerciseTemplate.id);
-      return foundExercise != null ? exerciseTemplate.copyWith(exercise: foundExercise) : exerciseTemplate;
-    }).toList();
+    final exercisesFromLibrary =
+        updateExercisesFromLibrary(exerciseLogs: template.exerciseTemplates, exercises: exerciseController.exercises);
 
     final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: exercisesFromLibrary);
 
