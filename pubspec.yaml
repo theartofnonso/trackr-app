@@ -96,6 +96,7 @@ flutter:
     - images/
     - icons/
     - muscles_illustration/
+    - muscles_illustration_green/
     - challenges_icons/
     - workouts/
   #   - images/a_dot_burr.jpeg

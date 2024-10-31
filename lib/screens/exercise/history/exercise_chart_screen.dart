@@ -195,7 +195,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
         Image.asset(
-          'muscles_illustration/$illustrationName.png',
+          'muscles_illustration_green/$illustrationName.png',
           fit: BoxFit.contain,
           height: 160, // Adjust the height as needed
         ),
@@ -227,7 +227,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                         controller: _controller,
                         count: muscleGroupsIllustrations.length,
                         effect: const WormEffect(
-                            activeDotColor: Colors.pink, dotWidth: 8.0, dotHeight: 8.0, dotColor: Colors.white12),
+                            activeDotColor: vibrantGreen, dotWidth: 8.0, dotHeight: 8.0, dotColor: Colors.white12),
                         axisDirection: Axis.vertical),
                   ),
                 ),
