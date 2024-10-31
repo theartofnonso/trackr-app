@@ -53,10 +53,10 @@ class MuscleScoreWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("$thisMonthScore",
+                Text("$thisMonthScore%",
                     style: GoogleFonts.ubuntu(
                         color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w900, fontSize: 20)),
-                Text("$lastMonthScore",
+                Text("$lastMonthScore%",
                     style: GoogleFonts.ubuntu(color: Colors.white54, fontWeight: FontWeight.w900, fontSize: 12))
               ],
             ),
