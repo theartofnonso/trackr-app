@@ -44,6 +44,8 @@ class MuscleGroup {
   static const MuscleGroup abs = MuscleGroup._("Abs", MuscleGroupFamily.core, "Abdominal muscles are essential for core stability, balance, and supporting almost all compound lifts.");
   static const MuscleGroup chest = MuscleGroup._("Chest", MuscleGroupFamily.chest, "The chest muscles are key for pushing movements, including presses and push-ups, and contribute to upper body strength.");
   static const MuscleGroup shoulders = MuscleGroup._("Shoulders", MuscleGroupFamily.shoulders, "Shoulders (deltoids) enable arm rotation and are involved in pushing and lifting movements.");
+  static const MuscleGroup frontShoulder = MuscleGroup._("Shoulders", MuscleGroupFamily.shoulders, "Shoulders (deltoids) enable arm rotation and are involved in pushing and lifting movements.");
+  static const MuscleGroup backShoulder = MuscleGroup._("Shoulders", MuscleGroupFamily.shoulders, "Shoulders (deltoids) enable arm rotation and are involved in pushing and lifting movements.");
   static const MuscleGroup abductors = MuscleGroup._("Abductors", MuscleGroupFamily.legs, "Abductors are responsible for moving the legs away from the body's midline, essential for lateral movements.");
   static const MuscleGroup adductors = MuscleGroup._("Adductors", MuscleGroupFamily.legs, "Adductors bring the legs toward the midline of the body and support stability in squats and lunges.");
   static const MuscleGroup glutes = MuscleGroup._("Glutes", MuscleGroupFamily.legs, "Glutes are powerful muscles for hip extension, playing a key role in squats, deadlifts, and explosive movements.");
@@ -65,6 +67,8 @@ class MuscleGroup {
         abs,
         chest,
         shoulders,
+        frontShoulder,
+        backShoulder,
         abductors,
         adductors,
         glutes,

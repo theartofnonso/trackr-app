@@ -8,8 +8,8 @@ import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
+import 'package:tracker_app/extensions/muscle_group_extension.dart';
 import 'package:tracker_app/widgets/exercise_history/personal_best_widget.dart';
-import 'package:tracker_app/widgets/label_divider.dart';
 
 import '../../../colors.dart';
 import '../../../controllers/routine_log_controller.dart';
@@ -188,6 +188,23 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   Widget build(BuildContext context) {
     final weightUnitLabel = weightLabel();
 
+    final muscleGroupsIllustrations =
+        [widget.exercise.primaryMuscleGroup, ...widget.exercise.secondaryMuscleGroups].map((muscleGroup) {
+      final illustrationName = muscleGroup.illustration();
+      return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+        Image.asset(
+          'muscles_illustration/$illustrationName.png',
+          fit: BoxFit.contain,
+          height: 160, // Adjust the height as needed
+        ),
+        const SizedBox(height: 6,),
+        Text(muscleGroup.name.toUpperCase(),
+            style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 14, height: 1.5))
+      ]);
+    }).toList();
+
     return SingleChildScrollView(
         child: Padding(
       padding: const EdgeInsets.only(top: 20, right: 10.0, bottom: 10, left: 10),
@@ -197,24 +214,9 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
           Stack(
             children: [
               AspectRatio(
-                aspectRatio: 3,
-                child: PageView(scrollDirection: Axis.vertical, controller: _controller, children: [
-                  Image.asset(
-                    'images/traps.png',
-                    fit: BoxFit.contain,
-                    height: 160, // Adjust the height as needed
-                  ),
-                  Image.asset(
-                    'images/traps.png',
-                    fit: BoxFit.contain,
-                    height: 160, // Adjust the height as needed
-                  ),
-                  Image.asset(
-                    'images/traps.png',
-                    fit: BoxFit.contain,
-                    height: 160, // Adjust the height as needed
-                  ),
-                ]),
+                aspectRatio: 1.8,
+                child: PageView(
+                    scrollDirection: Axis.vertical, controller: _controller, children: muscleGroupsIllustrations),
               ),
               Positioned.fill(
                 child: Align(
@@ -223,37 +225,14 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                     padding: const EdgeInsets.only(left: 2.0),
                     child: SmoothPageIndicator(
                         controller: _controller,
-                        count: 3,
+                        count: muscleGroupsIllustrations.length,
                         effect: const WormEffect(
-                          activeDotColor: Colors.pink,
-                          dotWidth: 10.0,
-                          dotHeight: 10.0,
-                          dotColor: Colors.white38
-                        ),
+                            activeDotColor: Colors.pink, dotWidth: 8.0, dotHeight: 8.0, dotColor: Colors.white12),
                         axisDirection: Axis.vertical),
                   ),
                 ),
               ),
             ],
-          ),
-          Center(
-            child: RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                    text: widget.exercise.primaryMuscleGroup.name.toUpperCase(),
-                    style:
-                        GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14, height: 1.5),
-                    children: [
-                      if (widget.exercise.secondaryMuscleGroups.isNotEmpty)
-                        [widget.exercise.primaryMuscleGroup, ...widget.exercise.secondaryMuscleGroups].length == 2
-                            ? const TextSpan(text: " & ")
-                            : const TextSpan(text: " | "),
-                      TextSpan(
-                          text: widget.exercise.secondaryMuscleGroups
-                              .map((muscleGroup) => muscleGroup.name.toUpperCase())
-                              .join(", "),
-                          style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 13)),
-                    ])),
           ),
           const SizedBox(height: 20),
           Padding(
