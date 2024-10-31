@@ -11,6 +11,7 @@ import 'package:tracker_app/extensions/amplify_models/routine_log_extension.dart
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
+import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/utils/https_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
@@ -270,7 +271,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     if (log == null) return;
 
-    final userInstructions = "Review my ${log.name} workout log and provide feedback";
+    final userInstructions = "Review my ${log.name} workout log and provide feedback. Please note, that my weights are in ${weightLabel()}";
 
     final logJsons = logs.map((log) => log.toJson());
 

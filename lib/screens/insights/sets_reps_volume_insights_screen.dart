@@ -335,7 +335,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       final endDate = logs.last.createdAt;
 
       final userInstructions =
-          "Review my workout logs for ${_selectedMuscleGroup.name} from $startDate to $endDate and provide feedback";
+          "Review my workout logs for ${_selectedMuscleGroup.name} from $startDate to $endDate and provide feedback. Please note, that my weights are in ${weightLabel()}";
 
       final logJsons = logs.map((log) => log.toJson());
 
