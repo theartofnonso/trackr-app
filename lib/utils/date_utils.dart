@@ -42,5 +42,38 @@ List<DateTimeRange> generateWeeksInRange({required DateTimeRange range}) {
     currentStartDate = currentEndDate.add(const Duration(days: 1));
   }
 
+  print(generateMonthsInRange(range: range));
+
   return weeks;
+}
+
+/// Returns a list of DateTimeRange representing each month in the given range.
+List<DateTimeRange> generateMonthsInRange({required DateTimeRange range}) {
+  List<DateTimeRange> months = [];
+
+  // Ensure that the startDate is not after the endDate
+  if (range.start.isAfter(range.end)) {
+    return months; // Return empty list if dates are invalid
+  }
+
+  // Set currentStartDate to the first day of the month of range.start
+  DateTime currentStartDate = DateTime(range.start.year, range.start.month, 1);
+
+  while (!currentStartDate.isAfter(range.end)) {
+    // Get the last day of the current month
+    DateTime currentEndDate = DateTime(currentStartDate.year, currentStartDate.month + 1, 0);
+
+    /// Adjust currentEndDate if it's beyond range.end
+    /// Only uncomment this if you want last day to be current date
+    // if (currentEndDate.isAfter(range.end)) {
+    //   currentEndDate = range.end;
+    // }
+
+    months.add(DateTimeRange(start: currentStartDate, end: currentEndDate));
+
+    // Move currentStartDate to the first day of the next month
+    currentStartDate = DateTime(currentStartDate.year, currentStartDate.month + 1, 1);
+  }
+
+  return months;
 }

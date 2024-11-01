@@ -77,7 +77,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     }).toList();
 
     final weeksInYear = generateWeeksInRange(range: dateRange);
-    List<num> valuesForWeek = [];
+    List<num> trends = [];
     List<String> weeks = [];
     List<String> months = [];
     int weekCounter = 0;
@@ -90,18 +90,18 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
         final values = _calculateMetric(sets: log.sets);
         return values;
       }).sum;
-      valuesForWeek.add(values);
+      trends.add(values);
       weeks.add("WK ${weekCounter + 1}");
       months.add(startOfWeek.formattedMonth());
       weekCounter += 1;
     }
 
-    final nonZeroValues = valuesForWeek.where((value) => value > 0).toList();
+    final nonZeroValues = trends.where((value) => value > 0).toList();
 
     final avgValue = nonZeroValues.isNotEmpty ? nonZeroValues.average.round() : 0;
 
     final chartPoints =
-        valuesForWeek.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+        trends.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
 
     final totalOptimal = _weightWhere(values: nonZeroValues, condition: (value) => value >= _optimalSetsOrRepsValue());
     final totalSufficient = _weightWhere(
@@ -116,7 +116,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     final weightColors = [vibrantGreen, vibrantBlue, Colors.deepOrangeAccent];
 
-    final barColors = valuesForWeek
+    final barColors = trends
         .map((value) => _metric == SetRepsVolumeReps.sets
             ? setsTrendColor(sets: value.toInt())
             : repsTrendColor(reps: value.toInt()))

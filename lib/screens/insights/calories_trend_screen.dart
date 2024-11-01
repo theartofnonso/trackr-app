@@ -10,6 +10,7 @@ import '../../colors.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../enums/chart_unit_enum.dart';
+import '../../utils/date_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/chart/bar_chart.dart';
 
@@ -27,24 +28,27 @@ class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
   Widget build(BuildContext context) {
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
-    List<DateTime> logMonths = [];
-    List<int> caloriesCount = [];
+    final dateRange = theLastYearDateTimeRange();
 
-    final logsAndMonths = groupBy(routineLogController.logs, (log) => log.createdAt.month);
+    final logs = routineLogController.whereLogsIsWithinRange(range: dateRange);
 
-    for (var logsAndMonths in logsAndMonths.entries) {
-      final logsForMonth = logsAndMonths.value;
-      final calories = logsForMonth
+    final monthsInYear = generateMonthsInRange(range: dateRange);
+
+    List<String> months = [];
+    List<int> calories = [];
+    for (final month in monthsInYear) {
+      final startOfMonth = month.start;
+      final endOfMonth = month.end;
+      final logsForTheMonth = logs.where((log) => log.createdAt.isBetweenInclusive(from: startOfMonth, to: endOfMonth));
+      final values = logsForTheMonth
           .map((log) => calculateCalories(duration: log.duration(), bodyWeight: 81, activity: log.activityType))
           .sum;
-      logMonths.add(logsForMonth.first.createdAt);
-      caloriesCount.add(calories);
+      calories.add(values);
+      months.add(startOfMonth.abbreviatedMonth());
     }
 
     final chartPoints =
-        caloriesCount.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
-
-    final dateTimes = logMonths.map((month) => month.abbreviatedMonth()).toList();
+        calories.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -113,11 +117,11 @@ class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
                     height: 250,
                     child: CustomBarChart(
                       chartPoints: chartPoints,
-                      periods: dateTimes,
+                      periods: months,
                       unit: ChartUnit.number,
                       bottomTitlesInterval: 1,
                       showLeftTitles: true,
-                      maxY: caloriesCount.max.toDouble(),
+                      maxY: calories.max.toDouble(),
                       reservedSize: 35,
                     )),
               ],
