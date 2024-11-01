@@ -9,6 +9,7 @@ import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
+import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:tracker_app/widgets/exercise_history/personal_best_widget.dart';
 
 import '../../../colors.dart';
@@ -19,7 +20,6 @@ import '../../../enums/chart_unit_enum.dart';
 import '../../../enums/exercise_type_enums.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/general_utils.dart';
-import '../../../widgets/buttons/solid_button_widget.dart';
 import '../../../widgets/chart/line_chart_widget.dart';
 import '../../logs/routine_log_screen.dart';
 
@@ -168,11 +168,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   }
 
   Color? _buttonColor({required SummaryType type}) {
-    return _summaryType == type ? vibrantGreen : sapphireDark.withOpacity(0.6);
-  }
-
-  Color? _textColor({required SummaryType type}) {
-    return _summaryType == type ? Colors.black : Colors.white;
+    return _summaryType == type ? vibrantGreen : null;
   }
 
   void _navigateTo({required String? routineLogId}) {
@@ -191,15 +187,15 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     final muscleGroupsIllustrations =
         [widget.exercise.primaryMuscleGroup, ...widget.exercise.secondaryMuscleGroups].map((muscleGroup) {
       final illustrationName = muscleGroup.illustration();
-      return Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
+      return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
         Image.asset(
           'muscles_illustration_green/$illustrationName.png',
           fit: BoxFit.contain,
           height: 160, // Adjust the height as needed
         ),
-        const SizedBox(height: 6,),
+        const SizedBox(
+          height: 6,
+        ),
         Text(muscleGroup.name.toUpperCase(),
             style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 14, height: 1.5))
       ]);
@@ -257,60 +253,54 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                     if (withWeightsOnly(type: widget.exercise.type))
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
-                        child: SolidButtonWidget(
+                        child: OpacityButtonWidget(
                             onPressed: _heaviestWeightPerLog,
                             label: SummaryType.weight.label,
-                            textColor: _textColor(type: SummaryType.weight),
                             padding: const EdgeInsets.only(right: 5.0),
                             buttonColor: _buttonColor(type: SummaryType.weight)),
                       ),
                     if (withWeightsOnly(type: widget.exercise.type))
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
-                        child: SolidButtonWidget(
+                        child: OpacityButtonWidget(
                             onPressed: _heaviestSetVolumePerLog,
                             label: SummaryType.setVolume.label,
-                            textColor: _textColor(type: SummaryType.setVolume),
                             padding: const EdgeInsets.only(right: 5.0),
                             buttonColor: _buttonColor(type: SummaryType.setVolume)),
                       ),
                     if (withReps(type: widget.exercise.type))
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
-                        child: SolidButtonWidget(
+                        child: OpacityButtonWidget(
                             onPressed: _highestRepsForLog,
                             label: SummaryType.mostReps.label,
-                            textColor: _textColor(type: SummaryType.mostReps),
                             padding: const EdgeInsets.only(right: 5.0),
                             buttonColor: _buttonColor(type: SummaryType.mostReps)),
                       ),
                     if (withReps(type: widget.exercise.type))
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
-                        child: SolidButtonWidget(
+                        child: OpacityButtonWidget(
                             onPressed: _totalRepsForLog,
                             label: SummaryType.sessionReps.label,
-                            textColor: _textColor(type: SummaryType.sessionReps),
                             padding: const EdgeInsets.only(right: 5.0),
                             buttonColor: _buttonColor(type: SummaryType.sessionReps)),
                       ),
                     if (withDurationOnly(type: widget.exercise.type))
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
-                        child: SolidButtonWidget(
+                        child: OpacityButtonWidget(
                             onPressed: _longestDurationPerLog,
                             label: SummaryType.bestTime.label,
-                            textColor: _textColor(type: SummaryType.bestTime),
                             padding: const EdgeInsets.only(right: 5.0),
                             buttonColor: _buttonColor(type: SummaryType.bestTime)),
                       ),
                     if (withDurationOnly(type: widget.exercise.type))
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
-                        child: SolidButtonWidget(
+                        child: OpacityButtonWidget(
                             onPressed: _totalTimePerLog,
                             label: SummaryType.sessionTimes.label,
-                            textColor: _textColor(type: SummaryType.sessionTimes),
                             padding: const EdgeInsets.only(right: 5.0),
                             buttonColor: _buttonColor(type: SummaryType.sessionTimes)),
                       ),
