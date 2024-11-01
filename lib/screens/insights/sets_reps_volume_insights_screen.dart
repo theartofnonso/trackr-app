@@ -18,7 +18,6 @@ import '../../colors.dart';
 import '../../controllers/exercise_controller.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
-import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/set_dto.dart';
 import '../../enums/chart_unit_enum.dart';
 import '../../enums/muscle_group_enums.dart';
@@ -45,8 +44,6 @@ class SetsAndRepsVolumeInsightsScreen extends StatefulWidget {
 
 class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsightsScreen> {
 
-  List<RoutineLogDto>? _logs;
-
   SetRepsVolumeReps _metric = SetRepsVolumeReps.reps;
 
   MuscleGroup _selectedMuscleGroup = MuscleGroup.abs;
@@ -59,11 +56,11 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     final textStyle = GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white70);
 
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
-
     final dateRange = theLastYearDateTimeRange();
 
-    final logs = _logs ?? routineLogController.whereLogsIsWithinRange(range: dateRange);
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
+
+    final logs = routineLogController.whereLogsIsWithinRange(range: dateRange);
 
     final exerciseController = Provider.of<ExerciseController>(context, listen: false);
 
@@ -79,7 +76,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       return muscleGroups.contains(_selectedMuscleGroup);
     }).toList();
 
-    final weeksInYear = generateWeeksInYear(range: dateRange);
+    final weeksInYear = generateWeeksInRange(range: dateRange);
     List<num> valuesForWeek = [];
     List<String> weeks = [];
     List<String> months = [];

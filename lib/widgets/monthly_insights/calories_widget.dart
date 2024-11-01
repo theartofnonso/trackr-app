@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/screens/insights/calories_trend_screen.dart';
 import 'package:tracker_app/utils/routine_utils.dart';
 
 import '../../colors.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
-import '../../screens/insights/sets_reps_volume_insights_screen.dart';
 
 class CaloriesWidget extends StatelessWidget {
   final List<RoutineLogDto> thisMonthLogs;
@@ -30,7 +30,7 @@ class CaloriesWidget extends StatelessWidget {
       ),
       child: ListTile(
         onTap: () {
-          context.push(SetsAndRepsVolumeInsightsScreen.routeName);
+          context.push(CaloriesTrendScreen.routeName);
         },
         tileColor: sapphireDark80,
         contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 20),

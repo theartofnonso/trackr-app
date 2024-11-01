@@ -48,7 +48,7 @@ class AmplifyRoutineLogRepository {
   }
 
   Future<void> loadLogsForFeed() async {
-    final dateRange = yearToDateTimeRange();
+    final dateRange = theLastYearDateTimeRange();
     final startOfCurrentYear = dateRange.start.toIso8601String();
     final endOfCurrentYear = dateRange.end.toIso8601String();
 

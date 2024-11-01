@@ -14,7 +14,6 @@ import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/empty_states/double_set_row_empty_state.dart';
 
-import '../dtos/appsync/activity_log_dto.dart';
 import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/appsync/routine_template_dto.dart';
 import '../dtos/exercise_log_dto.dart';
@@ -29,7 +28,6 @@ import '../widgets/empty_states/single_set_row_empty_state.dart';
 import '../widgets/routine/preview/set_rows/double_set_row.dart';
 import '../widgets/routine/preview/set_rows/set_row.dart';
 import '../widgets/routine/preview/set_rows/single_set_row.dart';
-import 'date_utils.dart';
 import 'exercise_logs_utils.dart';
 import 'general_utils.dart';
 
@@ -164,71 +162,6 @@ List<Widget> setsToWidgets(
   })).toList();
 
   return widgets.isNotEmpty ? widgets : [emptyState];
-}
-
-Map<DateTimeRange, List<RoutineLogDto>> groupRoutineLogsByWeek(
-    {required List<RoutineLogDto> routineLogs, required int year}) {
-  final map = <DateTimeRange, List<RoutineLogDto>>{};
-
-  List<DateTimeRange> weekRanges =
-      generateWeeksInYear(range: DateTimeRange(start: DateTime.now(), end: DateTime.now()));
-
-  for (final weekRange in weekRanges) {
-    map[weekRange] = routineLogs.where((log) => log.createdAt.isBetweenRange(range: weekRange)).toList();
-  }
-
-  return map;
-}
-
-Map<DateTimeRange, List<RoutineLogDto>> groupRoutineLogsByMonth({required List<RoutineLogDto> routineLogs}) {
-  if (routineLogs.isEmpty) return {};
-
-  final map = <DateTimeRange, List<RoutineLogDto>>{};
-
-  DateTime startDate = routineLogs.first.createdAt;
-
-  DateTime lastDate = routineLogs.last.createdAt;
-
-  List<DateTimeRange> monthRanges = generateMonthRangesFrom(startDate: startDate, endDate: lastDate);
-
-  for (final monthRange in monthRanges) {
-    map[monthRange] = routineLogs.where((log) => log.createdAt.isBetweenRange(range: monthRange)).toList();
-  }
-  return map;
-}
-
-Map<DateTimeRange, List<ActivityLogDto>> groupActivityLogsByWeek(
-    {required List<ActivityLogDto> activityLogs, DateTime? endDate}) {
-  final map = <DateTimeRange, List<ActivityLogDto>>{};
-
-  DateTime startDate = activityLogs.firstOrNull?.createdAt ?? DateTime.now();
-
-  DateTime lastDate = endDate ?? activityLogs.lastOrNull?.createdAt ?? DateTime.now();
-
-  List<DateTimeRange> weekRanges = generateWeekRangesFrom(startDate: startDate, endDate: lastDate);
-
-  for (final weekRange in weekRanges) {
-    map[weekRange] = activityLogs.where((log) => log.createdAt.isBetweenRange(range: weekRange)).toList();
-  }
-
-  return map;
-}
-
-Map<DateTimeRange, List<ActivityLogDto>> groupActivityLogsByMonth({required List<ActivityLogDto> activityLogs}) {
-  if (activityLogs.isEmpty) return {};
-
-  final map = <DateTimeRange, List<ActivityLogDto>>{};
-
-  DateTime startDate = activityLogs.first.createdAt;
-
-  DateTime lastDate = activityLogs.last.createdAt;
-
-  List<DateTimeRange> monthRanges = generateMonthRangesFrom(startDate: startDate, endDate: lastDate);
-
-  for (final monthRange in monthRanges) {
-    map[monthRange] = activityLogs.where((log) => log.createdAt.isBetweenRange(range: monthRange)).toList();
-  }
-  return map;
 }
 
 Map<String, List<ExerciseLogDto>> groupExerciseLogsByExerciseId({required List<RoutineLogDto> routineLogs}) {

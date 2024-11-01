@@ -17,7 +17,7 @@ DateTimeRange theLastYearDateTimeRange() {
 }
 
 /// Returns a list of DateTimeRange representing each week in the given year.
-List<DateTimeRange> generateWeeksInYear({required DateTimeRange range}) {
+List<DateTimeRange> generateWeeksInRange({required DateTimeRange range}) {
   List<DateTimeRange> weeks = [];
 
   // Ensure that the startDate is not after the endDate
@@ -40,33 +40,6 @@ List<DateTimeRange> generateWeeksInYear({required DateTimeRange range}) {
 
     // Move to the next week
     currentStartDate = currentEndDate.add(const Duration(days: 1));
-  }
-
-  return weeks;
-}
-
-/// Returns a list of DateTimeRange representing each week in the given month.
-List<DateTimeRange> generateWeeksInMonth(DateTime monthDate) {
-  List<DateTimeRange> weeks = [];
-  DateTime firstDayOfMonth = monthDate.startOfMonth();
-  DateTime lastDayOfMonth = monthDate.endOfMonth();
-
-  // Find the first Monday on or before the first day of the month
-  DateTime firstMonday = firstDayOfMonth.weekday == DateTime.monday
-      ? firstDayOfMonth
-      : firstDayOfMonth.subtract(Duration(days: firstDayOfMonth.weekday - DateTime.monday));
-
-  // Iterate through each week
-  for (DateTime weekStart = firstMonday;
-      weekStart.isBefore(lastDayOfMonth);
-      weekStart = weekStart.add(const Duration(days: 7))) {
-    DateTime weekEnd = weekStart.add(const Duration(days: 6));
-
-    // Adjust weekStart and weekEnd to be within the month
-    DateTime actualStart = weekStart.isBefore(firstDayOfMonth) ? firstDayOfMonth : weekStart;
-    DateTime actualEnd = weekEnd.isAfter(lastDayOfMonth) ? lastDayOfMonth : weekEnd;
-
-    weeks.add(DateTimeRange(start: actualStart, end: actualEnd));
   }
 
   return weeks;

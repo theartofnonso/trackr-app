@@ -179,7 +179,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                         const SizedBox(height: 12),
                         MonthlyInsightsScreen(dateTimeRange: _monthDateTimeRange),
                         const SizedBox(height: 18),
-                        LogStreakChartWidget(logs: routineLogsForTheYear),
+                        const LogStreakChartWidget(),
                       ])),
                 )
                 // Add more widgets here for exercise insights
