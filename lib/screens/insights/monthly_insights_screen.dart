@@ -6,6 +6,7 @@ import 'package:tracker_app/widgets/monthly_insights/month_summary_widget.dart';
 
 import '../../controllers/activity_log_controller.dart';
 import '../../controllers/routine_log_controller.dart';
+import '../../widgets/monthly_insights/calories_widget.dart';
 import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
 import '../../widgets/monthly_insights/muscle_score_widget.dart';
 
@@ -40,6 +41,8 @@ class MonthlyInsightsScreen extends StatelessWidget {
           routineLogs: thisMonthLogs,
           dateTime: dateTimeRange.start,
         ),
+        const SizedBox(height: 12),
+        CaloriesWidget(thisMonthLogs: thisMonthLogs, lastMonthLogs: lastMonthLogs),
         const SizedBox(height: 12),
         ActivitiesWidget(activities: activityLogs),
         const SizedBox(height: 12),
