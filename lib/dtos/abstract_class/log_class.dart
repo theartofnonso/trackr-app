@@ -1,4 +1,6 @@
 
+import 'package:tracker_app/enums/activity_type_enums.dart';
+
 enum LogType {
   routine, activity
 }
@@ -11,7 +13,8 @@ abstract class Log {
   DateTime get endTime;
   DateTime get createdAt;
   DateTime get updatedAt;
-  LogType get type;
+  LogType get logType;
+  ActivityType get activityType;
 
   Duration duration() {
     return endTime.difference(startTime);

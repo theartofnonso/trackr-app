@@ -6,6 +6,7 @@ import '../../../controllers/routine_log_controller.dart';
 import '../../../dtos/appsync/routine_log_dto.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/navigation_utils.dart';
+import '../../../utils/routine_utils.dart';
 import '../../../utils/string_utils.dart';
 import '../../list_tiles/list_tile_solid.dart';
 import '../../pbs/pb_icon.dart';

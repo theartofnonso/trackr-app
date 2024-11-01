@@ -8,13 +8,11 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/amplify_models/routine_log_extension.dart';
-import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/utils/https_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
-import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/backgrounds/trkr_loading_screen.dart';
 import 'package:tracker_app/widgets/chart/muscle_group_family_chart.dart';
 
@@ -83,12 +81,21 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     final exerciseController = Provider.of<ExerciseController>(context, listen: true);
 
     final numberOfCompletedSets = completedExerciseLogsAndSets.expand((exerciseLog) => exerciseLog.sets);
-    final completedSetsSummary =
-        "${numberOfCompletedSets.length} ${pluralize(word: "Set", count: numberOfCompletedSets.length)}";
 
-    final exercisesFromLibrary = updateExercisesFromLibrary(exerciseLogs: log.exerciseLogs, exercises: exerciseController.exercises);
+    final exercisesFromLibrary =
+        updateExercisesFromLibrary(exerciseLogs: log.exerciseLogs, exercises: exerciseController.exercises);
 
     final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: exercisesFromLibrary);
+
+    final calories = calculateCalories(duration: log.duration(), bodyWeight: 81, activity: log.activityType);
+
+    final pbs = log.exerciseLogs.map((exerciseLog) {
+      final pastExerciseLogs =
+          routineLogController.whereExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
+
+      return calculatePBs(
+          pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog);
+    }).expand((pbs) => pbs);
 
     return Scaffold(
         backgroundColor: sapphireDark,
@@ -129,7 +136,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
           ),
           child: Stack(children: [
             SafeArea(
-              minimum: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -137,12 +143,12 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                     Center(child: DateDurationPBWidget(dateTime: log.createdAt, duration: log.duration(), pbs: 0)),
                     if (log.notes.isNotEmpty)
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
                         child: Text('"${log.notes}"',
                             textAlign: TextAlign.start,
                             style: GoogleFonts.ubuntu(
                                 color: Colors.white70,
-                                fontSize: 16,
+                                fontSize: 14,
                                 fontStyle: FontStyle.italic,
                                 fontWeight: FontWeight.w600)),
                       ),
@@ -152,91 +158,101 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                       const SizedBox(
                         height: 10,
                       ),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
-                        color: sapphireDark.withOpacity(0.4), // Set the background color
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      child: Table(
-                        border: const TableBorder.symmetric(inside: BorderSide(color: sapphireLighter, width: 2)),
-                        columnWidths: const <int, TableColumnWidth>{
-                          0: FlexColumnWidth(),
-                          1: FlexColumnWidth(),
-                          2: FlexColumnWidth(),
-                        },
+                    const SizedBox(height: 10),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
                         children: [
-                          TableRow(children: [
-                            TableCell(
-                              verticalAlignment: TableCellVerticalAlignment.middle,
-                              child: Center(
-                                child: Text(
-                                    "${completedExerciseLogsAndSets.length} ${pluralize(word: "Exercise", count: completedExerciseLogsAndSets.length)}",
-                                    style: GoogleFonts.ubuntu(
-                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-                              ),
-                            ),
-                            TableCell(
-                              verticalAlignment: TableCellVerticalAlignment.middle,
-                              child: Center(
-                                child: Text(completedSetsSummary,
-                                    style: GoogleFonts.ubuntu(
-                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-                              ),
-                            ),
-                            TableCell(
-                              verticalAlignment: TableCellVerticalAlignment.middle,
-                              child: Center(
-                                child: Text(log.duration().hmsAnalog(),
-                                    style: GoogleFonts.ubuntu(
-                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-                              ),
-                            )
-                          ]),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          _StatisticWidget(
+                            title: "${completedExerciseLogsAndSets.length}",
+                            subtitle: "Exercises",
+                            image: "dumbbells",
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          _StatisticWidget(
+                            title: "${numberOfCompletedSets.length}",
+                            subtitle: "Sets",
+                            icon: FontAwesomeIcons.listOl,
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          _StatisticWidget(
+                            title: "$calories",
+                            subtitle: "Calories",
+                            icon: FontAwesomeIcons.heart,
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          _StatisticWidget(
+                            title: "${pbs.length}",
+                            subtitle: "PBs",
+                            icon: FontAwesomeIcons.star,
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          )
                         ],
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    GestureDetector(
-                      onTap: _onMinimiseMuscleGroupSplit,
-                      child: Container(
-                        color: Colors.transparent,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(children: [
-                              Text("Muscle Groups Split".toUpperCase(),
-                                  style: GoogleFonts.ubuntu(
-                                      color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
-                              const Spacer(),
-                              if (muscleGroupFamilyFrequencies.length > 3)
-                                FaIcon(_minimized ? FontAwesomeIcons.angleDown : FontAwesomeIcons.angleUp,
-                                    color: Colors.white70, size: 16),
-                            ]),
-                            const SizedBox(height: 10),
-                            Text("Here's a breakdown of the muscle groups in your ${log.name} workout log.",
-                                style: GoogleFonts.ubuntu(
-                                    color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
-                            const SizedBox(height: 10),
-                            MuscleGroupFamilyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
-                          ],
-                        ),
+                    const SizedBox(height: 22),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          GestureDetector(
+                            onTap: _onMinimiseMuscleGroupSplit,
+                            child: Container(
+                              color: Colors.transparent,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(children: [
+                                    Text("Muscle Groups Split".toUpperCase(),
+                                        style: GoogleFonts.ubuntu(
+                                            color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+                                    const Spacer(),
+                                    if (muscleGroupFamilyFrequencies.length > 3)
+                                      FaIcon(_minimized ? FontAwesomeIcons.angleDown : FontAwesomeIcons.angleUp,
+                                          color: Colors.white70, size: 16),
+                                  ]),
+                                  const SizedBox(height: 10),
+                                  Text("Here's a breakdown of the muscle groups in your ${log.name} workout log.",
+                                      style: GoogleFonts.ubuntu(
+                                          color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
+                                  const SizedBox(height: 10),
+                                  MuscleGroupFamilyChart(
+                                      frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
+                                ],
+                              ),
+                            ),
+                          ),
+                          if (log.owner == SharedPrefs().userId)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 12.0),
+                              child: TRKRInformationContainer(
+                                  ctaLabel: log.summary != null ? "Review your feedback" : "Ask for feedback",
+                                  description:
+                                      "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
+                                  onTap: () => log.summary != null
+                                      ? _showSummary()
+                                      : _generateSummary(logs: completedExerciseLogsAndSets)),
+                            ),
+                          ExerciseLogListView(
+                              exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogsAndSets),
+                              previewType: RoutinePreviewType.log),
+                        ],
                       ),
-                    ),
-                    if(log.owner == SharedPrefs().userId)
-                      Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12.0),
-                      child: TRKRInformationContainer(
-                          ctaLabel: log.summary != null ? "Review your feedback" : "Ask for feedback",
-                          description:
-                              "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
-                          onTap: () => log.summary != null
-                              ? _showSummary()
-                              : _generateSummary(logs: completedExerciseLogsAndSets)),
-                    ),
-                    ExerciseLogListView(
-                        exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogsAndSets),
-                        previewType: RoutinePreviewType.log),
+                    )
+                    //
+                    // const EdgeInsets.only(right: 10, bottom: 10, left: 10)
                   ],
                 ),
               ),
@@ -271,7 +287,8 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     if (log == null) return;
 
-    final userInstructions = "Review my ${log.name} workout log and provide feedback. Please note, that my weights are in ${weightLabel()}";
+    final userInstructions =
+        "Review my ${log.name} workout log and provide feedback. Please note, that my weights are in ${weightLabel()}";
 
     final logJsons = logs.map((log) => log.toJson());
 
@@ -538,5 +555,55 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         leftActionLabel: 'Cancel',
         rightActionLabel: 'Delete',
         isRightActionDestructive: true);
+  }
+}
+
+class _StatisticWidget extends StatelessWidget {
+  final IconData? icon;
+  final String? image;
+  final String title;
+  final String subtitle;
+
+  const _StatisticWidget({this.icon, this.image, required this.title, required this.subtitle});
+
+  @override
+  Widget build(BuildContext context) {
+    final leading = image != null
+        ? Image.asset(
+            'icons/$image.png',
+            fit: BoxFit.contain,
+            color: Colors.white70,
+            height: 14, // Adjust the height as needed
+          )
+        : FaIcon(icon, size: 14, color: Colors.white70);
+
+    return Container(
+      width: 140,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: sapphireDark60, // Background color of the container
+        borderRadius: BorderRadius.circular(5), // Border radius for rounded corners
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              leading,
+              const SizedBox(
+                width: 6,
+              ),
+              Text(subtitle.toUpperCase(),
+                  style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.bold))
+            ],
+          ),
+          const SizedBox(
+            height: 6,
+          ),
+          Text(title, style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900))
+        ],
+      ),
+    );
   }
 }

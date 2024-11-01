@@ -230,12 +230,12 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                   ),
                   if (template.notes.isNotEmpty)
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
                       child: Text('"${template.notes}"',
                           textAlign: TextAlign.start,
                           style: GoogleFonts.ubuntu(
                               color: Colors.white70,
-                              fontSize: 16,
+                              fontSize: 14,
                               fontStyle: FontStyle.italic,
                               fontWeight: FontWeight.w600)),
                     ),

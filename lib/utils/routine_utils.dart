@@ -6,8 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
-import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/dtos/routine_template_dto_extension.dart';
+import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/week_days_extension.dart';
 import 'package:tracker_app/graphQL/queries.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
@@ -15,12 +15,13 @@ import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/empty_states/double_set_row_empty_state.dart';
 
 import '../dtos/appsync/activity_log_dto.dart';
-import '../dtos/exercise_log_dto.dart';
-import '../dtos/pb_dto.dart';
 import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/appsync/routine_template_dto.dart';
+import '../dtos/exercise_log_dto.dart';
+import '../dtos/pb_dto.dart';
 import '../dtos/set_dto.dart';
 import '../dtos/viewmodels/exercise_log_view_model.dart';
+import '../enums/activity_type_enums.dart';
 import '../enums/routine_schedule_type_enums.dart';
 import '../enums/template_changes_type_message_enums.dart';
 import '../screens/exercise/reorder_exercises_screen.dart';
@@ -165,10 +166,12 @@ List<Widget> setsToWidgets(
   return widgets.isNotEmpty ? widgets : [emptyState];
 }
 
-Map<DateTimeRange, List<RoutineLogDto>> groupRoutineLogsByWeek({required List<RoutineLogDto> routineLogs, required int year}) {
+Map<DateTimeRange, List<RoutineLogDto>> groupRoutineLogsByWeek(
+    {required List<RoutineLogDto> routineLogs, required int year}) {
   final map = <DateTimeRange, List<RoutineLogDto>>{};
 
-  List<DateTimeRange> weekRanges = generateWeeksInYear(range: DateTimeRange(start: DateTime.now(), end: DateTime.now()));
+  List<DateTimeRange> weekRanges =
+      generateWeeksInYear(range: DateTimeRange(start: DateTime.now(), end: DateTime.now()));
 
   for (final weekRange in weekRanges) {
     map[weekRange] = routineLogs.where((log) => log.createdAt.isBetweenRange(range: weekRange)).toList();
@@ -286,8 +289,12 @@ List<ExerciseLogViewModel> exerciseLogsToViewModels({required List<ExerciseLogDt
   }).toList();
 }
 
-String copyRoutineAsText({required RoutinePreviewType routineType, required String name, required String notes, DateTime? dateTime, required List<ExerciseLogDto> exerciseLogs}) {
-
+String copyRoutineAsText(
+    {required RoutinePreviewType routineType,
+    required String name,
+    required String notes,
+    DateTime? dateTime,
+    required List<ExerciseLogDto> exerciseLogs}) {
   StringBuffer routineText = StringBuffer();
 
   routineText.writeln(name);
@@ -295,8 +302,8 @@ String copyRoutineAsText({required RoutinePreviewType routineType, required Stri
   if (notes.isNotEmpty) {
     routineText.writeln("\n Notes: $notes");
   }
-  if(routineType == RoutinePreviewType.log) {
-    if(dateTime != null) {
+  if (routineType == RoutinePreviewType.log) {
+    if (dateTime != null) {
       routineText.writeln(dateTime.formattedDayAndMonthAndYear());
     }
   }
@@ -323,4 +330,11 @@ String copyRoutineAsText({required RoutinePreviewType routineType, required Stri
     }
   }
   return routineText.toString();
+}
+
+int calculateCalories({required Duration duration, required double bodyWeight, required ActivityType activity}) {
+  const oxygenInMils = 3.5;
+  final bodyWeightInKG = isDefaultWeightUnit() ? bodyWeight : toKg(bodyWeight);
+  final caloriesPerMinute = (activity.met * bodyWeightInKG * oxygenInMils) / 200;
+  return (caloriesPerMinute * 60).floor();
 }

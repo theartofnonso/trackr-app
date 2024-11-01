@@ -1,9 +1,10 @@
 import 'dart:convert';
 
+import '../../enums/activity_type_enums.dart';
 import '../exercise_log_dto.dart';
-import '../interface/log_interface.dart';
+import '../abstract_class/log_class.dart';
 
-class RoutineLogDto implements Log {
+class RoutineLogDto extends Log {
   @override
   final String id;
   final String templateId;
@@ -118,5 +119,8 @@ class RoutineLogDto implements Log {
   }
 
   @override
-  LogType get type => LogType.routine;
+  LogType get logType => LogType.routine;
+
+  @override
+  ActivityType get activityType => ActivityType.weightlifting;
 }

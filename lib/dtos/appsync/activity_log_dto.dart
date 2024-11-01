@@ -1,6 +1,8 @@
-import '../interface/log_interface.dart';
+import 'package:tracker_app/enums/activity_type_enums.dart';
 
-class ActivityLogDto implements Log {
+import '../abstract_class/log_class.dart';
+
+class ActivityLogDto extends Log {
   @override
   final String id;
   @override
@@ -72,6 +74,8 @@ class ActivityLogDto implements Log {
   }
 
   @override
-  // TODO: implement type
-  LogType get type => LogType.activity;
+  LogType get logType => LogType.activity;
+
+  @override
+  ActivityType get activityType => ActivityType.fromString(name);
 }

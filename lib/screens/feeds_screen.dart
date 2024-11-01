@@ -10,9 +10,9 @@ import '../colors.dart';
 import '../controllers/activity_log_controller.dart';
 import '../controllers/exercise_controller.dart';
 import '../controllers/routine_log_controller.dart';
+import '../dtos/abstract_class/log_class.dart';
 import '../dtos/appsync/activity_log_dto.dart';
 import '../dtos/appsync/routine_log_dto.dart';
-import '../dtos/interface/log_interface.dart';
 import '../enums/activity_type_enums.dart';
 import '../utils/dialog_utils.dart';
 import '../utils/exercise_logs_utils.dart';
@@ -66,7 +66,7 @@ class FeedsScreen extends StatelessWidget {
               itemCount: allLogs.length,
               itemBuilder: (BuildContext context, int index) {
                 final log = allLogs[index];
-                final widget = log.type == LogType.routine
+                final widget = log.logType == LogType.routine
                     ? _RoutineLogFeedListItem(log: log as RoutineLogDto)
                     : _ActivityLogFeedListItem(log: log as ActivityLogDto);
                 return widget;

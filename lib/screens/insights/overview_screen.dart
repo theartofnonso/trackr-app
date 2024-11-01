@@ -11,14 +11,13 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
-import 'package:tracker_app/widgets/backgrounds/met_rating_screen.dart';
 
 import '../../controllers/activity_log_controller.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../controllers/settings_controller.dart';
+import '../../dtos/abstract_class/log_class.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
-import '../../dtos/interface/log_interface.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/activity_type_enums.dart';
 import '../../enums/routine_editor_type_enums.dart';
@@ -79,8 +78,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (true) return METRatingScreen(action: _hideLoadingScreen);
-    //if (_loading) return METRatingScreen(action: _hideLoadingScreen);
+    if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     Provider.of<SettingsController>(context, listen: true);
 
@@ -405,7 +403,7 @@ class _LogsListView extends StatelessWidget {
     final children = allLogsForCurrentDate.map((log) {
       Widget widget;
 
-      if (log.type == LogType.routine) {
+      if (log.logType == LogType.routine) {
         final routineLog = log as RoutineLogDto;
         widget = RoutineLogWidget(log: routineLog, trailing: routineLog.duration().hmsAnalog(), color: sapphireDark80);
       } else {
