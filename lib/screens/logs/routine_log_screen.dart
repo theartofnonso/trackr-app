@@ -185,7 +185,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                           _StatisticWidget(
                             title: "$calories",
                             subtitle: "Calories",
-                            icon: FontAwesomeIcons.heart,
+                            icon: FontAwesomeIcons.fire,
                           ),
                           const SizedBox(
                             width: 10,

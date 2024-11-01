@@ -35,7 +35,7 @@ class CaloriesWidget extends StatelessWidget {
         tileColor: sapphireDark80,
         contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 20),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        leading: const FaIcon(FontAwesomeIcons.solidHeart, color: Colors.white70),
+        leading: const FaIcon(FontAwesomeIcons.fire, color: Colors.white70),
         title: Text("Calories".toUpperCase(),
             style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
         subtitle: Text("Amount of energy expenditure",
