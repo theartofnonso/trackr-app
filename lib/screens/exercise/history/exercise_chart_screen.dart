@@ -234,7 +234,6 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.only(right: 20, bottom: 20),
             child: Column(
