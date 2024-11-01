@@ -61,7 +61,7 @@ class FeedsScreen extends StatelessWidget {
       ),
       child: SafeArea(
           minimum: const EdgeInsets.all(10.0),
-          child: ListView.separated(
+          child: ListView.builder(
               controller: scrollController,
               itemCount: allLogs.length,
               itemBuilder: (BuildContext context, int index) {
@@ -70,8 +70,7 @@ class FeedsScreen extends StatelessWidget {
                     ? _RoutineLogFeedListItem(log: log as RoutineLogDto)
                     : _ActivityLogFeedListItem(log: log as ActivityLogDto);
                 return widget;
-              },
-              separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.1)))),
+              })),
     );
   }
 }

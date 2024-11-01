@@ -79,8 +79,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //if (true) return METRatingScreen(action: _hideLoadingScreen);
-    if (_loading) return METRatingScreen(action: _hideLoadingScreen);
+    if (true) return METRatingScreen(action: _hideLoadingScreen);
+    //if (_loading) return METRatingScreen(action: _hideLoadingScreen);
 
     Provider.of<SettingsController>(context, listen: true);
 
