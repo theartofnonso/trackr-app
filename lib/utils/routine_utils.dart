@@ -168,7 +168,7 @@ List<Widget> setsToWidgets(
 Map<DateTimeRange, List<RoutineLogDto>> groupRoutineLogsByWeek({required List<RoutineLogDto> routineLogs, required int year}) {
   final map = <DateTimeRange, List<RoutineLogDto>>{};
 
-  List<DateTimeRange> weekRanges = getWeeksInYear(year);
+  List<DateTimeRange> weekRanges = generateWeeksInYear(range: DateTimeRange(start: DateTime.now(), end: DateTime.now()));
 
   for (final weekRange in weekRanges) {
     map[weekRange] = routineLogs.where((log) => log.createdAt.isBetweenRange(range: weekRange)).toList();

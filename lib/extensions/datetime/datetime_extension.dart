@@ -39,7 +39,7 @@ extension DateTimeExtension on DateTime {
 
   /// Get datetime format
   String formattedMonth() {
-    return DateFormat("MMMM", "en").format(this);
+    return DateFormat("MMM", "en").format(this);
   }
 
   /// Get datetime format

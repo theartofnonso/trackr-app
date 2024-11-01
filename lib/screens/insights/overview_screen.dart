@@ -11,6 +11,7 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
+import 'package:tracker_app/widgets/backgrounds/met_rating_screen.dart';
 
 import '../../controllers/activity_log_controller.dart';
 import '../../controllers/routine_log_controller.dart';
@@ -30,8 +31,6 @@ import '../../widgets/calendar/calendar_navigator.dart';
 import '../../widgets/label_divider.dart';
 import '../../widgets/monitors/overview_monitor.dart';
 import '../../widgets/monthly_insights/log_streak_chart_widget.dart';
-import '../../widgets/monthly_insights/muscle_score_chart_widget.dart';
-import '../../widgets/monthly_insights/muscle_score_widget.dart';
 import '../../widgets/routine/preview/activity_log_widget.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
 import '../AI/trkr_coach_chat_screen.dart';
@@ -80,7 +79,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
+    //if (true) return METRatingScreen(action: _hideLoadingScreen);
+    if (_loading) return METRatingScreen(action: _hideLoadingScreen);
 
     Provider.of<SettingsController>(context, listen: true);
 

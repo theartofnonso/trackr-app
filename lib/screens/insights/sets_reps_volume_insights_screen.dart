@@ -29,7 +29,6 @@ import '../../utils/exercise_logs_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../widgets/ai_widgets/trkr_information_container.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
-import '../../widgets/calendar/calendar_navigator.dart';
 import '../../widgets/chart/bar_chart.dart';
 import '../../widgets/chart/horizontal_stacked_bars.dart';
 import '../../widgets/chart/legend.dart';
@@ -45,7 +44,6 @@ class SetsAndRepsVolumeInsightsScreen extends StatefulWidget {
 }
 
 class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsightsScreen> {
-  DateTime _dateTime = DateTime.now();
 
   List<RoutineLogDto>? _logs;
 
@@ -63,7 +61,9 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
-    final logs = _logs ?? routineLogController.whereLogsIsSameMonth(dateTime: _dateTime);
+    final dateRange = theLastYearDateTimeRange();
+
+    final logs = _logs ?? routineLogController.whereLogsIsWithinRange(range: dateRange);
 
     final exerciseController = Provider.of<ExerciseController>(context, listen: false);
 
@@ -79,11 +79,12 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       return muscleGroups.contains(_selectedMuscleGroup);
     }).toList();
 
-    final weeksInMonth = generateWeeksInMonth(_dateTime);
+    final weeksInYear = generateWeeksInYear(range: dateRange);
     List<num> valuesForWeek = [];
-    List<int> weeks = [];
+    List<String> weeks = [];
+    List<String> months = [];
     int weekCounter = 0;
-    for (final week in weeksInMonth) {
+    for (final week in weeksInYear) {
       final startOfWeek = week.start;
       final endOfWeek = week.end;
       final values = exerciseLogs
@@ -93,7 +94,8 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
         return values;
       }).sum;
       valuesForWeek.add(values);
-      weeks.add(weekCounter);
+      weeks.add("WK ${weekCounter + 1}");
+      months.add(startOfWeek.formattedMonth());
       weekCounter += 1;
     }
 
@@ -103,10 +105,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     final chartPoints =
         valuesForWeek.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
-
-    final weeksLabels = weeks.mapIndexed((index, _) {
-      return "WK ${index + 1}";
-    }).toList();
 
     final totalOptimal = _weightWhere(values: nonZeroValues, condition: (value) => value >= _optimalSetsOrRepsValue());
     final totalSufficient = _weightWhere(
@@ -155,7 +153,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CalendarNavigator(onMonthChange: _onMonthChange),
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
@@ -264,10 +261,10 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                     height: 250,
                     child: CustomBarChart(
                       chartPoints: chartPoints,
-                      periods: weeksLabels,
+                      periods: months,
                       barColors: _metric != SetRepsVolumeReps.volume ? barColors : null,
                       unit: _chartUnit(),
-                      bottomTitlesInterval: 1,
+                      bottomTitlesInterval: 5,
                       showTopTitles: false,
                       showLeftTitles: true,
                       reservedSize: _reservedSize(),
@@ -331,8 +328,8 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       showSnackbar(
           context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: "You don't have any logs");
     } else {
-      final startDate = logs.first.createdAt;
-      final endDate = logs.last.createdAt;
+      final startDate = logs.first.createdAt.withoutTime();
+      final endDate = logs.last.createdAt.withoutTime();
 
       final userInstructions =
           "Review my workout logs for ${_selectedMuscleGroup.name} from $startDate to $endDate and provide feedback. Please note, that my weights are in ${weightLabel()}";
@@ -357,12 +354,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
         }
       });
     }
-  }
-
-  void _onMonthChange(DateTimeRange range) {
-    setState(() {
-      _dateTime = range.start;
-    });
   }
 
   int _weightWhere({required List<num> values, required bool Function(num) condition}) {
