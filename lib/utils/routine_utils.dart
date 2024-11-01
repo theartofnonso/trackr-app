@@ -269,5 +269,5 @@ int calculateCalories({required Duration duration, required double bodyWeight, r
   const oxygenInMils = 3.5;
   final bodyWeightInKG = isDefaultWeightUnit() ? bodyWeight : toKg(bodyWeight);
   final caloriesPerMinute = (activity.met * bodyWeightInKG * oxygenInMils) / 200;
-  return (caloriesPerMinute * 60).floor();
+  return (caloriesPerMinute * duration.inMinutes).floor();
 }
