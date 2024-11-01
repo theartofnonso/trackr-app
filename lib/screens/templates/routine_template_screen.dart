@@ -308,13 +308,15 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  TRKRInformationContainer(
-                      ctaLabel: "Ask for a review",
-                      description:
-                          "Achieving your fitness goals is easier with a structured plan. Ask the TRKR Coach to optimize your workouts and help you succeed!",
-                      onTap: _runRoutineAnalysis),
-                  const SizedBox(height: 12),
+                  if (template.owner == SharedPrefs().userId)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      child: TRKRInformationContainer(
+                          ctaLabel: "Ask for a review",
+                          description:
+                              "Achieving your fitness goals is easier with a structured plan. Ask the TRKR Coach to optimize your workouts and help you succeed!",
+                          onTap: _runRoutineAnalysis),
+                    ),
                   ExerciseLogListView(
                     exerciseLogs: exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
                     previewType: RoutinePreviewType.template,
