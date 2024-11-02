@@ -105,21 +105,6 @@ class ActiveChallengeScreen extends StatelessWidget {
                           style: GoogleFonts.ubuntu(
                               fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400, height: 1.8))),
                   const SizedBox(height: 20),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: sapphireDark.withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: LinearProgressIndicator(
-                      value: progress,
-                      backgroundColor: sapphireDark,
-                      color: vibrantGreen,
-                      minHeight: 25,
-                      borderRadius: BorderRadius.circular(3.0), // Border r
-                    ),
-                  ),
-                  const SizedBox(height: 20),
                   const LabelDivider(label: "Details", labelColor: Colors.white70, dividerColor: sapphireLighter),
                   const SizedBox(height: 16),
                   ListTile(
@@ -138,7 +123,7 @@ class ActiveChallengeScreen extends StatelessWidget {
                         FontAwesomeIcons.trophy,
                         color: Colors.white70,
                       ),
-                      title: Text(challengeTargetSummary(type: log.type, target: log.progress),
+                      title: Text(challengeTargetSummary(type: log.type, target: template.target),
                           style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400)),
                     ),
                   if (log is RepsChallengeDto)
@@ -192,25 +177,47 @@ class ActiveChallengeScreen extends StatelessWidget {
                         color: Colors.white70,
                       ),
                     ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: sapphireDark.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: LinearProgressIndicator(
+                      value: progress,
+                      backgroundColor: sapphireDark,
+                      color: vibrantGreen,
+                      minHeight: 25,
+                      borderRadius: BorderRadius.circular(3.0), // Border r
+                    ),
+                  ),
+                  const SizedBox(height: 10),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 20),
                       RichText(
                           text: TextSpan(
-                              text: "You have ",
-                              style:
-                                  GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500),
+                              text: "Great job! You have conquered",
+                              style: GoogleFonts.ubuntu(
+                                  height: 1.5, color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w500),
                               children: [
                             const TextSpan(text: " "),
                             TextSpan(
-                                text: "",
+                                text: "${log.progress}",
                                 style:
-                                    GoogleFonts.ubuntu(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)),
+                                    GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
                             const TextSpan(text: " "),
-                            const TextSpan(
-                                text: "this month",
-                                style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
+                            const TextSpan(text: "out of"),
+                            const TextSpan(text: " "),
+                            TextSpan(
+                                text: "${template.target} weeks",
+                                style:
+                                    GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
+                            const TextSpan(text: " "),
+                            const TextSpan(text: "in this challenge. Keep training to reach the finish line!"),
                           ])),
                     ],
                   ),
