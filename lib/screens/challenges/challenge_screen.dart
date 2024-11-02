@@ -5,9 +5,9 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
-import 'package:tracker_app/dtos/challenges/weight_challenge_dto.dart';
+import 'package:tracker_app/dtos/challengeTemplates/weight_challenge_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
-import 'package:tracker_app/extensions/challenge_template_extension.dart';
+import 'package:tracker_app/extensions/dtos/challenge_template_extension.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:tracker_app/widgets/label_divider.dart';
@@ -15,8 +15,8 @@ import 'package:tracker_app/widgets/pickers/muscle_picker.dart';
 
 import '../../../colors.dart';
 import '../../controllers/challenge_log_controller.dart';
-import '../../dtos/challenges/challenge_template.dart';
-import '../../dtos/challenges/reps_challenge_dto.dart';
+import '../../dtos/challengeTemplates/challenge_template.dart';
+import '../../dtos/challengeTemplates/reps_challenge_dto.dart';
 import '../../utils/challenge_utils.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/general_utils.dart';
@@ -131,7 +131,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                     title: Text(widget.challengeTemplate.rule,
                         style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400)),
                   ),
-                  if (widget.challengeTemplate is! WeightChallengeDto)
+                  if (widget.challengeTemplate is! WeightChallengeTemplate)
                     ListTile(
                       titleAlignment: ListTileTitleAlignment.threeLine,
                       leading: const FaIcon(
@@ -143,7 +143,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                               target: widget.challengeTemplate.target, type: widget.challengeTemplate.type),
                           style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400)),
                     ),
-                  if (widget.challengeTemplate is RepsChallengeDto)
+                  if (widget.challengeTemplate is RepsChallengeTemplate)
                     ListTile(
                       onTap: _selectMuscleGroup,
                       titleAlignment: ListTileTitleAlignment.center,
@@ -169,7 +169,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                         color: Colors.white70,
                       ),
                     ),
-                  if (widget.challengeTemplate is WeightChallengeDto)
+                  if (widget.challengeTemplate is WeightChallengeTemplate)
                     ListTile(
                       onTap: _selectExercise,
                       titleAlignment: ListTileTitleAlignment.center,
@@ -187,7 +187,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                         controller: _textEditingController,
                       ),
                     ),
-                  if (widget.challengeTemplate is WeightChallengeDto)
+                  if (widget.challengeTemplate is WeightChallengeTemplate)
                     ListTile(
                       onTap: _selectExercise,
                       titleAlignment: ListTileTitleAlignment.center,
@@ -261,7 +261,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
   }
 
   void _saveChallengeLog() async {
-    if (widget.challengeTemplate is RepsChallengeDto) {
+    if (widget.challengeTemplate is RepsChallengeTemplate) {
       if (_selectedMuscleGroup == MuscleGroup.none) {
         showSnackbar(
             context: context,
@@ -271,7 +271,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
       }
     }
 
-    if (widget.challengeTemplate is WeightChallengeDto) {
+    if (widget.challengeTemplate is WeightChallengeTemplate) {
       if (_targetWeight <= 0) {
         showSnackbar(
             context: context,

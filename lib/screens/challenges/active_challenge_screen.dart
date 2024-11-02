@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/dtos/challenges/weight_challenge_dto.dart';
+import 'package:tracker_app/dtos/challengeTemplates/weight_challenge_dto.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
@@ -13,7 +13,7 @@ import 'package:tracker_app/widgets/label_divider.dart';
 import '../../../colors.dart';
 import '../../controllers/challenge_log_controller.dart';
 import '../../dtos/appsync/challenge_log_dto.dart';
-import '../../dtos/challenges/reps_challenge_dto.dart';
+import '../../dtos/challengeTemplates/reps_challenge_dto.dart';
 import '../../enums/challenge_type_enums.dart';
 import '../../repositories/challenge_templates.dart';
 import '../../utils/challenge_utils.dart';
@@ -25,9 +25,9 @@ class ActiveChallengeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final challenges = ChallengeTemplates().loadChallenges();
+    final challenges = ChallengeTemplates().loadTemplates();
 
-    final template = challenges.firstWhere((template) => template.id == log.challengeId);
+    final template = challenges.firstWhere((template) => template.id == log.templateId);
 
     final progress = log.progress / template.target;
 
@@ -118,7 +118,7 @@ class ActiveChallengeScreen extends StatelessWidget {
                     title: Text(log.rule,
                         style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400)),
                   ),
-                  if (log is! WeightChallengeDto)
+                  if (log is! WeightChallengeTemplate)
                     ListTile(
                       titleAlignment: ListTileTitleAlignment.threeLine,
                       leading: const FaIcon(
@@ -128,16 +128,16 @@ class ActiveChallengeScreen extends StatelessWidget {
                       title: Text(challengeTargetSummary(type: log.type, target: template.target),
                           style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400)),
                     ),
-                  if (log is RepsChallengeDto)
+                  if (log is RepsChallengeTemplate)
                     ListTile(
                       titleAlignment: ListTileTitleAlignment.center,
                       leading: Image.asset(
-                        'muscles_illustration/${(log as RepsChallengeDto).muscleGroup.illustration()}.png',
+                        'muscles_illustration/${(log as RepsChallengeTemplate).muscleGroup.illustration()}.png',
                         fit: BoxFit.cover,
                         filterQuality: FilterQuality.low,
                         height: 32,
                       ),
-                      title: Text((log as RepsChallengeDto).muscleGroup.name,
+                      title: Text((log as RepsChallengeTemplate).muscleGroup.name,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
@@ -147,29 +147,29 @@ class ActiveChallengeScreen extends StatelessWidget {
                         color: Colors.white70,
                       ),
                     ),
-                  if (log is WeightChallengeDto)
+                  if (log is WeightChallengeTemplate)
                     ListTile(
                       titleAlignment: ListTileTitleAlignment.center,
                       leading: const FaIcon(
                         FontAwesomeIcons.trophy,
                         color: Colors.white70,
                       ),
-                      title: Text((log as RepsChallengeDto).muscleGroup.name,
+                      title: Text((log as RepsChallengeTemplate).muscleGroup.name,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
                           textAlign: TextAlign.start),
                     ),
-                  if (log is WeightChallengeDto)
+                  if (log is WeightChallengeTemplate)
                     ListTile(
                       titleAlignment: ListTileTitleAlignment.center,
                       leading: Image.asset(
-                        'muscles_illustration/${(log as WeightChallengeDto).exerciseDto?.primaryMuscleGroup.illustration()}.png',
+                        'muscles_illustration/${(log as WeightChallengeTemplate).exerciseDto?.primaryMuscleGroup.illustration()}.png',
                         fit: BoxFit.cover,
                         filterQuality: FilterQuality.low,
                         height: 32,
                       ),
-                      title: Text("${(log as WeightChallengeDto).exerciseDto?.name}",
+                      title: Text("${(log as WeightChallengeTemplate).exerciseDto?.name}",
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),

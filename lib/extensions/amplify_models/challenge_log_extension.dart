@@ -8,7 +8,7 @@ import '../../dtos/appsync/challenge_log_dto.dart';
 extension ChallengeLogExtension on ChallengeLog {
   ChallengeLogDto dto() {
     final json = jsonDecode(data);
-    final challengeId = json["challengeId"] ?? "";
+    final templateId = json["templateId"] ?? "";
     final name = json["name"] ?? "";
     final caption = json["caption"] ?? "";
     final description = json["description"] ?? "";
@@ -22,7 +22,7 @@ extension ChallengeLogExtension on ChallengeLog {
 
     return ChallengeLogDto(
         id: id,
-        challengeId: challengeId,
+        templateId: templateId,
         name: name,
         caption: caption,
         description: description,

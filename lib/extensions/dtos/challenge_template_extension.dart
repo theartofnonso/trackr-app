@@ -1,11 +1,11 @@
-import '../../dtos/appsync/challenge_log_dto.dart';
-import '../dtos/challenges/challenge_template.dart';
+import '../../../dtos/appsync/challenge_log_dto.dart';
+import '../../dtos/challengeTemplates/challenge_template.dart';
 
 extension ChallengeTemplateExtension on ChallengeTemplate {
   ChallengeLogDto createChallenge({required DateTime startDate}) {
     return ChallengeLogDto(
         id: "",
-        challengeId: id,
+        templateId: id,
         name: name,
         caption: caption,
         description: description,

@@ -60,7 +60,7 @@ class AmplifyChallengeLogRepository {
   }
 
   ChallengeLogDto? logWhereChallengeTemplateId({required String id}) {
-    return _logs.firstWhereOrNull((log) => log.challengeId == id);
+    return _logs.firstWhereOrNull((log) => log.templateId == id);
   }
 
   void clear() {

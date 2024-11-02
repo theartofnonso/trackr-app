@@ -2,7 +2,7 @@ import '../../enums/challenge_type_enums.dart';
 
 class ChallengeLogDto {
   final String id;
-  final String challengeId;
+  final String templateId;
   final String name;
   final String caption;
   final String description;
@@ -16,7 +16,7 @@ class ChallengeLogDto {
   ChallengeLogDto(
       {required this.id,
       required this.name,
-      required this.challengeId,
+      required this.templateId,
       required this.caption,
       required this.description,
       required this.rule,
@@ -29,7 +29,7 @@ class ChallengeLogDto {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'challengeId': challengeId,
+      'templateId': templateId,
       'name': name,
       'caption': caption,
       'description': description,
@@ -44,7 +44,7 @@ class ChallengeLogDto {
 
   ChallengeLogDto copyWith({
     String? id,
-    String? challengeId,
+    String? templateId,
     String? name,
     String? caption,
     String? description,
@@ -57,7 +57,7 @@ class ChallengeLogDto {
   }) {
     return ChallengeLogDto(
         id: id ?? this.id,
-        challengeId: challengeId ?? this.challengeId,
+        templateId: templateId ?? this.templateId,
         name: name ?? this.name,
         caption: caption ?? this.caption,
         description: description ?? this.caption,
@@ -71,6 +71,6 @@ class ChallengeLogDto {
 
   @override
   String toString() {
-    return 'ChallengeLogDto{id: $id, challengeId: $challengeId, name: $name, caption: $caption, description: $description, rule: $rule, progress: $progress, startDate: $startDate, endDate: $endDate, isCompleted: $isCompleted, type: $type}';
+    return 'ChallengeLogDto{id: $id, templateId: $templateId, name: $name, caption: $caption, description: $description, rule: $rule, progress: $progress, startDate: $startDate, endDate: $endDate, isCompleted: $isCompleted, type: $type}';
   }
 }

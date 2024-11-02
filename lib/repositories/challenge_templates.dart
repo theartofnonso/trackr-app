@@ -1,15 +1,15 @@
-import 'package:tracker_app/dtos/challenges/challenge_template.dart';
-import 'package:tracker_app/dtos/challenges/days_challenge_dto.dart';
-import 'package:tracker_app/dtos/challenges/reps_challenge_dto.dart';
-import 'package:tracker_app/dtos/challenges/weekly_challenge_dto.dart';
+import 'package:tracker_app/dtos/challengeTemplates/challenge_template.dart';
+import 'package:tracker_app/dtos/challengeTemplates/days_challenge_dto.dart';
+import 'package:tracker_app/dtos/challengeTemplates/reps_challenge_dto.dart';
+import 'package:tracker_app/dtos/challengeTemplates/weekly_challenge_dto.dart';
 import 'package:tracker_app/enums/challenge_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 
-import '../dtos/challenges/weight_challenge_dto.dart';
+import '../dtos/challengeTemplates/weight_challenge_dto.dart';
 
 class ChallengeTemplates {
   /// Weekly Challenges
-  final _legDayChallenge = WeeklyChallengeDto(
+  final _legDayChallenge = WeeklyChallengeTemplate(
       id: 'NMALDC_001',
       name: 'Never Miss A Leg Day'.toUpperCase(),
       description:
@@ -22,7 +22,7 @@ class ChallengeTemplates {
       isCompleted: false,
       type: ChallengeType.weekly);
 
-  final _mondayChallenge = WeeklyChallengeDto(
+  final _mondayChallenge = WeeklyChallengeTemplate(
       id: 'NMAMC_002',
       name: 'Never Miss A Monday'.toUpperCase(),
       description:
@@ -35,7 +35,7 @@ class ChallengeTemplates {
       isCompleted: false,
       type: ChallengeType.weekly);
 
-  final _weekendChallenge = WeeklyChallengeDto(
+  final _weekendChallenge = WeeklyChallengeTemplate(
       id: 'WWC_003',
       name: 'Weekend Warrior'.toUpperCase(),
       description:
@@ -49,7 +49,7 @@ class ChallengeTemplates {
       type: ChallengeType.weekly);
 
   /// Reps Challenges
-  final _repsChallenge = RepsChallengeDto(
+  final _repsChallenge = RepsChallengeTemplate(
       id: 'RP_000',
       name: '10K Reps Marathon'.toUpperCase(),
       description:
@@ -66,7 +66,7 @@ class ChallengeTemplates {
       type: ChallengeType.reps);
 
   /// Weight Challenges
-  final _weightChallenge = WeightChallengeDto(
+  final _weightChallenge = WeightChallengeTemplate(
       id: 'WHT_000',
       name: 'Twice as strong'.toUpperCase(),
       description:
@@ -82,7 +82,7 @@ class ChallengeTemplates {
       type: ChallengeType.weight, exerciseDto: null);
 
   /// Days Challenges
-  final _thirtyDaysChallenge = DaysChallengeDto(
+  final _thirtyDaysChallenge = DaysChallengeTemplate(
       id: 'DYS_30_001',
       name: '30 Days of Gains'.toUpperCase(),
       description: 'Start your journey by logging 30 days. Perfect for those beginning their obsession with fitness.',
@@ -93,7 +93,7 @@ class ChallengeTemplates {
       endDate: DateTime.now().add(const Duration(days: 30)),
       isCompleted: false,
       type: ChallengeType.days);
-  final _fiftyDaysChallenge = DaysChallengeDto(
+  final _fiftyDaysChallenge = DaysChallengeTemplate(
       id: 'DYC_50_002',
       name: '50 Days of Gains'.toUpperCase(),
       description: 'Take your commitment to the next level by logging 50 days of training.',
@@ -105,7 +105,7 @@ class ChallengeTemplates {
       isCompleted: false,
       type: ChallengeType.days);
 
-  final _hundredDaysChallenge = DaysChallengeDto(
+  final _hundredDaysChallenge = DaysChallengeTemplate(
       id: 'DYS_100_003',
       name: '100 Days of Gains'.toUpperCase(),
       description: 'Prove your dedication by logging 100 days of training. This challenge is for the truly committed.',
@@ -117,25 +117,25 @@ class ChallengeTemplates {
       isCompleted: false,
       type: ChallengeType.days);
 
-  List<ChallengeTemplate> loadChallenges() {
-    final challenges = <ChallengeTemplate>[];
+  List<ChallengeTemplate> loadTemplates() {
+    final templates = <ChallengeTemplate>[];
 
     /// Add Weekly Challenges
-    challenges.add(_legDayChallenge);
-    challenges.add(_mondayChallenge);
-    challenges.add(_weekendChallenge);
+    templates.add(_legDayChallenge);
+    templates.add(_mondayChallenge);
+    templates.add(_weekendChallenge);
 
     /// Add Reps Challenges
-    challenges.add(_repsChallenge);
+    templates.add(_repsChallenge);
 
     /// Add Weight Challenges
-    challenges.add(_weightChallenge);
+    templates.add(_weightChallenge);
 
     /// Add Days Challenges
-    challenges.add(_thirtyDaysChallenge);
-    challenges.add(_fiftyDaysChallenge);
-    challenges.add(_hundredDaysChallenge);
+    templates.add(_thirtyDaysChallenge);
+    templates.add(_fiftyDaysChallenge);
+    templates.add(_hundredDaysChallenge);
 
-    return challenges;
+    return templates;
   }
 }

@@ -1,23 +1,31 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
-import 'package:tracker_app/dtos/challenges/challenge_template.dart';
+import 'package:tracker_app/dtos/challengeTemplates/challenge_template.dart';
 import 'package:tracker_app/repositories/challenge_templates.dart';
-import 'package:tracker_app/widgets/challenges/challenge_target_icon.dart';
 
+import '../../dtos/appsync/challenge_log_dto.dart';
 import '../../utils/challenge_utils.dart';
 import '../../utils/navigation_utils.dart';
+import '../../widgets/challenges/challenge_target_icon.dart';
 import '../../widgets/information_containers/information_container_with_background_image.dart';
 import 'challenge_screen.dart';
 
 class ChallengesScreen extends StatelessWidget {
-  const ChallengesScreen({super.key});
+  
+  final List<ChallengeLogDto> challenges;
+  
+  const ChallengesScreen({super.key, required this.challenges});
 
   @override
   Widget build(BuildContext context) {
-    final challenges = ChallengeTemplates().loadChallenges();
+    final templates = ChallengeTemplates().loadTemplates();
 
-    final children = challenges.map((challenge) => _ChallengeWidget(challenge: challenge)).toList();
+    final children = templates.where((template) {
+      final challenge = challenges.firstWhereOrNull((challenge) => challenge.templateId == template.id);
+      return challenge == null;
+    } ).map((challenge) => _ChallengeWidget(challenge: challenge)).toList();
 
     return Scaffold(
         backgroundColor: Colors.transparent,

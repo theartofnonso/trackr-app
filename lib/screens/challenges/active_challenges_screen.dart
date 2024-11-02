@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/dtos/appsync/challenge_log_dto.dart';
-import 'package:tracker_app/widgets/challenges/challenge_target_icon.dart';
 
-import '../../controllers/challenge_log_controller.dart';
 import '../../utils/challenge_utils.dart';
 import '../../utils/navigation_utils.dart';
+import '../../widgets/challenges/challenge_target_icon.dart';
 import '../../widgets/information_containers/information_container_with_background_image.dart';
 import '../no_list_empty_state.dart';
 import 'active_challenge_screen.dart';
 
 class ActiveChallengesScreen extends StatelessWidget {
-  const ActiveChallengesScreen({super.key});
+
+  final List<ChallengeLogDto> challenges;
+  
+  const ActiveChallengesScreen({super.key, required this.challenges});
 
   @override
   Widget build(BuildContext context) {
-    final logs = Provider.of<ChallengeLogController>(context, listen: true).logs;
-
-    final children = logs.map((challenge) => _ActiveChallengeWidget(challenge: challenge)).toList();
+    
+    final children = challenges.map((challenge) => _ActiveChallengeWidget(challenge: challenge)).toList();
 
     if (children.isEmpty) {
       return const NoListEmptyState(
