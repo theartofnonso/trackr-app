@@ -42,8 +42,6 @@ List<DateTimeRange> generateWeeksInRange({required DateTimeRange range}) {
     currentStartDate = currentEndDate.add(const Duration(days: 1));
   }
 
-  print(generateMonthsInRange(range: range));
-
   return weeks;
 }
 

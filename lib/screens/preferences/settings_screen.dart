@@ -11,6 +11,7 @@ import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/activity_log_controller.dart';
 import 'package:tracker_app/graphQL/queries.dart';
 import 'package:tracker_app/screens/preferences/notifications_screen.dart';
+import 'package:tracker_app/screens/preferences/user_profile_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/urls.dart';
 import 'package:tracker_app/widgets/list_tiles/list_tile_outline.dart';
@@ -56,6 +57,9 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   @override
   Widget build(BuildContext context) {
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
+
+    final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
+    final user = routineUserController.user;
 
     return Scaffold(
       body: Container(
@@ -149,6 +153,14 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   });
                 },
               ),
+              if (user != null)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 8),
+                    OutlineListTile(onTap: _navigateToProfile, title: "Profile", trailing: "manage profile"),
+                  ],
+                ),
               const SizedBox(height: 8),
               OutlineListTile(onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "manage exercises"),
               if (Platform.isIOS)
@@ -201,6 +213,10 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     );
 
     await openUrl(url: emailUri.toString(), context: context);
+  }
+
+  void _navigateToProfile() {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const UserProfileScreen()));
   }
 
   void _navigateToExerciseLibrary() {

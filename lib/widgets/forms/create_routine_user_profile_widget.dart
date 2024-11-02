@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/widgets/label_divider.dart';
 
 import '../../colors.dart';
 import '../../controllers/routine_user_controller.dart';
@@ -11,8 +12,10 @@ import '../../dtos/appsync/routine_user_dto.dart';
 import '../../screens/preferences/settings_screen.dart';
 import '../../shared_prefs.dart';
 import '../../utils/dialog_utils.dart';
+import '../../utils/general_utils.dart';
 import '../../utils/https_utils.dart';
 import '../buttons/opacity_button_widget.dart';
+import '../pickers/weight_picker.dart';
 
 class CreateRoutineUserProfileWidget extends StatefulWidget {
   const CreateRoutineUserProfileWidget({
@@ -26,6 +29,11 @@ class CreateRoutineUserProfileWidget extends StatefulWidget {
 class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidget> {
   bool _hasRegexError = false;
   bool _usernameExistsError = false;
+  bool _hasWeightError = false;
+
+  String _usernameExistsErrorMessage = "";
+
+  int _weight = 0;
 
   final _editingController = TextEditingController();
 
@@ -49,18 +57,34 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
             ],
           )),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text("TRKR User Profiles",
-            textAlign: TextAlign.start,
-            style: GoogleFonts.ubuntu(fontSize: 20, fontWeight: FontWeight.w500, color: Colors.white)),
+        Center(
+          child: Container(
+              width: 60, // Width and height should be equal to make a perfect circle
+              height: 60,
+              decoration: BoxDecoration(
+                color: sapphireDark80,
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(5), // Optional border
+                boxShadow: [
+                  BoxShadow(
+                    color: sapphireDark.withOpacity(0.5),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: const Offset(0, 3), // changes position of shadow
+                  ),
+                ],
+              ),
+              child: const Center(child: FaIcon(FontAwesomeIcons.solidUser, color: Colors.white54, size: 22))),
+        ),
         const SizedBox(
-          height: 10,
+          height: 20,
         ),
         Text(
-            "User profiles enable you to join TRKR communities. Stay tuned for upcoming features that will enhance your user experience.",
+            "User profiles enable you to join TRKR communities. Stay tuned for upcoming features that will enhance your training experience.",
             style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white38),
-            textAlign: TextAlign.start),
+            textAlign: TextAlign.center),
         const SizedBox(
-          height: 18,
+          height: 20,
         ),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,7 +125,48 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
               style: GoogleFonts.ubuntu(fontSize: 10, fontWeight: FontWeight.w400, color: Colors.redAccent),
               textAlign: TextAlign.start),
         if (_usernameExistsError)
-          Text("${_editingController.text} already exists.",
+          Text(_usernameExistsErrorMessage,
+              style: GoogleFonts.ubuntu(fontSize: 10, fontWeight: FontWeight.w400, color: Colors.redAccent),
+              textAlign: TextAlign.start),
+        const SizedBox(
+          height: 26,
+        ),
+        const LabelDivider(label: "METRICS", labelColor: Colors.white70, dividerColor: sapphireLighter),
+        const SizedBox(
+          height: 20,
+        ),
+        ListTile(
+          onTap: () {
+            displayBottomSheet(
+                height: 240,
+                context: context,
+                child: WeightPicker(
+                    initialWeight: _weight,
+                    onSelect: (int weight) {
+                      Navigator.of(context).pop();
+                      setState(() {
+                        _weight = weight;
+                        _hasWeightError = false;
+                      });
+                    }));
+          },
+          contentPadding: EdgeInsets.zero,
+          titleAlignment: ListTileTitleAlignment.center,
+          minTileHeight: 8,
+          title: Text("Weight",
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+              textAlign: TextAlign.start),
+          subtitle: Text("Tap to select weight",
+              style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.white),
+              textAlign: TextAlign.start),
+          trailing: Text("$_weight${weightLabel()}".toUpperCase(),
+              style: GoogleFonts.ubuntu(fontSize: 18, fontWeight: FontWeight.w800, color: Colors.white70),
+              textAlign: TextAlign.start),
+        ),
+        if (_hasWeightError)
+          Text("Please select your weight.",
               style: GoogleFonts.ubuntu(fontSize: 10, fontWeight: FontWeight.w400, color: Colors.redAccent),
               textAlign: TextAlign.start),
         const SizedBox(
@@ -143,54 +208,92 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
 
   void _createUser() async {
     final username = _editingController.text.trim().toLowerCase();
-    if (username.isNotEmpty) {
-      final RegExp regex = RegExp(r'^[a-zA-Z0-9]+$');
-      if (!regex.hasMatch(username)) {
-        setState(() {
-          _hasRegexError = true;
-          _usernameExistsError = false;
-        });
-      } else {
-        setState(() {
-          _isLoading = true;
-          _hasRegexError = false;
-        });
-        final doesUserAlreadyExists = await _doesUsernameExists(username: username);
-        if (doesUserAlreadyExists) {
-          setState(() {
-            _usernameExistsError = true;
-            _hasRegexError = false;
-            _isLoading = false;
-          });
-        } else {
-          setState(() {
-            _usernameExistsError = false;
-          });
-          if (mounted) {
-            final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
-            final newUser = RoutineUserDto(
-                id: "", name: username, cognitoUserId: SharedPrefs().userId, email: SharedPrefs().userEmail, owner: "");
-            final createdUser = await routineUserController.saveUser(userDto: newUser);
-            if (mounted) {
-              Navigator.of(context).pop();
-              if (createdUser != null) {
-                showSnackbar(
-                    context: context,
-                    icon: const FaIcon(FontAwesomeIcons.circleInfo),
-                    message: "$username profile has been created.");
-              } else {
-                showSnackbar(
-                    context: context,
-                    icon: const FaIcon(FontAwesomeIcons.circleInfo),
-                    message: "Unable to create $username profile.");
-              }
-            }
-            setState(() {
-              _isLoading = false;
-            });
-          }
-        }
-      }
+
+    /// Check if the username is empty
+    if (username.isEmpty) {
+      setState(() {
+        _hasRegexError = false;
+        _usernameExistsError = false;
+        _hasWeightError = false;
+      });
+      return;
+    }
+
+    /// Check if username is valid
+    final RegExp regex = RegExp(r'^[a-zA-Z0-9]+$');
+    if (!regex.hasMatch(username)) {
+      setState(() {
+        _hasRegexError = true;
+        _usernameExistsError = false;
+        _hasWeightError = false;
+      });
+      return;
+    }
+
+    /// Check if the weight is set
+    if (_weight == 0) {
+      setState(() {
+        _hasWeightError = true;
+        _hasRegexError = false;
+        _usernameExistsError = false;
+      });
+      return;
+    }
+
+    /// Begin loading
+    setState(() {
+      _isLoading = true;
+      _hasRegexError = false;
+      _hasWeightError = false;
+      _usernameExistsError = false;
+    });
+
+    /// Check if the username already exists
+    final doesUserAlreadyExist = await _doesUsernameExists(username: username);
+    if (doesUserAlreadyExist) {
+      setState(() {
+        _usernameExistsErrorMessage = "${_editingController.text} already exists.";
+        _usernameExistsError = true;
+        _isLoading = false;
+      });
+      return;
+    }
+
+    if (!mounted) return;
+
+    final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
+    final newUser = RoutineUserDto(
+      id: "",
+      name: username,
+      cognitoUserId: SharedPrefs().userId,
+      email: SharedPrefs().userEmail,
+      weight: _weight,
+      owner: "",
+    );
+
+    final createdUser = await routineUserController.saveUser(userDto: newUser);
+
+    if (!mounted) return;
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    // Navigate back and show the result
+    Navigator.of(context).pop();
+
+    if (createdUser != null) {
+      showSnackbar(
+        context: context,
+        icon: const FaIcon(FontAwesomeIcons.circleInfo),
+        message: "$username profile has been created.",
+      );
+    } else {
+      showSnackbar(
+        context: context,
+        icon: const FaIcon(FontAwesomeIcons.triangleExclamation),
+        message: "Unable to create $username profile.",
+      );
     }
   }
 

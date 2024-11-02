@@ -320,6 +320,7 @@ void showUserBottomSheet({required BuildContext context, required RoutineUserDto
             Navigator.of(context).pop();
             showModalBottomSheet(
                 context: context,
+                showDragHandle: true,
                 isScrollControlled: true,
                 useSafeArea: true,
                 isDismissible: false,

@@ -47,6 +47,8 @@ class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
       months.add(startOfMonth.abbreviatedMonth());
     }
 
+    final avgCalories = calories.average.round();
+
     final chartPoints =
         calories.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
 
@@ -62,6 +64,7 @@ class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
       ),
       body: Container(
         width: double.infinity,
+        height: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -88,7 +91,7 @@ class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
                       children: [
                         RichText(
                           text: TextSpan(
-                            text: "200",
+                            text: "$avgCalories",
                             style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 28),
                             children: [
                               TextSpan(
@@ -113,7 +116,7 @@ class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
                   ],
                 ),
                 const SizedBox(height: 60),
-                SizedBox(
+                calories.sum > 0 ? SizedBox(
                     height: 250,
                     child: CustomBarChart(
                       chartPoints: chartPoints,
@@ -123,7 +126,7 @@ class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
                       showLeftTitles: true,
                       maxY: calories.max.toDouble(),
                       reservedSize: 35,
-                    )),
+                    )) : const Center(child: FaIcon(FontAwesomeIcons.chartSimple, color: sapphireDark, size: 120)),
               ],
             ),
           ),

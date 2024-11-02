@@ -142,15 +142,17 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                   children: [
                     Center(child: DateDurationPBWidget(dateTime: log.createdAt, duration: log.duration(), pbs: 0)),
                     if (log.notes.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
-                        child: Text('"${log.notes}"',
-                            textAlign: TextAlign.start,
-                            style: GoogleFonts.ubuntu(
-                                color: Colors.white70,
-                                fontSize: 14,
-                                fontStyle: FontStyle.italic,
-                                fontWeight: FontWeight.w600)),
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
+                          child: Text('"${log.notes}"',
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.ubuntu(
+                                  color: Colors.white70,
+                                  fontSize: 14,
+                                  fontStyle: FontStyle.italic,
+                                  fontWeight: FontWeight.w600)),
+                        ),
                       ),
 
                     /// Keep this spacing for when notes isn't available
@@ -428,7 +430,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
   }
 
   void _editLog() async {
-    Navigator.pop(context);
+    Navigator.of(context).pop();
     final log = _log;
     if (log != null) {
       final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.edit);

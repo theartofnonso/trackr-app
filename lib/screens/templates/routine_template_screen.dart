@@ -229,15 +229,17 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                     ],
                   ),
                   if (template.notes.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
-                      child: Text('"${template.notes}"',
-                          textAlign: TextAlign.start,
-                          style: GoogleFonts.ubuntu(
-                              color: Colors.white70,
-                              fontSize: 14,
-                              fontStyle: FontStyle.italic,
-                              fontWeight: FontWeight.w600)),
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
+                        child: Text('"${template.notes}"',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.ubuntu(
+                                color: Colors.white70,
+                                fontSize: 14,
+                                fontStyle: FontStyle.italic,
+                                fontWeight: FontWeight.w600)),
+                      ),
                     ),
 
                   /// Keep this spacing for when notes isn't available
