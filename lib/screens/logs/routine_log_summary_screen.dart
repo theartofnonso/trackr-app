@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -42,7 +43,9 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
 
   Image? _image;
 
-  final _controller = PageController(viewportFraction: 1);
+  final _pageController = PageController(viewportFraction: 1);
+
+  final _confettiController = ConfettiController();
 
   bool isMultipleOfFive(int number) {
     return number % 5 == 0;
@@ -93,82 +96,85 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
       routineLogShareableLiteKey,
     ];
 
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-          heroTag: "routine_log_screen",
-          onPressed: _showCopyBottomSheet,
-          backgroundColor: sapphireDark,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          child: const FaIcon(Icons.copy)),
-      appBar: AppBar(
-        backgroundColor: sapphireDark80,
-        leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
-          onPressed: context.pop,
-        ),
-        actions: [
-          IconButton(
-            icon: const FaIcon(FontAwesomeIcons.camera, color: Colors.white, size: 24),
-            onPressed: _showBottomSheet,
-          )
-        ],
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              sapphireDark80,
-              sapphireDark,
-            ],
+    return Stack(children: [
+      Scaffold(
+        floatingActionButton: FloatingActionButton(
+            heroTag: "routine_log_screen",
+            onPressed: _showCopyBottomSheet,
+            backgroundColor: sapphireDark,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+            child: const FaIcon(Icons.copy)),
+        appBar: AppBar(
+          backgroundColor: sapphireDark80,
+          leading: IconButton(
+            icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
+            onPressed: context.pop,
           ),
+          actions: [
+            IconButton(
+              icon: const FaIcon(FontAwesomeIcons.camera, color: Colors.white, size: 24),
+              onPressed: _showBottomSheet,
+            )
+          ],
         ),
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 30),
-              AspectRatio(
-                aspectRatio: 1,
-                child: PageView.builder(
-                  scrollDirection: Axis.horizontal,
-                  controller: _controller,
-                  itemCount: pages.length,
-                  itemBuilder: (_, index) {
-                    return pages[index % pages.length];
-                  },
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                sapphireDark80,
+                sapphireDark,
+              ],
+            ),
+          ),
+          child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 30),
+                AspectRatio(
+                  aspectRatio: 1,
+                  child: PageView.builder(
+                    scrollDirection: Axis.horizontal,
+                    controller: _pageController,
+                    itemCount: pages.length,
+                    itemBuilder: (_, index) {
+                      return pages[index % pages.length];
+                    },
+                  ),
                 ),
-              ),
-              const Spacer(),
-              SmoothPageIndicator(
-                controller: _controller,
-                count: pages.length,
-                effect: const ExpandingDotsEffect(activeDotColor: vibrantGreen),
-              ),
-              const SizedBox(height: 30),
-              OpacityButtonWidget(
-                  onPressed: () {
-                    final index = _controller.page!.toInt();
-                    captureImage(key: pagesKeys[index], pixelRatio: 3.5).then((_) {
-                      if (context.mounted) {
-                        showSnackbar(
-                            context: context,
-                            icon: const FaIcon(FontAwesomeIcons.circleCheck),
-                            message: "Content Shared");
-                      }
-                    });
-                    final contentType = _shareContentType(index: index);
-                    contentShared(contentType: contentType);
-                  },
-                  label: "Share",
-                  buttonColor: vibrantGreen,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14))
-            ],
+                const Spacer(),
+                SmoothPageIndicator(
+                  controller: _pageController,
+                  count: pages.length,
+                  effect: const ExpandingDotsEffect(activeDotColor: vibrantGreen),
+                ),
+                const SizedBox(height: 30),
+                OpacityButtonWidget(
+                    onPressed: () {
+                      final index = _pageController.page!.toInt();
+                      captureImage(key: pagesKeys[index], pixelRatio: 3.5).then((_) {
+                        if (context.mounted) {
+                          showSnackbar(
+                              context: context,
+                              icon: const FaIcon(FontAwesomeIcons.circleCheck),
+                              message: "Content Shared");
+                        }
+                      });
+                      final contentType = _shareContentType(index: index);
+                      contentShared(contentType: contentType);
+                    },
+                    label: "Share",
+                    buttonColor: vibrantGreen,
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14))
+              ],
+            ),
           ),
         ),
       ),
-    );
+      ConfettiWidget(confettiController: _confettiController, blastDirectionality: BlastDirectionality.explosive)
+    ]);
   }
 
   void _showCopyBottomSheet() {
@@ -331,5 +337,17 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
       _image = null;
       _hasImage = false;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _confettiController.play();
+  }
+
+  @override
+  void dispose() {
+    _confettiController.dispose();
+    super.dispose();
   }
 }

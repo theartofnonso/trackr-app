@@ -144,7 +144,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                     if (log.notes.isNotEmpty)
                       Center(
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
+                          padding: const EdgeInsets.only(top: 20, bottom: 10),
                           child: Text('"${log.notes}"',
                               textAlign: TextAlign.center,
                               style: GoogleFonts.ubuntu(

@@ -37,7 +37,7 @@ class ExerciseWidget extends StatelessWidget {
                 width: 35,
                 height: 35, // Adjust the height as needed
                 child: Image.asset(
-                  'muscles_illustration_green/${exercise.primaryMuscleGroup.illustration()}.png',
+                  'muscles_illustration/${exercise.primaryMuscleGroup.illustration()}.png',
                   fit: BoxFit.cover,
                   filterQuality: FilterQuality.low,
                 ),

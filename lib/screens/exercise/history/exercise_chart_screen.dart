@@ -186,10 +186,9 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
 
     final muscleGroupsIllustrations =
         [widget.exercise.primaryMuscleGroup, ...widget.exercise.secondaryMuscleGroups].map((muscleGroup) {
-      final illustrationName = muscleGroup.illustration();
       return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
         Image.asset(
-          'muscles_illustration_green/$illustrationName.png',
+          'muscles_illustration/${widget.exercise.primaryMuscleGroup.illustration()}.png',
           fit: BoxFit.contain,
           height: 160, // Adjust the height as needed
         ),
