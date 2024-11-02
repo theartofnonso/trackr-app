@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/challenges/weight_challenge_dto.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
+import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:tracker_app/widgets/label_divider.dart';
 
@@ -13,6 +14,7 @@ import '../../../colors.dart';
 import '../../controllers/challenge_log_controller.dart';
 import '../../dtos/appsync/challenge_log_dto.dart';
 import '../../dtos/challenges/reps_challenge_dto.dart';
+import '../../enums/challenge_type_enums.dart';
 import '../../repositories/challenge_templates.dart';
 import '../../utils/challenge_utils.dart';
 
@@ -213,7 +215,7 @@ class ActiveChallengeScreen extends StatelessWidget {
                             const TextSpan(text: "out of"),
                             const TextSpan(text: " "),
                             TextSpan(
-                                text: "${template.target} weeks",
+                                text: "${template.target} ${_targetDescription(type: log.type)}",
                                 style:
                                     GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
                             const TextSpan(text: " "),
@@ -247,5 +249,14 @@ class ActiveChallengeScreen extends StatelessWidget {
     if (context.mounted) {
       context.pop();
     }
+  }
+
+  String _targetDescription({required ChallengeType type}) {
+    return switch (type) {
+      ChallengeType.weekly => "weeks",
+      ChallengeType.reps => "reps",
+      ChallengeType.days => weightLabel(),
+      ChallengeType.weight => "days",
+    };
   }
 }
