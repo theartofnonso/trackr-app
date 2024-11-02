@@ -41,6 +41,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
     final activeChallenge = challengeLogController.logWhereChallengeTemplateId(id: widget.challengeTemplate.id);
 
     return Stack(
+      alignment: Alignment.topCenter,
       children: [
         Scaffold(
           backgroundColor: sapphireDark,

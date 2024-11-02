@@ -96,7 +96,9 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
       routineLogShareableLiteKey,
     ];
 
-    return Stack(children: [
+    return Stack(
+        alignment: Alignment.topCenter,
+        children: [
       Scaffold(
         floatingActionButton: FloatingActionButton(
             heroTag: "routine_log_screen",
