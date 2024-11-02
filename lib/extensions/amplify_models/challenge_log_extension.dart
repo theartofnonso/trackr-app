@@ -6,16 +6,16 @@ import '../../dtos/appsync/challenge_log_dto.dart';
 
 extension ChallengeLogExtension on ChallengeLog {
   ChallengeLogDto dto() {
-    final dataJson = jsonDecode(data);
-    final challengeId = dataJson["challengeId"] ?? "";
-    final name = dataJson["name"] ?? "";
-    final caption = dataJson["caption"] ?? "";
-    final description = dataJson["description"] ?? "";
-    final rule = dataJson["rule"] ?? "";
-    final target = dataJson["target"] ?? 0;
-    final startDate = DateTime.parse(dataJson["startDate"]);
-    final endDate = DateTime.parse(dataJson["endDate"]);
-    final isCompleted = dataJson["isCompleted"] ?? false;
+    final json = jsonDecode(data);
+    final challengeId = json["challengeId"] ?? "";
+    final name = json["name"] ?? "";
+    final caption = json["caption"] ?? "";
+    final description = json["description"] ?? "";
+    final rule = json["rule"] ?? "";
+    final target = json["target"] ?? 0;
+    final startDate = DateTime.parse(json["startDate"]);
+    final endDate = json["endDate"] != null ? DateTime.parse(json["endDate"]) : null;
+    final isCompleted = json["isCompleted"] ?? false;
 
     return ChallengeLogDto(
         id: id,

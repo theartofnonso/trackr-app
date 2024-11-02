@@ -18,7 +18,7 @@ class AmplifyChallengeLogRepository {
   }
 
   void _mapLogs({required List<ChallengeLog> logs}) {
-    _logs = logs.map((log) => log.dto()).toList();
+      _logs = logs.map((log) => log.dto()).toList();
   }
 
   Future<void> saveLog({required ChallengeLogDto logDto}) async {

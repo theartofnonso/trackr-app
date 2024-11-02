@@ -12,7 +12,7 @@ extension ChallengeTemplateExtension on ChallengeTemplate {
         caption: caption,
         description: description,
         rule: rule,
-        target: target,
+        target: 0,
         startDate: startDate,
         isCompleted: false);
   }

@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/dtos/streaks/weight_challenge_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
+import 'package:tracker_app/extensions/challenge_template_extension.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:tracker_app/widgets/label_divider.dart';
@@ -50,6 +51,10 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
     final activeChallenge = challengeLogController.logWhereChallengeTemplateId(id: widget.challengeTemplate.id);
 
     final selectedExercise = _selectedExercise;
+
+    int activeChallengeTarget = activeChallenge?.target ?? 0;
+
+    final progress = activeChallengeTarget / widget.challengeTemplate.target;
 
     return Stack(
       alignment: Alignment.topCenter,
@@ -239,7 +244,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                                 borderRadius: BorderRadius.circular(5),
                               ),
                               child: LinearProgressIndicator(
-                                value: 0.5,
+                                value: progress,
                                 backgroundColor: sapphireDark,
                                 color: vibrantGreen,
                                 minHeight: 25,
@@ -256,7 +261,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                             onLongPress: () => activeChallenge != null
                                 ? _deleteChallengeLog(challenge: activeChallenge)
                                 : _saveChallengeLog(),
-                            label: activeChallenge != null ? "Quit Challenge" : "Tap and hold to commit",
+                            label: activeChallenge != null ? "Tap and hold to leave" : "Tap and hold to commit",
                             buttonColor: activeChallenge != null ? Colors.red : vibrantGreen,
                           ),
                         ),
@@ -330,9 +335,9 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
         return;
       }
     }
-    //
-    // final challengeLog = widget.challengeTemplate.createChallenge(startDate: DateTime.now());
-    // await Provider.of<ChallengeLogController>(context, listen: false).saveLog(logDto: challengeLog);
+
+    final challengeLog = widget.challengeTemplate.createChallenge(startDate: DateTime.now());
+    await Provider.of<ChallengeLogController>(context, listen: false).saveLog(logDto: challengeLog);
 
     _confettiController.play();
 

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/dtos/streaks/challenge_template.dart';
 import 'package:tracker_app/repositories/challenge_templates.dart';
 import 'package:tracker_app/widgets/challenges/challenge_target_icon.dart';
 
+import '../../controllers/challenge_log_controller.dart';
 import '../../utils/challenge_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../widgets/information_containers/information_container_with_background_image.dart';
@@ -15,10 +17,16 @@ class ChallengesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final challenges = ChallengeTemplates().loadChallenges();
 
-    final children = challenges.map((challenge) => _ChallengeWidget(challenge: challenge)).toList();
+    final challengeLogController = Provider.of<ChallengeLogController>(context, listen: true);
+
+    final children = challenges.map((challenge) {
+      final activeChallenge = challengeLogController.logWhereChallengeTemplateId(id: challenge.id);
+
+      final isActive = activeChallenge != null;
+      return _ChallengeWidget(challenge: challenge, isActive: isActive);
+    }).toList();
 
     return Scaffold(
         backgroundColor: Colors.transparent,
@@ -60,9 +68,10 @@ class ChallengesScreen extends StatelessWidget {
 }
 
 class _ChallengeWidget extends StatelessWidget {
+  final bool isActive;
   final ChallengeTemplate challenge;
 
-  const _ChallengeWidget({required this.challenge});
+  const _ChallengeWidget({required this.challenge, required this.isActive});
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +81,19 @@ class _ChallengeWidget extends StatelessWidget {
       },
       child: Container(
           padding: const EdgeInsets.all(18),
-          decoration: BoxDecoration(color: sapphireDark80, borderRadius: BorderRadius.circular(5)),
+          decoration: BoxDecoration(
+              gradient: isActive
+                  ? const LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        sapphireDark80,
+                        sapphireDark,
+                      ],
+                    )
+                  : null,
+              color: sapphireDark80,
+              borderRadius: BorderRadius.circular(5)),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Image.asset(
               "challenges_icons/green_blob.png",
@@ -94,11 +115,9 @@ class _ChallengeWidget extends StatelessWidget {
               maxLines: 2,
             ),
             const Spacer(),
-            const Divider(color: sapphireLighter, endIndent: 10),
+            Divider(color: isActive ? vibrantGreen.withOpacity(0.2) : sapphireLighter, endIndent: 10),
             const SizedBox(height: 8),
-            Wrap(
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
+            Wrap(crossAxisAlignment: WrapCrossAlignment.center, children: [
               ChallengeTargetIcon(dto: challenge),
               const SizedBox(width: 8),
               Text(
