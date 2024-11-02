@@ -61,24 +61,33 @@ class FeedsScreen extends StatelessWidget {
       ),
       child: SafeArea(
           minimum: const EdgeInsets.all(10.0),
-          child: ListView.builder(
-              controller: scrollController,
-              itemCount: allLogs.length,
-              itemBuilder: (BuildContext context, int index) {
-                final log = allLogs[index];
-                final widget = log.logType == LogType.routine
-                    ? _RoutineLogFeedListItem(log: log as RoutineLogDto)
-                    : _ActivityLogFeedListItem(log: log as ActivityLogDto);
-                return widget;
-              })),
+          child: ListView.separated(
+            controller: scrollController,
+            itemCount: allLogs.length,
+            itemBuilder: (BuildContext context, int index) {
+              final log = allLogs[index];
+              final widget = log.logType == LogType.routine
+                  ? _RoutineLogFeedListItem(
+                      log: log as RoutineLogDto,
+                      isEvenIndex: index % 2 == 1,
+                    )
+                  : _ActivityLogFeedListItem(
+                      log: log as ActivityLogDto,
+                      isEvenIndex: index % 2 == 1,
+                    );
+              return widget;
+            },
+            separatorBuilder: (context, index) => const SizedBox(height: 10),
+          )),
     );
   }
 }
 
 class _RoutineLogFeedListItem extends StatelessWidget {
+  final bool isEvenIndex;
   final RoutineLogDto log;
 
-  const _RoutineLogFeedListItem({required this.log});
+  const _RoutineLogFeedListItem({required this.isEvenIndex, required this.log});
 
   @override
   Widget build(BuildContext context) {
@@ -106,8 +115,8 @@ class _RoutineLogFeedListItem extends StatelessWidget {
     return GestureDetector(
       onTap: () => navigateToRoutineLogPreview(context: context, log: log),
       child: Container(
-          color: Colors.transparent,
-          padding: const EdgeInsets.all(10.0),
+          decoration: isEvenIndex ? BoxDecoration(color: sapphireDark80, borderRadius: BorderRadius.circular(5)) : null,
+          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 5),
           child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
             ListTile(
               contentPadding: EdgeInsets.zero,
@@ -143,9 +152,10 @@ class _RoutineLogFeedListItem extends StatelessWidget {
 }
 
 class _ActivityLogFeedListItem extends StatelessWidget {
+  final bool isEvenIndex;
   final ActivityLogDto log;
 
-  const _ActivityLogFeedListItem({required this.log});
+  const _ActivityLogFeedListItem({required this.isEvenIndex, required this.log});
 
   @override
   Widget build(BuildContext context) {
@@ -156,8 +166,8 @@ class _ActivityLogFeedListItem extends StatelessWidget {
     return GestureDetector(
       onTap: () => showActivityBottomSheet(context: context, activity: log),
       child: Container(
-          color: Colors.transparent,
-          padding: const EdgeInsets.all(10.0),
+          decoration: isEvenIndex ? BoxDecoration(color: sapphireDark80, borderRadius: BorderRadius.circular(5)) : null,
+          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 5),
           child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
             ListTile(
               horizontalTitleGap: 5,

@@ -1,4 +1,3 @@
-
 class ChallengeLogDto {
   final String id;
   final String challengeId;

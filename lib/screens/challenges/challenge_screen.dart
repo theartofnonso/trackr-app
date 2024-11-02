@@ -231,8 +231,20 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
   }
 
   void _saveChallengeLog() async {
+    if (widget.challengeTemplate is RepsChallengeDto) {
+      if (_selectedMuscleGroup == MuscleGroup.none) {
+        showSnackbar(
+            context: context,
+            icon: const FaIcon(FontAwesomeIcons.circleInfo),
+            message: "Please select a muscle group for this challenge");
+        return;
+      }
+    }
+
     _confettiController.play();
+
     HapticFeedback.vibrate();
+
     final challengeLog = widget.challengeTemplate.copyAsChallengeLog();
     // await Provider.of<ChallengeLogController>(context, listen: false).saveLog(logDto: challengeLog);
     // if (context.mounted) {
