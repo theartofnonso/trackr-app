@@ -3,7 +3,8 @@ import '../../dtos/appsync/challenge_log_dto.dart';
 import '../dtos/streaks/challenge_template.dart';
 
 extension ChallengeTemplateExtension on ChallengeTemplate {
-  ChallengeLogDto copyAsChallengeLog() {
+
+  ChallengeLogDto createChallenge({required DateTime startDate}) {
     return ChallengeLogDto(
         id: "",
         challengeId: id,
@@ -13,8 +14,6 @@ extension ChallengeTemplateExtension on ChallengeTemplate {
         rule: rule,
         target: target,
         startDate: startDate,
-        endDate: endDate,
-        isCompleted: isCompleted,
-        image: image);
+        isCompleted: false);
   }
 }

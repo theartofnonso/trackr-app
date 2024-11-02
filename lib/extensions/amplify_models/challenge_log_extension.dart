@@ -16,7 +16,6 @@ extension ChallengeLogExtension on ChallengeLog {
     final startDate = DateTime.parse(dataJson["startDate"]);
     final endDate = DateTime.parse(dataJson["endDate"]);
     final isCompleted = dataJson["isCompleted"] ?? false;
-    final image = dataJson["image"] ?? "";
 
     return ChallengeLogDto(
         id: id,
@@ -28,7 +27,6 @@ extension ChallengeLogExtension on ChallengeLog {
         target: target,
         startDate: startDate,
         endDate: endDate,
-        isCompleted: isCompleted,
-        image: image);
+        isCompleted: isCompleted);
   }
 }

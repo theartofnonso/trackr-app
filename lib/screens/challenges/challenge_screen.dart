@@ -5,6 +5,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
+import 'package:tracker_app/dtos/streaks/weight_challenge_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/extensions/challenge_template_extension.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
@@ -19,6 +21,8 @@ import '../../dtos/streaks/challenge_template.dart';
 import '../../dtos/streaks/reps_challenge_dto.dart';
 import '../../utils/challenge_utils.dart';
 import '../../utils/dialog_utils.dart';
+import '../../utils/general_utils.dart';
+import '../../utils/routine_editors_utils.dart';
 
 class ChallengeScreen extends StatefulWidget {
   final ChallengeTemplate challengeTemplate;
@@ -32,13 +36,21 @@ class ChallengeScreen extends StatefulWidget {
 class _ChallengeScreenState extends State<ChallengeScreen> {
   MuscleGroup _selectedMuscleGroup = MuscleGroup.none;
 
+  ExerciseDto? _selectedExercise;
+
+  final double _targetWeight = 0;
+
   final _confettiController = ConfettiController();
+
+  final _textEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     final challengeLogController = Provider.of<ChallengeLogController>(context, listen: true);
 
     final activeChallenge = challengeLogController.logWhereChallengeTemplateId(id: widget.challengeTemplate.id);
+
+    final selectedExercise = _selectedExercise;
 
     return Stack(
       alignment: Alignment.topCenter,
@@ -130,31 +142,20 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                         title: Text(widget.challengeTemplate.rule,
                             style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400)),
                       ),
-                      ListTile(
-                        titleAlignment: ListTileTitleAlignment.threeLine,
-                        leading: const FaIcon(
-                          FontAwesomeIcons.trophy,
-                          color: Colors.white70,
+                      if (widget.challengeTemplate is! WeightChallengeDto)
+                        ListTile(
+                          titleAlignment: ListTileTitleAlignment.threeLine,
+                          leading: const FaIcon(
+                            FontAwesomeIcons.trophy,
+                            color: Colors.white70,
+                          ),
+                          title: Text(challengeTargetSummary(dto: widget.challengeTemplate),
+                              style:
+                                  GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400)),
                         ),
-                        title: Text(challengeTargetSummary(dto: widget.challengeTemplate),
-                            style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400)),
-                      ),
                       if (widget.challengeTemplate is RepsChallengeDto)
                         ListTile(
-                          onTap: () {
-                            displayBottomSheet(
-                                height: 240,
-                                context: context,
-                                child: MusclePicker(
-                                  onSelect: (MuscleGroup muscleGroup) {
-                                    Navigator.of(context).pop();
-                                    setState(() {
-                                      _selectedMuscleGroup = muscleGroup;
-                                    });
-                                  },
-                                  initialMuscleGroup: _selectedMuscleGroup,
-                                ));
-                          },
+                          onTap: _selectMuscleGroup,
                           titleAlignment: ListTileTitleAlignment.center,
                           leading: _selectedMuscleGroup == MuscleGroup.none
                               ? const FaIcon(
@@ -171,6 +172,45 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                               _selectedMuscleGroup == MuscleGroup.none
                                   ? "Select Muscle Group"
                                   : _selectedMuscleGroup.name,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
+                              textAlign: TextAlign.start),
+                          trailing: const FaIcon(
+                            FontAwesomeIcons.circleArrowRight,
+                            color: Colors.white70,
+                          ),
+                        ),
+                      if (widget.challengeTemplate is WeightChallengeDto)
+                        ListTile(
+                          onTap: _selectExercise,
+                          titleAlignment: ListTileTitleAlignment.center,
+                          leading: const FaIcon(
+                            FontAwesomeIcons.trophy,
+                            color: Colors.white70,
+                          ),
+                          title: _TextField(
+                            value: _targetWeight,
+                            onChanged: (_) {},
+                            controller: _textEditingController,
+                          ),
+                        ),
+                      if (widget.challengeTemplate is WeightChallengeDto)
+                        ListTile(
+                          onTap: _selectExercise,
+                          titleAlignment: ListTileTitleAlignment.center,
+                          leading: selectedExercise != null
+                              ? Image.asset(
+                                  'muscles_illustration/${selectedExercise.primaryMuscleGroup.illustration()}.png',
+                                  fit: BoxFit.cover,
+                                  filterQuality: FilterQuality.low,
+                                  height: 32,
+                                )
+                              : const FaIcon(
+                                  FontAwesomeIcons.solidCircleQuestion,
+                                  color: Colors.white70,
+                                ),
+                          title: Text(selectedExercise != null ? selectedExercise.name : "Select Exercise",
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
@@ -213,7 +253,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                             onLongPress: () => activeChallenge != null
                                 ? _deleteChallengeLog(challenge: activeChallenge)
                                 : _saveChallengeLog(),
-                            label: activeChallenge != null ? "Quit Challenge" : "Challenge launching soon",
+                            label: activeChallenge != null ? "Quit Challenge" : "Tap and hold to commit",
                             buttonColor: activeChallenge != null ? Colors.red : vibrantGreen,
                           ),
                         ),
@@ -230,6 +270,34 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
     );
   }
 
+  void _selectMuscleGroup() {
+    displayBottomSheet(
+        height: 240,
+        context: context,
+        child: MusclePicker(
+          onSelect: (MuscleGroup muscleGroup) {
+            Navigator.of(context).pop();
+            setState(() {
+              _selectedMuscleGroup = muscleGroup;
+            });
+          },
+          initialMuscleGroup: _selectedMuscleGroup,
+        ));
+  }
+
+  void _selectExercise() {
+    showExercisesInLibrary(
+        context: context,
+        exclude: [],
+        onSelected: (List<ExerciseDto> selectedExercises) {
+          if (selectedExercises.isNotEmpty) {
+            setState(() {
+              _selectedExercise = selectedExercises.first;
+            });
+          }
+        });
+  }
+
   void _saveChallengeLog() async {
     if (widget.challengeTemplate is RepsChallengeDto) {
       if (_selectedMuscleGroup == MuscleGroup.none) {
@@ -241,15 +309,31 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
       }
     }
 
+    if (widget.challengeTemplate is WeightChallengeDto) {
+      final selectedExercise = _selectedExercise;
+      if (selectedExercise != null) {
+        showSnackbar(
+            context: context,
+            icon: const FaIcon(FontAwesomeIcons.circleInfo),
+            message: "Please select an exercise for this challenge");
+        return;
+      }
+
+      if (_targetWeight <= 0) {
+        showSnackbar(
+            context: context,
+            icon: const FaIcon(FontAwesomeIcons.circleInfo),
+            message: "Please enter a target weight for this challenge");
+        return;
+      }
+    }
+
+    final challengeLog = widget.challengeTemplate.createChallenge(startDate: DateTime.now());
+    await Provider.of<ChallengeLogController>(context, listen: false).saveLog(logDto: challengeLog);
+
     _confettiController.play();
 
     HapticFeedback.vibrate();
-
-    final challengeLog = widget.challengeTemplate.copyAsChallengeLog();
-    // await Provider.of<ChallengeLogController>(context, listen: false).saveLog(logDto: challengeLog);
-    // if (context.mounted) {
-    //   print("Challege Accepted");
-    // }
   }
 
   void _deleteChallengeLog({required ChallengeLogDto challenge}) async {
@@ -259,7 +343,39 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
 
   @override
   void dispose() {
+    _textEditingController.dispose();
     _confettiController.dispose();
     super.dispose();
+  }
+}
+
+class _TextField extends StatelessWidget {
+  final num value;
+  final TextEditingController controller;
+  final void Function(double value) onChanged;
+
+  const _TextField({required this.controller, required this.value, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: controller,
+      onChanged: (value) => onChanged(_parseDoubleOrDefault(value: value)),
+      decoration: InputDecoration(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 14),
+          enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: Colors.white70)),
+          fillColor: Colors.transparent,
+          hintText: "${value > 0 ? weightWithConversion(value: value) : '0'}",
+          hintStyle: GoogleFonts.ubuntu(color: Colors.white70)),
+      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+      maxLines: 1,
+      textAlign: TextAlign.start,
+      style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
+    );
+  }
+
+  double _parseDoubleOrDefault({required String value}) {
+    return double.tryParse(value) ?? 0;
   }
 }

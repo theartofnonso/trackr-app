@@ -1,6 +1,10 @@
 import 'challenge_template.dart';
 
 class DaysChallengeDto extends ChallengeTemplate {
+  final DateTime startDate;
+  DateTime? endDate;
+  final bool isCompleted;
+
   DaysChallengeDto(
       {required super.id,
       required super.name,
@@ -8,8 +12,7 @@ class DaysChallengeDto extends ChallengeTemplate {
       required super.description,
       required super.rule,
       required super.target,
-      required super.startDate,
-      required super.endDate,
-      required super.isCompleted,
-      required super.image});
+      required this.startDate,
+      this.endDate,
+      required this.isCompleted});
 }

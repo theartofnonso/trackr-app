@@ -75,7 +75,7 @@ class _ChallengeWidget extends StatelessWidget {
           decoration: BoxDecoration(color: sapphireDark80, borderRadius: BorderRadius.circular(5)),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Image.asset(
-              challenge.image,
+              "challenges_icons/green_blob.png",
               fit: BoxFit.contain,
               height: 48, // Adjust the height as needed
             ),

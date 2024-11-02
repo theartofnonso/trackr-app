@@ -5,24 +5,22 @@ class ChallengeLogDto {
   final String caption;
   final String description;
   final String rule;
-  final int target;
+  int target = 1;
   final DateTime startDate;
-  final DateTime endDate;
-  final bool isCompleted;
-  final String image;
+  DateTime? endDate;
+  bool isCompleted;
 
   ChallengeLogDto(
       {required this.id,
       required this.name,
-        required this.challengeId,
+      required this.challengeId,
       required this.caption,
       required this.description,
       required this.rule,
-      required this.target,
+      this.target = 1,
       required this.startDate,
-      required this.endDate,
-      required this.isCompleted,
-      required this.image});
+      this.endDate,
+      this.isCompleted = false});
 
   Map<String, dynamic> toJson() {
     return {
@@ -34,9 +32,8 @@ class ChallengeLogDto {
       'rule': rule,
       'target': target,
       'startDate': startDate.toIso8601String(),
-      'endDate': endDate.toIso8601String(),
+      'endDate': endDate?.toIso8601String(),
       'isCompleted': isCompleted,
-      'image': ''
     };
   }
 
@@ -51,7 +48,6 @@ class ChallengeLogDto {
     DateTime? startDate,
     DateTime? endDate,
     bool? isCompleted,
-    String? image,
   }) {
     return ChallengeLogDto(
       id: id ?? this.id,
@@ -64,12 +60,11 @@ class ChallengeLogDto {
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.startDate,
       isCompleted: isCompleted ?? this.isCompleted,
-      image: image ?? this.image,
     );
   }
 
   @override
   String toString() {
-    return 'ChallengeLogDto{id: $id, challengeId: $challengeId, name: $name, caption: $caption, description: $description, rule: $rule, target: $target, startDate: $startDate, endDate: $endDate, isCompleted: $isCompleted, image: $image}';
+    return 'ChallengeLogDto{id: $id, challengeId: $challengeId, name: $name, caption: $caption, description: $description, rule: $rule, target: $target, startDate: $startDate, endDate: $endDate, isCompleted: $isCompleted}';
   }
 }

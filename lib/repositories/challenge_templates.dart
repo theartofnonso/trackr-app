@@ -19,8 +19,8 @@ class ChallengeTemplates {
     startDate: DateTime.now(),
     endDate: DateTime.now().add(const Duration(days: 112)),
     isCompleted: false,
-    image: 'challenges_icons/green_blob.png',
   );
+
   final _mondayChallenge = WeeklyChallengeDto(
     id: 'NMAMC_002',
     name: 'Never Miss A Monday'.toUpperCase(),
@@ -32,8 +32,8 @@ class ChallengeTemplates {
     startDate: DateTime.now(),
     endDate: DateTime.now().add(const Duration(days: 112)),
     isCompleted: false,
-    image: 'challenges_icons/green_blob.png',
   );
+
   final _weekendChallenge = WeeklyChallengeDto(
     id: 'WWC_003',
     name: 'Weekend Warrior'.toUpperCase(),
@@ -45,7 +45,6 @@ class ChallengeTemplates {
     startDate: DateTime.now(),
     endDate: DateTime.now().add(const Duration(days: 112)),
     isCompleted: false,
-    image: 'challenges_icons/green_blob.png',
   );
 
   /// Reps Challenges
@@ -63,7 +62,6 @@ class ChallengeTemplates {
     endDate: DateTime.now().add(const Duration(days: 182)),
     // 26 weeks
     isCompleted: false,
-    image: 'challenges_icons/green_blob.png',
   );
 
   /// Weight Challenges
@@ -71,16 +69,15 @@ class ChallengeTemplates {
     id: 'WHT_000',
     name: 'Twice as strong'.toUpperCase(),
     description:
-        'Challenge yourself to lift progressively heavier weights each week. Aim to meet your weight target by staying consistent and focused on your selected muscle group.',
+        'Challenge yourself to lift progressively heavier weights each week. Aim to meet your weight target by staying consistent and focused on your selected exercise.',
     caption: "Hit your personal best",
     target: 0,
     // Total weight target in kg or lbs for 26 weeks
-    rule: "Train each session and work towards meeting your weight goal in your chosen muscle group.",
+    rule: "Train each session and work towards meeting your weight goal in your chosen exercise.",
     startDate: DateTime.now(),
     endDate: DateTime.now().add(const Duration(days: 182)),
     // 26 weeks
     isCompleted: false,
-    image: 'challenges_icons/green_blob.png',
   );
 
   /// Days Challenges
@@ -94,7 +91,6 @@ class ChallengeTemplates {
     startDate: DateTime.now(),
     endDate: DateTime.now().add(const Duration(days: 30)),
     isCompleted: false,
-    image: 'challenges_icons/green_blob.png',
   );
   final _fiftyDaysChallenge = DaysChallengeDto(
     id: 'DYC_50_002',
@@ -106,7 +102,6 @@ class ChallengeTemplates {
     startDate: DateTime.now(),
     endDate: DateTime.now().add(const Duration(days: 50)),
     isCompleted: false,
-    image: 'challenges_icons/green_blob.png',
   );
   final _hundredDaysChallenge = DaysChallengeDto(
     id: 'DYS_100_003',
@@ -118,7 +113,6 @@ class ChallengeTemplates {
     startDate: DateTime.now(),
     endDate: DateTime.now().add(const Duration(days: 100)),
     isCompleted: false,
-    image: 'challenges_icons/green_blob.png',
   );
 
   List<ChallengeTemplate> loadChallenges() {
