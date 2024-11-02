@@ -37,7 +37,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
 
   ExerciseDto? _selectedExercise;
 
-  final double _targetWeight = 0;
+  double _targetWeight = 0;
 
   final _confettiController = ConfettiController();
 
@@ -58,7 +58,6 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
           backgroundColor: sapphireDark,
           body: Container(
             width: double.infinity,
-            height: double.infinity,
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
@@ -123,147 +122,146 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                     )
                   ]),
                 ),
-                SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      children: [
-                        Center(
-                            child: Text(widget.challengeTemplate.description,
-                                style: GoogleFonts.ubuntu(
-                                    fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400, height: 1.8))),
-                        const SizedBox(height: 20),
-                        const LabelDivider(label: "Details", labelColor: Colors.white70, dividerColor: sapphireLighter),
-                        const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    children: [
+                      Center(
+                          child: Text(widget.challengeTemplate.description,
+                              style: GoogleFonts.ubuntu(
+                                  fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400, height: 1.8))),
+                      const SizedBox(height: 20),
+                      const LabelDivider(label: "Details", labelColor: Colors.white70, dividerColor: sapphireLighter),
+                      const SizedBox(height: 16),
+                      ListTile(
+                        titleAlignment: ListTileTitleAlignment.threeLine,
+                        leading: const FaIcon(
+                          FontAwesomeIcons.book,
+                          color: Colors.white70,
+                        ),
+                        title: Text(widget.challengeTemplate.rule,
+                            style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400)),
+                      ),
+                      if (widget.challengeTemplate is! WeightChallengeDto)
                         ListTile(
                           titleAlignment: ListTileTitleAlignment.threeLine,
                           leading: const FaIcon(
-                            FontAwesomeIcons.book,
+                            FontAwesomeIcons.trophy,
                             color: Colors.white70,
                           ),
-                          title: Text(widget.challengeTemplate.rule,
+                          title: Text(challengeTargetSummary(dto: widget.challengeTemplate),
                               style:
                                   GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400)),
                         ),
-                        if (widget.challengeTemplate is! WeightChallengeDto)
-                          ListTile(
-                            titleAlignment: ListTileTitleAlignment.threeLine,
-                            leading: const FaIcon(
-                              FontAwesomeIcons.trophy,
-                              color: Colors.white70,
-                            ),
-                            title: Text(challengeTargetSummary(dto: widget.challengeTemplate),
-                                style:
-                                    GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400)),
-                          ),
-                        if (widget.challengeTemplate is RepsChallengeDto)
-                          ListTile(
-                            onTap: _selectMuscleGroup,
-                            titleAlignment: ListTileTitleAlignment.center,
-                            leading: _selectedMuscleGroup == MuscleGroup.none
-                                ? const FaIcon(
-                                    FontAwesomeIcons.solidCircleQuestion,
-                                    color: Colors.white70,
-                                  )
-                                : Image.asset(
-                                    'muscles_illustration/${_selectedMuscleGroup.illustration()}.png',
-                                    fit: BoxFit.cover,
-                                    filterQuality: FilterQuality.low,
-                                    height: 32,
-                                  ),
-                            title: Text(
-                                _selectedMuscleGroup == MuscleGroup.none
-                                    ? "Select Muscle Group"
-                                    : _selectedMuscleGroup.name,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style:
-                                    GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
-                                textAlign: TextAlign.start),
-                            trailing: const FaIcon(
-                              FontAwesomeIcons.circleArrowRight,
-                              color: Colors.white70,
-                            ),
-                          ),
-                        if (widget.challengeTemplate is WeightChallengeDto)
-                          ListTile(
-                            onTap: _selectExercise,
-                            titleAlignment: ListTileTitleAlignment.center,
-                            leading: const FaIcon(
-                              FontAwesomeIcons.trophy,
-                              color: Colors.white70,
-                            ),
-                            title: _TextField(
-                              value: _targetWeight,
-                              onChanged: (_) {},
-                              controller: _textEditingController,
-                            ),
-                          ),
-                        if (widget.challengeTemplate is WeightChallengeDto)
-                          ListTile(
-                            onTap: _selectExercise,
-                            titleAlignment: ListTileTitleAlignment.center,
-                            leading: selectedExercise != null
-                                ? Image.asset(
-                                    'muscles_illustration/${selectedExercise.primaryMuscleGroup.illustration()}.png',
-                                    fit: BoxFit.cover,
-                                    filterQuality: FilterQuality.low,
-                                    height: 32,
-                                  )
-                                : const FaIcon(
-                                    FontAwesomeIcons.solidCircleQuestion,
-                                    color: Colors.white70,
-                                  ),
-                            title: Text(selectedExercise != null ? selectedExercise.name : "Select Exercise",
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style:
-                                    GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
-                                textAlign: TextAlign.start),
-                            trailing: const FaIcon(
-                              FontAwesomeIcons.circleArrowRight,
-                              color: Colors.white70,
-                            ),
-                          ),
-                        if (activeChallenge != null)
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 20),
-                              const LabelDivider(
-                                  label: "Progress", labelColor: Colors.white70, dividerColor: sapphireLighter),
-                              const SizedBox(height: 16),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                                decoration: BoxDecoration(
-                                  color: sapphireDark.withOpacity(0.3),
-                                  borderRadius: BorderRadius.circular(5),
+                      if (widget.challengeTemplate is RepsChallengeDto)
+                        ListTile(
+                          onTap: _selectMuscleGroup,
+                          titleAlignment: ListTileTitleAlignment.center,
+                          leading: _selectedMuscleGroup == MuscleGroup.none
+                              ? const FaIcon(
+                                  FontAwesomeIcons.solidCircleQuestion,
+                                  color: Colors.white70,
+                                )
+                              : Image.asset(
+                                  'muscles_illustration/${_selectedMuscleGroup.illustration()}.png',
+                                  fit: BoxFit.cover,
+                                  filterQuality: FilterQuality.low,
+                                  height: 32,
                                 ),
-                                child: LinearProgressIndicator(
-                                  value: 0.5,
-                                  backgroundColor: sapphireDark,
-                                  color: vibrantGreen,
-                                  minHeight: 25,
-                                  borderRadius: BorderRadius.circular(3.0), // Border r
+                          title: Text(
+                              _selectedMuscleGroup == MuscleGroup.none
+                                  ? "Select Muscle Group"
+                                  : _selectedMuscleGroup.name,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
+                              textAlign: TextAlign.start),
+                          trailing: const FaIcon(
+                            FontAwesomeIcons.circleArrowRight,
+                            color: Colors.white70,
+                          ),
+                        ),
+                      if (widget.challengeTemplate is WeightChallengeDto)
+                        ListTile(
+                          onTap: _selectExercise,
+                          titleAlignment: ListTileTitleAlignment.center,
+                          leading: const FaIcon(
+                            FontAwesomeIcons.trophy,
+                            color: Colors.white70,
+                          ),
+                          title: _TextField(
+                            value: _targetWeight,
+                            onChanged: (value) {
+                              setState(() {
+                                _targetWeight = value;
+                              });
+                            },
+                            controller: _textEditingController,
+                          ),
+                        ),
+                      if (widget.challengeTemplate is WeightChallengeDto)
+                        ListTile(
+                          onTap: _selectExercise,
+                          titleAlignment: ListTileTitleAlignment.center,
+                          leading: selectedExercise != null
+                              ? Image.asset(
+                                  'muscles_illustration/${selectedExercise.primaryMuscleGroup.illustration()}.png',
+                                  fit: BoxFit.cover,
+                                  filterQuality: FilterQuality.low,
+                                  height: 32,
+                                )
+                              : const FaIcon(
+                                  FontAwesomeIcons.solidCircleQuestion,
+                                  color: Colors.white70,
                                 ),
+                          title: Text(selectedExercise != null ? selectedExercise.name : "Select Exercise",
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
+                              textAlign: TextAlign.start),
+                          trailing: const FaIcon(
+                            FontAwesomeIcons.circleArrowRight,
+                            color: Colors.white70,
+                          ),
+                        ),
+                      if (activeChallenge != null)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 20),
+                            const LabelDivider(
+                                label: "Progress", labelColor: Colors.white70, dividerColor: sapphireLighter),
+                            const SizedBox(height: 16),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: sapphireDark.withOpacity(0.3),
+                                borderRadius: BorderRadius.circular(5),
                               ),
-                            ],
-                          ),
-                        SafeArea(
-                          child: SizedBox(
-                            width: double.infinity,
-                            height: 50,
-                            child: OpacityButtonWidget(
-                              onLongPress: () => activeChallenge != null
-                                  ? _deleteChallengeLog(challenge: activeChallenge)
-                                  : _saveChallengeLog(),
-                              label: activeChallenge != null ? "Quit Challenge" : "Tap and hold to commit",
-                              buttonColor: activeChallenge != null ? Colors.red : vibrantGreen,
+                              child: LinearProgressIndicator(
+                                value: 0.5,
+                                backgroundColor: sapphireDark,
+                                color: vibrantGreen,
+                                minHeight: 25,
+                                borderRadius: BorderRadius.circular(3.0), // Border r
+                              ),
                             ),
+                          ],
+                        ),
+                      SafeArea(
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: 50,
+                          child: OpacityButtonWidget(
+                            onLongPress: () => activeChallenge != null
+                                ? _deleteChallengeLog(challenge: activeChallenge)
+                                : _saveChallengeLog(),
+                            label: activeChallenge != null ? "Quit Challenge" : "Tap and hold to commit",
+                            buttonColor: activeChallenge != null ? Colors.red : vibrantGreen,
                           ),
-                        )
-                      ],
-                    ),
+                        ),
+                      )
+                    ],
                   ),
                 ),
               ]),
@@ -324,7 +322,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
       }
 
       final selectedExercise = _selectedExercise;
-      if (selectedExercise != null) {
+      if (selectedExercise == null) {
         showSnackbar(
             context: context,
             icon: const FaIcon(FontAwesomeIcons.circleInfo),
