@@ -314,15 +314,15 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
       }
     }
 
-    if (_targetWeight <= 0) {
-      showSnackbar(
-          context: context,
-          icon: const FaIcon(FontAwesomeIcons.circleInfo),
-          message: "Please enter a target weight for this challenge");
-      return;
-    }
-
     if (widget.challengeTemplate is WeightChallengeDto) {
+      if (_targetWeight <= 0) {
+        showSnackbar(
+            context: context,
+            icon: const FaIcon(FontAwesomeIcons.circleInfo),
+            message: "Please enter a target weight for this challenge");
+        return;
+      }
+
       final selectedExercise = _selectedExercise;
       if (selectedExercise != null) {
         showSnackbar(
