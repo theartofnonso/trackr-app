@@ -1,4 +1,4 @@
-import 'package:tracker_app/dtos/streaks/challenge_template.dart';
+import 'package:tracker_app/dtos/challenges/challenge_template.dart';
 
 class WeeklyChallengeDto extends ChallengeTemplate {
   final DateTime startDate;
@@ -14,5 +14,6 @@ class WeeklyChallengeDto extends ChallengeTemplate {
       required super.target,
       required this.startDate,
       this.endDate,
-      required this.isCompleted});
+      required this.isCompleted,
+      required super.type});
 }

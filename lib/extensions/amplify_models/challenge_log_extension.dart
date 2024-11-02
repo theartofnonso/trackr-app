@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:tracker_app/enums/challenge_type_enums.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 
 import '../../dtos/appsync/challenge_log_dto.dart';
@@ -12,10 +13,12 @@ extension ChallengeLogExtension on ChallengeLog {
     final caption = json["caption"] ?? "";
     final description = json["description"] ?? "";
     final rule = json["rule"] ?? "";
-    final target = json["target"] ?? 0;
+    final progress = json["progress"] ?? 0;
     final startDate = DateTime.parse(json["startDate"]);
     final endDate = json["endDate"] != null ? DateTime.parse(json["endDate"]) : null;
     final isCompleted = json["isCompleted"] ?? false;
+    final typeString = json["type"] ?? "";
+    final type = ChallengeType.fromString(typeString);
 
     return ChallengeLogDto(
         id: id,
@@ -24,9 +27,10 @@ extension ChallengeLogExtension on ChallengeLog {
         caption: caption,
         description: description,
         rule: rule,
-        target: target,
+        progress: progress,
         startDate: startDate,
         endDate: endDate,
-        isCompleted: isCompleted);
+        isCompleted: isCompleted,
+        type: type);
   }
 }

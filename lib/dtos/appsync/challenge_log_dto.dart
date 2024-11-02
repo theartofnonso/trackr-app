@@ -1,3 +1,5 @@
+import '../../enums/challenge_type_enums.dart';
+
 class ChallengeLogDto {
   final String id;
   final String challengeId;
@@ -5,10 +7,11 @@ class ChallengeLogDto {
   final String caption;
   final String description;
   final String rule;
-  int target = 1;
+  int progress = 0;
   final DateTime startDate;
   DateTime? endDate;
   bool isCompleted;
+  final ChallengeType type;
 
   ChallengeLogDto(
       {required this.id,
@@ -17,10 +20,11 @@ class ChallengeLogDto {
       required this.caption,
       required this.description,
       required this.rule,
-      this.target = 1,
+      this.progress = 1,
       required this.startDate,
       this.endDate,
-      this.isCompleted = false});
+      this.isCompleted = false,
+      required this.type});
 
   Map<String, dynamic> toJson() {
     return {
@@ -30,10 +34,11 @@ class ChallengeLogDto {
       'caption': caption,
       'description': description,
       'rule': rule,
-      'target': target,
+      'progress': progress,
       'startDate': startDate.toIso8601String(),
       'endDate': endDate?.toIso8601String(),
       'isCompleted': isCompleted,
+      'type': type.name,
     };
   }
 
@@ -44,27 +49,28 @@ class ChallengeLogDto {
     String? caption,
     String? description,
     String? rule,
-    int? target,
+    int? progress,
     DateTime? startDate,
     DateTime? endDate,
     bool? isCompleted,
+    ChallengeType? type,
   }) {
     return ChallengeLogDto(
-      id: id ?? this.id,
-      challengeId: challengeId ?? this.challengeId,
-      name: name ?? this.name,
-      caption: caption ?? this.caption,
-      description: description ?? this.caption,
-      rule: rule ?? this.rule,
-      target: target ?? this.target,
-      startDate: startDate ?? this.startDate,
-      endDate: endDate ?? this.startDate,
-      isCompleted: isCompleted ?? this.isCompleted,
-    );
+        id: id ?? this.id,
+        challengeId: challengeId ?? this.challengeId,
+        name: name ?? this.name,
+        caption: caption ?? this.caption,
+        description: description ?? this.caption,
+        rule: rule ?? this.rule,
+        progress: progress ?? this.progress,
+        startDate: startDate ?? this.startDate,
+        endDate: endDate ?? this.startDate,
+        isCompleted: isCompleted ?? this.isCompleted,
+        type: type ?? this.type);
   }
 
   @override
   String toString() {
-    return 'ChallengeLogDto{id: $id, challengeId: $challengeId, name: $name, caption: $caption, description: $description, rule: $rule, target: $target, startDate: $startDate, endDate: $endDate, isCompleted: $isCompleted}';
+    return 'ChallengeLogDto{id: $id, challengeId: $challengeId, name: $name, caption: $caption, description: $description, rule: $rule, progress: $progress, startDate: $startDate, endDate: $endDate, isCompleted: $isCompleted, type: $type}';
   }
 }

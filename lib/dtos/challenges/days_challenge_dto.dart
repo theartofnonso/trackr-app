@@ -14,5 +14,6 @@ class DaysChallengeDto extends ChallengeTemplate {
       required super.target,
       required this.startDate,
       this.endDate,
-      required this.isCompleted});
+      required this.isCompleted,
+      required super.type});
 }

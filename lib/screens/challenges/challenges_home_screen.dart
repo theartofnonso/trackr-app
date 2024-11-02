@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/screens/challenges/user_challenges_screen.dart';
 
 import '../../colors.dart';
+import 'active_challenges_screen.dart';
 import 'challenges_screen.dart';
 
 class ChallengesHomeScreen extends StatelessWidget {
@@ -49,7 +49,7 @@ class ChallengesHomeScreen extends StatelessWidget {
                      child: TabBarView(
                        children: [
                          ChallengesScreen(),
-                         UserChallengesScreen()
+                         ActiveChallengesScreen()
                        ],
                      ),
                    ),

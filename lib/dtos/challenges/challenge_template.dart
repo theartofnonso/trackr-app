@@ -1,3 +1,5 @@
+import '../../enums/challenge_type_enums.dart';
+
 class ChallengeTemplate {
   final String id;
   final String name;
@@ -5,6 +7,7 @@ class ChallengeTemplate {
   final String description;
   final String rule;
   final int target;
+  final ChallengeType type;
 
   ChallengeTemplate({
     required this.id,
@@ -12,6 +15,7 @@ class ChallengeTemplate {
     required this.caption,
     required this.description,
     required this.rule,
-    required this.target
+    required this.target,
+    required this.type
   });
 }

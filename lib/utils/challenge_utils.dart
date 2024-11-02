@@ -1,28 +1,24 @@
 
+import 'package:tracker_app/enums/challenge_type_enums.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 
-import '../dtos/streaks/challenge_template.dart';
-import '../dtos/streaks/days_challenge_dto.dart';
-import '../dtos/streaks/reps_challenge_dto.dart';
-import '../dtos/streaks/weekly_challenge_dto.dart';
-import '../dtos/streaks/weight_challenge_dto.dart';
 import 'general_utils.dart';
 
-String challengeTargetSummary({required ChallengeTemplate dto}) {
-  if (dto is WeeklyChallengeDto) {
-    return "${dto.target} ${pluralize(word: "Week", count: dto.target)}";
+String challengeTargetSummary({required ChallengeType type, required int target, required}) {
+  if (type == ChallengeType.weekly) {
+    return "$target ${pluralize(word: "Week", count: target)}";
   }
 
-  if (dto is RepsChallengeDto) {
-    return "10k ${pluralize(word: "Rep", count: dto.target)}";
+  if (type == ChallengeType.reps) {
+    return "${target}k ${pluralize(word: "Rep", count: target)}";
   }
 
-  if (dto is WeightChallengeDto) {
-    return "${dto.target} ${pluralize(word: weightLabel(), count: dto.target)}";
+  if (type == ChallengeType.weight) {
+    return "$target ${pluralize(word: weightLabel(), count: target)}";
   }
 
-  if (dto is DaysChallengeDto) {
-    return "${dto.target} ${pluralize(word: "Day", count: dto.target)}";
+  if (type == ChallengeType.days) {
+    return "$target ${pluralize(word: "Day", count: target)}";
   }
   return "";
 }

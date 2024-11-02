@@ -1,4 +1,4 @@
-import 'package:tracker_app/dtos/streaks/challenge_template.dart';
+import 'package:tracker_app/dtos/challenges/challenge_template.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 
 class RepsChallengeDto extends ChallengeTemplate {
@@ -17,5 +17,6 @@ class RepsChallengeDto extends ChallengeTemplate {
       required super.target,
       required this.startDate,
       this.endDate,
-      required this.isCompleted});
+      required this.isCompleted,
+      required super.type});
 }

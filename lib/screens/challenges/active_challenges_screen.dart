@@ -1,23 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
-import 'package:tracker_app/dtos/challenges/challenge_template.dart';
-import 'package:tracker_app/repositories/challenge_templates.dart';
+import 'package:tracker_app/dtos/appsync/challenge_log_dto.dart';
 import 'package:tracker_app/widgets/challenges/challenge_target_icon.dart';
 
+import '../../controllers/challenge_log_controller.dart';
 import '../../utils/challenge_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../widgets/information_containers/information_container_with_background_image.dart';
-import 'challenge_screen.dart';
+import '../no_list_empty_state.dart';
+import 'active_challenge_screen.dart';
 
-class ChallengesScreen extends StatelessWidget {
-  const ChallengesScreen({super.key});
+class ActiveChallengesScreen extends StatelessWidget {
+  const ActiveChallengesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final challenges = ChallengeTemplates().loadChallenges();
+    final logs = Provider.of<ChallengeLogController>(context, listen: true).logs;
 
-    final children = challenges.map((challenge) => _ChallengeWidget(challenge: challenge)).toList();
+    final children = logs.map((challenge) => _ActiveChallengeWidget(challenge: challenge)).toList();
+
+    if (children.isEmpty) {
+      return const NoListEmptyState(
+          icon: FaIcon(
+            FontAwesomeIcons.trophy,
+            color: Colors.white12,
+            size: 48,
+          ),
+          message: "It might feel quiet now, but your active challenges will soon appear here.");
+    }
 
     return Scaffold(
         backgroundColor: Colors.transparent,
@@ -58,20 +71,30 @@ class ChallengesScreen extends StatelessWidget {
   }
 }
 
-class _ChallengeWidget extends StatelessWidget {
-  final ChallengeTemplate challenge;
+class _ActiveChallengeWidget extends StatelessWidget {
+  final ChallengeLogDto challenge;
 
-  const _ChallengeWidget({required this.challenge});
+  const _ActiveChallengeWidget({required this.challenge});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        navigateWithSlideTransition(context: context, child: ChallengeScreen(challengeTemplate: challenge));
+        navigateWithSlideTransition(context: context, child: ActiveChallengeScreen(log: challenge));
       },
       child: Container(
           padding: const EdgeInsets.all(18),
-          decoration: BoxDecoration(color: sapphireDark80, borderRadius: BorderRadius.circular(5)),
+          decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  sapphireDark80,
+                  sapphireDark,
+                ],
+              ),
+              color: sapphireDark80,
+              borderRadius: BorderRadius.circular(5)),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Image.asset(
               "challenges_icons/green_blob.png",
@@ -93,13 +116,13 @@ class _ChallengeWidget extends StatelessWidget {
               maxLines: 2,
             ),
             const Spacer(),
-            const Divider(color: sapphireLighter, endIndent: 10),
+            Divider(color: vibrantGreen.withOpacity(0.2), endIndent: 10),
             const SizedBox(height: 8),
             Wrap(crossAxisAlignment: WrapCrossAlignment.center, children: [
               ChallengeTargetIcon(type: challenge.type),
               const SizedBox(width: 8),
               Text(
-                challengeTargetSummary(type: challenge.type, target: challenge.target),
+                challengeTargetSummary(target: challenge.progress, type: challenge.type),
                 style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w500),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,
