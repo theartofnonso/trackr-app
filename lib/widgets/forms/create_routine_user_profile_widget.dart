@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/widgets/label_divider.dart';
 
 import '../../colors.dart';
 import '../../controllers/routine_user_controller.dart';
@@ -205,6 +204,16 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
   void _createUser() async {
     final username = _editingController.text.trim().toLowerCase();
 
+    /// Check if the weight is set
+    if (_weight == 0) {
+      setState(() {
+        _hasWeightError = true;
+        _hasRegexError = false;
+        _usernameExistsError = false;
+      });
+      return;
+    }
+
     /// Check if the username is empty
     if (username.isEmpty) {
       setState(() {
@@ -222,16 +231,6 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
         _hasRegexError = true;
         _usernameExistsError = false;
         _hasWeightError = false;
-      });
-      return;
-    }
-
-    /// Check if the weight is set
-    if (_weight == 0) {
-      setState(() {
-        _hasWeightError = true;
-        _hasRegexError = false;
-        _usernameExistsError = false;
       });
       return;
     }
