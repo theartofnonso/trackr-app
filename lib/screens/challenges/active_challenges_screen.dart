@@ -54,9 +54,9 @@ class ActiveChallengesScreen extends StatelessWidget {
               minimum: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 BackgroundInformationContainer(
-                    image: 'images/man_woman.jpg',
+                    image: 'images/woman_barbell.jpg',
                     containerColor: Colors.green.shade900,
-                    content: "Power up your weekly training sessions with fun challenges that fuel your motivation.",
+                    content: "Crush your goals, one challenge at a time! Stay consistent, and unlock your best self!",
                     textStyle: GoogleFonts.ubuntu(
                       fontSize: 16,
                       fontWeight: FontWeight.w400,

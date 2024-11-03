@@ -44,7 +44,7 @@ class ChallengesScreen extends StatelessWidget {
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 BackgroundInformationContainer(
                     image: 'images/man_woman.jpg',
-                    containerColor: Colors.green.shade900,
+                    containerColor: Colors.orange.shade900,
                     content: "Power up your weekly training sessions with fun challenges that fuel your motivation.",
                     textStyle: GoogleFonts.ubuntu(
                       fontSize: 16,
