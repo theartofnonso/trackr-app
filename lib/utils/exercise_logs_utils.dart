@@ -2,8 +2,6 @@ import 'dart:collection';
 
 import 'package:collection/collection.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
-import 'package:tracker_app/utils/general_utils.dart';
-
 import '../dtos/appsync/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/pb_dto.dart';
@@ -363,8 +361,7 @@ Map<MuscleGroupFamily, double> weeklyScaledMuscleGroupFamilyFrequency({required 
 
 double cumulativeMuscleGroupFamilyFrequency({required List<ExerciseLogDto> exerciseLogs}) {
   final frequencyEntries = _muscleGroupFamilyFrequencyForTheMonth(exerciseLogs: exerciseLogs)
-      .entries
-      .where((entry) => popularMuscleGroupFamilies().contains(entry.key));
+      .entries;
 
   final frequencyMap = Map.fromEntries(frequencyEntries);
 
