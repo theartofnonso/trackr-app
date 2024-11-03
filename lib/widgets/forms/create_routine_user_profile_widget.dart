@@ -84,56 +84,7 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
             style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white38),
             textAlign: TextAlign.center),
         const SizedBox(
-          height: 20,
-        ),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: TextField(
-                controller: _editingController,
-                maxLength: 15,
-                decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: sapphireLighter)),
-                    filled: true,
-                    fillColor: sapphireDark,
-                    hintText: "Enter a username",
-                    hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14)),
-                cursorColor: Colors.white,
-                keyboardType: TextInputType.text,
-                textCapitalization: TextCapitalization.none,
-                style:
-                    GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
-              ),
-            ),
-            const SizedBox(
-              width: 6,
-            ),
-            OpacityButtonWidget(
-              onPressed: _createUser,
-              label: "Create",
-              loading: _isLoading,
-              buttonColor: vibrantGreen,
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 2),
-            ),
-          ],
-        ),
-        if (_hasRegexError)
-          Text("Username must not contain symbols or spaces.",
-              style: GoogleFonts.ubuntu(fontSize: 10, fontWeight: FontWeight.w400, color: Colors.redAccent),
-              textAlign: TextAlign.start),
-        if (_usernameExistsError)
-          Text(_usernameExistsErrorMessage,
-              style: GoogleFonts.ubuntu(fontSize: 10, fontWeight: FontWeight.w400, color: Colors.redAccent),
-              textAlign: TextAlign.start),
-        const SizedBox(
-          height: 26,
-        ),
-        const LabelDivider(label: "METRICS", labelColor: Colors.white70, dividerColor: sapphireLighter),
-        const SizedBox(
-          height: 20,
+          height: 10,
         ),
         ListTile(
           onTap: () {
@@ -159,14 +110,59 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
               style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
               textAlign: TextAlign.start),
           subtitle: Text("Tap to select weight",
-              style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.white),
+              style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.white70),
               textAlign: TextAlign.start),
           trailing: Text("$_weight${weightLabel()}".toUpperCase(),
               style: GoogleFonts.ubuntu(fontSize: 18, fontWeight: FontWeight.w800, color: Colors.white70),
               textAlign: TextAlign.start),
         ),
         if (_hasWeightError)
-          Text("Please select your weight.",
+          Text("Please enter your weight.",
+              style: GoogleFonts.ubuntu(fontSize: 10, fontWeight: FontWeight.w400, color: Colors.redAccent),
+              textAlign: TextAlign.start),
+        const SizedBox(
+          height: 12,
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: TextField(
+                controller: _editingController,
+                maxLength: 15,
+                decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: sapphireLighter)),
+                    filled: true,
+                    fillColor: sapphireDark,
+                    hintText: "Enter a username",
+                    hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14)),
+                cursorColor: Colors.white,
+                keyboardType: TextInputType.text,
+                textCapitalization: TextCapitalization.none,
+                style:
+                GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+              ),
+            ),
+            const SizedBox(
+              width: 6,
+            ),
+            OpacityButtonWidget(
+              onPressed: _createUser,
+              label: "Create",
+              loading: _isLoading,
+              buttonColor: vibrantGreen,
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 2),
+            ),
+          ],
+        ),
+        if (_hasRegexError)
+          Text("Username must not contain symbols or spaces.",
+              style: GoogleFonts.ubuntu(fontSize: 10, fontWeight: FontWeight.w400, color: Colors.redAccent),
+              textAlign: TextAlign.start),
+        if (_usernameExistsError)
+          Text(_usernameExistsErrorMessage,
               style: GoogleFonts.ubuntu(fontSize: 10, fontWeight: FontWeight.w400, color: Colors.redAccent),
               textAlign: TextAlign.start),
         const SizedBox(

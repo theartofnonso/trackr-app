@@ -262,9 +262,9 @@ String copyRoutineAsText(
   return routineText.toString();
 }
 
-int calculateCalories({required Duration duration, required double bodyWeight, required ActivityType activity}) {
+int calculateCalories({required Duration duration, required int bodyWeight, required ActivityType activity}) {
   const oxygenInMils = 3.5;
-  final bodyWeightInKG = isDefaultWeightUnit() ? bodyWeight : toKg(bodyWeight);
+  final bodyWeightInKG = isDefaultWeightUnit() ? bodyWeight : toKg(bodyWeight.toDouble());
   final caloriesPerMinute = (activity.met * bodyWeightInKG * oxygenInMils) / 200;
   return (caloriesPerMinute * duration.inMinutes).floor();
 }

@@ -21,6 +21,7 @@ import '../../../dtos/exercise_log_dto.dart';
 import '../../controllers/exercise_controller.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../controllers/routine_template_controller.dart';
+import '../../controllers/routine_user_controller.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/viewmodels/exercise_log_view_model.dart';
@@ -72,6 +73,8 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
       });
     }
 
+    final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
+
     final log = _log;
 
     if (log == null) return const NotFound();
@@ -87,7 +90,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: exercisesFromLibrary);
 
-    final calories = calculateCalories(duration: log.duration(), bodyWeight: 81, activity: log.activityType);
+    final calories = calculateCalories(duration: log.duration(), bodyWeight: routineUserController.weight(), activity: log.activityType);
 
     final pbs = log.exerciseLogs.map((exerciseLog) {
       final pastExerciseLogs =

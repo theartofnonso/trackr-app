@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/screens/insights/calories_trend_screen.dart';
 import 'package:tracker_app/utils/routine_utils.dart';
 
 import '../../colors.dart';
+import '../../controllers/routine_user_controller.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
 
 class CaloriesWidget extends StatelessWidget {
@@ -18,8 +20,10 @@ class CaloriesWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final thisMonthCount = thisMonthLogs.map((log) => calculateCalories(duration: log.duration(), bodyWeight: 81, activity: log.activityType)).sum;
-    final lastMonthCount = lastMonthLogs.map((log) => calculateCalories(duration: log.duration(), bodyWeight: 81, activity: log.activityType)).sum;
+    final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
+
+    final thisMonthCount = thisMonthLogs.map((log) => calculateCalories(duration: log.duration(), bodyWeight: routineUserController.weight(), activity: log.activityType)).sum;
+    final lastMonthCount = lastMonthLogs.map((log) => calculateCalories(duration: log.duration(), bodyWeight: routineUserController.weight(), activity: log.activityType)).sum;
 
     final improved = thisMonthCount > lastMonthCount;
 

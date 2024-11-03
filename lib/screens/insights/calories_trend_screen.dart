@@ -8,6 +8,7 @@ import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
 import '../../colors.dart';
 import '../../controllers/routine_log_controller.dart';
+import '../../controllers/routine_user_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../enums/chart_unit_enum.dart';
 import '../../utils/date_utils.dart';
@@ -28,6 +29,8 @@ class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
   Widget build(BuildContext context) {
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
+    final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
+
     final dateRange = theLastYearDateTimeRange();
 
     final logs = routineLogController.whereLogsIsWithinRange(range: dateRange);
@@ -41,7 +44,7 @@ class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
       final endOfMonth = month.end;
       final logsForTheMonth = logs.where((log) => log.createdAt.isBetweenInclusive(from: startOfMonth, to: endOfMonth));
       final values = logsForTheMonth
-          .map((log) => calculateCalories(duration: log.duration(), bodyWeight: 81, activity: log.activityType))
+          .map((log) => calculateCalories(duration: log.duration(), bodyWeight: routineUserController.weight(), activity: log.activityType))
           .sum;
       calories.add(values);
       months.add(startOfMonth.abbreviatedMonth());

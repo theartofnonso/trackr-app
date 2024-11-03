@@ -17,6 +17,7 @@ import 'package:tracker_app/widgets/timers/datetime_range_picker.dart';
 
 import '../colors.dart';
 import '../controllers/activity_log_controller.dart';
+import '../controllers/routine_user_controller.dart';
 import '../dtos/appsync/activity_log_dto.dart';
 import '../widgets/buttons/opacity_button_widget.dart';
 import '../widgets/buttons/solid_button_widget.dart';
@@ -157,7 +158,9 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
 
   final image = activityType.image;
 
-  final calories = calculateCalories(duration: activity.duration(), bodyWeight: 81, activity: activity.activityType);
+  final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
+
+  final calories = calculateCalories(duration: activity.duration(), bodyWeight: routineUserController.weight(), activity: activity.activityType);
 
   displayBottomSheet(
       context: context,
