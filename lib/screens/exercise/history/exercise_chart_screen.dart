@@ -135,8 +135,8 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
       case ExerciseType.duration:
         _summaryType = SummaryType.bestTime;
         break;
-      case ExerciseType.none:
-        throw Exception("Exercise type does not exist");
+      case ExerciseType.all:
+        //Do nothing here
     }
 
     _dateTimes = widget.exerciseLogs.map((log) => log.createdAt.formattedDayAndMonth()).toList();
@@ -190,7 +190,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
         [widget.exercise.primaryMuscleGroup, ...widget.exercise.secondaryMuscleGroups].map((muscleGroup) {
       return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
         Image.asset(
-          'muscles_illustration/${widget.exercise.primaryMuscleGroup.illustration()}.png',
+          'muscles_illustration/${muscleGroup.illustration()}.png',
           fit: BoxFit.contain,
           height: 160, // Adjust the height as needed
         ),

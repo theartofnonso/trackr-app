@@ -158,8 +158,8 @@ List<Widget> setsToWidgets(
         }
         final label = Duration(milliseconds: setDto.durationValue()).hmsAnalog();
         return SingleSetRow(label: label, margin: margin, pbs: pbsForSet, routinePreviewType: routinePreviewType);
-      case ExerciseType.none:
-        throw Exception("Exercise type does not exist");
+      case ExerciseType.all:
+        throw Exception("Unable to create Set widget for type ExerciseType.all");
     }
   })).toList();
 
@@ -261,8 +261,8 @@ String copyRoutineAsText(
         case ExerciseType.duration:
           routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].durationSummary()}");
           break;
-        case ExerciseType.none:
-          throw Exception("Exercise type does not exist");
+        case ExerciseType.all:
+          // Do nothing here
       }
     }
   }

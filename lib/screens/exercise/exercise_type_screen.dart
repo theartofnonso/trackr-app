@@ -21,7 +21,7 @@ class _ExerciseTypeScreenState extends State<ExerciseTypeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const exerciseTypes = ExerciseType.values;
+    final exerciseTypes = ExerciseType.validValues;
 
     return Scaffold(
       appBar: AppBar(
@@ -51,7 +51,7 @@ class _ExerciseTypeScreenState extends State<ExerciseTypeScreen> {
                       onTap: () => _selectExerciseType(type: exerciseTypes[index]),
                       trailing: _TrailingWidget(type: exerciseTypes[index]),
                       title: Text(exerciseTypes[index].name, style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w600)),
-                      subtitle: Text(exerciseTypes[index].description,
+                      subtitle: Text("${exerciseTypes[index].description} . . .",
                           style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 13)),
                       dense: true),
                   separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.1)),
@@ -75,7 +75,7 @@ class _TrailingWidget extends StatelessWidget {
       ExerciseType.weights => ["KG", " | ", "REPS"],
       ExerciseType.bodyWeight => ["REPS"],
       ExerciseType.duration => ["TIME"],
-      ExerciseType.none => throw Exception("Exercise type does not exist"),
+      ExerciseType.all => throw Exception("Exercise type does not exist"),
     };
 
     final itemWidgets = measurements
