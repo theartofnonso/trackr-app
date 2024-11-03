@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_controller.dart';
+import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/widgets/empty_states/exercise_empty_state.dart';
 import 'package:tracker_app/widgets/search_bar.dart';
 
@@ -16,9 +17,11 @@ import '../../editors/exercise_editor_screen.dart';
 
 class ExerciseLibraryScreen extends StatefulWidget {
   final bool readOnly;
-  final List<ExerciseDto> preSelectedExercises;
+  final List<ExerciseDto> excludeExercises;
+  final ExerciseType type;
 
-  const ExerciseLibraryScreen({super.key, this.readOnly = false, this.preSelectedExercises = const []});
+  const ExerciseLibraryScreen(
+      {super.key, this.readOnly = false, this.excludeExercises = const [], this.type = ExerciseType.all});
 
   @override
   State<ExerciseLibraryScreen> createState() => _ExerciseLibraryScreenState();
@@ -30,21 +33,19 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   MuscleGroup? _selectedMuscleGroup;
 
   /// Holds a list of [ExerciseDto] when filtering through a search
-  final List<String> _preSelectedExercises = [];
   List<ExerciseDto> _filteredExercises = [];
 
   /// Search through the list of exercises
   void _runSearch() {
-    final preSelectedExerciseIds = widget.preSelectedExercises.map((exercise) => exercise.id).toList();
-
     final query = _searchController.text.toLowerCase().trim();
 
     List<ExerciseDto> searchResults = [];
 
     searchResults = Provider.of<ExerciseController>(context, listen: false)
         .exercises
-        .where((exercise) => !preSelectedExerciseIds.contains(exercise.id))
+        .where((exercise) => !widget.excludeExercises.contains(exercise))
         .where((exercise) => exercise.name.toLowerCase().contains(query.toLowerCase()))
+        .where((exercise) => widget.type == ExerciseType.all ? true : exercise.type == widget.type)
         .toList();
 
     if (_selectedMuscleGroup != null) {
@@ -215,16 +216,15 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   void _loadOrSyncExercises() {
     _filteredExercises = Provider.of<ExerciseController>(context, listen: false)
         .exercises
-        .where((exercise) => !_preSelectedExercises.contains(exercise.id))
+        .where((exercise) => !widget.excludeExercises.contains(exercise))
+        .where((exercise) => widget.type == ExerciseType.all ? true : exercise.type == widget.type)
         .toList();
   }
 
   @override
   void initState() {
     super.initState();
-
     _searchController = TextEditingController();
-
     _loadOrSyncExercises();
   }
 

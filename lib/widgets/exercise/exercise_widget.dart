@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/extensions/muscle_group_extension.dart';
 
 import '../../dtos/appsync/exercise_dto.dart';
 import '../../shared_prefs.dart';
@@ -30,6 +31,19 @@ class ExerciseWidget extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 4.0),
+              child: SizedBox(
+                width: 35,
+                height: 35, // Adjust the height as needed
+                child: Image.asset(
+                  'muscles_illustration/${exercise.primaryMuscleGroup.illustration()}.png',
+                  fit: BoxFit.cover,
+                  filterQuality: FilterQuality.low,
+                ),
+              ),
+            ),
+            const SizedBox(width: 14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,15 +91,13 @@ class ExerciseWidget extends StatelessWidget {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: GestureDetector(
-                  onTap: () => navigateToExercise != null ? navigateToExercise(exerciseDto) : null,
-                  child: const FaIcon(
-                    FontAwesomeIcons.circleInfo,
-                    color: Colors.white70,
-                  )),
-            )
+            const SizedBox(width: 10),
+            GestureDetector(
+                onTap: () => navigateToExercise != null ? navigateToExercise(exerciseDto) : null,
+                child: const FaIcon(
+                  FontAwesomeIcons.circleInfo,
+                  color: Colors.white70,
+                ))
           ],
         ),
       ),

@@ -42,11 +42,11 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
 
   void _selectExercisesInLibrary() async {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
-    final preSelectedExercises = controller.exerciseLogs.map((exercise) => exercise.exercise).toList();
+    final excludeExercises = controller.exerciseLogs.map((exercise) => exercise.exercise).toList();
 
     showExercisesInLibrary(
         context: context,
-        exclude: preSelectedExercises,
+        excludeExercises: excludeExercises,
         onSelected: (List<ExerciseDto> selectedExercises) {
           controller.addExerciseLogs(exercises: selectedExercises);
         });
@@ -54,11 +54,11 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
 
   void _selectSubstituteExercisesInLibrary({required ExerciseLogDto primaryExerciseLog}) async {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
-    final preSelectedExercises = controller.exerciseLogs.map((exercise) => exercise.exercise).toList();
+    final excludeExercises = controller.exerciseLogs.map((exercise) => exercise.exercise).toList();
 
     showExercisesInLibrary(
         context: context,
-        exclude: preSelectedExercises,
+        excludeExercises: excludeExercises,
         onSelected: (List<ExerciseDto> selectedExercises) {
           controller.addAlternates(primaryExerciseId: primaryExerciseLog.id, exercises: selectedExercises);
           _showSubstituteExercisePicker(primaryExerciseLog: primaryExerciseLog);
@@ -112,11 +112,11 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
 
   void _showReplaceExercisePicker({required ExerciseLogDto oldExerciseLog}) {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
-    final preSelectedExercises = controller.exerciseLogs.map((exercise) => exercise.exercise).toList();
+    final excludeExercises = controller.exerciseLogs.map((exercise) => exercise.exercise).toList();
 
     showExercisesInLibrary(
         context: context,
-        exclude: preSelectedExercises,
+        excludeExercises: excludeExercises,
         onSelected: (List<ExerciseDto> selectedExercises) {
           controller.replaceExerciseLog(oldExerciseId: oldExerciseLog.id, newExercise: selectedExercises.first);
         });
@@ -302,7 +302,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
           floatingActionButton: isKeyboardOpen
               ? null
               : FloatingActionButton(
-                  heroTag: "fab_select_exercise_log_screen",
+                  heroTag: "routine_template_editor_scree_fab",
                   onPressed: template != null ? _updateRoutineTemplate : _createRoutineTemplate,
                   backgroundColor: sapphireDark,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),

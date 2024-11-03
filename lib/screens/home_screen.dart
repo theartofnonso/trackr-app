@@ -11,7 +11,6 @@ import 'package:tracker_app/models/Exercise.dart';
 import 'package:tracker_app/models/RoutineUser.dart';
 import 'package:tracker_app/screens/feeds_screen.dart';
 import 'package:tracker_app/screens/insights/overview_screen.dart';
-import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/templates/routine_templates_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
@@ -57,8 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
       FeedsScreen(scrollController: _scrollController),
       OverviewScreen(scrollController: _scrollController),
       const RoutineTemplatesScreen(),
-      //const ChallengesHomeScreen(),
-      const SettingsScreen(),
+      const ChallengesHomeScreen(),
     ];
 
     return Scaffold(
@@ -95,15 +93,10 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             label: 'Workouts',
           ),
-          // const NavigationDestination(
-          //   icon: FaIcon(FontAwesomeIcons.trophy, color: Colors.grey),
-          //   selectedIcon: FaIcon(FontAwesomeIcons.trophy, color: Colors.white),
-          //   label: 'Statistics',
-          // ),
           const NavigationDestination(
-            icon: FaIcon(FontAwesomeIcons.gear, color: Colors.grey),
-            selectedIcon: FaIcon(FontAwesomeIcons.gear, color: Colors.white),
-            label: 'Settings',
+            icon: FaIcon(FontAwesomeIcons.trophy, color: Colors.grey),
+            selectedIcon: FaIcon(FontAwesomeIcons.trophy, color: Colors.white),
+            label: 'Challenges',
           ),
         ],
         onDestinationSelected: (int index) {

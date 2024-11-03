@@ -1,30 +1,23 @@
 {
   "version": 1,
   "paths": {
-    "/routine-log": {
-      "name": "/routine-log",
+    "/users/{username}": {
+      "name": "/users/{username}",
+      "lambdaFunction": "getUser",
+      "permissions": {
+        "setting": "open"
+      }
+    },
+    "/routine-logs/{id}": {
+      "name": "/routine-logs/{id}",
       "lambdaFunction": "getRoutineLog",
       "permissions": {
         "setting": "open"
       }
     },
-    "/routine-template": {
-      "name": "/routine-template",
+    "/routine-templates/{id}": {
+      "name": "/routine-templates/{id}",
       "lambdaFunction": "getRoutineTemplate",
-      "permissions": {
-        "setting": "open"
-      }
-    },
-    "/routine-logs": {
-      "name": "/routine-logs",
-      "lambdaFunction": "getAllRoutineLogs",
-      "permissions": {
-        "setting": "open"
-      }
-    },
-    "/users/{username}": {
-      "name": "/users/{username}",
-      "lambdaFunction": "getUser",
       "permissions": {
         "setting": "open"
       }

@@ -11,14 +11,14 @@ import '../colors.dart';
 import '../enums/muscle_group_enums.dart';
 import '../shared_prefs.dart';
 
-bool _isDefaultWeightUnit() {
+bool isDefaultWeightUnit() {
   final weightString = SharedPrefs().weightUnit;
   final weightUnit = WeightUnit.fromString(weightString);
   return weightUnit == WeightUnit.kg;
 }
 
 double weightWithConversion({required num value}) {
-  return _isDefaultWeightUnit() ? value.toDouble() : toLbs(value.toDouble());
+  return isDefaultWeightUnit() ? value.toDouble() : toLbs(value.toDouble());
 }
 
 String weightLabel() {

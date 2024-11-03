@@ -3,16 +3,18 @@ import 'package:google_fonts/google_fonts.dart';
 
 class LabelDivider extends StatelessWidget {
   final String label;
+  final double fontSize;
+  final bool shouldCapitalise;
   final Color labelColor;
   final Color dividerColor;
-  const LabelDivider({super.key, required this.label, required this.labelColor, required this.dividerColor});
+  const LabelDivider({super.key, required this.label, this.fontSize = 10, this.shouldCapitalise = false, required this.labelColor, required this.dividerColor});
 
   @override
   Widget build(BuildContext context) {
     return Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
       Text(
-        label.toUpperCase(),
-        style: GoogleFonts.ubuntu(color: labelColor, fontWeight: FontWeight.w700, fontSize: 10),
+        shouldCapitalise ? label.toUpperCase() : label,
+        style: GoogleFonts.ubuntu(color: labelColor, fontWeight: FontWeight.w700, fontSize: fontSize),
       ),
       Expanded(
         child: Container(

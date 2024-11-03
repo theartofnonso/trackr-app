@@ -15,26 +15,24 @@ const GRAPHQL_ENDPOINT = process.env.API_TRACKERAPP_GRAPHQLAPIENDPOINTOUTPUT;
 const AWS_REGION = process.env.AWS_REGION || 'eu-west-2';
 const {Sha256} = crypto;
 
-const query = `query RoutineLog($id: ID!) {
-    getRoutineLog(id: $id) {
-      id
-      data
-      owner
-      createdAt
-      updatedAt
-    }
-  }
-`;
-
 /**
  * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
  */
 
 export const handler = async (event) => {
 
-    const id = event.queryStringParameters["id"];
+    const {id} = event.pathParameters;
 
-    const variables = {id: id};
+    const query = `query GET_ROUTINELOG {
+    getRoutineLog(id: "${id}") {
+        id
+        data
+        owner
+        createdAt
+        updatedAt
+    }
+  }
+`;
 
     const endpoint = new URL(GRAPHQL_ENDPOINT);
 
@@ -52,7 +50,7 @@ export const handler = async (event) => {
             host: endpoint.host
         },
         hostname: endpoint.host,
-        body: JSON.stringify({query, variables}),
+        body: JSON.stringify({query}),
         path: endpoint.pathname
     });
 
@@ -65,9 +63,7 @@ export const handler = async (event) => {
 
     try {
         response = await fetch(request);
-        console.log(response);
         body = await response.json();
-        console.log(body);
         if (body.errors) statusCode = 400;
     } catch (error) {
         statusCode = 500;
