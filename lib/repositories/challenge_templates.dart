@@ -79,7 +79,7 @@ class ChallengeTemplates {
       endDate: DateTime.now().add(const Duration(days: 182)),
       // 26 weeks
       isCompleted: false,
-      type: ChallengeType.weight, exerciseDto: null);
+      type: ChallengeType.weight, exercise: null);
 
   /// Days Challenges
   final _thirtyDaysChallenge = DaysChallengeTemplate(

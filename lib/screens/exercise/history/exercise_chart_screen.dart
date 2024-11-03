@@ -135,6 +135,8 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
       case ExerciseType.duration:
         _summaryType = SummaryType.bestTime;
         break;
+      case ExerciseType.none:
+        throw Exception("Exercise type does not exist");
     }
 
     _dateTimes = widget.exerciseLogs.map((log) => log.createdAt.formattedDayAndMonth()).toList();

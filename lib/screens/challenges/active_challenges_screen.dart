@@ -4,22 +4,18 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/dtos/appsync/challenge_log_dto.dart';
 
-import '../../utils/challenge_utils.dart';
 import '../../utils/navigation_utils.dart';
-import '../../widgets/challenges/challenge_target_icon.dart';
 import '../../widgets/information_containers/information_container_with_background_image.dart';
 import '../no_list_empty_state.dart';
 import 'active_challenge_screen.dart';
 
 class ActiveChallengesScreen extends StatelessWidget {
-
   final List<ChallengeLogDto> challenges;
-  
+
   const ActiveChallengesScreen({super.key, required this.challenges});
 
   @override
   Widget build(BuildContext context) {
-    
     final children = challenges.map((challenge) => _ActiveChallengeWidget(challenge: challenge)).toList();
 
     if (children.isEmpty) {
@@ -61,7 +57,7 @@ class ActiveChallengesScreen extends StatelessWidget {
                 Expanded(
                   child: GridView.count(
                       crossAxisCount: 2,
-                      childAspectRatio: 0.8,
+                      childAspectRatio: 1.0,
                       mainAxisSpacing: 10.0,
                       crossAxisSpacing: 10.0,
                       children: children),
@@ -115,19 +111,6 @@ class _ActiveChallengeWidget extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
             ),
-            const Spacer(),
-            Divider(color: vibrantGreen.withOpacity(0.2), endIndent: 10),
-            const SizedBox(height: 8),
-            Wrap(crossAxisAlignment: WrapCrossAlignment.center, children: [
-              ChallengeTargetIcon(type: challenge.type),
-              const SizedBox(width: 8),
-              Text(
-                challengeTargetSummary(target: challenge.progress, type: challenge.type),
-                style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w500),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
-              )
-            ])
           ])),
     );
   }

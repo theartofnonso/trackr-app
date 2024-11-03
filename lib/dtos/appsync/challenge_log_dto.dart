@@ -1,4 +1,6 @@
 import '../../enums/challenge_type_enums.dart';
+import '../../enums/muscle_group_enums.dart';
+import 'exercise_dto.dart';
 
 class ChallengeLogDto {
   final String id;
@@ -11,6 +13,9 @@ class ChallengeLogDto {
   final DateTime startDate;
   DateTime? endDate;
   bool isCompleted;
+  final double weight;
+  final MuscleGroup muscleGroup;
+  final ExerciseDto? exercise;
   final ChallengeType type;
 
   ChallengeLogDto(
@@ -20,10 +25,13 @@ class ChallengeLogDto {
       required this.caption,
       required this.description,
       required this.rule,
-      this.progress = 1,
+      this.progress = 0,
       required this.startDate,
       this.endDate,
       this.isCompleted = false,
+      this.weight = 0,
+      required this.muscleGroup,
+      required this.exercise,
       required this.type});
 
   Map<String, dynamic> toJson() {
@@ -38,6 +46,9 @@ class ChallengeLogDto {
       'startDate': startDate.toIso8601String(),
       'endDate': endDate?.toIso8601String(),
       'isCompleted': isCompleted,
+      'weight': weight,
+      'muscleGroup': muscleGroup.name,
+      'exercise': exercise?.toJson(),
       'type': type.name,
     };
   }
@@ -53,6 +64,9 @@ class ChallengeLogDto {
     DateTime? startDate,
     DateTime? endDate,
     bool? isCompleted,
+    double? weight,
+    MuscleGroup? muscleGroup,
+    ExerciseDto? exercise,
     ChallengeType? type,
   }) {
     return ChallengeLogDto(
@@ -66,11 +80,14 @@ class ChallengeLogDto {
         startDate: startDate ?? this.startDate,
         endDate: endDate ?? this.startDate,
         isCompleted: isCompleted ?? this.isCompleted,
+        weight: weight ?? this.weight,
+        muscleGroup: muscleGroup ?? this.muscleGroup,
+        exercise: exercise ?? this.exercise,
         type: type ?? this.type);
   }
 
   @override
   String toString() {
-    return 'ChallengeLogDto{id: $id, templateId: $templateId, name: $name, caption: $caption, description: $description, rule: $rule, progress: $progress, startDate: $startDate, endDate: $endDate, isCompleted: $isCompleted, type: $type}';
+    return 'ChallengeLogDto{id: $id, templateId: $templateId, name: $name, caption: $caption, description: $description, rule: $rule, progress: $progress, startDate: $startDate, endDate: $endDate, isCompleted: $isCompleted, weight: $weight, muscleGroup: $muscleGroup, exercise: $exercise, type: $type}';
   }
 }

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_controller.dart';
+import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/widgets/empty_states/exercise_empty_state.dart';
 import 'package:tracker_app/widgets/search_bar.dart';
 
@@ -17,8 +18,10 @@ import '../../editors/exercise_editor_screen.dart';
 class ExerciseLibraryScreen extends StatefulWidget {
   final bool readOnly;
   final List<ExerciseDto> preSelectedExercises;
+  final ExerciseType type;
 
-  const ExerciseLibraryScreen({super.key, this.readOnly = false, this.preSelectedExercises = const []});
+  const ExerciseLibraryScreen(
+      {super.key, this.readOnly = false, this.preSelectedExercises = const [], this.type = ExerciseType.none});
 
   @override
   State<ExerciseLibraryScreen> createState() => _ExerciseLibraryScreenState();
@@ -45,6 +48,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         .exercises
         .where((exercise) => !preSelectedExerciseIds.contains(exercise.id))
         .where((exercise) => exercise.name.toLowerCase().contains(query.toLowerCase()))
+        .where((exercise) => exercise.type == ExerciseType.none ? true : exercise.type == widget.type)
         .toList();
 
     if (_selectedMuscleGroup != null) {
@@ -216,6 +220,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     _filteredExercises = Provider.of<ExerciseController>(context, listen: false)
         .exercises
         .where((exercise) => !_preSelectedExercises.contains(exercise.id))
+        .where((exercise) => exercise.type == ExerciseType.none ? true : exercise.type == widget.type)
         .toList();
   }
 

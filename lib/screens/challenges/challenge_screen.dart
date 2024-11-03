@@ -6,7 +6,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/dtos/challengeTemplates/weight_challenge_dto.dart';
+import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
+import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/dtos/challenge_template_extension.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
@@ -20,7 +22,9 @@ import '../../dtos/challengeTemplates/reps_challenge_dto.dart';
 import '../../utils/challenge_utils.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/general_utils.dart';
+import '../../utils/navigation_utils.dart';
 import '../../utils/routine_editors_utils.dart';
+import 'active_challenge_screen.dart';
 
 class ChallengeScreen extends StatefulWidget {
   final ChallengeTemplate challengeTemplate;
@@ -251,6 +255,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
     showExercisesInLibrary(
         context: context,
         exclude: [],
+        type: ExerciseType.weights,
         onSelected: (List<ExerciseDto> selectedExercises) {
           if (selectedExercises.isNotEmpty) {
             setState(() {
@@ -290,10 +295,20 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
       }
     }
 
-    final challengeLog = widget.challengeTemplate.createChallenge(startDate: DateTime.now());
+    final challengeLog = widget.challengeTemplate.createChallenge(
+        startDate: DateTime.now().withoutTime(),
+        muscleGroup: _selectedMuscleGroup,
+        exercise: _selectedExercise,
+        weight: _targetWeight);
+
     await Provider.of<ChallengeLogController>(context, listen: false).saveLog(logDto: challengeLog);
 
     HapticFeedback.vibrate();
+
+    if (mounted) {
+      //context.pop();
+      navigateWithSlideTransition(context: context, child: ActiveChallengeScreen(log: challengeLog));
+    }
   }
 
   @override

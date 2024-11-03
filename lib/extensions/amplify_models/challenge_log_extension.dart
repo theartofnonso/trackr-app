@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:tracker_app/enums/challenge_type_enums.dart';
+import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 
 import '../../dtos/appsync/challenge_log_dto.dart';
+import '../../dtos/appsync/exercise_dto.dart';
 
 extension ChallengeLogExtension on ChallengeLog {
   ChallengeLogDto dto() {
@@ -17,6 +19,11 @@ extension ChallengeLogExtension on ChallengeLog {
     final startDate = DateTime.parse(json["startDate"]);
     final endDate = json["endDate"] != null ? DateTime.parse(json["endDate"]) : null;
     final isCompleted = json["isCompleted"] ?? false;
+    final muscleGroupString = json["muscleGroup"] ?? "";
+    final muscleGroup = MuscleGroup.fromString(muscleGroupString);
+    final exerciseString = json["exercise"];
+    final exercise = exerciseString != null ? ExerciseDto.fromJson(exerciseString) : null;
+    final weight = json["weight"] ?? 0.0;
     final typeString = json["type"] ?? "";
     final type = ChallengeType.fromString(typeString);
 
@@ -31,6 +38,9 @@ extension ChallengeLogExtension on ChallengeLog {
         startDate: startDate,
         endDate: endDate,
         isCompleted: isCompleted,
-        type: type);
+        type: type,
+        muscleGroup: muscleGroup,
+        weight: weight,
+        exercise: exercise);
   }
 }

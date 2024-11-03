@@ -5,7 +5,7 @@ class WeightChallengeTemplate extends ChallengeTemplate {
   final DateTime startDate;
   DateTime? endDate;
   final bool isCompleted;
-  final ExerciseDto? exerciseDto;
+  final ExerciseDto? exercise;
 
   WeightChallengeTemplate(
       {required super.id,
@@ -14,7 +14,7 @@ class WeightChallengeTemplate extends ChallengeTemplate {
       required super.description,
       required super.rule,
       required super.target,
-      required this.exerciseDto,
+      required this.exercise,
       required this.startDate,
       this.endDate,
       required this.isCompleted,

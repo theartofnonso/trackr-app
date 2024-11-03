@@ -4,7 +4,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/dtos/challengeTemplates/weight_challenge_dto.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
@@ -13,7 +12,6 @@ import 'package:tracker_app/widgets/label_divider.dart';
 import '../../../colors.dart';
 import '../../controllers/challenge_log_controller.dart';
 import '../../dtos/appsync/challenge_log_dto.dart';
-import '../../dtos/challengeTemplates/reps_challenge_dto.dart';
 import '../../enums/challenge_type_enums.dart';
 import '../../repositories/challenge_templates.dart';
 import '../../utils/challenge_utils.dart';
@@ -29,7 +27,9 @@ class ActiveChallengeScreen extends StatelessWidget {
 
     final template = challenges.firstWhere((template) => template.id == log.templateId);
 
-    final progress = log.progress / template.target;
+    final templateTarget = template.target <= 0 ? log.weight : template.target;
+
+    final progress = log.progress / templateTarget;
 
     return Scaffold(
       backgroundColor: sapphireDark,
@@ -118,66 +118,46 @@ class ActiveChallengeScreen extends StatelessWidget {
                     title: Text(log.rule,
                         style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400)),
                   ),
-                  if (log is! WeightChallengeTemplate)
-                    ListTile(
-                      titleAlignment: ListTileTitleAlignment.threeLine,
-                      leading: const FaIcon(
-                        FontAwesomeIcons.trophy,
-                        color: Colors.white70,
-                      ),
-                      title: Text(challengeTargetSummary(type: log.type, target: template.target),
-                          style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400)),
+                  ListTile(
+                    titleAlignment: ListTileTitleAlignment.threeLine,
+                    leading: const FaIcon(
+                      FontAwesomeIcons.trophy,
+                      color: Colors.white70,
                     ),
-                  if (log is RepsChallengeTemplate)
+                    title: Text(
+                        challengeTargetSummary(
+                            type: log.type, target: log.type == ChallengeType.weight ? log.weight : template.target),
+                        style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400)),
+                  ),
+                  if (log.type == ChallengeType.reps)
                     ListTile(
                       titleAlignment: ListTileTitleAlignment.center,
                       leading: Image.asset(
-                        'muscles_illustration/${(log as RepsChallengeTemplate).muscleGroup.illustration()}.png',
+                        'muscles_illustration/${log.muscleGroup.illustration()}.png',
                         fit: BoxFit.cover,
                         filterQuality: FilterQuality.low,
                         height: 32,
                       ),
-                      title: Text((log as RepsChallengeTemplate).muscleGroup.name,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
-                          textAlign: TextAlign.start),
-                      trailing: const FaIcon(
-                        FontAwesomeIcons.circleArrowRight,
-                        color: Colors.white70,
-                      ),
-                    ),
-                  if (log is WeightChallengeTemplate)
-                    ListTile(
-                      titleAlignment: ListTileTitleAlignment.center,
-                      leading: const FaIcon(
-                        FontAwesomeIcons.trophy,
-                        color: Colors.white70,
-                      ),
-                      title: Text((log as RepsChallengeTemplate).muscleGroup.name,
+                      title: Text(log.muscleGroup.name,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
                           textAlign: TextAlign.start),
                     ),
-                  if (log is WeightChallengeTemplate)
+                  if (log.type == ChallengeType.weight)
                     ListTile(
                       titleAlignment: ListTileTitleAlignment.center,
                       leading: Image.asset(
-                        'muscles_illustration/${(log as WeightChallengeTemplate).exerciseDto?.primaryMuscleGroup.illustration()}.png',
+                        'muscles_illustration/${log.exercise?.primaryMuscleGroup.illustration()}.png',
                         fit: BoxFit.cover,
                         filterQuality: FilterQuality.low,
                         height: 32,
                       ),
-                      title: Text("${(log as WeightChallengeTemplate).exerciseDto?.name}",
+                      title: Text("${log.exercise?.name}",
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
                           textAlign: TextAlign.start),
-                      trailing: const FaIcon(
-                        FontAwesomeIcons.circleArrowRight,
-                        color: Colors.white70,
-                      ),
                     ),
                   const SizedBox(
                     height: 20,
@@ -197,32 +177,31 @@ class ActiveChallengeScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      RichText(
+                  progress > 0
+                      ? RichText(
                           text: TextSpan(
                               text: "Great job! You have conquered",
                               style: GoogleFonts.ubuntu(
                                   height: 1.5, color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w500),
                               children: [
-                            const TextSpan(text: " "),
-                            TextSpan(
-                                text: "${log.progress}",
-                                style:
-                                    GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
-                            const TextSpan(text: " "),
-                            const TextSpan(text: "out of"),
-                            const TextSpan(text: " "),
-                            TextSpan(
-                                text: "${template.target} ${_targetDescription(type: log.type)}",
-                                style:
-                                    GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
-                            const TextSpan(text: " "),
-                            const TextSpan(text: "in this challenge. Keep training to reach the finish line!"),
-                          ])),
-                    ],
-                  ),
+                              const TextSpan(text: " "),
+                              TextSpan(
+                                  text: "${log.progress}",
+                                  style: GoogleFonts.ubuntu(
+                                      color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
+                              const TextSpan(text: " "),
+                              const TextSpan(text: "out of"),
+                              const TextSpan(text: " "),
+                              TextSpan(
+                                  text: "${template.target} ${_targetDescription(type: log.type)}",
+                                  style: GoogleFonts.ubuntu(
+                                      color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
+                              const TextSpan(text: " "),
+                              const TextSpan(text: "in this challenge. Keep training to reach the finish line!"),
+                            ]))
+                      : Text("Keep up the training to see your progress grow for this challenge.",
+                          style: GoogleFonts.ubuntu(
+                              fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400, height: 1.5)),
                   SafeArea(
                     child: SizedBox(
                       width: double.infinity,
@@ -255,8 +234,8 @@ class ActiveChallengeScreen extends StatelessWidget {
     return switch (type) {
       ChallengeType.weekly => "weeks",
       ChallengeType.reps => "reps",
-      ChallengeType.days => weightLabel(),
-      ChallengeType.weight => "days",
+      ChallengeType.days => "days",
+      ChallengeType.weight => weightLabel(),
     };
   }
 }

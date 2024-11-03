@@ -25,6 +25,7 @@ class AmplifyChallengeLogRepository {
     final datetime = TemporalDateTime.withOffset(logDto.startDate, Duration.zero);
 
     final logToCreate = ChallengeLog(data: jsonEncode(logDto), createdAt: datetime, updatedAt: datetime);
+
     await Amplify.DataStore.save<ChallengeLog>(logToCreate);
 
     final updatedChallengeWithId = logDto.copyWith(id: logToCreate.id);

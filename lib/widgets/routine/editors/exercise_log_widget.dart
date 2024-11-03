@@ -327,6 +327,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               ),
             ExerciseType.bodyWeight => RepsSetHeader(editorType: widget.editorType),
             ExerciseType.duration => DurationSetHeader(editorType: widget.editorType),
+            ExerciseType.none => throw Exception("Exercise type does not exist"),
           },
           const SizedBox(height: 8),
           if (sets.isNotEmpty)
@@ -439,6 +440,7 @@ class _SetListView extends StatelessWidget {
             startTime: durationControllers.isNotEmpty ? durationControllers[index] : DateTime.now(),
             onupdateDuration: (Duration duration) => updateDuration(index: index, duration: duration, setDto: setDto),
           ),
+        ExerciseType.none => throw Exception("Exercise type does not exist"),
       };
 
       return Padding(padding: const EdgeInsets.only(bottom: 8.0), child: setWidget);
