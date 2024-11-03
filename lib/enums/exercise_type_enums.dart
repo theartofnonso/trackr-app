@@ -1,7 +1,8 @@
 enum ExerciseType {
   weights("WR", "Weights", "Bench Press, Dumbbell Curls"),
   bodyWeight("BW", "Bodyweight", "Pull Ups, Crunches, Burpees"),
-  duration("DR", "Duration", "Planks, Yoga");
+  duration("DR", "Duration", "Planks, Yoga"),
+  all("A", "All Types", "All Types");
 
   const ExerciseType(this.id, this.name, this.description);
 
@@ -12,4 +13,7 @@ enum ExerciseType {
   static ExerciseType fromString(String string) {
     return ExerciseType.values.firstWhere((value) => value.id.toLowerCase() == string.toLowerCase());
   }
+
+  static List<ExerciseType> validValues = [ExerciseType.weights, ExerciseType.bodyWeight, ExerciseType.duration];
+
 }

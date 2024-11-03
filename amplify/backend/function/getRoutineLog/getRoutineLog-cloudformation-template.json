@@ -103,12 +103,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "trackerappLambdaRole7e66fba2",
+            "trackerappLambdaRoled096f928",
             {
               "Fn::Join": [
                 "",
                 [
-                  "trackerappLambdaRole7e66fba2",
+                  "trackerappLambdaRoled096f928",
                   "-",
                   {
                     "Ref": "env"

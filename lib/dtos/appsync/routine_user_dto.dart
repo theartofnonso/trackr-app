@@ -1,13 +1,18 @@
-
 class RoutineUserDto {
   final String id;
   final String cognitoUserId;
   final String name;
   final String email;
+  final int weight;
   final String owner;
 
   RoutineUserDto(
-      {required this.id, required this.name, required this.cognitoUserId, required this.email, required this.owner});
+      {required this.id,
+      required this.name,
+      required this.cognitoUserId,
+      required this.email,
+      required this.weight,
+      required this.owner});
 
   Map<String, dynamic> toJson() {
     return {
@@ -15,6 +20,7 @@ class RoutineUserDto {
       'cognitoUserId': cognitoUserId,
       'name': name,
       'email': email,
+      'weight': weight,
       'owner': owner,
     };
   }
@@ -24,8 +30,10 @@ class RoutineUserDto {
     final cognitoUserId = json["cognitoUserId"] ?? "";
     final name = json["name"] ?? "";
     final email = json["email"] ?? "";
+    final weight = json["weight"] ?? 0;
     final owner = json["owner"] ?? "";
-    return RoutineUserDto(id: id, name: name, cognitoUserId: cognitoUserId, email: email, owner: owner.toString());
+    return RoutineUserDto(
+        id: id, name: name, cognitoUserId: cognitoUserId, email: email, weight: weight, owner: owner.toString());
   }
 
   RoutineUserDto copyWith({
@@ -33,6 +41,7 @@ class RoutineUserDto {
     String? name,
     String? cognitoUserId,
     String? email,
+    int? weight,
     String? owner,
   }) {
     return RoutineUserDto(
@@ -40,12 +49,12 @@ class RoutineUserDto {
         name: name ?? this.name,
         cognitoUserId: cognitoUserId ?? this.cognitoUserId,
         email: email ?? this.email,
+        weight: weight ?? this.weight,
         owner: owner ?? this.owner);
   }
 
   @override
   String toString() {
-    return 'RoutineUserDto{id: $id, cognitoUserId: $cognitoUserId, name: $name, email: $email, owner: $owner}';
+    return 'RoutineUserDto{id: $id, cognitoUserId: $cognitoUserId, name: $name, email: $email, weight: $weight, owner: $owner}';
   }
-
 }

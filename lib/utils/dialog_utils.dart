@@ -9,6 +9,7 @@ import 'package:tracker_app/enums/activity_type_enums.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
+import 'package:tracker_app/utils/routine_utils.dart';
 import 'package:tracker_app/widgets/forms/create_routine_user_profile_widget.dart';
 import 'package:tracker_app/widgets/label_divider.dart';
 import 'package:tracker_app/widgets/timers/datetime_picker.dart';
@@ -16,6 +17,7 @@ import 'package:tracker_app/widgets/timers/datetime_range_picker.dart';
 
 import '../colors.dart';
 import '../controllers/activity_log_controller.dart';
+import '../controllers/routine_user_controller.dart';
 import '../dtos/appsync/activity_log_dto.dart';
 import '../widgets/buttons/opacity_button_widget.dart';
 import '../widgets/buttons/solid_button_widget.dart';
@@ -156,6 +158,10 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
 
   final image = activityType.image;
 
+  final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
+
+  final calories = calculateCalories(duration: activity.duration(), bodyWeight: routineUserController.weight(), activity: activity.activityType);
+
   displayBottomSheet(
       context: context,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -188,9 +194,30 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
         const SizedBox(
           height: 6,
         ),
-        Text(activity.createdAt.formattedDayAndMonthAndYear(),
-            style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white70),
-            textAlign: TextAlign.start),
+        Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            const FaIcon(
+              FontAwesomeIcons.calendarDay,
+              color: Colors.white70,
+              size: 12,
+            ),
+            const SizedBox(width: 4),
+            Text(activity.createdAt.formattedDayAndMonthAndYear(),
+                style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white70),
+                textAlign: TextAlign.start),
+            const SizedBox(width: 12),
+            const FaIcon(
+              FontAwesomeIcons.fire,
+              color: Colors.white70,
+              size: 12,
+            ),
+            const SizedBox(width: 4),
+            Text("$calories calories",
+                style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white70),
+                textAlign: TextAlign.start),
+          ],
+        ),
         const SizedBox(
           height: 16,
         ),
@@ -294,9 +321,15 @@ void showUserBottomSheet({required BuildContext context, required RoutineUserDto
         ListTile(
           onTap: () {
             Navigator.of(context).pop();
-            showModalBottomSheet(context: context, isScrollControlled: true, useSafeArea: true, isDismissible: false, builder: (context) {
-              return const SettingsScreen();
-            });
+            showModalBottomSheet(
+                context: context,
+                showDragHandle: true,
+                isScrollControlled: true,
+                useSafeArea: true,
+                isDismissible: false,
+                builder: (context) {
+                  return const SafeArea(child: SettingsScreen());
+                });
           },
           leading: Text("Settings",
               style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),

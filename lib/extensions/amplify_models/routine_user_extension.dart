@@ -10,7 +10,8 @@ extension RoutineUserExtension on RoutineUser {
     final cognitoUserId = json["cognitoUserId"] ?? "";
     final name = json["name"] ?? "";
     final email = json["email"];
+    final weight = json["weight"] ?? 0;
     final owner = json["owner"] ?? "";
-    return RoutineUserDto(id: id, name: name, cognitoUserId: cognitoUserId, email: email, owner: owner);
+    return RoutineUserDto(id: id, name: name, cognitoUserId: cognitoUserId, email: email, weight: weight, owner: owner);
   }
 }

@@ -48,11 +48,11 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   void _selectExercisesInLibrary() async {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
-    final preSelectedExercises = controller.exerciseLogs.map((procedure) => procedure.exercise).toList();
+    final excludeExercises = controller.exerciseLogs.map((procedure) => procedure.exercise).toList();
 
     showExercisesInLibrary(
         context: context,
-        exclude: preSelectedExercises,
+        excludeExercises: excludeExercises,
         onSelected: (List<ExerciseDto> selectedExercises) {
           controller.addExerciseLogs(exercises: selectedExercises);
           _cacheLog();
@@ -61,11 +61,10 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   void _selectSubstituteExercisesInLibrary({required ExerciseLogDto primaryExerciseLog}) async {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
-    final preSelectedExercises = controller.exerciseLogs.map((exercise) => exercise.exercise).toList();
-
+    final excludeExercises = controller.exerciseLogs.map((exercise) => exercise.exercise).toList();
     showExercisesInLibrary(
         context: context,
-        exclude: preSelectedExercises,
+        excludeExercises: excludeExercises,
         onSelected: (List<ExerciseDto> selectedExercises) {
           controller.addAlternates(primaryExerciseId: primaryExerciseLog.id, exercises: selectedExercises);
           _showSubstituteExercisePicker(primaryExerciseLog: primaryExerciseLog);
@@ -126,11 +125,11 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   void _showReplaceExercisePicker({required ExerciseLogDto oldExerciseLog}) {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
-    final preSelectedExercises = controller.exerciseLogs.map((procedure) => procedure.exercise).toList();
+    final excludeExercises = controller.exerciseLogs.map((procedure) => procedure.exercise).toList();
 
     showExercisesInLibrary(
         context: context,
-        exclude: preSelectedExercises,
+        excludeExercises: excludeExercises,
         onSelected: (List<ExerciseDto> selectedExercises) {
           controller.replaceExerciseLog(oldExerciseId: oldExerciseLog.id, newExercise: selectedExercises.first);
           _cacheLog();

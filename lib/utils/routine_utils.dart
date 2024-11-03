@@ -2,25 +2,24 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
-import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/dtos/routine_template_dto_extension.dart';
+import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/week_days_extension.dart';
 import 'package:tracker_app/graphQL/queries.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/empty_states/double_set_row_empty_state.dart';
 
-import '../dtos/appsync/activity_log_dto.dart';
-import '../dtos/exercise_log_dto.dart';
-import '../dtos/pb_dto.dart';
 import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/appsync/routine_template_dto.dart';
+import '../dtos/exercise_log_dto.dart';
+import '../dtos/pb_dto.dart';
 import '../dtos/set_dto.dart';
 import '../dtos/viewmodels/exercise_log_view_model.dart';
+import '../enums/activity_type_enums.dart';
 import '../enums/routine_schedule_type_enums.dart';
 import '../enums/template_changes_type_message_enums.dart';
 import '../screens/exercise/reorder_exercises_screen.dart';
@@ -28,7 +27,6 @@ import '../widgets/empty_states/single_set_row_empty_state.dart';
 import '../widgets/routine/preview/set_rows/double_set_row.dart';
 import '../widgets/routine/preview/set_rows/set_row.dart';
 import '../widgets/routine/preview/set_rows/single_set_row.dart';
-import 'date_utils.dart';
 import 'exercise_logs_utils.dart';
 import 'general_utils.dart';
 
@@ -100,22 +98,16 @@ List<Widget> setsToWidgets(
       pbs: const [],
       child: Table(columnWidths: const <int, TableColumnWidth>{
         0: FlexColumnWidth(),
-      }, children: <TableRow>[
+      }, children: const <TableRow>[
         TableRow(children: [
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const FaIcon(
-                  FontAwesomeIcons.clock,
-                  color: Colors.white70,
-                  size: 16,
-                ),
-                const SizedBox(width: 4),
-                Text("Timer will run during workout",
-                    style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white70)),
-              ],
+            child: Center(
+              child: FaIcon(
+                FontAwesomeIcons.solidClock,
+                color: Colors.white70,
+                size: 16,
+              ),
             ),
           ),
         ]),
@@ -159,73 +151,12 @@ List<Widget> setsToWidgets(
         }
         final label = Duration(milliseconds: setDto.durationValue()).hmsAnalog();
         return SingleSetRow(label: label, margin: margin, pbs: pbsForSet, routinePreviewType: routinePreviewType);
+      case ExerciseType.all:
+        throw Exception("Unable to create Set widget for type ExerciseType.all");
     }
   })).toList();
 
   return widgets.isNotEmpty ? widgets : [emptyState];
-}
-
-Map<DateTimeRange, List<RoutineLogDto>> groupRoutineLogsByWeek({required List<RoutineLogDto> routineLogs, required int year}) {
-  final map = <DateTimeRange, List<RoutineLogDto>>{};
-
-  List<DateTimeRange> weekRanges = getWeeksInYear(year);
-
-  for (final weekRange in weekRanges) {
-    map[weekRange] = routineLogs.where((log) => log.createdAt.isBetweenRange(range: weekRange)).toList();
-  }
-
-  return map;
-}
-
-Map<DateTimeRange, List<RoutineLogDto>> groupRoutineLogsByMonth({required List<RoutineLogDto> routineLogs}) {
-  if (routineLogs.isEmpty) return {};
-
-  final map = <DateTimeRange, List<RoutineLogDto>>{};
-
-  DateTime startDate = routineLogs.first.createdAt;
-
-  DateTime lastDate = routineLogs.last.createdAt;
-
-  List<DateTimeRange> monthRanges = generateMonthRangesFrom(startDate: startDate, endDate: lastDate);
-
-  for (final monthRange in monthRanges) {
-    map[monthRange] = routineLogs.where((log) => log.createdAt.isBetweenRange(range: monthRange)).toList();
-  }
-  return map;
-}
-
-Map<DateTimeRange, List<ActivityLogDto>> groupActivityLogsByWeek(
-    {required List<ActivityLogDto> activityLogs, DateTime? endDate}) {
-  final map = <DateTimeRange, List<ActivityLogDto>>{};
-
-  DateTime startDate = activityLogs.firstOrNull?.createdAt ?? DateTime.now();
-
-  DateTime lastDate = endDate ?? activityLogs.lastOrNull?.createdAt ?? DateTime.now();
-
-  List<DateTimeRange> weekRanges = generateWeekRangesFrom(startDate: startDate, endDate: lastDate);
-
-  for (final weekRange in weekRanges) {
-    map[weekRange] = activityLogs.where((log) => log.createdAt.isBetweenRange(range: weekRange)).toList();
-  }
-
-  return map;
-}
-
-Map<DateTimeRange, List<ActivityLogDto>> groupActivityLogsByMonth({required List<ActivityLogDto> activityLogs}) {
-  if (activityLogs.isEmpty) return {};
-
-  final map = <DateTimeRange, List<ActivityLogDto>>{};
-
-  DateTime startDate = activityLogs.first.createdAt;
-
-  DateTime lastDate = activityLogs.last.createdAt;
-
-  List<DateTimeRange> monthRanges = generateMonthRangesFrom(startDate: startDate, endDate: lastDate);
-
-  for (final monthRange in monthRanges) {
-    map[monthRange] = activityLogs.where((log) => log.createdAt.isBetweenRange(range: monthRange)).toList();
-  }
-  return map;
 }
 
 Map<String, List<ExerciseLogDto>> groupExerciseLogsByExerciseId({required List<RoutineLogDto> routineLogs}) {
@@ -286,8 +217,12 @@ List<ExerciseLogViewModel> exerciseLogsToViewModels({required List<ExerciseLogDt
   }).toList();
 }
 
-String copyRoutineAsText({required RoutinePreviewType routineType, required String name, required String notes, DateTime? dateTime, required List<ExerciseLogDto> exerciseLogs}) {
-
+String copyRoutineAsText(
+    {required RoutinePreviewType routineType,
+    required String name,
+    required String notes,
+    DateTime? dateTime,
+    required List<ExerciseLogDto> exerciseLogs}) {
   StringBuffer routineText = StringBuffer();
 
   routineText.writeln(name);
@@ -295,8 +230,8 @@ String copyRoutineAsText({required RoutinePreviewType routineType, required Stri
   if (notes.isNotEmpty) {
     routineText.writeln("\n Notes: $notes");
   }
-  if(routineType == RoutinePreviewType.log) {
-    if(dateTime != null) {
+  if (routineType == RoutinePreviewType.log) {
+    if (dateTime != null) {
       routineText.writeln(dateTime.formattedDayAndMonthAndYear());
     }
   }
@@ -319,8 +254,17 @@ String copyRoutineAsText({required RoutinePreviewType routineType, required Stri
         case ExerciseType.duration:
           routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].durationSummary()}");
           break;
+        case ExerciseType.all:
+          // Do nothing here
       }
     }
   }
   return routineText.toString();
+}
+
+int calculateCalories({required Duration duration, required int bodyWeight, required ActivityType activity}) {
+  const oxygenInMils = 3.5;
+  final bodyWeightInKG = isDefaultWeightUnit() ? bodyWeight : toKg(bodyWeight.toDouble());
+  final caloriesPerMinute = (activity.met * bodyWeightInKG * oxygenInMils) / 200;
+  return (caloriesPerMinute * duration.inMinutes).floor();
 }

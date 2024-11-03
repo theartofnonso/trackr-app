@@ -281,7 +281,7 @@ class _HeroWidget extends StatelessWidget {
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             RichText(
               text: TextSpan(
-                text: "Hey there! TRKR Coach",
+                text: "Hey there!",
                 style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white, height: 1.5),
                 children: <TextSpan>[
                   TextSpan(

@@ -1,42 +1,45 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../colors.dart';
+import '../../controllers/routine_log_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../enums/chart_unit_enum.dart';
+import '../../utils/date_utils.dart';
 import '../chart/bar_chart.dart';
 
 class LogStreakChartWidget extends StatelessWidget {
-
-  final List<RoutineLogDto> logs;
-
-  const LogStreakChartWidget({super.key, required this.logs});
+  const LogStreakChartWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
 
-    List<DateTime> streakMonths = [];
-    List<int> streakCount = [];
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
-    final logsAndMonths = groupBy(logs, (log) => log.createdAt.month);
+    final dateRange = theLastYearDateTimeRange();
 
-    for (var logsAndMonths in logsAndMonths.entries) {
-      final logsForMonth = logsAndMonths.value;
-      final logsAndDays = groupBy(logsForMonth, (log) => log.createdAt.day);
-      streakMonths.add(logsForMonth.first.createdAt);
-      streakCount.add(logsAndDays.length);
+    final logs = routineLogController.whereLogsIsWithinRange(range: dateRange);
+
+    final monthsInYear = generateMonthsInRange(range: dateRange);
+
+    List<String> months = [];
+    List<int> streaks = [];
+    for (final month in monthsInYear) {
+      final startOfMonth = month.start;
+      final endOfMonth = month.end;
+      final values = logs.where((log) => log.createdAt.isBetweenInclusive(from: startOfMonth, to: endOfMonth));
+      streaks.add(values.length);
+      months.add(startOfMonth.abbreviatedMonth());
     }
 
     final chartPoints =
-        streakCount.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+        streaks.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
 
-    final streakColor = streakCount.map((streak) => logStreakColor(value: streak / 12)).toList();
-
-    final dateTimes = streakMonths.map((month) => month.abbreviatedMonth()).toList();
+    final streakColor = streaks.map((streak) => logStreakColor(value: streak / 12)).toList();
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -58,12 +61,12 @@ class LogStreakChartWidget extends StatelessWidget {
               height: 200,
               child: CustomBarChart(
                 chartPoints: chartPoints,
-                periods: dateTimes,
+                periods: months,
                 barColors: streakColor,
                 unit: ChartUnit.number,
                 bottomTitlesInterval: 1,
                 showLeftTitles: true,
-                maxY: streakCount.isNotEmpty ? streakCount.max.toDouble() : 31,
+                maxY: streaks.isNotEmpty ? streaks.max.toDouble() : 31,
                 reservedSize: 25,
               ))
         ],

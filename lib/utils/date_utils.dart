@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
@@ -18,51 +17,61 @@ DateTimeRange theLastYearDateTimeRange() {
 }
 
 /// Returns a list of DateTimeRange representing each week in the given year.
-List<DateTimeRange> getWeeksInYear(int year) {
+List<DateTimeRange> generateWeeksInRange({required DateTimeRange range}) {
   List<DateTimeRange> weeks = [];
-  DateTime firstDayOfYear = DateTime(year, 1, 1);
-  // Find the first Monday of the year
-  DateTime firstMonday = firstDayOfYear.weekday == DateTime.monday
-      ? firstDayOfYear
-      : firstDayOfYear.add(Duration(days: 8 - firstDayOfYear.weekday));
 
-  for (DateTime weekStart = firstMonday;
-  weekStart.year == year;
-  weekStart = weekStart.add(const Duration(days: 7))) {
-    DateTime weekEnd = weekStart.add(const Duration(days: 6));
-    // Adjust weekEnd if it goes beyond the year
-    if (weekEnd.year > year) {
-      weekEnd = DateTime(year, 12, 31);
+  // Ensure that the startDate is not after the endDate
+  if (range.start.isAfter(range.end)) {
+    return weeks; // Return empty list if dates are invalid
+  }
+
+  DateTime currentStartDate = DateTime(range.start.year, range.start.month, range.start.day - (range.start.weekday - 1) % 7);
+
+  while (!currentStartDate.isAfter(range.end)) {
+    // Calculate the end date for the current week
+    DateTime currentEndDate = currentStartDate.add(const Duration(days: 6));
+
+    // If the calculated end date is after the overall end date, adjust it
+    if (currentEndDate.isAfter(currentEndDate)) {
+      currentEndDate = currentEndDate;
     }
-    weeks.add(DateTimeRange(start: weekStart, end: weekEnd));
+
+    weeks.add(DateTimeRange(start: currentStartDate, end: currentEndDate));
+
+    // Move to the next week
+    currentStartDate = currentEndDate.add(const Duration(days: 1));
   }
 
   return weeks;
 }
 
-/// Returns a list of DateTimeRange representing each week in the given month.
-List<DateTimeRange> generateWeeksInMonth(DateTime monthDate) {
-  List<DateTimeRange> weeks = [];
-  DateTime firstDayOfMonth = monthDate.startOfMonth();
-  DateTime lastDayOfMonth = monthDate.endOfMonth();
+/// Returns a list of DateTimeRange representing each month in the given range.
+List<DateTimeRange> generateMonthsInRange({required DateTimeRange range}) {
+  List<DateTimeRange> months = [];
 
-  // Find the first Monday on or before the first day of the month
-  DateTime firstMonday = firstDayOfMonth.weekday == DateTime.monday
-      ? firstDayOfMonth
-      : firstDayOfMonth.subtract(Duration(days: firstDayOfMonth.weekday - DateTime.monday));
-
-  // Iterate through each week
-  for (DateTime weekStart = firstMonday;
-  weekStart.isBefore(lastDayOfMonth);
-  weekStart = weekStart.add(const Duration(days: 7))) {
-    DateTime weekEnd = weekStart.add(const Duration(days: 6));
-
-    // Adjust weekStart and weekEnd to be within the month
-    DateTime actualStart = weekStart.isBefore(firstDayOfMonth) ? firstDayOfMonth : weekStart;
-    DateTime actualEnd = weekEnd.isAfter(lastDayOfMonth) ? lastDayOfMonth : weekEnd;
-
-    weeks.add(DateTimeRange(start: actualStart, end: actualEnd));
+  // Ensure that the startDate is not after the endDate
+  if (range.start.isAfter(range.end)) {
+    return months; // Return empty list if dates are invalid
   }
 
-  return weeks;
+  // Set currentStartDate to the first day of the month of range.start
+  DateTime currentStartDate = DateTime(range.start.year, range.start.month, 1);
+
+  while (!currentStartDate.isAfter(range.end)) {
+    // Get the last day of the current month
+    DateTime currentEndDate = DateTime(currentStartDate.year, currentStartDate.month + 1, 0);
+
+    /// Adjust currentEndDate if it's beyond range.end
+    /// Only uncomment this if you want last day to be current date
+    // if (currentEndDate.isAfter(range.end)) {
+    //   currentEndDate = range.end;
+    // }
+
+    months.add(DateTimeRange(start: currentStartDate, end: currentEndDate));
+
+    // Move currentStartDate to the first day of the next month
+    currentStartDate = DateTime(currentStartDate.year, currentStartDate.month + 1, 1);
+  }
+
+  return months;
 }
