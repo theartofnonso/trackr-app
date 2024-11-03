@@ -539,7 +539,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                 presentSound: false,
                 presentBanner: false,
               ),
-            ));
+            ),
+            androidScheduleMode: AndroidScheduleMode.exact);
       }
     }
   }
