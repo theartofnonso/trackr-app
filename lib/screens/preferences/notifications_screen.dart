@@ -11,8 +11,8 @@ import 'package:tracker_app/enums/daily_notifications_enums.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 
-import '../../utils/timezone_utils.dart';
 import '../../utils/dialog_utils.dart';
+import '../../utils/timezone_utils.dart';
 
 Duration _timeForSchedule({required PendingNotificationRequest? schedule}) {
   final payload = _decodeNotificationPayload(schedule: schedule);
@@ -31,7 +31,8 @@ Future<void> _scheduleNotification(
       reminder.weekday, reminder.title, reminder.subtitle, tzDateTime, const NotificationDetails(),
       payload: jsonEncode(payload),
       uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
-      matchDateTimeComponents: matchDateTimeComponents);
+      matchDateTimeComponents: matchDateTimeComponents,
+      androidScheduleMode: AndroidScheduleMode.exact);
 }
 
 Map<String, dynamic> _decodeNotificationPayload({required PendingNotificationRequest? schedule}) {
@@ -129,10 +130,7 @@ class _NotificationSwitch extends StatelessWidget {
           Text(title, style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16)),
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             const SizedBox(height: 8),
-            if (enabled)
-              OpacityButtonWidget(
-                  onPressed: onPressed,
-                  label: subtitle)
+            if (enabled) OpacityButtonWidget(onPressed: onPressed, label: subtitle)
           ]),
         ]),
         Switch(

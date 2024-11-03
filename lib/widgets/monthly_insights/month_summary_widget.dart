@@ -65,7 +65,7 @@ class MonthSummaryWidget extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Text("Summary of ${dateTime.formattedMonth()} Training".toUpperCase(),
+            Text("Summary of ${dateTime.formattedFullMonth()} Training".toUpperCase(),
                 style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
             const SizedBox(height: 30),
             Table(
