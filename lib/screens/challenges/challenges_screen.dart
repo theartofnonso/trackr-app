@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/dtos/challengeTemplates/challenge_template.dart';
-import 'package:tracker_app/repositories/challenge_templates.dart';
-
 import '../../dtos/appsync/challenge_log_dto.dart';
 import '../../utils/challenge_utils.dart';
 import '../../utils/navigation_utils.dart';
@@ -13,14 +11,15 @@ import '../../widgets/information_containers/information_container_with_backgrou
 import 'challenge_screen.dart';
 
 class ChallengesScreen extends StatelessWidget {
-  
+
+  final List<ChallengeTemplate> templates;
+
   final List<ChallengeLogDto> challenges;
   
-  const ChallengesScreen({super.key, required this.challenges});
+  const ChallengesScreen({super.key, required this.templates, required this.challenges});
 
   @override
   Widget build(BuildContext context) {
-    final templates = ChallengeTemplates().loadTemplates();
 
     final children = templates.where((template) {
       final challenge = challenges.firstWhereOrNull((challenge) => challenge.templateId == template.id);

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../colors.dart';
 import '../../controllers/challenge_log_controller.dart';
+import '../../repositories/challenge_templates.dart';
 import 'active_challenges_screen.dart';
 import 'challenges_screen.dart';
 
@@ -12,6 +13,8 @@ class ChallengesHomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final templates = ChallengeTemplates().loadTemplates();
 
     final challenges = Provider.of<ChallengeLogController>(context, listen: true).logs;
 
@@ -52,8 +55,8 @@ class ChallengesHomeScreen extends StatelessWidget {
                   Expanded(
                     child: TabBarView(
                       children: [
-                        ChallengesScreen(challenges: challenges),
-                        ActiveChallengesScreen(challenges: challenges)
+                        ChallengesScreen(challenges: challenges, templates: templates),
+                        ActiveChallengesScreen(challenges: challenges, templates: templates)
                       ],
                     ),
                   ),
