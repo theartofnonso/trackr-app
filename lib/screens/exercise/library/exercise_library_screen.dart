@@ -220,7 +220,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     _filteredExercises = Provider.of<ExerciseController>(context, listen: false)
         .exercises
         .where((exercise) => !_preSelectedExercises.contains(exercise.id))
-        .where((exercise) => exercise.type == ExerciseType.none ? true : exercise.type == widget.type)
+        .where((exercise) => widget.type == ExerciseType.none ? true : exercise.type == widget.type)
         .toList();
   }
 
