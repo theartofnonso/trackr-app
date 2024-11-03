@@ -2,7 +2,6 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
@@ -99,22 +98,16 @@ List<Widget> setsToWidgets(
       pbs: const [],
       child: Table(columnWidths: const <int, TableColumnWidth>{
         0: FlexColumnWidth(),
-      }, children: <TableRow>[
+      }, children: const <TableRow>[
         TableRow(children: [
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const FaIcon(
-                  FontAwesomeIcons.clock,
-                  color: Colors.white70,
-                  size: 16,
-                ),
-                const SizedBox(width: 4),
-                Text("Timer will run during workout",
-                    style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white70)),
-              ],
+            child: Center(
+              child: FaIcon(
+                FontAwesomeIcons.solidClock,
+                color: Colors.white70,
+                size: 16,
+              ),
             ),
           ),
         ]),

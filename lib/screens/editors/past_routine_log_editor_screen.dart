@@ -261,7 +261,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
           floatingActionButton: isKeyboardOpen
               ? null
               : FloatingActionButton(
-                  heroTag: "fab_select_exercise_log_screen",
+                  heroTag: "past_routine_log_editor_scree_fab",
                   onPressed: _createLog,
                   backgroundColor: sapphireDark,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),

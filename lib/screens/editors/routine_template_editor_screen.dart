@@ -302,7 +302,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
           floatingActionButton: isKeyboardOpen
               ? null
               : FloatingActionButton(
-                  heroTag: "fab_select_exercise_log_screen",
+                  heroTag: "routine_template_editor_scree_fab",
                   onPressed: template != null ? _updateRoutineTemplate : _createRoutineTemplate,
                   backgroundColor: sapphireDark,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
