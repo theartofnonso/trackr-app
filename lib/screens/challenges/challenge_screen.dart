@@ -306,7 +306,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
     HapticFeedback.vibrate();
 
     if (mounted) {
-      //context.pop();
+      context.pop();
       navigateWithSlideTransition(context: context, child: ActiveChallengeScreen(log: challengeLog));
     }
   }
