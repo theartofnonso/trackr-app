@@ -23,7 +23,7 @@ extension ChallengeLogExtension on ChallengeLog {
     final muscleGroup = MuscleGroup.fromString(muscleGroupString);
     final exerciseString = json["exercise"];
     final exercise = exerciseString != null ? ExerciseDto.fromJson(exerciseString) : null;
-    final weight = json["weight"] ?? 0.0;
+    final weight = json["weight"] ?? 0;
     final typeString = json["type"] ?? "";
     final type = ChallengeType.fromString(typeString);
 
