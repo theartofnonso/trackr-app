@@ -27,11 +27,11 @@ void showSuperSetExercisePicker(
 
 void showSubstituteExercisePicker(
     {required BuildContext context,
-      required ExerciseLogDto primaryExerciseLog,
-      required List<ExerciseDto> otherExercises,
-      required Function(ExerciseDto secondaryExercise) onSelected,
-      required Function(ExerciseDto secondaryExercise) onRemoved,
-      required Function() selectExercisesInLibrary}) {
+    required ExerciseLogDto primaryExerciseLog,
+    required List<ExerciseDto> otherExercises,
+    required Function(ExerciseDto secondaryExercise) onSelected,
+    required Function(ExerciseDto secondaryExercise) onRemoved,
+    required Function() selectExercisesInLibrary}) {
   displayBottomSheet(
     context: context,
     child: SubstituteExercisePicker(
@@ -44,15 +44,16 @@ void showSubstituteExercisePicker(
   );
 }
 
-
 void showExercisesInLibrary(
     {required BuildContext context,
-    required List<ExerciseDto> exclude,
-    required void Function(List<ExerciseDto> selectedExercises) onSelected, ExerciseType type = ExerciseType.all}) async {
+    required List<ExerciseDto> excludeExercises,
+    required void Function(List<ExerciseDto> selectedExercises) onSelected,
+    ExerciseType type = ExerciseType.all}) async {
   final exercises = await Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) =>
-              ExerciseLibraryScreen(preSelectedExercises: exclude, type: type,)))
-      as List<ExerciseDto>?;
+      builder: (context) => ExerciseLibraryScreen(
+            excludeExercises: excludeExercises,
+            type: type,
+          ))) as List<ExerciseDto>?;
 
   if (context.mounted) {
     if (exercises != null && exercises.isNotEmpty) {

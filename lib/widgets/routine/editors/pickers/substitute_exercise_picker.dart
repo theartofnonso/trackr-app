@@ -1,7 +1,7 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
-
 import '../../../../dtos/appsync/exercise_dto.dart';
 import '../../../buttons/opacity_button_widget.dart';
 import '../../../empty_states/list_tile_empty_state.dart';
@@ -38,10 +38,10 @@ class _SubstituteExercisePickerState extends State<SubstituteExercisePicker> {
   @override
   Widget build(BuildContext context) {
     final listTiles = widget.exercises
-        .map((exercise) => Dismissible(
+        .mapIndexed((index, exercise) => Dismissible(
               direction: DismissDirection.endToStart,
               onDismissed: (_) => _onRemoveExercises(exercise: exercise),
-              key: ValueKey(exercise.id),
+              key: UniqueKey(),
               child: ListTile(
                 onTap: () {
                   widget.onSelect(exercise);

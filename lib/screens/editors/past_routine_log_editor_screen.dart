@@ -43,11 +43,11 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
 
   void _selectExercisesInLibrary() async {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
-    final preSelectedExercises = controller.exerciseLogs.map((exercise) => exercise.exercise).toList();
+    final excludeExercises = controller.exerciseLogs.map((exercise) => exercise.exercise).toList();
 
     showExercisesInLibrary(
         context: context,
-        exclude: preSelectedExercises,
+        excludeExercises: excludeExercises,
         onSelected: (List<ExerciseDto> selectedExercises) {
           controller.addExerciseLogs(exercises: selectedExercises);
         });
@@ -55,11 +55,11 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
 
   void _selectSubstituteExercisesInLibrary({required ExerciseLogDto primaryExerciseLog}) async {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
-    final preSelectedExercises = controller.exerciseLogs.map((exercise) => exercise.exercise).toList();
+    final excludeExercises = controller.exerciseLogs.map((exercise) => exercise.exercise).toList();
 
     showExercisesInLibrary(
         context: context,
-        exclude: preSelectedExercises,
+        excludeExercises: excludeExercises,
         onSelected: (List<ExerciseDto> selectedExercises) {
           controller.addAlternates(primaryExerciseId: primaryExerciseLog.id, exercises: selectedExercises);
           _showSubstituteExercisePicker(primaryExerciseLog: primaryExerciseLog);
@@ -113,11 +113,11 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
 
   void _showReplaceExercisePicker({required ExerciseLogDto oldExerciseLog}) {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
-    final preSelectedExercises = controller.exerciseLogs.map((exercise) => exercise.exercise).toList();
+    final excludeExercises = controller.exerciseLogs.map((exercise) => exercise.exercise).toList();
 
     showExercisesInLibrary(
         context: context,
-        exclude: preSelectedExercises,
+        excludeExercises: excludeExercises,
         onSelected: (List<ExerciseDto> selectedExercises) {
           controller.replaceExerciseLog(oldExerciseId: oldExerciseLog.id, newExercise: selectedExercises.first);
         });
@@ -149,7 +149,12 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
 
     final exercises = exerciseLogController.mergeAndCheckExerciseLogsAndSets(datetime: widget.log.startTime);
 
-    final updatedLog = widget.log.copyWith(exerciseLogs: exercises);
+    final routineName =
+        _templateNameController.text.trim().isNotEmpty ? _templateNameController.text.trim() : widget.log.name;
+    final routineNotes =
+        _templateNotesController.text.trim().isNotEmpty ? _templateNotesController.text.trim() : widget.log.notes;
+
+    final updatedLog = widget.log.copyWith(name: routineName, notes: routineNotes, exerciseLogs: exercises);
 
     if (widget.log.id.isEmpty) {
       final datetime = TemporalDateTime.withOffset(updatedLog.startTime, Duration.zero);

@@ -254,7 +254,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
   void _selectExercise() {
     showExercisesInLibrary(
         context: context,
-        exclude: [],
+        excludeExercises: [],
         type: ExerciseType.weights,
         onSelected: (List<ExerciseDto> selectedExercises) {
           if (selectedExercises.isNotEmpty) {
