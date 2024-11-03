@@ -48,7 +48,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         .exercises
         .where((exercise) => !preSelectedExerciseIds.contains(exercise.id))
         .where((exercise) => exercise.name.toLowerCase().contains(query.toLowerCase()))
-        .where((exercise) => exercise.type == ExerciseType.none ? true : exercise.type == widget.type)
+        .where((exercise) => widget.type == ExerciseType.none ? true : exercise.type == widget.type)
         .toList();
 
     if (_selectedMuscleGroup != null) {
