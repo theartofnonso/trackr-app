@@ -91,10 +91,19 @@ void main() {
       type: ExerciseType.duration,
       owner: "");
 
+  final neck = ExerciseDto(
+      id: "id_neck",
+      name: "Neck Exercise",
+      primaryMuscleGroup: MuscleGroup.neck,
+      secondaryMuscleGroups: [MuscleGroup.neck],
+      trainingPosition: TrainingPosition.lengthened,
+      type: ExerciseType.weights,
+      owner: "");
+
   final dayOneDateTimes = generateWeeklyDateTimes(size: 4, startDate: DateTime(2024, 1, 1));
   final dayTwoDateTimes = generateWeeklyDateTimes(size: 4, startDate: DateTime(2024, 1, 3));
 
-  final hamstringExerciseLogs = List.generate(
+  final hamstring1ExerciseLogs = List.generate(
       dayOneDateTimes.length,
       (index) => ExerciseLogDto(
           hamstringExercise.id,
@@ -109,9 +118,40 @@ void main() {
           ],
           dayOneDateTimes[index],
           []));
-  final quadExerciseLogs = List.generate(
+  final hamstring2ExerciseLogs = List.generate(
+      dayOneDateTimes.length,
+          (index) => ExerciseLogDto(
+          hamstringExercise.id,
+          "legDayOneSession$index",
+          "",
+          hamstringExercise,
+          "notes",
+          [
+            const SetDto(80, 15, true),
+            const SetDto(100, 8, true),
+            const SetDto(100, 6, true),
+          ],
+              dayTwoDateTimes[index],
+          []));
+
+  final quad1ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
       (index) => ExerciseLogDto(
+          quadExercise.id,
+          "legDayTwoSession$index",
+          "",
+          quadExercise,
+          "notes",
+          [
+            const SetDto(80, 15, true),
+            const SetDto(100, 8, true),
+            const SetDto(100, 6, true),
+          ],
+          dayOneDateTimes[index],
+          []));
+  final quad2ExerciseLogs = List.generate(
+      dayTwoDateTimes.length,
+          (index) => ExerciseLogDto(
           quadExercise.id,
           "legDayTwoSession$index",
           "",
@@ -156,7 +196,7 @@ void main() {
           dayTwoDateTimes[index],
           []));
 
-  final backExerciseLogs = List.generate(
+  final back1ExerciseLogs = List.generate(
       dayOneDateTimes.length,
       (index) => ExerciseLogDto(
           backExercise.id,
@@ -171,9 +211,40 @@ void main() {
           ],
           dayOneDateTimes[index],
           []));
-  final trapsExerciseLogs = List.generate(
+  final back2ExerciseLogs = List.generate(
+      dayOneDateTimes.length,
+          (index) => ExerciseLogDto(
+          backExercise.id,
+          "backDayOneSession$index",
+          "",
+          backExercise,
+          "notes",
+          [
+            const SetDto(80, 15, true),
+            const SetDto(100, 8, true),
+            const SetDto(100, 6, true),
+          ],
+          dayTwoDateTimes[index],
+          []));
+
+  final traps1ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
       (index) => ExerciseLogDto(
+          trapsExercise.id,
+          "backDayTwoSession$index",
+          "",
+          trapsExercise,
+          "notes",
+          [
+            const SetDto(80, 15, true),
+            const SetDto(100, 8, true),
+            const SetDto(100, 6, true),
+          ],
+          dayOneDateTimes[index],
+          []));
+  final traps2ExerciseLogs = List.generate(
+      dayTwoDateTimes.length,
+          (index) => ExerciseLogDto(
           trapsExercise.id,
           "backDayTwoSession$index",
           "",
@@ -311,10 +382,41 @@ void main() {
           dayTwoDateTimes[index],
           []));
 
+  final neck1ExerciseLogs = List.generate(
+      dayOneDateTimes.length,
+          (index) => ExerciseLogDto(
+          abs.id,
+          "neckDayOneSession$index",
+          "",
+          neck,
+          "notes",
+          [
+            const SetDto(80, 15, true),
+            const SetDto(100, 8, true),
+            const SetDto(100, 6, true),
+          ],
+          dayOneDateTimes[index],
+          []));
+  final neck2ExerciseLogs = List.generate(
+      dayTwoDateTimes.length,
+          (index) => ExerciseLogDto(
+          abs.id,
+          "neckDayTwoSession$index",
+          "",
+          neck,
+          "notes",
+          [
+            const SetDto(80, 15, true),
+            const SetDto(100, 8, true),
+            const SetDto(100, 6, true),
+          ],
+          dayTwoDateTimes[index],
+          []));
+
   test("Has completed monthly single muscle target", () {
     final exerciseLogs = [
-      ...hamstringExerciseLogs,
-      ...quadExerciseLogs,
+      ...hamstring1ExerciseLogs,
+      ...quad2ExerciseLogs,
     ];
 
     final frequencyDistribution = weeklyScaledMuscleGroupFamilyFrequency(exerciseLogs: exerciseLogs);
@@ -326,7 +428,7 @@ void main() {
   });
 
   test("Has completed 50% monthly single muscle target", () {
-    final exerciseLogs = [...hamstringExerciseLogs];
+    final exerciseLogs = [...hamstring1ExerciseLogs];
 
     final frequencyDistribution = weeklyScaledMuscleGroupFamilyFrequency(exerciseLogs: exerciseLogs);
 
@@ -338,12 +440,16 @@ void main() {
 
   test("Has achieved 100% monthly muscle score", () {
     final exerciseLogs = [
-      ...hamstringExerciseLogs,
-      ...quadExerciseLogs,
+      ...hamstring1ExerciseLogs,
+      ...hamstring2ExerciseLogs,
+      ...quad1ExerciseLogs,
+      ...quad2ExerciseLogs,
       ...chest1ExerciseLogs,
       ...chest2ExerciseLogs,
-      ...backExerciseLogs,
-      ...trapsExerciseLogs,
+      ...back1ExerciseLogs,
+      ...back2ExerciseLogs,
+      ...traps1ExerciseLogs,
+      ...traps2ExerciseLogs,
       ...shoulders1ExerciseLogs,
       ...shoulders2ExerciseLogs,
       ...biceps1ExerciseLogs,
@@ -352,10 +458,11 @@ void main() {
       ...triceps2ExerciseLogs,
       ...abs1ExerciseLogs,
       ...abs2ExerciseLogs,
+      ...neck1ExerciseLogs,
+      ...neck2ExerciseLogs
     ];
 
     final score = cumulativeMuscleGroupFamilyFrequency(exerciseLogs: exerciseLogs);
-
-    expect(score, 1);
+    expect(score, 1.0);
   });
 }

@@ -15,9 +15,9 @@ import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../controllers/activity_log_controller.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../controllers/settings_controller.dart';
+import '../../dtos/abstract_class/log_class.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
-import '../../dtos/interface/log_interface.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/activity_type_enums.dart';
 import '../../enums/routine_editor_type_enums.dart';
@@ -30,7 +30,6 @@ import '../../widgets/calendar/calendar_navigator.dart';
 import '../../widgets/label_divider.dart';
 import '../../widgets/monitors/overview_monitor.dart';
 import '../../widgets/monthly_insights/log_streak_chart_widget.dart';
-import '../../widgets/monthly_insights/muscle_score_chart_widget.dart';
 import '../../widgets/routine/preview/activity_log_widget.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
 import '../AI/trkr_coach_chat_screen.dart';
@@ -179,10 +178,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           ),
                         const SizedBox(height: 12),
                         MonthlyInsightsScreen(dateTimeRange: _monthDateTimeRange),
-                        const SizedBox(height: 24),
-                        MuscleScoreChatWidget(logs: routineLogsForTheYear),
                         const SizedBox(height: 18),
-                        LogStreakChartWidget(logs: routineLogsForTheYear),
+                        const LogStreakChartWidget(),
                       ])),
                 )
                 // Add more widgets here for exercise insights
@@ -406,7 +403,7 @@ class _LogsListView extends StatelessWidget {
     final children = allLogsForCurrentDate.map((log) {
       Widget widget;
 
-      if (log.type == LogType.routine) {
+      if (log.logType == LogType.routine) {
         final routineLog = log as RoutineLogDto;
         widget = RoutineLogWidget(log: routineLog, trailing: routineLog.duration().hmsAnalog(), color: sapphireDark80);
       } else {

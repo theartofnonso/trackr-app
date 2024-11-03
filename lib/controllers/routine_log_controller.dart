@@ -102,6 +102,10 @@ class RoutineLogController extends ChangeNotifier {
     return _amplifyLogRepository.whereLogsIsSameYear(dateTime: dateTime);
   }
 
+  List<RoutineLogDto> whereLogsIsWithinRange({required DateTimeRange range}) {
+    return _amplifyLogRepository.whereLogsIsWithinRange(range: range);
+  }
+
   List<ExerciseLogDto> whereExerciseLogsBefore({required ExerciseDto exercise, required DateTime date}) {
     return _amplifyLogRepository.whereExerciseLogsBefore(exercise: exercise, date: date);
   }

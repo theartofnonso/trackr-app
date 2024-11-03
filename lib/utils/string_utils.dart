@@ -29,6 +29,18 @@ String volumeInKOrM(double number, {bool showLessThan1k = true}) {
   }
 }
 
+String numbersInKOrM(int number, {bool showLessThan1k = true}) {
+  if (number <= 0) {
+    return "0";
+  } else if (number < 1000) {
+    return showLessThan1k ? "1K" : "$number";
+  } else if (number < 1000000) {
+    return '${(number / 1000).floor()}K';
+  } else {
+    return '${(number / 1000000).floor()}M';
+  }
+}
+
 String joinWithAnd({required List<String> items}) {
   // Check if the list is empty
   if (items.isEmpty) {

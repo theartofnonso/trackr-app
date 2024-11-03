@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -117,11 +116,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
     final exerciseController = Provider.of<ExerciseController>(context, listen: true);
 
-    final exercisesFromLibrary = template.exerciseTemplates.map((exerciseTemplate) {
-      final foundExercise = exerciseController.exercises
-          .firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.id == exerciseTemplate.id);
-      return foundExercise != null ? exerciseTemplate.copyWith(exercise: foundExercise) : exerciseTemplate;
-    }).toList();
+    final exercisesFromLibrary =
+        updateExercisesFromLibrary(exerciseLogs: template.exerciseTemplates, exercises: exerciseController.exercises);
 
     final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: exercisesFromLibrary);
 
@@ -233,15 +229,17 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                     ],
                   ),
                   if (template.notes.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
-                      child: Text('"${template.notes}"',
-                          textAlign: TextAlign.start,
-                          style: GoogleFonts.ubuntu(
-                              color: Colors.white70,
-                              fontSize: 16,
-                              fontStyle: FontStyle.italic,
-                              fontWeight: FontWeight.w600)),
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 20, bottom: 10),
+                        child: Text('"${template.notes}"',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.ubuntu(
+                                color: Colors.white70,
+                                fontSize: 14,
+                                fontStyle: FontStyle.italic,
+                                fontWeight: FontWeight.w600)),
+                      ),
                     ),
 
                   /// Keep this spacing for when notes isn't available
@@ -312,13 +310,15 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  TRKRInformationContainer(
-                      ctaLabel: "Ask for a review",
-                      description:
-                          "Achieving your fitness goals is easier with a structured plan. Ask the TRKR Coach to optimize your workouts and help you succeed!",
-                      onTap: _runRoutineAnalysis),
-                  const SizedBox(height: 12),
+                  if (template.owner == SharedPrefs().userId)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      child: TRKRInformationContainer(
+                          ctaLabel: "Ask for a review",
+                          description:
+                              "Achieving your fitness goals is easier with a structured plan. Ask the TRKR Coach to optimize your workouts and help you succeed!",
+                          onTap: _runRoutineAnalysis),
+                    ),
                   ExerciseLogListView(
                     exerciseLogs: exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
                     previewType: RoutinePreviewType.template,
@@ -404,7 +404,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     _template = routineTemplateController.templateWhere(id: widget.id);
     if (_template == null) {
       _loading = true;
-      getAPI(endpoint: "/routine-template", queryParameters: {"id": widget.id}).then((data) {
+      getAPI(endpoint: "/routine-templates/${widget.id}").then((data) {
         if (data.isNotEmpty) {
           final json = jsonDecode(data);
           final body = json["data"];

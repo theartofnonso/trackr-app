@@ -1,28 +1,30 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
-import 'package:tracker_app/dtos/streaks/challenge_template.dart';
-import 'package:tracker_app/repositories/challenge_templates.dart';
-import 'package:tracker_app/utils/string_utils.dart';
-import 'package:tracker_app/widgets/challenges/challenge_target_icon.dart';
-
-import '../../dtos/streaks/days/days_challenge_dto.dart';
-import '../../dtos/streaks/reps/reps_challenge_dto.dart';
-import '../../dtos/streaks/weight/weight_challenge_dto.dart';
-import '../../dtos/streaks/weekly/weekly_challenge_dto.dart';
+import 'package:tracker_app/dtos/challengeTemplates/challenge_template.dart';
+import '../../dtos/appsync/challenge_log_dto.dart';
+import '../../utils/challenge_utils.dart';
 import '../../utils/navigation_utils.dart';
+import '../../widgets/challenges/challenge_target_icon.dart';
 import '../../widgets/information_containers/information_container_with_background_image.dart';
 import 'challenge_screen.dart';
 
 class ChallengesScreen extends StatelessWidget {
-  const ChallengesScreen({super.key});
+
+  final List<ChallengeTemplate> templates;
+
+  final List<ChallengeLogDto> challenges;
+  
+  const ChallengesScreen({super.key, required this.templates, required this.challenges});
 
   @override
   Widget build(BuildContext context) {
 
-    final challenges = ChallengeTemplates().loadChallenges();
-
-    final children = challenges.map((challenge) => _ChallengeWidget(challenge: challenge)).toList();
+    final children = templates.where((template) {
+      final challenge = challenges.firstWhereOrNull((challenge) => challenge.templateId == template.id);
+      return challenge == null;
+    } ).map((challenge) => _ChallengeWidget(challenge: challenge)).toList();
 
     return Scaffold(
         backgroundColor: Colors.transparent,
@@ -42,7 +44,7 @@ class ChallengesScreen extends StatelessWidget {
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 BackgroundInformationContainer(
                     image: 'images/man_woman.jpg',
-                    containerColor: Colors.green.shade900,
+                    containerColor: Colors.orange.shade900,
                     content: "Power up your weekly training sessions with fun challenges that fuel your motivation.",
                     textStyle: GoogleFonts.ubuntu(
                       fontSize: 16,
@@ -79,7 +81,7 @@ class _ChallengeWidget extends StatelessWidget {
           decoration: BoxDecoration(color: sapphireDark80, borderRadius: BorderRadius.circular(5)),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Image.asset(
-              challenge.image,
+              "challenges_icons/green_blob.png",
               fit: BoxFit.contain,
               height: 48, // Adjust the height as needed
             ),
@@ -100,11 +102,11 @@ class _ChallengeWidget extends StatelessWidget {
             const Spacer(),
             const Divider(color: sapphireLighter, endIndent: 10),
             const SizedBox(height: 8),
-            Row(children: [
-              ChallengeTargetIcon(dto: challenge),
+            Wrap(crossAxisAlignment: WrapCrossAlignment.center, children: [
+              ChallengeTargetIcon(type: challenge.type),
               const SizedBox(width: 8),
               Text(
-                _targetSummary(dto: challenge),
+                challengeTargetSummary(type: challenge.type, target: challenge.target),
                 style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w500),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,
@@ -112,24 +114,5 @@ class _ChallengeWidget extends StatelessWidget {
             ])
           ])),
     );
-  }
-
-  String _targetSummary({required ChallengeTemplate dto}) {
-    if (dto is WeeklyChallengeDto) {
-      return "${dto.target} ${pluralize(word: "Week", count: dto.target)}";
-    }
-
-    if (dto is RepsChallengeDto) {
-      return "10k ${pluralize(word: "Rep", count: dto.target)}";
-    }
-
-    if (dto is WeightChallengeDto) {
-      return "${dto.target} ${pluralize(word: "Tonne", count: dto.target)}";
-    }
-
-    if (dto is DaysChallengeDto) {
-      return "${dto.target} ${pluralize(word: "Day", count: dto.target)}";
-    }
-    return "";
   }
 }

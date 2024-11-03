@@ -18,13 +18,14 @@ class AmplifyChallengeLogRepository {
   }
 
   void _mapLogs({required List<ChallengeLog> logs}) {
-    _logs = logs.map((log) => log.dto()).toList();
+      _logs = logs.map((log) => log.dto()).toList();
   }
 
   Future<void> saveLog({required ChallengeLogDto logDto}) async {
     final datetime = TemporalDateTime.withOffset(logDto.startDate, Duration.zero);
 
     final logToCreate = ChallengeLog(data: jsonEncode(logDto), createdAt: datetime, updatedAt: datetime);
+
     await Amplify.DataStore.save<ChallengeLog>(logToCreate);
 
     final updatedChallengeWithId = logDto.copyWith(id: logToCreate.id);
@@ -60,7 +61,7 @@ class AmplifyChallengeLogRepository {
   }
 
   ChallengeLogDto? logWhereChallengeTemplateId({required String id}) {
-    return _logs.firstWhereOrNull((log) => log.challengeId == id);
+    return _logs.firstWhereOrNull((log) => log.templateId == id);
   }
 
   void clear() {

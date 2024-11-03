@@ -1,8 +1,7 @@
 import 'dart:collection';
 
 import 'package:collection/collection.dart';
-import 'package:tracker_app/utils/general_utils.dart';
-
+import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import '../dtos/appsync/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/pb_dto.dart';
@@ -362,8 +361,7 @@ Map<MuscleGroupFamily, double> weeklyScaledMuscleGroupFamilyFrequency({required 
 
 double cumulativeMuscleGroupFamilyFrequency({required List<ExerciseLogDto> exerciseLogs}) {
   final frequencyEntries = _muscleGroupFamilyFrequencyForTheMonth(exerciseLogs: exerciseLogs)
-      .entries
-      .where((entry) => popularMuscleGroupFamilies().contains(entry.key));
+      .entries;
 
   final frequencyMap = Map.fromEntries(frequencyEntries);
 
@@ -386,4 +384,38 @@ bool withRepsOnly({required ExerciseType type}) {
 
 bool withDurationOnly({required ExerciseType type}) {
   return type == ExerciseType.duration;
+}
+
+List<ExerciseLogDto> updateExercisesFromLibrary({required List<ExerciseLogDto> exerciseLogs, required List<ExerciseDto> exercises}) {
+  return exerciseLogs.map((exerciseTemplate) {
+    final foundExercise = exercises
+        .firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.id == exerciseTemplate.id);
+    return foundExercise != null ? exerciseTemplate.copyWith(exercise: foundExercise) : exerciseTemplate;
+  }).toList();
+}
+
+int _calculateMuscleScore({required List<ExerciseLogDto> exerciseLogs, required List<ExerciseDto> exercises}) {
+  final exercisesFromLibrary = updateExercisesFromLibrary(exerciseLogs: exerciseLogs, exercises: exercises);
+
+  final muscleGroupsFrequencyScore = cumulativeMuscleGroupFamilyFrequency(exerciseLogs: exercisesFromLibrary);
+
+  final percentageScore = (muscleGroupsFrequencyScore * 100).round();
+
+  return percentageScore;
+}
+
+int calculateMuscleScoreForLogs({required List<RoutineLogDto> routineLogs, required List<ExerciseDto> exercises}) {
+  final exerciseLogs = routineLogs.expand((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs)).toList();
+
+  final percentageScore = _calculateMuscleScore(exerciseLogs: exerciseLogs, exercises: exercises);
+
+  return percentageScore;
+}
+
+int calculateMuscleScoreForLog({required RoutineLogDto routineLog, required List<ExerciseDto> exercises}) {
+  final exerciseLogs = exerciseLogsWithCheckedSets(exerciseLogs: routineLog.exerciseLogs).toList();
+
+  final percentageScore = _calculateMuscleScore(exerciseLogs: exerciseLogs, exercises: exercises);
+
+  return percentageScore;
 }

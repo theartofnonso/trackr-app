@@ -8,16 +8,17 @@ import 'package:tracker_app/widgets/routine/preview/date_duration_pb.dart';
 
 import '../colors.dart';
 import '../controllers/activity_log_controller.dart';
+import '../controllers/exercise_controller.dart';
 import '../controllers/routine_log_controller.dart';
+import '../dtos/abstract_class/log_class.dart';
 import '../dtos/appsync/activity_log_dto.dart';
 import '../dtos/appsync/routine_log_dto.dart';
-import '../dtos/interface/log_interface.dart';
 import '../enums/activity_type_enums.dart';
 import '../utils/dialog_utils.dart';
 import '../utils/exercise_logs_utils.dart';
 import '../utils/navigation_utils.dart';
 import '../widgets/chart/muscle_group_family_chart.dart';
-import 'no_list.dart';
+import 'no_list_empty_state.dart';
 
 class FeedsScreen extends StatelessWidget {
   final ScrollController scrollController;
@@ -36,7 +37,16 @@ class FeedsScreen extends StatelessWidget {
 
     final allLogs = [...routineLogs, ...activityLogs].sorted((a, b) => b.createdAt.compareTo(a.createdAt)).toList();
 
-    if (routineLogs.isEmpty) return const NoList();
+    if (routineLogs.isEmpty) {
+      return const NoListEmptyState(
+        icon: FaIcon(
+          FontAwesomeIcons.house,
+          color: Colors.white12,
+          size: 48,
+        ),
+        message: "It might feel quiet now, but new activities from your training will soon appear here.",
+      );
+    }
 
     return Container(
       decoration: const BoxDecoration(
@@ -52,24 +62,32 @@ class FeedsScreen extends StatelessWidget {
       child: SafeArea(
           minimum: const EdgeInsets.all(10.0),
           child: ListView.separated(
-              controller: scrollController,
-              itemCount: allLogs.length,
-              itemBuilder: (BuildContext context, int index) {
-                final log = allLogs[index];
-                final widget = log.type == LogType.routine
-                    ? _RoutineLogFeedListItem(log: log as RoutineLogDto)
-                    : _ActivityLogFeedListItem(log: log as ActivityLogDto);
-                return widget;
-              },
-              separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.1)))),
+            controller: scrollController,
+            itemCount: allLogs.length,
+            itemBuilder: (BuildContext context, int index) {
+              final log = allLogs[index];
+              final widget = log.logType == LogType.routine
+                  ? _RoutineLogFeedListItem(
+                      log: log as RoutineLogDto,
+                      isEvenIndex: index % 2 == 1,
+                    )
+                  : _ActivityLogFeedListItem(
+                      log: log as ActivityLogDto,
+                      isEvenIndex: index % 2 == 1,
+                    );
+              return widget;
+            },
+            separatorBuilder: (context, index) => const SizedBox(height: 10),
+          )),
     );
   }
 }
 
 class _RoutineLogFeedListItem extends StatelessWidget {
+  final bool isEvenIndex;
   final RoutineLogDto log;
 
-  const _RoutineLogFeedListItem({required this.log});
+  const _RoutineLogFeedListItem({required this.isEvenIndex, required this.log});
 
   @override
   Widget build(BuildContext context) {
@@ -86,20 +104,30 @@ class _RoutineLogFeedListItem extends StatelessWidget {
     final completedExerciseLogsAndSets = exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs);
     final updatedLog = log.copyWith(exerciseLogs: completedExerciseLogsAndSets);
 
-    final muscleGroupFamilyFrequencyData =
-        muscleGroupFamilyFrequency(exerciseLogs: updatedLog.exerciseLogs, includeSecondaryMuscleGroups: false);
+    final exerciseController = Provider.of<ExerciseController>(context, listen: false);
+
+    final exercisesFromLibrary =
+        updateExercisesFromLibrary(exerciseLogs: updatedLog.exerciseLogs, exercises: exerciseController.exercises);
+
+    final muscleGroupFamilyFrequencies =
+        muscleGroupFamilyFrequency(exerciseLogs: exercisesFromLibrary, includeSecondaryMuscleGroups: false);
 
     return GestureDetector(
       onTap: () => navigateToRoutineLogPreview(context: context, log: log),
       child: Container(
-          color: Colors.transparent,
-          padding: const EdgeInsets.all(10.0),
+          decoration: isEvenIndex ? BoxDecoration(color: sapphireDark80, borderRadius: BorderRadius.circular(5)) : null,
+          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 5),
           child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
             ListTile(
               contentPadding: EdgeInsets.zero,
               title: Text(log.name,
                   style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
-              subtitle: DateDurationPBWidget(dateTime: log.createdAt, duration: log.duration(), pbs: pbs.length, durationSince: true,),
+              subtitle: DateDurationPBWidget(
+                dateTime: log.createdAt,
+                duration: log.duration(),
+                pbs: pbs.length,
+                durationSince: true,
+              ),
               trailing: const _ProfileIcon(),
             ),
             SizedBox(
@@ -117,16 +145,17 @@ class _RoutineLogFeedListItem extends StatelessWidget {
                   ])),
             ),
             const SizedBox(height: 8),
-            MuscleGroupFamilyChart(frequencyData: muscleGroupFamilyFrequencyData),
+            MuscleGroupFamilyChart(frequencyData: muscleGroupFamilyFrequencies),
           ])),
     );
   }
 }
 
 class _ActivityLogFeedListItem extends StatelessWidget {
+  final bool isEvenIndex;
   final ActivityLogDto log;
 
-  const _ActivityLogFeedListItem({required this.log});
+  const _ActivityLogFeedListItem({required this.isEvenIndex, required this.log});
 
   @override
   Widget build(BuildContext context) {
@@ -137,8 +166,8 @@ class _ActivityLogFeedListItem extends StatelessWidget {
     return GestureDetector(
       onTap: () => showActivityBottomSheet(context: context, activity: log),
       child: Container(
-          color: Colors.transparent,
-          padding: const EdgeInsets.all(10.0),
+          decoration: isEvenIndex ? BoxDecoration(color: sapphireDark80, borderRadius: BorderRadius.circular(5)) : null,
+          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 5),
           child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
             ListTile(
               horizontalTitleGap: 5,
@@ -152,7 +181,8 @@ class _ActivityLogFeedListItem extends StatelessWidget {
                   : FaIcon(activityType.icon, color: Colors.white),
               title: Text(log.name,
                   style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
-              subtitle: DateDurationPBWidget(dateTime: log.createdAt, duration: log.duration(), pbs: 0, durationSince: true),
+              subtitle:
+                  DateDurationPBWidget(dateTime: log.createdAt, duration: log.duration(), pbs: 0, durationSince: true),
               trailing: const _ProfileIcon(),
             ),
           ])),

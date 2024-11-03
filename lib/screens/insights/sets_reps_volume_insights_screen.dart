@@ -18,7 +18,6 @@ import '../../colors.dart';
 import '../../controllers/exercise_controller.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
-import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/set_dto.dart';
 import '../../enums/chart_unit_enum.dart';
 import '../../enums/muscle_group_enums.dart';
@@ -29,7 +28,6 @@ import '../../utils/exercise_logs_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../widgets/ai_widgets/trkr_information_container.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
-import '../../widgets/calendar/calendar_navigator.dart';
 import '../../widgets/chart/bar_chart.dart';
 import '../../widgets/chart/horizontal_stacked_bars.dart';
 import '../../widgets/chart/legend.dart';
@@ -45,9 +43,6 @@ class SetsAndRepsVolumeInsightsScreen extends StatefulWidget {
 }
 
 class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsightsScreen> {
-  DateTime _dateTime = DateTime.now();
-
-  List<RoutineLogDto>? _logs;
 
   SetRepsVolumeReps _metric = SetRepsVolumeReps.reps;
 
@@ -61,9 +56,11 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     final textStyle = GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white70);
 
+    final dateRange = theLastYearDateTimeRange();
+
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
-    final logs = _logs ?? routineLogController.whereLogsIsSameMonth(dateTime: _dateTime);
+    final logs = routineLogController.whereLogsIsWithinRange(range: dateRange);
 
     final exerciseController = Provider.of<ExerciseController>(context, listen: false);
 
@@ -79,11 +76,12 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       return muscleGroups.contains(_selectedMuscleGroup);
     }).toList();
 
-    final weeksInMonth = generateWeeksInMonth(_dateTime);
-    List<num> valuesForWeek = [];
-    List<int> weeks = [];
+    final weeksInYear = generateWeeksInRange(range: dateRange);
+    List<num> trends = [];
+    List<String> weeks = [];
+    List<String> months = [];
     int weekCounter = 0;
-    for (final week in weeksInMonth) {
+    for (final week in weeksInYear) {
       final startOfWeek = week.start;
       final endOfWeek = week.end;
       final values = exerciseLogs
@@ -92,21 +90,18 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
         final values = _calculateMetric(sets: log.sets);
         return values;
       }).sum;
-      valuesForWeek.add(values);
-      weeks.add(weekCounter);
+      trends.add(values);
+      weeks.add("WK ${weekCounter + 1}");
+      months.add(startOfWeek.formattedMonth());
       weekCounter += 1;
     }
 
-    final nonZeroValues = valuesForWeek.where((value) => value > 0).toList();
+    final nonZeroValues = trends.where((value) => value > 0).toList();
 
     final avgValue = nonZeroValues.isNotEmpty ? nonZeroValues.average.round() : 0;
 
     final chartPoints =
-        valuesForWeek.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
-
-    final weeksLabels = weeks.mapIndexed((index, _) {
-      return "WK ${index + 1}";
-    }).toList();
+        trends.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
 
     final totalOptimal = _weightWhere(values: nonZeroValues, condition: (value) => value >= _optimalSetsOrRepsValue());
     final totalSufficient = _weightWhere(
@@ -121,7 +116,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     final weightColors = [vibrantGreen, vibrantBlue, Colors.deepOrangeAccent];
 
-    final barColors = valuesForWeek
+    final barColors = trends
         .map((value) => _metric == SetRepsVolumeReps.sets
             ? setsTrendColor(sets: value.toInt())
             : repsTrendColor(reps: value.toInt()))
@@ -155,7 +150,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CalendarNavigator(onMonthChange: _onMonthChange),
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
@@ -264,10 +258,10 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                     height: 250,
                     child: CustomBarChart(
                       chartPoints: chartPoints,
-                      periods: weeksLabels,
+                      periods: months,
                       barColors: _metric != SetRepsVolumeReps.volume ? barColors : null,
                       unit: _chartUnit(),
-                      bottomTitlesInterval: 1,
+                      bottomTitlesInterval: 5,
                       showTopTitles: false,
                       showLeftTitles: true,
                       reservedSize: _reservedSize(),
@@ -331,11 +325,11 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       showSnackbar(
           context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: "You don't have any logs");
     } else {
-      final startDate = logs.first.createdAt;
-      final endDate = logs.last.createdAt;
+      final startDate = logs.first.createdAt.withoutTime();
+      final endDate = logs.last.createdAt.withoutTime();
 
       final userInstructions =
-          "Review my workout logs for ${_selectedMuscleGroup.name} from $startDate to $endDate and provide feedback";
+          "Review my workout logs for ${_selectedMuscleGroup.name} from $startDate to $endDate and provide feedback. Please note, that my weights are in ${weightLabel()}";
 
       final logJsons = logs.map((log) => log.toJson());
 
@@ -357,12 +351,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
         }
       });
     }
-  }
-
-  void _onMonthChange(DateTimeRange range) {
-    setState(() {
-      _dateTime = range.start;
-    });
   }
 
   int _weightWhere({required List<num> values, required bool Function(num) condition}) {
