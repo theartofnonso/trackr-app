@@ -1,6 +1,6 @@
-import 'package:tracker_app/dtos/challengeTemplates/challenge_template.dart';
+import 'package:tracker_app/dtos/challengeTemplates/milestone_dto.dart';
 
-class WeeklyChallengeTemplate extends ChallengeTemplate {
+class WeeklyChallengeTemplate extends Milestone {
   final DateTime startDate;
   DateTime? endDate;
   final bool isCompleted;

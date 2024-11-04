@@ -215,6 +215,18 @@ Color setsTrendColor({required int sets}) {
   }
 }
 
+Color setsMilestoneColor({required double progress}) {
+  if (progress >= 0.7) {
+    return vibrantGreen;
+  } else if (progress >= 0.5) {
+    return vibrantBlue;
+  } else if (progress >= 0.3) {
+    return Colors.yellow;
+  } else {
+    return Colors.deepOrangeAccent;
+  }
+}
+
 Color repsTrendColor({required int reps}) {
   if (reps >= 120) {
     return vibrantGreen;

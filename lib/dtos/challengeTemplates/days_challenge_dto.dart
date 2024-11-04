@@ -1,6 +1,6 @@
-import 'challenge_template.dart';
+import 'milestone_dto.dart';
 
-class DaysChallengeTemplate extends ChallengeTemplate {
+class DaysChallengeTemplate extends Milestone {
   final DateTime startDate;
   DateTime? endDate;
   final bool isCompleted;

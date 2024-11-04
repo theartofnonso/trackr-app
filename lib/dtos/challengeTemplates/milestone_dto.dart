@@ -1,15 +1,15 @@
-import '../../enums/challenge_type_enums.dart';
+import '../../enums/milestone_type_enums.dart';
 
-class ChallengeTemplate {
+class Milestone {
   final String id;
   final String name;
   final String caption;
   final String description;
   final String rule;
   final int target;
-  final ChallengeType type;
+  final MilestoneType type;
 
-  ChallengeTemplate({
+  Milestone({
     required this.id,
     required this.name,
     required this.caption,

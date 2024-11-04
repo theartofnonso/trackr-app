@@ -1,35 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
+import 'package:tracker_app/dtos/challengeTemplates/milestone_dto.dart';
+import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:tracker_app/widgets/label_divider.dart';
 
 import '../../../colors.dart';
-import '../../controllers/challenge_log_controller.dart';
-import '../../dtos/appsync/challenge_log_dto.dart';
-import '../../enums/challenge_type_enums.dart';
-import '../../repositories/challenge_templates.dart';
+import '../../enums/milestone_type_enums.dart';
 import '../../utils/challenge_utils.dart';
 
-class ActiveChallengeScreen extends StatelessWidget {
-  final ChallengeLogDto log;
+class MilestoneScreen extends StatelessWidget {
+  final Milestone milestone;
 
-  const ActiveChallengeScreen({super.key, required this.log});
+  const MilestoneScreen({super.key, required this.milestone});
 
   @override
   Widget build(BuildContext context) {
-    final challenges = ChallengeTemplates().loadTemplates();
-
-    final template = challenges.firstWhere((template) => template.id == log.templateId);
-
-    final templateTarget = template.target <= 0 ? log.weight : template.target;
-
-    final progress = log.progress / templateTarget;
+    final progress = 0.3;
 
     return Scaffold(
       backgroundColor: sapphireDark,
@@ -79,7 +70,7 @@ class ActiveChallengeScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Text(log.name.toUpperCase(),
+                        Text(milestone.name.toUpperCase(),
                             style: GoogleFonts.ubuntu(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 22)),
                       ],
                     ),
@@ -103,7 +94,7 @@ class ActiveChallengeScreen extends StatelessWidget {
               child: Column(
                 children: [
                   Center(
-                      child: Text(log.description,
+                      child: Text(milestone.description,
                           style: GoogleFonts.ubuntu(
                               fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400, height: 1.8))),
                   const SizedBox(height: 20),
@@ -115,7 +106,7 @@ class ActiveChallengeScreen extends StatelessWidget {
                       FontAwesomeIcons.book,
                       color: Colors.white70,
                     ),
-                    title: Text(log.rule,
+                    title: Text(milestone.rule,
                         style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400)),
                   ),
                   ListTile(
@@ -124,36 +115,34 @@ class ActiveChallengeScreen extends StatelessWidget {
                       FontAwesomeIcons.trophy,
                       color: Colors.white70,
                     ),
-                    title: Text(
-                        challengeTargetSummary(
-                            type: log.type, target: log.type == ChallengeType.weight ? log.weight : template.target),
+                    title: Text(challengeTargetSummary(type: milestone.type, target: 12),
                         style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400)),
                   ),
-                  if (log.type == ChallengeType.reps)
+                  if (milestone.type == MilestoneType.reps)
                     ListTile(
                       titleAlignment: ListTileTitleAlignment.center,
                       leading: Image.asset(
-                        'muscles_illustration/${log.muscleGroup.illustration()}.png',
+                        'muscles_illustration/chest.png',
                         fit: BoxFit.cover,
                         filterQuality: FilterQuality.low,
                         height: 32,
                       ),
-                      title: Text(log.muscleGroup.name,
+                      title: Text(MuscleGroup.chest.name,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
                           textAlign: TextAlign.start),
                     ),
-                  if (log.type == ChallengeType.weight)
+                  if (milestone.type == MilestoneType.weight)
                     ListTile(
                       titleAlignment: ListTileTitleAlignment.center,
                       leading: Image.asset(
-                        'muscles_illustration/${log.exercise?.primaryMuscleGroup.illustration()}.png',
+                        'muscles_illustration/${MuscleGroup.biceps.illustration()}.png',
                         fit: BoxFit.cover,
                         filterQuality: FilterQuality.low,
                         height: 32,
                       ),
-                      title: Text("${log.exercise?.name}",
+                      title: Text(MuscleGroup.biceps.name,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
@@ -171,7 +160,7 @@ class ActiveChallengeScreen extends StatelessWidget {
                     child: LinearProgressIndicator(
                       value: progress,
                       backgroundColor: sapphireDark,
-                      color: vibrantGreen,
+                      color: setsMilestoneColor(progress: 0.3),
                       minHeight: 25,
                       borderRadius: BorderRadius.circular(3.0), // Border r
                     ),
@@ -186,14 +175,14 @@ class ActiveChallengeScreen extends StatelessWidget {
                               children: [
                               const TextSpan(text: " "),
                               TextSpan(
-                                  text: "${log.progress}",
+                                  text: "${4}",
                                   style: GoogleFonts.ubuntu(
                                       color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
                               const TextSpan(text: " "),
                               const TextSpan(text: "out of"),
                               const TextSpan(text: " "),
                               TextSpan(
-                                  text: "${template.target} ${_targetDescription(type: log.type)}",
+                                  text: "${12} ${_targetDescription(type: milestone.type)}",
                                   style: GoogleFonts.ubuntu(
                                       color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
                               const TextSpan(text: " "),
@@ -207,8 +196,8 @@ class ActiveChallengeScreen extends StatelessWidget {
                       width: double.infinity,
                       height: 50,
                       child: OpacityButtonWidget(
-                        onLongPress: () => _deleteChallengeLog(context: context),
-                        label: "Tap and hold to quit",
+                        onLongPress: null,
+                        label: "Milestone launching soon",
                         buttonColor: Colors.red,
                       ),
                     ),
@@ -222,20 +211,12 @@ class ActiveChallengeScreen extends StatelessWidget {
     );
   }
 
-  void _deleteChallengeLog({required BuildContext context}) async {
-    HapticFeedback.vibrate();
-    await Provider.of<ChallengeLogController>(context, listen: false).removeLog(log: log);
-    if (context.mounted) {
-      context.pop();
-    }
-  }
-
-  String _targetDescription({required ChallengeType type}) {
+  String _targetDescription({required MilestoneType type}) {
     return switch (type) {
-      ChallengeType.weekly => "weeks",
-      ChallengeType.reps => "reps",
-      ChallengeType.days => "days",
-      ChallengeType.weight => weightLabel(),
+      MilestoneType.weekly => "weeks",
+      MilestoneType.reps => "reps",
+      MilestoneType.days => "days",
+      MilestoneType.weight => weightLabel(),
     };
   }
 }

@@ -36,7 +36,7 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
       return foundExercise != null ? exerciseTemplate.copyWith(exercise: foundExercise) : exerciseTemplate;
     }).toList();
 
-    final muscleGroupFamilyFrequencies = weeklyScaledMuscleGroupFamilyFrequency(exerciseLogs: exerciseLogs);
+    final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequencyOn4WeeksScale(exerciseLogs: exerciseLogs);
 
     final muscleGroupFamilies = muscleGroupFamilyFrequencies.keys.toSet();
 

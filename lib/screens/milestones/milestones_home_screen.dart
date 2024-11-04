@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 
 import '../../colors.dart';
-import '../../controllers/challenge_log_controller.dart';
-import '../../repositories/challenge_templates.dart';
-import 'active_challenges_screen.dart';
-import 'challenges_screen.dart';
+import '../../repositories/milestones_repository.dart';
+import 'completed_milestones_screen.dart';
+import 'uncompleted_milestones_screen.dart';
 
-class ChallengesHomeScreen extends StatelessWidget {
-  const ChallengesHomeScreen({super.key});
+class MilestonesHomeScreen extends StatelessWidget {
+  const MilestonesHomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
 
-    final templates = ChallengeTemplates().loadTemplates();
-
-    final challenges = Provider.of<ChallengeLogController>(context, listen: true).logs;
+    final milestones = MilestonesRepository().loadMilestones();
 
     return DefaultTabController(
         length: 2,
@@ -28,10 +24,10 @@ class ChallengesHomeScreen extends StatelessWidget {
               dividerColor: Colors.transparent,
               tabs: [
                 Tab(
-                    child: Text("Challenges",
+                    child: Text("Milestones",
                         style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
                 Tab(
-                    child: Text("Active",
+                    child: Text("Completed",
                         style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
               ],
             ),
@@ -55,8 +51,8 @@ class ChallengesHomeScreen extends StatelessWidget {
                   Expanded(
                     child: TabBarView(
                       children: [
-                        ChallengesScreen(challenges: challenges, templates: templates),
-                        ActiveChallengesScreen(challenges: challenges, templates: templates)
+                        UncompletedMilestonesScreen(milestones: milestones),
+                        CompletedMilestonesScreen(milestones: milestones)
                       ],
                     ),
                   ),

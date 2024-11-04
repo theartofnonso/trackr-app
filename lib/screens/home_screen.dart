@@ -27,7 +27,7 @@ import '../models/ChallengeLog.dart';
 import '../models/RoutineLog.dart';
 import '../models/RoutineTemplate.dart';
 import '../utils/app_analytics.dart';
-import 'challenges/challenges_home_screen.dart';
+import 'milestones/milestones_home_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home_screen';
@@ -56,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
       FeedsScreen(scrollController: _scrollController),
       OverviewScreen(scrollController: _scrollController),
       const RoutineTemplatesScreen(),
-      const ChallengesHomeScreen(),
+      const MilestonesHomeScreen(),
     ];
 
     return Scaffold(
