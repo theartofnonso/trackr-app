@@ -122,12 +122,23 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: exercisesFromLibrary);
 
     final menuActions = [
-      MenuItemButton(onPressed: _navigateToRoutineTemplateEditor, child: Text("Edit", style: GoogleFonts.ubuntu())),
+      MenuItemButton(
+          onPressed: _navigateToRoutineTemplateEditor,
+          leadingIcon: FaIcon(FontAwesomeIcons.solidPenToSquare, size: 16),
+          child: Text("Edit", style: GoogleFonts.ubuntu())),
+      MenuItemButton(
+          onPressed: () => _createTemplate(copy: true),
+          leadingIcon: FaIcon(Icons.copy, size: 16),
+          child: Text("Copy", style: GoogleFonts.ubuntu())),
       MenuItemButton(
         onPressed: () => _updateTemplateSchedule(template: template),
+        leadingIcon: FaIcon(FontAwesomeIcons.solidClock, size: 16),
         child: Text("Schedule", style: GoogleFonts.ubuntu(color: Colors.white)),
       ),
-      MenuItemButton(onPressed: _showBottomSheet, child: Text("Share", style: GoogleFonts.ubuntu())),
+      MenuItemButton(
+          leadingIcon: FaIcon(FontAwesomeIcons.arrowUpFromBracket, size: 16),
+          onPressed: _showBottomSheet,
+          child: Text("Share", style: GoogleFonts.ubuntu())),
       MenuItemButton(
         onPressed: () {
           showBottomSheetWithMultiActions(
@@ -144,7 +155,12 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
               rightActionLabel: 'Delete',
               isRightActionDestructive: true);
         },
-        child: Text("Delete", style: GoogleFonts.ubuntu(color: Colors.red)),
+        leadingIcon: FaIcon(
+          FontAwesomeIcons.trash,
+          size: 16,
+          color: Colors.redAccent,
+        ),
+        child: Text("Delete", style: GoogleFonts.ubuntu(color: Colors.redAccent)),
       )
     ];
 
@@ -356,7 +372,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     }
   }
 
-  void _createTemplate() async {
+  void _createTemplate({bool copy = false}) async {
     final template = _template;
     if (template != null) {
       _showLoadingScreen();
@@ -372,7 +388,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
         }).toList();
         final templateToCreate = RoutineTemplateDto(
             id: "",
-            name: template.name,
+            name: copy ? "Copy of ${template.name}" : template.name,
             notes: template.notes,
             exerciseTemplates: exercises,
             owner: "",

@@ -147,7 +147,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                     if (log.notes.isNotEmpty)
                       Center(
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 20, bottom: 10),
+                          padding: const EdgeInsets.only(top: 20, right: 10, bottom: 10, left: 10),
                           child: Text('"${log.notes}"',
                               textAlign: TextAlign.center,
                               style: GoogleFonts.ubuntu(
@@ -367,7 +367,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             ListTile(
               dense: true,
               contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(FontAwesomeIcons.pen, size: 18),
+              leading: const FaIcon(FontAwesomeIcons.solidPenToSquare, size: 18),
               horizontalTitleGap: 6,
               title: Text("Edit Log",
                   style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
@@ -376,7 +376,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             ListTile(
               dense: true,
               contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(FontAwesomeIcons.clock, size: 18),
+              leading: const FaIcon(FontAwesomeIcons.solidClock, size: 18),
               horizontalTitleGap: 6,
               title: Text("Edit duration",
                   style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
@@ -385,7 +385,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             ListTile(
               dense: true,
               contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(FontAwesomeIcons.floppyDisk, size: 18),
+              leading: const FaIcon(FontAwesomeIcons.solidFloppyDisk, size: 18),
               horizontalTitleGap: 6,
               title: Text("Save as template",
                   style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
@@ -450,19 +450,19 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
   }
 
   void _editDuration() {
-    Navigator.pop(context);
+    Navigator.of(context).pop();
     final log = _log;
     if (log != null) {
       showDatetimeRangePicker(
           context: context,
           initialDateTimeRange: DateTimeRange(start: log.startTime, end: log.endTime),
           onChangedDateTimeRange: (DateTimeRange datetimeRange) async {
-            Navigator.pop(context);
+            Navigator.of(context).pop();
             final updatedLog = log.copyWith(
                 startTime: datetimeRange.start,
                 endTime: datetimeRange.end,
-                createdAt: datetimeRange.end,
-                updatedAt: datetimeRange.end);
+                createdAt: datetimeRange.start,
+                updatedAt: datetimeRange.start);
             await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: updatedLog);
             setState(() {
               _log = updatedLog;
@@ -546,14 +546,14 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
   }
 
   void _deleteLog() {
-    Navigator.pop(context); // Close the previous BottomSheet
+    Navigator.of(context).pop(); // Close the previous BottomSheet
     showBottomSheetWithMultiActions(
         context: context,
         title: "Delete log?",
         description: "Are you sure you want to delete this log?",
-        leftAction: context.pop,
+        leftAction: Navigator.of(context).pop,
         rightAction: () {
-          Navigator.pop(context); // Close current BottomSheet
+          Navigator.of(context).pop(); // Close current BottomSheet
           _showLoadingScreen();
           _doDeleteLog();
         },
