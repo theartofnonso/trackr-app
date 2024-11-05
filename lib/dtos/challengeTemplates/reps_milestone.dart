@@ -4,6 +4,8 @@ import 'package:tracker_app/enums/milestone_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 
 class RepsMilestone extends Milestone {
+  final MuscleGroup muscleGroup;
+
   RepsMilestone(
       {required super.id,
       required super.name,
@@ -11,7 +13,8 @@ class RepsMilestone extends Milestone {
       required super.description,
       required super.rule,
       required super.target,
-      required super.type});
+      required super.type,
+      required this.muscleGroup});
 
   static String _milestoneName({required MuscleGroup muscleGroup}) {
     return switch (muscleGroup) {
@@ -19,13 +22,13 @@ class RepsMilestone extends Milestone {
       MuscleGroup.biceps => "Guns and Glory",
       MuscleGroup.back => "Back Attack",
       MuscleGroup.calves => "Calves Do Grow",
-      MuscleGroup.chest => "Abs of Steel",
+      MuscleGroup.chest => "Pectacular",
       MuscleGroup.forearms => "Popeye's Pride",
       MuscleGroup.glutes => "Dump Truck",
       MuscleGroup.hamstrings => "Hammies Award",
       MuscleGroup.lats => "Wing Commander",
-      MuscleGroup.neck => "Abs of Steel",
-      MuscleGroup.shoulders => "Abs of Steel",
+      MuscleGroup.neck => "No Neck",
+      MuscleGroup.shoulders => "Jonny Bravo",
       MuscleGroup.traps => "Trap King",
       MuscleGroup.triceps => "Tri Titan",
       MuscleGroup.quadriceps => "Quadzilla",
@@ -63,6 +66,7 @@ class RepsMilestone extends Milestone {
           description: description,
           rule: rule,
           target: 10000,
+          muscleGroup: muscleGroup,
           type: MilestoneType.reps);
     }).toList();
   }

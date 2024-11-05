@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/challengeTemplates/milestone_dto.dart';
+import 'package:tracker_app/dtos/challengeTemplates/reps_milestone.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
@@ -115,34 +116,19 @@ class MilestoneScreen extends StatelessWidget {
                       FontAwesomeIcons.trophy,
                       color: Colors.white70,
                     ),
-                    title: Text(challengeTargetSummary(type: milestone.type, target: 12),
+                    title: Text(challengeTargetSummary(type: milestone.type, target: milestone.target),
                         style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400)),
                   ),
                   if (milestone.type == MilestoneType.reps)
                     ListTile(
                       titleAlignment: ListTileTitleAlignment.center,
                       leading: Image.asset(
-                        'muscles_illustration/chest.png',
+                        'muscles_illustration/${(milestone as RepsMilestone).muscleGroup.illustration()}.png',
                         fit: BoxFit.cover,
                         filterQuality: FilterQuality.low,
                         height: 32,
                       ),
-                      title: Text(MuscleGroup.chest.name,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
-                          textAlign: TextAlign.start),
-                    ),
-                  if (milestone.type == MilestoneType.hours)
-                    ListTile(
-                      titleAlignment: ListTileTitleAlignment.center,
-                      leading: Image.asset(
-                        'muscles_illustration/${MuscleGroup.biceps.illustration()}.png',
-                        fit: BoxFit.cover,
-                        filterQuality: FilterQuality.low,
-                        height: 32,
-                      ),
-                      title: Text(MuscleGroup.biceps.name,
+                      title: Text((milestone as RepsMilestone).muscleGroup.name,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),

@@ -8,6 +8,6 @@ String challengeTargetSummary({required MilestoneType type, required num target,
     MilestoneType.weekly => "$target ${pluralize(word: "Week", count: target.toInt())}",
     MilestoneType.reps => "${numbersInKOrM(target.toInt())} ${pluralize(word: "Rep", count: target.toInt())}",
     MilestoneType.days => "$target ${pluralize(word: "Day", count: target.toInt())}",
-    MilestoneType.hours => "$target ${pluralize(word: weightLabel(), count: target.toInt())}",
+    MilestoneType.hours => "$target ${pluralize(word: "Hour", count: target.toInt())}",
   };
 }
