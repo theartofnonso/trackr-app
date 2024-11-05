@@ -32,7 +32,7 @@ class MilestonesRepository {
     for (final milestone in hoursMilestones) {
       milestones.add(milestone);
     }
-    milestones.shuffle();
+    milestones.sort((a, b) => a.name.compareTo(b.name));
 
     return milestones;
   }
