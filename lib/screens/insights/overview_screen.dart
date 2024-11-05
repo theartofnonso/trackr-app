@@ -7,6 +7,7 @@ import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/routine_user_controller.dart';
 import 'package:tracker_app/dtos/appsync/activity_log_dto.dart';
 import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
+import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
@@ -85,7 +86,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     /// Routine Logs
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
     List<RoutineLogDto> routineLogsForTheYear =
-        routineLogController.whereLogsIsSameYear(dateTime: _monthDateTimeRange.start);
+        routineLogController.whereLogsIsSameYear(dateTime: DateTime.now().withoutTime());
 
     return Scaffold(
       floatingActionButton: _loading

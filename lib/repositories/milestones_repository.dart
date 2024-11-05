@@ -32,6 +32,7 @@ class MilestonesRepository {
     for (final milestone in hoursMilestones) {
       milestones.add(milestone);
     }
+    milestones.shuffle();
 
     return milestones;
   }

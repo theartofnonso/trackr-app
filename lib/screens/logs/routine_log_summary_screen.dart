@@ -57,8 +57,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
     final updatedLog = widget.log.copyWith(exerciseLogs: completedExerciseLogsAndSets);
 
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
-
-    final logsByDay = groupBy(routineLogController.logs, (log) => log.createdAt.withoutTime());
+    List<RoutineLogDto> routineLogsForTheYear = routineLogController.whereLogsIsSameYear(dateTime: DateTime.now().withoutTime());
 
     final muscleGroupFamilyFrequencyData =
         muscleGroupFamilyFrequency(exerciseLogs: updatedLog.exerciseLogs, includeSecondaryMuscleGroups: false);
@@ -84,14 +83,14 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
     }
 
     final pages = [
-      if (isMultipleOfFive(logsByDay.length)) SessionMilestoneShareable(label: "${logsByDay.length}th", image: _image),
+      if (isMultipleOfFive(routineLogsForTheYear.length)) SessionMilestoneShareable(label: "${routineLogsForTheYear.length}th", image: _image),
       ...pbShareAssets,
       RoutineLogShareableLite(
           log: updatedLog, frequencyData: muscleGroupFamilyFrequencyData, pbs: pbShareAssets.length, image: _image),
     ];
 
     final pagesKeys = [
-      if (isMultipleOfFive(logsByDay.length)) sessionMilestoneShareableKey,
+      if (isMultipleOfFive(routineLogsForTheYear.length)) sessionMilestoneShareableKey,
       ...pbShareAssetsKeys,
       routineLogShareableLiteKey,
     ];
