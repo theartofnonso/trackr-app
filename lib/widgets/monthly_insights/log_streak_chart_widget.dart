@@ -66,7 +66,7 @@ class LogStreakChartWidget extends StatelessWidget {
                 unit: ChartUnit.number,
                 bottomTitlesInterval: 1,
                 showLeftTitles: true,
-                maxY: 31,
+                maxY: streaks.isNotEmpty ? streaks.max.toDouble() : 31,
                 reservedSize: 25,
               ))
         ],

@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 
 import '../../enums/milestone_type_enums.dart';
 import 'milestone_dto.dart';
@@ -41,4 +42,6 @@ class DaysMilestone extends Milestone {
           type: MilestoneType.days);
     }).toList();
   }
+
+
 }
