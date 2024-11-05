@@ -25,9 +25,9 @@ class ChallengeTargetIcon extends StatelessWidget {
       );
     }
 
-    if (type == MilestoneType.weight) {
+    if (type == MilestoneType.hours) {
       return const FaIcon(
-        FontAwesomeIcons.weightHanging,
+        FontAwesomeIcons.solidClock,
         color: Colors.white,
         size: 12,
       );

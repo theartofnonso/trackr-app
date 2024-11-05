@@ -30,7 +30,7 @@ class DaysMilestone extends Milestone {
       final description =
           'Prove your dedication by logging ${days.value} days of training. This challenge is for the truly committed.';
       final caption = 'Train for ${days.value} days';
-      final rule = 'Log ${days.value} days of training to complete this 100-Day Challenge.';
+      final rule = 'Log ${days.value} days of training to complete this ${days.value}-Day Challenge.';
       return DaysMilestone(
           id: "Days_Milestone_${days.value}_$index",
           name: '${days.value} Days of Gains'.toUpperCase(),

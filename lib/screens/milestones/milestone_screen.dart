@@ -133,7 +133,7 @@ class MilestoneScreen extends StatelessWidget {
                           style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
                           textAlign: TextAlign.start),
                     ),
-                  if (milestone.type == MilestoneType.weight)
+                  if (milestone.type == MilestoneType.hours)
                     ListTile(
                       titleAlignment: ListTileTitleAlignment.center,
                       leading: Image.asset(
@@ -216,7 +216,7 @@ class MilestoneScreen extends StatelessWidget {
       MilestoneType.weekly => "weeks",
       MilestoneType.reps => "reps",
       MilestoneType.days => "days",
-      MilestoneType.weight => weightLabel(),
+      MilestoneType.hours => "hours",
     };
   }
 }

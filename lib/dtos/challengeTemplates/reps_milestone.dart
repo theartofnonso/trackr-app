@@ -3,8 +3,8 @@ import 'package:tracker_app/dtos/challengeTemplates/milestone_dto.dart';
 import 'package:tracker_app/enums/milestone_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 
-class RepsMarathonMilestone extends Milestone {
-  RepsMarathonMilestone(
+class RepsMilestone extends Milestone {
+  RepsMilestone(
       {required super.id,
       required super.name,
       required super.caption,
@@ -56,7 +56,7 @@ class RepsMarathonMilestone extends Milestone {
       final caption = "Accumulate 10k reps of ${muscleGroup.name} training";
       final rule = "Accumulate reps targeting your ${muscleGroup.name} in every training session.";
       final milestoneName = _milestoneName(muscleGroup: muscleGroup).toUpperCase();
-      return RepsMarathonMilestone(
+      return RepsMilestone(
           id: "Reps_Milestone_${milestoneName}_$index",
           name: milestoneName,
           caption: caption,
