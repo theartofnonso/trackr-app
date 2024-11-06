@@ -9,7 +9,7 @@ import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/models/ActivityLog.dart';
 import 'package:tracker_app/models/Exercise.dart';
 import 'package:tracker_app/models/RoutineUser.dart';
-import 'package:tracker_app/screens/insights/overview_screen.dart';
+import 'package:tracker_app/screens/milestones/home_tab_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/templates/routine_templates_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -52,9 +52,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final screens = [
-      OverviewScreen(scrollController: _scrollController),
+      HomeTabScreen(
+        scrollController: _scrollController,
+      ),
       const RoutineTemplatesScreen(),
       const MilestonesHomeScreen(),
       const SettingsScreen()

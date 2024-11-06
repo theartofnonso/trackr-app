@@ -18,7 +18,7 @@ class LogStreakChartWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
     final dateRange = theLastYearDateTimeRange();
 

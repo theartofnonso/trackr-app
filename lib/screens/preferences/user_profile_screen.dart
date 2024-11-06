@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/screens/not_found.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/widgets/label_divider.dart';
+import 'package:tracker_app/widgets/user_icon_widget.dart';
 
 import '../../colors.dart';
 import '../../controllers/routine_user_controller.dart';
@@ -55,23 +56,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           minimum: const EdgeInsets.all(10),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Center(
-              child: Container(
-                  width: 80, // Width and height should be equal to make a perfect circle
-                  height: 80,
-                  decoration: BoxDecoration(
-                    color: sapphireDark80,
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.circular(5), // Optional border
-                    boxShadow: [
-                      BoxShadow(
-                        color: sapphireDark.withOpacity(0.5),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset: const Offset(0, 3), // changes position of shadow
-                      ),
-                    ],
-                  ),
-                  child: const Center(child: FaIcon(FontAwesomeIcons.solidUser, color: Colors.white54, size: 34))),
+              child: UserIconWidget(size: 60, iconSize: 22),
             ),
             const SizedBox(
               height: 16,

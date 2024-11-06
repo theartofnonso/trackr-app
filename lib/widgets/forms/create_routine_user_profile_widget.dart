@@ -15,6 +15,7 @@ import '../../utils/general_utils.dart';
 import '../../utils/https_utils.dart';
 import '../buttons/opacity_button_widget.dart';
 import '../pickers/weight_picker.dart';
+import '../user_icon_widget.dart';
 
 class CreateRoutineUserProfileWidget extends StatefulWidget {
   const CreateRoutineUserProfileWidget({
@@ -57,23 +58,7 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
           )),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Center(
-          child: Container(
-              width: 60, // Width and height should be equal to make a perfect circle
-              height: 60,
-              decoration: BoxDecoration(
-                color: sapphireDark80,
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(5), // Optional border
-                boxShadow: [
-                  BoxShadow(
-                    color: sapphireDark.withOpacity(0.5),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: const Offset(0, 3), // changes position of shadow
-                  ),
-                ],
-              ),
-              child: const Center(child: FaIcon(FontAwesomeIcons.solidUser, color: Colors.white54, size: 22))),
+          child: UserIconWidget(size: 60, iconSize: 22),
         ),
         const SizedBox(
           height: 20,
@@ -141,7 +126,7 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
                 keyboardType: TextInputType.text,
                 textCapitalization: TextCapitalization.none,
                 style:
-                GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+                    GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
               ),
             ),
             const SizedBox(

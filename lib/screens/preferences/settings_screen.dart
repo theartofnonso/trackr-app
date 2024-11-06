@@ -159,7 +159,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 8),
-                      OutlineListTile(onTap: _navigateToProfile, title: "Profile", trailing: "manage profile"),
+                      OutlineListTile(onTap: _navigateToUserProfile, title: "Profile", trailing: "manage profile"),
                     ],
                   ),
                 const SizedBox(height: 8),
@@ -193,6 +193,16 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     );
   }
 
+  void _navigateToUserProfile() {
+    final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
+    final user = routineUserController.user;
+    if (user != null) {
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const UserProfileScreen()));
+    } else {
+      showCreateProfileBottomSheet(context: context);
+    }
+  }
+
   void _showLoadingScreen() {
     setState(() {
       _loading = true;
@@ -215,10 +225,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     );
 
     await openUrl(url: emailUri.toString(), context: context);
-  }
-
-  void _navigateToProfile() {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const UserProfileScreen()));
   }
 
   void _navigateToExerciseLibrary() {

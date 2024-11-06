@@ -15,6 +15,7 @@ import '../../dtos/appsync/routine_template_dto.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../utils/routine_utils.dart';
+import '../../widgets/information_containers/information_container_with_background_image.dart';
 
 class RoutineTemplatesScreen extends StatelessWidget {
   const RoutineTemplatesScreen({super.key});
@@ -82,6 +83,16 @@ class RoutineTemplatesScreen extends StatelessWidget {
             child: SafeArea(
                 minimum: const EdgeInsets.all(10.0),
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  const SizedBox(height: 16),
+                  BackgroundInformationContainer(
+                      image: 'images/man_woman.jpg',
+                      containerColor: Colors.blue.shade900,
+                      content: "A structured plan is essential for achieving your fitness goals. Try creating one.",
+                      textStyle: GoogleFonts.ubuntu(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white.withOpacity(0.9),
+                      )),
                   const SizedBox(height: 16),
                   TRKRCoachButton(label: "Describe a workout", onTap: () => _switchToAIContext(context: context)),
                   const SizedBox(height: 16),
