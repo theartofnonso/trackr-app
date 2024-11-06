@@ -21,9 +21,11 @@ import '../widgets/chart/muscle_group_family_chart.dart';
 import 'no_list_empty_state.dart';
 
 class FeedsScreen extends StatelessWidget {
+  final List<RoutineLogDto> logs;
+
   final ScrollController scrollController;
 
-  const FeedsScreen({super.key, required this.scrollController});
+  const FeedsScreen({super.key, required this.scrollController, required this.logs});
 
   @override
   Widget build(BuildContext context) {

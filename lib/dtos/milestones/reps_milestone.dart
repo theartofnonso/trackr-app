@@ -76,6 +76,9 @@ class RepsMilestone extends Milestone {
   }
 
   static double _calculateProgress({required List<RoutineLogDto> logs, required MuscleGroup muscleGroup}) {
+
+    if(logs.isEmpty) return 0;
+
     final totalReps = logs
         .expand((log) => log.exerciseLogs)
         .where((exerciseLog) {

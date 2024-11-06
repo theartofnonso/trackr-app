@@ -38,7 +38,6 @@ import 'package:tracker_app/screens/editors/routine_template_editor_screen.dart'
 import 'package:tracker_app/screens/exercise/history/exercise_home_screen.dart';
 import 'package:tracker_app/screens/home_screen.dart';
 import 'package:tracker_app/screens/insights/calories_trend_screen.dart';
-import 'package:tracker_app/screens/insights/overview_screen.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
 import 'package:tracker_app/screens/intro_screen.dart';
 import 'package:tracker_app/screens/logs/activity_logs_screen.dart';
@@ -143,10 +142,6 @@ final _router = GoRouter(
             },
           )
         ]),
-    GoRoute(
-      path: OverviewScreen.routeName, // Define the path for OverviewScreen
-      builder: (context, state) => const OverviewScreen(),
-    ),
     GoRoute(
       path: RoutineLogEditorScreen.routeName,
       builder: (context, state) {

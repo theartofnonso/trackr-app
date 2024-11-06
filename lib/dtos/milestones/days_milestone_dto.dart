@@ -49,6 +49,9 @@ class DaysMilestone extends Milestone {
   }
 
   static (List<RoutineLogDto>, double) _calculateLogsAndProgress({required List<RoutineLogDto> logs, required int target}) {
+
+    if(logs.isEmpty) return ([], 0);
+
     final listOfLogs = logs.take(target);
     final progress = listOfLogs.length / target;
     return (listOfLogs.take(target).toList(), progress);

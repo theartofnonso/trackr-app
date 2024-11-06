@@ -9,8 +9,8 @@ import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/models/ActivityLog.dart';
 import 'package:tracker_app/models/Exercise.dart';
 import 'package:tracker_app/models/RoutineUser.dart';
-import 'package:tracker_app/screens/feeds_screen.dart';
 import 'package:tracker_app/screens/insights/overview_screen.dart';
+import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/templates/routine_templates_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
@@ -52,11 +52,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     final screens = [
-      FeedsScreen(scrollController: _scrollController),
       OverviewScreen(scrollController: _scrollController),
       const RoutineTemplatesScreen(),
       const MilestonesHomeScreen(),
+      const SettingsScreen()
     ];
 
     return Scaffold(
@@ -73,11 +74,6 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: FaIcon(FontAwesomeIcons.house, color: Colors.grey),
             selectedIcon: FaIcon(FontAwesomeIcons.house, color: Colors.white),
             label: 'Home',
-          ),
-          const NavigationDestination(
-            icon: FaIcon(FontAwesomeIcons.barsProgress, color: Colors.grey),
-            selectedIcon: FaIcon(FontAwesomeIcons.barsProgress, color: Colors.white),
-            label: 'Statistics',
           ),
           NavigationDestination(
             icon: Image.asset(
@@ -96,6 +92,11 @@ class _HomeScreenState extends State<HomeScreen> {
           const NavigationDestination(
             icon: FaIcon(FontAwesomeIcons.trophy, color: Colors.grey),
             selectedIcon: FaIcon(FontAwesomeIcons.trophy, color: Colors.white),
+            label: 'Challenges',
+          ),
+          const NavigationDestination(
+            icon: FaIcon(FontAwesomeIcons.gear, color: Colors.grey),
+            selectedIcon: FaIcon(FontAwesomeIcons.gear, color: Colors.white),
             label: 'Challenges',
           ),
         ],

@@ -83,6 +83,17 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     Provider.of<SettingsController>(context, listen: true);
 
+    final menuActions = [
+      MenuItemButton(
+          onPressed: () {},
+          leadingIcon: FaIcon(FontAwesomeIcons.list, size: 16),
+          child: Text("Feeds", style: GoogleFonts.ubuntu())),
+      MenuItemButton(
+          onPressed: () {},
+          leadingIcon: FaIcon(FontAwesomeIcons.chartBar, size: 16),
+          child: Text("Stats", style: GoogleFonts.ubuntu())),
+    ];
+
     /// Routine Logs
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
     List<RoutineLogDto> routineLogsForTheYear =
@@ -148,9 +159,30 @@ class _OverviewScreenState extends State<OverviewScreen> {
                         const Spacer(),
                         IconButton(
                           onPressed: _navigateToUserProfile,
-                          icon: const Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                            FaIcon(FontAwesomeIcons.solidUser, color: Colors.white, size: 18),
-                          ]),
+                          icon: MenuAnchor(
+                            style: MenuStyle(
+                              backgroundColor: WidgetStateProperty.all(sapphireDark),
+                              surfaceTintColor: WidgetStateProperty.all(sapphireDark),
+                            ),
+                            builder: (BuildContext context, MenuController controller, Widget? child) {
+                              return IconButton(
+                                onPressed: () {
+                                  if (controller.isOpen) {
+                                    controller.close();
+                                  } else {
+                                    controller.open();
+                                  }
+                                },
+                                icon: const FaIcon(
+                                  FontAwesomeIcons.bars,
+                                  color: Colors.white,
+                                  size: 24,
+                                ),
+                                tooltip: 'Show menu',
+                              );
+                            },
+                            menuChildren: menuActions,
+                          ),
                         ),
                       ],
                     ),

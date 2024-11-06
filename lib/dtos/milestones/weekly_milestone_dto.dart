@@ -66,6 +66,9 @@ class WeeklyMilestone extends Milestone {
 
   static double _calculateMondayProgress(
       {required List<RoutineLogDto> logs, required int target, required List<DateTimeRange> weeks}) {
+
+    if(logs.isEmpty) return 0;
+
     List<RoutineLogDto> mondayLogs = [];
     for (final week in weeks) {
       final logsForTheWeek = logs.where((log) => log.createdAt.isWithinRange(range: week));
@@ -84,6 +87,9 @@ class WeeklyMilestone extends Milestone {
 
   static double _calculateWeekendProgress(
       {required List<RoutineLogDto> logs, required int target, required List<DateTimeRange> weeks}) {
+
+    if(logs.isEmpty) return 0;
+
     List<RoutineLogDto> weekendLogs = [];
     for (final week in weeks) {
       final logsForTheWeek = logs.where((log) => log.createdAt.isWithinRange(range: week));
@@ -103,6 +109,9 @@ class WeeklyMilestone extends Milestone {
 
   static double _calculateLegProgress(
       {required List<RoutineLogDto> logs, required int target, required List<DateTimeRange> weeks}) {
+
+    if(logs.isEmpty) return 0;
+
     List<RoutineLogDto> legsLogs = [];
     for (final week in weeks) {
       final logsForTheWeek = logs.where((log) => log.createdAt.isWithinRange(range: week));

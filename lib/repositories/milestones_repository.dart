@@ -14,7 +14,6 @@ class MilestonesRepository {
     final weeklyMilestones = WeeklyMilestone.loadMilestones(logs: logs);
     for (final milestone in weeklyMilestones) {
       milestones.add(milestone);
-      print("here");
     }
 
     /// Add Days Challenges
