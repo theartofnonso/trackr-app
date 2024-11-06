@@ -20,6 +20,8 @@ class MilestoneScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final remainder = (milestone.progress * milestone.target).toInt();
+
     final confettiController = ConfettiController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       confettiController.play();
@@ -156,27 +158,10 @@ class MilestoneScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     milestone.progress > 0
-                        ? RichText(
-                            text: TextSpan(
-                                text: "Great job! You have conquered",
-                                style: GoogleFonts.ubuntu(
-                                    height: 1.5, color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w500),
-                                children: [
-                                const TextSpan(text: " "),
-                                TextSpan(
-                                    text: "${4}",
-                                    style: GoogleFonts.ubuntu(
-                                        color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
-                                const TextSpan(text: " "),
-                                const TextSpan(text: "out of"),
-                                const TextSpan(text: " "),
-                                TextSpan(
-                                    text: "${12} ${_targetDescription(type: milestone.type)}",
-                                    style: GoogleFonts.ubuntu(
-                                        color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
-                                const TextSpan(text: " "),
-                                const TextSpan(text: "in this challenge. Keep training to reach the finish line!"),
-                              ]))
+                        ? milestone.progress == 1
+                            ? _CompletedMessage(target: milestone.target, description: _targetDescription())
+                            : _ProgressMessage(
+                                remainder: remainder, target: milestone.target, description: _targetDescription())
                         : Text("Keep up the training to see your progress grow for this challenge.",
                             style: GoogleFonts.ubuntu(
                                 fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400, height: 1.5)),
@@ -187,16 +172,74 @@ class MilestoneScreen extends StatelessWidget {
           ),
         ),
       ),
-      milestone.progress == 1 ? ConfettiWidget(minBlastForce: 10, confettiController: confettiController, blastDirectionality: BlastDirectionality.explosive) : const SizedBox.shrink()
+      milestone.progress == 1
+          ? ConfettiWidget(
+              minBlastForce: 10,
+              confettiController: confettiController,
+              blastDirectionality: BlastDirectionality.explosive)
+          : const SizedBox.shrink()
     ]);
   }
 
-  String _targetDescription({required MilestoneType type}) {
-    return switch (type) {
+  String _targetDescription() {
+    return switch (milestone.type) {
       MilestoneType.weekly => "weeks",
       MilestoneType.reps => "reps",
       MilestoneType.days => "days",
       MilestoneType.hours => "hours",
     };
+  }
+}
+
+class _ProgressMessage extends StatelessWidget {
+  final int remainder;
+  final int target;
+  final String description;
+
+  const _ProgressMessage({required this.remainder, required this.target, required this.description});
+
+  @override
+  Widget build(BuildContext context) {
+    return RichText(
+        text: TextSpan(
+            text: "Great job! You have conquered",
+            style: GoogleFonts.ubuntu(height: 1.5, color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w500),
+            children: [
+          const TextSpan(text: " "),
+          TextSpan(
+              text: "$remainder",
+              style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
+          const TextSpan(text: " "),
+          const TextSpan(text: "out of"),
+          const TextSpan(text: " "),
+          TextSpan(
+              text: "$target $description",
+              style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
+          const TextSpan(text: " "),
+          const TextSpan(text: "in this challenge. Keep training to reach the finish line!"),
+        ]));
+  }
+}
+
+class _CompletedMessage extends StatelessWidget {
+  final int target;
+  final String description;
+
+  const _CompletedMessage({required this.target, required this.description});
+
+  @override
+  Widget build(BuildContext context) {
+    return RichText(
+        text: TextSpan(
+            text: "Great job! You have successfully completed",
+            style: GoogleFonts.ubuntu(height: 1.5, color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w500),
+            children: [
+          const TextSpan(text: " "),
+          TextSpan(
+              text: "$target $description",
+              style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
+          const TextSpan(text: " "),
+          const TextSpan(text: "in this challenge. Keep training to complete more milestones!"),
+        ]));
   }
 }
