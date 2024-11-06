@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/widgets/milestones/milestone_grid_item.dart';
 
-import '../../dtos/challengeTemplates/milestone_dto.dart';
+import '../../dtos/milestones/milestone_dto.dart';
 import '../../widgets/information_containers/information_container_with_background_image.dart';
 import '../no_list_empty_state.dart';
 

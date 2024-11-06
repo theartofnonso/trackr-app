@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
-import 'package:tracker_app/dtos/challengeTemplates/milestone_dto.dart';
+import 'package:tracker_app/dtos/milestones/milestone_dto.dart';
 
 import '../../widgets/information_containers/information_container_with_background_image.dart';
 import '../../widgets/milestones/milestone_grid_item.dart';
 
-class UncompletedMilestonesScreen extends StatelessWidget {
+class PendingMilestonesScreen extends StatelessWidget {
   final List<Milestone> milestones;
 
-  const UncompletedMilestonesScreen({super.key, required this.milestones});
+  const PendingMilestonesScreen({super.key, required this.milestones});
 
   @override
   Widget build(BuildContext context) {

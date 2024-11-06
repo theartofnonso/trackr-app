@@ -1,8 +1,6 @@
 import 'package:tracker_app/enums/milestone_type_enums.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 
-import 'general_utils.dart';
-
 String challengeTargetSummary({required MilestoneType type, required num target, required}) {
   return switch (type) {
     MilestoneType.weekly => "$target ${pluralize(word: "Week", count: target.toInt())}",

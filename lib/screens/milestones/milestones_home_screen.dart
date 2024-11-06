@@ -1,18 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
 import '../../colors.dart';
+import '../../controllers/routine_log_controller.dart';
+import '../../dtos/appsync/routine_log_dto.dart';
 import '../../repositories/milestones_repository.dart';
 import 'completed_milestones_screen.dart';
-import 'uncompleted_milestones_screen.dart';
+import 'pending_milestones_screen.dart';
 
 class MilestonesHomeScreen extends StatelessWidget {
   const MilestonesHomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
-    final milestones = MilestonesRepository().loadMilestones();
+    List<RoutineLogDto> routineLogsForTheYear =
+        routineLogController.whereLogsIsSameYear(dateTime: DateTime.now().withoutTime());
+
+    routineLogsForTheYear.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+
+    final milestones = MilestonesRepository().loadMilestones(logs: routineLogsForTheYear);
+
+    final pendingMilestones = milestones.where((milestone) => milestone.progress < 1).toList();
+
+    final completedMilestones = milestones.where((milestone) => milestone.progress == 1).toList();
 
     return DefaultTabController(
         length: 2,
@@ -51,8 +65,8 @@ class MilestonesHomeScreen extends StatelessWidget {
                   Expanded(
                     child: TabBarView(
                       children: [
-                        UncompletedMilestonesScreen(milestones: milestones),
-                        CompletedMilestonesScreen(milestones: milestones)
+                        PendingMilestonesScreen(milestones: pendingMilestones),
+                        CompletedMilestonesScreen(milestones: completedMilestones)
                       ],
                     ),
                   ),

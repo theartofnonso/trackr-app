@@ -1,7 +1,9 @@
 import 'package:collection/collection.dart';
-import 'package:tracker_app/dtos/challengeTemplates/milestone_dto.dart';
+import 'package:tracker_app/dtos/milestones/milestone_dto.dart';
 import 'package:tracker_app/enums/milestone_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
+
+import '../appsync/routine_log_dto.dart';
 
 class RepsMilestone extends Milestone {
   final MuscleGroup muscleGroup;
@@ -13,6 +15,7 @@ class RepsMilestone extends Milestone {
       required super.description,
       required super.rule,
       required super.target,
+      required super.progress,
       required super.type,
       required this.muscleGroup});
 
@@ -36,7 +39,7 @@ class RepsMilestone extends Milestone {
     };
   }
 
-  static List<Milestone> loadMilestones() {
+  static List<Milestone> loadMilestones({required List<RoutineLogDto> logs}) {
     final muscleGroups = [
       MuscleGroup.abs,
       MuscleGroup.biceps,
@@ -66,8 +69,25 @@ class RepsMilestone extends Milestone {
           description: description,
           rule: rule,
           target: 10000,
+          progress: _calculateProgress(logs: logs, muscleGroup: muscleGroup),
           muscleGroup: muscleGroup,
           type: MilestoneType.reps);
     }).toList();
+  }
+
+  static double _calculateProgress({required List<RoutineLogDto> logs, required MuscleGroup muscleGroup}) {
+    final totalReps = logs
+        .expand((log) => log.exerciseLogs)
+        .where((exerciseLog) {
+          final primaryMuscleGroup = exerciseLog.exercise.primaryMuscleGroup;
+          final secondaryMuscleGroups = exerciseLog.exercise.secondaryMuscleGroups;
+          final muscleGroups = [primaryMuscleGroup, ...secondaryMuscleGroups];
+          return muscleGroups.contains(muscleGroup);
+        })
+        .expand((exerciseLog) => exerciseLog.sets)
+        .map((set) => set.value2);
+        //.reduce((value, element) => value + element);
+   // print("${muscleGroup.name} has $totalReps");
+    return 3000 / 10000;
   }
 }

@@ -7,6 +7,7 @@ class Milestone {
   final String description;
   final String rule;
   final int target;
+  final double progress;
   final MilestoneType type;
 
   Milestone({
@@ -16,6 +17,7 @@ class Milestone {
     required this.description,
     required this.rule,
     required this.target,
+    required this.progress,
     required this.type
   });
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../colors.dart';
-import '../../dtos/challengeTemplates/milestone_dto.dart';
+import '../../dtos/milestones/milestone_dto.dart';
 import '../../screens/milestones/milestone_screen.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
@@ -49,9 +49,9 @@ class MilestoneGridItem extends StatelessWidget {
                 borderRadius: BorderRadius.circular(5),
               ),
               child: LinearProgressIndicator(
-                value: 0,
+                value: milestone.progress,
                 backgroundColor: sapphireDark,
-                color: setsMilestoneColor(progress: 0),
+                color: setsMilestoneColor(progress: milestone.progress),
                 minHeight: 16,
                 borderRadius: BorderRadius.circular(3.0), // Border r
               ),

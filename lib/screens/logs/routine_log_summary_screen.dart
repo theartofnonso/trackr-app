@@ -174,7 +174,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
           ),
         ),
       ),
-      ConfettiWidget(confettiController: _confettiController, blastDirectionality: BlastDirectionality.explosive)
+      ConfettiWidget(minBlastForce: 10, confettiController: _confettiController, blastDirectionality: BlastDirectionality.explosive)
     ]);
   }
 
