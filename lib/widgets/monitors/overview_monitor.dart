@@ -34,7 +34,7 @@ class OverviewMonitor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
     final routineLogs = routineLogController.whereLogsIsSameMonth(dateTime: dateTime);
 

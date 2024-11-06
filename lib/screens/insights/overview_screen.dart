@@ -14,7 +14,6 @@ import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 
 import '../../controllers/activity_log_controller.dart';
 import '../../controllers/routine_log_controller.dart';
-import '../../controllers/settings_controller.dart';
 import '../../dtos/abstract_class/log_class.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
@@ -58,8 +57,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
   @override
   Widget build(BuildContext context) {
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
-
-    Provider.of<SettingsController>(context, listen: true);
 
     Provider.of<RoutineLogController>(context, listen: true);
 
@@ -115,7 +112,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                         const SizedBox(height: 12),
                         MonthlyInsightsScreen(dateTimeRange: widget.dateTimeRange),
                         const SizedBox(height: 18),
-                        const LogStreakChartWidget(),
+                        LogStreakChartWidget(),
                       ])),
                 )
                 // Add more widgets here for exercise insights

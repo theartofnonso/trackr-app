@@ -16,7 +16,6 @@ import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../controllers/activity_log_controller.dart';
-import '../controllers/challenge_log_controller.dart';
 import '../controllers/exercise_controller.dart';
 import '../controllers/routine_template_controller.dart';
 import '../controllers/routine_user_controller.dart';
@@ -122,58 +121,6 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void _observeExerciseQuery() async {
-    final controller = Provider.of<ExerciseController>(context, listen: false);
-    await controller.loadLocalExercises();
-    _exerciseStream = Amplify.DataStore.observeQuery(
-      Exercise.classType,
-    ).listen((QuerySnapshot<Exercise> snapshot) {
-      if (mounted) {
-        Provider.of<ExerciseController>(context, listen: false).streamExercises(exercises: snapshot.items);
-      }
-    });
-  }
-
-  void _observeRoutineLogQuery() {
-    _routineLogStream = Amplify.DataStore.observeQuery(
-      RoutineLog.classType,
-    ).listen((QuerySnapshot<RoutineLog> snapshot) {
-      if (mounted) {
-        Provider.of<RoutineLogController>(context, listen: false).streamLogs(logs: snapshot.items);
-      }
-    });
-  }
-
-  void _observeRoutineTemplateQuery() {
-    _routineTemplateStream = Amplify.DataStore.observeQuery(
-      RoutineTemplate.classType,
-    ).listen((QuerySnapshot<RoutineTemplate> snapshot) {
-      if (mounted) {
-        Provider.of<RoutineTemplateController>(context, listen: false).streamTemplates(templates: snapshot.items);
-      }
-    });
-  }
-
-  void _observeChallengeLogQuery() {
-    _challengeLogStream = Amplify.DataStore.observeQuery(
-      ChallengeLog.classType,
-    ).listen((QuerySnapshot<ChallengeLog> snapshot) {
-      if (mounted) {
-        Provider.of<ChallengeLogController>(context, listen: false).streamLogs(logs: snapshot.items);
-      }
-    });
-  }
-
-  void _observeActivityLogQuery() {
-    _activityLogStream = Amplify.DataStore.observeQuery(
-      ActivityLog.classType,
-    ).listen((QuerySnapshot<ActivityLog> snapshot) {
-      if (mounted) {
-        Provider.of<ActivityLogController>(context, listen: false).streamLogs(logs: snapshot.items);
-      }
-    });
-  }
-
   void _scrollToTop(int index) {
     _scrollController.animateTo(
       0,
@@ -183,12 +130,22 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _loadAppData() async {
+
+    final controller = Provider.of<ExerciseController>(context, listen: false);
+    await controller.loadLocalExercises();
+
+    final exercises = await Amplify.DataStore.query(Exercise.classType);
+    final routineLogs = await Amplify.DataStore.query(RoutineLog.classType);
+    final activityLogs = await Amplify.DataStore.query(ActivityLog.classType);
+    final routineTemplates = await Amplify.DataStore.query(RoutineTemplate.classType);
+
+    if (mounted) {
+      Provider.of<ExerciseController>(context, listen: false).streamExercises(exercises: exercises);
+      Provider.of<RoutineLogController>(context, listen: false).streamLogs(logs: routineLogs);
+      Provider.of<ActivityLogController>(context, listen: false).streamLogs(logs: activityLogs);
+      Provider.of<RoutineTemplateController>(context, listen: false).streamTemplates(templates: routineTemplates);
+    }
     _observeRoutineUserQuery();
-    _observeExerciseQuery();
-    _observeRoutineLogQuery();
-    _observeRoutineTemplateQuery();
-    _observeActivityLogQuery();
-    _observeChallengeLogQuery();
   }
 
   void _loadCachedLog() {

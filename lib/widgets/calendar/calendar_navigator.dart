@@ -76,7 +76,12 @@ class _CalendarNavigatorState extends State<CalendarNavigator> {
         IconButton(
             onPressed: canNavigatePrevious && widget.enabled ? _goToPreviousMonth : null,
             icon: FaIcon(FontAwesomeIcons.arrowLeftLong,
-                color: canNavigatePrevious && widget.enabled ? Colors.white : Colors.white30, size: 16)),
+                color: canNavigatePrevious && widget.enabled
+                    ? Colors.white
+                    : widget.enabled
+                        ? Colors.white30
+                        : Colors.transparent,
+                size: 16)),
         Text(
             widget.enabled
                 ? _currentDate.formattedMonthAndYear().toUpperCase()
@@ -89,7 +94,12 @@ class _CalendarNavigatorState extends State<CalendarNavigator> {
         IconButton(
             onPressed: canNavigateNext && widget.enabled ? _goToNextMonth : null,
             icon: FaIcon(FontAwesomeIcons.arrowRightLong,
-                color: canNavigateNext && widget.enabled ? Colors.white : Colors.white30, size: 16)),
+                color: canNavigateNext && widget.enabled
+                    ? Colors.white
+                    : widget.enabled
+                        ? Colors.white30
+                        : Colors.transparent,
+                size: 16)),
       ],
     );
   }
