@@ -59,7 +59,7 @@ class RepsMilestone extends Milestone {
     return muscleGroups.mapIndexed((index, muscleGroup) {
       final description =
           'Focus on building strength and endurance in your ${muscleGroup.name} by committing to this challenge. Consistency and dedication will be key as you target your goals each week.';
-      final caption = "Accumulate 10k reps of ${muscleGroup.name} training";
+      final caption = "Accumulate ${1}k reps of ${muscleGroup.name} training";
       final rule = "Accumulate reps targeting your ${muscleGroup.name} in every training session.";
       final milestoneName = _milestoneName(muscleGroup: muscleGroup).toUpperCase();
       return RepsMilestone(
@@ -68,29 +68,33 @@ class RepsMilestone extends Milestone {
           caption: caption,
           description: description,
           rule: rule,
-          target: 10000,
-          progress: _calculateProgress(logs: logs, muscleGroup: muscleGroup),
+          target: 1000,
+          progress: _calculateProgress(logs: logs, muscleGroup: muscleGroup, target: 1000),
           muscleGroup: muscleGroup,
           type: MilestoneType.reps);
     }).toList();
   }
 
-  static double _calculateProgress({required List<RoutineLogDto> logs, required MuscleGroup muscleGroup}) {
+  static double _calculateProgress(
+      {required List<RoutineLogDto> logs, required MuscleGroup muscleGroup, required int target}) {
+    if (logs.isEmpty) return 0;
 
-    if(logs.isEmpty) return 0;
+    int sumOfReps = 0;
 
-    final totalReps = logs
-        .expand((log) => log.exerciseLogs)
-        .where((exerciseLog) {
-          final primaryMuscleGroup = exerciseLog.exercise.primaryMuscleGroup;
-          final secondaryMuscleGroups = exerciseLog.exercise.secondaryMuscleGroups;
-          final muscleGroups = [primaryMuscleGroup, ...secondaryMuscleGroups];
-          return muscleGroups.contains(muscleGroup);
-        })
-        .expand((exerciseLog) => exerciseLog.sets)
-        .map((set) => set.value2);
-        //.reduce((value, element) => value + element);
-   // print("${muscleGroup.name} has $totalReps");
-    return 3000 / 10000;
+    final exerciseLogs = logs.expand((log) => log.exerciseLogs).where((exerciseLog) {
+      final primaryMuscleGroup = exerciseLog.exercise.primaryMuscleGroup;
+      final secondaryMuscleGroups = exerciseLog.exercise.secondaryMuscleGroups;
+      final muscleGroups = [primaryMuscleGroup, ...secondaryMuscleGroups];
+      return muscleGroups.contains(muscleGroup);
+    });
+    if (exerciseLogs.isNotEmpty) {
+      sumOfReps = exerciseLogs
+          .expand((exerciseLog) => exerciseLog.sets)
+          .map((set) => set.value2)
+          .reduce((value, element) => value + element)
+          .toInt();
+    }
+
+    return sumOfReps >= target ? 1 : sumOfReps / target;
   }
 }
