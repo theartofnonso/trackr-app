@@ -38,16 +38,16 @@ class AmplifyRoutineLogRepository {
     _exerciseLogsByType = groupExerciseLogsByExerciseType(routineLogs: _logs);
   }
 
-  void loadLogStream({required List<RoutineLog> logs, Function(List<RoutineLogDto> logDtos)? callback}) {
-    _mapAndNormaliseLogs(logs: logs);
+  void loadLogStream({required List<RoutineLog> logs, Function(List<RoutineLogDto> logDtos)? callback, required List<ExerciseDto> exercises}) {
+    _mapAndNormaliseLogs(logs: logs, exercises: exercises);
     final callbackFunction = callback;
     if(callbackFunction != null) {
       callbackFunction(_logs);
     }
   }
 
-  void _mapAndNormaliseLogs({required List<RoutineLog> logs}) {
-    _logs = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
+  void _mapAndNormaliseLogs({required List<RoutineLog> logs, required List<ExerciseDto> exercises}) {
+    _logs = logs.map((log) => log.dto(exercises: exercises)).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
     _normaliseLogs();
   }
 

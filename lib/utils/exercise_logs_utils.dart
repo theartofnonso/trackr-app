@@ -390,18 +390,17 @@ bool withDurationOnly({required ExerciseType type}) {
   return type == ExerciseType.duration;
 }
 
-List<ExerciseLogDto> updateExercisesFromLibrary({required List<ExerciseLogDto> exerciseLogs, required List<ExerciseDto> exercises}) {
-  return exerciseLogs.map((exerciseTemplate) {
+List<ExerciseLogDto> syncExercisesFromLibrary({required List<ExerciseLogDto> exerciseLogs, required List<ExerciseDto> exercises}) {
+  return exerciseLogs.map((exerciseLog) {
     final foundExercise = exercises
-        .firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.id == exerciseTemplate.id);
-    return foundExercise != null ? exerciseTemplate.copyWith(exercise: foundExercise) : exerciseTemplate;
+        .firstWhere((exerciseInLibrary) => exerciseInLibrary.id == exerciseLog.exercise.id, orElse: () => exerciseLog.exercise);
+    return exerciseLog.copyWith(exercise: foundExercise);
   }).toList();
 }
 
 int _calculateMuscleScore({required List<ExerciseLogDto> exerciseLogs, required List<ExerciseDto> exercises}) {
-  final exercisesFromLibrary = updateExercisesFromLibrary(exerciseLogs: exerciseLogs, exercises: exercises);
 
-  final muscleGroupsFrequencyScore = cumulativeMuscleGroupFamilyFrequency(exerciseLogs: exercisesFromLibrary);
+  final muscleGroupsFrequencyScore = cumulativeMuscleGroupFamilyFrequency(exerciseLogs: exerciseLogs);
 
   final percentageScore = (muscleGroupsFrequencyScore * 100).round();
 

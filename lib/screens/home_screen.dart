@@ -111,8 +111,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _loadAppData() async {
-    final controller = Provider.of<ExerciseController>(context, listen: false);
-    await controller.loadLocalExercises();
+    final exercisesController = Provider.of<ExerciseController>(context, listen: false);
+    await exercisesController.loadLocalExercises();
 
     final exercises = await Amplify.DataStore.query(Exercise.classType);
     final routineLogs = await Amplify.DataStore.query(RoutineLog.classType);
@@ -126,7 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
           logs: routineLogs,
           callback: (logs) {
             Provider.of<MilestoneController>(context, listen: false).loadMilestones(logs: logs);
-          });
+          }, exercises: exercisesController.exercises);
       Provider.of<ActivityLogController>(context, listen: false).streamLogs(logs: activityLogs);
       Provider.of<RoutineTemplateController>(context, listen: false).streamTemplates(templates: routineTemplates);
       Provider.of<RoutineUserController>(context, listen: false).streamUsers(users: routineUser);

@@ -87,7 +87,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     final numberOfCompletedSets = completedExerciseLogsAndSets.expand((exerciseLog) => exerciseLog.sets);
 
     final exercisesFromLibrary =
-        updateExercisesFromLibrary(exerciseLogs: log.exerciseLogs, exercises: exerciseController.exercises);
+        syncExercisesFromLibrary(exerciseLogs: log.exerciseLogs, exercises: exerciseController.exercises);
 
     final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: exercisesFromLibrary);
 
@@ -321,6 +321,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
   }
 
   void _loadData() {
+    final exercises = Provider.of<ExerciseController>(context, listen: false).exercises;
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
     _log = routineLogController.logWhereId(id: widget.id);
     if (_log == null) {
@@ -334,7 +335,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             final routineLogDto = RoutineLog.fromJson(routineLog);
             setState(() {
               _loading = false;
-              _log = routineLogDto.dto();
+              _log = routineLogDto.dto(exercises: exercises);
             });
           } else {
             setState(() {

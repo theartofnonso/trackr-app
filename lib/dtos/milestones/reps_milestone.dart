@@ -90,6 +90,7 @@ class RepsMilestone extends Milestone {
       if (sumOfReps < target) {
 
         final completedExerciseLogs = exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs);
+
         final exerciseLogs = completedExerciseLogs
             .where((exerciseLog) => exerciseLog.exercise.type != ExerciseType.duration)
             .where((exerciseLog) {

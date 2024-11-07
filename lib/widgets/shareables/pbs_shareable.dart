@@ -109,11 +109,7 @@ class PBsShareable extends StatelessWidget {
                       Text(pbDto.pb.description,
                           style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w600)),
                       const SizedBox(height: 30),
-                      Image.asset(
-                        'images/trkr.png',
-                        fit: BoxFit.contain,
-                        height: 8, // Adjust the height as needed
-                      ),
+
                     ]),
               ],
             ),

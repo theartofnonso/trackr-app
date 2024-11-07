@@ -117,7 +117,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     final exerciseController = Provider.of<ExerciseController>(context, listen: true);
 
     final exercisesFromLibrary =
-        updateExercisesFromLibrary(exerciseLogs: template.exerciseTemplates, exercises: exerciseController.exercises);
+        syncExercisesFromLibrary(exerciseLogs: template.exerciseTemplates, exercises: exerciseController.exercises);
 
     final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: exercisesFromLibrary);
 
