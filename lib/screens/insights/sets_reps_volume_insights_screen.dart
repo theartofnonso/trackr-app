@@ -133,7 +133,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
           ),
         ),
         child: SafeArea(
-          minimum: const EdgeInsets.all(10),
+          minimum: const EdgeInsets.only(top: 10, right: 10, bottom: 20, left: 10),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
