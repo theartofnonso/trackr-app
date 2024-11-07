@@ -7,7 +7,7 @@ import 'milestone_dto.dart';
 enum HoursMilestoneEnums {
   thirty(30, "Gym Newbie"),
   fifty(50, "Iron Intern"),
-  hundred(100, "Centurion");
+  hundred(100, "Sweat Equity");
 
   final int duration;
   final String name;

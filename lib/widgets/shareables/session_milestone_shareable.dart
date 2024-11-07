@@ -31,7 +31,7 @@ class SessionMilestoneShareable extends StatelessWidget {
                       alignment: Alignment.topCenter,
                     )
                   : DecorationImage(
-                      image: Image.asset("images/green_background.png").image,
+                      image: Image.asset("images/shapes.png").image,
                       fit: BoxFit.cover,
                       alignment: Alignment.topCenter,
                     ),

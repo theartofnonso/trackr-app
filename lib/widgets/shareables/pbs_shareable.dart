@@ -51,9 +51,10 @@ class PBsShareable extends StatelessWidget {
                       alignment: Alignment.topCenter,
                     )
                   : DecorationImage(
-                      image: Image.asset("images/green_background.png").image,
+                      image: Image.asset("images/shapes.png").image,
                       fit: BoxFit.cover,
                       alignment: Alignment.topCenter,
+                opacity: 0.3
                     ),
               gradient: imageFile == null
                   ? const LinearGradient(
@@ -113,7 +114,7 @@ class PBsShareable extends StatelessWidget {
                         fit: BoxFit.contain,
                         height: 8, // Adjust the height as needed
                       ),
-                    ])
+                    ]),
               ],
             ),
           ),
