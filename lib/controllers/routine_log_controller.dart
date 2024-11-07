@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
+import 'package:tracker_app/dtos/milestones/milestone_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/models/RoutineLog.dart';
 import 'package:tracker_app/repositories/amplify/amplify_routine_log_repository.dart';
@@ -22,13 +23,21 @@ class RoutineLogController extends ChangeNotifier {
 
   UnmodifiableListView<RoutineLogDto> get logs => _amplifyLogRepository.logs;
 
+  UnmodifiableListView<Milestone> get milestones => _amplifyLogRepository.milestones;
+
+  UnmodifiableListView<Milestone> get pendingMilestones => _amplifyLogRepository.pendingMilestones();
+
+  UnmodifiableListView<Milestone> get completedMilestones => _amplifyLogRepository.completedMilestones();
+
+  UnmodifiableListView<Milestone> get newMilestones => _amplifyLogRepository.newMilestones;
+
   UnmodifiableMapView<String, List<ExerciseLogDto>> get exerciseLogsById => _amplifyLogRepository.exerciseLogsById;
 
   UnmodifiableMapView<ExerciseType, List<ExerciseLogDto>> get exerciseLogsByType =>
       _amplifyLogRepository.exerciseLogsByType;
 
-  void streamLogs({required List<RoutineLog> logs, Function(List<RoutineLogDto> logDtos)? callback, required List<ExerciseDto> exercises}) {
-    _amplifyLogRepository.loadLogStream(logs: logs, callback: callback, exercises: exercises);
+  void streamLogs({required List<RoutineLog> logs, required List<ExerciseDto> exercises}) {
+    _amplifyLogRepository.loadLogStream(logs: logs, exercises: exercises);
     notifyListeners();
   }
   

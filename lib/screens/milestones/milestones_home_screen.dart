@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
 import '../../colors.dart';
-import '../../controllers/milestone_controller.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
 import 'completed_milestones_screen.dart';
@@ -22,13 +21,9 @@ class MilestonesHomeScreen extends StatelessWidget {
 
     routineLogsForTheYear.sort((a, b) => a.createdAt.compareTo(b.createdAt));
 
-    final milestonesController = Provider.of<MilestoneController>(context, listen: false);
+    final pendingMilestones = routineLogController.pendingMilestones;
 
-    final milestones  = milestonesController.fetchMilestones(logs: routineLogsForTheYear);
-
-    final pendingMilestones = milestones.where((milestone) => milestone.progress.$1 < 1).toList();
-
-    final completedMilestones = milestones.where((milestone) => milestone.progress.$1 == 1).toList();
+    final completedMilestones = routineLogController.completedMilestones;
 
     return DefaultTabController(
         length: 2,

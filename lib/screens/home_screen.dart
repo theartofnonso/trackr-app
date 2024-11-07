@@ -15,7 +15,6 @@ import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../controllers/activity_log_controller.dart';
 import '../controllers/exercise_controller.dart';
-import '../controllers/milestone_controller.dart';
 import '../controllers/routine_template_controller.dart';
 import '../controllers/routine_user_controller.dart';
 import '../dtos/appsync/routine_log_dto.dart';
@@ -124,9 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
       Provider.of<ExerciseController>(context, listen: false).streamExercises(exercises: exercises);
       Provider.of<RoutineLogController>(context, listen: false).streamLogs(
           logs: routineLogs,
-          callback: (logs) {
-            Provider.of<MilestoneController>(context, listen: false).loadMilestones(logs: logs);
-          }, exercises: exercisesController.exercises);
+          exercises: exercisesController.exercises);
       Provider.of<ActivityLogController>(context, listen: false).streamLogs(logs: activityLogs);
       Provider.of<RoutineTemplateController>(context, listen: false).streamTemplates(templates: routineTemplates);
       Provider.of<RoutineUserController>(context, listen: false).streamUsers(users: routineUser);

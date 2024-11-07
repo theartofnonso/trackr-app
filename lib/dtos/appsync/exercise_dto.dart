@@ -36,7 +36,7 @@ class ExerciseDto {
       'id': id,
       'name': name,
       'primaryMuscleGroup': primaryMuscleGroup.name,
-      'secondaryMuscleGroups': secondaryMuscleGroups.map((muscleGroup) => jsonEncode(muscleGroup)),
+      'secondaryMuscleGroups': secondaryMuscleGroups.map((muscleGroup) => jsonEncode(muscleGroup.name)).toList(),
       'type': type.id,
       'owner': owner,
       'description': description,

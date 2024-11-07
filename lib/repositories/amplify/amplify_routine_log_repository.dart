@@ -11,18 +11,29 @@ import 'package:tracker_app/utils/routine_utils.dart';
 
 import '../../dtos/appsync/exercise_dto.dart';
 import '../../dtos/exercise_log_dto.dart';
+import '../../dtos/milestones/days_milestone_dto.dart';
+import '../../dtos/milestones/hours_milestone_dto.dart';
+import '../../dtos/milestones/milestone_dto.dart';
+import '../../dtos/milestones/reps_milestone.dart';
+import '../../dtos/milestones/weekly_milestone_dto.dart';
 import '../../dtos/set_dto.dart';
 import '../../enums/exercise_type_enums.dart';
 import '../../models/RoutineLog.dart';
 import '../../models/RoutineTemplate.dart';
 import '../../shared_prefs.dart';
-import '../../utils/date_utils.dart';
-import '../../utils/https_utils.dart';
 
 class AmplifyRoutineLogRepository {
   List<RoutineLogDto> _logs = [];
 
   UnmodifiableListView<RoutineLogDto> get logs => UnmodifiableListView(_logs);
+
+  List<Milestone> _milestones = [];
+
+  UnmodifiableListView<Milestone> get milestones => UnmodifiableListView(_milestones);
+
+  List<Milestone> _newMilestones = [];
+
+  UnmodifiableListView<Milestone> get newMilestones => UnmodifiableListView(_newMilestones);
 
   Map<String, List<ExerciseLogDto>> _exerciseLogsById = {};
 
@@ -38,39 +49,20 @@ class AmplifyRoutineLogRepository {
     _exerciseLogsByType = groupExerciseLogsByExerciseType(routineLogs: _logs);
   }
 
-  void loadLogStream({required List<RoutineLog> logs, Function(List<RoutineLogDto> logDtos)? callback, required List<ExerciseDto> exercises}) {
+  void loadLogStream({required List<RoutineLog> logs, required List<ExerciseDto> exercises}) {
     _mapAndNormaliseLogs(logs: logs, exercises: exercises);
-    final callbackFunction = callback;
-    if(callbackFunction != null) {
-      callbackFunction(_logs);
-    }
   }
 
   void _mapAndNormaliseLogs({required List<RoutineLog> logs, required List<ExerciseDto> exercises}) {
     _logs = logs.map((log) => log.dto(exercises: exercises)).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
     _normaliseLogs();
-  }
-
-  Future<void> loadLogsForFeed() async {
-    final dateRange = theLastYearDateTimeRange();
-    final startOfCurrentYear = dateRange.start.toIso8601String();
-    final endOfCurrentYear = dateRange.end.toIso8601String();
-
-    try {
-      final response = await getAPI(
-          endpoint: "/routine-logs", queryParameters: {"start": startOfCurrentYear, "end": endOfCurrentYear});
-      if (response.isNotEmpty) {
-        final json = jsonDecode(response);
-        final data = json["data"];
-        final body = data["routineLogByDate"];
-        final _ = body["items"] as List<dynamic>;
-      }
-    } catch (e) {
-      safePrint(e);
-    }
+    _loadMilestones();
   }
 
   Future<RoutineLogDto> saveLog({required RoutineLogDto logDto, TemporalDateTime? datetime}) async {
+
+    final previousMilestones = completedMilestones().toSet();
+
     final now = datetime ?? TemporalDateTime.now();
 
     final logToCreate = RoutineLog(data: jsonEncode(logDto), createdAt: now, updatedAt: now);
@@ -85,6 +77,11 @@ class AmplifyRoutineLogRepository {
     _logs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
 
     _normaliseLogs();
+    _loadMilestones();
+
+    final updatedMilestones = completedMilestones().toSet();
+
+    _newMilestones = updatedMilestones.difference(previousMilestones).toList();
 
     return updatedRoutineWithExerciseIds;
   }
@@ -103,6 +100,7 @@ class AmplifyRoutineLogRepository {
       if (index > -1) {
         _logs[index] = log;
         _normaliseLogs();
+        _loadMilestones();
       }
     }
   }
@@ -120,6 +118,7 @@ class AmplifyRoutineLogRepository {
       if (index > -1) {
         _logs.removeAt(index);
         _normaliseLogs();
+        _loadMilestones();
       }
     }
   }
@@ -138,6 +137,42 @@ class AmplifyRoutineLogRepository {
       routineLog = RoutineLogDto.fromJson(json, owner: SharedPrefs().userId);
     }
     return routineLog;
+  }
+
+  void _loadMilestones() {
+
+    List<Milestone> milestones = [];
+
+    final logsForTheYear = whereLogsIsSameYear(dateTime: DateTime.now().withoutTime());
+
+    /// Add Weekly Challenges
+    final weeklyMilestones = WeeklyMilestone.loadMilestones(logs: logsForTheYear);
+    for (final milestone in weeklyMilestones) {
+      milestones.add(milestone);
+    }
+
+    /// Add Days Challenges
+    final daysMilestones = DaysMilestone.loadMilestones(logs: logsForTheYear);
+    for (final milestone in daysMilestones) {
+      milestones.add(milestone);
+    }
+
+    /// Add Reps Milestones
+    final repsMilestones = RepsMilestone.loadMilestones(logs: logsForTheYear);
+    for (final milestone in repsMilestones) {
+      milestones.add(milestone);
+    }
+
+    /// Add Hours Milestones
+    final hoursMilestones = HoursMilestone.loadMilestones(logs: logsForTheYear);
+    for (final milestone in hoursMilestones) {
+      milestones.add(milestone);
+    }
+
+    milestones.sort((a, b) => a.name.compareTo(b.name));
+
+    _milestones = milestones;
+
   }
 
   /// Helper methods
@@ -200,9 +235,16 @@ class AmplifyRoutineLogRepository {
     return _logs.where((log) => log.createdAt.isBetweenInclusive(from: range.start, to: range.end)).toList();
   }
 
+
+  /// Milestones
+  UnmodifiableListView<Milestone> pendingMilestones() => UnmodifiableListView(_milestones.where((milestone) => milestone.progress.$1 < 1));
+
+  UnmodifiableListView<Milestone> completedMilestones() => UnmodifiableListView(milestones.where((milestone) => milestone.progress.$1 == 1));
+
   void clear() {
     _logs.clear();
     _exerciseLogsById.clear();
     _exerciseLogsByType.clear();
+    _milestones.clear();
   }
 }

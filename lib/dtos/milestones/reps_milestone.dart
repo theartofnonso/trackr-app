@@ -70,8 +70,8 @@ class RepsMilestone extends Milestone {
           caption: caption,
           description: description,
           rule: rule,
-          target: 1000,
-          progress: _calculateProgress(logs: logs, muscleGroup: muscleGroup, target: 1000),
+          target: 414,
+          progress: _calculateProgress(logs: logs, muscleGroup: muscleGroup, target: 414),
           muscleGroup: muscleGroup,
           type: MilestoneType.reps);
     }).toList();
