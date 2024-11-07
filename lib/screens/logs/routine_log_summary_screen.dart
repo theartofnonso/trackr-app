@@ -7,10 +7,11 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
-import 'package:tracker_app/enums/share_content_type_enum.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
+import 'package:tracker_app/widgets/shareables/milestone_shareable.dart';
 import 'package:tracker_app/widgets/shareables/pbs_shareable.dart';
 import 'package:tracker_app/widgets/shareables/routine_log_shareable_lite.dart';
 import 'package:tracker_app/widgets/shareables/session_milestone_shareable.dart';
@@ -19,7 +20,6 @@ import '../../colors.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
 import '../../urls.dart';
-import '../../utils/app_analytics.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/routine_utils.dart';
@@ -53,17 +53,26 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final completedExerciseLogsAndSets = exerciseLogsWithCheckedSets(exerciseLogs: widget.log.exerciseLogs);
     final updatedLog = widget.log.copyWith(exerciseLogs: completedExerciseLogsAndSets);
 
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
-    List<RoutineLogDto> routineLogsForTheYear = routineLogController.whereLogsIsSameYear(dateTime: DateTime.now().withoutTime());
+    List<RoutineLogDto> routineLogsForTheYear =
+        routineLogController.whereLogsIsSameYear(dateTime: DateTime.now().withoutTime());
 
     final newMilestones = routineLogController.newMilestones;
 
     final muscleGroupFamilyFrequencyData =
         muscleGroupFamilyFrequency(exerciseLogs: updatedLog.exerciseLogs, includeSecondaryMuscleGroups: false);
+
+    List<Widget> milestoneShareAssets = [];
+    final milestoneShareAssetsKeys = [];
+    for (final milestone in newMilestones) {
+      final key = GlobalKey();
+      final shareable = MilestoneShareable(globalKey: key, milestone: milestone, image: _image);
+      milestoneShareAssets.add(shareable);
+      milestoneShareAssetsKeys.add(key);
+    }
 
     List<Widget> pbShareAssets = [];
     final pbShareAssetsKeys = [];
@@ -86,21 +95,22 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
     }
 
     final pages = [
-      if (isMultipleOfFive(routineLogsForTheYear.length)) SessionMilestoneShareable(label: "${routineLogsForTheYear.length}th", image: _image),
+      ...milestoneShareAssets,
+      if (isMultipleOfFive(routineLogsForTheYear.length))
+        SessionMilestoneShareable(label: "${routineLogsForTheYear.length}th", image: _image),
       ...pbShareAssets,
       RoutineLogShareableLite(
           log: updatedLog, frequencyData: muscleGroupFamilyFrequencyData, pbs: pbShareAssets.length, image: _image),
     ];
 
     final pagesKeys = [
-      if (isMultipleOfFive(routineLogsForTheYear.length)) sessionMilestoneShareableKey,
+      ...milestoneShareAssetsKeys,
+      if (isMultipleOfFive(routineLogsForTheYear.length)) sessionMilestoneGlobalKey,
       ...pbShareAssetsKeys,
-      routineLogShareableLiteKey,
+      routineLogGlobalKey,
     ];
 
-    return Stack(
-        alignment: Alignment.topCenter,
-        children: [
+    return Stack(alignment: Alignment.topCenter, children: [
       Scaffold(
         floatingActionButton: FloatingActionButton(
             heroTag: "routine_log_screen",
@@ -158,16 +168,16 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
                 OpacityButtonWidget(
                     onPressed: () {
                       final index = _pageController.page!.toInt();
-                      captureImage(key: pagesKeys[index], pixelRatio: 3.5).then((_) {
+                      captureImage(key: pagesKeys[index], pixelRatio: 3.5).then((result) {
                         if (context.mounted) {
-                          showSnackbar(
-                              context: context,
-                              icon: const FaIcon(FontAwesomeIcons.circleCheck),
-                              message: "Content Shared");
+                          if (result.status == ShareResultStatus.success) {
+                            showSnackbar(
+                                context: context,
+                                icon: const FaIcon(FontAwesomeIcons.circleCheck),
+                                message: "Content Shared");
+                          }
                         }
                       });
-                      final contentType = _shareContentType(index: index);
-                      contentShared(contentType: contentType);
                     },
                     label: "Share",
                     buttonColor: vibrantGreen,
@@ -177,7 +187,10 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
           ),
         ),
       ),
-      ConfettiWidget(minBlastForce: 10, confettiController: _confettiController, blastDirectionality: BlastDirectionality.explosive)
+      ConfettiWidget(
+          minBlastForce: 10,
+          confettiController: _confettiController,
+          blastDirectionality: BlastDirectionality.explosive)
     ]);
   }
 
@@ -263,18 +276,6 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
             )
           ]),
         ));
-  }
-
-  ShareContentType _shareContentType({required int index}) {
-    if (index == 0) {
-      return ShareContentType.milestoneAchievement;
-    } else if (index == 1) {
-      return ShareContentType.logMilestone;
-    } else if (index == 2) {
-      return ShareContentType.pbs;
-    } else {
-      return ShareContentType.sessionSummary;
-    }
   }
 
   void _showBottomSheet() {

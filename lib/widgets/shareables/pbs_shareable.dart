@@ -10,7 +10,7 @@ import 'package:tracker_app/utils/general_utils.dart';
 import '../../colors.dart';
 import '../../dtos/pb_dto.dart';
 
-GlobalKey pbsShareableKey = GlobalKey();
+GlobalKey pbsGlobalKey = GlobalKey();
 
 class PBsShareable extends StatelessWidget {
   final GlobalKey globalKey;
@@ -39,7 +39,7 @@ class PBsShareable extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(5),
+        borderRadius: BorderRadius.circular(20),
         child: RepaintBoundary(
           key: globalKey,
           child: Container(
@@ -50,12 +50,7 @@ class PBsShareable extends StatelessWidget {
                       fit: BoxFit.cover,
                       alignment: Alignment.topCenter,
                     )
-                  : DecorationImage(
-                      image: Image.asset("images/shapes.png").image,
-                      fit: BoxFit.cover,
-                      alignment: Alignment.topCenter,
-                opacity: 0.3
-                    ),
+                  : null,
               gradient: imageFile == null
                   ? const LinearGradient(
                       begin: Alignment.topCenter,

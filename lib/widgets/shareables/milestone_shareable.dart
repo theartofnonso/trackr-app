@@ -1,27 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/dtos/milestones/milestone_dto.dart';
 
 import '../../colors.dart';
 
-GlobalKey sessionMilestoneGlobalKey = GlobalKey();
+GlobalKey milestoneGlobalKey = GlobalKey();
 
-class SessionMilestoneShareable extends StatelessWidget {
-  final String label;
+class MilestoneShareable extends StatelessWidget {
+  final GlobalKey? globalKey;
+  final Milestone milestone;
   final Image? image;
 
-  const SessionMilestoneShareable({super.key, required this.label, this.image});
+  const MilestoneShareable({super.key, this.globalKey, required this.milestone, this.image});
 
   @override
   Widget build(BuildContext context) {
     final imageFile = image;
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
         child: RepaintBoundary(
-          key: sessionMilestoneGlobalKey,
+          key: globalKey,
           child: Container(
             decoration: BoxDecoration(
               image: imageFile != null
@@ -62,11 +63,11 @@ class SessionMilestoneShareable extends StatelessWidget {
                   children: [
                     const FaIcon(FontAwesomeIcons.award, color: vibrantGreen, size: 40),
                     const SizedBox(height: 20),
-                    Text(label,
+                    Text(milestone.name,
                         style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900)),
-                    Text("Session",
-                        style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 30),
+                    Text(milestone.caption,
+                        style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w600)),
+                    const SizedBox(height: 50),
                     Image.asset(
                       'images/trkr.png',
                       fit: BoxFit.contain,

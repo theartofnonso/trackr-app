@@ -10,10 +10,12 @@ import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/widgets/label_divider.dart';
+import 'package:tracker_app/widgets/shareables/milestone_shareable.dart';
 
 import '../../../colors.dart';
 import '../../enums/milestone_type_enums.dart';
 import '../../utils/challenge_utils.dart';
+import '../../utils/shareables_utils.dart';
 import '../../widgets/empty_states/list_tile_empty_state.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
 
@@ -55,7 +57,7 @@ class MilestoneScreen extends StatelessWidget {
         floatingActionButton: milestone.progress.$1 == 1
             ? FloatingActionButton(
                 heroTag: "milestone_screen",
-                onPressed: _shareMilestoneSummary,
+                onPressed: () => _shareMilestoneSummary(context: context),
                 backgroundColor: sapphireDark,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                 child: const FaIcon(FontAwesomeIcons.rocket))
@@ -254,7 +256,28 @@ class MilestoneScreen extends StatelessWidget {
     };
   }
 
-  void _shareMilestoneSummary() {}
+  void _shareMilestoneSummary({required BuildContext context}) {
+   onShare(context: context, globalKey: milestoneGlobalKey, child: Padding(
+     padding: const EdgeInsets.all(24.0),
+     child: Column(
+         mainAxisAlignment: MainAxisAlignment.center,
+         crossAxisAlignment: CrossAxisAlignment.center,
+         children: [
+           const FaIcon(FontAwesomeIcons.award, color: vibrantGreen, size: 32),
+           const SizedBox(height: 20),
+           Text(milestone.name,
+               style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w900)),
+           Text(milestone.caption,
+               style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w600)),
+           const SizedBox(height: 50),
+           Image.asset(
+             'images/trkr.png',
+             fit: BoxFit.contain,
+             height: 8, // Adjust the height as needed
+           ),
+         ]),
+   ));
+  }
 }
 
 class _ProgressMessage extends StatelessWidget {

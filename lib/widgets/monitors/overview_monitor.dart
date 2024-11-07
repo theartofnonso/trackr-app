@@ -13,13 +13,10 @@ import 'package:tracker_app/utils/string_utils.dart';
 import '../../colors.dart';
 import '../../controllers/exercise_controller.dart';
 import '../../controllers/routine_log_controller.dart';
-import '../../enums/share_content_type_enum.dart';
 import '../../strings.dart';
-import '../../utils/app_analytics.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/shareables_utils.dart';
-import '../buttons/opacity_button_widget.dart';
 import '../calendar/calendar.dart';
 import 'log_streak_monitor.dart';
 import 'muscle_group_family_frequency_monitor.dart';
@@ -44,7 +41,8 @@ class OverviewMonitor extends StatelessWidget {
 
     final exerciseController = Provider.of<ExerciseController>(context, listen: false);
 
-    final muscleScorePercentage = calculateMuscleScoreForLogs(routineLogs: routineLogs, exercises: exerciseController.exercises);
+    final muscleScorePercentage =
+        calculateMuscleScoreForLogs(routineLogs: routineLogs, exercises: exerciseController.exercises);
 
     return Stack(children: [
       if (showInfo)
@@ -163,114 +161,63 @@ class OverviewMonitor extends StatelessWidget {
   }
 
   void _onShareMonitor({required BuildContext context}) {
-    displayBottomSheet(
-      context: context,
-      child: Column(
-        children: [
-          RepaintBoundary(
-            key: monitorKey,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(5),
-              child: Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      sapphireDark80,
-                      sapphireDark,
-                    ],
-                  ),
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 18),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Monthly Overview".toUpperCase(),
-                        style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 2),
-                    Text(DateTime.now().formattedDayAndMonthAndYear(),
-                        style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w400)),
-                    const SizedBox(height: 20),
-                    OverviewMonitor(
-                      dateTime: dateTime,
-                      showInfo: false,
-                    ),
-                  ],
-                ),
+    onShare(
+        context: context,
+        globalKey: monitorKey,
+        padding: EdgeInsets.zero,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              color: Colors.white70,
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Monthly Overview".toUpperCase(),
+                      style: GoogleFonts.ubuntu(color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 1),
+                  Text(DateTime.now().formattedDayAndMonthAndYear(),
+                      style: GoogleFonts.ubuntu(color: Colors.black, fontSize: 12, fontWeight: FontWeight.w400)),
+                ],
               ),
             ),
-          ),
-          const SizedBox(height: 20),
-          OpacityButtonWidget(
-              onPressed: () {
-                captureImage(key: monitorKey, pixelRatio: 5);
-                contentShared(contentType: ShareContentType.monitor);
-                Navigator.of(context).pop();
-              },
-              label: "Share",
-              buttonColor: vibrantGreen,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14))
-        ],
-      ),
-    );
+            const SizedBox(height: 14),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 18),
+              child: OverviewMonitor(
+                dateTime: dateTime,
+                showInfo: false,
+              ),
+            ),
+            const SizedBox(height: 14),
+          ],
+        ));
   }
 
   void _onShareCalendar({required BuildContext context}) {
-    displayBottomSheet(
+    onShare(
         context: context,
-        isScrollControlled: true,
+        globalKey: calendarKey,
         child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              RepaintBoundary(
-                  key: calendarKey,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: Container(
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              sapphireDark80,
-                              sapphireDark,
-                            ],
-                          ),
-                        ),
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Align(
-                              alignment: Alignment.center,
-                              child: Text(dateTime.formattedMonthAndYear(),
-                                  textAlign: TextAlign.left,
-                                  style: GoogleFonts.ubuntu(
-                                      color: Colors.white, fontWeight: FontWeight.w900, fontSize: 20)),
-                            ),
-                            Calendar(dateTime: dateTime),
-                            const SizedBox(height: 12),
-                            Image.asset(
-                              'images/trkr.png',
-                              fit: BoxFit.contain,
-                              height: 8, // Adjust the height as needed
-                            ),
-                          ],
-                        )),
-                  )),
-              const SizedBox(height: 20),
-              OpacityButtonWidget(
-                  onPressed: () {
-                    captureImage(key: calendarKey, pixelRatio: 5);
-                    contentShared(contentType: ShareContentType.calender);
-                    Navigator.of(context).pop();
-                  },
-                  label: "Share",
-                  buttonColor: vibrantGreen,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14))
-            ]));
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Align(
+              alignment: Alignment.center,
+              child: Text(dateTime.formattedMonthAndYear(),
+                  textAlign: TextAlign.left,
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 20)),
+            ),
+            Calendar(dateTime: dateTime),
+            const SizedBox(height: 12),
+            Image.asset(
+              'images/trkr.png',
+              fit: BoxFit.contain,
+              height: 8, // Adjust the height as needed
+            ),
+          ],
+        ));
   }
 }
 
