@@ -50,7 +50,11 @@ class PBsShareable extends StatelessWidget {
                       fit: BoxFit.cover,
                       alignment: Alignment.topCenter,
                     )
-                  : null,
+                  : DecorationImage(
+                      image: Image.asset("images/green_background.png").image,
+                      fit: BoxFit.cover,
+                      alignment: Alignment.topCenter,
+                    ),
               gradient: imageFile == null
                   ? const LinearGradient(
                       begin: Alignment.topCenter,
@@ -99,12 +103,10 @@ class PBsShareable extends StatelessWidget {
                             )
                           : const SizedBox(height: 20),
                       Text(pbDto.exercise.name,
-                          style:
-                              GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                          style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 4),
                       Text(pbDto.pb.description,
-                          style:
-                              GoogleFonts.ubuntu(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w600)),
+                          style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w600)),
                       const SizedBox(height: 30),
                       Image.asset(
                         'images/trkr.png',

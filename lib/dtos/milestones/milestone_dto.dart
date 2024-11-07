@@ -22,4 +22,11 @@ class Milestone {
     required this.progress,
     required this.type
   });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is Milestone && runtimeType == other.runtimeType && id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
 }

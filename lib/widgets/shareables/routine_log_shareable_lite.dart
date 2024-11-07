@@ -36,7 +36,11 @@ class RoutineLogShareableLite extends StatelessWidget {
                       fit: BoxFit.cover,
                       alignment: Alignment.topCenter,
                     )
-                  : null,
+                  : DecorationImage(
+                      image: Image.asset("images/green_background.png").image,
+                      fit: BoxFit.cover,
+                      alignment: Alignment.topCenter,
+                    ),
               color: sapphireDark,
               gradient: imageFile == null
                   ? const LinearGradient(

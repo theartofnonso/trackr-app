@@ -44,8 +44,9 @@ class RoutineLogScreen extends StatefulWidget {
 
   final String id;
   final bool showSummary;
+  final bool isEditable;
 
-  const RoutineLogScreen({super.key, required this.id, required this.showSummary});
+  const RoutineLogScreen({super.key, required this.id, required this.showSummary, this.isEditable = true});
 
   @override
   State<RoutineLogScreen> createState() => _RoutineLogScreenState();
@@ -110,14 +111,14 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             ),
             title: Text(log.name,
                 style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
-            actions: log.owner == SharedPrefs().userId
+            actions: log.owner == SharedPrefs().userId && widget.isEditable
                 ? [
                     IconButton(
                         onPressed: () => _onShareLog(log: log),
                         icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18)),
                   ]
                 : []),
-        floatingActionButton: log.owner == SharedPrefs().userId
+        floatingActionButton: log.owner == SharedPrefs().userId && widget.isEditable
             ? FloatingActionButton(
                 heroTag: "routine_log_screen",
                 onPressed: _showBottomSheet,
@@ -239,7 +240,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                               ),
                             ),
                           ),
-                          if (log.owner == SharedPrefs().userId)
+                          if (log.owner == SharedPrefs().userId && widget.isEditable)
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 12.0),
                               child: TRKRInformationContainer(

@@ -16,8 +16,10 @@ import 'package:tracker_app/widgets/shareables/routine_log_shareable_lite.dart';
 import 'package:tracker_app/widgets/shareables/session_milestone_shareable.dart';
 
 import '../../colors.dart';
+import '../../controllers/milestone_controller.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
+import '../../dtos/milestones/milestone_dto.dart';
 import '../../urls.dart';
 import '../../utils/app_analytics.dart';
 import '../../utils/dialog_utils.dart';
@@ -53,11 +55,14 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     final completedExerciseLogsAndSets = exerciseLogsWithCheckedSets(exerciseLogs: widget.log.exerciseLogs);
     final updatedLog = widget.log.copyWith(exerciseLogs: completedExerciseLogsAndSets);
 
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
     List<RoutineLogDto> routineLogsForTheYear = routineLogController.whereLogsIsSameYear(dateTime: DateTime.now().withoutTime());
+
+    final milestones = _achievedMilestones(logs: routineLogsForTheYear);
 
     final muscleGroupFamilyFrequencyData =
         muscleGroupFamilyFrequency(exerciseLogs: updatedLog.exerciseLogs, includeSecondaryMuscleGroups: false);
@@ -176,6 +181,21 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
       ),
       ConfettiWidget(minBlastForce: 10, confettiController: _confettiController, blastDirectionality: BlastDirectionality.explosive)
     ]);
+  }
+
+  List<Milestone> _achievedMilestones({required List<RoutineLogDto> logs}) {
+    final milestoneController = Provider.of<MilestoneController>(context, listen: false);
+
+    final previousMilestones = milestoneController.completedMilestones().toSet();
+    final updatedMilestones = milestoneController.fetchMilestones(logs: logs).where((milestone) => milestone.progress.$1 == 1).toSet();
+
+    final newMilestones = updatedMilestones.difference(previousMilestones);
+
+    print(previousMilestones.length);
+    print(updatedMilestones.length);
+    print(newMilestones.length);
+
+    return newMilestones.toList();
   }
 
   void _showCopyBottomSheet() {

@@ -31,6 +31,7 @@ import 'package:tracker_app/repositories/amplify/amplify_routine_log_repository.
 import 'package:tracker_app/repositories/amplify/amplify_routine_template_repository.dart';
 import 'package:tracker_app/repositories/amplify/amplify_routine_user_repository.dart';
 import 'package:tracker_app/repositories/exercise_log_repository.dart';
+import 'package:tracker_app/repositories/milestones_repository.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_log_editor_screen.dart';
@@ -52,6 +53,7 @@ import 'package:tracker_app/utils/date_utils.dart';
 import 'amplifyconfiguration.dart';
 import 'controllers/activity_log_controller.dart';
 import 'controllers/challenge_log_controller.dart';
+import 'controllers/milestone_controller.dart';
 import 'controllers/routine_user_controller.dart';
 import 'dtos/appsync/exercise_dto.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
@@ -113,6 +115,9 @@ void main() async {
       ),
       ChangeNotifierProvider<ChallengeLogController>(
         create: (BuildContext context) => ChallengeLogController(AmplifyChallengeLogRepository()),
+      ),
+      ChangeNotifierProvider<MilestoneController>(
+        create: (BuildContext context) => MilestoneController(MilestonesRepository()),
       ),
       ChangeNotifierProvider<ExerciseLogController>(
           create: (BuildContext context) => ExerciseLogController(ExerciseLogRepository())),
@@ -228,9 +233,10 @@ final _router = GoRouter(
         final extra = state.extra as Map<String, dynamic>;
         final log = extra["log"] as RoutineLogDto;
         final showSummary = extra["showSummary"] as bool;
+        final isEditable = extra['isEditable'] as bool;
 
         return CustomTransitionPage(
-            child: RoutineLogScreen(id: log.id, showSummary: showSummary),
+            child: RoutineLogScreen(id: log.id, showSummary: showSummary, isEditable: isEditable),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               const begin = Offset(0.0, 1.0);
               const end = Offset.zero;

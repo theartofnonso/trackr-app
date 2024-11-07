@@ -27,8 +27,8 @@ class RoutineLogController extends ChangeNotifier {
   UnmodifiableMapView<ExerciseType, List<ExerciseLogDto>> get exerciseLogsByType =>
       _amplifyLogRepository.exerciseLogsByType;
 
-  void streamLogs({required List<RoutineLog> logs}) {
-    _amplifyLogRepository.loadLogStream(logs: logs);
+  void streamLogs({required List<RoutineLog> logs, Function(List<RoutineLogDto> logDtos)? callback}) {
+    _amplifyLogRepository.loadLogStream(logs: logs, callback: callback);
     notifyListeners();
   }
   

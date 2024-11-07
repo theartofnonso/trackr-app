@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -17,12 +15,12 @@ import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../controllers/activity_log_controller.dart';
 import '../controllers/exercise_controller.dart';
+import '../controllers/milestone_controller.dart';
 import '../controllers/routine_template_controller.dart';
 import '../controllers/routine_user_controller.dart';
 import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../enums/routine_editor_type_enums.dart';
-import '../models/ChallengeLog.dart';
 import '../models/RoutineLog.dart';
 import '../models/RoutineTemplate.dart';
 import '../utils/app_analytics.dart';
@@ -41,13 +39,6 @@ class _HomeScreenState extends State<HomeScreen> {
   final ScrollController _scrollController = ScrollController();
 
   int _currentScreenIndex = 0;
-
-  StreamSubscription<QuerySnapshot<ChallengeLog>>? _challengeLogStream;
-  StreamSubscription<QuerySnapshot<RoutineUser>>? _routineUserStream;
-  StreamSubscription<QuerySnapshot<RoutineLog>>? _routineLogStream;
-  StreamSubscription<QuerySnapshot<RoutineTemplate>>? _routineTemplateStream;
-  StreamSubscription<QuerySnapshot<ActivityLog>>? _activityLogStream;
-  StreamSubscription<QuerySnapshot<Exercise>>? _exerciseStream;
 
   @override
   Widget build(BuildContext context) {
@@ -111,16 +102,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _observeRoutineUserQuery() {
-    _routineUserStream = Amplify.DataStore.observeQuery(
-      RoutineUser.classType,
-    ).listen((QuerySnapshot<RoutineUser> snapshot) {
-      if (mounted) {
-        Provider.of<RoutineUserController>(context, listen: false).streamUsers(users: snapshot.items);
-      }
-    });
-  }
-
   void _scrollToTop(int index) {
     _scrollController.animateTo(
       0,
@@ -130,7 +111,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _loadAppData() async {
-
     final controller = Provider.of<ExerciseController>(context, listen: false);
     await controller.loadLocalExercises();
 
@@ -138,14 +118,19 @@ class _HomeScreenState extends State<HomeScreen> {
     final routineLogs = await Amplify.DataStore.query(RoutineLog.classType);
     final activityLogs = await Amplify.DataStore.query(ActivityLog.classType);
     final routineTemplates = await Amplify.DataStore.query(RoutineTemplate.classType);
+    final routineUser = await Amplify.DataStore.query(RoutineUser.classType);
 
     if (mounted) {
       Provider.of<ExerciseController>(context, listen: false).streamExercises(exercises: exercises);
-      Provider.of<RoutineLogController>(context, listen: false).streamLogs(logs: routineLogs);
+      Provider.of<RoutineLogController>(context, listen: false).streamLogs(
+          logs: routineLogs,
+          callback: (logs) {
+            Provider.of<MilestoneController>(context, listen: false).loadMilestones(logs: logs);
+          });
       Provider.of<ActivityLogController>(context, listen: false).streamLogs(logs: activityLogs);
       Provider.of<RoutineTemplateController>(context, listen: false).streamTemplates(templates: routineTemplates);
+      Provider.of<RoutineUserController>(context, listen: false).streamUsers(users: routineUser);
     }
-    _observeRoutineUserQuery();
   }
 
   void _loadCachedLog() {
@@ -182,16 +167,5 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _runSetup();
-  }
-
-  @override
-  void dispose() {
-    _challengeLogStream?.cancel();
-    _exerciseStream?.cancel();
-    _routineLogStream?.cancel();
-    _routineTemplateStream?.cancel();
-    _activityLogStream?.cancel();
-    _routineUserStream?.cancel();
-    super.dispose();
   }
 }

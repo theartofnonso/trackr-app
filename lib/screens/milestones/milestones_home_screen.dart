@@ -4,9 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
 import '../../colors.dart';
+import '../../controllers/milestone_controller.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
-import '../../repositories/milestones_repository.dart';
 import 'completed_milestones_screen.dart';
 import 'pending_milestones_screen.dart';
 
@@ -18,11 +18,13 @@ class MilestonesHomeScreen extends StatelessWidget {
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
     List<RoutineLogDto> routineLogsForTheYear =
-        routineLogController.whereLogsIsSameYear(dateTime: DateTime.now().withoutTime());
+    routineLogController.whereLogsIsSameYear(dateTime: DateTime.now().withoutTime());
 
     routineLogsForTheYear.sort((a, b) => a.createdAt.compareTo(b.createdAt));
 
-    final milestones = MilestonesRepository().loadMilestones(logs: routineLogsForTheYear);
+    final milestonesController = Provider.of<MilestoneController>(context, listen: false);
+
+    final milestones  = milestonesController.fetchMilestones(logs: routineLogsForTheYear);
 
     final pendingMilestones = milestones.where((milestone) => milestone.progress.$1 < 1).toList();
 

@@ -38,8 +38,12 @@ class AmplifyRoutineLogRepository {
     _exerciseLogsByType = groupExerciseLogsByExerciseType(routineLogs: _logs);
   }
 
-  void loadLogStream({required List<RoutineLog> logs}) {
+  void loadLogStream({required List<RoutineLog> logs, Function(List<RoutineLogDto> logDtos)? callback}) {
     _mapAndNormaliseLogs(logs: logs);
+    final callbackFunction = callback;
+    if(callbackFunction != null) {
+      callbackFunction(_logs);
+    }
   }
 
   void _mapAndNormaliseLogs({required List<RoutineLog> logs}) {

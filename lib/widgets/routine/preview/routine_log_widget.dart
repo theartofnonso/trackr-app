@@ -14,8 +14,9 @@ class RoutineLogWidget extends StatelessWidget {
   final RoutineLogDto log;
   final Color color;
   final String trailing;
+  final bool isEditable;
 
-  const RoutineLogWidget({super.key, required this.log, required this.color, required this.trailing});
+  const RoutineLogWidget({super.key, required this.log, required this.color, required this.trailing, this.isEditable = true});
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +39,6 @@ class RoutineLogWidget extends StatelessWidget {
         trailing: trailing,
         tileColor: color,
         trailingSubtitle: pbs.isNotEmpty ? PBIcon(color: sapphireLight, label: "${pbs.length}") : null,
-        onTap: () => navigateToRoutineLogPreview(context: context, log: log));
+        onTap: () => navigateToRoutineLogPreview(context: context, log: log, isEditable: isEditable));
   }
 }

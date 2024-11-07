@@ -39,7 +39,7 @@ class MilestoneScreen extends StatelessWidget {
             RoutineLogWidget(
                 log: log,
                 color: Colors.transparent,
-                trailing: log.createdAt.durationSinceOrDate()),
+                trailing: log.createdAt.durationSinceOrDate(), isEditable: false),
             if(index < milestone.progress.$2.length -1 )
               Divider(color: Colors.white70.withOpacity(0.1),indent: 20, endIndent: 20,)
           ],
