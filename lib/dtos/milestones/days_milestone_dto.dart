@@ -34,8 +34,6 @@ class DaysMilestone extends Milestone {
       final caption = 'Train for ${days.length} days';
       final rule = 'Log ${days.length} days of training to complete this ${days.length}-Day Challenge.';
       final loadLogsAndProgress = _calculateLogsAndProgress(logs: logs, target: days.length);
-      final _ = loadLogsAndProgress.$1;
-      final progress = loadLogsAndProgress.$2;
       return DaysMilestone(
           id: "Days_Milestone_${days.length}_$index",
           name: '${days.length} Days of Gains'.toUpperCase(),
@@ -43,17 +41,17 @@ class DaysMilestone extends Milestone {
           description: description,
           rule: rule,
           target: days.length,
-          progress: progress,
+          progress: loadLogsAndProgress,
           type: MilestoneType.days);
     }).toList();
   }
 
-  static (List<RoutineLogDto>, double) _calculateLogsAndProgress({required List<RoutineLogDto> logs, required int target}) {
+  static (double, List<RoutineLogDto>) _calculateLogsAndProgress({required List<RoutineLogDto> logs, required int target}) {
 
-    if(logs.isEmpty) return ([], 0);
+    if(logs.isEmpty) return (0, []);
 
-    final listOfLogs = logs.take(target);
-    final progress = listOfLogs.length / target;
-    return (listOfLogs.take(target).toList(), progress);
+    final qualifyingLogs = logs.take(target);
+    final progress = qualifyingLogs.length / target;
+    return (progress, qualifyingLogs.toList());
   }
 }

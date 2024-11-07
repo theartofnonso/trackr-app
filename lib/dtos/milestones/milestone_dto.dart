@@ -1,3 +1,5 @@
+import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
+
 import '../../enums/milestone_type_enums.dart';
 
 class Milestone {
@@ -7,7 +9,7 @@ class Milestone {
   final String description;
   final String rule;
   final int target;
-  final double progress;
+  final (double, List<RoutineLogDto>) progress;
   final MilestoneType type;
 
   Milestone({

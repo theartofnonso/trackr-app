@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/milestones/milestone_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
+import 'package:tracker_app/utils/exercise_logs_utils.dart';
 
 import '../../enums/milestone_type_enums.dart';
 import '../../utils/date_utils.dart';
@@ -64,10 +65,9 @@ class WeeklyMilestone extends Milestone {
     return [mondayMilestone, weekendMilestone, legDayMilestone];
   }
 
-  static double _calculateMondayProgress(
+  static (double, List<RoutineLogDto>) _calculateMondayProgress(
       {required List<RoutineLogDto> logs, required int target, required List<DateTimeRange> weeks}) {
-
-    if(logs.isEmpty) return 0;
+    if (logs.isEmpty) return (0, []);
 
     List<RoutineLogDto> mondayLogs = [];
     for (final week in weeks) {
@@ -81,14 +81,17 @@ class WeeklyMilestone extends Milestone {
         }
       }
     }
-    final listOfLogs = mondayLogs.take(target);
-    return listOfLogs.length / target;
+
+    final qualifyingLogs = mondayLogs.take(target).toList();
+
+    final progress = qualifyingLogs.length / target;
+
+    return (progress, qualifyingLogs);
   }
 
-  static double _calculateWeekendProgress(
+  static (double, List<RoutineLogDto>) _calculateWeekendProgress(
       {required List<RoutineLogDto> logs, required int target, required List<DateTimeRange> weeks}) {
-
-    if(logs.isEmpty) return 0;
+    if (logs.isEmpty) return (0, []);
 
     List<RoutineLogDto> weekendLogs = [];
     for (final week in weeks) {
@@ -103,20 +106,24 @@ class WeeklyMilestone extends Milestone {
         }
       }
     }
-    final listOfLogs = weekendLogs.take(target);
-    return listOfLogs.length / target;
+
+    final qualifyingLogs = weekendLogs.take(target).toList();
+
+    final progress = qualifyingLogs.length / target;
+
+    return (progress, qualifyingLogs);
   }
 
-  static double _calculateLegProgress(
+  static (double, List<RoutineLogDto>) _calculateLegProgress(
       {required List<RoutineLogDto> logs, required int target, required List<DateTimeRange> weeks}) {
-
-    if(logs.isEmpty) return 0;
+    if (logs.isEmpty) return (0, []);
 
     List<RoutineLogDto> legsLogs = [];
     for (final week in weeks) {
       final logsForTheWeek = logs.where((log) => log.createdAt.isWithinRange(range: week));
       final legLog = logsForTheWeek.firstWhereOrNull((log) {
-        final hasLegLog = log.exerciseLogs.where((exerciseLog) {
+        final completedExerciseLogs = exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs);
+        final hasLegLog = completedExerciseLogs.where((exerciseLog) {
           final primaryMuscleGroupFamily = exerciseLog.exercise.primaryMuscleGroup.family;
           final secondaryMuscleGroupFamilies =
               exerciseLog.exercise.secondaryMuscleGroups.map((muscleGroup) => muscleGroup.family);
@@ -133,7 +140,11 @@ class WeeklyMilestone extends Milestone {
         }
       }
     }
-    final listOfLogs = legsLogs.take(target);
-    return listOfLogs.length / target;
+
+    final qualifyingLogs = legsLogs.take(target).toList();
+
+    final progress = qualifyingLogs.length / target;
+
+    return (progress, qualifyingLogs);
   }
 }

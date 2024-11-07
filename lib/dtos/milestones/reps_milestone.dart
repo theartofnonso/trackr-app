@@ -1,8 +1,10 @@
 import 'package:collection/collection.dart';
 import 'package:tracker_app/dtos/milestones/milestone_dto.dart';
+import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/milestone_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 
+import '../../utils/exercise_logs_utils.dart';
 import '../appsync/routine_log_dto.dart';
 
 class RepsMilestone extends Milestone {
@@ -75,26 +77,43 @@ class RepsMilestone extends Milestone {
     }).toList();
   }
 
-  static double _calculateProgress(
+  static (double, List<RoutineLogDto>) _calculateProgress(
       {required List<RoutineLogDto> logs, required MuscleGroup muscleGroup, required int target}) {
-    if (logs.isEmpty) return 0;
+    if (logs.isEmpty) return (0, []);
 
     int sumOfReps = 0;
 
-    final exerciseLogs = logs.expand((log) => log.exerciseLogs).where((exerciseLog) {
-      final primaryMuscleGroup = exerciseLog.exercise.primaryMuscleGroup;
-      final secondaryMuscleGroups = exerciseLog.exercise.secondaryMuscleGroups;
-      final muscleGroups = [primaryMuscleGroup, ...secondaryMuscleGroups];
-      return muscleGroups.contains(muscleGroup);
-    });
-    if (exerciseLogs.isNotEmpty) {
-      sumOfReps = exerciseLogs
-          .expand((exerciseLog) => exerciseLog.sets)
-          .map((set) => set.value2)
-          .reduce((value, element) => value + element)
-          .toInt();
+    List<RoutineLogDto> qualifyingLogs = [];
+
+    for (final log in logs) {
+
+      if (sumOfReps < target) {
+
+        final completedExerciseLogs = exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs);
+        final exerciseLogs = completedExerciseLogs
+            .where((exerciseLog) => exerciseLog.exercise.type != ExerciseType.duration)
+            .where((exerciseLog) {
+          final primaryMuscleGroup = exerciseLog.exercise.primaryMuscleGroup;
+          final secondaryMuscleGroups = exerciseLog.exercise.secondaryMuscleGroups;
+          final muscleGroups = [primaryMuscleGroup, ...secondaryMuscleGroups];
+          return muscleGroups.contains(muscleGroup);
+        });
+
+        if (exerciseLogs.isNotEmpty) {
+          final reps = exerciseLogs
+              .expand((exerciseLog) => exerciseLog.sets)
+              .map((set) => set.value2)
+              .reduce((value, element) => value + element)
+              .toInt();
+
+          qualifyingLogs.add(log);
+          sumOfReps += reps;
+        }
+      }
     }
 
-    return sumOfReps >= target ? 1 : sumOfReps / target;
+    final progress = (sumOfReps >= target ? 1 : sumOfReps / target).toDouble();
+
+    return (progress, qualifyingLogs);
   }
 }

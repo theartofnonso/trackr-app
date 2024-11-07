@@ -24,9 +24,9 @@ class MilestonesHomeScreen extends StatelessWidget {
 
     final milestones = MilestonesRepository().loadMilestones(logs: routineLogsForTheYear);
 
-    final pendingMilestones = milestones.where((milestone) => milestone.progress < 1).toList();
+    final pendingMilestones = milestones.where((milestone) => milestone.progress.$1 < 1).toList();
 
-    final completedMilestones = milestones.where((milestone) => milestone.progress == 1).toList();
+    final completedMilestones = milestones.where((milestone) => milestone.progress.$1 == 1).toList();
 
     return DefaultTabController(
         length: 2,

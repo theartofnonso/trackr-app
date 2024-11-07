@@ -49,9 +49,9 @@ class MilestoneGridItem extends StatelessWidget {
                 borderRadius: BorderRadius.circular(5),
               ),
               child: LinearProgressIndicator(
-                value: milestone.progress,
+                value: milestone.progress.$1,
                 backgroundColor: sapphireDark,
-                color: setsMilestoneColor(progress: milestone.progress),
+                color: setsMilestoneColor(progress: milestone.progress.$1),
                 minHeight: 16,
                 borderRadius: BorderRadius.circular(3.0), // Border r
               ),

@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -5,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/milestones/milestone_dto.dart';
 import 'package:tracker_app/dtos/milestones/reps_milestone.dart';
+import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/widgets/label_divider.dart';
@@ -12,6 +14,8 @@ import 'package:tracker_app/widgets/label_divider.dart';
 import '../../../colors.dart';
 import '../../enums/milestone_type_enums.dart';
 import '../../utils/challenge_utils.dart';
+import '../../widgets/empty_states/list_tile_empty_state.dart';
+import '../../widgets/routine/preview/routine_log_widget.dart';
 
 class MilestoneScreen extends StatelessWidget {
   final Milestone milestone;
@@ -20,12 +24,30 @@ class MilestoneScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final remainder = (milestone.progress * milestone.target).toInt();
+    final remainder = (milestone.progress.$1 * milestone.target).toInt();
 
     final confettiController = ConfettiController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       confettiController.play();
     });
+
+    final children = milestone.progress.$2.mapIndexed((index, log) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Column(
+          children: [
+            RoutineLogWidget(
+                log: log,
+                color: Colors.transparent,
+                trailing: log.createdAt.durationSinceOrDate()),
+            if(index < milestone.progress.$2.length -1 )
+              Divider(color: Colors.white70.withOpacity(0.1),indent: 20, endIndent: 20,)
+          ],
+        ),
+      );
+    });
+
+
     return Stack(alignment: Alignment.topCenter, children: [
       Scaffold(
         backgroundColor: sapphireDark,
@@ -149,30 +171,41 @@ class MilestoneScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(5),
                       ),
                       child: LinearProgressIndicator(
-                        value: milestone.progress,
+                        value: milestone.progress.$1,
                         backgroundColor: sapphireDark,
-                        color: setsMilestoneColor(progress: milestone.progress),
+                        color: setsMilestoneColor(progress: milestone.progress.$1),
                         minHeight: 25,
                         borderRadius: BorderRadius.circular(3.0), // Border r
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    milestone.progress > 0
-                        ? milestone.progress == 1
-                            ? _CompletedMessage(target: milestone.target, description: _targetDescription())
-                            : _ProgressMessage(
-                                remainder: remainder, target: milestone.target, description: _targetDescription())
+                    const SizedBox(height: 16),
+                    milestone.progress.$1 > 0
+                        ? milestone.progress.$1 == 1
+                        ? _CompletedMessage(target: milestone.target, description: _targetDescription())
+                        : _ProgressMessage(
+                        remainder: remainder, target: milestone.target, description: _targetDescription())
                         : Text("Keep up the training to see your progress grow for this challenge.",
-                            style: GoogleFonts.ubuntu(
-                                fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400, height: 1.5)),
+                        style: GoogleFonts.ubuntu(
+                            fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400, height: 1.5)),
                   ],
                 ),
               ),
+              const SizedBox(height: 12),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: LabelDivider(label: "History", labelColor: Colors.white70, dividerColor: sapphireLighter, fontSize: 14, shouldCapitalise: true,),
+              ),
+
+              children.isNotEmpty ? SafeArea(top: false, child: Column(children: [...children],)) : Padding(
+                padding: const EdgeInsets.only(top: 16.0, left: 20),
+                child: const ListTileEmptyState(color: sapphireLighter,),
+              ),
+
             ]),
           ),
         ),
       ),
-      milestone.progress == 1
+      milestone.progress.$1 == 1
           ? ConfettiWidget(
               minBlastForce: 10,
               confettiController: confettiController,
