@@ -61,7 +61,6 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
     List<RoutineLogDto> routineLogsForTheYear = routineLogController.whereLogsIsSameYear(dateTime: DateTime.now().withoutTime());
 
     final newMilestones = routineLogController.newMilestones;
-    print(newMilestones);
 
     final muscleGroupFamilyFrequencyData =
         muscleGroupFamilyFrequency(exerciseLogs: updatedLog.exerciseLogs, includeSecondaryMuscleGroups: false);
