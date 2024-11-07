@@ -51,6 +51,12 @@ class MilestoneScreen extends StatelessWidget {
     return Stack(alignment: Alignment.topCenter, children: [
       Scaffold(
         backgroundColor: sapphireDark,
+        floatingActionButton: milestone.progress.$1 > milestone.target ? FloatingActionButton(
+            heroTag: "milestone_screen",
+            onPressed: _shareMilestoneSummary,
+            backgroundColor: sapphireDark,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+            child: const FaIcon(FontAwesomeIcons.rocket)) : null,
         body: Container(
           width: double.infinity,
           decoration: const BoxDecoration(
@@ -221,6 +227,10 @@ class MilestoneScreen extends StatelessWidget {
       MilestoneType.days => "days",
       MilestoneType.hours => "hours",
     };
+  }
+
+  void _shareMilestoneSummary() {
+
   }
 }
 
