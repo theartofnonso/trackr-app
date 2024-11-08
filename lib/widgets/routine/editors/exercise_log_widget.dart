@@ -355,7 +355,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             if (withWeightsOnly(type: exerciseType))
               IconButton(
                   onPressed: _show1RMRecommendations,
-                  icon: const FaIcon(FontAwesomeIcons.boltLightning, color: Colors.white, size: 16),
+                  icon: const FaIcon(FontAwesomeIcons.solidLightbulb, color: Colors.white, size: 16),
                   style: ButtonStyle(
                       visualDensity: VisualDensity.compact,
                       shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
