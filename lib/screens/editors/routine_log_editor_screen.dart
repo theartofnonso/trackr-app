@@ -14,7 +14,10 @@ import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
+import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/utils/routine_editors_utils.dart';
+import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
+import 'package:tracker_app/widgets/label_divider.dart';
 import 'package:tracker_app/widgets/routine/editors/exercise_log_widget_lite.dart';
 
 import '../../colors.dart';
@@ -345,11 +348,19 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
               ],
             ),
             floatingActionButton: isKeyboardOpen
-                ? null
+                ? FloatingActionButton.extended(
+                    heroTag: UniqueKey(),
+                    onPressed: _showWeightCalculator,
+                    backgroundColor: Colors.white.withOpacity(0.1),
+                    enableFeedback: true,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                    label:
+                        Text("Calculator", style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600)),
+                  )
                 : FloatingActionButton.extended(
                     heroTag: UniqueKey(),
                     onPressed: widget.mode == RoutineEditorMode.log ? _saveLog : _updateLog,
-                    backgroundColor: vibrantGreen.withOpacity(0.2),
+                    backgroundColor: vibrantGreen.withOpacity(0.1),
                     enableFeedback: true,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                     label: Text("Finish workout",
@@ -461,6 +472,11 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                 )
               ]),
             )));
+  }
+
+  void _showWeightCalculator() {
+    displayBottomSheet(
+        context: context, padding: EdgeInsets.symmetric(vertical: 16, horizontal: 0), child: WeightCalculator());
   }
 
   @override
@@ -592,5 +608,103 @@ class _RoutineLogOverview extends StatelessWidget {
             ])
           ],
         ));
+  }
+}
+
+class WeightCalculator extends StatefulWidget {
+  const WeightCalculator({super.key});
+
+  @override
+  State<WeightCalculator> createState() => _WeightCalculatorState();
+}
+
+class _WeightCalculatorState extends State<WeightCalculator> {
+  // Default weight plates (in kilograms)
+  final List<double> _defaultPlates = [25.0, 20.0, 15.0, 10.0, 5.0, 2.5, 1.25, 0.5];
+
+// Default bars (in kilograms)
+  final List<double> _defaultBars = [20.0, 15.0, 10.0, 7.5, 0]; // For example, Olympic, training, and junior bars
+
+  @override
+  Widget build(BuildContext context) {
+    final plates = _defaultPlates
+        .mapIndexed((index, plate) => Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: CircleAvatar(
+                  backgroundColor: Colors.white70,
+                  child: Text("${weightWithConversion(value: plate)}",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w600))),
+            ))
+        .toList();
+
+    final bars = _defaultBars
+        .mapIndexed((index, bar) => Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: OpacityButtonWidget(label: "${weightWithConversion(value: bar)}"),
+            ))
+        .toList();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 16.0),
+          child: Text("${weightWithConversion(value: 85)}${weightLabel()}".toUpperCase(),
+              textAlign: TextAlign.center,
+              style: GoogleFonts.ubuntu(fontSize: 28, color: Colors.white, fontWeight: FontWeight.w900)),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 16.0),
+          child: Text("Target Weight".toUpperCase(),
+              textAlign: TextAlign.start,
+              style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w600)),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 26.0, horizontal: 16),
+          child: LabelDivider(label: "Available Weights".toUpperCase(), labelColor: Colors.white70, dividerColor: sapphireLighter),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const SizedBox(
+              width: 20,
+            ),
+            SizedBox(
+              width: 100,
+              child: Text("Plate (${weightLabel()})".toUpperCase(),
+                  textAlign: TextAlign.start,
+                  style: GoogleFonts.ubuntu(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
+            ),
+            const SizedBox(
+              width: 6,
+            ),
+            Expanded(child: SingleChildScrollView(scrollDirection: Axis.horizontal, child: Row(children: plates))),
+          ],
+        ),
+        const SizedBox(height: 22),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const SizedBox(
+              width: 20,
+            ),
+            SizedBox(
+              width: 100,
+              child: Text("Bar (${weightLabel()})".toUpperCase(),
+                  textAlign: TextAlign.start,
+                  style: GoogleFonts.ubuntu(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
+            ),
+            const SizedBox(
+              width: 6,
+            ),
+            Expanded(child: SingleChildScrollView(scrollDirection: Axis.horizontal, child: Row(children: bars))),
+          ],
+        )
+      ],
+    );
   }
 }

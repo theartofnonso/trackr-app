@@ -54,6 +54,7 @@ Future<void> displayBottomSheet(
     double? height,
     enabledDrag = true,
     bool isDismissible = true,
+      EdgeInsetsGeometry? padding,
     bool isScrollControlled = false}) {
   return showModalBottomSheet(
       isScrollControlled: isScrollControlled,
@@ -67,7 +68,7 @@ Future<void> displayBottomSheet(
               Container(
                 height: height,
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 decoration: BoxDecoration(
                   gradient: gradient ??
                       const LinearGradient(
