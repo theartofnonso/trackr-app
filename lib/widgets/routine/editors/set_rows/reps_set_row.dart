@@ -11,6 +11,7 @@ class RepsSetRow extends StatelessWidget {
   final RoutineEditorMode editorType;
   final VoidCallback onRemoved;
   final VoidCallback onCheck;
+  final void Function() onTapRepsEditor;
   final (TextEditingController, TextEditingController) controllers;
   final void Function(num value) onChangedReps;
 
@@ -21,7 +22,7 @@ class RepsSetRow extends StatelessWidget {
     required this.onRemoved,
     required this.onCheck,
     required this.controllers,
-    required this.onChangedReps,
+    required this.onChangedReps, required this.onTapRepsEditor,
   });
 
   @override
@@ -50,6 +51,7 @@ class RepsSetRow extends StatelessWidget {
             child: IntTextField(
               value: reps,
               onChanged: onChangedReps,
+              onTap: onTapRepsEditor,
               controller: controllers.$2,
             ),
           ),

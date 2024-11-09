@@ -40,6 +40,8 @@ class ExerciseLogWidget extends StatefulWidget {
   final void Function(String superSetId) onRemoveSuperSet;
   final VoidCallback? onCache;
   final VoidCallback onResize;
+  final void Function(SetDto setDto) onTapWeightEditor;
+  final void Function(SetDto setDto) onTapRepsEditor;
 
   const ExerciseLogWidget(
       {super.key,
@@ -53,6 +55,8 @@ class ExerciseLogWidget extends StatefulWidget {
       this.onCache,
       required this.onReplaceLog,
       required this.onResize,
+      required this.onTapWeightEditor,
+      required this.onTapRepsEditor,
       required this.isMinimised});
 
   @override
@@ -148,6 +152,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _updateWeight({required int index, required double value, required SetDto setDto}) {
     final updatedSet = setDto.copyWith(value1: value);
+    widget.onTapWeightEditor(updatedSet);
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateWeight(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
     _cacheLog();
@@ -218,6 +223,14 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     _durationControllers.addAll(controllers);
   }
 
+  void _onTapWeightEditor({required SetDto setDto}) {
+    widget.onTapWeightEditor(setDto);
+  }
+
+  void _onTapRepsEditor({required SetDto setDto}) {
+    widget.onTapRepsEditor(setDto);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -258,8 +271,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   child: GestureDetector(
                 onTap: () {
                   FocusScope.of(context).unfocus();
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => ExerciseHomeScreen(exercise: widget.exerciseLogDto.exercise)));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => ExerciseHomeScreen(exercise: widget.exerciseLogDto.exercise)));
                 },
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -343,6 +356,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               controllers: _controllers,
               durationControllers: _durationControllers,
               updateDuration: _updateDuration,
+              onTapWeightEditor: _onTapWeightEditor,
+              onTapRepsEditor: _onTapRepsEditor,
             ),
           const SizedBox(height: 8),
           if (withDurationOnly(type: exerciseType) && sets.isEmpty)
@@ -395,6 +410,8 @@ class _SetListView extends StatelessWidget {
   final void Function({required int index, required Duration duration, required SetDto setDto, required bool checked})
       checkAndUpdateDuration;
   final void Function({required int index, required Duration duration, required SetDto setDto}) updateDuration;
+  final void Function({required SetDto setDto}) onTapWeightEditor;
+  final void Function({required SetDto setDto}) onTapRepsEditor;
 
   const _SetListView(
       {required this.exerciseType,
@@ -407,7 +424,9 @@ class _SetListView extends StatelessWidget {
       required this.updateReps,
       required this.updateWeight,
       required this.checkAndUpdateDuration,
-      required this.updateDuration});
+      required this.updateDuration,
+      required this.onTapWeightEditor,
+      required this.onTapRepsEditor});
 
   @override
   Widget build(BuildContext context) {
@@ -420,6 +439,8 @@ class _SetListView extends StatelessWidget {
             onRemoved: () => removeSet(index: index),
             onChangedReps: (num value) => updateReps(index: index, value: value, setDto: setDto),
             onChangedWeight: (double value) => updateWeight(index: index, value: value, setDto: setDto),
+            onTapWeightEditor: () => onTapWeightEditor(setDto: setDto),
+            onTapRepsEditor: () => onTapRepsEditor(setDto: setDto),
             controllers: controllers[index],
           ),
         ExerciseType.bodyWeight => RepsSetRow(
@@ -428,6 +449,7 @@ class _SetListView extends StatelessWidget {
             onCheck: () => updateSetCheck(index: index, setDto: setDto),
             onRemoved: () => removeSet(index: index),
             onChangedReps: (num value) => updateReps(index: index, value: value, setDto: setDto),
+            onTapRepsEditor: () => onTapRepsEditor(setDto: setDto),
             controllers: controllers[index],
           ),
         ExerciseType.duration => DurationSetRow(

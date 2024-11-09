@@ -14,12 +14,14 @@ import 'package:tracker_app/utils/dialog_utils.dart';
 import '../../colors.dart';
 import '../../controllers/routine_template_controller.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
+import '../../dtos/set_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/routine_editors_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/empty_states/exercise_log_empty_state.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
 import '../../widgets/routine/editors/exercise_log_widget_lite.dart';
+import '../../widgets/weight_plate_calculator.dart';
 
 class RoutineTemplateEditorScreen extends StatefulWidget {
   static const routeName = '/routine-template-editor';
@@ -39,6 +41,8 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   late Function _onDisposeCallback;
 
   final _minimisedExerciseLogCards = <String>[];
+
+  SetDto? _selectedSetDto;
 
   void _selectExercisesInLibrary() async {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
@@ -299,8 +303,22 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                     icon: const FaIcon(FontAwesomeIcons.barsStaggered, color: Colors.white)),
             ],
           ),
-          floatingActionButton: isKeyboardOpen
-              ? null
+          floatingActionButton: isKeyboardOpen && _selectedSetDto != null
+              ? FloatingActionButton.extended(
+                  heroTag: UniqueKey(),
+                  onPressed: _showWeightCalculator,
+                  backgroundColor: Colors.white.withOpacity(0.1),
+                  enableFeedback: true,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                  icon: Image.asset(
+                    'icons/dumbbells.png',
+                    fit: BoxFit.contain,
+                    color: Colors.white,
+                    height: 24, // Adjust the height as needed
+                  ),
+                  label:
+                      Text("Calculator", style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600)),
+                )
               : FloatingActionButton(
                   heroTag: "routine_template_editor_scree_fab",
                   onPressed: template != null ? _updateRoutineTemplate : _createRoutineTemplate,
@@ -377,6 +395,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                       exerciseLogs.isNotEmpty
                           ? Expanded(
                               child: ListView.separated(
+                                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                                   padding: const EdgeInsets.only(bottom: 250),
                                   itemBuilder: (BuildContext context, int index) {
                                     final log = exerciseLogs[index];
@@ -404,6 +423,16 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                                             onResize: () => _handleResizedExerciseLogCard(exerciseIdToResize: logId),
                                             isMinimised: _isMinimised(logId),
                                             onAlternate: () => _showSubstituteExercisePicker(primaryExerciseLog: log),
+                                            onTapWeightEditor: (SetDto setDto) {
+                                              setState(() {
+                                                _selectedSetDto = setDto;
+                                              });
+                                            },
+                                            onTapRepsEditor: (SetDto setDto) {
+                                              setState(() {
+                                                _selectedSetDto = null;
+                                              });
+                                            },
                                           );
                                   },
                                   separatorBuilder: (_, __) => const SizedBox(height: 10),
@@ -418,6 +447,13 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
             ),
           )),
     );
+  }
+
+  void _showWeightCalculator() {
+    displayBottomSheet(
+        context: context,
+        child: WeightPlateCalculator(target: _selectedSetDto?.value1.toDouble() ?? 0),
+        padding: EdgeInsets.zero);
   }
 
   @override

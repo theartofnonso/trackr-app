@@ -14,11 +14,7 @@ import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
-import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/utils/routine_editors_utils.dart';
-import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
-import 'package:tracker_app/widgets/buttons/opacity_circle_button_widget.dart';
-import 'package:tracker_app/widgets/label_divider.dart';
 import 'package:tracker_app/widgets/routine/editors/exercise_log_widget_lite.dart';
 
 import '../../colors.dart';
@@ -26,12 +22,14 @@ import '../../controllers/routine_log_controller.dart';
 import '../../controllers/routine_template_controller.dart';
 import '../../dtos/appsync/exercise_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
+import '../../dtos/set_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/app_analytics.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/empty_states/exercise_log_empty_state.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
 import '../../widgets/timers/routine_timer.dart';
+import '../../widgets/weight_plate_calculator.dart';
 
 class RoutineLogEditorScreen extends StatefulWidget {
   static const routeName = '/routine-log-editor';
@@ -49,6 +47,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   late Function _onDisposeCallback;
 
   final _minimisedExerciseLogCards = <String>[];
+
+  SetDto? _selectedSetDto;
 
   void _selectExercisesInLibrary() async {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
@@ -348,13 +348,19 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                       icon: const FaIcon(FontAwesomeIcons.barsStaggered, color: Colors.white))
               ],
             ),
-            floatingActionButton: isKeyboardOpen
+            floatingActionButton: isKeyboardOpen && _selectedSetDto != null
                 ? FloatingActionButton.extended(
                     heroTag: UniqueKey(),
                     onPressed: _showWeightCalculator,
                     backgroundColor: Colors.white.withOpacity(0.1),
                     enableFeedback: true,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                    icon: Image.asset(
+                      'icons/dumbbells.png',
+                      fit: BoxFit.contain,
+                      color: Colors.white,
+                      height: 24, // Adjust the height as needed
+                    ),
                     label:
                         Text("Calculator", style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600)),
                   )
@@ -416,6 +422,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                           if (exerciseLogs.isNotEmpty)
                             Expanded(
                               child: SingleChildScrollView(
+                                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                                 padding: const EdgeInsets.only(bottom: 250),
                                 child: Column(children: [
                                   ...exerciseLogs.map((exerciseLog) {
@@ -457,6 +464,16 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                                 isMinimised: _isMinimised(exerciseId),
                                                 onAlternate: () =>
                                                     _showSubstituteExercisePicker(primaryExerciseLog: log),
+                                                onTapWeightEditor: (SetDto setDto) {
+                                                  setState(() {
+                                                    _selectedSetDto = setDto;
+                                                  });
+                                                }, onTapRepsEditor: (SetDto setDto) {
+                                          setState(() {
+                                            print("cfc");
+                                            _selectedSetDto = null;
+                                          });
+                                        },
                                               ));
                                   })
                                 ]),
@@ -476,7 +493,10 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   }
 
   void _showWeightCalculator() {
-    displayBottomSheet(context: context, child: WeightCalculator(), padding: EdgeInsets.zero);
+    displayBottomSheet(
+        context: context,
+        child: WeightPlateCalculator(target: _selectedSetDto?.value1.toDouble() ?? 0),
+        padding: EdgeInsets.zero);
   }
 
   @override
@@ -609,278 +629,4 @@ class _RoutineLogOverview extends StatelessWidget {
           ],
         ));
   }
-}
-
-class WeightCalculator extends StatefulWidget {
-  const WeightCalculator({super.key});
-
-  @override
-  State<WeightCalculator> createState() => _WeightCalculatorState();
-}
-
-class _WeightCalculatorState extends State<WeightCalculator> {
-  final List<PlatesEnum> _selectedPlates = [];
-  BarsEnum _selectedBar = BarsEnum.twenty;
-
-  @override
-  Widget build(BuildContext context) {
-    final plates = PlatesEnum.values
-        .map((plate) => Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: OpacityCircleButtonWidget(
-                  padding: EdgeInsets.all(16),
-                  onPressed: () => _onSelectPlate(newPlate: plate),
-                  buttonColor: _getPlate(plate: plate) != null ? vibrantGreen : null,
-                  label: "${weightWithConversion(value: plate.weight)}"),
-            ))
-        .toList();
-
-    final bars = BarsEnum.values
-        .map((bar) => Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: OpacityButtonWidget(
-                  onPressed: () => _onSelectBar(newBar: bar),
-                  padding: EdgeInsets.symmetric(vertical: 6, horizontal: 10),
-                  buttonColor: _selectedBar == bar ? vibrantGreen : null,
-                  label: "${weightWithConversion(value: bar.weight)}"),
-            ))
-        .toList();
-
-    final weightSuggestions = _findClosestWeightCombination(targetWeight: 150);
-
-    final plateSuggestions = weightSuggestions.map((weight) => PlatesEnum.fromDouble(weight));
-
-    final weightEstimate = (weightSuggestions.sum.toInt() * 2) + _selectedBar.weight;
-    print(_selectedBar.weight);
-    final isExact = weightEstimate == 150;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text("${weightWithConversion(value: 150)}${weightLabel()}".toUpperCase(),
-              textAlign: TextAlign.center,
-              style: GoogleFonts.ubuntu(fontSize: 28, color: Colors.white, fontWeight: FontWeight.w900)),
-          const SizedBox(
-            height: 2,
-          ),
-          Text("Target Weight".toUpperCase(),
-              textAlign: TextAlign.start,
-              style: GoogleFonts.ubuntu(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w600)),
-          const SizedBox(
-            height: 18,
-          ),
-          _Bar(
-            bar: _selectedBar,
-            plates: plateSuggestions.sorted((a, b) => b.weight.compareTo(a.weight)),
-          ),
-          if (_selectedPlates.isNotEmpty && !isExact)
-            Padding(
-              padding: const EdgeInsets.only(top: 14, bottom: 2),
-              child: Text(
-                  "Closest estimate is ${weightWithConversion(value: weightEstimate)}${weightLabel()}".toUpperCase(),
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.ubuntu(fontSize: 12, color: Colors.deepOrange, fontWeight: FontWeight.w700)),
-            ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16),
-            child: LabelDivider(
-                label: "Available Weights (${weightLabel()})".toUpperCase(),
-                labelColor: Colors.white70,
-                dividerColor: sapphireLighter),
-          ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [SizedBox(width: 16), ...plates],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16),
-            child: LabelDivider(
-              label: "Available Bar (${weightLabel()})".toUpperCase(),
-              labelColor: Colors.white70,
-              dividerColor: sapphireLighter,
-              leftToRight: false,
-            ),
-          ),
-          SingleChildScrollView(scrollDirection: Axis.horizontal, child: Row(children: [SizedBox(width: 16), ...bars])),
-        ],
-      ),
-    );
-  }
-
-  void _onSelectPlate({required PlatesEnum newPlate}) {
-    final oldPlate = _selectedPlates.firstWhereOrNull((previousPlate) => previousPlate.weight == newPlate.weight);
-    setState(() {
-      if (oldPlate != null) {
-        _selectedPlates.remove(oldPlate);
-      } else {
-        _selectedPlates.add(newPlate);
-      }
-    });
-  }
-
-  void _onSelectBar({required BarsEnum newBar}) {
-    setState(() {
-      _selectedBar = newBar;
-    });
-  }
-
-  PlatesEnum? _getPlate({required PlatesEnum plate}) =>
-      _selectedPlates.firstWhereOrNull((previousPlate) => previousPlate.weight == plate.weight);
-
-  List<double> _findClosestWeightCombination({required double targetWeight}) {
-    // Calculate the weight needed for one side
-    double halfTargetWeight = (targetWeight - _selectedBar.weight) / 2;
-
-    // Sort weights in descending order for better efficiency
-    _selectedPlates.sort((a, b) => b.weight.compareTo(a.weight));
-
-    List<double> bestCombination = [];
-    double bestSum = 0;
-
-    // Recursive function to find the best combination
-    void findCombination(List<double> currentCombination, double currentSum, int index) {
-      if (currentSum > halfTargetWeight) return;
-
-      if (currentSum > bestSum) {
-        bestSum = currentSum;
-        bestCombination = List.from(currentCombination);
-      }
-
-      for (int i = index; i < _selectedPlates.length; i++) {
-        currentCombination.add(_selectedPlates[i].weight);
-        findCombination(currentCombination, currentSum + _selectedPlates[i].weight, i);
-        currentCombination.removeLast();
-      }
-    }
-
-    findCombination([], 0, 0);
-
-    return bestCombination;
-  }
-}
-
-class _Bar extends StatelessWidget {
-  final BarsEnum bar;
-  final List<PlatesEnum> plates;
-
-  const _Bar({required this.bar, required this.plates});
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(children: [
-        Container(
-            width: 100,
-            height: 20,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [
-                  Colors.white24,
-                  Colors.white70,
-                ],
-              ),
-            ),
-            child: Center(
-              child: Text("${weightWithConversion(value: bar.weight)}",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.ubuntu(fontSize: 12, color: Colors.black, fontWeight: FontWeight.bold)),
-            )),
-        Container(
-            width: 15,
-            height: 40,
-            decoration: const BoxDecoration(
-              color: sapphireDark60,
-            )),
-        ...plates.map((plate) => _Plate(plate: plate)),
-        Container(
-            width: 10,
-            height: 20,
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(5),
-                bottomRight: Radius.circular(5),
-              ),
-              gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [
-                  Colors.white24,
-                  Colors.white70,
-                ],
-              ),
-            ))
-      ]),
-    );
-  }
-}
-
-class _Plate extends StatelessWidget {
-  final PlatesEnum plate;
-
-  const _Plate({
-    required this.plate,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: plate.width,
-      height: plate.height,
-      margin: EdgeInsets.only(right: 3),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(6),
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [sapphireDark60, sapphireDark80, sapphireDark],
-        ),
-      ),
-      child: Center(
-        child: Text("${weightWithConversion(value: plate.weight)}",
-            textAlign: TextAlign.center,
-            style: GoogleFonts.ubuntu(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w600)),
-      ),
-    );
-  }
-}
-
-enum PlatesEnum {
-  twentyFive(weight: 25, height: 100, width: 38),
-  twenty(weight: 20, height: 90, width: 36),
-  fifteen(weight: 15, height: 80, width: 38),
-  ten(weight: 10, height: 70, width: 38),
-  five(weight: 5, height: 60, width: 38),
-  twoFive(weight: 2.5, height: 50, width: 38),
-  oneTwoFive(weight: 1.25, height: 40, width: 38),
-  zeroFive(weight: 0.5, height: 30, width: 38);
-
-  final double weight;
-  final double height;
-  final double width;
-
-  const PlatesEnum({required this.weight, required this.height, required this.width});
-
-  static PlatesEnum fromDouble(double weight) {
-    return PlatesEnum.values.firstWhere((value) => value.weight == weight);
-  }
-}
-
-enum BarsEnum {
-  twenty(weight: 20),
-  fifteen(weight: 15),
-  ten(weight: 10),
-  five(weight: 5),
-  sevenFive(weight: 7.5),
-  zero(weight: 0.0);
-
-  final double weight;
-
-  const BarsEnum({required this.weight});
 }
