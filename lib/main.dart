@@ -306,6 +306,7 @@ class _MyAppState extends State<MyApp> {
       ]);
       await Amplify.addPlugin(AmplifyDataStore(modelProvider: ModelProvider.instance, options: datastorePluginOptions));
       await Amplify.configure(amplifyconfig);
+      Amplify.DataStore.start();
     } on Exception catch (e) {
       debugPrint('Could not configure Amplify: $e');
     }
