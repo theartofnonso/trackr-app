@@ -163,7 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _observeRoutineTemplateQuery() {
     _routineTemplateStream = Amplify.DataStore.observeQuery(
       RoutineTemplate.classType,
-      //sortBy: [RoutineTemplate.CREATEDAT.descending()],
+      sortBy: [RoutineTemplate.CREATEDAT.descending()],
     ).listen((QuerySnapshot<RoutineTemplate> snapshot) {
       print(snapshot.items);
       if (mounted) {
