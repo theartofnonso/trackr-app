@@ -18,14 +18,10 @@ class AmplifyRoutineTemplateRepository {
   UnmodifiableListView<RoutineTemplateDto> get templates => UnmodifiableListView(_templates);
 
   void loadTemplatesStream({required List<RoutineTemplate> templates}) {
-    _mapAndSortTemplates(templates: templates);
-  }
-
-  void _mapAndSortTemplates({required List<RoutineTemplate> templates}) {
     _templates = templates.map((template) {
       final templateDto = template.dto();
       return templateDto;
-    }).sorted((a, b) => b.createdAt.compareTo(a.createdAt));
+    }).toList();
   }
 
   Future<RoutineTemplateDto> saveTemplate({required RoutineTemplateDto templateDto}) async {
@@ -36,8 +32,6 @@ class AmplifyRoutineTemplateRepository {
     await Amplify.DataStore.save<RoutineTemplate>(templateToCreate);
 
     final updatedWithId = templateDto.copyWith(id: templateToCreate.id, owner: SharedPrefs().userId);
-
-    _templates.insert(0, updatedWithId);
 
     return updatedWithId;
   }
@@ -51,11 +45,7 @@ class AmplifyRoutineTemplateRepository {
     if (result.isNotEmpty) {
       final oldTemplate = result.first;
       final newTemplate = oldTemplate.copyWith(data: jsonEncode(template));
-      await Amplify.DataStore.save<RoutineTemplate>(newTemplate);
-      final index = _indexWhereTemplate(id: template.id);
-      if (index > -1) {
-        _templates[index] = template;
-      }
+      Amplify.DataStore.save<RoutineTemplate>(newTemplate);
     }
   }
 
@@ -90,11 +80,7 @@ class AmplifyRoutineTemplateRepository {
 
       final newLog = oldTemplate.copyWith(data: jsonEncode(newTemplateDto));
 
-      await Amplify.DataStore.save<RoutineTemplate>(newLog);
-      final index = _indexWhereTemplate(id: newLog.id);
-      if (index > -1) {
-        _templates[index] = newTemplateDto;
-      }
+      Amplify.DataStore.save<RoutineTemplate>(newLog);
     }
   }
 
@@ -106,11 +92,7 @@ class AmplifyRoutineTemplateRepository {
 
     if (result.isNotEmpty) {
       final oldTemplate = result.first;
-      await Amplify.DataStore.delete<RoutineTemplate>(oldTemplate);
-      final index = _indexWhereTemplate(id: template.id);
-      if (index > -1) {
-        _templates.removeAt(index);
-      }
+      Amplify.DataStore.delete<RoutineTemplate>(oldTemplate);
     }
   }
 
@@ -126,10 +108,6 @@ class AmplifyRoutineTemplateRepository {
   }
 
   /// Helper methods
-
-  int _indexWhereTemplate({required String id}) {
-    return _templates.indexWhere((template) => template.id == id);
-  }
 
   RoutineTemplateDto? templateWhere({required String id}) {
     return _templates.firstWhereOrNull((dto) => dto.id == id);

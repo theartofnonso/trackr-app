@@ -238,7 +238,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
           type: _exerciseType,
           owner: "");
 
-      await Provider.of<ExerciseAndRoutineController>(context, listen: false).saveExercise(exerciseDto: exercise);
+      Provider.of<ExerciseAndRoutineController>(context, listen: false).saveExercise(exerciseDto: exercise);
       if (mounted) {
         context.pop();
       }

@@ -22,16 +22,14 @@ class ActivityLogController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<ActivityLogDto?> saveLog({required ActivityLogDto logDto}) async {
-    ActivityLogDto? savedLog;
+  void saveLog({required ActivityLogDto logDto}) {
     try {
-      savedLog = await _amplifyActivityLogRepository.saveLog(logDto: logDto);
+      _amplifyActivityLogRepository.saveLog(logDto: logDto);
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {
       notifyListeners();
     }
-    return savedLog;
   }
 
   Future<void> updateLog({required ActivityLogDto log}) async {

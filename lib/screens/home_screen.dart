@@ -126,6 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _observeRoutineUserQuery() {
     _routineUserStream = Amplify.DataStore.observeQuery(
       RoutineUser.classType,
+      sortBy: [RoutineUser.CREATEDAT.ascending()],
     ).listen((QuerySnapshot<RoutineUser> snapshot) {
       if (mounted) {
         Provider.of<RoutineUserController>(context, listen: false).streamUsers(users: snapshot.items);
@@ -138,6 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
     await controller.loadLocalExercises();
     _exerciseStream = Amplify.DataStore.observeQuery(
       Exercise.classType,
+      sortBy: [Exercise.CREATEDAT.ascending()],
     ).listen((QuerySnapshot<Exercise> snapshot) {
       if (mounted) {
         controller.streamExercises(exercises: snapshot.items);
@@ -148,6 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _observeRoutineLogQuery() {
     _routineLogStream = Amplify.DataStore.observeQuery(
       RoutineLog.classType,
+      sortBy: [RoutineLog.CREATEDAT.ascending()],
     ).listen((QuerySnapshot<RoutineLog> snapshot) {
       if (mounted) {
         Provider.of<ExerciseAndRoutineController>(context, listen: false).streamLogs(logs: snapshot.items);
@@ -158,6 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _observeRoutineTemplateQuery() {
     _routineTemplateStream = Amplify.DataStore.observeQuery(
       RoutineTemplate.classType,
+      sortBy: [RoutineTemplate.CREATEDAT.ascending()],
     ).listen((QuerySnapshot<RoutineTemplate> snapshot) {
       if (mounted) {
         Provider.of<ExerciseAndRoutineController>(context, listen: false).streamTemplates(templates: snapshot.items);
@@ -168,6 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _observeActivityLogQuery() {
     _activityLogStream = Amplify.DataStore.observeQuery(
       ActivityLog.classType,
+      sortBy: [ActivityLog.CREATEDAT.ascending()],
     ).listen((QuerySnapshot<ActivityLog> snapshot) {
       if (mounted) {
         Provider.of<ActivityLogController>(context, listen: false).streamLogs(logs: snapshot.items);

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
-import '../../dtos/appsync/routine_log_dto.dart';
 import 'completed_milestones_screen.dart';
 import 'pending_milestones_screen.dart';
 
@@ -15,11 +13,6 @@ class MilestonesHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
-
-    List<RoutineLogDto> routineLogsForTheYear =
-    routineLogController.whereLogsIsSameYear(dateTime: DateTime.now().withoutTime());
-
-    routineLogsForTheYear.sort((a, b) => a.createdAt.compareTo(b.createdAt));
 
     final pendingMilestones = routineLogController.pendingMilestones;
 

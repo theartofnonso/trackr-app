@@ -42,10 +42,11 @@ class AmplifyRoutineLogRepository {
     _exerciseLogsById = groupExerciseLogsByExerciseId(routineLogs: _logs);
   }
 
-  void loadLogStream({required List<RoutineLog> logs}) {
-    _logs = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
+  void loadLogStream({required List<RoutineLog> logs, required VoidCallback onLoaded}) {
+    _logs = logs.map((log) => log.dto()).toList();
     _groupExerciseLogs();
     _calculateMilestones();
+    onLoaded();
   }
 
   Future<RoutineLogDto> saveLog({required RoutineLogDto logDto, TemporalDateTime? datetime}) async {
@@ -55,18 +56,14 @@ class AmplifyRoutineLogRepository {
 
     final now = datetime ?? TemporalDateTime.now();
 
-    final logToCreate = RoutineLog(data: jsonEncode(logDto), createdAt: now, updatedAt: now);
+    final logToCreate = RoutineLog(data: jsonEncode(logDto), createdAt: now, updatedAt: now, owner: SharedPrefs().userId);
+
     await Amplify.DataStore.save<RoutineLog>(logToCreate);
 
     final updatedRoutineLogWithId = logDto.copyWith(id: logToCreate.id, owner: SharedPrefs().userId);
     final updatedRoutineWithExerciseIds = updatedRoutineLogWithId.copyWith(
         exerciseLogs:
             updatedRoutineLogWithId.exerciseLogs.map((log) => log.copyWith(routineLogId: logToCreate.id)).toList());
-
-    _logs.add(updatedRoutineWithExerciseIds);
-    _logs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
-
-    _groupExerciseLogs();
 
     // Capture recent list of milestones
     _calculateMilestones();
@@ -89,13 +86,7 @@ class AmplifyRoutineLogRepository {
     if (result.isNotEmpty) {
       final oldLog = result.first;
       final newLog = oldLog.copyWith(data: jsonEncode(log));
-      await Amplify.DataStore.save<RoutineLog>(newLog);
-      final index = _indexWhereLog(id: log.id);
-      if (index > -1) {
-        _logs[index] = log;
-        _groupExerciseLogs();
-        _calculateMilestones();
-      }
+      Amplify.DataStore.save<RoutineLog>(newLog);
     }
   }
 
@@ -107,13 +98,7 @@ class AmplifyRoutineLogRepository {
 
     if (result.isNotEmpty) {
       final oldTemplate = result.first;
-      await Amplify.DataStore.delete<RoutineLog>(oldTemplate);
-      final index = _indexWhereLog(id: log.id);
-      if (index > -1) {
-        _logs.removeAt(index);
-        _groupExerciseLogs();
-        _calculateMilestones();
-      }
+      Amplify.DataStore.delete<RoutineLog>(oldTemplate);
     }
   }
 
@@ -182,10 +167,6 @@ class AmplifyRoutineLogRepository {
   }
 
   /// Helper methods
-
-  int _indexWhereLog({required String id}) {
-    return _logs.indexWhere((log) => log.id == id);
-  }
 
   RoutineLogDto? logWhereId({required String id}) {
     return _logs.firstWhereOrNull((log) => log.id == id);

@@ -23,7 +23,7 @@ class AmplifyRoutineUserRepository {
   Future<RoutineUserDto?> saveUser({required RoutineUserDto userDto}) async {
     final now = TemporalDateTime.now();
 
-    final userToCreate = RoutineUser(username: userDto.name, data: jsonEncode(userDto), createdAt: now, updatedAt: now);
+    final userToCreate = RoutineUser(username: userDto.name, data: jsonEncode(userDto), createdAt: now, updatedAt: now, owner: SharedPrefs().userId);
 
     await Amplify.DataStore.save<RoutineUser>(userToCreate);
 

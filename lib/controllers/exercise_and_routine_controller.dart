@@ -51,7 +51,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
 
   /// Exercises
 
-  Future<void> loadLocalExercises() async {
+  Future<void> loadLocalExercises() {
     return _amplifyExerciseRepository.loadLocalExercises(onLoad: () {
       _amplifyLogRepository.syncLogsWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
       _amplifyTemplateRepository.syncTemplatesWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
@@ -69,10 +69,10 @@ class ExerciseAndRoutineController extends ChangeNotifier {
         });
   }
 
-  Future<void> saveExercise({required ExerciseDto exerciseDto}) async {
+  void saveExercise({required ExerciseDto exerciseDto}) {
     isLoading = true;
     try {
-      await _amplifyExerciseRepository.saveExercise(exerciseDto: exerciseDto);
+      _amplifyExerciseRepository.saveExercise(exerciseDto: exerciseDto);
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {
@@ -178,8 +178,11 @@ class ExerciseAndRoutineController extends ChangeNotifier {
   /// Logs
 
   void streamLogs({required List<RoutineLog> logs}) {
-    _amplifyLogRepository.loadLogStream(logs: logs);
-    notifyListeners();
+    _amplifyLogRepository.loadLogStream(logs: logs, onLoaded: () {
+      _amplifyLogRepository.syncLogsWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
+      _amplifyTemplateRepository.syncTemplatesWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
+      notifyListeners();
+    });
   }
 
   Future<RoutineLogDto?> saveLog({required RoutineLogDto logDto, TemporalDateTime? datetime}) async {

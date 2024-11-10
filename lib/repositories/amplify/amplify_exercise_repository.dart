@@ -81,16 +81,12 @@ class AmplifyExerciseRepository {
     onData();
   }
 
-  Future<void> saveExercise({required ExerciseDto exerciseDto}) async {
+  void saveExercise({required ExerciseDto exerciseDto}) {
     final now = TemporalDateTime.now();
 
-    final exerciseToCreate = Exercise(data: jsonEncode(exerciseDto), createdAt: now, updatedAt: now);
+    final exerciseToCreate = Exercise(data: jsonEncode(exerciseDto), createdAt: now, updatedAt: now, owner: SharedPrefs().userId);
 
-    await Amplify.DataStore.save<Exercise>(exerciseToCreate);
-
-    final updatedExerciseWithId = exerciseDto.copyWith(id: exerciseToCreate.id, owner: SharedPrefs().userId);
-
-    _exercises.add(updatedExerciseWithId);
+    Amplify.DataStore.save<Exercise>(exerciseToCreate);
   }
 
   Future<void> updateExercise({required ExerciseDto exercise, required VoidCallback onUpdated}) async {
@@ -102,11 +98,7 @@ class AmplifyExerciseRepository {
     if (result.isNotEmpty) {
       final oldExercise = result.first;
       final newExercise = oldExercise.copyWith(data: jsonEncode(exercise));
-      await Amplify.DataStore.save<Exercise>(newExercise);
-      final index = _indexWhereExercise(id: exercise.id);
-      if (index > -1) {
-        _exercises[index] = exercise;
-      }
+      Amplify.DataStore.save<Exercise>(newExercise);
     }
   }
 
@@ -118,19 +110,11 @@ class AmplifyExerciseRepository {
 
     if (result.isNotEmpty) {
       final oldTemplate = result.first;
-      await Amplify.DataStore.delete<Exercise>(oldTemplate);
-      final index = _indexWhereExercise(id: exercise.id);
-      if (index > -1) {
-        _exercises.removeAt(index);
-      }
+      Amplify.DataStore.delete<Exercise>(oldTemplate);
     }
   }
 
   /// Helper methods
-
-  int _indexWhereExercise({required String id}) {
-    return _exercises.indexWhere((routine) => routine.id == id);
-  }
 
   ExerciseDto? whereExercise({required String exerciseId}) {
     return _exercises.firstWhereOrNull((exercise) => exercise.id == exerciseId);
