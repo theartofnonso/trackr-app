@@ -155,8 +155,6 @@ class _HomeScreenState extends State<HomeScreen> {
       if (mounted) {
         Provider.of<ExerciseAndRoutineController>(context, listen: false).streamLogs(logs: snapshot.items);
       }
-    }, onError: (s) {
-      print(s);
     });
   }
 
@@ -165,7 +163,6 @@ class _HomeScreenState extends State<HomeScreen> {
       RoutineTemplate.classType,
       sortBy: [RoutineTemplate.CREATEDAT.descending()],
     ).listen((QuerySnapshot<RoutineTemplate> snapshot) {
-      print(snapshot.items);
       if (mounted) {
         Provider.of<ExerciseAndRoutineController>(context, listen: false).streamTemplates(templates: snapshot.items);
       }
