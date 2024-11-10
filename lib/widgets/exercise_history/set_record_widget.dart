@@ -27,8 +27,8 @@ class SetRecordWidget extends StatelessWidget {
         DoubleSetHeader(firstLabel: "Reps", secondLabel: 'Personal Best (${weightLabel().toUpperCase()})', routinePreviewType: RoutinePreviewType.log),
         const SizedBox(height: 8),
         ...personaBestSets.map((set) {
-          final firstLabel = set.repsValue();
-          final secondLabel = weightWithConversion(value: set.weightValue());
+          final firstLabel = set.reps();
+          final secondLabel = set.weight();
           return DoubleSetRow(first: "$firstLabel", second: "$secondLabel", margin: const EdgeInsets.only(bottom: 6.0), routinePreviewType: RoutinePreviewType.log,);
         }),
       ],

@@ -8,7 +8,7 @@ import '../../utils/string_utils.dart';
 import '../chart/muscle_group_family_chart.dart';
 import '../routine/preview/date_duration_pb.dart';
 
-GlobalKey routineLogShareableLiteKey = GlobalKey();
+GlobalKey routineLogGlobalKey = GlobalKey();
 
 class RoutineLogShareableLite extends StatelessWidget {
   final RoutineLogDto log;
@@ -25,9 +25,9 @@ class RoutineLogShareableLite extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(5),
+        borderRadius: BorderRadius.circular(20),
         child: RepaintBoundary(
-          key: routineLogShareableLiteKey,
+          key: routineLogGlobalKey,
           child: Container(
             decoration: BoxDecoration(
               image: imageFile != null

@@ -7,15 +7,16 @@ class LabelDivider extends StatelessWidget {
   final bool shouldCapitalise;
   final Color labelColor;
   final Color dividerColor;
-  const LabelDivider({super.key, required this.label, this.fontSize = 10, this.shouldCapitalise = false, required this.labelColor, required this.dividerColor});
+  final bool leftToRight;
+  const LabelDivider({super.key, required this.label, this.fontSize = 10, this.shouldCapitalise = false, required this.labelColor, required this.dividerColor, this.leftToRight = true});
 
   @override
   Widget build(BuildContext context) {
     return Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-      Text(
+      leftToRight ? Text(
         shouldCapitalise ? label.toUpperCase() : label,
         style: GoogleFonts.ubuntu(color: labelColor, fontWeight: FontWeight.w700, fontSize: fontSize),
-      ),
+      ) : SizedBox.shrink(),
       Expanded(
         child: Container(
           height: 0.8, // height of the divider
@@ -24,6 +25,10 @@ class LabelDivider extends StatelessWidget {
           margin: const EdgeInsets.symmetric(horizontal: 10), // add space around the divider
         ),
       ),
+      !leftToRight ? Text(
+        shouldCapitalise ? label.toUpperCase() : label,
+        style: GoogleFonts.ubuntu(color: labelColor, fontWeight: FontWeight.w700, fontSize: fontSize),
+      ) : SizedBox.shrink()
     ]);
   }
 }

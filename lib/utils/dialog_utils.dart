@@ -4,11 +4,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/dtos/appsync/routine_user_dto.dart';
 import 'package:tracker_app/enums/activity_type_enums.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
-import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/utils/routine_utils.dart';
 import 'package:tracker_app/widgets/forms/create_routine_user_profile_widget.dart';
 import 'package:tracker_app/widgets/label_divider.dart';
@@ -56,6 +54,7 @@ Future<void> displayBottomSheet(
     double? height,
     enabledDrag = true,
     bool isDismissible = true,
+      EdgeInsetsGeometry? padding,
     bool isScrollControlled = false}) {
   return showModalBottomSheet(
       isScrollControlled: isScrollControlled,
@@ -69,7 +68,7 @@ Future<void> displayBottomSheet(
               Container(
                 height: height,
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 decoration: BoxDecoration(
                   gradient: gradient ??
                       const LinearGradient(
@@ -278,64 +277,6 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
                 isRightActionDestructive: true);
           },
         ),
-      ]));
-}
-
-void showUserBottomSheet({required BuildContext context, required RoutineUserDto user}) {
-  displayBottomSheet(
-      context: context,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-        Container(
-            width: 60, // Width and height should be equal to make a perfect circle
-            height: 60,
-            decoration: BoxDecoration(
-              color: sapphireDark80,
-              shape: BoxShape.rectangle,
-              borderRadius: BorderRadius.circular(5), // Optional border
-              boxShadow: [
-                BoxShadow(
-                  color: sapphireDark.withOpacity(0.5),
-                  spreadRadius: 5,
-                  blurRadius: 7,
-                  offset: const Offset(0, 3), // changes position of shadow
-                ),
-              ],
-            ),
-            child: const Center(child: FaIcon(FontAwesomeIcons.solidUser, color: Colors.white54, size: 22))),
-        const SizedBox(
-          height: 16,
-        ),
-        Text("@${user.name}",
-            style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
-            textAlign: TextAlign.center),
-        const SizedBox(
-          height: 20,
-        ),
-        Text(
-            "User profiles enable you to join TRKR communities. Stay tuned for upcoming features that will enhance your training experience.",
-            style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white38),
-            textAlign: TextAlign.center),
-        const SizedBox(
-          height: 10,
-        ),
-        ListTile(
-          onTap: () {
-            Navigator.of(context).pop();
-            showModalBottomSheet(
-                context: context,
-                showDragHandle: true,
-                isScrollControlled: true,
-                useSafeArea: true,
-                isDismissible: false,
-                builder: (context) {
-                  return const SafeArea(child: SettingsScreen());
-                });
-          },
-          leading: Text("Settings",
-              style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
-              textAlign: TextAlign.center),
-          trailing: const FaIcon(FontAwesomeIcons.gear, color: Colors.grey),
-        )
       ]));
 }
 

@@ -8,6 +8,7 @@ import 'package:tracker_app/extensions/amplify_models/routine_template_extension
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
+import '../../dtos/appsync/exercise_dto.dart';
 import '../../dtos/exercise_log_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 
@@ -111,6 +112,17 @@ class AmplifyRoutineTemplateRepository {
         _templates.removeAt(index);
       }
     }
+  }
+
+  void syncTemplatesWithExercisesFromLibrary({required List<ExerciseDto> exercises}) {
+    final updatedTemplates = _templates.map((template) {
+      final updatedExerciseTemplates =  template.exerciseTemplates.map((exerciseTemplate) {
+        final foundExercise = exercises.firstWhere((exerciseInLibrary) => exerciseInLibrary.id == exerciseTemplate.exercise.id, orElse: () => exerciseTemplate.exercise);
+        return exerciseTemplate.copyWith(exercise: foundExercise);
+      }).toList();
+      return template.copyWith(exerciseTemplates: updatedExerciseTemplates);
+    }).toList();
+    _templates = updatedTemplates;
   }
 
   /// Helper methods

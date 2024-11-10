@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../colors.dart';
+import '../../colors.dart';
 
 class NotFound extends StatelessWidget {
   const NotFound({super.key});

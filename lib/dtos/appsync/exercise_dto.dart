@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:tracker_app/enums/training_position_enum.dart';
 
 import '../../enums/exercise_type_enums.dart';
@@ -34,6 +36,7 @@ class ExerciseDto {
       'id': id,
       'name': name,
       'primaryMuscleGroup': primaryMuscleGroup.name,
+      'secondaryMuscleGroups': secondaryMuscleGroups.map((muscleGroup) => jsonEncode(muscleGroup.name)).toList(),
       'type': type.id,
       'owner': owner,
       'description': description,

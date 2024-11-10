@@ -7,7 +7,7 @@ import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/widgets/empty_states/routine_log_empty_state.dart';
 
-import '../../controllers/routine_log_controller.dart';
+import '../../controllers/exercise_and_routine_controller.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
 
 class RoutineLogsScreen extends StatelessWidget {
@@ -20,7 +20,7 @@ class RoutineLogsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final routineLogsForMonth =
-        Provider.of<RoutineLogController>(context, listen: true).whereLogsIsSameMonth(dateTime: dateTime);
+        Provider.of<ExerciseAndRoutineController>(context, listen: true).whereLogsIsSameMonth(dateTime: dateTime);
 
     final logs = routineLogsForMonth.sorted((a, b) => b.createdAt.compareTo(a.createdAt));
 

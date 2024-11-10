@@ -21,7 +21,7 @@ class AmplifyExerciseRepository {
     return exerciseJsons.map((json) => ExerciseExtension.dtoLocal(json)).toList();
   }
 
-  Future<void> loadLocalExercises() async {
+  Future<void> loadLocalExercises({required VoidCallback onLoad}) async {
     List<ExerciseDto> exerciseDtos = [];
     final chestExercises = await _loadFromAssets(file: 'chest_exercises.json');
     final shouldersExercises = await _loadFromAssets(file: 'shoulders_exercises.json');
@@ -71,12 +71,14 @@ class AmplifyExerciseRepository {
     // print(withNoVideos.length);
 
     _exercises = exerciseDtos.sorted((a, b) => a.name.compareTo(b.name));
+    onLoad();
   }
 
-  void loadExerciseStream({required List<Exercise> exercises}) {
+  void loadExerciseStream({required List<Exercise> exercises, required VoidCallback onData}) {
     final snapshot = exercises.map((exercise) => exercise.dtoUser());
     _exercises.addAll(snapshot);
     _exercises = _exercises.toSet().sorted((a, b) => a.name.compareTo(b.name));
+    onData();
   }
 
   Future<void> saveExercise({required ExerciseDto exerciseDto}) async {
@@ -91,7 +93,7 @@ class AmplifyExerciseRepository {
     _exercises.add(updatedExerciseWithId);
   }
 
-  Future<void> updateExercise({required ExerciseDto exercise}) async {
+  Future<void> updateExercise({required ExerciseDto exercise, required VoidCallback onUpdated}) async {
     final result = (await Amplify.DataStore.query(
       Exercise.classType,
       where: Exercise.ID.eq(exercise.id),

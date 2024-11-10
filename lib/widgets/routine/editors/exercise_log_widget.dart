@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
-import 'package:tracker_app/controllers/routine_log_controller.dart';
+import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
@@ -40,6 +40,8 @@ class ExerciseLogWidget extends StatefulWidget {
   final void Function(String superSetId) onRemoveSuperSet;
   final VoidCallback? onCache;
   final VoidCallback onResize;
+  final void Function(SetDto setDto) onTapWeightEditor;
+  final void Function(SetDto setDto) onTapRepsEditor;
 
   const ExerciseLogWidget(
       {super.key,
@@ -53,6 +55,8 @@ class ExerciseLogWidget extends StatefulWidget {
       this.onCache,
       required this.onReplaceLog,
       required this.onResize,
+      required this.onTapWeightEditor,
+      required this.onTapRepsEditor,
       required this.isMinimised});
 
   @override
@@ -98,12 +102,12 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _show1RMRecommendations() {
     final pastExerciseLogs =
-        Provider.of<RoutineLogController>(context, listen: false).exerciseLogsById[widget.exerciseLogDto.id] ?? [];
-    final completedPastExerciseLogs = exerciseLogsWithCheckedSets(exerciseLogs: pastExerciseLogs);
+        Provider.of<ExerciseAndRoutineController>(context, listen: false).exerciseLogsById[widget.exerciseLogDto.id] ?? [];
+    final completedPastExerciseLogs = completedExercises(exerciseLogs: pastExerciseLogs);
     if (completedPastExerciseLogs.isNotEmpty) {
       final previousLog = completedPastExerciseLogs.last;
       final heaviestSetWeight = heaviestSetWeightForExerciseLog(exerciseLog: previousLog);
-      final oneRepMax = average1RM(weight: heaviestSetWeight.weightValue(), reps: heaviestSetWeight.repsValue());
+      final oneRepMax = average1RM(weight: heaviestSetWeight.weight(), reps: heaviestSetWeight.reps());
       displayBottomSheet(
           context: context,
           child: _OneRepMaxSlider(exercise: widget.exerciseLogDto.exercise.name, oneRepMax: oneRepMax));
@@ -127,7 +131,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     } else {
       _controllers.add((TextEditingController(), TextEditingController()));
     }
-    final pastSets = Provider.of<RoutineLogController>(context, listen: false)
+    final pastSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
         .whereSetsForExercise(exercise: widget.exerciseLogDto.exercise);
     Provider.of<ExerciseLogController>(context, listen: false)
         .addSet(exerciseLogId: widget.exerciseLogDto.id, pastSets: pastSets);
@@ -148,6 +152,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _updateWeight({required int index, required double value, required SetDto setDto}) {
     final updatedSet = setDto.copyWith(value1: value);
+    widget.onTapWeightEditor(updatedSet);
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateWeight(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
     _cacheLog();
@@ -163,7 +168,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   void _checkAndUpdateDuration(
       {required int index, required Duration duration, required SetDto setDto, required bool checked}) {
     if (setDto.checked) {
-      final duration = setDto.durationValue();
+      final duration = setDto.duration();
       final startTime = DateTime.now().subtract(Duration(milliseconds: duration));
       _durationControllers[index] = startTime;
       _updateSetCheck(index: index, setDto: setDto);
@@ -200,8 +205,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final sets = widget.exerciseLogDto.sets;
     List<(TextEditingController, TextEditingController)> controllers = [];
     for (var set in sets) {
-      final value1Controller = TextEditingController(text: set.weightValue().toString());
-      final value2Controller = TextEditingController(text: set.repsValue().toString());
+      final value1Controller = TextEditingController(text: set.weight().toString());
+      final value2Controller = TextEditingController(text: set.reps().toString());
       controllers.add((value1Controller, value2Controller));
     }
     _controllers.addAll(controllers);
@@ -211,11 +216,19 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final sets = widget.exerciseLogDto.sets;
     List<DateTime> controllers = [];
     for (var set in sets) {
-      final duration = set.durationValue();
+      final duration = set.duration();
       final startTime = DateTime.now().subtract(Duration(milliseconds: duration));
       controllers.add(startTime);
     }
     _durationControllers.addAll(controllers);
+  }
+
+  void _onTapWeightEditor({required SetDto setDto}) {
+    widget.onTapWeightEditor(setDto);
+  }
+
+  void _onTapRepsEditor({required SetDto setDto}) {
+    widget.onTapRepsEditor(setDto);
   }
 
   @override
@@ -258,8 +271,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   child: GestureDetector(
                 onTap: () {
                   FocusScope.of(context).unfocus();
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => ExerciseHomeScreen(exercise: widget.exerciseLogDto.exercise)));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => ExerciseHomeScreen(exercise: widget.exerciseLogDto.exercise)));
                 },
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -343,6 +356,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               controllers: _controllers,
               durationControllers: _durationControllers,
               updateDuration: _updateDuration,
+              onTapWeightEditor: _onTapWeightEditor,
+              onTapRepsEditor: _onTapRepsEditor,
             ),
           const SizedBox(height: 8),
           if (withDurationOnly(type: exerciseType) && sets.isEmpty)
@@ -355,7 +370,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             if (withWeightsOnly(type: exerciseType))
               IconButton(
                   onPressed: _show1RMRecommendations,
-                  icon: const FaIcon(FontAwesomeIcons.boltLightning, color: Colors.white, size: 16),
+                  icon: const FaIcon(FontAwesomeIcons.solidLightbulb, color: Colors.white, size: 16),
                   style: ButtonStyle(
                       visualDensity: VisualDensity.compact,
                       shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
@@ -395,6 +410,8 @@ class _SetListView extends StatelessWidget {
   final void Function({required int index, required Duration duration, required SetDto setDto, required bool checked})
       checkAndUpdateDuration;
   final void Function({required int index, required Duration duration, required SetDto setDto}) updateDuration;
+  final void Function({required SetDto setDto}) onTapWeightEditor;
+  final void Function({required SetDto setDto}) onTapRepsEditor;
 
   const _SetListView(
       {required this.exerciseType,
@@ -407,7 +424,9 @@ class _SetListView extends StatelessWidget {
       required this.updateReps,
       required this.updateWeight,
       required this.checkAndUpdateDuration,
-      required this.updateDuration});
+      required this.updateDuration,
+      required this.onTapWeightEditor,
+      required this.onTapRepsEditor});
 
   @override
   Widget build(BuildContext context) {
@@ -420,6 +439,8 @@ class _SetListView extends StatelessWidget {
             onRemoved: () => removeSet(index: index),
             onChangedReps: (num value) => updateReps(index: index, value: value, setDto: setDto),
             onChangedWeight: (double value) => updateWeight(index: index, value: value, setDto: setDto),
+            onTapWeightEditor: () => onTapWeightEditor(setDto: setDto),
+            onTapRepsEditor: () => onTapRepsEditor(setDto: setDto),
             controllers: controllers[index],
           ),
         ExerciseType.bodyWeight => RepsSetRow(
@@ -428,6 +449,7 @@ class _SetListView extends StatelessWidget {
             onCheck: () => updateSetCheck(index: index, setDto: setDto),
             onRemoved: () => removeSet(index: index),
             onChangedReps: (num value) => updateReps(index: index, value: value, setDto: setDto),
+            onTapRepsEditor: () => onTapRepsEditor(setDto: setDto),
             controllers: controllers[index],
           ),
         ExerciseType.duration => DurationSetRow(

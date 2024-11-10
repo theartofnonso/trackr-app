@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:tracker_app/enums/challenge_type_enums.dart';
+import 'package:tracker_app/enums/milestone_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 
@@ -23,9 +23,9 @@ extension ChallengeLogExtension on ChallengeLog {
     final muscleGroup = MuscleGroup.fromString(muscleGroupString);
     final exerciseString = json["exercise"];
     final exercise = exerciseString != null ? ExerciseDto.fromJson(exerciseString) : null;
-    final weight = json["weight"] ?? 0.0;
+    final weight = json["weight"] ?? 0;
     final typeString = json["type"] ?? "";
-    final type = ChallengeType.fromString(typeString);
+    final type = MilestoneType.fromString(typeString);
 
     return ChallengeLogDto(
         id: id,

@@ -1,4 +1,3 @@
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -8,8 +7,6 @@ import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/dtos/routine_template_dto_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/week_days_extension.dart';
-import 'package:tracker_app/graphQL/queries.dart';
-import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/empty_states/double_set_row_empty_state.dart';
 
@@ -134,8 +131,8 @@ List<Widget> setsToWidgets(
 
     switch (type) {
       case ExerciseType.weights:
-        final firstLabel = weightWithConversion(value: setDto.weightValue());
-        final secondLabel = setDto.repsValue();
+        final firstLabel = setDto.weight();
+        final secondLabel = setDto.reps();
         return DoubleSetRow(
             first: "$firstLabel",
             second: "$secondLabel",
@@ -143,13 +140,13 @@ List<Widget> setsToWidgets(
             pbs: pbsForSet,
             routinePreviewType: routinePreviewType);
       case ExerciseType.bodyWeight:
-        final label = setDto.repsValue();
+        final label = setDto.reps();
         return SingleSetRow(label: "$label", margin: margin, routinePreviewType: routinePreviewType);
       case ExerciseType.duration:
         if (routinePreviewType == RoutinePreviewType.template) {
           return durationTemplate;
         }
-        final label = Duration(milliseconds: setDto.durationValue()).hmsAnalog();
+        final label = Duration(milliseconds: setDto.duration()).hmsAnalog();
         return SingleSetRow(label: label, margin: margin, pbs: pbsForSet, routinePreviewType: routinePreviewType);
       case ExerciseType.all:
         throw Exception("Unable to create Set widget for type ExerciseType.all");
@@ -164,31 +161,8 @@ Map<String, List<ExerciseLogDto>> groupExerciseLogsByExerciseId({required List<R
   return groupBy(exerciseLogs, (exerciseLog) => exerciseLog.exercise.id);
 }
 
-Map<ExerciseType, List<ExerciseLogDto>> groupExerciseLogsByExerciseType({required List<RoutineLogDto> routineLogs}) {
-  final exerciseLogs = routineLogs.expand((log) => log.exerciseLogs);
-  return groupBy(exerciseLogs, (exerciseLog) => exerciseLog.exercise.type);
-}
-
 String superSetId({required ExerciseLogDto firstExerciseLog, required ExerciseLogDto secondExerciseLog}) {
   return "superset_id_${firstExerciseLog.exercise.id}_${secondExerciseLog.exercise.id}";
-}
-
-Future<List<RoutineLog>> getAllRoutineLogs() async {
-  List<RoutineLog> logs = [];
-
-  final request = GraphQLRequest<PaginatedResult<RoutineLog>>(
-      document: listRoutineLogs,
-      decodePath: listRoutineLogsPath,
-      modelType: const PaginatedModelType(RoutineLog.classType),
-      authorizationMode: APIAuthorizationType.apiKey);
-
-  final response = await Amplify.API.query(request: request).response;
-  final results = response.data;
-  if (results != null) {
-    logs = results.items.whereType<RoutineLog>().toList();
-  }
-
-  return logs;
 }
 
 String scheduledDaysSummary({required RoutineTemplateDto template}) {
@@ -249,7 +223,7 @@ String copyRoutineAsText(
           routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].weightsSummary()}");
           break;
         case ExerciseType.bodyWeight:
-          routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].bodyWeightSummary()}");
+          routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].repsSummary()}");
           break;
         case ExerciseType.duration:
           routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].durationSummary()}");

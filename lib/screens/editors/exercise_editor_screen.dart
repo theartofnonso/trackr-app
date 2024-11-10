@@ -5,13 +5,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/enums/training_position_enum.dart';
 import 'package:tracker_app/screens/exercise/muscle_groups_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 
 import '../../colors.dart';
+import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/exercise_dto.dart';
 import '../../enums/exercise_type_enums.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
@@ -39,7 +39,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final exerciseEditorController = Provider.of<ExerciseController>(context, listen: true);
+    final exerciseEditorController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
     if (exerciseEditorController.errorMessage.isNotEmpty) {
       SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -238,7 +238,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
           type: _exerciseType,
           owner: "");
 
-      await Provider.of<ExerciseController>(context, listen: false).saveExercise(exerciseDto: exercise);
+      await Provider.of<ExerciseAndRoutineController>(context, listen: false).saveExercise(exerciseDto: exercise);
       if (mounted) {
         context.pop();
       }
@@ -257,7 +257,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
       if (exercise == null) return;
 
       final updatedExercise = exercise.copyWith(name: exerciseName.trim(), primaryMuscleGroup: _primaryMuscleGroup);
-      await Provider.of<ExerciseController>(context, listen: false).updateExercise(exercise: updatedExercise);
+      await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateExercise(exercise: updatedExercise);
       if (mounted) {
         context.pop();
       }

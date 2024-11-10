@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 
 import '../../colors.dart';
-import '../../controllers/exercise_controller.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
 import '../../screens/insights/sets_reps_volume_insights_screen.dart';
 import '../../utils/exercise_logs_utils.dart';
@@ -18,10 +16,8 @@ class MuscleScoreWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final exerciseController = Provider.of<ExerciseController>(context, listen: false);
-
-    final thisMonthScore = calculateMuscleScoreForLogs(routineLogs: thisMonthLogs, exercises: exerciseController.exercises);
-    final lastMonthScore = calculateMuscleScoreForLogs(routineLogs: lastMonthLogs, exercises: exerciseController.exercises);
+    final thisMonthScore = calculateMuscleScoreForLogs(routineLogs: thisMonthLogs);
+    final lastMonthScore = calculateMuscleScoreForLogs(routineLogs: lastMonthLogs);
 
     final improved = thisMonthScore > lastMonthScore;
 

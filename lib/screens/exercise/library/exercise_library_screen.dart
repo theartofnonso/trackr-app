@@ -3,12 +3,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/widgets/empty_states/exercise_empty_state.dart';
 import 'package:tracker_app/widgets/search_bar.dart';
 
 import '../../../colors.dart';
+import '../../../controllers/exercise_and_routine_controller.dart';
 import '../../../dtos/appsync/exercise_dto.dart';
 import '../../../enums/muscle_group_enums.dart';
 import '../../../utils/navigation_utils.dart';
@@ -41,7 +41,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
     List<ExerciseDto> searchResults = [];
 
-    searchResults = Provider.of<ExerciseController>(context, listen: false)
+    searchResults = Provider.of<ExerciseAndRoutineController>(context, listen: false)
         .exercises
         .where((exercise) => !widget.excludeExercises.contains(exercise))
         .where((exercise) => exercise.name.toLowerCase().contains(query.toLowerCase()))
@@ -214,7 +214,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   }
 
   void _loadOrSyncExercises() {
-    _filteredExercises = Provider.of<ExerciseController>(context, listen: false)
+    _filteredExercises = Provider.of<ExerciseAndRoutineController>(context, listen: false)
         .exercises
         .where((exercise) => !widget.excludeExercises.contains(exercise))
         .where((exercise) => widget.type == ExerciseType.all ? true : exercise.type == widget.type)

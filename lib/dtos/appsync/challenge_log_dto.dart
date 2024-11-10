@@ -1,4 +1,4 @@
-import '../../enums/challenge_type_enums.dart';
+import '../../enums/milestone_type_enums.dart';
 import '../../enums/muscle_group_enums.dart';
 import 'exercise_dto.dart';
 
@@ -16,7 +16,7 @@ class ChallengeLogDto {
   final double weight;
   final MuscleGroup muscleGroup;
   final ExerciseDto? exercise;
-  final ChallengeType type;
+  final MilestoneType type;
 
   ChallengeLogDto(
       {required this.id,
@@ -67,7 +67,7 @@ class ChallengeLogDto {
     double? weight,
     MuscleGroup? muscleGroup,
     ExerciseDto? exercise,
-    ChallengeType? type,
+    MilestoneType? type,
   }) {
     return ChallengeLogDto(
         id: id ?? this.id,
