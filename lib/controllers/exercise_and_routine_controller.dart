@@ -55,6 +55,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
     return _amplifyExerciseRepository.loadLocalExercises(onLoad: () {
       _amplifyLogRepository.syncLogsWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
       _amplifyTemplateRepository.syncTemplatesWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
+      notifyListeners();
     });
   }
 
@@ -64,6 +65,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
         onData: () {
           _amplifyLogRepository.syncLogsWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
           _amplifyTemplateRepository.syncTemplatesWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
+          notifyListeners();
         });
   }
 
@@ -88,6 +90,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
           onUpdated: () {
             _amplifyLogRepository.syncLogsWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
             _amplifyTemplateRepository.syncTemplatesWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
+            notifyListeners();
           });
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
