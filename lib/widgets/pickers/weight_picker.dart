@@ -25,7 +25,6 @@ class _WeightPickerState extends State<WeightPicker> {
 
   @override
   Widget build(BuildContext context) {
-    print(_weights);
     final weights = _weights
         .map((weight) => Center(
             child: Text("$weight",
