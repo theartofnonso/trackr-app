@@ -10,7 +10,7 @@ import 'package:tracker_app/utils/general_utils.dart';
 import '../../colors.dart';
 import '../../dtos/pb_dto.dart';
 
-GlobalKey pbsShareableKey = GlobalKey();
+GlobalKey pbsGlobalKey = GlobalKey();
 
 class PBsShareable extends StatelessWidget {
   final GlobalKey globalKey;
@@ -25,12 +25,12 @@ class PBsShareable extends StatelessWidget {
     String? value;
 
     if (withDurationOnly(type: pbDto.exercise.type)) {
-      value = Duration(milliseconds: set.durationValue()).hmsAnalog();
+      value = Duration(milliseconds: set.duration()).hmsAnalog();
     } else if (withWeightsOnly(type: pbDto.exercise.type)) {
       if (pbDto.pb == PBType.weight) {
-        value = "${set.weightValue()}${weightLabel().toUpperCase()}";
+        value = "${set.weight()}${weightLabel().toUpperCase()}";
       } else {
-        value = "${set.weightValue()}${weightLabel().toUpperCase()} x ${set.repsValue()}";
+        value = "${set.weight()}${weightLabel().toUpperCase()} x ${set.reps()}";
       }
     }
 
@@ -39,7 +39,7 @@ class PBsShareable extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(5),
+        borderRadius: BorderRadius.circular(20),
         child: RepaintBoundary(
           key: globalKey,
           child: Container(
@@ -99,19 +99,13 @@ class PBsShareable extends StatelessWidget {
                             )
                           : const SizedBox(height: 20),
                       Text(pbDto.exercise.name,
-                          style:
-                              GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                          style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 4),
                       Text(pbDto.pb.description,
-                          style:
-                              GoogleFonts.ubuntu(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w600)),
+                          style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w600)),
                       const SizedBox(height: 30),
-                      Image.asset(
-                        'images/trkr.png',
-                        fit: BoxFit.contain,
-                        height: 8, // Adjust the height as needed
-                      ),
-                    ])
+
+                    ]),
               ],
             ),
           ),

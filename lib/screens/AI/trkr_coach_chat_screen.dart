@@ -5,12 +5,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/strings/ai_prompts.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 
-import '../../controllers/exercise_controller.dart';
-import '../../dtos/exercise_log_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
+import '../../dtos/exercise_log_dto.dart';
 import '../../dtos/set_dto.dart';
 import '../../enums/routine_preview_type_enum.dart';
 import '../../openAI/open_ai.dart';
@@ -133,8 +133,8 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
     });
   }
 
-  void _showSnackbar(String message) {
-    showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: message);
+  void _showSnackbar(String message, {Widget? icon}) {
+    showSnackbar(context: context, icon: icon ?? const Icon(Icons.info_outline), message: message);
   }
 
   void _cancelLoadingScreen() {
@@ -179,13 +179,18 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
 
     final completeSystemInstructions = buffer.toString();
 
-    final tool = await runMessageWithTools(systemInstruction: personalTrainerInstructionForWorkouts, userInstruction: userInstruction);
+    final tool = await runMessageWithTools(
+        systemInstruction: personalTrainerInstructionForWorkouts,
+        userInstruction: userInstruction,
+        callback: (message) {
+          _showSnackbar("Oops, I can only assist you with workouts.", icon: TRKRCoachWidget());
+        });
     if (tool != null) {
       final toolId = tool['id'];
       final toolName = tool['name']; // A function
       if (toolName == "list_exercises") {
         if (mounted) {
-          final exercises = Provider.of<ExerciseController>(context, listen: false).exercises;
+          final exercises = Provider.of<ExerciseAndRoutineController>(context, listen: false).exercises;
           final functionCallPayload = await createFunctionCallPayload(
               toolId: toolId,
               systemInstruction: completeSystemInstructions,
@@ -200,8 +205,8 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
             final workoutCaption = json["workout_caption"] ?? "A workout created by TRKR Coach";
             final exerciseTemplates = exerciseIds.map((exerciseId) {
               final exerciseInLibrary = exercises.firstWhere((exercise) => exercise.id == exerciseId);
-              final exerciseTemplate = ExerciseLogDto(
-                  exerciseInLibrary.id, "", "", exerciseInLibrary, exerciseInLibrary.description ?? "", [const SetDto(0, 0, false)], DateTime.now(), []);
+              final exerciseTemplate = ExerciseLogDto(exerciseInLibrary.id, "", "", exerciseInLibrary,
+                  exerciseInLibrary.description ?? "", [const SetDto(0, 0, false)], DateTime.now(), []);
               return exerciseTemplate;
             }).toList();
             templateDto = RoutineTemplateDto(
@@ -215,7 +220,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
           }
         }
       } else {
-        _showSnackbar("I'm sorry, I cannot assist with that request.");
+        _showSnackbar("Oops, I can only assist you with workouts.", icon: TRKRCoachWidget());
       }
     }
     return templateDto;

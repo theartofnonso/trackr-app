@@ -78,7 +78,7 @@ extension DateTimeExtension on DateTime {
     return isAfter(from) && isBefore(to);
   }
 
-  bool isBetweenRange({required DateTimeRange range}) {
+  bool isWithinRange({required DateTimeRange range}) {
     return isBetweenInclusive(from: range.start, to: range.end);
   }
 

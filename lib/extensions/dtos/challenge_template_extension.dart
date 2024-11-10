@@ -2,9 +2,9 @@ import 'package:tracker_app/enums/muscle_group_enums.dart';
 
 import '../../../dtos/appsync/challenge_log_dto.dart';
 import '../../dtos/appsync/exercise_dto.dart';
-import '../../dtos/challengeTemplates/challenge_template.dart';
+import '../../dtos/milestones/milestone_dto.dart';
 
-extension ChallengeTemplateExtension on ChallengeTemplate {
+extension ChallengeTemplateExtension on Milestone {
   ChallengeLogDto createChallenge(
       {required DateTime startDate, required MuscleGroup muscleGroup, ExerciseDto? exercise, double weight = 0}) {
     return ChallengeLogDto(

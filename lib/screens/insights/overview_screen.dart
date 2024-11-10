@@ -4,17 +4,16 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
-import 'package:tracker_app/controllers/routine_user_controller.dart';
 import 'package:tracker_app/dtos/appsync/activity_log_dto.dart';
 import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
+import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 
 import '../../controllers/activity_log_controller.dart';
-import '../../controllers/routine_log_controller.dart';
-import '../../controllers/settings_controller.dart';
+import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/abstract_class/log_class.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
@@ -26,9 +25,8 @@ import '../../utils/navigation_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_text_widget.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/calendar/calendar.dart';
-import '../../widgets/calendar/calendar_navigator.dart';
 import '../../widgets/label_divider.dart';
-import '../../widgets/monitors/overview_monitor.dart';
+import '../../widgets/monitors/log_streak_muscle_trend_monitor.dart';
 import '../../widgets/monthly_insights/log_streak_chart_widget.dart';
 import '../../widgets/routine/preview/activity_log_widget.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
@@ -36,58 +34,34 @@ import '../AI/trkr_coach_chat_screen.dart';
 import 'monthly_insights_screen.dart';
 
 class OverviewScreen extends StatefulWidget {
-  final ScrollController? scrollController;
+  final ScrollController scrollController;
 
   static const routeName = '/overview_screen';
 
-  const OverviewScreen({super.key, this.scrollController});
+  final DateTimeRange dateTimeRange;
+  
+  const OverviewScreen({super.key, required this.scrollController, required this.dateTimeRange});
 
   @override
   State<OverviewScreen> createState() => _OverviewScreenState();
 }
 
 class _OverviewScreenState extends State<OverviewScreen> {
-  late DateTime _selectedDateTime;
 
-  late DateTimeRange _monthDateTimeRange;
+  DateTime _selectedDateTime = DateTime.now().withoutTime();
 
   bool _loading = false;
 
   TextEditingController? _textEditingController;
 
-  void _logEmptyRoutine() async {
-    final log = Provider.of<RoutineLogController>(context, listen: false).cachedLog();
-    if (log == null) {
-      final log = RoutineLogDto(
-          id: "",
-          templateId: "",
-          name: "${timeOfDay()} Session",
-          exerciseLogs: [],
-          notes: "",
-          startTime: DateTime.now(),
-          endTime: DateTime.now(),
-          owner: "",
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now());
-      final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log);
-      navigateToRoutineLogEditor(context: context, arguments: arguments);
-    } else {
-      showSnackbar(context: context, icon: const Icon(Icons.info_outline_rounded), message: "${log.name} is running");
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
-    Provider.of<SettingsController>(context, listen: true);
-
-    /// Routine Logs
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
-    List<RoutineLogDto> routineLogsForTheYear =
-        routineLogController.whereLogsIsSameYear(dateTime: _monthDateTimeRange.start);
+    Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       floatingActionButton: _loading
           ? null
           : FloatingActionButton(
@@ -110,58 +84,17 @@ class _OverviewScreenState extends State<OverviewScreen> {
           ),
         ),
         child: SafeArea(
-            minimum: const EdgeInsets.all(10.0),
+            minimum: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  SizedBox(
-                    width: 70,
-                    child: Row(
-                      children: [
-                        IconButton(
-                          onPressed: () => navigateToRoutineLogs(context: context, dateTime: _monthDateTimeRange.start),
-                          icon: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                            Image.asset(
-                              'icons/dumbbells.png',
-                              fit: BoxFit.contain,
-                              height: 24, // Adjust the height as needed
-                            ),
-                            const SizedBox(width: 4),
-                            Text("${routineLogsForTheYear.length}",
-                                style:
-                                    GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
-                          ]),
-                        ),
-                        const Spacer()
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: CalendarNavigator(onMonthChange: _onMonthChange),
-                  ),
-                  SizedBox(
-                    width: 70,
-                    child: Row(
-                      children: [
-                        const Spacer(),
-                        IconButton(
-                          onPressed: _navigateToUserProfile,
-                          icon: const Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                            FaIcon(FontAwesomeIcons.solidUser, color: Colors.white, size: 18),
-                          ]),
-                        ),
-                      ],
-                    ),
-                  ),
-                ]),
                 Expanded(
                   child: SingleChildScrollView(
                       controller: widget.scrollController,
                       padding: const EdgeInsets.only(bottom: 150),
                       child: Column(children: [
                         const SizedBox(height: 12),
-                        OverviewMonitor(dateTime: _monthDateTimeRange.start),
+                        LogStreakMuscleTrendMonitor(dateTime: widget.dateTimeRange.start),
                         if (SharedPrefs().showCalendar)
                           Padding(
                             padding: const EdgeInsets.only(top: 16.0),
@@ -169,7 +102,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                               children: [
                                 Calendar(
                                   onSelectDate: _onChangedDateTime,
-                                  dateTime: _monthDateTimeRange.start,
+                                  dateTime: widget.dateTimeRange.start,
                                 ),
                                 const SizedBox(height: 10),
                                 _LogsListView(dateTime: _selectedDateTime),
@@ -177,9 +110,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
                             ),
                           ),
                         const SizedBox(height: 12),
-                        MonthlyInsightsScreen(dateTimeRange: _monthDateTimeRange),
+                        MonthlyInsightsScreen(dateTimeRange: widget.dateTimeRange),
                         const SizedBox(height: 18),
-                        const LogStreakChartWidget(),
+                        LogStreakChartWidget(),
                       ])),
                 )
                 // Add more widgets here for exercise insights
@@ -189,20 +122,31 @@ class _OverviewScreenState extends State<OverviewScreen> {
     );
   }
 
+  void _logEmptyRoutine() async {
+    final log = Provider.of<ExerciseAndRoutineController>(context, listen: false).cachedLog();
+    if (log == null) {
+      final log = RoutineLogDto(
+          id: "",
+          templateId: "",
+          name: "${timeOfDay()} Session",
+          exerciseLogs: [],
+          notes: "",
+          startTime: DateTime.now(),
+          endTime: DateTime.now(),
+          owner: "",
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now());
+      final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log);
+      navigateToRoutineLogEditor(context: context, arguments: arguments);
+    } else {
+      showSnackbar(context: context, icon: const Icon(Icons.info_outline_rounded), message: "${log.name} is running");
+    }
+  }
+
   void _hideLoadingScreen() {
     setState(() {
       _loading = false;
     });
-  }
-
-  void _navigateToUserProfile() {
-    final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
-    final user = routineUserController.user;
-    if (user != null) {
-      showUserBottomSheet(context: context, user: user);
-    } else {
-      showCreateProfileBottomSheet(context: context);
-    }
   }
 
   void _showBottomSheet() {
@@ -360,19 +304,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
     });
   }
 
-  void _onMonthChange(DateTimeRange range) {
-    setState(() {
-      _monthDateTimeRange = range;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedDateTime = DateTime.now();
-    _monthDateTimeRange = thisMonthDateRange();
-  }
-
   @override
   void dispose() {
     _textEditingController?.dispose();
@@ -388,7 +319,7 @@ class _LogsListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     /// Routine Logs
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
+    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
     final routineLogsForCurrentDate = routineLogController.whereLogsIsSameDay(dateTime: dateTime).toList();
 
     /// Activity Logs

@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
 import '../../../colors.dart';
-import '../../../controllers/routine_log_controller.dart';
+import '../../../controllers/exercise_and_routine_controller.dart';
 import '../../../dtos/appsync/routine_log_dto.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/navigation_utils.dart';
@@ -14,12 +14,13 @@ class RoutineLogWidget extends StatelessWidget {
   final RoutineLogDto log;
   final Color color;
   final String trailing;
+  final bool isEditable;
 
-  const RoutineLogWidget({super.key, required this.log, required this.color, required this.trailing});
+  const RoutineLogWidget({super.key, required this.log, required this.color, required this.trailing, this.isEditable = true});
 
   @override
   Widget build(BuildContext context) {
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
+    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
     final pbs = log.exerciseLogs.map((exerciseLog) {
       final pastExerciseLogs =
@@ -29,7 +30,7 @@ class RoutineLogWidget extends StatelessWidget {
           pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog);
     }).expand((pbs) => pbs);
 
-    final completedExerciseLogsAndSets = exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs);
+    final completedExerciseLogsAndSets = completedExercises(exerciseLogs: log.exerciseLogs);
 
     return SolidListTile(
         title: log.name,
@@ -38,6 +39,6 @@ class RoutineLogWidget extends StatelessWidget {
         trailing: trailing,
         tileColor: color,
         trailingSubtitle: pbs.isNotEmpty ? PBIcon(color: sapphireLight, label: "${pbs.length}") : null,
-        onTap: () => navigateToRoutineLogPreview(context: context, log: log));
+        onTap: () => navigateToRoutineLogPreview(context: context, log: log, isEditable: isEditable));
   }
 }

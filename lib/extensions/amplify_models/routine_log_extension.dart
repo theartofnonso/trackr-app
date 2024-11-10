@@ -17,7 +17,6 @@ extension RoutineLogExtension on RoutineLog {
     final endTime = DateTime.parse(json["endTime"]);
     final exerciseLogJsons = json["exercises"] as List<dynamic>;
     final exerciseLogs = exerciseLogJsons.map((json) => ExerciseLogDto.fromJson(routineLogId: id, createdAt: createdAt.getDateTimeInUtc(), json: jsonDecode(json))).toList();
-
     return RoutineLogDto(
       id: id,
       templateId: templateId,

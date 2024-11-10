@@ -27,8 +27,8 @@ class _WeightPickerState extends State<WeightPicker> {
   Widget build(BuildContext context) {
     final weights = _weights
         .map((weight) => Center(
-        child: Text("$weight",
-            style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 32, color: Colors.white))))
+            child: Text("$weight",
+                style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 32, color: Colors.white))))
         .toList();
 
     return Column(
@@ -64,7 +64,7 @@ class _WeightPickerState extends State<WeightPicker> {
     final min = isDefaultWeightUnit() ? 23 : 51;
     final max = isDefaultWeightUnit() ? 204 - 23 + 1 : 450 - 51 + 1;
     _weights = List.generate(max, (index) => min + index);
-    final initialIndex = _weights.indexOf(widget.initialWeight);
+    final initialIndex = _weights.indexOf(weightWithConversion(value: widget.initialWeight).floor());
     _scrollController = FixedExtentScrollController(initialItem: initialIndex);
   }
 

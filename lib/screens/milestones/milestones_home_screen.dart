@@ -1,22 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
 import '../../colors.dart';
-import '../../controllers/challenge_log_controller.dart';
-import '../../repositories/challenge_templates.dart';
-import 'active_challenges_screen.dart';
-import 'challenges_screen.dart';
+import '../../controllers/exercise_and_routine_controller.dart';
+import '../../dtos/appsync/routine_log_dto.dart';
+import 'completed_milestones_screen.dart';
+import 'pending_milestones_screen.dart';
 
-class ChallengesHomeScreen extends StatelessWidget {
-  const ChallengesHomeScreen({super.key});
+class MilestonesHomeScreen extends StatelessWidget {
+  const MilestonesHomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
-    final templates = ChallengeTemplates().loadTemplates();
+    List<RoutineLogDto> routineLogsForTheYear =
+    routineLogController.whereLogsIsSameYear(dateTime: DateTime.now().withoutTime());
 
-    final challenges = Provider.of<ChallengeLogController>(context, listen: true).logs;
+    routineLogsForTheYear.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+
+    final pendingMilestones = routineLogController.pendingMilestones;
+
+    final completedMilestones = routineLogController.completedMilestones;
 
     return DefaultTabController(
         length: 2,
@@ -28,10 +35,10 @@ class ChallengesHomeScreen extends StatelessWidget {
               dividerColor: Colors.transparent,
               tabs: [
                 Tab(
-                    child: Text("Challenges",
+                    child: Text("Active",
                         style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
                 Tab(
-                    child: Text("Active",
+                    child: Text("Completed",
                         style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
               ],
             ),
@@ -55,8 +62,8 @@ class ChallengesHomeScreen extends StatelessWidget {
                   Expanded(
                     child: TabBarView(
                       children: [
-                        ChallengesScreen(challenges: challenges, templates: templates),
-                        ActiveChallengesScreen(challenges: challenges, templates: templates)
+                        PendingMilestonesScreen(milestones: pendingMilestones),
+                        CompletedMilestonesScreen(milestones: completedMilestones)
                       ],
                     ),
                   ),

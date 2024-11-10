@@ -4,7 +4,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
-import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../colors.dart';
 import '../../enums/chart_unit_enum.dart';
@@ -71,7 +70,7 @@ class LineChartWidget extends StatelessWidget {
                     LineChartBarData(
                         //isStepLineChart: true,
                         spots: chartPoints.map((point) {
-                          return FlSpot(point.x.toDouble(), unit == ChartUnit.weight ? weightWithConversion(value: point.y) : point.y.toDouble());
+                          return FlSpot(point.x.toDouble(), point.y.toDouble());
                         }).toList(),
                         gradient: const LinearGradient(
                           colors: gradientColors,

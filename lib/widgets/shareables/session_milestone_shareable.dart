@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../colors.dart';
 
-GlobalKey sessionMilestoneShareableKey = GlobalKey();
+GlobalKey sessionMilestoneGlobalKey = GlobalKey();
 
 class SessionMilestoneShareable extends StatelessWidget {
   final String label;
@@ -21,7 +21,7 @@ class SessionMilestoneShareable extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
         child: RepaintBoundary(
-          key: sessionMilestoneShareableKey,
+          key: sessionMilestoneGlobalKey,
           child: Container(
             decoration: BoxDecoration(
               image: imageFile != null
@@ -58,20 +58,21 @@ class SessionMilestoneShareable extends StatelessWidget {
                 )),
               Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center, children: [
-                const FaIcon(FontAwesomeIcons.award, color: vibrantGreen, size: 40),
-                const SizedBox(height: 20),
-                Text(label,
-                    style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900)),
-                Text("Session",
-                    style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 30),
-                Image.asset(
-                  'images/trkr.png',
-                  fit: BoxFit.contain,
-                  height: 8, // Adjust the height as needed
-                ),
-              ])
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const FaIcon(FontAwesomeIcons.award, color: vibrantGreen, size: 40),
+                    const SizedBox(height: 20),
+                    Text(label,
+                        style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900)),
+                    Text("Session",
+                        style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 30),
+                    Image.asset(
+                      'images/trkr.png',
+                      fit: BoxFit.contain,
+                      height: 8, // Adjust the height as needed
+                    ),
+                  ])
             ]),
           ),
         ),

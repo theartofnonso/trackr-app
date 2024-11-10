@@ -7,7 +7,7 @@ import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
-import '../../controllers/routine_log_controller.dart';
+import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/string_utils.dart';
@@ -24,7 +24,7 @@ class MonthSummaryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final exerciseLogs = routineLogs
-        .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
+        .map((log) => completedExercises(exerciseLogs: log.exerciseLogs))
         .expand((exerciseLogs) => exerciseLogs);
 
     final sets = exerciseLogs.expand((exercise) => exercise.sets);
@@ -38,15 +38,15 @@ class MonthSummaryWidget extends StatelessWidget {
       return volume;
     }).sum;
 
-    final totalVolume = volumeInKOrM(weightWithConversion(value: tonnage));
+    final totalVolume = volumeInKOrM(tonnage);
 
     final exerciseLogsWithReps = exerciseLogs.where((exerciseLog) => withReps(type: exerciseLog.exercise.type));
     final totalReps = exerciseLogsWithReps.map((log) {
-      final reps = log.sets.map((set) => set.repsValue()).sum;
+      final reps = log.sets.map((set) => set.reps()).sum;
       return reps;
     }).sum;
 
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
+    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
     final numberOfPbs = exerciseLogs.map((exerciseLog) {
       final pastExerciseLogs =

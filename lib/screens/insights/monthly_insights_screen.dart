@@ -5,7 +5,7 @@ import 'package:tracker_app/widgets/monthly_insights/activities_widget.dart';
 import 'package:tracker_app/widgets/monthly_insights/month_summary_widget.dart';
 
 import '../../controllers/activity_log_controller.dart';
-import '../../controllers/routine_log_controller.dart';
+import '../../controllers/exercise_and_routine_controller.dart';
 import '../../widgets/monthly_insights/calories_widget.dart';
 import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
 import '../../widgets/monthly_insights/muscle_score_widget.dart';
@@ -17,7 +17,7 @@ class MonthlyInsightsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
+    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
     final thisMonthLogs = routineLogController
         .whereLogsIsSameMonth(dateTime: dateTimeRange.start)

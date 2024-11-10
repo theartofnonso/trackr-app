@@ -419,7 +419,7 @@ void main() {
       ...quad2ExerciseLogs,
     ];
 
-    final frequencyDistribution = weeklyScaledMuscleGroupFamilyFrequency(exerciseLogs: exerciseLogs);
+    final frequencyDistribution = muscleGroupFamilyFrequencyOn4WeeksScale(exerciseLogs: exerciseLogs);
 
     final legMuscleGroup = frequencyDistribution.entries;
 
@@ -430,7 +430,7 @@ void main() {
   test("Has completed 50% monthly single muscle target", () {
     final exerciseLogs = [...hamstring1ExerciseLogs];
 
-    final frequencyDistribution = weeklyScaledMuscleGroupFamilyFrequency(exerciseLogs: exerciseLogs);
+    final frequencyDistribution = muscleGroupFamilyFrequencyOn4WeeksScale(exerciseLogs: exerciseLogs);
 
     final legMuscleGroup = frequencyDistribution.entries;
 

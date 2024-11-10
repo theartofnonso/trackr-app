@@ -6,10 +6,12 @@ import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import '../../utils/date_utils.dart';
 
 class CalendarNavigator extends StatefulWidget {
+  final bool enabled;
+
   /// Callback when the month changes, providing the current month as DateTime.
   final void Function(DateTimeRange currentMonth) onMonthChange;
 
-  const CalendarNavigator({super.key, required this.onMonthChange});
+  const CalendarNavigator({super.key, required this.onMonthChange, this.enabled = true});
 
   @override
   State<CalendarNavigator> createState() => _CalendarNavigatorState();
@@ -69,21 +71,35 @@ class _CalendarNavigatorState extends State<CalendarNavigator> {
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         IconButton(
-            onPressed: canNavigatePrevious ? _goToPreviousMonth : null,
+            onPressed: canNavigatePrevious && widget.enabled ? _goToPreviousMonth : null,
             icon: FaIcon(FontAwesomeIcons.arrowLeftLong,
-                color: canNavigatePrevious ? Colors.white : Colors.white70, size: 16)),
-        Text(_currentDate.formattedMonthAndYear(),
+                color: canNavigatePrevious && widget.enabled
+                    ? Colors.white
+                    : widget.enabled
+                        ? Colors.white30
+                        : Colors.transparent,
+                size: 16)),
+        Text(
+            widget.enabled
+                ? _currentDate.formattedMonthAndYear().toUpperCase()
+                : "Trends for the past year".toUpperCase(),
             textAlign: TextAlign.center,
             style: GoogleFonts.ubuntu(
               fontSize: 12,
               fontWeight: FontWeight.w900,
             )),
         IconButton(
-            onPressed: canNavigateNext ? _goToNextMonth : null,
+            onPressed: canNavigateNext && widget.enabled ? _goToNextMonth : null,
             icon: FaIcon(FontAwesomeIcons.arrowRightLong,
-                color: canNavigateNext ? Colors.white : Colors.white70, size: 16)),
+                color: canNavigateNext && widget.enabled
+                    ? Colors.white
+                    : widget.enabled
+                        ? Colors.white30
+                        : Colors.transparent,
+                size: 16)),
       ],
     );
   }
