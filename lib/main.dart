@@ -14,11 +14,9 @@ import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:tracker_app/colors.dart';
-import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/controllers/notification_controller.dart';
-import 'package:tracker_app/controllers/routine_log_controller.dart';
-import 'package:tracker_app/controllers/routine_template_controller.dart';
+import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/controllers/settings_controller.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/dtos/appsync/routine_template_dto.dart';
@@ -97,14 +95,8 @@ void main() async {
       ChangeNotifierProvider<RoutineUserController>(
         create: (BuildContext context) => RoutineUserController(AmplifyRoutineUserRepository()),
       ),
-      ChangeNotifierProvider<ExerciseController>(
-        create: (BuildContext context) => ExerciseController(AmplifyExerciseRepository()),
-      ),
-      ChangeNotifierProvider<RoutineTemplateController>(
-        create: (BuildContext context) => RoutineTemplateController(AmplifyRoutineTemplateRepository()),
-      ),
-      ChangeNotifierProvider<RoutineLogController>(
-        create: (BuildContext context) => RoutineLogController(AmplifyRoutineLogRepository()),
+      ChangeNotifierProvider<ExerciseAndRoutineController>(
+        create: (BuildContext context) => ExerciseAndRoutineController(amplifyExerciseRepository: AmplifyExerciseRepository(), amplifyTemplateRepository: AmplifyRoutineTemplateRepository(), amplifyLogRepository: AmplifyRoutineLogRepository()),
       ),
       ChangeNotifierProvider<ActivityLogController>(
         create: (BuildContext context) => ActivityLogController(AmplifyActivityLogRepository()),

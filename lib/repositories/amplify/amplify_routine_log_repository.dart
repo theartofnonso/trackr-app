@@ -17,7 +17,6 @@ import '../../dtos/milestones/milestone_dto.dart';
 import '../../dtos/milestones/reps_milestone.dart';
 import '../../dtos/milestones/weekly_milestone_dto.dart';
 import '../../dtos/set_dto.dart';
-import '../../enums/exercise_type_enums.dart';
 import '../../models/RoutineLog.dart';
 import '../../models/RoutineTemplate.dart';
 import '../../shared_prefs.dart';
@@ -39,28 +38,19 @@ class AmplifyRoutineLogRepository {
 
   UnmodifiableMapView<String, List<ExerciseLogDto>> get exerciseLogsById => UnmodifiableMapView(_exerciseLogsById);
 
-  Map<ExerciseType, List<ExerciseLogDto>> _exerciseLogsByType = {};
-
-  UnmodifiableMapView<ExerciseType, List<ExerciseLogDto>> get exerciseLogsByType =>
-      UnmodifiableMapView(_exerciseLogsByType);
-
-  void _normaliseLogs() {
+  void _groupExerciseLogs() {
     _exerciseLogsById = groupExerciseLogsByExerciseId(routineLogs: _logs);
-    _exerciseLogsByType = groupExerciseLogsByExerciseType(routineLogs: _logs);
   }
 
-  void loadLogStream({required List<RoutineLog> logs, required List<ExerciseDto> exercises}) {
-    _mapAndNormaliseLogs(logs: logs, exercises: exercises);
-  }
-
-  void _mapAndNormaliseLogs({required List<RoutineLog> logs, required List<ExerciseDto> exercises}) {
-    _logs = logs.map((log) => log.dto(exercises: exercises)).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
-    _normaliseLogs();
-    _loadMilestones();
+  void loadLogStream({required List<RoutineLog> logs}) {
+    _logs = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
+    _groupExerciseLogs();
+    _calculateMilestones();
   }
 
   Future<RoutineLogDto> saveLog({required RoutineLogDto logDto, TemporalDateTime? datetime}) async {
 
+    // Capture current list of completed milestones
     final previousMilestones = completedMilestones().toSet();
 
     final now = datetime ?? TemporalDateTime.now();
@@ -76,11 +66,15 @@ class AmplifyRoutineLogRepository {
     _logs.add(updatedRoutineWithExerciseIds);
     _logs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
 
-    _normaliseLogs();
-    _loadMilestones();
+    _groupExerciseLogs();
 
+    // Capture recent list of milestones
+    _calculateMilestones();
+
+    // Capture recent list of completed milestones
     final updatedMilestones = completedMilestones().toSet();
 
+    // Get newly achieved milestone
     _newMilestones = updatedMilestones.difference(previousMilestones).toList();
 
     return updatedRoutineWithExerciseIds;
@@ -99,8 +93,8 @@ class AmplifyRoutineLogRepository {
       final index = _indexWhereLog(id: log.id);
       if (index > -1) {
         _logs[index] = log;
-        _normaliseLogs();
-        _loadMilestones();
+        _groupExerciseLogs();
+        _calculateMilestones();
       }
     }
   }
@@ -117,8 +111,8 @@ class AmplifyRoutineLogRepository {
       final index = _indexWhereLog(id: log.id);
       if (index > -1) {
         _logs.removeAt(index);
-        _normaliseLogs();
-        _loadMilestones();
+        _groupExerciseLogs();
+        _calculateMilestones();
       }
     }
   }
@@ -139,7 +133,7 @@ class AmplifyRoutineLogRepository {
     return routineLog;
   }
 
-  void _loadMilestones() {
+  void _calculateMilestones() {
 
     List<Milestone> milestones = [];
 
@@ -173,6 +167,17 @@ class AmplifyRoutineLogRepository {
 
     _milestones = milestones;
 
+  }
+
+  void syncLogsWithExercisesFromLibrary({required List<ExerciseDto> exercises}) {
+    final updatedLogs = _logs.map((log) {
+      final updatedExerciseLogs =  log.exerciseLogs.map((exerciseLog) {
+        final foundExercise = exercises.firstWhere((exerciseInLibrary) => exerciseInLibrary.id == exerciseLog.exercise.id, orElse: () => exerciseLog.exercise);
+        return exerciseLog.copyWith(exercise: foundExercise);
+      }).toList();
+      return log.copyWith(exerciseLogs: updatedExerciseLogs);
+    }).toList();
+    _logs = updatedLogs;
   }
 
   /// Helper methods
@@ -244,7 +249,7 @@ class AmplifyRoutineLogRepository {
   void clear() {
     _logs.clear();
     _exerciseLogsById.clear();
-    _exerciseLogsByType.clear();
     _milestones.clear();
+    _newMilestones.clear();
   }
 }

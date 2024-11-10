@@ -89,7 +89,7 @@ class RepsMilestone extends Milestone {
 
       if (sumOfReps < target) {
 
-        final completedExerciseLogs = exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs);
+        final completedExerciseLogs = completedExercises(exerciseLogs: log.exerciseLogs);
 
         final exerciseLogs = completedExerciseLogs
             .where((exerciseLog) => exerciseLog.exercise.type != ExerciseType.duration)
@@ -103,7 +103,7 @@ class RepsMilestone extends Milestone {
         if (exerciseLogs.isNotEmpty) {
           final reps = exerciseLogs
               .expand((exerciseLog) => exerciseLog.sets)
-              .map((set) => set.value2)
+              .map((set) => set.reps())
               .reduce((value, element) => value + element)
               .toInt();
 

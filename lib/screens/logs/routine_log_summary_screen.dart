@@ -17,7 +17,7 @@ import 'package:tracker_app/widgets/shareables/routine_log_shareable_lite.dart';
 import 'package:tracker_app/widgets/shareables/session_milestone_shareable.dart';
 
 import '../../colors.dart';
-import '../../controllers/routine_log_controller.dart';
+import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
 import '../../urls.dart';
 import '../../utils/dialog_utils.dart';
@@ -53,10 +53,11 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final completedExerciseLogsAndSets = exerciseLogsWithCheckedSets(exerciseLogs: widget.log.exerciseLogs);
-    final updatedLog = widget.log.copyWith(exerciseLogs: completedExerciseLogsAndSets);
+    final updatedExerciseLogs = completedExercises(exerciseLogs: widget.log.exerciseLogs);
 
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
+    final updatedLog = widget.log.copyWith(exerciseLogs: updatedExerciseLogs);
+
+    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
     List<RoutineLogDto> routineLogsForTheYear =
         routineLogController.whereLogsIsSameYear(dateTime: DateTime.now().withoutTime());
 

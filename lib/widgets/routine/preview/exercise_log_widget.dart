@@ -6,7 +6,7 @@ import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 
-import '../../../controllers/routine_log_controller.dart';
+import '../../../controllers/exercise_and_routine_controller.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/general_utils.dart';
@@ -29,7 +29,7 @@ class ExerciseLogWidget extends StatelessWidget {
 
     final exerciseType = exerciseLog.exercise.type;
 
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
+    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
     final pastExerciseLogs =
         routineLogController.whereExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);

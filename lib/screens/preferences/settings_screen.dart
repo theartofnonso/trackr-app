@@ -16,9 +16,7 @@ import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/urls.dart';
 import 'package:tracker_app/widgets/list_tiles/list_tile_outline.dart';
 
-import '../../controllers/exercise_controller.dart';
-import '../../controllers/routine_log_controller.dart';
-import '../../controllers/routine_template_controller.dart';
+import '../../controllers/exercise_and_routine_controller.dart';
 import '../../controllers/routine_user_controller.dart';
 import '../../controllers/settings_controller.dart';
 import '../../utils/dialog_utils.dart';
@@ -259,9 +257,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     SharedPrefs().clear();
     await FlutterLocalNotificationsPlugin().cancelAll();
     if (mounted) {
-      Provider.of<RoutineTemplateController>(context, listen: false).clear();
-      Provider.of<RoutineLogController>(context, listen: false).clear();
-      Provider.of<ExerciseController>(context, listen: false).clear();
+      Provider.of<ExerciseAndRoutineController>(context, listen: false).clear();
       Provider.of<ActivityLogController>(context, listen: false).clear();
       Provider.of<RoutineUserController>(context, listen: false).clear();
     }

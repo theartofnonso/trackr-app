@@ -6,13 +6,12 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
-import 'package:tracker_app/controllers/routine_log_controller.dart';
+import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 
 import '../../colors.dart';
-import '../../controllers/routine_template_controller.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/set_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
@@ -160,7 +159,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
         createdAt: DateTime.now(),
         updatedAt: DateTime.now());
 
-    await Provider.of<RoutineTemplateController>(context, listen: false).saveTemplate(templateDto: template);
+    await Provider.of<ExerciseAndRoutineController>(context, listen: false).saveTemplate(templateDto: template);
     _navigateBack();
   }
 
@@ -198,7 +197,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   }
 
   void _doUpdateRoutineTemplate({required RoutineTemplateDto updatedTemplate}) async {
-    final templateProvider = Provider.of<RoutineTemplateController>(context, listen: false);
+    final templateProvider = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
     final updatedRoutineTemplate = _getUpdatedRoutineTemplate(template: updatedTemplate);
 
@@ -273,7 +272,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
 
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
 
-    final routineTemplateController = Provider.of<RoutineTemplateController>(context, listen: true);
+    final routineTemplateController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
     if (routineTemplateController.errorMessage.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -452,7 +451,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   void _showWeightCalculator() {
     displayBottomSheet(
         context: context,
-        child: WeightPlateCalculator(target: _selectedSetDto?.value1.toDouble() ?? 0),
+        child: WeightPlateCalculator(target: _selectedSetDto?.weight().toDouble() ?? 0),
         padding: EdgeInsets.zero);
   }
 
@@ -470,7 +469,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     final exercises = widget.template?.exerciseTemplates;
     if (exercises != null && exercises.isNotEmpty) {
       final updatedExerciseLogs = exercises.map((exerciseLog) {
-        final previousSets = Provider.of<RoutineLogController>(context, listen: false)
+        final previousSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
             .whereSetsForExercise(exercise: exerciseLog.exercise);
         if (previousSets.isNotEmpty) {
           final unCheckedSets =

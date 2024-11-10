@@ -4,13 +4,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
-import 'package:tracker_app/controllers/routine_template_controller.dart';
 import 'package:tracker_app/extensions/dtos/routine_template_dto_extension.dart';
 import 'package:tracker_app/screens/AI/trkr_coach_chat_screen.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_button.dart';
 import 'package:tracker_app/widgets/empty_states/routine_empty_state.dart';
 
+import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
@@ -22,7 +22,7 @@ class RoutineTemplatesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<RoutineTemplateController>(builder: (_, provider, __) {
+    return Consumer<ExerciseAndRoutineController>(builder: (_, provider, __) {
       final routineTemplates = List<RoutineTemplateDto>.from(provider.templates);
 
       final sortedScheduledTemplates =
@@ -123,7 +123,7 @@ class RoutineTemplatesScreen extends StatelessWidget {
 
   void _saveTemplate({required BuildContext context, required RoutineTemplateDto template}) async {
     final routineTemplate = template;
-    final templateController = Provider.of<RoutineTemplateController>(context, listen: false);
+    final templateController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
     await templateController.saveTemplate(templateDto: routineTemplate);
   }
 }

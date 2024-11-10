@@ -14,8 +14,7 @@ import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/empty_states/horizontal_stacked_bars_empty_state.dart';
 
 import '../../colors.dart';
-import '../../controllers/exercise_controller.dart';
-import '../../controllers/routine_log_controller.dart';
+import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../dtos/set_dto.dart';
 import '../../enums/chart_unit_enum.dart';
@@ -56,14 +55,14 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     final dateRange = theLastYearDateTimeRange();
 
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
+    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
     final logs = routineLogController.whereLogsIsWithinRange(range: dateRange);
 
-    final exerciseController = Provider.of<ExerciseController>(context, listen: false);
+    final exerciseController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
     final exerciseLogs = logs
-        .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
+        .map((log) => completedExercises(exerciseLogs: log.exerciseLogs))
         .expand((exerciseLogs) => exerciseLogs)
         .map((exerciseLog) {
       final foundExercise = exerciseController.exercises
@@ -350,7 +349,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   num _calculateMetric({required List<SetDto> sets}) {
     return switch (_metric) {
       SetRepsVolumeReps.sets => sets.length,
-      SetRepsVolumeReps.reps => sets.map((set) => set.repsValue()).sum,
+      SetRepsVolumeReps.reps => sets.map((set) => set.reps()).sum,
       SetRepsVolumeReps.volume => sets.map((set) => set.volume()).sum,
     };
   }
@@ -395,7 +394,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   @override
   void initState() {
     super.initState();
-    final defaultMuscleGroup = Provider.of<RoutineLogController>(context, listen: false)
+    final defaultMuscleGroup = Provider.of<ExerciseAndRoutineController>(context, listen: false)
         .logs
         .firstOrNull
         ?.exerciseLogs

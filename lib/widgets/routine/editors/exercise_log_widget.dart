@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
-import 'package:tracker_app/controllers/routine_log_controller.dart';
+import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
@@ -102,12 +102,12 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _show1RMRecommendations() {
     final pastExerciseLogs =
-        Provider.of<RoutineLogController>(context, listen: false).exerciseLogsById[widget.exerciseLogDto.id] ?? [];
-    final completedPastExerciseLogs = exerciseLogsWithCheckedSets(exerciseLogs: pastExerciseLogs);
+        Provider.of<ExerciseAndRoutineController>(context, listen: false).exerciseLogsById[widget.exerciseLogDto.id] ?? [];
+    final completedPastExerciseLogs = completedExercises(exerciseLogs: pastExerciseLogs);
     if (completedPastExerciseLogs.isNotEmpty) {
       final previousLog = completedPastExerciseLogs.last;
       final heaviestSetWeight = heaviestSetWeightForExerciseLog(exerciseLog: previousLog);
-      final oneRepMax = average1RM(weight: heaviestSetWeight.weightValue(), reps: heaviestSetWeight.repsValue());
+      final oneRepMax = average1RM(weight: heaviestSetWeight.weight(), reps: heaviestSetWeight.reps());
       displayBottomSheet(
           context: context,
           child: _OneRepMaxSlider(exercise: widget.exerciseLogDto.exercise.name, oneRepMax: oneRepMax));
@@ -131,7 +131,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     } else {
       _controllers.add((TextEditingController(), TextEditingController()));
     }
-    final pastSets = Provider.of<RoutineLogController>(context, listen: false)
+    final pastSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
         .whereSetsForExercise(exercise: widget.exerciseLogDto.exercise);
     Provider.of<ExerciseLogController>(context, listen: false)
         .addSet(exerciseLogId: widget.exerciseLogDto.id, pastSets: pastSets);
@@ -168,7 +168,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   void _checkAndUpdateDuration(
       {required int index, required Duration duration, required SetDto setDto, required bool checked}) {
     if (setDto.checked) {
-      final duration = setDto.durationValue();
+      final duration = setDto.duration();
       final startTime = DateTime.now().subtract(Duration(milliseconds: duration));
       _durationControllers[index] = startTime;
       _updateSetCheck(index: index, setDto: setDto);
@@ -205,8 +205,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final sets = widget.exerciseLogDto.sets;
     List<(TextEditingController, TextEditingController)> controllers = [];
     for (var set in sets) {
-      final value1Controller = TextEditingController(text: set.weightValue().toString());
-      final value2Controller = TextEditingController(text: set.repsValue().toString());
+      final value1Controller = TextEditingController(text: set.weight().toString());
+      final value2Controller = TextEditingController(text: set.reps().toString());
       controllers.add((value1Controller, value2Controller));
     }
     _controllers.addAll(controllers);
@@ -216,7 +216,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final sets = widget.exerciseLogDto.sets;
     List<DateTime> controllers = [];
     for (var set in sets) {
-      final duration = set.durationValue();
+      final duration = set.duration();
       final startTime = DateTime.now().subtract(Duration(milliseconds: duration));
       controllers.add(startTime);
     }

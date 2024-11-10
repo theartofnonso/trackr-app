@@ -18,8 +18,7 @@ import 'package:tracker_app/utils/routine_editors_utils.dart';
 import 'package:tracker_app/widgets/routine/editors/exercise_log_widget_lite.dart';
 
 import '../../colors.dart';
-import '../../controllers/routine_log_controller.dart';
-import '../../controllers/routine_template_controller.dart';
+import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/exercise_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/set_dto.dart';
@@ -156,7 +155,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     final routineLogToBeUpdated = routineLog.copyWith(endTime: DateTime.now());
 
     final updatedRoutineLog =
-        await Provider.of<RoutineLogController>(context, listen: false).saveLog(logDto: routineLogToBeUpdated);
+        await Provider.of<ExerciseAndRoutineController>(context, listen: false).saveLog(logDto: routineLogToBeUpdated);
 
     workoutSessionLogged();
 
@@ -171,7 +170,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   Future<void> _doUpdateRoutineLog() async {
     final routineLog = _routineLog();
 
-    await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: routineLog);
+    await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateLog(log: routineLog);
 
     _updateRoutineTemplate(log: routineLog);
 
@@ -233,7 +232,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   Future<void> _updateRoutineTemplate({required RoutineLogDto log}) async {
     final template =
-        Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: widget.log.templateId);
+        Provider.of<ExerciseAndRoutineController>(context, listen: false).templateWhere(id: widget.log.templateId);
     if (template != null) {
       await _doUpdateTemplate(log: log, templateToUpdate: template);
     }
@@ -243,7 +242,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     if (widget.mode == RoutineEditorMode.log) {
       final routineLog = _routineLog();
       final updatedRoutineLog = routineLog.copyWith(endTime: DateTime.now());
-      Provider.of<RoutineLogController>(context, listen: false).cacheLog(logDto: updatedRoutineLog);
+      Provider.of<ExerciseAndRoutineController>(context, listen: false).cacheLog(logDto: updatedRoutineLog);
     }
   }
 
@@ -285,7 +284,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
       return exerciseLog.copyWith(sets: newSets);
     }).toList();
     final updatedTemplate = templateToUpdate.copyWith(exerciseTemplates: exerciseLogs);
-    await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: updatedTemplate);
+    await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateTemplate(template: updatedTemplate);
   }
 
   /// Handle collapsed ExerciseLogWidget
@@ -307,7 +306,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   @override
   Widget build(BuildContext context) {
-    final routineLogEditorController = Provider.of<RoutineLogController>(context, listen: true);
+    final routineLogEditorController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
     if (routineLogEditorController.errorMessage.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -470,7 +469,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                                   });
                                                 }, onTapRepsEditor: (SetDto setDto) {
                                           setState(() {
-                                            print("cfc");
                                             _selectedSetDto = null;
                                           });
                                         },
@@ -495,7 +493,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   void _showWeightCalculator() {
     displayBottomSheet(
         context: context,
-        child: WeightPlateCalculator(target: _selectedSetDto?.value1.toDouble() ?? 0),
+        child: WeightPlateCalculator(target: _selectedSetDto?.weight().toDouble() ?? 0),
         padding: EdgeInsets.zero);
   }
 
@@ -517,7 +515,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   void _initializeProcedureData() {
     final exerciseLogs = widget.log.exerciseLogs;
     final updatedExerciseLogs = exerciseLogs.map((exerciseLog) {
-      final previousSets = Provider.of<RoutineLogController>(context, listen: false)
+      final previousSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
           .whereSetsForExercise(exercise: exerciseLog.exercise);
       if (previousSets.isNotEmpty) {
         final hasCurrentSets = exerciseLog.sets.isNotEmpty;

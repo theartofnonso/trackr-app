@@ -160,7 +160,6 @@ class _WeightCalculatorState extends State<WeightPlateCalculator> {
 
     findCombination([], 0, 0);
 
-    print(bestCombination);
     return bestCombination;
   }
 }

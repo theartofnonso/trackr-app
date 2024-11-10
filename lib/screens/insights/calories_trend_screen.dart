@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
 import '../../colors.dart';
-import '../../controllers/routine_log_controller.dart';
+import '../../controllers/exercise_and_routine_controller.dart';
 import '../../controllers/routine_user_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../enums/chart_unit_enum.dart';
@@ -27,7 +27,7 @@ class CaloriesTrendScreen extends StatefulWidget {
 class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
   @override
   Widget build(BuildContext context) {
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
+    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
     final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
 

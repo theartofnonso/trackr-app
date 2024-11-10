@@ -6,7 +6,7 @@ import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/widgets/exercise_history/set_record_widget.dart';
 
 import '../../dtos/appsync/exercise_dto.dart';
-import '../../controllers/routine_log_controller.dart';
+import '../../controllers/exercise_and_routine_controller.dart';
 
 class PersonalBestWidget extends StatelessWidget {
   final ExerciseDto exercise;
@@ -16,9 +16,9 @@ class PersonalBestWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<ExerciseLogDto> pastLogs =
-        Provider.of<RoutineLogController>(context, listen: false).exerciseLogsById[exercise.id] ?? [];
+        Provider.of<ExerciseAndRoutineController>(context, listen: false).exerciseLogsById[exercise.id] ?? [];
 
-    final completedLogs = exerciseLogsWithCheckedSets(exerciseLogs: pastLogs);
+    final completedLogs = completedExercises(exerciseLogs: pastLogs);
 
     final sets = completedLogs.expand((log) => log.sets).where((set) => set.isNotEmpty()).toList();
 

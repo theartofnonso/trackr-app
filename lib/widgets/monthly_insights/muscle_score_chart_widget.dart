@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../colors.dart';
-import '../../controllers/exercise_controller.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../enums/chart_unit_enum.dart';
@@ -23,7 +21,6 @@ class MuscleScoreChartWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final exerciseController = Provider.of<ExerciseController>(context, listen: false);
 
     List<DateTime> scoreMonths = [];
     List<int> scoreCount = [];
@@ -32,10 +29,9 @@ class MuscleScoreChartWidget extends StatelessWidget {
 
     for (var logsAndMonths in logsAndMonths.entries) {
       final exerciseLogsForTheMonth =
-          logsAndMonths.value.expand((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs)).toList();
+          logsAndMonths.value.expand((log) => completedExercises(exerciseLogs: log.exerciseLogs)).toList();
 
-      final muscleScorePercentage =
-          calculateMuscleScoreForLogs(routineLogs: logsAndMonths.value, exercises: exerciseController.exercises);
+      final muscleScorePercentage = calculateMuscleScoreForLogs(routineLogs: logsAndMonths.value);
 
       scoreMonths.add(exerciseLogsForTheMonth.first.createdAt);
       scoreCount.add(muscleScorePercentage);

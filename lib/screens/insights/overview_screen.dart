@@ -13,7 +13,7 @@ import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 
 import '../../controllers/activity_log_controller.dart';
-import '../../controllers/routine_log_controller.dart';
+import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/abstract_class/log_class.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
@@ -26,7 +26,7 @@ import '../../widgets/ai_widgets/trkr_coach_text_widget.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/calendar/calendar.dart';
 import '../../widgets/label_divider.dart';
-import '../../widgets/monitors/overview_monitor.dart';
+import '../../widgets/monitors/log_streak_muscle_trend_monitor.dart';
 import '../../widgets/monthly_insights/log_streak_chart_widget.dart';
 import '../../widgets/routine/preview/activity_log_widget.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
@@ -58,7 +58,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
   Widget build(BuildContext context) {
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
-    Provider.of<RoutineLogController>(context, listen: true);
+    Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -94,7 +94,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       padding: const EdgeInsets.only(bottom: 150),
                       child: Column(children: [
                         const SizedBox(height: 12),
-                        OverviewMonitor(dateTime: widget.dateTimeRange.start),
+                        LogStreakMuscleTrendMonitor(dateTime: widget.dateTimeRange.start),
                         if (SharedPrefs().showCalendar)
                           Padding(
                             padding: const EdgeInsets.only(top: 16.0),
@@ -123,7 +123,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 
   void _logEmptyRoutine() async {
-    final log = Provider.of<RoutineLogController>(context, listen: false).cachedLog();
+    final log = Provider.of<ExerciseAndRoutineController>(context, listen: false).cachedLog();
     if (log == null) {
       final log = RoutineLogDto(
           id: "",
@@ -319,7 +319,7 @@ class _LogsListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     /// Routine Logs
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
+    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
     final routineLogsForCurrentDate = routineLogController.whereLogsIsSameDay(dateTime: dateTime).toList();
 
     /// Activity Logs

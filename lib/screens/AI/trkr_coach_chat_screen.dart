@@ -5,10 +5,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/strings/ai_prompts.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 
-import '../../controllers/exercise_controller.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/exercise_log_dto.dart';
 import '../../dtos/set_dto.dart';
@@ -190,7 +190,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
       final toolName = tool['name']; // A function
       if (toolName == "list_exercises") {
         if (mounted) {
-          final exercises = Provider.of<ExerciseController>(context, listen: false).exercises;
+          final exercises = Provider.of<ExerciseAndRoutineController>(context, listen: false).exercises;
           final functionCallPayload = await createFunctionCallPayload(
               toolId: toolId,
               systemInstruction: completeSystemInstructions,

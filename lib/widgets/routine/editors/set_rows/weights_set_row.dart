@@ -33,8 +33,8 @@ class WeightsSetRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    num weight = setDto.weightValue();
-    int reps = setDto.repsValue().toInt();
+    num weight = setDto.weight();
+    int reps = setDto.reps().toInt();
 
     return Table(
       border: TableBorder.all(color: Colors.white.withOpacity(0.1), borderRadius: BorderRadius.circular(5)),

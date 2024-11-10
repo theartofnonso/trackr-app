@@ -35,32 +35,33 @@ class SetDto {
   }
 
   double volume() {
-    return (value1 * value2).toDouble();
+    final convertedWeight = weightWithConversion(value: value1);
+    return (convertedWeight * value2).toDouble();
   }
 
-  double weightValue() {
-    return value1.toDouble();
+  double weight() {
+    return weightWithConversion(value: value1.toDouble());
   }
 
-  int durationValue() {
+  int duration() {
     return value1.toInt();
   }
 
-  int repsValue() {
+  int reps() {
     return value2.toInt();
   }
 
   String weightsSummary() {
-    return "${weightValue()}${weightLabel()} x ${repsValue()}";
+    return "${weight()}${weightLabel()} x ${reps()}";
   }
 
   String durationSummary() {
-    final label = Duration(milliseconds: durationValue()).hmsAnalog();
+    final label = Duration(milliseconds: duration()).hmsAnalog();
     return label;
   }
 
-  String bodyWeightSummary() {
-    return "x${repsValue()}";
+  String repsSummary() {
+    return "x${reps()}";
   }
 
   @override

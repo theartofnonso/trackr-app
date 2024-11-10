@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
 import '../../colors.dart';
-import '../../controllers/routine_log_controller.dart';
+import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
 import 'completed_milestones_screen.dart';
 import 'pending_milestones_screen.dart';
@@ -14,7 +14,7 @@ class MilestonesHomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
+    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
     List<RoutineLogDto> routineLogsForTheYear =
     routineLogController.whereLogsIsSameYear(dateTime: DateTime.now().withoutTime());

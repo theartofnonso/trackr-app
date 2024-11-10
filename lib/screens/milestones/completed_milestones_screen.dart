@@ -6,7 +6,7 @@ import 'package:tracker_app/widgets/milestones/milestone_grid_item.dart';
 
 import '../../dtos/milestones/milestone_dto.dart';
 import '../../widgets/information_containers/information_container_with_background_image.dart';
-import '../no_list_empty_state.dart';
+import '../empty_state_screens/no_list_empty_state.dart';
 
 class CompletedMilestonesScreen extends StatelessWidget {
   final List<Milestone> milestones;

@@ -3,7 +3,7 @@ import 'package:tracker_app/colors.dart';
 
 import '../../utils/general_utils.dart';
 
-class MuscleGroupFamilyFrequencyMonitor extends StatelessWidget {
+class MuscleTrendMonitor extends StatelessWidget {
   final double value;
   final double width;
   final double height;
@@ -11,7 +11,7 @@ class MuscleGroupFamilyFrequencyMonitor extends StatelessWidget {
   final StrokeCap? strokeCap;
   final Decoration? decoration;
 
-  const MuscleGroupFamilyFrequencyMonitor({
+  const MuscleTrendMonitor({
     super.key,
     required this.value,
     required this.width,

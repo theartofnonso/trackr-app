@@ -11,38 +11,35 @@ import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../colors.dart';
-import '../../controllers/exercise_controller.dart';
-import '../../controllers/routine_log_controller.dart';
+import '../../controllers/exercise_and_routine_controller.dart';
 import '../../strings.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/shareables_utils.dart';
 import '../calendar/calendar.dart';
 import 'log_streak_monitor.dart';
-import 'muscle_group_family_frequency_monitor.dart';
+import 'muscle_trend_monitor.dart';
 
 GlobalKey monitorKey = GlobalKey();
 
-class OverviewMonitor extends StatelessWidget {
+class LogStreakMuscleTrendMonitor extends StatelessWidget {
   final DateTime dateTime;
   final bool showInfo;
 
-  const OverviewMonitor({super.key, required this.dateTime, this.showInfo = true});
+  const LogStreakMuscleTrendMonitor({super.key, required this.dateTime, this.showInfo = true});
 
   @override
   Widget build(BuildContext context) {
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
-    final routineLogs = routineLogController.whereLogsIsSameMonth(dateTime: dateTime);
+    final routineLogs = exerciseAndRoutineController.whereLogsIsSameMonth(dateTime: dateTime);
 
     final routineLogsByDay = groupBy(routineLogs, (log) => log.createdAt.withoutTime().day);
 
     final monthlyProgress = routineLogsByDay.length / 12;
 
-    final exerciseController = Provider.of<ExerciseController>(context, listen: false);
-
     final muscleScorePercentage =
-        calculateMuscleScoreForLogs(routineLogs: routineLogs, exercises: exerciseController.exercises);
+        calculateMuscleScoreForLogs(routineLogs: routineLogs);
 
     return Stack(children: [
       if (showInfo)
@@ -92,7 +89,7 @@ class OverviewMonitor extends StatelessWidget {
                     color: sapphireDark.withOpacity(0.35),
                     borderRadius: BorderRadius.circular(100),
                   )),
-              MuscleGroupFamilyFrequencyMonitor(
+              MuscleTrendMonitor(
                   value: muscleScorePercentage / 100, width: 70, height: 70, strokeWidth: 6),
               Image.asset(
                 'images/trkr.png',
@@ -186,7 +183,7 @@ class OverviewMonitor extends StatelessWidget {
             const SizedBox(height: 14),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 18),
-              child: OverviewMonitor(
+              child: LogStreakMuscleTrendMonitor(
                 dateTime: dateTime,
                 showInfo: false,
               ),

@@ -4,8 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
-import 'package:tracker_app/controllers/exercise_controller.dart';
-import 'package:tracker_app/controllers/routine_log_controller.dart';
+import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_chart_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_video_screen.dart';
@@ -36,7 +35,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
   void _deleteExercise(BuildContext context) async {
     context.pop();
     try {
-      await Provider.of<ExerciseController>(context, listen: false).removeExercise(exercise: widget.exercise);
+      await Provider.of<ExerciseAndRoutineController>(context, listen: false).removeExercise(exercise: widget.exercise);
       if (context.mounted) {
         context.pop();
       }
@@ -52,13 +51,15 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final foundExercise =
-        Provider.of<ExerciseController>(context, listen: true).whereExercise(exerciseId: widget.exercise.id) ??
+
+    final exerciseController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
+
+    final foundExercise = exerciseController.whereExercise(exerciseId: widget.exercise.id) ??
             widget.exercise;
 
     final exerciseLogs = _exerciseLogsById?[foundExercise.id] ?? [];
 
-    final completedExerciseLogs = exerciseLogsWithCheckedSets(exerciseLogs: exerciseLogs);
+    final completedExerciseLogs = completedExercises(exerciseLogs: exerciseLogs);
 
     final heaviestSetVolumeRecord = heaviestSetVolume(exerciseLogs: completedExerciseLogs);
 
@@ -190,7 +191,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
   @override
   void initState() {
     super.initState();
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
+    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
     _exerciseLogsById = routineLogController.exerciseLogsById;
   }
 }

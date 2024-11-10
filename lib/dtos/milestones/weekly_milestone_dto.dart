@@ -122,7 +122,7 @@ class WeeklyMilestone extends Milestone {
     for (final week in weeks) {
       final logsForTheWeek = logs.where((log) => log.createdAt.isWithinRange(range: week));
       final legLog = logsForTheWeek.firstWhereOrNull((log) {
-        final completedExerciseLogs = exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs);
+        final completedExerciseLogs = completedExercises(exerciseLogs: log.exerciseLogs);
         final hasLegLog = completedExerciseLogs.where((exerciseLog) {
           final primaryMuscleGroupFamily = exerciseLog.exercise.primaryMuscleGroup.family;
           final secondaryMuscleGroupFamilies =
