@@ -115,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _loadAppData() async {
+  void _loadAppData() {
     _observeRoutineUserQuery();
     _observeExerciseQuery();
     _observeRoutineLogQuery();
@@ -155,13 +155,15 @@ class _HomeScreenState extends State<HomeScreen> {
       if (mounted) {
         Provider.of<ExerciseAndRoutineController>(context, listen: false).streamLogs(logs: snapshot.items);
       }
+    }, onError: (s) {
+      print(s);
     });
   }
 
   void _observeRoutineTemplateQuery() {
     _routineTemplateStream = Amplify.DataStore.observeQuery(
       RoutineTemplate.classType,
-      sortBy: [RoutineTemplate.CREATEDAT.ascending()],
+      sortBy: [RoutineTemplate.CREATEDAT.descending()],
     ).listen((QuerySnapshot<RoutineTemplate> snapshot) {
       if (mounted) {
         Provider.of<ExerciseAndRoutineController>(context, listen: false).streamTemplates(templates: snapshot.items);
