@@ -178,6 +178,7 @@ class AmplifyRoutineLogRepository {
       return log.copyWith(exerciseLogs: updatedExerciseLogs);
     }).toList();
     _logs = updatedLogs;
+    _calculateMilestones();
   }
 
   /// Helper methods
