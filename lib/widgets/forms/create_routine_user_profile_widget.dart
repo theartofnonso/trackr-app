@@ -96,7 +96,7 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
           subtitle: Text("Tap to select weight",
               style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.white70),
               textAlign: TextAlign.start),
-          trailing: Text("$_weight${weightLabel()}".toUpperCase(),
+          trailing: Text("${weightWithConversion(value: _weight).floor()}${weightLabel()}".toUpperCase(),
               style: GoogleFonts.ubuntu(fontSize: 18, fontWeight: FontWeight.w800, color: Colors.white70),
               textAlign: TextAlign.start),
         ),

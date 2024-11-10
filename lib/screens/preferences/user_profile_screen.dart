@@ -100,7 +100,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               subtitle: Text("We use your weight to calculate your calories burned",
                   style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.white70),
                   textAlign: TextAlign.start),
-              trailing: Text("${user.weight}${weightLabel()}",
+              trailing: Text("${weightWithConversion(value: user.weight).floor()}${weightLabel()}",
                   style: GoogleFonts.ubuntu(fontSize: 18, fontWeight: FontWeight.w800, color: Colors.white70),
                   textAlign: TextAlign.start),
             )
