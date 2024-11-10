@@ -35,7 +35,7 @@ class MilestonesHomeScreen extends StatelessWidget {
               dividerColor: Colors.transparent,
               tabs: [
                 Tab(
-                    child: Text("Milestones",
+                    child: Text("Active",
                         style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
                 Tab(
                     child: Text("Completed",

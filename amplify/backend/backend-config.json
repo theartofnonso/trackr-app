@@ -203,22 +203,6 @@
     }
   },
   "parameters": {
-    "AMPLIFY_function_deleteUserData_deploymentBucketName": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "deleteUserData"
-        }
-      ]
-    },
-    "AMPLIFY_function_deleteUserData_s3Key": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "deleteUserData"
-        }
-      ]
-    },
     "AMPLIFY_function_deleteUserExerciseData_deploymentBucketName": {
       "usedBy": [
         {

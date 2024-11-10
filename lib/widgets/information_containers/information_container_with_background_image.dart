@@ -25,6 +25,7 @@ class BackgroundInformationContainer extends StatelessWidget {
             image,
             fit: BoxFit.cover,
             width: double.infinity,
+            alignment: Alignment.center,
           ),
           Container(
             width: double.infinity,

@@ -85,7 +85,7 @@ class RoutineTemplatesScreen extends StatelessWidget {
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   const SizedBox(height: 16),
                   BackgroundInformationContainer(
-                      image: 'images/man_woman.jpg',
+                      image: 'images/lace.jpg',
                       containerColor: Colors.blue.shade900,
                       content: "A structured plan is essential for achieving your fitness goals. Try creating one.",
                       textStyle: GoogleFonts.ubuntu(

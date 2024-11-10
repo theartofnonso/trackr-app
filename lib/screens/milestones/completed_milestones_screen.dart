@@ -24,7 +24,7 @@ class CompletedMilestonesScreen extends StatelessWidget {
             color: Colors.white12,
             size: 48,
           ),
-          message: "It might feel quiet now, but your active challenges will soon appear here.");
+          message: "It might feel quiet now, but your completed challenges will soon appear here.");
     }
 
     return Scaffold(
