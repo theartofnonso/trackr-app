@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
@@ -34,7 +35,9 @@ import '../AI/trkr_coach_summary_screen.dart';
 class SetsAndRepsVolumeInsightsScreen extends StatefulWidget {
   static const routeName = '/sets_and_reps_volume_insights_screen';
 
-  const SetsAndRepsVolumeInsightsScreen({super.key});
+  final bool canPop;
+
+  const SetsAndRepsVolumeInsightsScreen({super.key, this.canPop = true});
 
   @override
   State<SetsAndRepsVolumeInsightsScreen> createState() => _SetsAndRepsVolumeInsightsScreenState();
@@ -119,6 +122,15 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
         .toList();
 
     return Scaffold(
+      appBar: widget.canPop ? AppBar(
+        backgroundColor: sapphireDark80,
+        leading: IconButton(
+          icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+          onPressed: context.pop,
+        ),
+        title: Text("Muscle Trend".toUpperCase(),
+            style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+      ) : null,
       body: Container(
         width: double.infinity,
         decoration: const BoxDecoration(
