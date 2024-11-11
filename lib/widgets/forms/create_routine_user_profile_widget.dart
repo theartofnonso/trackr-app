@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 import '../../colors.dart';
 import '../../controllers/routine_user_controller.dart';
 import '../../dtos/appsync/routine_user_dto.dart';
-import '../../screens/preferences/settings_screen.dart';
 import '../../shared_prefs.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/general_utils.dart';
@@ -42,7 +41,7 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(top: 16, right: 16, bottom: 28, left: 16),
+      padding: const EdgeInsets.only(top: 16, right: 16, bottom: 16, left: 16),
       decoration: const BoxDecoration(
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(20),
@@ -105,7 +104,7 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
               style: GoogleFonts.ubuntu(fontSize: 10, fontWeight: FontWeight.w400, color: Colors.redAccent),
               textAlign: TextAlign.start),
         const SizedBox(
-          height: 12,
+          height: 20,
         ),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,26 +148,6 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
           Text(_usernameExistsErrorMessage,
               style: GoogleFonts.ubuntu(fontSize: 10, fontWeight: FontWeight.w400, color: Colors.redAccent),
               textAlign: TextAlign.start),
-        const SizedBox(
-          height: 10,
-        ),
-        ListTile(
-          onTap: () {
-            Navigator.of(context).pop();
-            showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                useSafeArea: true,
-                isDismissible: false,
-                builder: (context) {
-                  return const SafeArea(child: SettingsScreen());
-                });
-          },
-          leading: Text("Settings",
-              style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
-              textAlign: TextAlign.center),
-          trailing: const FaIcon(FontAwesomeIcons.gear, color: Colors.grey),
-        )
       ]),
     );
   }

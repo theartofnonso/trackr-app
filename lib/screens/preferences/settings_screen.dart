@@ -56,9 +56,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   Widget build(BuildContext context) {
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
-    final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
-    final user = routineUserController.user;
-
     return Scaffold(
       body: Container(
         padding: const EdgeInsets.all(10.0),
@@ -152,7 +149,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     });
                   },
                 ),
-                if (user != null)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
