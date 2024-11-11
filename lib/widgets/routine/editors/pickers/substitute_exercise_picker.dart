@@ -1,7 +1,9 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
+
 import '../../../../dtos/appsync/exercise_dto.dart';
 import '../../../buttons/opacity_button_widget.dart';
 import '../../../empty_states/list_tile_empty_state.dart';
@@ -38,19 +40,17 @@ class _SubstituteExercisePickerState extends State<SubstituteExercisePicker> {
   @override
   Widget build(BuildContext context) {
     final listTiles = widget.exercises
-        .mapIndexed((index, exercise) => Dismissible(
-              direction: DismissDirection.endToStart,
-              onDismissed: (_) => _onRemoveExercises(exercise: exercise),
-              key: UniqueKey(),
-              child: ListTile(
-                onTap: () {
-                  widget.onSelect(exercise);
-                },
-                dense: true,
-                contentPadding: EdgeInsets.zero,
-                title: Text(exercise.name,
-                    style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 15)),
-              ),
+        .mapIndexed((index, exercise) => ListTile(
+              onTap: () {
+                widget.onSelect(exercise);
+              },
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              title: Text(exercise.name,
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 15)),
+              trailing: GestureDetector(
+                  onTap: () => _onRemoveExercises(exercise: exercise),
+                  child: FaIcon(FontAwesomeIcons.solidCircleXmark, color: Colors.redAccent, size: 22)),
             ))
         .toList();
 
@@ -95,29 +95,29 @@ class _EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const SizedBox(height: 16),
-          const Padding(
-            padding: EdgeInsets.only(left: 18.0),
-            child: ListTileEmptyState(),
-          ),
-          const SizedBox(height: 12),
-          const Padding(
-            padding: EdgeInsets.only(left: 18.0),
-            child: ListTileEmptyState(),
-          ),
-          const SizedBox(height: 24),
-          OpacityButtonWidget(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const SizedBox(height: 16),
+        const Padding(
+          padding: EdgeInsets.only(left: 18.0),
+          child: ListTileEmptyState(),
+        ),
+        const SizedBox(height: 12),
+        const Padding(
+          padding: EdgeInsets.only(left: 18.0),
+          child: ListTileEmptyState(),
+        ),
+        const SizedBox(height: 24),
+        Center(
+          child: OpacityButtonWidget(
               onPressed: onPressed,
               label: "Add substitute exercises",
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              buttonColor: vibrantGreen)
-        ],
-      ),
+              buttonColor: vibrantGreen),
+        )
+      ],
     );
   }
 }
