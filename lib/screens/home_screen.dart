@@ -147,17 +147,6 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void _observeRoutineLogQuery() {
-    _routineLogStream = Amplify.DataStore.observeQuery(
-      RoutineLog.classType,
-      sortBy: [RoutineLog.CREATEDAT.ascending()],
-    ).listen((QuerySnapshot<RoutineLog> snapshot) {
-      if (mounted) {
-        Provider.of<ExerciseAndRoutineController>(context, listen: false).streamLogs(logs: snapshot.items);
-      }
-    });
-  }
-
   void _observeRoutineTemplateQuery() {
     _routineTemplateStream = Amplify.DataStore.observeQuery(
       RoutineTemplate.classType,
@@ -165,6 +154,17 @@ class _HomeScreenState extends State<HomeScreen> {
     ).listen((QuerySnapshot<RoutineTemplate> snapshot) {
       if (mounted) {
         Provider.of<ExerciseAndRoutineController>(context, listen: false).streamTemplates(templates: snapshot.items);
+      }
+    });
+  }
+
+  void _observeRoutineLogQuery() {
+    _routineLogStream = Amplify.DataStore.observeQuery(
+      RoutineLog.classType,
+      sortBy: [RoutineLog.CREATEDAT.ascending()],
+    ).listen((QuerySnapshot<RoutineLog> snapshot) {
+      if (mounted) {
+        Provider.of<ExerciseAndRoutineController>(context, listen: false).streamLogs(logs: snapshot.items);
       }
     });
   }
@@ -219,8 +219,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     _exerciseStream?.cancel();
-    _routineLogStream?.cancel();
     _routineTemplateStream?.cancel();
+    _routineLogStream?.cancel();
     _activityLogStream?.cancel();
     _routineUserStream?.cancel();
     super.dispose();

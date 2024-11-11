@@ -298,7 +298,8 @@ class _MyAppState extends State<MyApp> {
       await Amplify.addPlugin(AmplifyAuthCognito());
       final apiPluginOptions = APIPluginOptions(modelProvider: ModelProvider.instance);
       await Amplify.addPlugin(AmplifyAPI(options: apiPluginOptions));
-      final datastorePluginOptions = DataStorePluginOptions(syncExpressions: [
+      final datastorePluginOptions = DataStorePluginOptions(
+          syncExpressions: [
         DataStoreSyncExpression(
             ActivityLog.classType, () => ActivityLog.CREATEDAT.between(startOfCurrentYear, endOfCurrentYear)),
         DataStoreSyncExpression(
@@ -306,7 +307,6 @@ class _MyAppState extends State<MyApp> {
       ]);
       await Amplify.addPlugin(AmplifyDataStore(modelProvider: ModelProvider.instance, options: datastorePluginOptions));
       await Amplify.configure(amplifyconfig);
-      Amplify.DataStore.start();
     } on Exception catch (e) {
       debugPrint('Could not configure Amplify: $e');
     }
