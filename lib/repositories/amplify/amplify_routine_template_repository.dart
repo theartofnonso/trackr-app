@@ -27,11 +27,11 @@ class AmplifyRoutineTemplateRepository {
   Future<RoutineTemplateDto> saveTemplate({required RoutineTemplateDto templateDto}) async {
     final now = TemporalDateTime.now();
 
-    final templateToCreate = RoutineTemplate(data: jsonEncode(templateDto), createdAt: now, updatedAt: now);
+    final templateToCreate = RoutineTemplate(data: jsonEncode(templateDto), createdAt: now, updatedAt: now, owner: SharedPrefs().userId);
 
     await Amplify.DataStore.save<RoutineTemplate>(templateToCreate);
 
-    final updatedWithId = templateDto.copyWith(id: templateToCreate.id, owner: SharedPrefs().userId);
+    final updatedWithId = templateDto.copyWith(id: templateToCreate.id);
 
     return updatedWithId;
   }

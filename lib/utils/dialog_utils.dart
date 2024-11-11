@@ -244,7 +244,7 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
                       name: activityType.name,
                       startTime: datetimeRange.start,
                       endTime: datetimeRange.end,
-                      createdAt: datetimeRange.end,
+                      createdAt: datetimeRange.start,
                       updatedAt: DateTime.now());
                   Provider.of<ActivityLogController>(context, listen: false).updateLog(log: updatedActivity);
                 });

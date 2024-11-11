@@ -183,7 +183,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   bool _isRoutinePartiallyComplete() {
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
     final exerciseLogs = exerciseLogController.mergeExerciseLogsAndSets();
-    return exerciseLogs.any((log) => log.sets.any((set) => set.checked));
+    return exerciseLogs.any((log) => log.sets.any((set) => set.isNotEmpty() && set.checked));
   }
 
   void _discardLog() {

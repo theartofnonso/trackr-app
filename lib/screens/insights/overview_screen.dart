@@ -39,7 +39,7 @@ class OverviewScreen extends StatefulWidget {
   static const routeName = '/overview_screen';
 
   final DateTimeRange dateTimeRange;
-  
+
   const OverviewScreen({super.key, required this.scrollController, required this.dateTimeRange});
 
   @override
@@ -47,7 +47,6 @@ class OverviewScreen extends StatefulWidget {
 }
 
 class _OverviewScreenState extends State<OverviewScreen> {
-
   DateTime _selectedDateTime = DateTime.now().withoutTime();
 
   bool _loading = false;
@@ -58,7 +57,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
   Widget build(BuildContext context) {
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
+    /// Be notified of changes
     Provider.of<ExerciseAndRoutineController>(context, listen: true);
+    Provider.of<ActivityLogController>(context, listen: true);
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -232,7 +233,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           endTime: datetimeRange.end,
                           createdAt: datetimeRange.end,
                           updatedAt: datetimeRange.end,
-                          owner: "");
+                          owner: '');
                       Provider.of<ActivityLogController>(context, listen: false).saveLog(logDto: activityLog);
                     });
               },

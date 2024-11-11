@@ -165,13 +165,13 @@ String superSetId({required ExerciseLogDto firstExerciseLog, required ExerciseLo
   return "superset_id_${firstExerciseLog.exercise.id}_${secondExerciseLog.exercise.id}";
 }
 
-String scheduledDaysSummary({required RoutineTemplateDto template}) {
+String scheduledDaysSummary({required RoutineTemplateDto template, bool showFullName = false}) {
   if (template.scheduleType == RoutineScheduleType.days) {
     final scheduledDays = template.scheduledDays;
 
     if (scheduledDays.isNotEmpty) {
       final scheduledDayNames =
-          scheduledDays.map((day) => template.isScheduledToday() ? day.longName : day.shortName).toList();
+          scheduledDays.map((day) => showFullName ? day.longName : day.shortName).toList();
 
       return scheduledDays.length == 7 ? "Everyday" : "Every ${joinWithAnd(items: scheduledDayNames)}";
     }

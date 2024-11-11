@@ -35,7 +35,9 @@ class AmplifyActivityLogRepository {
 
     if (result.isNotEmpty) {
       final oldLog = result.first;
-      final newLog = oldLog.copyWith(data: jsonEncode(log));
+      final startTime = TemporalDateTime.withOffset(log.startTime, Duration.zero);
+      final updatedAt = TemporalDateTime.withOffset(log.updatedAt, Duration.zero);
+      final newLog = oldLog.copyWith(data: jsonEncode(log), createdAt: startTime, updatedAt: updatedAt);
       await Amplify.DataStore.save<ActivityLog>(newLog);
     }
   }

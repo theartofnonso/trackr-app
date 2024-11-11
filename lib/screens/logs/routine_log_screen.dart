@@ -460,7 +460,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                 startTime: datetimeRange.start,
                 endTime: datetimeRange.end,
                 createdAt: datetimeRange.start,
-                updatedAt: datetimeRange.start);
+                updatedAt: DateTime.now());
             await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateLog(log: updatedLog);
             setState(() {
               _log = updatedLog;

@@ -196,12 +196,17 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
   }
 
   void _showCopyBottomSheet() {
-    final workoutLogLink = "$shareableRoutineLogUrl/${widget.log.id}";
+
+    final listOfCompletedExercises = completedExercises(exerciseLogs: widget.log.exerciseLogs);
+
+    final updatedLog = widget.log.copyWith(exerciseLogs: listOfCompletedExercises);
+
+    final workoutLogLink = "$shareableRoutineLogUrl/${updatedLog.id}";
     final workoutLogText = copyRoutineAsText(
         routineType: RoutinePreviewType.log,
-        name: widget.log.name,
-        notes: widget.log.notes,
-        exerciseLogs: widget.log.exerciseLogs);
+        name: updatedLog.name,
+        notes: updatedLog.notes,
+        exerciseLogs: updatedLog.exerciseLogs);
 
     displayBottomSheet(
         context: context,

@@ -235,7 +235,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                         size: 12,
                       ),
                       const SizedBox(width: 6),
-                      Text(scheduledDaysSummary(template: template),
+                      Text(scheduledDaysSummary(template: template, showFullName: true),
                           style: GoogleFonts.ubuntu(
                               color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
                     ],
