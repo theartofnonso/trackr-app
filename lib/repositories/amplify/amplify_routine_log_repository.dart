@@ -85,7 +85,9 @@ class AmplifyRoutineLogRepository {
 
     if (result.isNotEmpty) {
       final oldLog = result.first;
-      final newLog = oldLog.copyWith(data: jsonEncode(log));
+      final startTime = TemporalDateTime.withOffset(log.startTime, Duration.zero);
+      final endTime = TemporalDateTime.withOffset(log.endTime, Duration.zero);
+      final newLog = oldLog.copyWith(data: jsonEncode(log), createdAt: startTime, updatedAt: endTime);
       Amplify.DataStore.save<RoutineLog>(newLog);
     }
   }
