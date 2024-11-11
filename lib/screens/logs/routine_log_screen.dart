@@ -160,9 +160,8 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                     /// Keep this spacing for when notes isn't available
                     if (updatedLog.notes.isEmpty)
                       const SizedBox(
-                        height: 10,
+                        height: 20,
                       ),
-                    const SizedBox(height: 10),
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(

@@ -257,7 +257,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                   /// Keep this spacing for when notes isn't available
                   if (template.notes.isEmpty)
                     const SizedBox(
-                      height: 10,
+                      height: 20,
                     ),
                   Container(
                     margin: const EdgeInsets.only(bottom: 12),
