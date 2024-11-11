@@ -238,7 +238,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
           type: _exerciseType,
           owner: "");
 
-      Provider.of<ExerciseAndRoutineController>(context, listen: false).saveExercise(exerciseDto: exercise);
+      await Provider.of<ExerciseAndRoutineController>(context, listen: false).saveExercise(exerciseDto: exercise);
       if (mounted) {
         context.pop();
       }
@@ -259,7 +259,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
       final updatedExercise = exercise.copyWith(name: exerciseName.trim(), primaryMuscleGroup: _primaryMuscleGroup);
       await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateExercise(exercise: updatedExercise);
       if (mounted) {
-        context.pop();
+        context.pop(updatedExercise);
       }
     }
   }

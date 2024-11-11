@@ -11,9 +11,11 @@ import '../../models/Exercise.dart';
 import '../../shared_prefs.dart';
 
 class AmplifyExerciseRepository {
-  List<ExerciseDto> _exercises = [];
+  List<ExerciseDto> _localExercises = [];
+  List<ExerciseDto> _userExercises = [];
 
-  UnmodifiableListView<ExerciseDto> get exercises => UnmodifiableListView(_exercises);
+  UnmodifiableListView<ExerciseDto> get exercises =>
+      UnmodifiableListView([..._localExercises, ..._userExercises].sorted((a, b) => a.name.compareTo(b.name)));
 
   Future<List<ExerciseDto>> _loadFromAssets({required String file}) async {
     String jsonString = await rootBundle.loadString('exercises/$file');
@@ -70,23 +72,22 @@ class AmplifyExerciseRepository {
     //
     // print(withNoVideos.length);
 
-    _exercises = exerciseDtos.sorted((a, b) => a.name.compareTo(b.name));
+    _localExercises = exerciseDtos;
     onLoad();
   }
 
   void loadExerciseStream({required List<Exercise> exercises, required VoidCallback onData}) {
-    final snapshot = exercises.map((exercise) => exercise.dtoUser());
-    _exercises.addAll(snapshot);
-    _exercises = _exercises.toSet().sorted((a, b) => a.name.compareTo(b.name));
+    _userExercises = exercises.map((exercise) => exercise.dtoUser()).toList();
     onData();
   }
 
-  void saveExercise({required ExerciseDto exerciseDto}) {
+  Future<void> saveExercise({required ExerciseDto exerciseDto}) async {
     final now = TemporalDateTime.now();
 
-    final exerciseToCreate = Exercise(data: jsonEncode(exerciseDto), createdAt: now, updatedAt: now, owner: SharedPrefs().userId);
+    final exerciseToCreate =
+        Exercise(data: jsonEncode(exerciseDto), createdAt: now, updatedAt: now, owner: SharedPrefs().userId);
 
-    Amplify.DataStore.save<Exercise>(exerciseToCreate);
+    await Amplify.DataStore.save<Exercise>(exerciseToCreate);
   }
 
   Future<void> updateExercise({required ExerciseDto exercise, required VoidCallback onUpdated}) async {
@@ -98,7 +99,7 @@ class AmplifyExerciseRepository {
     if (result.isNotEmpty) {
       final oldExercise = result.first;
       final newExercise = oldExercise.copyWith(data: jsonEncode(exercise));
-      Amplify.DataStore.save<Exercise>(newExercise);
+      await Amplify.DataStore.save<Exercise>(newExercise);
     }
   }
 
@@ -110,17 +111,18 @@ class AmplifyExerciseRepository {
 
     if (result.isNotEmpty) {
       final oldTemplate = result.first;
-      Amplify.DataStore.delete<Exercise>(oldTemplate);
+      await Amplify.DataStore.delete<Exercise>(oldTemplate);
     }
   }
 
   /// Helper methods
 
   ExerciseDto? whereExercise({required String exerciseId}) {
-    return _exercises.firstWhereOrNull((exercise) => exercise.id == exerciseId);
+    return exercises.firstWhereOrNull((exercise) => exercise.id == exerciseId);
   }
 
   void clear() {
-    _exercises.clear();
+    _localExercises.clear();
+    _userExercises.clear();
   }
 }

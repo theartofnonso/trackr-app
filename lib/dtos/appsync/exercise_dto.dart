@@ -102,7 +102,7 @@ class ExerciseDto {
 
   @override
   String toString() {
-    return 'ExerciseDto{id: $id, name: $name, primaryMuscleGroup: $primaryMuscleGroup, secondaryMuscleGroups: $secondaryMuscleGroups video: $video, description: $description, trainingPosition: $trainingPosition, creditSource: $creditSource, credit: $credit, type: $type, owner: $owner}';
+    return 'ExerciseDto{id: $id, name: $name, primaryMuscleGroup: ${primaryMuscleGroup.name}, secondaryMuscleGroups: $secondaryMuscleGroups video: $video, description: $description, trainingPosition: $trainingPosition, creditSource: $creditSource, credit: $credit, type: $type, owner: $owner}';
   }
 
   @override

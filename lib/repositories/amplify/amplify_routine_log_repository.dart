@@ -88,7 +88,7 @@ class AmplifyRoutineLogRepository {
       final startTime = TemporalDateTime.withOffset(log.startTime, Duration.zero);
       final endTime = TemporalDateTime.withOffset(log.endTime, Duration.zero);
       final newLog = oldLog.copyWith(data: jsonEncode(log), createdAt: startTime, updatedAt: endTime);
-      Amplify.DataStore.save<RoutineLog>(newLog);
+      await Amplify.DataStore.save<RoutineLog>(newLog);
     }
   }
 
@@ -100,7 +100,7 @@ class AmplifyRoutineLogRepository {
 
     if (result.isNotEmpty) {
       final oldTemplate = result.first;
-      Amplify.DataStore.delete<RoutineLog>(oldTemplate);
+      await Amplify.DataStore.delete<RoutineLog>(oldTemplate);
     }
   }
 

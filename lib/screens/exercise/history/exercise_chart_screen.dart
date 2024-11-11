@@ -192,7 +192,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
         Image.asset(
           'muscles_illustration/${muscleGroup.illustration()}.png',
           fit: BoxFit.contain,
-          height: 160, // Adjust the height as needed
+          height: 120, // Adjust the height as needed
         ),
         const SizedBox(
           height: 6,

@@ -36,7 +36,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   List<ExerciseDto> _filteredExercises = [];
 
   /// Search through the list of exercises
-  void _runSearch() {
+  void _runSearch(_) {
     final query = _searchController.text.toLowerCase().trim();
 
     List<ExerciseDto> searchResults = [];
@@ -61,7 +61,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   void _clearSearch() {
     _searchController.clear();
-    _runSearch();
+    _runSearch("Nil");
   }
 
   /// Select an exercise
@@ -133,7 +133,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
               children: [
                 CSearchBar(
                     hintText: "Search exercises",
-                    onChanged: (_) => _runSearch(),
+                    onChanged: _runSearch,
                     onClear: _clearSearch,
                     controller: _searchController),
                 const SizedBox(height: 10),
@@ -154,7 +154,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                     icon: GestureDetector(
                       onTap: () {
                         _selectedMuscleGroup = null;
-                        _runSearch();
+                        _runSearch("Nil");
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(right: 8.0),
@@ -169,7 +169,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                     style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
                     onChanged: (MuscleGroup? value) {
                       _selectedMuscleGroup = value;
-                      _runSearch();
+                      _runSearch("Nil");
                     },
                     items: muscleGroups.map<DropdownMenuItem<MuscleGroup>>((MuscleGroup muscleGroup) {
                       return DropdownMenuItem<MuscleGroup>(
@@ -230,7 +230,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   @override
   void dispose() {
-    super.dispose();
     _searchController.dispose();
+    super.dispose();
   }
 }

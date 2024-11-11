@@ -45,7 +45,7 @@ class AmplifyRoutineTemplateRepository {
     if (result.isNotEmpty) {
       final oldTemplate = result.first;
       final newTemplate = oldTemplate.copyWith(data: jsonEncode(template));
-      Amplify.DataStore.save<RoutineTemplate>(newTemplate);
+      await Amplify.DataStore.save<RoutineTemplate>(newTemplate);
     }
   }
 
@@ -80,7 +80,7 @@ class AmplifyRoutineTemplateRepository {
 
       final newLog = oldTemplate.copyWith(data: jsonEncode(newTemplateDto));
 
-      Amplify.DataStore.save<RoutineTemplate>(newLog);
+      await Amplify.DataStore.save<RoutineTemplate>(newLog);
     }
   }
 
@@ -92,7 +92,7 @@ class AmplifyRoutineTemplateRepository {
 
     if (result.isNotEmpty) {
       final oldTemplate = result.first;
-      Amplify.DataStore.delete<RoutineTemplate>(oldTemplate);
+      await Amplify.DataStore.delete<RoutineTemplate>(oldTemplate);
     }
   }
 

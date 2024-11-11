@@ -69,10 +69,10 @@ class ExerciseAndRoutineController extends ChangeNotifier {
         });
   }
 
-  void saveExercise({required ExerciseDto exerciseDto}) {
+  Future<void> saveExercise({required ExerciseDto exerciseDto}) async {
     isLoading = true;
     try {
-      _amplifyExerciseRepository.saveExercise(exerciseDto: exerciseDto);
+     await _amplifyExerciseRepository.saveExercise(exerciseDto: exerciseDto);
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {

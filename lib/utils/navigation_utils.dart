@@ -19,9 +19,10 @@ import '../screens/logs/routine_logs_screen.dart';
 import '../screens/logs/routine_log_screen.dart';
 import '../screens/templates/routine_template_screen.dart';
 
-Future<Future<Object?>> navigateToExerciseEditor(
+Future<ExerciseDto?> navigateToExerciseEditor(
     {required BuildContext context, ExerciseEditorArguments? arguments}) async {
-  return context.push(ExerciseEditorScreen.routeName, extra: arguments);
+  final exercise = await context.push(ExerciseEditorScreen.routeName, extra: arguments) as ExerciseDto?;
+  return exercise;
 }
 
 Future<RoutineTemplateDto?> navigateToRoutineTemplateEditor({required BuildContext context, RoutineTemplateArguments? arguments}) async {
@@ -57,7 +58,7 @@ void navigateToRoutineLogPreview({required BuildContext context, required Routin
 }
 
 Future<void> navigateToExerciseHome({required BuildContext context, required ExerciseDto exercise}) async {
-  context.push(ExerciseHomeScreen.routeName, extra: exercise);
+  await context.push(ExerciseHomeScreen.routeName, extra: exercise);
 }
 
 void navigateToShareableScreen({required BuildContext context, required RoutineLogDto log}) {

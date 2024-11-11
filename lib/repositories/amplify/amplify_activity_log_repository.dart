@@ -19,12 +19,12 @@ class AmplifyActivityLogRepository {
     _logs = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
   }
 
-  void saveLog({required ActivityLogDto logDto}) {
+  Future<void> saveLog({required ActivityLogDto logDto}) async {
     final datetime = TemporalDateTime.withOffset(logDto.endTime, Duration.zero);
 
     final logToCreate = ActivityLog(data: jsonEncode(logDto), createdAt: datetime, updatedAt: datetime, owner: SharedPrefs().userId);
 
-    Amplify.DataStore.save<ActivityLog>(logToCreate);
+    await Amplify.DataStore.save<ActivityLog>(logToCreate);
   }
 
   Future<void> updateLog({required ActivityLogDto log}) async {
@@ -36,7 +36,7 @@ class AmplifyActivityLogRepository {
     if (result.isNotEmpty) {
       final oldLog = result.first;
       final newLog = oldLog.copyWith(data: jsonEncode(log));
-      Amplify.DataStore.save<ActivityLog>(newLog);
+      await Amplify.DataStore.save<ActivityLog>(newLog);
     }
   }
 
@@ -48,7 +48,7 @@ class AmplifyActivityLogRepository {
 
     if (result.isNotEmpty) {
       final oldTemplate = result.first;
-      Amplify.DataStore.delete<ActivityLog>(oldTemplate);
+      await Amplify.DataStore.delete<ActivityLog>(oldTemplate);
     }
   }
 
