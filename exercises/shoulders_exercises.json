@@ -80,7 +80,7 @@
   {
     "id": "SHD8",
     "name": "Cable Lateral Raise",
-    "primaryMuscleGroup": "middle_shoulder",
+    "primaryMuscleGroup": "front shoulder",
     "secondaryMuscleGroups": ["traps", "forearms", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=Z5FA9aq3L6A",
@@ -131,7 +131,7 @@
   {
     "id": "SHD13",
     "name": "Dumbbell Lateral Raise",
-    "primaryMuscleGroup": "middle_shoulder",
+    "primaryMuscleGroup": "front shoulder",
     "secondaryMuscleGroups": ["traps", "forearms", "abs"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=gN1Sc6KkK7Q",
@@ -206,7 +206,7 @@
   {
     "id": "SHD20",
     "name": "Machine Lateral Raise",
-    "primaryMuscleGroup": "middle_shoulder",
+    "primaryMuscleGroup": "front shoulder",
     "secondaryMuscleGroups": ["traps", "forearms"],
     "type": "WR",
     "description": "Isolates the lateral deltoids to increase shoulder width.",

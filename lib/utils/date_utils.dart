@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
-DateTimeRange yearToDateTimeRange({DateTime? datetime}) {
-  final now = datetime ?? DateTime.now();
+DateTimeRange yearToEndTimeRange({required DateTime datetime}) {
+  final now = datetime.withoutTime();
   final start = DateTime(now.year, 1);
   final end = DateTime(now.year, 12, 31);
+  return DateTimeRange(start: start, end: end);
+}
+
+DateTimeRange yearToDateTimeRange({required DateTime datetime}) {
+  final now = datetime.withoutTime();
+  final start = DateTime(now.year, 1);
+  final end = DateTime(now.year, datetime.month, datetime.day);
   return DateTimeRange(start: start, end: end);
 }
 

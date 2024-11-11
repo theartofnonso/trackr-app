@@ -4,8 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
-import 'package:tracker_app/controllers/exercise_controller.dart';
-import 'package:tracker_app/controllers/routine_log_controller.dart';
+import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_chart_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_video_screen.dart';
@@ -17,9 +16,9 @@ import '../../../dtos/exercise_log_dto.dart';
 import '../../../utils/dialog_utils.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/navigation_utils.dart';
+import '../../empty_state_screens/not_found.dart';
 
 class ExerciseHomeScreen extends StatefulWidget {
-
   static const routeName = "/exercise_home_screen";
 
   final ExerciseDto exercise;
@@ -31,12 +30,14 @@ class ExerciseHomeScreen extends StatefulWidget {
 }
 
 class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
+  ExerciseDto? _exercise;
+
   Map<String, List<ExerciseLogDto>>? _exerciseLogsById;
 
   void _deleteExercise(BuildContext context) async {
     context.pop();
     try {
-      await Provider.of<ExerciseController>(context, listen: false).removeExercise(exercise: widget.exercise);
+      await Provider.of<ExerciseAndRoutineController>(context, listen: false).removeExercise(exercise: widget.exercise);
       if (context.mounted) {
         context.pop();
       }
@@ -52,13 +53,13 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final foundExercise =
-        Provider.of<ExerciseController>(context, listen: true).whereExercise(exerciseId: widget.exercise.id) ??
-            widget.exercise;
+    final exercise = _exercise;
 
-    final exerciseLogs = _exerciseLogsById?[foundExercise.id] ?? [];
+    if (exercise == null) return const NotFound();
 
-    final completedExerciseLogs = exerciseLogsWithCheckedSets(exerciseLogs: exerciseLogs);
+    final exerciseLogs = _exerciseLogsById?[exercise.id] ?? [];
+
+    final completedExerciseLogs = completedExercises(exerciseLogs: exerciseLogs);
 
     final heaviestSetVolumeRecord = heaviestSetVolume(exerciseLogs: completedExerciseLogs);
 
@@ -72,13 +73,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
 
     final menuActions = [
       MenuItemButton(
-        onPressed: () {
-          navigateToExerciseEditor(
-              context: context,
-              arguments: ExerciseEditorArguments(
-                exercise: foundExercise,
-              ));
-        },
+        onPressed: _navigateToExerciseEditor,
         child: const Text("Edit"),
       ),
       MenuItemButton(
@@ -97,7 +92,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
       )
     ];
 
-    final hasVideo = foundExercise.video != null;
+    final hasVideo = exercise.video != null;
 
     return DefaultTabController(
         length: hasVideo ? 3 : 2,
@@ -108,7 +103,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
               icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
               onPressed: context.pop,
             ),
-            title: Text(foundExercise.name,
+            title: Text(exercise.name,
                 style: GoogleFonts.ubuntu(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
             bottom: TabBar(
               dividerColor: Colors.transparent,
@@ -125,7 +120,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
                           style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
               ],
             ),
-            actions: foundExercise.owner == SharedPrefs().userId
+            actions: exercise.owner == SharedPrefs().userId
                 ? [
                     MenuAnchor(
                       style: MenuStyle(
@@ -175,11 +170,11 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
                     longestDuration: longestDurationRecord,
                     mostRepsSet: mostRepsSetRecord,
                     mostRepsSession: mostRepsSessionRecord,
-                    exercise: foundExercise,
+                    exercise: exercise,
                     exerciseLogs: completedExerciseLogs,
                   ),
                   HistoryScreen(exerciseLogs: completedExerciseLogs),
-                  if (hasVideo) ExerciseVideoScreen(exercise: foundExercise)
+                  if (hasVideo) ExerciseVideoScreen(exercise: exercise)
                 ],
               ),
             ),
@@ -187,10 +182,24 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
         ));
   }
 
+  void _navigateToExerciseEditor() async {
+    final exercise = _exercise;
+    if (exercise != null) {
+      final arguments = ExerciseEditorArguments(exercise: exercise);
+      final updatedExercise = await navigateToExerciseEditor(context: context, arguments: arguments);
+      if (updatedExercise != null) {
+        setState(() {
+          _exercise = updatedExercise;
+        });
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
+    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
     _exerciseLogsById = routineLogController.exerciseLogsById;
+    _exercise = widget.exercise;
   }
 }

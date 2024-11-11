@@ -52,7 +52,7 @@ Future<String?> runMessage({required String system, required String user}) async
   return message;
 }
 
-Future<dynamic> runMessageWithTools({required String systemInstruction, required String userInstruction}) async {
+Future<dynamic> runMessageWithTools({required String systemInstruction, required String userInstruction, Function(String message)? callback}) async {
   dynamic tool;
 
   final body = jsonEncode({
@@ -78,14 +78,23 @@ Future<dynamic> runMessageWithTools({required String systemInstruction, required
       final choices = body['choices'] as List<dynamic>;
       if (choices.isNotEmpty) {
         final choice = choices[0];
-        final toolCalls = choice['message']['tool_calls'] as List<dynamic>;
-        if (toolCalls.isNotEmpty) {
+        final message = choice['message'];
+        final toolCalls = message['tool_calls'] as List<dynamic>?;
+        if (toolCalls != null) {
           final toolId = toolCalls[0]['id'];
           final toolName = toolCalls[0]['function']['name'];
           tool = {
             "id": toolId,
             "name": toolName
           };
+        } else {
+          final content = message['content'];
+          if(content != null) {
+            final callbackFunction = callback;
+            if(callbackFunction != null) {
+              callbackFunction(content);
+            }
+          }
         }
       }
     }

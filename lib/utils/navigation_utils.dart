@@ -19,9 +19,10 @@ import '../screens/logs/routine_logs_screen.dart';
 import '../screens/logs/routine_log_screen.dart';
 import '../screens/templates/routine_template_screen.dart';
 
-Future<Future<Object?>> navigateToExerciseEditor(
+Future<ExerciseDto?> navigateToExerciseEditor(
     {required BuildContext context, ExerciseEditorArguments? arguments}) async {
-  return context.push(ExerciseEditorScreen.routeName, extra: arguments);
+  final exercise = await context.push(ExerciseEditorScreen.routeName, extra: arguments) as ExerciseDto?;
+  return exercise;
 }
 
 Future<RoutineTemplateDto?> navigateToRoutineTemplateEditor({required BuildContext context, RoutineTemplateArguments? arguments}) async {
@@ -37,7 +38,7 @@ Future<void> navigateToRoutineLogEditor({required BuildContext context, required
   final log = await context.push(RoutineLogEditorScreen.routeName, extra: arguments) as RoutineLogDto?;
   if (log != null) {
     if (context.mounted) {
-      context.push(RoutineLogScreen.routeName, extra: {"log": log, "showSummary": true});
+      context.push(RoutineLogScreen.routeName, extra: {"log": log, "showSummary": true, "isEditable": true});
     }
   }
 }
@@ -52,12 +53,12 @@ void navigateToRoutineTemplatePreview({required BuildContext context, required R
   context.push(RoutineTemplateScreen.routeName, extra: template);
 }
 
-void navigateToRoutineLogPreview({required BuildContext context, required RoutineLogDto log}) {
-  context.push(RoutineLogScreen.routeName, extra: {"log": log, "showSummary": false});
+void navigateToRoutineLogPreview({required BuildContext context, required RoutineLogDto log, bool isEditable = true}) {
+  context.push(RoutineLogScreen.routeName, extra: {"log": log, "showSummary": false, "isEditable": isEditable});
 }
 
 Future<void> navigateToExerciseHome({required BuildContext context, required ExerciseDto exercise}) async {
-  context.push(ExerciseHomeScreen.routeName, extra: exercise);
+  await context.push(ExerciseHomeScreen.routeName, extra: exercise);
 }
 
 void navigateToShareableScreen({required BuildContext context, required RoutineLogDto log}) {

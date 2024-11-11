@@ -53,7 +53,7 @@ class RoutineUserController extends ChangeNotifier {
     }
   }
 
-  int weight() {
+  double weight() {
     return _amplifyRoutineUserRepository.user?.weight ?? 0;
   }
 

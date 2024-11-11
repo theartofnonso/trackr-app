@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
-import 'package:tracker_app/controllers/routine_log_controller.dart';
+import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/widgets/empty_states/list_view_empty_state.dart';
 
 import '../../dtos/exercise_log_dto.dart';
@@ -24,7 +24,7 @@ class ExerciseHistoryLogWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
+    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
     final routineLog = routineLogController.logWhereId(id: exerciseLog.routineLogId ?? "");
 
     if(routineLog == null) {

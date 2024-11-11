@@ -8,7 +8,7 @@ import 'package:tracker_app/extensions/week_days_extension.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 
-import '../../controllers/routine_template_controller.dart';
+import '../../controllers/exercise_and_routine_controller.dart';
 import '../../enums/routine_schedule_type_enums.dart';
 
 class RoutineDayPlanner extends StatefulWidget {
@@ -109,7 +109,7 @@ class _RoutineDayPlannerState extends State<RoutineDayPlanner> {
   void _updateRoutineTemplateDays() async {
     _selectedDays.sort((a, b) => a.index.compareTo(b.index));
     final template = widget.template.copyWith(scheduledDays: _selectedDays, scheduleType: RoutineScheduleType.days, scheduleIntervals: 0, scheduledDate: null);
-    await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: template);
+    await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateTemplate(template: template);
     if (mounted) {
       Navigator.of(context).pop(template);
     }

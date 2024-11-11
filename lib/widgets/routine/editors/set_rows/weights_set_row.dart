@@ -14,6 +14,8 @@ class WeightsSetRow extends StatelessWidget {
   final VoidCallback onCheck;
   final void Function(int value) onChangedReps;
   final void Function(double value) onChangedWeight;
+  final void Function() onTapWeightEditor;
+  final void Function() onTapRepsEditor;
   final (TextEditingController, TextEditingController) controllers;
 
   const WeightsSetRow({
@@ -24,13 +26,15 @@ class WeightsSetRow extends StatelessWidget {
     required this.onCheck,
     required this.onChangedReps,
     required this.onChangedWeight,
+    required this.onTapWeightEditor,
+    required this.onTapRepsEditor,
     required this.controllers,
   });
 
   @override
   Widget build(BuildContext context) {
-    num weight = setDto.weightValue();
-    int reps = setDto.repsValue().toInt();
+    num weight = setDto.weight();
+    int reps = setDto.reps().toInt();
 
     return Table(
       border: TableBorder.all(color: Colors.white.withOpacity(0.1), borderRadius: BorderRadius.circular(5)),
@@ -54,9 +58,8 @@ class WeightsSetRow extends StatelessWidget {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: DoubleTextField(
               value: weight,
-              onChanged: (value) {
-                onChangedWeight(value);
-              },
+              onChanged: onChangedWeight,
+              onTap: onTapWeightEditor,
               controller: controllers.$1,
             ),
           ),
@@ -65,6 +68,7 @@ class WeightsSetRow extends StatelessWidget {
             child: IntTextField(
               value: reps,
               onChanged: onChangedReps,
+              onTap: onTapRepsEditor,
               controller: controllers.$2,
             ),
           ),

@@ -13,7 +13,7 @@ import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:tracker_app/widgets/exercise_history/personal_best_widget.dart';
 
 import '../../../colors.dart';
-import '../../../controllers/routine_log_controller.dart';
+import '../../../controllers/exercise_and_routine_controller.dart';
 import '../../../dtos/graph/chart_point_dto.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../enums/chart_unit_enum.dart';
@@ -73,7 +73,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   void _heaviestWeightPerLog() {
     final sets = widget.exerciseLogs.map((log) => heaviestSetWeightForExerciseLog(exerciseLog: log)).toList();
     setState(() {
-      _chartPoints = sets.mapIndexed((index, set) => ChartPointDto(index, set.weightValue())).toList();
+      _chartPoints = sets.mapIndexed((index, set) => ChartPointDto(index, set.weight())).toList();
       _summaryType = SummaryType.weight;
       _chartUnit = ChartUnit.weight;
     });
@@ -136,7 +136,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
         _summaryType = SummaryType.bestTime;
         break;
       case ExerciseType.all:
-        //Do nothing here
+      //Do nothing here
     }
 
     _dateTimes = widget.exerciseLogs.map((log) => log.createdAt.formattedDayAndMonth()).toList();
@@ -175,7 +175,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
 
   void _navigateTo({required String? routineLogId}) {
     if (routineLogId != null) {
-      final routineLog = Provider.of<RoutineLogController>(context, listen: false).logWhereId(id: routineLogId);
+      final routineLog = Provider.of<ExerciseAndRoutineController>(context, listen: false).logWhereId(id: routineLogId);
       if (routineLog != null) {
         context.push(RoutineLogScreen.routeName, extra: routineLog);
       }
@@ -192,7 +192,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
         Image.asset(
           'muscles_illustration/${muscleGroup.illustration()}.png',
           fit: BoxFit.contain,
-          height: 160, // Adjust the height as needed
+          height: 120, // Adjust the height as needed
         ),
         const SizedBox(
           height: 6,
@@ -313,7 +313,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
               padding: const EdgeInsets.only(bottom: 10.0),
               child: _MetricListTile(
                 title: 'Heaviest Weight',
-                trailing: "${weightWithConversion(value: widget.heaviestWeight.$2)}$weightUnitLabel",
+                trailing: "${widget.heaviestWeight.$2}$weightUnitLabel",
                 subtitle: 'Heaviest weight in a set',
                 onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),
                 enabled: widget.exerciseLogs.isNotEmpty,
@@ -325,7 +325,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
               child: _MetricListTile(
                   title: 'Heaviest Set Volume',
                   trailing:
-                      "${weightWithConversion(value: widget.heaviestSet.$2.weightValue())}$weightUnitLabel x ${widget.heaviestSet.$2.repsValue()}",
+                      "${widget.heaviestSet.$2.weight()}$weightUnitLabel x ${widget.heaviestSet.$2.reps()}",
                   subtitle: 'Heaviest volume in a set',
                   onTap: () => _navigateTo(routineLogId: widget.heaviestSet.$1),
                   enabled: widget.exerciseLogs.isNotEmpty),

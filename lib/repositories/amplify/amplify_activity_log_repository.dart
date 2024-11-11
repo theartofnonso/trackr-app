@@ -16,25 +16,15 @@ class AmplifyActivityLogRepository {
   UnmodifiableListView<ActivityLogDto> get logs => UnmodifiableListView(_logs);
 
   void loadLogsStream({required List<ActivityLog> logs}) {
-    _mapLogs(logs: logs);
-  }
-
-  void _mapLogs({required List<ActivityLog> logs}) {
     _logs = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
   }
 
-  Future<ActivityLogDto> saveLog({required ActivityLogDto logDto}) async {
+  Future<void> saveLog({required ActivityLogDto logDto}) async {
     final datetime = TemporalDateTime.withOffset(logDto.endTime, Duration.zero);
 
-    final logToCreate = ActivityLog(data: jsonEncode(logDto), createdAt: datetime, updatedAt: datetime);
+    final logToCreate = ActivityLog(data: jsonEncode(logDto), createdAt: datetime, updatedAt: datetime, owner: SharedPrefs().userId);
+
     await Amplify.DataStore.save<ActivityLog>(logToCreate);
-
-    final updatedActivityWithId = logDto.copyWith(id: logToCreate.id, owner: SharedPrefs().userId);
-
-    _logs.add(updatedActivityWithId);
-    _logs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
-
-    return updatedActivityWithId;
   }
 
   Future<void> updateLog({required ActivityLogDto log}) async {
@@ -45,12 +35,10 @@ class AmplifyActivityLogRepository {
 
     if (result.isNotEmpty) {
       final oldLog = result.first;
-      final newLog = oldLog.copyWith(data: jsonEncode(log));
+      final startTime = TemporalDateTime.withOffset(log.startTime, Duration.zero);
+      final updatedAt = TemporalDateTime.withOffset(log.updatedAt, Duration.zero);
+      final newLog = oldLog.copyWith(data: jsonEncode(log), createdAt: startTime, updatedAt: updatedAt);
       await Amplify.DataStore.save<ActivityLog>(newLog);
-      final index = _indexWhereLog(id: log.id);
-      if (index > -1) {
-        _logs[index] = log;
-      }
     }
   }
 
@@ -63,18 +51,10 @@ class AmplifyActivityLogRepository {
     if (result.isNotEmpty) {
       final oldTemplate = result.first;
       await Amplify.DataStore.delete<ActivityLog>(oldTemplate);
-      final index = _indexWhereLog(id: log.id);
-      if (index > -1) {
-        _logs.removeAt(index);
-      }
     }
   }
 
   /// Helper methods
-
-  int _indexWhereLog({required String id}) {
-    return _logs.indexWhere((log) => log.id == id);
-  }
 
   ActivityLogDto? logWhereId({required String id}) {
     return _logs.firstWhereOrNull((log) => log.id == id);

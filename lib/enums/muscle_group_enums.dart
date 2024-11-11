@@ -1,3 +1,5 @@
+import 'package:collection/collection.dart';
+
 class MuscleGroupFamily {
   final String name;
 
@@ -97,7 +99,7 @@ class MuscleGroup {
         calves,
         neck,
         fullBody,
-      ];
+      ].sorted((a, b) => a.name.compareTo(b.name));
 
   // Get all muscle groups by a specific family
   static List<MuscleGroup> byFamily(MuscleGroupFamily family) {

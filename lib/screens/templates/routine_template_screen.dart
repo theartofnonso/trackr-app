@@ -6,14 +6,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/extensions/amplify_models/routine_template_extension.dart';
 import 'package:tracker_app/screens/AI/trkr_coach_exercise_recommendation_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 
 import '../../colors.dart';
-import '../../controllers/routine_template_controller.dart';
+import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/exercise_log_dto.dart';
 import '../../dtos/set_dto.dart';
@@ -37,7 +36,7 @@ import '../../widgets/ai_widgets/trkr_information_container.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/chart/muscle_group_family_chart.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
-import '../not_found.dart';
+import '../empty_state_screens/not_found.dart';
 import 'routine_day_planner.dart';
 
 class RoutineTemplateScreen extends StatefulWidget {
@@ -60,7 +59,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   void _deleteRoutine({required RoutineTemplateDto template}) async {
     try {
-      await Provider.of<RoutineTemplateController>(context, listen: false).removeTemplate(template: template);
+      await Provider.of<ExerciseAndRoutineController>(context, listen: false).removeTemplate(template: template);
       if (mounted) {
         context.pop();
       }
@@ -96,14 +95,14 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   Widget build(BuildContext context) {
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
-    final routineTemplateController = Provider.of<RoutineTemplateController>(context, listen: false);
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
-    if (routineTemplateController.errorMessage.isNotEmpty) {
+    if (exerciseAndRoutineController.errorMessage.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         showSnackbar(
             context: context,
             icon: const FaIcon(FontAwesomeIcons.circleInfo),
-            message: routineTemplateController.errorMessage);
+            message: exerciseAndRoutineController.errorMessage);
       });
     }
 
@@ -114,20 +113,28 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     final numberOfSets = template.exerciseTemplates.expand((exerciseTemplate) => exerciseTemplate.sets);
     final setsSummary = "${numberOfSets.length} ${pluralize(word: "Set", count: numberOfSets.length)}";
 
-    final exerciseController = Provider.of<ExerciseController>(context, listen: true);
+    final updatedExerciseLogs = completedExercises(exerciseLogs: template.exerciseTemplates);
 
-    final exercisesFromLibrary =
-        updateExercisesFromLibrary(exerciseLogs: template.exerciseTemplates, exercises: exerciseController.exercises);
-
-    final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: exercisesFromLibrary);
+    final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: updatedExerciseLogs);
 
     final menuActions = [
-      MenuItemButton(onPressed: _navigateToRoutineTemplateEditor, child: Text("Edit", style: GoogleFonts.ubuntu())),
+      MenuItemButton(
+          onPressed: _navigateToRoutineTemplateEditor,
+          leadingIcon: FaIcon(FontAwesomeIcons.solidPenToSquare, size: 16),
+          child: Text("Edit", style: GoogleFonts.ubuntu())),
+      MenuItemButton(
+          onPressed: () => _createTemplate(copy: true),
+          leadingIcon: FaIcon(Icons.copy, size: 16),
+          child: Text("Copy", style: GoogleFonts.ubuntu())),
       MenuItemButton(
         onPressed: () => _updateTemplateSchedule(template: template),
+        leadingIcon: FaIcon(FontAwesomeIcons.solidClock, size: 16),
         child: Text("Schedule", style: GoogleFonts.ubuntu(color: Colors.white)),
       ),
-      MenuItemButton(onPressed: _showBottomSheet, child: Text("Share", style: GoogleFonts.ubuntu())),
+      MenuItemButton(
+          leadingIcon: FaIcon(FontAwesomeIcons.arrowUpFromBracket, size: 16),
+          onPressed: _showBottomSheet,
+          child: Text("Share", style: GoogleFonts.ubuntu())),
       MenuItemButton(
         onPressed: () {
           showBottomSheetWithMultiActions(
@@ -144,7 +151,12 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
               rightActionLabel: 'Delete',
               isRightActionDestructive: true);
         },
-        child: Text("Delete", style: GoogleFonts.ubuntu(color: Colors.red)),
+        leadingIcon: FaIcon(
+          FontAwesomeIcons.trash,
+          size: 16,
+          color: Colors.redAccent,
+        ),
+        child: Text("Delete", style: GoogleFonts.ubuntu(color: Colors.redAccent)),
       )
     ];
 
@@ -223,7 +235,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                         size: 12,
                       ),
                       const SizedBox(width: 6),
-                      Text(scheduledDaysSummary(template: template),
+                      Text(scheduledDaysSummary(template: template, showFullName: true),
                           style: GoogleFonts.ubuntu(
                               color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
                     ],
@@ -245,7 +257,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                   /// Keep this spacing for when notes isn't available
                   if (template.notes.isEmpty)
                     const SizedBox(
-                      height: 10,
+                      height: 20,
                     ),
                   Container(
                     margin: const EdgeInsets.only(bottom: 12),
@@ -356,7 +368,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     }
   }
 
-  void _createTemplate() async {
+  void _createTemplate({bool copy = false}) async {
     final template = _template;
     if (template != null) {
       _showLoadingScreen();
@@ -372,14 +384,14 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
         }).toList();
         final templateToCreate = RoutineTemplateDto(
             id: "",
-            name: template.name,
+            name: copy ? "Copy of ${template.name}" : template.name,
             notes: template.notes,
             exerciseTemplates: exercises,
             owner: "",
             createdAt: DateTime.now(),
             updatedAt: DateTime.now());
 
-        final createdTemplate = await Provider.of<RoutineTemplateController>(context, listen: false)
+        final createdTemplate = await Provider.of<ExerciseAndRoutineController>(context, listen: false)
             .saveTemplate(templateDto: templateToCreate);
         if (mounted) {
           if (createdTemplate != null) {
@@ -400,8 +412,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   }
 
   void _loadData() {
-    final routineTemplateController = Provider.of<RoutineTemplateController>(context, listen: false);
-    _template = routineTemplateController.templateWhere(id: widget.id);
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+    _template = exerciseAndRoutineController.templateWhere(id: widget.id);
     if (_template == null) {
       _loading = true;
       getAPI(endpoint: "/routine-templates/${widget.id}").then((data) {
@@ -446,7 +458,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
         if (exerciseIds.isNotEmpty) {
           if (mounted) {
-            final exercises = Provider.of<ExerciseController>(context, listen: false).exercises;
+            final exercises = Provider.of<ExerciseAndRoutineController>(context, listen: false).exercises;
 
             final exerciseTemplates = exerciseIds.map((exerciseId) {
               final exerciseInLibrary = exercises.firstWhere((exercise) => exercise.id == exerciseId);
@@ -505,7 +517,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       final toolName = tool['name']; // A function
       if (toolName == "list_exercises") {
         if (mounted) {
-          final exercises = Provider.of<ExerciseController>(context, listen: false).exercises;
+          final exercises = Provider.of<ExerciseAndRoutineController>(context, listen: false).exercises;
           final functionCallPayload = await createFunctionCallPayload(
               toolId: toolId,
               systemInstruction: personalTrainerInstructionForWorkouts,
@@ -540,7 +552,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   }
 
   void _updateTemplate({required RoutineTemplateDto template}) async {
-    await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: template);
+    await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateTemplate(template: template);
     setState(() {
       _template = template;
     });

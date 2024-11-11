@@ -8,6 +8,7 @@ import 'package:tracker_app/extensions/amplify_models/routine_template_extension
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
+import '../../dtos/appsync/exercise_dto.dart';
 import '../../dtos/exercise_log_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 
@@ -17,26 +18,20 @@ class AmplifyRoutineTemplateRepository {
   UnmodifiableListView<RoutineTemplateDto> get templates => UnmodifiableListView(_templates);
 
   void loadTemplatesStream({required List<RoutineTemplate> templates}) {
-    _mapAndSortTemplates(templates: templates);
-  }
-
-  void _mapAndSortTemplates({required List<RoutineTemplate> templates}) {
     _templates = templates.map((template) {
       final templateDto = template.dto();
       return templateDto;
-    }).sorted((a, b) => b.createdAt.compareTo(a.createdAt));
+    }).toList();
   }
 
   Future<RoutineTemplateDto> saveTemplate({required RoutineTemplateDto templateDto}) async {
     final now = TemporalDateTime.now();
 
-    final templateToCreate = RoutineTemplate(data: jsonEncode(templateDto), createdAt: now, updatedAt: now);
+    final templateToCreate = RoutineTemplate(data: jsonEncode(templateDto), createdAt: now, updatedAt: now, owner: SharedPrefs().userId);
 
     await Amplify.DataStore.save<RoutineTemplate>(templateToCreate);
 
-    final updatedWithId = templateDto.copyWith(id: templateToCreate.id, owner: SharedPrefs().userId);
-
-    _templates.insert(0, updatedWithId);
+    final updatedWithId = templateDto.copyWith(id: templateToCreate.id);
 
     return updatedWithId;
   }
@@ -51,10 +46,6 @@ class AmplifyRoutineTemplateRepository {
       final oldTemplate = result.first;
       final newTemplate = oldTemplate.copyWith(data: jsonEncode(template));
       await Amplify.DataStore.save<RoutineTemplate>(newTemplate);
-      final index = _indexWhereTemplate(id: template.id);
-      if (index > -1) {
-        _templates[index] = template;
-      }
     }
   }
 
@@ -90,10 +81,6 @@ class AmplifyRoutineTemplateRepository {
       final newLog = oldTemplate.copyWith(data: jsonEncode(newTemplateDto));
 
       await Amplify.DataStore.save<RoutineTemplate>(newLog);
-      final index = _indexWhereTemplate(id: newLog.id);
-      if (index > -1) {
-        _templates[index] = newTemplateDto;
-      }
     }
   }
 
@@ -106,18 +93,21 @@ class AmplifyRoutineTemplateRepository {
     if (result.isNotEmpty) {
       final oldTemplate = result.first;
       await Amplify.DataStore.delete<RoutineTemplate>(oldTemplate);
-      final index = _indexWhereTemplate(id: template.id);
-      if (index > -1) {
-        _templates.removeAt(index);
-      }
     }
   }
 
-  /// Helper methods
-
-  int _indexWhereTemplate({required String id}) {
-    return _templates.indexWhere((template) => template.id == id);
+  void syncTemplatesWithExercisesFromLibrary({required List<ExerciseDto> exercises}) {
+    final updatedTemplates = _templates.map((template) {
+      final updatedExerciseTemplates =  template.exerciseTemplates.map((exerciseTemplate) {
+        final foundExercise = exercises.firstWhere((exerciseInLibrary) => exerciseInLibrary.id == exerciseTemplate.exercise.id, orElse: () => exerciseTemplate.exercise);
+        return exerciseTemplate.copyWith(exercise: foundExercise);
+      }).toList();
+      return template.copyWith(exerciseTemplates: updatedExerciseTemplates);
+    }).toList();
+    _templates = updatedTemplates;
   }
+
+  /// Helper methods
 
   RoutineTemplateDto? templateWhere({required String id}) {
     return _templates.firstWhereOrNull((dto) => dto.id == id);

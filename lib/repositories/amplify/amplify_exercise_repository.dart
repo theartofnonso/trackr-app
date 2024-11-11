@@ -11,9 +11,11 @@ import '../../models/Exercise.dart';
 import '../../shared_prefs.dart';
 
 class AmplifyExerciseRepository {
-  List<ExerciseDto> _exercises = [];
+  List<ExerciseDto> _localExercises = [];
+  List<ExerciseDto> _userExercises = [];
 
-  UnmodifiableListView<ExerciseDto> get exercises => UnmodifiableListView(_exercises);
+  UnmodifiableListView<ExerciseDto> get exercises =>
+      UnmodifiableListView([..._localExercises, ..._userExercises].sorted((a, b) => a.name.compareTo(b.name)));
 
   Future<List<ExerciseDto>> _loadFromAssets({required String file}) async {
     String jsonString = await rootBundle.loadString('exercises/$file');
@@ -21,7 +23,7 @@ class AmplifyExerciseRepository {
     return exerciseJsons.map((json) => ExerciseExtension.dtoLocal(json)).toList();
   }
 
-  Future<void> loadLocalExercises() async {
+  Future<void> loadLocalExercises({required VoidCallback onLoad}) async {
     List<ExerciseDto> exerciseDtos = [];
     final chestExercises = await _loadFromAssets(file: 'chest_exercises.json');
     final shouldersExercises = await _loadFromAssets(file: 'shoulders_exercises.json');
@@ -70,28 +72,25 @@ class AmplifyExerciseRepository {
     //
     // print(withNoVideos.length);
 
-    _exercises = exerciseDtos.sorted((a, b) => a.name.compareTo(b.name));
+    _localExercises = exerciseDtos;
+    onLoad();
   }
 
-  void loadExerciseStream({required List<Exercise> exercises}) {
-    final snapshot = exercises.map((exercise) => exercise.dtoUser());
-    _exercises.addAll(snapshot);
-    _exercises = _exercises.toSet().sorted((a, b) => a.name.compareTo(b.name));
+  void loadExerciseStream({required List<Exercise> exercises, required VoidCallback onData}) {
+    _userExercises = exercises.map((exercise) => exercise.dtoUser()).toList();
+    onData();
   }
 
   Future<void> saveExercise({required ExerciseDto exerciseDto}) async {
     final now = TemporalDateTime.now();
 
-    final exerciseToCreate = Exercise(data: jsonEncode(exerciseDto), createdAt: now, updatedAt: now);
+    final exerciseToCreate =
+        Exercise(data: jsonEncode(exerciseDto), createdAt: now, updatedAt: now, owner: SharedPrefs().userId);
 
     await Amplify.DataStore.save<Exercise>(exerciseToCreate);
-
-    final updatedExerciseWithId = exerciseDto.copyWith(id: exerciseToCreate.id, owner: SharedPrefs().userId);
-
-    _exercises.add(updatedExerciseWithId);
   }
 
-  Future<void> updateExercise({required ExerciseDto exercise}) async {
+  Future<void> updateExercise({required ExerciseDto exercise, required VoidCallback onUpdated}) async {
     final result = (await Amplify.DataStore.query(
       Exercise.classType,
       where: Exercise.ID.eq(exercise.id),
@@ -101,10 +100,6 @@ class AmplifyExerciseRepository {
       final oldExercise = result.first;
       final newExercise = oldExercise.copyWith(data: jsonEncode(exercise));
       await Amplify.DataStore.save<Exercise>(newExercise);
-      final index = _indexWhereExercise(id: exercise.id);
-      if (index > -1) {
-        _exercises[index] = exercise;
-      }
     }
   }
 
@@ -117,24 +112,17 @@ class AmplifyExerciseRepository {
     if (result.isNotEmpty) {
       final oldTemplate = result.first;
       await Amplify.DataStore.delete<Exercise>(oldTemplate);
-      final index = _indexWhereExercise(id: exercise.id);
-      if (index > -1) {
-        _exercises.removeAt(index);
-      }
     }
   }
 
   /// Helper methods
 
-  int _indexWhereExercise({required String id}) {
-    return _exercises.indexWhere((routine) => routine.id == id);
-  }
-
   ExerciseDto? whereExercise({required String exerciseId}) {
-    return _exercises.firstWhereOrNull((exercise) => exercise.id == exerciseId);
+    return exercises.firstWhereOrNull((exercise) => exercise.id == exerciseId);
   }
 
   void clear() {
-    _exercises.clear();
+    _localExercises.clear();
+    _userExercises.clear();
   }
 }

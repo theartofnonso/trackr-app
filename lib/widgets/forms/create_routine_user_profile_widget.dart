@@ -8,13 +8,13 @@ import 'package:provider/provider.dart';
 import '../../colors.dart';
 import '../../controllers/routine_user_controller.dart';
 import '../../dtos/appsync/routine_user_dto.dart';
-import '../../screens/preferences/settings_screen.dart';
 import '../../shared_prefs.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/https_utils.dart';
 import '../buttons/opacity_button_widget.dart';
-import '../pickers/weight_picker.dart';
+import '../routine/editors/textfields/double_textfield.dart';
+import '../user_icon_widget.dart';
 
 class CreateRoutineUserProfileWidget extends StatefulWidget {
   const CreateRoutineUserProfileWidget({
@@ -32,16 +32,18 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
 
   String _usernameExistsErrorMessage = "";
 
-  int _weight = 0;
+  double _weight = 0;
 
-  final _editingController = TextEditingController();
+  final _usernameEditingController = TextEditingController();
+
+  final _weightEditingController = TextEditingController();
 
   bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(top: 16, right: 16, bottom: 28, left: 16),
+      padding: const EdgeInsets.only(top: 16, right: 16, bottom: 16, left: 16),
       decoration: const BoxDecoration(
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(20),
@@ -57,49 +59,12 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
           )),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Center(
-          child: Container(
-              width: 60, // Width and height should be equal to make a perfect circle
-              height: 60,
-              decoration: BoxDecoration(
-                color: sapphireDark80,
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(5), // Optional border
-                boxShadow: [
-                  BoxShadow(
-                    color: sapphireDark.withOpacity(0.5),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: const Offset(0, 3), // changes position of shadow
-                  ),
-                ],
-              ),
-              child: const Center(child: FaIcon(FontAwesomeIcons.solidUser, color: Colors.white54, size: 22))),
+          child: UserIconWidget(size: 60, iconSize: 22),
         ),
         const SizedBox(
           height: 20,
         ),
-        Text(
-            "User profiles enable you to join TRKR communities. Stay tuned for upcoming features that will enhance your training experience.",
-            style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white38),
-            textAlign: TextAlign.center),
-        const SizedBox(
-          height: 10,
-        ),
         ListTile(
-          onTap: () {
-            displayBottomSheet(
-                height: 240,
-                context: context,
-                child: WeightPicker(
-                    initialWeight: _weight,
-                    onSelect: (int weight) {
-                      Navigator.of(context).pop();
-                      setState(() {
-                        _weight = weight;
-                        _hasWeightError = false;
-                      });
-                    }));
-          },
           contentPadding: EdgeInsets.zero,
           titleAlignment: ListTileTitleAlignment.center,
           minTileHeight: 8,
@@ -108,26 +73,40 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
               overflow: TextOverflow.ellipsis,
               style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
               textAlign: TextAlign.start),
-          subtitle: Text("Tap to select weight",
+          subtitle: Text("Enter your weight in ${weightLabel().toUpperCase()}",
               style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.white70),
               textAlign: TextAlign.start),
-          trailing: Text("$_weight${weightLabel()}".toUpperCase(),
-              style: GoogleFonts.ubuntu(fontSize: 18, fontWeight: FontWeight.w800, color: Colors.white70),
-              textAlign: TextAlign.start),
+          trailing: Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: sapphireLighter, // Border color
+                  width: 1.0, // Border width
+                ),
+                borderRadius: BorderRadius.circular(5), // Rounded corners
+              ),
+              width: 70,
+              child: DoubleTextField(
+                  value: _weight,
+                  controller: _weightEditingController,
+                  onChanged: (value) {
+                    setState(() {
+                      _weight = value;
+                    });
+                  })),
         ),
         if (_hasWeightError)
           Text("Please enter your weight.",
               style: GoogleFonts.ubuntu(fontSize: 10, fontWeight: FontWeight.w400, color: Colors.redAccent),
               textAlign: TextAlign.start),
         const SizedBox(
-          height: 12,
+          height: 20,
         ),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               child: TextField(
-                controller: _editingController,
+                controller: _usernameEditingController,
                 maxLength: 15,
                 decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -141,7 +120,7 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
                 keyboardType: TextInputType.text,
                 textCapitalization: TextCapitalization.none,
                 style:
-                GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+                    GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
               ),
             ),
             const SizedBox(
@@ -164,26 +143,6 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
           Text(_usernameExistsErrorMessage,
               style: GoogleFonts.ubuntu(fontSize: 10, fontWeight: FontWeight.w400, color: Colors.redAccent),
               textAlign: TextAlign.start),
-        const SizedBox(
-          height: 10,
-        ),
-        ListTile(
-          onTap: () {
-            Navigator.of(context).pop();
-            showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                useSafeArea: true,
-                isDismissible: false,
-                builder: (context) {
-                  return const SafeArea(child: SettingsScreen());
-                });
-          },
-          leading: Text("Settings",
-              style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
-              textAlign: TextAlign.center),
-          trailing: const FaIcon(FontAwesomeIcons.gear, color: Colors.grey),
-        )
       ]),
     );
   }
@@ -202,7 +161,7 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
   }
 
   void _createUser() async {
-    final username = _editingController.text.trim().toLowerCase();
+    final username = _usernameEditingController.text.trim().toLowerCase();
 
     /// Check if the weight is set
     if (_weight == 0) {
@@ -247,7 +206,7 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
     final doesUserAlreadyExist = await _doesUsernameExists(username: username);
     if (doesUserAlreadyExist) {
       setState(() {
-        _usernameExistsErrorMessage = "${_editingController.text} already exists.";
+        _usernameExistsErrorMessage = "${_usernameEditingController.text} already exists.";
         _usernameExistsError = true;
         _isLoading = false;
       });
@@ -294,7 +253,8 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
 
   @override
   void dispose() {
-    _editingController.dispose();
+    _usernameEditingController.dispose();
+    _weightEditingController.dispose();
     super.dispose();
   }
 }
