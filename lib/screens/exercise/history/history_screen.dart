@@ -16,6 +16,7 @@ class HistoryScreen extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 2, right: 10.0, bottom: 10, left: 10),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           exerciseLogs.isNotEmpty
               ? Expanded(
