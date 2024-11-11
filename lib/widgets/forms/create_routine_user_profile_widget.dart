@@ -13,7 +13,7 @@ import '../../utils/dialog_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/https_utils.dart';
 import '../buttons/opacity_button_widget.dart';
-import '../pickers/weight_picker.dart';
+import '../routine/editors/textfields/double_textfield.dart';
 import '../user_icon_widget.dart';
 
 class CreateRoutineUserProfileWidget extends StatefulWidget {
@@ -32,9 +32,11 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
 
   String _usernameExistsErrorMessage = "";
 
-  int _weight = 0;
+  double _weight = 0;
 
-  final _editingController = TextEditingController();
+  final _usernameEditingController = TextEditingController();
+
+  final _weightEditingController = TextEditingController();
 
   bool _isLoading = false;
 
@@ -62,28 +64,7 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
         const SizedBox(
           height: 20,
         ),
-        Text(
-            "User profiles enable you to join TRKR communities. Stay tuned for upcoming features that will enhance your training experience.",
-            style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white38),
-            textAlign: TextAlign.center),
-        const SizedBox(
-          height: 10,
-        ),
         ListTile(
-          onTap: () {
-            displayBottomSheet(
-                height: 240,
-                context: context,
-                child: WeightPicker(
-                    initialWeight: _weight,
-                    onSelect: (int weight) {
-                      Navigator.of(context).pop();
-                      setState(() {
-                        _weight = weight;
-                        _hasWeightError = false;
-                      });
-                    }));
-          },
           contentPadding: EdgeInsets.zero,
           titleAlignment: ListTileTitleAlignment.center,
           minTileHeight: 8,
@@ -92,12 +73,26 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
               overflow: TextOverflow.ellipsis,
               style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
               textAlign: TextAlign.start),
-          subtitle: Text("Tap to select weight",
+          subtitle: Text("Enter your weight in ${weightLabel().toUpperCase()}",
               style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.white70),
               textAlign: TextAlign.start),
-          trailing: Text("${weightWithConversion(value: _weight).floor()}${weightLabel()}".toUpperCase(),
-              style: GoogleFonts.ubuntu(fontSize: 18, fontWeight: FontWeight.w800, color: Colors.white70),
-              textAlign: TextAlign.start),
+          trailing: Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: sapphireLighter, // Border color
+                  width: 1.0, // Border width
+                ),
+                borderRadius: BorderRadius.circular(5), // Rounded corners
+              ),
+              width: 70,
+              child: DoubleTextField(
+                  value: _weight,
+                  controller: _weightEditingController,
+                  onChanged: (value) {
+                    setState(() {
+                      _weight = value;
+                    });
+                  })),
         ),
         if (_hasWeightError)
           Text("Please enter your weight.",
@@ -111,7 +106,7 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
           children: [
             Expanded(
               child: TextField(
-                controller: _editingController,
+                controller: _usernameEditingController,
                 maxLength: 15,
                 decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -166,7 +161,7 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
   }
 
   void _createUser() async {
-    final username = _editingController.text.trim().toLowerCase();
+    final username = _usernameEditingController.text.trim().toLowerCase();
 
     /// Check if the weight is set
     if (_weight == 0) {
@@ -211,7 +206,7 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
     final doesUserAlreadyExist = await _doesUsernameExists(username: username);
     if (doesUserAlreadyExist) {
       setState(() {
-        _usernameExistsErrorMessage = "${_editingController.text} already exists.";
+        _usernameExistsErrorMessage = "${_usernameEditingController.text} already exists.";
         _usernameExistsError = true;
         _isLoading = false;
       });
@@ -258,7 +253,8 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
 
   @override
   void dispose() {
-    _editingController.dispose();
+    _usernameEditingController.dispose();
+    _weightEditingController.dispose();
     super.dispose();
   }
 }

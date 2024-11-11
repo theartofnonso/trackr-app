@@ -3,7 +3,7 @@ class RoutineUserDto {
   final String cognitoUserId;
   final String name;
   final String email;
-  final int weight;
+  final double weight;
   final String owner;
 
   RoutineUserDto(
@@ -30,7 +30,7 @@ class RoutineUserDto {
     final cognitoUserId = json["cognitoUserId"] ?? "";
     final name = json["name"] ?? "";
     final email = json["email"] ?? "";
-    final weight = json["weight"] ?? 0;
+    final weight = json["weight"] ?? 0.0;
     final owner = json["owner"] ?? "";
     return RoutineUserDto(
         id: id, name: name, cognitoUserId: cognitoUserId, email: email, weight: weight, owner: owner.toString());
@@ -41,7 +41,7 @@ class RoutineUserDto {
     String? name,
     String? cognitoUserId,
     String? email,
-    int? weight,
+    double? weight,
     String? owner,
   }) {
     return RoutineUserDto(
