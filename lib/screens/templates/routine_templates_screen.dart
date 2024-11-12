@@ -86,8 +86,14 @@ class RoutineTemplatesScreen extends StatelessWidget {
   }
 
   void _switchToAIContext({required BuildContext context}) async {
-    final result =
-        await navigateWithSlideTransition(context: context, child: const TRKRCoachChatScreen()) as RoutineTemplateDto?;
+    final result = await navigateWithSlideTransition(
+        context: context,
+        child: const TRKRCoachChatScreen(loadingMessages: [
+          "Crafting your perfect plan",
+          "Tailoring your plan just for you",
+          "Sweating the details for you",
+          "One step closer to your goals"
+        ])) as RoutineTemplateDto?;
     if (result != null) {
       if (context.mounted) {
         _saveTemplate(context: context, template: result);

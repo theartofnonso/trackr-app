@@ -23,9 +23,8 @@ import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_text_widget.dart';
-import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/calendar/calendar.dart';
-import '../../widgets/label_divider.dart';
+import '../../widgets/dividers/label_divider.dart';
 import '../../widgets/monitors/log_streak_muscle_trend_monitor.dart';
 import '../../widgets/monthly_insights/log_streak_chart_widget.dart';
 import '../../widgets/routine/preview/activity_log_widget.dart';
@@ -55,7 +54,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     /// Be notified of changes
     Provider.of<ExerciseAndRoutineController>(context, listen: true);
@@ -142,12 +140,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
     } else {
       showSnackbar(context: context, icon: const Icon(Icons.info_outline_rounded), message: "${log.name} is running");
     }
-  }
-
-  void _hideLoadingScreen() {
-    setState(() {
-      _loading = false;
-    });
   }
 
   void _showBottomSheet() {
@@ -288,7 +280,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   void _switchToAIContext() async {
     final result =
-        await navigateWithSlideTransition(context: context, child: const TRKRCoachChatScreen()) as RoutineTemplateDto?;
+        await navigateWithSlideTransition(context: context, child: const TRKRCoachChatScreen(loadingMessages: [
+          "Crafting your perfect plan",
+          "Tailoring your plan just for you",
+          "Sweating the details for you",
+          "One step closer to your goals"
+        ])) as RoutineTemplateDto?;
     if (result != null) {
       if (context.mounted) {
         final arguments = RoutineLogArguments(log: result.log(), editorMode: RoutineEditorMode.log);

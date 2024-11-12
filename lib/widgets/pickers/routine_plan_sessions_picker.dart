@@ -17,7 +17,7 @@ class RoutinePlanSessionsPicker extends StatefulWidget {
 }
 
 class _RoutinePlanSessionsPickerState extends State<RoutinePlanSessionsPicker> {
-  RoutinePlanSessions _goal = RoutinePlanSessions.two;
+  RoutinePlanSessions _weeklySessions = RoutinePlanSessions.two;
 
   FixedExtentScrollController? _scrollController;
 
@@ -27,7 +27,7 @@ class _RoutinePlanSessionsPickerState extends State<RoutinePlanSessionsPicker> {
 
     final children = RoutinePlanSessions.values
         .map((session) => Center(
-            child: Text("${session.frequency} times per week",
+            child: Text("${session.frequency} days per week",
                 style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 24, color: Colors.white))))
         .toList();
 
@@ -39,7 +39,7 @@ class _RoutinePlanSessionsPickerState extends State<RoutinePlanSessionsPicker> {
             scrollController: _scrollController,
             itemExtent: 38.0,
             onSelectedItemChanged: (int index) {
-              _goal = sessions[index];
+              _weeklySessions = sessions[index];
             },
             squeeze: 1,
             selectionOverlay: Container(color: Colors.transparent),
@@ -49,9 +49,9 @@ class _RoutinePlanSessionsPickerState extends State<RoutinePlanSessionsPicker> {
         const SizedBox(height: 16),
         OpacityButtonWidget(
             onPressed: () {
-              widget.onSelect(_goal);
+              widget.onSelect(_weeklySessions);
             },
-            label: "Select Sessions",
+            label: "Train ${_weeklySessions.frequency} days per week",
             buttonColor: vibrantGreen,
             padding: const EdgeInsets.all(10.0))
       ],

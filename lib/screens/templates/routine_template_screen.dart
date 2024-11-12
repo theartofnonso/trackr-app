@@ -57,43 +57,11 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   bool _minimized = true;
 
-  void _deleteRoutine({required RoutineTemplateDto template}) async {
-    try {
-      await Provider.of<ExerciseAndRoutineController>(context, listen: false).removeTemplate(template: template);
-      if (mounted) {
-        context.pop();
-      }
-    } catch (e) {
-      if (mounted) {
-        showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Unable to remove workout");
-      }
-    } finally {
-      _toggleLoadingState();
-    }
-  }
-
-  void _toggleLoadingState() {
-    setState(() {
-      _loading = !_loading;
-    });
-  }
-
-  void _navigateToRoutineTemplateEditor() async {
-    final template = _template;
-    if (template != null) {
-      final arguments = RoutineTemplateArguments(template: template);
-      final updatedTemplate = await navigateToRoutineTemplateEditor(context: context, arguments: arguments);
-      if (updatedTemplate != null) {
-        setState(() {
-          _template = updatedTemplate;
-        });
-      }
-    }
-  }
+  List<String> _messages = [];
 
   @override
   Widget build(BuildContext context) {
-    if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
+    if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen, messages: _messages);
 
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
@@ -354,6 +322,40 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     });
   }
 
+  void _deleteRoutine({required RoutineTemplateDto template}) async {
+    try {
+      await Provider.of<ExerciseAndRoutineController>(context, listen: false).removeTemplate(template: template);
+      if (mounted) {
+        context.pop();
+      }
+    } catch (e) {
+      if (mounted) {
+        showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Unable to remove workout");
+      }
+    } finally {
+      _toggleLoadingState();
+    }
+  }
+
+  void _toggleLoadingState() {
+    setState(() {
+      _loading = !_loading;
+    });
+  }
+
+  void _navigateToRoutineTemplateEditor() async {
+    final template = _template;
+    if (template != null) {
+      final arguments = RoutineTemplateArguments(template: template);
+      final updatedTemplate = await navigateToRoutineTemplateEditor(context: context, arguments: arguments);
+      if (updatedTemplate != null) {
+        setState(() {
+          _template = updatedTemplate;
+        });
+      }
+    }
+  }
+
   void _onMinimiseMuscleGroupSplit() {
     setState(() {
       _minimized = !_minimized;
@@ -371,6 +373,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   void _createTemplate({bool copy = false}) async {
     final template = _template;
     if (template != null) {
+
       _showLoadingScreen();
 
       try {
@@ -426,6 +429,12 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
             setState(() {
               _loading = false;
               _template = routineTemplateDto.dto();
+              _messages = [
+                "Just a moment",
+                "Loading workout, one set at a time",
+                "Analyzing workout sets and reps",
+                "Just a moment, loading workout"
+              ];
             });
           } else {
             setState(() {
@@ -441,6 +450,16 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     final template = _template;
 
     if (template != null) {
+
+      setState(() {
+        _messages = [
+          "Crunching your numbers",
+          "Counting your reps",
+          "Analyzing your gains",
+          "Building your progress report"
+        ];
+      });
+
       _showLoadingScreen();
 
       final muscleGroupAndExercises = await _runFunctionMessage(template: template);

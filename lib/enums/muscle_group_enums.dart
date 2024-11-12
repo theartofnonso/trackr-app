@@ -12,19 +12,13 @@ class MuscleGroupFamily {
   static const MuscleGroupFamily chest = MuscleGroupFamily._("Chest");
   static const MuscleGroupFamily shoulders = MuscleGroupFamily._("Shoulders");
   static const MuscleGroupFamily core = MuscleGroupFamily._("Core");
+  static const MuscleGroupFamily neck = MuscleGroupFamily._("Neck");
   static const MuscleGroupFamily fullBody = MuscleGroupFamily._("Full Body");
   static const MuscleGroupFamily none = MuscleGroupFamily._("None");
 
   // List of all families
-  static List<MuscleGroupFamily> get values => [
-        legs,
-        back,
-        arms,
-        chest,
-        shoulders,
-        core,
-        fullBody,
-      ].sorted((a, b) => a.name.compareTo(b.name));
+  static List<MuscleGroupFamily> get values =>
+      [legs, back, arms, chest, shoulders, neck, core].sorted((a, b) => a.name.compareTo(b.name));
 }
 
 class MuscleGroup {
@@ -70,7 +64,7 @@ class MuscleGroup {
   static const MuscleGroup calves = MuscleGroup._("Calves", MuscleGroupFamily.legs,
       "Calves enable ankle flexion, essential for running, jumping, and stability in lower-body movements.");
   static const MuscleGroup neck =
-      MuscleGroup._("Neck", MuscleGroupFamily.fullBody, "Neck muscles help stabilize the head and support posture.");
+      MuscleGroup._("Neck", MuscleGroupFamily.neck, "Neck muscles help stabilize the head and support posture.");
   static const MuscleGroup fullBody = MuscleGroup._("Full Body", MuscleGroupFamily.fullBody,
       "Full body exercises engage multiple muscle groups, improving overall strength and endurance.");
   static const MuscleGroup none =

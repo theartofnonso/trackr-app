@@ -54,7 +54,11 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
 
   @override
   Widget build(BuildContext context) {
-    if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
+    if (_loading) {
+      return TRKRLoadingScreen(action: _hideLoadingScreen, messages: [
+        "Loading",
+      ]);
+    }
 
     return Scaffold(
       body: Container(
@@ -149,13 +153,13 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     });
                   },
                 ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 8),
-                      OutlineListTile(onTap: _navigateToUserProfile, title: "Profile", trailing: "manage profile"),
-                    ],
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 8),
+                    OutlineListTile(onTap: _navigateToUserProfile, title: "Profile", trailing: "manage profile"),
+                  ],
+                ),
                 const SizedBox(height: 8),
                 OutlineListTile(onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "manage exercises"),
                 if (Platform.isIOS)

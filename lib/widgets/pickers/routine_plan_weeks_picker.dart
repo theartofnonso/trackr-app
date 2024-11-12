@@ -51,7 +51,7 @@ class _RoutinePlanWeeksPickerState extends State<RoutinePlanWeeksPicker> {
             onPressed: () {
               widget.onSelect(_weeks);
             },
-            label: "Select Weeks",
+            label: "Train for ${_weeks.weeks} weeks",
             buttonColor: vibrantGreen,
             padding: const EdgeInsets.all(10.0))
       ],

@@ -57,9 +57,11 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
   bool _minimized = true;
 
+  List<String> _messages = [];
+
   @override
   Widget build(BuildContext context) {
-    if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
+    if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen, messages: _messages);
 
     final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
@@ -302,6 +304,15 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     final completeInstructions = buffer.toString();
 
+    setState(() {
+      _messages = [
+        "Crunching your numbers",
+        "Counting your reps",
+        "Analyzing your gains",
+        "Building your progress report"
+      ];
+    });
+
     _showLoadingScreen();
 
     final summary = await runMessage(system: routineLogSystemInstruction, user: completeInstructions);
@@ -332,6 +343,12 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             setState(() {
               _loading = false;
               _log = routineLogDto.dto();
+              _messages = [
+                "Just a moment",
+                "Loading progress, one set at a time",
+                "Analyzing workout gains",
+                "Just a moment, loading session"
+              ];
             });
           } else {
             setState(() {

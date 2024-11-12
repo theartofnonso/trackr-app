@@ -1,11 +1,11 @@
-const listExercisesFunctionTool = {
+const _listExercisesFunctionTool = {
   "name": "list_exercises",
   "description":
       "Call this whenever you need to select exercises or make decisions involving exercises, please refer to the provided exercise data. Use this data to inform your choices and ensure accurate and relevant exercise recommendations",
 };
 
 const openAIFunctionTools = [
-  {"type": "function", "function": listExercisesFunctionTool}
+  {"type": "function", "function": _listExercisesFunctionTool}
 ];
 
 const newRoutineTemplateResponseFormat = {

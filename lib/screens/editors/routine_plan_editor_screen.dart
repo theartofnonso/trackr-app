@@ -9,14 +9,16 @@ import 'package:tracker_app/enums/routine_plan_sessions.dart';
 import 'package:tracker_app/enums/routine_plan_weeks.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/routine_editors_utils.dart';
-import 'package:tracker_app/widgets/label_divider.dart';
+import 'package:tracker_app/widgets/dividers/label_container.dart';
 import 'package:tracker_app/widgets/pickers/routine_plan_goal_picker.dart';
 import 'package:tracker_app/widgets/pickers/routine_plan_weeks_picker.dart';
 
 import '../../colors.dart';
 import '../../enums/routine_plan_goal.dart';
+import '../../strings/ai_prompts.dart';
+import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
-import '../../widgets/information_containers/information_container.dart';
+import '../../widgets/dividers/center_label_divider.dart';
 import '../../widgets/pickers/routine_plan_sessions_picker.dart';
 
 class RoutinePlanEditorScreen extends StatefulWidget {
@@ -29,22 +31,36 @@ class RoutinePlanEditorScreen extends StatefulWidget {
 }
 
 class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
+  bool _loading = false;
+
   RoutinePlanGoal _goal = RoutinePlanGoal.muscle;
   RoutinePlanWeeks _weeks = RoutinePlanWeeks.four;
   RoutinePlanSessions _sessions = RoutinePlanSessions.two;
 
-  final List<MuscleGroupFamily> _selectedMuscleGroupFamilies = [MuscleGroupFamily.fullBody];
+  final List<MuscleGroupFamily> _selectedMuscleGroupFamilies = [MuscleGroupFamily.legs];
 
   final List<ExerciseDto> _armsExercises = [];
   final List<ExerciseDto> _backExercises = [];
   final List<ExerciseDto> _chestExercises = [];
   final List<ExerciseDto> _coreExercises = [];
-  final List<ExerciseDto> _fullBodyExercises = [];
   final List<ExerciseDto> _legExercises = [];
+  final List<ExerciseDto> _neckExercises = [];
   final List<ExerciseDto> _shoulderExercises = [];
 
   @override
   Widget build(BuildContext context) {
+    if (_loading) {
+      return TRKRLoadingScreen(
+        action: _hideLoadingScreen,
+        messages: [
+          "Crafting your perfect plan",
+          "Tailoring your plan just for you",
+          "Sweating the details for you",
+          "One step closer to your goals"
+        ],
+      );
+    }
+
     final inactiveStyle = GoogleFonts.ubuntu(color: Colors.white70, fontSize: 22, fontWeight: FontWeight.w600);
     final activeStyle = GoogleFonts.ubuntu(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w600);
 
@@ -59,11 +75,11 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
             ))
         .toList();
 
-    final exercisePickers = MuscleGroupFamily.values
+    final exercisePickers = _selectedMuscleGroupFamilies
         .map(
           (family) => Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: _ExercisePicker(
+            padding: const EdgeInsets.only(bottom: 2.0),
+            child: _FavouriteExercisePicker(
               family: family,
               inactiveStyle: inactiveStyle,
               activeStyle: activeStyle,
@@ -89,6 +105,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
           )),
       body: Container(
         width: double.infinity,
+        height: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -135,34 +152,31 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
                       },
                     style: activeStyle),
               ])),
-              LabelDivider(
-                  label: "Choose muscles to train",
-                  shouldCapitalise: true,
-                  labelColor: Colors.white,
+              LabelContainer(
+                  label: "Choose muscles to train".toUpperCase(),
+                  description: "Choose the muscle groups you’d like to focus on for your training plan.",
+                  labelStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 14),
+                  descriptionStyle:
+                      GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white70, fontSize: 14),
                   dividerColor: sapphireLighter),
               const SizedBox(height: 12),
               Wrap(children: muscleGroupFamilies),
-              const SizedBox(height: 18),
-              LabelDivider(
-                  label: "Tell us about your favourite exercises",
-                  shouldCapitalise: true,
-                  labelColor: Colors.white,
+              const SizedBox(height: 26),
+              LabelContainer(
+                  label: "Tell us about your favourite exercises".toUpperCase(),
+                  description:
+                      "We use your suggestions to deliver smarter, more personalized training recommendations.",
+                  labelStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 14),
+                  descriptionStyle:
+                      GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white70, fontSize: 14),
                   dividerColor: sapphireLighter),
-              const SizedBox(height: 14),
+              const SizedBox(height: 4),
               ...exercisePickers,
-              const SizedBox(height: 14),
-              InformationContainer(
-                leadingIcon: FaIcon(FontAwesomeIcons.lightbulb, size: 16),
-                title: 'Workout Plan Info',
-                description: "Provide TRKR Coach with answers that are closely accurate to what your goals are.",
-                color: Colors.transparent,
-                padding: EdgeInsets.zero,
-              ),
               const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
                 child: OpacityButtonWidget(
-                    onPressed: () {},
+                    onPressed: _createWorkoutPlan,
                     label: "${_goal.description} in ${_weeks.weeks} weeks",
                     padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
                     buttonColor: vibrantGreen),
@@ -172,6 +186,53 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
         ),
       ),
     );
+  }
+
+  void _showLoadingScreen() {
+    setState(() {
+      _loading = true;
+    });
+  }
+
+  void _hideLoadingScreen() {
+    setState(() {
+      _loading = false;
+    });
+  }
+
+  void _createWorkoutPlan() {
+    _showLoadingScreen();
+
+    final StringBuffer buffer = StringBuffer();
+
+    buffer.writeln("I want to ${_goal.description}, over a ${_weeks.weeks} period.");
+
+    final muscleGroups = _selectedMuscleGroupFamilies
+        .map((family) => MuscleGroup.byFamily(family))
+        .expand((muscleGroups) => muscleGroups)
+        .map((muscleGroup) => muscleGroup.name)
+        .join(", ");
+    buffer.writeln("The muscle groups I want to focus on are $muscleGroups.");
+
+    for (final family in _selectedMuscleGroupFamilies) {
+      final selectedExerciseIds = _getSelectedExercises(family: family).map((exercise) => exercise.id).join(", ");
+      buffer.writeln("For ${family.name}, I prefer exercises like $selectedExerciseIds");
+    }
+
+    buffer.writeln(personalTrainerInstructionForWorkouts);
+    buffer.writeln("Task.");
+    buffer.writeln(
+        "Create a ${_weeks.weeks} weeks ${_goal.description} workout plan with ${_sessions.frequency} training sessions per week.");
+    buffer.writeln("For each muscle group, suggest two exercises.");
+    buffer.writeln("Both exercises must engage the muscle group from both the lengthened and shortened positions.");
+    buffer.writeln(
+        "Also ensure your exercise suggestions are similar in nature to the list of exercise ids I have provided if any was provided.");
+
+    final completeInstructions = buffer.toString();
+
+    print(completeInstructions);
+
+    _hideLoadingScreen();
   }
 
   void _onSelectGoal(RoutinePlanGoal goal) {
@@ -198,17 +259,10 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
   void _onSelectMuscleGroupFamily({required MuscleGroupFamily newFamily}) {
     final oldFamily = _selectedMuscleGroupFamilies.firstWhereOrNull((previousFamily) => previousFamily == newFamily);
     setState(() {
-      if (newFamily == MuscleGroupFamily.fullBody) {
-        _selectedMuscleGroupFamilies.clear();
-        _selectedMuscleGroupFamilies.add(newFamily);
-      } else if (oldFamily != null) {
+      if (oldFamily != null) {
         _selectedMuscleGroupFamilies.remove(oldFamily);
       } else {
         _selectedMuscleGroupFamilies.add(newFamily);
-        final fullBody = _getMuscleGroupFamily(family: MuscleGroupFamily.fullBody);
-        if (fullBody != null) {
-          _selectedMuscleGroupFamilies.remove(MuscleGroupFamily.fullBody);
-        }
       }
     });
   }
@@ -222,8 +276,8 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
       MuscleGroupFamily.back => _backExercises,
       MuscleGroupFamily.chest => _chestExercises,
       MuscleGroupFamily.core => _coreExercises,
-      MuscleGroupFamily.fullBody => _fullBodyExercises,
       MuscleGroupFamily.legs => _legExercises,
+      MuscleGroupFamily.neck => _neckExercises,
       MuscleGroupFamily.shoulders => _shoulderExercises,
       _ => throw UnsupportedError("${family.name} is not allowed in here"),
     };
@@ -243,11 +297,11 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
       case MuscleGroupFamily.core:
         _coreExercises.add(exercise);
         break;
-      case MuscleGroupFamily.fullBody:
-        _fullBodyExercises.add(exercise);
-        break;
       case MuscleGroupFamily.legs:
         _legExercises.add(exercise);
+        break;
+      case MuscleGroupFamily.neck:
+        _neckExercises.add(exercise);
         break;
       case MuscleGroupFamily.shoulders:
         _shoulderExercises.add(exercise);
@@ -272,9 +326,6 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
       case MuscleGroupFamily.core:
         _coreExercises.remove(exercise);
         break;
-      case MuscleGroupFamily.fullBody:
-        _fullBodyExercises.remove(exercise);
-        break;
       case MuscleGroupFamily.legs:
         _legExercises.remove(exercise);
         break;
@@ -293,7 +344,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
   }
 }
 
-class _ExercisePicker extends StatelessWidget {
+class _FavouriteExercisePicker extends StatelessWidget {
   final MuscleGroupFamily family;
   final TextStyle inactiveStyle;
   final TextStyle activeStyle;
@@ -301,7 +352,7 @@ class _ExercisePicker extends StatelessWidget {
   final Function(ExerciseDto exercise) onRemove;
   final List<ExerciseDto> exercises;
 
-  const _ExercisePicker(
+  const _FavouriteExercisePicker(
       {required this.family,
       required this.inactiveStyle,
       required this.activeStyle,
@@ -313,9 +364,9 @@ class _ExercisePicker extends StatelessWidget {
   Widget build(BuildContext context) {
     final listTiles = exercises
         .map((exercise) => Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ListTile(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ListTile(
                   dense: true,
                   contentPadding: EdgeInsets.zero,
                   title: Text(exercise.name,
@@ -324,9 +375,11 @@ class _ExercisePicker extends StatelessWidget {
                       onTap: () => onRemove(exercise),
                       child: FaIcon(FontAwesomeIcons.solidCircleXmark, color: Colors.redAccent, size: 22)),
                 ),
-            Divider(color: sapphireLighter,)
-          ],
-        ))
+                Divider(
+                  color: sapphireLighter,
+                )
+              ],
+            ))
         .toList();
 
     return GestureDetector(
@@ -341,35 +394,45 @@ class _ExercisePicker extends StatelessWidget {
               }
             });
       },
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.only(right: 20.0, bottom: 20, left: 20, top: 12),
-        decoration: BoxDecoration(
-          border: Border.all(
-            style: BorderStyle.solid,
-            color: sapphireLighter, // Border color
-            width: 1.0, // Border width
-          ),
-          borderRadius: BorderRadius.circular(5), // Rounded corners
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ...listTiles,
-            if(exercises.isNotEmpty)
-              const SizedBox(height: 10),
-            Center(
-              child: RichText(
-                  text: TextSpan(children: [
-                TextSpan(text: "Tap to select", style: inactiveStyle.copyWith(fontSize: 14)),
-                TextSpan(text: " ", style: activeStyle),
-                TextSpan(text: family.name, style: activeStyle.copyWith(fontSize: 14)),
-                TextSpan(text: " ", style: activeStyle),
-                TextSpan(text: "exercises", style: inactiveStyle.copyWith(fontSize: 14)),
-              ])),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Padding(
+              padding: const EdgeInsets.symmetric(vertical: 14.0),
+              child: CenterLabelDivider(
+                  label: family.name.toUpperCase(),
+                  style: GoogleFonts.ubuntu(fontWeight: FontWeight.w900, color: Colors.white70, fontSize: 16),
+                  dividerColor: sapphireLighter)),
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.only(right: 20.0, bottom: 20, left: 20, top: 12),
+            decoration: BoxDecoration(
+              border: Border.all(
+                style: BorderStyle.solid,
+                color: sapphireLighter, // Border color
+                width: 1.0, // Border width
+              ),
+              borderRadius: BorderRadius.circular(5), // Rounded corners
             ),
-          ],
-        ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ...listTiles,
+                if (exercises.isNotEmpty) const SizedBox(height: 10),
+                Center(
+                  child: RichText(
+                      text: TextSpan(children: [
+                    TextSpan(text: "Tap to select", style: inactiveStyle.copyWith(fontSize: 14)),
+                    TextSpan(text: " ", style: activeStyle),
+                    TextSpan(text: family.name, style: activeStyle.copyWith(fontSize: 14)),
+                    TextSpan(text: " ", style: activeStyle),
+                    TextSpan(text: "exercises", style: inactiveStyle.copyWith(fontSize: 14)),
+                  ])),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -9,7 +9,7 @@ import 'package:tracker_app/dtos/milestones/reps_milestone.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
-import 'package:tracker_app/widgets/label_divider.dart';
+import 'package:tracker_app/widgets/dividers/label_divider.dart';
 import 'package:tracker_app/widgets/shareables/milestone_shareable.dart';
 
 import '../../../colors.dart';

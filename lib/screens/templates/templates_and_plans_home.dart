@@ -5,8 +5,8 @@ import 'package:tracker_app/screens/templates/routine_templates_screen.dart';
 
 import '../../colors.dart';
 
-class TemplatesAndProgramsHome extends StatelessWidget {
-  const TemplatesAndProgramsHome({super.key});
+class TemplatesAndPlansHome extends StatelessWidget {
+  const TemplatesAndPlansHome({super.key});
 
   @override
   Widget build(BuildContext context) {

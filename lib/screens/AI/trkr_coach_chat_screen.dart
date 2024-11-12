@@ -24,7 +24,9 @@ import '../../widgets/routine/preview/exercise_log_listview.dart';
 class TRKRCoachChatScreen extends StatefulWidget {
   static const routeName = '/routine_ai_context_screen';
 
-  const TRKRCoachChatScreen({super.key});
+  final List<String> loadingMessages;
+
+  const TRKRCoachChatScreen({super.key, required this.loadingMessages});
 
   @override
   State<TRKRCoachChatScreen> createState() => _TRKRCoachChatScreenState();
@@ -39,7 +41,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_loading) return TRKRLoadingScreen(action: _cancelLoadingScreen);
+    if (_loading) return TRKRLoadingScreen(action: _cancelLoadingScreen, messages: widget.loadingMessages);
 
     final routineTemplate = _routineTemplate;
 
@@ -174,7 +176,6 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
 
     buffer.writeln(personalTrainerInstructionForWorkouts);
     buffer.writeln("For each muscle group, suggest two exercises.");
-    buffer.writeln("Ensure one exercise targets the muscle group primarily or secondarily.");
     buffer.writeln("Both exercises must engage the muscle group from both the lengthened and shortened positions.");
 
     final completeSystemInstructions = buffer.toString();
