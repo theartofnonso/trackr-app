@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +21,7 @@ import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../dtos/set_dto.dart';
 import '../../enums/chart_unit_enum.dart';
+import '../../enums/exercise_type_enums.dart';
 import '../../enums/muscle_group_enums.dart';
 import '../../enums/sets_reps_volume_enum.dart';
 import '../../openAI/open_ai.dart';
@@ -198,7 +201,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                 TRKRInformationContainer(
                   ctaLabel: "Review your ${_selectedMuscleGroup.name} training",
                   description: _selectedMuscleGroup.description,
-                  onTap: () => _generateSummary(logs: exerciseLogs),
+                  onTap: () => _generateSummary(exerciseLogs: exerciseLogs),
                 ),
                 const SizedBox(height: 20),
                 Row(
@@ -325,23 +328,37 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     });
   }
 
-  void _generateSummary({required List<ExerciseLogDto> logs}) {
-    if (logs.isEmpty) {
+  void _generateSummary({required List<ExerciseLogDto> exerciseLogs}) {
+    if (exerciseLogs.isEmpty) {
       showSnackbar(
           context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: "You don't have any logs");
     } else {
-      final startDate = logs.first.createdAt.withoutTime();
-      final endDate = logs.last.createdAt.withoutTime();
+      final startDate = exerciseLogs.first.createdAt.withoutTime();
+      final endDate = exerciseLogs.last.createdAt.withoutTime();
 
       final userInstructions =
           "Review my workout logs for ${_selectedMuscleGroup.name} from $startDate to $endDate and provide feedback. Please note, that my weights are in ${weightLabel()}";
 
-      final logJsons = logs.map((log) => log.toJson());
+      final exerciseLogJsons = exerciseLogs.mapIndexed((index, exerciseLog) {
+        final setSummaries = exerciseLog.sets.mapIndexed((index, set) {
+          return switch (exerciseLog.exercise.type) {
+            ExerciseType.weights => "Set ${index + 1}: ${exerciseLog.sets[index].weightsSummary()}",
+            ExerciseType.bodyWeight => "Set ${index + 1}: ${exerciseLog.sets[index].repsSummary()}",
+            ExerciseType.duration => "Set ${index + 1}: ${exerciseLog.sets[index].durationSummary()}",
+          };
+        }).toList();
+
+        return jsonEncode({
+          "exercise": exerciseLog.exercise.name,
+          "sets": setSummaries,
+        });
+      }).toList();
 
       final StringBuffer buffer = StringBuffer();
 
       buffer.writeln(userInstructions);
-      buffer.writeln(logJsons);
+
+      buffer.writeln(exerciseLogJsons);
 
       final completeInstructions = buffer.toString();
 
