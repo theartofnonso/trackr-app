@@ -125,19 +125,11 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   }
 
   void _computeChart() {
-    switch (widget.exercise.type) {
-      case ExerciseType.weights:
-        _summaryType = SummaryType.weight;
-        break;
-      case ExerciseType.bodyWeight:
-        _summaryType = SummaryType.mostReps;
-        break;
-      case ExerciseType.duration:
-        _summaryType = SummaryType.bestTime;
-        break;
-      case ExerciseType.all:
-      //Do nothing here
-    }
+    _summaryType = switch (widget.exercise.type) {
+      ExerciseType.weights => SummaryType.weight,
+      ExerciseType.bodyWeight => SummaryType.mostReps,
+      ExerciseType.duration => _summaryType = SummaryType.bestTime
+    };
 
     _dateTimes = widget.exerciseLogs.map((log) => log.createdAt.formattedDayAndMonth()).toList();
 
@@ -324,8 +316,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
               padding: const EdgeInsets.only(bottom: 10.0),
               child: _MetricListTile(
                   title: 'Heaviest Set Volume',
-                  trailing:
-                      "${widget.heaviestSet.$2.weight()}$weightUnitLabel x ${widget.heaviestSet.$2.reps()}",
+                  trailing: "${widget.heaviestSet.$2.weight()}$weightUnitLabel x ${widget.heaviestSet.$2.reps()}",
                   subtitle: 'Heaviest volume in a set',
                   onTap: () => _navigateTo(routineLogId: widget.heaviestSet.$1),
                   enabled: widget.exerciseLogs.isNotEmpty),

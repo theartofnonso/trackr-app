@@ -86,7 +86,6 @@ class ExerciseLogWidget extends StatelessWidget {
               label: 'TIME',
               routinePreviewType: previewType,
             ),
-          ExerciseType.all => throw Exception("Unable to return Set header for type ExerciseType.all"),
         },
         const SizedBox(height: 8),
         ...setsToWidgets(

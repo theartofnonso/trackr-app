@@ -147,8 +147,6 @@ List<Widget> setsToWidgets(
         }
         final label = Duration(milliseconds: setDto.duration()).hmsAnalog();
         return SingleSetRow(label: label, margin: margin, pbs: pbsForSet, routinePreviewType: routinePreviewType);
-      case ExerciseType.all:
-        throw Exception("Unable to create Set widget for type ExerciseType.all");
     }
   })).toList();
 
@@ -169,8 +167,7 @@ String scheduledDaysSummary({required RoutineTemplateDto template, bool showFull
     final scheduledDays = template.scheduledDays;
 
     if (scheduledDays.isNotEmpty) {
-      final scheduledDayNames =
-          scheduledDays.map((day) => showFullName ? day.longName : day.shortName).toList();
+      final scheduledDayNames = scheduledDays.map((day) => showFullName ? day.longName : day.shortName).toList();
 
       return scheduledDays.length == 7 ? "Everyday" : "Every ${joinWithAnd(items: scheduledDayNames)}";
     }
@@ -227,8 +224,6 @@ String copyRoutineAsText(
         case ExerciseType.duration:
           routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].durationSummary()}");
           break;
-        case ExerciseType.all:
-          // Do nothing here
       }
     }
   }

@@ -312,15 +312,21 @@ class _ExercisePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final listTiles = exercises
-        .map((exercise) => ListTile(
-              dense: true,
-              contentPadding: EdgeInsets.zero,
-              title: Text(exercise.name,
-                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 15)),
-              trailing: GestureDetector(
-                  onTap: () => onRemove(exercise),
-                  child: FaIcon(FontAwesomeIcons.solidCircleXmark, color: Colors.redAccent, size: 22)),
-            ))
+        .map((exercise) => Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ListTile(
+                  dense: true,
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(exercise.name,
+                      style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 15)),
+                  trailing: GestureDetector(
+                      onTap: () => onRemove(exercise),
+                      child: FaIcon(FontAwesomeIcons.solidCircleXmark, color: Colors.redAccent, size: 22)),
+                ),
+            Divider(color: sapphireLighter,)
+          ],
+        ))
         .toList();
 
     return GestureDetector(
@@ -328,6 +334,7 @@ class _ExercisePicker extends StatelessWidget {
         showExercisesInLibrary(
             context: context,
             excludeExercises: exercises,
+            muscleGroupFamily: family,
             onSelected: (exercises) {
               for (final exercise in exercises) {
                 onSelect(exercise);
@@ -348,6 +355,9 @@ class _ExercisePicker extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            ...listTiles,
+            if(exercises.isNotEmpty)
+              const SizedBox(height: 10),
             Center(
               child: RichText(
                   text: TextSpan(children: [
@@ -358,7 +368,6 @@ class _ExercisePicker extends StatelessWidget {
                 TextSpan(text: "exercises", style: inactiveStyle.copyWith(fontSize: 14)),
               ])),
             ),
-            ...listTiles
           ],
         ),
       ),

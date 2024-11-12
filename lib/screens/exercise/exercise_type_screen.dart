@@ -74,8 +74,7 @@ class _TrailingWidget extends StatelessWidget {
     List<String> measurements = switch (type) {
       ExerciseType.weights => ["KG", " | ", "REPS"],
       ExerciseType.bodyWeight => ["REPS"],
-      ExerciseType.duration => ["TIME"],
-      ExerciseType.all => throw Exception("Exercise type does not exist"),
+      ExerciseType.duration => ["TIME"]
     };
 
     final itemWidgets = measurements
