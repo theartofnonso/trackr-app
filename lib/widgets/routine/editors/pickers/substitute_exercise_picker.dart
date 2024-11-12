@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -40,7 +39,7 @@ class _SubstituteExercisePickerState extends State<SubstituteExercisePicker> {
   @override
   Widget build(BuildContext context) {
     final listTiles = widget.exercises
-        .mapIndexed((index, exercise) => ListTile(
+        .map((exercise) => ListTile(
               onTap: () {
                 widget.onSelect(exercise);
               },

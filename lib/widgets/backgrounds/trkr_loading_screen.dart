@@ -24,7 +24,7 @@ class TRKRLoadingScreen extends StatelessWidget {
                   child: SafeArea(
                     minimum: const EdgeInsets.all(10.0),
                     child: IconButton(
-                      icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
+                      icon: const FaIcon(FontAwesomeIcons.solidCircleXmark, color: Colors.white, size: 28),
                       onPressed: action,
                     ),
                   ),

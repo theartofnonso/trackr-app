@@ -12,7 +12,6 @@ import 'package:tracker_app/widgets/empty_states/routine_empty_state.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
-import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/information_containers/information_container_with_background_image.dart';
@@ -43,18 +42,6 @@ class RoutineTemplatesScreen extends StatelessWidget {
         }
       }
 
-      final exerciseTemplates =
-          routineTemplates.map((template) => template.exerciseTemplates).expand((exercises) => exercises).toList();
-
-      final exercisesByMuscleGroupFamily =
-          groupBy(exerciseTemplates, (exercise) => exercise.exercise.primaryMuscleGroup.family);
-
-      final muscleGroupFamilies = exercisesByMuscleGroupFamily.keys.toSet();
-
-      final listOfPopularMuscleGroupFamilies = popularMuscleGroupFamilies().toSet();
-
-      final untrainedMuscleGroups = listOfPopularMuscleGroupFamilies.difference(muscleGroupFamilies);
-
       final children = templates
           .map((template) =>
               _RoutineWidget(template: template, scheduleSummary: scheduledDaysSummary(template: template)))
@@ -65,49 +52,36 @@ class RoutineTemplatesScreen extends StatelessWidget {
           floatingActionButton: FloatingActionButton(
             heroTag: "fab_routines_screen",
             onPressed: () => navigateToRoutineTemplateEditor(context: context),
-            backgroundColor: sapphireDark.withOpacity(untrainedMuscleGroups.isNotEmpty ? 0.6 : 1),
+            backgroundColor: sapphireDark,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-            child: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 28),
+            child: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 24),
           ),
-          body: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  sapphireDark80,
-                  sapphireDark,
-                ],
-              ),
-            ),
-            child: SafeArea(
-                minimum: const EdgeInsets.all(10.0),
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  const SizedBox(height: 16),
-                  BackgroundInformationContainer(
-                      image: 'images/lace.jpg',
-                      containerColor: Colors.blue.shade900,
-                      content: "A structured plan is essential for achieving your fitness goals. Try creating one.",
-                      textStyle: GoogleFonts.ubuntu(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.white.withOpacity(0.9),
-                      )),
-                  const SizedBox(height: 16),
-                  TRKRCoachButton(label: "Describe a workout", onTap: () => _switchToAIContext(context: context)),
-                  const SizedBox(height: 16),
-                  templates.isNotEmpty
-                      ? Expanded(
-                          child: GridView.count(
-                              crossAxisCount: 2,
-                              childAspectRatio: 1,
-                              mainAxisSpacing: 10.0,
-                              crossAxisSpacing: 10.0,
-                              children: children),
-                        )
-                      : const RoutineEmptyState(),
-                ])),
-          ));
+          body: SafeArea(
+              minimum: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                BackgroundInformationContainer(
+                    image: 'images/lace.jpg',
+                    containerColor: Colors.blue.shade900,
+                    content: "A structured plan is essential for achieving your fitness goals. Try creating one.",
+                    textStyle: GoogleFonts.ubuntu(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white.withOpacity(0.9),
+                    )),
+                const SizedBox(height: 16),
+                TRKRCoachButton(label: "Describe a workout", onTap: () => _switchToAIContext(context: context)),
+                const SizedBox(height: 16),
+                templates.isNotEmpty
+                    ? Expanded(
+                        child: GridView.count(
+                            crossAxisCount: 2,
+                            childAspectRatio: 1,
+                            mainAxisSpacing: 10.0,
+                            crossAxisSpacing: 10.0,
+                            children: children),
+                      )
+                    : const RoutineEmptyState(message: "Tap the + button to create workout templates"),
+              ])));
     });
   }
 

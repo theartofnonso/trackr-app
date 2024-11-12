@@ -11,7 +11,7 @@ import 'package:tracker_app/models/Exercise.dart';
 import 'package:tracker_app/models/RoutineUser.dart';
 import 'package:tracker_app/screens/home_tab_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
-import 'package:tracker_app/screens/templates/routine_templates_screen.dart';
+import 'package:tracker_app/screens/templates/templates_and_programs_home.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 
@@ -51,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
       HomeTabScreen(
         scrollController: _scrollController,
       ),
-      const RoutineTemplatesScreen(),
+      const TemplatesAndProgramsHome(),
       const MilestonesHomeScreen(),
       const SettingsScreen()
     ];

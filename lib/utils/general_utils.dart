@@ -249,6 +249,5 @@ List<MuscleGroupFamily> popularMuscleGroupFamilies() {
     MuscleGroupFamily.shoulders,
     MuscleGroupFamily.arms,
     MuscleGroupFamily.core,
-    MuscleGroupFamily.neck
   ];
 }

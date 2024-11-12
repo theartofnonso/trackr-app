@@ -52,9 +52,9 @@ Future<void> displayBottomSheet(
     required Widget child,
     Gradient? gradient,
     double? height,
-    enabledDrag = true,
+    bool enabledDrag = true,
     bool isDismissible = true,
-      EdgeInsetsGeometry? padding,
+    EdgeInsetsGeometry? padding,
     bool isScrollControlled = false}) {
   return showModalBottomSheet(
       isScrollControlled: isScrollControlled,
@@ -159,7 +159,8 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
 
   final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
 
-  final calories = calculateCalories(duration: activity.duration(), bodyWeight: routineUserController.weight(), activity: activity.activityType);
+  final calories = calculateCalories(
+      duration: activity.duration(), bodyWeight: routineUserController.weight(), activity: activity.activityType);
 
   displayBottomSheet(
       context: context,

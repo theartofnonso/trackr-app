@@ -45,8 +45,7 @@ void showSubstituteExercisePicker(
 }
 
 void showExercisesInLibrary(
-    {required BuildContext context,
-    required List<ExerciseDto> excludeExercises,
+    {required BuildContext context, List<ExerciseDto> excludeExercises = const [],
     required void Function(List<ExerciseDto> selectedExercises) onSelected,
     ExerciseType type = ExerciseType.all}) async {
   final exercises = await Navigator.of(context).push(MaterialPageRoute(

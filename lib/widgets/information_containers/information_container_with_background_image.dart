@@ -8,8 +8,9 @@ class BackgroundInformationContainer extends StatelessWidget {
   final Color? containerColor;
   final TextStyle? textStyle;
   final String image;
+  final Gradient? gradient;
 
-  const BackgroundInformationContainer({super.key, required this.content, this.containerColor, this.textStyle, required this.image});
+  const BackgroundInformationContainer({super.key, required this.content, this.containerColor, this.textStyle, required this.image, this.gradient});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +31,7 @@ class BackgroundInformationContainer extends StatelessWidget {
           Container(
             width: double.infinity,
             decoration: BoxDecoration(
-              gradient: LinearGradient(
+              gradient: gradient ?? LinearGradient(
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
                 colors: [

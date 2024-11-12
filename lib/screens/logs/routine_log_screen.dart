@@ -102,7 +102,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         appBar: AppBar(
             backgroundColor: sapphireDark80,
             leading: IconButton(
-              icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
+              icon: const FaIcon(FontAwesomeIcons.solidCircleXmark, color: Colors.white, size: 28),
               onPressed: context.pop,
             ),
             title: Text(updatedLog.name,

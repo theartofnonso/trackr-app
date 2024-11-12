@@ -8,6 +8,7 @@ class InformationContainer extends StatelessWidget {
   final String description;
   final Widget? trailingIcon;
   final Color color;
+  final EdgeInsetsGeometry? padding;
 
   const InformationContainer(
       {super.key,
@@ -16,13 +17,13 @@ class InformationContainer extends StatelessWidget {
       this.trailingIcon,
       this.description = "",
       required this.color,
-      this.richDescription});
+      this.richDescription, this.padding});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(5)),
-      padding: const EdgeInsets.all(12),
+      padding: padding ?? const EdgeInsets.all(12),
       width: double.infinity,
       child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
