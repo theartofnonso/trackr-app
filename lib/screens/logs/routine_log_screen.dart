@@ -523,7 +523,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             .saveTemplate(templateDto: templateToCreate);
         if (mounted) {
           if (createdTemplate != null) {
-            navigateToRoutineTemplatePreview(context: context, template: createdTemplate);
+            navigateToRoutineTemplate(context: context, template: createdTemplate);
           }
         }
       } catch (_) {

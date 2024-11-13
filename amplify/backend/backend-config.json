@@ -14,14 +14,6 @@
             "Arn"
           ],
           "category": "function",
-          "resourceName": "getUser"
-        },
-        {
-          "attributes": [
-            "Name",
-            "Arn"
-          ],
-          "category": "function",
           "resourceName": "getRoutineLog"
         },
         {
@@ -180,21 +172,6 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
-    "getUser": {
-      "build": true,
-      "dependsOn": [
-        {
-          "attributes": [
-            "GraphQLAPIIdOutput",
-            "GraphQLAPIEndpointOutput"
-          ],
-          "category": "api",
-          "resourceName": "trackerapp"
-        }
-      ],
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
-    },
     "postAuthentication": {
       "build": true,
       "dependsOn": [],
@@ -296,22 +273,6 @@
         {
           "category": "function",
           "resourceName": "getRoutineTemplate"
-        }
-      ]
-    },
-    "AMPLIFY_function_getUser_deploymentBucketName": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "getUser"
-        }
-      ]
-    },
-    "AMPLIFY_function_getUser_s3Key": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "getUser"
         }
       ]
     },

@@ -42,6 +42,7 @@ import 'package:tracker_app/screens/logs/routine_log_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
+import 'package:tracker_app/screens/templates/plans/routine_template_plan_screen.dart';
 import 'package:tracker_app/screens/templates/routine_template_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/date_utils.dart';
@@ -50,6 +51,7 @@ import 'amplifyconfiguration.dart';
 import 'controllers/activity_log_controller.dart';
 import 'controllers/routine_user_controller.dart';
 import 'dtos/appsync/exercise_dto.dart';
+import 'dtos/appsync/routine_template_plan_dto.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
 import 'dtos/viewmodels/routine_template_arguments.dart';
 import 'models/ModelProvider.dart';
@@ -210,6 +212,13 @@ final _router = GoRouter(
       builder: (context, state) {
         final template = state.extra as RoutineTemplateDto;
         return RoutineTemplateScreen(id: template.id);
+      },
+    ),
+    GoRoute(
+      path: RoutineTemplatePlanScreen.routeName,
+      builder: (context, state) {
+        final templatePlan = state.extra as RoutineTemplatePlanDto;
+        return RoutineTemplatePlanScreen(id: templatePlan.id);
       },
     ),
     GoRoute(

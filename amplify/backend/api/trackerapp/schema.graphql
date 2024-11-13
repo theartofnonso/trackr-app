@@ -33,6 +33,21 @@ type RoutineTemplate
   updatedAt: AWSDateTime!
 }
 
+type RoutineTemplatePlan
+     @model
+     @auth(
+        rules: [
+          { allow: owner},
+          { allow: public, operations: [read], provider: iam }
+        ]
+     ) {
+  id: ID!
+  owner: String
+  data: AWSJSON!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
 type RoutineLog
      @model
      @auth(

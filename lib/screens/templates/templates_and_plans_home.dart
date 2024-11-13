@@ -49,7 +49,7 @@ class TemplatesAndPlansHome extends StatelessWidget {
                     child: TabBarView(
                       children: [
                         RoutineTemplatesScreen(),
-                        RoutineProgramsHome()
+                        RoutinePlansHome()
                       ],
                     ),
                   ),

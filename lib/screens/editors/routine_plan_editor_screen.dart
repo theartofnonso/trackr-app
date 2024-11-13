@@ -7,7 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
-import 'package:tracker_app/dtos/appsync/routine_template_plan.dart';
+import 'package:tracker_app/dtos/appsync/routine_template_plan_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/enums/routine_plan_sessions.dart';
 import 'package:tracker_app/enums/routine_plan_weeks.dart';
@@ -276,6 +276,8 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
           if (jsonString != null) {
             final json = jsonDecode(jsonString);
             final workouts = json["workouts"] as List<dynamic>;
+            final workoutPlanName = json["workout_name"] ?? "A workout plan";
+            final workoutPlanNotes = json["workout_caption"] ?? "";
             if (workouts.isNotEmpty) {
               final routineTemplates = workouts.map((workout) {
                 final workoutName = json["workout_name"] ?? "A workout";
@@ -303,7 +305,10 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
                     createdAt: DateTime.now(),
                     updatedAt: DateTime.now());
               }).toList();
-              final routineTemplatePlan = RoutineTemplatePlan(
+              final routineTemplatePlan = RoutineTemplatePlanDto(
+                id: "",
+                  name: workoutPlanName,
+                  notes: workoutPlanNotes,
                   templates: routineTemplates,
                   owner: SharedPrefs().userId,
                   createdAt: DateTime.now(),

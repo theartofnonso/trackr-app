@@ -103,10 +103,6 @@
           "s3Key": "amplify-builds/deleteUserRoutineTemplateData-46587073444b626a6c65-build.zip"
         },
         "getRoutineLogs": {},
-        "getUser": {
-          "deploymentBucketName": "amplify-trackerapp-prod-223531-deployment",
-          "s3Key": "amplify-builds/getUser-78786d4d6b44476f6b79-build.zip"
-        },
         "getRoutineLog": {
           "deploymentBucketName": "amplify-trackerapp-prod-223531-deployment",
           "s3Key": "amplify-builds/getRoutineLog-78466d6a746965532b75-build.zip"

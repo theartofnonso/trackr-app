@@ -9,6 +9,7 @@ import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import '../dtos/appsync/exercise_dto.dart';
 import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/appsync/routine_template_dto.dart';
+import '../dtos/appsync/routine_template_plan_dto.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../dtos/viewmodels/routine_template_arguments.dart';
 import '../screens/editors/past_routine_log_editor_screen.dart';
@@ -49,8 +50,12 @@ Future<RoutineLogDto?> navigateAndEditLog(
   return log;
 }
 
-void navigateToRoutineTemplatePreview({required BuildContext context, required RoutineTemplateDto template}) {
+void navigateToRoutineTemplate({required BuildContext context, required RoutineTemplateDto template}) {
   context.push(RoutineTemplateScreen.routeName, extra: template);
+}
+
+void navigateToRoutineTemplatePlan({required BuildContext context, required RoutineTemplatePlanDto templatePlan}) {
+  context.push(RoutineTemplateScreen.routeName, extra: templatePlan);
 }
 
 void navigateToRoutineLogPreview({required BuildContext context, required RoutineLogDto log, bool isEditable = true}) {

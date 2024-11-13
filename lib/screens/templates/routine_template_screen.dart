@@ -398,7 +398,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
             .saveTemplate(templateDto: templateToCreate);
         if (mounted) {
           if (createdTemplate != null) {
-            navigateToRoutineTemplatePreview(context: context, template: createdTemplate);
+            navigateToRoutineTemplate(context: context, template: createdTemplate);
           }
         }
       } catch (_) {

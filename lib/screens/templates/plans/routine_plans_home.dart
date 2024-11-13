@@ -1,20 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:tracker_app/dtos/appsync/routine_template_plan_dto.dart';
 import 'package:tracker_app/screens/editors/routine_plan_editor_screen.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../../../colors.dart';
+import '../../../controllers/exercise_and_routine_controller.dart';
 import '../../../utils/string_utils.dart';
 import '../../../widgets/empty_states/routine_empty_state.dart';
 import '../../../widgets/information_containers/information_container_with_background_image.dart';
 
-class RoutineProgramsHome extends StatelessWidget {
-  const RoutineProgramsHome({super.key});
+class RoutinePlansHome extends StatelessWidget {
+  const RoutinePlansHome({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final programs = [_ProgramWidget(), _ProgramWidget(), _ProgramWidget()];
+
+    final routineTemplates = Provider.of<ExerciseAndRoutineController>(context, listen: false).templates;
+
+    final routineTemplatePlan = RoutineTemplatePlanDto(id: "", name: "4-Week Muscle Mummy", notes: "", templates: routineTemplates, owner: "", createdAt: DateTime.now(), updatedAt: DateTime.now());
+
+    final programs = [_TemplatePlanWidget(templatePlanDto: routineTemplatePlan), _TemplatePlanWidget(templatePlanDto: routineTemplatePlan), _TemplatePlanWidget(templatePlanDto: routineTemplatePlan)];
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -78,13 +86,16 @@ class RoutineProgramsHome extends StatelessWidget {
   }
 }
 
-class _ProgramWidget extends StatelessWidget {
-  const _ProgramWidget();
+class _TemplatePlanWidget extends StatelessWidget {
+
+  final RoutineTemplatePlanDto templatePlanDto;
+
+  const _TemplatePlanWidget({required this.templatePlanDto});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () => navigateToRoutineTemplatePlan(context: context, templatePlan: templatePlanDto),
       child: Container(
           padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(color: sapphireDark80, borderRadius: BorderRadius.circular(10), boxShadow: [
@@ -92,14 +103,14 @@ class _ProgramWidget extends StatelessWidget {
           ]),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(
-              "4-Week Muscle Mummy",
+              templatePlanDto.name,
               style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w700),
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
             ),
             const Spacer(),
             Text(
-              "3 ${pluralize(word: "Session", count: 3)}/Week",
+              "${templatePlanDto.templates.length} ${pluralize(word: "Session", count: 3)}/Week",
               style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w500),
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
