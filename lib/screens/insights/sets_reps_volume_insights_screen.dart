@@ -357,8 +357,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
       final completeInstructions = buffer.toString();
 
-      print(completeInstructions);
-
       _showLoadingScreen();
 
       runMessage(system: routineLogSystemInstruction, user: completeInstructions).then((response) {

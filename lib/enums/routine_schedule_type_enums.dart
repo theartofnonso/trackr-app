@@ -1,6 +1,5 @@
 enum RoutineScheduleType {
   days,
-  intervals,
   none;
 
   static RoutineScheduleType fromString(String string) {

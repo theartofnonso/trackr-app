@@ -1,12 +1,18 @@
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
+import 'package:tracker_app/dtos/appsync/routine_template_plan.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/enums/routine_plan_sessions.dart';
 import 'package:tracker_app/enums/routine_plan_weeks.dart';
+import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
+import 'package:tracker_app/openAI/open_ai_functions.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/routine_editors_utils.dart';
 import 'package:tracker_app/widgets/dividers/label_container.dart';
@@ -14,8 +20,15 @@ import 'package:tracker_app/widgets/pickers/routine_plan_goal_picker.dart';
 import 'package:tracker_app/widgets/pickers/routine_plan_weeks_picker.dart';
 
 import '../../colors.dart';
+import '../../controllers/exercise_and_routine_controller.dart';
+import '../../dtos/appsync/routine_template_dto.dart';
+import '../../dtos/exercise_log_dto.dart';
+import '../../dtos/set_dto.dart';
 import '../../enums/routine_plan_goal.dart';
+import '../../openAI/open_ai.dart';
+import '../../shared_prefs.dart';
 import '../../strings/ai_prompts.dart';
+import '../../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/dividers/center_label_divider.dart';
@@ -200,7 +213,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
     });
   }
 
-  void _createWorkoutPlan() {
+  void _createWorkoutPlan() async {
     _showLoadingScreen();
 
     final StringBuffer buffer = StringBuffer();
@@ -213,31 +226,97 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
 
     buffer.writeln();
 
-    buffer.writeln("I want to ${_goal.description} over a ${_weeks.weeks} weeks period. The muscle groups I want to focus on are $muscleGroups.");
+    buffer.writeln(
+        "I want to ${_goal.description} over a ${_weeks.weeks}-week period. The muscle groups I want to focus on are $muscleGroups.");
     for (final family in _selectedMuscleGroupFamilies) {
       final selectedExerciseIds = _getSelectedExercises(family: family).map((exercise) => exercise.id).join(", ");
-      if(selectedExerciseIds.isNotEmpty) {
+      if (selectedExerciseIds.isNotEmpty) {
         buffer.writeln("For ${family.name}, I prefer exercises like $selectedExerciseIds");
       }
     }
-    buffer.writeln();
-
-    buffer.writeln("Instruction");
-    buffer.writeln(personalTrainerInstructionForWorkouts);
 
     buffer.writeln();
 
-    buffer.writeln("Task");
-    buffer.writeln(
-        "1. Create a ${_weeks.weeks}-week ${_goal.description} workout plan with ${_sessions.frequency} training sessions per week.");
+    buffer.writeln("Instructions");
+    buffer
+        .writeln("1. Create ${_sessions.frequency} workouts to be reused for the entire ${_weeks.weeks}-week period .");
     buffer.writeln("2. For each muscle group, suggest exercises that are sufficient.");
-    buffer.writeln("3. Suggest a balanced combination of exercises engaging all muscle groups from both the lengthened and shortened positions.");
+    buffer.writeln(
+        "3. Suggest a balanced combination of exercises engaging all muscle groups from both the lengthened and shortened positions.");
     buffer.writeln(
         "4. Ensure variety while sticking to exercises similar in nature to the exercise ids listed above if any.");
 
     final completeInstructions = buffer.toString();
 
+    await _runFunctionMessage(userInstruction: completeInstructions);
+
     _hideLoadingScreen();
+  }
+
+  Future<void> _runFunctionMessage({required String userInstruction}) async {
+    final tool = await runMessageWithTools(
+        systemInstruction: personalTrainerInstructionForWorkouts,
+        userInstruction: userInstruction,
+        callback: (message) {
+          showSnackbar(context: context, message: "Oops, unable to assist with this request.", icon: TRKRCoachWidget());
+        });
+    if (tool != null) {
+      final toolId = tool['id'];
+      final toolName = tool['name']; // A function
+      if (toolName == "list_exercises") {
+        if (mounted) {
+          final exercises = Provider.of<ExerciseAndRoutineController>(context, listen: false).exercises;
+          final functionCallPayload = await createFunctionCallPayload(
+              toolId: toolId,
+              systemInstruction: personalTrainerInstructionForWorkouts,
+              user: userInstruction,
+              responseFormat: newRoutinePlanResponseFormat,
+              exercises: exercises);
+          final jsonString = await runMessageWithFunctionCallResult(payload: functionCallPayload);
+          if (jsonString != null) {
+            final json = jsonDecode(jsonString);
+            final workouts = json["workouts"] as List<dynamic>;
+            if (workouts.isNotEmpty) {
+              final routineTemplates = workouts.map((workout) {
+                final workoutName = json["workout_name"] ?? "A workout";
+                final workoutCaption = json["workout_caption"] ?? "A workout created by TRKR Coach";
+                final exerciseIds = json["exercises"] as List<dynamic>;
+                final exerciseTemplates = exerciseIds.map((exerciseId) {
+                  final exerciseInLibrary = exercises.firstWhere((exercise) => exercise.id == exerciseId);
+                  final exerciseTemplate = ExerciseLogDto(
+                      exerciseInLibrary.id,
+                      "",
+                      "",
+                      exerciseInLibrary,
+                      exerciseInLibrary.description ?? "",
+                      [const SetDto(0, 0, false)],
+                      DateTime.now().withoutTime(),
+                      []);
+                  return exerciseTemplate;
+                }).toList();
+                return RoutineTemplateDto(
+                    id: "",
+                    name: workoutName,
+                    exerciseTemplates: exerciseTemplates,
+                    notes: workoutCaption,
+                    owner: SharedPrefs().userId,
+                    createdAt: DateTime.now(),
+                    updatedAt: DateTime.now());
+              }).toList();
+              final routineTemplatePlan = RoutineTemplatePlan(
+                  templates: routineTemplates,
+                  owner: SharedPrefs().userId,
+                  createdAt: DateTime.now(),
+                  updatedAt: DateTime.now());
+            }
+          }
+        }
+      } else {
+        if (mounted) {
+          showSnackbar(context: context, message: "Oops, unable to assist with this request.", icon: TRKRCoachWidget());
+        }
+      }
+    }
   }
 
   void _onSelectGoal(RoutinePlanGoal goal) {

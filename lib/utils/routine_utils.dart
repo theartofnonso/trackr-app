@@ -173,9 +173,6 @@ String scheduledDaysSummary({required RoutineTemplateDto template, bool showFull
     }
   }
 
-  if (template.scheduleIntervals >= 1) {
-    return template.scheduleIntervals == 1 ? "Everyday" : "${template.scheduledDate?.formattedDate()}";
-  }
   return "No schedule";
 }
 

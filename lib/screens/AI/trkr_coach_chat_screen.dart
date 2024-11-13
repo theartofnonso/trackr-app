@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
+import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/strings/ai_prompts.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 
@@ -136,7 +137,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
   }
 
   void _showSnackbar(String message, {Widget? icon}) {
-    showSnackbar(context: context, icon: icon ?? const Icon(Icons.info_outline), message: message);
+    showSnackbar(context: context, icon: icon ?? const FaIcon(FontAwesomeIcons.circleInfo), message: message);
   }
 
   void _cancelLoadingScreen() {
@@ -174,22 +175,19 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
 
     final StringBuffer buffer = StringBuffer();
 
-    buffer.writeln("Instruction");
     buffer.writeln(userInstruction);
 
     buffer.writeln();
 
-    buffer.writeln("Task");
-    buffer.writeln(
-        "1. Create a workout");
+    buffer.writeln("Instructions");
+    buffer.writeln("1. Create a workout");
     buffer.writeln("2. For each muscle group, suggest 2 exercises that are sufficient.");
-    buffer.writeln("3. Ensure a balanced combination of exercises engaging all muscle groups from both the lengthened and shortened positions.");
+    buffer.writeln(
+        "3. Ensure a balanced combination of exercises engaging all muscle groups from both the lengthened and shortened positions.");
     buffer.writeln(
         "4. Ensure variety while sticking to exercises similar in nature to the exercise ids listed above if any.");
 
     final completeInstructions = buffer.toString();
-
-    print(completeInstructions);
 
     final tool = await runMessageWithTools(
         systemInstruction: personalTrainerInstructionForWorkouts,
@@ -205,7 +203,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
           final exercises = Provider.of<ExerciseAndRoutineController>(context, listen: false).exercises;
           final functionCallPayload = await createFunctionCallPayload(
               toolId: toolId,
-              systemInstruction: completeInstructions,
+              systemInstruction: personalTrainerInstructionForWorkouts,
               user: completeInstructions,
               responseFormat: newRoutineTemplateResponseFormat,
               exercises: exercises);
@@ -218,7 +216,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
             final exerciseTemplates = exerciseIds.map((exerciseId) {
               final exerciseInLibrary = exercises.firstWhere((exercise) => exercise.id == exerciseId);
               final exerciseTemplate = ExerciseLogDto(exerciseInLibrary.id, "", "", exerciseInLibrary,
-                  exerciseInLibrary.description ?? "", [const SetDto(0, 0, false)], DateTime.now(), []);
+                  exerciseInLibrary.description ?? "", [const SetDto(0, 0, false)], DateTime.now().withoutTime(), []);
               return exerciseTemplate;
             }).toList();
             templateDto = RoutineTemplateDto(

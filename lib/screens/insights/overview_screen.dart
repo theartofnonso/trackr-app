@@ -48,8 +48,6 @@ class OverviewScreen extends StatefulWidget {
 class _OverviewScreenState extends State<OverviewScreen> {
   DateTime _selectedDateTime = DateTime.now().withoutTime();
 
-  bool _loading = false;
-
   TextEditingController? _textEditingController;
 
   @override
@@ -61,9 +59,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      floatingActionButton: _loading
-          ? null
-          : FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
               heroTag: "fab_overview_screen",
               onPressed: _showBottomSheet,
               backgroundColor: sapphireDark,

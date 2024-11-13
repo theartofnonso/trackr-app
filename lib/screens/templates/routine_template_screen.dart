@@ -453,10 +453,10 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
       setState(() {
         _messages = [
-          "Crunching your numbers",
-          "Counting your reps",
-          "Analyzing your gains",
-          "Building your progress report"
+          "Crafting your perfect plan",
+          "Tailoring your plan just for you",
+          "Sweating the details for you",
+          "One step closer to your goals"
         ];
       });
 
@@ -506,27 +506,24 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
     buffer.writeln();
 
-    buffer.writeln("Criteria 1 - Muscle Group Training Requirements:");
     buffer.writeln("1. Ensure each muscle group is trained with two exercises:");
     buffer.writeln("2. One from my original selection.");
     buffer.writeln(
         "3. A recommended alternative to adequately target the muscle group.");
     buffer.writeln(
-        "4. If the primary exercise is a compound exercise, the secondary recommendation should be an isolation exercise.");
+        "4. The recommended alternative should not be a variation of the original exercise. Compare exercise names to ensure they are not variations of the same exercise.");
     buffer.writeln(
-        "5. Recommendations should optimize muscle targeting by incorporating both compound and isolation exercises where appropriate.");
+        "6. Incorporate both compound and isolation exercises where appropriate to optimize muscle targeting");
 
     buffer.writeln();
 
-    buffer.writeln("My Exercise Selection:");
+    buffer.writeln("My original Exercise Selection:");
     for (final exerciseTemplate in template.exerciseTemplates) {
       buffer.writeln("Exercise Id: ${exerciseTemplate.exercise.id}\nExercise Name: ${exerciseTemplate.exercise.name}");
       buffer.writeln();
     }
 
     final completeUserInstructions = buffer.toString();
-
-    print(completeUserInstructions);
 
     final tool = await runMessageWithTools(
         systemInstruction: personalTrainerInstructionForWorkouts, userInstruction: completeUserInstructions);

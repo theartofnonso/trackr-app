@@ -14,7 +14,6 @@ extension RoutineTemplateExtension on RoutineTemplate {
     final notes = dataJson["notes"] ?? "";
     final exerciseLogJsons = dataJson["exercises"] as List<dynamic>;
     final exercises = exerciseLogJsons.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).toList();
-    final scheduleIntervals = dataJson["scheduleIntervals"] ?? 0;
     final scheduledDateString = dataJson["scheduledDate"];
     final scheduledDate = scheduledDateString != null ? DateTime.parse(scheduledDateString) : null;
     final scheduleTypeString = dataJson["scheduleType"];
@@ -28,7 +27,6 @@ extension RoutineTemplateExtension on RoutineTemplate {
       exerciseTemplates: exercises,
       scheduledDays: daysOfWeek,
       notes: notes,
-      scheduleIntervals: scheduleIntervals,
       scheduledDate: scheduledDate,
       scheduleType: scheduleType,
       owner: owner ?? "",
