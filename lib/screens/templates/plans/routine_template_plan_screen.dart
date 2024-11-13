@@ -32,8 +32,6 @@ class _RoutineTemplatePlanScreenState extends State<RoutineTemplatePlanScreen> {
 
   bool _loading = false;
 
-  bool _minimized = true;
-
   List<String> _messages = [];
 
   @override
@@ -134,7 +132,7 @@ class _RoutineTemplatePlanScreenState extends State<RoutineTemplatePlanScreen> {
                           verticalAlignment: TableCellVerticalAlignment.middle,
                           child: Center(
                             child: Text(
-                                "${templatePlan.templates.length} ${pluralize(word: "Workouts/Week", count: templatePlan.templates.length)}",
+                                "${templatePlan.templates.length} ${pluralize(word: "Workout", count: templatePlan.templates.length)} | Week",
                                 style:
                                     GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                           ),
@@ -213,6 +211,7 @@ class _RoutineTemplatePlanScreenState extends State<RoutineTemplatePlanScreen> {
         name: "4-Week Muscle Mummy",
         notes: "This is a 4-wek plan focusing on your upper and lowe body to build muscle in all areas.",
         templates: routineTemplates,
+        weeks: 4,
         owner: SharedPrefs().userId,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now());

@@ -5,7 +5,6 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
-import 'package:tracker_app/extensions/amplify_models/routine_log_extension.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/utils/routine_utils.dart';
 
@@ -42,21 +41,21 @@ class AmplifyRoutineLogRepository {
     _exerciseLogsById = groupExerciseLogsByExerciseId(routineLogs: _logs);
   }
 
-  void loadLogStream({required List<RoutineLog> logs, required VoidCallback onLoaded}) {
-    _logs = logs.map((log) => log.dto()).toList();
+  void loadLogStream({required List<RoutineLog> logs, required VoidCallback onData}) {
+    _logs = logs.map((log) => RoutineLogDto.toDto(log)).toList();
     _groupExerciseLogs();
     _calculateMilestones();
-    onLoaded();
+    onData();
   }
 
   Future<RoutineLogDto> saveLog({required RoutineLogDto logDto, TemporalDateTime? datetime}) async {
-
     // Capture current list of completed milestones
     final previousMilestones = completedMilestones().toSet();
 
     final now = datetime ?? TemporalDateTime.now();
 
-    final logToCreate = RoutineLog(data: jsonEncode(logDto), createdAt: now, updatedAt: now, owner: SharedPrefs().userId);
+    final logToCreate =
+        RoutineLog(data: jsonEncode(logDto), createdAt: now, updatedAt: now, owner: SharedPrefs().userId);
 
     await Amplify.DataStore.save<RoutineLog>(logToCreate);
 
@@ -115,13 +114,13 @@ class AmplifyRoutineLogRepository {
     final cache = SharedPrefs().cachedRoutineLog;
     if (cache.isNotEmpty) {
       final json = jsonDecode(cache);
-      routineLog = RoutineLogDto.fromJson(json, owner: SharedPrefs().userId);
+      final log = RoutineLog.fromJson(json);
+      return RoutineLogDto.fromLog(log: log);
     }
     return routineLog;
   }
 
   void _calculateMilestones() {
-
     List<Milestone> milestones = [];
 
     final logsForTheYear = whereLogsIsSameYear(dateTime: DateTime.now().withoutTime());
@@ -153,13 +152,14 @@ class AmplifyRoutineLogRepository {
     milestones.sort((a, b) => a.name.compareTo(b.name));
 
     _milestones = milestones;
-
   }
 
   void syncLogsWithExercisesFromLibrary({required List<ExerciseDto> exercises}) {
     final updatedLogs = _logs.map((log) {
-      final updatedExerciseLogs =  log.exerciseLogs.map((exerciseLog) {
-        final foundExercise = exercises.firstWhere((exerciseInLibrary) => exerciseInLibrary.id == exerciseLog.exercise.id, orElse: () => exerciseLog.exercise);
+      final updatedExerciseLogs = log.exerciseLogs.map((exerciseLog) {
+        final foundExercise = exercises.firstWhere(
+            (exerciseInLibrary) => exerciseInLibrary.id == exerciseLog.exercise.id,
+            orElse: () => exerciseLog.exercise);
         return exerciseLog.copyWith(exercise: foundExercise);
       }).toList();
       return log.copyWith(exerciseLogs: updatedExerciseLogs);
@@ -224,11 +224,12 @@ class AmplifyRoutineLogRepository {
     return _logs.where((log) => log.createdAt.isBetweenInclusive(from: range.start, to: range.end)).toList();
   }
 
-
   /// Milestones
-  UnmodifiableListView<Milestone> pendingMilestones() => UnmodifiableListView(_milestones.where((milestone) => milestone.progress.$1 < 1));
+  UnmodifiableListView<Milestone> pendingMilestones() =>
+      UnmodifiableListView(_milestones.where((milestone) => milestone.progress.$1 < 1));
 
-  UnmodifiableListView<Milestone> completedMilestones() => UnmodifiableListView(milestones.where((milestone) => milestone.progress.$1 == 1));
+  UnmodifiableListView<Milestone> completedMilestones() =>
+      UnmodifiableListView(milestones.where((milestone) => milestone.progress.$1 == 1));
 
   void clear() {
     _logs.clear();

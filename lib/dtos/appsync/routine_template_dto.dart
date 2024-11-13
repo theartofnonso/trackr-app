@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/enums/routine_schedule_type_enums.dart';
 
 import '../../enums/week_days_enum.dart';
+import '../../models/RoutineTemplate.dart';
 import '../exercise_log_dto.dart';
 
 class RoutineTemplateDto {
@@ -39,7 +42,38 @@ class RoutineTemplateDto {
     };
   }
 
-  RoutineLogDto log() {
+  factory RoutineTemplateDto.toDto(RoutineTemplate template) {
+    return RoutineTemplateDto.fromTemplate(template: template);
+  }
+
+  factory RoutineTemplateDto.fromTemplate({required RoutineTemplate template}) {
+    final json = jsonDecode(template.data);
+    final name = json["name"] ?? "";
+    final notes = json["notes"] ?? "";
+    final exerciseLogJsons = json["exercises"] as List<dynamic>;
+    final exercises = exerciseLogJsons.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).toList();
+    final scheduledDateString = json["scheduledDate"];
+    final scheduledDate = scheduledDateString != null ? DateTime.parse(scheduledDateString) : null;
+    final scheduleTypeString = json["scheduleType"];
+    final scheduleType = scheduleTypeString != null ? RoutineScheduleType.fromString(scheduleTypeString) : RoutineScheduleType.days;
+    final scheduledDays = json["days"] as List<dynamic>? ?? [];
+    final daysOfWeek = scheduledDays.map((day) => DayOfWeek.fromWeekDay(day)).toList();
+
+    return RoutineTemplateDto(
+      id: template.id,
+      name: name,
+      exerciseTemplates: exercises,
+      scheduledDays: daysOfWeek,
+      notes: notes,
+      scheduledDate: scheduledDate,
+      scheduleType: scheduleType,
+      owner: template.owner ?? "",
+      createdAt: template.createdAt.getDateTimeInUtc(),
+      updatedAt: template.updatedAt.getDateTimeInUtc(),
+    );
+  }
+
+  RoutineLogDto toLog() {
     return RoutineLogDto(
         id: "",
         templateId: id,

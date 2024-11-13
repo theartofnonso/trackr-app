@@ -5,8 +5,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
-import 'package:tracker_app/extensions/amplify_models/exercise_extension.dart';
-
+import '../../extensions/amplify_models/exercise_extension.dart';
 import '../../models/Exercise.dart';
 import '../../shared_prefs.dart';
 
@@ -20,7 +19,7 @@ class AmplifyExerciseRepository {
   Future<List<ExerciseDto>> _loadFromAssets({required String file}) async {
     String jsonString = await rootBundle.loadString('exercises/$file');
     final exerciseJsons = json.decode(jsonString) as List<dynamic>;
-    return exerciseJsons.map((json) => ExerciseExtension.dtoLocal(json)).toList();
+    return exerciseJsons.map((json) => ExerciseExtension.dtoFromLocal(json)).toList();
   }
 
   Future<void> loadLocalExercises({required VoidCallback onLoad}) async {
@@ -77,8 +76,8 @@ class AmplifyExerciseRepository {
   }
 
   void loadExerciseStream({required List<Exercise> exercises, required VoidCallback onData}) {
-    _userExercises = exercises.map((exercise) => exercise.dtoUser()).toList();
-    onData();
+      _userExercises = exercises.map((exercise) => ExerciseDto.toDto(exercise)).toList();
+      onData();
   }
 
   Future<void> saveExercise({required ExerciseDto exerciseDto}) async {

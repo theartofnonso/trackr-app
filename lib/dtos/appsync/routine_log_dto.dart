@@ -1,8 +1,9 @@
 import 'dart:convert';
 
 import '../../enums/activity_type_enums.dart';
-import '../exercise_log_dto.dart';
+import '../../models/RoutineLog.dart';
 import '../abstract_class/log_class.dart';
+import '../exercise_log_dto.dart';
 
 class RoutineLogDto extends Log {
   @override
@@ -56,31 +57,35 @@ class RoutineLogDto extends Log {
     };
   }
 
-  factory RoutineLogDto.fromJson(Map<String, dynamic> json, {String? owner, DateTime? createdAt, DateTime? updateAt}) {
-    final id = json["id"] ?? "";
+  factory RoutineLogDto.toDto(RoutineLog log) {
+    return RoutineLogDto.fromLog(log: log);
+  }
+
+  factory RoutineLogDto.fromLog({required RoutineLog log}) {
+    final json = jsonDecode(log.data);
     final templateId = json["templateId"] ?? "";
     final name = json["name"] ?? "";
     final notes = json["notes"] ?? "";
     final summary = json["summary"];
     final startTime = DateTime.parse(json["startTime"]);
     final endTime = DateTime.parse(json["endTime"]);
-    final exercisesJsons = json["exercises"] as List<dynamic>;
-    final exercises =
-        exercisesJsons.map((json) => ExerciseLogDto.fromJson(routineLogId: id, json: jsonDecode(json))).toList();
-    final createdAtDate = createdAt ?? DateTime.now();
-    final updatedAtDate = updateAt ?? DateTime.now();
+    final exerciseLogJsons = json["exercises"] as List<dynamic>;
+    final exerciseLogs = exerciseLogJsons
+        .map((json) => ExerciseLogDto.fromJson(
+            routineLogId: log.id, createdAt: log.createdAt.getDateTimeInUtc(), json: jsonDecode(json)))
+        .toList();
     return RoutineLogDto(
-      id: id,
+      id: log.id,
       templateId: templateId,
       name: name,
+      exerciseLogs: exerciseLogs,
       notes: notes,
       summary: summary,
       startTime: startTime,
       endTime: endTime,
-      exerciseLogs: exercises,
-      owner: owner ?? "",
-      createdAt: createdAtDate,
-      updatedAt: updatedAtDate,
+      owner: log.owner ?? "",
+      createdAt: log.createdAt.getDateTimeInUtc(),
+      updatedAt: log.updatedAt.getDateTimeInUtc(),
     );
   }
 

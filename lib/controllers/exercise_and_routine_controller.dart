@@ -10,10 +10,13 @@ import 'package:tracker_app/repositories/amplify/amplify_routine_log_repository.
 import '../dtos/appsync/exercise_dto.dart';
 import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/appsync/routine_template_dto.dart';
+import '../dtos/appsync/routine_template_plan_dto.dart';
 import '../dtos/set_dto.dart';
 import '../models/Exercise.dart';
 import '../models/RoutineTemplate.dart';
+import '../models/RoutineTemplatePlan.dart';
 import '../repositories/amplify/amplify_exercise_repository.dart';
+import '../repositories/amplify/amplify_routine_template_plan_repository.dart';
 import '../repositories/amplify/amplify_routine_template_repository.dart';
 
 class ExerciseAndRoutineController extends ChangeNotifier {
@@ -22,14 +25,17 @@ class ExerciseAndRoutineController extends ChangeNotifier {
 
   late AmplifyExerciseRepository _amplifyExerciseRepository;
   late AmplifyRoutineTemplateRepository _amplifyTemplateRepository;
+  late AmplifyRoutineTemplatePlanRepository _amplifyTemplatePlanRepository;
   late AmplifyRoutineLogRepository _amplifyLogRepository;
 
   ExerciseAndRoutineController(
       {required AmplifyExerciseRepository amplifyExerciseRepository,
       required AmplifyRoutineTemplateRepository amplifyTemplateRepository,
-      required AmplifyRoutineLogRepository amplifyLogRepository}) {
+      required AmplifyRoutineLogRepository amplifyLogRepository,
+      required AmplifyRoutineTemplatePlanRepository amplifyTemplatePlanRepository}) {
     _amplifyExerciseRepository = amplifyExerciseRepository;
     _amplifyTemplateRepository = amplifyTemplateRepository;
+    _amplifyTemplatePlanRepository = amplifyTemplatePlanRepository;
     _amplifyLogRepository = amplifyLogRepository;
   }
 
@@ -38,6 +44,8 @@ class ExerciseAndRoutineController extends ChangeNotifier {
   UnmodifiableListView<RoutineTemplateDto> get templates => _amplifyTemplateRepository.templates;
 
   UnmodifiableListView<RoutineLogDto> get logs => _amplifyLogRepository.logs;
+
+  UnmodifiableListView<RoutineTemplatePlanDto> get templatePlans => _amplifyTemplatePlanRepository.templatePlans;
 
   UnmodifiableListView<Milestone> get milestones => _amplifyLogRepository.milestones;
 
@@ -55,6 +63,8 @@ class ExerciseAndRoutineController extends ChangeNotifier {
     return _amplifyExerciseRepository.loadLocalExercises(onLoad: () {
       _amplifyLogRepository.syncLogsWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
       _amplifyTemplateRepository.syncTemplatesWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
+      _amplifyTemplatePlanRepository.syncTemplatePlansWithExercisesFromLibrary(
+          exercises: _amplifyExerciseRepository.exercises);
       notifyListeners();
     });
   }
@@ -64,7 +74,8 @@ class ExerciseAndRoutineController extends ChangeNotifier {
         exercises: exercises,
         onData: () {
           _amplifyLogRepository.syncLogsWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
-          _amplifyTemplateRepository.syncTemplatesWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
+          _amplifyTemplateRepository.syncTemplatesWithExercisesFromLibrary(
+              exercises: _amplifyExerciseRepository.exercises);
           notifyListeners();
         });
   }
@@ -72,7 +83,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
   Future<void> saveExercise({required ExerciseDto exerciseDto}) async {
     isLoading = true;
     try {
-     await _amplifyExerciseRepository.saveExercise(exerciseDto: exerciseDto);
+      await _amplifyExerciseRepository.saveExercise(exerciseDto: exerciseDto);
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {
@@ -89,7 +100,8 @@ class ExerciseAndRoutineController extends ChangeNotifier {
           exercise: exercise,
           onUpdated: () {
             _amplifyLogRepository.syncLogsWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
-            _amplifyTemplateRepository.syncTemplatesWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
+            _amplifyTemplateRepository.syncTemplatesWithExercisesFromLibrary(
+                exercises: _amplifyExerciseRepository.exercises);
             notifyListeners();
           });
     } catch (e) {
@@ -117,7 +129,12 @@ class ExerciseAndRoutineController extends ChangeNotifier {
   /// Templates
 
   void streamTemplates({required List<RoutineTemplate> templates}) {
-    _amplifyTemplateRepository.loadTemplatesStream(templates: templates);
+    _amplifyTemplateRepository.loadTemplatesStream(
+        templates: templates,
+        onData: () {
+          _amplifyTemplateRepository.syncTemplatesWithExercisesFromLibrary(
+              exercises: _amplifyExerciseRepository.exercises);
+        });
     notifyListeners();
   }
 
@@ -149,19 +166,6 @@ class ExerciseAndRoutineController extends ChangeNotifier {
     }
   }
 
-  Future<void> updateTemplateSetsOnly({required String templateId, required List<ExerciseLogDto> newExercises}) async {
-    isLoading = true;
-    try {
-      await _amplifyTemplateRepository.updateTemplateSetsOnly(templateId: templateId, newExercises: newExercises);
-    } catch (e) {
-      errorMessage = "Oops! Something went wrong. Please try again later.";
-    } finally {
-      isLoading = false;
-      errorMessage = "";
-      notifyListeners();
-    }
-  }
-
   Future<void> removeTemplate({required RoutineTemplateDto template}) async {
     isLoading = true;
     try {
@@ -175,14 +179,68 @@ class ExerciseAndRoutineController extends ChangeNotifier {
     }
   }
 
+  /// TemplatePlans
+
+  void streamTemplatePlan({required List<RoutineTemplatePlan> templatePlans}) {
+    _amplifyTemplatePlanRepository.loadTemplatePlansStream(
+        templatesPlans: templatePlans,
+        onData: () {
+          _amplifyTemplatePlanRepository.syncTemplatePlansWithExercisesFromLibrary(
+              exercises: _amplifyExerciseRepository.exercises);
+        });
+    notifyListeners();
+  }
+
+  Future<RoutineTemplatePlanDto?> saveTemplatePlan({required RoutineTemplatePlanDto templatePlanDto}) async {
+    RoutineTemplatePlanDto? savedTemplatePlan;
+    isLoading = true;
+    try {
+      savedTemplatePlan = await _amplifyTemplatePlanRepository.saveTemplatePlan(templateDto: templatePlanDto);
+    } catch (e) {
+      errorMessage = "Oops! Something went wrong. Please try again later.";
+    } finally {
+      isLoading = false;
+      errorMessage = "";
+      notifyListeners();
+    }
+    return savedTemplatePlan;
+  }
+
+  Future<void> updateTemplatePlan({required RoutineTemplatePlanDto templatePlan}) async {
+    isLoading = true;
+    try {
+      await _amplifyTemplatePlanRepository.updateTemplatePlan(template: templatePlan);
+    } catch (e) {
+      errorMessage = "Oops! Something went wrong. Please try again later.";
+    } finally {
+      isLoading = false;
+      errorMessage = "";
+      notifyListeners();
+    }
+  }
+
+  Future<void> removeTemplatePlan({required RoutineTemplatePlanDto templatePlan}) async {
+    isLoading = true;
+    try {
+      await _amplifyTemplatePlanRepository.removeTemplatePlan(template: templatePlan);
+    } catch (e) {
+      errorMessage = "Oops! Something went wrong. Please try again later.";
+    } finally {
+      isLoading = false;
+      errorMessage = "";
+      notifyListeners();
+    }
+  }
+
   /// Logs
 
   void streamLogs({required List<RoutineLog> logs}) {
-    _amplifyLogRepository.loadLogStream(logs: logs, onLoaded: () {
-      _amplifyLogRepository.syncLogsWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
-      _amplifyTemplateRepository.syncTemplatesWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
-      notifyListeners();
-    });
+    _amplifyLogRepository.loadLogStream(
+        logs: logs,
+        onData: () {
+          _amplifyLogRepository.syncLogsWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
+          notifyListeners();
+        });
   }
 
   Future<RoutineLogDto?> saveLog({required RoutineLogDto logDto, TemporalDateTime? datetime}) async {
@@ -277,9 +335,15 @@ class ExerciseAndRoutineController extends ChangeNotifier {
     return _amplifyTemplateRepository.templateWhere(id: id);
   }
 
+  /// TemplatePlan Helpers methods
+  RoutineTemplatePlanDto? templatePlanWhere({required String id}) {
+    return _amplifyTemplatePlanRepository.templatePlanWhere(id: id);
+  }
+
   void clear() {
     _amplifyExerciseRepository.clear();
     _amplifyTemplateRepository.clear();
+    _amplifyTemplatePlanRepository.clear();
     _amplifyLogRepository.clear();
     notifyListeners();
   }

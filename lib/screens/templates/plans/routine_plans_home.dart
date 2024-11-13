@@ -20,7 +20,7 @@ class RoutinePlansHome extends StatelessWidget {
 
     final routineTemplates = Provider.of<ExerciseAndRoutineController>(context, listen: false).templates;
 
-    final routineTemplatePlan = RoutineTemplatePlanDto(id: "", name: "4-Week Muscle Mummy", notes: "", templates: routineTemplates, owner: "", createdAt: DateTime.now(), updatedAt: DateTime.now());
+    final routineTemplatePlan = RoutineTemplatePlanDto(id: "", name: "4-Week Muscle Mummy", notes: "", templates: routineTemplates, weeks: 4, owner: "", createdAt: DateTime.now(), updatedAt: DateTime.now());
 
     final programs = [_TemplatePlanWidget(templatePlanDto: routineTemplatePlan), _TemplatePlanWidget(templatePlanDto: routineTemplatePlan), _TemplatePlanWidget(templatePlanDto: routineTemplatePlan)];
 
@@ -38,19 +38,14 @@ class RoutinePlansHome extends StatelessWidget {
           height: double.infinity,
           decoration: BoxDecoration(
             shape: BoxShape.rectangle, // Use BoxShape.circle for circular borders
-            gradient: const LinearGradient(
-              colors: [Colors.blue, Colors.green], // Gradient colors
+            gradient: SweepGradient(
+              colors: [Colors.green.shade900, Colors.blue.shade900],
+              stops: const [0, 1],
+              center: Alignment.topRight,
             ),
             borderRadius: BorderRadius.circular(5),
           ),
-          child: Container(
-            margin: const EdgeInsets.all(1), // Border width
-            decoration: BoxDecoration(
-              color: sapphireDark,
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: Center(child: const FaIcon(FontAwesomeIcons.plus, color: Colors.white70, size: 24)),
-          ),
+          child: Center(child: const FaIcon(FontAwesomeIcons.plus, color: Colors.black, size: 24)),
         ),
       ),
       body: SafeArea(
@@ -110,7 +105,7 @@ class _TemplatePlanWidget extends StatelessWidget {
             ),
             const Spacer(),
             Text(
-              "${templatePlanDto.templates.length} ${pluralize(word: "Session", count: 3)}/Week",
+              "${templatePlanDto.templates.length} ${pluralize(word: "Session", count: 3)} / Week",
               style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w500),
               overflow: TextOverflow.ellipsis,
               maxLines: 2,

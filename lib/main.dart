@@ -25,6 +25,7 @@ import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/repositories/amplify/amplify_activity_log_repository.dart';
 import 'package:tracker_app/repositories/amplify/amplify_exercise_repository.dart';
 import 'package:tracker_app/repositories/amplify/amplify_routine_log_repository.dart';
+import 'package:tracker_app/repositories/amplify/amplify_routine_template_plan_repository.dart';
 import 'package:tracker_app/repositories/amplify/amplify_routine_template_repository.dart';
 import 'package:tracker_app/repositories/amplify/amplify_routine_user_repository.dart';
 import 'package:tracker_app/repositories/exercise_log_repository.dart';
@@ -101,7 +102,8 @@ void main() async {
         create: (BuildContext context) => ExerciseAndRoutineController(
             amplifyExerciseRepository: AmplifyExerciseRepository(),
             amplifyTemplateRepository: AmplifyRoutineTemplateRepository(),
-            amplifyLogRepository: AmplifyRoutineLogRepository()),
+            amplifyLogRepository: AmplifyRoutineLogRepository(),
+            amplifyTemplatePlanRepository: AmplifyRoutineTemplatePlanRepository()),
       ),
       ChangeNotifierProvider<ActivityLogController>(
         create: (BuildContext context) => ActivityLogController(AmplifyActivityLogRepository()),
@@ -307,8 +309,7 @@ class _MyAppState extends State<MyApp> {
       await Amplify.addPlugin(AmplifyAuthCognito());
       final apiPluginOptions = APIPluginOptions(modelProvider: ModelProvider.instance);
       await Amplify.addPlugin(AmplifyAPI(options: apiPluginOptions));
-      final datastorePluginOptions = DataStorePluginOptions(
-          syncExpressions: [
+      final datastorePluginOptions = DataStorePluginOptions(syncExpressions: [
         DataStoreSyncExpression(
             ActivityLog.classType, () => ActivityLog.CREATEDAT.between(startOfCurrentYear, endOfCurrentYear)),
         DataStoreSyncExpression(

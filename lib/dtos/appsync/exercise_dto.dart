@@ -1,9 +1,12 @@
 import 'dart:convert';
 
+import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
+import 'package:tracker_app/dtos/appsync/routine_template_dto.dart';
 import 'package:tracker_app/enums/training_position_enum.dart';
 
 import '../../enums/exercise_type_enums.dart';
 import '../../enums/muscle_group_enums.dart';
+import '../../models/Exercise.dart';
 
 class ExerciseDto {
   final String id;
@@ -46,37 +49,42 @@ class ExerciseDto {
     };
   }
 
+  /// Only use this when loading user's custom exercise from DB
+  factory ExerciseDto.toDto(Exercise exercise) {
+    return ExerciseDto.fromExercise(exercise: exercise);
+  }
+
+  /// Only use this when loading user's custom exercise from DB
+  factory ExerciseDto.fromExercise({required Exercise exercise}) {
+    final json = jsonDecode(exercise.data) as Map<String, dynamic>;
+    final exerciseDto = ExerciseDto.fromJson(json);
+    return ExerciseDto(
+        id: exercise.id,
+        name: exerciseDto.name,
+        primaryMuscleGroup: exerciseDto.primaryMuscleGroup,
+        secondaryMuscleGroups: exerciseDto.secondaryMuscleGroups,
+        type: exerciseDto.type,
+        trainingPosition: exerciseDto.trainingPosition,
+        owner: exercise.owner ?? "");
+  }
+
+  /// No need to load full data because [RoutineTemplateDto] and [RoutineLogDto] are always synced with the [ExerciseDto]
+  /// Syncing happens when [ExerciseDto] is loaded due to CRUD operations or when
   factory ExerciseDto.fromJson(Map<String, dynamic> json) {
     final id = json['id'] ?? "";
     final name = json["name"] ?? "";
     final primaryMuscleGroupString = json["primaryMuscleGroup"] ?? "";
     final primaryMuscleGroup = MuscleGroup.fromString(primaryMuscleGroupString);
-    final secondaryMuscleGroupString = (json["secondaryMuscleGroups"] as List<dynamic>?) ?? [];
-    final secondaryMuscleGroups =
-        secondaryMuscleGroupString.map((muscleGroup) => MuscleGroup.fromString(muscleGroup)).toList();
     final typeJson = json["type"] ?? "";
     final type = ExerciseType.fromString(typeJson);
-    final trainingPositionString = json["trainingPosition"] ?? "";
-    final trainingPosition = TrainingPosition.fromString(trainingPositionString);
-    final owner = json["owner"] ?? "";
-    final video = json["video"];
-    final description = json["description"] ?? "";
-    final videoUri = video != null ? Uri.parse(video) : null;
-    final creditSource = json["creditSource"];
-    final creditSourceUri = creditSource != null ? Uri.parse(creditSource) : null;
-    final credit = json["credit"] ?? "";
     return ExerciseDto(
         id: id,
         name: name,
         primaryMuscleGroup: primaryMuscleGroup,
-        secondaryMuscleGroups: secondaryMuscleGroups,
+        secondaryMuscleGroups: [],
+        trainingPosition: TrainingPosition.none,
         type: type,
-        video: videoUri,
-        description: description,
-        trainingPosition: trainingPosition,
-        owner: owner.toString(),
-        creditSource: creditSourceUri,
-        credit: credit);
+        owner: "");
   }
 
   ExerciseDto copyWith({
@@ -110,8 +118,6 @@ class ExerciseDto {
 
   @override
   bool operator ==(Object other) {
-    return other is ExerciseDto &&
-        other.id == id;
+    return other is ExerciseDto && other.id == id;
   }
-
 }

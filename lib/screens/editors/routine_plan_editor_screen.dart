@@ -310,6 +310,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
                   name: workoutPlanName,
                   notes: workoutPlanNotes,
                   templates: routineTemplates,
+                  weeks: _weeks.weeks,
                   owner: SharedPrefs().userId,
                   createdAt: DateTime.now(),
                   updatedAt: DateTime.now());

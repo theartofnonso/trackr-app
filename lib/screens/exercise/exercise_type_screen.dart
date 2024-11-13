@@ -21,7 +21,7 @@ class _ExerciseTypeScreenState extends State<ExerciseTypeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final exerciseTypes = ExerciseType.validValues;
+    final exerciseTypes = ExerciseType.values;
 
     return Scaffold(
       appBar: AppBar(

@@ -20,7 +20,6 @@ import 'package:tracker_app/widgets/routine/editors/exercise_log_widget_lite.dar
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/exercise_dto.dart';
-import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/set_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/app_analytics.dart';
@@ -159,11 +158,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     workoutSessionLogged();
 
-    if (updatedRoutineLog != null) {
-      if (updatedRoutineLog.templateId.isNotEmpty) {
-        await _updateRoutineTemplate(log: updatedRoutineLog);
-      }
-    }
     _navigateBack(routineLog: updatedRoutineLog);
   }
 
@@ -172,11 +166,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateLog(log: routineLog);
 
-    _updateRoutineTemplate(log: routineLog);
-
-    if (routineLog.templateId.isNotEmpty) {
-      await _updateRoutineTemplate(log: routineLog);
-    }
     _navigateBack(routineLog: routineLog);
   }
 
@@ -230,14 +219,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     }
   }
 
-  Future<void> _updateRoutineTemplate({required RoutineLogDto log}) async {
-    final template =
-        Provider.of<ExerciseAndRoutineController>(context, listen: false).templateWhere(id: widget.log.templateId);
-    if (template != null) {
-      await _doUpdateTemplate(log: log, templateToUpdate: template);
-    }
-  }
-
   void _cacheLog() {
     if (widget.mode == RoutineEditorMode.log) {
       final routineLog = _routineLog();
@@ -276,15 +257,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
       _cleanUpSession();
     }
     context.pop(routineLog);
-  }
-
-  Future<void> _doUpdateTemplate({required RoutineLogDto log, required RoutineTemplateDto templateToUpdate}) async {
-    final exerciseLogs = log.exerciseLogs.map((exerciseLog) {
-      final newSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
-      return exerciseLog.copyWith(sets: newSets);
-    }).toList();
-    final updatedTemplate = templateToUpdate.copyWith(exerciseTemplates: exerciseLogs);
-    await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateTemplate(template: updatedTemplate);
   }
 
   /// Handle collapsed ExerciseLogWidget
@@ -467,11 +439,12 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                                   setState(() {
                                                     _selectedSetDto = setDto;
                                                   });
-                                                }, onTapRepsEditor: (SetDto setDto) {
-                                          setState(() {
-                                            _selectedSetDto = null;
-                                          });
-                                        },
+                                                },
+                                                onTapRepsEditor: (SetDto setDto) {
+                                                  setState(() {
+                                                    _selectedSetDto = null;
+                                                  });
+                                                },
                                               ));
                                   })
                                 ]),

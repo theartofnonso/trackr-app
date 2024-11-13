@@ -9,16 +9,14 @@ import '../../enums/exercise_type_enums.dart';
 import '../../enums/training_position_enum.dart';
 
 extension ExerciseExtension on Exercise {
-  static ExerciseDto dtoLocal(dynamic json) {
+  static ExerciseDto dtoFromLocal(dynamic json) {
     final id = json["id"];
     final name = json["name"];
-    final primaryMuscleGroupString = json["primaryMuscleGroup"] ?? "";
-    final primaryMuscleGroup = MuscleGroup.fromString(primaryMuscleGroupString);
-    final secondaryMuscleGroupJson = json["secondaryMuscleGroups"] as List<dynamic>;
-    final secondaryMuscleGroups =
-        secondaryMuscleGroupJson.map((muscleGroup) => MuscleGroup.fromString(muscleGroup)).toList();
-    final trainingPositionString = json["trainingPosition"] ?? "";
-    final trainingPosition = TrainingPosition.fromString(trainingPositionString);
+    final primaryMuscleGroup = MuscleGroup.fromString(json["primaryMuscleGroup"] ?? "");
+    final secondaryMuscleGroups = (json["secondaryMuscleGroups"] as List<dynamic>)
+        .map((muscleGroup) => MuscleGroup.fromString(muscleGroup))
+        .toList();
+    final trainingPosition = TrainingPosition.fromString(json["trainingPosition"] ?? "");
     final typeString = json["type"];
     final video = json["video"];
     final videoUri = video != null ? Uri.parse(video) : null;
@@ -40,7 +38,7 @@ extension ExerciseExtension on Exercise {
         owner: "");
   }
 
-  ExerciseDto dtoUser() {
+  ExerciseDto dtoFromCustom() {
     final json = jsonDecode(data);
     final name = json["name"] ?? "";
     final primaryMuscleGroupString = json["primaryMuscleGroup"] ?? "";

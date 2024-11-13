@@ -6,7 +6,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/extensions/amplify_models/routine_template_extension.dart';
 import 'package:tracker_app/screens/AI/trkr_coach_exercise_recommendation_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
@@ -365,7 +364,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   void _launchRoutineLogEditor() {
     final template = _template;
     if (template != null) {
-      final arguments = RoutineLogArguments(log: template.log(), editorMode: RoutineEditorMode.log);
+      final arguments = RoutineLogArguments(log: template.toLog(), editorMode: RoutineEditorMode.log);
       navigateToRoutineLogEditor(context: context, arguments: arguments);
     }
   }
@@ -419,22 +418,22 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     _template = exerciseAndRoutineController.templateWhere(id: widget.id);
     if (_template == null) {
       _loading = true;
+      _messages = [
+        "Just a moment",
+        "Loading workout, one set at a time",
+        "Analyzing workout sets and reps",
+        "Just a moment, loading workout"
+      ];
       getAPI(endpoint: "/routine-templates/${widget.id}").then((data) {
         if (data.isNotEmpty) {
           final json = jsonDecode(data);
           final body = json["data"];
-          final routineTemplate = body["getRoutineTemplate"];
-          if (routineTemplate != null) {
-            final routineTemplateDto = RoutineTemplate.fromJson(routineTemplate);
+          final routineTemplateJson = body["getRoutineTemplate"];
+          if (routineTemplateJson != null) {
+            final template = RoutineTemplate.fromJson(routineTemplateJson);
             setState(() {
               _loading = false;
-              _template = routineTemplateDto.dto();
-              _messages = [
-                "Just a moment",
-                "Loading workout, one set at a time",
-                "Analyzing workout sets and reps",
-                "Just a moment, loading workout"
-              ];
+              _template = RoutineTemplateDto.toDto(template);
             });
           } else {
             setState(() {

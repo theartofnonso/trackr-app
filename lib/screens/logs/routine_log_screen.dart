@@ -7,7 +7,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
-import 'package:tracker_app/extensions/amplify_models/routine_log_extension.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/general_utils.dart';
@@ -333,22 +332,22 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     _log = routineLogController.logWhereId(id: widget.id);
     if (_log == null) {
       _loading = true;
+      _messages = [
+        "Just a moment",
+        "Loading progress, one set at a time",
+        "Analyzing workout gains",
+        "Just a moment, loading session"
+      ];
       getAPI(endpoint: "/routine-logs/${widget.id}").then((data) {
         if (data.isNotEmpty) {
           final json = jsonDecode(data);
           final body = json["data"];
-          final routineLog = body["getRoutineLog"];
-          if (routineLog != null) {
-            final routineLogDto = RoutineLog.fromJson(routineLog);
+          final routineLogJson = body["getRoutineLog"];
+          if (routineLogJson != null) {
+            final log = RoutineLog.fromJson(routineLogJson);
             setState(() {
               _loading = false;
-              _log = routineLogDto.dto();
-              _messages = [
-                "Just a moment",
-                "Loading progress, one set at a time",
-                "Analyzing workout gains",
-                "Just a moment, loading session"
-              ];
+              _log = RoutineLogDto.toDto(log);
             });
           } else {
             setState(() {

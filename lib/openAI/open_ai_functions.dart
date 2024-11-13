@@ -94,7 +94,7 @@ const newRoutinePlanResponseFormat = {
           }
         },
         "workout_plan_name": {"type": "string", "description": "The descriptive name of the workout"},
-        "workout_plan_caption": {"type": "string", "description": "A brief caption that summarises the workout"}
+        "workout_plan_caption": {"type": "string", "description": "A brief caption that summarises the workout"},
       },
       "required": ["workouts", "workout_plan_name", "workout_plan_caption"],
       "additionalProperties": false

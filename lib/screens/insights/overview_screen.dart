@@ -284,7 +284,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
         ])) as RoutineTemplateDto?;
     if (result != null) {
       if (context.mounted) {
-        final arguments = RoutineLogArguments(log: result.log(), editorMode: RoutineEditorMode.log);
+        final arguments = RoutineLogArguments(log: result.toLog(), editorMode: RoutineEditorMode.log);
         if (mounted) {
           navigateToRoutineLogEditor(context: context, arguments: arguments);
         }
