@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/extensions/dtos/routine_template_dto_extension.dart';
 import 'package:tracker_app/screens/AI/trkr_coach_chat_screen.dart';
+import 'package:tracker_app/strings/loading_screen_messages.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_button.dart';
 import 'package:tracker_app/widgets/empty_states/routine_empty_state.dart';
 import 'package:tracker_app/widgets/routine/preview/routine_template_grid_item_widget.dart';
@@ -88,12 +89,7 @@ class RoutineTemplatesScreen extends StatelessWidget {
   void _switchToAIContext({required BuildContext context}) async {
     final result = await navigateWithSlideTransition(
         context: context,
-        child: const TRKRCoachChatScreen(loadingMessages: [
-          "Crafting your perfect plan",
-          "Tailoring your plan just for you",
-          "Sweating the details for you",
-          "One step closer to your goals"
-        ])) as RoutineTemplateDto?;
+        child: const TRKRCoachChatScreen(loadingMessages: loadingTRKRCoachRoutineMessages)) as RoutineTemplateDto?;
     if (result != null) {
       if (context.mounted) {
         _saveTemplate(context: context, template: result);

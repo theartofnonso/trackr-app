@@ -28,6 +28,7 @@ import '../../enums/routine_plan_goal.dart';
 import '../../openAI/open_ai.dart';
 import '../../shared_prefs.dart';
 import '../../strings/ai_prompts.dart';
+import '../../strings/loading_screen_messages.dart';
 import '../../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
@@ -65,12 +66,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
     if (_loading) {
       return TRKRLoadingScreen(
         action: _hideLoadingScreen,
-        messages: [
-          "Crafting your perfect plan",
-          "Tailoring your plan just for you",
-          "Sweating the details for you",
-          "One step closer to your goals"
-        ],
+        messages: loadingTRKRCoachRoutineMessages,
       );
     }
 

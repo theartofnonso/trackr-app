@@ -25,6 +25,7 @@ import '../../enums/muscle_group_enums.dart';
 import '../../enums/sets_reps_volume_enum.dart';
 import '../../openAI/open_ai.dart';
 import '../../strings/ai_prompts.dart';
+import '../../strings/loading_screen_messages.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../widgets/ai_widgets/trkr_information_container.dart';
@@ -57,12 +58,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     if (_loading) {
       return TRKRLoadingScreen(
         action: _hideLoadingScreen,
-        messages: [
-          "Crunching your numbers",
-          "Counting your reps",
-          "Analyzing your gains",
-          "Building your progress report"
-        ],
+        messages: loadingSetsRepsVolumeMessages,
       );
     }
 

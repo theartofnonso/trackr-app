@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/screens/AI/trkr_coach_exercise_recommendation_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
+import 'package:tracker_app/strings/loading_screen_messages.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 
 import '../../colors.dart';
@@ -418,12 +419,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     _template = exerciseAndRoutineController.templateWhere(id: widget.id);
     if (_template == null) {
       _loading = true;
-      _messages = [
-        "Just a moment",
-        "Loading workout, one set at a time",
-        "Analyzing workout sets and reps",
-        "Just a moment, loading workout"
-      ];
+      _messages = loadingRoutineMessages;
       getAPI(endpoint: "/routine-templates/${widget.id}").then((data) {
         if (data.isNotEmpty) {
           final json = jsonDecode(data);
@@ -451,12 +447,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     if (template != null) {
 
       setState(() {
-        _messages = [
-          "Crafting your perfect plan",
-          "Tailoring your plan just for you",
-          "Sweating the details for you",
-          "One step closer to your goals"
-        ];
+        _messages = loadingTRKRCoachRoutineMessages;
       });
 
       _showLoadingScreen();

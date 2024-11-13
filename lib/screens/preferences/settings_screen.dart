@@ -55,9 +55,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   @override
   Widget build(BuildContext context) {
     if (_loading) {
-      return TRKRLoadingScreen(action: _hideLoadingScreen, messages: [
-        "Loading",
-      ]);
+      return TRKRLoadingScreen(action: _hideLoadingScreen);
     }
 
     return Scaffold(

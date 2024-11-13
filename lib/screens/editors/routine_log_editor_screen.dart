@@ -476,7 +476,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     WidgetsBinding.instance.addObserver(this);
 
-    _initializeProcedureData();
+    _loadExerciseLogs();
 
     _onDisposeCallback = Provider.of<ExerciseLogController>(context, listen: false).onClear;
 
@@ -485,7 +485,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     });
   }
 
-  void _initializeProcedureData() {
+  void _loadExerciseLogs() {
     final exerciseLogs = widget.log.exerciseLogs;
     final updatedExerciseLogs = exerciseLogs.map((exerciseLog) {
       final previousSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)

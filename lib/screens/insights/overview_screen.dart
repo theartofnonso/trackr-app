@@ -9,6 +9,7 @@ import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/shared_prefs.dart';
+import 'package:tracker_app/strings/loading_screen_messages.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 
@@ -276,12 +277,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   void _switchToAIContext() async {
     final result =
-        await navigateWithSlideTransition(context: context, child: const TRKRCoachChatScreen(loadingMessages: [
-          "Crafting your perfect plan",
-          "Tailoring your plan just for you",
-          "Sweating the details for you",
-          "One step closer to your goals"
-        ])) as RoutineTemplateDto?;
+        await navigateWithSlideTransition(context: context, child: const TRKRCoachChatScreen(loadingMessages: loadingTRKRCoachRoutineMessages)) as RoutineTemplateDto?;
     if (result != null) {
       if (context.mounted) {
         final arguments = RoutineLogArguments(log: result.toLog(), editorMode: RoutineEditorMode.log);

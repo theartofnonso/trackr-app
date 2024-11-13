@@ -2,6 +2,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/strings/loading_screen_messages.dart';
 
 import '../../colors.dart';
 
@@ -11,7 +12,7 @@ class TRKRLoadingScreen extends StatelessWidget {
   final VoidCallback? action;
   final List<String> messages;
 
-  const TRKRLoadingScreen({super.key, this.opacity = 0.6, this.action, required this.messages});
+  const TRKRLoadingScreen({super.key, this.opacity = 0.6, this.action, this.messages = defaultLoadingMessages});
 
   @override
   Widget build(BuildContext context) {

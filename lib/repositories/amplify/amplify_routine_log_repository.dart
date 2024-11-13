@@ -114,8 +114,7 @@ class AmplifyRoutineLogRepository {
     final cache = SharedPrefs().cachedRoutineLog;
     if (cache.isNotEmpty) {
       final json = jsonDecode(cache);
-      final log = RoutineLog.fromJson(json);
-      return RoutineLogDto.fromLog(log: log);
+      return RoutineLogDto.fromCachedLog(json: json);
     }
     return routineLog;
   }

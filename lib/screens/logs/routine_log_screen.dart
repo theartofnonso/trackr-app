@@ -9,6 +9,7 @@ import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
+import 'package:tracker_app/strings/loading_screen_messages.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/utils/https_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
@@ -304,12 +305,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     final completeInstructions = buffer.toString();
 
     setState(() {
-      _messages = [
-        "Crunching your numbers",
-        "Counting your reps",
-        "Analyzing your gains",
-        "Building your progress report"
-      ];
+      _messages = loadingTRKRCoachRoutineMessages;
     });
 
     _showLoadingScreen();
@@ -332,12 +328,8 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     _log = routineLogController.logWhereId(id: widget.id);
     if (_log == null) {
       _loading = true;
-      _messages = [
-        "Just a moment",
-        "Loading progress, one set at a time",
-        "Analyzing workout gains",
-        "Just a moment, loading session"
-      ];
+      _messages = loadingRoutineMessages;
+
       getAPI(endpoint: "/routine-logs/${widget.id}").then((data) {
         if (data.isNotEmpty) {
           final json = jsonDecode(data);
