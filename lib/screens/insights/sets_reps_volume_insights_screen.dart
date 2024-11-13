@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
@@ -339,7 +338,11 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       final userInstructions =
           "Review my workout logs for ${_selectedMuscleGroup.name} from $startDate to $endDate and provide feedback. Please note, that my weights are in ${weightLabel()}";
 
-      final exerciseLogJsons = exerciseLogs.mapIndexed((index, exerciseLog) {
+      final StringBuffer buffer = StringBuffer();
+
+      buffer.writeln(userInstructions);
+
+      exerciseLogs.mapIndexed((index, exerciseLog) {
         final setSummaries = exerciseLog.sets.mapIndexed((index, set) {
           return switch (exerciseLog.exercise.type) {
             ExerciseType.weights => "Set ${index + 1}: ${exerciseLog.sets[index].weightsSummary()}",
@@ -348,19 +351,13 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
           };
         }).toList();
 
-        return jsonEncode({
-          "exercise": exerciseLog.exercise.name,
-          "sets": setSummaries,
-        });
+        buffer.writeln("Exercise: ${exerciseLog.exercise.name}");
+        buffer.writeln("Sets: $setSummaries");
       }).toList();
 
-      final StringBuffer buffer = StringBuffer();
-
-      buffer.writeln(userInstructions);
-
-      buffer.writeln(exerciseLogJsons);
-
       final completeInstructions = buffer.toString();
+
+      print(completeInstructions);
 
       _showLoadingScreen();
 

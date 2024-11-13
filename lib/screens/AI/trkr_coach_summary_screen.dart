@@ -56,7 +56,7 @@ class _AppBar extends StatelessWidget {
         Expanded(
           child: Text("TRKR Coach".toUpperCase(),
               textAlign: TextAlign.center,
-              style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 16)),
+              style: GoogleFonts.ubuntu(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 16)),
         ),
         IconButton(
           icon: const SizedBox.shrink(),

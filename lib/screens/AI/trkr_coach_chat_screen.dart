@@ -174,11 +174,22 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
 
     final StringBuffer buffer = StringBuffer();
 
-    buffer.writeln(personalTrainerInstructionForWorkouts);
-    buffer.writeln("For each muscle group, suggest two exercises.");
-    buffer.writeln("Both exercises must engage the muscle group from both the lengthened and shortened positions.");
+    buffer.writeln("Instruction");
+    buffer.writeln(userInstruction);
 
-    final completeSystemInstructions = buffer.toString();
+    buffer.writeln();
+
+    buffer.writeln("Task");
+    buffer.writeln(
+        "1. Create a workout");
+    buffer.writeln("2. For each muscle group, suggest 2 exercises that are sufficient.");
+    buffer.writeln("3. Ensure a balanced combination of exercises engaging all muscle groups from both the lengthened and shortened positions.");
+    buffer.writeln(
+        "4. Ensure variety while sticking to exercises similar in nature to the exercise ids listed above if any.");
+
+    final completeInstructions = buffer.toString();
+
+    print(completeInstructions);
 
     final tool = await runMessageWithTools(
         systemInstruction: personalTrainerInstructionForWorkouts,
@@ -194,8 +205,8 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
           final exercises = Provider.of<ExerciseAndRoutineController>(context, listen: false).exercises;
           final functionCallPayload = await createFunctionCallPayload(
               toolId: toolId,
-              systemInstruction: completeSystemInstructions,
-              user: userInstruction,
+              systemInstruction: completeInstructions,
+              user: completeInstructions,
               responseFormat: newRoutineTemplateResponseFormat,
               exercises: exercises);
           final jsonString = await runMessageWithFunctionCallResult(payload: functionCallPayload);

@@ -205,32 +205,37 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
 
     final StringBuffer buffer = StringBuffer();
 
-    buffer.writeln("I want to ${_goal.description}, over a ${_weeks.weeks} period.");
-
     final muscleGroups = _selectedMuscleGroupFamilies
         .map((family) => MuscleGroup.byFamily(family))
         .expand((muscleGroups) => muscleGroups)
         .map((muscleGroup) => muscleGroup.name)
         .join(", ");
-    buffer.writeln("The muscle groups I want to focus on are $muscleGroups.");
 
+    buffer.writeln();
+
+    buffer.writeln("I want to ${_goal.description} over a ${_weeks.weeks} weeks period. The muscle groups I want to focus on are $muscleGroups.");
     for (final family in _selectedMuscleGroupFamilies) {
       final selectedExerciseIds = _getSelectedExercises(family: family).map((exercise) => exercise.id).join(", ");
-      buffer.writeln("For ${family.name}, I prefer exercises like $selectedExerciseIds");
+      if(selectedExerciseIds.isNotEmpty) {
+        buffer.writeln("For ${family.name}, I prefer exercises like $selectedExerciseIds");
+      }
     }
+    buffer.writeln();
 
+    buffer.writeln("Instruction");
     buffer.writeln(personalTrainerInstructionForWorkouts);
-    buffer.writeln("Task.");
+
+    buffer.writeln();
+
+    buffer.writeln("Task");
     buffer.writeln(
-        "Create a ${_weeks.weeks} weeks ${_goal.description} workout plan with ${_sessions.frequency} training sessions per week.");
-    buffer.writeln("For each muscle group, suggest two exercises.");
-    buffer.writeln("Both exercises must engage the muscle group from both the lengthened and shortened positions.");
+        "1. Create a ${_weeks.weeks}-week ${_goal.description} workout plan with ${_sessions.frequency} training sessions per week.");
+    buffer.writeln("2. For each muscle group, suggest exercises that are sufficient.");
+    buffer.writeln("3. Suggest a balanced combination of exercises engaging all muscle groups from both the lengthened and shortened positions.");
     buffer.writeln(
-        "Also ensure your exercise suggestions are similar in nature to the list of exercise ids I have provided if any was provided.");
+        "4. Ensure variety while sticking to exercises similar in nature to the exercise ids listed above if any.");
 
     final completeInstructions = buffer.toString();
-
-    print(completeInstructions);
 
     _hideLoadingScreen();
   }
