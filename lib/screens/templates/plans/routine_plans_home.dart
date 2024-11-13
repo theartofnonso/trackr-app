@@ -39,7 +39,7 @@ class RoutinePlansHome extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.rectangle, // Use BoxShape.circle for circular borders
             gradient: SweepGradient(
-              colors: [Colors.green.shade900, Colors.blue.shade900],
+              colors: [vibrantGreen, vibrantBlue],
               stops: const [0, 1],
               center: Alignment.topRight,
             ),
