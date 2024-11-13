@@ -1,10 +1,10 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
-import 'package:go_router/go_router.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
+import 'package:tracker_app/widgets/dividers/label_container.dart';
 
 import '../../dtos/appsync/exercise_dto.dart';
 
@@ -73,7 +73,9 @@ class _TrkrCoachExerciseRecommendationScreenState extends State<TrkrCoachExercis
             _AppBar(positiveAction: _navigateBack, canPerformPositiveAction: _selectedExercises.isNotEmpty),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Text("Recommendations are based on the principle that a standard workout session should train each muscle group with at least two exercises. Below are your exercises with a recommended option to pair with.", style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w400)),
+              child: Text(
+                  "Recommendations are based on the principle that a standard workout session should train each muscle group with at least two exercises. Below are your exercises with a recommended option to pair with.",
+                  style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w400)),
             ),
             Expanded(
               child: SingleChildScrollView(
@@ -88,7 +90,6 @@ class _TrkrCoachExerciseRecommendationScreenState extends State<TrkrCoachExercis
       ),
     ));
   }
-
 
   void _navigateBack() {
     context.pop(_selectedExercises);
@@ -116,11 +117,20 @@ class _RecommendationListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isFirstSuggested = originalExercises.firstWhereOrNull((exercise) => exercise.id == first.id) == null;
-    final isSecondSuggested = originalExercises.firstWhereOrNull((exercise) => exercise.id == second.id) == null;
+    final originalChip = Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: Container(
+          padding: const EdgeInsets.all(6.0),
+          decoration: BoxDecoration(
+            color: Colors.white10.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(3.0),
+          ),
+          child: Text("Yours".toUpperCase(),
+              style: GoogleFonts.ubuntu(color: vibrantGreen, fontSize: 9, fontWeight: FontWeight.w700))),
+    );
 
     final suggestedChip = Padding(
-      padding: const EdgeInsets.only(top: 12.0),
+      padding: const EdgeInsets.only(top: 8.0),
       child: Container(
           padding: const EdgeInsets.all(6.0),
           decoration: BoxDecoration(
@@ -148,8 +158,8 @@ class _RecommendationListItem extends StatelessWidget {
           children: [
             Row(
               children: [
-                Text("Training ${muscleGroup.name}",
-                    style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+                Text("Training ${muscleGroup.name}".toUpperCase(),
+                    style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500)),
                 const SizedBox(
                   height: 16,
                 ),
@@ -164,49 +174,25 @@ class _RecommendationListItem extends StatelessWidget {
             const SizedBox(
               height: 12,
             ),
-            Row(
-              children: [
-                Image.asset(
-                  'icons/dumbbells.png',
-                  fit: BoxFit.contain,
-                  height: 24, // Adjust the height as needed
-                ),
-                const SizedBox(
-                  width: 6,
-                ),
-                Text(first.name,
-                    style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w600)),
-              ],
-            ),
-            isFirstSuggested ? suggestedChip : const SizedBox.shrink(),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Divider(
-                height: 1,
-                color: Colors.white10.withOpacity(0.1),
-                endIndent: 24,
-                indent: 8,
-              ),
-            ),
-            Row(
-              children: [
-                Image.asset(
-                  'icons/dumbbells.png',
-                  fit: BoxFit.contain,
-                  height: 24, // Adjust the height as needed
-                ),
-                const SizedBox(
-                  width: 6,
-                ),
-                Text(second.name,
-                    style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w600)),
-              ],
-            ),
-            isSecondSuggested ? suggestedChip : const SizedBox.shrink(),
+            Text(first.name,
+                style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w400)),
+            originalChip,
             const SizedBox(
-              height: 16,
+              height: 18,
             ),
-            Text(rationale, style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w400))
+            Text(second.name,
+                style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w400)),
+            suggestedChip,
+            const SizedBox(
+              height: 18,
+            ),
+            LabelContainer(
+              label: "Explanation".toUpperCase(),
+              description: rationale,
+              labelStyle: GoogleFonts.ubuntu(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
+              descriptionStyle: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w400),
+              dividerColor: Colors.white30,
+            ),
           ],
         ),
       ),

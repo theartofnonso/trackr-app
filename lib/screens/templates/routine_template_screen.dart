@@ -499,35 +499,34 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   Future<List<Map<String, dynamic>>> _runFunctionMessage({required RoutineTemplateDto template}) async {
     List<Map<String, dynamic>> muscleGroupAndExercises = [];
 
-    final listOfExerciseJsons = template.exerciseTemplates
-        .map((exerciseTemplate) => jsonEncode({
-              "id": exerciseTemplate.exercise.id,
-              "name": exerciseTemplate.exercise.name,
-            }))
-        .toList();
-
     final StringBuffer buffer = StringBuffer();
 
     buffer.writeln(
         "For Each Exercise in my selection, recommend an alternative exercise that meets the following criteria.");
-    buffer.writeln("\n");
+
+    buffer.writeln();
+
     buffer.writeln("Criteria 1 - Muscle Group Training Requirements:");
-    buffer.writeln("Dual Exercises: Ensure each muscle group is trained with two exercises:");
-    buffer.writeln("Primary Exercise: One from my original selection.");
+    buffer.writeln("1. Ensure each muscle group is trained with two exercises:");
+    buffer.writeln("2. One from my original selection.");
     buffer.writeln(
-        "Secondary Exercise: A recommended alternative if the original selection doesn't adequately target the muscle group.");
-    buffer.writeln("\n");
-    buffer.writeln("Criteria 2 - Targeting Specifications:");
+        "3. A recommended alternative to adequately target the muscle group.");
     buffer.writeln(
-        "Primary or Secondary Focus: Exercises should target the muscle group either primarily or secondarily.");
-    buffer.writeln("Range of Motion: Both exercises must engage the muscle group in:");
-    buffer.writeln("Lengthened Position");
-    buffer.writeln("Shortened Position");
-    buffer.writeln("\n");
-    buffer.writeln("Exercise Selection:");
-    buffer.writeln(listOfExerciseJsons);
+        "4. If the primary exercise is a compound exercise, the secondary recommendation should be an isolation exercise.");
+    buffer.writeln(
+        "5. Recommendations should optimize muscle targeting by incorporating both compound and isolation exercises where appropriate.");
+
+    buffer.writeln();
+
+    buffer.writeln("My Exercise Selection:");
+    for (final exerciseTemplate in template.exerciseTemplates) {
+      buffer.writeln("Exercise Id: ${exerciseTemplate.exercise.id}\nExercise Name: ${exerciseTemplate.exercise.name}");
+      buffer.writeln();
+    }
 
     final completeUserInstructions = buffer.toString();
+
+    print(completeUserInstructions);
 
     final tool = await runMessageWithTools(
         systemInstruction: personalTrainerInstructionForWorkouts, userInstruction: completeUserInstructions);

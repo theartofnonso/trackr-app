@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/screens/templates/programs/routine_programs_home.dart';
+import 'package:tracker_app/screens/templates/plans/routine_plans_home.dart';
 import 'package:tracker_app/screens/templates/routine_templates_screen.dart';
 
 import '../../colors.dart';
