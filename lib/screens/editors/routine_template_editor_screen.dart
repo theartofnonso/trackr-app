@@ -323,7 +323,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                   onPressed: template != null ? _updateRoutineTemplate : _createRoutineTemplate,
                   backgroundColor: sapphireDark,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                  child: const FaIcon(FontAwesomeIcons.check, color: Colors.white, size: 28),
+                  child: const FaIcon(FontAwesomeIcons.solidSquareCheck, color: Colors.white, size: 28),
                 ),
           body: Container(
             width: double.infinity,

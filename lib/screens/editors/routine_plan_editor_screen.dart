@@ -100,7 +100,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
       appBar: AppBar(
           backgroundColor: sapphireDark80,
           leading: IconButton(
-            icon: const FaIcon(FontAwesomeIcons.solidCircleXmark, color: Colors.white, size: 28),
+            icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
             onPressed: Navigator.of(context).pop,
           )),
       body: Container(
@@ -378,7 +378,7 @@ class _FavouriteExercisePicker extends StatelessWidget {
                       style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 15)),
                   trailing: GestureDetector(
                       onTap: () => onRemove(exercise),
-                      child: FaIcon(FontAwesomeIcons.solidCircleXmark, color: Colors.redAccent, size: 22)),
+                      child: FaIcon(FontAwesomeIcons.squareXmark, color: Colors.redAccent, size: 22)),
                 ),
                 Divider(
                   color: sapphireLighter,

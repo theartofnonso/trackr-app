@@ -30,7 +30,7 @@ class _ActivitySelectorScreenState extends State<ActivitySelectorScreen> {
       appBar: AppBar(
         backgroundColor: sapphireDark80,
         leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.solidCircleXmark, color: Colors.white, size: 28),
+          icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
           onPressed: context.pop,
         ),
         title: Text("Select An Activity".toUpperCase(),

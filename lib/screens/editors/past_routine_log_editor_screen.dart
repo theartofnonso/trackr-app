@@ -287,7 +287,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
                   onPressed: _createLog,
                   backgroundColor: sapphireDark,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                  child: const FaIcon(FontAwesomeIcons.check, color: Colors.white, size: 28),
+                  child: const FaIcon(FontAwesomeIcons.solidSquareCheck, color: Colors.white, size: 28),
                 ),
           body: Container(
             width: double.infinity,

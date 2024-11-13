@@ -87,7 +87,7 @@ class _ExpandableFabState extends State<ExpandableFab> with SingleTickerProvider
             onTap: _toggle,
             child: const Padding(
               padding: EdgeInsets.all(8),
-              child: FaIcon(FontAwesomeIcons.solidCircleXmark, color: Colors.white),
+              child: FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white),
             ),
           ),
         ),

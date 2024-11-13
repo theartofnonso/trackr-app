@@ -49,7 +49,7 @@ class _SubstituteExercisePickerState extends State<SubstituteExercisePicker> {
                   style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 15)),
               trailing: GestureDetector(
                   onTap: () => _onRemoveExercises(exercise: exercise),
-                  child: FaIcon(FontAwesomeIcons.solidCircleXmark, color: Colors.redAccent, size: 22)),
+                  child: FaIcon(FontAwesomeIcons.squareXmark, color: Colors.redAccent, size: 22)),
             ))
         .toList();
 
