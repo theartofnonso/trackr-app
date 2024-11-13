@@ -18,6 +18,7 @@ import '../screens/editors/routine_template_editor_screen.dart';
 import '../screens/logs/activity_logs_screen.dart';
 import '../screens/logs/routine_logs_screen.dart';
 import '../screens/logs/routine_log_screen.dart';
+import '../screens/templates/plans/routine_template_plan_screen.dart';
 import '../screens/templates/routine_template_screen.dart';
 
 Future<ExerciseDto?> navigateToExerciseEditor(
@@ -55,7 +56,7 @@ void navigateToRoutineTemplate({required BuildContext context, required RoutineT
 }
 
 void navigateToRoutineTemplatePlan({required BuildContext context, required RoutineTemplatePlanDto templatePlan}) {
-  context.push(RoutineTemplateScreen.routeName, extra: templatePlan);
+  context.push(RoutineTemplatePlanScreen.routeName, extra: templatePlan);
 }
 
 void navigateToRoutineLogPreview({required BuildContext context, required RoutineLogDto log, bool isEditable = true}) {

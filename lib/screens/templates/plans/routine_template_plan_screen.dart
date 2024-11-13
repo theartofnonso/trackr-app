@@ -1,23 +1,19 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/extensions/amplify_models/routine_template_extension.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import '../../../colors.dart';
 import '../../../controllers/exercise_and_routine_controller.dart';
-import '../../../dtos/appsync/routine_template_dto.dart';
-import '../../../models/RoutineTemplate.dart';
+import '../../../dtos/appsync/routine_template_plan_dto.dart';
 import '../../../utils/dialog_utils.dart';
-import '../../../utils/exercise_logs_utils.dart';
-import '../../../utils/https_utils.dart';
+import '../../../utils/routine_utils.dart';
 import '../../../utils/string_utils.dart';
 import '../../../widgets/backgrounds/trkr_loading_screen.dart';
-import '../../../widgets/chart/muscle_group_family_chart.dart';
+import '../../../widgets/empty_states/routine_empty_state.dart';
+import '../../../widgets/routine/preview/routine_template_grid_item_widget.dart';
 import '../../empty_state_screens/not_found.dart';
 
 class RoutineTemplatePlanScreen extends StatefulWidget {
@@ -32,7 +28,7 @@ class RoutineTemplatePlanScreen extends StatefulWidget {
 }
 
 class _RoutineTemplatePlanScreenState extends State<RoutineTemplatePlanScreen> {
-  RoutineTemplateDto? _template;
+  RoutineTemplatePlanDto? _templatePlan;
 
   bool _loading = false;
 
@@ -55,13 +51,14 @@ class _RoutineTemplatePlanScreenState extends State<RoutineTemplatePlanScreen> {
       });
     }
 
-    final templatePlan = _template;
+    final templatePlan = _templatePlan;
 
     if (templatePlan == null) return const NotFound();
 
-    final updatedExerciseLogs = completedExercises(exerciseLogs: templatePlan.exerciseTemplates);
-
-    final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: updatedExerciseLogs);
+    final templates = templatePlan.templates
+        .map((template) => RoutineTemplateGridItemWidget(
+            template: template, scheduleSummary: scheduledDaysSummary(template: template)))
+        .toList();
 
     return Scaffold(
         floatingActionButton: templatePlan.owner == SharedPrefs().userId
@@ -97,94 +94,76 @@ class _RoutineTemplatePlanScreenState extends State<RoutineTemplatePlanScreen> {
           ),
           child: SafeArea(
             minimum: const EdgeInsets.all(10.0),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  if (templatePlan.notes.isNotEmpty)
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 20, bottom: 10),
-                        child: Text('"${templatePlan.notes}"',
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.ubuntu(
-                                color: Colors.white70,
-                                fontSize: 14,
-                                fontStyle: FontStyle.italic,
-                                fontWeight: FontWeight.w600)),
-                      ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                if (templatePlan.notes.isNotEmpty)
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: Text('"${templatePlan.notes}"',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.ubuntu(
+                              color: Colors.white70,
+                              fontSize: 14,
+                              fontStyle: FontStyle.italic,
+                              fontWeight: FontWeight.w600)),
                     ),
+                  ),
 
-                  /// Keep this spacing for when notes isn't available
-                  if (templatePlan.notes.isEmpty)
-                    const SizedBox(
-                      height: 20,
-                    ),
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 12),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
-                      color: sapphireDark.withOpacity(0.4), // Set the background color
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: Table(
-                      border: const TableBorder.symmetric(inside: BorderSide(color: sapphireLighter, width: 2)),
-                      columnWidths: const <int, TableColumnWidth>{
-                        0: FlexColumnWidth(),
-                        1: FlexColumnWidth(),
-                      },
-                      children: [
-                        TableRow(children: [
-                          TableCell(
-                            verticalAlignment: TableCellVerticalAlignment.middle,
-                            child: Center(
-                              child: Text(
-                                  "${templatePlan.exerciseTemplates.length} ${pluralize(word: "Workouts/Week", count: templatePlan.exerciseTemplates.length)}",
-                                  style: GoogleFonts.ubuntu(
-                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-                            ),
-                          ),
-                          TableCell(
-                            verticalAlignment: TableCellVerticalAlignment.middle,
-                            child: Center(
-                              child: Text("4 Weeks",
-                                  style: GoogleFonts.ubuntu(
-                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-                            ),
-                          ),
-                        ]),
-                      ],
-                    ),
+                /// Keep this spacing for when notes isn't available
+                if (templatePlan.notes.isEmpty)
+                  const SizedBox(
+                    height: 20,
                   ),
-                  const SizedBox(height: 10),
-                  GestureDetector(
-                    onTap: _onMinimiseMuscleGroupSplit,
-                    child: Container(
-                      color: Colors.transparent,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(children: [
-                            Text("Muscle Groups Split".toUpperCase(),
-                                style: GoogleFonts.ubuntu(
-                                    color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
-                            const Spacer(),
-                            if (muscleGroupFamilyFrequencies.length > 3)
-                              FaIcon(_minimized ? FontAwesomeIcons.angleDown : FontAwesomeIcons.angleUp,
-                                  color: Colors.white70, size: 16),
-                          ]),
-                          const SizedBox(height: 10),
-                          Text("Here's a breakdown of the muscle groups in your ${templatePlan.name} workout plan.",
-                              style:
-                                  GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
-                          const SizedBox(height: 10),
-                          MuscleGroupFamilyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
-                        ],
-                      ),
-                    ),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
+                    color: sapphireDark.withOpacity(0.4), // Set the background color
                   ),
-                ],
-              ),
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: Table(
+                    border: const TableBorder.symmetric(inside: BorderSide(color: sapphireLighter, width: 2)),
+                    columnWidths: const <int, TableColumnWidth>{
+                      0: FlexColumnWidth(),
+                      1: FlexColumnWidth(),
+                    },
+                    children: [
+                      TableRow(children: [
+                        TableCell(
+                          verticalAlignment: TableCellVerticalAlignment.middle,
+                          child: Center(
+                            child: Text(
+                                "${templatePlan.templates.length} ${pluralize(word: "Workouts/Week", count: templatePlan.templates.length)}",
+                                style:
+                                    GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                          ),
+                        ),
+                        TableCell(
+                          verticalAlignment: TableCellVerticalAlignment.middle,
+                          child: Center(
+                            child: Text("4 Weeks",
+                                style:
+                                    GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                          ),
+                        ),
+                      ]),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                templatePlan.templates.isNotEmpty
+                    ? Expanded(
+                        child: GridView.count(
+                            crossAxisCount: 2,
+                            childAspectRatio: 1,
+                            mainAxisSpacing: 10.0,
+                            crossAxisSpacing: 10.0,
+                            children: templates),
+                      )
+                    : const RoutineEmptyState(
+                        message: "It might feel quiet now, but your workouts will soon appear here."),
+              ],
             ),
           ),
         ));
@@ -196,42 +175,47 @@ class _RoutineTemplatePlanScreenState extends State<RoutineTemplatePlanScreen> {
     });
   }
 
-  void _onMinimiseMuscleGroupSplit() {
-    setState(() {
-      _minimized = !_minimized;
-    });
-  }
-
   void _loadData() {
-    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-    _template = exerciseAndRoutineController.templateWhere(id: widget.id);
-    if (_template == null) {
-      _loading = true;
-      getAPI(endpoint: "/routine-templates/${widget.id}").then((data) {
-        if (data.isNotEmpty) {
-          final json = jsonDecode(data);
-          final body = json["data"];
-          final routineTemplate = body["getRoutineTemplate"];
-          if (routineTemplate != null) {
-            final routineTemplateDto = RoutineTemplate.fromJson(routineTemplate);
-            setState(() {
-              _loading = false;
-              _template = routineTemplateDto.dto();
-              _messages = [
-                "Just a moment",
-                "Loading workout, one set at a time",
-                "Analyzing workout sets and reps",
-                "Just a moment, loading workout"
-              ];
-            });
-          } else {
-            setState(() {
-              _loading = false;
-            });
-          }
-        }
-      });
-    }
+    // final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+    // _templatePlan = exerciseAndRoutineController.templateWhere(id: widget.id);
+    // if (_templatePlan == null) {
+    //   _loading = true;
+    //   getAPI(endpoint: "/routine-template-plans/${widget.id}").then((data) {
+    //     if (data.isNotEmpty) {
+    //       final json = jsonDecode(data);
+    //       final body = json["data"];
+    //       final routineTemplate = body["getRoutineTemplate"];
+    //       if (routineTemplate != null) {
+    //         final routineTemplateDto = RoutineTemplate.fromJson(routineTemplate);
+    //         setState(() {
+    //           _loading = false;
+    //           _templatePlan = routineTemplateDto.dto();
+    //           _messages = [
+    //             "Just a moment",
+    //             "Loading workout, one set at a time",
+    //             "Analyzing workout sets and reps",
+    //             "Just a moment, loading workout"
+    //           ];
+    //         });
+    //       } else {
+    //         setState(() {
+    //           _loading = false;
+    //         });
+    //       }
+    //     }
+    //   });
+    // }
+
+    final routineTemplates = Provider.of<ExerciseAndRoutineController>(context, listen: false).templates;
+
+    _templatePlan = RoutineTemplatePlanDto(
+        id: "",
+        name: "4-Week Muscle Mummy",
+        notes: "This is a 4-wek plan focusing on your upper and lowe body to build muscle in all areas.",
+        templates: routineTemplates,
+        owner: SharedPrefs().userId,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now());
   }
 
   @override
