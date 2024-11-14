@@ -181,7 +181,8 @@ class ExerciseAndRoutineController extends ChangeNotifier {
 
   /// TemplatePlans
 
-  void streamTemplatePlan({required List<RoutineTemplatePlan> templatePlans}) {
+  void streamTemplatePlans({required List<RoutineTemplatePlan> templatePlans}) {
+
     _amplifyTemplatePlanRepository.loadTemplatePlansStream(
         templatesPlans: templatePlans,
         onData: () {
@@ -195,7 +196,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
     RoutineTemplatePlanDto? savedTemplatePlan;
     isLoading = true;
     try {
-      savedTemplatePlan = await _amplifyTemplatePlanRepository.saveTemplatePlan(templateDto: templatePlanDto);
+      savedTemplatePlan = await _amplifyTemplatePlanRepository.saveTemplatePlan(templatePlanDto: templatePlanDto);
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {

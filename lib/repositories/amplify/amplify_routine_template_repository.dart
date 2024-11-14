@@ -27,7 +27,7 @@ class AmplifyRoutineTemplateRepository {
 
     await Amplify.DataStore.save<RoutineTemplate>(templateToCreate);
 
-    final updatedWithId = templateDto.copyWith(id: templateToCreate.id);
+    final updatedWithId = templateDto.copyWith(id: templateToCreate.id, owner: templateToCreate.owner);
 
     return updatedWithId;
   }

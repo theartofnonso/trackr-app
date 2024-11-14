@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/shared_prefs.dart';
+import 'package:tracker_app/strings/loading_screen_messages.dart';
 
 import '../../../colors.dart';
 import '../../../controllers/exercise_and_routine_controller.dart';
@@ -32,11 +33,9 @@ class _RoutineTemplatePlanScreenState extends State<RoutineTemplatePlanScreen> {
 
   bool _loading = false;
 
-  List<String> _messages = [];
-
   @override
   Widget build(BuildContext context) {
-    if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen, messages: _messages);
+    if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen, messages: loadingTRKRCoachRoutineMessages);
 
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
@@ -174,8 +173,8 @@ class _RoutineTemplatePlanScreenState extends State<RoutineTemplatePlanScreen> {
   }
 
   void _loadData() {
-    // final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-    // _templatePlan = exerciseAndRoutineController.templateWhere(id: widget.id);
+    final controller = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+    _templatePlan = controller.templatePlanWhere(id: widget.id);
     // if (_templatePlan == null) {
     //   _loading = true;
     //   getAPI(endpoint: "/routine-template-plans/${widget.id}").then((data) {
@@ -203,18 +202,6 @@ class _RoutineTemplatePlanScreenState extends State<RoutineTemplatePlanScreen> {
     //     }
     //   });
     // }
-
-    final routineTemplates = Provider.of<ExerciseAndRoutineController>(context, listen: false).templates;
-
-    _templatePlan = RoutineTemplatePlanDto(
-        id: "",
-        name: "4-Week Muscle Mummy",
-        notes: "This is a 4-wek plan focusing on your upper and lowe body to build muscle in all areas.",
-        templates: routineTemplates,
-        weeks: 4,
-        owner: SharedPrefs().userId,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now());
   }
 
   @override

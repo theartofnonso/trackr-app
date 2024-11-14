@@ -33,6 +33,7 @@ class RoutineTemplateDto {
 
   Map<String, dynamic> toJson() {
     return {
+      "id": id,
       'name': name,
       'notes': notes,
       'exercises': exerciseTemplates.map((exercise) => exercise.toJson()).toList(),
@@ -55,7 +56,8 @@ class RoutineTemplateDto {
     final scheduledDateString = json["scheduledDate"];
     final scheduledDate = scheduledDateString != null ? DateTime.parse(scheduledDateString) : null;
     final scheduleTypeString = json["scheduleType"];
-    final scheduleType = scheduleTypeString != null ? RoutineScheduleType.fromString(scheduleTypeString) : RoutineScheduleType.days;
+    final scheduleType =
+        scheduleTypeString != null ? RoutineScheduleType.fromString(scheduleTypeString) : RoutineScheduleType.days;
     final scheduledDays = json["days"] as List<dynamic>? ?? [];
     final daysOfWeek = scheduledDays.map((day) => DayOfWeek.fromWeekDay(day)).toList();
 
@@ -70,6 +72,34 @@ class RoutineTemplateDto {
       owner: template.owner ?? "",
       createdAt: template.createdAt.getDateTimeInUtc(),
       updatedAt: template.updatedAt.getDateTimeInUtc(),
+    );
+  }
+
+  factory RoutineTemplateDto.fromJson({required Map<String, dynamic> json}) {
+    final id = json["id"] ?? "";
+    final name = json["name"] ?? "";
+    final notes = json["notes"] ?? "";
+    final exerciseLogJsons = json["exercises"] as List<dynamic>;
+    final exercises = exerciseLogJsons.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).toList();
+    final scheduledDateString = json["scheduledDate"];
+    final scheduledDate = scheduledDateString != null ? DateTime.parse(scheduledDateString) : null;
+    final scheduleTypeString = json["scheduleType"];
+    final scheduleType =
+        scheduleTypeString != null ? RoutineScheduleType.fromString(scheduleTypeString) : RoutineScheduleType.days;
+    final scheduledDays = json["days"] as List<dynamic>? ?? [];
+    final daysOfWeek = scheduledDays.map((day) => DayOfWeek.fromWeekDay(day)).toList();
+    final owner = json["owner"] ?? "";
+    return RoutineTemplateDto(
+      id: id,
+      name: name,
+      exerciseTemplates: exercises,
+      scheduledDays: daysOfWeek,
+      notes: notes,
+      scheduledDate: scheduledDate,
+      scheduleType: scheduleType,
+      owner: owner ?? "",
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
     );
   }
 

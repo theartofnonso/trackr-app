@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
@@ -247,6 +248,10 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
     await _runFunctionMessage(userInstruction: completeInstructions);
 
     _hideLoadingScreen();
+
+    if(mounted) {
+      context.pop();
+    }
   }
 
   Future<void> _runFunctionMessage({required String userInstruction}) async {
@@ -261,7 +266,8 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
       final toolName = tool['name']; // A function
       if (toolName == "list_exercises") {
         if (mounted) {
-          final exercises = Provider.of<ExerciseAndRoutineController>(context, listen: false).exercises;
+          final controller = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+          final exercises = controller.exercises;
           final functionCallPayload = await createFunctionCallPayload(
               toolId: toolId,
               systemInstruction: personalTrainerInstructionForWorkouts,
@@ -272,13 +278,13 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
           if (jsonString != null) {
             final json = jsonDecode(jsonString);
             final workouts = json["workouts"] as List<dynamic>;
-            final workoutPlanName = json["workout_name"] ?? "A workout plan";
-            final workoutPlanNotes = json["workout_caption"] ?? "";
+            final workoutPlanName = json["workout_plan_name"] ?? "A workout plan";
+            final workoutPlanNotes = json["workout_plan_caption"] ?? "";
             if (workouts.isNotEmpty) {
               final routineTemplates = workouts.map((workout) {
-                final workoutName = json["workout_name"] ?? "A workout";
-                final workoutCaption = json["workout_caption"] ?? "A workout created by TRKR Coach";
-                final exerciseIds = json["exercises"] as List<dynamic>;
+                final workoutName = workout["workout_name"] ?? "A workout";
+                final workoutCaption = workout["workout_caption"] ?? "A workout created by TRKR Coach";
+                final exerciseIds = workout["exercises"] as List<dynamic>;
                 final exerciseTemplates = exerciseIds.map((exerciseId) {
                   final exerciseInLibrary = exercises.firstWhere((exercise) => exercise.id == exerciseId);
                   final exerciseTemplate = ExerciseLogDto(
@@ -301,15 +307,24 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
                     createdAt: DateTime.now(),
                     updatedAt: DateTime.now());
               }).toList();
+              List<RoutineTemplateDto> createdTemplates = [];
+              for (final templateToCreate in routineTemplates) {
+                final template = await controller.saveTemplate(templateDto: templateToCreate);
+                if (template != null) {
+                  createdTemplates.add(template);
+                }
+              }
               final routineTemplatePlan = RoutineTemplatePlanDto(
-                id: "",
+                  id: "",
                   name: workoutPlanName,
                   notes: workoutPlanNotes,
-                  templates: routineTemplates,
+                  templates: createdTemplates,
                   weeks: _weeks.weeks,
-                  owner: SharedPrefs().userId,
+                  owner: "",
                   createdAt: DateTime.now(),
                   updatedAt: DateTime.now());
+
+              await _saveTemplatePlan(templatePlan: routineTemplatePlan);
             }
           }
         }
@@ -422,6 +437,11 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
         throw UnsupportedError("${family.name} is not allowed in here");
     }
     setState(() {});
+  }
+
+  Future<void> _saveTemplatePlan({required RoutineTemplatePlanDto templatePlan}) async {
+    final controller = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+    await controller.saveTemplatePlan(templatePlanDto: templatePlan);
   }
 
   @override

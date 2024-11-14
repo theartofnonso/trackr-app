@@ -22,6 +22,7 @@ import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../enums/routine_editor_type_enums.dart';
 import '../models/RoutineLog.dart';
 import '../models/RoutineTemplate.dart';
+import '../models/RoutineTemplatePlan.dart';
 import '../utils/app_analytics.dart';
 import 'milestones/milestones_home_screen.dart';
 
@@ -42,6 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
   StreamSubscription<QuerySnapshot<RoutineUser>>? _routineUserStream;
   StreamSubscription<QuerySnapshot<RoutineLog>>? _routineLogStream;
   StreamSubscription<QuerySnapshot<RoutineTemplate>>? _routineTemplateStream;
+  StreamSubscription<QuerySnapshot<RoutineTemplatePlan>>? _routineTemplatePlanStream;
   StreamSubscription<QuerySnapshot<ActivityLog>>? _activityLogStream;
   StreamSubscription<QuerySnapshot<Exercise>>? _exerciseStream;
 
@@ -120,6 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _observeExerciseQuery();
     _observeRoutineLogQuery();
     _observeRoutineTemplateQuery();
+    _observeRoutineTemplatePlanQuery();
     _observeActivityLogQuery();
   }
 
@@ -154,6 +157,18 @@ class _HomeScreenState extends State<HomeScreen> {
     ).listen((QuerySnapshot<RoutineTemplate> snapshot) {
       if (mounted) {
         Provider.of<ExerciseAndRoutineController>(context, listen: false).streamTemplates(templates: snapshot.items);
+      }
+    });
+  }
+
+  void _observeRoutineTemplatePlanQuery() {
+    _routineTemplatePlanStream = Amplify.DataStore.observeQuery(
+      RoutineTemplatePlan.classType,
+      sortBy: [RoutineTemplatePlan.CREATEDAT.descending()],
+    ).listen((QuerySnapshot<RoutineTemplatePlan> snapshot) {
+      if (mounted) {
+        Provider.of<ExerciseAndRoutineController>(context, listen: false)
+            .streamTemplatePlans(templatePlans: snapshot.items);
       }
     });
   }
@@ -220,6 +235,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void dispose() {
     _exerciseStream?.cancel();
     _routineTemplateStream?.cancel();
+    _routineTemplatePlanStream?.cancel();
     _routineLogStream?.cancel();
     _activityLogStream?.cancel();
     _routineUserStream?.cancel();

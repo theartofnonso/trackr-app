@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:tracker_app/dtos/appsync/routine_template_dto.dart';
 
-import '../../models/RoutineTemplate.dart';
 import '../../models/RoutineTemplatePlan.dart';
 
 class RoutineTemplatePlanDto {
@@ -26,36 +25,34 @@ class RoutineTemplatePlanDto {
       required this.updatedAt});
 
   factory RoutineTemplatePlanDto.toDto(RoutineTemplatePlan templatePlan) {
-    final json = jsonDecode(templatePlan.data);
-    return RoutineTemplatePlanDto.fromJson(json);
+    return RoutineTemplatePlanDto.fromTemplate(templatePlan: templatePlan);
   }
 
-  factory RoutineTemplatePlanDto.fromJson(Map<String, dynamic> data) {
-    final routineTemplatePlan = RoutineTemplatePlan.fromJson(data);
-    final dataJson = jsonDecode(routineTemplatePlan.data);
-    final name = dataJson["name"] ?? "";
-    final notes = dataJson["notes"] ?? "";
-    final weeks = dataJson["weeks"] ?? 0;
-    final templateJsons = dataJson["templates"] as List<dynamic>;
+  factory RoutineTemplatePlanDto.fromTemplate({required RoutineTemplatePlan templatePlan}) {
+    final json = jsonDecode(templatePlan.data);
+    final name = json["name"] ?? "";
+    final notes = json["notes"] ?? "";
+    final weeks = json["weeks"] ?? 0;
+    final templateJsons = json["templates"] as List<dynamic>;
     final templates = templateJsons.map((json) {
-      final template = RoutineTemplate.fromJson(json);
-      return RoutineTemplateDto.fromTemplate(template: template);
+      return RoutineTemplateDto.fromJson(json: json);
     }).toList();
 
     return RoutineTemplatePlanDto(
-      id: routineTemplatePlan.id,
+      id: templatePlan.id,
       name: name,
       notes: notes,
       templates: templates,
       weeks: weeks,
-      owner: routineTemplatePlan.owner ?? "",
-      createdAt: routineTemplatePlan.createdAt.getDateTimeInUtc(),
-      updatedAt: routineTemplatePlan.updatedAt.getDateTimeInUtc(),
+      owner: templatePlan.owner ?? "",
+      createdAt: templatePlan.createdAt.getDateTimeInUtc(),
+      updatedAt: templatePlan.updatedAt.getDateTimeInUtc(),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'name': name,
       'notes': notes,
       'templates': templates.map((template) => template.toJson()).toList(),

@@ -57,7 +57,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   bool _minimized = true;
 
-  List<String> _messages = [];
+  List<String> _messages = defaultLoadingMessages;
 
   @override
   Widget build(BuildContext context) {

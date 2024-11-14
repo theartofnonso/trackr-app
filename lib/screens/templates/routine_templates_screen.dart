@@ -98,8 +98,7 @@ class RoutineTemplatesScreen extends StatelessWidget {
   }
 
   void _saveTemplate({required BuildContext context, required RoutineTemplateDto template}) async {
-    final routineTemplate = template;
-    final templateController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-    await templateController.saveTemplate(templateDto: routineTemplate);
+    final controller = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+    await controller.saveTemplate(templateDto: template);
   }
 }

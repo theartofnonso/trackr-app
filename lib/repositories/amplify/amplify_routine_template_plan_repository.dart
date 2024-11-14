@@ -20,15 +20,15 @@ class AmplifyRoutineTemplatePlanRepository {
     onData();
   }
 
-  Future<RoutineTemplatePlanDto> saveTemplatePlan({required RoutineTemplatePlanDto templateDto}) async {
+  Future<RoutineTemplatePlanDto> saveTemplatePlan({required RoutineTemplatePlanDto templatePlanDto}) async {
     final now = TemporalDateTime.now();
 
     final templatePlanToCreate =
-        RoutineTemplatePlan(data: jsonEncode(templateDto), createdAt: now, updatedAt: now, owner: SharedPrefs().userId);
+    RoutineTemplatePlan(data: jsonEncode(templatePlanDto), createdAt: now, updatedAt: now, owner: SharedPrefs().userId);
 
     await Amplify.DataStore.save<RoutineTemplatePlan>(templatePlanToCreate);
 
-    final updatedWithId = templateDto.copyWith(id: templatePlanToCreate.id);
+    final updatedWithId = templatePlanDto.copyWith(id: templatePlanToCreate.id, owner: templatePlanToCreate.owner);
 
     return updatedWithId;
   }
@@ -63,7 +63,7 @@ class AmplifyRoutineTemplatePlanRepository {
       final updatedTemplates = templatePlan.templates.map((template) {
         final updatedExerciseTemplates = template.exerciseTemplates.map((exerciseTemplate) {
           final foundExercise = exercises.firstWhere(
-              (exerciseInLibrary) => exerciseInLibrary.id == exerciseTemplate.exercise.id,
+                  (exerciseInLibrary) => exerciseInLibrary.id == exerciseTemplate.exercise.id,
               orElse: () => exerciseTemplate.exercise);
           return exerciseTemplate.copyWith(exercise: foundExercise);
         }).toList();

@@ -17,12 +17,9 @@ class RoutinePlansHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final templatePlans = Provider.of<ExerciseAndRoutineController>(context, listen: true).templatePlans;
 
-    final routineTemplates = Provider.of<ExerciseAndRoutineController>(context, listen: false).templates;
-
-    final routineTemplatePlan = RoutineTemplatePlanDto(id: "", name: "4-Week Muscle Mummy", notes: "", templates: routineTemplates, weeks: 4, owner: "", createdAt: DateTime.now(), updatedAt: DateTime.now());
-
-    final programs = [_TemplatePlanWidget(templatePlanDto: routineTemplatePlan), _TemplatePlanWidget(templatePlanDto: routineTemplatePlan), _TemplatePlanWidget(templatePlanDto: routineTemplatePlan)];
+    final children = templatePlans.map((templatePlan) => _TemplatePlanWidget(templatePlanDto: templatePlan)).toList();
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -54,7 +51,7 @@ class RoutinePlansHome extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               BackgroundInformationContainer(
-                  image: 'images/lace.jpg',
+                  image: 'images/woman_leg_press.jpg',
                   content: "Ask TRKR Coach for a personalized plan for you, structured towards a specific goal.",
                   textStyle: GoogleFonts.ubuntu(
                     fontSize: 16,
@@ -65,14 +62,14 @@ class RoutinePlansHome extends StatelessWidget {
                     colors: [Colors.green.shade800, Colors.blue.shade800, Colors.transparent],
                   )),
               const SizedBox(height: 16),
-              programs.isNotEmpty
+              templatePlans.isNotEmpty
                   ? Expanded(
                       child: GridView.count(
                           crossAxisCount: 2,
                           childAspectRatio: 1,
                           mainAxisSpacing: 10.0,
                           crossAxisSpacing: 10.0,
-                          children: programs),
+                          children: children),
                     )
                   : const RoutineEmptyState(message: '"Tap the + button to create workout program"'),
             ],
@@ -82,7 +79,6 @@ class RoutinePlansHome extends StatelessWidget {
 }
 
 class _TemplatePlanWidget extends StatelessWidget {
-
   final RoutineTemplatePlanDto templatePlanDto;
 
   const _TemplatePlanWidget({required this.templatePlanDto});
