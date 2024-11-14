@@ -186,7 +186,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
               SizedBox(
                 width: double.infinity,
                 child: OpacityButtonWidget(
-                    onPressed: _createWorkoutPlan,
+                    onPressed: _createTemplatePlan,
                     label: "${_goal.description} in ${_weeks.weeks} weeks",
                     padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
                     buttonColor: vibrantGreen),
@@ -210,7 +210,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
     });
   }
 
-  void _createWorkoutPlan() async {
+  void _createTemplatePlan() async {
     _showLoadingScreen();
 
     final StringBuffer buffer = StringBuffer();
@@ -249,7 +249,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
 
     _hideLoadingScreen();
 
-    if(mounted) {
+    if (mounted) {
       context.pop();
     }
   }
@@ -280,52 +280,16 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
             final workouts = json["workouts"] as List<dynamic>;
             final workoutPlanName = json["workout_plan_name"] ?? "A workout plan";
             final workoutPlanNotes = json["workout_plan_caption"] ?? "";
-            if (workouts.isNotEmpty) {
-              final routineTemplates = workouts.map((workout) {
-                final workoutName = workout["workout_name"] ?? "A workout";
-                final workoutCaption = workout["workout_caption"] ?? "A workout created by TRKR Coach";
-                final exerciseIds = workout["exercises"] as List<dynamic>;
-                final exerciseTemplates = exerciseIds.map((exerciseId) {
-                  final exerciseInLibrary = exercises.firstWhere((exercise) => exercise.id == exerciseId);
-                  final exerciseTemplate = ExerciseLogDto(
-                      exerciseInLibrary.id,
-                      "",
-                      "",
-                      exerciseInLibrary,
-                      exerciseInLibrary.description ?? "",
-                      [const SetDto(0, 0, false)],
-                      DateTime.now().withoutTime(),
-                      []);
-                  return exerciseTemplate;
-                }).toList();
-                return RoutineTemplateDto(
-                    id: "",
-                    name: workoutName,
-                    exerciseTemplates: exerciseTemplates,
-                    notes: workoutCaption,
-                    owner: SharedPrefs().userId,
-                    createdAt: DateTime.now(),
-                    updatedAt: DateTime.now());
-              }).toList();
-              List<RoutineTemplateDto> createdTemplates = [];
-              for (final templateToCreate in routineTemplates) {
-                final template = await controller.saveTemplate(templateDto: templateToCreate);
-                if (template != null) {
-                  createdTemplates.add(template);
-                }
-              }
-              final routineTemplatePlan = RoutineTemplatePlanDto(
-                  id: "",
-                  name: workoutPlanName,
-                  notes: workoutPlanNotes,
-                  templates: createdTemplates,
-                  weeks: _weeks.weeks,
-                  owner: "",
-                  createdAt: DateTime.now(),
-                  updatedAt: DateTime.now());
-
-              await _saveTemplatePlan(templatePlan: routineTemplatePlan);
-            }
+            final routineTemplateDtos = _createRoutineTemplates(workouts: workouts, exercises: exercises);
+            final routineTemplatePlanDto = RoutineTemplatePlanDto(
+                id: "",
+                name: workoutPlanName,
+                notes: workoutPlanNotes,
+                weeks: _weeks.weeks,
+                owner: "",
+                createdAt: DateTime.now(),
+                updatedAt: DateTime.now());
+            _saveTemplatePlan(templatePlanDto: routineTemplatePlanDto, templateDtos: routineTemplateDtos);
           }
         }
       } else {
@@ -439,9 +403,36 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
     setState(() {});
   }
 
-  Future<void> _saveTemplatePlan({required RoutineTemplatePlanDto templatePlan}) async {
+  List<RoutineTemplateDto> _createRoutineTemplates(
+      {required List<dynamic> workouts, required List<ExerciseDto> exercises}) {
+    return workouts.map((workout) {
+      final workoutName = workout["workout_name"] ?? "A workout";
+      final workoutCaption = workout["workout_caption"] ?? "A workout created by TRKR Coach";
+      final exerciseIds = workout["exercises"] as List<dynamic>;
+      final exerciseTemplates = exerciseIds.map((exerciseId) {
+        final exerciseInLibrary = exercises.firstWhere((exercise) => exercise.id == exerciseId);
+        final exerciseTemplate = ExerciseLogDto(exerciseInLibrary.id, "", "", exerciseInLibrary,
+            exerciseInLibrary.description ?? "", [const SetDto(0, 0, false)], DateTime.now().withoutTime(), []);
+        return exerciseTemplate;
+      }).toList();
+      return RoutineTemplateDto(
+          id: "",
+          name: workoutName,
+          exerciseTemplates: exerciseTemplates,
+          notes: workoutCaption,
+          owner: SharedPrefs().userId,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now());
+    }).toList();
+  }
+
+  Future<void> _saveTemplatePlan(
+      {required RoutineTemplatePlanDto templatePlanDto, required List<RoutineTemplateDto> templateDtos}) async {
     final controller = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-    await controller.saveTemplatePlan(templatePlanDto: templatePlan);
+    final templatePlan = await controller.saveTemplatePlan(templatePlanDto: templatePlanDto);
+    for (final templateDto in templateDtos) {
+      await controller.saveTemplate(templatePlan: templatePlan, templateDto: templateDto);
+    }
   }
 
   @override

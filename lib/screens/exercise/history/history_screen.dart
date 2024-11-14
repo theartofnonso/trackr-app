@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 
-import '../../../widgets/empty_states/list_view_empty_state.dart';
 import '../../../widgets/exercise_history/exercise_history_log_widget.dart';
+import '../../empty_state_screens/no_list_empty_state.dart';
 
 class HistoryScreen extends StatelessWidget {
   final List<ExerciseLogDto> exerciseLogs;
@@ -11,7 +12,6 @@ class HistoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final reversed = exerciseLogs.reversed.toList();
     return Padding(
       padding: EdgeInsets.only(top: exerciseLogs.isNotEmpty ? 0 : 20, right: 10.0, bottom: 10, left: 10),
@@ -20,12 +20,19 @@ class HistoryScreen extends StatelessWidget {
         children: [
           exerciseLogs.isNotEmpty
               ? Expanded(
-            child: ListView.separated(
-                itemBuilder: (BuildContext context, int index) => ExerciseHistoryLogWidget(exerciseLog: reversed[index]),
-                separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
-                itemCount: exerciseLogs.length),
-          )
-              : const ListViewEmptyState(),
+                  child: ListView.separated(
+                      itemBuilder: (BuildContext context, int index) =>
+                          ExerciseHistoryLogWidget(exerciseLog: reversed[index]),
+                      separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
+                      itemCount: exerciseLogs.length),
+                )
+              : const NoListEmptyState(
+                  icon: FaIcon(
+                    FontAwesomeIcons.solidLightbulb,
+                    color: Colors.white70,
+                  ),
+                  message: "It might feel quiet now, but your history will soon appear here.",
+                ),
         ],
       ),
     );

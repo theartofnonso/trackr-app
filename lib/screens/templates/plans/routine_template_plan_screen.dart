@@ -13,8 +13,8 @@ import '../../../utils/dialog_utils.dart';
 import '../../../utils/routine_utils.dart';
 import '../../../utils/string_utils.dart';
 import '../../../widgets/backgrounds/trkr_loading_screen.dart';
-import '../../../widgets/empty_states/routine_empty_state.dart';
 import '../../../widgets/routine/preview/routine_template_grid_item_widget.dart';
+import '../../empty_state_screens/no_list_empty_state.dart';
 import '../../empty_state_screens/not_found.dart';
 
 class RoutineTemplatePlanScreen extends StatefulWidget {
@@ -52,9 +52,21 @@ class _RoutineTemplatePlanScreenState extends State<RoutineTemplatePlanScreen> {
 
     if (templatePlan == null) return const NotFound();
 
+    final menuActions = [
+      MenuItemButton(
+        onPressed: _deleteRoutineTemplatePlan,
+        leadingIcon: FaIcon(
+          FontAwesomeIcons.trash,
+          size: 16,
+          color: Colors.redAccent,
+        ),
+        child: Text("Delete", style: GoogleFonts.ubuntu(color: Colors.redAccent)),
+      )
+    ];
+
     final templates = templatePlan.templates
-        .map((template) => RoutineTemplateGridItemWidget(
-            template: template, scheduleSummary: scheduledDaysSummary(template: template)))
+        ?.map((template) => RoutineTemplateGridItemWidget(
+            template: template, scheduleSummary: scheduledDaysSummary(template: template), templatePlanId: templatePlan.id))
         .toList();
 
     return Scaffold(
@@ -76,6 +88,32 @@ class _RoutineTemplatePlanScreenState extends State<RoutineTemplatePlanScreen> {
           centerTitle: true,
           title: Text(templatePlan.name,
               style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+          actions: [
+            MenuAnchor(
+              style: MenuStyle(
+                backgroundColor: WidgetStateProperty.all(sapphireDark80),
+                surfaceTintColor: WidgetStateProperty.all(sapphireDark),
+              ),
+              builder: (BuildContext context, MenuController controller, Widget? child) {
+                return IconButton(
+                  onPressed: () {
+                    if (controller.isOpen) {
+                      controller.close();
+                    } else {
+                      controller.open();
+                    }
+                  },
+                  icon: const Icon(
+                    Icons.more_vert_rounded,
+                    color: Colors.white,
+                    size: 24,
+                  ),
+                  tooltip: 'Show menu',
+                );
+              },
+              menuChildren: menuActions,
+            )
+          ],
         ),
         body: Container(
           width: double.infinity,
@@ -131,7 +169,7 @@ class _RoutineTemplatePlanScreenState extends State<RoutineTemplatePlanScreen> {
                           verticalAlignment: TableCellVerticalAlignment.middle,
                           child: Center(
                             child: Text(
-                                "${templatePlan.templates.length} ${pluralize(word: "Workout", count: templatePlan.templates.length)} | Week",
+                                "${templatePlan.templates?.length ?? 0} ${pluralize(word: "Workout", count: templatePlan.templates?.length ?? 0)} | Week",
                                 style:
                                     GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                           ),
@@ -149,27 +187,71 @@ class _RoutineTemplatePlanScreenState extends State<RoutineTemplatePlanScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                templatePlan.templates.isNotEmpty
+                templatePlan.templates?.isNotEmpty ?? false
                     ? Expanded(
                         child: GridView.count(
                             crossAxisCount: 2,
                             childAspectRatio: 1,
                             mainAxisSpacing: 10.0,
                             crossAxisSpacing: 10.0,
-                            children: templates),
+                            children: templates ?? []),
                       )
-                    : const RoutineEmptyState(
-                        message: "It might feel quiet now, but your workouts will soon appear here."),
+                    : const NoListEmptyState(icon: FaIcon(FontAwesomeIcons.solidLightbulb, color: Colors.white70,), message: "It might feel quiet now, but your workouts will soon appear here.",),
               ],
             ),
           ),
         ));
   }
 
+  void _showLoadingScreen() {
+    setState(() {
+      _loading = false;
+    });
+  }
+
   void _hideLoadingScreen() {
     setState(() {
       _loading = false;
     });
+  }
+
+  void _deleteRoutineTemplatePlan() {
+    final templatePlan = _templatePlan;
+    if (templatePlan != null) {
+      showBottomSheetWithMultiActions(
+          context: context,
+          title: "Delete workout plan?",
+          description: "Are you sure you want to delete this workout plan?",
+          leftAction: Navigator.of(context).pop,
+          rightAction: () {
+            context.pop();
+            _showLoadingScreen();
+            _deleteTemplate();
+          },
+          leftActionLabel: 'Cancel',
+          rightActionLabel: 'Delete',
+          isRightActionDestructive: true);
+    }
+  }
+
+  void _deleteTemplate() async {
+    final templatePlan = _templatePlan;
+    if (templatePlan != null) {
+      try {
+        await Provider.of<ExerciseAndRoutineController>(context, listen: false).removeTemplatePlan(
+            templatePlan: templatePlan);
+        if (mounted) {
+          context.pop();
+        }
+      } catch (e) {
+        if (mounted) {
+          showSnackbar(
+              context: context, icon: const Icon(Icons.info_outline), message: "Unable to delete workout plan");
+        }
+      } finally {
+        _hideLoadingScreen();
+      }
+    }
   }
 
   void _loadData() {

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
+import 'package:tracker_app/dtos/appsync/routine_template_plan_dto.dart';
 import 'package:tracker_app/enums/routine_schedule_type_enums.dart';
 
 import '../../enums/week_days_enum.dart';
@@ -14,6 +15,7 @@ class RoutineTemplateDto {
   final RoutineScheduleType scheduleType;
   final List<ExerciseLogDto> exerciseTemplates;
   final List<DayOfWeek> scheduledDays;
+  final RoutineTemplatePlanDto? templatePlanDto;
   final DateTime? scheduledDate;
   final String owner;
   final DateTime createdAt;
@@ -24,6 +26,7 @@ class RoutineTemplateDto {
       required this.name,
       required this.exerciseTemplates,
       this.scheduledDays = const [],
+      this.templatePlanDto,
       required this.notes,
       required this.createdAt,
       required this.updatedAt,
@@ -61,6 +64,20 @@ class RoutineTemplateDto {
     final scheduledDays = json["days"] as List<dynamic>? ?? [];
     final daysOfWeek = scheduledDays.map((day) => DayOfWeek.fromWeekDay(day)).toList();
 
+    /// We only need the [RoutineTemplatePlan] ID
+    final templatePlanDto = template.templatePlan != null
+        ? RoutineTemplatePlanDto(
+            id: template.templatePlan?.id ?? "",
+            name: "",
+            notes: "",
+            weeks: 0,
+            owner: template.templatePlan?.owner ?? "",
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now())
+        : null;
+
+    print(templatePlanDto?.id);
+
     return RoutineTemplateDto(
       id: template.id,
       name: name,
@@ -68,38 +85,11 @@ class RoutineTemplateDto {
       scheduledDays: daysOfWeek,
       notes: notes,
       scheduledDate: scheduledDate,
+      templatePlanDto: templatePlanDto,
       scheduleType: scheduleType,
       owner: template.owner ?? "",
       createdAt: template.createdAt.getDateTimeInUtc(),
       updatedAt: template.updatedAt.getDateTimeInUtc(),
-    );
-  }
-
-  factory RoutineTemplateDto.fromJson({required Map<String, dynamic> json}) {
-    final id = json["id"] ?? "";
-    final name = json["name"] ?? "";
-    final notes = json["notes"] ?? "";
-    final exerciseLogJsons = json["exercises"] as List<dynamic>;
-    final exercises = exerciseLogJsons.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).toList();
-    final scheduledDateString = json["scheduledDate"];
-    final scheduledDate = scheduledDateString != null ? DateTime.parse(scheduledDateString) : null;
-    final scheduleTypeString = json["scheduleType"];
-    final scheduleType =
-        scheduleTypeString != null ? RoutineScheduleType.fromString(scheduleTypeString) : RoutineScheduleType.days;
-    final scheduledDays = json["days"] as List<dynamic>? ?? [];
-    final daysOfWeek = scheduledDays.map((day) => DayOfWeek.fromWeekDay(day)).toList();
-    final owner = json["owner"] ?? "";
-    return RoutineTemplateDto(
-      id: id,
-      name: name,
-      exerciseTemplates: exercises,
-      scheduledDays: daysOfWeek,
-      notes: notes,
-      scheduledDate: scheduledDate,
-      scheduleType: scheduleType,
-      owner: owner ?? "",
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
     );
   }
 

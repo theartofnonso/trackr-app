@@ -16,14 +16,22 @@ class AmplifyRoutineTemplateRepository {
   UnmodifiableListView<RoutineTemplateDto> get templates => UnmodifiableListView(_templates);
 
   void loadTemplatesStream({required List<RoutineTemplate> templates, required VoidCallback onData}) {
-    _templates = templates.map((template) => RoutineTemplateDto.toDto(template)).toList();
+    _templates = templates
+        .map((template) => RoutineTemplateDto.toDto(template))
+        .toList();
     onData();
   }
 
-  Future<RoutineTemplateDto> saveTemplate({required RoutineTemplateDto templateDto}) async {
+  Future<RoutineTemplateDto> saveTemplate(
+      {required RoutineTemplateDto templateDto, RoutineTemplatePlan? templatePlan}) async {
     final now = TemporalDateTime.now();
 
-    final templateToCreate = RoutineTemplate(data: jsonEncode(templateDto), createdAt: now, updatedAt: now, owner: SharedPrefs().userId);
+    final templateToCreate = RoutineTemplate(
+        data: jsonEncode(templateDto),
+        templatePlan: templatePlan,
+        createdAt: now,
+        updatedAt: now,
+        owner: SharedPrefs().userId);
 
     await Amplify.DataStore.save<RoutineTemplate>(templateToCreate);
 
@@ -59,8 +67,10 @@ class AmplifyRoutineTemplateRepository {
 
   void syncTemplatesWithExercisesFromLibrary({required List<ExerciseDto> exercises}) {
     final updatedTemplates = _templates.map((template) {
-      final updatedExerciseTemplates =  template.exerciseTemplates.map((exerciseTemplate) {
-        final foundExercise = exercises.firstWhere((exerciseInLibrary) => exerciseInLibrary.id == exerciseTemplate.exercise.id, orElse: () => exerciseTemplate.exercise);
+      final updatedExerciseTemplates = template.exerciseTemplates.map((exerciseTemplate) {
+        final foundExercise = exercises.firstWhere(
+            (exerciseInLibrary) => exerciseInLibrary.id == exerciseTemplate.exercise.id,
+            orElse: () => exerciseTemplate.exercise);
         return exerciseTemplate.copyWith(exercise: foundExercise);
       }).toList();
       return template.copyWith(exerciseTemplates: updatedExerciseTemplates);
@@ -72,6 +82,18 @@ class AmplifyRoutineTemplateRepository {
 
   RoutineTemplateDto? templateWhere({required String id}) {
     return _templates.firstWhereOrNull((dto) => dto.id == id);
+  }
+
+  RoutineTemplateDto? templateByTemplatePlanId({required String id}) {
+    return _templates.firstWhereOrNull((dto) => dto.templatePlanDto?.id == id);
+  }
+
+  List<RoutineTemplateDto> templatesByTemplatePlanId({required String id}) {
+    return _templates.where((dto) => dto.templatePlanDto?.id == id).toList();
+  }
+
+  List<RoutineTemplateDto> templatesWithoutTemplatePlanId({required String id}) {
+    return _templates.where((dto) => dto.templatePlanDto?.id == id).toList();
   }
 
   void clear() {

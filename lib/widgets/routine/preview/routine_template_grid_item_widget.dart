@@ -10,15 +10,16 @@ import '../../../utils/string_utils.dart';
 class RoutineTemplateGridItemWidget extends StatelessWidget {
   final RoutineTemplateDto template;
   final String scheduleSummary;
+  final String templatePlanId;
 
-  const RoutineTemplateGridItemWidget({super.key, required this.template, required this.scheduleSummary});
+  const RoutineTemplateGridItemWidget({super.key, required this.template, required this.scheduleSummary, this.templatePlanId = ""});
 
   @override
   Widget build(BuildContext context) {
     final exercises = template.exerciseTemplates;
     final sets = template.exerciseTemplates.expand((exercise) => exercise.sets);
     return GestureDetector(
-      onTap: () => navigateToRoutineTemplate(context: context, template: template),
+      onTap: () => navigateToRoutineTemplate(context: context, template: template, templatePlanId: templatePlanId),
       child: Container(
           padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(

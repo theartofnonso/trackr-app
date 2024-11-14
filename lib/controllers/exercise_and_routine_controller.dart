@@ -43,9 +43,9 @@ class ExerciseAndRoutineController extends ChangeNotifier {
 
   UnmodifiableListView<RoutineTemplateDto> get templates => _amplifyTemplateRepository.templates;
 
-  UnmodifiableListView<RoutineLogDto> get logs => _amplifyLogRepository.logs;
-
   UnmodifiableListView<RoutineTemplatePlanDto> get templatePlans => _amplifyTemplatePlanRepository.templatePlans;
+
+  UnmodifiableListView<RoutineLogDto> get logs => _amplifyLogRepository.logs;
 
   UnmodifiableListView<Milestone> get milestones => _amplifyLogRepository.milestones;
 
@@ -131,18 +131,17 @@ class ExerciseAndRoutineController extends ChangeNotifier {
   void streamTemplates({required List<RoutineTemplate> templates}) {
     _amplifyTemplateRepository.loadTemplatesStream(
         templates: templates,
-        onData: () {
-          _amplifyTemplateRepository.syncTemplatesWithExercisesFromLibrary(
-              exercises: _amplifyExerciseRepository.exercises);
-        });
+        onData: () {});
     notifyListeners();
   }
 
-  Future<RoutineTemplateDto?> saveTemplate({required RoutineTemplateDto templateDto}) async {
+  Future<RoutineTemplateDto?> saveTemplate(
+      {required RoutineTemplateDto templateDto, RoutineTemplatePlan? templatePlan}) async {
     RoutineTemplateDto? savedTemplate;
     isLoading = true;
     try {
-      savedTemplate = await _amplifyTemplateRepository.saveTemplate(templateDto: templateDto);
+      savedTemplate =
+          await _amplifyTemplateRepository.saveTemplate(templateDto: templateDto, templatePlan: templatePlan);
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {
@@ -182,7 +181,6 @@ class ExerciseAndRoutineController extends ChangeNotifier {
   /// TemplatePlans
 
   void streamTemplatePlans({required List<RoutineTemplatePlan> templatePlans}) {
-
     _amplifyTemplatePlanRepository.loadTemplatePlansStream(
         templatesPlans: templatePlans,
         onData: () {
@@ -192,8 +190,8 @@ class ExerciseAndRoutineController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<RoutineTemplatePlanDto?> saveTemplatePlan({required RoutineTemplatePlanDto templatePlanDto}) async {
-    RoutineTemplatePlanDto? savedTemplatePlan;
+  Future<RoutineTemplatePlan?> saveTemplatePlan({required RoutineTemplatePlanDto templatePlanDto}) async {
+    RoutineTemplatePlan? savedTemplatePlan;
     isLoading = true;
     try {
       savedTemplatePlan = await _amplifyTemplatePlanRepository.saveTemplatePlan(templatePlanDto: templatePlanDto);
@@ -210,7 +208,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
   Future<void> updateTemplatePlan({required RoutineTemplatePlanDto templatePlan}) async {
     isLoading = true;
     try {
-      await _amplifyTemplatePlanRepository.updateTemplatePlan(template: templatePlan);
+      await _amplifyTemplatePlanRepository.updateTemplatePlan(templatePlanDto: templatePlan);
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {
@@ -223,7 +221,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
   Future<void> removeTemplatePlan({required RoutineTemplatePlanDto templatePlan}) async {
     isLoading = true;
     try {
-      await _amplifyTemplatePlanRepository.removeTemplatePlan(template: templatePlan);
+      await _amplifyTemplatePlanRepository.removeTemplatePlan(templatePlanDto: templatePlan);
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {
@@ -334,6 +332,14 @@ class ExerciseAndRoutineController extends ChangeNotifier {
   /// Template Helpers methods
   RoutineTemplateDto? templateWhere({required String id}) {
     return _amplifyTemplateRepository.templateWhere(id: id);
+  }
+
+  RoutineTemplateDto? templateByTemplatePlanId({required String id}) {
+    return _amplifyTemplateRepository.templateByTemplatePlanId(id: id);
+  }
+
+  List<RoutineTemplateDto> templatesByTemplatePlanId({required String id}) {
+    return _amplifyTemplateRepository.templatesByTemplatePlanId(id: id);
   }
 
   /// TemplatePlan Helpers methods

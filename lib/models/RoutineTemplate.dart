@@ -29,6 +29,7 @@ class RoutineTemplate extends amplify_core.Model {
   final String id;
   final String? _owner;
   final String? _data;
+  final RoutineTemplatePlan? _templatePlan;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
 
@@ -62,6 +63,10 @@ class RoutineTemplate extends amplify_core.Model {
     }
   }
   
+  RoutineTemplatePlan? get templatePlan {
+    return _templatePlan;
+  }
+  
   amplify_core.TemporalDateTime get createdAt {
     try {
       return _createdAt!;
@@ -88,13 +93,14 @@ class RoutineTemplate extends amplify_core.Model {
     }
   }
   
-  const RoutineTemplate._internal({required this.id, owner, required data, required createdAt, required updatedAt}): _owner = owner, _data = data, _createdAt = createdAt, _updatedAt = updatedAt;
+  const RoutineTemplate._internal({required this.id, owner, required data, templatePlan, required createdAt, required updatedAt}): _owner = owner, _data = data, _templatePlan = templatePlan, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory RoutineTemplate({String? id, String? owner, required String data, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
+  factory RoutineTemplate({String? id, String? owner, required String data, RoutineTemplatePlan? templatePlan, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
     return RoutineTemplate._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       owner: owner,
       data: data,
+      templatePlan: templatePlan,
       createdAt: createdAt,
       updatedAt: updatedAt);
   }
@@ -110,6 +116,7 @@ class RoutineTemplate extends amplify_core.Model {
       id == other.id &&
       _owner == other._owner &&
       _data == other._data &&
+      _templatePlan == other._templatePlan &&
       _createdAt == other._createdAt &&
       _updatedAt == other._updatedAt;
   }
@@ -125,6 +132,7 @@ class RoutineTemplate extends amplify_core.Model {
     buffer.write("id=" + "$id" + ", ");
     buffer.write("owner=" + "$_owner" + ", ");
     buffer.write("data=" + "$_data" + ", ");
+    buffer.write("templatePlan=" + (_templatePlan != null ? _templatePlan!.toString() : "null") + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
@@ -132,11 +140,12 @@ class RoutineTemplate extends amplify_core.Model {
     return buffer.toString();
   }
   
-  RoutineTemplate copyWith({String? owner, String? data, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+  RoutineTemplate copyWith({String? owner, String? data, RoutineTemplatePlan? templatePlan, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
     return RoutineTemplate._internal(
       id: id,
       owner: owner ?? this.owner,
       data: data ?? this.data,
+      templatePlan: templatePlan ?? this.templatePlan,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt);
   }
@@ -144,6 +153,7 @@ class RoutineTemplate extends amplify_core.Model {
   RoutineTemplate copyWithModelFieldValues({
     ModelFieldValue<String?>? owner,
     ModelFieldValue<String>? data,
+    ModelFieldValue<RoutineTemplatePlan?>? templatePlan,
     ModelFieldValue<amplify_core.TemporalDateTime>? createdAt,
     ModelFieldValue<amplify_core.TemporalDateTime>? updatedAt
   }) {
@@ -151,6 +161,7 @@ class RoutineTemplate extends amplify_core.Model {
       id: id,
       owner: owner == null ? this.owner : owner.value,
       data: data == null ? this.data : data.value,
+      templatePlan: templatePlan == null ? this.templatePlan : templatePlan.value,
       createdAt: createdAt == null ? this.createdAt : createdAt.value,
       updatedAt: updatedAt == null ? this.updatedAt : updatedAt.value
     );
@@ -160,17 +171,23 @@ class RoutineTemplate extends amplify_core.Model {
     : id = json['id'],
       _owner = json['owner'],
       _data = json['data'],
+      _templatePlan = json['templatePlan'] != null
+        ? json['templatePlan']['serializedData'] != null
+          ? RoutineTemplatePlan.fromJson(new Map<String, dynamic>.from(json['templatePlan']['serializedData']))
+          : RoutineTemplatePlan.fromJson(new Map<String, dynamic>.from(json['templatePlan']))
+        : null,
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'owner': _owner, 'data': _data, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'owner': _owner, 'data': _data, 'templatePlan': _templatePlan?.toJson(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
     'id': id,
     'owner': _owner,
     'data': _data,
+    'templatePlan': _templatePlan,
     'createdAt': _createdAt,
     'updatedAt': _updatedAt
   };
@@ -179,6 +196,9 @@ class RoutineTemplate extends amplify_core.Model {
   static final ID = amplify_core.QueryField(fieldName: "id");
   static final OWNER = amplify_core.QueryField(fieldName: "owner");
   static final DATA = amplify_core.QueryField(fieldName: "data");
+  static final TEMPLATEPLAN = amplify_core.QueryField(
+    fieldName: "templatePlan",
+    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'RoutineTemplatePlan'));
   static final CREATEDAT = amplify_core.QueryField(fieldName: "createdAt");
   static final UPDATEDAT = amplify_core.QueryField(fieldName: "updatedAt");
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
@@ -205,6 +225,10 @@ class RoutineTemplate extends amplify_core.Model {
         ])
     ];
     
+    modelSchemaDefinition.indexes = [
+      amplify_core.ModelIndex(fields: const ["templatePlanID"], name: "byRoutineTemplatePlan")
+    ];
+    
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.id());
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
@@ -217,6 +241,13 @@ class RoutineTemplate extends amplify_core.Model {
       key: RoutineTemplate.DATA,
       isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.belongsTo(
+      key: RoutineTemplate.TEMPLATEPLAN,
+      isRequired: false,
+      targetNames: ['templatePlanID'],
+      ofModelName: 'RoutineTemplatePlan'
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(

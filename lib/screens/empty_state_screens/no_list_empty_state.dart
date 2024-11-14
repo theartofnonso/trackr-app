@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../colors.dart';
-
 class NoListEmptyState extends StatelessWidget {
 
   final Widget icon;
@@ -12,25 +10,14 @@ class NoListEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
+    return Expanded(
+      child: Container(
         width: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              sapphireDark80,
-              sapphireDark,
-            ],
-          ),
-        ),
-        child: SafeArea(
-            minimum: const EdgeInsets.all(10.0),
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+        padding: EdgeInsets.all(20),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
               icon,
               const SizedBox(height: 16),
               Text(message,
@@ -40,7 +27,7 @@ class NoListEmptyState extends StatelessWidget {
                       fontSize: 16,
                       fontStyle: FontStyle.italic,
                       fontWeight: FontWeight.w600))
-            ])),
+            ]),
       ),
     );
   }

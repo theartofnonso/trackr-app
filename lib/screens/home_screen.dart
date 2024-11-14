@@ -150,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void _observeRoutineTemplateQuery() {
+  void _observeRoutineTemplateQuery() async {
     _routineTemplateStream = Amplify.DataStore.observeQuery(
       RoutineTemplate.classType,
       sortBy: [RoutineTemplate.CREATEDAT.descending()],

@@ -1,14 +1,13 @@
 import 'dart:convert';
 
 import 'package:tracker_app/dtos/appsync/routine_template_dto.dart';
-
-import '../../models/RoutineTemplatePlan.dart';
+import 'package:tracker_app/models/ModelProvider.dart';
 
 class RoutineTemplatePlanDto {
   final String id;
   final String name;
   final String notes;
-  final List<RoutineTemplateDto> templates;
+  final List<RoutineTemplateDto>? templates;
   final int weeks;
   final String owner;
   final DateTime createdAt;
@@ -18,31 +17,31 @@ class RoutineTemplatePlanDto {
       {required this.id,
       required this.name,
       required this.notes,
-      required this.templates,
+      this.templates,
       required this.weeks,
       required this.owner,
       required this.createdAt,
       required this.updatedAt});
 
-  factory RoutineTemplatePlanDto.toDto(RoutineTemplatePlan templatePlan) {
-    return RoutineTemplatePlanDto.fromTemplate(templatePlan: templatePlan);
+  factory RoutineTemplatePlanDto.toDto(RoutineTemplatePlan templatePlan, {required List<RoutineTemplate> templates}) {
+    return RoutineTemplatePlanDto.fromTemplate(templatePlan: templatePlan, templates: templates);
   }
 
-  factory RoutineTemplatePlanDto.fromTemplate({required RoutineTemplatePlan templatePlan}) {
+  factory RoutineTemplatePlanDto.fromTemplate(
+      {required RoutineTemplatePlan templatePlan, required List<RoutineTemplate> templates}) {
     final json = jsonDecode(templatePlan.data);
     final name = json["name"] ?? "";
     final notes = json["notes"] ?? "";
     final weeks = json["weeks"] ?? 0;
-    final templateJsons = json["templates"] as List<dynamic>;
-    final templates = templateJsons.map((json) {
-      return RoutineTemplateDto.fromJson(json: json);
+    final templateDtos = templates.map((template) {
+      return RoutineTemplateDto.fromTemplate(template: template);
     }).toList();
 
     return RoutineTemplatePlanDto(
       id: templatePlan.id,
       name: name,
       notes: notes,
-      templates: templates,
+      templates: templateDtos,
       weeks: weeks,
       owner: templatePlan.owner ?? "",
       createdAt: templatePlan.createdAt.getDateTimeInUtc(),
@@ -55,7 +54,7 @@ class RoutineTemplatePlanDto {
       'id': id,
       'name': name,
       'notes': notes,
-      'templates': templates.map((template) => template.toJson()).toList(),
+      'templates': templates?.map((template) => template.toJson()).toList(),
       'weeks': weeks,
     };
   }

@@ -29,7 +29,7 @@ class ExerciseLogEmptyState extends StatelessWidget {
             ),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                Text("Hamstring Curl",
+                Text("Lying Leg Curl",
                     style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 14)),
                 const Icon(Icons.more_horiz_rounded, color: Colors.white70)
               ]),

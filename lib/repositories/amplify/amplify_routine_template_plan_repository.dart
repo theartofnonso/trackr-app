@@ -15,41 +15,47 @@ class AmplifyRoutineTemplatePlanRepository {
 
   UnmodifiableListView<RoutineTemplatePlanDto> get templatePlans => UnmodifiableListView(_templatePlans);
 
-  void loadTemplatePlansStream({required List<RoutineTemplatePlan> templatesPlans, required VoidCallback onData}) {
-    _templatePlans = templatesPlans.map((templatePlan) => RoutineTemplatePlanDto.toDto(templatePlan)).toList();
+  void loadTemplatePlansStream(
+      {required List<RoutineTemplatePlan> templatesPlans, required VoidCallback onData}) async {
+    for (final templatePlan in templatesPlans) {
+      final templates = await Amplify.DataStore.query(
+        RoutineTemplate.classType,
+        where: RoutineTemplate.TEMPLATEPLAN.eq(templatePlan.id),
+      );
+      final templatePlanDto = RoutineTemplatePlanDto.toDto(templatePlan, templates: templates);
+      _templatePlans.add(templatePlanDto);
+    }
     onData();
   }
 
-  Future<RoutineTemplatePlanDto> saveTemplatePlan({required RoutineTemplatePlanDto templatePlanDto}) async {
+  Future<RoutineTemplatePlan> saveTemplatePlan({required RoutineTemplatePlanDto templatePlanDto}) async {
     final now = TemporalDateTime.now();
 
-    final templatePlanToCreate =
-    RoutineTemplatePlan(data: jsonEncode(templatePlanDto), createdAt: now, updatedAt: now, owner: SharedPrefs().userId);
+    final templatePlanToCreate = RoutineTemplatePlan(
+        data: jsonEncode(templatePlanDto), createdAt: now, updatedAt: now, owner: SharedPrefs().userId);
 
     await Amplify.DataStore.save<RoutineTemplatePlan>(templatePlanToCreate);
 
-    final updatedWithId = templatePlanDto.copyWith(id: templatePlanToCreate.id, owner: templatePlanToCreate.owner);
-
-    return updatedWithId;
+    return templatePlanToCreate;
   }
 
-  Future<void> updateTemplatePlan({required RoutineTemplatePlanDto template}) async {
+  Future<void> updateTemplatePlan({required RoutineTemplatePlanDto templatePlanDto}) async {
     final result = (await Amplify.DataStore.query(
       RoutineTemplatePlan.classType,
-      where: RoutineTemplatePlan.ID.eq(template.id),
+      where: RoutineTemplatePlan.ID.eq(templatePlanDto.id),
     ));
 
     if (result.isNotEmpty) {
       final oldTemplate = result.first;
-      final newTemplate = oldTemplate.copyWith(data: jsonEncode(template));
+      final newTemplate = oldTemplate.copyWith(data: jsonEncode(templatePlanDto));
       await Amplify.DataStore.save<RoutineTemplatePlan>(newTemplate);
     }
   }
 
-  Future<void> removeTemplatePlan({required RoutineTemplatePlanDto template}) async {
+  Future<void> removeTemplatePlan({required RoutineTemplatePlanDto templatePlanDto}) async {
     final result = (await Amplify.DataStore.query(
       RoutineTemplatePlan.classType,
-      where: RoutineTemplatePlan.ID.eq(template.id),
+      where: RoutineTemplatePlan.ID.eq(templatePlanDto.id),
     ));
 
     if (result.isNotEmpty) {
@@ -60,10 +66,10 @@ class AmplifyRoutineTemplatePlanRepository {
 
   void syncTemplatePlansWithExercisesFromLibrary({required List<ExerciseDto> exercises}) {
     final updatedTemplatePlans = _templatePlans.map((templatePlan) {
-      final updatedTemplates = templatePlan.templates.map((template) {
+      final updatedTemplates = templatePlan.templates?.map((template) {
         final updatedExerciseTemplates = template.exerciseTemplates.map((exerciseTemplate) {
           final foundExercise = exercises.firstWhere(
-                  (exerciseInLibrary) => exerciseInLibrary.id == exerciseTemplate.exercise.id,
+              (exerciseInLibrary) => exerciseInLibrary.id == exerciseTemplate.exercise.id,
               orElse: () => exerciseTemplate.exercise);
           return exerciseTemplate.copyWith(exercise: foundExercise);
         }).toList();

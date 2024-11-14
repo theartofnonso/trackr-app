@@ -125,7 +125,7 @@ final _router = GoRouter(
             path: "shared-workout/:id",
             builder: (context, state) {
               final id = state.pathParameters['id'] ?? "";
-              return RoutineTemplateScreen(id: id);
+              return RoutineTemplateScreen(templateId: id);
             },
           ),
           GoRoute(
@@ -212,8 +212,10 @@ final _router = GoRouter(
     GoRoute(
       path: RoutineTemplateScreen.routeName,
       builder: (context, state) {
-        final template = state.extra as RoutineTemplateDto;
-        return RoutineTemplateScreen(id: template.id);
+        final extras = state.extra as Map<String, dynamic>;
+        final template = extras["template"] as RoutineTemplateDto;
+        final templatePlanId = extras["templatePlanId"] as String;
+        return RoutineTemplateScreen(templateId: template.id, templatePlanId: templatePlanId,);
       },
     ),
     GoRoute(

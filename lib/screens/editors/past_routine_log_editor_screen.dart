@@ -6,8 +6,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
+import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
@@ -18,10 +18,10 @@ import '../../dtos/set_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/routine_editors_utils.dart';
 import '../../utils/routine_utils.dart';
-import '../../widgets/empty_states/exercise_log_empty_state.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
 import '../../widgets/routine/editors/exercise_log_widget_lite.dart';
 import '../../widgets/weight_plate_calculator.dart';
+import '../empty_state_screens/no_list_empty_state.dart';
 
 class PastRoutineLogEditorScreen extends StatefulWidget {
   static const routeName = '/past-routine-log-editor';
@@ -400,9 +400,13 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
                                   },
                                   separatorBuilder: (_, __) => const SizedBox(height: 10),
                                   itemCount: exerciseLogs.length))
-                          : const ExerciseLogEmptyState(
-                              mode: RoutineEditorMode.edit,
-                              message: "Tap the + button to start adding exercises to your workout"),
+                          : const NoListEmptyState(
+                              icon: FaIcon(
+                                FontAwesomeIcons.solidLightbulb,
+                                color: Colors.white70,
+                              ),
+                              message: "Tap the + button to start adding exercises to your workout.",
+                            ),
                     ],
                   ),
                 ),

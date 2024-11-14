@@ -51,8 +51,8 @@ Future<RoutineLogDto?> navigateAndEditLog(
   return log;
 }
 
-void navigateToRoutineTemplate({required BuildContext context, required RoutineTemplateDto template}) {
-  context.push(RoutineTemplateScreen.routeName, extra: template);
+void navigateToRoutineTemplate({required BuildContext context, required RoutineTemplateDto template, String templatePlanId = ""}) {
+  context.push(RoutineTemplateScreen.routeName, extra: {"template": template, "templatePlanId": templatePlanId});
 }
 
 void navigateToRoutineTemplatePlan({required BuildContext context, required RoutineTemplatePlanDto templatePlan}) {

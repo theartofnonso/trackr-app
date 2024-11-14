@@ -9,15 +9,17 @@ import 'package:tracker_app/utils/navigation_utils.dart';
 import '../../../colors.dart';
 import '../../../controllers/exercise_and_routine_controller.dart';
 import '../../../utils/string_utils.dart';
-import '../../../widgets/empty_states/routine_empty_state.dart';
 import '../../../widgets/information_containers/information_container_with_background_image.dart';
+import '../../empty_state_screens/no_list_empty_state.dart';
 
 class RoutinePlansHome extends StatelessWidget {
   const RoutinePlansHome({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final templatePlans = Provider.of<ExerciseAndRoutineController>(context, listen: true).templatePlans;
+    final controller = Provider.of<ExerciseAndRoutineController>(context, listen: true);
+
+    final templatePlans = controller.templatePlans;
 
     final children = templatePlans.map((templatePlan) => _TemplatePlanWidget(templatePlanDto: templatePlan)).toList();
 
@@ -71,7 +73,10 @@ class RoutinePlansHome extends StatelessWidget {
                           crossAxisSpacing: 10.0,
                           children: children),
                     )
-                  : const RoutineEmptyState(message: '"Tap the + button to create workout program"'),
+                  : const NoListEmptyState(
+                      icon: FaIcon(FontAwesomeIcons.solidLightbulb),
+                      message: "Tap the + button to create a workout plan",
+                    ),
             ],
           )),
     );
@@ -99,7 +104,7 @@ class _TemplatePlanWidget extends StatelessWidget {
             ),
             const Spacer(),
             Text(
-              "${templatePlanDto.templates.length} ${pluralize(word: "Session", count: 3)} / Week",
+              "${templatePlanDto.templates?.length ?? 0} ${pluralize(word: "Session", count: 3)} / Week",
               style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w500),
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
