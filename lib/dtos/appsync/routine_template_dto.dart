@@ -76,8 +76,6 @@ class RoutineTemplateDto {
             updatedAt: DateTime.now())
         : null;
 
-    print(templatePlanDto?.id);
-
     return RoutineTemplateDto(
       id: template.id,
       name: name,
