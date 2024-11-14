@@ -6,7 +6,6 @@ import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/enums/routine_editor_type_enums.dart';
-import 'package:tracker_app/enums/training_position_enum.dart';
 import 'package:tracker_app/repositories/exercise_log_repository.dart';
 
 void main() {
@@ -16,7 +15,6 @@ void main() {
       name: "Lying Leg Curl",
       primaryMuscleGroup: MuscleGroup.hamstrings,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
       owner: "");
 
@@ -25,7 +23,6 @@ void main() {
       name: "Plank",
       primaryMuscleGroup: MuscleGroup.abs,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.duration,
       owner: "");
 
@@ -34,7 +31,6 @@ void main() {
       name: "Bench Press",
       primaryMuscleGroup: MuscleGroup.chest,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
       owner: "");
 

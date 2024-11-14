@@ -13,7 +13,6 @@ class ExerciseDto {
   final String name;
   final MuscleGroup primaryMuscleGroup;
   final List<MuscleGroup> secondaryMuscleGroups;
-  final TrainingPosition trainingPosition;
   final Uri? video;
   final String? description;
   final Uri? creditSource;
@@ -27,7 +26,6 @@ class ExerciseDto {
       required this.primaryMuscleGroup,
       required this.secondaryMuscleGroups,
       required this.type,
-      required this.trainingPosition,
       this.description,
       this.video,
       this.creditSource,
@@ -64,7 +62,6 @@ class ExerciseDto {
         primaryMuscleGroup: exerciseDto.primaryMuscleGroup,
         secondaryMuscleGroups: exerciseDto.secondaryMuscleGroups,
         type: exerciseDto.type,
-        trainingPosition: exerciseDto.trainingPosition,
         owner: exercise.owner ?? "");
   }
 
@@ -82,7 +79,6 @@ class ExerciseDto {
         name: name,
         primaryMuscleGroup: primaryMuscleGroup,
         secondaryMuscleGroups: [],
-        trainingPosition: TrainingPosition.none,
         type: type,
         owner: "");
   }
@@ -102,7 +98,6 @@ class ExerciseDto {
         name: name ?? this.name,
         primaryMuscleGroup: primaryMuscleGroup ?? this.primaryMuscleGroup,
         secondaryMuscleGroups: secondaryMuscleGroups ?? this.secondaryMuscleGroups,
-        trainingPosition: trainingPosition ?? this.trainingPosition,
         type: type ?? this.type,
         owner: owner ?? this.owner,
         description: description ?? this.description);
@@ -110,7 +105,7 @@ class ExerciseDto {
 
   @override
   String toString() {
-    return 'ExerciseDto{id: $id, name: $name, primaryMuscleGroup: ${primaryMuscleGroup.name}, secondaryMuscleGroups: $secondaryMuscleGroups video: $video, description: $description, trainingPosition: $trainingPosition, creditSource: $creditSource, credit: $credit, type: $type, owner: $owner}';
+    return 'ExerciseDto{id: $id, name: $name, primaryMuscleGroup: ${primaryMuscleGroup.name}, secondaryMuscleGroups: $secondaryMuscleGroups video: $video, description: $description, creditSource: $creditSource, credit: $credit, type: $type, owner: $owner}';
   }
 
   @override

@@ -15,7 +15,6 @@ void main() {
       name: "Hamstring Exercise",
       primaryMuscleGroup: MuscleGroup.hamstrings,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
       owner: "");
 
@@ -24,7 +23,6 @@ void main() {
       name: "Quad Exercise",
       primaryMuscleGroup: MuscleGroup.quadriceps,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
       owner: "");
 
@@ -33,7 +31,6 @@ void main() {
       name: "Back Exercise",
       primaryMuscleGroup: MuscleGroup.lats,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
       owner: "");
 
@@ -42,7 +39,6 @@ void main() {
       name: "Traps Exercise",
       primaryMuscleGroup: MuscleGroup.traps,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
       owner: "");
 
@@ -51,7 +47,6 @@ void main() {
       name: "Chest Exercise",
       primaryMuscleGroup: MuscleGroup.chest,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
       owner: "");
 
@@ -60,7 +55,6 @@ void main() {
       name: "Shoulders Exercise",
       primaryMuscleGroup: MuscleGroup.shoulders,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
       owner: "");
 
@@ -69,7 +63,6 @@ void main() {
       name: "Biceps Exercise",
       primaryMuscleGroup: MuscleGroup.biceps,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
       owner: "");
 
@@ -78,7 +71,6 @@ void main() {
       name: "Triceps Exercise",
       primaryMuscleGroup: MuscleGroup.triceps,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
       owner: "");
 
@@ -87,7 +79,6 @@ void main() {
       name: "Abs Exercise",
       primaryMuscleGroup: MuscleGroup.abs,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.duration,
       owner: "");
 
@@ -96,7 +87,6 @@ void main() {
       name: "Neck Exercise",
       primaryMuscleGroup: MuscleGroup.neck,
       secondaryMuscleGroups: [MuscleGroup.neck],
-      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
       owner: "");
 

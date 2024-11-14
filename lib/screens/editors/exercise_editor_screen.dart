@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
-import 'package:tracker_app/enums/training_position_enum.dart';
 import 'package:tracker_app/screens/exercise/muscle_groups_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 
@@ -234,7 +233,6 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
           name: exerciseName,
           primaryMuscleGroup: _primaryMuscleGroup,
           secondaryMuscleGroups: [],
-          trainingPosition: TrainingPosition.none,
           type: _exerciseType,
           owner: "");
 
