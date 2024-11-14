@@ -33,11 +33,7 @@ class RoutineTemplateGridItemWidget extends StatelessWidget {
                   sapphireDark,
                 ],
               )
-                  : null,
-              boxShadow: [
-                BoxShadow(
-                    color: sapphireDark.withOpacity(0.5), spreadRadius: 5, blurRadius: 7, offset: const Offset(0, 3))
-              ]),
+                  : null,),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(
               template.name,

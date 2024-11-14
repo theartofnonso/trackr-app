@@ -89,9 +89,7 @@ class _TemplatePlanWidget extends StatelessWidget {
       onTap: () => navigateToRoutineTemplatePlan(context: context, templatePlan: templatePlanDto),
       child: Container(
           padding: const EdgeInsets.all(18),
-          decoration: BoxDecoration(color: sapphireDark80, borderRadius: BorderRadius.circular(10), boxShadow: [
-            BoxShadow(color: sapphireDark.withOpacity(0.5), spreadRadius: 5, blurRadius: 7, offset: const Offset(0, 3))
-          ]),
+          decoration: BoxDecoration(color: sapphireDark80, borderRadius: BorderRadius.circular(10)),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(
               templatePlanDto.name,
