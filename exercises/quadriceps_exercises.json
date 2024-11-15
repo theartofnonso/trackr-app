@@ -1,198 +1,27 @@
 [
   {
     "id": "QUD1",
-    "name": "Air Squat",
+    "name": "Squat",
     "primaryMuscleGroup": "quadriceps",
     "secondaryMuscleGroups": ["glutes", "hamstrings"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=3gqTBy0KlxM",
     "creditSource": "https://www.youtube.com/@WodstarFitness",
     "credit": "Wodstar",
-    "description": "A bodyweight squat targeting the quadriceps, glutes, and hamstrings.",
-    "trainingPosition": "Lengthened"
-  },
-  {
-    "id": "QUD2",
-    "name": "Barbell Hack Squat",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes", "hamstrings"],
-    "type": "WR",
-    "description": "A barbell squat variation that focuses on the quadriceps and glutes.",
-    "trainingPosition": "Lengthened"
+    "description": "A foundational squat variation that engages the quads, glutes, and core with barbell resistance.",
+    "movement": "squat"
   },
   {
     "id": "QUD3",
-    "name": "Barbell Lunge",
+    "name": "Lunges",
     "primaryMuscleGroup": "quadriceps",
     "secondaryMuscleGroups": ["glutes", "hamstrings"],
     "type": "WR",
-    "video": "https://www.youtube.com/watch?v=Z6i2IQqTuU0",
-    "creditSource": "https://www.youtube.com/@OPEXFitness",
-    "credit": "OPEX Fitness",
-    "description": "A barbell exercise emphasizing quadriceps, hamstrings, and glutes during lunging.",
-    "trainingPosition": "Lengthened"
-  },
-  {
-    "id": "QUD4",
-    "name": "Barbell Walking Lunge",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes", "hamstrings", "abs"],
-    "type": "WR",
-    "description": "Targets the quadriceps and glutes with added core stabilization in a walking motion.",
-    "trainingPosition": "Lengthened"
-  },
-  {
-    "id": "QUD5",
-    "name": "Belt Squat",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes", "hamstrings"],
-    "type": "WR",
-    "description": "A squat variation using a belt to reduce spinal load while targeting quadriceps.",
-    "trainingPosition": "Lengthened"
-  },
-  {
-    "id": "QUD6",
-    "name": "Bodyweight Lunge",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes", "hamstrings"],
-    "type": "BW",
     "video": "https://www.youtube.com/watch?v=krxGoIpg9XQ",
     "creditSource": "https://www.youtube.com/@OPEXFitness",
     "credit": "OPEX Fitness",
-    "description": "A simple lunge targeting quadriceps, hamstrings, and glutes using body weight.",
-    "trainingPosition": "Lengthened"
-  },
-  {
-    "id": "QUD7",
-    "name": "Box Squat",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes", "hamstrings"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=7iw2gLZKZ0w",
-    "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
-    "credit": "Functional Bodybuilding",
-    "description": "A squat to a box that focuses on quadriceps and glutes while improving form.",
-    "trainingPosition": "Lengthened"
-  },
-  {
-    "id": "QUD8",
-    "name": "Bulgarian Split Squat",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes", "hamstrings"],
-    "type": "BW",
-    "video": "https://www.youtube.com/watch?v=TEXl2b3__S4",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "A single-leg squat variation that isolates the quadriceps and glutes.",
-    "trainingPosition": "Lengthened"
-  },
-  {
-    "id": "QUD9",
-    "name": "Chair Squat",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes", "hamstrings"],
-    "type": "BW",
-    "description": "A beginner-friendly squat variation using a chair to focus on quadriceps and glutes.",
-    "trainingPosition": "Lengthened"
-  },
-  {
-    "id": "QUD10",
-    "name": "Dumbbell Lunge",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes", "hamstrings"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=t7DBjlOTwAk",
-    "creditSource": "https://www.youtube.com/@thirdspacelondon8746",
-    "credit": "Third Space London",
-    "description": "A weighted lunge targeting quadriceps, hamstrings, and glutes using dumbbells.",
-    "trainingPosition": "Lengthened"
-  },
-  {
-    "id": "QUD11",
-    "name": "Squat (Dumbbell)",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes", "hamstrings"],
-    "type": "WR",
-    "description": "A squat variation with dumbbells focusing on quadriceps, glutes, and hamstrings.",
-    "trainingPosition": "Lengthened"
-  },
-  {
-    "id": "QUD12",
-    "name": "Front Squat",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes", "hamstrings", "abs", "back"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=Q1Ypb8ZNzI4",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "A barbell squat with the weight on the front of the body, primarily targeting quadriceps.",
-    "trainingPosition": "Lengthened"
-  },
-  {
-    "id": "QUD13",
-    "name": "Goblet Squat",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes", "hamstrings", "abs", "back"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=zBV3ceGyAxw",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "A squat variation holding a dumbbell or kettlebell at chest level, targeting quadriceps and glutes.",
-    "trainingPosition": "Lengthened"
-  },
-  {
-    "id": "QUD14",
-    "name": "Hack Squat Machine",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes", "hamstrings"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=scs5XcsZuc8",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "A machine-based squat exercise focusing on the quadriceps while minimizing upper body involvement.",
-    "trainingPosition": "Lengthened"
-  },
-  {
-    "id": "QUD15",
-    "name": "Half Air Squat",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes"],
-    "type": "BW",
-    "description": "A reduced range squat targeting quadriceps with less knee stress.",
-    "trainingPosition": "Shortened"
-  },
-  {
-    "id": "QUD17",
-    "name": "Landmine Hack Squat",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes", "hamstrings", "abs"],
-    "type": "WR",
-    "description": "A landmine squat variation emphasizing quadriceps development.",
-    "trainingPosition": "Lengthened"
-  },
-  {
-    "id": "QUD18",
-    "name": "Landmine Squat",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes", "hamstrings", "abs"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=YxaXaZxVcDU",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "A squat using a landmine setup, focusing on quadriceps and glutes.",
-    "trainingPosition": "Lengthened"
-  },
-  {
-    "id": "QUD19",
-    "name": "Leg Extension",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": [],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=4ZDm5EbiFI8",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "An isolation exercise for strengthening the quadriceps using a leg extension machine.",
-    "trainingPosition": "Shortened"
+    "description": "A barbell exercise emphasizing quadriceps, hamstrings, and glutes during lunging.",
+    "movement": "lunge"
   },
   {
     "id": "QUD20",
@@ -204,210 +33,42 @@
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
     "description": "A machine-based exercise that targets the quadriceps, glutes, and hamstrings.",
-    "trainingPosition": "Lengthened"
+    "movement": "squat"
   },
   {
-    "id": "QUD21",
-    "name": "Pause Squat",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes", "hamstrings", "abs", "back"],
-    "type": "WR",
-    "description": "A squat variation with a pause at the bottom to increase time under tension on quadriceps.",
-    "trainingPosition": "Lengthened"
-  },
-  {
-    "id": "QUD22",
-    "name": "Safety Bar Squat",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes", "hamstrings", "abs", "back"],
-    "type": "WR",
-    "description": "A squat using a safety bar to reduce shoulder strain while focusing on quadriceps.",
-    "trainingPosition": "Lengthened"
-  },
-  {
-    "id": "QUD23",
-    "name": "Shallow Body Weight Lunge",
+    "id": "QUD8",
+    "name": "Bulgarian Split Squat",
     "primaryMuscleGroup": "quadriceps",
     "secondaryMuscleGroups": ["glutes", "hamstrings"],
     "type": "BW",
-    "description": "A less intense lunge variation focusing on quadriceps without full depth.",
-    "trainingPosition": "Shortened"
-  },
-  {
-    "id": "QUD24",
-    "name": "Side Lunges (Bodyweight)",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes", "adductors", "abductors", "hamstrings"],
-    "type": "BW",
-    "description": "A lateral lunge targeting the quadriceps, inner thighs, and glutes.",
-    "trainingPosition": "Lengthened"
-  },
-  {
-    "id": "QUD25",
-    "name": "Smith Machine Squat",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes", "hamstrings"],
-    "type": "WR",
-    "description": "Targets the quadriceps with added stability from the Smith machine, allowing for controlled movements.",
-    "trainingPosition": "Lengthened"
-  },
-  {
-    "id": "QUD26",
-    "name": "Squat (Barbell)",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes", "hamstrings", "abs", "back"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=qy_VBX2KWDA",
+    "video": "https://www.youtube.com/watch?v=TEXl2b3__S4",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "A foundational squat variation that engages the quads, glutes, and core with barbell resistance.",
-    "trainingPosition": "Lengthened"
+    "description": "A single-leg squat variation that isolates the quadriceps and glutes.",
+    "movement": "squat"
   },
   {
-    "id": "QUD27",
-    "name": "Step Up",
+    "id": "QUD19",
+    "name": "Leg Extension",
     "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes", "hamstrings", "calves"],
-    "type": "BW",
-    "video": "https://www.youtube.com/watch?v=1jzIPebeINM",
-    "creditSource": "https://www.youtube.com/@thirdspacelondon8746",
-    "credit": "Third Space London",
-    "description": "Works the quadriceps and glutes by stepping onto an elevated platform, enhancing lower body strength.",
-    "trainingPosition": "Shortened"
-  },
-  {
-    "id": "QUD28",
-    "name": "Sissy Squat (Weighted)",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["abs"],
+    "secondaryMuscleGroups": [],
     "type": "WR",
-    "video": "https://www.youtube.com/watch?v=weDhU3B6YLQ",
-    "creditSource": "https://www.youtube.com/@denvyr",
-    "credit": "Denvyr | Realistic Fitness Dietitian",
-    "description": "Targets the quadriceps intensely while using weighted resistance for added challenge.",
-    "trainingPosition": "Lengthened"
-  },
-  {
-    "id": "QUD29",
-    "name": "Pendulum Squat",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes", "hamstrings"],
-    "type": "WR",
-    "description": "A machine-based exercise focusing on the quads, utilizing a pendulum motion to isolate the muscle group.",
-    "trainingPosition": "Lengthened"
-  },
-  {
-    "id": "QUD30",
-    "name": "Squat (Bodyweight)",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes", "hamstrings"],
-    "type": "BW",
-    "video": "https://www.youtube.com/watch?v=l83R5PblSMA",
+    "video": "https://www.youtube.com/watch?v=4ZDm5EbiFI8",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "A fundamental bodyweight movement engaging the quadriceps and glutes for overall lower body strength.",
-    "trainingPosition": "Lengthened"
+    "description": "An isolation exercise for strengthening the quadriceps using a leg extension machine.",
+    "movement": "push"
   },
   {
-    "id": "QUD31",
-    "name": "Sumo Squat (Dumbbell)",
+    "id": "QUD20",
+    "name": "Step Ups",
     "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes", "hamstrings", "adductors"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=2SvNjQHHCx8",
-    "creditSource": "https://www.youtube.com/@denvyr",
-    "credit": "Denvyr | Realistic Fitness Dietitian",
-    "description": "This squat variation widens the stance to target the quads and inner thighs with dumbbell resistance.",
-    "trainingPosition": "Lengthened"
-  },
-  {
-    "id": "QUD32",
-    "name": "Sumo Squat (Barbell)",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes", "hamstrings", "adductors"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=qiQAsB0x-7k",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "Involves a wide stance to engage the quads, hamstrings, and inner thighs with barbell weight.",
-    "trainingPosition": "Lengthened"
-  },
-  {
-    "id": "QUD33",
-    "name": "Sumo Squat (Kettle Bell)",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes", "hamstrings", "adductors"],
-    "type": "WR",
-    "description": "Targets the quads and inner thighs by holding a kettlebell while squatting in a wide stance.",
-    "trainingPosition": "Lengthened"
-  },
-  {
-    "id": "QUD34",
-    "name": "Zecher Squat",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes", "hamstrings", "abs", "back"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=_fXBhqQWj64",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "A barbell squat variation where the bar is held in the elbows, focusing on quads and core stability.",
-    "trainingPosition": "Lengthened"
-  },
-  {
-    "id": "QUD35",
-    "name": "Squat (Smith Machine)",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes", "hamstrings"],
-    "type": "WR",
-    "description": "Utilizes the Smith machine to provide extra control and focus on the quads during squats.",
-    "trainingPosition": "Lengthened"
-  },
-  {
-    "id": "QUD36",
-    "name": "Step Up (Dumbbell)",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes", "hamstrings", "calves"],
+    "secondaryMuscleGroups": ["hamstrings", "adductors", "glutes"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=DxUNi119Qzs",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Targets the quads and glutes by stepping onto an elevated surface while holding dumbbells.",
-    "trainingPosition": "Shortened"
-  },
-  {
-    "id": "QUD37",
-    "name": "Step Up (Barbell)",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes", "hamstrings", "calves"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=hbIMKzHuglA",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "Engages the quads and glutes by stepping up while carrying a barbell for resistance.",
-    "trainingPosition": "Shortened"
-  },
-  {
-    "id": "QUD38",
-    "name": "Side Step Up",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes", "hamstrings", "adductors", "abductors"],
-    "type": "BW",
-    "video": "https://www.youtube.com/watch?v=baKJg6iQ_Ww",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "Focuses on the quadriceps and outer thigh by stepping up laterally onto an elevated platform.",
-    "trainingPosition": "Shortened"
-  },
-  {
-    "id": "QUD39",
-    "name": "Bulgarian Split Squat (Dumbbells)",
-    "primaryMuscleGroup": "quadriceps",
-    "secondaryMuscleGroups": ["glutes", "hamstrings", "abs"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=vgn7bSXkgkA",
-    "creditSource": "https://www.youtube.com/@denvyr",
-    "credit": "Denvyr | Realistic Fitness Dietitian",
-    "description": "A single-leg squat variation that isolates the quadriceps and glutes using dumbbells.",
-    "trainingPosition": "Lengthened"
+    "description": " functional lower-body exercise that strengthens the quadriceps while also engaging the glutes, hamstrings, and calves.",
+    "movement": "lunge"
   }
 ]

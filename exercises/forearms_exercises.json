@@ -1,38 +1,5 @@
 [
   {
-    "id": "FOR1",
-    "name": "Barbell Wrist Curl",
-    "primaryMuscleGroup": "forearms",
-    "secondaryMuscleGroups": ["biceps", "shoulders"],
-    "type": "WR",
-    "description": "Strengthens the forearm flexors and improves grip strength.",
-    "trainingPosition": "Shortened"
-  },
-  {
-    "id": "FOR2",
-    "name": "Barbell Wrist Curl Behind the Back",
-    "primaryMuscleGroup": "forearms",
-    "secondaryMuscleGroups": ["biceps", "shoulders"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=LjerEt3Gnyw",
-    "creditSource": "https://www.youtube.com/@TheActiveLife",
-    "credit": "The Active Life",
-    "description": "Targets forearm flexors and improves grip with an isolated motion.",
-    "trainingPosition": "Shortened"
-  },
-  {
-    "id": "FOR3",
-    "name": "Dumbbell Wrist Curl",
-    "primaryMuscleGroup": "forearms",
-    "secondaryMuscleGroups": ["biceps", "shoulders"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=3VLTzIrnb5g",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "Builds forearm flexor strength and enhances wrist mobility.",
-    "trainingPosition": "Shortened"
-  },
-  {
     "id": "FOR4",
     "name": "Farmers Walk",
     "primaryMuscleGroup": "forearms",
@@ -42,7 +9,49 @@
     "creditSource": "https://www.youtube.com/@thirdspacelondon8746",
     "credit": "Third Space London",
     "description": "Boosts grip strength and endurance while engaging forearms and shoulders.",
-    "trainingPosition": "Shortened"
+    "movement": "gait"
+  },
+  {
+    "id": "FOR1",
+    "name": "Wrist Curls",
+    "primaryMuscleGroup": "forearms",
+    "secondaryMuscleGroups": [],
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=3VLTzIrnb5g",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym",
+    "description": "Strengthens the forearm flexors and improves grip strength.",
+    "movement": "pull"
+  },
+  {
+    "id": "FOR10",
+    "name": "Reverse Wrist Curls",
+    "primaryMuscleGroup": "forearms",
+    "secondaryMuscleGroups": [],
+    "type": "WR",
+    "description": "Strengthens the forearm flexors and improves grip strength.",
+    "movement": "pull"
+  },
+  {
+    "id": "FOR11",
+    "name": "Dead Hangs",
+    "primaryMuscleGroup": "forearms",
+    "secondaryMuscleGroups": ["back"],
+    "type": "BW",
+    "description": "Strengthens the forearm flexors and improves grip strength.",
+    "movement": "pull"
+  },
+  {
+    "id": "FOR6",
+    "name": "Plate Pinch",
+    "primaryMuscleGroup": "forearms",
+    "secondaryMuscleGroups": ["shoulders"],
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=jFTV3DQf3HE",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym",
+    "description": "Develops grip strength by focusing on pinching strength in the forearms.",
+    "movement": "pull"
   },
   {
     "id": "FOR5",
@@ -51,48 +60,6 @@
     "secondaryMuscleGroups": [],
     "type": "WR",
     "description": "Targets hand and forearm muscles to improve grip strength.",
-    "trainingPosition": "Shortened"
-  },
-  {
-    "id": "FOR6",
-    "name": "Plate Pinch",
-    "primaryMuscleGroup": "forearms",
-    "secondaryMuscleGroups": ["shoulders", "traps"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=jFTV3DQf3HE",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "Develops grip strength by focusing on pinching strength in the forearms.",
-    "trainingPosition": "Shortened"
-  },
-  {
-    "id": "FOR7",
-    "name": "Plate Wrist Curl",
-    "primaryMuscleGroup": "forearms",
-    "secondaryMuscleGroups": ["biceps", "shoulders"],
-    "type": "WR",
-    "description": "Engages forearm flexors with a controlled wrist curling movement.",
-    "trainingPosition": "Shortened"
-  },
-  {
-    "id": "FOR8",
-    "name": "Barbell Wrist Extension",
-    "primaryMuscleGroup": "forearms",
-    "secondaryMuscleGroups": ["biceps", "shoulders"],
-    "type": "WR",
-    "description": "Strengthens the forearm extensors for balanced wrist development.",
-    "trainingPosition": "Shortened"
-  },
-  {
-    "id": "FOR9",
-    "name": "Dumbbell Wrist Extension",
-    "primaryMuscleGroup": "forearms",
-    "secondaryMuscleGroups": ["biceps", "shoulders"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=UcwgCTkVvIQ",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "Isolates and builds forearm extensor strength, improving wrist stability.",
-    "trainingPosition": "Shortened"
+    "movement": "pull"
   }
 ]

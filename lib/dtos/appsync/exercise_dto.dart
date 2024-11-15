@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/dtos/appsync/routine_template_dto.dart';
-import 'package:tracker_app/enums/training_position_enum.dart';
+import 'package:tracker_app/enums/core_movements_enum.dart';
 
 import '../../enums/exercise_type_enums.dart';
 import '../../enums/muscle_group_enums.dart';
@@ -89,7 +89,7 @@ class ExerciseDto {
     MuscleGroup? primaryMuscleGroup,
     List<MuscleGroup>? secondaryMuscleGroups,
     ExerciseType? type,
-    TrainingPosition? trainingPosition,
+    CoreMovement? trainingPosition,
     String? owner,
     String? description,
   }) {

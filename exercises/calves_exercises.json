@@ -1,37 +1,7 @@
 [
   {
-    "id": "CAL1",
-    "name": "Eccentric Heel Drop",
-    "primaryMuscleGroup": "calves",
-    "secondaryMuscleGroups": [],
-    "type": "BW",
-    "description": "Focuses on lengthening the calf muscles to improve strength and mobility.",
-    "trainingPosition": "Lengthened"
-  },
-  {
-    "id": "CAL2",
-    "name": "Heel Raise",
-    "primaryMuscleGroup": "calves",
-    "secondaryMuscleGroups": [],
-    "type": "BW",
-    "description": "Targets the calves by raising the heels to build strength and endurance.",
-    "trainingPosition": "Shortened"
-  },
-  {
-    "id": "CAL3",
-    "name": "Seated Calf Raise",
-    "primaryMuscleGroup": "calves",
-    "secondaryMuscleGroups": [],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=3ZRe_QpvRPg",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "Isolates the calves, particularly the soleus muscle, in a seated position.",
-    "trainingPosition": "Shortened"
-  },
-  {
     "id": "CAL4",
-    "name": "Standing Calf Raise",
+    "name": "Calf Raises",
     "primaryMuscleGroup": "calves",
     "secondaryMuscleGroups": [],
     "type": "BW",
@@ -39,78 +9,15 @@
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
     "description": "Strengthens the calf muscles by raising the heels from a standing position.",
-    "trainingPosition": "Shortened"
+    "movement": "gait"
   },
   {
-    "id": "CAL5",
-    "name": "Standing Calf Raise (Machine)",
+    "id": "CAL12",
+    "name": "Jump Rope",
     "primaryMuscleGroup": "calves",
     "secondaryMuscleGroups": [],
-    "type": "WR",
-    "description": "Targets the calves with added resistance from the machine for increased intensity.",
-    "trainingPosition": "Shortened"
-  },
-  {
-    "id": "CAL6",
-    "name": "Standing Calf Raise (Dumbbell)",
-    "primaryMuscleGroup": "calves",
-    "secondaryMuscleGroups": [],
-    "type": "WR",
-    "description": "Engages the calves using dumbbells to add resistance to the standing raise.",
-    "trainingPosition": "Shortened"
-  },
-  {
-    "id": "CAL7",
-    "name": "Standing Calf Raise (Smith Machine)",
-    "primaryMuscleGroup": "calves",
-    "secondaryMuscleGroups": [],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=Zep-wKHWkNM",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "Stabilized calf raise using the Smith machine for controlled resistance.",
-    "trainingPosition": "Shortened"
-  },
-  {
-    "id": "CAL8",
-    "name": "Standing Calf Raise (Barbell)",
-    "primaryMuscleGroup": "calves",
-    "secondaryMuscleGroups": [],
-    "type": "WR",
-    "description": "Utilizes a barbell for added weight in a standing calf raise, enhancing muscle growth.",
-    "trainingPosition": "Shortened"
-  },
-  {
-    "id": "CAL9",
-    "name": "Calf Extension (Machine)",
-    "primaryMuscleGroup": "calves",
-    "secondaryMuscleGroups": [],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=rpGCS8AEsAM",
-    "creditSource": "https://www.youtube.com/@MatrixFitnessUS",
-    "credit": "Matrix Fitness",
-    "description": "Uses a machine to extend the calves and build strength through resistance.",
-    "trainingPosition": "Shortened"
-  },
-  {
-    "id": "CAL10",
-    "name": "Calf Press (Machine)",
-    "primaryMuscleGroup": "calves",
-    "secondaryMuscleGroups": [],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=dhRz1Ns60Zg",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "Engages the calves using a machine for press movement to develop power.",
-    "trainingPosition": "Shortened"
-  },
-  {
-    "id": "CAL11",
-    "name": "Single Standing Calf Raise (Machine)",
-    "primaryMuscleGroup": "calves",
-    "secondaryMuscleGroups": [],
-    "type": "WR",
-    "description": "Isolates each calf with a single-leg movement for balanced strength development.",
-    "trainingPosition": "Shortened"
+    "type": "BW",
+    "description": "Engages the calves through repetitive jumping motions, building strength, endurance, and coordination while improving overall lower-body mobility and agility.",
+    "movement": "gait"
   }
 ]
