@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
+import 'package:tracker_app/dtos/exercise_variant_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/widgets/dividers/label_container.dart';
 
@@ -11,11 +12,11 @@ import '../../dtos/exercise_dto.dart';
 class TRKRCoachExerciseRecommendationScreen extends StatefulWidget {
   static const routeName = '/trkr_coach_exercise_recommendation_screen';
 
-  final List<ExerciseDTO> originalExerciseTemplates;
+  final List<ExerciseVariantDTO> originalExerciseVariants;
   final List<Map<String, dynamic>> muscleGroupAndExercises;
 
   const TRKRCoachExerciseRecommendationScreen(
-      {super.key, required this.originalExerciseTemplates, required this.muscleGroupAndExercises});
+      {super.key, required this.originalExerciseVariants, required this.muscleGroupAndExercises});
 
   @override
   State<TRKRCoachExerciseRecommendationScreen> createState() => _TRKRCoachExerciseRecommendationScreenState();
@@ -38,7 +39,7 @@ class _TRKRCoachExerciseRecommendationScreenState extends State<TRKRCoachExercis
           first: exercises[0],
           second: exercises[1],
           rationale: rationale,
-          originalExercises: widget.originalExerciseTemplates,
+          originalExerciseVariants: widget.originalExerciseVariants,
           isSelected: _selectedExerciseNames.contains((exercises[1] as ExerciseDTO).name),
           onSelect: (String selectedExerciseName) {
             if (_selectedExerciseNames.contains(selectedExerciseName)) {
@@ -97,10 +98,10 @@ class _TRKRCoachExerciseRecommendationScreenState extends State<TRKRCoachExercis
 }
 
 class _RecommendationListItem extends StatelessWidget {
-  final List<ExerciseDTO> originalExercises;
+  final List<ExerciseVariantDTO> originalExerciseVariants;
   final MuscleGroup muscleGroup;
-  final ExerciseDTO first;
-  final ExerciseDTO second;
+  final ExerciseVariantDTO first;
+  final ExerciseVariantDTO second;
   final String rationale;
   final bool isSelected;
   final Function(String selectedExerciseId) onSelect;
@@ -110,7 +111,7 @@ class _RecommendationListItem extends StatelessWidget {
     required this.first,
     required this.second,
     required this.rationale,
-    required this.originalExercises,
+    required this.originalExerciseVariants,
     this.isSelected = false,
     required this.onSelect,
   });

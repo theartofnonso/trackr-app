@@ -80,9 +80,9 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
 
     for (final exerciseLog in updatedLog.exerciseLogs) {
       final pastExerciseLogs =
-          routineLogController.whereExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
+          routineLogController.whereExerciseLogsBefore(exerciseVariant: exerciseLog.exerciseVariant, date: exerciseLog.createdAt);
       final pbs = calculatePBs(
-          pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseLog.exercise.metric, exerciseLog: exerciseLog);
+          pastExerciseLogs: pastExerciseLogs, exerciseMetric: exerciseLog.exerciseVariant.metric, exerciseLog: exerciseLog);
       final setAndPBs = groupBy(pbs, (pb) => pb.set);
       for (final setAndPB in setAndPBs.entries) {
         final pbs = setAndPB.value;

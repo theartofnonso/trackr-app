@@ -389,7 +389,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
           /// [Exercise.duration] exercises do not have sets in templates
           /// This is because we only need to store the duration of the exercise in [RoutineEditorType.log] i.e data is logged in realtime
-          final sets = withDurationOnly(type: exerciseLog.exercise.metric) ? <SetDto>[] : uncheckedSets;
+          final sets = withDurationOnly(metric: exerciseLog.exerciseVariant.metric) ? <SetDto>[] : uncheckedSets;
           return exerciseLog.copyWith(sets: sets);
         }).toList();
         final templateToCreate = RoutineTemplateDto(
@@ -468,12 +468,12 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       _hideLoadingScreen();
 
       if (mounted) {
-        final originalExerciseTemplates = template.exerciseTemplates.map((template) => template.exercise).toList();
+        final originalExerciseTemplates = template.exerciseTemplates.map((template) => template.exerciseVariant).toList();
         final recommendedExerciseNames = await navigateWithSlideTransition(
                 context: context,
                 child: TRKRCoachExerciseRecommendationScreen(
                     muscleGroupAndExercises: muscleGroupAndExercises,
-                    originalExerciseTemplates: originalExerciseTemplates)) as List<String>? ??
+                    originalExerciseVariants: originalExerciseTemplates)) as List<String>? ??
             [];
 
         if (recommendedExerciseNames.isNotEmpty) {
@@ -518,7 +518,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
     buffer.writeln("My original Exercise Selection:");
     for (final exerciseTemplate in template.exerciseTemplates) {
-      buffer.writeln("Exercise Name: ${exerciseTemplate.exercise.name}\nExercise Name: ${exerciseTemplate.exercise.name}");
+      buffer.writeln("Exercise Name: ${exerciseTemplate.exerciseVariant.name}\nExercise Name: ${exerciseTemplate.exerciseVariant.name}");
       buffer.writeln();
     }
 

@@ -5,6 +5,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
+import 'package:tracker_app/dtos/exercise_variant_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/utils/routine_utils.dart';
 
@@ -152,28 +153,14 @@ class AmplifyRoutineLogRepository {
     _milestones = milestones;
   }
 
-  void syncLogsWithExercisesFromLibrary({required List<ExerciseDTO> exercises}) {
-    final updatedLogs = _logs.map((log) {
-      final updatedExerciseLogs = log.exerciseLogs.map((exerciseLog) {
-        final foundExercise = exercises.firstWhere(
-            (exerciseInLibrary) => exerciseInLibrary.name == exerciseLog.exercise.name,
-            orElse: () => exerciseLog.exercise);
-        return exerciseLog.copyWith(exercise: foundExercise);
-      }).toList();
-      return log.copyWith(exerciseLogs: updatedExerciseLogs);
-    }).toList();
-    _logs = updatedLogs;
-    _calculateMilestones();
-  }
-
   /// Helper methods
 
   RoutineLogDto? logWhereId({required String id}) {
     return _logs.firstWhereOrNull((log) => log.id == id);
   }
 
-  List<SetDto> whereSetsForExercise({required ExerciseDTO exercise}) {
-    final exerciseLogs = _exerciseLogsByName[exercise.name]?.reversed ?? [];
+  List<SetDto> whereSetsForExercise({required ExerciseVariantDTO exerciseVariant}) {
+    final exerciseLogs = _exerciseLogsByName[exerciseVariant.name]?.reversed ?? [];
     return exerciseLogs.isNotEmpty ? exerciseLogs.first.sets : [];
   }
 
@@ -182,8 +169,8 @@ class AmplifyRoutineLogRepository {
     return exerciseLogs.isNotEmpty ? exerciseLogs.first.sets : [];
   }
 
-  List<ExerciseLogDto> whereExerciseLogsBefore({required ExerciseDTO exercise, required DateTime date}) {
-    return _exerciseLogsByName[exercise.name]?.where((log) => log.createdAt.isBefore(date)).toList() ?? [];
+  List<ExerciseLogDto> whereExerciseLogsBefore({required ExerciseVariantDTO exerciseVariant, required DateTime date}) {
+    return _exerciseLogsByName[exerciseVariant.name]?.where((log) => log.createdAt.isBefore(date)).toList() ?? [];
   }
 
   /// RoutineLog for the following [DateTime]

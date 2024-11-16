@@ -36,11 +36,11 @@ class ExerciseLogLiteWidget extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(exerciseLogDto.exercise.name,
+                Text(exerciseLogDto.exerciseVariant.name,
                     style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
                 if (superSetExerciseDto != null)
                   Column(children: [
-                    Text("with ${superSetExerciseDto.exercise.name}",
+                    Text("with ${superSetExerciseDto.exerciseVariant.name}",
                         style: GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 12)),
                   ]),
               ],

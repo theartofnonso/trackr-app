@@ -35,7 +35,7 @@ Future<List<ExerciseLogDto>?> reOrderExerciseLogs(
 
 List<ExerciseLogDto> whereOtherExerciseLogsExcept(
     {required ExerciseLogDto exerciseLog, required List<ExerciseLogDto> others}) {
-  return others.where((otherExerciseLog) => otherExerciseLog.exercise.name != exerciseLog.exercise.name && otherExerciseLog.superSetId.isEmpty).toList();
+  return others.where((otherExerciseLog) => otherExerciseLog.exerciseVariant.name != exerciseLog.exerciseVariant.name && otherExerciseLog.superSetId.isEmpty).toList();
 }
 
 List<TemplateChange> checkForChanges(
@@ -80,11 +80,11 @@ ExerciseLogDto? whereOtherExerciseInSuperSet(
   return exercises.firstWhereOrNull((exercise) =>
       exercise.superSetId.isNotEmpty &&
       exercise.superSetId == firstExercise.superSetId &&
-      exercise.exercise.name != firstExercise.exercise.name);
+      exercise.exerciseVariant.name != firstExercise.exerciseVariant.name);
 }
 
 List<Widget> setsToWidgets(
-    {required ExerciseMetric type,
+    {required ExerciseMetric exerciseMetric,
     required List<SetDto> sets,
     List<PBDto> pbs = const [],
     required RoutinePreviewType routinePreviewType}) {
@@ -111,10 +111,10 @@ List<Widget> setsToWidgets(
 
   Widget emptyState;
 
-  if (withWeightsOnly(type: type)) {
+  if (withWeightsOnly(metric: exerciseMetric)) {
     emptyState = const DoubleSetRowEmptyState();
   } else {
-    if (withDurationOnly(type: type)) {
+    if (withDurationOnly(metric: exerciseMetric)) {
       emptyState = durationTemplate;
     } else {
       emptyState = const SingleSetRowEmptyState();
@@ -128,7 +128,7 @@ List<Widget> setsToWidgets(
   final widgets = sets.map(((setDto) {
     final pbsForSet = pbsBySet[setDto] ?? [];
 
-    switch (type) {
+    switch (exerciseMetric) {
       case ExerciseMetric.weights:
         final firstLabel = setDto.weight();
         final secondLabel = setDto.reps();
@@ -157,11 +157,11 @@ List<Widget> setsToWidgets(
 
 Map<String, List<ExerciseLogDto>> groupExerciseLogsByExerciseId({required List<RoutineLogDto> routineLogs}) {
   final exerciseLogs = routineLogs.expand((log) => log.exerciseLogs);
-  return groupBy(exerciseLogs, (exerciseLog) => exerciseLog.exercise.name);
+  return groupBy(exerciseLogs, (exerciseLog) => exerciseLog.exerciseVariant.name);
 }
 
 String superSetId({required ExerciseLogDto firstExerciseLog, required ExerciseLogDto secondExerciseLog}) {
-  return "superset_id_${firstExerciseLog.exercise.name}_${secondExerciseLog.exercise.name}";
+  return "superset_id_${firstExerciseLog.exerciseVariant.name}_${secondExerciseLog.exerciseVariant.name}";
 }
 
 String scheduledDaysSummary({required RoutineTemplateDto template, bool showFullName = false}) {
@@ -206,14 +206,14 @@ String copyRoutineAsText(
   }
 
   for (var exerciseLog in exerciseLogs) {
-    var exercise = exerciseLog.exercise;
+    var exercise = exerciseLog.exerciseVariant;
     routineText.writeln("\n- Exercise: ${exercise.name}");
     routineText.writeln("  Muscle Group: ${exercise.primaryMuscleGroups.map((muscleGroup) => muscleGroup.name).join(", ")}");
     if (exerciseLog.notes.isNotEmpty) {
       routineText.writeln("  Notes: ${exerciseLog.notes}");
     }
     for (var i = 0; i < exerciseLog.sets.length; i++) {
-      switch (exerciseLog.exercise.metric) {
+      switch (exerciseLog.exerciseVariant.metric) {
         case ExerciseMetric.weights:
           routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].weightsSummary()}");
           break;

@@ -27,14 +27,14 @@ class ExerciseLogWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final otherSuperSet = superSet;
 
-    final exerciseType = exerciseLog.exercise.metric;
+    final exerciseMetric = exerciseLog.exerciseVariant.metric;
 
     final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
     final pastExerciseLogs =
-        routineLogController.whereExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
+        routineLogController.whereExerciseLogsBefore(exerciseVariant: exerciseLog.exerciseVariant, date: exerciseLog.createdAt);
 
-    final pbs = calculatePBs(pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseType, exerciseLog: exerciseLog);
+    final pbs = calculatePBs(pastExerciseLogs: pastExerciseLogs, exerciseMetric: exerciseMetric, exerciseLog: exerciseLog);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,15 +44,15 @@ class ExerciseLogWidget extends StatelessWidget {
           dense: true,
           onTap: () {
             Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => ExerciseHomeScreen(exercise: exerciseLog.exercise)));
+                .push(MaterialPageRoute(builder: (context) => ExerciseHomeScreen(exerciseName: exerciseLog.exerciseVariant.name)));
           },
-          title: Text(exerciseLog.exercise.name,
+          title: Text(exerciseLog.exerciseVariant.name,
               style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
               textAlign: TextAlign.center),
           subtitle: otherSuperSet != null
               ? Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
-                  child: Text("with ${otherSuperSet.exercise.name}",
+                  child: Text("with ${otherSuperSet.exerciseVariant.name}",
                       style: GoogleFonts.ubuntu(color: vibrantGreen, fontSize: 12, fontWeight: FontWeight.w600),
                       textAlign: TextAlign.center),
                 )
@@ -72,7 +72,7 @@ class ExerciseLogWidget extends StatelessWidget {
                 ),
               )
             : const SizedBox.shrink(),
-        switch (exerciseType) {
+        switch (exerciseMetric) {
           ExerciseMetric.weights => DoubleSetHeader(
               firstLabel: weightLabel().toUpperCase(),
               secondLabel: 'REPS',
@@ -90,7 +90,7 @@ class ExerciseLogWidget extends StatelessWidget {
         },
         const SizedBox(height: 8),
         ...setsToWidgets(
-            type: exerciseType,
+            exerciseMetric: exerciseMetric,
             sets: exerciseLog.sets,
             pbs: previewType == RoutinePreviewType.log ? pbs : [],
             routinePreviewType: previewType),

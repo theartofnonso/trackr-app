@@ -18,7 +18,7 @@ import '../../../widgets/exercise/exercise_widget.dart';
 
 class ExerciseLibraryScreen extends StatefulWidget {
   final bool readOnly;
-  final List<ExerciseDTO> excludeExercises;
+  final List<String> exercisesToExclude;
   final ExerciseMetric? exerciseMetric;
   final MuscleGroupFamily? muscleGroupFamily;
   final MuscleGroup? muscleGroup;
@@ -26,7 +26,7 @@ class ExerciseLibraryScreen extends StatefulWidget {
   const ExerciseLibraryScreen(
       {super.key,
       this.readOnly = false,
-      this.excludeExercises = const [],
+      this.exercisesToExclude = const [],
       this.exerciseMetric,
       this.muscleGroupFamily,
       this.muscleGroup});
@@ -49,15 +49,13 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
     List<ExerciseDTO> searchResults = [];
 
-    final exerciseMetric = widget.exerciseMetric;
     final muscleGroup = widget.muscleGroup;
     final muscleGroupFamily = widget.muscleGroupFamily;
 
     searchResults = Provider.of<ExerciseAndRoutineController>(context, listen: false)
         .exercises
-        .where((exercise) => !widget.excludeExercises.contains(exercise))
+        .where((exercise) => !widget.exercisesToExclude.contains(exercise.name))
         .where((exercise) => exercise.name.toLowerCase().contains(query.toLowerCase()))
-        .where((exercise) => exerciseMetric != null ? exercise.metric == widget.exerciseMetric : true)
         .where((exercise) => muscleGroup != null
             ? exercise.primaryMuscleGroups.any((muscleGroup) => _selectedMuscleGroups.contains(muscleGroup))
             : true)
@@ -210,14 +208,12 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
       _selectedMuscleGroups.firstWhereOrNull((previousMuscleGroup) => previousMuscleGroup == muscleGroup);
 
   void _loadOrSyncExercises() {
-    final exerciseMetric = widget.exerciseMetric;
     final muscleGroup = widget.muscleGroup;
     final muscleGroupFamily = widget.muscleGroupFamily;
 
     _filteredExercises = Provider.of<ExerciseAndRoutineController>(context, listen: false)
         .exercises
-        .where((exercise) => !widget.excludeExercises.contains(exercise))
-        .where((exercise) => exerciseMetric != null ? exercise.metric == widget.exerciseMetric : true)
+        .where((exercise) => !widget.exercisesToExclude.contains(exercise.name))
         .where((exercise) => muscleGroup != null
             ? exercise.primaryMuscleGroups.any((muscleGroup) => _selectedMuscleGroups.contains(muscleGroup))
             : true)

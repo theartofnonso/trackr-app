@@ -1,17 +1,17 @@
+import 'package:tracker_app/dtos/exercise_variant_dto.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 
 import '../enums/pb_enums.dart';
-import 'exercise_dto.dart';
 
 class PBDto {
   final SetDto set;
-  final ExerciseDTO exercise;
+  final ExerciseVariantDTO exerciseVariant;
   final PBType pb;
 
-  PBDto({required this.set, required this.exercise, required this.pb});
+  PBDto({required this.set, required this.exerciseVariant, required this.pb});
 
   @override
   String toString() {
-    return 'PBDto{set: $set, exercise: $exercise, pb: $pb}';
+    return 'PBDto{set: $set, exercise: $exerciseVariant, pb: $pb}';
   }
 }

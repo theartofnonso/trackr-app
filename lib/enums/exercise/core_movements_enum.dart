@@ -13,6 +13,6 @@ enum CoreMovement {
   final String name;
 
   static CoreMovement fromString(String string) {
-    return CoreMovement.values.firstWhere((value) => value.name.toLowerCase() == string.toLowerCase(), orElse: () => others);
+    return values.firstWhere((value) => value.name.toLowerCase() == string.toLowerCase(), orElse: () => others);
   }
 }

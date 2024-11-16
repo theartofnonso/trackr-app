@@ -127,15 +127,15 @@ void main() {
     exerciseLogRepository.addSuperSets(
         firstExerciseName: lyingLegCurlExerciseLog1.type,
         secondExerciseName: benchPressExerciseLog1.type,
-        superSetId: "superset_id_${lyingLegCurlExerciseLog1.exercise.type}_${benchPressExerciseLog1.exercise.type}");
+        superSetId: "superset_id_${lyingLegCurlExerciseLog1.exerciseVariant.type}_${benchPressExerciseLog1.exerciseVariant.type}");
 
     expect(
         exerciseLogRepository.exerciseLogs.firstWhereOrNull((log) => log.type == lyingLegCurlExerciseLog1.type)?.superSetId,
-        "superset_id_${lyingLegCurlExerciseLog1.exercise.type}_${benchPressExerciseLog1.exercise.type}");
+        "superset_id_${lyingLegCurlExerciseLog1.exerciseVariant.type}_${benchPressExerciseLog1.exerciseVariant.type}");
 
     expect(
         exerciseLogRepository.exerciseLogs.firstWhereOrNull((log) => log.type == benchPressExerciseLog1.type)?.superSetId,
-        "superset_id_${lyingLegCurlExerciseLog1.exercise.type}_${benchPressExerciseLog1.exercise.type}");
+        "superset_id_${lyingLegCurlExerciseLog1.exerciseVariant.type}_${benchPressExerciseLog1.exerciseVariant.type}");
   });
 
   test("Remove Super set Exercise Logs", () {
@@ -147,10 +147,10 @@ void main() {
     exerciseLogRepository.addSuperSets(
         firstExerciseName: lyingLegCurlExerciseLog1.type,
         secondExerciseName: benchPressExerciseLog1.type,
-        superSetId: "superset_id_${lyingLegCurlExerciseLog1.exercise.type}_${benchPressExerciseLog1.exercise.type}");
+        superSetId: "superset_id_${lyingLegCurlExerciseLog1.exerciseVariant.type}_${benchPressExerciseLog1.exerciseVariant.type}");
 
     exerciseLogRepository.removeSuperSet(
-        superSetId: "superset_id_${lyingLegCurlExerciseLog1.exercise.type}_${benchPressExerciseLog1.exercise.type}");
+        superSetId: "superset_id_${lyingLegCurlExerciseLog1.exerciseVariant.type}_${benchPressExerciseLog1.exerciseVariant.type}");
 
     expect(
         exerciseLogRepository.exerciseLogs.firstWhereOrNull((log) => log.type == lyingLegCurlExerciseLog1.type)?.superSetId,

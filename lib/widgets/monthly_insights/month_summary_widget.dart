@@ -40,7 +40,7 @@ class MonthSummaryWidget extends StatelessWidget {
 
     final totalVolume = volumeInKOrM(tonnage);
 
-    final exerciseLogsWithReps = exerciseLogs.where((exerciseLog) => withReps(type: exerciseLog.exercise.metric));
+    final exerciseLogsWithReps = exerciseLogs.where((exerciseLog) => withReps(metric: exerciseLog.exerciseVariant.metric));
     final totalReps = exerciseLogsWithReps.map((log) {
       final reps = log.sets.map((set) => set.reps()).sum;
       return reps;
@@ -50,10 +50,10 @@ class MonthSummaryWidget extends StatelessWidget {
 
     final numberOfPbs = exerciseLogs.map((exerciseLog) {
       final pastExerciseLogs =
-          routineLogController.whereExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
+          routineLogController.whereExerciseLogsBefore(exerciseVariant: exerciseLog.exerciseVariant, date: exerciseLog.createdAt);
 
       return calculatePBs(
-          pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseLog.exercise.metric, exerciseLog: exerciseLog);
+          pastExerciseLogs: pastExerciseLogs, exerciseMetric: exerciseLog.exerciseVariant.metric, exerciseLog: exerciseLog);
     }).expand((pbs) => pbs);
 
     return Container(

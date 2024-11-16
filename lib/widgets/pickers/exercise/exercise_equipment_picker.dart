@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/enums/exercise/exercise_equipment_enum.dart';
 
-import '../../colors.dart';
-import '../buttons/opacity_button_widget.dart';
-import '../dividers/label_container.dart';
+import '../../../colors.dart';
+import '../../buttons/opacity_button_widget.dart';
+import '../../dividers/label_container.dart';
 
 class ExerciseEquipmentPicker extends StatefulWidget {
   final ExerciseEquipment? initialEquipment;

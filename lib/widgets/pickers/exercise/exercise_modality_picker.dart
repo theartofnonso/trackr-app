@@ -1,32 +1,32 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/widgets/dividers/label_container.dart';
 
-import '../../colors.dart';
-import '../../enums/exercise/exercise_metrics_enums.dart';
-import '../buttons/opacity_button_widget.dart';
-import '../dividers/label_container.dart';
+import '../../../colors.dart';
+import '../../../enums/exercise/exercise_modality_enum.dart';
+import '../../buttons/opacity_button_widget.dart';
 
-class ExerciseMetricPicker extends StatefulWidget {
-  final ExerciseMetric? initialMetric;
-  final void Function(ExerciseMetric metric) onSelect;
+class ExerciseModalityPicker extends StatefulWidget {
+  final ExerciseModality? initialModality;
+  final void Function(ExerciseModality modality) onSelect;
 
-  const ExerciseMetricPicker({super.key, this.initialMetric, required this.onSelect});
+  const ExerciseModalityPicker({super.key, this.initialModality, required this.onSelect});
 
   @override
-  State<ExerciseMetricPicker> createState() => _ExerciseMetricPickerState();
+  State<ExerciseModalityPicker> createState() => _ExerciseModalityPickerState();
 }
 
-class _ExerciseMetricPickerState extends State<ExerciseMetricPicker> {
-  ExerciseMetric _selectedMetric = ExerciseMetric.weights;
+class _ExerciseModalityPickerState extends State<ExerciseModalityPicker> {
+  ExerciseModality _selectedMode = ExerciseModality.bilateral;
 
   FixedExtentScrollController? _scrollController;
 
   @override
   Widget build(BuildContext context) {
-    final metrics = [ExerciseMetric.weights, ExerciseMetric.reps, ExerciseMetric.duration];
+    final modes = [ExerciseModality.unilateral, ExerciseModality.bilateral];
 
-    final children = metrics
+    final children = modes
         .map((value) => Center(
             child: Text(value.name,
                 style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 24, color: Colors.white))))
@@ -36,8 +36,8 @@ class _ExerciseMetricPickerState extends State<ExerciseMetricPicker> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         LabelContainer(
-          label: "Logging Metric".toUpperCase(),
-          description: _selectedMetric.description,
+          label: "Training Modality".toUpperCase(),
+          description: _selectedMode.description,
           labelStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 14),
           descriptionStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white70, fontSize: 14),
           dividerColor: sapphireLighter,
@@ -49,7 +49,7 @@ class _ExerciseMetricPickerState extends State<ExerciseMetricPicker> {
             itemExtent: 38.0,
             onSelectedItemChanged: (int index) {
               setState(() {
-                _selectedMetric = metrics[index];
+                _selectedMode = modes[index];
               });
             },
             squeeze: 1,
@@ -60,9 +60,9 @@ class _ExerciseMetricPickerState extends State<ExerciseMetricPicker> {
         const SizedBox(height: 16),
         OpacityButtonWidget(
             onPressed: () {
-              widget.onSelect(_selectedMetric);
+              widget.onSelect(_selectedMode);
             },
-            label: "Switch to ${_selectedMetric.name} metrics",
+            label: "Switch to ${_selectedMode.name} movements",
             buttonColor: vibrantGreen,
             padding: const EdgeInsets.all(10.0))
       ],
@@ -72,7 +72,7 @@ class _ExerciseMetricPickerState extends State<ExerciseMetricPicker> {
   @override
   void initState() {
     super.initState();
-    final initialIndex = ExerciseMetric.values.indexOf(widget.initialMetric ?? ExerciseMetric.weights);
+    final initialIndex = ExerciseModality.values.indexOf(widget.initialModality ?? ExerciseModality.bilateral);
     _scrollController = FixedExtentScrollController(initialItem: initialIndex);
   }
 

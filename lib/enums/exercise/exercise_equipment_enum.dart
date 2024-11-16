@@ -17,8 +17,7 @@ enum ExerciseEquipment {
   smithMachine("Smith Machine", "Stabilized barbell for squats, presses, and safer lifts."),
   cableMachine("Cable Machine", "Versatile for isolation and functional exercises"),
   plate("Plate", "Add resistance to barbells or use for loaded carries."),
-  none("none", "No equipment needed—perfect for bodyweight exercises."),
-  ;
+  none("No Equipment", "No equipment needed—perfect for bodyweight exercises.");
 
   const ExerciseEquipment(this.name, this.description);
 
@@ -26,6 +25,6 @@ enum ExerciseEquipment {
   final String description;
 
   static ExerciseEquipment fromString(String string) {
-    return ExerciseEquipment.values.firstWhere((value) => value.name.toLowerCase() == string.toLowerCase());
+    return values.firstWhere((value) => value.name.toLowerCase() == string.toLowerCase());
   }
 }

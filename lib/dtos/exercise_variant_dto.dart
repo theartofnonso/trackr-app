@@ -1,4 +1,3 @@
-import 'package:tracker_app/dtos/exercise_variant_dto.dart';
 import 'package:tracker_app/enums/exercise/core_movements_enum.dart';
 import 'package:tracker_app/enums/exercise/exercise_equipment_enum.dart';
 import 'package:tracker_app/enums/exercise/exercise_metrics_enums.dart';
@@ -8,25 +7,25 @@ import 'package:tracker_app/enums/muscle_group_enums.dart';
 import '../enums/exercise/exercise_position_enum.dart';
 import '../enums/exercise/exercise_stance_enum.dart';
 
-class ExerciseDTO {
+class ExerciseVariantDTO {
   final String name;
   final String description;
-  final List<ExerciseMetric> metrics;
-  final List<ExerciseModality> modes;
-  final List<ExercisePosition> positions;
-  final List<ExerciseStance> stances;
+  final ExerciseMetric metric;
+  final ExerciseModality mode;
+  final ExercisePosition position;
+  final ExerciseStance stance;
   final ExerciseEquipment equipment;
   final List<MuscleGroup> primaryMuscleGroups;
   final List<MuscleGroup> secondaryMuscleGroups;
   final CoreMovement movement;
 
-  ExerciseDTO(
+  ExerciseVariantDTO(
       {required this.name,
       required this.description,
-      required this.metrics,
-      required this.modes,
-      required this.positions,
-      required this.stances,
+      required this.metric,
+      required this.mode,
+      required this.position,
+      required this.stance,
       required this.equipment,
       required this.primaryMuscleGroups,
       required this.secondaryMuscleGroups,
@@ -38,24 +37,23 @@ class ExerciseDTO {
       'description': description,
       'primary_muscle_groups': secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name).toList(),
       'secondary_muscle_groups': secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name).toList(),
-      'metrics': metrics.map((metric) => metric.name).toList(),
-      'modes': modes.map((mode) => mode.name).toList(),
-      'positions': positions.map((position) => position.name).toList(),
-      'stances': stances.map((stance) => stance.name).toList(),
+      'metric': metric.name,
+      'mode': mode.name,
+      'position': position.name,
+      'stance': stance.name,
       'equipment': equipment.name,
       'movement': movement.name
     };
   }
 
-  factory ExerciseDTO.fromJson(Map<String, dynamic> json) {
+  factory ExerciseVariantDTO.fromJson(Map<String, dynamic> json) {
     final name = json["name"];
     final description = json["description"];
-    final metrics = (json["metrics"] as List<dynamic>).map((metric) => ExerciseMetric.fromString(metric)).toList();
+    final metric = ExerciseMetric.fromString(json["metric"]);
+    final mode = ExerciseModality.fromString(json["mode"]);
+    final position = ExercisePosition.fromString(json["position"]);
+    final stance = ExerciseStance.fromString(json["stance"]);
     final movement = CoreMovement.fromString(json["movement"]);
-    final modes = (json["modes"] as List<dynamic>).map((mode) => ExerciseModality.fromString(mode)).toList();
-    final positions =
-        (json["positions"] as List<dynamic>).map((position) => ExercisePosition.fromString(position)).toList();
-    final stances = (json["stances"] as List<dynamic>).map((stance) => ExerciseStance.fromString(stance)).toList();
     final equipment = ExerciseEquipment.fromString(json["equipment"]);
     final primaryMuscleGroups = (json["primary_muscle_groups"] as List<dynamic>)
         .map((muscleGroup) => MuscleGroup.fromString(muscleGroup))
@@ -64,38 +62,38 @@ class ExerciseDTO {
         .map((muscleGroup) => MuscleGroup.fromString(muscleGroup))
         .toList();
 
-    return ExerciseDTO(
+    return ExerciseVariantDTO(
         name: name,
         description: description,
-        metrics: metrics,
-        modes: modes,
-        positions: positions,
-        stances: stances,
+        metric: metric,
+        mode: mode,
+        position: position,
+        stance: stance,
         equipment: equipment,
         primaryMuscleGroups: primaryMuscleGroups,
         secondaryMuscleGroups: secondaryMuscleGroups,
         movement: movement);
   }
 
-  ExerciseDTO copyWith({
+  ExerciseVariantDTO copyWith({
     String? name,
     String? description,
-    List<ExerciseMetric>? metrics,
-    List<ExerciseModality>? modes,
-    List<ExercisePosition>? positions,
-    List<ExerciseStance>? stances,
+    ExerciseMetric? metric,
+    ExerciseModality? mode,
+    ExercisePosition? position,
+    ExerciseStance? stance,
     ExerciseEquipment? equipment,
     List<MuscleGroup>? primaryMuscleGroups,
     List<MuscleGroup>? secondaryMuscleGroups,
     CoreMovement? movement,
   }) {
-    return ExerciseDTO(
+    return ExerciseVariantDTO(
       name: name ?? this.name,
       description: description ?? this.description,
-      metrics: metrics ?? this.metrics,
-      modes: modes ?? this.modes,
-      positions: positions ?? this.positions,
-      stances: stances ?? this.stances,
+      metric: metric ?? this.metric,
+      mode: mode ?? this.mode,
+      position: position ?? this.position,
+      stance: stance ?? this.stance,
       equipment: equipment ?? this.equipment,
       primaryMuscleGroups: primaryMuscleGroups ?? this.primaryMuscleGroups,
       secondaryMuscleGroups: secondaryMuscleGroups ?? this.secondaryMuscleGroups,
@@ -105,23 +103,6 @@ class ExerciseDTO {
 
   @override
   String toString() {
-    return 'ExerciseDTO{name: $name, description: $description, metrics: $metrics, modes: $modes, positions: $positions, stances: $stances, equipment: $equipment, primaryMuscleGroups: $primaryMuscleGroups, secondaryMuscleGroups: $secondaryMuscleGroups, movement: $movement}';
-  }
-}
-
-extension ExerciseDTOExtension on ExerciseDTO {
-
-  ExerciseVariantDTO defaultVariant() {
-    return ExerciseVariantDTO(
-        name: name,
-        description: description,
-        metric: metrics.first,
-        mode: modes.first,
-        position: positions.first,
-        stance: stances.first,
-        equipment: equipment,
-        primaryMuscleGroups: primaryMuscleGroups,
-        secondaryMuscleGroups: secondaryMuscleGroups,
-        movement: movement);
+    return 'ExerciseVariantDTO{name: $name, description: $description, metrics: ${metric.name}, modes: ${mode.name}, positions: ${position.name}, stances: ${stance.name}, equipment: ${equipment.name}, primaryMuscleGroups: ${primaryMuscleGroups.map((muscleGroup) => muscleGroup.name).join(", ")}, secondaryMuscleGroups: ${secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name).join(", ")}, movement: ${movement.name}}';
   }
 }

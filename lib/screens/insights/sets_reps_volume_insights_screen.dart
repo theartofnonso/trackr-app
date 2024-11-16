@@ -74,7 +74,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
         .map((log) => completedExercises(exerciseLogs: log.exerciseLogs))
         .expand((exerciseLogs) => exerciseLogs)
         .where((exerciseLog) {
-      final muscleGroups = [...exerciseLog.exercise.primaryMuscleGroups, ...exerciseLog.exercise.secondaryMuscleGroups];
+      final muscleGroups = [...exerciseLog.exerciseVariant.primaryMuscleGroups, ...exerciseLog.exerciseVariant.secondaryMuscleGroups];
       return muscleGroups.contains(_selectedMuscleGroup);
     }).toList();
 
@@ -340,7 +340,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
       exerciseLogs.mapIndexed((index, exerciseLog) {
         final setSummaries = exerciseLog.sets.mapIndexed((index, set) {
-          return switch (exerciseLog.exercise.metric) {
+          return switch (exerciseLog.exerciseVariant.metric) {
             ExerciseMetric.weights => "Set ${index + 1}: ${exerciseLog.sets[index].weightsSummary()}",
             ExerciseMetric.reps => "Set ${index + 1}: ${exerciseLog.sets[index].repsSummary()}",
             ExerciseMetric.duration => "Set ${index + 1}: ${exerciseLog.sets[index].durationSummary()}",
@@ -349,7 +349,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
           };
         }).toList();
 
-        buffer.writeln("Exercise: ${exerciseLog.exercise.name}");
+        buffer.writeln("Exercise: ${exerciseLog.exerciseVariant.name}");
         buffer.writeln("Sets: $setSummaries");
       }).toList();
 
@@ -429,7 +429,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
         .firstOrNull
         ?.exerciseLogs
         .firstOrNull
-        ?.exercise
+        ?.exerciseVariant
         .primaryMuscleGroups.first;
     _selectedMuscleGroup = defaultMuscleGroup ?? MuscleGroup.values.first;
   }

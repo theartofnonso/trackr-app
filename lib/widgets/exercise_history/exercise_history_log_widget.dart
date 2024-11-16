@@ -69,7 +69,7 @@ class _ExerciseLogWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final exerciseType = exerciseLog.exercise.metric;
+    final exerciseType = exerciseLog.exerciseVariant.metric;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,7 +87,7 @@ class _ExerciseLogWidget extends StatelessWidget {
           ExerciseMetric.none => throw UnimplementedError(),
           ExerciseMetric.duration => const SingleSetHeader(label: 'TIME', routinePreviewType: RoutinePreviewType.log),},
         const SizedBox(height: 8),
-        ...setsToWidgets(type: exerciseType, sets: exerciseLog.sets, routinePreviewType: RoutinePreviewType.log),
+        ...setsToWidgets(exerciseMetric: exerciseType, sets: exerciseLog.sets, routinePreviewType: RoutinePreviewType.log),
       ],
     );
   }

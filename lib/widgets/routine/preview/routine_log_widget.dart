@@ -24,10 +24,10 @@ class RoutineLogWidget extends StatelessWidget {
 
     final pbs = log.exerciseLogs.map((exerciseLog) {
       final pastExerciseLogs =
-          routineLogController.whereExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
+          routineLogController.whereExerciseLogsBefore(exerciseVariant: exerciseLog.exerciseVariant, date: exerciseLog.createdAt);
 
       return calculatePBs(
-          pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseLog.exercise.metric, exerciseLog: exerciseLog);
+          pastExerciseLogs: pastExerciseLogs, exerciseMetric: exerciseLog.exerciseVariant.metric, exerciseLog: exerciseLog);
     }).expand((pbs) => pbs);
 
     final completedExerciseLogsAndSets = completedExercises(exerciseLogs: log.exerciseLogs);

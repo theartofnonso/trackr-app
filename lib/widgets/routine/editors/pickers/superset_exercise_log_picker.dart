@@ -28,7 +28,7 @@ class SuperSetExerciseLogPicker extends StatelessWidget {
               },
               dense: true,
       contentPadding: EdgeInsets.zero,
-              title: Text(exercise.exercise.name,
+              title: Text(exercise.exerciseVariant.name,
                   style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 15)),
             ))
         .toList();

@@ -18,7 +18,7 @@ void showSuperSetExercisePicker(
   displayBottomSheet(
     context: context,
     child: SuperSetExerciseLogPicker(
-      title: "Superset ${firstExerciseLog.exercise.name} with",
+      title: "Superset ${firstExerciseLog.exerciseVariant.name} with",
       exercises: otherExerciseLogs,
       onSelect: onSelected,
       onSelectExercisesInLibrary: selectExercisesInLibrary,
@@ -36,7 +36,7 @@ void showSubstituteExercisePicker(
   displayBottomSheet(
     context: context,
     child: SubstituteExercisePicker(
-      title: "Substitute ${primaryExerciseLog.exercise.name} for",
+      title: "Substitute ${primaryExerciseLog.exerciseVariant.name} for",
       exercises: otherExercises,
       onSelect: onSelected,
       onRemove: onRemoved,
@@ -47,14 +47,14 @@ void showSubstituteExercisePicker(
 
 void showExercisesInLibrary(
     {required BuildContext context,
-    List<ExerciseDTO> excludeExercises = const [],
+    List<String> exercisesToExclude = const [],
     required void Function(List<ExerciseDTO> selectedExercises) onSelected,
     ExerciseMetric? type,
     MuscleGroupFamily? muscleGroupFamily,
     MuscleGroup? muscleGroup}) async {
   final exercises = await Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => ExerciseLibraryScreen(
-            excludeExercises: excludeExercises,
+            exercisesToExclude: exercisesToExclude,
             exerciseMetric: type,
             muscleGroupFamily: muscleGroupFamily,
             muscleGroup: muscleGroup,

@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
+import 'package:tracker_app/dtos/exercise_variant_dto.dart';
 import 'package:tracker_app/dtos/milestones/milestone_dto.dart';
 import 'package:tracker_app/models/RoutineLog.dart';
 import 'package:tracker_app/repositories/amplify/amplify_routine_log_repository.dart';
@@ -240,16 +241,16 @@ class ExerciseAndRoutineController extends ChangeNotifier {
     return _amplifyLogRepository.whereLogsIsWithinRange(range: range);
   }
 
-  List<ExerciseLogDto> whereExerciseLogsBefore({required ExerciseDTO exercise, required DateTime date}) {
-    return _amplifyLogRepository.whereExerciseLogsBefore(exercise: exercise, date: date);
+  List<ExerciseLogDto> whereExerciseLogsBefore({required ExerciseVariantDTO exerciseVariant, required DateTime date}) {
+    return _amplifyLogRepository.whereExerciseLogsBefore(exerciseVariant: exerciseVariant, date: date);
   }
 
-  List<SetDto> whereSetsForExercise({required ExerciseDTO exercise}) {
-    return _amplifyLogRepository.whereSetsForExercise(exercise: exercise);
+  List<SetDto> whereSetsForExercise({required ExerciseVariantDTO exerciseVariant}) {
+    return _amplifyLogRepository.whereSetsForExercise(exerciseVariant: exerciseVariant);
   }
 
   /// Exercise Helpers methods
-  ExerciseDTO? whereExercise({required String name}) {
+  ExerciseDTO whereExercise({required String name}) {
     return _amplifyExerciseRepository.whereExercise(name: name);
   }
 

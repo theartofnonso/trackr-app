@@ -125,9 +125,9 @@ class WeeklyMilestone extends Milestone {
         final completedExerciseLogs = completedExercises(exerciseLogs: log.exerciseLogs);
         final hasLegLog = completedExerciseLogs.where((exerciseLog) {
           final primaryMuscleGroupFamilies =
-              exerciseLog.exercise.primaryMuscleGroups.map((muscleGroup) => muscleGroup.family);
+              exerciseLog.exerciseVariant.primaryMuscleGroups.map((muscleGroup) => muscleGroup.family);
           final secondaryMuscleGroupFamilies =
-              exerciseLog.exercise.secondaryMuscleGroups.map((muscleGroup) => muscleGroup.family);
+              exerciseLog.exerciseVariant.secondaryMuscleGroups.map((muscleGroup) => muscleGroup.family);
           final muscleGroupFamilies = [...primaryMuscleGroupFamilies, ...secondaryMuscleGroupFamilies];
           return muscleGroupFamilies.contains(MuscleGroupFamily.legs);
         }).isNotEmpty;

@@ -1,8 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
-import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
+import '../dtos/exercise_variant_dto.dart';
 import '../dtos/set_dto.dart';
 import '../enums/routine_editor_type_enums.dart';
 import '../repositories/exercise_log_repository.dart';
@@ -28,8 +28,8 @@ class ExerciseLogController extends ChangeNotifier {
     return _exerciseLogRepository.mergeAndCheckPastExerciseLogsAndSets(datetime: datetime);
   }
 
-  void addExerciseLogs({required List<ExerciseDTO> exercises}) {
-    _exerciseLogRepository.addExerciseLogs(exercises: exercises);
+  void addExerciseLogs({required List<ExerciseVariantDTO> exercisesVariants}) {
+    _exerciseLogRepository.addExerciseLogs(exerciseVariants: exercisesVariants);
     notifyListeners();
   }
 
@@ -48,8 +48,8 @@ class ExerciseLogController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void replaceExerciseLog({required String oldExerciseId, required ExerciseDTO newExercise}) {
-    _exerciseLogRepository.replaceExercise(oldExerciseName: oldExerciseId, newExercise: newExercise);
+  void replaceExerciseLog({required String oldExerciseId, required ExerciseVariantDTO newExerciseVariant}) {
+    _exerciseLogRepository.replaceExercise(oldExerciseName: oldExerciseId, newExerciseVariant: newExerciseVariant);
     notifyListeners();
   }
 

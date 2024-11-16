@@ -416,7 +416,7 @@ void main() {
           routineLogId: abs.type,
           superSetId: "neckDayTwoSession$index",
           "",
-          exercise: neck,
+          exerciseVariant: neck,
           "notes",
           [
             const SetDto(80, 15, true),

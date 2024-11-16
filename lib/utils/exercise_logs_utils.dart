@@ -168,12 +168,12 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
 
 List<PBDto> calculatePBs(
     {required List<ExerciseLogDto> pastExerciseLogs,
-    required ExerciseMetric exerciseType,
-    required ExerciseLogDto exerciseLog}) {
+      required ExerciseMetric exerciseMetric,
+      required ExerciseLogDto exerciseLog}) {
   List<PBDto> pbs = [];
 
   if (pastExerciseLogs.isNotEmpty && exerciseLog.sets.isNotEmpty) {
-    if (withWeightsOnly(type: exerciseType)) {
+    if (withWeightsOnly(metric: exerciseMetric)) {
       final pastHeaviestWeight = pastExerciseLogs
           .map((log) => heaviestSetWeightForExerciseLog(exerciseLog: log))
           .map((set) => set.weight())
@@ -183,27 +183,27 @@ List<PBDto> calculatePBs(
       final currentHeaviestWeightSets = exerciseLog.sets.where((set) => set.weight() > pastHeaviestWeight);
       if (currentHeaviestWeightSets.isNotEmpty) {
         final heaviestWeightSet =
-            currentHeaviestWeightSets.reduce((curr, next) => (curr.volume()) > (next.volume()) ? curr : next);
-        pbs.add(PBDto(set: heaviestWeightSet, exercise: exerciseLog.exercise, pb: PBType.weight));
+        currentHeaviestWeightSets.reduce((curr, next) => (curr.volume()) > (next.volume()) ? curr : next);
+        pbs.add(PBDto(set: heaviestWeightSet, exerciseVariant: exerciseLog.exerciseVariant, pb: PBType.weight));
       }
 
       final currentHeaviestVolumeSets = exerciseLog.sets.where((set) => (set.volume()) > pastHeaviestSetVolume);
       if (currentHeaviestVolumeSets.isNotEmpty) {
         final heaviestVolumeSet =
-            currentHeaviestVolumeSets.reduce((curr, next) => (curr.volume()) > (next.volume()) ? curr : next);
-        pbs.add(PBDto(set: heaviestVolumeSet, exercise: exerciseLog.exercise, pb: PBType.volume));
+        currentHeaviestVolumeSets.reduce((curr, next) => (curr.volume()) > (next.volume()) ? curr : next);
+        pbs.add(PBDto(set: heaviestVolumeSet, exerciseVariant: exerciseLog.exerciseVariant, pb: PBType.volume));
       }
     }
 
-    if (withDurationOnly(type: exerciseType)) {
+    if (withDurationOnly(metric: exerciseMetric)) {
       final pastLongestDuration = pastExerciseLogs.map((log) => longestDurationForExerciseLog(exerciseLog: log)).max;
 
       final currentLongestDurations =
-          exerciseLog.sets.where((set) => Duration(milliseconds: set.duration()) > pastLongestDuration);
+      exerciseLog.sets.where((set) => Duration(milliseconds: set.duration()) > pastLongestDuration);
       if (currentLongestDurations.isNotEmpty) {
         final longestDurationSet = currentLongestDurations.reduce((curr, next) =>
-            Duration(milliseconds: curr.duration()) > Duration(milliseconds: next.duration()) ? curr : next);
-        pbs.add(PBDto(set: longestDurationSet, exercise: exerciseLog.exercise, pb: PBType.duration));
+        Duration(milliseconds: curr.duration()) > Duration(milliseconds: next.duration()) ? curr : next);
+        pbs.add(PBDto(set: longestDurationSet, exerciseVariant: exerciseLog.exerciseVariant, pb: PBType.duration));
       }
     }
   }
@@ -220,7 +220,7 @@ TemplateChange? hasReOrderedExercises(
     {required List<ExerciseLogDto> exerciseLogs1, required List<ExerciseLogDto> exerciseLogs2}) {
   final length = exerciseLogs1.length > exerciseLogs2.length ? exerciseLogs2.length : exerciseLogs1.length;
   for (int i = 0; i < length; i++) {
-    if (exerciseLogs1[i].exercise.name != exerciseLogs2[i].exercise.name) {
+    if (exerciseLogs1[i].exerciseVariant.name != exerciseLogs2[i].exerciseVariant.name) {
       return TemplateChange.exerciseOrder; // Re-orderedList
     }
   }
@@ -239,8 +239,8 @@ TemplateChange? hasExercisesChanged({
   required List<ExerciseLogDto> exerciseLogs1,
   required List<ExerciseLogDto> exerciseLogs2,
 }) {
-  Set<String> exerciseIds1 = exerciseLogs1.map((p) => p.exercise.name).toSet();
-  Set<String> exerciseIds2 = exerciseLogs2.map((p) => p.exercise.name).toSet();
+  Set<String> exerciseIds1 = exerciseLogs1.map((p) => p.exerciseVariant.name).toSet();
+  Set<String> exerciseIds2 = exerciseLogs2.map((p) => p.exerciseVariant.name).toSet();
 
   int changes = exerciseIds1.difference(exerciseIds2).length;
 
@@ -291,11 +291,11 @@ Map<MuscleGroupFamily, double> muscleGroupFamilyFrequency(
 
   // Counting the occurrences of each MuscleGroup
   for (var log in exerciseLogs) {
-    for (final muscleGroup in log.exercise.primaryMuscleGroups) {
+    for (final muscleGroup in log.exerciseVariant.primaryMuscleGroups) {
       frequencyMap.update(muscleGroup.family, (value) => value + 1, ifAbsent: () => 1);
     }
     if (includeSecondaryMuscleGroups) {
-      for (var muscleGroup in log.exercise.secondaryMuscleGroups) {
+      for (var muscleGroup in log.exerciseVariant.secondaryMuscleGroups) {
         frequencyMap.update(muscleGroup.family, (value) => value + 1, ifAbsent: () => 1);
       }
     }
@@ -323,11 +323,11 @@ Map<MuscleGroupFamily, int> _muscleGroupFamilyCountOn4WeeksScale({required List<
   // Counting the occurrences of each MuscleGroup
   for (var logAndDate in exerciseLogsByDay.entries) {
     final primaryMuscleGroupFamilies = logAndDate.value
-        .map((log) => log.exercise.primaryMuscleGroups)
+        .map((log) => log.exerciseVariant.primaryMuscleGroups)
         .expand((muscleGroup) => muscleGroup)
         .map((muscleGroup) => muscleGroup.family);
     final secondaryMuscleGroupFamilies = logAndDate.value
-        .map((log) => log.exercise.secondaryMuscleGroups)
+        .map((log) => log.exerciseVariant.secondaryMuscleGroups)
         .expand((muscleGroup) => muscleGroup)
         .map((muscleGroup) => muscleGroup.family);
     final muscleGroupFamilies = {...primaryMuscleGroupFamilies, ...secondaryMuscleGroupFamilies};
@@ -368,20 +368,20 @@ double cumulativeMuscleGroupFamilyFrequency({required List<ExerciseLogDto> exerc
   return cumulativeFrequency / 56;
 }
 
-bool withWeightsOnly({required ExerciseMetric type}) {
-  return type == ExerciseMetric.weights;
+bool withWeightsOnly({required ExerciseMetric metric}) {
+  return metric == ExerciseMetric.weights;
 }
 
-bool withReps({required ExerciseMetric type}) {
-  return type == ExerciseMetric.weights || type == ExerciseMetric.reps;
+bool withReps({required ExerciseMetric metric}) {
+  return metric == ExerciseMetric.weights || metric == ExerciseMetric.reps;
 }
 
-bool withRepsOnly({required ExerciseMetric type}) {
-  return type == ExerciseMetric.reps;
+bool withRepsOnly({required ExerciseMetric metric}) {
+  return metric == ExerciseMetric.reps;
 }
 
-bool withDurationOnly({required ExerciseMetric type}) {
-  return type == ExerciseMetric.duration;
+bool withDurationOnly({required ExerciseMetric metric}) {
+  return metric == ExerciseMetric.duration;
 }
 
 int _calculateMuscleScore({required List<ExerciseLogDto> exerciseLogs}) {

@@ -1,59 +1,38 @@
 [
   {
-    "id": "GLT2",
-    "name": "Cable Pull-Throughs",
-    "primaryMuscleGroup": "glutes",
-    "secondary_muscle_groups": ["hamstrings", "back", "abs"],
-    "type": "weightsAndReps",
-    "video": "https://www.youtube.com/watch?v=f2rO8ZCMan8",
-    "creditSource": "https://www.youtube.com/@denvyr",
-    "credit": "Denvyr | Realistic Fitness Dietitian",
-    "description": "Engages the glutes and hamstrings while focusing on hip hinge movement.",
-    "movement": "hinge"
-  },
-  {
-    "id": "GLT26",
-    "name": "Glute Kickbacks",
-    "primaryMuscleGroup": "glutes",
-    "secondary_muscle_groups": [],
-    "type": "weightsAndReps",
-    "video": "https://www.youtube.com/watch?v=SqO-VUEak2M",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "A resistance-based exercise that targets the glutes through isolated hip extension.",
-    "movement": "hinge"
-  },
-  {
-    "id": "GLT7",
-    "name": "Glute Bridges",
-    "primaryMuscleGroup": "glutes",
-    "secondary_muscle_groups": ["hamstrings", "abs", "back"],
-    "type": "reps",
-    "video": "https://www.youtube.com/watch?v=tqp5XQPpTxY",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "Engages the glutes and lower back by lifting hips from the floor.",
-    "movement": "hinge"
-  },
-  {
-    "id": "GLT20",
-    "name": "Hip Thrust",
-    "primaryMuscleGroup": "glutes",
+    "name": "Hip Thrusts",
+    "primary_muscle_groups": [
+      "glutes"
+    ],
     "secondary_muscle_groups": ["hamstrings", "abs", "quadriceps"],
-    "type": "weightsAndReps",
-    "video": "https://www.youtube.com/watch?v=aweBS7K71l8",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "Strengthens glutes with heavy resistance through barbell hip thrusts.",
+    "description": "Targets the gluteus maximus for strength and size through hip extension.",
+    "equipment": "none",
+    "modality": "bilateral",
+    "metric": "reps",
     "movement": "hinge"
   },
   {
-    "id": "GLT21",
-    "name": "Reverse Hyperextension",
-    "primaryMuscleGroup": "glutes",
-    "secondary_muscle_groups": ["hamstrings", "back"],
-    "type": "reps",
-    "description": "Engages the glutes and lower back through reverse extension of the legs.",
+    "name": "Glute Kickbacks",
+    "primary_muscle_groups": [
+      "glutes"
+    ],
+    "secondary_muscle_groups": ["hamstrings", "abs", "quadriceps"],
+    "description": "Targets the gluteus maximus for strength and size through hip extension.",
+    "equipment": "none",
+    "modality": "bilateral",
+    "metric": "reps",
+    "movement": "hinge"
+  },
+  {
+    "name": "Glute Kickbacks",
+    "primary_muscle_groups": [
+      "glutes"
+    ],
+    "secondary_muscle_groups": ["hamstrings", "abs", "quadriceps"],
+    "description": "Targets the gluteus maximus for strength and size through hip extension.",
+    "equipment": "none",
+    "modality": "bilateral",
+    "metric": "reps",
     "movement": "hinge"
   }
 ]

@@ -46,13 +46,13 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
 
   void _selectExercisesInLibrary() async {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
-    final excludeExercises = controller.exerciseLogs.map((exercise) => exercise.exercise).toList();
+    final excludeExercises = controller.exerciseLogs.map((exercise) => exercise.exerciseVariant).toList();
 
     showExercisesInLibrary(
         context: context,
-        excludeExercises: excludeExercises,
+        exercisesToExclude: excludeExercises.map((exercise) => exercise.name).toList(),
         onSelected: (List<ExerciseDTO> selectedExercises) {
-          controller.addExerciseLogs(exercises: selectedExercises);
+          controller.addExerciseLogs(exercisesVariants: selectedExercises.map((exercise) => exercise.defaultVariant()).toList());
         });
   }
 
@@ -67,8 +67,8 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
           _closeDialog();
           final id = superSetId(firstExerciseLog: firstExerciseLog, secondExerciseLog: secondExerciseLog);
           controller.superSetExerciseLogs(
-              firstExerciseName: firstExerciseLog.exercise.name,
-              secondExerciseName: secondExerciseLog.exercise.name,
+              firstExerciseName: firstExerciseLog.exerciseVariant.name,
+              secondExerciseName: secondExerciseLog.exerciseVariant.name,
               superSetId: id);
         },
         selectExercisesInLibrary: () {
@@ -79,14 +79,14 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
 
   void _showReplaceExercisePicker({required ExerciseLogDto oldExerciseLog}) {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
-    final excludeExercises = controller.exerciseLogs.map((exercise) => exercise.exercise).toList();
+    final excludeExercises = controller.exerciseLogs.map((exercise) => exercise.exerciseVariant).toList();
 
     showExercisesInLibrary(
         context: context,
-        excludeExercises: excludeExercises,
+        exercisesToExclude: excludeExercises.map((exerciseVariant) => exerciseVariant.name).toList(),
         onSelected: (List<ExerciseDTO> selectedExercises) {
           controller.replaceExerciseLog(
-              oldExerciseId: oldExerciseLog.exercise.name, newExercise: selectedExercises.first);
+              oldExerciseId: oldExerciseLog.exerciseVariant.name, newExerciseVariant: selectedExercises.first.defaultVariant());
         });
   }
 
@@ -330,7 +330,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
                                   padding: const EdgeInsets.only(bottom: 250),
                                   itemBuilder: (BuildContext context, int index) {
                                     final exerciseLog = exerciseLogs[index];
-                                    final exerciseName = exerciseLog.exercise.name;
+                                    final exerciseName = exerciseLog.exerciseVariant.name;
                                     final isExerciseMinimised = _minimisedExerciseLogCards.contains(exerciseName);
                                     return isExerciseMinimised
                                         ? ExerciseLogLiteWidget(
@@ -410,7 +410,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
     if (exercises.isNotEmpty) {
       final updatedExerciseLogs = exercises.map((exerciseLog) {
         final previousSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
-            .whereSetsForExercise(exercise: exerciseLog.exercise);
+            .whereSetsForExercise(exerciseVariant: exerciseLog.exerciseVariant);
         if (previousSets.isNotEmpty) {
           final unCheckedSets =
               previousSets.take(exerciseLog.sets.length).map((set) => set.copyWith(checked: false)).toList();
@@ -436,7 +436,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
       final isExerciseCompleted = completedSets == exerciseLog.sets.length;
       if (isExerciseCompleted) {
         setState(() {
-          _minimisedExerciseLogCards.add(exerciseLog.exercise.name);
+          _minimisedExerciseLogCards.add(exerciseLog.exerciseVariant.name);
         });
       }
     });

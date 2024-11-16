@@ -24,9 +24,9 @@ class PBsShareable extends StatelessWidget {
   Widget build(BuildContext context) {
     String? value;
 
-    if (withDurationOnly(type: pbDto.exercise.metric)) {
+    if (withDurationOnly(metric: pbDto.exerciseVariant.metric)) {
       value = Duration(milliseconds: set.duration()).hmsAnalog();
-    } else if (withWeightsOnly(type: pbDto.exercise.metric)) {
+    } else if (withWeightsOnly(metric: pbDto.exerciseVariant.metric)) {
       if (pbDto.pb == PBType.weight) {
         value = "${set.weight()}${weightLabel().toUpperCase()}";
       } else {
@@ -98,7 +98,7 @@ class PBsShareable extends StatelessWidget {
                                       color: Colors.white, fontSize: 24, fontWeight: FontWeight.w600)),
                             )
                           : const SizedBox(height: 20),
-                      Text(pbDto.exercise.name,
+                      Text(pbDto.exerciseVariant.name,
                           style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 4),
                       Text(pbDto.pb.description,

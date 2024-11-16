@@ -7,7 +7,6 @@ import 'package:collection/collection.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
-import '../../dtos/exercise_dto.dart';
 import '../../dtos/appsync/routine_template_plan_dto.dart';
 
 class AmplifyRoutineTemplatePlanRepository {
@@ -62,22 +61,6 @@ class AmplifyRoutineTemplatePlanRepository {
       final oldTemplate = result.first;
       await Amplify.DataStore.delete<RoutineTemplatePlan>(oldTemplate);
     }
-  }
-
-  void syncTemplatePlansWithExercisesFromLibrary({required List<ExerciseDTO> exercises}) {
-    final updatedTemplatePlans = _templatePlans.map((templatePlan) {
-      final updatedTemplates = templatePlan.templates?.map((template) {
-        final updatedExerciseTemplates = template.exerciseTemplates.map((exerciseTemplate) {
-          final foundExercise = exercises.firstWhere(
-              (exerciseInLibrary) => exerciseInLibrary.name == exerciseTemplate.exercise.name,
-              orElse: () => exerciseTemplate.exercise);
-          return exerciseTemplate.copyWith(exercise: foundExercise);
-        }).toList();
-        return template.copyWith(exerciseTemplates: updatedExerciseTemplates);
-      }).toList();
-      return templatePlan.copyWith(templates: updatedTemplates);
-    }).toList();
-    _templatePlans = updatedTemplatePlans;
   }
 
   /// Helper methods

@@ -26,32 +26,6 @@
     "movement": "pull"
   },
   {
-    "name": "Seated Front Raises",
-    "primary_muscle_groups": [
-      "shoulders"
-    ],
-    "secondary_muscle_groups": [
-      "triceps", "chest"],
-    "description": "Primarily targets the front deltoid muscles to build shoulder size.",
-    "equipment": "dumbbells",
-    "modality": "bilateral",
-    "metric": "weights",
-    "movement": "pull"
-  },
-  {
-    "name": "Seated Lateral Raises",
-    "primary_muscle_groups": [
-      "shoulders"
-    ],
-    "secondary_muscle_groups": [
-      "triceps", "chest"],
-    "description": "Engages the lateral deltoids to build shoulder width and definition.",
-    "equipment": "dumbbells",
-    "modality": "bilateral",
-    "metric": "weights",
-    "movement": "pull"
-  },
-  {
     "name": "Upright Rows",
     "primary_muscle_groups": [
       "shoulders"
@@ -79,19 +53,6 @@
   },
   {
     "name": "Overhead Press",
-    "primary_muscle_groups": [
-      "shoulders"
-    ],
-    "secondary_muscle_groups": [
-      "triceps", "chest"],
-    "description": "Builds overall shoulder strength, also involving the triceps and upper chest.",
-    "equipment": "barbell",
-    "modality": "bilateral",
-    "metric": "weights",
-    "movement": "pull"
-  },
-  {
-    "name": "Seated Overhead Press",
     "primary_muscle_groups": [
       "shoulders"
     ],

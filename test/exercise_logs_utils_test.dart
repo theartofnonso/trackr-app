@@ -187,17 +187,17 @@ void main() {
           ],
           DateTime.now(), []);
 
-      final pbs = [PBDto(set: pbLog.sets[2], exercise: lyingLegCurlExercise, pb: PBType.weight)];
+      final pbs = [PBDto(set: pbLog.sets[2], exerciseVariant: lyingLegCurlExercise, pb: PBType.weight)];
 
       final result = calculatePBs(
           pastExerciseLogs: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2],
-          exerciseType: ExerciseMetric.weights,
+          exerciseMetrics: ExerciseMetric.weights,
           exerciseLog: pbLog);
 
       expect(result.length, 1);
       expect(result[0].pb, pbs[0].pb);
       expect(result[0].set, pbs[0].set);
-      expect(result[0].exercise, pbs[0].exercise);
+      expect(result[0].exerciseVariant, pbs[0].exerciseVariant);
     });
 
     test("Has [PBType.volume]", () {
@@ -214,17 +214,17 @@ void main() {
           ],
           DateTime.now(), []);
 
-      final pbs = [PBDto(set: pbLog.sets[1], exercise: lyingLegCurlExercise, pb: PBType.volume)];
+      final pbs = [PBDto(set: pbLog.sets[1], exerciseVariant: lyingLegCurlExercise, pb: PBType.volume)];
 
       final result = calculatePBs(
           pastExerciseLogs: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2, lyingLegCurlExerciseLog3],
-          exerciseType: ExerciseMetric.weights,
+          exerciseMetrics: ExerciseMetric.weights,
           exerciseLog: pbLog);
 
       expect(result.length, 1);
       expect(result[0].pb, pbs[0].pb);
       expect(result[0].set, pbs[0].set);
-      expect(result[0].exercise, pbs[0].exercise);
+      expect(result[0].exerciseVariant, pbs[0].exerciseVariant);
     });
 
     test("Has [PBType.weight], PBType.volume]", () {
@@ -242,13 +242,13 @@ void main() {
           DateTime.now(), []);
 
       final pbs = [
-        PBDto(set: pbLog.sets[1], exercise: lyingLegCurlExercise, pb: PBType.weight),
-        PBDto(set: pbLog.sets[1], exercise: lyingLegCurlExercise, pb: PBType.volume)
+        PBDto(set: pbLog.sets[1], exerciseVariant: lyingLegCurlExercise, pb: PBType.weight),
+        PBDto(set: pbLog.sets[1], exerciseVariant: lyingLegCurlExercise, pb: PBType.volume)
       ];
 
       final result = calculatePBs(
           pastExerciseLogs: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2, lyingLegCurlExerciseLog3],
-          exerciseType: ExerciseMetric.weights,
+          exerciseMetrics: ExerciseMetric.weights,
           exerciseLog: pbLog);
 
       expect(result.length, 2);
@@ -256,8 +256,8 @@ void main() {
       expect(result[0].set, pbs[0].set);
       expect(result[1].pb, pbs[1].pb);
       expect(result[1].set, pbs[1].set);
-      expect(result[0].exercise, pbs[0].exercise);
-      expect(result[1].exercise, pbs[1].exercise);
+      expect(result[0].exerciseVariant, pbs[0].exerciseVariant);
+      expect(result[1].exerciseVariant, pbs[1].exerciseVariant);
     });
 
     test("Has [PBType.duration]", () {
@@ -274,17 +274,17 @@ void main() {
           ],
           DateTime.now(), []);
 
-      final pbs = [PBDto(set: pbLog.sets[2], exercise: plankExercise, pb: PBType.duration)];
+      final pbs = [PBDto(set: pbLog.sets[2], exerciseVariant: plankExercise, pb: PBType.duration)];
 
       final result = calculatePBs(
           pastExerciseLogs: [plankExerciseLog1, plankExerciseLog2],
-          exerciseType: ExerciseMetric.duration,
+          exerciseMetrics: ExerciseMetric.duration,
           exerciseLog: pbLog);
 
       expect(result.length, 1);
       expect(result[0].pb, pbs[0].pb);
       expect(result[0].set, pbs[0].set);
-      expect(result[0].exercise, pbs[0].exercise);
+      expect(result[0].exerciseVariant, pbs[0].exerciseVariant);
     });
 
     test("Has [PBType.weight, PBType.volume, PBType.durations]", () {
@@ -317,15 +317,15 @@ void main() {
       final pbLogs = [pbLog1, pbLog2];
 
       final pbs = [
-        PBDto(set: pbLog1.sets[1], exercise: lyingLegCurlExercise, pb: PBType.weight),
-        PBDto(set: pbLog1.sets[1], exercise: lyingLegCurlExercise, pb: PBType.volume),
-        PBDto(set: pbLog2.sets[2], exercise: plankExercise, pb: PBType.duration)
+        PBDto(set: pbLog1.sets[1], exerciseVariant: lyingLegCurlExercise, pb: PBType.weight),
+        PBDto(set: pbLog1.sets[1], exerciseVariant: lyingLegCurlExercise, pb: PBType.volume),
+        PBDto(set: pbLog2.sets[2], exerciseVariant: plankExercise, pb: PBType.duration)
       ];
 
       final result = pbLogs
           .map((log) => calculatePBs(
               pastExerciseLogs: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2, lyingLegCurlExerciseLog3],
-              exerciseType: log.exercise.exerciseMetric,
+              exerciseMetrics: log.exerciseVariant.exerciseMetric,
               exerciseLog: log))
           .expand((pbs) => pbs)
           .toList();
@@ -337,9 +337,9 @@ void main() {
       expect(result[1].set, pbs[1].set);
       expect(result[2].pb, pbs[2].pb);
       expect(result[2].set, pbs[2].set);
-      expect(result[0].exercise, pbs[0].exercise);
-      expect(result[1].exercise, pbs[1].exercise);
-      expect(result[2].exercise, pbs[2].exercise);
+      expect(result[0].exerciseVariant, pbs[0].exerciseVariant);
+      expect(result[1].exerciseVariant, pbs[1].exerciseVariant);
+      expect(result[2].exerciseVariant, pbs[2].exerciseVariant);
     });
   });
 

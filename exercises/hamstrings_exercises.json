@@ -1,83 +1,74 @@
 [
   {
-    "id": "HAM1",
-    "name": "Good Mornings",
-    "primaryMuscleGroup": "hamstrings",
+    "name": "Good Morning",
+    "primary_muscle_groups": [
+      "hamstrings"
+    ],
     "secondary_muscle_groups": ["glutes", "back", "abs"],
-    "type": "weightsAndReps",
-    "video": "https://www.youtube.com/watch?v=nWyx81AfTos",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
     "description": "Targets the hamstrings and lower back with a hinge motion, building posterior chain strength.",
+    "equipment": "barbell",
+    "modality": "bilateral",
+    "metric": "weights",
     "movement": "hinge"
   },
   {
-    "id": "HAM3",
+    "name": "Deadlifts",
+    "primary_muscle_groups": [
+      "hamstrings"
+    ],
+    "secondary_muscle_groups": ["glutes", "back", "abs", "forearms"],
+    "description": "Targets the hamstrings and lower back with a hinge motion, building posterior chain strength.",
+    "equipment": "barbell",
+    "modality": "bilateral",
+    "metric": "weights",
+    "movement": "hinge"
+  },
+  {
+    "name": "Single-Leg Deadlifts",
+    "primary_muscle_groups": [
+      "hamstrings"
+    ],
+    "secondary_muscle_groups": ["glutes", "back", "abs", "forearms"],
+    "description": "Targets the hamstrings and lower back with a hinge motion, building posterior chain strength.",
+    "equipment": "barbell",
+    "modality": "unilateral",
+    "metric": "weights",
+    "movement": "hinge"
+  },
+  {
     "name": "Lying Leg Curl",
-    "primaryMuscleGroup": "hamstrings",
-    "secondary_muscle_groups": ["calves"],
-    "type": "weightsAndReps",
-    "video": "https://www.youtube.com/watch?v=SbSNUXPRkc8",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
+    "primary_muscle_groups": [
+      "hamstrings"
+    ],
+    "secondary_muscle_groups": ["glutes"],
     "description": "Isolates the hamstrings by curling the legs from a lying position, enhancing muscle development.",
+    "equipment": "barbell",
+    "modality": "bilateral",
+    "metric": "weights",
     "movement": "hinge"
   },
   {
-    "id": "HAM5",
-    "name": "Nordic Hamstring Curls",
-    "primaryMuscleGroup": "hamstrings",
-    "secondary_muscle_groups": ["glutes", "calves"],
-    "type": "reps",
-    "video": "https://www.youtube.com/watch?v=NfBGKhjedD8",
-    "creditSource": "https://www.youtube.com/@STYRK_DK",
-    "credit": "STYRK",
+    "name": "Nordic Hamstring Curl",
+    "primary_muscle_groups": [
+      "hamstrings"
+    ],
+    "secondary_muscle_groups": ["glutes", "quadriceps", "calves"],
     "description": "An advanced bodyweight exercise that focuses on eccentric hamstring strength and injury prevention.",
+    "equipment": "machine",
+    "modality": "bilateral",
+    "metric": "reps",
     "movement": "hinge"
   },
   {
-    "id": "HAM8",
-    "name": "Romanian Deadlift (Dumbbell)",
-    "primaryMuscleGroup": "hamstrings",
-    "secondary_muscle_groups": ["glutes", "back", "forearms", "abs"],
-    "type": "weightsAndReps",
-    "video": "https://www.youtube.com/watch?v=plb5jEO4Unw",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "A variation of the Romanian deadlift using dumbbells, focusing on hamstring and glute activation.",
-    "movement": "hinge"
-  },
-  {
-    "id": "HAM20",
-    "name": "Glute-Ham Raises",
-    "primaryMuscleGroup": "hamstrings",
-    "secondary_muscle_groups": ["glutes", "back"],
-    "type": "reps",
-    "description": "An advanced bodyweight exercise that targets the hamstrings through knee flexion and hip extension.",
-    "movement": "hinge"
-  },
-  {
-    "id": "HAM21",
-    "name": "Kettlebell Swings",
-    "primaryMuscleGroup": "hamstrings",
-    "secondary_muscle_groups": ["glutes", "back", "abs"],
-    "type": "weightsAndReps",
-    "video": "https://www.youtube.com/watch?v=vdezTMulJ-k",
-    "creditSource": "https://www.youtube.com/@crossfit",
-    "credit": "Crossfit",
-    "description": "A dynamic exercise that utilizes a powerful hinge motion to target the hamstrings, glutes, and posterior chain.",
-    "movement": "hinge"
-  },
-  {
-    "id": "HAM22",
-    "name": "Swiss Ball Hamstring Curls",
-    "primaryMuscleGroup": "hamstrings",
-    "secondary_muscle_groups": ["glutes", "back", "abs"],
-    "type": "reps",
-    "video": "https://www.youtube.com/watch?v=XkESHgkTdFw",
-    "creditSource": "https://www.youtube.com/@nuffieldhealth",
-    "credit": "Nuffield Health",
-    "description": "A bodyweight exercise using a swiss ball that strengthens the hamstrings through knee flexion and challenges core stability.",
+    "name": "Glute Ham Raise",
+    "primary_muscle_groups": [
+      "hamstrings"
+    ],
+    "secondary_muscle_groups": ["glutes"],
+    "description": "Strengthens the hamstrings and glutes by lifting the body from the knees, improving posterior strength.",
+    "equipment": "machine",
+    "modality": "bilateral",
+    "metric": "reps",
     "movement": "hinge"
   }
 ]

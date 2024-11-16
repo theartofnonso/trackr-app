@@ -10,7 +10,7 @@ enum ExerciseMetric {
   final String description;
 
   static ExerciseMetric fromString(String string) {
-    return ExerciseMetric.values
+    return values
         .firstWhere((value) => value.name.toLowerCase() == string.toLowerCase(), orElse: () => none);
   }
 }

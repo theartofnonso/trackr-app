@@ -480,7 +480,7 @@ class _FavouriteExercisePicker extends StatelessWidget {
       onTap: () {
         showExercisesInLibrary(
             context: context,
-            excludeExercises: exercises,
+            exercisesToExclude: exercises.map((exercise) => exercise.name).toList(),
             muscleGroupFamily: family,
             onSelected: (exercises) {
               for (final exercise in exercises) {

@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_chart_screen.dart';
-import 'package:tracker_app/screens/exercise/history/exercise_video_screen.dart';
 import 'package:tracker_app/screens/exercise/history/history_screen.dart';
 
 import '../../../dtos/exercise_dto.dart';
@@ -17,9 +16,9 @@ import '../../empty_state_screens/not_found.dart';
 class ExerciseHomeScreen extends StatefulWidget {
   static const routeName = "/exercise_home_screen";
 
-  final ExerciseDTO exercise;
+  final String exerciseName;
 
-  const ExerciseHomeScreen({super.key, required this.exercise});
+  const ExerciseHomeScreen({super.key, required this.exerciseName});
 
   @override
   State<ExerciseHomeScreen> createState() => _ExerciseHomeScreenState();
@@ -50,10 +49,8 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
 
     final mostRepsSessionRecord = mostRepsInSession(exerciseLogs: completedExerciseLogs);
 
-    final hasVideo = false;
-
     return DefaultTabController(
-        length: hasVideo ? 3 : 2,
+        length: 2,
         child: Scaffold(
           appBar: AppBar(
             backgroundColor: sapphireDark80,
@@ -72,10 +69,6 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
                 Tab(
                     child: Text("History",
                         style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
-                if (hasVideo)
-                  Tab(
-                      child: Text("Video",
-                          style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
               ],
             ),
           ),
@@ -100,11 +93,10 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
                     longestDuration: longestDurationRecord,
                     mostRepsSet: mostRepsSetRecord,
                     mostRepsSession: mostRepsSessionRecord,
-                    exercise: exercise,
+                    exerciseVariant: exercise.defaultVariant(), // to BE FIXED
                     exerciseLogs: completedExerciseLogs,
                   ),
                   HistoryScreen(exerciseLogs: completedExerciseLogs),
-                  if (hasVideo) ExerciseVideoScreen(exercise: exercise)
                 ],
               ),
             ),
@@ -115,8 +107,8 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
   @override
   void initState() {
     super.initState();
-    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-    _exerciseLogsByName = routineLogController.exerciseLogsByName;
-    _exercise = widget.exercise;
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+    _exerciseLogsByName = exerciseAndRoutineController.exerciseLogsByName;
+    _exercise = exerciseAndRoutineController.whereExercise(name: widget.exerciseName) ;
   }
 }

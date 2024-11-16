@@ -92,10 +92,10 @@ class RepsMilestone extends Milestone {
         final completedExerciseLogs = completedExercises(exerciseLogs: log.exerciseLogs);
 
         final exerciseLogs = completedExerciseLogs
-            .where((exerciseLog) => exerciseLog.exercise.metric != ExerciseMetric.duration)
+            .where((exerciseLog) => exerciseLog.exerciseVariant.metric != ExerciseMetric.duration)
             .where((exerciseLog) {
-          final primaryMuscleGroups = exerciseLog.exercise.primaryMuscleGroups;
-          final secondaryMuscleGroups = exerciseLog.exercise.secondaryMuscleGroups;
+          final primaryMuscleGroups = exerciseLog.exerciseVariant.primaryMuscleGroups;
+          final secondaryMuscleGroups = exerciseLog.exerciseVariant.secondaryMuscleGroups;
           final muscleGroups = [...primaryMuscleGroups, ...secondaryMuscleGroups];
           return muscleGroups.contains(muscleGroup);
         });

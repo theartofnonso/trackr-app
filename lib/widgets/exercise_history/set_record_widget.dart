@@ -9,10 +9,10 @@ import '../routine/preview/set_headers/double_set_header.dart';
 import '../routine/preview/set_rows/double_set_row.dart';
 
 class SetRecordWidget extends StatelessWidget {
-  final ExerciseMetric exerciseType;
+  final ExerciseMetric exerciseMetric;
   final List<SetDto> sets;
 
-  const SetRecordWidget({super.key, required this.exerciseType, required this.sets});
+  const SetRecordWidget({super.key, required this.exerciseMetric, required this.sets});
 
   @override
   Widget build(BuildContext context) {
