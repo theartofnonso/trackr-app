@@ -22,8 +22,8 @@ class CaloriesWidget extends StatelessWidget {
 
     final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
 
-    final thisMonthCount = thisMonthLogs.map((log) => calculateCalories(duration: log.duration(), bodyWeight: routineUserController.weight(), activity: log.activityType)).sum;
-    final lastMonthCount = lastMonthLogs.map((log) => calculateCalories(duration: log.duration(), bodyWeight: routineUserController.weight(), activity: log.activityType)).sum;
+    final thisMonthCount = thisMonthLogs.map((log) => calculateCalories(duration: log.duration(), reps: routineUserController.weight(), activity: log.activityType)).sum;
+    final lastMonthCount = lastMonthLogs.map((log) => calculateCalories(duration: log.duration(), reps: routineUserController.weight(), activity: log.activityType)).sum;
 
     final improved = thisMonthCount > lastMonthCount;
 

@@ -389,7 +389,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
           /// [Exercise.duration] exercises do not have sets in templates
           /// This is because we only need to store the duration of the exercise in [RoutineEditorType.log] i.e data is logged in realtime
-          final sets = withDurationOnly(type: exerciseLog.exercise.type) ? <SetDto>[] : uncheckedSets;
+          final sets = withDurationOnly(type: exerciseLog.exercise.metric) ? <SetDto>[] : uncheckedSets;
           return exerciseLog.copyWith(sets: sets);
         }).toList();
         final templateToCreate = RoutineTemplateDto(
@@ -469,21 +469,20 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
       if (mounted) {
         final originalExerciseTemplates = template.exerciseTemplates.map((template) => template.exercise).toList();
-        final exerciseIds = await navigateWithSlideTransition(
+        final recommendedExerciseNames = await navigateWithSlideTransition(
                 context: context,
-                child: TrkrCoachExerciseRecommendationScreen(
+                child: TRKRCoachExerciseRecommendationScreen(
                     muscleGroupAndExercises: muscleGroupAndExercises,
                     originalExerciseTemplates: originalExerciseTemplates)) as List<String>? ??
             [];
 
-        if (exerciseIds.isNotEmpty) {
+        if (recommendedExerciseNames.isNotEmpty) {
           if (mounted) {
             final exercises = Provider.of<ExerciseAndRoutineController>(context, listen: false).exercises;
 
-            final exerciseTemplates = exerciseIds.map((exerciseId) {
-              final exerciseInLibrary = exercises.firstWhere((exercise) => exercise.id == exerciseId);
-              final exerciseTemplate = ExerciseLogDto(
-                  exerciseInLibrary.id, "", "", exerciseInLibrary, "", [const SetDto(0, 0, false)], DateTime.now(), []);
+            final exerciseTemplates = recommendedExerciseNames.map((exerciseName) {
+              final exerciseInLibrary = exercises.firstWhere((exercise) => exercise.name == exerciseName);
+              final exerciseTemplate = ExerciseLogDto.empty(exercise: exerciseInLibrary);
               return exerciseTemplate;
             }).toList();
             final originalTemplates = template.exerciseTemplates;
@@ -519,7 +518,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
     buffer.writeln("My original Exercise Selection:");
     for (final exerciseTemplate in template.exerciseTemplates) {
-      buffer.writeln("Exercise Id: ${exerciseTemplate.exercise.id}\nExercise Name: ${exerciseTemplate.exercise.name}");
+      buffer.writeln("Exercise Name: ${exerciseTemplate.exercise.name}\nExercise Name: ${exerciseTemplate.exercise.name}");
       buffer.writeln();
     }
 
@@ -547,8 +546,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
               final muscleGroupString = json["muscle_group"];
               final recommendedExercises = json["recommended_exercises"] as List<dynamic>;
               final rationale = json["rationale"];
-              final exerciseTemplates = recommendedExercises.map((exerciseId) {
-                return exercises.firstWhere((exercise) => exercise.id == exerciseId);
+              final exerciseTemplates = recommendedExercises.map((exerciseName) {
+                return exercises.firstWhere((exercise) => exercise.name == exerciseName);
               }).toList();
               final muscleGroup = MuscleGroup.fromString(muscleGroupString);
               return {

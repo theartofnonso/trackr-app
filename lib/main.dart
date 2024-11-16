@@ -20,16 +20,14 @@ import 'package:tracker_app/controllers/notification_controller.dart';
 import 'package:tracker_app/controllers/settings_controller.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/dtos/appsync/routine_template_dto.dart';
-import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
 import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/repositories/amplify/amplify_activity_log_repository.dart';
-import 'package:tracker_app/repositories/amplify/amplify_exercise_repository.dart';
+import 'package:tracker_app/repositories/exercise_repository.dart';
 import 'package:tracker_app/repositories/amplify/amplify_routine_log_repository.dart';
 import 'package:tracker_app/repositories/amplify/amplify_routine_template_plan_repository.dart';
 import 'package:tracker_app/repositories/amplify/amplify_routine_template_repository.dart';
 import 'package:tracker_app/repositories/amplify/amplify_routine_user_repository.dart';
 import 'package:tracker_app/repositories/exercise_log_repository.dart';
-import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_log_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_template_editor_screen.dart';
@@ -51,8 +49,8 @@ import 'package:tracker_app/utils/date_utils.dart';
 import 'amplifyconfiguration.dart';
 import 'controllers/activity_log_controller.dart';
 import 'controllers/routine_user_controller.dart';
-import 'dtos/appsync/exercise_dto.dart';
 import 'dtos/appsync/routine_template_plan_dto.dart';
+import 'dtos/exercise_dto.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
 import 'dtos/viewmodels/routine_template_arguments.dart';
 import 'models/ModelProvider.dart';
@@ -100,7 +98,7 @@ void main() async {
       ),
       ChangeNotifierProvider<ExerciseAndRoutineController>(
         create: (BuildContext context) => ExerciseAndRoutineController(
-            amplifyExerciseRepository: AmplifyExerciseRepository(),
+            amplifyExerciseRepository: ExerciseRepository(),
             amplifyTemplateRepository: AmplifyRoutineTemplateRepository(),
             amplifyLogRepository: AmplifyRoutineLogRepository(),
             amplifyTemplatePlanRepository: AmplifyRoutineTemplatePlanRepository()),
@@ -158,16 +156,9 @@ final _router = GoRouter(
       },
     ),
     GoRoute(
-      path: ExerciseEditorScreen.routeName,
-      builder: (context, state) {
-        final args = state.extra as ExerciseEditorArguments?;
-        return ExerciseEditorScreen(exercise: args?.exercise);
-      },
-    ),
-    GoRoute(
       path: ExerciseHomeScreen.routeName,
       builder: (context, state) {
-        final args = state.extra as ExerciseDto;
+        final args = state.extra as ExerciseDTO;
         return ExerciseHomeScreen(exercise: args);
       },
     ),

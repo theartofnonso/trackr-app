@@ -1,93 +1,118 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
+import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
-import 'package:tracker_app/enums/exercise_type_enums.dart';
+import 'package:tracker_app/enums/exercise/core_movements_enum.dart';
+import 'package:tracker_app/enums/exercise/exercise_equipment_enum.dart';
+import 'package:tracker_app/enums/exercise/exercise_metrics_enums.dart';
+import 'package:tracker_app/enums/exercise/exercise_modality_enum.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 
 import 'date_utils.dart';
 
 void main() {
-  final hamstringExercise = ExerciseDto(
-      id: "id_hamstring_exercise",
-      name: "Hamstring Exercise",
-      primaryMuscleGroup: MuscleGroup.hamstrings,
-      secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      type: ExerciseType.weights,
-      owner: "");
+  final hamstringExercise = ExerciseDTO(
+    name: "Hamstring Exercise",
+    primaryMuscleGroups: [MuscleGroup.hamstrings],
+    secondaryMuscleGroups: [MuscleGroup.hamstrings],
+    metric: ExerciseMetric.weights,
+    description: '',
+    modality: ExerciseModality.bilateral,
+    equipment: ExerciseMetric.machine,
+    movement: CoreMovement.hinge,
+  );
 
-  final quadExercise = ExerciseDto(
-      id: "id_quad_exercise",
-      name: "Quad Exercise",
-      primaryMuscleGroup: MuscleGroup.quadriceps,
-      secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      type: ExerciseType.weights,
-      owner: "");
+  final quadExercise = ExerciseDTO(
+    name: "Quad Exercise",
+    primaryMuscleGroups: [MuscleGroup.quadriceps],
+    secondaryMuscleGroups: [MuscleGroup.quadriceps],
+    metric: ExerciseMetric.weights,
+    description: '',
+    modality: ExerciseModality.bilateral,
+    equipment: ExerciseMetric.machine,
+    movement: CoreMovement.squat,
+  );
 
-  final backExercise = ExerciseDto(
-      id: "id_back_exercise",
+  final backExercise = ExerciseDTO(
       name: "Back Exercise",
-      primaryMuscleGroup: MuscleGroup.lats,
-      secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      type: ExerciseType.weights,
-      owner: "");
+      primaryMuscleGroups: [MuscleGroup.back],
+      secondaryMuscleGroups: [MuscleGroup.back],
+      metric: ExerciseMetric.weights,
+      description: '',
+      modality: ExerciseModality.bilateral,
+      equipment: ExerciseMetric.machine,
+      movement: CoreMovement.pull);
 
-  final trapsExercise = ExerciseDto(
-      id: "id_traps_exercise",
+  final trapsExercise = ExerciseDTO(
       name: "Traps Exercise",
-      primaryMuscleGroup: MuscleGroup.traps,
-      secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      type: ExerciseType.weights,
-      owner: "");
+      primaryMuscleGroups: [MuscleGroup.traps],
+      secondaryMuscleGroups: [MuscleGroup.traps],
+      metric: ExerciseMetric.weights,
+      description: '',
+      modality: ExerciseModality.bilateral,
+      equipment: ExerciseMetric.machine,
+      movement: CoreMovement.pull);
 
-  final chestExercise = ExerciseDto(
-      id: "id_chest_exercise",
+  final chestExercise = ExerciseDTO(
       name: "Chest Exercise",
-      primaryMuscleGroup: MuscleGroup.chest,
-      secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      type: ExerciseType.weights,
-      owner: "");
+      primaryMuscleGroups: [MuscleGroup.chest],
+      secondaryMuscleGroups: [MuscleGroup.chest],
+      metric: ExerciseMetric.weights,
+      description: '',
+      modality: ExerciseModality.bilateral,
+      equipment: ExerciseMetric.machine,
+      movement: CoreMovement.push);
 
-  final shouldersExercise = ExerciseDto(
-      id: "id_shoulders_exercise",
+  final shouldersExercise = ExerciseDTO(
       name: "Shoulders Exercise",
-      primaryMuscleGroup: MuscleGroup.shoulders,
-      secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      type: ExerciseType.weights,
-      owner: "");
+      primaryMuscleGroups: [MuscleGroup.shoulders],
+      secondaryMuscleGroups: [MuscleGroup.shoulders],
+      metric: ExerciseMetric.weights,
+      description: '',
+      modality: ExerciseModality.bilateral,
+      equipment: ExerciseMetric.machine,
+      movement: CoreMovement.push);
 
-  final bicepsExercise = ExerciseDto(
-      id: "id_biceps_exercise",
+  final bicepsExercise = ExerciseDTO(
       name: "Biceps Exercise",
-      primaryMuscleGroup: MuscleGroup.biceps,
-      secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      type: ExerciseType.weights,
-      owner: "");
+      primaryMuscleGroups: [MuscleGroup.biceps],
+      secondaryMuscleGroups: [MuscleGroup.biceps],
+      metric: ExerciseMetric.weights,
+      description: '',
+      modality: ExerciseModality.bilateral,
+      equipment: ExerciseMetric.machine,
+      movement: CoreMovement.push);
 
-  final tricepsExercise = ExerciseDto(
-      id: "id_triceps_exercise",
+  final tricepsExercise = ExerciseDTO(
       name: "Triceps Exercise",
-      primaryMuscleGroup: MuscleGroup.triceps,
-      secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      type: ExerciseType.weights,
-      owner: "");
+      primaryMuscleGroups: [MuscleGroup.triceps],
+      secondaryMuscleGroups: [MuscleGroup.triceps],
+      metric: ExerciseMetric.weights,
+      description: '',
+      modality: ExerciseModality.bilateral,
+      equipment: ExerciseMetric.machine,
+      movement: CoreMovement.push);
 
-  final abs = ExerciseDto(
-      id: "id_abs",
+  final abs = ExerciseDTO(
       name: "Abs Exercise",
-      primaryMuscleGroup: MuscleGroup.abs,
-      secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      type: ExerciseType.duration,
-      owner: "");
+      primaryMuscleGroups: [MuscleGroup.abs],
+      secondaryMuscleGroups: [MuscleGroup.abs],
+      metric: ExerciseMetric.weights,
+      description: '',
+      modality: ExerciseModality.bilateral,
+      equipment: ExerciseMetric.machine,
+      movement: CoreMovement.pull);
 
-  final neck = ExerciseDto(
-      id: "id_neck",
+  final neck = ExerciseDTO(
       name: "Neck Exercise",
-      primaryMuscleGroup: MuscleGroup.neck,
+      primaryMuscleGroups: [MuscleGroup.neck],
       secondaryMuscleGroups: [MuscleGroup.neck],
-      type: ExerciseType.weights,
-      owner: "");
+      metric: ExerciseMetric.weights,
+      description: '',
+      modality: ExerciseModality.bilateral,
+      equipment: ExerciseMetric.machine,
+      movement: CoreMovement.others);
 
   final dayOneDateTimes = generateWeeklyDateTimes(size: 4, startDate: DateTime(2024, 1, 1));
   final dayTwoDateTimes = generateWeeklyDateTimes(size: 4, startDate: DateTime(2024, 1, 3));
@@ -95,7 +120,7 @@ void main() {
   final hamstring1ExerciseLogs = List.generate(
       dayOneDateTimes.length,
       (index) => ExerciseLogDto(
-          hamstringExercise.id,
+          hamstringExercise.type,
           "legDayOneSession$index",
           "",
           hamstringExercise,
@@ -109,8 +134,8 @@ void main() {
           []));
   final hamstring2ExerciseLogs = List.generate(
       dayOneDateTimes.length,
-          (index) => ExerciseLogDto(
-          hamstringExercise.id,
+      (index) => ExerciseLogDto(
+          hamstringExercise.type,
           "legDayOneSession$index",
           "",
           hamstringExercise,
@@ -120,13 +145,13 @@ void main() {
             const SetDto(100, 8, true),
             const SetDto(100, 6, true),
           ],
-              dayTwoDateTimes[index],
+          dayTwoDateTimes[index],
           []));
 
   final quad1ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
       (index) => ExerciseLogDto(
-          quadExercise.id,
+          quadExercise.type,
           "legDayTwoSession$index",
           "",
           quadExercise,
@@ -140,8 +165,8 @@ void main() {
           []));
   final quad2ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
-          (index) => ExerciseLogDto(
-          quadExercise.id,
+      (index) => ExerciseLogDto(
+          quadExercise.type,
           "legDayTwoSession$index",
           "",
           quadExercise,
@@ -157,7 +182,7 @@ void main() {
   final chest1ExerciseLogs = List.generate(
       dayOneDateTimes.length,
       (index) => ExerciseLogDto(
-          chestExercise.id,
+          chestExercise.type,
           "chestDayOneSession$index",
           "",
           chestExercise,
@@ -172,7 +197,7 @@ void main() {
   final chest2ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
       (index) => ExerciseLogDto(
-          chestExercise.id,
+          chestExercise.type,
           "chestDayTwoSession$index",
           "",
           chestExercise,
@@ -188,7 +213,7 @@ void main() {
   final back1ExerciseLogs = List.generate(
       dayOneDateTimes.length,
       (index) => ExerciseLogDto(
-          backExercise.id,
+          backExercise.type,
           "backDayOneSession$index",
           "",
           backExercise,
@@ -202,8 +227,8 @@ void main() {
           []));
   final back2ExerciseLogs = List.generate(
       dayOneDateTimes.length,
-          (index) => ExerciseLogDto(
-          backExercise.id,
+      (index) => ExerciseLogDto(
+          backExercise.type,
           "backDayOneSession$index",
           "",
           backExercise,
@@ -219,7 +244,7 @@ void main() {
   final traps1ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
       (index) => ExerciseLogDto(
-          trapsExercise.id,
+          trapsExercise.type,
           "backDayTwoSession$index",
           "",
           trapsExercise,
@@ -233,8 +258,8 @@ void main() {
           []));
   final traps2ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
-          (index) => ExerciseLogDto(
-          trapsExercise.id,
+      (index) => ExerciseLogDto(
+          trapsExercise.type,
           "backDayTwoSession$index",
           "",
           trapsExercise,
@@ -250,7 +275,7 @@ void main() {
   final shoulders1ExerciseLogs = List.generate(
       dayOneDateTimes.length,
       (index) => ExerciseLogDto(
-          shouldersExercise.id,
+          shouldersExercise.type,
           "shouldersDayOneSession$index",
           "",
           shouldersExercise,
@@ -265,7 +290,7 @@ void main() {
   final shoulders2ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
       (index) => ExerciseLogDto(
-          shouldersExercise.id,
+          shouldersExercise.type,
           "shouldersDayTwoSession$index",
           "",
           shouldersExercise,
@@ -281,7 +306,7 @@ void main() {
   final biceps1ExerciseLogs = List.generate(
       dayOneDateTimes.length,
       (index) => ExerciseLogDto(
-          bicepsExercise.id,
+          bicepsExercise.type,
           "bicepsDayOneSession$index",
           "",
           bicepsExercise,
@@ -296,7 +321,7 @@ void main() {
   final biceps2ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
       (index) => ExerciseLogDto(
-          bicepsExercise.id,
+          bicepsExercise.type,
           "bicepsDayTwoSession$index",
           "",
           bicepsExercise,
@@ -312,7 +337,7 @@ void main() {
   final triceps1ExerciseLogs = List.generate(
       dayOneDateTimes.length,
       (index) => ExerciseLogDto(
-          tricepsExercise.id,
+          tricepsExercise.type,
           "tricepsDayOneSession$index",
           "",
           tricepsExercise,
@@ -327,7 +352,7 @@ void main() {
   final triceps2ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
       (index) => ExerciseLogDto(
-          tricepsExercise.id,
+          tricepsExercise.type,
           "tricepsDayTwoSession$index",
           "",
           tricepsExercise,
@@ -343,7 +368,7 @@ void main() {
   final abs1ExerciseLogs = List.generate(
       dayOneDateTimes.length,
       (index) => ExerciseLogDto(
-          abs.id,
+          abs.type,
           "coreDayOneSession$index",
           "",
           abs,
@@ -358,7 +383,7 @@ void main() {
   final abs2ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
       (index) => ExerciseLogDto(
-          abs.id,
+          abs.type,
           "coreDayTwoSession$index",
           "",
           abs,
@@ -373,8 +398,8 @@ void main() {
 
   final neck1ExerciseLogs = List.generate(
       dayOneDateTimes.length,
-          (index) => ExerciseLogDto(
-          abs.id,
+      (index) => ExerciseLogDto(
+          abs.type,
           "neckDayOneSession$index",
           "",
           neck,
@@ -388,11 +413,11 @@ void main() {
           []));
   final neck2ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
-          (index) => ExerciseLogDto(
-          abs.id,
-          "neckDayTwoSession$index",
+      (index) => ExerciseLogDto(
+          routineLogId: abs.type,
+          superSetId: "neckDayTwoSession$index",
           "",
-          neck,
+          exercise: neck,
           "notes",
           [
             const SetDto(80, 15, true),

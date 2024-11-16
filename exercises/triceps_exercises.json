@@ -4,7 +4,7 @@
     "name": "Overhead Triceps Extension",
     "primaryMuscleGroup": "triceps",
     "secondaryMuscleGroups": [],
-    "type": "WR",
+    "type": "weightsAndReps",
     "video": "https://www.youtube.com/watch?v=q5X9thiKofE",
     "creditSource": "https://www.youtube.com/@RenaissancePeriodization",
     "credit": "Renaissance Periodization",
@@ -16,7 +16,7 @@
     "name": "Skull Crusher",
     "primaryMuscleGroup": "triceps",
     "secondaryMuscleGroups": [],
-    "type": "WR",
+    "type": "weightsAndReps",
     "video": "https://www.youtube.com/watch?v=UzjDwLeTfmM",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
     "credit": "TheGymGroup",
@@ -25,13 +25,13 @@
   },
   {
     "id": "TRI3",
-    "name": "Parallel Bar Dips",
+    "name": "Bar Dips",
     "primaryMuscleGroup": "triceps",
     "secondaryMuscleGroups": [
       "chest",
       "shoulders"
     ],
-    "type": "BW",
+    "type": "reps",
     "video": "https://www.youtube.com/watch?v=qrS6aa0aQ9I",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
@@ -43,7 +43,7 @@
     "name": "Triceps Pushdown",
     "primaryMuscleGroup": "triceps",
     "secondaryMuscleGroups": [],
-    "type": "WR",
+    "type": "weightsAndReps",
     "video": "https://www.youtube.com/watch?v=LXkCrxn3caQ",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
@@ -51,26 +51,11 @@
     "movement": "push"
   },
   {
-    "id": "TRI20",
-    "name": "Close-Grip Bench Press",
-    "primaryMuscleGroup": "triceps",
-    "secondaryMuscleGroups": [
-      "chest",
-      "shoulders"
-    ],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=DzA2xZhDGeo",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "Engages triceps by narrowing the grip on the bench press bar.",
-    "movement": "push"
-  },
-  {
     "id": "TRI21",
     "name": "Diamond Push-Ups",
     "primaryMuscleGroup": "triceps",
     "secondaryMuscleGroups": [],
-    "type": "WR",
+    "type": "weightsAndReps",
     "video": "https://www.youtube.com/watch?v=K8bKxVcwjrk",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
@@ -85,7 +70,7 @@
       "chest",
       "shoulders"
     ],
-    "type": "WR",
+    "type": "weightsAndReps",
     "video": "https://www.youtube.com/watch?v=-uO9kMDzWsQ",
     "creditSource": "https://www.youtube.com/@OPEXFitness",
     "credit": "OPEX Fitness",
@@ -100,7 +85,7 @@
       "chest",
       "shoulders"
     ],
-    "type": "WR",
+    "type": "weightsAndReps",
     "video": "https://www.youtube.com/watch?v=-uO9kMDzWsQ",
     "creditSource": "https://www.youtube.com/@OPEXFitness",
     "credit": "OPEX Fitness",
@@ -115,7 +100,7 @@
       "chest",
       "shoulders"
     ],
-    "type": "WR",
+    "type": "weightsAndReps",
     "video": "https://www.youtube.com/watch?v=JPmbMOu4IYw",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",

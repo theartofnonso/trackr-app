@@ -4,7 +4,7 @@
     "name": "Plank",
     "primaryMuscleGroup": "abs",
     "secondaryMuscleGroups": ["shoulders", "back", "glutes", "quadriceps", "triceps"],
-    "type": "DR",
+    "type": "duration",
     "video": "https://www.youtube.com/watch?v=q4rDeHYMcIg",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
@@ -16,7 +16,7 @@
     "name": "Leg Raises",
     "primaryMuscleGroup": "abs",
     "secondaryMuscleGroups": ["forearms", "lats", "shoulders"],
-    "type": "BW",
+    "type": "reps",
     "video": "https://www.youtube.com/watch?v=O7iDA3ory-w",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
@@ -28,16 +28,16 @@
     "name": "Ab Roller",
     "primaryMuscleGroup": "abs",
     "secondaryMuscleGroups": ["back", "shoulders", "triceps", "lats", "forearms"],
-    "type": "BW",
+    "type": "reps",
     "description": "Targets the core, engaging the abs, lower back, and shoulders during the roll-out motion.",
-    "movement": "other"
+    "movement": "others"
   },
   {
     "id": "ABS24",
     "name": "Crunches",
     "primaryMuscleGroup": "abs",
     "secondaryMuscleGroups": [],
-    "type": "BW",
+    "type": "reps",
     "video": "https://www.youtube.com/watch?v=wnuLak2onoA",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
@@ -49,7 +49,7 @@
     "name": "Russian Twist",
     "primaryMuscleGroup": "abs",
     "secondaryMuscleGroups": ["back"],
-    "type": "WR",
+    "type": "weightsAndReps",
     "video": "https://www.youtube.com/watch?v=Tau0hsW8iR0",
     "creditSource": "https://www.youtube.com/@marcusfilly",
     "credit": "Marcus Filly",
@@ -61,7 +61,7 @@
     "name": "Mountain Climbers",
     "primaryMuscleGroup": "abs",
     "secondaryMuscleGroups": ["shoulders", "quadriceps", "hamstrings", "glutes", "triceps", "chest"],
-    "type": "BW",
+    "type": "reps",
     "video": "https://www.youtube.com/watch?v=qdBkvS0pEVc",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
     "credit": "TheGymGroup",
@@ -73,23 +73,23 @@
     "name": "Dead Bug",
     "primaryMuscleGroup": "abs",
     "secondaryMuscleGroups": ["back", "shoulders"],
-    "type": "BW",
+    "type": "reps",
     "video": "https://www.youtube.com/watch?v=9RK9UUgKIQE",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
     "description": "Activates deep core muscles and stabilizes the lower back with controlled leg and arm movements.",
-    "movement": "other"
+    "movement": "others"
   },
   {
     "id": "ABS33",
     "name": "Flutter Kicks",
     "primaryMuscleGroup": "abs",
     "secondaryMuscleGroups": ["quadriceps"],
-    "type": "BW",
+    "type": "reps",
     "video": "https://www.youtube.com/watch?v=cZhLXKHuS74",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
     "credit": "TheGymGroup",
     "description": "Targets the lower abs and hip flexors with small, fast leg movements.",
-    "movement": "other"
+    "movement": "others"
   }
 ]

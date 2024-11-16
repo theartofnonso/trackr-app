@@ -44,7 +44,7 @@ class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
       final endOfMonth = month.end;
       final logsForTheMonth = logs.where((log) => log.createdAt.isBetweenInclusive(from: startOfMonth, to: endOfMonth));
       final values = logsForTheMonth
-          .map((log) => calculateCalories(duration: log.duration(), bodyWeight: routineUserController.weight(), activity: log.activityType))
+          .map((log) => calculateCalories(duration: log.duration(), reps: routineUserController.weight(), activity: log.activityType))
           .sum;
       calories.add(values);
       months.add(startOfMonth.abbreviatedMonth());

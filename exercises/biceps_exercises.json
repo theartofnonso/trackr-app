@@ -1,14 +1,114 @@
 [
   {
-    "id": "BIC1",
-    "name": "Curls",
-    "primaryMuscleGroup": "biceps",
-    "secondaryMuscleGroups": ["forearms", "shoulders"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=Hi8aC8oZGIE",
-    "creditSource": "https://www.youtube.com/@TheGymGroupUK",
-    "credit": "TheGymGroup",
-    "description": "Focuses on building overall biceps mass with weight.",
+    "name": "Preacher Curls",
+    "primaryMuscleGroups": [
+      "biceps"
+    ],
+    "secondary_muscle_groups": [
+      "forearms"
+    ],
+    "description": "Isolates the biceps with support from a preacher bench.",
+    "equipment": "barbell",
+    "modality": "bilateral",
+    "metric": "weights",
+    "movement": "pull"
+  },
+  {
+    "name": "Reverse Curls",
+    "primaryMuscleGroups": [
+      "biceps"
+    ],
+    "secondary_muscle_groups": [
+      "forearms"
+    ],
+    "description": "Isolates the biceps with support from a preacher bench.",
+    "equipment": "barbell",
+    "modality": "bilateral",
+    "metric": "weights",
+    "movement": "pull"
+  },
+  {
+    "name": "Bicep Curls",
+    "primaryMuscleGroups": [
+      "biceps"
+    ],
+    "secondary_muscle_groups": [
+      "forearms"
+    ],
+    "description": "Isolates the biceps with support from a preacher bench.",
+    "equipment": "barbell",
+    "modality": "bilateral",
+    "metric": "weights",
+    "movement": "pull"
+  },
+  {
+    "name": "Concentration Curls",
+    "primaryMuscleGroups": [
+      "biceps"
+    ],
+    "secondary_muscle_groups": [
+      "forearms"
+    ],
+    "description": "Isolates the biceps with support from a preacher bench.",
+    "equipment": "barbell",
+    "modality": "bilateral",
+    "metric": "weights",
+    "movement": "pull"
+  },
+  {
+    "name": "Hammer Curls",
+    "primaryMuscleGroups": [
+      "biceps"
+    ],
+    "secondary_muscle_groups": [
+      "forearms"
+    ],
+    "description": "Isolates the biceps with support from a preacher bench.",
+    "equipment": "barbell",
+    "modality": "bilateral",
+    "metric": "weights",
+    "movement": "pull"
+  },
+  {
+    "name": "Incline Bicep Curls",
+    "primaryMuscleGroups": [
+      "biceps"
+    ],
+    "secondary_muscle_groups": [
+      "forearms"
+    ],
+    "description": "Isolates the biceps with support from a preacher bench.",
+    "equipment": "barbell",
+    "modality": "bilateral",
+    "metric": "weights",
+    "movement": "pull"
+  },
+  {
+    "name": "Zottman Curls",
+    "primaryMuscleGroups": [
+      "biceps"
+    ],
+    "secondary_muscle_groups": [
+      "forearms"
+    ],
+    "description": "Isolates the biceps with support from a preacher bench.",
+    "equipment": "barbell",
+    "modality": "bilateral",
+    "metric": "weights",
+    "movement": "pull"
+  },
+  {
+    "name": "Spider Curls",
+    "primaryMuscleGroups": [
+      "biceps"
+    ],
+    "secondary_muscle_groups": [
+      "forearms"
+    ],
+    "description": "Isolates the biceps with support from a preacher bench.",
+    "equipment": "barbell",
+    "modality": "bilateral",
+    "metric": "weights",
     "movement": "pull"
   }
 ]

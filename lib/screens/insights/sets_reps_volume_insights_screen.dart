@@ -20,7 +20,7 @@ import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../dtos/set_dto.dart';
 import '../../enums/chart_unit_enum.dart';
-import '../../enums/exercise_type_enums.dart';
+import '../../enums/exercise/exercise_metrics_enums.dart';
 import '../../enums/muscle_group_enums.dart';
 import '../../enums/sets_reps_volume_enum.dart';
 import '../../openAI/open_ai.dart';
@@ -74,7 +74,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
         .map((log) => completedExercises(exerciseLogs: log.exerciseLogs))
         .expand((exerciseLogs) => exerciseLogs)
         .where((exerciseLog) {
-      final muscleGroups = [exerciseLog.exercise.primaryMuscleGroup, ...exerciseLog.exercise.secondaryMuscleGroups];
+      final muscleGroups = [...exerciseLog.exercise.primaryMuscleGroups, ...exerciseLog.exercise.secondaryMuscleGroups];
       return muscleGroups.contains(_selectedMuscleGroup);
     }).toList();
 
@@ -340,10 +340,12 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
       exerciseLogs.mapIndexed((index, exerciseLog) {
         final setSummaries = exerciseLog.sets.mapIndexed((index, set) {
-          return switch (exerciseLog.exercise.type) {
-            ExerciseType.weights => "Set ${index + 1}: ${exerciseLog.sets[index].weightsSummary()}",
-            ExerciseType.bodyWeight => "Set ${index + 1}: ${exerciseLog.sets[index].repsSummary()}",
-            ExerciseType.duration => "Set ${index + 1}: ${exerciseLog.sets[index].durationSummary()}",
+          return switch (exerciseLog.exercise.metric) {
+            ExerciseMetric.weights => "Set ${index + 1}: ${exerciseLog.sets[index].weightsSummary()}",
+            ExerciseMetric.reps => "Set ${index + 1}: ${exerciseLog.sets[index].repsSummary()}",
+            ExerciseMetric.duration => "Set ${index + 1}: ${exerciseLog.sets[index].durationSummary()}",
+
+            ExerciseMetric.none => throw UnimplementedError(),
           };
         }).toList();
 
@@ -428,7 +430,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
         ?.exerciseLogs
         .firstOrNull
         ?.exercise
-        .primaryMuscleGroup;
+        .primaryMuscleGroups.first;
     _selectedMuscleGroup = defaultMuscleGroup ?? MuscleGroup.values.first;
   }
 }

@@ -3,11 +3,11 @@ import 'dart:collection';
 import 'package:collection/collection.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 
-import '../dtos/appsync/exercise_dto.dart';
+import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/pb_dto.dart';
 import '../dtos/set_dto.dart';
-import '../enums/exercise_type_enums.dart';
+import '../enums/exercise/exercise_metrics_enums.dart';
 import '../enums/muscle_group_enums.dart';
 import '../enums/pb_enums.dart';
 import '../enums/template_changes_type_message_enums.dart';
@@ -74,7 +74,7 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
   return log.createdAt;
 }
 
-/// Highest value across all [ExerciseDto]
+/// Highest value across all [ExerciseDTO]
 
 (String?, SetDto) heaviestSetVolume({required List<ExerciseLogDto> exerciseLogs}) {
   // Return null if there are no past logs
@@ -168,7 +168,7 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
 
 List<PBDto> calculatePBs(
     {required List<ExerciseLogDto> pastExerciseLogs,
-    required ExerciseType exerciseType,
+    required ExerciseMetric exerciseType,
     required ExerciseLogDto exerciseLog}) {
   List<PBDto> pbs = [];
 
@@ -220,7 +220,7 @@ TemplateChange? hasReOrderedExercises(
     {required List<ExerciseLogDto> exerciseLogs1, required List<ExerciseLogDto> exerciseLogs2}) {
   final length = exerciseLogs1.length > exerciseLogs2.length ? exerciseLogs2.length : exerciseLogs1.length;
   for (int i = 0; i < length; i++) {
-    if (exerciseLogs1[i].exercise.id != exerciseLogs2[i].exercise.id) {
+    if (exerciseLogs1[i].exercise.name != exerciseLogs2[i].exercise.name) {
       return TemplateChange.exerciseOrder; // Re-orderedList
     }
   }
@@ -239,8 +239,8 @@ TemplateChange? hasExercisesChanged({
   required List<ExerciseLogDto> exerciseLogs1,
   required List<ExerciseLogDto> exerciseLogs2,
 }) {
-  Set<String> exerciseIds1 = exerciseLogs1.map((p) => p.exercise.id).toSet();
-  Set<String> exerciseIds2 = exerciseLogs2.map((p) => p.exercise.id).toSet();
+  Set<String> exerciseIds1 = exerciseLogs1.map((p) => p.exercise.name).toSet();
+  Set<String> exerciseIds2 = exerciseLogs2.map((p) => p.exercise.name).toSet();
 
   int changes = exerciseIds1.difference(exerciseIds2).length;
 
@@ -291,12 +291,12 @@ Map<MuscleGroupFamily, double> muscleGroupFamilyFrequency(
 
   // Counting the occurrences of each MuscleGroup
   for (var log in exerciseLogs) {
-    if (log.exercise.primaryMuscleGroup.family != MuscleGroupFamily.fullBody) {
-      frequencyMap.update(log.exercise.primaryMuscleGroup.family, (value) => value + 1, ifAbsent: () => 1);
-      if (includeSecondaryMuscleGroups) {
-        for (var muscleGroup in log.exercise.secondaryMuscleGroups) {
-          frequencyMap.update(muscleGroup.family, (value) => value + 1, ifAbsent: () => 1);
-        }
+    for (final muscleGroup in log.exercise.primaryMuscleGroups) {
+      frequencyMap.update(muscleGroup.family, (value) => value + 1, ifAbsent: () => 1);
+    }
+    if (includeSecondaryMuscleGroups) {
+      for (var muscleGroup in log.exercise.secondaryMuscleGroups) {
+        frequencyMap.update(muscleGroup.family, (value) => value + 1, ifAbsent: () => 1);
       }
     }
   }
@@ -322,7 +322,10 @@ Map<MuscleGroupFamily, int> _muscleGroupFamilyCountOn4WeeksScale({required List<
 
   // Counting the occurrences of each MuscleGroup
   for (var logAndDate in exerciseLogsByDay.entries) {
-    final primaryMuscleGroupFamilies = logAndDate.value.map((log) => log.exercise.primaryMuscleGroup.family);
+    final primaryMuscleGroupFamilies = logAndDate.value
+        .map((log) => log.exercise.primaryMuscleGroups)
+        .expand((primaryMuscleGroups) => primaryMuscleGroups)
+        .map((muscleGroup) => muscleGroup.family);
     final secondaryMuscleGroupFamilies = logAndDate.value
         .map((log) => log.exercise.secondaryMuscleGroups)
         .expand((muscleGroup) => muscleGroup)
@@ -367,20 +370,20 @@ double cumulativeMuscleGroupFamilyFrequency({required List<ExerciseLogDto> exerc
   return cumulativeFrequency / 56;
 }
 
-bool withWeightsOnly({required ExerciseType type}) {
-  return type == ExerciseType.weights;
+bool withWeightsOnly({required ExerciseMetric type}) {
+  return type == ExerciseMetric.weights;
 }
 
-bool withReps({required ExerciseType type}) {
-  return type == ExerciseType.weights || type == ExerciseType.bodyWeight;
+bool withReps({required ExerciseMetric type}) {
+  return type == ExerciseMetric.weights || type == ExerciseMetric.reps;
 }
 
-bool withRepsOnly({required ExerciseType type}) {
-  return type == ExerciseType.bodyWeight;
+bool withRepsOnly({required ExerciseMetric type}) {
+  return type == ExerciseMetric.reps;
 }
 
-bool withDurationOnly({required ExerciseType type}) {
-  return type == ExerciseType.duration;
+bool withDurationOnly({required ExerciseMetric type}) {
+  return type == ExerciseMetric.duration;
 }
 
 int _calculateMuscleScore({required List<ExerciseLogDto> exerciseLogs}) {

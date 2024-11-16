@@ -1,52 +1,227 @@
 [
   {
-    "id": "CHT2",
-    "name": "Bench Press",
-    "primaryMuscleGroup": "chest",
-    "secondaryMuscleGroups": ["triceps", "shoulders", "back", "abs"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=YjMw-BjQgzY",
-    "creditSource": "https://www.youtube.com/@TheGymGroupUK",
-    "credit": "TheGymGroup",
-    "description": "Strengthens the chest, shoulders, and triceps with a pressing motion.",
-    "movement": "push"
-  },
-  {
-    "id": "CHT22",
-    "name": "Push-Ups",
-    "primaryMuscleGroup": "chest",
-    "secondaryMuscleGroups": ["triceps", "shoulders", "abs"],
-    "type": "BW",
-    "video": "https://www.youtube.com/watch?v=0pkjOk0EiAk",
-    "creditSource": "https://www.youtube.com/@crossfit",
-    "credit": "Crossfit",
-    "description": "Engages chest and stabilizers with added instability from the rings.",
-    "movement": "push"
-  },
-  {
-    "id": "CHT37",
-    "name": "Cable Crossovers",
-    "primaryMuscleGroup": "chest",
-    "secondaryMuscleGroups": ["shoulders"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=hhruLxo9yZU",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "Targets upper chest muscles with high cable tension.",
-    "movement": "push"
-  },
-  {
-    "id": "CHT38",
-    "name": "Flyes",
-    "primaryMuscleGroup": "chest",
-    "secondaryMuscleGroups": [
+    "name": "Bar Dip",
+    "primaryMuscleGroups": [
+      "chest"
+    ],
+    "secondary_muscle_groups": [
+      "triceps",
       "shoulders"
     ],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=hhruLxo9yZU",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "Engages the chest muscles through a wide arc motion, emphasizing a deep stretch and controlled contraction to isolate and strengthen the chest.",
+    "description": "Targets chest, triceps, and shoulders to build upper body strength.",
+    "equipment": "Parallel Bars",
+    "modality": "bilateral",
+    "metric": "reps",
+    "movement": "push"
+  },
+  {
+    "name": "Bench Press",
+    "primaryMuscleGroups": [
+      "chest"
+    ],
+    "secondary_muscle_groups": [
+      "triceps",
+      "shoulders"
+    ],
+    "description": "Strengthens the chest, shoulders, and triceps with a pressing motion.",
+    "equipment": "Barbell",
+    "modality": "bilateral",
+    "metric": "weights",
+    "movement": "push"
+  },
+  {
+    "name": "Incline Bench Press",
+    "primaryMuscleGroups": [
+      "chest"
+    ],
+    "secondary_muscle_groups": [
+      "triceps",
+      "shoulders"
+    ],
+    "description": "Strengthens the chest, shoulders, and triceps with a pressing motion.",
+    "equipment": "Barbell",
+    "modality": "bilateral",
+    "metric": "weights",
+    "movement": "push"
+  },
+  {
+    "name": "Decline Bench Press",
+    "primaryMuscleGroups": [
+      "chest"
+    ],
+    "secondary_muscle_groups": [
+      "triceps",
+      "shoulders"
+    ],
+    "description": "Strengthens the chest, shoulders, and triceps with a pressing motion.",
+    "equipment": "Barbell",
+    "modality": "bilateral",
+    "metric": "weights",
+    "movement": "push"
+  },
+  {
+    "name": "Floor Bench Press",
+    "primaryMuscleGroups": [
+      "chest"
+    ],
+    "secondary_muscle_groups": [
+      "triceps",
+      "shoulders"
+    ],
+    "description": "Strengthens the chest, shoulders, and triceps with a pressing motion.",
+    "equipment": "Barbell",
+    "modality": "bilateral",
+    "metric": "weights",
+    "movement": "push"
+  },
+  {
+    "name": "Chest Press",
+    "primaryMuscleGroups": [
+      "chest"
+    ],
+    "secondary_muscle_groups": [
+      "triceps",
+      "shoulders"
+    ],
+    "description": "Strengthens the chest, shoulders, and triceps with a pressing motion.",
+    "equipment": "machine",
+    "modality": "bilateral",
+    "metric": "weights",
+    "movement": "push"
+  },
+  {
+    "name": "Chest Fly",
+    "primaryMuscleGroups": [
+      "chest"
+    ],
+    "secondary_muscle_groups": [
+      "triceps",
+      "shoulders"
+    ],
+    "description": "Strengthens the chest, shoulders, and triceps with a pressing motion.",
+    "equipment": "cable machine",
+    "modality": "bilateral",
+    "metric": "weights",
+    "movement": "push"
+  },
+  {
+    "name": "High Chest Fly",
+    "primaryMuscleGroups": [
+      "chest"
+    ],
+    "secondary_muscle_groups": [
+      "triceps",
+      "shoulders"
+    ],
+    "description": "Strengthens the chest, shoulders, and triceps with a pressing motion.",
+    "equipment": "cable machine",
+    "modality": "bilateral",
+    "metric": "weights",
+    "movement": "push"
+  },
+  {
+    "name": "Low Chest Fly",
+    "primaryMuscleGroups": [
+      "chest"
+    ],
+    "secondary_muscle_groups": [
+      "triceps",
+      "shoulders"
+    ],
+    "description": "Strengthens the chest, shoulders, and triceps with a pressing motion.",
+    "equipment": "cable machine",
+    "modality": "bilateral",
+    "metric": "weights",
+    "movement": "push"
+  },
+  {
+    "name": "Push-Up",
+    "primaryMuscleGroups": [
+      "chest"
+    ],
+    "secondary_muscle_groups": [
+      "triceps",
+      "shoulders"
+    ],
+    "description": "Strengthens the chest, shoulders, and triceps with a pressing motion.",
+    "equipment": "none",
+    "modality": "bilateral",
+    "metric": "reps",
+    "movement": "push"
+  },
+  {
+    "name": "Incline Push-Up",
+    "primaryMuscleGroups": [
+      "chest"
+    ],
+    "secondary_muscle_groups": [
+      "triceps",
+      "shoulders"
+    ],
+    "description": "Strengthens the chest, shoulders, and triceps with a pressing motion.",
+    "equipment": "none",
+    "modality": "bilateral",
+    "metric": "reps",
+    "movement": "push"
+  },
+  {
+    "name": "Decline Push-Up",
+    "primaryMuscleGroups": [
+      "chest"
+    ],
+    "secondary_muscle_groups": [
+      "triceps",
+      "shoulders"
+    ],
+    "description": "Strengthens the chest, shoulders, and triceps with a pressing motion.",
+    "equipment": "none",
+    "modality": "bilateral",
+    "metric": "reps",
+    "movement": "push"
+  },
+  {
+    "name": "Kneeling Push-Up",
+    "primaryMuscleGroups": [
+      "chest"
+    ],
+    "secondary_muscle_groups": [
+      "triceps",
+      "shoulders"
+    ],
+    "description": "Strengthens the chest, shoulders, and triceps with a pressing motion.",
+    "equipment": "none",
+    "modality": "bilateral",
+    "metric": "reps",
+    "movement": "push"
+  },
+  {
+    "name": "Kneeling Incline Push-Up",
+    "primaryMuscleGroups": [
+      "chest"
+    ],
+    "secondary_muscle_groups": [
+      "triceps",
+      "shoulders"
+    ],
+    "description": "Strengthens the chest, shoulders, and triceps with a pressing motion.",
+    "equipment": "none",
+    "modality": "bilateral",
+    "metric": "reps",
+    "movement": "push"
+  },
+  {
+    "name": "Kneeling Decline Push-Up",
+    "primaryMuscleGroups": [
+      "chest"
+    ],
+    "secondary_muscle_groups": [
+      "triceps",
+      "shoulders"
+    ],
+    "description": "Strengthens the chest, shoulders, and triceps with a pressing motion.",
+    "equipment": "none",
+    "modality": "bilateral",
+    "metric": "reps",
     "movement": "push"
   }
 ]

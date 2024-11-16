@@ -3,15 +3,15 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
 
-import '../../../../dtos/appsync/exercise_dto.dart';
+import '../../../../dtos/exercise_dto.dart';
 import '../../../buttons/opacity_button_widget.dart';
 import '../../../empty_states/list_tile_empty_state.dart';
 
 class SubstituteExercisePicker extends StatefulWidget {
   final String title;
-  final List<ExerciseDto> exercises;
-  final void Function(ExerciseDto exericse) onSelect;
-  final void Function(ExerciseDto exericse) onRemove;
+  final List<ExerciseDTO> exercises;
+  final void Function(ExerciseDTO exericse) onSelect;
+  final void Function(ExerciseDTO exericse) onRemove;
   final void Function() onSelectExercisesInLibrary;
 
   const SubstituteExercisePicker(
@@ -27,11 +27,11 @@ class SubstituteExercisePicker extends StatefulWidget {
 }
 
 class _SubstituteExercisePickerState extends State<SubstituteExercisePicker> {
-  List<ExerciseDto> _exercises = [];
+  List<ExerciseDTO> _exercises = [];
 
-  void _onRemoveExercises({required ExerciseDto exercise}) {
+  void _onRemoveExercises({required ExerciseDTO exercise}) {
     setState(() {
-      _exercises.removeWhere((exerciseToBeRemoved) => exerciseToBeRemoved.id == exercise.id);
+      _exercises.removeWhere((exerciseToBeRemoved) => exerciseToBeRemoved.name == exercise.name);
     });
     widget.onRemove(exercise);
   }

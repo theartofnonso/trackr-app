@@ -6,13 +6,11 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
-import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/strings/ai_prompts.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/exercise_log_dto.dart';
-import '../../dtos/set_dto.dart';
 import '../../enums/routine_preview_type_enum.dart';
 import '../../openAI/open_ai.dart';
 import '../../openAI/open_ai_functions.dart';
@@ -210,14 +208,12 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
           final jsonString = await runMessageWithFunctionCallResult(payload: functionCallPayload);
           if (jsonString != null) {
             final json = jsonDecode(jsonString);
-            final exerciseIds = json["exercises"] as List<dynamic>;
+            final exerciseNames = json["exercises"] as List<dynamic>;
             final workoutName = json["workout_name"] ?? "A workout";
             final workoutCaption = json["workout_caption"] ?? "A workout created by TRKR Coach";
-            final exerciseTemplates = exerciseIds.map((exerciseId) {
-              final exerciseInLibrary = exercises.firstWhere((exercise) => exercise.id == exerciseId);
-              final exerciseTemplate = ExerciseLogDto(exerciseInLibrary.id, "", "", exerciseInLibrary,
-                  exerciseInLibrary.description ?? "", [const SetDto(0, 0, false)], DateTime.now().withoutTime(), []);
-              return exerciseTemplate;
+            final exerciseTemplates = exerciseNames.map((exerciseId) {
+              final exerciseInLibrary = exercises.firstWhere((exercise) => exercise.name == exerciseId);
+              return ExerciseLogDto.empty(exercise: exerciseInLibrary);
             }).toList();
             templateDto = RoutineTemplateDto(
                 id: "",

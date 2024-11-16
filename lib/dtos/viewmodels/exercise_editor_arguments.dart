@@ -1,8 +1,8 @@
 
-import '../appsync/exercise_dto.dart';
+import '../exercise_dto.dart';
 
 class ExerciseEditorArguments {
-  final ExerciseDto exercise;
+  final ExerciseDTO exercise;
 
   ExerciseEditorArguments({required this.exercise});
 }

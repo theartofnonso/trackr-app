@@ -7,15 +7,14 @@ import 'package:tracker_app/dtos/milestones/milestone_dto.dart';
 import 'package:tracker_app/models/RoutineLog.dart';
 import 'package:tracker_app/repositories/amplify/amplify_routine_log_repository.dart';
 
-import '../dtos/appsync/exercise_dto.dart';
 import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/appsync/routine_template_dto.dart';
 import '../dtos/appsync/routine_template_plan_dto.dart';
+import '../dtos/exercise_dto.dart';
 import '../dtos/set_dto.dart';
-import '../models/Exercise.dart';
 import '../models/RoutineTemplate.dart';
 import '../models/RoutineTemplatePlan.dart';
-import '../repositories/amplify/amplify_exercise_repository.dart';
+import '../repositories/exercise_repository.dart';
 import '../repositories/amplify/amplify_routine_template_plan_repository.dart';
 import '../repositories/amplify/amplify_routine_template_repository.dart';
 
@@ -23,13 +22,13 @@ class ExerciseAndRoutineController extends ChangeNotifier {
   bool isLoading = false;
   String errorMessage = '';
 
-  late AmplifyExerciseRepository _amplifyExerciseRepository;
+  late ExerciseRepository _amplifyExerciseRepository;
   late AmplifyRoutineTemplateRepository _amplifyTemplateRepository;
   late AmplifyRoutineTemplatePlanRepository _amplifyTemplatePlanRepository;
   late AmplifyRoutineLogRepository _amplifyLogRepository;
 
   ExerciseAndRoutineController(
-      {required AmplifyExerciseRepository amplifyExerciseRepository,
+      {required ExerciseRepository amplifyExerciseRepository,
       required AmplifyRoutineTemplateRepository amplifyTemplateRepository,
       required AmplifyRoutineLogRepository amplifyLogRepository,
       required AmplifyRoutineTemplatePlanRepository amplifyTemplatePlanRepository}) {
@@ -39,7 +38,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
     _amplifyLogRepository = amplifyLogRepository;
   }
 
-  UnmodifiableListView<ExerciseDto> get exercises => _amplifyExerciseRepository.exercises;
+  UnmodifiableListView<ExerciseDTO> get exercises => _amplifyExerciseRepository.exercises;
 
   UnmodifiableListView<RoutineTemplateDto> get templates => _amplifyTemplateRepository.templates;
 
@@ -55,83 +54,17 @@ class ExerciseAndRoutineController extends ChangeNotifier {
 
   UnmodifiableListView<Milestone> get newMilestones => _amplifyLogRepository.newMilestones;
 
-  UnmodifiableMapView<String, List<ExerciseLogDto>> get exerciseLogsById => _amplifyLogRepository.exerciseLogsById;
+  UnmodifiableMapView<String, List<ExerciseLogDto>> get exerciseLogsByName => _amplifyLogRepository.exerciseLogsByName;
 
   /// Exercises
-
-  Future<void> loadLocalExercises() {
-    return _amplifyExerciseRepository.loadLocalExercises(onLoad: () {
-      _amplifyLogRepository.syncLogsWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
-      _amplifyTemplateRepository.syncTemplatesWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
-      _amplifyTemplatePlanRepository.syncTemplatePlansWithExercisesFromLibrary(
-          exercises: _amplifyExerciseRepository.exercises);
-      notifyListeners();
-    });
-  }
-
-  void streamExercises({required List<Exercise> exercises}) {
-    _amplifyExerciseRepository.loadExerciseStream(
-        exercises: exercises,
-        onData: () {
-          _amplifyLogRepository.syncLogsWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
-          _amplifyTemplateRepository.syncTemplatesWithExercisesFromLibrary(
-              exercises: _amplifyExerciseRepository.exercises);
-          notifyListeners();
-        });
-  }
-
-  Future<void> saveExercise({required ExerciseDto exerciseDto}) async {
-    isLoading = true;
-    try {
-      await _amplifyExerciseRepository.saveExercise(exerciseDto: exerciseDto);
-    } catch (e) {
-      errorMessage = "Oops! Something went wrong. Please try again later.";
-    } finally {
-      isLoading = false;
-      errorMessage = "";
-      notifyListeners();
-    }
-  }
-
-  Future<void> updateExercise({required ExerciseDto exercise}) async {
-    isLoading = true;
-    try {
-      await _amplifyExerciseRepository.updateExercise(
-          exercise: exercise,
-          onUpdated: () {
-            _amplifyLogRepository.syncLogsWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
-            _amplifyTemplateRepository.syncTemplatesWithExercisesFromLibrary(
-                exercises: _amplifyExerciseRepository.exercises);
-            notifyListeners();
-          });
-    } catch (e) {
-      errorMessage = "Oops! Something went wrong. Please try again later.";
-    } finally {
-      isLoading = false;
-      errorMessage = "";
-      notifyListeners();
-    }
-  }
-
-  Future<void> removeExercise({required ExerciseDto exercise}) async {
-    isLoading = true;
-    try {
-      await _amplifyExerciseRepository.removeExercise(exercise: exercise);
-    } catch (e) {
-      errorMessage = "Oops! Something went wrong. Please try again later.";
-    } finally {
-      isLoading = false;
-      errorMessage = "";
-      notifyListeners();
-    }
+  void loadExercises() {
+    _amplifyExerciseRepository.loadExercises();
   }
 
   /// Templates
 
   void streamTemplates({required List<RoutineTemplate> templates}) {
-    _amplifyTemplateRepository.loadTemplatesStream(
-        templates: templates,
-        onData: () {});
+    _amplifyTemplateRepository.loadTemplatesStream(templates: templates);
     notifyListeners();
   }
 
@@ -181,12 +114,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
   /// TemplatePlans
 
   void streamTemplatePlans({required List<RoutineTemplatePlan> templatePlans}) {
-    _amplifyTemplatePlanRepository.loadTemplatePlansStream(
-        templatesPlans: templatePlans,
-        onData: () {
-          _amplifyTemplatePlanRepository.syncTemplatePlansWithExercisesFromLibrary(
-              exercises: _amplifyExerciseRepository.exercises);
-        });
+    _amplifyTemplatePlanRepository.loadTemplatePlansStream(templatesPlans: templatePlans, onData: () {});
     notifyListeners();
   }
 
@@ -234,12 +162,8 @@ class ExerciseAndRoutineController extends ChangeNotifier {
   /// Logs
 
   void streamLogs({required List<RoutineLog> logs}) {
-    _amplifyLogRepository.loadLogStream(
-        logs: logs,
-        onData: () {
-          _amplifyLogRepository.syncLogsWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
-          notifyListeners();
-        });
+    _amplifyLogRepository.loadLogStream(logs: logs);
+    notifyListeners();
   }
 
   Future<RoutineLogDto?> saveLog({required RoutineLogDto logDto, TemporalDateTime? datetime}) async {
@@ -316,17 +240,17 @@ class ExerciseAndRoutineController extends ChangeNotifier {
     return _amplifyLogRepository.whereLogsIsWithinRange(range: range);
   }
 
-  List<ExerciseLogDto> whereExerciseLogsBefore({required ExerciseDto exercise, required DateTime date}) {
+  List<ExerciseLogDto> whereExerciseLogsBefore({required ExerciseDTO exercise, required DateTime date}) {
     return _amplifyLogRepository.whereExerciseLogsBefore(exercise: exercise, date: date);
   }
 
-  List<SetDto> whereSetsForExercise({required ExerciseDto exercise}) {
+  List<SetDto> whereSetsForExercise({required ExerciseDTO exercise}) {
     return _amplifyLogRepository.whereSetsForExercise(exercise: exercise);
   }
 
   /// Exercise Helpers methods
-  ExerciseDto? whereExercise({required String exerciseId}) {
-    return _amplifyExerciseRepository.whereExercise(exerciseId: exerciseId);
+  ExerciseDTO? whereExercise({required String name}) {
+    return _amplifyExerciseRepository.whereExercise(name: name);
   }
 
   /// Template Helpers methods

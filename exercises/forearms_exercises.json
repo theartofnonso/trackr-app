@@ -4,7 +4,7 @@
     "name": "Farmers Walk",
     "primaryMuscleGroup": "forearms",
     "secondaryMuscleGroups": ["shoulders", "traps", "back", "abs", "glutes", "quadriceps", "hamstrings", "calves"],
-    "type": "WR",
+    "type": "weightsAndReps",
     "video": "https://www.youtube.com/watch?v=k3Gsq1pNYUQ",
     "creditSource": "https://www.youtube.com/@thirdspacelondon8746",
     "credit": "Third Space London",
@@ -16,7 +16,7 @@
     "name": "Wrist Curls",
     "primaryMuscleGroup": "forearms",
     "secondaryMuscleGroups": [],
-    "type": "WR",
+    "type": "weightsAndReps",
     "video": "https://www.youtube.com/watch?v=3VLTzIrnb5g",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
@@ -28,7 +28,7 @@
     "name": "Reverse Wrist Curls",
     "primaryMuscleGroup": "forearms",
     "secondaryMuscleGroups": [],
-    "type": "WR",
+    "type": "weightsAndReps",
     "description": "Strengthens the forearm flexors and improves grip strength.",
     "movement": "pull"
   },
@@ -37,7 +37,7 @@
     "name": "Dead Hangs",
     "primaryMuscleGroup": "forearms",
     "secondaryMuscleGroups": ["back"],
-    "type": "BW",
+    "type": "reps",
     "description": "Strengthens the forearm flexors and improves grip strength.",
     "movement": "pull"
   },
@@ -46,7 +46,7 @@
     "name": "Plate Pinch",
     "primaryMuscleGroup": "forearms",
     "secondaryMuscleGroups": ["shoulders"],
-    "type": "WR",
+    "type": "weightsAndReps",
     "video": "https://www.youtube.com/watch?v=jFTV3DQf3HE",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
@@ -58,7 +58,7 @@
     "name": "Gripper",
     "primaryMuscleGroup": "forearms",
     "secondaryMuscleGroups": [],
-    "type": "WR",
+    "type": "weightsAndReps",
     "description": "Targets hand and forearm muscles to improve grip strength.",
     "movement": "pull"
   }

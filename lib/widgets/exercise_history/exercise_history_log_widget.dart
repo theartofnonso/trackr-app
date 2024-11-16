@@ -8,7 +8,7 @@ import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/widgets/empty_states/list_view_empty_state.dart';
 
 import '../../dtos/exercise_log_dto.dart';
-import '../../enums/exercise_type_enums.dart';
+import '../../enums/exercise/exercise_metrics_enums.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../routine/preview/set_headers/double_set_header.dart';
@@ -69,7 +69,7 @@ class _ExerciseLogWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final exerciseType = exerciseLog.exercise.type;
+    final exerciseType = exerciseLog.exercise.metric;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,9 +82,10 @@ class _ExerciseLogWidget extends StatelessWidget {
         )
             : const SizedBox.shrink(),
         switch (exerciseType) {
-          ExerciseType.weights => DoubleSetHeader(firstLabel: weightLabel().toUpperCase(), secondLabel: 'REPS', routinePreviewType: RoutinePreviewType.log),
-          ExerciseType.bodyWeight => const SingleSetHeader(label: 'REPS', routinePreviewType: RoutinePreviewType.log),
-          ExerciseType.duration => const SingleSetHeader(label: 'TIME', routinePreviewType: RoutinePreviewType.log),},
+          ExerciseMetric.weights => DoubleSetHeader(firstLabel: weightLabel().toUpperCase(), secondLabel: 'REPS', routinePreviewType: RoutinePreviewType.log),
+          ExerciseMetric.reps => const SingleSetHeader(label: 'REPS', routinePreviewType: RoutinePreviewType.log),
+          ExerciseMetric.none => throw UnimplementedError(),
+          ExerciseMetric.duration => const SingleSetHeader(label: 'TIME', routinePreviewType: RoutinePreviewType.log),},
         const SizedBox(height: 8),
         ...setsToWidgets(type: exerciseType, sets: exerciseLog.sets, routinePreviewType: RoutinePreviewType.log),
       ],

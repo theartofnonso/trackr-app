@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:tracker_app/enums/exercise_type_enums.dart';
+import 'package:tracker_app/enums/exercise/exercise_metrics_enums.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
@@ -35,7 +35,7 @@ Future<List<ExerciseLogDto>?> reOrderExerciseLogs(
 
 List<ExerciseLogDto> whereOtherExerciseLogsExcept(
     {required ExerciseLogDto exerciseLog, required List<ExerciseLogDto> others}) {
-  return others.where((procedure) => procedure.id != exerciseLog.id && procedure.superSetId.isEmpty).toList();
+  return others.where((otherExerciseLog) => otherExerciseLog.exercise.name != exerciseLog.exercise.name && otherExerciseLog.superSetId.isEmpty).toList();
 }
 
 List<TemplateChange> checkForChanges(
@@ -80,11 +80,11 @@ ExerciseLogDto? whereOtherExerciseInSuperSet(
   return exercises.firstWhereOrNull((exercise) =>
       exercise.superSetId.isNotEmpty &&
       exercise.superSetId == firstExercise.superSetId &&
-      exercise.exercise.id != firstExercise.exercise.id);
+      exercise.exercise.name != firstExercise.exercise.name);
 }
 
 List<Widget> setsToWidgets(
-    {required ExerciseType type,
+    {required ExerciseMetric type,
     required List<SetDto> sets,
     List<PBDto> pbs = const [],
     required RoutinePreviewType routinePreviewType}) {
@@ -129,7 +129,7 @@ List<Widget> setsToWidgets(
     final pbsForSet = pbsBySet[setDto] ?? [];
 
     switch (type) {
-      case ExerciseType.weights:
+      case ExerciseMetric.weights:
         final firstLabel = setDto.weight();
         final secondLabel = setDto.reps();
         return DoubleSetRow(
@@ -138,15 +138,17 @@ List<Widget> setsToWidgets(
             margin: margin,
             pbs: pbsForSet,
             routinePreviewType: routinePreviewType);
-      case ExerciseType.bodyWeight:
+      case ExerciseMetric.reps:
         final label = setDto.reps();
         return SingleSetRow(label: "$label", margin: margin, routinePreviewType: routinePreviewType);
-      case ExerciseType.duration:
+      case ExerciseMetric.duration:
         if (routinePreviewType == RoutinePreviewType.template) {
           return durationTemplate;
         }
         final label = Duration(milliseconds: setDto.duration()).hmsAnalog();
         return SingleSetRow(label: label, margin: margin, pbs: pbsForSet, routinePreviewType: routinePreviewType);
+      case ExerciseMetric.none:
+        return SizedBox.shrink();
     }
   })).toList();
 
@@ -155,11 +157,11 @@ List<Widget> setsToWidgets(
 
 Map<String, List<ExerciseLogDto>> groupExerciseLogsByExerciseId({required List<RoutineLogDto> routineLogs}) {
   final exerciseLogs = routineLogs.expand((log) => log.exerciseLogs);
-  return groupBy(exerciseLogs, (exerciseLog) => exerciseLog.exercise.id);
+  return groupBy(exerciseLogs, (exerciseLog) => exerciseLog.exercise.name);
 }
 
 String superSetId({required ExerciseLogDto firstExerciseLog, required ExerciseLogDto secondExerciseLog}) {
-  return "superset_id_${firstExerciseLog.exercise.id}_${secondExerciseLog.exercise.id}";
+  return "superset_id_${firstExerciseLog.exercise.name}_${secondExerciseLog.exercise.name}";
 }
 
 String scheduledDaysSummary({required RoutineTemplateDto template, bool showFullName = false}) {
@@ -206,30 +208,32 @@ String copyRoutineAsText(
   for (var exerciseLog in exerciseLogs) {
     var exercise = exerciseLog.exercise;
     routineText.writeln("\n- Exercise: ${exercise.name}");
-    routineText.writeln("  Muscle Group: ${exercise.primaryMuscleGroup.name}");
+    routineText.writeln("  Muscle Group: ${exercise.primaryMuscleGroups.map((muscleGroup) => muscleGroup.name).join(", ")}");
     if (exerciseLog.notes.isNotEmpty) {
       routineText.writeln("  Notes: ${exerciseLog.notes}");
     }
     for (var i = 0; i < exerciseLog.sets.length; i++) {
-      switch (exerciseLog.exercise.type) {
-        case ExerciseType.weights:
+      switch (exerciseLog.exercise.metric) {
+        case ExerciseMetric.weights:
           routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].weightsSummary()}");
           break;
-        case ExerciseType.bodyWeight:
+        case ExerciseMetric.reps:
           routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].repsSummary()}");
           break;
-        case ExerciseType.duration:
+        case ExerciseMetric.duration:
           routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].durationSummary()}");
           break;
+        case ExerciseMetric.none:
+          routineText.writeln("");
       }
     }
   }
   return routineText.toString();
 }
 
-int calculateCalories({required Duration duration, required double bodyWeight, required ActivityType activity}) {
+int calculateCalories({required Duration duration, required double reps, required ActivityType activity}) {
   const oxygenInMils = 3.5;
-  final bodyWeightInKG = isDefaultWeightUnit() ? bodyWeight : toKg(bodyWeight.toDouble());
+  final bodyWeightInKG = isDefaultWeightUnit() ? reps : toKg(reps.toDouble());
   final caloriesPerMinute = (activity.met * bodyWeightInKG * oxygenInMils) / 200;
   return (caloriesPerMinute * duration.inMinutes).floor();
 }

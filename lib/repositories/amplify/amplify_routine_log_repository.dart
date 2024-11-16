@@ -8,7 +8,7 @@ import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/utils/routine_utils.dart';
 
-import '../../dtos/appsync/exercise_dto.dart';
+import '../../dtos/exercise_dto.dart';
 import '../../dtos/exercise_log_dto.dart';
 import '../../dtos/milestones/days_milestone_dto.dart';
 import '../../dtos/milestones/hours_milestone_dto.dart';
@@ -33,19 +33,18 @@ class AmplifyRoutineLogRepository {
 
   UnmodifiableListView<Milestone> get newMilestones => UnmodifiableListView(_newMilestones);
 
-  Map<String, List<ExerciseLogDto>> _exerciseLogsById = {};
+  Map<String, List<ExerciseLogDto>> _exerciseLogsByName = {};
 
-  UnmodifiableMapView<String, List<ExerciseLogDto>> get exerciseLogsById => UnmodifiableMapView(_exerciseLogsById);
+  UnmodifiableMapView<String, List<ExerciseLogDto>> get exerciseLogsByName => UnmodifiableMapView(_exerciseLogsByName);
 
   void _groupExerciseLogs() {
-    _exerciseLogsById = groupExerciseLogsByExerciseId(routineLogs: _logs);
+    _exerciseLogsByName = groupExerciseLogsByExerciseId(routineLogs: _logs);
   }
 
-  void loadLogStream({required List<RoutineLog> logs, required VoidCallback onData}) {
+  void loadLogStream({required List<RoutineLog> logs}) {
     _logs = logs.map((log) => RoutineLogDto.toDto(log)).toList();
     _groupExerciseLogs();
     _calculateMilestones();
-    onData();
   }
 
   Future<RoutineLogDto> saveLog({required RoutineLogDto logDto, TemporalDateTime? datetime}) async {
@@ -153,11 +152,11 @@ class AmplifyRoutineLogRepository {
     _milestones = milestones;
   }
 
-  void syncLogsWithExercisesFromLibrary({required List<ExerciseDto> exercises}) {
+  void syncLogsWithExercisesFromLibrary({required List<ExerciseDTO> exercises}) {
     final updatedLogs = _logs.map((log) {
       final updatedExerciseLogs = log.exerciseLogs.map((exerciseLog) {
         final foundExercise = exercises.firstWhere(
-            (exerciseInLibrary) => exerciseInLibrary.id == exerciseLog.exercise.id,
+            (exerciseInLibrary) => exerciseInLibrary.name == exerciseLog.exercise.name,
             orElse: () => exerciseLog.exercise);
         return exerciseLog.copyWith(exercise: foundExercise);
       }).toList();
@@ -173,18 +172,18 @@ class AmplifyRoutineLogRepository {
     return _logs.firstWhereOrNull((log) => log.id == id);
   }
 
-  List<SetDto> whereSetsForExercise({required ExerciseDto exercise}) {
-    final exerciseLogs = _exerciseLogsById[exercise.id]?.reversed ?? [];
+  List<SetDto> whereSetsForExercise({required ExerciseDTO exercise}) {
+    final exerciseLogs = _exerciseLogsByName[exercise.name]?.reversed ?? [];
     return exerciseLogs.isNotEmpty ? exerciseLogs.first.sets : [];
   }
 
-  List<SetDto> whereSetsForExerciseBefore({required ExerciseDto exercise, required DateTime date}) {
-    final exerciseLogs = _exerciseLogsById[exercise.id]?.where((log) => log.createdAt.isBefore(date)) ?? [];
+  List<SetDto> whereSetsForExerciseBefore({required ExerciseDTO exercise, required DateTime date}) {
+    final exerciseLogs = _exerciseLogsByName[exercise.name]?.where((log) => log.createdAt.isBefore(date)) ?? [];
     return exerciseLogs.isNotEmpty ? exerciseLogs.first.sets : [];
   }
 
-  List<ExerciseLogDto> whereExerciseLogsBefore({required ExerciseDto exercise, required DateTime date}) {
-    return _exerciseLogsById[exercise.id]?.where((log) => log.createdAt.isBefore(date)).toList() ?? [];
+  List<ExerciseLogDto> whereExerciseLogsBefore({required ExerciseDTO exercise, required DateTime date}) {
+    return _exerciseLogsByName[exercise.name]?.where((log) => log.createdAt.isBefore(date)).toList() ?? [];
   }
 
   /// RoutineLog for the following [DateTime]
@@ -232,7 +231,7 @@ class AmplifyRoutineLogRepository {
 
   void clear() {
     _logs.clear();
-    _exerciseLogsById.clear();
+    _exerciseLogsByName.clear();
     _milestones.clear();
     _newMilestones.clear();
   }

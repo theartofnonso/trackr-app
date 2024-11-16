@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/models/ActivityLog.dart';
-import 'package:tracker_app/models/Exercise.dart';
 import 'package:tracker_app/models/RoutineUser.dart';
 import 'package:tracker_app/screens/home_tab_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
@@ -45,7 +44,6 @@ class _HomeScreenState extends State<HomeScreen> {
   StreamSubscription<QuerySnapshot<RoutineTemplate>>? _routineTemplateStream;
   StreamSubscription<QuerySnapshot<RoutineTemplatePlan>>? _routineTemplatePlanStream;
   StreamSubscription<QuerySnapshot<ActivityLog>>? _activityLogStream;
-  StreamSubscription<QuerySnapshot<Exercise>>? _exerciseStream;
 
   @override
   Widget build(BuildContext context) {
@@ -118,8 +116,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _loadAppData() {
+    Provider.of<ExerciseAndRoutineController>(context, listen: false).loadExercises();
     _observeRoutineUserQuery();
-    _observeExerciseQuery();
     _observeRoutineLogQuery();
     _observeRoutineTemplateQuery();
     _observeRoutineTemplatePlanQuery();
@@ -133,19 +131,6 @@ class _HomeScreenState extends State<HomeScreen> {
     ).listen((QuerySnapshot<RoutineUser> snapshot) {
       if (mounted) {
         Provider.of<RoutineUserController>(context, listen: false).streamUsers(users: snapshot.items);
-      }
-    });
-  }
-
-  void _observeExerciseQuery() async {
-    final controller = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-    await controller.loadLocalExercises();
-    _exerciseStream = Amplify.DataStore.observeQuery(
-      Exercise.classType,
-      sortBy: [Exercise.CREATEDAT.ascending()],
-    ).listen((QuerySnapshot<Exercise> snapshot) {
-      if (mounted) {
-        controller.streamExercises(exercises: snapshot.items);
       }
     });
   }
@@ -233,7 +218,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
-    _exerciseStream?.cancel();
     _routineTemplateStream?.cancel();
     _routineTemplatePlanStream?.cancel();
     _routineLogStream?.cancel();

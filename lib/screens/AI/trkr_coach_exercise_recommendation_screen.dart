@@ -6,23 +6,23 @@ import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/widgets/dividers/label_container.dart';
 
-import '../../dtos/appsync/exercise_dto.dart';
+import '../../dtos/exercise_dto.dart';
 
-class TrkrCoachExerciseRecommendationScreen extends StatefulWidget {
+class TRKRCoachExerciseRecommendationScreen extends StatefulWidget {
   static const routeName = '/trkr_coach_exercise_recommendation_screen';
 
-  final List<ExerciseDto> originalExerciseTemplates;
+  final List<ExerciseDTO> originalExerciseTemplates;
   final List<Map<String, dynamic>> muscleGroupAndExercises;
 
-  const TrkrCoachExerciseRecommendationScreen(
+  const TRKRCoachExerciseRecommendationScreen(
       {super.key, required this.originalExerciseTemplates, required this.muscleGroupAndExercises});
 
   @override
-  State<TrkrCoachExerciseRecommendationScreen> createState() => _TrkrCoachExerciseRecommendationScreenState();
+  State<TRKRCoachExerciseRecommendationScreen> createState() => _TRKRCoachExerciseRecommendationScreenState();
 }
 
-class _TrkrCoachExerciseRecommendationScreenState extends State<TrkrCoachExerciseRecommendationScreen> {
-  final List<String> _selectedExercises = [];
+class _TRKRCoachExerciseRecommendationScreenState extends State<TRKRCoachExerciseRecommendationScreen> {
+  final List<String> _selectedExerciseNames = [];
 
   @override
   Widget build(BuildContext context) {
@@ -39,15 +39,15 @@ class _TrkrCoachExerciseRecommendationScreenState extends State<TrkrCoachExercis
           second: exercises[1],
           rationale: rationale,
           originalExercises: widget.originalExerciseTemplates,
-          isSelected: _selectedExercises.contains((exercises[1] as ExerciseDto).id),
-          onSelect: (String selectedExerciseId) {
-            if (_selectedExercises.contains(selectedExerciseId)) {
+          isSelected: _selectedExerciseNames.contains((exercises[1] as ExerciseDTO).name),
+          onSelect: (String selectedExerciseName) {
+            if (_selectedExerciseNames.contains(selectedExerciseName)) {
               setState(() {
-                _selectedExercises.remove(selectedExerciseId);
+                _selectedExerciseNames.remove(selectedExerciseName);
               });
             } else {
               setState(() {
-                _selectedExercises.add(selectedExerciseId);
+                _selectedExerciseNames.add(selectedExerciseName);
               });
             }
           },
@@ -70,7 +70,7 @@ class _TrkrCoachExerciseRecommendationScreenState extends State<TrkrCoachExercis
       child: SafeArea(
         child: Column(
           children: [
-            _AppBar(positiveAction: _navigateBack, canPerformPositiveAction: _selectedExercises.isNotEmpty),
+            _AppBar(positiveAction: _navigateBack, canPerformPositiveAction: _selectedExerciseNames.isNotEmpty),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Text(
@@ -92,15 +92,15 @@ class _TrkrCoachExerciseRecommendationScreenState extends State<TrkrCoachExercis
   }
 
   void _navigateBack() {
-    context.pop(_selectedExercises);
+    context.pop(_selectedExerciseNames);
   }
 }
 
 class _RecommendationListItem extends StatelessWidget {
-  final List<ExerciseDto> originalExercises;
+  final List<ExerciseDTO> originalExercises;
   final MuscleGroup muscleGroup;
-  final ExerciseDto first;
-  final ExerciseDto second;
+  final ExerciseDTO first;
+  final ExerciseDTO second;
   final String rationale;
   final bool isSelected;
   final Function(String selectedExerciseId) onSelect;
@@ -142,7 +142,7 @@ class _RecommendationListItem extends StatelessWidget {
     );
 
     return GestureDetector(
-      onTap: () => onSelect(second.id),
+      onTap: () => onSelect(second.name),
       child: Container(
         padding: const EdgeInsets.all(12.0),
         decoration: BoxDecoration(

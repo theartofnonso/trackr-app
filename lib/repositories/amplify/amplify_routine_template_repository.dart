@@ -1,13 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ui';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
-import '../../dtos/appsync/exercise_dto.dart';
+import '../../dtos/exercise_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 
 class AmplifyRoutineTemplateRepository {
@@ -15,11 +14,10 @@ class AmplifyRoutineTemplateRepository {
 
   UnmodifiableListView<RoutineTemplateDto> get templates => UnmodifiableListView(_templates);
 
-  void loadTemplatesStream({required List<RoutineTemplate> templates, required VoidCallback onData}) {
+  void loadTemplatesStream({required List<RoutineTemplate> templates}) {
     _templates = templates
         .map((template) => RoutineTemplateDto.toDto(template))
         .toList();
-    onData();
   }
 
   Future<RoutineTemplateDto> saveTemplate(
@@ -65,11 +63,11 @@ class AmplifyRoutineTemplateRepository {
     }
   }
 
-  void syncTemplatesWithExercisesFromLibrary({required List<ExerciseDto> exercises}) {
+  void syncTemplatesWithExercisesFromLibrary({required List<ExerciseDTO> exercises}) {
     final updatedTemplates = _templates.map((template) {
       final updatedExerciseTemplates = template.exerciseTemplates.map((exerciseTemplate) {
         final foundExercise = exercises.firstWhere(
-            (exerciseInLibrary) => exerciseInLibrary.id == exerciseTemplate.exercise.id,
+            (exerciseInLibrary) => exerciseInLibrary.name == exerciseTemplate.exercise.name,
             orElse: () => exerciseTemplate.exercise);
         return exerciseTemplate.copyWith(exercise: foundExercise);
       }).toList();

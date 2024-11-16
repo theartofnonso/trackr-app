@@ -4,7 +4,7 @@
     "name": "Hip Adduction Machine",
     "primaryMuscleGroup": "adductors",
     "secondaryMuscleGroups": ["glutes", "hamstrings", "quadriceps"],
-    "type": "WR",
+    "type": "weightsAndReps",
     "video": "https://www.youtube.com/watch?v=CjAVezAggkI",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",

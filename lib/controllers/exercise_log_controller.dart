@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
-import '../dtos/appsync/exercise_dto.dart';
+import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/set_dto.dart';
 import '../enums/routine_editor_type_enums.dart';
@@ -28,8 +28,13 @@ class ExerciseLogController extends ChangeNotifier {
     return _exerciseLogRepository.mergeAndCheckPastExerciseLogsAndSets(datetime: datetime);
   }
 
-  void addExerciseLogs({required List<ExerciseDto> exercises}) {
+  void addExerciseLogs({required List<ExerciseDTO> exercises}) {
     _exerciseLogRepository.addExerciseLogs(exercises: exercises);
+    notifyListeners();
+  }
+
+  void updateExerciseLog({required ExerciseLogDto newExerciseLog}) {
+    _exerciseLogRepository.updateExerciseLog(newExerciseLog: newExerciseLog);
     notifyListeners();
   }
 
@@ -39,23 +44,23 @@ class ExerciseLogController extends ChangeNotifier {
   }
 
   void removeExerciseLog({required String logId}) {
-    _exerciseLogRepository.removeExerciseLog(logId: logId);
+    _exerciseLogRepository.removeExerciseLog(exerciseName: logId);
     notifyListeners();
   }
 
-  void replaceExerciseLog({required String oldExerciseId, required ExerciseDto newExercise}) {
-    _exerciseLogRepository.replaceExercise(oldExerciseId: oldExerciseId, newExercise: newExercise);
+  void replaceExerciseLog({required String oldExerciseId, required ExerciseDTO newExercise}) {
+    _exerciseLogRepository.replaceExercise(oldExerciseName: oldExerciseId, newExercise: newExercise);
     notifyListeners();
   }
 
-  void updateExerciseLogNotes({required String exerciseLogId, required String value}) {
-    _exerciseLogRepository.updateExerciseLogNotes(exerciseLogId: exerciseLogId, value: value);
+  void updateExerciseLogNotes({required String exerciseName, required String value}) {
+    _exerciseLogRepository.updateExerciseLogNotes(exerciseName: exerciseName, value: value);
   }
 
   void superSetExerciseLogs(
-      {required String firstExerciseLogId, required String secondExerciseLogId, required String superSetId}) {
+      {required String firstExerciseName, required String secondExerciseName, required String superSetId}) {
     _exerciseLogRepository.addSuperSets(
-        firstExerciseLogId: firstExerciseLogId, secondExerciseLogId: secondExerciseLogId, superSetId: superSetId);
+        firstExerciseName: firstExerciseName, secondExerciseName: secondExerciseName, superSetId: superSetId);
     notifyListeners();
   }
 
@@ -64,46 +69,36 @@ class ExerciseLogController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addSet({required String exerciseLogId, required List<SetDto> pastSets}) {
-    _exerciseLogRepository.addSet(exerciseLogId: exerciseLogId, pastSets: pastSets);
+  void addSet({required String exerciseName, required List<SetDto> pastSets}) {
+    _exerciseLogRepository.addSet(exerciseName: exerciseName, pastSets: pastSets);
     notifyListeners();
   }
 
-  void addAlternates({required String primaryExerciseId, required List<ExerciseDto> exercises}) {
-    _exerciseLogRepository.addSubstituteExercises(primaryExerciseId: primaryExerciseId, exercises: exercises);
+  void removeSetForExerciseLog({required String exerciseName, required int index}) {
+    _exerciseLogRepository.removeSet(exerciseName: exerciseName, index: index);
     notifyListeners();
   }
 
-  void removeAlternates({required String primaryExerciseId, required String secondaryExerciseId}) {
-    _exerciseLogRepository.removeSubstituteExercises(primaryExerciseId: primaryExerciseId, secondaryExerciseId: secondaryExerciseId);
+  void updateWeight({required String exerciseName, required int index, required SetDto setDto}) {
+    _exerciseLogRepository.updateWeight(exerciseName: exerciseName, index: index, setDto: setDto);
     notifyListeners();
   }
 
-  void removeSetForExerciseLog({required String exerciseLogId, required int index}) {
-    _exerciseLogRepository.removeSet(exerciseLogId: exerciseLogId, index: index);
-    notifyListeners();
-  }
-
-  void updateWeight({required String exerciseLogId, required int index, required SetDto setDto}) {
-    _exerciseLogRepository.updateWeight(exerciseLogId: exerciseLogId, index: index, setDto: setDto);
-    notifyListeners();
-  }
-
-  void updateReps({required String exerciseLogId, required int index, required SetDto setDto}) {
-    _exerciseLogRepository.updateReps(exerciseLogId: exerciseLogId, index: index, setDto: setDto);
+  void updateReps({required String exerciseName, required int index, required SetDto setDto}) {
+    _exerciseLogRepository.updateReps(exerciseName: exerciseName, index: index, setDto: setDto);
     notifyListeners();
   }
 
   void updateDuration(
-      {required String exerciseLogId, required int index, required SetDto setDto, required bool notify}) {
-    _exerciseLogRepository.updateDuration(exerciseLogId: exerciseLogId, index: index, setDto: setDto);
+      {required String exerciseName, required int index, required SetDto setDto, required bool notify}) {
+    _exerciseLogRepository.updateDuration(exerciseName: exerciseName, index: index, setDto: setDto);
     if (notify) {
       notifyListeners();
     }
   }
 
-  void updateSetCheck({required String exerciseLogId, required int index, required SetDto setDto}) {
-    _exerciseLogRepository.updateSetCheck(exerciseLogId: exerciseLogId, index: index, setDto: setDto);
+  void updateSetCheck({required String exerciseName, required int index, required SetDto setDto}) {
+    _exerciseLogRepository.updateSetCheck(exerciseName: exerciseName, index: index, setDto: setDto);
     notifyListeners();
   }
 

@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
+import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
@@ -17,7 +17,7 @@ import '../../../controllers/exercise_and_routine_controller.dart';
 import '../../../dtos/graph/chart_point_dto.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../enums/chart_unit_enum.dart';
-import '../../../enums/exercise_type_enums.dart';
+import '../../../enums/exercise/exercise_metrics_enums.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/general_utils.dart';
 import '../../../widgets/chart/line_chart_widget.dart';
@@ -42,7 +42,7 @@ class ExerciseChartScreen extends StatefulWidget {
   final (String?, Duration) longestDuration;
   final (String?, int) mostRepsSet;
   final (String?, int) mostRepsSession;
-  final ExerciseDto exercise;
+  final ExerciseDTO exercise;
   final List<ExerciseLogDto> exerciseLogs;
 
   const ExerciseChartScreen(
@@ -125,10 +125,11 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   }
 
   void _computeChart() {
-    _summaryType = switch (widget.exercise.type) {
-      ExerciseType.weights => SummaryType.weight,
-      ExerciseType.bodyWeight => SummaryType.mostReps,
-      ExerciseType.duration => _summaryType = SummaryType.bestTime
+    _summaryType = switch (widget.exercise.metric) {
+      ExerciseMetric.weights => SummaryType.weight,
+      ExerciseMetric.reps => SummaryType.mostReps,
+      ExerciseMetric.duration => _summaryType = SummaryType.bestTime,
+      ExerciseMetric.none => throw UnimplementedError(),
     };
 
     _dateTimes = widget.exerciseLogs.map((log) => log.createdAt.formattedDayAndMonth()).toList();
@@ -179,7 +180,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     final weightUnitLabel = weightLabel();
 
     final muscleGroupsIllustrations =
-        [widget.exercise.primaryMuscleGroup, ...widget.exercise.secondaryMuscleGroups].map((muscleGroup) {
+        [...widget.exercise.primaryMuscleGroups, ...widget.exercise.secondaryMuscleGroups].map((muscleGroup) {
       return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
         Image.asset(
           'muscles_illustration/${muscleGroup.illustration()}.png',
@@ -243,7 +244,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    if (withWeightsOnly(type: widget.exercise.type))
+                    if (withWeightsOnly(type: widget.exercise.metric))
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: OpacityButtonWidget(
@@ -252,7 +253,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                             padding: const EdgeInsets.only(right: 5.0),
                             buttonColor: _buttonColor(type: SummaryType.weight)),
                       ),
-                    if (withWeightsOnly(type: widget.exercise.type))
+                    if (withWeightsOnly(type: widget.exercise.metric))
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: OpacityButtonWidget(
@@ -261,7 +262,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                             padding: const EdgeInsets.only(right: 5.0),
                             buttonColor: _buttonColor(type: SummaryType.setVolume)),
                       ),
-                    if (withReps(type: widget.exercise.type))
+                    if (withReps(type: widget.exercise.metric))
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: OpacityButtonWidget(
@@ -270,7 +271,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                             padding: const EdgeInsets.only(right: 5.0),
                             buttonColor: _buttonColor(type: SummaryType.mostReps)),
                       ),
-                    if (withReps(type: widget.exercise.type))
+                    if (withReps(type: widget.exercise.metric))
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: OpacityButtonWidget(
@@ -279,7 +280,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                             padding: const EdgeInsets.only(right: 5.0),
                             buttonColor: _buttonColor(type: SummaryType.sessionReps)),
                       ),
-                    if (withDurationOnly(type: widget.exercise.type))
+                    if (withDurationOnly(type: widget.exercise.metric))
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: OpacityButtonWidget(
@@ -288,7 +289,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                             padding: const EdgeInsets.only(right: 5.0),
                             buttonColor: _buttonColor(type: SummaryType.bestTime)),
                       ),
-                    if (withDurationOnly(type: widget.exercise.type))
+                    if (withDurationOnly(type: widget.exercise.metric))
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: OpacityButtonWidget(
@@ -300,7 +301,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                   ],
                 )),
           const SizedBox(height: 10),
-          if (withWeightsOnly(type: widget.exercise.type))
+          if (withWeightsOnly(type: widget.exercise.metric))
             Padding(
               padding: const EdgeInsets.only(bottom: 10.0),
               child: _MetricListTile(
@@ -311,7 +312,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                 enabled: widget.exerciseLogs.isNotEmpty,
               ),
             ),
-          if (withWeightsOnly(type: widget.exercise.type))
+          if (withWeightsOnly(type: widget.exercise.metric))
             Padding(
               padding: const EdgeInsets.only(bottom: 10.0),
               child: _MetricListTile(
@@ -321,7 +322,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                   onTap: () => _navigateTo(routineLogId: widget.heaviestSet.$1),
                   enabled: widget.exerciseLogs.isNotEmpty),
             ),
-          if (withDurationOnly(type: widget.exercise.type))
+          if (withDurationOnly(type: widget.exercise.metric))
             Padding(
               padding: const EdgeInsets.only(bottom: 10.0),
               child: _MetricListTile(
@@ -331,7 +332,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                   onTap: () => _navigateTo(routineLogId: widget.longestDuration.$1),
                   enabled: widget.exerciseLogs.isNotEmpty),
             ),
-          if (withReps(type: widget.exercise.type))
+          if (withReps(type: widget.exercise.metric))
             Padding(
               padding: const EdgeInsets.only(bottom: 10.0),
               child: _MetricListTile(
@@ -341,7 +342,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                   onTap: () => _navigateTo(routineLogId: widget.mostRepsSet.$1),
                   enabled: widget.exerciseLogs.isNotEmpty),
             ),
-          if (withReps(type: widget.exercise.type))
+          if (withReps(type: widget.exercise.metric))
             Padding(
               padding: const EdgeInsets.only(bottom: 10.0),
               child: _MetricListTile(
@@ -351,7 +352,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                   onTap: () => _navigateTo(routineLogId: widget.mostRepsSession.$1),
                   enabled: widget.exerciseLogs.isNotEmpty),
             ),
-          if (withWeightsOnly(type: widget.exercise.type)) PersonalBestWidget(exercise: widget.exercise),
+          if (withWeightsOnly(type: widget.exercise.metric)) PersonalBestWidget(exercise: widget.exercise),
         ],
       ),
     ));

@@ -24,9 +24,9 @@ class PBsShareable extends StatelessWidget {
   Widget build(BuildContext context) {
     String? value;
 
-    if (withDurationOnly(type: pbDto.exercise.type)) {
+    if (withDurationOnly(type: pbDto.exercise.metric)) {
       value = Duration(milliseconds: set.duration()).hmsAnalog();
-    } else if (withWeightsOnly(type: pbDto.exercise.type)) {
+    } else if (withWeightsOnly(type: pbDto.exercise.metric)) {
       if (pbDto.pb == PBType.weight) {
         value = "${set.weight()}${weightLabel().toUpperCase()}";
       } else {

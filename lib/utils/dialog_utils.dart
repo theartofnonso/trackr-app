@@ -160,7 +160,7 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
   final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
 
   final calories = calculateCalories(
-      duration: activity.duration(), bodyWeight: routineUserController.weight(), activity: activity.activityType);
+      duration: activity.duration(), reps: routineUserController.weight(), activity: activity.activityType);
 
   displayBottomSheet(
       context: context,

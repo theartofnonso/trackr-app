@@ -4,7 +4,7 @@
     "name": "Hip Abduction",
     "primaryMuscleGroup": "abductors",
     "secondaryMuscleGroups": ["glutes", "quadriceps", "hamstrings", "abs"],
-    "type": "BW",
+    "type": "reps",
     "video": "https://www.youtube.com/watch?v=G_8LItOiZ0Q",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",

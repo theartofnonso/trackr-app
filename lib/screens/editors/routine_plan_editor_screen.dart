@@ -7,12 +7,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/dtos/appsync/routine_template_plan_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/enums/routine_plan_sessions.dart';
 import 'package:tracker_app/enums/routine_plan_weeks.dart';
-import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/openAI/open_ai_functions.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/routine_editors_utils.dart';
@@ -23,8 +21,8 @@ import 'package:tracker_app/widgets/pickers/routine_plan_weeks_picker.dart';
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
+import '../../dtos/exercise_dto.dart';
 import '../../dtos/exercise_log_dto.dart';
-import '../../dtos/set_dto.dart';
 import '../../enums/routine_plan_goal.dart';
 import '../../openAI/open_ai.dart';
 import '../../shared_prefs.dart';
@@ -54,13 +52,13 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
 
   final List<MuscleGroupFamily> _selectedMuscleGroupFamilies = [MuscleGroupFamily.legs];
 
-  final List<ExerciseDto> _armsExercises = [];
-  final List<ExerciseDto> _backExercises = [];
-  final List<ExerciseDto> _chestExercises = [];
-  final List<ExerciseDto> _coreExercises = [];
-  final List<ExerciseDto> _legExercises = [];
-  final List<ExerciseDto> _neckExercises = [];
-  final List<ExerciseDto> _shoulderExercises = [];
+  final List<ExerciseDTO> _armsExercises = [];
+  final List<ExerciseDTO> _backExercises = [];
+  final List<ExerciseDTO> _chestExercises = [];
+  final List<ExerciseDTO> _coreExercises = [];
+  final List<ExerciseDTO> _legExercises = [];
+  final List<ExerciseDTO> _neckExercises = [];
+  final List<ExerciseDTO> _shoulderExercises = [];
 
   @override
   Widget build(BuildContext context) {
@@ -93,11 +91,11 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
               family: family,
               inactiveStyle: inactiveStyle,
               activeStyle: activeStyle,
-              onSelect: (ExerciseDto exercise) {
+              onSelect: (ExerciseDTO exercise) {
                 _onSelectExercise(exercise: exercise, family: family);
               },
               exercises: _getSelectedExercises(family: family),
-              onRemove: (ExerciseDto exercise) {
+              onRemove: (ExerciseDTO exercise) {
                 _onRemoveExercise(exercise: exercise, family: family);
               },
             ),
@@ -226,9 +224,9 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
     buffer.writeln(
         "I want to ${_goal.description} over a ${_weeks.weeks}-week period. The muscle groups I want to focus on are $muscleGroups.");
     for (final family in _selectedMuscleGroupFamilies) {
-      final selectedExerciseIds = _getSelectedExercises(family: family).map((exercise) => exercise.id).join(", ");
-      if (selectedExerciseIds.isNotEmpty) {
-        buffer.writeln("For ${family.name}, I prefer exercises like $selectedExerciseIds");
+      final selectedExerciseNames = _getSelectedExercises(family: family).map((exercise) => exercise.name).join(", ");
+      if (selectedExerciseNames.isNotEmpty) {
+        buffer.writeln("For ${family.name}, I prefer exercises like $selectedExerciseNames");
       }
     }
 
@@ -335,7 +333,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
   MuscleGroupFamily? _getMuscleGroupFamily({required MuscleGroupFamily family}) =>
       _selectedMuscleGroupFamilies.firstWhereOrNull((previousFamily) => previousFamily == family);
 
-  List<ExerciseDto> _getSelectedExercises({required MuscleGroupFamily family}) {
+  List<ExerciseDTO> _getSelectedExercises({required MuscleGroupFamily family}) {
     return switch (family) {
       MuscleGroupFamily.arms => _armsExercises,
       MuscleGroupFamily.back => _backExercises,
@@ -348,7 +346,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
     };
   }
 
-  void _onSelectExercise({required MuscleGroupFamily family, required ExerciseDto exercise}) {
+  void _onSelectExercise({required MuscleGroupFamily family, required ExerciseDTO exercise}) {
     switch (family) {
       case MuscleGroupFamily.arms:
         _armsExercises.add(exercise);
@@ -377,7 +375,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
     setState(() {});
   }
 
-  void _onRemoveExercise({required MuscleGroupFamily family, required ExerciseDto exercise}) {
+  void _onRemoveExercise({required MuscleGroupFamily family, required ExerciseDTO exercise}) {
     switch (family) {
       case MuscleGroupFamily.arms:
         _armsExercises.remove(exercise);
@@ -404,15 +402,14 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
   }
 
   List<RoutineTemplateDto> _createRoutineTemplates(
-      {required List<dynamic> workouts, required List<ExerciseDto> exercises}) {
+      {required List<dynamic> workouts, required List<ExerciseDTO> exercises}) {
     return workouts.map((workout) {
       final workoutName = workout["workout_name"] ?? "A workout";
       final workoutCaption = workout["workout_caption"] ?? "A workout created by TRKR Coach";
-      final exerciseIds = workout["exercises"] as List<dynamic>;
-      final exerciseTemplates = exerciseIds.map((exerciseId) {
-        final exerciseInLibrary = exercises.firstWhere((exercise) => exercise.id == exerciseId);
-        final exerciseTemplate = ExerciseLogDto(exerciseInLibrary.id, "", "", exerciseInLibrary,
-            exerciseInLibrary.description ?? "", [const SetDto(0, 0, false)], DateTime.now().withoutTime(), []);
+      final exerciseNames = workout["exercises"] as List<dynamic>;
+      final exerciseTemplates = exerciseNames.map((exerciseName) {
+        final exerciseInLibrary = exercises.firstWhere((exercise) => exercise.name == exerciseName);
+        final exerciseTemplate = ExerciseLogDto.empty(exercise: exerciseInLibrary);
         return exerciseTemplate;
       }).toList();
       return RoutineTemplateDto(
@@ -445,9 +442,9 @@ class _FavouriteExercisePicker extends StatelessWidget {
   final MuscleGroupFamily family;
   final TextStyle inactiveStyle;
   final TextStyle activeStyle;
-  final Function(ExerciseDto exercise) onSelect;
-  final Function(ExerciseDto exercise) onRemove;
-  final List<ExerciseDto> exercises;
+  final Function(ExerciseDTO exercise) onSelect;
+  final Function(ExerciseDTO exercise) onRemove;
+  final List<ExerciseDTO> exercises;
 
   const _FavouriteExercisePicker(
       {required this.family,

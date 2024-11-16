@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:tracker_app/dtos/milestones/milestone_dto.dart';
-import 'package:tracker_app/enums/exercise_type_enums.dart';
+import 'package:tracker_app/enums/exercise/exercise_metrics_enums.dart';
 import 'package:tracker_app/enums/milestone_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 
@@ -92,11 +92,11 @@ class RepsMilestone extends Milestone {
         final completedExerciseLogs = completedExercises(exerciseLogs: log.exerciseLogs);
 
         final exerciseLogs = completedExerciseLogs
-            .where((exerciseLog) => exerciseLog.exercise.type != ExerciseType.duration)
+            .where((exerciseLog) => exerciseLog.exercise.metric != ExerciseMetric.duration)
             .where((exerciseLog) {
-          final primaryMuscleGroup = exerciseLog.exercise.primaryMuscleGroup;
+          final primaryMuscleGroups = exerciseLog.exercise.primaryMuscleGroups;
           final secondaryMuscleGroups = exerciseLog.exercise.secondaryMuscleGroups;
-          final muscleGroups = [primaryMuscleGroup, ...secondaryMuscleGroups];
+          final muscleGroups = [...primaryMuscleGroups, ...secondaryMuscleGroups];
           return muscleGroups.contains(muscleGroup);
         });
 

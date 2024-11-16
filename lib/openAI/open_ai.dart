@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:http/http.dart' as http;
 
-import '../dtos/appsync/exercise_dto.dart';
+import '../dtos/exercise_dto.dart';
 import '../openAI/open_ai_functions.dart';
 
 const String _apiKey =
@@ -110,7 +110,7 @@ Future<String> createFunctionCallPayload(
     required String systemInstruction,
     required String user,
     required Map<String, Object> responseFormat,
-    required List<ExerciseDto> exercises}) async {
+    required List<ExerciseDTO> exercises}) async {
   final functionCallMessage = {
     "role": "assistant",
     "tool_calls": [
@@ -124,9 +124,8 @@ Future<String> createFunctionCallPayload(
 
   final listOfExerciseJsons = exercises
       .map((exercise) => jsonEncode({
-            "id": exercise.id,
             "name": exercise.name,
-            "primary_muscle_group": exercise.primaryMuscleGroup.name,
+            "primaryMuscleGroups": exercise.primaryMuscleGroups.map((muscleGroup) => muscleGroup.name).toList(),
             "secondary_muscle_groups": exercise.secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name).toList()
           }))
       .toList();

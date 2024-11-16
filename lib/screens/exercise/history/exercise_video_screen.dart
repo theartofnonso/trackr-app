@@ -4,20 +4,20 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/utils/uri_utils.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-import '../../../dtos/appsync/exercise_dto.dart';
+import '../../../dtos/exercise_dto.dart';
 
 class ExerciseVideoScreen extends StatelessWidget {
-  final ExerciseDto exercise;
+  final ExerciseDTO exercise;
 
   const ExerciseVideoScreen({super.key, required this.exercise});
 
   @override
   Widget build(BuildContext context) {
-    final video = exercise.video;
+    final video = "";
     final videoUrl = video != null ? video.toString() : "";
     final videoId = YoutubePlayer.convertUrlToId(videoUrl) ?? "";
 
-    final creditSource = exercise.creditSource;
+    final creditSource = "";
 
     final controller = YoutubePlayerController(
       initialVideoId: videoId,
@@ -57,7 +57,7 @@ class ExerciseVideoScreen extends StatelessWidget {
                         openUrl(url: creditSource.toString(), context: context);
                       }
                     },
-                  text: exercise.credit ?? "",
+                  text: "",
                   style: GoogleFonts.ubuntu(
                     color: Colors.white,
                     decoration: TextDecoration.underline,

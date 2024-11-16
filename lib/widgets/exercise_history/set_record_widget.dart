@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
-import 'package:tracker_app/enums/exercise_type_enums.dart';
+import 'package:tracker_app/enums/exercise/exercise_metrics_enums.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../enums/routine_preview_type_enum.dart';
@@ -9,7 +9,7 @@ import '../routine/preview/set_headers/double_set_header.dart';
 import '../routine/preview/set_rows/double_set_row.dart';
 
 class SetRecordWidget extends StatelessWidget {
-  final ExerciseType exerciseType;
+  final ExerciseMetric exerciseType;
   final List<SetDto> sets;
 
   const SetRecordWidget({super.key, required this.exerciseType, required this.sets});

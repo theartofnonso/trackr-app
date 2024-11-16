@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
-import 'package:tracker_app/enums/exercise_type_enums.dart';
+import 'package:tracker_app/enums/exercise/exercise_metrics_enums.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 
 import '../../../controllers/exercise_and_routine_controller.dart';
@@ -27,7 +27,7 @@ class ExerciseLogWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final otherSuperSet = superSet;
 
-    final exerciseType = exerciseLog.exercise.type;
+    final exerciseType = exerciseLog.exercise.metric;
 
     final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
@@ -73,19 +73,20 @@ class ExerciseLogWidget extends StatelessWidget {
               )
             : const SizedBox.shrink(),
         switch (exerciseType) {
-          ExerciseType.weights => DoubleSetHeader(
+          ExerciseMetric.weights => DoubleSetHeader(
               firstLabel: weightLabel().toUpperCase(),
               secondLabel: 'REPS',
               routinePreviewType: previewType,
             ),
-          ExerciseType.bodyWeight => SingleSetHeader(
+          ExerciseMetric.reps => SingleSetHeader(
               label: 'REPS',
               routinePreviewType: previewType,
             ),
-          ExerciseType.duration => SingleSetHeader(
+          ExerciseMetric.duration => SingleSetHeader(
               label: 'TIME',
               routinePreviewType: previewType,
             ),
+          ExerciseMetric.none => throw UnimplementedError(),
         },
         const SizedBox(height: 8),
         ...setsToWidgets(

@@ -89,14 +89,14 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: updatedExerciseLogs);
 
     final calories = calculateCalories(
-        duration: updatedLog.duration(), bodyWeight: routineUserController.weight(), activity: log.activityType);
+        duration: updatedLog.duration(), reps: routineUserController.weight(), activity: log.activityType);
 
     final pbs = updatedLog.exerciseLogs.map((exerciseLog) {
       final pastExerciseLogs =
           routineLogController.whereExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
 
       return calculatePBs(
-          pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog);
+          pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseLog.exercise.metric, exerciseLog: exerciseLog);
     }).expand((pbs) => pbs);
 
     return Scaffold(
@@ -498,7 +498,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
           /// [Exercise.duration] exercises do not have sets in templates
           /// This is because we only need to store the duration of the exercise in [RoutineEditorType.log] i.e data is log in realtime
-          final sets = withDurationOnly(type: exerciseLog.exercise.type) ? <SetDto>[] : uncheckedSets;
+          final sets = withDurationOnly(type: exerciseLog.exercise.metric) ? <SetDto>[] : uncheckedSets;
           return exerciseLog.copyWith(sets: sets);
         }).toList();
         final templateToCreate = RoutineTemplateDto(
