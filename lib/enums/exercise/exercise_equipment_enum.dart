@@ -1,7 +1,7 @@
 enum ExerciseEquipment {
   barbell("Barbell", "Classic for heavy lifts like squats, deadlifts, and bench press."),
   ezBar("EZ Bar", "Perfect for curls and tricep extensions with a natural grip."),
-  dumbbell("Dumbbell", "Versatile weights for targeted strength training."),
+  dumbbell("Dumbbells", "Versatile weights for targeted strength training."),
   band("Band", "Resistance bands for mobility, strength, and rehabilitation."),
   rope("Rope", "Ideal for tricep pushdowns, cable exercises, or battle rope training."),
   trapBar("Trap-Bar", "Great for deadlifts with a neutral grip to reduce strain."),

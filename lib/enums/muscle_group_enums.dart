@@ -46,10 +46,6 @@ class MuscleGroup {
       "The chest muscles are key for pushing movements, including presses and push-ups, and contribute to upper body strength.");
   static const MuscleGroup shoulders = MuscleGroup._("Shoulders", MuscleGroupFamily.shoulders,
       "Shoulders (deltoids) enable arm rotation and are involved in pushing and lifting movements.");
-  static const MuscleGroup frontShoulder = MuscleGroup._("Front Shoulder", MuscleGroupFamily.shoulders,
-      "Shoulders (deltoids) enable arm rotation and are involved in pushing and lifting movements.");
-  static const MuscleGroup backShoulder = MuscleGroup._("Back Shoulder", MuscleGroupFamily.shoulders,
-      "Shoulders (deltoids) enable arm rotation and are involved in pushing and lifting movements.");
   static const MuscleGroup abductors = MuscleGroup._("Abductors", MuscleGroupFamily.legs,
       "Abductors are responsible for moving the legs away from the body's midline, essential for lateral movements.");
   static const MuscleGroup adductors = MuscleGroup._("Adductors", MuscleGroupFamily.legs,
@@ -77,8 +73,6 @@ class MuscleGroup {
         abs,
         chest,
         shoulders,
-        frontShoulder,
-        backShoulder,
         abductors,
         adductors,
         glutes,

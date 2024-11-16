@@ -2,113 +2,157 @@
   {
     "name": "Front Raises",
     "primaryMuscleGroups": [
-      "front_shoulder"
-    ],
-    "secondary_muscle_groups": [
-      "triceps",
       "shoulders"
     ],
+    "secondary_muscle_groups": [
+      "triceps", "chest"],
     "description": "Targets chest, triceps, and shoulders to build upper body strength.",
-    "equipment": "Parallel Bars",
+    "equipment": "dumbbells",
     "modality": "bilateral",
-    "metric": "reps",
-    "movement": "push"
+    "metric": "weights",
+    "movement": "pull"
   },
   {
-    "id": "SHD13",
     "name": "Lateral Raises",
     "primaryMuscleGroups": [
-      "front_shoulder"
-    ],
-    "secondary_muscle_groups": [
-      "triceps",
       "shoulders"
     ],
+    "secondary_muscle_groups": [
+      "triceps", "chest"],
     "description": "Engages the lateral deltoids to build shoulder width and definition.",
-    "equipment": "Parallel Bars",
+    "equipment": "dumbbells",
     "modality": "bilateral",
-    "metric": "reps",
-    "movement": "push"
+    "metric": "weights",
+    "movement": "pull"
   },
   {
-    "id": "SHD6",
+    "name": "Seated Front Raises",
+    "primaryMuscleGroups": [
+      "shoulders"
+    ],
+    "secondary_muscle_groups": [
+      "triceps", "chest"],
+    "description": "Targets chest, triceps, and shoulders to build upper body strength.",
+    "equipment": "dumbbells",
+    "modality": "bilateral",
+    "metric": "weights",
+    "movement": "pull"
+  },
+  {
+    "name": "Seated Lateral Raises",
+    "primaryMuscleGroups": [
+      "shoulders"
+    ],
+    "secondary_muscle_groups": [
+      "triceps", "chest"],
+    "description": "Engages the lateral deltoids to build shoulder width and definition.",
+    "equipment": "dumbbells",
+    "modality": "bilateral",
+    "metric": "weights",
+    "movement": "pull"
+  },
+  {
     "name": "Upright Row",
-    "primaryMuscleGroup": "back shoulder",
-    "secondaryMuscleGroups": ["traps", "biceps", "forearms"],
-    "type": "weightsAndReps",
-    "video": "https://www.youtube.com/watch?v=8UvsRWUb0YU",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "Works the shoulders and traps for shoulder development.",
-    "movement": "push"
+    "primaryMuscleGroups": [
+      "shoulders"
+    ],
+    "secondary_muscle_groups": [
+      "triceps", "chest"],
+    "description": "Engages the lateral deltoids to build shoulder width and definition.",
+    "equipment": "dumbbells",
+    "modality": "bilateral",
+    "metric": "weights",
+    "movement": "pull"
   },
   {
-    "id": "SHD16",
-    "name": "Face Pull",
-    "primaryMuscleGroup": "back shoulder",
-    "secondaryMuscleGroups": ["back", "traps", "biceps", "forearms"],
-    "type": "weightsAndReps",
-    "video": "https://www.youtube.com/watch?v=0Po47vvj9g4",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "Improves shoulder health by targeting the rear delts and upper back.",
-    "movement": "push"
-  },
-  {
-    "id": "SHD23",
-    "name": "Overhead Press",
-    "primaryMuscleGroup": "shoulders",
-    "secondaryMuscleGroups": ["triceps", "traps", "abs", "forearms"],
-    "type": "weightsAndReps",
-    "description": "Develops shoulder mass and strength with overhead pressing motion.",
-    "movement": "push"
-  },
-  {
-    "id": "SHD28",
-    "name": "Rear Delt Flyes",
-    "primaryMuscleGroup": "shoulders",
-    "secondaryMuscleGroups": ["back", "traps", "forearms"],
-    "type": "weightsAndReps",
-    "video": "https://www.youtube.com/watch?v=ZHiwyJbj8Dw",
-    "creditSource": "https://www.youtube.com/@denvyr",
-    "credit": "Denvyr | Realistic Fitness Dietitian",
-    "description": "Strengthens the rear deltoids and upper back, enhancing posture and shoulder support.",
-    "movement": "push"
-  },
-  {
-    "id": "SHD26",
-    "name": "Push Press",
-    "primaryMuscleGroup": "shoulders",
-    "secondaryMuscleGroups": ["triceps", "quadriceps", "glutes", "hamstrings", "abs", "back", "calves"],
-    "type": "weightsAndReps",
-    "video": "https://www.youtube.com/watch?v=HKx22sWywxc",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "Engages shoulders, triceps, and core with a dynamic push to lift the weight overhead.",
-    "movement": "push"
-  },
-  {
-    "id": "SHD34",
     "name": "Arnold Press",
-    "primaryMuscleGroup": "shoulders",
-    "secondaryMuscleGroups": ["triceps", "traps", "abs", "forearms"],
-    "type": "weightsAndReps",
-    "video": "https://www.youtube.com/watch?v=jeJttN2EWCo",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "A variation of the shoulder press that activates all three heads of the deltoid muscles.",
-    "movement": "push"
+    "primaryMuscleGroups": [
+      "shoulders"
+    ],
+    "secondary_muscle_groups": [
+      "triceps", "chest"],
+    "description": "Engages the lateral deltoids to build shoulder width and definition.",
+    "equipment": "dumbbells",
+    "modality": "bilateral",
+    "metric": "weights",
+    "movement": "pull"
   },
   {
-    "id": "SHD46",
-    "name": "Handstand Push-Ups",
-    "primaryMuscleGroup": "shoulders",
-    "secondaryMuscleGroups": ["chest", "traps", "abs", "forearms"],
-    "type": "weightsAndReps",
-    "video": "https://www.youtube.com/watch?v=_od0CCC6DEM",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "Primarily targets the shoulder muscles, particularly the front deltoids.",
-    "movement": "push"
+    "name": "Overhead Press",
+    "primaryMuscleGroups": [
+      "shoulders"
+    ],
+    "secondary_muscle_groups": [
+      "triceps", "chest"],
+    "description": "Engages the lateral deltoids to build shoulder width and definition.",
+    "equipment": "barbell",
+    "modality": "bilateral",
+    "metric": "weights",
+    "movement": "pull"
+  },
+  {
+    "name": "Seated Overhead Press",
+    "primaryMuscleGroups": [
+      "shoulders"
+    ],
+    "secondary_muscle_groups": [
+      "triceps", "chest"],
+    "description": "Engages the lateral deltoids to build shoulder width and definition.",
+    "equipment": "barbell",
+    "modality": "bilateral",
+    "metric": "weights",
+    "movement": "pull"
+  },
+  {
+    "name": "Flyes",
+    "primaryMuscleGroups": [
+      "shoulders"
+    ],
+    "secondary_muscle_groups": [
+      "triceps", "chest"],
+    "description": "Engages the lateral deltoids to build shoulder width and definition.",
+    "equipment": "dumbbells",
+    "modality": "bilateral",
+    "metric": "weights",
+    "movement": "pull"
+  },
+  {
+    "name": "Reverse Flyes",
+    "primaryMuscleGroups": [
+      "shoulders"
+    ],
+    "secondary_muscle_groups": [
+      "triceps", "chest"],
+    "description": "Engages the lateral deltoids to build shoulder width and definition.",
+    "equipment": "dumbbells",
+    "modality": "bilateral",
+    "metric": "weights",
+    "movement": "pull"
+  },
+  {
+    "name": "Internal Shoulder Rotation",
+    "primaryMuscleGroups": [
+      "shoulders"
+    ],
+    "secondary_muscle_groups": [
+      "triceps", "chest"],
+    "description": "Engages the lateral deltoids to build shoulder width and definition.",
+    "equipment": "dumbbells",
+    "modality": "bilateral",
+    "metric": "weights",
+    "movement": "pull"
+  },
+  {
+    "name": "External Shoulder Rotation",
+    "primaryMuscleGroups": [
+      "shoulders"
+    ],
+    "secondary_muscle_groups": [
+      "triceps", "chest"],
+    "description": "Engages the lateral deltoids to build shoulder width and definition.",
+    "equipment": "dumbbells",
+    "modality": "bilateral",
+    "metric": "weights",
+    "movement": "pull"
   }
 ]

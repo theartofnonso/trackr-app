@@ -20,8 +20,10 @@ class ExerciseRepository {
   Future<void> loadExercises() async {
     final chestExercises = await _loadFromAssets(file: 'chest_exercises.json');
     final bicepsExercises = await _loadFromAssets(file: 'biceps_exercises.json');
+    final shouldersExercises = await _loadFromAssets(file: 'shoulders_exercises.json');
     _exercises.addAll(chestExercises);
     _exercises.addAll(bicepsExercises);
+    _exercises.addAll(shouldersExercises);
   }
 
   /// Helper methods
