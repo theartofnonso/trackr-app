@@ -1,8 +1,8 @@
 enum ExerciseMetric {
-  weights("Weights", "Bench Press, Dumbbell Curls"),
-  reps("Reps", "Pull Ups, Crunches, Burpees"),
-  duration("Duration", "Planks, Yoga"),
-  none("None", "");
+  weights("Weights", "Log the weight and reps for strength exercises like bench press or squats curls."),
+  reps("Reps", "rack the number of reps for bodyweight exercises like pull-ups, crunches, or burpees"),
+  duration("Duration", "Record how long you hold or perform time-based exercises like planks or Dead Hang."),
+  none("none", "");
 
   const ExerciseMetric(this.name, this.description);
 

@@ -432,44 +432,85 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _showExerciseEquipmentPicker() {
     displayBottomSheet(
-        height: 216,
+        height: 300,
         context: context,
         child: ExerciseEquipmentPicker(
             initialEquipment: widget.exerciseLogDto.exercise.equipment,
             onSelect: (newEquipment) {
-              Navigator.of(context).pop();
-              final updatedExercise = widget.exerciseLogDto.exercise.copyWith(equipment: newEquipment);
-              final updatedExerciseLog = widget.exerciseLogDto.copyWith(exercise: updatedExercise);
-              widget.onUpdate(updatedExerciseLog);
+              _onUpdateExerciseLog(
+                  title: 'Switch to ${newEquipment.name}',
+                  message: 'Do you want to switch training equipment?',
+                  callback: () {
+                    _closeDialog();
+                    final updatedExercise = widget.exerciseLogDto.exercise.copyWith(equipment: newEquipment);
+                    final updatedExerciseLog = widget.exerciseLogDto.copyWith(exercise: updatedExercise);
+                    widget.onUpdate(updatedExerciseLog);
+                  },
+                  rightActionLabel: 'Switch to ${newEquipment.name}');
             }));
   }
 
   void _showExerciseModalityPicker() {
     displayBottomSheet(
-        height: 216,
+        height: 300,
         context: context,
         child: ExerciseModalityPicker(
             initialModality: widget.exerciseLogDto.exercise.modality,
             onSelect: (newMode) {
-              Navigator.of(context).pop();
-              final updatedExercise = widget.exerciseLogDto.exercise.copyWith(modality: newMode);
-              final updatedExerciseLog = widget.exerciseLogDto.copyWith(exercise: updatedExercise);
-              widget.onUpdate(updatedExerciseLog);
+              _onUpdateExerciseLog(
+                  title: 'Change to ${newMode.name} movement',
+                  message: 'Do you want to change your movement?',
+                  callback: () {
+                    _closeDialog();
+                    final updatedExercise = widget.exerciseLogDto.exercise.copyWith(modality: newMode);
+                    final updatedExerciseLog = widget.exerciseLogDto.copyWith(exercise: updatedExercise);
+                    widget.onUpdate(updatedExerciseLog);
+                  },
+                  rightActionLabel: 'Change movement to ${newMode.name}');
             }));
   }
 
   void _showExerciseMetricPicker() {
     displayBottomSheet(
-        height: 216,
+        height: 300,
         context: context,
         child: ExerciseMetricPicker(
             initialMetric: widget.exerciseLogDto.exercise.metric,
             onSelect: (newMetric) {
-              Navigator.of(context).pop();
-              final updatedExercise = widget.exerciseLogDto.exercise.copyWith(metric: newMetric);
-              final updatedExerciseLog = widget.exerciseLogDto.copyWith(exercise: updatedExercise);
-              widget.onUpdate(updatedExerciseLog);
+              _onUpdateExerciseLog(
+                  title: 'Start logging ${newMetric.name}',
+                  message: 'Do you want to update your logging metrics?',
+                  callback: () {
+                    _closeDialog();
+                    final updatedExercise = widget.exerciseLogDto.exercise.copyWith(metric: newMetric);
+                    final updatedExerciseLog = widget.exerciseLogDto.copyWith(exercise: updatedExercise);
+                    widget.onUpdate(updatedExerciseLog);
+                  },
+                  rightActionLabel: 'Start logging ${newMetric.name}');
             }));
+  }
+
+  void _onUpdateExerciseLog(
+      {required String title,
+      required String message,
+      required Function() callback,
+      required String rightActionLabel}) {
+    showBottomSheetWithMultiActions(
+        context: context,
+        title: title,
+        description: message,
+        leftAction: _closeDialog,
+        rightAction: () {
+          _closeDialog();
+          callback();
+        },
+        leftActionLabel: 'Cancel',
+        rightActionLabel: rightActionLabel,
+        isRightActionDestructive: true);
+  }
+
+  void _closeDialog() {
+    Navigator.of(context).pop();
   }
 }
 

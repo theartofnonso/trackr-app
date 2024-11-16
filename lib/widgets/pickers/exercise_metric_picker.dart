@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../colors.dart';
 import '../../enums/exercise/exercise_metrics_enums.dart';
 import '../buttons/opacity_button_widget.dart';
+import '../dividers/label_container.dart';
 
 class ExerciseMetricPicker extends StatefulWidget {
   final ExerciseMetric? initialMetric;
@@ -17,15 +18,15 @@ class ExerciseMetricPicker extends StatefulWidget {
 }
 
 class _ExerciseMetricPickerState extends State<ExerciseMetricPicker> {
-  ExerciseMetric _metric = ExerciseMetric.weights;
+  ExerciseMetric _selectedMetric = ExerciseMetric.weights;
 
   FixedExtentScrollController? _scrollController;
 
   @override
   Widget build(BuildContext context) {
-    final metrics = ExerciseMetric.values;
+    final metrics = [ExerciseMetric.weights, ExerciseMetric.reps, ExerciseMetric.duration];
 
-    final children = ExerciseMetric.values
+    final children = metrics
         .map((value) => Center(
             child: Text(value.name,
                 style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 24, color: Colors.white))))
@@ -34,14 +35,22 @@ class _ExerciseMetricPickerState extends State<ExerciseMetricPicker> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        LabelContainer(
+          label: "Logging Metric".toUpperCase(),
+          description: _selectedMetric.description,
+          labelStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 14),
+          descriptionStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white70, fontSize: 14),
+          dividerColor: sapphireLighter,
+          labelAlignment: LabelAlignment.left,
+        ),
         Expanded(
           child: CupertinoPicker(
             scrollController: _scrollController,
             itemExtent: 38.0,
             onSelectedItemChanged: (int index) {
-             setState(() {
-               _metric = metrics[index];
-             });
+              setState(() {
+                _selectedMetric = metrics[index];
+              });
             },
             squeeze: 1,
             selectionOverlay: Container(color: Colors.transparent),
@@ -51,9 +60,9 @@ class _ExerciseMetricPickerState extends State<ExerciseMetricPicker> {
         const SizedBox(height: 16),
         OpacityButtonWidget(
             onPressed: () {
-              widget.onSelect(_metric);
+              widget.onSelect(_selectedMetric);
             },
-            label: "Log ${_metric.name}",
+            label: "Switch to ${_selectedMetric.name} metrics",
             buttonColor: vibrantGreen,
             padding: const EdgeInsets.all(10.0))
       ],
