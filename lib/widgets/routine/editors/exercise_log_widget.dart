@@ -479,7 +479,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                     final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: updatedExercise);
                     widget.onUpdate(updatedExerciseLog);
                   },
-                  rightActionLabel: 'Change to ${newMode.name}');
+                  rightActionLabel: 'Switch to ${newMode.name}');
             }));
   }
 
@@ -499,7 +499,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                     final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: updatedExercise);
                     widget.onUpdate(updatedExerciseLog);
                   },
-                  rightActionLabel: 'Start logging ${newMetric.name}');
+                  rightActionLabel: 'Switch to ${newMetric.name}');
             }));
   }
 
@@ -519,7 +519,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                     final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: updatedExercise);
                     widget.onUpdate(updatedExerciseLog);
                   },
-                  rightActionLabel: 'Start training in ${newPosition.name}');
+                  rightActionLabel: 'Switch to ${newPosition.name}');
             }));
   }
 
@@ -539,7 +539,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                     final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: updatedExercise);
                     widget.onUpdate(updatedExerciseLog);
                   },
-                  rightActionLabel: 'Start training ${newStance.name}');
+                  rightActionLabel: 'Switch to ${newStance.name}');
             }));
   }
 
