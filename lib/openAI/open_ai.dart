@@ -125,7 +125,7 @@ Future<String> createFunctionCallPayload(
   final listOfExerciseJsons = exercises
       .map((exercise) => jsonEncode({
             "name": exercise.name,
-            "primaryMuscleGroups": exercise.primaryMuscleGroups.map((muscleGroup) => muscleGroup.name).toList(),
+            "primary_muscle_groups": exercise.primaryMuscleGroups.map((muscleGroup) => muscleGroup.name).toList(),
             "secondary_muscle_groups": exercise.secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name).toList()
           }))
       .toList();

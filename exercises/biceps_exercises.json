@@ -1,7 +1,7 @@
 [
   {
     "name": "Preacher Curls",
-    "primaryMuscleGroups": [
+    "primary_muscle_groups": [
       "biceps"
     ],
     "secondary_muscle_groups": [
@@ -15,7 +15,7 @@
   },
   {
     "name": "Reverse Curls",
-    "primaryMuscleGroups": [
+    "primary_muscle_groups": [
       "biceps"
     ],
     "secondary_muscle_groups": [
@@ -29,7 +29,7 @@
   },
   {
     "name": "Bicep Curls",
-    "primaryMuscleGroups": [
+    "primary_muscle_groups": [
       "biceps"
     ],
     "secondary_muscle_groups": [
@@ -43,7 +43,7 @@
   },
   {
     "name": "Concentration Curls",
-    "primaryMuscleGroups": [
+    "primary_muscle_groups": [
       "biceps"
     ],
     "secondary_muscle_groups": [
@@ -57,7 +57,7 @@
   },
   {
     "name": "Hammer Curls",
-    "primaryMuscleGroups": [
+    "primary_muscle_groups": [
       "biceps"
     ],
     "secondary_muscle_groups": [
@@ -71,7 +71,7 @@
   },
   {
     "name": "Incline Bicep Curls",
-    "primaryMuscleGroups": [
+    "primary_muscle_groups": [
       "biceps"
     ],
     "secondary_muscle_groups": [
@@ -85,7 +85,7 @@
   },
   {
     "name": "Zottman Curls",
-    "primaryMuscleGroups": [
+    "primary_muscle_groups": [
       "biceps"
     ],
     "secondary_muscle_groups": [
@@ -99,7 +99,7 @@
   },
   {
     "name": "Spider Curls",
-    "primaryMuscleGroups": [
+    "primary_muscle_groups": [
       "biceps"
     ],
     "secondary_muscle_groups": [

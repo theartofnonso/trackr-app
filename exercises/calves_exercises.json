@@ -3,7 +3,7 @@
     "id": "CAL4",
     "name": "Calf Raises",
     "primaryMuscleGroup": "calves",
-    "secondaryMuscleGroups": [],
+    "secondary_muscle_groups": [],
     "type": "reps",
     "video": "https://www.youtube.com/watch?v=Zep-wKHWkNM",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -15,7 +15,7 @@
     "id": "CAL12",
     "name": "Jump Rope",
     "primaryMuscleGroup": "calves",
-    "secondaryMuscleGroups": [],
+    "secondary_muscle_groups": [],
     "type": "reps",
     "description": "Engages the calves through repetitive jumping motions, building strength, endurance, and coordination while improving overall lower-body mobility and agility.",
     "movement": "gait"

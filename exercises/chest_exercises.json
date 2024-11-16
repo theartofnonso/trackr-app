@@ -1,7 +1,7 @@
 [
   {
     "name": "Bar Dip",
-    "primaryMuscleGroups": [
+    "primary_muscle_groups": [
       "chest"
     ],
     "secondary_muscle_groups": [
@@ -16,7 +16,7 @@
   },
   {
     "name": "Bench Press",
-    "primaryMuscleGroups": [
+    "primary_muscle_groups": [
       "chest"
     ],
     "secondary_muscle_groups": [
@@ -31,7 +31,7 @@
   },
   {
     "name": "Incline Bench Press",
-    "primaryMuscleGroups": [
+    "primary_muscle_groups": [
       "chest"
     ],
     "secondary_muscle_groups": [
@@ -46,7 +46,7 @@
   },
   {
     "name": "Decline Bench Press",
-    "primaryMuscleGroups": [
+    "primary_muscle_groups": [
       "chest"
     ],
     "secondary_muscle_groups": [
@@ -61,7 +61,7 @@
   },
   {
     "name": "Floor Bench Press",
-    "primaryMuscleGroups": [
+    "primary_muscle_groups": [
       "chest"
     ],
     "secondary_muscle_groups": [
@@ -76,7 +76,7 @@
   },
   {
     "name": "Chest Press",
-    "primaryMuscleGroups": [
+    "primary_muscle_groups": [
       "chest"
     ],
     "secondary_muscle_groups": [
@@ -91,7 +91,7 @@
   },
   {
     "name": "Chest Fly",
-    "primaryMuscleGroups": [
+    "primary_muscle_groups": [
       "chest"
     ],
     "secondary_muscle_groups": [
@@ -106,7 +106,7 @@
   },
   {
     "name": "High Chest Fly",
-    "primaryMuscleGroups": [
+    "primary_muscle_groups": [
       "chest"
     ],
     "secondary_muscle_groups": [
@@ -121,7 +121,7 @@
   },
   {
     "name": "Low Chest Fly",
-    "primaryMuscleGroups": [
+    "primary_muscle_groups": [
       "chest"
     ],
     "secondary_muscle_groups": [
@@ -136,7 +136,7 @@
   },
   {
     "name": "Push-Up",
-    "primaryMuscleGroups": [
+    "primary_muscle_groups": [
       "chest"
     ],
     "secondary_muscle_groups": [
@@ -151,7 +151,7 @@
   },
   {
     "name": "Incline Push-Up",
-    "primaryMuscleGroups": [
+    "primary_muscle_groups": [
       "chest"
     ],
     "secondary_muscle_groups": [
@@ -166,7 +166,7 @@
   },
   {
     "name": "Decline Push-Up",
-    "primaryMuscleGroups": [
+    "primary_muscle_groups": [
       "chest"
     ],
     "secondary_muscle_groups": [
@@ -181,7 +181,7 @@
   },
   {
     "name": "Kneeling Push-Up",
-    "primaryMuscleGroups": [
+    "primary_muscle_groups": [
       "chest"
     ],
     "secondary_muscle_groups": [
@@ -196,7 +196,7 @@
   },
   {
     "name": "Kneeling Incline Push-Up",
-    "primaryMuscleGroups": [
+    "primary_muscle_groups": [
       "chest"
     ],
     "secondary_muscle_groups": [
@@ -211,7 +211,7 @@
   },
   {
     "name": "Kneeling Decline Push-Up",
-    "primaryMuscleGroups": [
+    "primary_muscle_groups": [
       "chest"
     ],
     "secondary_muscle_groups": [

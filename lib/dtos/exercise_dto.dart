@@ -30,7 +30,7 @@ class ExerciseDTO {
     return {
       'name': name,
       'description': description,
-      'primaryMuscleGroups': secondaryMuscleGroups.map((muscleGroup) => jsonEncode(muscleGroup.name)).toList(),
+      'primary_muscle_groups': secondaryMuscleGroups.map((muscleGroup) => jsonEncode(muscleGroup.name)).toList(),
       'secondary_muscle_groups': secondaryMuscleGroups.map((muscleGroup) => jsonEncode(muscleGroup.name)).toList(),
       'metric': metric.name,
       'modality': modality.name,
@@ -46,7 +46,7 @@ class ExerciseDTO {
     final movement = CoreMovement.fromString(json["movement"]);
     final modality = ExerciseModality.fromString(json["modality"]);
     final equipment = ExerciseEquipment.fromString(json["equipment"]);
-    final primaryMuscleGroups = (json["primaryMuscleGroups"] as List<dynamic>)
+    final primaryMuscleGroups = (json["primary_muscle_groups"] as List<dynamic>)
         .map((muscleGroup) => MuscleGroup.fromString(muscleGroup))
         .toList();
     final secondaryMuscleGroups = (json["secondary_muscle_groups"] as List<dynamic>)
@@ -83,5 +83,10 @@ class ExerciseDTO {
         primaryMuscleGroups: primaryMuscleGroups ?? this.primaryMuscleGroups,
         secondaryMuscleGroups: secondaryMuscleGroups ?? this.secondaryMuscleGroups,
         movement: movement ?? this.movement);
+  }
+
+  @override
+  String toString() {
+    return 'ExerciseDTO{name: $name, description: $description, metric: $metric, modality: $modality, equipment: $equipment, primaryMuscleGroups: $primaryMuscleGroups, secondaryMuscleGroups: $secondaryMuscleGroups, movement: $movement}';
   }
 }

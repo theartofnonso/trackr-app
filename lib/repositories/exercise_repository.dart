@@ -21,9 +21,11 @@ class ExerciseRepository {
     final chestExercises = await _loadFromAssets(file: 'chest_exercises.json');
     final bicepsExercises = await _loadFromAssets(file: 'biceps_exercises.json');
     final shouldersExercises = await _loadFromAssets(file: 'shoulders_exercises.json');
+  final quadricepsExercises = await _loadFromAssets(file: 'quadriceps_exercises.json');
     _exercises.addAll(chestExercises);
     _exercises.addAll(bicepsExercises);
     _exercises.addAll(shouldersExercises);
+    _exercises.addAll(quadricepsExercises);
   }
 
   /// Helper methods

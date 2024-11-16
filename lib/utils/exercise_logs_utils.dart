@@ -324,7 +324,7 @@ Map<MuscleGroupFamily, int> _muscleGroupFamilyCountOn4WeeksScale({required List<
   for (var logAndDate in exerciseLogsByDay.entries) {
     final primaryMuscleGroupFamilies = logAndDate.value
         .map((log) => log.exercise.primaryMuscleGroups)
-        .expand((primaryMuscleGroups) => primaryMuscleGroups)
+        .expand((muscleGroup) => muscleGroup)
         .map((muscleGroup) => muscleGroup.family);
     final secondaryMuscleGroupFamilies = logAndDate.value
         .map((log) => log.exercise.secondaryMuscleGroups)

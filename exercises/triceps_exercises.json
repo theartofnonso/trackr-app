@@ -3,7 +3,7 @@
     "id": "TRI1",
     "name": "Overhead Triceps Extension",
     "primaryMuscleGroup": "triceps",
-    "secondaryMuscleGroups": [],
+    "secondary_muscle_groups": [],
     "type": "weightsAndReps",
     "video": "https://www.youtube.com/watch?v=q5X9thiKofE",
     "creditSource": "https://www.youtube.com/@RenaissancePeriodization",
@@ -15,7 +15,7 @@
     "id": "TRI2",
     "name": "Skull Crusher",
     "primaryMuscleGroup": "triceps",
-    "secondaryMuscleGroups": [],
+    "secondary_muscle_groups": [],
     "type": "weightsAndReps",
     "video": "https://www.youtube.com/watch?v=UzjDwLeTfmM",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
@@ -27,7 +27,7 @@
     "id": "TRI3",
     "name": "Bar Dips",
     "primaryMuscleGroup": "triceps",
-    "secondaryMuscleGroups": [
+    "secondary_muscle_groups": [
       "chest",
       "shoulders"
     ],
@@ -42,7 +42,7 @@
     "id": "TRI9",
     "name": "Triceps Pushdown",
     "primaryMuscleGroup": "triceps",
-    "secondaryMuscleGroups": [],
+    "secondary_muscle_groups": [],
     "type": "weightsAndReps",
     "video": "https://www.youtube.com/watch?v=LXkCrxn3caQ",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -54,7 +54,7 @@
     "id": "TRI21",
     "name": "Diamond Push-Ups",
     "primaryMuscleGroup": "triceps",
-    "secondaryMuscleGroups": [],
+    "secondary_muscle_groups": [],
     "type": "weightsAndReps",
     "video": "https://www.youtube.com/watch?v=K8bKxVcwjrk",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
@@ -66,7 +66,7 @@
     "id": "TRI22",
     "name": "Close-Grip Floor Press",
     "primaryMuscleGroup": "triceps",
-    "secondaryMuscleGroups": [
+    "secondary_muscle_groups": [
       "chest",
       "shoulders"
     ],
@@ -81,7 +81,7 @@
     "id": "TRI23",
     "name": "Reverse Grip Triceps Pushdown",
     "primaryMuscleGroup": "triceps",
-    "secondaryMuscleGroups": [
+    "secondary_muscle_groups": [
       "chest",
       "shoulders"
     ],
@@ -96,7 +96,7 @@
     "id": "TRI24",
     "name": "Dumbbell Triceps Kickbacks",
     "primaryMuscleGroup": "triceps",
-    "secondaryMuscleGroups": [
+    "secondary_muscle_groups": [
       "chest",
       "shoulders"
     ],

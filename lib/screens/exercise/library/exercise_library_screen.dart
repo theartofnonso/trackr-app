@@ -159,8 +159,10 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                     onClear: _clearSearch,
                     controller: _searchController),
                 const SizedBox(height: 10),
-                //SingleChildScrollView(scrollDirection: Axis.horizontal, child: Row(children: muscleGroups)),
-                Wrap(children: muscleGroups),
+                SingleChildScrollView(
+                    scrollDirection: Axis.horizontal, child: Row(children: muscleGroups.sublist(0, 8))),
+                SingleChildScrollView(
+                    scrollDirection: Axis.horizontal, child: Row(children: muscleGroups.sublist(8, 16))),
                 const SizedBox(height: 18),
                 _filteredExercises.isNotEmpty
                     ? Expanded(
