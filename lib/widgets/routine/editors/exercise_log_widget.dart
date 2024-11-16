@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
+import 'package:tracker_app/enums/exercise/exercise_equipment_enum.dart';
 import 'package:tracker_app/enums/exercise/exercise_metrics_enums.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
@@ -22,6 +23,9 @@ import 'package:tracker_app/widgets/routine/editors/set_rows/weights_set_row.dar
 import '../../../colors.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../enums/exercise/core_movements_enum.dart';
+import '../../../enums/exercise/exercise_modality_enum.dart';
+import '../../../enums/exercise/exercise_position_enum.dart';
+import '../../../enums/exercise/exercise_stance_enum.dart';
 import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../utils/general_utils.dart';
@@ -257,9 +261,11 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final superSetExerciseDto = widget.superSet;
 
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context);
+
     final exerciseVariant = widget.exerciseLogDto.exerciseVariant;
 
-    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context);
+    final exercise = exerciseAndRoutineController.whereExercise(name: exerciseVariant.name);
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
@@ -316,25 +322,25 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 buttonColor: Colors.orange,
                 padding: EdgeInsets.symmetric(horizontal: 0),
                 textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.orange),
-                onPressed: _showExerciseEquipmentPicker,
+                onPressed: () => _showExerciseEquipmentPicker(equipment: exercise.equipment),
               ),
-              if (exerciseAndRoutineController.whereExercise(name: exerciseVariant.name).modes.length > 1)
+              if (exercise.modes.length > 1)
                 OpacityButtonWidget(
                   label: widget.exerciseLogDto.exerciseVariant.mode.name.toUpperCase(),
                   buttonColor: Colors.redAccent,
                   padding: EdgeInsets.symmetric(horizontal: 0),
                   textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.redAccent),
-                  onPressed: _showExerciseModalityPicker,
+                  onPressed: () => _showExerciseModalityPicker(modes: exercise.modes),
                 ),
-              if (exerciseAndRoutineController.whereExercise(name: exerciseVariant.name).metrics.length > 1)
+              if (exercise.metrics.length > 1)
                 OpacityButtonWidget(
                   label: widget.exerciseLogDto.exerciseVariant.metric.name.toUpperCase(),
                   buttonColor: vibrantBlue,
                   padding: EdgeInsets.symmetric(horizontal: 0),
                   textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: vibrantBlue),
-                  onPressed: _showExerciseMetricPicker,
+                  onPressed: () => _showExerciseMetricPicker(metrics: exercise.metrics),
                 ),
-              if (exerciseAndRoutineController.whereExercise(name: exerciseVariant.name).positions.length > 1 &&
+              if (exercise.positions.length > 1 &&
                   (exerciseVariant.movement == CoreMovement.push || exerciseVariant.movement == CoreMovement.pull))
                 OpacityButtonWidget(
                   label: widget.exerciseLogDto.exerciseVariant.position.name.toUpperCase(),
@@ -342,15 +348,15 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   padding: EdgeInsets.symmetric(horizontal: 0),
                   textStyle:
                       GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.deepPurpleAccent),
-                  onPressed: _showExercisePositionPicker,
+                  onPressed: () => _showExercisePositionPicker(positions: exercise.positions),
                 ),
-              if (exerciseAndRoutineController.whereExercise(name: exerciseVariant.name).stances.length > 1)
+              if (exercise.stances.length > 1)
                 OpacityButtonWidget(
                   label: widget.exerciseLogDto.exerciseVariant.stance.name.toUpperCase(),
                   buttonColor: Colors.pink,
                   padding: EdgeInsets.symmetric(horizontal: 0),
                   textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.pink),
-                  onPressed: _showExerciseStancePicker,
+                  onPressed: () => _showExerciseStancePicker(stances: exercise.stances),
                 ),
             ],
           ),
@@ -445,12 +451,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     );
   }
 
-  void _showExerciseEquipmentPicker() {
+  void _showExerciseEquipmentPicker({required List<ExerciseEquipment> equipment}) {
     displayBottomSheet(
         height: 300,
         context: context,
         child: ExerciseEquipmentPicker(
             initialEquipment: widget.exerciseLogDto.exerciseVariant.equipment,
+            equipment: equipment,
             onSelect: (newEquipment) {
               _onUpdateExerciseLog(
                   title: 'Switch to ${newEquipment.name}',
@@ -465,12 +472,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             }));
   }
 
-  void _showExerciseModalityPicker() {
+  void _showExerciseModalityPicker({required List<ExerciseModality> modes}) {
     displayBottomSheet(
         height: 300,
         context: context,
         child: ExerciseModalityPicker(
             initialModality: widget.exerciseLogDto.exerciseVariant.mode,
+            modes: modes,
             onSelect: (newMode) {
               _onUpdateExerciseLog(
                   title: 'Change to ${newMode.name} movement',
@@ -485,12 +493,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             }));
   }
 
-  void _showExerciseMetricPicker() {
+  void _showExerciseMetricPicker({required List<ExerciseMetric> metrics}) {
     displayBottomSheet(
         height: 300,
         context: context,
         child: ExerciseMetricPicker(
             initialMetric: widget.exerciseLogDto.exerciseVariant.metric,
+            metrics: metrics,
             onSelect: (newMetric) {
               _onUpdateExerciseLog(
                   title: 'Start logging ${newMetric.name}',
@@ -505,12 +514,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             }));
   }
 
-  void _showExercisePositionPicker() {
+  void _showExercisePositionPicker({required List<ExercisePosition> positions}) {
     displayBottomSheet(
         height: 300,
         context: context,
         child: ExercisePositionPicker(
             initialPosition: widget.exerciseLogDto.exerciseVariant.position,
+            positions: positions,
             onSelect: (newPosition) {
               _onUpdateExerciseLog(
                   title: 'Start training in ${newPosition.name}',
@@ -525,12 +535,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             }));
   }
 
-  void _showExerciseStancePicker() {
+  void _showExerciseStancePicker({required List<ExerciseStance> stances}) {
     displayBottomSheet(
         height: 300,
         context: context,
         child: ExerciseStancePicker(
             initialStance: widget.exerciseLogDto.exerciseVariant.stance,
+            stances: stances,
             onSelect: (newStance) {
               _onUpdateExerciseLog(
                   title: 'Start training ${newStance.name}',

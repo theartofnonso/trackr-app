@@ -18,6 +18,9 @@ class ExerciseRepository {
     _loadBicepsExercises();
     _loadQuadricepsExercises();
     _loadHamstringExercises();
+    _loadTricepsExercises();
+
+    _exercises.sort((a, b) => a.name.compareTo(b.name));
   }
 
   void _loadBicepsExercises() async {
@@ -25,10 +28,18 @@ class ExerciseRepository {
         name: "Bicep Curls",
         description: "Focuses on building overall biceps mass with weights.",
         metrics: [ExerciseMetric.weights],
-        modes: ExerciseModality.values,
+        modes: [ExerciseModality.unilateral, ExerciseModality.bilateral],
         positions: ExercisePosition.values,
         stances: ExerciseStance.values,
-        equipment: ExerciseEquipment.dumbbell,
+        equipment: [
+          ExerciseEquipment.dumbbell,
+          ExerciseEquipment.barbell,
+          ExerciseEquipment.ezBar,
+          ExerciseEquipment.cableMachine,
+          ExerciseEquipment.machine,
+          ExerciseEquipment.band,
+          ExerciseEquipment.kettleBell
+        ],
         primaryMuscleGroups: [MuscleGroup.biceps],
         secondaryMuscleGroups: [MuscleGroup.forearms],
         movement: CoreMovement.pull);
@@ -37,7 +48,6 @@ class ExerciseRepository {
   }
 
   void _loadQuadricepsExercises() {
-
     final squatsExercise = ExerciseDTO(
         name: "Squats",
         description: "A squat targeting the quadriceps, glutes, and hamstrings.",
@@ -45,7 +55,12 @@ class ExerciseRepository {
         modes: [ExerciseModality.bilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.standing],
-        equipment: ExerciseEquipment.none,
+        equipment: [
+          ExerciseEquipment.barbell,
+          ExerciseEquipment.machine,
+          ExerciseEquipment.smithMachine,
+          ExerciseEquipment.none
+        ],
         primaryMuscleGroups: [MuscleGroup.quadriceps],
         secondaryMuscleGroups: [MuscleGroup.hamstrings, MuscleGroup.glutes],
         movement: CoreMovement.squat);
@@ -57,7 +72,7 @@ class ExerciseRepository {
         modes: [ExerciseModality.unilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.standing],
-        equipment: ExerciseEquipment.none,
+        equipment: [ExerciseEquipment.barbell, ExerciseEquipment.dumbbell, ExerciseEquipment.none],
         primaryMuscleGroups: [MuscleGroup.quadriceps],
         secondaryMuscleGroups: [MuscleGroup.hamstrings, MuscleGroup.glutes],
         movement: CoreMovement.squat);
@@ -69,7 +84,9 @@ class ExerciseRepository {
         modes: [ExerciseModality.unilateral, ExerciseModality.bilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.standing],
-        equipment: ExerciseEquipment.machine,
+        equipment: [
+          ExerciseEquipment.machine,
+        ],
         primaryMuscleGroups: [MuscleGroup.quadriceps],
         secondaryMuscleGroups: [MuscleGroup.hamstrings, MuscleGroup.glutes],
         movement: CoreMovement.squat);
@@ -81,7 +98,7 @@ class ExerciseRepository {
         modes: [ExerciseModality.unilateral, ExerciseModality.bilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.seated],
-        equipment: ExerciseEquipment.machine,
+        equipment: [ExerciseEquipment.machine],
         primaryMuscleGroups: [MuscleGroup.quadriceps],
         secondaryMuscleGroups: [MuscleGroup.hamstrings, MuscleGroup.glutes],
         movement: CoreMovement.hinge);
@@ -94,7 +111,7 @@ class ExerciseRepository {
         modes: [ExerciseModality.unilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.standing],
-        equipment: ExerciseEquipment.none,
+        equipment: [ExerciseEquipment.dumbbell, ExerciseEquipment.kettleBell, ExerciseEquipment.none],
         primaryMuscleGroups: [MuscleGroup.quadriceps],
         secondaryMuscleGroups: [MuscleGroup.hamstrings, MuscleGroup.glutes],
         movement: CoreMovement.lunge);
@@ -106,7 +123,7 @@ class ExerciseRepository {
         modes: [ExerciseModality.unilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.standing],
-        equipment: ExerciseEquipment.none,
+        equipment: [ExerciseEquipment.barbell, ExerciseEquipment.kettleBell, ExerciseEquipment.none],
         primaryMuscleGroups: [MuscleGroup.quadriceps],
         secondaryMuscleGroups: [MuscleGroup.hamstrings, MuscleGroup.glutes],
         movement: CoreMovement.squat);
@@ -127,7 +144,9 @@ class ExerciseRepository {
         modes: [ExerciseModality.bilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.standing],
-        equipment: ExerciseEquipment.barbell,
+        equipment: [
+          ExerciseEquipment.barbell,
+        ],
         primaryMuscleGroups: [MuscleGroup.hamstrings],
         secondaryMuscleGroups: [MuscleGroup.glutes, MuscleGroup.back, MuscleGroup.abs],
         movement: CoreMovement.hinge);
@@ -139,19 +158,26 @@ class ExerciseRepository {
         modes: [ExerciseModality.unilateral, ExerciseModality.bilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.standing],
-        equipment: ExerciseEquipment.barbell,
+        equipment: [
+          ExerciseEquipment.band,
+          ExerciseEquipment.barbell,
+          ExerciseEquipment.dumbbell,
+          ExerciseEquipment.kettleBell,
+          ExerciseEquipment.smithMachine
+        ],
         primaryMuscleGroups: [MuscleGroup.hamstrings],
         secondaryMuscleGroups: [MuscleGroup.glutes, MuscleGroup.back, MuscleGroup.abs, MuscleGroup.forearms],
         movement: CoreMovement.hinge);
 
     final hamstringCurlExercise = ExerciseDTO(
         name: "Hamstring Curls",
-        description: "Isolates the hamstrings by curling the legs from a lying/seated position, enhancing muscle development.",
+        description:
+            "Isolates the hamstrings by curling the legs from a lying/seated position, enhancing muscle development.",
         metrics: [ExerciseMetric.weights],
         modes: [ExerciseModality.unilateral, ExerciseModality.bilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.seated, ExerciseStance.lying],
-        equipment: ExerciseEquipment.machine,
+        equipment: [ExerciseEquipment.machine, ExerciseEquipment.none],
         primaryMuscleGroups: [MuscleGroup.hamstrings],
         secondaryMuscleGroups: [MuscleGroup.glutes],
         movement: CoreMovement.hinge);
@@ -159,6 +185,107 @@ class ExerciseRepository {
     _exercises.add(goodMorningExercise);
     _exercises.add(deadliftsExercise);
     _exercises.add(hamstringCurlExercise);
+  }
+
+  void _loadTricepsExercises() {
+    final kickbacksExercise = ExerciseDTO(
+        name: "Triceps Kickbacks",
+        description: "Isolate the triceps by extending the arm backward in a controlled motion.",
+        metrics: [ExerciseMetric.weights],
+        modes: [ExerciseModality.unilateral],
+        positions: [ExercisePosition.neutral],
+        stances: [ExerciseStance.standing],
+        equipment: [ExerciseEquipment.dumbbell, ExerciseEquipment.cableMachine],
+        primaryMuscleGroups: [MuscleGroup.triceps],
+        secondaryMuscleGroups: [MuscleGroup.chest, MuscleGroup.shoulders],
+        movement: CoreMovement.push);
+
+    final pushDownsExercise = ExerciseDTO(
+        name: "Triceps Pushdowns",
+        description: "Isolates the triceps with a unique underhand grip, emphasizing the medial head of the muscle.",
+        metrics: [ExerciseMetric.weights],
+        modes: [ExerciseModality.unilateral, ExerciseModality.bilateral],
+        positions: [ExercisePosition.neutral],
+        stances: [ExerciseStance.standing],
+        equipment: [ExerciseEquipment.rope, ExerciseEquipment.vBarHandle, ExerciseEquipment.straightBarHandle],
+        primaryMuscleGroups: [MuscleGroup.triceps],
+        secondaryMuscleGroups: [MuscleGroup.chest, MuscleGroup.shoulders],
+        movement: CoreMovement.push);
+
+    final closeGripPressesExercise = ExerciseDTO(
+        name: "Close-Grip Presses",
+        description: "Targets the triceps by narrowing hand placement during the pressing motion.",
+        metrics: [ExerciseMetric.reps, ExerciseMetric.weights],
+        modes: [ExerciseModality.bilateral],
+        positions: [ExercisePosition.incline, ExercisePosition.decline, ExercisePosition.neutral],
+        stances: [ExerciseStance.lying, ExerciseStance.seated],
+        equipment: [ExerciseEquipment.barbell, ExerciseEquipment.smithMachine],
+        primaryMuscleGroups: [MuscleGroup.triceps],
+        secondaryMuscleGroups: [MuscleGroup.chest, MuscleGroup.shoulders],
+        movement: CoreMovement.push);
+
+    final diamondPushUpExercise = ExerciseDTO(
+        name: "Diamond Push-Ups",
+        description: "Focuses on strengthening the triceps by positioning the hands close together in a diamond shape.",
+        metrics: [ExerciseMetric.reps, ExerciseMetric.weights],
+        modes: [ExerciseModality.bilateral],
+        positions: [ExercisePosition.neutral],
+        stances: [ExerciseStance.lying],
+        equipment: [ExerciseEquipment.none, ExerciseEquipment.plate],
+        primaryMuscleGroups: [MuscleGroup.triceps],
+        secondaryMuscleGroups: [MuscleGroup.chest, MuscleGroup.shoulders],
+        movement: CoreMovement.push);
+
+    final dipsExercise = ExerciseDTO(
+        name: "Dips",
+        description:
+            "Strengthens the triceps by using body weight or weights attachments in a dipping motion with support from bars.",
+        metrics: [ExerciseMetric.reps, ExerciseMetric.weights],
+        modes: [ExerciseModality.bilateral],
+        positions: [ExercisePosition.neutral],
+        stances: [ExerciseStance.standing],
+        equipment: [ExerciseEquipment.parallelBars, ExerciseEquipment.straightBar, ExerciseEquipment.assistedMachine],
+        primaryMuscleGroups: [MuscleGroup.triceps],
+        secondaryMuscleGroups: [MuscleGroup.chest, MuscleGroup.shoulders],
+        movement: CoreMovement.push);
+
+    final extensionExercise = ExerciseDTO(
+        name: "Triceps Extension",
+        description: "Targets the long head of the triceps by stretching and contracting through the motion.",
+        metrics: [ExerciseMetric.weights],
+        modes: [ExerciseModality.unilateral, ExerciseModality.bilateral],
+        positions: [ExercisePosition.neutral],
+        stances: [ExerciseStance.standing],
+        equipment: [ExerciseEquipment.rope, ExerciseEquipment.vBarHandle, ExerciseEquipment.straightBarHandle],
+        primaryMuscleGroups: [MuscleGroup.triceps],
+        secondaryMuscleGroups: [MuscleGroup.chest, MuscleGroup.shoulders],
+        movement: CoreMovement.push);
+
+    final overheadExtensionExercise = ExerciseDTO(
+        name: "Overhead Triceps Extension",
+        description: "Targets the long head of the triceps by stretching and contracting through the motion.",
+        metrics: [ExerciseMetric.weights],
+        modes: [ExerciseModality.unilateral, ExerciseModality.bilateral],
+        positions: [ExercisePosition.neutral],
+        stances: [ExerciseStance.standing, ExerciseStance.seated, ExerciseStance.lying],
+        equipment: [
+          ExerciseEquipment.rope,
+          ExerciseEquipment.vBarHandle,
+          ExerciseEquipment.straightBarHandle,
+          ExerciseEquipment.dumbbell,
+          ExerciseEquipment.barbell
+        ],
+        primaryMuscleGroups: [MuscleGroup.triceps],
+        secondaryMuscleGroups: [MuscleGroup.chest, MuscleGroup.shoulders],
+        movement: CoreMovement.push);
+
+    _exercises.add(kickbacksExercise);
+    _exercises.add(pushDownsExercise);
+    _exercises.add(closeGripPressesExercise);
+    _exercises.add(diamondPushUpExercise);
+    _exercises.add(dipsExercise);
+    _exercises.add(extensionExercise);
+    _exercises.add(overheadExtensionExercise);
   }
 
   /// Helper methods

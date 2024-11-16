@@ -9,9 +9,10 @@ import '../../buttons/opacity_button_widget.dart';
 
 class ExerciseModalityPicker extends StatefulWidget {
   final ExerciseModality? initialModality;
+  final List<ExerciseModality> modes;
   final void Function(ExerciseModality modality) onSelect;
 
-  const ExerciseModalityPicker({super.key, this.initialModality, required this.onSelect});
+  const ExerciseModalityPicker({super.key, this.initialModality, required this.modes, required this.onSelect});
 
   @override
   State<ExerciseModalityPicker> createState() => _ExerciseModalityPickerState();
@@ -24,9 +25,8 @@ class _ExerciseModalityPickerState extends State<ExerciseModalityPicker> {
 
   @override
   Widget build(BuildContext context) {
-    final modes = [ExerciseModality.unilateral, ExerciseModality.bilateral];
 
-    final children = modes
+    final children = widget.modes
         .map((value) => Center(
             child: Text(value.name,
                 style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 24, color: Colors.white))))
@@ -49,7 +49,7 @@ class _ExerciseModalityPickerState extends State<ExerciseModalityPicker> {
             itemExtent: 38.0,
             onSelectedItemChanged: (int index) {
               setState(() {
-                _selectedMode = modes[index];
+                _selectedMode = widget.modes[index];
               });
             },
             squeeze: 1,
@@ -72,7 +72,7 @@ class _ExerciseModalityPickerState extends State<ExerciseModalityPicker> {
   @override
   void initState() {
     super.initState();
-    final initialIndex = ExerciseModality.values.indexOf(widget.initialModality ?? ExerciseModality.bilateral);
+    final initialIndex = widget.modes.indexOf(widget.initialModality ?? ExerciseModality.bilateral);
     _scrollController = FixedExtentScrollController(initialItem: initialIndex);
   }
 

@@ -9,9 +9,10 @@ import '../../dividers/label_container.dart';
 
 class ExerciseStancePicker extends StatefulWidget {
   final ExerciseStance? initialStance;
+  final List<ExerciseStance> stances;
   final void Function(ExerciseStance position) onSelect;
 
-  const ExerciseStancePicker({super.key, this.initialStance, required this.onSelect});
+  const ExerciseStancePicker({super.key, this.initialStance, required this.stances, required this.onSelect});
 
   @override
   State<ExerciseStancePicker> createState() => _ExerciseStancePickerState();
@@ -24,9 +25,7 @@ class _ExerciseStancePickerState extends State<ExerciseStancePicker> {
 
   @override
   Widget build(BuildContext context) {
-    final stances = ExerciseStance.values;
-
-    final children = stances
+    final children = widget.stances
         .map((value) => Center(
             child: Text(value.name,
                 style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 24, color: Colors.white))))
@@ -49,7 +48,7 @@ class _ExerciseStancePickerState extends State<ExerciseStancePicker> {
             itemExtent: 38.0,
             onSelectedItemChanged: (int index) {
               setState(() {
-                _selectedStance = stances[index];
+                _selectedStance = widget.stances[index];
               });
             },
             squeeze: 1,
@@ -72,7 +71,7 @@ class _ExerciseStancePickerState extends State<ExerciseStancePicker> {
   @override
   void initState() {
     super.initState();
-    final initialIndex = ExerciseStance.values.indexOf(widget.initialStance ?? ExerciseStance.standing);
+    final initialIndex = widget.stances.indexOf(widget.initialStance ?? ExerciseStance.standing);
     _scrollController = FixedExtentScrollController(initialItem: initialIndex);
   }
 

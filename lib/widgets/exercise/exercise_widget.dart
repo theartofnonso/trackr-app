@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
 
 import '../../dtos/exercise_dto.dart';
+import '../../utils/string_utils.dart';
 
 class ExerciseWidget extends StatelessWidget {
   final ExerciseDTO exerciseDto;
@@ -21,7 +22,9 @@ class ExerciseWidget extends StatelessWidget {
     final exercise = exerciseDto;
     final description = exerciseDto.description;
 
-    final primaryGroups = exercise.primaryMuscleGroups.map((muscleGroup) => muscleGroup.name).join(", ");
+    final primaryMuscleGroupNames = exercise.primaryMuscleGroups.map((muscleGroup) => muscleGroup.name.toUpperCase()).toList();
+
+    final secondaryMuscleGroupNames = exercise.secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name.toUpperCase()).toList();
 
     return GestureDetector(
       onTap: () => selectExercise != null ? selectExercise(exerciseDto) : null,
@@ -67,7 +70,7 @@ class ExerciseWidget extends StatelessWidget {
                   ),
                   RichText(
                       text: TextSpan(
-                          text: primaryGroups.toUpperCase(),
+                          text: listWithAnd(strings: primaryMuscleGroupNames),
                           style: GoogleFonts.ubuntu(
                               color: Colors.deepOrangeAccent, fontWeight: FontWeight.w600, fontSize: 12, height: 1.5),
                           children: [
@@ -76,9 +79,7 @@ class ExerciseWidget extends StatelessWidget {
                               ? const TextSpan(text: " & ")
                               : const TextSpan(text: " | "),
                         TextSpan(
-                            text: exercise.secondaryMuscleGroups
-                                .map((muscleGroup) => muscleGroup.name.toUpperCase())
-                                .join(", "),
+                            text: listWithAnd(strings: secondaryMuscleGroupNames),
                             style: GoogleFonts.ubuntu(
                                 color: Colors.orange.withOpacity(0.6), fontWeight: FontWeight.w500, fontSize: 11)),
                       ])),

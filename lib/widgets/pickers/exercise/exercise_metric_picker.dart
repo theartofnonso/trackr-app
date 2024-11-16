@@ -9,9 +9,10 @@ import '../../dividers/label_container.dart';
 
 class ExerciseMetricPicker extends StatefulWidget {
   final ExerciseMetric? initialMetric;
+  final List<ExerciseMetric> metrics;
   final void Function(ExerciseMetric metric) onSelect;
 
-  const ExerciseMetricPicker({super.key, this.initialMetric, required this.onSelect});
+  const ExerciseMetricPicker({super.key, this.initialMetric, required this.metrics, required this.onSelect});
 
   @override
   State<ExerciseMetricPicker> createState() => _ExerciseMetricPickerState();
@@ -24,9 +25,7 @@ class _ExerciseMetricPickerState extends State<ExerciseMetricPicker> {
 
   @override
   Widget build(BuildContext context) {
-    final metrics = [ExerciseMetric.weights, ExerciseMetric.reps, ExerciseMetric.duration];
-
-    final children = metrics
+    final children = widget.metrics
         .map((value) => Center(
             child: Text(value.name,
                 style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 24, color: Colors.white))))
@@ -49,7 +48,7 @@ class _ExerciseMetricPickerState extends State<ExerciseMetricPicker> {
             itemExtent: 38.0,
             onSelectedItemChanged: (int index) {
               setState(() {
-                _selectedMetric = metrics[index];
+                _selectedMetric = widget.metrics[index];
               });
             },
             squeeze: 1,
@@ -72,7 +71,7 @@ class _ExerciseMetricPickerState extends State<ExerciseMetricPicker> {
   @override
   void initState() {
     super.initState();
-    final initialIndex = ExerciseMetric.values.indexOf(widget.initialMetric ?? ExerciseMetric.weights);
+    final initialIndex = widget.metrics.indexOf(widget.initialMetric ?? ExerciseMetric.weights);
     _scrollController = FixedExtentScrollController(initialItem: initialIndex);
   }
 

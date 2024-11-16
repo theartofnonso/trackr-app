@@ -9,9 +9,10 @@ import '../../dividers/label_container.dart';
 
 class ExerciseEquipmentPicker extends StatefulWidget {
   final ExerciseEquipment? initialEquipment;
+  final List<ExerciseEquipment> equipment;
   final void Function(ExerciseEquipment equipment) onSelect;
 
-  const ExerciseEquipmentPicker({super.key, this.initialEquipment, required this.onSelect});
+  const ExerciseEquipmentPicker({super.key, this.initialEquipment, required this.equipment, required this.onSelect});
 
   @override
   State<ExerciseEquipmentPicker> createState() => _ExerciseEquipmentPickerState();
@@ -24,9 +25,7 @@ class _ExerciseEquipmentPickerState extends State<ExerciseEquipmentPicker> {
 
   @override
   Widget build(BuildContext context) {
-    final equipment = ExerciseEquipment.values;
-
-    final children = ExerciseEquipment.values
+    final children = widget.equipment
         .map((value) => Center(
             child: Text(value.name,
                 style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 24, color: Colors.white))))
@@ -50,7 +49,7 @@ class _ExerciseEquipmentPickerState extends State<ExerciseEquipmentPicker> {
             itemExtent: 38.0,
             onSelectedItemChanged: (int index) {
               setState(() {
-                _selectedEquipment = equipment[index];
+                _selectedEquipment = widget.equipment[index];
               });
             },
             squeeze: 1,
@@ -73,7 +72,7 @@ class _ExerciseEquipmentPickerState extends State<ExerciseEquipmentPicker> {
   @override
   void initState() {
     super.initState();
-    final initialIndex = ExerciseEquipment.values.indexOf(widget.initialEquipment ?? ExerciseEquipment.barbell);
+    final initialIndex = widget.equipment.indexOf(widget.initialEquipment ?? ExerciseEquipment.barbell);
     _scrollController = FixedExtentScrollController(initialItem: initialIndex);
   }
 

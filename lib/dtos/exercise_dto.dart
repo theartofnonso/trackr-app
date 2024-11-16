@@ -15,7 +15,7 @@ class ExerciseDTO {
   final List<ExerciseModality> modes;
   final List<ExercisePosition> positions;
   final List<ExerciseStance> stances;
-  final ExerciseEquipment equipment;
+  final List<ExerciseEquipment> equipment;
   final List<MuscleGroup> primaryMuscleGroups;
   final List<MuscleGroup> secondaryMuscleGroups;
   final CoreMovement movement;
@@ -42,7 +42,7 @@ class ExerciseDTO {
       'modes': modes.map((mode) => mode.name).toList(),
       'positions': positions.map((position) => position.name).toList(),
       'stances': stances.map((stance) => stance.name).toList(),
-      'equipment': equipment.name,
+      'equipment': equipment.map((equipment) => equipment.name).toList(),
       'movement': movement.name
     };
   }
@@ -56,7 +56,7 @@ class ExerciseDTO {
     final positions =
         (json["positions"] as List<dynamic>).map((position) => ExercisePosition.fromString(position)).toList();
     final stances = (json["stances"] as List<dynamic>).map((stance) => ExerciseStance.fromString(stance)).toList();
-    final equipment = ExerciseEquipment.fromString(json["equipment"]);
+    final equipment = (json["equipment"] as List<dynamic>).map((equipment) => ExerciseEquipment.fromString(equipment)).toList();
     final primaryMuscleGroups = (json["primary_muscle_groups"] as List<dynamic>)
         .map((muscleGroup) => MuscleGroup.fromString(muscleGroup))
         .toList();
@@ -84,7 +84,7 @@ class ExerciseDTO {
     List<ExerciseModality>? modes,
     List<ExercisePosition>? positions,
     List<ExerciseStance>? stances,
-    ExerciseEquipment? equipment,
+    List<ExerciseEquipment>? equipment,
     List<MuscleGroup>? primaryMuscleGroups,
     List<MuscleGroup>? secondaryMuscleGroups,
     CoreMovement? movement,
@@ -119,7 +119,7 @@ extension ExerciseDTOExtension on ExerciseDTO {
         mode: modes.first,
         position: positions.first,
         stance: stances.first,
-        equipment: equipment,
+        equipment: equipment.first,
         primaryMuscleGroups: primaryMuscleGroups,
         secondaryMuscleGroups: secondaryMuscleGroups,
         movement: movement);
