@@ -1,14 +1,33 @@
 [
   {
-    "id": "SHD4",
     "name": "Front Raises",
-    "primaryMuscleGroup": "shoulders",
-    "secondaryMuscleGroups": ["chest", "traps", "abs", "forearms"],
-    "type": "weightsAndReps",
-    "video": "https://www.youtube.com/watch?v=_od0CCC6DEM",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "Primarily targets the front deltoid muscles to build shoulder size.",
+    "primaryMuscleGroups": [
+      "front_shoulder"
+    ],
+    "secondary_muscle_groups": [
+      "triceps",
+      "shoulders"
+    ],
+    "description": "Targets chest, triceps, and shoulders to build upper body strength.",
+    "equipment": "Parallel Bars",
+    "modality": "bilateral",
+    "metric": "reps",
+    "movement": "push"
+  },
+  {
+    "id": "SHD13",
+    "name": "Lateral Raises",
+    "primaryMuscleGroups": [
+      "front_shoulder"
+    ],
+    "secondary_muscle_groups": [
+      "triceps",
+      "shoulders"
+    ],
+    "description": "Engages the lateral deltoids to build shoulder width and definition.",
+    "equipment": "Parallel Bars",
+    "modality": "bilateral",
+    "metric": "reps",
     "movement": "push"
   },
   {
@@ -21,18 +40,6 @@
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
     "description": "Works the shoulders and traps for shoulder development.",
-    "movement": "push"
-  },
-  {
-    "id": "SHD13",
-    "name": "Lateral Raises",
-    "primaryMuscleGroup": "shoulders",
-    "secondaryMuscleGroups": ["traps", "forearms", "abs"],
-    "type": "weightsAndReps",
-    "video": "https://www.youtube.com/watch?v=gN1Sc6KkK7Q",
-    "creditSource": "https://www.youtube.com/@TheGymGroupUK",
-    "credit": "TheGymGroup",
-    "description": "Engages the lateral deltoids to build shoulder width and definition.",
     "movement": "push"
   },
   {

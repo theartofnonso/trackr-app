@@ -256,8 +256,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final exerciseType = widget.exerciseLogDto.exercise.metric;
 
-    print(exerciseType);
-
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
       decoration: BoxDecoration(

@@ -13,6 +13,7 @@ import '../../../controllers/exercise_and_routine_controller.dart';
 import '../../../dtos/exercise_dto.dart';
 import '../../../enums/muscle_group_enums.dart';
 import '../../../utils/navigation_utils.dart';
+import '../../../widgets/buttons/opacity_button_widget.dart';
 import '../../../widgets/exercise/exercise_widget.dart';
 
 class ExerciseLibraryScreen extends StatefulWidget {
@@ -37,7 +38,7 @@ class ExerciseLibraryScreen extends StatefulWidget {
 class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   late TextEditingController _searchController;
 
-  MuscleGroup? _selectedMuscleGroup;
+  final List<MuscleGroup> _selectedMuscleGroups = [];
 
   /// Holds a list of [ExerciseDTO] when filtering through a search
   List<ExerciseDTO> _filteredExercises = [];
@@ -48,7 +49,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
     List<ExerciseDTO> searchResults = [];
 
-    final exerciseType = widget.exerciseMetric;
+    final exerciseMetric = widget.exerciseMetric;
     final muscleGroup = widget.muscleGroup;
     final muscleGroupFamily = widget.muscleGroupFamily;
 
@@ -56,17 +57,21 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         .exercises
         .where((exercise) => !widget.excludeExercises.contains(exercise))
         .where((exercise) => exercise.name.toLowerCase().contains(query.toLowerCase()))
-        .where((exercise) => exerciseType != null ? exercise.metric == widget.exerciseMetric : true)
-        .where((exercise) => muscleGroup != null ? exercise.primaryMuscleGroups.contains(_selectedMuscleGroup) : true)
+        .where((exercise) => exerciseMetric != null ? exercise.metric == widget.exerciseMetric : true)
+        .where((exercise) => muscleGroup != null
+            ? exercise.primaryMuscleGroups.any((muscleGroup) => _selectedMuscleGroups.contains(muscleGroup))
+            : true)
         .where((exercise) => muscleGroupFamily != null
             ? exercise.primaryMuscleGroups.firstWhereOrNull((muscleGroup) => muscleGroup.family == muscleGroupFamily) !=
                 null
             : true)
         .toList();
 
-    if (_selectedMuscleGroup != null) {
-      searchResults =
-          searchResults.where((exercise) => exercise.primaryMuscleGroups.contains(_selectedMuscleGroup)).toList();
+    if (_selectedMuscleGroups.isNotEmpty) {
+      searchResults = searchResults
+          .where((exercise) =>
+              exercise.primaryMuscleGroups.any((muscleGroup) => _selectedMuscleGroups.contains(muscleGroup)))
+          .toList();
     }
 
     searchResults.sort((a, b) => a.name.compareTo(b.name));
@@ -100,7 +105,21 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final muscleGroups = MuscleGroup.values;
+    final muscleGroups = MuscleGroup.values
+        .sorted((a, b) => a.name.compareTo(b.name))
+        .map((muscleGroup) => Padding(
+              padding: const EdgeInsets.only(right: 6.0),
+              child: OpacityButtonWidget(
+                  onPressed: () => _onSelectMuscleGroup(newMuscleGroup: muscleGroup),
+                  padding: EdgeInsets.symmetric(horizontal: 0),
+                  textStyle: GoogleFonts.ubuntu(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 10,
+                      color: _getMuscleGroup(muscleGroup: muscleGroup) != null ? vibrantGreen : Colors.white70),
+                  buttonColor: _getMuscleGroup(muscleGroup: muscleGroup) != null ? vibrantGreen : null,
+                  label: muscleGroup.name.toUpperCase()),
+            ))
+        .toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -140,52 +159,8 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                     onClear: _clearSearch,
                     controller: _searchController),
                 const SizedBox(height: 10),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: sapphireDark, // Background color
-                    borderRadius: BorderRadius.circular(5), // Border radius
-                  ),
-                  child: DropdownButton<MuscleGroup>(
-                    menuMaxHeight: 400,
-                    isExpanded: true,
-                    isDense: true,
-                    value: _selectedMuscleGroup,
-                    hint: Text("Filter by muscle group",
-                        style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14)),
-                    icon: GestureDetector(
-                      onTap: () {
-                        _selectedMuscleGroup = null;
-                        _runSearch("Nil");
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: _selectedMuscleGroup == null
-                            ? const FaIcon(FontAwesomeIcons.chevronDown, color: Colors.white70, size: 16)
-                            : const FaIcon(FontAwesomeIcons.circleXmark, color: Colors.white, size: 18),
-                      ),
-                    ),
-                    underline: Container(
-                      color: Colors.transparent,
-                    ),
-                    style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
-                    onChanged: (MuscleGroup? value) {
-                      _selectedMuscleGroup = value;
-                      _runSearch("Nil");
-                    },
-                    items: muscleGroups.map<DropdownMenuItem<MuscleGroup>>((MuscleGroup muscleGroup) {
-                      return DropdownMenuItem<MuscleGroup>(
-                        value: muscleGroup,
-                        child: Text(muscleGroup.name,
-                            style: GoogleFonts.ubuntu(
-                                color: _selectedMuscleGroup == muscleGroup ? Colors.white : Colors.white70,
-                                fontWeight: _selectedMuscleGroup == muscleGroup ? FontWeight.bold : FontWeight.w500,
-                                fontSize: 14)),
-                      );
-                    }).toList(),
-                  ),
-                ),
+                //SingleChildScrollView(scrollDirection: Axis.horizontal, child: Row(children: muscleGroups)),
+                Wrap(children: muscleGroups),
                 const SizedBox(height: 18),
                 _filteredExercises.isNotEmpty
                     ? Expanded(
@@ -216,6 +191,22 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     );
   }
 
+  void _onSelectMuscleGroup({required MuscleGroup newMuscleGroup}) {
+    final oldMuscleGroup =
+        _selectedMuscleGroups.firstWhereOrNull((previousMuscleGroup) => previousMuscleGroup == newMuscleGroup);
+    setState(() {
+      if (oldMuscleGroup != null) {
+        _selectedMuscleGroups.remove(oldMuscleGroup);
+      } else {
+        _selectedMuscleGroups.add(newMuscleGroup);
+      }
+      _runSearch("");
+    });
+  }
+
+  MuscleGroup? _getMuscleGroup({required MuscleGroup muscleGroup}) =>
+      _selectedMuscleGroups.firstWhereOrNull((previousMuscleGroup) => previousMuscleGroup == muscleGroup);
+
   void _loadOrSyncExercises() {
     final exerciseMetric = widget.exerciseMetric;
     final muscleGroup = widget.muscleGroup;
@@ -225,7 +216,9 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         .exercises
         .where((exercise) => !widget.excludeExercises.contains(exercise))
         .where((exercise) => exerciseMetric != null ? exercise.metric == widget.exerciseMetric : true)
-        .where((exercise) => muscleGroup != null ? exercise.primaryMuscleGroups.contains(_selectedMuscleGroup) : true)
+        .where((exercise) => muscleGroup != null
+            ? exercise.primaryMuscleGroups.any((muscleGroup) => _selectedMuscleGroups.contains(muscleGroup))
+            : true)
         .where((exercise) => muscleGroupFamily != null
             ? exercise.primaryMuscleGroups.firstWhereOrNull((muscleGroup) => muscleGroup.family == muscleGroupFamily) !=
                 null

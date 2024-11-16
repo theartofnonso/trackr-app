@@ -333,9 +333,7 @@ Map<MuscleGroupFamily, int> _muscleGroupFamilyCountOn4WeeksScale({required List<
     final muscleGroupFamilies = {...primaryMuscleGroupFamilies, ...secondaryMuscleGroupFamilies};
 
     for (var family in muscleGroupFamilies) {
-      if (family != MuscleGroupFamily.fullBody) {
-        frequencyMap.update(family, (value) => value >= 8 ? 8 : value + 1, ifAbsent: () => 1);
-      }
+      frequencyMap.update(family, (value) => value >= 8 ? 8 : value + 1, ifAbsent: () => 1);
     }
   }
 
