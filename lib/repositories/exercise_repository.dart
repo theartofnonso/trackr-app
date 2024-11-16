@@ -17,6 +17,7 @@ class ExerciseRepository {
   void loadExercises() {
     _loadBicepsExercises();
     _loadQuadricepsExercises();
+    _loadHamstringExercises();
   }
 
   void _loadBicepsExercises() async {
@@ -116,6 +117,48 @@ class ExerciseRepository {
     _exercises.add(legExtensionsExercise);
     _exercises.add(stepUpsExercise);
     _exercises.add(splitSquatsExercise);
+  }
+
+  void _loadHamstringExercises() {
+    final goodMorningExercise = ExerciseDTO(
+        name: "Good Morning",
+        description: "Targets the hamstrings and lower back with a hinge motion, building posterior chain strength.",
+        metrics: [ExerciseMetric.weights],
+        modes: [ExerciseModality.bilateral],
+        positions: [ExercisePosition.neutral],
+        stances: [ExerciseStance.standing],
+        equipment: ExerciseEquipment.barbell,
+        primaryMuscleGroups: [MuscleGroup.hamstrings],
+        secondaryMuscleGroups: [MuscleGroup.glutes, MuscleGroup.back, MuscleGroup.abs],
+        movement: CoreMovement.hinge);
+
+    final deadliftsExercise = ExerciseDTO(
+        name: "Deadlifts",
+        description: "Targets the hamstrings and lower back with a hinge motion, building posterior chain strength.",
+        metrics: [ExerciseMetric.weights],
+        modes: [ExerciseModality.unilateral, ExerciseModality.bilateral],
+        positions: [ExercisePosition.neutral],
+        stances: [ExerciseStance.standing],
+        equipment: ExerciseEquipment.barbell,
+        primaryMuscleGroups: [MuscleGroup.hamstrings],
+        secondaryMuscleGroups: [MuscleGroup.glutes, MuscleGroup.back, MuscleGroup.abs, MuscleGroup.forearms],
+        movement: CoreMovement.hinge);
+
+    final hamstringCurlExercise = ExerciseDTO(
+        name: "Hamstring Curls",
+        description: "Isolates the hamstrings by curling the legs from a lying/seated position, enhancing muscle development.",
+        metrics: [ExerciseMetric.weights],
+        modes: [ExerciseModality.unilateral, ExerciseModality.bilateral],
+        positions: [ExercisePosition.neutral],
+        stances: [ExerciseStance.seated, ExerciseStance.lying],
+        equipment: ExerciseEquipment.machine,
+        primaryMuscleGroups: [MuscleGroup.hamstrings],
+        secondaryMuscleGroups: [MuscleGroup.glutes],
+        movement: CoreMovement.hinge);
+
+    _exercises.add(goodMorningExercise);
+    _exercises.add(deadliftsExercise);
+    _exercises.add(hamstringCurlExercise);
   }
 
   /// Helper methods

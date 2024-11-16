@@ -21,6 +21,7 @@ import 'package:tracker_app/widgets/routine/editors/set_rows/weights_set_row.dar
 
 import '../../../colors.dart';
 import '../../../dtos/set_dto.dart';
+import '../../../enums/exercise/core_movements_enum.dart';
 import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../utils/general_utils.dart';
@@ -333,7 +334,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: vibrantBlue),
                   onPressed: _showExerciseMetricPicker,
                 ),
-              if (exerciseAndRoutineController.whereExercise(name: exerciseVariant.name).positions.length > 1)
+              if (exerciseAndRoutineController.whereExercise(name: exerciseVariant.name).positions.length > 1 &&
+                  (exerciseVariant.movement == CoreMovement.push || exerciseVariant.movement == CoreMovement.pull))
                 OpacityButtonWidget(
                   label: widget.exerciseLogDto.exerciseVariant.position.name.toUpperCase(),
                   buttonColor: Colors.deepPurple,
