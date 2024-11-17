@@ -37,6 +37,7 @@ class ExerciseDTO {
       this.secondaryMuscleGroups = const [],
       required this.coreMovement});
 
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,

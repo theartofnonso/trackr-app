@@ -15,7 +15,7 @@ class PersonalBestWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<ExerciseLogDto> pastLogs =
+    List<ExerciseLogDTO> pastLogs =
         Provider.of<ExerciseAndRoutineController>(context, listen: false).exerciseLogsByName[exerciseVariant.name] ?? [];
 
     final completedLogs = completedExercises(exerciseLogs: pastLogs);

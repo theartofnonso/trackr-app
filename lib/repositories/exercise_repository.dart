@@ -718,7 +718,7 @@ class ExerciseRepository {
         modes: [ExerciseModality.unilateral, ExerciseModality.bilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.lying, ExerciseStance.kneeling],
-        equipment: [ExerciseEquipment.plate],
+        equipment: [ExerciseEquipment.none, ExerciseEquipment.plate],
         movements: [ExerciseMovement.reverse, ExerciseMovement.none],
         primaryMuscleGroups: [MuscleGroup.abs],
         coreMovement: CoreMovement.others);
@@ -777,7 +777,7 @@ class ExerciseRepository {
         modes: [ExerciseModality.unilateral, ExerciseModality.bilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.standing, ExerciseStance.seated],
-        equipment: [ExerciseEquipment.plate, ExerciseEquipment.dumbbell, ExerciseEquipment.machine],
+        equipment: [ExerciseEquipment.plate, ExerciseEquipment.dumbbell, ExerciseEquipment.machine, ExerciseEquipment.none],
         primaryMuscleGroups: [MuscleGroup.calves],
         coreMovement: CoreMovement.others);
 

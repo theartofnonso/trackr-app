@@ -21,6 +21,7 @@ import 'package:tracker_app/widgets/routine/editors/set_rows/reps_set_row.dart';
 import 'package:tracker_app/widgets/routine/editors/set_rows/weights_set_row.dart';
 
 import '../../../colors.dart';
+import '../../../dtos/exercise_dto.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../enums/exercise/core_movements_enum.dart';
 import '../../../enums/exercise/exercise_modality_enum.dart';
@@ -40,8 +41,8 @@ import '../../pickers/exercise/exercise_stance_picker.dart';
 class ExerciseLogWidget extends StatefulWidget {
   final RoutineEditorMode editorType;
 
-  final ExerciseLogDto exerciseLogDto;
-  final ExerciseLogDto? superSet;
+  final ExerciseLogDTO exerciseLogDto;
+  final ExerciseLogDTO? superSet;
 
   final bool isMinimised;
 
@@ -54,7 +55,7 @@ class ExerciseLogWidget extends StatefulWidget {
   final VoidCallback onResize;
   final void Function(SetDto setDto) onTapWeightEditor;
   final void Function(SetDto setDto) onTapRepsEditor;
-  final void Function(ExerciseLogDto exerciseLogDto) onUpdate;
+  final void Function(ExerciseLogDTO exerciseLogDto) onUpdate;
 
   const ExerciseLogWidget(
       {super.key,
@@ -340,7 +341,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   buttonColor: vibrantBlue,
                   padding: EdgeInsets.symmetric(horizontal: 0),
                   textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: vibrantBlue),
-                  onPressed: () => _showExerciseMetricPicker(metrics: exercise.metrics),
+                  onPressed: () => _showExerciseMetricPicker(metrics: exercise.metrics, exercise: exercise),
                 ),
               if (exercise.positions.length > 1 &&
                   (exerciseVariant.coreMovement == CoreMovement.push ||
@@ -474,8 +475,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   message: 'Do you want to switch training equipment?',
                   callback: () {
                     _closeDialog();
-                    final updatedExercise = widget.exerciseLogDto.exerciseVariant.copyWith(equipment: newEquipment);
-                    final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: updatedExercise);
+                     final noEquipment = newEquipment == ExerciseEquipment.none;
+                     final newMetric = noEquipment ? ExerciseMetric.reps : widget.exerciseLogDto.exerciseVariant.metric;
+                    final updatedExerciseVariant = widget.exerciseLogDto.exerciseVariant.copyWith(equipment: newEquipment, metric: newMetric);
+                    final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: updatedExerciseVariant);
                     widget.onUpdate(updatedExerciseLog);
                   },
                   rightActionLabel: 'Switch to ${newEquipment.name}');
@@ -503,7 +506,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             }));
   }
 
-  void _showExerciseMetricPicker({required List<ExerciseMetric> metrics}) {
+  void _showExerciseMetricPicker({required List<ExerciseMetric> metrics, required ExerciseDTO exercise}) {
     displayBottomSheet(
         height: 300,
         context: context,
@@ -516,6 +519,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   message: 'Do you want to update your logging metrics?',
                   callback: () {
                     _closeDialog();
+                    final isWeightsMetric = newMetric == ExerciseMetric.weights;
+                    if(isWeightsMetric) {
+                      _showExerciseEquipmentPicker(equipment: exercise.equipment);
+                    }
                     final updatedExercise = widget.exerciseLogDto.exerciseVariant.copyWith(metric: newMetric);
                     final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: updatedExercise);
                     widget.onUpdate(updatedExerciseLog);

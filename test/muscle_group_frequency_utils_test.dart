@@ -118,7 +118,7 @@ void main() {
 
   final hamstring1ExerciseLogs = List.generate(
       dayOneDateTimes.length,
-      (index) => ExerciseLogDto(
+      (index) => ExerciseLogDTO(
           hamstringExercise.type,
           "legDayOneSession$index",
           "",
@@ -133,7 +133,7 @@ void main() {
           []));
   final hamstring2ExerciseLogs = List.generate(
       dayOneDateTimes.length,
-      (index) => ExerciseLogDto(
+      (index) => ExerciseLogDTO(
           hamstringExercise.type,
           "legDayOneSession$index",
           "",
@@ -149,7 +149,7 @@ void main() {
 
   final quad1ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
-      (index) => ExerciseLogDto(
+      (index) => ExerciseLogDTO(
           quadExercise.type,
           "legDayTwoSession$index",
           "",
@@ -164,7 +164,7 @@ void main() {
           []));
   final quad2ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
-      (index) => ExerciseLogDto(
+      (index) => ExerciseLogDTO(
           quadExercise.type,
           "legDayTwoSession$index",
           "",
@@ -180,7 +180,7 @@ void main() {
 
   final chest1ExerciseLogs = List.generate(
       dayOneDateTimes.length,
-      (index) => ExerciseLogDto(
+      (index) => ExerciseLogDTO(
           chestExercise.type,
           "chestDayOneSession$index",
           "",
@@ -195,7 +195,7 @@ void main() {
           []));
   final chest2ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
-      (index) => ExerciseLogDto(
+      (index) => ExerciseLogDTO(
           chestExercise.type,
           "chestDayTwoSession$index",
           "",
@@ -211,7 +211,7 @@ void main() {
 
   final back1ExerciseLogs = List.generate(
       dayOneDateTimes.length,
-      (index) => ExerciseLogDto(
+      (index) => ExerciseLogDTO(
           backExercise.type,
           "backDayOneSession$index",
           "",
@@ -226,7 +226,7 @@ void main() {
           []));
   final back2ExerciseLogs = List.generate(
       dayOneDateTimes.length,
-      (index) => ExerciseLogDto(
+      (index) => ExerciseLogDTO(
           backExercise.type,
           "backDayOneSession$index",
           "",
@@ -242,7 +242,7 @@ void main() {
 
   final traps1ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
-      (index) => ExerciseLogDto(
+      (index) => ExerciseLogDTO(
           trapsExercise.type,
           "backDayTwoSession$index",
           "",
@@ -257,7 +257,7 @@ void main() {
           []));
   final traps2ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
-      (index) => ExerciseLogDto(
+      (index) => ExerciseLogDTO(
           trapsExercise.type,
           "backDayTwoSession$index",
           "",
@@ -273,7 +273,7 @@ void main() {
 
   final shoulders1ExerciseLogs = List.generate(
       dayOneDateTimes.length,
-      (index) => ExerciseLogDto(
+      (index) => ExerciseLogDTO(
           shouldersExercise.type,
           "shouldersDayOneSession$index",
           "",
@@ -288,7 +288,7 @@ void main() {
           []));
   final shoulders2ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
-      (index) => ExerciseLogDto(
+      (index) => ExerciseLogDTO(
           shouldersExercise.type,
           "shouldersDayTwoSession$index",
           "",
@@ -304,7 +304,7 @@ void main() {
 
   final biceps1ExerciseLogs = List.generate(
       dayOneDateTimes.length,
-      (index) => ExerciseLogDto(
+      (index) => ExerciseLogDTO(
           bicepsExercise.type,
           "bicepsDayOneSession$index",
           "",
@@ -319,7 +319,7 @@ void main() {
           []));
   final biceps2ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
-      (index) => ExerciseLogDto(
+      (index) => ExerciseLogDTO(
           bicepsExercise.type,
           "bicepsDayTwoSession$index",
           "",
@@ -335,7 +335,7 @@ void main() {
 
   final triceps1ExerciseLogs = List.generate(
       dayOneDateTimes.length,
-      (index) => ExerciseLogDto(
+      (index) => ExerciseLogDTO(
           tricepsExercise.type,
           "tricepsDayOneSession$index",
           "",
@@ -350,7 +350,7 @@ void main() {
           []));
   final triceps2ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
-      (index) => ExerciseLogDto(
+      (index) => ExerciseLogDTO(
           tricepsExercise.type,
           "tricepsDayTwoSession$index",
           "",
@@ -366,7 +366,7 @@ void main() {
 
   final abs1ExerciseLogs = List.generate(
       dayOneDateTimes.length,
-      (index) => ExerciseLogDto(
+      (index) => ExerciseLogDTO(
           abs.type,
           "coreDayOneSession$index",
           "",
@@ -381,7 +381,7 @@ void main() {
           []));
   final abs2ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
-      (index) => ExerciseLogDto(
+      (index) => ExerciseLogDTO(
           abs.type,
           "coreDayTwoSession$index",
           "",
@@ -397,7 +397,7 @@ void main() {
 
   final neck1ExerciseLogs = List.generate(
       dayOneDateTimes.length,
-      (index) => ExerciseLogDto(
+      (index) => ExerciseLogDTO(
           abs.type,
           "neckDayOneSession$index",
           "",
@@ -412,7 +412,7 @@ void main() {
           []));
   final neck2ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
-      (index) => ExerciseLogDto(
+      (index) => ExerciseLogDTO(
           routineLogId: abs.type,
           superSetId: "neckDayTwoSession$index",
           "",

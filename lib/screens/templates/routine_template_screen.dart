@@ -482,7 +482,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
             final exerciseTemplates = recommendedExerciseNames.map((exerciseName) {
               final exerciseInLibrary = exercises.firstWhere((exercise) => exercise.name == exerciseName);
-              final exerciseTemplate = ExerciseLogDto.empty(exercise: exerciseInLibrary);
+              final exerciseTemplate = ExerciseLogDTO.empty(exercise: exerciseInLibrary);
               return exerciseTemplate;
             }).toList();
             final originalTemplates = template.exerciseTemplates;

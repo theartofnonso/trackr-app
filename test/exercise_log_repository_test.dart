@@ -32,7 +32,7 @@ void main() {
       exerciseMetric: ExerciseMetric.weights,
       owner: "");
 
-  final lyingLegCurlExerciseLog1 = ExerciseLogDto(
+  final lyingLegCurlExerciseLog1 = ExerciseLogDTO(
       lyingLegCurlExercise.name,
       "routineLogId1",
       "superSetId",
@@ -45,7 +45,7 @@ void main() {
       ],
       DateTime(2023, 12, 1), []);
 
-  final plankExerciseLog1 = ExerciseLogDto(
+  final plankExerciseLog1 = ExerciseLogDTO(
       plankExercise.type,
       "routineLogId1",
       "superSetId",
@@ -58,7 +58,7 @@ void main() {
       ],
       DateTime.now(), []);
 
-  final benchPressExerciseLog1 = ExerciseLogDto(
+  final benchPressExerciseLog1 = ExerciseLogDTO(
       benchPressExercise.type,
       "routineLogId1",
       "superSetId",
@@ -239,7 +239,7 @@ void main() {
   test("All [ExerciseType.duration] sets must be checked when merging", () {
     final exerciseLogRepository = ExerciseLogRepository();
 
-    final plankExerciseLog1 = ExerciseLogDto(
+    final plankExerciseLog1 = ExerciseLogDTO(
         plankExercise.type,
         "routineLogId1",
         "superSetId",

@@ -34,9 +34,9 @@ class AmplifyRoutineLogRepository {
 
   UnmodifiableListView<Milestone> get newMilestones => UnmodifiableListView(_newMilestones);
 
-  Map<String, List<ExerciseLogDto>> _exerciseLogsByName = {};
+  Map<String, List<ExerciseLogDTO>> _exerciseLogsByName = {};
 
-  UnmodifiableMapView<String, List<ExerciseLogDto>> get exerciseLogsByName => UnmodifiableMapView(_exerciseLogsByName);
+  UnmodifiableMapView<String, List<ExerciseLogDTO>> get exerciseLogsByName => UnmodifiableMapView(_exerciseLogsByName);
 
   void _groupExerciseLogs() {
     _exerciseLogsByName = groupExerciseLogsByExerciseId(routineLogs: _logs);
@@ -169,7 +169,7 @@ class AmplifyRoutineLogRepository {
     return exerciseLogs.isNotEmpty ? exerciseLogs.first.sets : [];
   }
 
-  List<ExerciseLogDto> whereExerciseLogsBefore({required ExerciseVariantDTO exerciseVariant, required DateTime date}) {
+  List<ExerciseLogDTO> whereExerciseLogsBefore({required ExerciseVariantDTO exerciseVariant, required DateTime date}) {
     return _exerciseLogsByName[exerciseVariant.name]?.where((log) => log.createdAt.isBefore(date)).toList() ?? [];
   }
 

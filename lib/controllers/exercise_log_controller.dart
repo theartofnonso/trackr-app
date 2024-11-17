@@ -14,17 +14,17 @@ class ExerciseLogController extends ChangeNotifier {
     _exerciseLogRepository = exerciseLogRepository;
   }
 
-  UnmodifiableListView<ExerciseLogDto> get exerciseLogs => _exerciseLogRepository.exerciseLogs;
+  UnmodifiableListView<ExerciseLogDTO> get exerciseLogs => _exerciseLogRepository.exerciseLogs;
 
-  void loadExerciseLogs({required List<ExerciseLogDto> exerciseLogs, required RoutineEditorMode mode}) {
+  void loadExerciseLogs({required List<ExerciseLogDTO> exerciseLogs, required RoutineEditorMode mode}) {
     _exerciseLogRepository.loadExerciseLogs(exerciseLogs: exerciseLogs, mode: mode);
   }
 
-  List<ExerciseLogDto> mergeExerciseLogsAndSets() {
+  List<ExerciseLogDTO> mergeExerciseLogsAndSets() {
     return _exerciseLogRepository.mergeExerciseLogsAndSets();
   }
 
-  List<ExerciseLogDto> mergeAndCheckExerciseLogsAndSets({required DateTime datetime}) {
+  List<ExerciseLogDTO> mergeAndCheckExerciseLogsAndSets({required DateTime datetime}) {
     return _exerciseLogRepository.mergeAndCheckPastExerciseLogsAndSets(datetime: datetime);
   }
 
@@ -33,12 +33,12 @@ class ExerciseLogController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateExerciseLog({required ExerciseLogDto newExerciseLog}) {
+  void updateExerciseLog({required ExerciseLogDTO newExerciseLog}) {
     _exerciseLogRepository.updateExerciseLog(newExerciseLog: newExerciseLog);
     notifyListeners();
   }
 
-  void reOrderExerciseLogs({required List<ExerciseLogDto> reOrderedList}) {
+  void reOrderExerciseLogs({required List<ExerciseLogDTO> reOrderedList}) {
     _exerciseLogRepository.reOrderExerciseLogs(reOrderedList: reOrderedList);
     notifyListeners();
   }
@@ -106,7 +106,7 @@ class ExerciseLogController extends ChangeNotifier {
     return _exerciseLogRepository.completedSets();
   }
 
-  List<ExerciseLogDto> completedExerciseLog() {
+  List<ExerciseLogDTO> completedExerciseLog() {
     return _exerciseLogRepository.completedExerciseLogs();
   }
 

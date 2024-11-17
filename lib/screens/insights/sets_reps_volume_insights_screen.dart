@@ -323,7 +323,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     });
   }
 
-  void _generateSummary({required List<ExerciseLogDto> exerciseLogs}) {
+  void _generateSummary({required List<ExerciseLogDTO> exerciseLogs}) {
     if (exerciseLogs.isEmpty) {
       showSnackbar(
           context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: "You don't have any logs");

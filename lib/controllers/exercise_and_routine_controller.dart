@@ -55,7 +55,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
 
   UnmodifiableListView<Milestone> get newMilestones => _amplifyLogRepository.newMilestones;
 
-  UnmodifiableMapView<String, List<ExerciseLogDto>> get exerciseLogsByName => _amplifyLogRepository.exerciseLogsByName;
+  UnmodifiableMapView<String, List<ExerciseLogDTO>> get exerciseLogsByName => _amplifyLogRepository.exerciseLogsByName;
 
   /// Exercises
   void loadExercises() {
@@ -241,7 +241,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
     return _amplifyLogRepository.whereLogsIsWithinRange(range: range);
   }
 
-  List<ExerciseLogDto> whereExerciseLogsBefore({required ExerciseVariantDTO exerciseVariant, required DateTime date}) {
+  List<ExerciseLogDTO> whereExerciseLogsBefore({required ExerciseVariantDTO exerciseVariant, required DateTime date}) {
     return _amplifyLogRepository.whereExerciseLogsBefore(exerciseVariant: exerciseVariant, date: date);
   }
 

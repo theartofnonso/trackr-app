@@ -57,7 +57,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
         });
   }
 
-  void _showSuperSetExercisePicker({required ExerciseLogDto firstExerciseLog}) {
+  void _showSuperSetExercisePicker({required ExerciseLogDTO firstExerciseLog}) {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
     final otherExercises = whereOtherExerciseLogsExcept(exerciseLog: firstExerciseLog, others: controller.exerciseLogs);
     showSuperSetExercisePicker(
@@ -78,7 +78,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
         });
   }
 
-  void _showReplaceExercisePicker({required ExerciseLogDto oldExerciseLog}) {
+  void _showReplaceExercisePicker({required ExerciseLogDTO oldExerciseLog}) {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
     final excludeExercises = controller.exerciseLogs.map((exercise) => exercise.exerciseVariant).toList();
 
@@ -159,7 +159,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
     }
   }
 
-  void _reOrderExerciseLogs({required List<ExerciseLogDto> exerciseLogs}) async {
+  void _reOrderExerciseLogs({required List<ExerciseLogDTO> exerciseLogs}) async {
     final orderedList = await reOrderExerciseLogs(context: context, exerciseLogs: exerciseLogs);
     if (!mounted) {
       return;
@@ -169,7 +169,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
     }
   }
 
-  void _updateExerciseLog(ExerciseLogDto exerciseLog) async {
+  void _updateExerciseLog(ExerciseLogDTO exerciseLog) async {
     Provider.of<ExerciseLogController>(context, listen: false).updateExerciseLog(newExerciseLog: exerciseLog);
   }
 

@@ -62,7 +62,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         });
   }
 
-  void _showSuperSetExercisePicker({required ExerciseLogDto firstExerciseLog}) {
+  void _showSuperSetExercisePicker({required ExerciseLogDTO firstExerciseLog}) {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
     final otherExercises = whereOtherExerciseLogsExcept(exerciseLog: firstExerciseLog, others: controller.exerciseLogs);
     showSuperSetExercisePicker(
@@ -84,7 +84,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         });
   }
 
-  void _showReplaceExercisePicker({required ExerciseLogDto oldExerciseLog}) {
+  void _showReplaceExercisePicker({required ExerciseLogDTO oldExerciseLog}) {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
     final excludeExercises = controller.exerciseLogs.map((procedure) => procedure.exerciseVariant).toList();
 
@@ -196,7 +196,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     Navigator.of(context).pop();
   }
 
-  void _reOrderExerciseLogs({required List<ExerciseLogDto> exerciseLogs}) async {
+  void _reOrderExerciseLogs({required List<ExerciseLogDTO> exerciseLogs}) async {
     final orderedList = await reOrderExerciseLogs(context: context, exerciseLogs: exerciseLogs);
     if (mounted) {
       if (orderedList != null) {
@@ -237,7 +237,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     return _minimisedExerciseLogCards.firstWhereOrNull((exerciseId) => exerciseId == id) != null;
   }
 
-  void _updateExerciseLog(ExerciseLogDto exerciseLog) async {
+  void _updateExerciseLog(ExerciseLogDTO exerciseLog) async {
     Provider.of<ExerciseLogController>(context, listen: false).updateExerciseLog(newExerciseLog: exerciseLog);
     _cacheLog();
   }

@@ -18,7 +18,7 @@ class RoutineLogDto extends Log {
   final DateTime startTime;
   @override
   final DateTime endTime;
-  final List<ExerciseLogDto> exerciseLogs;
+  final List<ExerciseLogDTO> exerciseLogs;
   final String owner;
   @override
   final DateTime createdAt;
@@ -70,7 +70,7 @@ class RoutineLogDto extends Log {
     final endTime = DateTime.parse(json["endTime"]);
     final exerciseLogJsons = json["exercises"] as List<dynamic>;
     final exerciseLogs = exerciseLogJsons
-        .map((json) => ExerciseLogDto.fromJson(
+        .map((json) => ExerciseLogDTO.fromJson(
         routineLogId: "", json: jsonDecode(json)))
         .toList();
     return RoutineLogDto(
@@ -98,7 +98,7 @@ class RoutineLogDto extends Log {
     final endTime = DateTime.parse(json["endTime"]);
     final exerciseLogJsons = json["exercises"] as List<dynamic>;
     final exerciseLogs = exerciseLogJsons
-        .map((json) => ExerciseLogDto.fromJson(
+        .map((json) => ExerciseLogDTO.fromJson(
             routineLogId: log.id, createdAt: log.createdAt.getDateTimeInUtc(), json: jsonDecode(json)))
         .toList();
     return RoutineLogDto(
@@ -125,7 +125,7 @@ class RoutineLogDto extends Log {
     String? summary,
     DateTime? startTime,
     DateTime? endTime,
-    List<ExerciseLogDto>? exerciseLogs,
+    List<ExerciseLogDTO>? exerciseLogs,
     String? owner,
     DateTime? createdAt,
     DateTime? updatedAt,

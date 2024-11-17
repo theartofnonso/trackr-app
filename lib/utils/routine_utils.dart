@@ -26,20 +26,20 @@ import '../widgets/routine/preview/set_rows/single_set_row.dart';
 import 'exercise_logs_utils.dart';
 import 'general_utils.dart';
 
-Future<List<ExerciseLogDto>?> reOrderExerciseLogs(
-    {required BuildContext context, required List<ExerciseLogDto> exerciseLogs}) async {
+Future<List<ExerciseLogDTO>?> reOrderExerciseLogs(
+    {required BuildContext context, required List<ExerciseLogDTO> exerciseLogs}) async {
   return await Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => ReOrderExercisesScreen(exercises: exerciseLogs)))
-      as List<ExerciseLogDto>?;
+      as List<ExerciseLogDTO>?;
 }
 
-List<ExerciseLogDto> whereOtherExerciseLogsExcept(
-    {required ExerciseLogDto exerciseLog, required List<ExerciseLogDto> others}) {
+List<ExerciseLogDTO> whereOtherExerciseLogsExcept(
+    {required ExerciseLogDTO exerciseLog, required List<ExerciseLogDTO> others}) {
   return others.where((otherExerciseLog) => otherExerciseLog.exerciseVariant.name != exerciseLog.exerciseVariant.name && otherExerciseLog.superSetId.isEmpty).toList();
 }
 
 List<TemplateChange> checkForChanges(
-    {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2, bool isEditor = true}) {
+    {required List<ExerciseLogDTO> exerciseLog1, required List<ExerciseLogDTO> exerciseLog2, bool isEditor = true}) {
   List<TemplateChange?> unsavedChangesMessage = [];
 
   /// Check if [ExerciseLogDto] have been added or removed
@@ -75,8 +75,8 @@ List<TemplateChange> checkForChanges(
   return unsavedChangesMessage.whereType<TemplateChange>().toList();
 }
 
-ExerciseLogDto? whereOtherExerciseInSuperSet(
-    {required ExerciseLogDto firstExercise, required List<ExerciseLogDto> exercises}) {
+ExerciseLogDTO? whereOtherExerciseInSuperSet(
+    {required ExerciseLogDTO firstExercise, required List<ExerciseLogDTO> exercises}) {
   return exercises.firstWhereOrNull((exercise) =>
       exercise.superSetId.isNotEmpty &&
       exercise.superSetId == firstExercise.superSetId &&
@@ -155,12 +155,12 @@ List<Widget> setsToWidgets(
   return widgets.isNotEmpty ? widgets : [emptyState];
 }
 
-Map<String, List<ExerciseLogDto>> groupExerciseLogsByExerciseId({required List<RoutineLogDto> routineLogs}) {
+Map<String, List<ExerciseLogDTO>> groupExerciseLogsByExerciseId({required List<RoutineLogDto> routineLogs}) {
   final exerciseLogs = routineLogs.expand((log) => log.exerciseLogs);
   return groupBy(exerciseLogs, (exerciseLog) => exerciseLog.exerciseVariant.name);
 }
 
-String superSetId({required ExerciseLogDto firstExerciseLog, required ExerciseLogDto secondExerciseLog}) {
+String superSetId({required ExerciseLogDTO firstExerciseLog, required ExerciseLogDTO secondExerciseLog}) {
   return "superset_id_${firstExerciseLog.exerciseVariant.name}_${secondExerciseLog.exerciseVariant.name}";
 }
 
@@ -178,7 +178,7 @@ String scheduledDaysSummary({required RoutineTemplateDto template, bool showFull
   return "No schedule";
 }
 
-List<ExerciseLogViewModel> exerciseLogsToViewModels({required List<ExerciseLogDto> exerciseLogs}) {
+List<ExerciseLogViewModel> exerciseLogsToViewModels({required List<ExerciseLogDTO> exerciseLogs}) {
   return exerciseLogs.map((exerciseLog) {
     return ExerciseLogViewModel(
         exerciseLog: exerciseLog,
@@ -191,7 +191,7 @@ String copyRoutineAsText(
     required String name,
     required String notes,
     DateTime? dateTime,
-    required List<ExerciseLogDto> exerciseLogs}) {
+    required List<ExerciseLogDTO> exerciseLogs}) {
   StringBuffer routineText = StringBuffer();
 
   routineText.writeln(name);

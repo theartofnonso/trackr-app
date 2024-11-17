@@ -15,8 +15,8 @@ import '../preview/set_headers/double_set_header.dart';
 import '../preview/set_headers/single_set_header.dart';
 
 class ExerciseLogWidget extends StatelessWidget {
-  final ExerciseLogDto exerciseLog;
-  final ExerciseLogDto? superSet;
+  final ExerciseLogDTO exerciseLog;
+  final ExerciseLogDTO? superSet;
   final EdgeInsetsGeometry? padding;
   final RoutinePreviewType previewType;
 

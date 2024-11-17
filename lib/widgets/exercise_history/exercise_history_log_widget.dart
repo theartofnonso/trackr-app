@@ -15,7 +15,7 @@ import '../routine/preview/set_headers/double_set_header.dart';
 import '../routine/preview/set_headers/single_set_header.dart';
 
 class ExerciseHistoryLogWidget extends StatelessWidget {
-  final ExerciseLogDto exerciseLog;
+  final ExerciseLogDTO exerciseLog;
 
   const ExerciseHistoryLogWidget({
     super.key,
@@ -62,7 +62,7 @@ class ExerciseHistoryLogWidget extends StatelessWidget {
 }
 
 class _ExerciseLogWidget extends StatelessWidget {
-  final ExerciseLogDto exerciseLog;
+  final ExerciseLogDTO exerciseLog;
 
   const _ExerciseLogWidget({required this.exerciseLog});
 

@@ -8,7 +8,7 @@ import 'package:tracker_app/colors.dart';
 import '../../dtos/exercise_log_dto.dart';
 
 class ReOrderExercisesScreen extends StatefulWidget {
-  final List<ExerciseLogDto> exercises;
+  final List<ExerciseLogDTO> exercises;
 
   const ReOrderExercisesScreen({super.key, required this.exercises});
 
@@ -18,7 +18,7 @@ class ReOrderExercisesScreen extends StatefulWidget {
 
 class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
   bool _hasReOrdered = false;
-  late List<ExerciseLogDto> _exercises;
+  late List<ExerciseLogDTO> _exercises;
 
   void _reOrderProcedures({required int oldIndex, required int newIndex}) {
     setState(() {
@@ -27,7 +27,7 @@ class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
       if (oldIndex < newIndex) {
         newIndex -= 1;
       }
-      final ExerciseLogDto item = _exercises.removeAt(oldIndex);
+      final ExerciseLogDTO item = _exercises.removeAt(oldIndex);
       _exercises.insert(newIndex, item);
     });
   }

@@ -27,7 +27,7 @@ class ExerciseHomeScreen extends StatefulWidget {
 class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
   ExerciseDTO? _exercise;
 
-  Map<String, List<ExerciseLogDto>>? _exerciseLogsByName;
+  Map<String, List<ExerciseLogDTO>>? _exerciseLogsByName;
 
   @override
   Widget build(BuildContext context) {

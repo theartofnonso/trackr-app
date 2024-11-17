@@ -6,7 +6,7 @@ import '../../../widgets/exercise_history/exercise_history_log_widget.dart';
 import '../../empty_state_screens/no_list_empty_state.dart';
 
 class HistoryScreen extends StatelessWidget {
-  final List<ExerciseLogDto> exerciseLogs;
+  final List<ExerciseLogDTO> exerciseLogs;
 
   const HistoryScreen({super.key, required this.exerciseLogs});
 

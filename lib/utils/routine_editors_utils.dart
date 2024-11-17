@@ -11,9 +11,9 @@ import 'dialog_utils.dart';
 
 void showSuperSetExercisePicker(
     {required BuildContext context,
-    required ExerciseLogDto firstExerciseLog,
-    required List<ExerciseLogDto> otherExerciseLogs,
-    required Function(ExerciseLogDto secondExercise) onSelected,
+    required ExerciseLogDTO firstExerciseLog,
+    required List<ExerciseLogDTO> otherExerciseLogs,
+    required Function(ExerciseLogDTO secondExercise) onSelected,
     required Function() selectExercisesInLibrary}) {
   displayBottomSheet(
     context: context,
@@ -28,7 +28,7 @@ void showSuperSetExercisePicker(
 
 void showSubstituteExercisePicker(
     {required BuildContext context,
-    required ExerciseLogDto primaryExerciseLog,
+    required ExerciseLogDTO primaryExerciseLog,
     required List<ExerciseDTO> otherExercises,
     required Function(ExerciseDTO secondaryExercise) onSelected,
     required Function(ExerciseDTO secondaryExercise) onRemoved,

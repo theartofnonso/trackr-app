@@ -13,7 +13,7 @@ class RoutineTemplateDto {
   final String name;
   final String notes;
   final RoutineScheduleType scheduleType;
-  final List<ExerciseLogDto> exerciseTemplates;
+  final List<ExerciseLogDTO> exerciseTemplates;
   final List<DayOfWeek> scheduledDays;
   final RoutineTemplatePlanDto? templatePlanDto;
   final DateTime? scheduledDate;
@@ -55,7 +55,7 @@ class RoutineTemplateDto {
     final name = json["name"] ?? "";
     final notes = json["notes"] ?? "";
     final exerciseLogJsons = json["exercises"] as List<dynamic>;
-    final exercises = exerciseLogJsons.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).toList();
+    final exercises = exerciseLogJsons.map((json) => ExerciseLogDTO.fromJson(json: jsonDecode(json))).toList();
     final scheduledDateString = json["scheduledDate"];
     final scheduledDate = scheduledDateString != null ? DateTime.parse(scheduledDateString) : null;
     final scheduleTypeString = json["scheduleType"];
@@ -111,7 +111,7 @@ class RoutineTemplateDto {
       String? notes,
       DateTime? startTime,
       DateTime? endTime,
-      List<ExerciseLogDto>? exerciseTemplates,
+      List<ExerciseLogDTO>? exerciseTemplates,
       List<DayOfWeek>? scheduledDays,
       DateTime? createdAt,
       DateTime? updatedAt,

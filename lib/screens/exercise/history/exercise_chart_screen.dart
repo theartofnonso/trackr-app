@@ -43,7 +43,7 @@ class ExerciseChartScreen extends StatefulWidget {
   final (String?, int) mostRepsSet;
   final (String?, int) mostRepsSession;
   final ExerciseVariantDTO exerciseVariant;
-  final List<ExerciseLogDto> exerciseLogs;
+  final List<ExerciseLogDTO> exerciseLogs;
 
   const ExerciseChartScreen(
       {super.key,

@@ -35,7 +35,7 @@ void main() {
       exerciseMetric: ExerciseMetric.weights,
       owner: "");
 
-  final lyingLegCurlExerciseLog1 = ExerciseLogDto(
+  final lyingLegCurlExerciseLog1 = ExerciseLogDTO(
       lyingLegCurlExercise.type,
       "routineLogId1",
       "superSetId",
@@ -48,7 +48,7 @@ void main() {
       ],
       DateTime(2023, 12, 1), []);
 
-  final lyingLegCurlExerciseLog2 = ExerciseLogDto(
+  final lyingLegCurlExerciseLog2 = ExerciseLogDTO(
       lyingLegCurlExercise.type,
       "routineLogId2",
       "superSetId",
@@ -61,7 +61,7 @@ void main() {
       ],
       DateTime(2023, 12, 1), []);
 
-  final lyingLegCurlExerciseLog3 = ExerciseLogDto(
+  final lyingLegCurlExerciseLog3 = ExerciseLogDTO(
       lyingLegCurlExercise.type,
       "routineLogId3",
       "superSetId",
@@ -74,7 +74,7 @@ void main() {
       ],
       DateTime(2023, 12, 1), []);
 
-  final plankExerciseLog1 = ExerciseLogDto(
+  final plankExerciseLog1 = ExerciseLogDTO(
       plankExercise.type,
       "routineLogId1",
       "superSetId",
@@ -87,7 +87,7 @@ void main() {
       ],
       DateTime.now(), []);
 
-  final plankExerciseLog2 = ExerciseLogDto(
+  final plankExerciseLog2 = ExerciseLogDTO(
       plankExercise.type,
       "routineLogId2",
       "superSetId",
@@ -174,7 +174,7 @@ void main() {
 
   group("Test PBs", () {
     test("Has [PBType.weight]", () {
-      final pbLog = ExerciseLogDto(
+      final pbLog = ExerciseLogDTO(
           lyingLegCurlExercise.type,
           "routineLogId4",
           "superSetId",
@@ -201,7 +201,7 @@ void main() {
     });
 
     test("Has [PBType.volume]", () {
-      final pbLog = ExerciseLogDto(
+      final pbLog = ExerciseLogDTO(
           lyingLegCurlExercise.type,
           "routineLogId4",
           "superSetId",
@@ -228,7 +228,7 @@ void main() {
     });
 
     test("Has [PBType.weight], PBType.volume]", () {
-      final pbLog = ExerciseLogDto(
+      final pbLog = ExerciseLogDTO(
           lyingLegCurlExercise.type,
           "routineLogId4",
           "superSetId",
@@ -261,7 +261,7 @@ void main() {
     });
 
     test("Has [PBType.duration]", () {
-      final pbLog = ExerciseLogDto(
+      final pbLog = ExerciseLogDTO(
           plankExercise.type,
           "routineLogId4",
           "superSetId",
@@ -288,7 +288,7 @@ void main() {
     });
 
     test("Has [PBType.weight, PBType.volume, PBType.durations]", () {
-      final pbLog1 = ExerciseLogDto(
+      final pbLog1 = ExerciseLogDTO(
           lyingLegCurlExercise.type,
           "routineLogId4",
           "superSetId",
@@ -301,7 +301,7 @@ void main() {
           ],
           DateTime.now(), []);
 
-      final pbLog2 = ExerciseLogDto(
+      final pbLog2 = ExerciseLogDTO(
           plankExercise.type,
           "routineLogId4",
           "superSetId",
@@ -367,7 +367,7 @@ group ("Template changes", () {
 
   test("Different exercises", () {
 
-    final newExerciseLog = ExerciseLogDto(
+    final newExerciseLog = ExerciseLogDTO(
         benchPressExercise.type,
         "routineLogId1",
         "superSetId",

@@ -5,7 +5,7 @@ import 'package:tracker_app/dtos/set_dto.dart';
 import 'exercise_dto.dart';
 import 'exercise_variant_dto.dart';
 
-class ExerciseLogDto {
+class ExerciseLogDTO {
   final String? routineLogId;
   final String superSetId;
   final ExerciseVariantDTO exerciseVariant;
@@ -13,7 +13,7 @@ class ExerciseLogDto {
   final List<SetDto> sets;
   final DateTime createdAt;
 
-  const ExerciseLogDto(
+  const ExerciseLogDTO(
       {required this.routineLogId,
       required this.superSetId,
       required this.exerciseVariant,
@@ -32,7 +32,7 @@ class ExerciseLogDto {
     });
   }
 
-  ExerciseLogDto copyWith(
+  ExerciseLogDTO copyWith(
       {String? routineLogId,
       String? superSetId,
       String? exerciseId,
@@ -40,7 +40,7 @@ class ExerciseLogDto {
       String? notes,
       List<SetDto>? sets,
       DateTime? createdAt}) {
-    return ExerciseLogDto(
+    return ExerciseLogDTO(
         routineLogId: routineLogId ?? this.routineLogId,
         superSetId: superSetId ?? this.superSetId,
         exerciseVariant: exerciseVariant ?? this.exerciseVariant,
@@ -49,12 +49,12 @@ class ExerciseLogDto {
         createdAt: createdAt ?? this.createdAt);
   }
 
-  factory ExerciseLogDto.empty({required ExerciseDTO exercise}) {
-    return ExerciseLogDto(
+  factory ExerciseLogDTO.empty({required ExerciseDTO exercise}) {
+    return ExerciseLogDTO(
         routineLogId: "", superSetId: "", exerciseVariant: exercise.defaultVariant(), notes: "", sets: [], createdAt: DateTime.now());
   }
 
-  factory ExerciseLogDto.fromJson({String? routineLogId, DateTime? createdAt, required Map<String, dynamic> json}) {
+  factory ExerciseLogDTO.fromJson({String? routineLogId, DateTime? createdAt, required Map<String, dynamic> json}) {
     final superSetId = json["superSetId"] ?? "";
     final exerciseJson = json["exercise"] as Map<String, dynamic>;
     final exercise = ExerciseVariantDTO.fromJson(exerciseJson);
@@ -62,7 +62,7 @@ class ExerciseLogDto {
     final setsJsons = json["sets"] as List<dynamic>;
     final sets = setsJsons.map((json) => SetDto.fromJson(jsonDecode(json))).toList();
 
-    return ExerciseLogDto(
+    return ExerciseLogDTO(
         routineLogId: routineLogId,
         superSetId: superSetId,
         exerciseVariant: exercise,

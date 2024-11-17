@@ -287,7 +287,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     }
   }
 
-  void _generateSummary({required List<ExerciseLogDto> logs}) async {
+  void _generateSummary({required List<ExerciseLogDTO> logs}) async {
     final log = _log;
 
     if (log == null) return;
@@ -430,7 +430,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     });
   }
 
-  List<ExerciseLogViewModel> _exerciseLogsToViewModels({required List<ExerciseLogDto> exerciseLogs}) {
+  List<ExerciseLogViewModel> _exerciseLogsToViewModels({required List<ExerciseLogDTO> exerciseLogs}) {
     return exerciseLogs
         .map((exerciseLog) => ExerciseLogViewModel(
             exerciseLog: exerciseLog,

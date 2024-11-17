@@ -416,7 +416,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
       final exerciseNames = workout["exercises"] as List<dynamic>;
       final exerciseTemplates = exerciseNames.map((exerciseName) {
         final exerciseInLibrary = exercises.firstWhere((exercise) => exercise.name == exerciseName);
-        final exerciseTemplate = ExerciseLogDto.empty(exercise: exerciseInLibrary);
+        final exerciseTemplate = ExerciseLogDTO.empty(exercise: exerciseInLibrary);
         return exerciseTemplate;
       }).toList();
       return RoutineTemplateDto(

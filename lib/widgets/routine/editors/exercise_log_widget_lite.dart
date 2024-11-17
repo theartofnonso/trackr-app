@@ -12,8 +12,8 @@ import '../../chips/squared_chips.dart';
 
 class ExerciseLogLiteWidget extends StatelessWidget {
   final RoutineEditorMode editorType;
-  final ExerciseLogDto exerciseLogDto;
-  final ExerciseLogDto? superSet;
+  final ExerciseLogDTO exerciseLogDto;
+  final ExerciseLogDTO? superSet;
   final VoidCallback onMaximise;
 
   const ExerciseLogLiteWidget(

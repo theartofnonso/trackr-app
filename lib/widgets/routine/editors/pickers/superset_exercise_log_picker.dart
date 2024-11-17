@@ -8,8 +8,8 @@ import '../../../empty_states/list_tile_empty_state.dart';
 
 class SuperSetExerciseLogPicker extends StatelessWidget {
   final String title;
-  final List<ExerciseLogDto> exercises;
-  final void Function(ExerciseLogDto exericseLog) onSelect;
+  final List<ExerciseLogDTO> exercises;
+  final void Function(ExerciseLogDTO exericseLog) onSelect;
   final void Function() onSelectExercisesInLibrary;
 
   const SuperSetExerciseLogPicker(

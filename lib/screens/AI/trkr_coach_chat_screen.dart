@@ -213,7 +213,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
             final workoutCaption = json["workout_caption"] ?? "A workout created by TRKR Coach";
             final exerciseTemplates = exerciseNames.map((exerciseId) {
               final exerciseInLibrary = exercises.firstWhere((exercise) => exercise.name == exerciseId);
-              return ExerciseLogDto.empty(exercise: exerciseInLibrary);
+              return ExerciseLogDTO.empty(exercise: exerciseInLibrary);
             }).toList();
             templateDto = RoutineTemplateDto(
                 id: "",

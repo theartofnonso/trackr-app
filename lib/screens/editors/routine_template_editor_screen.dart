@@ -56,7 +56,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
         });
   }
 
-  void _showSuperSetExercisePicker({required ExerciseLogDto firstExerciseLog}) {
+  void _showSuperSetExercisePicker({required ExerciseLogDTO firstExerciseLog}) {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
     final otherExercises = whereOtherExerciseLogsExcept(exerciseLog: firstExerciseLog, others: controller.exerciseLogs);
     showSuperSetExercisePicker(
@@ -77,7 +77,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
         });
   }
 
-  void _showReplaceExercisePicker({required ExerciseLogDto oldExerciseLog}) {
+  void _showReplaceExercisePicker({required ExerciseLogDTO oldExerciseLog}) {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
     final excludeExercises = controller.exerciseLogs.map((exercise) => exercise.exerciseVariant).toList();
 
@@ -151,7 +151,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   }
 
   RoutineTemplateDto _getUpdatedRoutineTemplate(
-      {required RoutineTemplateDto template, List<ExerciseLogDto>? updatedExerciseLogs}) {
+      {required RoutineTemplateDto template, List<ExerciseLogDTO>? updatedExerciseLogs}) {
     final exerciseProvider = Provider.of<ExerciseLogController>(context, listen: false);
     final exerciseLogs = updatedExerciseLogs ?? exerciseProvider.mergeExerciseLogsAndSets();
 
@@ -193,7 +193,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     }
   }
 
-  void _reOrderExerciseLogs({required List<ExerciseLogDto> exerciseLogs}) async {
+  void _reOrderExerciseLogs({required List<ExerciseLogDTO> exerciseLogs}) async {
     final orderedList = await reOrderExerciseLogs(context: context, exerciseLogs: exerciseLogs);
     if (!mounted) {
       return;
@@ -232,7 +232,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     return _minimisedExerciseLogCards.firstWhereOrNull((exerciseId) => exerciseId == id) != null;
   }
 
-  void _updateExerciseLog(ExerciseLogDto exerciseLog) async {
+  void _updateExerciseLog(ExerciseLogDTO exerciseLog) async {
     Provider.of<ExerciseLogController>(context, listen: false).updateExerciseLog(newExerciseLog: exerciseLog);
   }
 
