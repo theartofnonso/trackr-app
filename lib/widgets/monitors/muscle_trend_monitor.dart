@@ -31,7 +31,7 @@ class MuscleTrendMonitor extends StatelessWidget {
         strokeWidth: strokeWidth,
         backgroundColor: sapphireDark80,
         strokeCap: strokeCap ?? StrokeCap.butt,
-        valueColor: AlwaysStoppedAnimation<Color>(muscleFamilyFrequencyColor(value: value)),
+        valueColor: AlwaysStoppedAnimation<Color>(muscleGroupFrequencyColor(value: value)),
       ),
     );
   }

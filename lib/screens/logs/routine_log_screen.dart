@@ -14,7 +14,7 @@ import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/utils/https_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/backgrounds/trkr_loading_screen.dart';
-import 'package:tracker_app/widgets/chart/muscle_group_family_chart.dart';
+import 'package:tracker_app/widgets/chart/muscle_group_chart.dart';
 
 import '../../../colors.dart';
 import '../../../dtos/exercise_log_dto.dart';
@@ -86,7 +86,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     final numberOfCompletedSets = updatedExerciseLogs.expand((exerciseLog) => exerciseLog.sets);
 
-    final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: updatedExerciseLogs);
+    final muscleGroupFamilyFrequencies = muscleGroupFrequency(exerciseLogs: updatedExerciseLogs);
 
     final calories = calculateCalories(
         duration: updatedLog.duration(), reps: routineUserController.weight(), activity: log.activityType);
@@ -233,7 +233,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                                       style: GoogleFonts.ubuntu(
                                           color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
                                   const SizedBox(height: 10),
-                                  MuscleGroupFamilyChart(
+                                  MuscleGroupChart(
                                       frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
                                 ],
                               ),

@@ -1,42 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../dtos/appsync/routine_log_dto.dart';
-import '../../utils/exercise_logs_utils.dart';
-import '../../utils/general_utils.dart';
-import '../../utils/string_utils.dart';
-import '../chart/muscle_group_family_frequency_chart.dart';
 
-class MuscleGroupFamilyFrequencyWidget extends StatefulWidget {
+import '../../dtos/appsync/routine_log_dto.dart';
+import '../../enums/muscle_group_enums.dart';
+import '../../utils/exercise_logs_utils.dart';
+import '../../utils/string_utils.dart';
+import '../chart/muscle_group_frequency_chart.dart';
+
+class MuscleGroupFrequencyWidget extends StatefulWidget {
   final List<RoutineLogDto> logs;
 
-  const MuscleGroupFamilyFrequencyWidget({super.key, required this.logs});
+  const MuscleGroupFrequencyWidget({super.key, required this.logs});
 
   @override
-  State<MuscleGroupFamilyFrequencyWidget> createState() => _MuscleGroupFamilyFrequencyWidgetState();
+  State<MuscleGroupFrequencyWidget> createState() => _MuscleGroupFrequencyWidgetState();
 }
 
-class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFrequencyWidget> {
+class _MuscleGroupFrequencyWidgetState extends State<MuscleGroupFrequencyWidget> {
   bool _minimized = true;
 
   @override
   Widget build(BuildContext context) {
-
     final exerciseLogs = widget.logs
         .map((log) => completedExercises(exerciseLogs: log.exerciseLogs))
-        .expand((exerciseLogs) => exerciseLogs).toList();
+        .expand((exerciseLogs) => exerciseLogs)
+        .toList();
 
-    final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequencyOn4WeeksScale(exerciseLogs: exerciseLogs);
+    final muscleGroupFrequencies = muscleGroupFrequencyOn4WeeksScale(exerciseLogs: exerciseLogs);
 
-    final muscleGroupFamilies = muscleGroupFamilyFrequencies.keys.toSet();
+    final muscleGroupFrequencyKeys = muscleGroupFrequencies.keys.toSet();
 
-    final listOfPopularMuscleGroupFamilies = popularMuscleGroupFamilies().toSet();
-
-    final untrainedMuscleGroups = listOfPopularMuscleGroupFamilies.difference(muscleGroupFamilies);
+    final untrainedMuscleGroups = MuscleGroup.values.toSet().difference(muscleGroupFrequencyKeys);
 
     String untrainedMuscleGroupsNames = joinWithAnd(items: untrainedMuscleGroups.map((muscle) => muscle.name).toList());
 
-    if (untrainedMuscleGroups.length == popularMuscleGroupFamilies().length) {
+    if (untrainedMuscleGroups.length == MuscleGroup.values.length) {
       untrainedMuscleGroupsNames = "any muscle groups";
     }
 
@@ -49,7 +48,7 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
             Text("Muscle Groups Frequency".toUpperCase(),
                 style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
             const Spacer(),
-            if (muscleGroupFamilyFrequencies.length > 3)
+            if (muscleGroupFrequencies.length > 3)
               FaIcon(_minimized ? FontAwesomeIcons.angleDown : FontAwesomeIcons.angleUp,
                   color: Colors.white70, size: 16),
           ]),
@@ -58,7 +57,7 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
               "Train a variety of muscle groups to avoid muscle imbalances and prevent injury. On average each muscle group should be trained at least 2 times a week.",
               style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
           const SizedBox(height: 10),
-          MuscleGroupFamilyFrequencyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
+          MuscleGroupFrequencyChart(frequencyData: muscleGroupFrequencies, minimized: _minimized),
           if (untrainedMuscleGroups.isNotEmpty)
             Column(
               children: [

@@ -73,9 +73,15 @@ class RoutinePlansHome extends StatelessWidget {
                           crossAxisSpacing: 10.0,
                           children: children),
                     )
-                  : const NoListEmptyState(
-                      icon: FaIcon(FontAwesomeIcons.solidLightbulb),
-                      message: "Tap the + button to create a workout plan",
+                  : Expanded(
+                      child: const NoListEmptyState(
+                        icon: FaIcon(
+                          FontAwesomeIcons.solidLightbulb,
+                          color: Colors.white12,
+                          size: 48,
+                        ),
+                        message: "Tap the + button to create a workout plan",
+                      ),
                     ),
             ],
           )),

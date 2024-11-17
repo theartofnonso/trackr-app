@@ -19,7 +19,7 @@ void main() {
     description: '',
     modality: ExerciseModality.bilateral,
     equipment: ExerciseMetric.machine,
-    movement: CoreMovement.hinge,
+    coreMovement: CoreMovement.hinge,
   );
 
   final quadExercise = ExerciseDTO(
@@ -30,7 +30,7 @@ void main() {
     description: '',
     modality: ExerciseModality.bilateral,
     equipment: ExerciseMetric.machine,
-    movement: CoreMovement.squat,
+    coreMovement: CoreMovement.squat,
   );
 
   final backExercise = ExerciseDTO(
@@ -41,7 +41,7 @@ void main() {
       description: '',
       modality: ExerciseModality.bilateral,
       equipment: ExerciseMetric.machine,
-      movement: CoreMovement.pull);
+      coreMovement: CoreMovement.pull);
 
   final trapsExercise = ExerciseDTO(
       name: "Traps Exercise",
@@ -51,7 +51,7 @@ void main() {
       description: '',
       modality: ExerciseModality.bilateral,
       equipment: ExerciseMetric.machine,
-      movement: CoreMovement.pull);
+      coreMovement: CoreMovement.pull);
 
   final chestExercise = ExerciseDTO(
       name: "Chest Exercise",
@@ -61,7 +61,7 @@ void main() {
       description: '',
       modality: ExerciseModality.bilateral,
       equipment: ExerciseMetric.machine,
-      movement: CoreMovement.push);
+      coreMovement: CoreMovement.push);
 
   final shouldersExercise = ExerciseDTO(
       name: "Shoulders Exercise",
@@ -71,7 +71,7 @@ void main() {
       description: '',
       modality: ExerciseModality.bilateral,
       equipment: ExerciseMetric.machine,
-      movement: CoreMovement.push);
+      coreMovement: CoreMovement.push);
 
   final bicepsExercise = ExerciseDTO(
       name: "Biceps Exercise",
@@ -81,7 +81,7 @@ void main() {
       description: '',
       modality: ExerciseModality.bilateral,
       equipment: ExerciseMetric.machine,
-      movement: CoreMovement.push);
+      coreMovement: CoreMovement.push);
 
   final tricepsExercise = ExerciseDTO(
       name: "Triceps Exercise",
@@ -91,7 +91,7 @@ void main() {
       description: '',
       modality: ExerciseModality.bilateral,
       equipment: ExerciseMetric.machine,
-      movement: CoreMovement.push);
+      coreMovement: CoreMovement.push);
 
   final abs = ExerciseDTO(
       name: "Abs Exercise",
@@ -101,7 +101,7 @@ void main() {
       description: '',
       modality: ExerciseModality.bilateral,
       equipment: ExerciseMetric.machine,
-      movement: CoreMovement.pull);
+      coreMovement: CoreMovement.pull);
 
   final neck = ExerciseDTO(
       name: "Neck Exercise",
@@ -111,7 +111,7 @@ void main() {
       description: '',
       modality: ExerciseModality.bilateral,
       equipment: ExerciseMetric.machine,
-      movement: CoreMovement.others);
+      coreMovement: CoreMovement.others);
 
   final dayOneDateTimes = generateWeeklyDateTimes(size: 4, startDate: DateTime(2024, 1, 1));
   final dayTwoDateTimes = generateWeeklyDateTimes(size: 4, startDate: DateTime(2024, 1, 3));
@@ -432,7 +432,7 @@ void main() {
       ...quad2ExerciseLogs,
     ];
 
-    final frequencyDistribution = muscleGroupFamilyFrequencyOn4WeeksScale(exerciseLogs: exerciseLogs);
+    final frequencyDistribution = muscleGroupFrequencyOn4WeeksScale(exerciseLogs: exerciseLogs);
 
     final legMuscleGroup = frequencyDistribution.entries;
 
@@ -443,7 +443,7 @@ void main() {
   test("Has completed 50% monthly single muscle target", () {
     final exerciseLogs = [...hamstring1ExerciseLogs];
 
-    final frequencyDistribution = muscleGroupFamilyFrequencyOn4WeeksScale(exerciseLogs: exerciseLogs);
+    final frequencyDistribution = muscleGroupFrequencyOn4WeeksScale(exerciseLogs: exerciseLogs);
 
     final legMuscleGroup = frequencyDistribution.entries;
 

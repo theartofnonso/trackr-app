@@ -40,7 +40,7 @@ class MuscleScoreChartWidget extends StatelessWidget {
     final chartPoints =
         scoreCount.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
 
-    final scoreColors = scoreCount.map((score) => muscleFamilyFrequencyColor(value: score / 100)).toList();
+    final scoreColors = scoreCount.map((score) => muscleGroupFrequencyColor(value: score / 100)).toList();
 
     final dateTimes = scoreMonths.map((month) => month.abbreviatedMonth()).toList();
 

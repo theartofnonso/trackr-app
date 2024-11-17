@@ -159,7 +159,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   ],
                 ),
                 const SizedBox(height: 8),
-                OutlineListTile(onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "manage exercises"),
+                OutlineListTile(onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "view insights"),
                 if (Platform.isIOS)
                   Column(children: [
                     const SizedBox(height: 8),
@@ -171,7 +171,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 const SizedBox(height: 8),
                 OutlineListTile(onTap: _sendFeedback, title: "Feedback", trailing: "Help us improve"),
                 const SizedBox(height: 8),
-                OutlineListTile(onTap: _visitTRKR, title: "Visit TRKR"),
+                OutlineListTile(onTap: _visitTRKR, title: "Visit TRKR", trailing: "Follow us on socials"),
                 const SizedBox(height: 8),
                 OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
                 const SizedBox(height: 8),

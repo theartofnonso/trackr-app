@@ -63,8 +63,8 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
 
     final newMilestones = routineLogController.newMilestones;
 
-    final muscleGroupFamilyFrequencyData =
-        muscleGroupFamilyFrequency(exerciseLogs: updatedLog.exerciseLogs, includeSecondaryMuscleGroups: false);
+    final muscleGroupFrequencyData =
+        muscleGroupFrequency(exerciseLogs: updatedLog.exerciseLogs, includeSecondaryMuscleGroups: false);
 
     List<Widget> milestoneShareAssets = [];
     final milestoneShareAssetsKeys = [];
@@ -101,7 +101,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
         SessionMilestoneShareable(label: "${routineLogsForTheYear.length}th", image: _image),
       ...pbShareAssets,
       RoutineLogShareableLite(
-          log: updatedLog, frequencyData: muscleGroupFamilyFrequencyData, pbs: pbShareAssets.length, image: _image),
+          log: updatedLog, frequencyData: muscleGroupFrequencyData, pbs: pbShareAssets.length, image: _image),
     ];
 
     final pagesKeys = [

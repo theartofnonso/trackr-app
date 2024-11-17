@@ -285,24 +285,23 @@ TemplateChange? hasSetValueChanged({
   return exerciseLog1Volume != exerciseLog2Volume ? TemplateChange.setValue : null;
 }
 
-Map<MuscleGroupFamily, double> muscleGroupFamilyFrequency(
-    {required List<ExerciseLogDto> exerciseLogs, bool includeSecondaryMuscleGroups = true}) {
-  final frequencyMap = <MuscleGroupFamily, int>{};
+Map<MuscleGroup, double> muscleGroupFrequency({required List<ExerciseLogDto> exerciseLogs, bool includeSecondaryMuscleGroups = true}) {
+  final frequencyMap = <MuscleGroup, int>{};
 
   // Counting the occurrences of each MuscleGroup
   for (var log in exerciseLogs) {
     for (final muscleGroup in log.exerciseVariant.primaryMuscleGroups) {
-      frequencyMap.update(muscleGroup.family, (value) => value + 1, ifAbsent: () => 1);
+      frequencyMap.update(muscleGroup, (value) => value + 1, ifAbsent: () => 1);
     }
     if (includeSecondaryMuscleGroups) {
       for (var muscleGroup in log.exerciseVariant.secondaryMuscleGroups) {
-        frequencyMap.update(muscleGroup.family, (value) => value + 1, ifAbsent: () => 1);
+        frequencyMap.update(muscleGroup, (value) => value + 1, ifAbsent: () => 1);
       }
     }
   }
 
   int totalCount = frequencyMap.values.sum;
-  final scaledFrequencyMap = <MuscleGroupFamily, double>{};
+  final scaledFrequencyMap = <MuscleGroup, double>{};
 
   // Scaling the frequencies from 0 to 1
   frequencyMap.forEach((key, value) {
@@ -311,39 +310,37 @@ Map<MuscleGroupFamily, double> muscleGroupFamilyFrequency(
 
   final sortedEntries = scaledFrequencyMap.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
 
-  final sortedFrequencyMap = LinkedHashMap<MuscleGroupFamily, double>.fromEntries(sortedEntries);
+  final sortedFrequencyMap = LinkedHashMap<MuscleGroup, double>.fromEntries(sortedEntries);
   return sortedFrequencyMap;
 }
 
-Map<MuscleGroupFamily, int> _muscleGroupFamilyCountOn4WeeksScale({required List<ExerciseLogDto> exerciseLogs}) {
-  final frequencyMap = <MuscleGroupFamily, int>{};
+Map<MuscleGroup, int> _muscleGroupCountOn4WeeksScale({required List<ExerciseLogDto> exerciseLogs}) {
+  final frequencyMap = <MuscleGroup, int>{};
 
   final exerciseLogsByDay = groupBy(exerciseLogs, (log) => log.createdAt.day);
 
   // Counting the occurrences of each MuscleGroup
   for (var logAndDate in exerciseLogsByDay.entries) {
-    final primaryMuscleGroupFamilies = logAndDate.value
+    final primaryMuscleGroups = logAndDate.value
         .map((log) => log.exerciseVariant.primaryMuscleGroups)
-        .expand((muscleGroup) => muscleGroup)
-        .map((muscleGroup) => muscleGroup.family);
-    final secondaryMuscleGroupFamilies = logAndDate.value
+        .expand((muscleGroup) => muscleGroup);
+    final secondaryMuscleGroups = logAndDate.value
         .map((log) => log.exerciseVariant.secondaryMuscleGroups)
-        .expand((muscleGroup) => muscleGroup)
-        .map((muscleGroup) => muscleGroup.family);
-    final muscleGroupFamilies = {...primaryMuscleGroupFamilies, ...secondaryMuscleGroupFamilies};
+        .expand((muscleGroup) => muscleGroup);
+    final muscleGroups = {...primaryMuscleGroups, ...secondaryMuscleGroups};
 
-    for (var family in muscleGroupFamilies) {
-      frequencyMap.update(family, (value) => value >= 8 ? 8 : value + 1, ifAbsent: () => 1);
+    for (final muscleGroup in muscleGroups) {
+      frequencyMap.update(muscleGroup, (value) => value >= 8 ? 8 : value + 1, ifAbsent: () => 1);
     }
   }
 
   return frequencyMap;
 }
 
-Map<MuscleGroupFamily, double> muscleGroupFamilyFrequencyOn4WeeksScale({required List<ExerciseLogDto> exerciseLogs}) {
-  final frequencyMap = _muscleGroupFamilyCountOn4WeeksScale(exerciseLogs: exerciseLogs);
+Map<MuscleGroup, double> muscleGroupFrequencyOn4WeeksScale({required List<ExerciseLogDto> exerciseLogs}) {
+  final frequencyMap = _muscleGroupCountOn4WeeksScale(exerciseLogs: exerciseLogs);
 
-  final scaledFrequencyMap = <MuscleGroupFamily, double>{};
+  final scaledFrequencyMap = <MuscleGroup, double>{};
 
   // Scaling the frequencies from 0 to 1
   frequencyMap.forEach((key, value) {
@@ -353,13 +350,13 @@ Map<MuscleGroupFamily, double> muscleGroupFamilyFrequencyOn4WeeksScale({required
 
   final sortedEntries = scaledFrequencyMap.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
 
-  final sortedFrequencyMap = LinkedHashMap<MuscleGroupFamily, double>.fromEntries(sortedEntries);
+  final sortedFrequencyMap = LinkedHashMap<MuscleGroup, double>.fromEntries(sortedEntries);
 
   return sortedFrequencyMap;
 }
 
 double cumulativeMuscleGroupFamilyFrequency({required List<ExerciseLogDto> exerciseLogs}) {
-  final frequencyEntries = _muscleGroupFamilyCountOn4WeeksScale(exerciseLogs: exerciseLogs).entries;
+  final frequencyEntries = _muscleGroupCountOn4WeeksScale(exerciseLogs: exerciseLogs).entries;
 
   final frequencyMap = Map.fromEntries(frequencyEntries);
 

@@ -26,13 +26,16 @@ class HistoryScreen extends StatelessWidget {
                       separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
                       itemCount: exerciseLogs.length),
                 )
-              : const NoListEmptyState(
-                  icon: FaIcon(
-                    FontAwesomeIcons.solidLightbulb,
-                    color: Colors.white70,
+              : Expanded(
+                child: const NoListEmptyState(
+                    icon: FaIcon(
+                      FontAwesomeIcons.solidLightbulb,
+                      color: Colors.white12,
+                      size: 48,
+                    ),
+                    message: "It might feel quiet now, but your history will soon appear here.",
                   ),
-                  message: "It might feel quiet now, but your history will soon appear here.",
-                ),
+              ),
         ],
       ),
     );

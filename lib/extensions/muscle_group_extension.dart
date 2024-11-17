@@ -11,16 +11,11 @@ extension MuscleGroupExtension on MuscleGroup {
       MuscleGroup.biceps => "biceps",
       MuscleGroup.calves => "calves",
       MuscleGroup.chest => "chest",
-      MuscleGroup.forearms => "forearms",
       MuscleGroup.shoulders => "frontshoulder",
       MuscleGroup.glutes => "glutes",
       MuscleGroup.hamstrings => "hamstrings",
-      MuscleGroup.lats => "lats",
-      MuscleGroup.neck => "neck",
-      MuscleGroup.traps => "traps",
       MuscleGroup.triceps => "triceps",
       MuscleGroup.quadriceps => "quadriceps",
-      _ => "",
     };
   }
 }

@@ -24,6 +24,7 @@ import '../../../colors.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../enums/exercise/core_movements_enum.dart';
 import '../../../enums/exercise/exercise_modality_enum.dart';
+import '../../../enums/exercise/exercise_movement_enum.dart';
 import '../../../enums/exercise/exercise_position_enum.dart';
 import '../../../enums/exercise/exercise_stance_enum.dart';
 import '../../../enums/routine_editor_type_enums.dart';
@@ -32,6 +33,7 @@ import '../../../utils/general_utils.dart';
 import '../../../utils/one_rep_max_calculator.dart';
 import '../../pickers/exercise/exercise_metric_picker.dart';
 import '../../pickers/exercise/exercise_modality_picker.dart';
+import '../../pickers/exercise/exercise_movement_picker.dart';
 import '../../pickers/exercise/exercise_position_picker.dart';
 import '../../pickers/exercise/exercise_stance_picker.dart';
 
@@ -286,7 +288,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                       builder: (context) =>
                           ExerciseHomeScreen(exerciseName: widget.exerciseLogDto.exerciseVariant.name)));
                 },
-                child: Text(widget.exerciseLogDto.exerciseVariant.name,
+                child: Text(exerciseVariant.name,
                     style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
               ),
               const Spacer(),
@@ -318,15 +320,15 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             spacing: 8,
             children: [
               OpacityButtonWidget(
-                label: widget.exerciseLogDto.exerciseVariant.equipment.name.toUpperCase(),
-                buttonColor: Colors.orange,
+                label: exerciseVariant.equipment.name.toUpperCase(),
+                buttonColor: vibrantGreen,
                 padding: EdgeInsets.symmetric(horizontal: 0),
-                textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.orange),
+                textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: vibrantGreen),
                 onPressed: () => _showExerciseEquipmentPicker(equipment: exercise.equipment),
               ),
               if (exercise.modes.length > 1)
                 OpacityButtonWidget(
-                  label: widget.exerciseLogDto.exerciseVariant.mode.name.toUpperCase(),
+                  label: exerciseVariant.mode.name.toUpperCase(),
                   buttonColor: Colors.redAccent,
                   padding: EdgeInsets.symmetric(horizontal: 0),
                   textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.redAccent),
@@ -334,29 +336,37 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 ),
               if (exercise.metrics.length > 1)
                 OpacityButtonWidget(
-                  label: widget.exerciseLogDto.exerciseVariant.metric.name.toUpperCase(),
+                  label: exerciseVariant.metric.name.toUpperCase(),
                   buttonColor: vibrantBlue,
                   padding: EdgeInsets.symmetric(horizontal: 0),
                   textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: vibrantBlue),
                   onPressed: () => _showExerciseMetricPicker(metrics: exercise.metrics),
                 ),
               if (exercise.positions.length > 1 &&
-                  (exerciseVariant.movement == CoreMovement.push || exerciseVariant.movement == CoreMovement.pull))
+                  (exerciseVariant.coreMovement == CoreMovement.push ||
+                      exerciseVariant.coreMovement == CoreMovement.pull))
                 OpacityButtonWidget(
-                  label: widget.exerciseLogDto.exerciseVariant.position.name.toUpperCase(),
-                  buttonColor: Colors.deepPurple,
+                  label: exerciseVariant.position.name.toUpperCase(),
+                  buttonColor: Colors.cyanAccent,
                   padding: EdgeInsets.symmetric(horizontal: 0),
-                  textStyle:
-                      GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.deepPurpleAccent),
+                  textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.cyanAccent),
                   onPressed: () => _showExercisePositionPicker(positions: exercise.positions),
                 ),
               if (exercise.stances.length > 1)
                 OpacityButtonWidget(
-                  label: widget.exerciseLogDto.exerciseVariant.stance.name.toUpperCase(),
-                  buttonColor: Colors.pink,
+                  label: exerciseVariant.stance.name.toUpperCase(),
+                  buttonColor: Colors.purpleAccent,
                   padding: EdgeInsets.symmetric(horizontal: 0),
-                  textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.pink),
+                  textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.purpleAccent),
                   onPressed: () => _showExerciseStancePicker(stances: exercise.stances),
+                ),
+              if (exercise.movements.length > 1)
+                OpacityButtonWidget(
+                  label: exerciseVariant.movement.name.toUpperCase(),
+                  buttonColor: Colors.orange,
+                  padding: EdgeInsets.symmetric(horizontal: 0),
+                  textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.orange),
+                  onPressed: () => _showExerciseMovementPicker(movements: exercise.movements),
                 ),
             ],
           ),
@@ -383,7 +393,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             cursorColor: Colors.white,
             keyboardType: TextInputType.text,
             textCapitalization: TextCapitalization.sentences,
-            style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+            style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white.withOpacity(0.8), fontSize: 14),
           ),
           const SizedBox(height: 12),
           switch (exerciseVariant.metric) {
@@ -553,6 +563,27 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                     widget.onUpdate(updatedExerciseLog);
                   },
                   rightActionLabel: 'Switch to ${newStance.name}');
+            }));
+  }
+
+  void _showExerciseMovementPicker({required List<ExerciseMovement> movements}) {
+    displayBottomSheet(
+        height: 300,
+        context: context,
+        child: ExerciseMovementPicker(
+            initialMovement: widget.exerciseLogDto.exerciseVariant.movement,
+            movements: movements,
+            onSelect: (newMovement) {
+              _onUpdateExerciseLog(
+                  title: 'Start training ${newMovement.name}',
+                  message: 'Do you want to update your training movement?',
+                  callback: () {
+                    _closeDialog();
+                    final updatedExercise = widget.exerciseLogDto.exerciseVariant.copyWith(movement: newMovement);
+                    final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: updatedExercise);
+                    widget.onUpdate(updatedExerciseLog);
+                  },
+                  rightActionLabel: 'Switch to ${newMovement.name}');
             }));
   }
 

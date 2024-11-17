@@ -50,14 +50,12 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
   RoutinePlanWeeks _weeks = RoutinePlanWeeks.four;
   RoutinePlanSessions _sessions = RoutinePlanSessions.two;
 
-  final List<MuscleGroupFamily> _selectedMuscleGroupFamilies = [MuscleGroupFamily.legs];
+  final List<MuscleGroup> _selectedMuscleGroups = [MuscleGroup.hamstrings];
 
   final List<ExerciseDTO> _armsExercises = [];
   final List<ExerciseDTO> _backExercises = [];
   final List<ExerciseDTO> _chestExercises = [];
-  final List<ExerciseDTO> _coreExercises = [];
   final List<ExerciseDTO> _legExercises = [];
-  final List<ExerciseDTO> _neckExercises = [];
   final List<ExerciseDTO> _shoulderExercises = [];
 
   @override
@@ -72,31 +70,31 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
     final inactiveStyle = GoogleFonts.ubuntu(color: Colors.white70, fontSize: 22, fontWeight: FontWeight.w600);
     final activeStyle = GoogleFonts.ubuntu(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w600);
 
-    final muscleGroupFamilies = MuscleGroupFamily.values
-        .map((family) => Padding(
+    final muscleGroupFamilies = MuscleGroup.values
+        .map((muscleGroup) => Padding(
               padding: const EdgeInsets.only(right: 8.0, bottom: 6),
               child: OpacityButtonWidget(
-                  onPressed: () => _onSelectMuscleGroupFamily(newFamily: family),
+                  onPressed: () => _onSelectMuscleGroup(newMuscleGroup: muscleGroup),
                   padding: EdgeInsets.symmetric(vertical: 6, horizontal: 10),
-                  buttonColor: _getMuscleGroupFamily(family: family) != null ? vibrantGreen : null,
-                  label: family.name),
+                  buttonColor: _getMuscleGroup(muscleGroup: muscleGroup) != null ? vibrantGreen : null,
+                  label: muscleGroup.name),
             ))
         .toList();
 
-    final exercisePickers = _selectedMuscleGroupFamilies
+    final exercisePickers = _selectedMuscleGroups
         .map(
-          (family) => Padding(
+          (muscleGroup) => Padding(
             padding: const EdgeInsets.only(bottom: 2.0),
             child: _FavouriteExercisePicker(
-              family: family,
+              muscleGroup: muscleGroup,
               inactiveStyle: inactiveStyle,
               activeStyle: activeStyle,
               onSelect: (ExerciseDTO exercise) {
-                _onSelectExercise(exercise: exercise, family: family);
+                _onSelectExercise(exercise: exercise, muscleGroup: muscleGroup);
               },
-              exercises: _getSelectedExercises(family: family),
+              exercises: _getSelectedExercises(muscleGroup: muscleGroup),
               onRemove: (ExerciseDTO exercise) {
-                _onRemoveExercise(exercise: exercise, family: family);
+                _onRemoveExercise(exercise: exercise, muscleGroup: muscleGroup);
               },
             ),
           ),
@@ -213,9 +211,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
 
     final StringBuffer buffer = StringBuffer();
 
-    final muscleGroups = _selectedMuscleGroupFamilies
-        .map((family) => MuscleGroup.byFamily(family))
-        .expand((muscleGroups) => muscleGroups)
+    final muscleGroups = _selectedMuscleGroups
         .map((muscleGroup) => muscleGroup.name)
         .join(", ");
 
@@ -223,8 +219,8 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
 
     buffer.writeln(
         "I want to ${_goal.description} over a ${_weeks.weeks}-week period. The muscle groups I want to focus on are $muscleGroups.");
-    for (final family in _selectedMuscleGroupFamilies) {
-      final selectedExerciseNames = _getSelectedExercises(family: family).map((exercise) => exercise.name).join(", ");
+    for (final family in _selectedMuscleGroups) {
+      final selectedExerciseNames = _getSelectedExercises(muscleGroup: family).map((exercise) => exercise.name).join(", ");
       if (selectedExerciseNames.isNotEmpty) {
         buffer.writeln("For ${family.name}, I prefer exercises like $selectedExerciseNames");
       }
@@ -319,85 +315,96 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
     });
   }
 
-  void _onSelectMuscleGroupFamily({required MuscleGroupFamily newFamily}) {
-    final oldFamily = _selectedMuscleGroupFamilies.firstWhereOrNull((previousFamily) => previousFamily == newFamily);
+  void _onSelectMuscleGroup({required MuscleGroup newMuscleGroup}) {
+    final oldFamily = _selectedMuscleGroups.firstWhereOrNull((previousFamily) => previousFamily == newMuscleGroup);
     setState(() {
       if (oldFamily != null) {
-        _selectedMuscleGroupFamilies.remove(oldFamily);
+        _selectedMuscleGroups.remove(oldFamily);
       } else {
-        _selectedMuscleGroupFamilies.add(newFamily);
+        _selectedMuscleGroups.add(newMuscleGroup);
       }
     });
   }
 
-  MuscleGroupFamily? _getMuscleGroupFamily({required MuscleGroupFamily family}) =>
-      _selectedMuscleGroupFamilies.firstWhereOrNull((previousFamily) => previousFamily == family);
+  MuscleGroup? _getMuscleGroup({required MuscleGroup muscleGroup}) =>
+      _selectedMuscleGroups.firstWhereOrNull((previousFamily) => previousFamily == muscleGroup);
 
-  List<ExerciseDTO> _getSelectedExercises({required MuscleGroupFamily family}) {
-    return switch (family) {
-      MuscleGroupFamily.arms => _armsExercises,
-      MuscleGroupFamily.back => _backExercises,
-      MuscleGroupFamily.chest => _chestExercises,
-      MuscleGroupFamily.core => _coreExercises,
-      MuscleGroupFamily.legs => _legExercises,
-      MuscleGroupFamily.neck => _neckExercises,
-      MuscleGroupFamily.shoulders => _shoulderExercises,
-      _ => throw UnsupportedError("${family.name} is not allowed in here"),
+  List<ExerciseDTO> _getSelectedExercises({required MuscleGroup muscleGroup}) {
+    return switch (muscleGroup) {
+      MuscleGroup.biceps => _armsExercises,
+      MuscleGroup.back => _backExercises,
+      MuscleGroup.chest => _chestExercises,
+      MuscleGroup.quadriceps => _legExercises,
+      MuscleGroup.shoulders => _shoulderExercises,
+      // TODO: Handle this case.
+      MuscleGroup.abs => throw UnimplementedError(),
+      // TODO: Handle this case.
+      MuscleGroup.abductors => throw UnimplementedError(),
+      // TODO: Handle this case.
+      MuscleGroup.adductors => throw UnimplementedError(),
+      // TODO: Handle this case.
+      MuscleGroup.calves => throw UnimplementedError(),
+      // TODO: Handle this case.
+      MuscleGroup.glutes => throw UnimplementedError(),
+      // TODO: Handle this case.
+      MuscleGroup.hamstrings => throw UnimplementedError(),
+      // TODO: Handle this case.
+      MuscleGroup.triceps => throw UnimplementedError(),
     };
   }
 
-  void _onSelectExercise({required MuscleGroupFamily family, required ExerciseDTO exercise}) {
-    switch (family) {
-      case MuscleGroupFamily.arms:
-        _armsExercises.add(exercise);
-        break;
-      case MuscleGroupFamily.back:
-        _backExercises.add(exercise);
-        break;
-      case MuscleGroupFamily.chest:
-        _chestExercises.add(exercise);
-        break;
-      case MuscleGroupFamily.core:
-        _coreExercises.add(exercise);
-        break;
-      case MuscleGroupFamily.legs:
-        _legExercises.add(exercise);
-        break;
-      case MuscleGroupFamily.neck:
-        _neckExercises.add(exercise);
-        break;
-      case MuscleGroupFamily.shoulders:
-        _shoulderExercises.add(exercise);
-        break;
-      default:
-        throw UnsupportedError("${family.name} is not allowed in here");
-    }
+  void _onSelectExercise({required MuscleGroup muscleGroup, required ExerciseDTO exercise}) {
+    // switch (muscleGroup) {
+    //   case MuscleGroupFamily.arms:
+    //     _armsExercises.add(exercise);
+    //     break;
+    //   case MuscleGroupFamily.back:
+    //     _backExercises.add(exercise);
+    //     break;
+    //   case MuscleGroupFamily.chest:
+    //     _chestExercises.add(exercise);
+    //     break;
+    //   case MuscleGroupFamily.core:
+    //     _coreExercises.add(exercise);
+    //     break;
+    //   case MuscleGroupFamily.legs:
+    //     _legExercises.add(exercise);
+    //     break;
+    //   case MuscleGroupFamily.neck:
+    //     _neckExercises.add(exercise);
+    //     break;
+    //   case MuscleGroupFamily.shoulders:
+    //     _shoulderExercises.add(exercise);
+    //     break;
+    //   default:
+    //     throw UnsupportedError("${muscleGroup.name} is not allowed in here");
+    // }
     setState(() {});
   }
 
-  void _onRemoveExercise({required MuscleGroupFamily family, required ExerciseDTO exercise}) {
-    switch (family) {
-      case MuscleGroupFamily.arms:
-        _armsExercises.remove(exercise);
-        break;
-      case MuscleGroupFamily.back:
-        _backExercises.remove(exercise);
-        break;
-      case MuscleGroupFamily.chest:
-        _chestExercises.remove(exercise);
-        break;
-      case MuscleGroupFamily.core:
-        _coreExercises.remove(exercise);
-        break;
-      case MuscleGroupFamily.legs:
-        _legExercises.remove(exercise);
-        break;
-      case MuscleGroupFamily.shoulders:
-        _shoulderExercises.remove(exercise);
-        break;
-      default:
-        throw UnsupportedError("${family.name} is not allowed in here");
-    }
+  void _onRemoveExercise({required MuscleGroup muscleGroup, required ExerciseDTO exercise}) {
+    // switch (muscleGroup) {
+    //   case MuscleGroupFamily.arms:
+    //     _armsExercises.remove(exercise);
+    //     break;
+    //   case MuscleGroupFamily.back:
+    //     _backExercises.remove(exercise);
+    //     break;
+    //   case MuscleGroupFamily.chest:
+    //     _chestExercises.remove(exercise);
+    //     break;
+    //   case MuscleGroupFamily.core:
+    //     _coreExercises.remove(exercise);
+    //     break;
+    //   case MuscleGroupFamily.legs:
+    //     _legExercises.remove(exercise);
+    //     break;
+    //   case MuscleGroupFamily.shoulders:
+    //     _shoulderExercises.remove(exercise);
+    //     break;
+    //   default:
+    //     throw UnsupportedError("${family.name} is not allowed in here");
+    // }
     setState(() {});
   }
 
@@ -439,7 +446,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
 }
 
 class _FavouriteExercisePicker extends StatelessWidget {
-  final MuscleGroupFamily family;
+  final MuscleGroup muscleGroup;
   final TextStyle inactiveStyle;
   final TextStyle activeStyle;
   final Function(ExerciseDTO exercise) onSelect;
@@ -447,7 +454,7 @@ class _FavouriteExercisePicker extends StatelessWidget {
   final List<ExerciseDTO> exercises;
 
   const _FavouriteExercisePicker(
-      {required this.family,
+      {required this.muscleGroup,
       required this.inactiveStyle,
       required this.activeStyle,
       required this.onSelect,
@@ -481,7 +488,7 @@ class _FavouriteExercisePicker extends StatelessWidget {
         showExercisesInLibrary(
             context: context,
             exercisesToExclude: exercises.map((exercise) => exercise.name).toList(),
-            muscleGroupFamily: family,
+            muscleGroup: muscleGroup,
             onSelected: (exercises) {
               for (final exercise in exercises) {
                 onSelect(exercise);
@@ -494,7 +501,7 @@ class _FavouriteExercisePicker extends StatelessWidget {
           Padding(
               padding: const EdgeInsets.symmetric(vertical: 14.0),
               child: CenterLabelDivider(
-                  label: family.name.toUpperCase(),
+                  label: muscleGroup.name.toUpperCase(),
                   style: GoogleFonts.ubuntu(fontWeight: FontWeight.w900, color: Colors.white70, fontSize: 16),
                   dividerColor: sapphireLighter)),
           Container(
@@ -518,7 +525,7 @@ class _FavouriteExercisePicker extends StatelessWidget {
                       text: TextSpan(children: [
                     TextSpan(text: "Tap to select", style: inactiveStyle.copyWith(fontSize: 14)),
                     TextSpan(text: " ", style: activeStyle),
-                    TextSpan(text: family.name, style: activeStyle.copyWith(fontSize: 14)),
+                    TextSpan(text: muscleGroup.name, style: activeStyle.copyWith(fontSize: 14)),
                     TextSpan(text: " ", style: activeStyle),
                     TextSpan(text: "exercises", style: inactiveStyle.copyWith(fontSize: 14)),
                   ])),

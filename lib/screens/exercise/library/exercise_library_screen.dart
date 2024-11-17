@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/exercise/exercise_metrics_enums.dart';
-import 'package:tracker_app/widgets/empty_states/exercise_empty_state.dart';
+import 'package:tracker_app/screens/empty_state_screens/no_list_empty_state.dart';
 import 'package:tracker_app/widgets/search_bar.dart';
 
 import '../../../colors.dart';
@@ -20,16 +20,10 @@ class ExerciseLibraryScreen extends StatefulWidget {
   final bool readOnly;
   final List<String> exercisesToExclude;
   final ExerciseMetric? exerciseMetric;
-  final MuscleGroupFamily? muscleGroupFamily;
   final MuscleGroup? muscleGroup;
 
   const ExerciseLibraryScreen(
-      {super.key,
-      this.readOnly = false,
-      this.exercisesToExclude = const [],
-      this.exerciseMetric,
-      this.muscleGroupFamily,
-      this.muscleGroup});
+      {super.key, this.readOnly = false, this.exercisesToExclude = const [], this.exerciseMetric, this.muscleGroup});
 
   @override
   State<ExerciseLibraryScreen> createState() => _ExerciseLibraryScreenState();
@@ -50,7 +44,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     List<ExerciseDTO> searchResults = [];
 
     final muscleGroup = widget.muscleGroup;
-    final muscleGroupFamily = widget.muscleGroupFamily;
 
     searchResults = Provider.of<ExerciseAndRoutineController>(context, listen: false)
         .exercises
@@ -58,10 +51,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         .where((exercise) => exercise.name.toLowerCase().contains(query.toLowerCase()))
         .where((exercise) => muscleGroup != null
             ? exercise.primaryMuscleGroups.any((muscleGroup) => _selectedMuscleGroups.contains(muscleGroup))
-            : true)
-        .where((exercise) => muscleGroupFamily != null
-            ? exercise.primaryMuscleGroups.firstWhereOrNull((muscleGroup) => muscleGroup.family == muscleGroupFamily) !=
-                null
             : true)
         .toList();
 
@@ -158,9 +147,9 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                     controller: _searchController),
                 const SizedBox(height: 10),
                 SingleChildScrollView(
-                    scrollDirection: Axis.horizontal, child: Row(children: muscleGroups.sublist(0, 8))),
+                    scrollDirection: Axis.horizontal, child: Row(children: muscleGroups.sublist(0, 6))),
                 SingleChildScrollView(
-                    scrollDirection: Axis.horizontal, child: Row(children: muscleGroups.sublist(8, 16))),
+                    scrollDirection: Axis.horizontal, child: Row(children: muscleGroups.sublist(6, 12))),
                 const SizedBox(height: 18),
                 _filteredExercises.isNotEmpty
                     ? Expanded(
@@ -182,7 +171,15 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                               itemCount: _filteredExercises.length),
                         ),
                       )
-                    : const ExerciseEmptyState(),
+                    : Expanded(
+                        child: const NoListEmptyState(
+                            icon: FaIcon(
+                              FontAwesomeIcons.solidLightbulb,
+                              color: Colors.white12,
+                              size: 48,
+                            ),
+                            message: "It might feel quiet now, but your exercises will soon appear here."),
+                      ),
               ],
             ),
           ),
@@ -209,17 +206,12 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   void _loadOrSyncExercises() {
     final muscleGroup = widget.muscleGroup;
-    final muscleGroupFamily = widget.muscleGroupFamily;
 
     _filteredExercises = Provider.of<ExerciseAndRoutineController>(context, listen: false)
         .exercises
         .where((exercise) => !widget.exercisesToExclude.contains(exercise.name))
         .where((exercise) => muscleGroup != null
             ? exercise.primaryMuscleGroups.any((muscleGroup) => _selectedMuscleGroups.contains(muscleGroup))
-            : true)
-        .where((exercise) => muscleGroupFamily != null
-            ? exercise.primaryMuscleGroups.firstWhereOrNull((muscleGroup) => muscleGroup.family == muscleGroupFamily) !=
-                null
             : true)
         .toList();
   }

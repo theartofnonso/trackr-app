@@ -5,11 +5,11 @@ import 'package:tracker_app/utils/general_utils.dart';
 import '../../colors.dart';
 import '../../enums/muscle_group_enums.dart';
 
-class MuscleGroupFamilyFrequencyChart extends StatelessWidget {
-  final Map<MuscleGroupFamily, double> frequencyData;
+class MuscleGroupFrequencyChart extends StatelessWidget {
+  final Map<MuscleGroup, double> frequencyData;
   final bool minimized;
 
-  const MuscleGroupFamilyFrequencyChart({super.key, required this.frequencyData, this.minimized = false});
+  const MuscleGroupFrequencyChart({super.key, required this.frequencyData, this.minimized = false});
 
   @override
   Widget build(BuildContext context) {
@@ -22,14 +22,14 @@ class MuscleGroupFamilyFrequencyChart extends StatelessWidget {
 
 class _HorizontalBarChart extends StatelessWidget {
   final bool minimized;
-  final Map<MuscleGroupFamily, double> frequencyData;
+  final Map<MuscleGroup, double> frequencyData;
 
   const _HorizontalBarChart({required this.frequencyData, required this.minimized});
 
   @override
   Widget build(BuildContext context) {
     List<Widget> children =
-        frequencyData.entries.map((entry) => _LinearBar(muscleGroupFamily: entry.key, frequency: entry.value)).toList();
+        frequencyData.entries.map((entry) => _LinearBar(muscleGroup: entry.key, frequency: entry.value)).toList();
 
     final count = minimized ? children.take(3) : children;
 
@@ -38,10 +38,10 @@ class _HorizontalBarChart extends StatelessWidget {
 }
 
 class _LinearBar extends StatelessWidget {
-  final MuscleGroupFamily muscleGroupFamily;
+  final MuscleGroup muscleGroup;
   final double frequency;
 
-  const _LinearBar({required this.muscleGroupFamily, required this.frequency});
+  const _LinearBar({required this.muscleGroup, required this.frequency});
 
   @override
   Widget build(BuildContext context) {
@@ -64,13 +64,13 @@ class _LinearBar extends StatelessWidget {
                 LinearProgressIndicator(
                   value: frequency,
                   backgroundColor: sapphireDark,
-                  color: muscleFamilyFrequencyColor(value: frequency),
+                  color: muscleGroupFrequencyColor(value: frequency),
                   minHeight: 25,
                   borderRadius: BorderRadius.circular(3.0), // Border r
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0),
-                  child: Text(muscleGroupFamily.name.toUpperCase(),
+                  child: Text(muscleGroup.name.toUpperCase(),
                       style: GoogleFonts.ubuntu(fontWeight: FontWeight.w700, color: sapphireDark, fontSize: 12)),
                 )
               ],

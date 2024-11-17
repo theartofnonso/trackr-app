@@ -10,7 +10,7 @@ import '../../utils/date_utils.dart';
 import '../appsync/routine_log_dto.dart';
 
 class WeeklyMilestone extends Milestone {
-  final MuscleGroupFamily muscleGroupFamily;
+  final List<MuscleGroup> muscleGroups;
 
   WeeklyMilestone(
       {required super.id,
@@ -19,7 +19,7 @@ class WeeklyMilestone extends Milestone {
       required super.description,
       required super.rule,
       required super.target,
-      this.muscleGroupFamily = MuscleGroupFamily.none,
+      this.muscleGroups = const[],
       required super.progress,
       required super.type});
 
@@ -50,6 +50,8 @@ class WeeklyMilestone extends Milestone {
         rule: "Log at least one training session every weekend (Saturday or Sunday) for 16 consecutive weeks.",
         type: MilestoneType.weekly);
 
+    final legMuscleGroups = [MuscleGroup.quadriceps, MuscleGroup.hamstrings, MuscleGroup.calves, MuscleGroup.glutes, MuscleGroup.adductors, MuscleGroup.abductors];
+
     final legDayMilestone = WeeklyMilestone(
         id: 'NMALDC_001',
         name: 'Never Miss A Leg Day'.toUpperCase(),
@@ -57,8 +59,8 @@ class WeeklyMilestone extends Milestone {
             'Commit to your fitness goals by never skipping leg day. Strengthen your lower body through consistent training, enhancing your overall physique and performance.',
         caption: "Train legs weekly",
         target: 16,
-        progress: _calculateLegProgress(logs: logs, target: 16, weeks: weeksInYear),
-        muscleGroupFamily: MuscleGroupFamily.legs,
+        progress: _calculateLegProgress(logs: logs, target: 16, weeks: weeksInYear, muscleGroups: legMuscleGroups),
+        muscleGroups: legMuscleGroups,
         rule: "Log at least one leg-focused training session every week for 16 consecutive weeks.",
         type: MilestoneType.weekly);
 
@@ -115,7 +117,7 @@ class WeeklyMilestone extends Milestone {
   }
 
   static (double, List<RoutineLogDto>) _calculateLegProgress(
-      {required List<RoutineLogDto> logs, required int target, required List<DateTimeRange> weeks}) {
+      {required List<RoutineLogDto> logs, required int target, required List<DateTimeRange> weeks, required List<MuscleGroup> muscleGroups}) {
     if (logs.isEmpty) return (0, []);
 
     List<RoutineLogDto> legsLogs = [];
@@ -124,12 +126,10 @@ class WeeklyMilestone extends Milestone {
       final legLog = logsForTheWeek.firstWhereOrNull((log) {
         final completedExerciseLogs = completedExercises(exerciseLogs: log.exerciseLogs);
         final hasLegLog = completedExerciseLogs.where((exerciseLog) {
-          final primaryMuscleGroupFamilies =
-              exerciseLog.exerciseVariant.primaryMuscleGroups.map((muscleGroup) => muscleGroup.family);
-          final secondaryMuscleGroupFamilies =
-              exerciseLog.exerciseVariant.secondaryMuscleGroups.map((muscleGroup) => muscleGroup.family);
-          final muscleGroupFamilies = [...primaryMuscleGroupFamilies, ...secondaryMuscleGroupFamilies];
-          return muscleGroupFamilies.contains(MuscleGroupFamily.legs);
+          final primaryMuscleGroups = exerciseLog.exerciseVariant.primaryMuscleGroups;
+          final secondaryMuscleGroups = exerciseLog.exerciseVariant.secondaryMuscleGroups;
+          final muscleGroups = [...primaryMuscleGroups, ...secondaryMuscleGroups];
+          return muscleGroups.any((muscleGroup) => muscleGroups.contains(muscleGroup));
         }).isNotEmpty;
         return hasLegLog;
       });

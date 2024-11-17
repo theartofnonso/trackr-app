@@ -50,13 +50,11 @@ void showExercisesInLibrary(
     List<String> exercisesToExclude = const [],
     required void Function(List<ExerciseDTO> selectedExercises) onSelected,
     ExerciseMetric? type,
-    MuscleGroupFamily? muscleGroupFamily,
     MuscleGroup? muscleGroup}) async {
   final exercises = await Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => ExerciseLibraryScreen(
             exercisesToExclude: exercisesToExclude,
             exerciseMetric: type,
-            muscleGroupFamily: muscleGroupFamily,
             muscleGroup: muscleGroup,
           ))) as List<ExerciseDTO>?;
 

@@ -56,7 +56,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         context: context,
         exercisesToExclude: excludeExercises.map((exercise) => exercise.name).toList(),
         onSelected: (List<ExerciseDTO> selectedExercises) {
-          controller.addExerciseLogs(exercisesVariants: selectedExercises.map((exercise) => exercise.defaultVariant()).toList());
+          final variants = selectedExercises.map((exercise) => exercise.defaultVariant()).toList();
+          controller.addExerciseLogs(exercisesVariants: variants);
           _cacheLog();
         });
   }
@@ -72,7 +73,9 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
           _closeDialog();
           final id = superSetId(firstExerciseLog: firstExerciseLog, secondExerciseLog: secondExerciseLog);
           controller.superSetExerciseLogs(
-              firstExerciseName: firstExerciseLog.exerciseVariant.name, secondExerciseName: secondExerciseLog.exerciseVariant.name, superSetId: id);
+              firstExerciseName: firstExerciseLog.exerciseVariant.name,
+              secondExerciseName: secondExerciseLog.exerciseVariant.name,
+              superSetId: id);
           _cacheLog();
         },
         selectExercisesInLibrary: () {
@@ -89,7 +92,9 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         context: context,
         exercisesToExclude: excludeExercises.map((exercise) => exercise.name).toList(),
         onSelected: (List<ExerciseDTO> selectedExercises) {
-          controller.replaceExerciseLog(oldExerciseId: oldExerciseLog.exerciseVariant.name, newExerciseVariant: selectedExercises.first.defaultVariant());
+          controller.replaceExerciseLog(
+              oldExerciseId: oldExerciseLog.exerciseVariant.name,
+              newExerciseVariant: selectedExercises.first.defaultVariant());
           _cacheLog();
         });
   }
@@ -380,16 +385,19 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                                 superSet: whereOtherExerciseInSuperSet(
                                                     firstExercise: exerciseLog, exercises: exerciseLogs),
                                                 onRemoveSuperSet: (String superSetId) {
-                                                  exerciseLogController.removeSuperSet(superSetId: exerciseLog.superSetId);
+                                                  exerciseLogController.removeSuperSet(
+                                                      superSetId: exerciseLog.superSetId);
                                                   _cacheLog();
                                                 },
                                                 onRemoveLog: () {
                                                   exerciseLogController.removeExerciseLog(logId: exerciseName);
                                                   _cacheLog();
                                                 },
-                                                onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
+                                                onSuperSet: () =>
+                                                    _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
                                                 onCache: _cacheLog,
-                                                onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
+                                                onReplaceLog: () =>
+                                                    _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
                                                 onResize: () =>
                                                     _handleResizedExerciseLogCard(exerciseIdToResize: exerciseName),
                                                 isMinimised: _isMinimised(exerciseName),
@@ -402,19 +410,23 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                                   setState(() {
                                                     _selectedSetDto = null;
                                                   });
-                                                }, onUpdate: _updateExerciseLog,
+                                                },
+                                                onUpdate: _updateExerciseLog,
                                               ));
                                   })
                                 ]),
                               ),
                             ),
                           if (exerciseLogs.isEmpty)
-                            const NoListEmptyState(
-                              icon: FaIcon(
-                                FontAwesomeIcons.solidLightbulb,
-                                color: Colors.white70,
+                            Expanded(
+                              child: const NoListEmptyState(
+                                icon: FaIcon(
+                                  FontAwesomeIcons.solidLightbulb,
+                                  color: Colors.white12,
+                                  size: 48,
+                                ),
+                                message: "Tap the + button to start adding exercises to your log.",
                               ),
-                              message: "Tap the + button to start adding exercises to your log.",
                             )
                         ],
                       ),

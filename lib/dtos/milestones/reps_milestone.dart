@@ -28,13 +28,9 @@ class RepsMilestone extends Milestone {
       MuscleGroup.back => "Back Attack",
       MuscleGroup.calves => "Calves Do Grow",
       MuscleGroup.chest => "Pectacular",
-      MuscleGroup.forearms => "Popeye's Pride",
       MuscleGroup.glutes => "Dump Truck",
       MuscleGroup.hamstrings => "Hammies Award",
-      MuscleGroup.lats => "Wing Commander",
-      MuscleGroup.neck => "No Neck",
       MuscleGroup.shoulders => "Jonny Bravo",
-      MuscleGroup.traps => "Trap King",
       MuscleGroup.triceps => "Tri Titan",
       MuscleGroup.quadriceps => "Quadzilla",
       _ => "No Milestone"
@@ -48,13 +44,9 @@ class RepsMilestone extends Milestone {
       MuscleGroup.back,
       MuscleGroup.calves,
       MuscleGroup.chest,
-      MuscleGroup.forearms,
       MuscleGroup.glutes,
       MuscleGroup.hamstrings,
-      MuscleGroup.lats,
-      MuscleGroup.neck,
       MuscleGroup.shoulders,
-      MuscleGroup.traps,
       MuscleGroup.triceps,
       MuscleGroup.quadriceps
     ];

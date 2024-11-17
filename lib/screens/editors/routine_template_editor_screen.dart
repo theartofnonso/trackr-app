@@ -51,7 +51,8 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
         context: context,
         exercisesToExclude: excludeExercises.map((exercise) => exercise.name).toList(),
         onSelected: (List<ExerciseDTO> selectedExercises) {
-          controller.addExerciseLogs(exercisesVariants: selectedExercises.map((exercise) => exercise.defaultVariant()).toList());
+          final variants = selectedExercises.map((exercise) => exercise.defaultVariant()).toList();
+          controller.addExerciseLogs(exercisesVariants: variants);
         });
   }
 
@@ -85,7 +86,8 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
         exercisesToExclude: excludeExercises.map((exercise) => exercise.name).toList(),
         onSelected: (List<ExerciseDTO> selectedExercises) {
           controller.replaceExerciseLog(
-              oldExerciseId: oldExerciseLog.exerciseVariant.name, newExerciseVariant: selectedExercises.first.defaultVariant());
+              oldExerciseId: oldExerciseLog.exerciseVariant.name,
+              newExerciseVariant: selectedExercises.first.defaultVariant());
         });
   }
 
@@ -402,18 +404,22 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                                               setState(() {
                                                 _selectedSetDto = null;
                                               });
-                                            }, onUpdate: _updateExerciseLog,
+                                            },
+                                            onUpdate: _updateExerciseLog,
                                           );
                                   },
                                   separatorBuilder: (_, __) => const SizedBox(height: 10),
                                   itemCount: exerciseLogs.length))
-                          : const NoListEmptyState(
-                              icon: FaIcon(
-                                FontAwesomeIcons.solidLightbulb,
-                                color: Colors.white70,
+                          : Expanded(
+                            child: const NoListEmptyState(
+                                icon: FaIcon(
+                                  FontAwesomeIcons.solidLightbulb,
+                                  color: Colors.white12,
+                                  size: 48,
+                                ),
+                                message: "Tap the + button to start adding exercises to your workout.",
                               ),
-                              message: "Tap the + button to start adding exercises to your workout.",
-                            ),
+                          ),
                     ],
                   ),
                 ),

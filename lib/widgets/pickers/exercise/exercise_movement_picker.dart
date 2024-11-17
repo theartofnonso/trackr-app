@@ -1,32 +1,31 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/widgets/dividers/label_container.dart';
 
 import '../../../colors.dart';
-import '../../../enums/exercise/exercise_modality_enum.dart';
+import '../../../enums/exercise/exercise_movement_enum.dart';
 import '../../buttons/opacity_button_widget.dart';
+import '../../dividers/label_container.dart';
 
-class ExerciseModalityPicker extends StatefulWidget {
-  final ExerciseModality? initialModality;
-  final List<ExerciseModality> modes;
-  final void Function(ExerciseModality modality) onSelect;
+class ExerciseMovementPicker extends StatefulWidget {
+  final ExerciseMovement? initialMovement;
+  final List<ExerciseMovement> movements;
+  final void Function(ExerciseMovement position) onSelect;
 
-  const ExerciseModalityPicker({super.key, this.initialModality, required this.modes, required this.onSelect});
+  const ExerciseMovementPicker({super.key, this.initialMovement, required this.movements, required this.onSelect});
 
   @override
-  State<ExerciseModalityPicker> createState() => _ExerciseModalityPickerState();
+  State<ExerciseMovementPicker> createState() => _ExerciseMovementPickerState();
 }
 
-class _ExerciseModalityPickerState extends State<ExerciseModalityPicker> {
-  ExerciseModality _selectedMode = ExerciseModality.bilateral;
+class _ExerciseMovementPickerState extends State<ExerciseMovementPicker> {
+  ExerciseMovement _selectedMovement = ExerciseMovement.none;
 
   FixedExtentScrollController? _scrollController;
 
   @override
   Widget build(BuildContext context) {
-
-    final children = widget.modes
+    final children = widget.movements
         .map((value) => Center(
             child: Text(value.name,
                 style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 24, color: Colors.white))))
@@ -36,8 +35,8 @@ class _ExerciseModalityPickerState extends State<ExerciseModalityPicker> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         LabelContainer(
-          label: "Training Modality".toUpperCase(),
-          description: _selectedMode.description,
+          label: "Training movement".toUpperCase(),
+          description: _selectedMovement.description,
           labelStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 14),
           descriptionStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white70, fontSize: 14),
           dividerColor: sapphireLighter,
@@ -49,7 +48,7 @@ class _ExerciseModalityPickerState extends State<ExerciseModalityPicker> {
             itemExtent: 38.0,
             onSelectedItemChanged: (int index) {
               setState(() {
-                _selectedMode = widget.modes[index];
+                _selectedMovement = widget.movements[index];
               });
             },
             squeeze: 1,
@@ -60,9 +59,9 @@ class _ExerciseModalityPickerState extends State<ExerciseModalityPicker> {
         const SizedBox(height: 16),
         OpacityButtonWidget(
             onPressed: () {
-              widget.onSelect(_selectedMode);
+              widget.onSelect(_selectedMovement);
             },
-            label: "Switch to ${_selectedMode.name}",
+            label: "Switch to ${_selectedMovement.name}",
             buttonColor: vibrantGreen,
             padding: const EdgeInsets.all(10.0))
       ],
@@ -72,7 +71,7 @@ class _ExerciseModalityPickerState extends State<ExerciseModalityPicker> {
   @override
   void initState() {
     super.initState();
-    final initialIndex = widget.modes.indexOf(widget.initialModality ?? ExerciseModality.bilateral);
+    final initialIndex = widget.movements.indexOf(widget.initialMovement ?? ExerciseMovement.none);
     _scrollController = FixedExtentScrollController(initialItem: initialIndex);
   }
 

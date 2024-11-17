@@ -7,7 +7,7 @@ import 'package:tracker_app/widgets/monthly_insights/month_summary_widget.dart';
 import '../../controllers/activity_log_controller.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../widgets/monthly_insights/calories_widget.dart';
-import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
+import '../../widgets/monthly_insights/muscle_groups_frequency_widget.dart';
 import '../../widgets/monthly_insights/muscle_score_widget.dart';
 
 class MonthlyInsightsScreen extends StatelessWidget {
@@ -52,7 +52,7 @@ class MonthlyInsightsScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 24),
-              MuscleGroupFamilyFrequencyWidget(logs: thisMonthLogs),
+              MuscleGroupFrequencyWidget(logs: thisMonthLogs),
             ],
           ),
       ],

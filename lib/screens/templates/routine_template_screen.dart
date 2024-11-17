@@ -34,7 +34,7 @@ import '../../utils/routine_utils.dart';
 import '../../utils/string_utils.dart';
 import '../../widgets/ai_widgets/trkr_information_container.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
-import '../../widgets/chart/muscle_group_family_chart.dart';
+import '../../widgets/chart/muscle_group_chart.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
 import '../empty_state_screens/not_found.dart';
 import 'routine_day_planner.dart';
@@ -83,7 +83,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     final numberOfSets = template.exerciseTemplates.expand((exerciseTemplate) => exerciseTemplate.sets);
     final setsSummary = "${numberOfSets.length} ${pluralize(word: "Set", count: numberOfSets.length)}";
 
-    final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: template.exerciseTemplates);
+    final muscleGroupFamilyFrequencies = muscleGroupFrequency(exerciseLogs: template.exerciseTemplates);
 
     final menuActions = [
       MenuItemButton(
@@ -271,7 +271,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                               style:
                                   GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
                           const SizedBox(height: 10),
-                          MuscleGroupFamilyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
+                          MuscleGroupChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
                         ],
                       ),
                     ),

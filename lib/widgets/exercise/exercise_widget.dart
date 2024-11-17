@@ -22,12 +22,14 @@ class ExerciseWidget extends StatelessWidget {
     final exercise = exerciseDto;
     final description = exerciseDto.description;
 
-    final primaryMuscleGroupNames = exercise.primaryMuscleGroups.map((muscleGroup) => muscleGroup.name.toUpperCase()).toList();
+    final primaryMuscleGroupNames =
+        exercise.primaryMuscleGroups.map((muscleGroup) => muscleGroup.name.toUpperCase()).toList();
 
-    final secondaryMuscleGroupNames = exercise.secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name.toUpperCase()).toList();
+    final secondaryMuscleGroupNames =
+        exercise.secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name.toUpperCase()).toList();
 
     return GestureDetector(
-      onTap: () => selectExercise != null ? selectExercise(exerciseDto) : null,
+      onTap: () => selectExercise != null ? selectExercise(exerciseDto) : onNavigateToExercise!(exerciseDto),
       child: Container(
         color: Colors.transparent,
         width: double.infinity,
@@ -86,13 +88,19 @@ class ExerciseWidget extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: 10),
-            GestureDetector(
-                onTap: () => navigateToExercise != null ? navigateToExercise(exerciseDto) : null,
-                child: const FaIcon(
-                  FontAwesomeIcons.circleInfo,
-                  color: Colors.white70,
-                ))
+            if (selectExercise != null)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(width: 10),
+                  GestureDetector(
+                      onTap: () => navigateToExercise != null ? navigateToExercise(exerciseDto) : null,
+                      child: const FaIcon(
+                        FontAwesomeIcons.circleInfo,
+                        color: Colors.white70,
+                      )),
+                ],
+              )
           ],
         ),
       ),
