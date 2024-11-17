@@ -92,6 +92,8 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+
     final muscleGroups = MuscleGroup.values
         .sorted((a, b) => a.name.compareTo(b.name))
         .map((muscleGroup) => Padding(
@@ -108,12 +110,14 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
             ))
         .toList();
 
+    final muscleGroupScrollViewHalf = MuscleGroup.values.length ~/ 2;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: sapphireDark80,
         leading: IconButton(
           icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-          onPressed: () => context.pop(),
+          onPressed: context.pop,
         ),
       ),
       body: NotificationListener(
@@ -147,9 +151,9 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                     controller: _searchController),
                 const SizedBox(height: 10),
                 SingleChildScrollView(
-                    scrollDirection: Axis.horizontal, child: Row(children: muscleGroups.sublist(0, 6))),
+                    scrollDirection: Axis.horizontal, child: Row(children: muscleGroups.sublist(0, muscleGroupScrollViewHalf))),
                 SingleChildScrollView(
-                    scrollDirection: Axis.horizontal, child: Row(children: muscleGroups.sublist(6, 12))),
+                    scrollDirection: Axis.horizontal, child: Row(children: muscleGroups.sublist(muscleGroupScrollViewHalf))),
                 const SizedBox(height: 18),
                 _filteredExercises.isNotEmpty
                     ? Expanded(
