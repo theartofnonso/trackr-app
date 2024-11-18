@@ -35,8 +35,8 @@ class ExerciseHomeScreen extends StatefulWidget {
 }
 
 class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
-
   List<ExerciseLogDTO> _exerciseLogs = [];
+  List<ExerciseLogDTO> _filteredExerciseLogs = [];
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
 
     if (exercise == null) return const NotFound();
 
-    final completedExerciseLogs = completedExercises(exerciseLogs: _exerciseLogs);
+    final completedExerciseLogs = completedExercises(exerciseLogs: _filteredExerciseLogs);
 
     final heaviestSetVolumeRecord = heaviestSetVolume(exerciseLogs: completedExerciseLogs);
 
@@ -58,7 +58,8 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
 
     final mostRepsSessionRecord = mostRepsInSession(exerciseLogs: completedExerciseLogs);
 
-    final firstVariant = _exerciseLogs.isNotEmpty ? _exerciseLogs.first.exerciseVariant : exercise.defaultVariant();
+    final firstVariant =
+        _filteredExerciseLogs.isNotEmpty ? _filteredExerciseLogs.first.exerciseVariant : exercise.defaultVariant();
 
     return DefaultTabController(
         length: 2,
@@ -107,8 +108,8 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
                       borderRadius: BorderRadius.circular(5.0),
                       border: Border.all(
                         color: sapphireLighter, // Border color
-                        width: 1.0,         // Border width
-                      ),// Adjust the radius as needed
+                        width: 1.0, // Border width
+                      ), // Adjust the radius as needed
                     ),
                     child: Wrap(
                       runSpacing: 8,
@@ -119,7 +120,8 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
                           buttonColor: vibrantGreen,
                           padding: EdgeInsets.symmetric(horizontal: 0),
                           textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: vibrantGreen),
-                          onPressed: () => _showExerciseEquipmentPicker(equipment: exercise.equipment, exerciseVariant: firstVariant),
+                          onPressed: () => _showExerciseEquipmentPicker(
+                              equipment: exercise.equipment, exerciseVariant: firstVariant),
                         ),
                         if (exercise.modes.length > 1)
                           OpacityButtonWidget(
@@ -127,16 +129,19 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
                             buttonColor: Colors.redAccent,
                             padding: EdgeInsets.symmetric(horizontal: 0),
                             textStyle:
-                            GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.redAccent),
-                            onPressed: () => _showExerciseModalityPicker(modes: exercise.modes, exerciseVariant: firstVariant),
+                                GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.redAccent),
+                            onPressed: () =>
+                                _showExerciseModalityPicker(modes: exercise.modes, exerciseVariant: firstVariant),
                           ),
                         if (exercise.metrics.length > 1)
                           OpacityButtonWidget(
                             label: firstVariant.metric.name.toUpperCase(),
                             buttonColor: vibrantBlue,
                             padding: EdgeInsets.symmetric(horizontal: 0),
-                            textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: vibrantBlue),
-                            onPressed: () => _showExerciseMetricPicker(metrics: exercise.metrics, exerciseVariant: firstVariant),
+                            textStyle:
+                                GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: vibrantBlue),
+                            onPressed: () =>
+                                _showExerciseMetricPicker(metrics: exercise.metrics, exerciseVariant: firstVariant),
                           ),
                         if (exercise.positions.length > 1 &&
                             (firstVariant.coreMovement == CoreMovement.push ||
@@ -146,17 +151,19 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
                             buttonColor: Colors.cyanAccent,
                             padding: EdgeInsets.symmetric(horizontal: 0),
                             textStyle:
-                            GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.cyanAccent),
-                            onPressed: () => _showExercisePositionPicker(positions: exercise.positions, exerciseVariant: firstVariant),
+                                GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.cyanAccent),
+                            onPressed: () => _showExercisePositionPicker(
+                                positions: exercise.positions, exerciseVariant: firstVariant),
                           ),
                         if (exercise.stances.length > 1)
                           OpacityButtonWidget(
                             label: firstVariant.stance.name.toUpperCase(),
                             buttonColor: Colors.purpleAccent,
                             padding: EdgeInsets.symmetric(horizontal: 0),
-                            textStyle:
-                            GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.purpleAccent),
-                            onPressed: () => _showExerciseStancePicker(stances: exercise.stances, exerciseVariant: firstVariant),
+                            textStyle: GoogleFonts.ubuntu(
+                                fontWeight: FontWeight.bold, fontSize: 10, color: Colors.purpleAccent),
+                            onPressed: () =>
+                                _showExerciseStancePicker(stances: exercise.stances, exerciseVariant: firstVariant),
                           ),
                         if (exercise.movements.length > 1)
                           OpacityButtonWidget(
@@ -164,8 +171,9 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
                             buttonColor: Colors.orange,
                             padding: EdgeInsets.symmetric(horizontal: 0),
                             textStyle:
-                            GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.orange),
-                            onPressed: () => _showExerciseMovementPicker(movements: exercise.movements, exerciseVariant: firstVariant),
+                                GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.orange),
+                            onPressed: () => _showExerciseMovementPicker(
+                                movements: exercise.movements, exerciseVariant: firstVariant),
                           ),
                       ],
                     ),
@@ -194,20 +202,32 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
         ));
   }
 
-  void _showExerciseEquipmentPicker({required List<ExerciseEquipment> equipment, required ExerciseVariantDTO exerciseVariant}) {
+  void _showExerciseEquipmentPicker(
+      {required List<ExerciseEquipment> equipment, required ExerciseVariantDTO exerciseVariant}) {
     showExerciseEquipmentPicker(
         context: context,
         initialEquipment: exerciseVariant.equipment,
         equipment: equipment,
-        onSelect: (newEquipment) {});
+        onSelect: (newEquipment) {
+          setState(() {
+            _filteredExerciseLogs =
+                _exerciseLogs.where((exerciseLog) => exerciseLog.exerciseVariant.equipment == newEquipment).toList();
+          });
+        });
   }
 
-  void _showExerciseModalityPicker({required List<ExerciseModality> modes, required ExerciseVariantDTO exerciseVariant}) {
+  void _showExerciseModalityPicker(
+      {required List<ExerciseModality> modes, required ExerciseVariantDTO exerciseVariant}) {
     showExerciseModalityPicker(
         context: context,
         initialModality: exerciseVariant.mode,
         modes: modes,
-        onSelect: (newMode) {});
+        onSelect: (newMode) {
+          setState(() {
+            _filteredExerciseLogs =
+                _exerciseLogs.where((exerciseLog) => exerciseLog.exerciseVariant.mode == newMode).toList();
+          });
+        });
   }
 
   void _showExerciseMetricPicker({required List<ExerciseMetric> metrics, required ExerciseVariantDTO exerciseVariant}) {
@@ -215,15 +235,26 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
         context: context,
         initialMetric: exerciseVariant.metric,
         metrics: metrics,
-        onSelect: (newMetric) {});
+        onSelect: (newMetric) {
+          setState(() {
+            _filteredExerciseLogs =
+                _exerciseLogs.where((exerciseLog) => exerciseLog.exerciseVariant.metric == newMetric).toList();
+          });
+        });
   }
 
-  void _showExercisePositionPicker({required List<ExercisePosition> positions, required ExerciseVariantDTO exerciseVariant}) {
+  void _showExercisePositionPicker(
+      {required List<ExercisePosition> positions, required ExerciseVariantDTO exerciseVariant}) {
     showExercisePositionPicker(
         context: context,
         initialPosition: exerciseVariant.position,
         positions: positions,
-        onSelect: (newPosition) {});
+        onSelect: (newPosition) {
+          setState(() {
+            _filteredExerciseLogs =
+                _exerciseLogs.where((exerciseLog) => exerciseLog.exerciseVariant.position == newPosition).toList();
+          });
+        });
   }
 
   void _showExerciseStancePicker({required List<ExerciseStance> stances, required ExerciseVariantDTO exerciseVariant}) {
@@ -231,14 +262,32 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
         context: context,
         initialStance: exerciseVariant.stance,
         stances: stances,
-        onSelect: (newStance) {});
+        onSelect: (newStance) {
+          setState(() {
+            _filteredExerciseLogs =
+                _exerciseLogs.where((exerciseLog) => exerciseLog.exerciseVariant.stance == newStance).toList();
+          });
+        });
   }
 
-  void _showExerciseMovementPicker({required List<ExerciseMovement> movements, required ExerciseVariantDTO exerciseVariant}) {
+  void _showExerciseMovementPicker(
+      {required List<ExerciseMovement> movements, required ExerciseVariantDTO exerciseVariant}) {
     showExerciseMovementPicker(
         context: context,
         initialMovement: exerciseVariant.movement,
         movements: movements,
-        onSelect: (newMovement) {});
+        onSelect: (newMovement) {
+          setState(() {
+            _filteredExerciseLogs =
+                _exerciseLogs.where((exerciseLog) => exerciseLog.exerciseVariant.movement == newMovement).toList();
+          });
+        });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+    _exerciseLogs = exerciseAndRoutineController.exerciseLogsById[widget.id] ?? [];
   }
 }
