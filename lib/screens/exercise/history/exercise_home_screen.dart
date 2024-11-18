@@ -209,6 +209,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
         initialEquipment: exerciseVariant.equipment,
         equipment: equipment,
         onSelect: (newEquipment) {
+          Navigator.of(context).pop();
           setState(() {
             _filteredExerciseLogs =
                 _exerciseLogs.where((exerciseLog) => exerciseLog.exerciseVariant.equipment == newEquipment).toList();
@@ -223,6 +224,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
         initialModality: exerciseVariant.mode,
         modes: modes,
         onSelect: (newMode) {
+          Navigator.of(context).pop();
           setState(() {
             _filteredExerciseLogs =
                 _exerciseLogs.where((exerciseLog) => exerciseLog.exerciseVariant.mode == newMode).toList();
@@ -236,6 +238,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
         initialMetric: exerciseVariant.metric,
         metrics: metrics,
         onSelect: (newMetric) {
+          Navigator.of(context).pop();
           setState(() {
             _filteredExerciseLogs =
                 _exerciseLogs.where((exerciseLog) => exerciseLog.exerciseVariant.metric == newMetric).toList();
@@ -250,6 +253,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
         initialPosition: exerciseVariant.position,
         positions: positions,
         onSelect: (newPosition) {
+          Navigator.of(context).pop();
           setState(() {
             _filteredExerciseLogs =
                 _exerciseLogs.where((exerciseLog) => exerciseLog.exerciseVariant.position == newPosition).toList();
@@ -263,6 +267,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
         initialStance: exerciseVariant.stance,
         stances: stances,
         onSelect: (newStance) {
+          Navigator.of(context).pop();
           setState(() {
             _filteredExerciseLogs =
                 _exerciseLogs.where((exerciseLog) => exerciseLog.exerciseVariant.stance == newStance).toList();
@@ -277,6 +282,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
         initialMovement: exerciseVariant.movement,
         movements: movements,
         onSelect: (newMovement) {
+          Navigator.of(context).pop();
           setState(() {
             _filteredExerciseLogs =
                 _exerciseLogs.where((exerciseLog) => exerciseLog.exerciseVariant.movement == newMovement).toList();
