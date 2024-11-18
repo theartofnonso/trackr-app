@@ -1,6 +1,6 @@
 enum ExerciseModality {
   unilateral("Unilateral", "Perform exercises one side at a time, like single-leg deadlifts or single-arm rows.”"),
-  bilateral("Bilateral", "Engage both sides together, such as squats or bench presses.");
+  bilateral("Bilateral", "Engage both limbs together, such as squats or bench presses.");
 
   const ExerciseModality(this.name, this.description);
 
