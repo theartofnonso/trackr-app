@@ -339,7 +339,7 @@ class ExerciseRepository {
 
     final diamondPushUpExercise = ExerciseDTO(
         id: "TRI_04",
-        name: "Diamond Push-Ups",
+        name: "Diamond Push-Up",
         description: "Focuses on strengthening the triceps by positioning the hands close together in a diamond shape.",
         metrics: [ExerciseMetric.reps, ExerciseMetric.weights],
         modes: [ExerciseModality.bilateral],
