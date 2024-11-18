@@ -344,8 +344,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
             ExerciseMetric.weights => "Set ${index + 1}: ${exerciseLog.sets[index].weightsSummary()}",
             ExerciseMetric.reps => "Set ${index + 1}: ${exerciseLog.sets[index].repsSummary()}",
             ExerciseMetric.duration => "Set ${index + 1}: ${exerciseLog.sets[index].durationSummary()}",
-
-            ExerciseMetric.none => throw UnimplementedError(),
           };
         }).toList();
 

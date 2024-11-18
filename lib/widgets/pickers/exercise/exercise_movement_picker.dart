@@ -19,6 +19,7 @@ class ExerciseMovementPicker extends StatefulWidget {
 }
 
 class _ExerciseMovementPickerState extends State<ExerciseMovementPicker> {
+
   ExerciseMovement _selectedMovement = ExerciseMovement.none;
 
   FixedExtentScrollController? _scrollController;
@@ -72,6 +73,7 @@ class _ExerciseMovementPickerState extends State<ExerciseMovementPicker> {
   void initState() {
     super.initState();
     final initialIndex = widget.movements.indexOf(widget.initialMovement ?? ExerciseMovement.none);
+    _selectedMovement = widget.movements[initialIndex];
     _scrollController = FixedExtentScrollController(initialItem: initialIndex);
   }
 

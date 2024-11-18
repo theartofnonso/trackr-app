@@ -73,6 +73,7 @@ class _ExerciseModalityPickerState extends State<ExerciseModalityPicker> {
   void initState() {
     super.initState();
     final initialIndex = widget.modes.indexOf(widget.initialModality ?? ExerciseModality.bilateral);
+    _selectedMode = widget.modes[initialIndex];
     _scrollController = FixedExtentScrollController(initialItem: initialIndex);
   }
 

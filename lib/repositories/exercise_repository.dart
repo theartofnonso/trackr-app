@@ -62,7 +62,7 @@ class ExerciseRepository {
         modes: [ExerciseModality.bilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.standing],
-        equipment: [ExerciseEquipment.parallelBars, ExerciseEquipment.straightBar, ExerciseEquipment.assistedMachine],
+        equipment: [ExerciseEquipment.none, ExerciseEquipment.parallelBars, ExerciseEquipment.straightBar, ExerciseEquipment.assistedMachine],
         primaryMuscleGroups: [MuscleGroup.chest],
         secondaryMuscleGroups: [MuscleGroup.shoulders, MuscleGroup.triceps],
         coreMovement: CoreMovement.push);
@@ -129,15 +129,15 @@ class ExerciseRepository {
         id: "QUA_01",
         name: "Squats",
         description: "A squat targeting the quadriceps, glutes, and hamstrings.",
-        metrics: [ExerciseMetric.weights, ExerciseMetric.reps],
+        metrics: [ExerciseMetric.reps, ExerciseMetric.weights],
         modes: [ExerciseModality.bilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.standing],
         equipment: [
+          ExerciseEquipment.none,
           ExerciseEquipment.barbell,
           ExerciseEquipment.machine,
-          ExerciseEquipment.smithMachine,
-          ExerciseEquipment.none
+          ExerciseEquipment.smithMachine
         ],
         primaryMuscleGroups: [MuscleGroup.quadriceps],
         secondaryMuscleGroups: [MuscleGroup.hamstrings, MuscleGroup.glutes],
@@ -161,7 +161,7 @@ class ExerciseRepository {
         name: "Leg Presses",
         description: "A machine-based exercise that targets the quadriceps, glutes, and hamstrings.",
         metrics: [ExerciseMetric.weights],
-        modes: [ExerciseModality.unilateral, ExerciseModality.bilateral],
+        modes: [ExerciseModality.bilateral, ExerciseModality.unilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.standing],
         equipment: [
@@ -176,7 +176,7 @@ class ExerciseRepository {
         name: "Leg Extensions",
         description: "An isolation exercise for strengthening the quadriceps using a leg extension machine.",
         metrics: [ExerciseMetric.weights],
-        modes: [ExerciseModality.unilateral, ExerciseModality.bilateral],
+        modes: [ExerciseModality.bilateral, ExerciseModality.unilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.seated],
         equipment: [ExerciseEquipment.machine],
@@ -193,7 +193,7 @@ class ExerciseRepository {
         modes: [ExerciseModality.unilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.standing],
-        equipment: [ExerciseEquipment.dumbbell, ExerciseEquipment.kettleBell, ExerciseEquipment.none],
+        equipment: [ExerciseEquipment.none, ExerciseEquipment.dumbbell, ExerciseEquipment.kettleBell],
         primaryMuscleGroups: [MuscleGroup.quadriceps],
         secondaryMuscleGroups: [MuscleGroup.hamstrings, MuscleGroup.glutes],
         coreMovement: CoreMovement.lunge);
@@ -207,10 +207,10 @@ class ExerciseRepository {
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.standing],
         equipment: [
+          ExerciseEquipment.none,
           ExerciseEquipment.barbell,
           ExerciseEquipment.dumbbell,
-          ExerciseEquipment.kettleBell,
-          ExerciseEquipment.none
+          ExerciseEquipment.kettleBell
         ],
         primaryMuscleGroups: [MuscleGroup.quadriceps],
         secondaryMuscleGroups: [MuscleGroup.hamstrings, MuscleGroup.glutes],
@@ -265,7 +265,7 @@ class ExerciseRepository {
         description:
             "Isolates the hamstrings by curling the legs from a lying/seated position, enhancing muscle development.",
         metrics: [ExerciseMetric.weights],
-        modes: [ExerciseModality.unilateral, ExerciseModality.bilateral],
+        modes: [ExerciseModality.bilateral, ExerciseModality.unilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.seated, ExerciseStance.lying],
         equipment: [ExerciseEquipment.machine, ExerciseEquipment.none],
@@ -282,7 +282,7 @@ class ExerciseRepository {
         modes: [ExerciseModality.bilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.lying],
-        equipment: [ExerciseEquipment.plate, ExerciseEquipment.none],
+        equipment: [ExerciseEquipment.none, ExerciseEquipment.plate],
         primaryMuscleGroups: [MuscleGroup.hamstrings],
         secondaryMuscleGroups: [
           MuscleGroup.glutes,
@@ -316,7 +316,7 @@ class ExerciseRepository {
         name: "Triceps Pushdowns",
         description: "Isolates the triceps with a unique underhand grip, emphasizing the medial head of the muscle.",
         metrics: [ExerciseMetric.weights],
-        modes: [ExerciseModality.unilateral, ExerciseModality.bilateral],
+        modes: [ExerciseModality.bilateral, ExerciseModality.unilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.standing],
         equipment: [ExerciseEquipment.rope, ExerciseEquipment.vBarHandle, ExerciseEquipment.straightBarHandle],
@@ -328,7 +328,7 @@ class ExerciseRepository {
         id: "TRI_03",
         name: "Close-Grip Presses",
         description: "Targets the triceps by narrowing hand placement during the pressing motion.",
-        metrics: [ExerciseMetric.reps, ExerciseMetric.weights],
+        metrics: [ExerciseMetric.weights],
         modes: [ExerciseModality.bilateral],
         positions: [ExercisePosition.incline, ExercisePosition.decline, ExercisePosition.neutral],
         stances: [ExerciseStance.lying, ExerciseStance.seated],
@@ -359,7 +359,7 @@ class ExerciseRepository {
         modes: [ExerciseModality.bilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.standing],
-        equipment: [ExerciseEquipment.parallelBars, ExerciseEquipment.straightBar, ExerciseEquipment.assistedMachine],
+        equipment: [ExerciseEquipment.none, ExerciseEquipment.parallelBars, ExerciseEquipment.straightBar, ExerciseEquipment.assistedMachine],
         primaryMuscleGroups: [MuscleGroup.triceps],
         secondaryMuscleGroups: [MuscleGroup.chest, MuscleGroup.shoulders],
         coreMovement: CoreMovement.push);
@@ -369,7 +369,7 @@ class ExerciseRepository {
         name: "Triceps Extensions",
         description: "Targets the long head of the triceps by stretching and contracting through the motion.",
         metrics: [ExerciseMetric.weights],
-        modes: [ExerciseModality.unilateral, ExerciseModality.bilateral],
+        modes: [ExerciseModality.bilateral, ExerciseModality.unilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.standing, ExerciseStance.seated, ExerciseStance.lying],
         movements: [ExerciseMovement.overhead, ExerciseMovement.none],
@@ -398,7 +398,7 @@ class ExerciseRepository {
         name: "Rows",
         description: "Targets the lats, traps, and rhomboids.",
         metrics: [ExerciseMetric.weights],
-        modes: [ExerciseModality.unilateral, ExerciseModality.bilateral],
+        modes: [ExerciseModality.bilateral, ExerciseModality.unilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.standing, ExerciseStance.seated],
         equipment: [
@@ -419,12 +419,12 @@ class ExerciseRepository {
         name: "Lat Pulldowns",
         description: "Focuses on the lats and upper back, ideal for developing width.",
         metrics: [ExerciseMetric.weights],
-        modes: [ExerciseModality.unilateral, ExerciseModality.bilateral],
+        modes: [ExerciseModality.bilateral, ExerciseModality.unilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.seated],
         equipment: [ExerciseEquipment.cableMachine],
         primaryMuscleGroups: [MuscleGroup.back],
-        movements: [ExerciseMovement.reverse, ExerciseMovement.none],
+        movements: [ExerciseMovement.none, ExerciseMovement.reverse],
         secondaryMuscleGroups: [MuscleGroup.biceps, MuscleGroup.shoulders],
         coreMovement: CoreMovement.pull);
 
@@ -433,10 +433,11 @@ class ExerciseRepository {
         name: "Pull-Ups",
         description: "A bodyweight exercise that activates the lats and upper back, promoting overall back strength.",
         metrics: [ExerciseMetric.reps, ExerciseMetric.weights],
-        modes: [ExerciseModality.unilateral, ExerciseModality.bilateral],
+        modes: [ExerciseModality.bilateral, ExerciseModality.unilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.hanging],
         equipment: [
+          ExerciseEquipment.none,
           ExerciseEquipment.plate,
           ExerciseEquipment.dumbbell,
           ExerciseEquipment.kettleBell,
@@ -444,7 +445,7 @@ class ExerciseRepository {
           ExerciseEquipment.band
         ],
         primaryMuscleGroups: [MuscleGroup.back],
-        movements: [ExerciseMovement.reverse, ExerciseMovement.none],
+        movements: [ExerciseMovement.none, ExerciseMovement.reverse],
         secondaryMuscleGroups: [MuscleGroup.biceps, MuscleGroup.shoulders],
         coreMovement: CoreMovement.pull);
 
@@ -486,11 +487,11 @@ class ExerciseRepository {
         name: "Hip Adduction",
         description:
             "Targets the inner thigh muscles, specifically the adductors, to improve leg stability and strength.",
-        metrics: [ExerciseMetric.weights],
+        metrics: [ExerciseMetric.reps, ExerciseMetric.weights],
         modes: [ExerciseModality.bilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.seated],
-        equipment: [ExerciseEquipment.machine, ExerciseEquipment.band],
+        equipment: [ExerciseEquipment.none, ExerciseEquipment.machine, ExerciseEquipment.band],
         primaryMuscleGroups: [MuscleGroup.adductors],
         coreMovement: CoreMovement.others);
 
@@ -566,7 +567,7 @@ class ExerciseRepository {
         movements: [ExerciseMovement.overhead],
         coreMovement: CoreMovement.push);
 
-    final reverseExercise = ExerciseDTO(
+    final flyesExercise = ExerciseDTO(
         id: "SHO_05",
         name: "Reverse Shoulder Flyes",
         description: "Strengthens the rear deltoids and upper back, enhancing posture and shoulder support.",
@@ -618,7 +619,7 @@ class ExerciseRepository {
     _exercises.add(uprightRowExercise);
     _exercises.add(arnoldPressExercise);
     _exercises.add(overheadExercise);
-    _exercises.add(reverseExercise);
+    _exercises.add(flyesExercise);
     _exercises.add(rotationExercise);
     _exercises.add(facePullExercise);
   }
@@ -629,10 +630,11 @@ class ExerciseRepository {
         name: "Glute Bridge",
         description: "Strengthens the glutes during a hip-lifting movement.",
         metrics: [ExerciseMetric.reps, ExerciseMetric.weights],
-        modes: [ExerciseModality.unilateral, ExerciseModality.bilateral],
+        modes: [ExerciseModality.bilateral, ExerciseModality.unilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.lying],
         equipment: [
+          ExerciseEquipment.none,
           ExerciseEquipment.dumbbell,
           ExerciseEquipment.plate,
           ExerciseEquipment.kettleBell,
@@ -647,14 +649,14 @@ class ExerciseRepository {
         name: "Hip Thrust",
         description: "Targets the gluteus maximus for strength and size through hip extension.",
         metrics: [ExerciseMetric.reps, ExerciseMetric.weights],
-        modes: [ExerciseModality.unilateral, ExerciseModality.bilateral],
+        modes: [ExerciseModality.bilateral, ExerciseModality.unilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.lying],
         equipment: [
+          ExerciseEquipment.barbell,
           ExerciseEquipment.dumbbell,
           ExerciseEquipment.plate,
           ExerciseEquipment.kettleBell,
-          ExerciseEquipment.barbell,
           ExerciseEquipment.smithMachine,
           ExerciseEquipment.machine
         ],
@@ -676,10 +678,10 @@ class ExerciseRepository {
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.kneeling, ExerciseStance.standing],
         equipment: [
+          ExerciseEquipment.none,
           ExerciseEquipment.cableMachine,
           ExerciseEquipment.machine,
           ExerciseEquipment.band,
-          ExerciseEquipment.none
         ],
         primaryMuscleGroups: [MuscleGroup.glutes],
         secondaryMuscleGroups: [
@@ -698,7 +700,7 @@ class ExerciseRepository {
         modes: [ExerciseModality.bilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.standing],
-        equipment: [ExerciseEquipment.cableMachine, ExerciseEquipment.band],
+        equipment: [ExerciseEquipment.band, ExerciseEquipment.cableMachine],
         primaryMuscleGroups: [MuscleGroup.glutes],
         secondaryMuscleGroups: [MuscleGroup.hamstrings, MuscleGroup.adductors, MuscleGroup.back],
         coreMovement: CoreMovement.hinge);
@@ -715,11 +717,11 @@ class ExerciseRepository {
         name: "Planks",
         description: "Strengthens the core by holding a static plank position, engaging the entire midsection.",
         metrics: [ExerciseMetric.duration],
-        modes: [ExerciseModality.unilateral, ExerciseModality.bilateral],
+        modes: [ExerciseModality.bilateral, ExerciseModality.unilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.lying, ExerciseStance.kneeling],
         equipment: [ExerciseEquipment.none, ExerciseEquipment.plate],
-        movements: [ExerciseMovement.reverse, ExerciseMovement.none],
+        movements: [ExerciseMovement.none, ExerciseMovement.reverse],
         primaryMuscleGroups: [MuscleGroup.abs],
         coreMovement: CoreMovement.others);
 
@@ -731,7 +733,7 @@ class ExerciseRepository {
         modes: [ExerciseModality.bilateral],
         positions: [ExercisePosition.neutral, ExercisePosition.decline],
         stances: [ExerciseStance.lying],
-        movements: [ExerciseMovement.reverse, ExerciseMovement.none],
+        movements: [ExerciseMovement.none, ExerciseMovement.reverse],
         equipment: [
           ExerciseEquipment.none,
           ExerciseEquipment.machine,
@@ -751,7 +753,7 @@ class ExerciseRepository {
         modes: [ExerciseModality.bilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.lying, ExerciseStance.hanging],
-        movements: [ExerciseMovement.reverse, ExerciseMovement.none],
+        movements: [ExerciseMovement.none, ExerciseMovement.reverse],
         equipment: [
           ExerciseEquipment.none,
           ExerciseEquipment.machine,
@@ -774,10 +776,10 @@ class ExerciseRepository {
         name: "Calf Raises",
         description: "Strengthens the calf muscles by raising the heels from a standing position.",
         metrics: [ExerciseMetric.reps, ExerciseMetric.weights],
-        modes: [ExerciseModality.unilateral, ExerciseModality.bilateral],
+        modes: [ExerciseModality.bilateral, ExerciseModality.unilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.standing, ExerciseStance.seated],
-        equipment: [ExerciseEquipment.plate, ExerciseEquipment.dumbbell, ExerciseEquipment.machine, ExerciseEquipment.none],
+        equipment: [ExerciseEquipment.none, ExerciseEquipment.plate, ExerciseEquipment.dumbbell, ExerciseEquipment.machine],
         primaryMuscleGroups: [MuscleGroup.calves],
         coreMovement: CoreMovement.others);
 
@@ -787,7 +789,7 @@ class ExerciseRepository {
         description:
             "Engages the calves through repetitive jumping motions, building strength, endurance, and coordination while improving overall lower-body mobility and agility.",
         metrics: [ExerciseMetric.reps, ExerciseMetric.weights],
-        modes: [ExerciseModality.unilateral, ExerciseModality.bilateral],
+        modes: [ExerciseModality.bilateral, ExerciseModality.unilateral],
         positions: [ExercisePosition.neutral],
         stances: [ExerciseStance.standing],
         equipment: [ExerciseEquipment.rope],

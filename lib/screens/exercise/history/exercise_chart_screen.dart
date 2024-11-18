@@ -128,8 +128,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     _summaryType = switch (widget.exerciseVariant.metric) {
       ExerciseMetric.weights => SummaryType.weight,
       ExerciseMetric.reps => SummaryType.mostReps,
-      ExerciseMetric.duration => _summaryType = SummaryType.bestTime,
-      ExerciseMetric.none => throw UnimplementedError(),
+      ExerciseMetric.duration => _summaryType = SummaryType.bestTime
     };
 
     _dateTimes = widget.exerciseLogs.map((log) => log.createdAt.formattedDayAndMonth()).toList();

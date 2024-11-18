@@ -13,7 +13,7 @@ enum ExerciseMovement {
       "Reverse movements engage muscles on the back of your body, such as rear delts, traps, and lats, to improve posture and pulling strength."),
   highToLow("High to low", "A movement pattern where the resistance starts above shoulder level and is brought downwards, targeting muscles with a downward force trajectory."),
   lowToHigh("Low to high", "A movement pattern where the resistance starts below shoulder level and is lifted upwards, engaging muscles with an upward force trajectory."),
-  none("N/a", "");
+  none("Default", "This option indicates no modification to the original way of performing the exercise.");
 
   const ExerciseMovement(this.name, this.description);
 

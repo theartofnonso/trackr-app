@@ -72,6 +72,7 @@ class _ExerciseMetricPickerState extends State<ExerciseMetricPicker> {
   void initState() {
     super.initState();
     final initialIndex = widget.metrics.indexOf(widget.initialMetric ?? ExerciseMetric.weights);
+    _selectedMetric = widget.metrics[initialIndex];
     _scrollController = FixedExtentScrollController(initialItem: initialIndex);
   }
 

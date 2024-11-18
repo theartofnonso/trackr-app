@@ -86,7 +86,6 @@ class ExerciseLogWidget extends StatelessWidget {
               label: 'TIME',
               routinePreviewType: previewType,
             ),
-          ExerciseMetric.none => throw UnimplementedError(),
         },
         const SizedBox(height: 8),
         ...setsToWidgets(

@@ -72,6 +72,7 @@ class _ExercisePositionPickerState extends State<ExercisePositionPicker> {
   void initState() {
     super.initState();
     final initialIndex = widget.positions.indexOf(widget.initialPosition ?? ExercisePosition.neutral);
+    _selectedPosition = widget.positions[initialIndex];
     _scrollController = FixedExtentScrollController(initialItem: initialIndex);
   }
 

@@ -147,8 +147,6 @@ List<Widget> setsToWidgets(
         }
         final label = Duration(milliseconds: setDto.duration()).hmsAnalog();
         return SingleSetRow(label: label, margin: margin, pbs: pbsForSet, routinePreviewType: routinePreviewType);
-      case ExerciseMetric.none:
-        return SizedBox.shrink();
     }
   })).toList();
 
@@ -223,8 +221,6 @@ String copyRoutineAsText(
         case ExerciseMetric.duration:
           routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].durationSummary()}");
           break;
-        case ExerciseMetric.none:
-          routineText.writeln("");
       }
     }
   }

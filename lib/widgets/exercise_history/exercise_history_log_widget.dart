@@ -84,7 +84,6 @@ class _ExerciseLogWidget extends StatelessWidget {
         switch (exerciseType) {
           ExerciseMetric.weights => DoubleSetHeader(firstLabel: weightLabel().toUpperCase(), secondLabel: 'REPS', routinePreviewType: RoutinePreviewType.log),
           ExerciseMetric.reps => const SingleSetHeader(label: 'REPS', routinePreviewType: RoutinePreviewType.log),
-          ExerciseMetric.none => throw UnimplementedError(),
           ExerciseMetric.duration => const SingleSetHeader(label: 'TIME', routinePreviewType: RoutinePreviewType.log),},
         const SizedBox(height: 8),
         ...setsToWidgets(exerciseMetric: exerciseType, sets: exerciseLog.sets, routinePreviewType: RoutinePreviewType.log),

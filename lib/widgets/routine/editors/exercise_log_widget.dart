@@ -22,6 +22,7 @@ import 'package:tracker_app/widgets/routine/editors/set_rows/weights_set_row.dar
 
 import '../../../colors.dart';
 import '../../../dtos/exercise_dto.dart';
+import '../../../dtos/exercise_variant_dto.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../enums/exercise/core_movements_enum.dart';
 import '../../../enums/exercise/exercise_modality_enum.dart';
@@ -405,8 +406,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               ),
             ExerciseMetric.reps => RepsSetHeader(editorType: widget.editorType),
             ExerciseMetric.duration => DurationSetHeader(editorType: widget.editorType),
-            // TODO: Handle this case.
-            ExerciseMetric.none => throw UnimplementedError(),
           },
           const SizedBox(height: 8),
           if (sets.isNotEmpty)
@@ -475,9 +474,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   message: 'Do you want to switch training equipment?',
                   callback: () {
                     _closeDialog();
-                     final noEquipment = newEquipment == ExerciseEquipment.none;
-                     final newMetric = noEquipment ? ExerciseMetric.reps : widget.exerciseLogDto.exerciseVariant.metric;
-                    final updatedExerciseVariant = widget.exerciseLogDto.exerciseVariant.copyWith(equipment: newEquipment, metric: newMetric);
+                    final noEquipment = newEquipment == ExerciseEquipment.none;
+                    final newMetric = noEquipment ? ExerciseMetric.reps : widget.exerciseLogDto.exerciseVariant.metric;
+                    final updatedExerciseVariant =
+                        widget.exerciseLogDto.exerciseVariant.copyWith(equipment: newEquipment, metric: newMetric);
                     final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: updatedExerciseVariant);
                     widget.onUpdate(updatedExerciseLog);
                   },
@@ -520,10 +520,14 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   callback: () {
                     _closeDialog();
                     final isWeightsMetric = newMetric == ExerciseMetric.weights;
-                    if(isWeightsMetric) {
+                    ExerciseVariantDTO updatedExercise =
+                        widget.exerciseLogDto.exerciseVariant.copyWith(metric: newMetric);
+                    if (isWeightsMetric) {
                       _showExerciseEquipmentPicker(equipment: exercise.equipment);
+                    } else if (newMetric == ExerciseMetric.reps) {
+                      updatedExercise = widget.exerciseLogDto.exerciseVariant
+                          .copyWith(equipment: ExerciseEquipment.none);
                     }
-                    final updatedExercise = widget.exerciseLogDto.exerciseVariant.copyWith(metric: newMetric);
                     final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: updatedExercise);
                     widget.onUpdate(updatedExerciseLog);
                   },
@@ -683,8 +687,6 @@ class _SetListView extends StatelessWidget {
             startTime: durationControllers.isNotEmpty ? durationControllers[index] : DateTime.now(),
             onupdateDuration: (Duration duration) => updateDuration(index: index, duration: duration, setDto: setDto),
           ),
-        // TODO: Handle this case.
-        ExerciseMetric.none => throw UnimplementedError(),
       };
 
       return Padding(padding: const EdgeInsets.only(bottom: 8.0), child: setWidget);
