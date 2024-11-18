@@ -1,9 +1,9 @@
 enum ExerciseMovement {
   overhead("Overhead",
       "Overhead movements involve lifting or extending weights above your head, focusing on muscles like triceps, shoulders, and back."),
-  internalRotation("Internal Rotation",
+  internalRotation("Internal",
       "A movement pattern where the limb rotates towards the midline of the body."),
-  externalRotation("External Rotation",
+  externalRotation("External",
       "A movement pattern where the limb rotates away from the midline of the body."),
   lateral("Lateral",
       "Lateral movements work the sides of your body, engaging muscles like deltoids and obliques to improve balance and coordination."),
