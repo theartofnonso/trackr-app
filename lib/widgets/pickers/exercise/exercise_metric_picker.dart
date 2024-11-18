@@ -39,7 +39,7 @@ class _ExerciseMetricPickerState extends State<ExerciseMetricPicker> {
           description: _selectedMetric.description,
           labelStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 14),
           descriptionStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white70, fontSize: 14),
-          dividerColor: sapphireLighter,
+          dividerColor: Colors.transparent,
           labelAlignment: LabelAlignment.left,
         ),
         Expanded(
