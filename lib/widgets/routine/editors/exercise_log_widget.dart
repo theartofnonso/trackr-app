@@ -113,7 +113,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _show1RMRecommendations() {
     final pastExerciseLogs = Provider.of<ExerciseAndRoutineController>(context, listen: false)
-            .exerciseLogsByName[widget.exerciseLogDto.exerciseVariant.name] ??
+            .exerciseLogsById[widget.exerciseLogDto.exerciseVariant.name] ??
         [];
     final completedPastExerciseLogs = completedExercises(exerciseLogs: pastExerciseLogs);
     if (completedPastExerciseLogs.isNotEmpty) {
@@ -269,9 +269,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final exerciseVariant = widget.exerciseLogDto.exerciseVariant;
 
-    final exercise = exerciseAndRoutineController.whereExercise(name: exerciseVariant.name);
+    final exercise = exerciseAndRoutineController.whereExercise(id: exerciseVariant.id);
 
-    return Container(
+    return exercise != null ? Container(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
       decoration: BoxDecoration(
         color: sapphireDark80, // Set the background color
@@ -288,7 +288,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   FocusScope.of(context).unfocus();
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) =>
-                          ExerciseHomeScreen(exerciseName: widget.exerciseLogDto.exerciseVariant.name)));
+                          ExerciseHomeScreen(id: widget.exerciseLogDto.exerciseVariant.id)));
                 },
                 child: Text(exerciseVariant.name,
                     style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
@@ -458,7 +458,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           ])
         ],
       ),
-    );
+    ) : const SizedBox.shrink();
   }
 
   void _showExerciseEquipmentPicker({required List<ExerciseEquipment> equipment}) {

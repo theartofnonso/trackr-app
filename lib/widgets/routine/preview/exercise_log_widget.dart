@@ -44,7 +44,7 @@ class ExerciseLogWidget extends StatelessWidget {
           dense: true,
           onTap: () {
             Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => ExerciseHomeScreen(exerciseName: exerciseLog.exerciseVariant.name)));
+                .push(MaterialPageRoute(builder: (context) => ExerciseHomeScreen(id: exerciseLog.exerciseVariant.id)));
           },
           title: Text(exerciseLog.exerciseVariant.name,
               style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),

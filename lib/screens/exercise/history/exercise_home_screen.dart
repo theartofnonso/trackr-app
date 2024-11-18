@@ -9,33 +9,30 @@ import 'package:tracker_app/screens/exercise/history/exercise_chart_screen.dart'
 import 'package:tracker_app/screens/exercise/history/history_screen.dart';
 
 import '../../../dtos/exercise_dto.dart';
-import '../../../dtos/exercise_log_dto.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../empty_state_screens/not_found.dart';
 
 class ExerciseHomeScreen extends StatefulWidget {
   static const routeName = "/exercise_home_screen";
 
-  final String exerciseName;
+  final String id;
 
-  const ExerciseHomeScreen({super.key, required this.exerciseName});
+  const ExerciseHomeScreen({super.key, required this.id});
 
   @override
   State<ExerciseHomeScreen> createState() => _ExerciseHomeScreenState();
 }
 
 class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
-  ExerciseDTO? _exercise;
-
-  Map<String, List<ExerciseLogDTO>>? _exerciseLogsByName;
-
   @override
   Widget build(BuildContext context) {
-    final exercise = _exercise;
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+
+    final exercise = exerciseAndRoutineController.whereExercise(id: widget.id);
 
     if (exercise == null) return const NotFound();
 
-    final exerciseLogs = _exerciseLogsByName?[exercise.name] ?? [];
+    final exerciseLogs = exerciseAndRoutineController.exerciseLogsById[exercise.id] ?? [];
 
     final completedExerciseLogs = completedExercises(exerciseLogs: exerciseLogs);
 
@@ -93,7 +90,8 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
                     longestDuration: longestDurationRecord,
                     mostRepsSet: mostRepsSetRecord,
                     mostRepsSession: mostRepsSessionRecord,
-                    exerciseVariant: exercise.defaultVariant(), // to BE FIXED
+                    exerciseVariant: exercise.defaultVariant(),
+                    // to BE FIXED
                     exerciseLogs: completedExerciseLogs,
                   ),
                   HistoryScreen(exerciseLogs: completedExerciseLogs),
@@ -104,11 +102,11 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
         ));
   }
 
-  @override
-  void initState() {
-    super.initState();
-    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-    _exerciseLogsByName = exerciseAndRoutineController.exerciseLogsByName;
-    _exercise = exerciseAndRoutineController.whereExercise(name: widget.exerciseName) ;
-  }
+// @override
+// void initState() {
+//   super.initState();
+//   final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+//   _exerciseLogsByExerciseId = exerciseAndRoutineController.exerciseLogsById;
+//   _exercise = exerciseAndRoutineController.whereExercise(id: widget.id) ;
+// }
 }

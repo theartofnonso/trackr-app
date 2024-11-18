@@ -35,7 +35,11 @@ Future<List<ExerciseLogDTO>?> reOrderExerciseLogs(
 
 List<ExerciseLogDTO> whereOtherExerciseLogsExcept(
     {required ExerciseLogDTO exerciseLog, required List<ExerciseLogDTO> others}) {
-  return others.where((otherExerciseLog) => otherExerciseLog.exerciseVariant.name != exerciseLog.exerciseVariant.name && otherExerciseLog.superSetId.isEmpty).toList();
+  return others
+      .where((otherExerciseLog) =>
+          otherExerciseLog.exerciseVariant.name != exerciseLog.exerciseVariant.name &&
+          otherExerciseLog.superSetId.isEmpty)
+      .toList();
 }
 
 List<TemplateChange> checkForChanges(
@@ -155,11 +159,11 @@ List<Widget> setsToWidgets(
 
 Map<String, List<ExerciseLogDTO>> groupExerciseLogsByExerciseId({required List<RoutineLogDto> routineLogs}) {
   final exerciseLogs = routineLogs.expand((log) => log.exerciseLogs);
-  return groupBy(exerciseLogs, (exerciseLog) => exerciseLog.exerciseVariant.name);
+  return groupBy(exerciseLogs, (exerciseLog) => exerciseLog.exerciseVariant.id);
 }
 
 String superSetId({required ExerciseLogDTO firstExerciseLog, required ExerciseLogDTO secondExerciseLog}) {
-  return "superset_id_${firstExerciseLog.exerciseVariant.name}_${secondExerciseLog.exerciseVariant.name}";
+  return "superset_id_${firstExerciseLog.exerciseVariant.id}_${secondExerciseLog.exerciseVariant.id}";
 }
 
 String scheduledDaysSummary({required RoutineTemplateDto template, bool showFullName = false}) {
@@ -206,7 +210,8 @@ String copyRoutineAsText(
   for (var exerciseLog in exerciseLogs) {
     var exercise = exerciseLog.exerciseVariant;
     routineText.writeln("\n- Exercise: ${exercise.name}");
-    routineText.writeln("  Muscle Group: ${exercise.primaryMuscleGroups.map((muscleGroup) => muscleGroup.name).join(", ")}");
+    routineText
+        .writeln("  Muscle Group: ${exercise.primaryMuscleGroups.map((muscleGroup) => muscleGroup.name).join(", ")}");
     if (exerciseLog.notes.isNotEmpty) {
       routineText.writeln("  Notes: ${exerciseLog.notes}");
     }

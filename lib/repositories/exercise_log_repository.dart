@@ -262,7 +262,7 @@ class ExerciseLogRepository {
   List<ExerciseLogDTO> completedExerciseLogs() {
     return _exerciseLogs.where((exercise) {
       final numberOfCompletedSets = exercise.sets.where((set) => set.checked);
-      return numberOfCompletedSets.length == exercise.sets.length;
+      return numberOfCompletedSets.isNotEmpty && numberOfCompletedSets.length == exercise.sets.length;
     }).toList();
   }
 

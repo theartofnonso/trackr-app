@@ -55,7 +55,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
 
   UnmodifiableListView<Milestone> get newMilestones => _amplifyLogRepository.newMilestones;
 
-  UnmodifiableMapView<String, List<ExerciseLogDTO>> get exerciseLogsByName => _amplifyLogRepository.exerciseLogsByName;
+  UnmodifiableMapView<String, List<ExerciseLogDTO>> get exerciseLogsById => _amplifyLogRepository.exerciseLogsById;
 
   /// Exercises
   void loadExercises() {
@@ -250,8 +250,8 @@ class ExerciseAndRoutineController extends ChangeNotifier {
   }
 
   /// Exercise Helpers methods
-  ExerciseDTO whereExercise({required String name}) {
-    return _amplifyExerciseRepository.whereExercise(name: name);
+  ExerciseDTO? whereExercise({required String id}) {
+    return _amplifyExerciseRepository.whereExercise(id: id);
   }
 
   /// Template Helpers methods

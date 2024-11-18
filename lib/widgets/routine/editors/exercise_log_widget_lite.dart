@@ -31,9 +31,9 @@ class ExerciseLogLiteWidget extends StatelessWidget {
 
     final exerciseVariant = exerciseLogDto.exerciseVariant;
 
-    final exercise = exerciseAndRoutineController.whereExercise(name: exerciseVariant.name);
+    final exercise = exerciseAndRoutineController.whereExercise(id: exerciseVariant.id);
 
-    return Container(
+    return exercise != null ? Container(
       padding: superSet == null ? const EdgeInsets.symmetric(vertical: 10, horizontal: 10) : const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: sapphireDark80, // Set the background color
@@ -50,7 +50,7 @@ class ExerciseLogLiteWidget extends StatelessWidget {
                   onTap: () {
                     FocusScope.of(context).unfocus();
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => ExerciseHomeScreen(exerciseName: exerciseLogDto.exerciseVariant.name)));
+                        builder: (context) => ExerciseHomeScreen(id: exerciseLogDto.exerciseVariant.id)));
                   },
                   child: Text(exerciseLogDto.exerciseVariant.name,
                       style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
@@ -108,6 +108,6 @@ class ExerciseLogLiteWidget extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ) : const SizedBox.shrink();
   }
 }

@@ -802,8 +802,8 @@ class ExerciseRepository {
 
   /// Helper methods
 
-  ExerciseDTO whereExercise({required String name}) {
-    return exercises.firstWhere((exercise) => exercise.name == name);
+  ExerciseDTO? whereExercise({required String id}) {
+    return exercises.firstWhereOrNull((exercise) => exercise.id == id);
   }
 
   void clear() {

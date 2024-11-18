@@ -159,7 +159,7 @@ final _router = GoRouter(
       path: ExerciseHomeScreen.routeName,
       builder: (context, state) {
         final args = state.extra as ExerciseVariantDTO;
-        return ExerciseHomeScreen(exerciseName: args.name);
+        return ExerciseHomeScreen(id: args.id);
       },
     ),
     GoRoute(
