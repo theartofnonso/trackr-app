@@ -374,7 +374,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     return date.subtract(Duration(days: date.weekday - 1));
   }
 
-  num _calculateMetric({required List<SetDto> sets}) {
+  num _calculateMetric({required List<SetDTO> sets}) {
     return switch (_metric) {
       SetRepsVolumeReps.sets => sets.length,
       SetRepsVolumeReps.reps => sets.map((set) => set.reps()).sum,

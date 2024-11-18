@@ -38,7 +38,7 @@ enum SummaryType {
 
 class ExerciseChartScreen extends StatefulWidget {
   final (String?, double) heaviestWeight;
-  final (String?, SetDto) heaviestSet;
+  final (String?, SetDTO) heaviestSet;
   final (String?, Duration) longestDuration;
   final (String?, int) mostRepsSet;
   final (String?, int) mostRepsSession;

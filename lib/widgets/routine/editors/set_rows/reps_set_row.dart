@@ -7,7 +7,7 @@ import '../set_check_button.dart';
 import '../set_delete_button.dart';
 
 class RepsSetRow extends StatelessWidget {
-  final SetDto setDto;
+  final SetDTO setDto;
   final RoutineEditorMode editorType;
   final VoidCallback onRemoved;
   final VoidCallback onCheck;

@@ -5,7 +5,7 @@ import '../../../dtos/set_dto.dart';
 import 'package:flutter/services.dart';
 
 class SetCheckButton extends StatelessWidget {
-  final SetDto setDto;
+  final SetDTO setDto;
   final void Function() onCheck;
 
   const SetCheckButton({super.key, required this.setDto, required this.onCheck});

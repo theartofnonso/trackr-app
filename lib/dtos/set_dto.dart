@@ -1,83 +1,60 @@
-
 import 'dart:convert';
 
-import 'package:tracker_app/extensions/duration_extension.dart';
-import 'package:tracker_app/utils/general_utils.dart';
+import 'package:tracker_app/dtos/reps_set_dto.dart';
+import 'package:tracker_app/dtos/weight_and_reps_set_dto.dart';
 
-class SetDto {
-  final num value1;
-  final num value2;
-  final bool checked;
+import '../enums/exercise/exercise_metrics_enums.dart';
+import 'duration_set_dto.dart';
 
-  const SetDto(this.value1, this.value2, this.checked);
+abstract class SetDTO {
+  final bool _isChecked;
 
-  SetDto copyWith({num? value1, num? value2, bool? checked}) {
-    return SetDto(value1 ?? this.value1, value2 ?? this.value2, checked ?? this.checked);
-  }
+  const SetDTO({required bool checked}) : _isChecked = checked;
+
+  bool get checked => _isChecked;
+
+  bool isEmpty();
+
+  bool isNotEmpty();
+
+  SetDTO copyWith({bool? checked});
 
   String toJson() {
-    return jsonEncode({"value1": value1, "value2": value2, "checked": checked});
+    if (this is WeightAndRepsSetDTO) {
+      final weightAndRepSet = this as WeightAndRepsSetDTO;
+      return jsonEncode({"value1": weightAndRepSet.weight, "value2": weightAndRepSet.reps, "checked": checked});
+    } else if (this is RepsSetDTO) {
+      final repSet = this as RepsSetDTO;
+      return jsonEncode({"value1": 0, "value2": repSet.reps, "checked": checked});
+    }
+    final durationSet = this as DurationSetDTO;
+    return jsonEncode({"value1": 0, "value2": durationSet.duration.inMilliseconds, "checked": checked});
   }
 
-  factory SetDto.fromJson(Map<String, dynamic> json) {
-    final value1 = json["value1"];
-    final value2 = json["value2"];
-    final checked = json["checked"];
-    return SetDto(value1, value2, checked);
+  factory SetDTO.fromJson(Map<String, dynamic> json, {required ExerciseMetric metric}) {
+    final value1 = json["value1"] as num;
+    final value2 = json["value2"] as num;
+    final checked = json["checked"] as bool;
+    return switch (metric) {
+      ExerciseMetric.weights => WeightAndRepsSetDTO(weight: value1.toDouble(), reps: value2.toInt(), checked: checked),
+      ExerciseMetric.reps => RepsSetDTO(reps: value2, checked: checked),
+      ExerciseMetric.duration => DurationSetDTO(duration: Duration(milliseconds: value2.toInt()), checked: checked),
+    };
   }
 
-  bool isEmpty() {
-    return value1 + value2 == 0;
+  factory SetDTO.newType({required ExerciseMetric metric}) {
+    return switch (metric) {
+      ExerciseMetric.weights => WeightAndRepsSetDTO(weight: 0, reps: 0, checked: false),
+      ExerciseMetric.reps => RepsSetDTO(reps: 0, checked: false),
+      ExerciseMetric.duration => DurationSetDTO(duration: Duration.zero, checked: false),
+    };
   }
 
-  bool isNotEmpty() {
-    return value1 + value2 > 0;
-  }
-
-  double volume() {
-    final convertedWeight = weightWithConversion(value: value1);
-    return (convertedWeight * value2).toDouble();
-  }
-
-  double weight() {
-    return weightWithConversion(value: value1.toDouble());
-  }
-
-  int duration() {
-    return value1.toInt();
-  }
-
-  int reps() {
-    return value2.toInt();
-  }
-
-  String weightsSummary() {
-    return "${weight()}${weightLabel()} x ${reps()}";
-  }
-
-  String durationSummary() {
-    final label = Duration(milliseconds: duration()).hmsAnalog();
-    return label;
-  }
-
-  String repsSummary() {
-    return "x${reps()}";
-  }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-          other is SetDto &&
-              runtimeType == other.runtimeType &&
-              value1 == other.value1 &&
-              value2 == other.value2 &&
-              checked == other.checked;
-
-  @override
-  int get hashCode => value1.hashCode ^ value2.hashCode ^ checked.hashCode;
-
-  @override
-  String toString() {
-    return 'SetDto{value1: $value1, value2: $value2, checked: $checked}';
+  factory SetDTO.set({required ExerciseMetric metric, required SetDTO set}) {
+    return switch (metric) {
+      ExerciseMetric.weights => set as WeightAndRepsSetDTO,
+      ExerciseMetric.reps => set as RepsSetDTO,
+      ExerciseMetric.duration => set as DurationSetDTO,
+    };
   }
 }

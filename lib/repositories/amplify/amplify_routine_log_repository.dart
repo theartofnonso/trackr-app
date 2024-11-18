@@ -159,12 +159,12 @@ class AmplifyRoutineLogRepository {
     return _logs.firstWhereOrNull((log) => log.id == id);
   }
 
-  List<SetDto> whereSetsForExercise({required ExerciseVariantDTO exerciseVariant}) {
+  List<SetDTO> whereSetsForExercise({required ExerciseVariantDTO exerciseVariant}) {
     final exerciseLogs = _exerciseLogsById[exerciseVariant.name]?.reversed ?? [];
     return exerciseLogs.isNotEmpty ? exerciseLogs.first.sets : [];
   }
 
-  List<SetDto> whereSetsForExerciseBefore({required ExerciseDTO exercise, required DateTime date}) {
+  List<SetDTO> whereSetsForExerciseBefore({required ExerciseDTO exercise, required DateTime date}) {
     final exerciseLogs = _exerciseLogsById[exercise.name]?.where((log) => log.createdAt.isBefore(date)) ?? [];
     return exerciseLogs.isNotEmpty ? exerciseLogs.first.sets : [];
   }

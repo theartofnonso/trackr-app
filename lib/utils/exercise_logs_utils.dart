@@ -2,6 +2,9 @@ import 'dart:collection';
 
 import 'package:collection/collection.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
+import 'package:tracker_app/dtos/duration_set_dto.dart';
+import 'package:tracker_app/dtos/reps_set_dto.dart';
+import 'package:tracker_app/dtos/weight_and_reps_set_dto.dart';
 
 import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
@@ -14,49 +17,65 @@ import '../enums/template_changes_type_message_enums.dart';
 
 /// Highest value per [ExerciseLogDTO]
 
-SetDto heaviestSetWeightForExerciseLog({required ExerciseLogDTO exerciseLog}) {
+SetDTO heaviestSetWeightForExerciseLog({required ExerciseLogDTO exerciseLog}) {
   if (exerciseLog.sets.isEmpty) {
-    return const SetDto(0, 0, false);
+    return const WeightAndRepsSetDTO(weight: 0, reps: 0, checked: false);
   }
 
-  return exerciseLog.sets.reduce((SetDto currentHeaviest, SetDto nextSet) =>
-      (nextSet.weight() > currentHeaviest.weight()) ? nextSet : currentHeaviest);
+  return exerciseLog.sets.reduce((SetDTO currentHeaviest, SetDTO nextSet) =>
+      ((nextSet as WeightAndRepsSetDTO).weight > (currentHeaviest as WeightAndRepsSetDTO).weight) ? nextSet : currentHeaviest);
 }
 
 Duration longestDurationForExerciseLog({required ExerciseLogDTO exerciseLog}) {
   return exerciseLog.sets
-      .map((set) => Duration(milliseconds: set.duration()))
+      .map((set) => (set as DurationSetDTO).duration)
       .fold(Duration.zero, (max, duration) => duration > max ? duration : max);
 }
 
 Duration totalDurationExerciseLog({required ExerciseLogDTO exerciseLog}) {
   return exerciseLog.sets.fold<Duration>(
     Duration.zero,
-    (total, set) => total + Duration(milliseconds: set.duration()),
+    (total, set) => total + (set as DurationSetDTO).duration,
   );
 }
 
 int totalRepsForExerciseLog({required ExerciseLogDTO exerciseLog}) =>
-    exerciseLog.sets.fold(0, (total, set) => total + set.reps());
+    exerciseLog.sets.fold(0, (total, set) {
+      final metric = exerciseLog.exerciseVariant.metric;
+      if(metric == ExerciseMetric.reps) {
+        return total + (set as RepsSetDTO).reps;
+      } else if(metric == ExerciseMetric.weights) {
+        return total + (set as WeightAndRepsSetDTO).reps;
+      }
+      return 0;
+    });
 
 int highestRepsForExerciseLog({required ExerciseLogDTO exerciseLog}) {
   if (exerciseLog.sets.isEmpty) return 0;
 
-  return exerciseLog.sets.map((set) => set.reps()).reduce((curr, next) => curr > next ? curr : next).toInt();
+  return exerciseLog.sets.map((set) {
+    final metric = exerciseLog.exerciseVariant.metric;
+    if(metric == ExerciseMetric.reps) {
+      return (set as RepsSetDTO).reps;
+    } else if(metric == ExerciseMetric.weights) {
+      return (set as WeightAndRepsSetDTO).reps;
+    }
+    set.reps()).reduce((curr, next) => curr > next ? curr : next
+  }).toInt();
 }
 
 double heaviestVolumeForExerciseLog({required ExerciseLogDTO exerciseLog}) {
   return exerciseLog.sets.map((set) => set.volume()).fold(0.0, (prev, element) => element > prev ? element : prev);
 }
 
-SetDto heaviestSetVolumeForExerciseLog({required ExerciseLogDTO exerciseLog}) {
+SetDTO heaviestSetVolumeForExerciseLog({required ExerciseLogDTO exerciseLog}) {
   // Check if there are no sets in the exercise log
   if (exerciseLog.sets.isEmpty) {
-    return const SetDto(0, 0, false);
+    return const SetDTO(0, 0, false);
   }
 
   double heaviestVolume = 0;
-  SetDto heaviestSet = const SetDto(0, 0, false);
+  SetDTO heaviestSet = const SetDTO(0, 0, false);
 
   for (final set in exerciseLog.sets) {
     final volume = set.volume();
@@ -76,11 +95,11 @@ DateTime dateTimePerLog({required ExerciseLogDTO log}) {
 
 /// Highest value across all [ExerciseDTO]
 
-(String?, SetDto) heaviestSetVolume({required List<ExerciseLogDTO> exerciseLogs}) {
+(String?, SetDTO) heaviestSetVolume({required List<ExerciseLogDTO> exerciseLogs}) {
   // Return null if there are no past logs
-  if (exerciseLogs.isEmpty) return ("", const SetDto(0, 0, false));
+  if (exerciseLogs.isEmpty) return ("", const SetDTO(0, 0, false));
 
-  SetDto heaviestSet = exerciseLogs.first.sets.first;
+  SetDTO heaviestSet = exerciseLogs.first.sets.first;
   String? logId = exerciseLogs.first.routineLogId;
 
   num heaviestVolume = 0.0;

@@ -10,7 +10,7 @@ class ExerciseLogDTO {
   final String superSetId;
   final ExerciseVariantDTO exerciseVariant;
   final String notes;
-  final List<SetDto> sets;
+  final List<SetDTO> sets;
   final DateTime createdAt;
 
   const ExerciseLogDTO(
@@ -38,7 +38,7 @@ class ExerciseLogDTO {
       String? exerciseId,
       ExerciseVariantDTO? exerciseVariant,
       String? notes,
-      List<SetDto>? sets,
+      List<SetDTO>? sets,
       DateTime? createdAt}) {
     return ExerciseLogDTO(
         routineLogId: routineLogId ?? this.routineLogId,
@@ -60,7 +60,7 @@ class ExerciseLogDTO {
     final exercise = ExerciseVariantDTO.fromJson(exerciseJson);
     final notes = json["notes"] ?? "";
     final setsJsons = json["sets"] as List<dynamic>;
-    final sets = setsJsons.map((json) => SetDto.fromJson(jsonDecode(json))).toList();
+    final sets = setsJsons.map((json) => SetDTO.fromJson(jsonDecode(json), metric: exercise.metric)).toList();
 
     return ExerciseLogDTO(
         routineLogId: routineLogId,

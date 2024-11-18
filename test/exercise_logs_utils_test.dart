@@ -42,9 +42,9 @@ void main() {
       lyingLegCurlExercise,
       "notes",
       [
-        const SetDto(80, 15, true),
-        const SetDto(100, 8, true),
-        const SetDto(100, 6, true),
+        const SetDTO(80, 15, true),
+        const SetDTO(100, 8, true),
+        const SetDTO(100, 6, true),
       ],
       DateTime(2023, 12, 1), []);
 
@@ -55,9 +55,9 @@ void main() {
       lyingLegCurlExercise,
       "notes",
       [
-        const SetDto(80, 12, true),
-        const SetDto(100, 10, true),
-        const SetDto(100, 6, true),
+        const SetDTO(80, 12, true),
+        const SetDTO(100, 10, true),
+        const SetDTO(100, 6, true),
       ],
       DateTime(2023, 12, 1), []);
 
@@ -68,9 +68,9 @@ void main() {
       lyingLegCurlExercise,
       "notes",
       [
-        const SetDto(80, 12, true),
-        const SetDto(100, 10, true),
-        const SetDto(150, 11, true),
+        const SetDTO(80, 12, true),
+        const SetDTO(100, 10, true),
+        const SetDTO(150, 11, true),
       ],
       DateTime(2023, 12, 1), []);
 
@@ -81,9 +81,9 @@ void main() {
       plankExercise,
       "notes",
       [
-        const SetDto(120000, 0, true),
-        const SetDto(180000, 0, true),
-        const SetDto(150000, 0, true),
+        const SetDTO(120000, 0, true),
+        const SetDTO(180000, 0, true),
+        const SetDTO(150000, 0, true),
       ],
       DateTime.now(), []);
 
@@ -94,9 +94,9 @@ void main() {
       plankExercise,
       "notes",
       [
-        const SetDto(110000, 0, true),
-        const SetDto(100000, 0, true),
-        const SetDto(120000, 0, true),
+        const SetDTO(110000, 0, true),
+        const SetDTO(100000, 0, true),
+        const SetDTO(120000, 0, true),
       ],
       DateTime.now(), []);
 
@@ -181,9 +181,9 @@ void main() {
           lyingLegCurlExercise,
           "notes",
           [
-            const SetDto(80, 12, true),
-            const SetDto(100, 10, true),
-            const SetDto(160, 6, true),
+            const SetDTO(80, 12, true),
+            const SetDTO(100, 10, true),
+            const SetDTO(160, 6, true),
           ],
           DateTime.now(), []);
 
@@ -208,9 +208,9 @@ void main() {
           lyingLegCurlExercise,
           "notes",
           [
-            const SetDto(80, 12, true),
-            const SetDto(150, 20, true),
-            const SetDto(100, 10, true),
+            const SetDTO(80, 12, true),
+            const SetDTO(150, 20, true),
+            const SetDTO(100, 10, true),
           ],
           DateTime.now(), []);
 
@@ -235,9 +235,9 @@ void main() {
           lyingLegCurlExercise,
           "notes",
           [
-            const SetDto(80, 12, true),
-            const SetDto(160, 12, true),
-            const SetDto(100, 10, true),
+            const SetDTO(80, 12, true),
+            const SetDTO(160, 12, true),
+            const SetDTO(100, 10, true),
           ],
           DateTime.now(), []);
 
@@ -268,9 +268,9 @@ void main() {
           plankExercise,
           "notes",
           [
-            const SetDto(110000, 0, true),
-            const SetDto(100000, 0, true),
-            const SetDto(220000, 0, true),
+            const SetDTO(110000, 0, true),
+            const SetDTO(100000, 0, true),
+            const SetDTO(220000, 0, true),
           ],
           DateTime.now(), []);
 
@@ -295,9 +295,9 @@ void main() {
           lyingLegCurlExercise,
           "notes",
           [
-            const SetDto(80, 12, true),
-            const SetDto(160, 12, true),
-            const SetDto(100, 10, true),
+            const SetDTO(80, 12, true),
+            const SetDTO(160, 12, true),
+            const SetDTO(100, 10, true),
           ],
           DateTime.now(), []);
 
@@ -308,9 +308,9 @@ void main() {
           plankExercise,
           "notes",
           [
-            const SetDto(110000, 0, true),
-            const SetDto(100000, 0, true),
-            const SetDto(220000, 0, true),
+            const SetDTO(110000, 0, true),
+            const SetDTO(100000, 0, true),
+            const SetDTO(220000, 0, true),
           ],
           DateTime.now(), []);
 
@@ -374,9 +374,9 @@ group ("Template changes", () {
         benchPressExercise,
         "notes",
         [
-          const SetDto(80, 12, true),
-          const SetDto(160, 12, true),
-          const SetDto(100, 10, true),
+          const SetDTO(80, 12, true),
+          const SetDTO(160, 12, true),
+          const SetDTO(100, 10, true),
         ],
         DateTime.now(), []);
 
@@ -395,7 +395,7 @@ group ("Template changes", () {
 
   test("Changed super set id", () {
 
-    final updatedExerciseLog = lyingLegCurlExerciseLog2.copyWith(sets: [const SetDto(80, 12, true), const SetDto(100, 10, true), const SetDto(150, 11, false)]);
+    final updatedExerciseLog = lyingLegCurlExerciseLog2.copyWith(sets: [const SetDTO(80, 12, true), const SetDTO(100, 10, true), const SetDTO(150, 11, false)]);
 
     final result = hasCheckedSetsChanged(
         exerciseLogs1: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2],
@@ -405,7 +405,7 @@ group ("Template changes", () {
 
   test("Changed set value", () {
 
-    final updatedExerciseLog = lyingLegCurlExerciseLog2.copyWith(sets: [const SetDto(80, 12, true), const SetDto(100, 10, true), const SetDto(160, 11, false)]);
+    final updatedExerciseLog = lyingLegCurlExerciseLog2.copyWith(sets: [const SetDTO(80, 12, true), const SetDTO(100, 10, true), const SetDTO(160, 11, false)]);
 
     final result = hasSetValueChanged(
         exerciseLogs1: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2],

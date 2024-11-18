@@ -245,7 +245,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
     return _amplifyLogRepository.whereExerciseLogsBefore(exerciseVariant: exerciseVariant, date: date);
   }
 
-  List<SetDto> whereSetsForExercise({required ExerciseVariantDTO exerciseVariant}) {
+  List<SetDTO> whereSetsForExercise({required ExerciseVariantDTO exerciseVariant}) {
     return _amplifyLogRepository.whereSetsForExercise(exerciseVariant: exerciseVariant);
   }
 

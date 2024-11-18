@@ -125,9 +125,9 @@ void main() {
           hamstringExercise,
           "notes",
           [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
+            const SetDTO(80, 15, true),
+            const SetDTO(100, 8, true),
+            const SetDTO(100, 6, true),
           ],
           dayOneDateTimes[index],
           []));
@@ -140,9 +140,9 @@ void main() {
           hamstringExercise,
           "notes",
           [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
+            const SetDTO(80, 15, true),
+            const SetDTO(100, 8, true),
+            const SetDTO(100, 6, true),
           ],
           dayTwoDateTimes[index],
           []));
@@ -156,9 +156,9 @@ void main() {
           quadExercise,
           "notes",
           [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
+            const SetDTO(80, 15, true),
+            const SetDTO(100, 8, true),
+            const SetDTO(100, 6, true),
           ],
           dayOneDateTimes[index],
           []));
@@ -171,9 +171,9 @@ void main() {
           quadExercise,
           "notes",
           [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
+            const SetDTO(80, 15, true),
+            const SetDTO(100, 8, true),
+            const SetDTO(100, 6, true),
           ],
           dayTwoDateTimes[index],
           []));
@@ -187,9 +187,9 @@ void main() {
           chestExercise,
           "notes",
           [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
+            const SetDTO(80, 15, true),
+            const SetDTO(100, 8, true),
+            const SetDTO(100, 6, true),
           ],
           dayOneDateTimes[index],
           []));
@@ -202,9 +202,9 @@ void main() {
           chestExercise,
           "notes",
           [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
+            const SetDTO(80, 15, true),
+            const SetDTO(100, 8, true),
+            const SetDTO(100, 6, true),
           ],
           dayTwoDateTimes[index],
           []));
@@ -218,9 +218,9 @@ void main() {
           backExercise,
           "notes",
           [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
+            const SetDTO(80, 15, true),
+            const SetDTO(100, 8, true),
+            const SetDTO(100, 6, true),
           ],
           dayOneDateTimes[index],
           []));
@@ -233,9 +233,9 @@ void main() {
           backExercise,
           "notes",
           [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
+            const SetDTO(80, 15, true),
+            const SetDTO(100, 8, true),
+            const SetDTO(100, 6, true),
           ],
           dayTwoDateTimes[index],
           []));
@@ -249,9 +249,9 @@ void main() {
           trapsExercise,
           "notes",
           [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
+            const SetDTO(80, 15, true),
+            const SetDTO(100, 8, true),
+            const SetDTO(100, 6, true),
           ],
           dayOneDateTimes[index],
           []));
@@ -264,9 +264,9 @@ void main() {
           trapsExercise,
           "notes",
           [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
+            const SetDTO(80, 15, true),
+            const SetDTO(100, 8, true),
+            const SetDTO(100, 6, true),
           ],
           dayTwoDateTimes[index],
           []));
@@ -280,9 +280,9 @@ void main() {
           shouldersExercise,
           "notes",
           [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
+            const SetDTO(80, 15, true),
+            const SetDTO(100, 8, true),
+            const SetDTO(100, 6, true),
           ],
           dayOneDateTimes[index],
           []));
@@ -295,9 +295,9 @@ void main() {
           shouldersExercise,
           "notes",
           [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
+            const SetDTO(80, 15, true),
+            const SetDTO(100, 8, true),
+            const SetDTO(100, 6, true),
           ],
           dayTwoDateTimes[index],
           []));
@@ -311,9 +311,9 @@ void main() {
           bicepsExercise,
           "notes",
           [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
+            const SetDTO(80, 15, true),
+            const SetDTO(100, 8, true),
+            const SetDTO(100, 6, true),
           ],
           dayTwoDateTimes[index],
           []));
@@ -326,9 +326,9 @@ void main() {
           bicepsExercise,
           "notes",
           [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
+            const SetDTO(80, 15, true),
+            const SetDTO(100, 8, true),
+            const SetDTO(100, 6, true),
           ],
           dayTwoDateTimes[index],
           []));
@@ -342,9 +342,9 @@ void main() {
           tricepsExercise,
           "notes",
           [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
+            const SetDTO(80, 15, true),
+            const SetDTO(100, 8, true),
+            const SetDTO(100, 6, true),
           ],
           dayOneDateTimes[index],
           []));
@@ -357,9 +357,9 @@ void main() {
           tricepsExercise,
           "notes",
           [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
+            const SetDTO(80, 15, true),
+            const SetDTO(100, 8, true),
+            const SetDTO(100, 6, true),
           ],
           dayTwoDateTimes[index],
           []));
@@ -373,9 +373,9 @@ void main() {
           abs,
           "notes",
           [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
+            const SetDTO(80, 15, true),
+            const SetDTO(100, 8, true),
+            const SetDTO(100, 6, true),
           ],
           dayOneDateTimes[index],
           []));
@@ -388,9 +388,9 @@ void main() {
           abs,
           "notes",
           [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
+            const SetDTO(80, 15, true),
+            const SetDTO(100, 8, true),
+            const SetDTO(100, 6, true),
           ],
           dayTwoDateTimes[index],
           []));
@@ -404,9 +404,9 @@ void main() {
           neck,
           "notes",
           [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
+            const SetDTO(80, 15, true),
+            const SetDTO(100, 8, true),
+            const SetDTO(100, 6, true),
           ],
           dayOneDateTimes[index],
           []));
@@ -419,9 +419,9 @@ void main() {
           exerciseVariant: neck,
           "notes",
           [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
+            const SetDTO(80, 15, true),
+            const SetDTO(100, 8, true),
+            const SetDTO(100, 6, true),
           ],
           dayTwoDateTimes[index],
           []));

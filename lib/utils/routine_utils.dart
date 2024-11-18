@@ -89,7 +89,7 @@ ExerciseLogDTO? whereOtherExerciseInSuperSet(
 
 List<Widget> setsToWidgets(
     {required ExerciseMetric exerciseMetric,
-    required List<SetDto> sets,
+    required List<SetDTO> sets,
     List<PBDto> pbs = const [],
     required RoutinePreviewType routinePreviewType}) {
   final durationTemplate = SetRow(

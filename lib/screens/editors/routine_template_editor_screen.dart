@@ -41,7 +41,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
 
   final _minimisedExerciseLogCards = <String>[];
 
-  SetDto? _selectedSetDto;
+  SetDTO? _selectedSetDto;
 
   void _selectExercisesInLibrary() async {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
@@ -395,12 +395,12 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                                             onResize: () =>
                                                 _handleResizedExerciseLogCard(exerciseIdToResize: exerciseName),
                                             isMinimised: _isMinimised(exerciseName),
-                                            onTapWeightEditor: (SetDto setDto) {
+                                            onTapWeightEditor: (SetDTO setDto) {
                                               setState(() {
                                                 _selectedSetDto = setDto;
                                               });
                                             },
-                                            onTapRepsEditor: (SetDto setDto) {
+                                            onTapRepsEditor: (SetDTO setDto) {
                                               setState(() {
                                                 _selectedSetDto = null;
                                               });

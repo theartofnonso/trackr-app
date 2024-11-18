@@ -4,7 +4,7 @@ import 'package:tracker_app/dtos/set_dto.dart';
 import '../enums/pb_enums.dart';
 
 class PBDto {
-  final SetDto set;
+  final SetDTO set;
   final ExerciseVariantDTO exerciseVariant;
   final PBType pb;
 
