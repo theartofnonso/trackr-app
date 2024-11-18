@@ -13,7 +13,6 @@ import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/utils/exercise_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
-import 'package:tracker_app/widgets/pickers/exercise/exercise_equipment_picker.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/weight_reps_set_header.dart';
@@ -34,11 +33,6 @@ import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/one_rep_max_calculator.dart';
-import '../../pickers/exercise/exercise_metric_picker.dart';
-import '../../pickers/exercise/exercise_modality_picker.dart';
-import '../../pickers/exercise/exercise_movement_picker.dart';
-import '../../pickers/exercise/exercise_position_picker.dart';
-import '../../pickers/exercise/exercise_stance_picker.dart';
 
 class ExerciseLogWidget extends StatefulWidget {
   final RoutineEditorMode editorType;
@@ -272,325 +266,324 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final exercise = exerciseAndRoutineController.whereExercise(id: exerciseVariant.id);
 
-    return exercise != null ? Container(
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-      decoration: BoxDecoration(
-        color: sapphireDark80, // Set the background color
-        borderRadius: BorderRadius.circular(5), // Set the border radius to make it rounded
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  FocusScope.of(context).unfocus();
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) =>
-                          ExerciseHomeScreen(id: widget.exerciseLogDto.exerciseVariant.id)));
-                },
-                child: Text(exerciseVariant.name,
-                    style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
-              ),
-              const Spacer(),
-              MenuAnchor(
-                  style: MenuStyle(
-                    backgroundColor: WidgetStateProperty.all(sapphireDark80),
-                    surfaceTintColor: WidgetStateProperty.all(sapphireDark),
-                  ),
-                  builder: (BuildContext context, MenuController controller, Widget? child) {
-                    return IconButton(
-                      onPressed: () {
-                        if (controller.isOpen) {
-                          controller.close();
-                        } else {
-                          FocusScope.of(context).unfocus();
-                          controller.open();
-                        }
+    return exercise != null
+        ? Container(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+            decoration: BoxDecoration(
+              color: sapphireDark80, // Set the background color
+              borderRadius: BorderRadius.circular(5), // Set the border radius to make it rounded
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        FocusScope.of(context).unfocus();
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ExerciseHomeScreen(id: widget.exerciseLogDto.exerciseVariant.id)));
                       },
-                      icon: const Icon(Icons.more_horiz_rounded, color: Colors.white),
-                      tooltip: 'Show menu',
-                    );
-                  },
-                  menuChildren: _menuActionButtons())
-            ],
-          ),
-          const SizedBox(height: 6),
-          Wrap(
-            runSpacing: 8,
-            spacing: 8,
-            children: [
-              OpacityButtonWidget(
-                label: exerciseVariant.equipment.name.toUpperCase(),
-                buttonColor: vibrantGreen,
-                padding: EdgeInsets.symmetric(horizontal: 0),
-                textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: vibrantGreen),
-                onPressed: () => _showExerciseEquipmentPicker(equipment: exercise.equipment),
-              ),
-              if (exercise.modes.length > 1)
-                OpacityButtonWidget(
-                  label: exerciseVariant.mode.name.toUpperCase(),
-                  buttonColor: Colors.redAccent,
-                  padding: EdgeInsets.symmetric(horizontal: 0),
-                  textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.redAccent),
-                  onPressed: () => _showExerciseModalityPicker(modes: exercise.modes),
+                      child: Text(exerciseVariant.name,
+                          style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+                    ),
+                    const Spacer(),
+                    MenuAnchor(
+                        style: MenuStyle(
+                          backgroundColor: WidgetStateProperty.all(sapphireDark80),
+                          surfaceTintColor: WidgetStateProperty.all(sapphireDark),
+                        ),
+                        builder: (BuildContext context, MenuController controller, Widget? child) {
+                          return IconButton(
+                            onPressed: () {
+                              if (controller.isOpen) {
+                                controller.close();
+                              } else {
+                                FocusScope.of(context).unfocus();
+                                controller.open();
+                              }
+                            },
+                            icon: const Icon(Icons.more_horiz_rounded, color: Colors.white),
+                            tooltip: 'Show menu',
+                          );
+                        },
+                        menuChildren: _menuActionButtons())
+                  ],
                 ),
-              if (exercise.metrics.length > 1)
-                OpacityButtonWidget(
-                  label: exerciseVariant.metric.name.toUpperCase(),
-                  buttonColor: vibrantBlue,
-                  padding: EdgeInsets.symmetric(horizontal: 0),
-                  textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: vibrantBlue),
-                  onPressed: () => _showExerciseMetricPicker(metrics: exercise.metrics, exercise: exercise),
+                const SizedBox(height: 6),
+                Wrap(
+                  runSpacing: 8,
+                  spacing: 8,
+                  children: [
+                    OpacityButtonWidget(
+                      label: exerciseVariant.equipment.name.toUpperCase(),
+                      buttonColor: vibrantGreen,
+                      padding: EdgeInsets.symmetric(horizontal: 0),
+                      textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: vibrantGreen),
+                      onPressed: () => _showExerciseEquipmentPicker(equipment: exercise.equipment),
+                    ),
+                    if (exercise.modes.length > 1)
+                      OpacityButtonWidget(
+                        label: exerciseVariant.mode.name.toUpperCase(),
+                        buttonColor: Colors.redAccent,
+                        padding: EdgeInsets.symmetric(horizontal: 0),
+                        textStyle:
+                            GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.redAccent),
+                        onPressed: () => _showExerciseModalityPicker(modes: exercise.modes),
+                      ),
+                    if (exercise.metrics.length > 1)
+                      OpacityButtonWidget(
+                        label: exerciseVariant.metric.name.toUpperCase(),
+                        buttonColor: vibrantBlue,
+                        padding: EdgeInsets.symmetric(horizontal: 0),
+                        textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: vibrantBlue),
+                        onPressed: () => _showExerciseMetricPicker(metrics: exercise.metrics, exercise: exercise),
+                      ),
+                    if (exercise.positions.length > 1 &&
+                        (exerciseVariant.coreMovement == CoreMovement.push ||
+                            exerciseVariant.coreMovement == CoreMovement.pull))
+                      OpacityButtonWidget(
+                        label: exerciseVariant.position.name.toUpperCase(),
+                        buttonColor: Colors.cyanAccent,
+                        padding: EdgeInsets.symmetric(horizontal: 0),
+                        textStyle:
+                            GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.cyanAccent),
+                        onPressed: () => _showExercisePositionPicker(positions: exercise.positions),
+                      ),
+                    if (exercise.stances.length > 1)
+                      OpacityButtonWidget(
+                        label: exerciseVariant.stance.name.toUpperCase(),
+                        buttonColor: Colors.purpleAccent,
+                        padding: EdgeInsets.symmetric(horizontal: 0),
+                        textStyle:
+                            GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.purpleAccent),
+                        onPressed: () => _showExerciseStancePicker(stances: exercise.stances),
+                      ),
+                    if (exercise.movements.length > 1)
+                      OpacityButtonWidget(
+                        label: exerciseVariant.movement.name.toUpperCase(),
+                        buttonColor: Colors.orange,
+                        padding: EdgeInsets.symmetric(horizontal: 0),
+                        textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.orange),
+                        onPressed: () => _showExerciseMovementPicker(movements: exercise.movements),
+                      ),
+                  ],
                 ),
-              if (exercise.positions.length > 1 &&
-                  (exerciseVariant.coreMovement == CoreMovement.push ||
-                      exerciseVariant.coreMovement == CoreMovement.pull))
-                OpacityButtonWidget(
-                  label: exerciseVariant.position.name.toUpperCase(),
-                  buttonColor: Colors.cyanAccent,
-                  padding: EdgeInsets.symmetric(horizontal: 0),
-                  textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.cyanAccent),
-                  onPressed: () => _showExercisePositionPicker(positions: exercise.positions),
+                const SizedBox(height: 8),
+                if (superSetExerciseDto != null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Text("with ${superSetExerciseDto.exerciseVariant.name}",
+                        style: GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 12)),
+                  ),
+                TextField(
+                  controller: TextEditingController(text: widget.exerciseLogDto.notes),
+                  onChanged: (value) => _updateProcedureNotes(value: value),
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: sapphireLighter)),
+                    filled: true,
+                    fillColor: sapphireDark.withOpacity(0.4),
+                    hintText: "Enter notes",
+                    hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14),
+                  ),
+                  maxLines: null,
+                  cursorColor: Colors.white,
+                  keyboardType: TextInputType.text,
+                  textCapitalization: TextCapitalization.sentences,
+                  style: GoogleFonts.ubuntu(
+                      fontWeight: FontWeight.w400, color: Colors.white.withOpacity(0.8), fontSize: 14),
                 ),
-              if (exercise.stances.length > 1)
-                OpacityButtonWidget(
-                  label: exerciseVariant.stance.name.toUpperCase(),
-                  buttonColor: Colors.purpleAccent,
-                  padding: EdgeInsets.symmetric(horizontal: 0),
-                  textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.purpleAccent),
-                  onPressed: () => _showExerciseStancePicker(stances: exercise.stances),
-                ),
-              if (exercise.movements.length > 1)
-                OpacityButtonWidget(
-                  label: exerciseVariant.movement.name.toUpperCase(),
-                  buttonColor: Colors.orange,
-                  padding: EdgeInsets.symmetric(horizontal: 0),
-                  textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.orange),
-                  onPressed: () => _showExerciseMovementPicker(movements: exercise.movements),
-                ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          if (superSetExerciseDto != null)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10.0),
-              child: Text("with ${superSetExerciseDto.exerciseVariant.name}",
-                  style: GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 12)),
+                const SizedBox(height: 12),
+                switch (exerciseVariant.metric) {
+                  ExerciseMetric.weights => WeightRepsSetHeader(
+                      editorType: widget.editorType,
+                      firstLabel: weightLabel().toUpperCase(),
+                      secondLabel: 'REPS',
+                    ),
+                  ExerciseMetric.reps => RepsSetHeader(editorType: widget.editorType),
+                  ExerciseMetric.duration => DurationSetHeader(editorType: widget.editorType),
+                },
+                const SizedBox(height: 8),
+                if (sets.isNotEmpty)
+                  _SetListView(
+                    exerciseType: exerciseVariant.metric,
+                    sets: sets,
+                    editorType: widget.editorType,
+                    updateSetCheck: _updateSetCheck,
+                    removeSet: _removeSet,
+                    updateReps: _updateReps,
+                    updateWeight: _updateWeight,
+                    checkAndUpdateDuration: _checkAndUpdateDuration,
+                    controllers: _controllers,
+                    durationControllers: _durationControllers,
+                    updateDuration: _updateDuration,
+                    onTapWeightEditor: _onTapWeightEditor,
+                    onTapRepsEditor: _onTapRepsEditor,
+                  ),
+                const SizedBox(height: 8),
+                if (withDurationOnly(metric: exerciseVariant.metric) && sets.isEmpty)
+                  Center(
+                    child: Text("Tap + to add a timer",
+                        style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white70)),
+                  ),
+                const SizedBox(height: 8),
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  if (withWeightsOnly(metric: exerciseVariant.metric))
+                    IconButton(
+                        onPressed: _show1RMRecommendations,
+                        icon: const FaIcon(FontAwesomeIcons.solidLightbulb, color: Colors.white, size: 16),
+                        style: ButtonStyle(
+                            visualDensity: VisualDensity.compact,
+                            shape: WidgetStateProperty.all(
+                                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
+                  const Spacer(),
+                  IconButton(
+                    onPressed: widget.onResize,
+                    icon: const Icon(Icons.close_fullscreen_rounded, color: Colors.white),
+                    tooltip: 'Maximise card',
+                  ),
+                  const SizedBox(
+                    width: 6,
+                  ),
+                  IconButton(
+                      onPressed: _addSet,
+                      icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 16),
+                      style: ButtonStyle(
+                          visualDensity: VisualDensity.compact,
+                          backgroundColor: WidgetStateProperty.all(sapphireDark.withOpacity(0.2)),
+                          shape:
+                              WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
+                ])
+              ],
             ),
-          TextField(
-            controller: TextEditingController(text: widget.exerciseLogDto.notes),
-            onChanged: (value) => _updateProcedureNotes(value: value),
-            decoration: InputDecoration(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: sapphireLighter)),
-              filled: true,
-              fillColor: sapphireDark.withOpacity(0.4),
-              hintText: "Enter notes",
-              hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14),
-            ),
-            maxLines: null,
-            cursorColor: Colors.white,
-            keyboardType: TextInputType.text,
-            textCapitalization: TextCapitalization.sentences,
-            style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white.withOpacity(0.8), fontSize: 14),
-          ),
-          const SizedBox(height: 12),
-          switch (exerciseVariant.metric) {
-            ExerciseMetric.weights => WeightRepsSetHeader(
-                editorType: widget.editorType,
-                firstLabel: weightLabel().toUpperCase(),
-                secondLabel: 'REPS',
-              ),
-            ExerciseMetric.reps => RepsSetHeader(editorType: widget.editorType),
-            ExerciseMetric.duration => DurationSetHeader(editorType: widget.editorType),
-          },
-          const SizedBox(height: 8),
-          if (sets.isNotEmpty)
-            _SetListView(
-              exerciseType: exerciseVariant.metric,
-              sets: sets,
-              editorType: widget.editorType,
-              updateSetCheck: _updateSetCheck,
-              removeSet: _removeSet,
-              updateReps: _updateReps,
-              updateWeight: _updateWeight,
-              checkAndUpdateDuration: _checkAndUpdateDuration,
-              controllers: _controllers,
-              durationControllers: _durationControllers,
-              updateDuration: _updateDuration,
-              onTapWeightEditor: _onTapWeightEditor,
-              onTapRepsEditor: _onTapRepsEditor,
-            ),
-          const SizedBox(height: 8),
-          if (withDurationOnly(metric: exerciseVariant.metric) && sets.isEmpty)
-            Center(
-              child: Text("Tap + to add a timer",
-                  style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white70)),
-            ),
-          const SizedBox(height: 8),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            if (withWeightsOnly(metric: exerciseVariant.metric))
-              IconButton(
-                  onPressed: _show1RMRecommendations,
-                  icon: const FaIcon(FontAwesomeIcons.solidLightbulb, color: Colors.white, size: 16),
-                  style: ButtonStyle(
-                      visualDensity: VisualDensity.compact,
-                      shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
-            const Spacer(),
-            IconButton(
-              onPressed: widget.onResize,
-              icon: const Icon(Icons.close_fullscreen_rounded, color: Colors.white),
-              tooltip: 'Maximise card',
-            ),
-            const SizedBox(
-              width: 6,
-            ),
-            IconButton(
-                onPressed: _addSet,
-                icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 16),
-                style: ButtonStyle(
-                    visualDensity: VisualDensity.compact,
-                    backgroundColor: WidgetStateProperty.all(sapphireDark.withOpacity(0.2)),
-                    shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
-          ])
-        ],
-      ),
-    ) : const SizedBox.shrink();
+          )
+        : const SizedBox.shrink();
   }
 
   void _showExerciseEquipmentPicker({required List<ExerciseEquipment> equipment}) {
-    showExerciseEquipmentPicker(context: context, exerciseVariant: widget.exerciseLogDto.exerciseVariant, equipment: equipment, onSelect: (newEquipment) {
-      _onUpdateExerciseLog(
-          title: 'Switch to ${newEquipment.name}',
-          message: 'Do you want to switch training equipment?',
-          callback: () {
-            _closeDialog();
-            final noEquipment = newEquipment == ExerciseEquipment.none;
-            final newMetric = noEquipment ? ExerciseMetric.reps : widget.exerciseLogDto.exerciseVariant.metric;
-            final updatedExerciseVariant =
-            widget.exerciseLogDto.exerciseVariant.copyWith(equipment: newEquipment, metric: newMetric);
-            final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: updatedExerciseVariant);
-            widget.onUpdate(updatedExerciseLog);
-          },
-          rightActionLabel: 'Switch to ${newEquipment.name}');
-    });
+    showExerciseEquipmentPicker(
+        context: context,
+        initialEquipment: widget.exerciseLogDto.exerciseVariant.equipment,
+        equipment: equipment,
+        onSelect: (newEquipment) {
+          _onUpdateExerciseLog(
+              title: 'Switch to ${newEquipment.name}',
+              message: 'Do you want to switch training equipment?',
+              callback: () {
+                _closeDialog();
+                final noEquipment = newEquipment == ExerciseEquipment.none;
+                final newMetric = noEquipment ? ExerciseMetric.reps : widget.exerciseLogDto.exerciseVariant.metric;
+                final updatedExerciseVariant =
+                    widget.exerciseLogDto.exerciseVariant.copyWith(equipment: newEquipment, metric: newMetric);
+                final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: updatedExerciseVariant);
+                widget.onUpdate(updatedExerciseLog);
+              },
+              rightActionLabel: 'Switch to ${newEquipment.name}');
+        });
   }
 
   void _showExerciseModalityPicker({required List<ExerciseModality> modes}) {
-    displayBottomSheet(
-        height: 300,
+    showExerciseModalityPicker(
         context: context,
-        child: ExerciseModalityPicker(
-            initialModality: widget.exerciseLogDto.exerciseVariant.mode,
-            modes: modes,
-            onSelect: (newMode) {
-              _onUpdateExerciseLog(
-                  title: 'Change to ${newMode.name} movement',
-                  message: 'Do you want to change your movement?',
-                  callback: () {
-                    _closeDialog();
-                    final updatedExercise = widget.exerciseLogDto.exerciseVariant.copyWith(mode: newMode);
-                    final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: updatedExercise);
-                    widget.onUpdate(updatedExerciseLog);
-                  },
-                  rightActionLabel: 'Switch to ${newMode.name}');
-            }));
+        initialModality: widget.exerciseLogDto.exerciseVariant.mode,
+        modes: modes,
+        onSelect: (newMode) {
+          _onUpdateExerciseLog(
+              title: 'Change to ${newMode.name} movement',
+              message: 'Do you want to change your movement?',
+              callback: () {
+                _closeDialog();
+                final updatedExercise = widget.exerciseLogDto.exerciseVariant.copyWith(mode: newMode);
+                final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: updatedExercise);
+                widget.onUpdate(updatedExerciseLog);
+              },
+              rightActionLabel: 'Switch to ${newMode.name}');
+        });
   }
 
   void _showExerciseMetricPicker({required List<ExerciseMetric> metrics, required ExerciseDTO exercise}) {
-    displayBottomSheet(
-        height: 300,
+    showExerciseMetricPicker(
         context: context,
-        child: ExerciseMetricPicker(
-            initialMetric: widget.exerciseLogDto.exerciseVariant.metric,
-            metrics: metrics,
-            onSelect: (newMetric) {
-              _onUpdateExerciseLog(
-                  title: 'Start logging ${newMetric.name}',
-                  message: 'Do you want to update your logging metrics?',
-                  callback: () {
-                    _closeDialog();
-                    final isWeightsMetric = newMetric == ExerciseMetric.weights;
-                    ExerciseVariantDTO updatedExercise =
-                        widget.exerciseLogDto.exerciseVariant.copyWith(metric: newMetric);
-                    if (isWeightsMetric) {
-                      _showExerciseEquipmentPicker(equipment: exercise.equipment);
-                    } else if (newMetric == ExerciseMetric.reps) {
-                      updatedExercise = widget.exerciseLogDto.exerciseVariant
-                          .copyWith(equipment: ExerciseEquipment.none);
-                    }
-                    final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: updatedExercise);
-                    widget.onUpdate(updatedExerciseLog);
-                  },
-                  rightActionLabel: 'Switch to ${newMetric.name}');
-            }));
+        initialMetric: widget.exerciseLogDto.exerciseVariant.metric,
+        metrics: metrics,
+        onSelect: (newMetric) {
+          _onUpdateExerciseLog(
+              title: 'Start logging ${newMetric.name}',
+              message: 'Do you want to update your logging metrics?',
+              callback: () {
+                _closeDialog();
+                final isWeightsMetric = newMetric == ExerciseMetric.weights;
+                ExerciseVariantDTO updatedExercise = widget.exerciseLogDto.exerciseVariant.copyWith(metric: newMetric);
+                if (isWeightsMetric) {
+                  _showExerciseEquipmentPicker(equipment: exercise.equipment);
+                } else if (newMetric == ExerciseMetric.reps) {
+                  updatedExercise = widget.exerciseLogDto.exerciseVariant.copyWith(equipment: ExerciseEquipment.none);
+                }
+                final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: updatedExercise);
+                widget.onUpdate(updatedExerciseLog);
+              },
+              rightActionLabel: 'Switch to ${newMetric.name}');
+        });
   }
 
   void _showExercisePositionPicker({required List<ExercisePosition> positions}) {
-    displayBottomSheet(
-        height: 300,
+    showExercisePositionPicker(
         context: context,
-        child: ExercisePositionPicker(
-            initialPosition: widget.exerciseLogDto.exerciseVariant.position,
-            positions: positions,
-            onSelect: (newPosition) {
-              _onUpdateExerciseLog(
-                  title: 'Start training in ${newPosition.name}',
-                  message: 'Do you want to update your training position?',
-                  callback: () {
-                    _closeDialog();
-                    final updatedExercise = widget.exerciseLogDto.exerciseVariant.copyWith(position: newPosition);
-                    final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: updatedExercise);
-                    widget.onUpdate(updatedExerciseLog);
-                  },
-                  rightActionLabel: 'Switch to ${newPosition.name}');
-            }));
+        initialPosition: widget.exerciseLogDto.exerciseVariant.position,
+        positions: positions,
+        onSelect: (newPosition) {
+          _onUpdateExerciseLog(
+              title: 'Start training in ${newPosition.name}',
+              message: 'Do you want to update your training position?',
+              callback: () {
+                _closeDialog();
+                final updatedExercise = widget.exerciseLogDto.exerciseVariant.copyWith(position: newPosition);
+                final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: updatedExercise);
+                widget.onUpdate(updatedExerciseLog);
+              },
+              rightActionLabel: 'Switch to ${newPosition.name}');
+        });
   }
 
   void _showExerciseStancePicker({required List<ExerciseStance> stances}) {
-    displayBottomSheet(
-        height: 300,
+    showExerciseStancePicker(
         context: context,
-        child: ExerciseStancePicker(
-            initialStance: widget.exerciseLogDto.exerciseVariant.stance,
-            stances: stances,
-            onSelect: (newStance) {
-              _onUpdateExerciseLog(
-                  title: 'Start training ${newStance.name}',
-                  message: 'Do you want to update your training stance?',
-                  callback: () {
-                    _closeDialog();
-                    final updatedExercise = widget.exerciseLogDto.exerciseVariant.copyWith(stance: newStance);
-                    final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: updatedExercise);
-                    widget.onUpdate(updatedExerciseLog);
-                  },
-                  rightActionLabel: 'Switch to ${newStance.name}');
-            }));
+        initialStance: widget.exerciseLogDto.exerciseVariant.stance,
+        stances: stances,
+        onSelect: (newStance) {
+          _onUpdateExerciseLog(
+              title: 'Start training ${newStance.name}',
+              message: 'Do you want to update your training stance?',
+              callback: () {
+                _closeDialog();
+                final updatedExercise = widget.exerciseLogDto.exerciseVariant.copyWith(stance: newStance);
+                final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: updatedExercise);
+                widget.onUpdate(updatedExerciseLog);
+              },
+              rightActionLabel: 'Switch to ${newStance.name}');
+        });
   }
 
   void _showExerciseMovementPicker({required List<ExerciseMovement> movements}) {
-    displayBottomSheet(
-        height: 300,
+    showExerciseMovementPicker(
         context: context,
-        child: ExerciseMovementPicker(
-            initialMovement: widget.exerciseLogDto.exerciseVariant.movement,
-            movements: movements,
-            onSelect: (newMovement) {
-              _onUpdateExerciseLog(
-                  title: 'Start training ${newMovement.name}',
-                  message: 'Do you want to update your training movement?',
-                  callback: () {
-                    _closeDialog();
-                    final updatedExercise = widget.exerciseLogDto.exerciseVariant.copyWith(movement: newMovement);
-                    final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: updatedExercise);
-                    widget.onUpdate(updatedExerciseLog);
-                  },
-                  rightActionLabel: 'Switch to ${newMovement.name}');
-            }));
+        initialMovement: widget.exerciseLogDto.exerciseVariant.movement,
+        movements: movements,
+        onSelect: (newMovement) {
+          _onUpdateExerciseLog(
+              title: 'Start training ${newMovement.name}',
+              message: 'Do you want to update your training movement?',
+              callback: () {
+                _closeDialog();
+                final updatedExercise = widget.exerciseLogDto.exerciseVariant.copyWith(movement: newMovement);
+                final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: updatedExercise);
+                widget.onUpdate(updatedExerciseLog);
+              },
+              rightActionLabel: 'Switch to ${newMovement.name}');
+        });
   }
 
   void _onUpdateExerciseLog(

@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:tracker_app/dtos/exercise_variant_dto.dart';
 
-import '../dtos/exercise_dto.dart';
 import '../enums/exercise/exercise_equipment_enum.dart';
 import '../enums/exercise/exercise_metrics_enums.dart';
 import '../enums/exercise/exercise_modality_enum.dart';
@@ -18,70 +16,69 @@ import 'dialog_utils.dart';
 
 void showExerciseEquipmentPicker(
     {required BuildContext context,
-    required ExerciseVariantDTO exerciseVariant,
+      ExerciseEquipment? initialEquipment,
     required List<ExerciseEquipment> equipment,
     required Function(ExerciseEquipment object) onSelect}) {
   displayBottomSheet(
       height: 300,
       context: context,
       child: ExerciseEquipmentPicker(
-          initialEquipment: exerciseVariant.equipment, equipment: equipment, onSelect: onSelect));
+          initialEquipment: initialEquipment, equipment: equipment, onSelect: onSelect));
 }
 
 void showExerciseModalityPicker(
     {required BuildContext context,
-    required ExerciseVariantDTO exerciseVariant,
+      ExerciseModality? initialModality,
     required List<ExerciseModality> modes,
     required Function(ExerciseModality object) onSelect}) {
   displayBottomSheet(
       height: 300,
       context: context,
-      child: ExerciseModalityPicker(initialModality: exerciseVariant.mode, modes: modes, onSelect: onSelect));
+      child: ExerciseModalityPicker(initialModality: initialModality, modes: modes, onSelect: onSelect));
 }
 
 void showExerciseMetricPicker(
     {required BuildContext context,
-    required ExerciseVariantDTO exerciseVariant,
+      ExerciseMetric? initialMetric,
     required List<ExerciseMetric> metrics,
-    required ExerciseDTO exercise,
     required Function(ExerciseMetric object) onSelect}) {
   displayBottomSheet(
       height: 300,
       context: context,
-      child: ExerciseMetricPicker(initialMetric: exerciseVariant.metric, metrics: metrics, onSelect: onSelect));
+      child: ExerciseMetricPicker(initialMetric: initialMetric, metrics: metrics, onSelect: onSelect));
 }
 
 void showExercisePositionPicker(
     {required BuildContext context,
-    required ExerciseVariantDTO exerciseVariant,
+      ExercisePosition? initialPosition,
     required List<ExercisePosition> positions,
     required Function(ExercisePosition object) onSelect}) {
   displayBottomSheet(
       height: 300,
       context: context,
       child:
-          ExercisePositionPicker(initialPosition: exerciseVariant.position, positions: positions, onSelect: onSelect));
+          ExercisePositionPicker(initialPosition: initialPosition, positions: positions, onSelect: onSelect));
 }
 
 void showExerciseStancePicker(
     {required BuildContext context,
-    required ExerciseVariantDTO exerciseVariant,
+      ExerciseStance? initialStance,
     required List<ExerciseStance> stances,
     required Function(ExerciseStance object) onSelect}) {
   displayBottomSheet(
       height: 300,
       context: context,
-      child: ExerciseStancePicker(initialStance: exerciseVariant.stance, stances: stances, onSelect: onSelect));
+      child: ExerciseStancePicker(initialStance: initialStance, stances: stances, onSelect: onSelect));
 }
 
 void showExerciseMovementPicker(
     {required BuildContext context,
-    required ExerciseVariantDTO exerciseVariant,
+    ExerciseMovement? initialMovement,
     required List<ExerciseMovement> movements,
     required Function(ExerciseMovement object) onSelect}) {
   displayBottomSheet(
       height: 300,
       context: context,
       child:
-          ExerciseMovementPicker(initialMovement: exerciseVariant.movement, movements: movements, onSelect: onSelect));
+          ExerciseMovementPicker(initialMovement: initialMovement, movements: movements, onSelect: onSelect));
 }

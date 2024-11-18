@@ -9,8 +9,17 @@ import 'package:tracker_app/screens/exercise/history/exercise_chart_screen.dart'
 import 'package:tracker_app/screens/exercise/history/history_screen.dart';
 
 import '../../../dtos/exercise_dto.dart';
+import '../../../dtos/exercise_log_dto.dart';
+import '../../../dtos/exercise_variant_dto.dart';
 import '../../../enums/exercise/core_movements_enum.dart';
+import '../../../enums/exercise/exercise_equipment_enum.dart';
+import '../../../enums/exercise/exercise_metrics_enums.dart';
+import '../../../enums/exercise/exercise_modality_enum.dart';
+import '../../../enums/exercise/exercise_movement_enum.dart';
+import '../../../enums/exercise/exercise_position_enum.dart';
+import '../../../enums/exercise/exercise_stance_enum.dart';
 import '../../../utils/exercise_logs_utils.dart';
+import '../../../utils/exercise_utils.dart';
 import '../../../widgets/buttons/opacity_button_widget.dart';
 import '../../empty_state_screens/not_found.dart';
 
@@ -26,6 +35,9 @@ class ExerciseHomeScreen extends StatefulWidget {
 }
 
 class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
+
+  List<ExerciseLogDTO> _exerciseLogs = [];
+
   @override
   Widget build(BuildContext context) {
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
@@ -34,9 +46,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
 
     if (exercise == null) return const NotFound();
 
-    final exerciseLogs = exerciseAndRoutineController.exerciseLogsById[exercise.id] ?? [];
-
-    final completedExerciseLogs = completedExercises(exerciseLogs: exerciseLogs);
+    final completedExerciseLogs = completedExercises(exerciseLogs: _exerciseLogs);
 
     final heaviestSetVolumeRecord = heaviestSetVolume(exerciseLogs: completedExerciseLogs);
 
@@ -48,7 +58,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
 
     final mostRepsSessionRecord = mostRepsInSession(exerciseLogs: completedExerciseLogs);
 
-    final firstVariant = exerciseLogs.isNotEmpty ? exerciseLogs.first.exerciseVariant : exercise.defaultVariant();
+    final firstVariant = _exerciseLogs.isNotEmpty ? _exerciseLogs.first.exerciseVariant : exercise.defaultVariant();
 
     return DefaultTabController(
         length: 2,
@@ -109,7 +119,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
                           buttonColor: vibrantGreen,
                           padding: EdgeInsets.symmetric(horizontal: 0),
                           textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: vibrantGreen),
-                          onPressed: () {},
+                          onPressed: () => _showExerciseEquipmentPicker(equipment: exercise.equipment, exerciseVariant: firstVariant),
                         ),
                         if (exercise.modes.length > 1)
                           OpacityButtonWidget(
@@ -118,7 +128,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
                             padding: EdgeInsets.symmetric(horizontal: 0),
                             textStyle:
                             GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.redAccent),
-                            onPressed: () {},
+                            onPressed: () => _showExerciseModalityPicker(modes: exercise.modes, exerciseVariant: firstVariant),
                           ),
                         if (exercise.metrics.length > 1)
                           OpacityButtonWidget(
@@ -126,7 +136,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
                             buttonColor: vibrantBlue,
                             padding: EdgeInsets.symmetric(horizontal: 0),
                             textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: vibrantBlue),
-                            onPressed: () {},
+                            onPressed: () => _showExerciseMetricPicker(metrics: exercise.metrics, exerciseVariant: firstVariant),
                           ),
                         if (exercise.positions.length > 1 &&
                             (firstVariant.coreMovement == CoreMovement.push ||
@@ -137,7 +147,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
                             padding: EdgeInsets.symmetric(horizontal: 0),
                             textStyle:
                             GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.cyanAccent),
-                            onPressed: () {},
+                            onPressed: () => _showExercisePositionPicker(positions: exercise.positions, exerciseVariant: firstVariant),
                           ),
                         if (exercise.stances.length > 1)
                           OpacityButtonWidget(
@@ -146,7 +156,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
                             padding: EdgeInsets.symmetric(horizontal: 0),
                             textStyle:
                             GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.purpleAccent),
-                            onPressed: () {},
+                            onPressed: () => _showExerciseStancePicker(stances: exercise.stances, exerciseVariant: firstVariant),
                           ),
                         if (exercise.movements.length > 1)
                           OpacityButtonWidget(
@@ -155,7 +165,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
                             padding: EdgeInsets.symmetric(horizontal: 0),
                             textStyle:
                             GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.orange),
-                            onPressed: () {},
+                            onPressed: () => _showExerciseMovementPicker(movements: exercise.movements, exerciseVariant: firstVariant),
                           ),
                       ],
                     ),
@@ -182,5 +192,53 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
             ),
           ),
         ));
+  }
+
+  void _showExerciseEquipmentPicker({required List<ExerciseEquipment> equipment, required ExerciseVariantDTO exerciseVariant}) {
+    showExerciseEquipmentPicker(
+        context: context,
+        initialEquipment: exerciseVariant.equipment,
+        equipment: equipment,
+        onSelect: (newEquipment) {});
+  }
+
+  void _showExerciseModalityPicker({required List<ExerciseModality> modes, required ExerciseVariantDTO exerciseVariant}) {
+    showExerciseModalityPicker(
+        context: context,
+        initialModality: exerciseVariant.mode,
+        modes: modes,
+        onSelect: (newMode) {});
+  }
+
+  void _showExerciseMetricPicker({required List<ExerciseMetric> metrics, required ExerciseVariantDTO exerciseVariant}) {
+    showExerciseMetricPicker(
+        context: context,
+        initialMetric: exerciseVariant.metric,
+        metrics: metrics,
+        onSelect: (newMetric) {});
+  }
+
+  void _showExercisePositionPicker({required List<ExercisePosition> positions, required ExerciseVariantDTO exerciseVariant}) {
+    showExercisePositionPicker(
+        context: context,
+        initialPosition: exerciseVariant.position,
+        positions: positions,
+        onSelect: (newPosition) {});
+  }
+
+  void _showExerciseStancePicker({required List<ExerciseStance> stances, required ExerciseVariantDTO exerciseVariant}) {
+    showExerciseStancePicker(
+        context: context,
+        initialStance: exerciseVariant.stance,
+        stances: stances,
+        onSelect: (newStance) {});
+  }
+
+  void _showExerciseMovementPicker({required List<ExerciseMovement> movements, required ExerciseVariantDTO exerciseVariant}) {
+    showExerciseMovementPicker(
+        context: context,
+        initialMovement: exerciseVariant.movement,
+        movements: movements,
+        onSelect: (newMovement) {});
   }
 }
