@@ -106,7 +106,7 @@ class ExerciseRepository {
         name: "Bicep Curls",
         description: "Focuses on building overall biceps mass with weights.",
         metrics: [ExerciseMetric.weights],
-        modes: [ExerciseModality.unilateral, ExerciseModality.bilateral],
+        modes: [ExerciseModality.bilateral, ExerciseModality.unilateral],
         positions: ExercisePosition.values,
         stances: [ExerciseStance.standing, ExerciseStance.seated],
         equipment: [
