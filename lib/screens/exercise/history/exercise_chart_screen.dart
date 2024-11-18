@@ -196,7 +196,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
 
     return SingleChildScrollView(
         child: Padding(
-      padding: const EdgeInsets.only(top: 20, right: 10.0, bottom: 10, left: 10),
+      padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

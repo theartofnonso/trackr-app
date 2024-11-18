@@ -9,7 +9,9 @@ import 'package:tracker_app/screens/exercise/history/exercise_chart_screen.dart'
 import 'package:tracker_app/screens/exercise/history/history_screen.dart';
 
 import '../../../dtos/exercise_dto.dart';
+import '../../../enums/exercise/core_movements_enum.dart';
 import '../../../utils/exercise_logs_utils.dart';
+import '../../../widgets/buttons/opacity_button_widget.dart';
 import '../../empty_state_screens/not_found.dart';
 
 class ExerciseHomeScreen extends StatefulWidget {
@@ -45,6 +47,8 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
     final mostRepsSetRecord = mostRepsInSet(exerciseLogs: completedExerciseLogs);
 
     final mostRepsSessionRecord = mostRepsInSession(exerciseLogs: completedExerciseLogs);
+
+    final firstVariant = exerciseLogs.isNotEmpty ? exerciseLogs.first.exerciseVariant : exercise.defaultVariant();
 
     return DefaultTabController(
         length: 2,
@@ -82,31 +86,101 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
               ),
             ),
             child: SafeArea(
-              child: TabBarView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  ExerciseChartScreen(
-                    heaviestWeight: heaviestWeightRecord,
-                    heaviestSet: heaviestSetVolumeRecord,
-                    longestDuration: longestDurationRecord,
-                    mostRepsSet: mostRepsSetRecord,
-                    mostRepsSession: mostRepsSessionRecord,
-                    exerciseVariant: exercise.defaultVariant(),
-                    // to BE FIXED
-                    exerciseLogs: completedExerciseLogs,
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 18.0),
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.transparent, // Makes the background transparent
+                      borderRadius: BorderRadius.circular(5.0),
+                      border: Border.all(
+                        color: sapphireLighter, // Border color
+                        width: 1.0,         // Border width
+                      ),// Adjust the radius as needed
+                    ),
+                    child: Wrap(
+                      runSpacing: 8,
+                      spacing: 8,
+                      children: [
+                        OpacityButtonWidget(
+                          label: firstVariant.equipment.name.toUpperCase(),
+                          buttonColor: vibrantGreen,
+                          padding: EdgeInsets.symmetric(horizontal: 0),
+                          textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: vibrantGreen),
+                          onPressed: () {},
+                        ),
+                        if (exercise.modes.length > 1)
+                          OpacityButtonWidget(
+                            label: firstVariant.mode.name.toUpperCase(),
+                            buttonColor: Colors.redAccent,
+                            padding: EdgeInsets.symmetric(horizontal: 0),
+                            textStyle:
+                            GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.redAccent),
+                            onPressed: () {},
+                          ),
+                        if (exercise.metrics.length > 1)
+                          OpacityButtonWidget(
+                            label: firstVariant.metric.name.toUpperCase(),
+                            buttonColor: vibrantBlue,
+                            padding: EdgeInsets.symmetric(horizontal: 0),
+                            textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: vibrantBlue),
+                            onPressed: () {},
+                          ),
+                        if (exercise.positions.length > 1 &&
+                            (firstVariant.coreMovement == CoreMovement.push ||
+                                firstVariant.coreMovement == CoreMovement.pull))
+                          OpacityButtonWidget(
+                            label: firstVariant.position.name.toUpperCase(),
+                            buttonColor: Colors.cyanAccent,
+                            padding: EdgeInsets.symmetric(horizontal: 0),
+                            textStyle:
+                            GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.cyanAccent),
+                            onPressed: () {},
+                          ),
+                        if (exercise.stances.length > 1)
+                          OpacityButtonWidget(
+                            label: firstVariant.stance.name.toUpperCase(),
+                            buttonColor: Colors.purpleAccent,
+                            padding: EdgeInsets.symmetric(horizontal: 0),
+                            textStyle:
+                            GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.purpleAccent),
+                            onPressed: () {},
+                          ),
+                        if (exercise.movements.length > 1)
+                          OpacityButtonWidget(
+                            label: firstVariant.movement.name.toUpperCase(),
+                            buttonColor: Colors.orange,
+                            padding: EdgeInsets.symmetric(horizontal: 0),
+                            textStyle:
+                            GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.orange),
+                            onPressed: () {},
+                          ),
+                      ],
+                    ),
                   ),
-                  HistoryScreen(exerciseLogs: completedExerciseLogs),
+                  Expanded(
+                    child: TabBarView(
+                      children: [
+                        ExerciseChartScreen(
+                          heaviestWeight: heaviestWeightRecord,
+                          heaviestSet: heaviestSetVolumeRecord,
+                          longestDuration: longestDurationRecord,
+                          mostRepsSet: mostRepsSetRecord,
+                          mostRepsSession: mostRepsSessionRecord,
+                          exerciseVariant: firstVariant,
+                          // to BE FIXED
+                          exerciseLogs: completedExerciseLogs,
+                        ),
+                        HistoryScreen(exerciseLogs: completedExerciseLogs),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
         ));
   }
-
-// @override
-// void initState() {
-//   super.initState();
-//   final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-//   _exerciseLogsByExerciseId = exerciseAndRoutineController.exerciseLogsById;
-//   _exercise = exerciseAndRoutineController.whereExercise(id: widget.id) ;
-// }
 }

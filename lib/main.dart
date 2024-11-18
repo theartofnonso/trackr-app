@@ -50,7 +50,7 @@ import 'amplifyconfiguration.dart';
 import 'controllers/activity_log_controller.dart';
 import 'controllers/routine_user_controller.dart';
 import 'dtos/appsync/routine_template_plan_dto.dart';
-import 'dtos/exercise_variant_dto.dart';
+import 'dtos/exercise_dto.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
 import 'dtos/viewmodels/routine_template_arguments.dart';
 import 'models/ModelProvider.dart';
@@ -158,7 +158,7 @@ final _router = GoRouter(
     GoRoute(
       path: ExerciseHomeScreen.routeName,
       builder: (context, state) {
-        final args = state.extra as ExerciseVariantDTO;
+        final args = state.extra as ExerciseDTO;
         return ExerciseHomeScreen(id: args.id);
       },
     ),

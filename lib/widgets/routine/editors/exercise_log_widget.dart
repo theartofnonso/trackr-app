@@ -10,6 +10,7 @@ import 'package:tracker_app/enums/exercise/exercise_equipment_enum.dart';
 import 'package:tracker_app/enums/exercise/exercise_metrics_enums.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
+import 'package:tracker_app/utils/exercise_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:tracker_app/widgets/pickers/exercise/exercise_equipment_picker.dart';
@@ -462,27 +463,21 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _showExerciseEquipmentPicker({required List<ExerciseEquipment> equipment}) {
-    displayBottomSheet(
-        height: 300,
-        context: context,
-        child: ExerciseEquipmentPicker(
-            initialEquipment: widget.exerciseLogDto.exerciseVariant.equipment,
-            equipment: equipment,
-            onSelect: (newEquipment) {
-              _onUpdateExerciseLog(
-                  title: 'Switch to ${newEquipment.name}',
-                  message: 'Do you want to switch training equipment?',
-                  callback: () {
-                    _closeDialog();
-                    final noEquipment = newEquipment == ExerciseEquipment.none;
-                    final newMetric = noEquipment ? ExerciseMetric.reps : widget.exerciseLogDto.exerciseVariant.metric;
-                    final updatedExerciseVariant =
-                        widget.exerciseLogDto.exerciseVariant.copyWith(equipment: newEquipment, metric: newMetric);
-                    final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: updatedExerciseVariant);
-                    widget.onUpdate(updatedExerciseLog);
-                  },
-                  rightActionLabel: 'Switch to ${newEquipment.name}');
-            }));
+    showExerciseEquipmentPicker(context: context, exerciseVariant: widget.exerciseLogDto.exerciseVariant, equipment: equipment, onSelect: (newEquipment) {
+      _onUpdateExerciseLog(
+          title: 'Switch to ${newEquipment.name}',
+          message: 'Do you want to switch training equipment?',
+          callback: () {
+            _closeDialog();
+            final noEquipment = newEquipment == ExerciseEquipment.none;
+            final newMetric = noEquipment ? ExerciseMetric.reps : widget.exerciseLogDto.exerciseVariant.metric;
+            final updatedExerciseVariant =
+            widget.exerciseLogDto.exerciseVariant.copyWith(equipment: newEquipment, metric: newMetric);
+            final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: updatedExerciseVariant);
+            widget.onUpdate(updatedExerciseLog);
+          },
+          rightActionLabel: 'Switch to ${newEquipment.name}');
+    });
   }
 
   void _showExerciseModalityPicker({required List<ExerciseModality> modes}) {
