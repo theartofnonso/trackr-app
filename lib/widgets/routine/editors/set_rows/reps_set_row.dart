@@ -13,7 +13,7 @@ class RepsSetRow extends StatelessWidget {
   final VoidCallback onCheck;
   final void Function() onTapRepsEditor;
   final (TextEditingController, TextEditingController) controllers;
-  final void Function(int value) onChangedReps;
+  final void Function(int reps) onChangedReps;
 
   const RepsSetRow({
     super.key,

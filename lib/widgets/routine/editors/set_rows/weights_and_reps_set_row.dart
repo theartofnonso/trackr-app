@@ -12,8 +12,8 @@ class WeightsAndRepsSetRow extends StatelessWidget {
   final RoutineEditorMode editorType;
   final VoidCallback onRemoved;
   final VoidCallback onCheck;
-  final void Function(int value) onChangedReps;
-  final void Function(double value) onChangedWeight;
+  final void Function(int reps) onChangedReps;
+  final void Function(double reps) onChangedWeight;
   final void Function() onTapWeightEditor;
   final void Function() onTapRepsEditor;
   final (TextEditingController, TextEditingController) controllers;
@@ -35,7 +35,6 @@ class WeightsAndRepsSetRow extends StatelessWidget {
   Widget build(BuildContext context) {
     num weight = setDto.weight;
     int reps = setDto.reps;
-
     return Table(
       border: TableBorder.all(color: Colors.white.withOpacity(0.1), borderRadius: BorderRadius.circular(5)),
       columnWidths: editorType == RoutineEditorMode.edit

@@ -40,6 +40,6 @@ class WeightAndRepsSetDTO extends SetDTO {
 
   @override
   String toString() {
-    return 'WeightAndRepsSetDTO{value1: $_weight, reps: $_reps, checked: ${super.checked}}';
+    return 'WeightAndRepsSetDTO{weight: $_weight, reps: $_reps, checked: ${super.checked}}';
   }
 }
