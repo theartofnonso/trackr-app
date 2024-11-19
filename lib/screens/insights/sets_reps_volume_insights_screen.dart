@@ -1,4 +1,3 @@
-
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
+import 'package:tracker_app/dtos/reps_set_dto.dart';
+import 'package:tracker_app/dtos/weight_and_reps_set_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/health_and_fitness_stats.dart';
 import 'package:tracker_app/utils/date_utils.dart';
@@ -74,7 +75,10 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
         .map((log) => completedExercises(exerciseLogs: log.exerciseLogs))
         .expand((exerciseLogs) => exerciseLogs)
         .where((exerciseLog) {
-      final muscleGroups = [...exerciseLog.exerciseVariant.primaryMuscleGroups, ...exerciseLog.exerciseVariant.secondaryMuscleGroups];
+      final muscleGroups = [
+        ...exerciseLog.exerciseVariant.primaryMuscleGroups,
+        ...exerciseLog.exerciseVariant.secondaryMuscleGroups
+      ];
       return muscleGroups.contains(_selectedMuscleGroup);
     }).toList();
 
@@ -341,9 +345,9 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       exerciseLogs.mapIndexed((index, exerciseLog) {
         final setSummaries = exerciseLog.sets.mapIndexed((index, set) {
           return switch (exerciseLog.exerciseVariant.metric) {
-            ExerciseMetric.weights => "Set ${index + 1}: ${exerciseLog.sets[index].weightsSummary()}",
-            ExerciseMetric.reps => "Set ${index + 1}: ${exerciseLog.sets[index].repsSummary()}",
-            ExerciseMetric.duration => "Set ${index + 1}: ${exerciseLog.sets[index].durationSummary()}",
+            ExerciseMetric.weights => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
+            ExerciseMetric.reps => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
+            ExerciseMetric.duration => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
           };
         }).toList();
 
@@ -377,8 +381,15 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   num _calculateMetric({required List<SetDTO> sets}) {
     return switch (_metric) {
       SetRepsVolumeReps.sets => sets.length,
-      SetRepsVolumeReps.reps => sets.map((set) => set.reps()).sum,
-      SetRepsVolumeReps.volume => sets.map((set) => set.volume()).sum,
+      SetRepsVolumeReps.reps => sets.map((set) {
+          if (set is RepsSetDTO) {
+            return set.reps;
+          } else if (set is WeightAndRepsSetDTO) {
+            return set.reps;
+          }
+          return 0;
+        }).sum,
+      SetRepsVolumeReps.volume => sets.map((set) => (set as WeightAndRepsSetDTO).volume()).sum,
     };
   }
 
@@ -428,7 +439,8 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
         ?.exerciseLogs
         .firstOrNull
         ?.exerciseVariant
-        .primaryMuscleGroups.first;
+        .primaryMuscleGroups
+        .first;
     _selectedMuscleGroup = defaultMuscleGroup ?? MuscleGroup.values.first;
   }
 }

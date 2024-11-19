@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
+import 'package:tracker_app/dtos/weight_and_reps_set_dto.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/routine_editors_utils.dart';
@@ -440,7 +441,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   void _showWeightCalculator() {
     displayBottomSheet(
         context: context,
-        child: WeightPlateCalculator(target: _selectedSetDto?.weight().toDouble() ?? 0),
+        child: WeightPlateCalculator(target: (_selectedSetDto as WeightAndRepsSetDTO?)?.weight.toDouble() ?? 0),
         padding: EdgeInsets.zero);
   }
 

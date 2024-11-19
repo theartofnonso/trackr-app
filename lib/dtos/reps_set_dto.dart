@@ -9,6 +9,7 @@ class RepsSetDTO extends SetDTO {
 
   int get reps => _reps;
 
+  @override
   RepsSetDTO copyWith({int? reps, bool? checked}) {
     return RepsSetDTO(reps: reps ?? _reps, checked: checked ?? super.checked);
   }
@@ -23,7 +24,8 @@ class RepsSetDTO extends SetDTO {
     return _reps > 0;
   }
 
-  String repsSummary() {
+  @override
+  String summary() {
     return "x$reps";
   }
 

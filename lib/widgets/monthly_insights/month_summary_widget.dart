@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
+import 'package:tracker_app/dtos/weight_and_reps_set_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
+import '../../dtos/reps_set_dto.dart';
+import '../../enums/exercise/exercise_metrics_enums.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/string_utils.dart';
 
@@ -18,7 +21,8 @@ class MonthSummaryWidget extends StatelessWidget {
 
   const MonthSummaryWidget({
     super.key,
-    required this.routineLogs, required this.dateTime,
+    required this.routineLogs,
+    required this.dateTime,
   });
 
   @override
@@ -34,26 +38,37 @@ class MonthSummaryWidget extends StatelessWidget {
     final totalHours = Duration(milliseconds: routineLogHoursInMilliSeconds);
 
     final tonnage = exerciseLogs.map((log) {
-      final volume = log.sets.map((set) => set.volume()).sum;
+      final volume = log.sets.map((set) => (set as WeightAndRepsSetDTO).volume()).sum;
       return volume;
     }).sum;
 
     final totalVolume = volumeInKOrM(tonnage);
 
-    final exerciseLogsWithReps = exerciseLogs.where((exerciseLog) => withReps(metric: exerciseLog.exerciseVariant.metric));
+    final exerciseLogsWithReps =
+        exerciseLogs.where((exerciseLog) => withReps(metric: exerciseLog.exerciseVariant.metric));
     final totalReps = exerciseLogsWithReps.map((log) {
-      final reps = log.sets.map((set) => set.reps()).sum;
+      final reps = log.sets.map((set) {
+        final metric = log.exerciseVariant.metric;
+        if (metric == ExerciseMetric.reps) {
+          return (set as RepsSetDTO).reps;
+        } else if (metric == ExerciseMetric.weights) {
+          return (set as WeightAndRepsSetDTO).reps;
+        }
+        return 0;
+      }).sum;
       return reps;
     }).sum;
 
     final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
     final numberOfPbs = exerciseLogs.map((exerciseLog) {
-      final pastExerciseLogs =
-          routineLogController.whereExerciseLogsBefore(exerciseVariant: exerciseLog.exerciseVariant, date: exerciseLog.createdAt);
+      final pastExerciseLogs = routineLogController.whereExerciseLogsBefore(
+          exerciseVariant: exerciseLog.exerciseVariant, date: exerciseLog.createdAt);
 
       return calculatePBs(
-          pastExerciseLogs: pastExerciseLogs, exerciseMetric: exerciseLog.exerciseVariant.metric, exerciseLog: exerciseLog);
+          pastExerciseLogs: pastExerciseLogs,
+          exerciseMetric: exerciseLog.exerciseVariant.metric,
+          exerciseLog: exerciseLog);
     }).expand((pbs) => pbs);
 
     return Container(

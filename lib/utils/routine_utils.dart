@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tracker_app/dtos/weight_and_reps_set_dto.dart';
 import 'package:tracker_app/enums/exercise/exercise_metrics_enums.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
@@ -11,8 +12,10 @@ import 'package:tracker_app/widgets/empty_states/double_set_row_empty_state.dart
 
 import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/appsync/routine_template_dto.dart';
+import '../dtos/duration_set_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/pb_dto.dart';
+import '../dtos/reps_set_dto.dart';
 import '../dtos/set_dto.dart';
 import '../dtos/viewmodels/exercise_log_view_model.dart';
 import '../enums/activity_type_enums.dart';
@@ -134,8 +137,8 @@ List<Widget> setsToWidgets(
 
     switch (exerciseMetric) {
       case ExerciseMetric.weights:
-        final firstLabel = setDto.weight();
-        final secondLabel = setDto.reps();
+        final firstLabel = (setDto as WeightAndRepsSetDTO).weight;
+        final secondLabel = (setDto).reps;
         return DoubleSetRow(
             first: "$firstLabel",
             second: "$secondLabel",
@@ -143,13 +146,13 @@ List<Widget> setsToWidgets(
             pbs: pbsForSet,
             routinePreviewType: routinePreviewType);
       case ExerciseMetric.reps:
-        final label = setDto.reps();
+        final label = (setDto as RepsSetDTO).reps;
         return SingleSetRow(label: "$label", margin: margin, routinePreviewType: routinePreviewType);
       case ExerciseMetric.duration:
         if (routinePreviewType == RoutinePreviewType.template) {
           return durationTemplate;
         }
-        final label = Duration(milliseconds: setDto.duration()).hmsAnalog();
+        final label = (setDto as DurationSetDTO).duration.hmsAnalog();
         return SingleSetRow(label: label, margin: margin, pbs: pbsForSet, routinePreviewType: routinePreviewType);
     }
   })).toList();
@@ -218,13 +221,13 @@ String copyRoutineAsText(
     for (var i = 0; i < exerciseLog.sets.length; i++) {
       switch (exerciseLog.exerciseVariant.metric) {
         case ExerciseMetric.weights:
-          routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].weightsSummary()}");
+          routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].summary()}");
           break;
         case ExerciseMetric.reps:
-          routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].repsSummary()}");
+          routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].summary()}");
           break;
         case ExerciseMetric.duration:
-          routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].durationSummary()}");
+          routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].summary()}");
           break;
       }
     }

@@ -33,12 +33,9 @@ class WeightAndRepsSetDTO extends SetDTO {
     return (convertedWeight * _reps);
   }
 
-  String weightsSummary() {
+  @override
+  String summary() {
     return "$weight${weightLabel()} x $reps";
-  }
-
-  String repsSummary() {
-    return "x$reps";
   }
 
   @override

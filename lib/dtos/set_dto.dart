@@ -19,6 +19,8 @@ abstract class SetDTO {
 
   SetDTO copyWith({bool? checked});
 
+  String summary();
+
   String toJson() {
     if (this is WeightAndRepsSetDTO) {
       final weightAndRepSet = this as WeightAndRepsSetDTO;
@@ -47,14 +49,6 @@ abstract class SetDTO {
       ExerciseMetric.weights => WeightAndRepsSetDTO(weight: 0, reps: 0, checked: false),
       ExerciseMetric.reps => RepsSetDTO(reps: 0, checked: false),
       ExerciseMetric.duration => DurationSetDTO(duration: Duration.zero, checked: false),
-    };
-  }
-
-  factory SetDTO.set({required ExerciseMetric metric, required SetDTO set}) {
-    return switch (metric) {
-      ExerciseMetric.weights => set as WeightAndRepsSetDTO,
-      ExerciseMetric.reps => set as RepsSetDTO,
-      ExerciseMetric.duration => set as DurationSetDTO,
     };
   }
 }

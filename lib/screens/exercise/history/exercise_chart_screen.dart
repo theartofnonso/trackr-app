@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/exercise_variant_dto.dart';
+import 'package:tracker_app/dtos/weight_and_reps_set_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
@@ -73,7 +74,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   void _heaviestWeightPerLog() {
     final sets = widget.exerciseLogs.map((log) => heaviestSetWeightForExerciseLog(exerciseLog: log)).toList();
     setState(() {
-      _chartPoints = sets.mapIndexed((index, set) => ChartPointDto(index, set.weight())).toList();
+      _chartPoints = sets.mapIndexed((index, set) => ChartPointDto(index, (set as WeightAndRepsSetDTO).weight)).toList();
       _summaryType = SummaryType.weight;
       _chartUnit = ChartUnit.weight;
     });
@@ -316,7 +317,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
               padding: const EdgeInsets.only(bottom: 10.0),
               child: _MetricListTile(
                   title: 'Heaviest Set Volume',
-                  trailing: "${widget.heaviestSet.$2.weight()}$weightUnitLabel x ${widget.heaviestSet.$2.reps()}",
+                  trailing: widget.heaviestSet.$2.summary(),
                   subtitle: 'Heaviest volume in a set',
                   onTap: () => _navigateTo(routineLogId: widget.heaviestSet.$1),
                   enabled: widget.exerciseLogs.isNotEmpty),

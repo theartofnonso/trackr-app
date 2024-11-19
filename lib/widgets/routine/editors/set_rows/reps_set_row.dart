@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:tracker_app/dtos/reps_set_dto.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/int_textfield.dart';
 
-import '../../../../dtos/set_dto.dart';
 import '../../../../enums/routine_editor_type_enums.dart';
 import '../set_check_button.dart';
 import '../set_delete_button.dart';
 
 class RepsSetRow extends StatelessWidget {
-  final SetDTO setDto;
+  final RepsSetDTO setDto;
   final RoutineEditorMode editorType;
   final VoidCallback onRemoved;
   final VoidCallback onCheck;
   final void Function() onTapRepsEditor;
   final (TextEditingController, TextEditingController) controllers;
-  final void Function(num value) onChangedReps;
+  final void Function(int value) onChangedReps;
 
   const RepsSetRow({
     super.key,
@@ -27,7 +27,7 @@ class RepsSetRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int reps = setDto.reps().toInt();
+    int reps = setDto.reps;
 
     return Table(
       border: TableBorder.all(color: Colors.white.withOpacity(0.1), borderRadius: BorderRadius.circular(5)),

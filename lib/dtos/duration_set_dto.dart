@@ -11,7 +11,7 @@ class DurationSetDTO extends SetDTO {
   Duration get duration => _duration;
 
   @override
-  DurationSetDTO copyWith({int? duration, bool? checked}) {
+  DurationSetDTO copyWith({Duration? duration, bool? checked}) {
     return DurationSetDTO(duration: duration ?? _duration, checked: checked ?? super.checked);
   }
 
@@ -25,7 +25,8 @@ class DurationSetDTO extends SetDTO {
     return _duration > Duration.zero;
   }
 
-  String durationSummary() {
+  @override
+  String summary() {
     return duration.hmsAnalog();
   }
 
