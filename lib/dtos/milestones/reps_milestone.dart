@@ -79,13 +79,13 @@ class RepsMilestone extends Milestone {
     List<RoutineLogDto> qualifyingLogs = [];
 
     for (final log in logs) {
-
       if (sumOfReps < target) {
-
         final completedExerciseLogs = completedExercises(exerciseLogs: log.exerciseLogs);
 
         final exerciseLogs = completedExerciseLogs
-            .where((exerciseLog) => exerciseLog.exerciseVariant.metric != ExerciseMetric.duration)
+            .where((exerciseLog) =>
+                exerciseLog.exerciseVariant.getExerciseMetricConfiguration("exercise_metric") !=
+                ExerciseMetric.duration)
             .where((exerciseLog) {
           final primaryMuscleGroups = exerciseLog.exerciseVariant.primaryMuscleGroups;
           final secondaryMuscleGroups = exerciseLog.exerciseVariant.secondaryMuscleGroups;

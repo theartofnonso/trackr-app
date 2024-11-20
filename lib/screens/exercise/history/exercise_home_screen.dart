@@ -155,7 +155,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
                             onPressed: () => _showExercisePositionPicker(
                                 positions: exercise.positions, exerciseVariant: firstVariant),
                           ),
-                        if (exercise.stances.length > 1)
+                        if (exercise.configurationOptions.length > 1)
                           OpacityButtonWidget(
                             label: firstVariant.stance.name.toUpperCase(),
                             buttonColor: Colors.purpleAccent,
@@ -163,7 +163,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
                             textStyle: GoogleFonts.ubuntu(
                                 fontWeight: FontWeight.bold, fontSize: 10, color: Colors.purpleAccent),
                             onPressed: () =>
-                                _showExerciseStancePicker(stances: exercise.stances, exerciseVariant: firstVariant),
+                                _showExerciseStancePicker(stances: exercise.configurationOptions, exerciseVariant: firstVariant),
                           ),
                         if (exercise.movements.length > 1)
                           OpacityButtonWidget(

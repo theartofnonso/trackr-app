@@ -31,7 +31,7 @@ class ExerciseLogLiteWidget extends StatelessWidget {
 
     final exerciseVariant = exerciseLogDto.exerciseVariant;
 
-    final exercise = exerciseAndRoutineController.whereExercise(id: exerciseVariant.id);
+    final exercise = exerciseAndRoutineController.whereExercise(id: exerciseVariant.baseExerciseId);
 
     return exercise != null ? Container(
       padding: superSet == null ? const EdgeInsets.symmetric(vertical: 10, horizontal: 10) : const EdgeInsets.all(10),
@@ -50,7 +50,7 @@ class ExerciseLogLiteWidget extends StatelessWidget {
                   onTap: () {
                     FocusScope.of(context).unfocus();
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => ExerciseHomeScreen(id: exerciseLogDto.exerciseVariant.id)));
+                        builder: (context) => ExerciseHomeScreen(id: exerciseLogDto.exerciseVariant.baseExerciseId)));
                   },
                   child: Text(exerciseLogDto.exerciseVariant.name,
                       style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
@@ -94,7 +94,7 @@ class ExerciseLogLiteWidget extends StatelessWidget {
                   label: exerciseVariant.position.name.toUpperCase(),
                   color: Colors.cyanAccent,
                 ),
-              if (exercise.stances.length > 1)
+              if (exercise.configurationOptions.length > 1)
                 SquaredChips(
                   label: exerciseVariant.stance.name.toUpperCase(),
                   color: Colors.purpleAccent,

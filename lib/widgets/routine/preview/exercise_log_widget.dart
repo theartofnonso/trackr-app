@@ -27,7 +27,7 @@ class ExerciseLogWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final otherSuperSet = superSet;
 
-    final exerciseMetric = exerciseLog.exerciseVariant.metric;
+    final exerciseMetric = exerciseLog.exerciseVariant.getExerciseMetricConfiguration("exercise_metric");
 
     final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
@@ -44,7 +44,7 @@ class ExerciseLogWidget extends StatelessWidget {
           dense: true,
           onTap: () {
             Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => ExerciseHomeScreen(id: exerciseLog.exerciseVariant.id)));
+                .push(MaterialPageRoute(builder: (context) => ExerciseHomeScreen(id: exerciseLog.exerciseVariant.baseExerciseId)));
           },
           title: Text(exerciseLog.exerciseVariant.name,
               style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),

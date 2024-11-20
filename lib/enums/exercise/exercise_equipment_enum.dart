@@ -1,4 +1,6 @@
-enum ExerciseEquipment {
+import 'package:tracker_app/dtos/exercise_dto.dart';
+
+enum ExerciseEquipment implements ExerciseConfig {
   barbell("Barbell", "Classic for heavy lifts like squats, deadlifts, and bench press."),
   ezBar("EZ Bar", "Perfect for curls and tricep extensions with a natural grip."),
   dumbbell("Dumbbells", "Versatile weights for targeted strength training."),
@@ -14,6 +16,7 @@ enum ExerciseEquipment {
   kettleBell("Kettle Bell", "Dynamic weight for swings, snatches, and functional training."),
   assistedMachine("Assisted Machine", "Provides support for exercises like pull-ups or dips."),
   machine("Machine", "Targeted strength training with guided movements."),
+  hackSquatMachine("Hack Squat Machine", "Please provide a description here"),
   smithMachine("Smith Machine", "Stabilized barbell for squats, presses, and safer lifts."),
   cableMachine("Cable Machine", "Versatile for isolation and functional exercises"),
   plate("Plate", "Add resistance to barbells or use for loaded carries."),
@@ -21,7 +24,10 @@ enum ExerciseEquipment {
 
   const ExerciseEquipment(this.name, this.description);
 
+  @override
   final String name;
+
+  @override
   final String description;
 
   static ExerciseEquipment fromString(String string) {

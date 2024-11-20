@@ -9,13 +9,12 @@ import 'package:tracker_app/dtos/duration_set_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/reps_set_dto.dart';
 import 'package:tracker_app/dtos/weight_and_reps_set_dto.dart';
-import 'package:tracker_app/enums/exercise/exercise_equipment_enum.dart';
 import 'package:tracker_app/enums/exercise/exercise_metrics_enums.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
-import 'package:tracker_app/utils/exercise_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
+import 'package:tracker_app/widgets/pickers/exercise/exercise_configurations_picker.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/weight_reps_set_header.dart';
@@ -25,13 +24,7 @@ import 'package:tracker_app/widgets/routine/editors/set_rows/weights_and_reps_se
 
 import '../../../colors.dart';
 import '../../../dtos/exercise_dto.dart';
-import '../../../dtos/exercise_variant_dto.dart';
 import '../../../dtos/set_dto.dart';
-import '../../../enums/exercise/core_movements_enum.dart';
-import '../../../enums/exercise/exercise_modality_enum.dart';
-import '../../../enums/exercise/exercise_movement_enum.dart';
-import '../../../enums/exercise/exercise_position_enum.dart';
-import '../../../enums/exercise/exercise_stance_enum.dart';
 import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../utils/general_utils.dart';
@@ -79,6 +72,8 @@ class ExerciseLogWidget extends StatefulWidget {
 class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   final List<(TextEditingController, TextEditingController)> _controllers = [];
   final List<DateTime> _durationControllers = [];
+
+  late Map<String, dynamic> _selectedConfigurations;
 
   /// [MenuItemButton]
   List<Widget> _menuActionButtons() {
@@ -257,6 +252,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   @override
   void initState() {
     super.initState();
+
+    _selectedConfigurations = Map<String, dynamic>.from(widget.exerciseLogDto.exerciseVariant.configurations);
+
     if (ExerciseMetric.weights == widget.exerciseLogDto.exerciseVariant.metric ||
         ExerciseMetric.reps == widget.exerciseLogDto.exerciseVariant.metric) {
       _loadTextEditingControllers();
@@ -284,7 +282,16 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final exerciseVariant = widget.exerciseLogDto.exerciseVariant;
 
-    final exercise = exerciseAndRoutineController.whereExercise(id: exerciseVariant.id);
+    final exercise = exerciseAndRoutineController.whereExercise(id: exerciseVariant.baseExerciseId);
+
+    final configurationOptionsWidgets = exercise?.configurationOptions.keys.map((String configKey) => OpacityButtonWidget(
+      label: configKey.toUpperCase(),
+      buttonColor: Colors.redAccent,
+      padding: EdgeInsets.symmetric(horizontal: 0),
+      textStyle:
+      GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.redAccent),
+      onPressed: () => _showConfigurationPicker(configKey: configKey, baseExercise: exercise),
+    )).toList() ?? [];
 
     return exercise != null
         ? Container(
@@ -303,7 +310,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                       onTap: () {
                         FocusScope.of(context).unfocus();
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => ExerciseHomeScreen(id: widget.exerciseLogDto.exerciseVariant.id)));
+                            builder: (context) => ExerciseHomeScreen(id: widget.exerciseLogDto.exerciseVariant.baseExerciseId)));
                       },
                       child: Text(exerciseVariant.name,
                           style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
@@ -335,61 +342,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 Wrap(
                   runSpacing: 8,
                   spacing: 8,
-                  children: [
-                    OpacityButtonWidget(
-                      label: exerciseVariant.equipment.name.toUpperCase(),
-                      buttonColor: vibrantGreen,
-                      padding: EdgeInsets.symmetric(horizontal: 0),
-                      textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: vibrantGreen),
-                      onPressed: () => _showExerciseEquipmentPicker(equipment: exercise.equipment),
-                    ),
-                    if (exercise.modes.length > 1)
-                      OpacityButtonWidget(
-                        label: exerciseVariant.mode.name.toUpperCase(),
-                        buttonColor: Colors.redAccent,
-                        padding: EdgeInsets.symmetric(horizontal: 0),
-                        textStyle:
-                            GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.redAccent),
-                        onPressed: () => _showExerciseModalityPicker(modes: exercise.modes),
-                      ),
-                    if (exercise.metrics.length > 1)
-                      OpacityButtonWidget(
-                        label: exerciseVariant.metric.name.toUpperCase(),
-                        buttonColor: vibrantBlue,
-                        padding: EdgeInsets.symmetric(horizontal: 0),
-                        textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: vibrantBlue),
-                        onPressed: () => _showExerciseMetricPicker(metrics: exercise.metrics, exercise: exercise),
-                      ),
-                    if (exercise.positions.length > 1 &&
-                        (exerciseVariant.coreMovement == CoreMovement.push ||
-                            exerciseVariant.coreMovement == CoreMovement.pull))
-                      OpacityButtonWidget(
-                        label: exerciseVariant.position.name.toUpperCase(),
-                        buttonColor: Colors.cyanAccent,
-                        padding: EdgeInsets.symmetric(horizontal: 0),
-                        textStyle:
-                            GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.cyanAccent),
-                        onPressed: () => _showExercisePositionPicker(positions: exercise.positions),
-                      ),
-                    if (exercise.stances.length > 1)
-                      OpacityButtonWidget(
-                        label: exerciseVariant.stance.name.toUpperCase(),
-                        buttonColor: Colors.purpleAccent,
-                        padding: EdgeInsets.symmetric(horizontal: 0),
-                        textStyle:
-                            GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.purpleAccent),
-                        onPressed: () => _showExerciseStancePicker(stances: exercise.stances),
-                      ),
-                    if (exercise.movements.length > 1)
-                      OpacityButtonWidget(
-                        label: exerciseVariant.movement.name.toUpperCase(),
-                        buttonColor: Colors.orange,
-                        padding: EdgeInsets.symmetric(horizontal: 0),
-                        textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.orange),
-                        onPressed: () => _showExerciseMovementPicker(movements: exercise.movements),
-                      ),
-                  ],
-                ),
+                  children: configurationOptionsWidgets),
                 const SizedBox(height: 8),
                 if (superSetExerciseDto != null)
                   Padding(
@@ -504,142 +457,24 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         : const SizedBox.shrink();
   }
 
-  void _showExerciseEquipmentPicker({required List<ExerciseEquipment> equipment}) {
-    showExerciseEquipmentPicker(
-        context: context,
-        initialEquipment: widget.exerciseLogDto.exerciseVariant.equipment,
-        equipment: equipment,
-        onSelect: (newEquipment) {
-          _onUpdateExerciseLog(
-              title: 'Switch to ${newEquipment.name}',
-              message: 'Do you want to switch training equipment?',
-              callback: () {
-                _closeDialog();
-                ExerciseMetric metric = widget.exerciseLogDto.exerciseVariant.metric;
-                if (newEquipment == ExerciseEquipment.none &&
-                    (metric != ExerciseMetric.reps || metric != ExerciseMetric.duration)) {
-                  /// Training without [ExerciseEquipment.none], therefore [ExerciseMetric.reps] or [ExerciseMetric.duration] becomes the default
-                  metric = metric == ExerciseMetric.reps ? metric : ExerciseMetric.duration;
-                } else if (newEquipment != ExerciseEquipment.none &&
-                    (metric == ExerciseMetric.reps || metric == ExerciseMetric.duration)) {
-                  /// Training with ![ExerciseEquipment.none], therefore [ExerciseMetric.weight] becomes the default
-                  metric = ExerciseMetric.weights;
-                }
-                final updatedExerciseVariant =
-                    widget.exerciseLogDto.exerciseVariant.copyWith(equipment: newEquipment, metric: metric);
-                final shouldUpdateSets = newEquipment != widget.exerciseLogDto.exerciseVariant.equipment;
-                final updatedExerciseLog = widget.exerciseLogDto
-                    .copyWith(exerciseVariant: updatedExerciseVariant, sets: shouldUpdateSets ? [] : null);
-                widget.onUpdate(updatedExerciseLog);
-              },
-              rightActionLabel: 'Switch to ${newEquipment.name}');
-        });
-  }
-
-  void _showExerciseModalityPicker({required List<ExerciseModality> modes}) {
-    showExerciseModalityPicker(
-        context: context,
-        initialModality: widget.exerciseLogDto.exerciseVariant.mode,
-        modes: modes,
-        onSelect: (newMode) {
-          _onUpdateExerciseLog(
-              title: 'Change to ${newMode.name} movement',
-              message: 'Do you want to change your movement?',
-              callback: () {
-                _closeDialog();
-                final updatedExercise = widget.exerciseLogDto.exerciseVariant.copyWith(mode: newMode);
-                final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: updatedExercise);
-                widget.onUpdate(updatedExerciseLog);
-              },
-              rightActionLabel: 'Switch to ${newMode.name}');
-        });
-  }
-
-  void _showExerciseMetricPicker({required List<ExerciseMetric> metrics, required ExerciseDTO exercise}) {
-    showExerciseMetricPicker(
-        context: context,
-        initialMetric: widget.exerciseLogDto.exerciseVariant.metric,
-        metrics: metrics,
-        onSelect: (newMetric) {
-          _onUpdateExerciseLog(
-              title: 'Start logging ${newMetric.name}',
-              message: 'Do you want to update your logging metrics?',
-              callback: () {
-                _closeDialog();
-                ExerciseVariantDTO exerciseToUpdate = widget.exerciseLogDto.exerciseVariant.copyWith(metric: newMetric);
-                ExerciseEquipment equipment = widget.exerciseLogDto.exerciseVariant.equipment;
-                if (newMetric == ExerciseMetric.weights && equipment == ExerciseEquipment.none) {
-                  /// When [ExerciseMetric.weights] is set, Training equipment should be ![ExerciseEquipment.none]
-                  _showExerciseEquipmentPicker(equipment: exercise.equipment);
-                } else if ((newMetric == ExerciseMetric.reps || newMetric == ExerciseMetric.duration) &&
-                    equipment != ExerciseEquipment.none) {
-                  /// When [ExerciseMetric.reps] or [ExerciseMetric.duration] is set, Training equipment should be [ExerciseEquipment.none]
-                  exerciseToUpdate = widget.exerciseLogDto.exerciseVariant.copyWith(equipment: ExerciseEquipment.none);
-                }
-                final shouldUpdateSets = newMetric != widget.exerciseLogDto.exerciseVariant.metric;
-                final updatedExerciseLog = widget.exerciseLogDto
-                    .copyWith(exerciseVariant: exerciseToUpdate, sets: shouldUpdateSets ? [] : null);
-                widget.onUpdate(updatedExerciseLog);
-              },
-              rightActionLabel: 'Switch to ${newMetric.name}');
-        });
-  }
-
-  void _showExercisePositionPicker({required List<ExercisePosition> positions}) {
-    showExercisePositionPicker(
-        context: context,
-        initialPosition: widget.exerciseLogDto.exerciseVariant.position,
-        positions: positions,
-        onSelect: (newPosition) {
-          _onUpdateExerciseLog(
-              title: 'Start training in ${newPosition.name}',
-              message: 'Do you want to update your training position?',
-              callback: () {
-                _closeDialog();
-                final updatedExercise = widget.exerciseLogDto.exerciseVariant.copyWith(position: newPosition);
-                final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: updatedExercise);
-                widget.onUpdate(updatedExerciseLog);
-              },
-              rightActionLabel: 'Switch to ${newPosition.name}');
-        });
-  }
-
-  void _showExerciseStancePicker({required List<ExerciseStance> stances}) {
-    showExerciseStancePicker(
-        context: context,
-        initialStance: widget.exerciseLogDto.exerciseVariant.stance,
-        stances: stances,
-        onSelect: (newStance) {
-          _onUpdateExerciseLog(
-              title: 'Start training ${newStance.name}',
-              message: 'Do you want to update your training stance?',
-              callback: () {
-                _closeDialog();
-                final updatedExercise = widget.exerciseLogDto.exerciseVariant.copyWith(stance: newStance);
-                final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: updatedExercise);
-                widget.onUpdate(updatedExerciseLog);
-              },
-              rightActionLabel: 'Switch to ${newStance.name}');
-        });
-  }
-
-  void _showExerciseMovementPicker({required List<ExerciseMovement> movements}) {
-    showExerciseMovementPicker(
-        context: context,
-        initialMovement: widget.exerciseLogDto.exerciseVariant.movement,
-        movements: movements,
-        onSelect: (newMovement) {
-          _onUpdateExerciseLog(
-              title: 'Start training ${newMovement.name}',
-              message: 'Do you want to update your training movement?',
-              callback: () {
-                _closeDialog();
-                final updatedExercise = widget.exerciseLogDto.exerciseVariant.copyWith(movement: newMovement);
-                final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: updatedExercise);
-                widget.onUpdate(updatedExerciseLog);
-              },
-              rightActionLabel: 'Switch to ${newMovement.name}');
-        });
+  void _showConfigurationPicker({required String configKey, required ExerciseDTO baseExercise}) {
+    final options = baseExercise.configurationOptions[configKey]!;
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return ExerciseConfigurationsPicker<dynamic>(
+          label: configKey,
+          initialConfig: _selectedConfigurations[configKey],
+          configurationOptions: options,
+          onSelect: (configuration) {
+            Navigator.of(context).pop();
+            setState(() {
+              _selectedConfigurations[configKey] = configuration;
+            });
+          }, // Provide descriptions if available
+        );
+      },
+    );
   }
 
   void _onUpdateExerciseLog(

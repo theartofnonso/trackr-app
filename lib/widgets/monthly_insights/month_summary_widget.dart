@@ -45,10 +45,10 @@ class MonthSummaryWidget extends StatelessWidget {
     final totalVolume = volumeInKOrM(tonnage);
 
     final exerciseLogsWithReps =
-        exerciseLogs.where((exerciseLog) => withReps(metric: exerciseLog.exerciseVariant.metric));
+        exerciseLogs.where((exerciseLog) => withReps(metric: exerciseLog.exerciseVariant.getExerciseMetricConfiguration("exercise_metric")));
     final totalReps = exerciseLogsWithReps.map((log) {
       final reps = log.sets.map((set) {
-        final metric = log.exerciseVariant.metric;
+        final metric = log.exerciseVariant.getExerciseMetricConfiguration("exercise_metric");
         if (metric == ExerciseMetric.reps) {
           return (set as RepsSetDTO).reps;
         } else if (metric == ExerciseMetric.weights) {
@@ -67,7 +67,7 @@ class MonthSummaryWidget extends StatelessWidget {
 
       return calculatePBs(
           pastExerciseLogs: pastExerciseLogs,
-          exerciseMetric: exerciseLog.exerciseVariant.metric,
+          exerciseMetric: exerciseLog.exerciseVariant.getExerciseMetricConfiguration("exercise_metric"),
           exerciseLog: exerciseLog);
     }).expand((pbs) => pbs);
 

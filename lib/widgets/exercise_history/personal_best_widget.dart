@@ -30,7 +30,7 @@ class PersonalBestWidget extends StatelessWidget {
           Text("Personal Best achievements for this exercise",
               style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500)),
           const SizedBox(height: 16),
-          SetRecordWidget(exerciseMetric: exerciseVariant.metric, sets: sets),
+          SetRecordWidget(exerciseMetric: exerciseVariant.getExerciseMetricConfiguration("exercise_metric"), sets: sets),
         ],
       ),
     );

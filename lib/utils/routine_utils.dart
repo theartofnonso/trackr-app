@@ -162,11 +162,11 @@ List<Widget> setsToWidgets(
 
 Map<String, List<ExerciseLogDTO>> groupExerciseLogsByExerciseId({required List<RoutineLogDto> routineLogs}) {
   final exerciseLogs = routineLogs.expand((log) => log.exerciseLogs);
-  return groupBy(exerciseLogs, (exerciseLog) => exerciseLog.exerciseVariant.id);
+  return groupBy(exerciseLogs, (exerciseLog) => exerciseLog.exerciseVariant.baseExerciseId);
 }
 
 String superSetId({required ExerciseLogDTO firstExerciseLog, required ExerciseLogDTO secondExerciseLog}) {
-  return "superset_id_${firstExerciseLog.exerciseVariant.id}_${secondExerciseLog.exerciseVariant.id}";
+  return "superset_id_${firstExerciseLog.exerciseVariant.baseExerciseId}_${secondExerciseLog.exerciseVariant.baseExerciseId}";
 }
 
 String scheduledDaysSummary({required RoutineTemplateDto template, bool showFullName = false}) {
@@ -219,7 +219,7 @@ String copyRoutineAsText(
       routineText.writeln("  Notes: ${exerciseLog.notes}");
     }
     for (var i = 0; i < exerciseLog.sets.length; i++) {
-      switch (exerciseLog.exerciseVariant.metric) {
+      switch (exerciseLog.exerciseVariant.getExerciseMetricConfiguration("exercise_metric")) {
         case ExerciseMetric.weights:
           routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].summary()}");
           break;

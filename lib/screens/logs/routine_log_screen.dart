@@ -96,7 +96,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
           routineLogController.whereExerciseLogsBefore(exerciseVariant: exerciseLog.exerciseVariant, date: exerciseLog.createdAt);
 
       return calculatePBs(
-          pastExerciseLogs: pastExerciseLogs, exerciseMetric: exerciseLog.exerciseVariant.metric, exerciseLog: exerciseLog);
+          pastExerciseLogs: pastExerciseLogs, exerciseMetric: exerciseLog.exerciseVariant.getExerciseMetricConfiguration("exercise_metric"), exerciseLog: exerciseLog);
     }).expand((pbs) => pbs);
 
     return Scaffold(
@@ -498,7 +498,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
           /// [Exercise.duration] exercises do not have sets in templates
           /// This is because we only need to store the duration of the exercise in [RoutineEditorType.log] i.e data is log in realtime
-          final sets = withDurationOnly(metric: exerciseLog.exerciseVariant.metric) ? <SetDTO>[] : uncheckedSets;
+          final sets = withDurationOnly(metric: exerciseLog.exerciseVariant.getExerciseMetricConfiguration("exercise_metric")) ? <SetDTO>[] : uncheckedSets;
           return exerciseLog.copyWith(sets: sets);
         }).toList();
         final templateToCreate = RoutineTemplateDto(
