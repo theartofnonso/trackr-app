@@ -12,7 +12,7 @@ import '../../../dtos/exercise_dto.dart';
 import '../../../dtos/exercise_log_dto.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../widgets/buttons/opacity_button_widget.dart';
-import '../../../widgets/pickers/exercise/exercise_configurations_picker.dart';
+import '../../../widgets/pickers/exercise_configurations_picker.dart';
 import '../../empty_state_screens/not_found.dart';
 
 class ExerciseHomeScreen extends StatefulWidget {

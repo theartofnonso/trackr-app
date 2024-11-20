@@ -1,33 +1,35 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/enums/exercise/exercise_stance_enum.dart';
+import 'package:tracker_app/dtos/exercise_dto.dart';
 
-import '../../../colors.dart';
-import '../../buttons/opacity_button_widget.dart';
-import '../../dividers/label_container.dart';
+import '../../colors.dart';
+import '../buttons/opacity_button_widget.dart';
+import '../dividers/label_container.dart';
 
-class ExerciseStancePicker extends StatefulWidget {
-  final ExerciseStance? initialStance;
-  final List<ExerciseStance> stances;
-  final void Function(ExerciseStance position) onSelect;
+class ExerciseConfigurationsPicker<Enum> extends StatefulWidget {
+  final String label;
+  final Enum? initialConfig;
+  final List<ExerciseConfig> configurationOptions;
+  final void Function(ExerciseConfig configuration) onSelect;
 
-  const ExerciseStancePicker({super.key, this.initialStance, required this.stances, required this.onSelect});
+  const ExerciseConfigurationsPicker(
+      {super.key, required this.label, this.initialConfig, required this.configurationOptions, required this.onSelect});
 
   @override
-  State<ExerciseStancePicker> createState() => _ExerciseStancePickerState();
+  State<ExerciseConfigurationsPicker> createState() => _ExerciseConfigurationsPickerState();
 }
 
-class _ExerciseStancePickerState extends State<ExerciseStancePicker> {
-  ExerciseStance _selectedStance = ExerciseStance.standing;
+class _ExerciseConfigurationsPickerState<Enum> extends State<ExerciseConfigurationsPicker<Enum>> {
+  late ExerciseConfig _selectedConfig;
 
   FixedExtentScrollController? _scrollController;
 
   @override
   Widget build(BuildContext context) {
-    final children = widget.stances
-        .map((value) => Center(
-            child: Text(value.name,
+    final children = widget.configurationOptions
+        .map((config) => Center(
+            child: Text(config.name,
                 style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 24, color: Colors.white))))
         .toList();
 
@@ -35,8 +37,8 @@ class _ExerciseStancePickerState extends State<ExerciseStancePicker> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         LabelContainer(
-          label: "Training Stance".toUpperCase(),
-          description: _selectedStance.description,
+          label: widget.label.toUpperCase(),
+          description: _selectedConfig.description,
           labelStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 14),
           descriptionStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white70, fontSize: 14),
           dividerColor: Colors.transparent,
@@ -48,7 +50,7 @@ class _ExerciseStancePickerState extends State<ExerciseStancePicker> {
             itemExtent: 38.0,
             onSelectedItemChanged: (int index) {
               setState(() {
-                _selectedStance = widget.stances[index];
+                _selectedConfig = widget.configurationOptions[index];
               });
             },
             squeeze: 1,
@@ -59,9 +61,9 @@ class _ExerciseStancePickerState extends State<ExerciseStancePicker> {
         const SizedBox(height: 16),
         OpacityButtonWidget(
             onPressed: () {
-              widget.onSelect(_selectedStance);
+              widget.onSelect(_selectedConfig);
             },
-            label: "Switch to ${_selectedStance.name}",
+            label: "Switch to ${_selectedConfig.name}",
             buttonColor: vibrantGreen,
             padding: const EdgeInsets.all(10.0))
       ],
@@ -71,8 +73,12 @@ class _ExerciseStancePickerState extends State<ExerciseStancePicker> {
   @override
   void initState() {
     super.initState();
-    final initialIndex = widget.stances.indexOf(widget.initialStance ?? ExerciseStance.standing);
-    _selectedStance = widget.stances[initialIndex];
+    if (widget.configurationOptions.isEmpty) {
+      throw ArgumentError('Configuration Options list cannot be empty.');
+    }
+    final initialIndex =
+        widget.initialConfig != null ? widget.configurationOptions.indexOf(widget.initialConfig as ExerciseConfig) : 0;
+    _selectedConfig = widget.configurationOptions[initialIndex];
     _scrollController = FixedExtentScrollController(initialItem: initialIndex);
   }
 

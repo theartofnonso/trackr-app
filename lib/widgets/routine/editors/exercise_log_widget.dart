@@ -14,7 +14,7 @@ import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
-import 'package:tracker_app/widgets/pickers/exercise/exercise_configurations_picker.dart';
+import 'package:tracker_app/widgets/pickers/exercise_configurations_picker.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/weight_reps_set_header.dart';
@@ -459,21 +459,20 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _showConfigurationPicker({required String configKey, required ExerciseDTO baseExercise}) {
     final options = baseExercise.configurationOptions[configKey]!;
-    showModalBottomSheet(
+    displayBottomSheet(
       context: context,
-      builder: (BuildContext context) {
-        return ExerciseConfigurationsPicker<dynamic>(
-          label: configKey,
-          initialConfig: _selectedConfigurations[configKey],
-          configurationOptions: options,
-          onSelect: (configuration) {
-            Navigator.of(context).pop();
-            setState(() {
-              _selectedConfigurations[configKey] = configuration;
-            });
-          }, // Provide descriptions if available
-        );
-      },
+      height: 300,
+      child: ExerciseConfigurationsPicker<dynamic>(
+        label: configKey,
+        initialConfig: _selectedConfigurations[configKey],
+        configurationOptions: options,
+        onSelect: (configuration) {
+          Navigator.of(context).pop();
+          setState(() {
+            _selectedConfigurations[configKey] = configuration;
+          });
+        }, // Provide descriptions if available
+      ),
     );
   }
 
