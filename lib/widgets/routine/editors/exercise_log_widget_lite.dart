@@ -5,7 +5,6 @@ import 'package:tracker_app/dtos/exercise_log_dto.dart';
 
 import '../../../colors.dart';
 import '../../../controllers/exercise_and_routine_controller.dart';
-import '../../../enums/exercise/core_movements_enum.dart';
 import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../chips/squared_chips.dart';
@@ -32,6 +31,11 @@ class ExerciseLogLiteWidget extends StatelessWidget {
     final exerciseVariant = exerciseLogDto.exerciseVariant;
 
     final exercise = exerciseAndRoutineController.whereExercise(id: exerciseVariant.baseExerciseId);
+
+    final configurationChips = exercise?.configurationOptions.keys.map((String configKey) => SquaredChips(
+      label: configKey.toUpperCase(),
+      color: vibrantGreen,
+    )).toList() ?? [];
 
     return exercise != null ? Container(
       padding: superSet == null ? const EdgeInsets.symmetric(vertical: 10, horizontal: 10) : const EdgeInsets.all(10),
@@ -72,39 +76,7 @@ class ExerciseLogLiteWidget extends StatelessWidget {
           Wrap(
             runSpacing: 8,
             spacing: 8,
-            children: [
-              SquaredChips(
-                label: exerciseVariant.equipment.name.toUpperCase(),
-                color: vibrantGreen,
-              ),
-              if (exercise.modes.length > 1)
-                SquaredChips(
-                  label: exerciseVariant.mode.name.toUpperCase(),
-                  color: Colors.redAccent,
-                ),
-              if (exercise.metrics.length > 1)
-                SquaredChips(
-                  label: exerciseVariant.metric.name.toUpperCase(),
-                  color: vibrantBlue,
-                ),
-              if (exercise.positions.length > 1 &&
-                  (exerciseVariant.coreMovement == CoreMovement.push ||
-                      exerciseVariant.coreMovement == CoreMovement.pull))
-                SquaredChips(
-                  label: exerciseVariant.position.name.toUpperCase(),
-                  color: Colors.cyanAccent,
-                ),
-              if (exercise.configurationOptions.length > 1)
-                SquaredChips(
-                  label: exerciseVariant.stance.name.toUpperCase(),
-                  color: Colors.purpleAccent,
-                ),
-              if (exercise.movements.length > 1)
-                SquaredChips(
-                  label: exerciseVariant.movement.name.toUpperCase(),
-                  color: Colors.orange,
-                ),
-            ],
+            children: configurationChips,
           ),
         ],
       ),

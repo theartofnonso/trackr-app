@@ -127,21 +127,6 @@ class ExerciseRepository {
 
   void _loadQuadricepsExercises() {
     final squatsExercise = SquatExerciseDTO(
-        id: "QUA_01",
-        name: "Squats",
-        description: "A squat targeting the quadriceps, glutes, and hamstrings.",
-        primaryMuscleGroups: [
-          MuscleGroup.quadriceps
-        ],
-        secondaryMuscleGroups: [
-          MuscleGroup.hamstrings,
-          MuscleGroup.glutes
-        ],
-        configurationOptions: {
-          "exercise_metric": [ExerciseMetric.reps, ExerciseMetric.weights],
-        });
-
-    SquatExerciseDTO(
       id: "QUA_01",
       name: "Squats",
       description: "Targets the quadriceps, glutes, and hamstrings.",

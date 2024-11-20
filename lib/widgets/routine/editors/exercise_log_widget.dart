@@ -132,7 +132,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _addSet() {
-    if (withDurationOnly(metric: widget.exerciseLogDto.exerciseVariant.metric)) {
+    if (withDurationOnly(metric: widget.exerciseLogDto.exerciseVariant.getExerciseMetricConfiguration("metrics"))) {
       _durationControllers.add(DateTime.now());
     } else {
       _controllers.add((TextEditingController(), TextEditingController()));
@@ -142,12 +142,12 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     Provider.of<ExerciseLogController>(context, listen: false).addSet(
         exerciseId: widget.exerciseLogDto.exerciseVariant.name,
         pastSets: pastSets,
-        metric: widget.exerciseLogDto.exerciseVariant.metric);
+        metric: widget.exerciseLogDto.exerciseVariant.getExerciseMetricConfiguration("metrics"));
     _cacheLog();
   }
 
   void _removeSet({required int index}) {
-    if (withDurationOnly(metric: widget.exerciseLogDto.exerciseVariant.metric)) {
+    if (withDurationOnly(metric: widget.exerciseLogDto.exerciseVariant.getExerciseMetricConfiguration("metrics"))) {
       _durationControllers.removeAt(index);
     } else {
       _controllers.removeAt(index);
@@ -212,7 +212,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _loadTextEditingControllers() {
     final sets = widget.exerciseLogDto.sets;
-    final metric = widget.exerciseLogDto.exerciseVariant.metric;
+    final metric = widget.exerciseLogDto.exerciseVariant.getExerciseMetricConfiguration("metrics");
     List<(TextEditingController, TextEditingController)> controllers = [];
     double weight = 0;
     int reps = 0;
@@ -255,12 +255,12 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     _selectedConfigurations = Map<String, dynamic>.from(widget.exerciseLogDto.exerciseVariant.configurations);
 
-    if (ExerciseMetric.weights == widget.exerciseLogDto.exerciseVariant.metric ||
-        ExerciseMetric.reps == widget.exerciseLogDto.exerciseVariant.metric) {
+    if (ExerciseMetric.weights == widget.exerciseLogDto.exerciseVariant.getExerciseMetricConfiguration("metrics") ||
+        ExerciseMetric.reps == widget.exerciseLogDto.exerciseVariant.getExerciseMetricConfiguration("metrics")) {
       _loadTextEditingControllers();
     }
     if (widget.editorType == RoutineEditorMode.log &&
-        ExerciseMetric.duration == widget.exerciseLogDto.exerciseVariant.metric) {
+        ExerciseMetric.duration == widget.exerciseLogDto.exerciseVariant.getExerciseMetricConfiguration("metrics")) {
       _loadDurationControllers();
     }
   }
@@ -286,10 +286,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final configurationOptionsWidgets = exercise?.configurationOptions.keys.map((String configKey) => OpacityButtonWidget(
       label: configKey.toUpperCase(),
-      buttonColor: Colors.redAccent,
+      buttonColor: vibrantGreen,
       padding: EdgeInsets.symmetric(horizontal: 0),
       textStyle:
-      GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.redAccent),
+      GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: vibrantGreen),
       onPressed: () => _showConfigurationPicker(configKey: configKey, baseExercise: exercise),
     )).toList() ?? [];
 
@@ -370,7 +370,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                       fontWeight: FontWeight.w400, color: Colors.white.withOpacity(0.8), fontSize: 14),
                 ),
                 const SizedBox(height: 12),
-                switch (exerciseVariant.metric) {
+                switch (exerciseVariant.getExerciseMetricConfiguration("metrics")) {
                   ExerciseMetric.weights => WeightRepsSetHeader(
                       editorType: widget.editorType,
                       firstLabel: weightLabel().toUpperCase(),
@@ -381,7 +381,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 },
                 const SizedBox(height: 8),
                 if (sets.isNotEmpty)
-                  if (exerciseVariant.metric == ExerciseMetric.weights)
+                  if (exerciseVariant.getExerciseMetricConfiguration("metrics") == ExerciseMetric.weights)
                     _WeightAndRepsSetListView(
                       sets: sets.map((set) => set as WeightAndRepsSetDTO).toList(),
                       editorType: widget.editorType,
@@ -393,7 +393,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                       onTapWeightEditor: _onTapWeightEditor,
                       onTapRepsEditor: _onTapRepsEditor,
                     ),
-                if (exerciseVariant.metric == ExerciseMetric.reps)
+                if (exerciseVariant.getExerciseMetricConfiguration("metrics") == ExerciseMetric.reps)
                   _RepsSetListView(
                     sets: sets.map((set) => set as RepsSetDTO).toList(),
                     editorType: widget.editorType,
@@ -404,7 +404,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                     onTapWeightEditor: _onTapWeightEditor,
                     onTapRepsEditor: _onTapRepsEditor,
                   ),
-                if (exerciseVariant.metric == ExerciseMetric.duration)
+                if (exerciseVariant.getExerciseMetricConfiguration("metrics") == ExerciseMetric.duration)
                   _DurationSetListView(
                     sets: sets.map((set) => set as DurationSetDTO).toList(),
                     editorType: widget.editorType,
@@ -418,14 +418,14 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                     updateDuration: _updateDuration,
                   ),
                 const SizedBox(height: 8),
-                if (withDurationOnly(metric: exerciseVariant.metric) && sets.isEmpty)
+                if (withDurationOnly(metric: exerciseVariant.getExerciseMetricConfiguration("metrics")) && sets.isEmpty)
                   Center(
                     child: Text("Tap + to add a timer",
                         style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white70)),
                   ),
                 const SizedBox(height: 8),
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  if (withWeightsOnly(metric: exerciseVariant.metric))
+                  if (withWeightsOnly(metric: exerciseVariant.getExerciseMetricConfiguration("metrics")))
                     IconButton(
                         onPressed: _show1RMRecommendations,
                         icon: const FaIcon(FontAwesomeIcons.solidLightbulb, color: Colors.white, size: 16),
