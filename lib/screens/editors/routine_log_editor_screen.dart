@@ -18,12 +18,12 @@ import 'package:tracker_app/utils/routine_editors_utils.dart';
 import 'package:tracker_app/widgets/routine/editors/exercise_log_widget_lite.dart';
 
 import '../../colors.dart';
+import '../../controllers/analytics_controller.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/exercise_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/set_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
-import '../../utils/app_analytics.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/empty_states/exercise_log_empty_state.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
@@ -157,7 +157,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     final updatedRoutineLog =
         await Provider.of<ExerciseAndRoutineController>(context, listen: false).saveLog(logDto: routineLogToBeUpdated);
 
-    workoutSessionLogged();
+    AnalyticsController.workoutSessionEvent(eventAction: "workout_session_logged");
 
     if (updatedRoutineLog != null) {
       if (updatedRoutineLog.templateId.isNotEmpty) {

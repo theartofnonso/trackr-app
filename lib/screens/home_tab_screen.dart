@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/controllers/analytics_controller.dart';
 import 'package:tracker_app/screens/insights/overview_screen.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
 
@@ -73,6 +74,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
   }
 
   void _onMonthChange(DateTimeRange range) {
+    AnalyticsController.calendarInteractions(eventAction: "month_change: ${range.toString()}");
     setState(() {
       _monthDateTimeRange = range;
     });

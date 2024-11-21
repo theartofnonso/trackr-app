@@ -16,13 +16,13 @@ import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../controllers/activity_log_controller.dart';
+import '../controllers/analytics_controller.dart';
 import '../controllers/routine_user_controller.dart';
 import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../enums/routine_editor_type_enums.dart';
 import '../models/RoutineLog.dart';
 import '../models/RoutineTemplate.dart';
-import '../utils/app_analytics.dart';
 import 'milestones/milestones_home_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -190,12 +190,13 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  ///add user stuff here for analytics instead
   void _cacheUser() async {
     final authUser = await Amplify.Auth.getCurrentUser();
     final signInDetails = authUser.signInDetails.toJson();
     SharedPrefs().userId = authUser.userId;
     SharedPrefs().userEmail = signInDetails["username"] as String;
-    identifyUser(userId: SharedPrefs().userId);
+    AnalyticsController.loginAnalytics(isFirstLaunch: SharedPrefs().firstLaunch);
   }
 
   void _runSetup() async {
@@ -204,7 +205,7 @@ class _HomeScreenState extends State<HomeScreen> {
       _loadAppData();
       SharedPrefs().firstLaunch = false;
     } else {
-      identifyUser(userId: SharedPrefs().userId);
+      AnalyticsController.loginAnalytics(isFirstLaunch: SharedPrefs().firstLaunch);
       _loadAppData();
       _loadCachedLog();
     }

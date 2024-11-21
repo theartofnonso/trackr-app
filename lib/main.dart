@@ -54,12 +54,26 @@ import 'dtos/viewmodels/routine_log_arguments.dart';
 import 'dtos/viewmodels/routine_template_arguments.dart';
 import 'models/ModelProvider.dart';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await SharedPrefs().init();
 
   await initializeDateFormatting();
+
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
+    print("Firebase initialized");
+  } catch(e) {
+    print("Failed to initialize Firebase: $e");
+  }
 
   const DarwinInitializationSettings iOSInitializationSettingsDarwin = DarwinInitializationSettings(
     requestAlertPermission: false,
@@ -276,12 +290,17 @@ final _router = GoRouter(
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  //get analytics => analytics;
+
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
   bool _isFirstLaunch = SharedPrefs().firstLaunch;
+
+  //static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+  //static FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
 
   @override
   void initState() {
@@ -366,7 +385,6 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     //debugPaintSizeEnabled = true;
-
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp, // Lock orientation to portrait up
     ]);
