@@ -13,6 +13,7 @@ import '../dtos/appsync/routine_template_dto.dart';
 import '../dtos/appsync/routine_template_plan_dto.dart';
 import '../dtos/abstract_class/exercise_dto.dart';
 import '../dtos/sets_dtos/set_dto.dart';
+import '../enums/exercise/exercise_configuration_key.dart';
 import '../models/RoutineTemplate.dart';
 import '../models/RoutineTemplatePlan.dart';
 import '../repositories/exercise_repository.dart';
@@ -55,7 +56,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
 
   UnmodifiableListView<Milestone> get newMilestones => _amplifyLogRepository.newMilestones;
 
-  UnmodifiableMapView<String, List<ExerciseLogDTO>> get exerciseLogsById => _amplifyLogRepository.exerciseLogsById;
+  UnmodifiableMapView<String, List<ExerciseLogDTO>> get exerciseLogsByExerciseId => _amplifyLogRepository.exerciseLogsByExerciseId;
 
   /// Exercises
   void loadExercises() {
@@ -249,7 +250,13 @@ class ExerciseAndRoutineController extends ChangeNotifier {
     return _amplifyLogRepository.whereSetsForExercise(exerciseVariant: exerciseVariant);
   }
 
-  /// Exercise Helpers methods
+  /// [ExerciseLogDTO] helpers
+  List<ExerciseLogDTO> filterExerciseLogsByIdAndConfigurations(
+      {required String exerciseId, required Map<ExerciseConfigurationKey, ExerciseConfigValue> configurations}) {
+    return _amplifyLogRepository.filterExerciseLogsByIdAndConfigurations(exerciseId: exerciseId, configurations: configurations);
+  }
+
+  /// [ExerciseDTO] Helpers methods
   ExerciseDTO whereExercise({required String id}) {
     return _amplifyExerciseRepository.whereExercise(id: id);
   }

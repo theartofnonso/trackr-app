@@ -11,6 +11,7 @@ import 'package:tracker_app/screens/exercise/history/history_screen.dart';
 import '../../../dtos/abstract_class/exercise_dto.dart';
 import '../../../dtos/exercise_log_dto.dart';
 import '../../../enums/exercise/exercise_configuration_key.dart';
+import '../../../utils/dialog_utils.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../widgets/buttons/opacity_button_widget.dart';
 import '../../../widgets/pickers/exercise_configurations_picker.dart';
@@ -28,17 +29,17 @@ class ExerciseHomeScreen extends StatefulWidget {
 
 class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
   List<ExerciseLogDTO> _exerciseLogs = [];
-  List<ExerciseLogDTO> _filteredExerciseLogs = [];
 
-  late Map<ExerciseConfigurationKey, dynamic> _selectedConfigurations;
+  late Map<ExerciseConfigurationKey, ExerciseConfigValue> _selectedConfigurations;
+
+  late ExerciseDTO _baseExercise;
+
+  late ExerciseAndRoutineController _exerciseAndRoutineController;
 
   @override
   Widget build(BuildContext context) {
-    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
-    final exercise = exerciseAndRoutineController.whereExercise(id: widget.id);
-
-    final completedExerciseLogs = completedExercises(exerciseLogs: _filteredExerciseLogs);
+    final completedExerciseLogs = completedExercises(exerciseLogs: _exerciseLogs);
 
     final heaviestSetVolumeRecord = heaviestSetVolume(exerciseLogs: completedExerciseLogs);
 
@@ -51,18 +52,21 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
     final mostRepsSessionRecord = mostRepsInSession(exerciseLogs: completedExerciseLogs);
 
     final firstVariant =
-        _filteredExerciseLogs.isNotEmpty ? _filteredExerciseLogs.first.exerciseVariant : exercise.defaultVariant();
+        _exerciseLogs.isNotEmpty ? _exerciseLogs.first.exerciseVariant : _baseExercise.defaultVariant();
 
-    final configurationOptionsWidgets = exercise.configurationOptions.keys
-            .map((ExerciseConfigurationKey configKey) => OpacityButtonWidget(
-                  label: configKey.name.toUpperCase(),
-                  buttonColor: vibrantGreen,
-                  padding: EdgeInsets.symmetric(horizontal: 0),
-                  textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: vibrantGreen),
-                  onPressed: () => _showConfigurationPicker(configKey: configKey, baseExercise: exercise),
-                ))
-            .toList() ??
-        [];
+    final configurationOptionsWidgets = _baseExercise.configurationOptions.keys.where((configKey) {
+      final configOptions = _baseExercise.configurationOptions[configKey]!;
+      return configOptions.length > 1;
+    }).map((ExerciseConfigurationKey configKey) {
+      final configValue = firstVariant.configurations[configKey]!;
+      return OpacityButtonWidget(
+        label: configValue.displayName.toLowerCase(),
+        buttonColor: vibrantGreen,
+        padding: EdgeInsets.symmetric(horizontal: 0),
+        textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 12, color: vibrantGreen),
+        onPressed: () => _showConfigurationPicker(configKey: configKey, baseExercise: _baseExercise),
+      );
+    }).toList();
 
     return DefaultTabController(
         length: 2,
@@ -73,7 +77,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
               icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
               onPressed: context.pop,
             ),
-            title: Text(exercise.name,
+            title: Text(_baseExercise.name,
                 style: GoogleFonts.ubuntu(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
             bottom: TabBar(
               dividerColor: Colors.transparent,
@@ -142,29 +146,34 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
 
   void _showConfigurationPicker({required ExerciseConfigurationKey configKey, required ExerciseDTO baseExercise}) {
     final options = baseExercise.configurationOptions[configKey]!;
-    showModalBottomSheet(
+    displayBottomSheet(
       context: context,
-      builder: (BuildContext context) {
-        return ExerciseConfigurationsPicker<dynamic>(
-          configurationKey: configKey,
-          initialConfig: _selectedConfigurations[configKey],
-          configurationOptions: options,
-          onSelect: (configuration) {
-            Navigator.of(context).pop();
-            setState(() {
-              _selectedConfigurations[configKey] = configuration;
-            });
-          }, // Provide descriptions if available
-        );
-      },
+      height: 300,
+      child: ExerciseConfigurationsPicker<dynamic>(
+        configurationKey: configKey,
+        initialConfig: _selectedConfigurations[configKey],
+        configurationOptions: options,
+        onSelect: (configuration) {
+          Navigator.of(context).pop();
+          setState(() {
+            _selectedConfigurations[configKey] = configuration;
+            _exerciseLogs = _exerciseAndRoutineController.filterExerciseLogsByIdAndConfigurations(exerciseId: widget.id, configurations: _selectedConfigurations);
+          });
+        }, // Provide descriptions if available
+      ),
     );
   }
 
   @override
   void initState() {
     super.initState();
-    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-    _exerciseLogs = exerciseAndRoutineController.exerciseLogsById[widget.id] ?? [];
-    // _selectedConfigurations = Map<String, dynamic>.from(widget..exerciseVariant.configurations);
+    _exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+
+    _baseExercise = _exerciseAndRoutineController.whereExercise(id: widget.id);
+
+    _selectedConfigurations = _baseExercise.defaultVariant().configurations;
+
+    _exerciseLogs = _exerciseAndRoutineController.filterExerciseLogsByIdAndConfigurations(exerciseId: widget.id, configurations: _selectedConfigurations);
+
   }
 }

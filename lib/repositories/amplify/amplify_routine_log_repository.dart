@@ -17,6 +17,7 @@ import '../../dtos/milestones/milestone_dto.dart';
 import '../../dtos/milestones/reps_milestone.dart';
 import '../../dtos/milestones/weekly_milestone_dto.dart';
 import '../../dtos/sets_dtos/set_dto.dart';
+import '../../enums/exercise/exercise_configuration_key.dart';
 import '../../models/RoutineLog.dart';
 import '../../models/RoutineTemplate.dart';
 import '../../shared_prefs.dart';
@@ -34,12 +35,12 @@ class AmplifyRoutineLogRepository {
 
   UnmodifiableListView<Milestone> get newMilestones => UnmodifiableListView(_newMilestones);
 
-  Map<String, List<ExerciseLogDTO>> _exerciseLogsById = {};
+  Map<String, List<ExerciseLogDTO>> _exerciseLogsByExerciseId = {};
 
-  UnmodifiableMapView<String, List<ExerciseLogDTO>> get exerciseLogsById => UnmodifiableMapView(_exerciseLogsById);
+  UnmodifiableMapView<String, List<ExerciseLogDTO>> get exerciseLogsByExerciseId => UnmodifiableMapView(_exerciseLogsByExerciseId);
 
   void _groupExerciseLogs() {
-    _exerciseLogsById = groupExerciseLogsByExerciseId(routineLogs: _logs);
+    _exerciseLogsByExerciseId = groupExerciseLogsByExerciseId(routineLogs: _logs);
   }
 
   void loadLogStream({required List<RoutineLog> logs}) {
@@ -160,17 +161,17 @@ class AmplifyRoutineLogRepository {
   }
 
   List<SetDTO> whereSetsForExercise({required ExerciseVariantDTO exerciseVariant}) {
-    final exerciseLogs = _exerciseLogsById[exerciseVariant.name]?.reversed ?? [];
+    final exerciseLogs = _exerciseLogsByExerciseId[exerciseVariant.name]?.reversed ?? [];
     return exerciseLogs.isNotEmpty ? exerciseLogs.first.sets : [];
   }
 
   List<SetDTO> whereSetsForExerciseBefore({required ExerciseDTO exercise, required DateTime date}) {
-    final exerciseLogs = _exerciseLogsById[exercise.name]?.where((log) => log.createdAt.isBefore(date)) ?? [];
+    final exerciseLogs = _exerciseLogsByExerciseId[exercise.name]?.where((log) => log.createdAt.isBefore(date)) ?? [];
     return exerciseLogs.isNotEmpty ? exerciseLogs.first.sets : [];
   }
 
   List<ExerciseLogDTO> whereExerciseLogsBefore({required ExerciseVariantDTO exerciseVariant, required DateTime date}) {
-    return _exerciseLogsById[exerciseVariant.name]?.where((log) => log.createdAt.isBefore(date)).toList() ?? [];
+    return _exerciseLogsByExerciseId[exerciseVariant.name]?.where((log) => log.createdAt.isBefore(date)).toList() ?? [];
   }
 
   /// RoutineLog for the following [DateTime]
@@ -209,6 +210,27 @@ class AmplifyRoutineLogRepository {
     return _logs.where((log) => log.createdAt.isBetweenInclusive(from: range.start, to: range.end)).toList();
   }
 
+  /// ExerciseLog
+  List<ExerciseLogDTO> filterExerciseLogsByIdAndConfigurations({required String exerciseId, required Map<ExerciseConfigurationKey, ExerciseConfigValue> configurations}) {
+    final exerciseLogs = _exerciseLogsByExerciseId[exerciseId] ?? [];
+
+    return exerciseLogs.where((log) {
+      final Map<ExerciseConfigurationKey, ExerciseConfigValue> logConfigurations =
+          log.exerciseVariant.configurations;
+
+      // Check if all criteria configurations match the log's configurations
+      for (final key in configurations.keys) {
+        final ExerciseConfigValue? logValue = logConfigurations[key];
+        final ExerciseConfigValue criteriaValue = configurations[key]!;
+
+        if (logValue == null || logValue != criteriaValue) {
+          return false; // This log does not match the criteria
+        }
+      }
+      return true; // All criteria configurations match
+    }).toList();
+  }
+
   /// Milestones
   UnmodifiableListView<Milestone> pendingMilestones() =>
       UnmodifiableListView(_milestones.where((milestone) => milestone.progress.$1 < 1));
@@ -218,7 +240,7 @@ class AmplifyRoutineLogRepository {
 
   void clear() {
     _logs.clear();
-    _exerciseLogsById.clear();
+    _exerciseLogsByExerciseId.clear();
     _milestones.clear();
     _newMilestones.clear();
   }

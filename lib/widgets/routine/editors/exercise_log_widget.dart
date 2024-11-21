@@ -107,7 +107,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _show1RMRecommendations() {
     final pastExerciseLogs = Provider.of<ExerciseAndRoutineController>(context, listen: false)
-            .exerciseLogsById[widget.exerciseLogDto.exerciseVariant.name] ??
+            .exerciseLogsByExerciseId[widget.exerciseLogDto.exerciseVariant.name] ??
         [];
     final completedPastExerciseLogs = completedExercises(exerciseLogs: pastExerciseLogs);
     if (completedPastExerciseLogs.isNotEmpty) {
@@ -254,8 +254,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   void initState() {
     super.initState();
 
-    _selectedConfigurations =
-        Map<ExerciseConfigurationKey, ExerciseConfigValue>.from(widget.exerciseLogDto.exerciseVariant.configurations);
+    _selectedConfigurations = widget.exerciseLogDto.exerciseVariant.configurations;
 
     if (SetType.weightsAndReps == widget.exerciseLogDto.exerciseVariant.getSetTypeConfiguration() ||
         SetType.reps == widget.exerciseLogDto.exerciseVariant.getSetTypeConfiguration()) {
@@ -286,7 +285,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final exercise = exerciseAndRoutineController.whereExercise(id: exerciseVariant.baseExerciseId);
 
-    final configurationOptionsWidgets = exerciseVariant.configurations.keys.where((configKey) {
+    final configurationOptionsWidgets = exercise.configurationOptions.keys.where((configKey) {
       final configOptions = exercise.configurationOptions[configKey]!;
       return configOptions.length > 1;
     }).map((ExerciseConfigurationKey configKey) {

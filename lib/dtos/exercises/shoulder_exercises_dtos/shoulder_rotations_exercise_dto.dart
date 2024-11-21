@@ -1,4 +1,5 @@
 import 'package:tracker_app/dtos/exercise_variant_dto.dart';
+import 'package:tracker_app/enums/exercise/exercise_movement_enum.dart';
 import 'package:tracker_app/enums/exercise/exercise_stance_enum.dart';
 import 'package:tracker_app/enums/exercise/exercise_upper_body_modality_enum.dart';
 
@@ -28,7 +29,8 @@ class ShoulderRotationsExerciseDTO extends ExerciseDTO {
   @override
   Map<ExerciseConfigurationKey, List<ExerciseConfigValue>> get configurationOptions => {
     ExerciseConfigurationKey.setType: [SetType.reps, SetType.weightsAndReps],
-    ExerciseConfigurationKey.stance: [ExerciseStance.seated, ExerciseStance.standing],
+    ExerciseConfigurationKey.stance: [ExerciseStance.seated, ExerciseStance.standing, ExerciseStance.lying],
+    ExerciseConfigurationKey.movement: [ExerciseMovement.internalRotation, ExerciseMovement.internalRotation],
     ExerciseConfigurationKey.upperBodyModality: [ExerciseUpperBodyModality.unilateral, ExerciseUpperBodyModality.bilateral],
     ExerciseConfigurationKey.equipment: [
       ExerciseEquipment.dumbbell,
@@ -45,6 +47,7 @@ class ShoulderRotationsExerciseDTO extends ExerciseDTO {
           ExerciseConfigurationKey.equipment: ExerciseEquipment.dumbbell,
           ExerciseConfigurationKey.upperBodyModality: ExerciseUpperBodyModality.unilateral,
           ExerciseConfigurationKey.stance: ExerciseStance.standing,
+          ExerciseConfigurationKey.movement: ExerciseMovement.internalRotation,
         });
     return variant;
   }
