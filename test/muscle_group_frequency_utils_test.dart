@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
-import 'package:tracker_app/dtos/set_dto.dart';
+import 'package:tracker_app/dtos/sets_dtos/set_dto.dart';
 import 'package:tracker_app/enums/exercise/core_movements_enum.dart';
 import 'package:tracker_app/enums/exercise/exercise_metrics_enums.dart';
 import 'package:tracker_app/enums/exercise/exercise_modality_enum.dart';

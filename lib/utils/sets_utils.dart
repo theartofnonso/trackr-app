@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
-import 'package:tracker_app/dtos/weight_and_reps_set_dto.dart';
+import 'package:tracker_app/dtos/sets_dtos/weight_and_reps_set_dto.dart';
 
-import '../dtos/set_dto.dart';
+import '../dtos/sets_dtos/set_dto.dart';
 
 List<SetDTO> personalBestSets({required List<SetDTO> sets}) {
   var groupedByReps = groupBy(sets, (set) => (set as WeightAndRepsSetDTO).reps);

@@ -2,14 +2,14 @@ import 'dart:collection';
 
 import 'package:collection/collection.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
-import 'package:tracker_app/dtos/duration_set_dto.dart';
-import 'package:tracker_app/dtos/reps_set_dto.dart';
-import 'package:tracker_app/dtos/weight_and_reps_set_dto.dart';
+import 'package:tracker_app/dtos/sets_dtos/duration_set_dto.dart';
+import 'package:tracker_app/dtos/sets_dtos/reps_set_dto.dart';
+import 'package:tracker_app/dtos/sets_dtos/weight_and_reps_set_dto.dart';
 
 import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/pb_dto.dart';
-import '../dtos/set_dto.dart';
+import '../dtos/sets_dtos/set_dto.dart';
 import '../enums/exercise/exercise_metrics_enums.dart';
 import '../enums/muscle_group_enums.dart';
 import '../enums/pb_enums.dart';

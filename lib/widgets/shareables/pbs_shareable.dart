@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/dtos/duration_set_dto.dart';
-import 'package:tracker_app/dtos/set_dto.dart';
-import 'package:tracker_app/dtos/weight_and_reps_set_dto.dart';
+import 'package:tracker_app/dtos/sets_dtos/duration_set_dto.dart';
+import 'package:tracker_app/dtos/sets_dtos/set_dto.dart';
+import 'package:tracker_app/dtos/sets_dtos/weight_and_reps_set_dto.dart';
 import 'package:tracker_app/enums/pb_enums.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
@@ -11,7 +11,7 @@ import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../colors.dart';
 import '../../dtos/pb_dto.dart';
-import '../../dtos/reps_set_dto.dart';
+import '../../dtos/sets_dtos/reps_set_dto.dart';
 
 GlobalKey pbsGlobalKey = GlobalKey();
 

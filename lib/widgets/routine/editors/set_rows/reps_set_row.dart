@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tracker_app/dtos/reps_set_dto.dart';
+import 'package:tracker_app/dtos/sets_dtos/reps_set_dto.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/int_textfield.dart';
 
 import '../../../../enums/routine_editor_type_enums.dart';

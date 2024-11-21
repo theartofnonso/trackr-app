@@ -3,7 +3,7 @@ import 'package:tracker_app/dtos/exercise_variant_dto.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 
 import '../dtos/exercise_log_dto.dart';
-import '../dtos/set_dto.dart';
+import '../dtos/sets_dtos/set_dto.dart';
 import '../enums/exercise/exercise_metrics_enums.dart';
 import '../enums/routine_editor_type_enums.dart';
 

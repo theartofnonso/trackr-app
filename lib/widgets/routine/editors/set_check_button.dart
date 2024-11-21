@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tracker_app/colors.dart';
-import '../../../dtos/set_dto.dart';
+import '../../../dtos/sets_dtos/set_dto.dart';
 import 'package:flutter/services.dart';
 
 class SetCheckButton extends StatelessWidget {

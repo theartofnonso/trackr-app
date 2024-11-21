@@ -12,7 +12,7 @@ import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/appsync/routine_template_dto.dart';
 import '../dtos/appsync/routine_template_plan_dto.dart';
 import '../dtos/exercise_dto.dart';
-import '../dtos/set_dto.dart';
+import '../dtos/sets_dtos/set_dto.dart';
 import '../models/RoutineTemplate.dart';
 import '../models/RoutineTemplatePlan.dart';
 import '../repositories/exercise_repository.dart';
