@@ -21,7 +21,7 @@ import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../dtos/sets_dtos/set_dto.dart';
 import '../../enums/chart_unit_enum.dart';
-import '../../enums/exercise/exercise_metrics_enums.dart';
+import '../../enums/exercise/set_type_enums.dart';
 import '../../enums/muscle_group_enums.dart';
 import '../../enums/sets_reps_volume_enum.dart';
 import '../../openAI/open_ai.dart';
@@ -344,7 +344,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
       exerciseLogs.mapIndexed((index, exerciseLog) {
         final setSummaries = exerciseLog.sets.mapIndexed((index, set) {
-          return switch (exerciseLog.exerciseVariant.getExerciseMetricConfiguration("metrics")) {
+          return switch (exerciseLog.exerciseVariant.getSetTypeConfiguration("metrics")) {
             SetType.weightsAndReps => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
             SetType.reps => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
             SetType.duration => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",

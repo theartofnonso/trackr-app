@@ -2,7 +2,7 @@ import 'package:tracker_app/dtos/exercise_variant_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 
 import '../../enums/exercise/exercise_equipment_enum.dart';
-import '../../enums/exercise/exercise_metrics_enums.dart';
+import '../../enums/exercise/set_type_enums.dart';
 import '../exercise_dto.dart';
 
 class SquatExerciseDTO extends ExerciseDTO {

@@ -11,6 +11,6 @@ enum ExerciseStance {
   final String description;
 
   static ExerciseStance fromString(String string) {
-    return values.firstWhere((value) => value.name.toLowerCase() == string.toLowerCase(), orElse: () => standing);
+    return values.firstWhere((value) => value.toString().toLowerCase() == string.toLowerCase(), orElse: () => standing);
   }
 }

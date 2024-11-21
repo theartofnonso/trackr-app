@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/enums/exercise/exercise_metrics_enums.dart';
+import 'package:tracker_app/enums/exercise/set_type_enums.dart';
 import 'package:tracker_app/screens/empty_state_screens/no_list_empty_state.dart';
 import 'package:tracker_app/widgets/search_bar.dart';
 

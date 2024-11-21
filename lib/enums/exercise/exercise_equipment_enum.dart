@@ -31,7 +31,7 @@ enum ExerciseEquipment implements ExerciseConfig {
   final String description;
 
   static ExerciseEquipment fromString(String string) {
-    return values.firstWhere((value) => value.name.toLowerCase() == string.toLowerCase());
+    return values.firstWhere((value) => value.toString().toLowerCase() == string.toLowerCase());
   }
 
   static ExerciseEquipment fromJson(Map<String, dynamic> json) {

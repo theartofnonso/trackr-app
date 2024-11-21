@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
-import 'package:tracker_app/enums/exercise/exercise_metrics_enums.dart';
+import 'package:tracker_app/enums/exercise/set_type_enums.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 
 import '../../../controllers/exercise_and_routine_controller.dart';
@@ -27,7 +27,7 @@ class ExerciseLogWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final otherSuperSet = superSet;
 
-    final exerciseMetric = exerciseLog.exerciseVariant.getExerciseMetricConfiguration("metrics");
+    final exerciseMetric = exerciseLog.exerciseVariant.getSetTypeConfiguration("metrics");
 
     final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 

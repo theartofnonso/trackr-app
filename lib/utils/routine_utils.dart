@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tracker_app/dtos/sets_dtos/weight_and_reps_set_dto.dart';
-import 'package:tracker_app/enums/exercise/exercise_metrics_enums.dart';
+import 'package:tracker_app/enums/exercise/set_type_enums.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
@@ -219,7 +219,7 @@ String copyRoutineAsText(
       routineText.writeln("  Notes: ${exerciseLog.notes}");
     }
     for (var i = 0; i < exerciseLog.sets.length; i++) {
-      switch (exerciseLog.exerciseVariant.getExerciseMetricConfiguration("metrics")) {
+      switch (exerciseLog.exerciseVariant.getSetTypeConfiguration("metrics")) {
         case SetType.weightsAndReps:
           routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].summary()}");
           break;

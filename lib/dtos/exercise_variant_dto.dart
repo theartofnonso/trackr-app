@@ -1,7 +1,7 @@
 import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 
-import '../enums/exercise/exercise_metrics_enums.dart';
+import '../enums/exercise/set_type_enums.dart';
 
 class ExerciseVariantDTO {
   final String baseExerciseId;
@@ -55,7 +55,7 @@ class ExerciseVariantDTO {
     }
   }
 
-  SetType getExerciseMetricConfiguration(String key) {
+  SetType getSetTypeConfiguration(String key) {
     if (configurations.containsKey(key)) {
       return configurations[key] as SetType;
     } else {

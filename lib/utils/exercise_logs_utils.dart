@@ -10,7 +10,7 @@ import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/pb_dto.dart';
 import '../dtos/sets_dtos/set_dto.dart';
-import '../enums/exercise/exercise_metrics_enums.dart';
+import '../enums/exercise/set_type_enums.dart';
 import '../enums/muscle_group_enums.dart';
 import '../enums/pb_enums.dart';
 import '../enums/template_changes_type_message_enums.dart';
@@ -42,7 +42,7 @@ Duration totalDurationExerciseLog({required ExerciseLogDTO exerciseLog}) {
 }
 
 int totalRepsForExerciseLog({required ExerciseLogDTO exerciseLog}) => exerciseLog.sets.fold(0, (total, set) {
-      final metric = exerciseLog.exerciseVariant.getExerciseMetricConfiguration("metrics");
+      final metric = exerciseLog.exerciseVariant.getSetTypeConfiguration("metrics");
       if (metric == SetType.reps) {
         return total + (set as RepsSetDTO).reps;
       } else if (metric == SetType.weightsAndReps) {
@@ -56,7 +56,7 @@ int highestRepsForExerciseLog({required ExerciseLogDTO exerciseLog}) {
 
   return exerciseLog.sets
       .map((set) {
-        final metric = exerciseLog.exerciseVariant.getExerciseMetricConfiguration("metrics");
+        final metric = exerciseLog.exerciseVariant.getSetTypeConfiguration("metrics");
         if (metric == SetType.reps) {
           return (set as RepsSetDTO).reps;
         } else if (metric == SetType.weightsAndReps) {

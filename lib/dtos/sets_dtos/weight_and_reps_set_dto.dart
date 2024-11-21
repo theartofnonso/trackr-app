@@ -1,7 +1,7 @@
 import 'package:tracker_app/dtos/sets_dtos/set_dto.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
-import '../../enums/exercise/exercise_metrics_enums.dart';
+import '../../enums/exercise/set_type_enums.dart';
 
 class WeightAndRepsSetDTO extends SetDTO {
   final double _weight;

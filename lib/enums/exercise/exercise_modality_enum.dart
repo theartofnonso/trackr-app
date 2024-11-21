@@ -8,6 +8,6 @@ enum ExerciseModality {
   final String description;
 
   static ExerciseModality fromString(String string) {
-    return values.firstWhere((value) => value.name.toLowerCase() == string.toLowerCase());
+    return values.firstWhere((value) => value.toString().toLowerCase() == string.toLowerCase());
   }
 }

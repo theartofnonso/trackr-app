@@ -21,6 +21,6 @@ enum ExerciseMovement {
   final String description;
 
   static ExerciseMovement fromString(String string) {
-    return values.firstWhere((value) => value.name.toLowerCase() == string.toLowerCase(), orElse: () => none);
+    return values.firstWhere((value) => value.toString().toLowerCase() == string.toLowerCase(), orElse: () => none);
   }
 }

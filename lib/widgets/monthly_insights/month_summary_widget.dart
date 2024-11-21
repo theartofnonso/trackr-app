@@ -11,7 +11,7 @@ import 'package:tracker_app/utils/general_utils.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/sets_dtos/reps_set_dto.dart';
-import '../../enums/exercise/exercise_metrics_enums.dart';
+import '../../enums/exercise/set_type_enums.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/string_utils.dart';
 
@@ -45,10 +45,10 @@ class MonthSummaryWidget extends StatelessWidget {
     final totalVolume = volumeInKOrM(tonnage);
 
     final exerciseLogsWithReps =
-        exerciseLogs.where((exerciseLog) => withReps(metric: exerciseLog.exerciseVariant.getExerciseMetricConfiguration("metrics")));
+        exerciseLogs.where((exerciseLog) => withReps(metric: exerciseLog.exerciseVariant.getSetTypeConfiguration("metrics")));
     final totalReps = exerciseLogsWithReps.map((log) {
       final reps = log.sets.map((set) {
-        final metric = log.exerciseVariant.getExerciseMetricConfiguration("metrics");
+        final metric = log.exerciseVariant.getSetTypeConfiguration("metrics");
         if (metric == SetType.reps) {
           return (set as RepsSetDTO).reps;
         } else if (metric == SetType.weightsAndReps) {
@@ -67,7 +67,7 @@ class MonthSummaryWidget extends StatelessWidget {
 
       return calculatePBs(
           pastExerciseLogs: pastExerciseLogs,
-          exerciseMetric: exerciseLog.exerciseVariant.getExerciseMetricConfiguration("metrics"),
+          exerciseMetric: exerciseLog.exerciseVariant.getSetTypeConfiguration("metrics"),
           exerciseLog: exerciseLog);
     }).expand((pbs) => pbs);
 

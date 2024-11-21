@@ -9,6 +9,6 @@ enum ExercisePosition {
   final String description;
 
   static ExercisePosition fromString(String string) {
-    return values.firstWhere((value) => value.name.toLowerCase() == string.toLowerCase(), orElse: () => neutral);
+    return values.firstWhere((value) => value.toString().toLowerCase() == string.toLowerCase(), orElse: () => neutral);
   }
 }

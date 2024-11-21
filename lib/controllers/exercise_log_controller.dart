@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/exercise_variant_dto.dart';
 import '../dtos/sets_dtos/set_dto.dart';
-import '../enums/exercise/exercise_metrics_enums.dart';
+import '../enums/exercise/set_type_enums.dart';
 import '../enums/routine_editor_type_enums.dart';
 import '../repositories/exercise_log_repository.dart';
 

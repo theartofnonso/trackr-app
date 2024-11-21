@@ -3,7 +3,7 @@ import 'package:tracker_app/enums/muscle_group_enums.dart';
 
 import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
-import '../enums/exercise/exercise_metrics_enums.dart';
+import '../enums/exercise/set_type_enums.dart';
 import '../screens/exercise/library/exercise_library_screen.dart';
 import '../widgets/routine/editors/pickers/substitute_exercise_picker.dart';
 import '../widgets/routine/editors/pickers/superset_exercise_log_picker.dart';

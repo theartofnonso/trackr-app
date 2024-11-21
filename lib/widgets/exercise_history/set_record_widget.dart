@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:tracker_app/dtos/sets_dtos/set_dto.dart';
 import 'package:tracker_app/dtos/sets_dtos/weight_and_reps_set_dto.dart';
-import 'package:tracker_app/enums/exercise/exercise_metrics_enums.dart';
+import 'package:tracker_app/enums/exercise/set_type_enums.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../enums/routine_preview_type_enum.dart';

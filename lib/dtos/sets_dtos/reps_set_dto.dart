@@ -1,6 +1,6 @@
 
 import 'package:tracker_app/dtos/sets_dtos/set_dto.dart';
-import 'package:tracker_app/enums/exercise/exercise_metrics_enums.dart';
+import 'package:tracker_app/enums/exercise/set_type_enums.dart';
 
 class RepsSetDTO extends SetDTO {
   final int _reps;
