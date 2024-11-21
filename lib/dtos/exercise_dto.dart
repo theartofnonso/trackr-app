@@ -6,7 +6,6 @@ import 'package:tracker_app/enums/muscle_group_enums.dart';
 import '../enums/exercise/exercise_equipment_enum.dart';
 
 abstract class ExerciseConfig {
-  String get name;
   String get displayName;
   String get description;
 
@@ -33,7 +32,7 @@ abstract class ExerciseDTO {
   Map<ExerciseConfigurationKey, List<ExerciseConfig>> get configurationOptions;
 
 
-  ExerciseVariantDTO createVariant({required Map<ExerciseConfigurationKey, dynamic> configurations});
+  ExerciseVariantDTO createVariant({required Map<ExerciseConfigurationKey, ExerciseConfig> configurations});
 
   ExerciseVariantDTO defaultVariant();
 

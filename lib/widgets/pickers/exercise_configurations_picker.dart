@@ -10,7 +10,7 @@ import '../dividers/label_container.dart';
 
 class ExerciseConfigurationsPicker<Enum> extends StatefulWidget {
   final ExerciseConfigurationKey configurationKey;
-  final Enum? initialConfig;
+  final ExerciseConfig? initialConfig;
   final List<ExerciseConfig> configurationOptions;
   final void Function(ExerciseConfig configuration) onSelect;
 
@@ -38,7 +38,7 @@ class _ExerciseConfigurationsPickerState<Enum> extends State<ExerciseConfigurati
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         LabelContainer(
-          label: widget.configurationKey.name.toUpperCase(),
+          label: widget.configurationKey.displayName.toUpperCase(),
           description: _selectedConfig.description,
           labelStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 14),
           descriptionStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white70, fontSize: 14),
@@ -62,7 +62,9 @@ class _ExerciseConfigurationsPickerState<Enum> extends State<ExerciseConfigurati
         const SizedBox(height: 16),
         OpacityButtonWidget(
             onPressed: () {
-              widget.onSelect(_selectedConfig);
+              if(_selectedConfig != widget.initialConfig) {
+                widget.onSelect(_selectedConfig);
+              }
             },
             label: "Switch to ${_selectedConfig.displayName}",
             buttonColor: vibrantGreen,
@@ -77,6 +79,7 @@ class _ExerciseConfigurationsPickerState<Enum> extends State<ExerciseConfigurati
     if (widget.configurationOptions.isEmpty) {
       throw ArgumentError('Configuration Options list cannot be empty.');
     }
+    print( widget.initialConfig);
     final initialIndex =
         widget.initialConfig != null ? widget.configurationOptions.indexOf(widget.initialConfig as ExerciseConfig) : 0;
     _selectedConfig = widget.configurationOptions[initialIndex];

@@ -36,27 +36,50 @@ class SquatExerciseDTO extends ExerciseDTO {
   };
 
   @override
-  ExerciseVariantDTO createVariant({required Map<ExerciseConfigurationKey, dynamic> configurations}) {
-    /// Validate configurations
-    Map<ExerciseConfigurationKey, ExerciseConfig> validConfigurations = {};
+  ExerciseVariantDTO createVariant({required Map<ExerciseConfigurationKey, ExerciseConfig> configurations}) {
 
-    configurations.forEach((key, value) {
-      if (configurationOptions.containsKey(key)) {
-        if (configurationOptions[key]!.contains(value)) {
-          validConfigurations[key] = value;
-        } else {
-          throw ArgumentError('Invalid configuration value "$value" for key "$key" in "$name".');
-        }
-      } else {
+    // Validate configurations
+    final validConfigurations = <ExerciseConfigurationKey, ExerciseConfig>{};
+
+    for (final key in configurations.keys) {
+      final value = configurations[key];
+      final validOptions = configurationOptions[key];
+
+      if (validOptions == null) {
         throw ArgumentError('Configuration "$key" is not valid for exercise "$name".');
       }
-    });
+
+      if (!validOptions.contains(value)) {
+        throw ArgumentError('Invalid configuration value "$value" for key "$key" in "$name".');
+      }
+
+      validConfigurations[key] = value!;
+    }
+
+    // Adjust configurations if necessary before creating the variant
+    final equipmentConfig = validConfigurations[ExerciseConfigurationKey.equipment] as ExerciseEquipment;
+    final setTypeConfig = validConfigurations[ExerciseConfigurationKey.setType] as SetType;
+
+    if (equipmentConfig == ExerciseEquipment.none) {
+      validConfigurations[ExerciseConfigurationKey.setType] = SetType.reps;
+    } else {
+      validConfigurations[ExerciseConfigurationKey.setType] = SetType.weightsAndReps;
+    }
+
+    if(setTypeConfig == SetType.weightsAndReps) {
+      validConfigurations[ExerciseConfigurationKey.equipment] = configurationOptions[ExerciseConfigurationKey.equipment]!.last;
+    } else {
+      validConfigurations[ExerciseConfigurationKey.equipment] = ExerciseEquipment.none;
+    }
+
+    // Create the variant with validated configurations
     return ExerciseVariantDTO(
-        baseExerciseId: id,
-        name: name,
-        primaryMuscleGroups: primaryMuscleGroups,
-        secondaryMuscleGroups: secondaryMuscleGroups,
-        configurations: validConfigurations);
+      baseExerciseId: id,
+      name: name,
+      primaryMuscleGroups: primaryMuscleGroups,
+      secondaryMuscleGroups: secondaryMuscleGroups,
+      configurations: validConfigurations,
+    );
   }
 
   @override
