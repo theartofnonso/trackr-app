@@ -4,7 +4,7 @@ import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_home_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 
-import '../dtos/exercises/exercise_dto.dart';
+import '../dtos/abstract_class/exercise_dto.dart';
 import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/appsync/routine_template_dto.dart';
 import '../dtos/appsync/routine_template_plan_dto.dart';

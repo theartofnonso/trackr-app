@@ -9,7 +9,7 @@ import 'package:tracker_app/dtos/exercise_variant_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/utils/routine_utils.dart';
 
-import '../../dtos/exercises/exercise_dto.dart';
+import '../../dtos/abstract_class/exercise_dto.dart';
 import '../../dtos/exercise_log_dto.dart';
 import '../../dtos/milestones/days_milestone_dto.dart';
 import '../../dtos/milestones/hours_milestone_dto.dart';

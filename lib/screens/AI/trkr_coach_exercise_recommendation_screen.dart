@@ -7,7 +7,7 @@ import 'package:tracker_app/dtos/exercise_variant_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/widgets/dividers/label_container.dart';
 
-import '../../dtos/exercises/exercise_dto.dart';
+import '../../dtos/abstract_class/exercise_dto.dart';
 
 class TRKRCoachExerciseRecommendationScreen extends StatefulWidget {
   static const routeName = '/trkr_coach_exercise_recommendation_screen';

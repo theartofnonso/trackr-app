@@ -23,7 +23,7 @@ import 'package:tracker_app/widgets/routine/editors/set_rows/reps_set_row.dart';
 import 'package:tracker_app/widgets/routine/editors/set_rows/weights_and_reps_set_row.dart';
 
 import '../../../colors.dart';
-import '../../../dtos/exercises/exercise_dto.dart';
+import '../../../dtos/abstract_class/exercise_dto.dart';
 import '../../../dtos/sets_dtos/set_dto.dart';
 import '../../../enums/exercise/exercise_configuration_key.dart';
 import '../../../enums/routine_editor_type_enums.dart';
@@ -74,7 +74,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   final List<(TextEditingController, TextEditingController)> _controllers = [];
   final List<DateTime> _durationControllers = [];
 
-  late Map<ExerciseConfigurationKey, ExerciseConfig> _selectedConfigurations;
+  late Map<ExerciseConfigurationKey, ExerciseConfigValue> _selectedConfigurations;
 
   /// [MenuItemButton]
   List<Widget> _menuActionButtons() {
@@ -255,7 +255,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     super.initState();
 
     _selectedConfigurations =
-        Map<ExerciseConfigurationKey, ExerciseConfig>.from(widget.exerciseLogDto.exerciseVariant.configurations);
+        Map<ExerciseConfigurationKey, ExerciseConfigValue>.from(widget.exerciseLogDto.exerciseVariant.configurations);
 
     if (SetType.weightsAndReps == widget.exerciseLogDto.exerciseVariant.getSetTypeConfiguration() ||
         SetType.reps == widget.exerciseLogDto.exerciseVariant.getSetTypeConfiguration()) {

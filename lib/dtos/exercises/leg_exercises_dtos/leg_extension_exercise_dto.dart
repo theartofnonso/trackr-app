@@ -5,7 +5,7 @@ import '../../../enums/exercise/exercise_equipment_enum.dart';
 import '../../../enums/exercise/exercise_lower_body_modality_enum.dart';
 import '../../../enums/exercise/set_type_enums.dart';
 import '../../../enums/muscle_group_enums.dart';
-import '../exercise_dto.dart';
+import '../../abstract_class/exercise_dto.dart';
 
 class LegExtensionsExerciseDTO extends ExerciseDTO {
 
@@ -25,7 +25,7 @@ class LegExtensionsExerciseDTO extends ExerciseDTO {
   List<MuscleGroup> get secondaryMuscleGroups => [MuscleGroup.hamstrings, MuscleGroup.glutes];
 
   @override
-  Map<ExerciseConfigurationKey, List<ExerciseConfig>> get configurationOptions => {
+  Map<ExerciseConfigurationKey, List<ExerciseConfigValue>> get configurationOptions => {
     ExerciseConfigurationKey.setType: [SetType.weightsAndReps],
     ExerciseConfigurationKey.equipment: [
       ExerciseEquipment.machine,

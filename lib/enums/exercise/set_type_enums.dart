@@ -1,8 +1,8 @@
 import 'package:tracker_app/enums/exercise/exercise_configuration_key.dart';
 
-import '../../dtos/exercises/exercise_dto.dart';
+import '../../dtos/abstract_class/exercise_dto.dart';
 
-enum SetType implements ExerciseConfig {
+enum SetType implements ExerciseConfigValue {
   weightsAndReps(
       displayName: "With Weights",
       description: "Log the weight and reps for strength exercises like bench press or squats curls."),

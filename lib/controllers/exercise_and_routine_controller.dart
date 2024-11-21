@@ -11,7 +11,7 @@ import 'package:tracker_app/repositories/amplify/amplify_routine_log_repository.
 import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/appsync/routine_template_dto.dart';
 import '../dtos/appsync/routine_template_plan_dto.dart';
-import '../dtos/exercises/exercise_dto.dart';
+import '../dtos/abstract_class/exercise_dto.dart';
 import '../dtos/sets_dtos/set_dto.dart';
 import '../models/RoutineTemplate.dart';
 import '../models/RoutineTemplatePlan.dart';

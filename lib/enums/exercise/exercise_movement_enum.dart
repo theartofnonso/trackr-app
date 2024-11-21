@@ -1,8 +1,8 @@
-import 'package:tracker_app/dtos/exercises/exercise_dto.dart';
+import 'package:tracker_app/dtos/abstract_class/exercise_dto.dart';
 
 import 'exercise_configuration_key.dart';
 
-enum ExerciseMovement implements ExerciseConfig {
+enum ExerciseMovement implements ExerciseConfigValue {
   internalRotation(
       displayName: "Internal",
       description: "A movement pattern where the limb rotates towards the midline of the body."),

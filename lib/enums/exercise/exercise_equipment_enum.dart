@@ -1,7 +1,7 @@
-import 'package:tracker_app/dtos/exercises/exercise_dto.dart';
+import 'package:tracker_app/dtos/abstract_class/exercise_dto.dart';
 import 'package:tracker_app/enums/exercise/exercise_configuration_key.dart';
 
-enum ExerciseEquipment implements ExerciseConfig {
+enum ExerciseEquipment implements ExerciseConfigValue {
   barbell(displayName: "Barbell", description: "Classic for heavy lifts like squats, deadlifts, and bench press."),
   ezBar(displayName: "EZ Bar", description: "Perfect for curls and tricep extensions with a natural grip."),
   dumbbell(displayName: "Dumbbells", description: "Versatile weights for targeted strength training."),
@@ -38,8 +38,8 @@ enum ExerciseEquipment implements ExerciseConfig {
   }
 
   static ExerciseEquipment fromJson(Map<String, dynamic> json) {
-    final displayName = json["name"];
-    return ExerciseEquipment._fromString(displayName);
+    final name = json["name"];
+    return ExerciseEquipment._fromString(name);
   }
 
   @override

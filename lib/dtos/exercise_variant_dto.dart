@@ -1,4 +1,4 @@
-import 'package:tracker_app/dtos/exercises/exercise_dto.dart';
+import 'package:tracker_app/dtos/abstract_class/exercise_dto.dart';
 import 'package:tracker_app/enums/exercise/exercise_equipment_enum.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 
@@ -10,7 +10,7 @@ class ExerciseVariantDTO {
   final String name;
   final List<MuscleGroup> primaryMuscleGroups;
   final List<MuscleGroup> secondaryMuscleGroups;
-  final Map<ExerciseConfigurationKey, ExerciseConfig> configurations;
+  final Map<ExerciseConfigurationKey, ExerciseConfigValue> configurations;
 
   ExerciseVariantDTO(
       {required this.baseExerciseId,
@@ -23,9 +23,12 @@ class ExerciseVariantDTO {
     return {
       'base_exercise_id': baseExerciseId,
       'name': name,
-      'primary_muscle_groups': secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name).toList(),
+      'primary_muscle_groups': primaryMuscleGroups.map((muscleGroup) => muscleGroup.name).toList(),
       'secondary_muscle_groups': secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name).toList(),
-      'configurations': configurations,
+      'configurations': configurations.map((key, value) => MapEntry(
+        key.toJson(),
+        value.toJson(),
+      ))
     };
   }
 
@@ -38,8 +41,9 @@ class ExerciseVariantDTO {
     final secondaryMuscleGroups = (json["secondary_muscle_groups"] as List<dynamic>)
         .map((muscleGroup) => MuscleGroup.fromJson(muscleGroup))
         .toList();
-    final configurations = (json['configurations'] as Map<ExerciseConfigurationKey, dynamic>)
-        .map((key, value) => MapEntry(key, ExerciseConfig.fromJson(value)));
+    final configurations = (json['configurations'] as Map<String, dynamic>).map(
+          (key, value) => MapEntry(ExerciseConfigurationKey.fromJson(key), ExerciseConfigValue.fromJson(value)),
+    );
 
     return ExerciseVariantDTO(
         baseExerciseId: id,
@@ -49,7 +53,7 @@ class ExerciseVariantDTO {
         configurations: configurations);
   }
 
-  ExerciseConfig getConfigurationValue(ExerciseConfigurationKey key) {
+  ExerciseConfigValue getConfigurationValue(ExerciseConfigurationKey key) {
     if (configurations.containsKey(key)) {
       return configurations[key]!;
     } else {
@@ -66,7 +70,7 @@ class ExerciseVariantDTO {
     String? name,
     List<MuscleGroup>? primaryMuscleGroups,
     List<MuscleGroup>? secondaryMuscleGroups,
-    Map<ExerciseConfigurationKey, ExerciseConfig>? configurations,
+    Map<ExerciseConfigurationKey, ExerciseConfigValue>? configurations,
   }) {
     return ExerciseVariantDTO(
       baseExerciseId: baseExerciseId ?? this.baseExerciseId,

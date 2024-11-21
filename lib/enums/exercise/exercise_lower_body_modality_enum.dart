@@ -1,8 +1,8 @@
-import 'package:tracker_app/dtos/exercises/exercise_dto.dart';
+import 'package:tracker_app/dtos/abstract_class/exercise_dto.dart';
 
 import 'exercise_configuration_key.dart';
 
-enum ExerciseLowerBodyModality implements ExerciseConfig {
+enum ExerciseLowerBodyModality implements ExerciseConfigValue {
   unilateral(displayName: "Single Leg", description: "Perform exercises one side at a time."),
   bilateral(displayName: "Both Legs", description: "Engage both legs together.");
 
@@ -19,8 +19,8 @@ enum ExerciseLowerBodyModality implements ExerciseConfig {
   }
 
   static ExerciseLowerBodyModality fromJson(Map<String, dynamic> json) {
-    final displayName = json["name"];
-    return ExerciseLowerBodyModality._fromString(displayName);
+    final name = json["name"];
+    return ExerciseLowerBodyModality._fromString(name);
   }
 
   @override

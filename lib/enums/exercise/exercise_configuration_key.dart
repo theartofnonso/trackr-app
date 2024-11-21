@@ -17,15 +17,10 @@ enum ExerciseConfigurationKey {
     return values.firstWhere((value) => value.name.toLowerCase() == string.toLowerCase());
   }
 
-  static ExerciseConfigurationKey fromJson(Map<String, dynamic> json) {
-    final displayName = json["name"];
-    return ExerciseConfigurationKey._fromString(displayName);
+  static ExerciseConfigurationKey fromJson(String string) {
+    print(string);
+    return ExerciseConfigurationKey._fromString(string);
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'displayName': displayName,
-    };
-  }
+  String toJson() => name;
 }

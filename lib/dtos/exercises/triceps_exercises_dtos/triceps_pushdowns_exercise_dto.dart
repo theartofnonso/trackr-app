@@ -6,7 +6,7 @@ import '../../../enums/exercise/exercise_stance_enum.dart';
 import '../../../enums/exercise/exercise_upper_body_modality_enum.dart';
 import '../../../enums/exercise/set_type_enums.dart';
 import '../../../enums/muscle_group_enums.dart';
-import '../exercise_dto.dart';
+import '../../abstract_class/exercise_dto.dart';
 
 class TricepsPushdownsExerciseDTO extends ExerciseDTO {
 
@@ -26,7 +26,7 @@ class TricepsPushdownsExerciseDTO extends ExerciseDTO {
   List<MuscleGroup> get secondaryMuscleGroups => [];
 
   @override
-  Map<ExerciseConfigurationKey, List<ExerciseConfig>> get configurationOptions => {
+  Map<ExerciseConfigurationKey, List<ExerciseConfigValue>> get configurationOptions => {
     ExerciseConfigurationKey.setType: [SetType.weightsAndReps],
     ExerciseConfigurationKey.stance: [ExerciseStance.standing],
     ExerciseConfigurationKey.equipment: [

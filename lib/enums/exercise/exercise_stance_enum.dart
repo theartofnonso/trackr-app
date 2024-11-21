@@ -1,7 +1,7 @@
-import '../../dtos/exercises/exercise_dto.dart';
+import '../../dtos/abstract_class/exercise_dto.dart';
 import 'exercise_configuration_key.dart';
 
-enum ExerciseStance implements ExerciseConfig {
+enum ExerciseStance implements ExerciseConfigValue {
   seated(displayName: "Seated", description: "Perform exercises while seated, focusing on stability and controlled movement."),
   standing(displayName: "Standing", description: "Engage your core and balance with exercises done while standing upright."),
   kneeling(displayName: "Kneeling", description: "A stance where the body is supported on the knees."),

@@ -1,8 +1,8 @@
-import 'package:tracker_app/dtos/exercises/exercise_dto.dart';
+import 'package:tracker_app/dtos/abstract_class/exercise_dto.dart';
 
 import 'exercise_configuration_key.dart';
 
-enum ExerciseUpperBodyModality implements ExerciseConfig {
+enum ExerciseUpperBodyModality implements ExerciseConfigValue {
   unilateral(displayName: "Single Arm", description: "Perform exercises one side at a time."),
   bilateral(displayName: "Both Arms", description: "Engage both arms together.");
 

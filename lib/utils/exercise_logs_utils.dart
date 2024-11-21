@@ -6,7 +6,7 @@ import 'package:tracker_app/dtos/sets_dtos/duration_set_dto.dart';
 import 'package:tracker_app/dtos/sets_dtos/reps_set_dto.dart';
 import 'package:tracker_app/dtos/sets_dtos/weight_and_reps_set_dto.dart';
 
-import '../dtos/exercises/exercise_dto.dart';
+import '../dtos/abstract_class/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/pb_dto.dart';
 import '../dtos/sets_dtos/set_dto.dart';

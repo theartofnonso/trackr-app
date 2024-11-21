@@ -20,7 +20,7 @@ import 'package:tracker_app/widgets/routine/editors/exercise_log_widget_lite.dar
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
-import '../../dtos/exercises/exercise_dto.dart';
+import '../../dtos/abstract_class/exercise_dto.dart';
 import '../../dtos/sets_dtos/set_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/app_analytics.dart';
@@ -58,11 +58,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         exercisesToExclude: excludeExercises.map((exercise) => exercise.name).toList(),
         onSelected: (List<ExerciseDTO> selectedExercises) {
           final variants = selectedExercises.map((exercise) {
-            try {
-              exercise.defaultVariant();
-            } catch(e) {
-              print(e);
-            }
             return exercise.defaultVariant();
           }).toList();
           controller.addExerciseLogs(exercisesVariants: variants);

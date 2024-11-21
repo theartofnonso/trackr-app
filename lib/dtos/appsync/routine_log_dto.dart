@@ -70,8 +70,10 @@ class RoutineLogDto extends Log {
     final endTime = DateTime.parse(json["endTime"]);
     final exerciseLogJsons = json["exercises"] as List<dynamic>;
     final exerciseLogs = exerciseLogJsons
-        .map((json) => ExerciseLogDTO.fromJson(
-        routineLogId: "", json: jsonDecode(json)))
+        .map((json) {
+          return ExerciseLogDTO.fromJson(
+              routineLogId: "", json: json);
+    })
         .toList();
     return RoutineLogDto(
       id: "",

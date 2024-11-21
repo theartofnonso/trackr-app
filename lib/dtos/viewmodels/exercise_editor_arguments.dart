@@ -1,5 +1,5 @@
 
-import '../exercises/exercise_dto.dart';
+import '../abstract_class/exercise_dto.dart';
 
 class ExerciseEditorArguments {
   final ExerciseDTO exercise;

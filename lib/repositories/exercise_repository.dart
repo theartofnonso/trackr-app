@@ -4,7 +4,7 @@ import '../dtos/exercises/biceps_exercises_dtos/bicep_curls_exercise_dto.dart';
 import '../dtos/exercises/chest_exercise_dtos/chest_dips_exercise_dto.dart';
 import '../dtos/exercises/chest_exercise_dtos/chest_flys_exercise_dto.dart';
 import '../dtos/exercises/chest_exercise_dtos/chest_pushUps_exercise_dto.dart';
-import '../dtos/exercises/exercise_dto.dart';
+import '../dtos/abstract_class/exercise_dto.dart';
 import '../dtos/exercises/chest_exercise_dtos/bench_presses_exercise_dto.dart';
 import '../dtos/exercises/hamstrings_exercises_dtos/deadlifts_exercise_dto.dart';
 import '../dtos/exercises/hamstrings_exercises_dtos/good_morning_exercise_dto.dart';

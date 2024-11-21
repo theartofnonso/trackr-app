@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
 
-import '../../../../dtos/exercises/exercise_dto.dart';
+import '../../../../dtos/abstract_class/exercise_dto.dart';
 import '../../../buttons/opacity_button_widget.dart';
 import '../../../empty_states/list_tile_empty_state.dart';
 

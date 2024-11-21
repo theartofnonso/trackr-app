@@ -1,27 +1,30 @@
 import 'package:tracker_app/dtos/exercise_variant_dto.dart';
 import 'package:tracker_app/enums/exercise/exercise_configuration_key.dart';
+import 'package:tracker_app/enums/exercise/exercise_seating_position_enum.dart';
 import 'package:tracker_app/enums/exercise/set_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 
 import '../../enums/exercise/exercise_equipment_enum.dart';
 
-abstract class ExerciseConfig {
+abstract class ExerciseConfigValue {
   final String displayName;
   final String description;
 
-  ExerciseConfig(this.displayName, this.description);
+  ExerciseConfigValue(this.displayName, this.description);
 
   Map<String, dynamic> toJson();
 
-  static ExerciseConfig fromJson(Map<String, dynamic> json) {
+  static ExerciseConfigValue fromJson(Map<String, dynamic> json) {
+
     switch (json['type']) {
-      case ExerciseConfigurationKey.equipment:
+      case "equipment":
         return ExerciseEquipment.fromJson(json);
-      case ExerciseConfigurationKey.setType:
+      case "setType":
         return SetType.fromJson(json);
-      case ExerciseConfigurationKey.seatingPosition:
+      case "seatingPosition":
+        return ExerciseSeatingPosition.fromJson(json);
       default:
-        throw ArgumentError('Unknown ExerciseConfig type: ${json['type']}');
+        throw ArgumentError('Unknown ExerciseConfigValue type: ${json['type']}');
     }
   }
 }
@@ -32,12 +35,12 @@ abstract class ExerciseDTO {
   String get description;
   List<MuscleGroup> get primaryMuscleGroups;
   List<MuscleGroup> get secondaryMuscleGroups;
-  Map<ExerciseConfigurationKey, List<ExerciseConfig>> get configurationOptions;
+  Map<ExerciseConfigurationKey, List<ExerciseConfigValue>> get configurationOptions;
 
 
-  ExerciseVariantDTO createVariant({required Map<ExerciseConfigurationKey, ExerciseConfig> configurations}) {
+  ExerciseVariantDTO createVariant({required Map<ExerciseConfigurationKey, ExerciseConfigValue> configurations}) {
     // Validate configurations
-    final validConfigurations = <ExerciseConfigurationKey, ExerciseConfig>{};
+    final validConfigurations = <ExerciseConfigurationKey, ExerciseConfigValue>{};
 
     for (final key in configurations.keys) {
       final value = configurations[key];

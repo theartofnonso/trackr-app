@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/dtos/exercises/exercise_dto.dart';
+import 'package:tracker_app/dtos/abstract_class/exercise_dto.dart';
 
 import '../../colors.dart';
 import '../../enums/exercise/exercise_configuration_key.dart';
@@ -10,9 +10,9 @@ import '../dividers/label_container.dart';
 
 class ExerciseConfigurationsPicker<Enum> extends StatefulWidget {
   final ExerciseConfigurationKey configurationKey;
-  final ExerciseConfig? initialConfig;
-  final List<ExerciseConfig> configurationOptions;
-  final void Function(ExerciseConfig configuration) onSelect;
+  final ExerciseConfigValue? initialConfig;
+  final List<ExerciseConfigValue> configurationOptions;
+  final void Function(ExerciseConfigValue configuration) onSelect;
 
   const ExerciseConfigurationsPicker(
       {super.key, required this.configurationKey, this.initialConfig, required this.configurationOptions, required this.onSelect});
@@ -22,7 +22,7 @@ class ExerciseConfigurationsPicker<Enum> extends StatefulWidget {
 }
 
 class _ExerciseConfigurationsPickerState<Enum> extends State<ExerciseConfigurationsPicker<Enum>> {
-  late ExerciseConfig _selectedConfig;
+  late ExerciseConfigValue _selectedConfig;
 
   FixedExtentScrollController? _scrollController;
 
@@ -80,7 +80,7 @@ class _ExerciseConfigurationsPickerState<Enum> extends State<ExerciseConfigurati
       throw ArgumentError('Configuration Options list cannot be empty.');
     }
     final initialIndex =
-        widget.initialConfig != null ? widget.configurationOptions.indexOf(widget.initialConfig as ExerciseConfig) : 0;
+        widget.initialConfig != null ? widget.configurationOptions.indexOf(widget.initialConfig as ExerciseConfigValue) : 0;
     _selectedConfig = widget.configurationOptions[initialIndex];
     _scrollController = FixedExtentScrollController(initialItem: initialIndex);
   }

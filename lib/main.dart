@@ -50,7 +50,7 @@ import 'amplifyconfiguration.dart';
 import 'controllers/activity_log_controller.dart';
 import 'controllers/routine_user_controller.dart';
 import 'dtos/appsync/routine_template_plan_dto.dart';
-import 'dtos/exercises/exercise_dto.dart';
+import 'dtos/abstract_class/exercise_dto.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
 import 'dtos/viewmodels/routine_template_arguments.dart';
 import 'models/ModelProvider.dart';
