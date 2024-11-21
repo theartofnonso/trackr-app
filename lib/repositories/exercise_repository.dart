@@ -1,9 +1,13 @@
 import 'package:collection/collection.dart';
+import 'package:tracker_app/dtos/exercises/abs_exercises_dtos/leg_raises_exercise_dto.dart';
 import 'package:tracker_app/dtos/exercises/glutes_exercises_dtos/hip_thrust_exercise_dto.dart';
 import 'package:tracker_app/dtos/exercises/glutes_exercises_dtos/pull_throughs_exercise_dto.dart';
 
 import '../dtos/abstract_class/exercise_dto.dart';
 import '../dtos/exercises/abductor_adduction_exercises_dtos/abductor_exercise_dto.dart';
+import '../dtos/exercises/abs_exercises_dtos/crunches_exercise_dto.dart';
+import '../dtos/exercises/abs_exercises_dtos/knee_raises_exercise_dto.dart';
+import '../dtos/exercises/abs_exercises_dtos/plank_exercise_dto.dart';
 import '../dtos/exercises/back_exercises_dtos/back_extension_exercise_dto.dart';
 import '../dtos/exercises/back_exercises_dtos/back_rows_exercise_dto.dart';
 import '../dtos/exercises/back_exercises_dtos/pulldown_exercise_dto.dart';
@@ -191,63 +195,19 @@ class ExerciseRepository {
     _exercises.add(pullThroughsExercise);
   }
 
-  void absExercise() {
-    final planksExercise = ExerciseDTO(
-        id: "ABS_01",
-        name: "Planks",
-        description: "Strengthens the core by holding a static plank position, engaging the entire midsection.",
-        metrics: [ExerciseMetric.duration],
-        modes: [ExerciseModality.bilateral, ExerciseModality.unilateral],
-        positions: [ExercisePosition.neutral],
-        stances: [ExerciseStance.lying, ExerciseStance.kneeling],
-        equipment: [ExerciseEquipment.none, ExerciseEquipment.plate],
-        movements: [ExerciseMovement.none, ExerciseMovement.reverse],
-        primaryMuscleGroups: [MuscleGroup.abs],
-        coreMovement: CoreMovement.others);
+  void _absExercise() {
+    final planksExercise = PlanksExerciseDTO();
 
-    final crunchesExercise = ExerciseDTO(
-        id: "ABS_02",
-        name: "Crunches",
-        description: "Targets the upper abs in a crunching motion.",
-        metrics: [ExerciseMetric.reps, ExerciseMetric.weights],
-        modes: [ExerciseModality.bilateral],
-        positions: [ExercisePosition.neutral, ExercisePosition.decline],
-        stances: [ExerciseStance.lying],
-        movements: [ExerciseMovement.none, ExerciseMovement.reverse],
-        equipment: [
-          ExerciseEquipment.none,
-          ExerciseEquipment.machine,
-          ExerciseEquipment.cableMachine,
-          ExerciseEquipment.plate,
-          ExerciseEquipment.dumbbell,
-          ExerciseEquipment.kettleBell
-        ],
-        primaryMuscleGroups: [MuscleGroup.abs],
-        coreMovement: CoreMovement.others);
+    final crunchesExercise = CrunchesExerciseDto();
 
-    final legRaisesExercise = ExerciseDTO(
-        id: "ABS_03",
-        name: "Leg Raises",
-        description: "Targets the lower abs by lifting the legs while suspended.",
-        metrics: [ExerciseMetric.reps, ExerciseMetric.weights],
-        modes: [ExerciseModality.bilateral],
-        positions: [ExercisePosition.neutral],
-        stances: [ExerciseStance.lying, ExerciseStance.hanging],
-        movements: [ExerciseMovement.none, ExerciseMovement.reverse],
-        equipment: [
-          ExerciseEquipment.none,
-          ExerciseEquipment.machine,
-          ExerciseEquipment.cableMachine,
-          ExerciseEquipment.plate,
-          ExerciseEquipment.dumbbell,
-          ExerciseEquipment.kettleBell
-        ],
-        primaryMuscleGroups: [MuscleGroup.abs],
-        coreMovement: CoreMovement.hinge);
+    final legRaisesExercise = LegRaisesExerciseDto();
+
+    final kneeRaisesExercise = KneeRaisesExerciseDto();
 
     _exercises.add(planksExercise);
     _exercises.add(crunchesExercise);
     _exercises.add(legRaisesExercise);
+    _exercises.add(kneeRaisesExercise);
   }
 
   void _calvesExercise() {
