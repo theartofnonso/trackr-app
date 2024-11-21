@@ -164,7 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
       sortBy: [RoutineLog.CREATEDAT.ascending()],
     ).listen((QuerySnapshot<RoutineLog> snapshot) {
       if (mounted) {
-       // Provider.of<ExerciseAndRoutineController>(context, listen: false).streamLogs(logs: snapshot.items);
+       Provider.of<ExerciseAndRoutineController>(context, listen: false).streamLogs(logs: snapshot.items);
       }
     });
   }
