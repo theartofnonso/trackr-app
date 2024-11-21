@@ -19,7 +19,7 @@ class PlanksExerciseDTO extends ExerciseDTO {
   String get description => "Strengthens the core by holding a static plank position, engaging the entire midsection.";
 
   @override
-  List<MuscleGroup> get primaryMuscleGroups => [MuscleGroup.abductors];
+  List<MuscleGroup> get primaryMuscleGroups => [MuscleGroup.abs];
 
   @override
   List<MuscleGroup> get secondaryMuscleGroups => [MuscleGroup.glutes];
