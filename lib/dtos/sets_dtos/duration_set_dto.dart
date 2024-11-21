@@ -1,5 +1,5 @@
 
-import 'package:tracker_app/dtos/set_dto.dart';
+import 'package:tracker_app/dtos/sets_dtos/set_dto.dart';
 import 'package:tracker_app/enums/exercise/exercise_metrics_enums.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 

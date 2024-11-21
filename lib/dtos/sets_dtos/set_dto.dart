@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:tracker_app/dtos/reps_set_dto.dart';
-import 'package:tracker_app/dtos/weight_and_reps_set_dto.dart';
+import 'package:tracker_app/dtos/sets_dtos/reps_set_dto.dart';
+import 'package:tracker_app/dtos/sets_dtos/weight_and_reps_set_dto.dart';
 
-import '../enums/exercise/exercise_metrics_enums.dart';
+import '../../enums/exercise/exercise_metrics_enums.dart';
 import 'duration_set_dto.dart';
 
 abstract class SetDTO {
