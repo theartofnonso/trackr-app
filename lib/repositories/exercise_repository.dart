@@ -5,6 +5,7 @@ import 'package:tracker_app/dtos/exercises/glutes_exercises_dtos/pull_throughs_e
 
 import '../dtos/abstract_class/exercise_dto.dart';
 import '../dtos/exercises/abductor_adduction_exercises_dtos/abductor_exercise_dto.dart';
+import '../dtos/exercises/abductor_adduction_exercises_dtos/adductor_exercise_dto.dart';
 import '../dtos/exercises/abs_exercises_dtos/crunches_exercise_dto.dart';
 import '../dtos/exercises/abs_exercises_dtos/knee_raises_exercise_dto.dart';
 import '../dtos/exercises/abs_exercises_dtos/plank_exercise_dto.dart';
@@ -153,7 +154,7 @@ class ExerciseRepository {
   void _loadAbductorAdductorExercises() {
     final abductorExercise = AbductorExerciseDTO();
 
-    final adductionExercise = AbductorExerciseDTO();
+    final adductionExercise = AdductorExerciseDTO();
 
     _exercises.add(abductorExercise);
     _exercises.add(adductionExercise);
