@@ -18,7 +18,6 @@ enum ExerciseConfigurationKey {
   }
 
   static ExerciseConfigurationKey fromJson(String string) {
-    print(string);
     return ExerciseConfigurationKey._fromString(string);
   }
 

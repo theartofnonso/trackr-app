@@ -60,7 +60,6 @@ class ExerciseLogDTO {
     final superSetId = json["superSetId"] ?? "";
     final exerciseJson = json["exercise"] as Map<String, dynamic>;
     final exerciseVariant = ExerciseVariantDTO.fromJson(exerciseJson);
-    print(exerciseVariant);
     final notes = json["notes"] ?? "";
     final setsJsons = json["sets"] as List<dynamic>;
     final sets = setsJsons.map((json) =>

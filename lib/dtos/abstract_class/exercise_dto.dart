@@ -15,7 +15,6 @@ abstract class ExerciseConfigValue {
   Map<String, dynamic> toJson();
 
   static ExerciseConfigValue fromJson(Map<String, dynamic> json) {
-
     switch (json['type']) {
       case "equipment":
         return ExerciseEquipment.fromJson(json);
