@@ -26,7 +26,7 @@ enum ExerciseLowerBodyModality implements ExerciseConfig {
   @override
   Map<String, dynamic> toJson() {
     return {
-      "type": ExerciseConfigurationKey.lowerBodyModality,
+      "type": ExerciseConfigurationKey.lowerBodyModality.name,
       'name': name,
       'displayName': displayName,
       'description': description,

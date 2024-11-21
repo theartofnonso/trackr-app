@@ -45,7 +45,7 @@ enum ExerciseEquipment implements ExerciseConfig {
   @override
   Map<String, dynamic> toJson() {
     return {
-      "type": ExerciseConfigurationKey.equipment,
+      "type": ExerciseConfigurationKey.equipment.name,
       'name': name,
       'displayName': displayName,
       'description': description,

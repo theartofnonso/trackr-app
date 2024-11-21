@@ -20,15 +20,15 @@ class ExerciseLogDTO {
     required this.sets,
     required this.createdAt});
 
-  String toJson() {
+  Map<String, dynamic> toJson() {
     final setJsons = sets.map((set) => set.toJson()).toList();
 
-    return jsonEncode({
+    return {
       "superSetId": superSetId,
       "exercise": exerciseVariant.toJson(),
       "notes": notes,
       "sets": setJsons,
-    });
+    };
   }
 
   ExerciseLogDTO copyWith({String? routineLogId,

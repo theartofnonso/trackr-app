@@ -33,7 +33,7 @@ enum ExerciseStance implements ExerciseConfig {
   @override
   Map<String, dynamic> toJson() {
     return {
-      "type": ExerciseConfigurationKey.stance,
+      "type": ExerciseConfigurationKey.stance.name,
       'name': name,
       'displayName': displayName,
       'description': description,

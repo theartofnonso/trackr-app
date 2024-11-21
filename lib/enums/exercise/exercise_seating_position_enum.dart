@@ -27,7 +27,7 @@ enum ExerciseSeatingPosition implements ExerciseConfig {
   @override
   Map<String, dynamic> toJson() {
     return {
-      "type": ExerciseConfigurationKey.seatingPosition,
+      "type": ExerciseConfigurationKey.seatingPosition.name,
       'name': name,
       'displayName': displayName,
       'description': description,

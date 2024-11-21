@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:tracker_app/dtos/sets_dtos/reps_set_dto.dart';
 import 'package:tracker_app/dtos/sets_dtos/weight_and_reps_set_dto.dart';
 
@@ -23,16 +21,16 @@ abstract class SetDTO {
 
   String summary();
 
-  String toJson() {
+  Map<String, dynamic> toJson() {
     if (this is WeightAndRepsSetDTO) {
       final weightAndRepSet = this as WeightAndRepsSetDTO;
-      return jsonEncode({"value1": weightAndRepSet.weight, "value2": weightAndRepSet.reps, "checked": checked});
+      return {"value1": weightAndRepSet.weight, "value2": weightAndRepSet.reps, "checked": checked};
     } else if (this is RepsSetDTO) {
       final repSet = this as RepsSetDTO;
-      return jsonEncode({"value1": 0, "value2": repSet.reps, "checked": checked});
+      return {"value1": 0, "value2": repSet.reps, "checked": checked};
     }
     final durationSet = this as DurationSetDTO;
-    return jsonEncode({"value1": 0, "value2": durationSet.duration.inMilliseconds, "checked": checked});
+    return {"value1": 0, "value2": durationSet.duration.inMilliseconds, "checked": checked};
   }
 
   factory SetDTO.fromJson(Map<String, dynamic> json, {required SetType metric}) {

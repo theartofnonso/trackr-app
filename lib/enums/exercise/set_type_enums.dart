@@ -33,7 +33,7 @@ enum SetType implements ExerciseConfig {
   @override
   Map<String, dynamic> toJson() {
     return {
-      "type": ExerciseConfigurationKey.setType,
+      "type": ExerciseConfigurationKey.setType.name,
       'name': name,
       'displayName': displayName,
       'description': description,

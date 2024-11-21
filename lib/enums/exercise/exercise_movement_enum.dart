@@ -50,7 +50,7 @@ enum ExerciseMovement implements ExerciseConfig {
   @override
   Map<String, dynamic> toJson() {
     return {
-      "type": ExerciseConfigurationKey.movement,
+      "type": ExerciseConfigurationKey.movement.name,
       'name': name,
       'displayName': displayName,
       'description': description,
