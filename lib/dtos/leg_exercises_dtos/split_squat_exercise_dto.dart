@@ -28,7 +28,8 @@ class SplitSquatExerciseDTO extends ExerciseDTO {
     "equipment": [
       ExerciseEquipment.none,
       ExerciseEquipment.dumbbell,
-      ExerciseEquipment.kettleBell
+      ExerciseEquipment.kettleBell,
+      ExerciseEquipment.smithMachine
     ]
   };
 
