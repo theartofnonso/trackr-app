@@ -101,7 +101,7 @@ class RoutineLogDto extends Log {
     final exerciseLogJsons = json["exercises"] as List<dynamic>;
     final exerciseLogs = exerciseLogJsons
         .map((json) => ExerciseLogDTO.fromJson(
-            routineLogId: log.id, createdAt: log.createdAt.getDateTimeInUtc(), json: jsonDecode(json)))
+            routineLogId: log.id, createdAt: log.createdAt.getDateTimeInUtc(), json: json))
         .toList();
     return RoutineLogDto(
       id: log.id,
