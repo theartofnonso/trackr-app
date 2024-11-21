@@ -33,13 +33,14 @@ class ExerciseLogLiteWidget extends StatelessWidget {
 
     final exercise = exerciseAndRoutineController.whereExercise(id: exerciseVariant.baseExerciseId);
 
-    final configurationChips = exercise.configurationOptions.keys.map((ExerciseConfigurationKey configKey) {
-      final configValue = exerciseVariant.configurations[configKey]!;
+    final configurationChips = exercise.configurationOptions.keys.where((configKey) {
       final configOptions = exercise.configurationOptions[configKey]!;
-      final isConfigurable = configOptions.length > 1;
+      return configOptions.length > 1;
+    }).map((ExerciseConfigurationKey configKey) {
+      final configValue = exerciseVariant.configurations[configKey]!;
       return SquaredChips(
         label: configValue.displayName.toLowerCase(),
-        color: isConfigurable ? vibrantGreen : Colors.grey,
+        color: vibrantGreen,
       );
     }).toList();
 

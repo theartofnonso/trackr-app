@@ -1,4 +1,5 @@
 import 'package:tracker_app/dtos/exercise_dto.dart';
+import 'package:tracker_app/enums/exercise/exercise_configuration_key.dart';
 
 enum ExerciseEquipment implements ExerciseConfig {
   barbell(displayName: "Barbell", description: "Classic for heavy lifts like squats, deadlifts, and bench press."),
@@ -44,7 +45,7 @@ enum ExerciseEquipment implements ExerciseConfig {
   @override
   Map<String, dynamic> toJson() {
     return {
-      "type": "ExerciseEquipment",
+      "type": ExerciseConfigurationKey.equipment,
       'name': name,
       'displayName': displayName,
       'description': description,

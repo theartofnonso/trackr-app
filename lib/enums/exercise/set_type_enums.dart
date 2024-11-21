@@ -1,3 +1,5 @@
+import 'package:tracker_app/enums/exercise/exercise_configuration_key.dart';
+
 import '../../dtos/exercise_dto.dart';
 
 enum SetType implements ExerciseConfig {
@@ -31,7 +33,7 @@ enum SetType implements ExerciseConfig {
   @override
   Map<String, dynamic> toJson() {
     return {
-      "type": "SetType",
+      "type": ExerciseConfigurationKey.setType,
       'name': name,
       'displayName': displayName,
       'description': description,

@@ -32,30 +32,6 @@ class LegPressExerciseDTO extends ExerciseDTO {
   };
 
   @override
-  ExerciseVariantDTO createVariant({required Map<ExerciseConfigurationKey, dynamic> configurations}) {
-    /// Validate configurations
-    Map<ExerciseConfigurationKey, ExerciseConfig> validConfigurations = {};
-
-    configurations.forEach((key, value) {
-      if (configurationOptions.containsKey(key)) {
-        if (configurationOptions[key]!.contains(value)) {
-          validConfigurations[key] = value;
-        } else {
-          throw ArgumentError('Invalid configuration value "$value" for key "$key" in "$name".');
-        }
-      } else {
-        throw ArgumentError('Configuration "$key" is not valid for exercise "$name".');
-      }
-    });
-    return ExerciseVariantDTO(
-        baseExerciseId: id,
-        name: name,
-        primaryMuscleGroups: primaryMuscleGroups,
-        secondaryMuscleGroups: secondaryMuscleGroups,
-        configurations: validConfigurations);
-  }
-
-  @override
   ExerciseVariantDTO defaultVariant() {
     final variant = createVariant(
         configurations: {

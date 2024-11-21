@@ -4,7 +4,7 @@ import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/sets_dtos/set_dto.dart';
 import 'package:tracker_app/enums/exercise/core_movements_enum.dart';
 import 'package:tracker_app/enums/exercise/set_type_enums.dart';
-import 'package:tracker_app/enums/exercise/exercise_modality_enum.dart';
+import 'package:tracker_app/enums/exercise/exercise_lower_body_modality_enum.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 

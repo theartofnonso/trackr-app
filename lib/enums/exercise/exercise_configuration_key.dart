@@ -1,6 +1,11 @@
 enum ExerciseConfigurationKey {
   setType(displayName: "Set Type"),
-  equipment(displayName: "Equipment");
+  equipment(displayName: "Equipment"),
+  lowerBodyModality(displayName: "Modes"),
+  upperBodyModality(displayName: "Modes"),
+  seatingPosition(displayName: "Seating Position"),
+  layingPosition(displayName: "Laying Position"),
+  standingPosition(displayName: "Standing Position");
 
   final String displayName;
 

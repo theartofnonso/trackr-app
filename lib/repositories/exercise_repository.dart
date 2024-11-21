@@ -1,18 +1,17 @@
 import 'package:collection/collection.dart';
+import 'package:tracker_app/dtos/biceps_exercises_dtos/bicep_curls_exercise_dto.dart';
+import 'package:tracker_app/dtos/chest_exercise_dtos/bench_presses_exercise_dto.dart';
+import 'package:tracker_app/dtos/chest_exercise_dtos/chest_flyes_exercise_dto.dart';
 import 'package:tracker_app/dtos/leg_exercises_dtos/leg_press_exercise_dto.dart';
 import 'package:tracker_app/dtos/leg_exercises_dtos/lunges_exercise_dto.dart';
 import 'package:tracker_app/dtos/leg_exercises_dtos/split_squat_exercise_dto.dart';
 import 'package:tracker_app/dtos/leg_exercises_dtos/squat_exercise_dto.dart';
 import 'package:tracker_app/dtos/leg_exercises_dtos/step_ups_exercise_dto.dart';
-import 'package:tracker_app/enums/exercise/core_movements_enum.dart';
-import 'package:tracker_app/enums/exercise/exercise_equipment_enum.dart';
-import 'package:tracker_app/enums/exercise/exercise_modality_enum.dart';
-import 'package:tracker_app/enums/exercise/exercise_position_enum.dart';
-import 'package:tracker_app/enums/muscle_group_enums.dart';
 
+import '../dtos/chest_exercise_dtos/chest_dips_exercise_dto.dart';
+import '../dtos/chest_exercise_dtos/chest_pushUps_exercise_dto.dart';
 import '../dtos/exercise_dto.dart';
 import '../dtos/leg_exercises_dtos/leg_extension_exercise_dto.dart';
-import '../enums/exercise/exercise_stance_enum.dart';
 
 class ExerciseRepository {
   final List<ExerciseDTO> _exercises = [];
@@ -23,8 +22,8 @@ class ExerciseRepository {
     // absExercise();
     // _loadAbductorAdductorExercises();
     // _calvesExercise();
-    // _loadChestExercises();
-    // _loadBicepsExercises();
+    _loadChestExercises();
+    _loadBicepsExercises();
     // _loadTricepsExercises();
     // _loadBackExercises();
     _loadQuadricepsExercises();
@@ -35,99 +34,26 @@ class ExerciseRepository {
     _exercises.sort((a, b) => a.name.compareTo(b.name));
   }
 
-  //
-  // void _loadChestExercises() async {
-  //   final benchPressExercise = ExerciseDTO(
-  //       id: "CHT_01",
-  //       name: "Chest Press",
-  //       description: "Strengthens the chest, shoulders, and triceps with a pressing motion.",
-  //       metrics: [ExerciseMetric.weights],
-  //       modes: [ExerciseModality.bilateral],
-  //       positions: [ExercisePosition.neutral, ExercisePosition.incline, ExercisePosition.decline],
-  //       stances: [ExerciseStance.lying],
-  //       equipment: [
-  //         ExerciseEquipment.dumbbell,
-  //         ExerciseEquipment.barbell,
-  //         ExerciseEquipment.ezBar,
-  //         ExerciseEquipment.cableMachine,
-  //         ExerciseEquipment.machine,
-  //         ExerciseEquipment.band,
-  //         ExerciseEquipment.kettleBell,
-  //         ExerciseEquipment.plate
-  //       ],
-  //       primaryMuscleGroups: [MuscleGroup.chest],
-  //       secondaryMuscleGroups: [MuscleGroup.shoulders, MuscleGroup.triceps],
-  //       coreMovement: CoreMovement.push);
-  //
-  //   final dipsExercise = ExerciseDTO(
-  //       id: "CHT_02",
-  //       name: "Chest Dips",
-  //       description: "Targets chest, triceps, and shoulders to build upper body strength.",
-  //       metrics: [ExerciseMetric.reps, ExerciseMetric.weights],
-  //       modes: [ExerciseModality.bilateral],
-  //       positions: [ExercisePosition.neutral],
-  //       stances: [ExerciseStance.standing],
-  //       equipment: [ExerciseEquipment.none, ExerciseEquipment.parallelBars, ExerciseEquipment.straightBar, ExerciseEquipment.assistedMachine],
-  //       primaryMuscleGroups: [MuscleGroup.chest],
-  //       secondaryMuscleGroups: [MuscleGroup.shoulders, MuscleGroup.triceps],
-  //       coreMovement: CoreMovement.push);
-  //
-  //   final flyesExercise = ExerciseDTO(
-  //       id: "CHT_0E",
-  //       name: "Chest Flyes",
-  //       description: "Stretches and strengthens the chest muscles with a fly motion.",
-  //       metrics: [ExerciseMetric.weights],
-  //       modes: [ExerciseModality.unilateral],
-  //       positions: [ExercisePosition.neutral, ExercisePosition.incline, ExercisePosition.decline],
-  //       stances: [ExerciseStance.standing, ExerciseStance.seated, ExerciseStance.lying],
-  //       equipment: [ExerciseEquipment.cableMachine, ExerciseEquipment.machine, ExerciseEquipment.dumbbell],
-  //       movements: [ExerciseMovement.none, ExerciseMovement.highToLow, ExerciseMovement.lowToHigh],
-  //       primaryMuscleGroups: [MuscleGroup.chest],
-  //       secondaryMuscleGroups: [MuscleGroup.shoulders, MuscleGroup.triceps],
-  //       coreMovement: CoreMovement.push);
-  //
-  //   final pushUpExercise = ExerciseDTO(
-  //       id: "CHT_04",
-  //       name: "Push-Ups",
-  //       description: "Strengthens the chest and triceps with a bodyweight.",
-  //       metrics: [ExerciseMetric.reps, ExerciseMetric.weights],
-  //       modes: [ExerciseModality.bilateral, ExerciseModality.unilateral],
-  //       positions: [ExercisePosition.neutral, ExercisePosition.incline, ExercisePosition.decline],
-  //       stances: [ExerciseStance.lying],
-  //       equipment: [ExerciseEquipment.none, ExerciseEquipment.plate],
-  //       primaryMuscleGroups: [MuscleGroup.chest],
-  //       secondaryMuscleGroups: [MuscleGroup.triceps, MuscleGroup.shoulders],
-  //       coreMovement: CoreMovement.push);
-  //
-  //   _exercises.add(benchPressExercise);
-  //   _exercises.add(dipsExercise);
-  //   _exercises.add(flyesExercise);
-  //   _exercises.add(pushUpExercise);
-  // }
-  //
-  // void _loadBicepsExercises() async {
-  //   final bicepExercise = ExerciseDTO(
-  //       id: "BIC_01",
-  //       name: "Bicep Curls",
-  //       description: "Focuses on building overall biceps mass with weights.",
-  //       metrics: [ExerciseMetric.weights],
-  //       modes: [ExerciseModality.bilateral, ExerciseModality.unilateral],
-  //       positions: ExercisePosition.values,
-  //       stances: [ExerciseStance.standing, ExerciseStance.seated],
-  //       equipment: [
-  //         ExerciseEquipment.dumbbell,
-  //         ExerciseEquipment.barbell,
-  //         ExerciseEquipment.ezBar,
-  //         ExerciseEquipment.cableMachine,
-  //         ExerciseEquipment.machine,
-  //         ExerciseEquipment.band,
-  //         ExerciseEquipment.kettleBell
-  //       ],
-  //       primaryMuscleGroups: [MuscleGroup.biceps],
-  //       coreMovement: CoreMovement.pull);
-  //
-  //   _exercises.add(bicepExercise);
-  // }
+  void _loadChestExercises() async {
+    final benchPressesExercise = BenchPressesExerciseDTO();
+
+    final dipsExercise = ChestDipsExerciseDTO();
+
+    final flyesExercise = ChestFlyesExerciseDTO();
+
+    final pushUpsExercise = ChestPushUpsExerciseDto();
+
+    _exercises.add(benchPressesExercise);
+    _exercises.add(dipsExercise);
+    _exercises.add(flyesExercise);
+    _exercises.add(pushUpsExercise);
+  }
+
+  void _loadBicepsExercises() async {
+    final bicepsExercise = BicepCurlsExerciseDTO();
+
+    _exercises.add(bicepsExercise);
+  }
 
   void _loadQuadricepsExercises() {
     final squatsExercise = SquatExerciseDTO();

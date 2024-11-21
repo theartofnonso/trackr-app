@@ -5,8 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
-import 'package:tracker_app/dtos/sets_dtos/duration_set_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
+import 'package:tracker_app/dtos/sets_dtos/duration_set_dto.dart';
 import 'package:tracker_app/dtos/sets_dtos/reps_set_dto.dart';
 import 'package:tracker_app/dtos/sets_dtos/weight_and_reps_set_dto.dart';
 import 'package:tracker_app/enums/exercise/set_type_enums.dart';
@@ -30,7 +30,6 @@ import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/one_rep_max_calculator.dart';
-import '../../chips/squared_chips.dart';
 
 class ExerciseLogWidget extends StatefulWidget {
   final RoutineEditorMode editorType;
@@ -255,7 +254,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   void initState() {
     super.initState();
 
-    _selectedConfigurations = Map<ExerciseConfigurationKey, ExerciseConfig>.from(widget.exerciseLogDto.exerciseVariant.configurations);
+    _selectedConfigurations =
+        Map<ExerciseConfigurationKey, ExerciseConfig>.from(widget.exerciseLogDto.exerciseVariant.configurations);
 
     if (SetType.weightsAndReps == widget.exerciseLogDto.exerciseVariant.getSetTypeConfiguration() ||
         SetType.reps == widget.exerciseLogDto.exerciseVariant.getSetTypeConfiguration()) {
@@ -286,19 +286,17 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final exercise = exerciseAndRoutineController.whereExercise(id: exerciseVariant.baseExerciseId);
 
-    final configurationOptionsWidgets = exerciseVariant.configurations.keys.map((ExerciseConfigurationKey configKey) {
-      final configValue = exerciseVariant.configurations[configKey]!;
+    final configurationOptionsWidgets = exerciseVariant.configurations.keys.where((configKey) {
       final configOptions = exercise.configurationOptions[configKey]!;
-      final isConfigurable = configOptions.length > 1;
-      return isConfigurable ? OpacityButtonWidget(
+      return configOptions.length > 1;
+    }).map((ExerciseConfigurationKey configKey) {
+      final configValue = exerciseVariant.configurations[configKey]!;
+      return OpacityButtonWidget(
         label: configValue.displayName.toLowerCase(),
         buttonColor: vibrantGreen,
         padding: EdgeInsets.symmetric(horizontal: 0),
         textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 12, color: vibrantGreen),
         onPressed: () => _showConfigurationPicker(configKey: configKey, baseExercise: exercise),
-      ) : SquaredChips(
-        label: configValue.displayName.toLowerCase(),
-        color: Colors.grey,
       );
     }).toList();
 
@@ -473,14 +471,14 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           setState(() {
             _selectedConfigurations[configKey] = configuration;
             final newExerciseVariant = baseExercise.createVariant(configurations: _selectedConfigurations);
-            final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: newExerciseVariant, sets: configuration is SetType ? [] : null);
+            final updatedExerciseLog = widget.exerciseLogDto
+                .copyWith(exerciseVariant: newExerciseVariant, sets: configuration is SetType ? [] : null);
             widget.onUpdate(updatedExerciseLog);
           });
         }, // Provide descriptions if available
       ),
     );
   }
-  
 }
 
 class _WeightAndRepsSetListView extends StatelessWidget {
