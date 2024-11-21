@@ -19,8 +19,8 @@ enum ExerciseUpperBodyModality implements ExerciseConfigValue {
   }
 
   static ExerciseUpperBodyModality fromJson(Map<String, dynamic> json) {
-    final displayName = json["name"];
-    return ExerciseUpperBodyModality._fromString(displayName);
+    final name = json["name"];
+    return ExerciseUpperBodyModality._fromString(name);
   }
 
   @override

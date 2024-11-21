@@ -43,8 +43,8 @@ enum ExerciseMovement implements ExerciseConfigValue {
   }
 
   static ExerciseMovement fromJson(Map<String, dynamic> json) {
-    final displayName = json["name"];
-    return ExerciseMovement._fromString(displayName);
+    final name = json["name"];
+    return ExerciseMovement._fromString(name);
   }
 
   @override
