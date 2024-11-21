@@ -1,20 +1,31 @@
 import 'package:collection/collection.dart';
+import 'package:tracker_app/dtos/exercises/glutes_exercises_dtos/hip_thrust_exercise_dto.dart';
+import 'package:tracker_app/dtos/exercises/glutes_exercises_dtos/pull_throughs_exercise_dto.dart';
 
+import '../dtos/abstract_class/exercise_dto.dart';
+import '../dtos/exercises/abductor_adduction_exercises_dtos/abductor_exercise_dto.dart';
+import '../dtos/exercises/back_exercises_dtos/back_extension_exercise_dto.dart';
+import '../dtos/exercises/back_exercises_dtos/back_rows_exercise_dto.dart';
+import '../dtos/exercises/back_exercises_dtos/pulldown_exercise_dto.dart';
+import '../dtos/exercises/back_exercises_dtos/pullup_exercise_dto.dart';
 import '../dtos/exercises/biceps_exercises_dtos/bicep_curls_exercise_dto.dart';
+import '../dtos/exercises/calves/calf_raises_exercise_dto.dart';
+import '../dtos/exercises/calves/jump_rope_exercise_dto.dart';
+import '../dtos/exercises/chest_exercise_dtos/bench_presses_exercise_dto.dart';
 import '../dtos/exercises/chest_exercise_dtos/chest_dips_exercise_dto.dart';
 import '../dtos/exercises/chest_exercise_dtos/chest_flys_exercise_dto.dart';
 import '../dtos/exercises/chest_exercise_dtos/chest_pushUps_exercise_dto.dart';
-import '../dtos/abstract_class/exercise_dto.dart';
-import '../dtos/exercises/chest_exercise_dtos/bench_presses_exercise_dto.dart';
+import '../dtos/exercises/glutes_exercises_dtos/glute_bridge_exercise_dto.dart';
+import '../dtos/exercises/glutes_exercises_dtos/kickbacks_exercise_dto.dart';
 import '../dtos/exercises/hamstrings_exercises_dtos/deadlifts_exercise_dto.dart';
 import '../dtos/exercises/hamstrings_exercises_dtos/good_morning_exercise_dto.dart';
 import '../dtos/exercises/hamstrings_exercises_dtos/leg_curls_exercise_dto.dart';
-import '../dtos/exercises/leg_exercises_dtos/leg_extension_exercise_dto.dart';
-import '../dtos/exercises/leg_exercises_dtos/leg_press_exercise_dto.dart';
-import '../dtos/exercises/leg_exercises_dtos/lunges_exercise_dto.dart';
-import '../dtos/exercises/leg_exercises_dtos/split_squat_exercise_dto.dart';
-import '../dtos/exercises/leg_exercises_dtos/squat_exercise_dto.dart';
-import '../dtos/exercises/leg_exercises_dtos/step_ups_exercise_dto.dart';
+import '../dtos/exercises/quadriceps_exercises_dtos/leg_extension_exercise_dto.dart';
+import '../dtos/exercises/quadriceps_exercises_dtos/leg_press_exercise_dto.dart';
+import '../dtos/exercises/quadriceps_exercises_dtos/lunges_exercise_dto.dart';
+import '../dtos/exercises/quadriceps_exercises_dtos/split_squat_exercise_dto.dart';
+import '../dtos/exercises/quadriceps_exercises_dtos/squat_exercise_dto.dart';
+import '../dtos/exercises/quadriceps_exercises_dtos/step_ups_exercise_dto.dart';
 import '../dtos/exercises/shoulder_exercises_dtos/face_pulls_exercise_dto.dart';
 import '../dtos/exercises/shoulder_exercises_dtos/shoulder_flys_exercise_dto.dart';
 import '../dtos/exercises/shoulder_exercises_dtos/shoulder_presses_exercise_dto.dart';
@@ -33,17 +44,17 @@ class ExerciseRepository {
   UnmodifiableListView<ExerciseDTO> get exercises => UnmodifiableListView(_exercises);
 
   void loadExercises() {
-    // absExercise();
-    // _loadAbductorAdductorExercises();
-    // _calvesExercise();
+    _absExercise();
+    _loadAbductorAdductorExercises();
+    _calvesExercise();
     _loadChestExercises();
     _loadBicepsExercises();
     _loadTricepsExercises();
-    //_loadBackExercises();
+    _loadBackExercises();
     _loadQuadricepsExercises();
     _loadHamstringExercises();
     _loadShouldersExercises();
-    // _glutesExercise();
+    _glutesExercise();
 
     _exercises.sort((a, b) => a.name.compareTo(b.name));
   }
@@ -120,112 +131,29 @@ class ExerciseRepository {
     _exercises.add(extensionExercise);
   }
 
-  // void _loadBackExercises() {
-  //   final rowsExercise = ExerciseDTO(
-  //       id: "BAC_01",
-  //       name: "Rows",
-  //       description: "Targets the lats, traps, and rhomboids.",
-  //       metrics: [ExerciseMetric.weights],
-  //       modes: [ExerciseModality.bilateral, ExerciseModality.unilateral],
-  //       positions: [ExercisePosition.neutral],
-  //       stances: [ExerciseStance.standing, ExerciseStance.seated],
-  //       equipment: [
-  //         ExerciseEquipment.dumbbell,
-  //         ExerciseEquipment.cableMachine,
-  //         ExerciseEquipment.barbell,
-  //         ExerciseEquipment.kettleBell,
-  //         ExerciseEquipment.smithMachine,
-  //         ExerciseEquipment.tBarHandle
-  //       ],
-  //       primaryMuscleGroups: [MuscleGroup.back],
-  //       movements: [ExerciseMovement.reverse, ExerciseMovement.none],
-  //       secondaryMuscleGroups: [MuscleGroup.biceps, MuscleGroup.abs, MuscleGroup.shoulders],
-  //       coreMovement: CoreMovement.pull);
-  //
-  //   final latPullDownsExercise = ExerciseDTO(
-  //       id: "BAC_02",
-  //       name: "Lat Pulldowns",
-  //       description: "Focuses on the lats and upper back, ideal for developing width.",
-  //       metrics: [ExerciseMetric.weights],
-  //       modes: [ExerciseModality.bilateral, ExerciseModality.unilateral],
-  //       positions: [ExercisePosition.neutral],
-  //       stances: [ExerciseStance.seated],
-  //       equipment: [ExerciseEquipment.cableMachine],
-  //       primaryMuscleGroups: [MuscleGroup.back],
-  //       movements: [ExerciseMovement.none, ExerciseMovement.reverse],
-  //       secondaryMuscleGroups: [MuscleGroup.biceps, MuscleGroup.shoulders],
-  //       coreMovement: CoreMovement.pull);
-  //
-  //   final pullUpsExercise = ExerciseDTO(
-  //       id: "BAC_03",
-  //       name: "Pull-Ups",
-  //       description: "A bodyweight exercise that activates the lats and upper back, promoting overall back strength.",
-  //       metrics: [ExerciseMetric.reps, ExerciseMetric.weights],
-  //       modes: [ExerciseModality.bilateral, ExerciseModality.unilateral],
-  //       positions: [ExercisePosition.neutral],
-  //       stances: [ExerciseStance.hanging],
-  //       equipment: [
-  //         ExerciseEquipment.none,
-  //         ExerciseEquipment.plate,
-  //         ExerciseEquipment.dumbbell,
-  //         ExerciseEquipment.kettleBell,
-  //         ExerciseEquipment.assistedMachine,
-  //         ExerciseEquipment.band
-  //       ],
-  //       primaryMuscleGroups: [MuscleGroup.back],
-  //       movements: [ExerciseMovement.none, ExerciseMovement.reverse],
-  //       secondaryMuscleGroups: [MuscleGroup.biceps, MuscleGroup.shoulders],
-  //       coreMovement: CoreMovement.pull);
-  //
-  //   final hyperExtensionExercise = ExerciseDTO(
-  //       id: "BAC_04",
-  //       name: "Back Extension",
-  //       description: "Targets the lower back and hamstrings with a bodyweight or weighted hyperextension.",
-  //       metrics: [ExerciseMetric.reps, ExerciseMetric.weights],
-  //       modes: [ExerciseModality.bilateral],
-  //       positions: [ExercisePosition.neutral],
-  //       stances: [ExerciseStance.lying],
-  //       equipment: [ExerciseEquipment.none, ExerciseEquipment.plate],
-  //       primaryMuscleGroups: [MuscleGroup.back],
-  //       secondaryMuscleGroups: [MuscleGroup.glutes, MuscleGroup.hamstrings, MuscleGroup.abs],
-  //       coreMovement: CoreMovement.hinge);
-  //
-  //   _exercises.add(rowsExercise);
-  //   _exercises.add(latPullDownsExercise);
-  //   _exercises.add(hyperExtensionExercise);
-  //   _exercises.add(pullUpsExercise);
-  // }
+  void _loadBackExercises() {
+    final rowsExercise = RowsExerciseDTO();
 
-  // void _loadAbductorAdductorExercises() {
-  //   final abductorExercise = ExerciseDTO(
-  //       id: "ABD_01",
-  //       name: "Hip Abduction",
-  //       description: "Activates and strengthens the hip abductors using resistance, focusing on lateral leg movement.",
-  //       metrics: [ExerciseMetric.weights],
-  //       modes: [ExerciseModality.bilateral],
-  //       positions: [ExercisePosition.neutral],
-  //       stances: [ExerciseStance.seated],
-  //       equipment: [ExerciseEquipment.machine, ExerciseEquipment.band],
-  //       primaryMuscleGroups: [MuscleGroup.abductors],
-  //       secondaryMuscleGroups: [MuscleGroup.glutes],
-  //       coreMovement: CoreMovement.others);
-  //
-  //   final adductionExercise = ExerciseDTO(
-  //       id: "ADD_01",
-  //       name: "Hip Adduction",
-  //       description:
-  //           "Targets the inner thigh muscles, specifically the adductors, to improve leg stability and strength.",
-  //       metrics: [ExerciseMetric.reps, ExerciseMetric.weights],
-  //       modes: [ExerciseModality.bilateral],
-  //       positions: [ExercisePosition.neutral],
-  //       stances: [ExerciseStance.seated],
-  //       equipment: [ExerciseEquipment.none, ExerciseEquipment.machine, ExerciseEquipment.band],
-  //       primaryMuscleGroups: [MuscleGroup.adductors],
-  //       coreMovement: CoreMovement.others);
-  //
-  //   _exercises.add(abductorExercise);
-  //   _exercises.add(adductionExercise);
-  // }
+    final latPullDownsExercise = PulldownExerciseDTO();
+
+    final pullUpsExercise = PullUpsExerciseDTO();
+
+    final hyperExtensionExercise = BackExtensionExerciseDTO();
+
+    _exercises.add(rowsExercise);
+    _exercises.add(latPullDownsExercise);
+    _exercises.add(hyperExtensionExercise);
+    _exercises.add(pullUpsExercise);
+  }
+
+  void _loadAbductorAdductorExercises() {
+    final abductorExercise = AbductorExerciseDTO();
+
+    final adductionExercise = AbductorExerciseDTO();
+
+    _exercises.add(abductorExercise);
+    _exercises.add(adductionExercise);
+  }
 
   void _loadShouldersExercises() {
     final raisesExercise = ShoulderRaisesExerciseDTO();
@@ -248,181 +176,88 @@ class ExerciseRepository {
     _exercises.add(facePullExercise);
   }
 
-  // void _glutesExercise() {
-  //   final gluteBridgeExercise = ExerciseDTO(
-  //       id: "GLU_01",
-  //       name: "Glute Bridge",
-  //       description: "Strengthens the glutes during a hip-lifting movement.",
-  //       metrics: [ExerciseMetric.reps, ExerciseMetric.weights],
-  //       modes: [ExerciseModality.bilateral, ExerciseModality.unilateral],
-  //       positions: [ExercisePosition.neutral],
-  //       stances: [ExerciseStance.lying],
-  //       equipment: [
-  //         ExerciseEquipment.none,
-  //         ExerciseEquipment.dumbbell,
-  //         ExerciseEquipment.plate,
-  //         ExerciseEquipment.kettleBell,
-  //         ExerciseEquipment.barbell
-  //       ],
-  //       primaryMuscleGroups: [MuscleGroup.glutes],
-  //       secondaryMuscleGroups: [MuscleGroup.hamstrings, MuscleGroup.back],
-  //       coreMovement: CoreMovement.others);
-  //
-  //   final hipThrustExercise = ExerciseDTO(
-  //       id: "GLU_02",
-  //       name: "Hip Thrust",
-  //       description: "Targets the gluteus maximus for strength and size through hip extension.",
-  //       metrics: [ExerciseMetric.reps, ExerciseMetric.weights],
-  //       modes: [ExerciseModality.bilateral, ExerciseModality.unilateral],
-  //       positions: [ExercisePosition.neutral],
-  //       stances: [ExerciseStance.lying],
-  //       equipment: [
-  //         ExerciseEquipment.barbell,
-  //         ExerciseEquipment.dumbbell,
-  //         ExerciseEquipment.plate,
-  //         ExerciseEquipment.kettleBell,
-  //         ExerciseEquipment.smithMachine,
-  //         ExerciseEquipment.machine
-  //       ],
-  //       primaryMuscleGroups: [MuscleGroup.glutes],
-  //       secondaryMuscleGroups: [
-  //         MuscleGroup.hamstrings,
-  //         MuscleGroup.quadriceps,
-  //         MuscleGroup.adductors,
-  //         MuscleGroup.back
-  //       ],
-  //       coreMovement: CoreMovement.hinge);
-  //
-  //   final kickBacksExercise = ExerciseDTO(
-  //       id: "GLU_03",
-  //       name: "Glute Kickbacks",
-  //       description: "Bodyweight exercise that isolates the glutes with a backward kicking motion.",
-  //       metrics: [ExerciseMetric.reps, ExerciseMetric.weights],
-  //       modes: [ExerciseModality.unilateral],
-  //       positions: [ExercisePosition.neutral],
-  //       stances: [ExerciseStance.kneeling, ExerciseStance.standing],
-  //       equipment: [
-  //         ExerciseEquipment.none,
-  //         ExerciseEquipment.cableMachine,
-  //         ExerciseEquipment.machine,
-  //         ExerciseEquipment.band,
-  //       ],
-  //       primaryMuscleGroups: [MuscleGroup.glutes],
-  //       secondaryMuscleGroups: [
-  //         MuscleGroup.hamstrings,
-  //         MuscleGroup.quadriceps,
-  //         MuscleGroup.adductors,
-  //         MuscleGroup.back
-  //       ],
-  //       coreMovement: CoreMovement.others);
-  //
-  //   final pullThroughsExercise = ExerciseDTO(
-  //       id: "GLU_04",
-  //       name: "Pull Throughs",
-  //       description: "Engages the glutes and hamstrings while focusing on hip hinge movement.",
-  //       metrics: [ExerciseMetric.reps, ExerciseMetric.weights],
-  //       modes: [ExerciseModality.bilateral],
-  //       positions: [ExercisePosition.neutral],
-  //       stances: [ExerciseStance.standing],
-  //       equipment: [ExerciseEquipment.band, ExerciseEquipment.cableMachine],
-  //       primaryMuscleGroups: [MuscleGroup.glutes],
-  //       secondaryMuscleGroups: [MuscleGroup.hamstrings, MuscleGroup.adductors, MuscleGroup.back],
-  //       coreMovement: CoreMovement.hinge);
-  //
-  //   _exercises.add(gluteBridgeExercise);
-  //   _exercises.add(hipThrustExercise);
-  //   _exercises.add(kickBacksExercise);
-  //   _exercises.add(pullThroughsExercise);
-  // }
-  //
-  // void absExercise() {
-  //   final planksExercise = ExerciseDTO(
-  //       id: "ABS_01",
-  //       name: "Planks",
-  //       description: "Strengthens the core by holding a static plank position, engaging the entire midsection.",
-  //       metrics: [ExerciseMetric.duration],
-  //       modes: [ExerciseModality.bilateral, ExerciseModality.unilateral],
-  //       positions: [ExercisePosition.neutral],
-  //       stances: [ExerciseStance.lying, ExerciseStance.kneeling],
-  //       equipment: [ExerciseEquipment.none, ExerciseEquipment.plate],
-  //       movements: [ExerciseMovement.none, ExerciseMovement.reverse],
-  //       primaryMuscleGroups: [MuscleGroup.abs],
-  //       coreMovement: CoreMovement.others);
-  //
-  //   final crunchesExercise = ExerciseDTO(
-  //       id: "ABS_02",
-  //       name: "Crunches",
-  //       description: "Targets the upper abs in a crunching motion.",
-  //       metrics: [ExerciseMetric.reps, ExerciseMetric.weights],
-  //       modes: [ExerciseModality.bilateral],
-  //       positions: [ExercisePosition.neutral, ExercisePosition.decline],
-  //       stances: [ExerciseStance.lying],
-  //       movements: [ExerciseMovement.none, ExerciseMovement.reverse],
-  //       equipment: [
-  //         ExerciseEquipment.none,
-  //         ExerciseEquipment.machine,
-  //         ExerciseEquipment.cableMachine,
-  //         ExerciseEquipment.plate,
-  //         ExerciseEquipment.dumbbell,
-  //         ExerciseEquipment.kettleBell
-  //       ],
-  //       primaryMuscleGroups: [MuscleGroup.abs],
-  //       coreMovement: CoreMovement.others);
-  //
-  //   final legRaisesExercise = ExerciseDTO(
-  //       id: "ABS_03",
-  //       name: "Leg Raises",
-  //       description: "Targets the lower abs by lifting the legs while suspended.",
-  //       metrics: [ExerciseMetric.reps, ExerciseMetric.weights],
-  //       modes: [ExerciseModality.bilateral],
-  //       positions: [ExercisePosition.neutral],
-  //       stances: [ExerciseStance.lying, ExerciseStance.hanging],
-  //       movements: [ExerciseMovement.none, ExerciseMovement.reverse],
-  //       equipment: [
-  //         ExerciseEquipment.none,
-  //         ExerciseEquipment.machine,
-  //         ExerciseEquipment.cableMachine,
-  //         ExerciseEquipment.plate,
-  //         ExerciseEquipment.dumbbell,
-  //         ExerciseEquipment.kettleBell
-  //       ],
-  //       primaryMuscleGroups: [MuscleGroup.abs],
-  //       coreMovement: CoreMovement.hinge);
-  //
-  //   _exercises.add(planksExercise);
-  //   _exercises.add(crunchesExercise);
-  //   _exercises.add(legRaisesExercise);
-  // }
-  //
-  // void _calvesExercise() {
-  //   final calfRaisesExercise = ExerciseDTO(
-  //       id: "CAL_01",
-  //       name: "Calf Raises",
-  //       description: "Strengthens the calf muscles by raising the heels from a standing position.",
-  //       metrics: [ExerciseMetric.reps, ExerciseMetric.weights],
-  //       modes: [ExerciseModality.bilateral, ExerciseModality.unilateral],
-  //       positions: [ExercisePosition.neutral],
-  //       stances: [ExerciseStance.standing, ExerciseStance.seated],
-  //       equipment: [ExerciseEquipment.none, ExerciseEquipment.plate, ExerciseEquipment.dumbbell, ExerciseEquipment.machine],
-  //       primaryMuscleGroups: [MuscleGroup.calves],
-  //       coreMovement: CoreMovement.others);
-  //
-  //   final jumpRopeExercise = ExerciseDTO(
-  //       id: "CAL_02",
-  //       name: "Jump Rope",
-  //       description:
-  //           "Engages the calves through repetitive jumping motions, building strength, endurance, and coordination while improving overall lower-body mobility and agility.",
-  //       metrics: [ExerciseMetric.reps, ExerciseMetric.weights],
-  //       modes: [ExerciseModality.bilateral, ExerciseModality.unilateral],
-  //       positions: [ExercisePosition.neutral],
-  //       stances: [ExerciseStance.standing],
-  //       equipment: [ExerciseEquipment.rope],
-  //       primaryMuscleGroups: [MuscleGroup.calves],
-  //       coreMovement: CoreMovement.others);
-  //
-  //   _exercises.add(calfRaisesExercise);
-  //   _exercises.add(jumpRopeExercise);
-  // }
+  void _glutesExercise() {
+    final gluteBridgeExercise = GluteBridgeExerciseDTO();
+
+    final hipThrustExercise = HipThrustsExerciseDto();
+
+    final kickBacksExercise = GluteKickBacksExerciseDTO();
+
+    final pullThroughsExercise = PullThroughsExerciseDto();
+
+    _exercises.add(gluteBridgeExercise);
+    _exercises.add(hipThrustExercise);
+    _exercises.add(kickBacksExercise);
+    _exercises.add(pullThroughsExercise);
+  }
+
+  void absExercise() {
+    final planksExercise = ExerciseDTO(
+        id: "ABS_01",
+        name: "Planks",
+        description: "Strengthens the core by holding a static plank position, engaging the entire midsection.",
+        metrics: [ExerciseMetric.duration],
+        modes: [ExerciseModality.bilateral, ExerciseModality.unilateral],
+        positions: [ExercisePosition.neutral],
+        stances: [ExerciseStance.lying, ExerciseStance.kneeling],
+        equipment: [ExerciseEquipment.none, ExerciseEquipment.plate],
+        movements: [ExerciseMovement.none, ExerciseMovement.reverse],
+        primaryMuscleGroups: [MuscleGroup.abs],
+        coreMovement: CoreMovement.others);
+
+    final crunchesExercise = ExerciseDTO(
+        id: "ABS_02",
+        name: "Crunches",
+        description: "Targets the upper abs in a crunching motion.",
+        metrics: [ExerciseMetric.reps, ExerciseMetric.weights],
+        modes: [ExerciseModality.bilateral],
+        positions: [ExercisePosition.neutral, ExercisePosition.decline],
+        stances: [ExerciseStance.lying],
+        movements: [ExerciseMovement.none, ExerciseMovement.reverse],
+        equipment: [
+          ExerciseEquipment.none,
+          ExerciseEquipment.machine,
+          ExerciseEquipment.cableMachine,
+          ExerciseEquipment.plate,
+          ExerciseEquipment.dumbbell,
+          ExerciseEquipment.kettleBell
+        ],
+        primaryMuscleGroups: [MuscleGroup.abs],
+        coreMovement: CoreMovement.others);
+
+    final legRaisesExercise = ExerciseDTO(
+        id: "ABS_03",
+        name: "Leg Raises",
+        description: "Targets the lower abs by lifting the legs while suspended.",
+        metrics: [ExerciseMetric.reps, ExerciseMetric.weights],
+        modes: [ExerciseModality.bilateral],
+        positions: [ExercisePosition.neutral],
+        stances: [ExerciseStance.lying, ExerciseStance.hanging],
+        movements: [ExerciseMovement.none, ExerciseMovement.reverse],
+        equipment: [
+          ExerciseEquipment.none,
+          ExerciseEquipment.machine,
+          ExerciseEquipment.cableMachine,
+          ExerciseEquipment.plate,
+          ExerciseEquipment.dumbbell,
+          ExerciseEquipment.kettleBell
+        ],
+        primaryMuscleGroups: [MuscleGroup.abs],
+        coreMovement: CoreMovement.hinge);
+
+    _exercises.add(planksExercise);
+    _exercises.add(crunchesExercise);
+    _exercises.add(legRaisesExercise);
+  }
+
+  void _calvesExercise() {
+    final calfRaisesExercise = CalfRaisesExerciseDTO();
+
+    final jumpRopeExercise = JumpRopeExerciseDto();
+
+    _exercises.add(calfRaisesExercise);
+    _exercises.add(jumpRopeExercise);
+  }
 
   /// Helper methods
 

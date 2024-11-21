@@ -1,38 +1,38 @@
 import 'package:tracker_app/dtos/exercise_variant_dto.dart';
+import 'package:tracker_app/enums/exercise/exercise_stance_enum.dart';
 
 import '../../../enums/exercise/exercise_configuration_key.dart';
 import '../../../enums/exercise/exercise_equipment_enum.dart';
-import '../../../enums/exercise/exercise_upper_body_modality_enum.dart';
 import '../../../enums/exercise/set_type_enums.dart';
 import '../../../enums/muscle_group_enums.dart';
 import '../../abstract_class/exercise_dto.dart';
 
-class TricepsKickbacksExerciseDTO extends ExerciseDTO {
+class AbductorExerciseDTO extends ExerciseDTO {
 
   @override
-  String get id => "TRI_03";
+  String get id => "ABD_01";
 
   @override
-  String get name => "Triceps Kickbacks";
+  String get name => "Hip Abduction";
 
   @override
-  String get description => "Isolate the triceps by extending the arm backward in a controlled motion.";
+  String get description => "Activates and strengthens the hip abductors using resistance, focusing on lateral leg movement.";
 
   @override
-  List<MuscleGroup> get primaryMuscleGroups => [MuscleGroup.triceps];
+  List<MuscleGroup> get primaryMuscleGroups => [MuscleGroup.abductors];
 
   @override
-  List<MuscleGroup> get secondaryMuscleGroups => [];
+  List<MuscleGroup> get secondaryMuscleGroups => [MuscleGroup.glutes];
 
   @override
   Map<ExerciseConfigurationKey, List<ExerciseConfigValue>> get configurationOptions => {
     ExerciseConfigurationKey.setType: [SetType.reps, SetType.weightsAndReps],
+    ExerciseConfigurationKey.stance: [ExerciseStance.seated, ExerciseStance.standing, ExerciseStance.lying, ExerciseStance.kneeling],
     ExerciseConfigurationKey.equipment: [
-      ExerciseEquipment.rope,
-      ExerciseEquipment.dumbbell,
-      ExerciseEquipment.band
+      ExerciseEquipment.machine,
+      ExerciseEquipment.band,
+      ExerciseEquipment.cableMachine
     ],
-    ExerciseConfigurationKey.upperBodyModality: [ExerciseUpperBodyModality.unilateral, ExerciseUpperBodyModality.bilateral]
   };
 
   @override
@@ -40,8 +40,8 @@ class TricepsKickbacksExerciseDTO extends ExerciseDTO {
     final variant = createVariant(
         configurations: {
           ExerciseConfigurationKey.setType: SetType.weightsAndReps,
-          ExerciseConfigurationKey.equipment: ExerciseEquipment.dumbbell,
-          ExerciseConfigurationKey.upperBodyModality: ExerciseUpperBodyModality.bilateral
+          ExerciseConfigurationKey.equipment: ExerciseEquipment.machine,
+          ExerciseConfigurationKey.stance: ExerciseStance.seated,
         });
     return variant;
   }
