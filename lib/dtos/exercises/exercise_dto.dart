@@ -3,7 +3,7 @@ import 'package:tracker_app/enums/exercise/exercise_configuration_key.dart';
 import 'package:tracker_app/enums/exercise/set_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 
-import '../enums/exercise/exercise_equipment_enum.dart';
+import '../../enums/exercise/exercise_equipment_enum.dart';
 
 abstract class ExerciseConfig {
   final String displayName;

@@ -1,0 +1,47 @@
+import 'package:tracker_app/dtos/exercise_variant_dto.dart';
+
+import '../../../enums/exercise/exercise_configuration_key.dart';
+import '../../../enums/exercise/exercise_equipment_enum.dart';
+import '../../../enums/exercise/set_type_enums.dart';
+import '../../../enums/muscle_group_enums.dart';
+import '../exercise_dto.dart';
+
+class UprightRowsExerciseDto extends ExerciseDTO {
+
+  @override
+  String get id => "SHO_02";
+
+  @override
+  String get name => "Upright Rows";
+
+  @override
+  String get description => "Works the shoulders and traps for shoulder development.";
+
+  @override
+  List<MuscleGroup> get primaryMuscleGroups => [MuscleGroup.shoulders];
+
+  @override
+  List<MuscleGroup> get secondaryMuscleGroups => [];
+
+  @override
+  Map<ExerciseConfigurationKey, List<ExerciseConfig>> get configurationOptions => {
+    ExerciseConfigurationKey.setType: [SetType.reps, SetType.weightsAndReps],
+    ExerciseConfigurationKey.equipment: [
+      ExerciseEquipment.dumbbell,
+      ExerciseEquipment.barbell,
+      ExerciseEquipment.ezBar,
+      ExerciseEquipment.band,
+      ExerciseEquipment.cableMachine,
+    ]
+  };
+
+  @override
+  ExerciseVariantDTO defaultVariant() {
+    final variant = createVariant(
+        configurations: {
+          ExerciseConfigurationKey.setType: SetType.weightsAndReps,
+          ExerciseConfigurationKey.equipment: ExerciseEquipment.dumbbell,
+        });
+    return variant;
+  }
+}

@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
 
-import '../../dtos/exercise_dto.dart';
+import '../../dtos/exercises/exercise_dto.dart';
 import '../../utils/string_utils.dart';
 
 class ExerciseWidget extends StatelessWidget {

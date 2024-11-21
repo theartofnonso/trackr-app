@@ -20,7 +20,7 @@ import 'package:tracker_app/widgets/routine/editors/exercise_log_widget_lite.dar
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
-import '../../dtos/exercise_dto.dart';
+import '../../dtos/exercises/exercise_dto.dart';
 import '../../dtos/sets_dtos/set_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/app_analytics.dart';

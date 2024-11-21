@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/dtos/exercise_dto.dart';
+import 'package:tracker_app/dtos/exercises/exercise_dto.dart';
 
 import '../../colors.dart';
 import '../../enums/exercise/exercise_configuration_key.dart';

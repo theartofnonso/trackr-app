@@ -1,25 +1,31 @@
 import 'package:collection/collection.dart';
-import 'package:tracker_app/dtos/biceps_exercises_dtos/bicep_curls_exercise_dto.dart';
-import 'package:tracker_app/dtos/chest_exercise_dtos/bench_presses_exercise_dto.dart';
-import 'package:tracker_app/dtos/chest_exercise_dtos/chest_flyes_exercise_dto.dart';
-import 'package:tracker_app/dtos/hamstrings_exercises_dtos/deadlifts_exercise_dto.dart';
-import 'package:tracker_app/dtos/hamstrings_exercises_dtos/good_morning_exercise_dto.dart';
-import 'package:tracker_app/dtos/hamstrings_exercises_dtos/leg_curls_exercise_dto.dart';
-import 'package:tracker_app/dtos/leg_exercises_dtos/leg_press_exercise_dto.dart';
-import 'package:tracker_app/dtos/leg_exercises_dtos/lunges_exercise_dto.dart';
-import 'package:tracker_app/dtos/leg_exercises_dtos/split_squat_exercise_dto.dart';
-import 'package:tracker_app/dtos/leg_exercises_dtos/squat_exercise_dto.dart';
-import 'package:tracker_app/dtos/leg_exercises_dtos/step_ups_exercise_dto.dart';
-import 'package:tracker_app/dtos/triceps_exercises_dtos/triceps_dips_exercise_dto.dart';
-import 'package:tracker_app/dtos/triceps_exercises_dtos/triceps_extensions_exercise_dto.dart';
-import 'package:tracker_app/dtos/triceps_exercises_dtos/triceps_kickbacks_exercise_dto.dart';
-import 'package:tracker_app/dtos/triceps_exercises_dtos/triceps_pushdowns_exercise_dto.dart';
 
-import '../dtos/chest_exercise_dtos/chest_dips_exercise_dto.dart';
-import '../dtos/chest_exercise_dtos/chest_pushUps_exercise_dto.dart';
-import '../dtos/exercise_dto.dart';
-import '../dtos/leg_exercises_dtos/leg_extension_exercise_dto.dart';
-import '../dtos/triceps_exercises_dtos/triceps_pushUps_exercise_dto.dart';
+import '../dtos/exercises/biceps_exercises_dtos/bicep_curls_exercise_dto.dart';
+import '../dtos/exercises/chest_exercise_dtos/chest_dips_exercise_dto.dart';
+import '../dtos/exercises/chest_exercise_dtos/chest_flys_exercise_dto.dart';
+import '../dtos/exercises/chest_exercise_dtos/chest_pushUps_exercise_dto.dart';
+import '../dtos/exercises/exercise_dto.dart';
+import '../dtos/exercises/chest_exercise_dtos/bench_presses_exercise_dto.dart';
+import '../dtos/exercises/hamstrings_exercises_dtos/deadlifts_exercise_dto.dart';
+import '../dtos/exercises/hamstrings_exercises_dtos/good_morning_exercise_dto.dart';
+import '../dtos/exercises/hamstrings_exercises_dtos/leg_curls_exercise_dto.dart';
+import '../dtos/exercises/leg_exercises_dtos/leg_extension_exercise_dto.dart';
+import '../dtos/exercises/leg_exercises_dtos/leg_press_exercise_dto.dart';
+import '../dtos/exercises/leg_exercises_dtos/lunges_exercise_dto.dart';
+import '../dtos/exercises/leg_exercises_dtos/split_squat_exercise_dto.dart';
+import '../dtos/exercises/leg_exercises_dtos/squat_exercise_dto.dart';
+import '../dtos/exercises/leg_exercises_dtos/step_ups_exercise_dto.dart';
+import '../dtos/exercises/shoulder_exercises_dtos/face_pulls_exercise_dto.dart';
+import '../dtos/exercises/shoulder_exercises_dtos/shoulder_flys_exercise_dto.dart';
+import '../dtos/exercises/shoulder_exercises_dtos/shoulder_presses_exercise_dto.dart';
+import '../dtos/exercises/shoulder_exercises_dtos/shoulder_raises_exercise_dto.dart';
+import '../dtos/exercises/shoulder_exercises_dtos/shoulder_rotations_exercise_dto.dart';
+import '../dtos/exercises/shoulder_exercises_dtos/upright_rows_exercise_dto.dart';
+import '../dtos/exercises/triceps_exercises_dtos/triceps_dips_exercise_dto.dart';
+import '../dtos/exercises/triceps_exercises_dtos/triceps_extensions_exercise_dto.dart';
+import '../dtos/exercises/triceps_exercises_dtos/triceps_kickbacks_exercise_dto.dart';
+import '../dtos/exercises/triceps_exercises_dtos/triceps_pushUps_exercise_dto.dart';
+import '../dtos/exercises/triceps_exercises_dtos/triceps_pushdowns_exercise_dto.dart';
 
 class ExerciseRepository {
   final List<ExerciseDTO> _exercises = [];
@@ -36,7 +42,7 @@ class ExerciseRepository {
     //_loadBackExercises();
     _loadQuadricepsExercises();
     _loadHamstringExercises();
-    // _loadShouldersExercises();
+    _loadShouldersExercises();
     // _glutesExercise();
 
     _exercises.sort((a, b) => a.name.compareTo(b.name));
@@ -47,7 +53,7 @@ class ExerciseRepository {
 
     final dipsExercise = ChestDipsExerciseDTO();
 
-    final flyesExercise = ChestFlyesExerciseDTO();
+    final flyesExercise = ChestFlysExerciseDTO();
 
     final pushUpsExercise = ChestPushUpsExerciseDto();
 
@@ -220,132 +226,28 @@ class ExerciseRepository {
   //   _exercises.add(abductorExercise);
   //   _exercises.add(adductionExercise);
   // }
-  //
-  // void _loadShouldersExercises() {
-  //   final raisesExercise = ExerciseDTO(
-  //       id: "SHO_01",
-  //       name: "Shoulder Raises",
-  //       description: "Targets the front/lateral deltoid muscles to build shoulder size.",
-  //       metrics: [ExerciseMetric.weights],
-  //       modes: [ExerciseModality.unilateral],
-  //       positions: [ExercisePosition.neutral],
-  //       stances: [ExerciseStance.standing, ExerciseStance.seated],
-  //       equipment: [
-  //         ExerciseEquipment.dumbbell,
-  //         ExerciseEquipment.cableMachine,
-  //         ExerciseEquipment.machine,
-  //         ExerciseEquipment.plate,
-  //         ExerciseEquipment.kettleBell,
-  //         ExerciseEquipment.barbell
-  //       ],
-  //       primaryMuscleGroups: [MuscleGroup.shoulders],
-  //       coreMovement: CoreMovement.push);
-  //
-  //   final uprightRowExercise = ExerciseDTO(
-  //       id: "SHO_02",
-  //       name: "Upright Rows",
-  //       description: "Works the shoulders and traps for shoulder development.",
-  //       metrics: [ExerciseMetric.weights],
-  //       modes: [ExerciseModality.bilateral],
-  //       positions: [ExercisePosition.neutral],
-  //       stances: [ExerciseStance.standing, ExerciseStance.seated],
-  //       equipment: [
-  //         ExerciseEquipment.barbell,
-  //         ExerciseEquipment.dumbbell,
-  //         ExerciseEquipment.cableMachine,
-  //         ExerciseEquipment.plate,
-  //         ExerciseEquipment.kettleBell
-  //       ],
-  //       primaryMuscleGroups: [MuscleGroup.shoulders],
-  //       coreMovement: CoreMovement.push);
-  //
-  //   final arnoldPressExercise = ExerciseDTO(
-  //       id: "SHO_03",
-  //       name: "Arnold Press",
-  //       description: "A variation of the shoulder press that activates all three heads of the deltoid muscles.",
-  //       metrics: [ExerciseMetric.weights],
-  //       modes: [ExerciseModality.unilateral],
-  //       positions: [ExercisePosition.neutral],
-  //       stances: [ExerciseStance.standing, ExerciseStance.seated],
-  //       equipment: [ExerciseEquipment.dumbbell, ExerciseEquipment.kettleBell],
-  //       primaryMuscleGroups: [MuscleGroup.shoulders],
-  //       coreMovement: CoreMovement.push);
-  //
-  //   final overheadExercise = ExerciseDTO(
-  //       id: "SHO_04",
-  //       name: "Overhead Press",
-  //       description: "Builds overall shoulder strength, also involving the triceps and upper chest.",
-  //       metrics: [ExerciseMetric.weights],
-  //       modes: [ExerciseModality.bilateral, ExerciseModality.unilateral],
-  //       positions: [ExercisePosition.neutral],
-  //       stances: [ExerciseStance.standing, ExerciseStance.seated],
-  //       equipment: [
-  //         ExerciseEquipment.barbell,
-  //         ExerciseEquipment.machine,
-  //         ExerciseEquipment.dumbbell,
-  //         ExerciseEquipment.kettleBell
-  //       ],
-  //       primaryMuscleGroups: [MuscleGroup.shoulders],
-  //       movements: [ExerciseMovement.overhead],
-  //       coreMovement: CoreMovement.push);
-  //
-  //   final flyesExercise = ExerciseDTO(
-  //       id: "SHO_05",
-  //       name: "Reverse Shoulder Flyes",
-  //       description: "Strengthens the rear deltoids and upper back, enhancing posture and shoulder support.",
-  //       metrics: [ExerciseMetric.weights],
-  //       modes: [ExerciseModality.bilateral, ExerciseModality.unilateral],
-  //       positions: [ExercisePosition.neutral],
-  //       stances: [ExerciseStance.standing, ExerciseStance.seated],
-  //       equipment: [
-  //         ExerciseEquipment.cableMachine,
-  //         ExerciseEquipment.machine,
-  //         ExerciseEquipment.dumbbell,
-  //         ExerciseEquipment.kettleBell
-  //       ],
-  //       primaryMuscleGroups: [MuscleGroup.shoulders],
-  //       movements: [ExerciseMovement.reverse],
-  //       coreMovement: CoreMovement.push);
-  //
-  //   final rotationExercise = ExerciseDTO(
-  //       id: "SHO_06",
-  //       name: "Shoulder Rotations",
-  //       description: "Strengthens the rear deltoids and upper back, enhancing posture and shoulder support.",
-  //       metrics: [ExerciseMetric.weights],
-  //       modes: [ExerciseModality.unilateral],
-  //       positions: [ExercisePosition.neutral],
-  //       stances: [ExerciseStance.standing, ExerciseStance.seated, ExerciseStance.lying],
-  //       equipment: [
-  //         ExerciseEquipment.cableMachine,
-  //         ExerciseEquipment.machine,
-  //         ExerciseEquipment.dumbbell,
-  //         ExerciseEquipment.kettleBell
-  //       ],
-  //       primaryMuscleGroups: [MuscleGroup.shoulders],
-  //       movements: [ExerciseMovement.internalRotation, ExerciseMovement.externalRotation],
-  //       coreMovement: CoreMovement.push);
-  //
-  //   final facePullExercise = ExerciseDTO(
-  //       id: "SHO_07",
-  //       name: "Face Pull",
-  //       description: "Improves shoulder health by targeting the rear delts and upper back.",
-  //       metrics: [ExerciseMetric.weights],
-  //       modes: [ExerciseModality.bilateral],
-  //       positions: [ExercisePosition.neutral],
-  //       stances: [ExerciseStance.standing, ExerciseStance.seated],
-  //       equipment: [ExerciseEquipment.cableMachine, ExerciseEquipment.band],
-  //       primaryMuscleGroups: [MuscleGroup.shoulders],
-  //       coreMovement: CoreMovement.pull);
-  //
-  //   _exercises.add(raisesExercise);
-  //   _exercises.add(uprightRowExercise);
-  //   _exercises.add(arnoldPressExercise);
-  //   _exercises.add(overheadExercise);
-  //   _exercises.add(flyesExercise);
-  //   _exercises.add(rotationExercise);
-  //   _exercises.add(facePullExercise);
-  // }
-  //
+
+  void _loadShouldersExercises() {
+    final raisesExercise = ShoulderRaisesExerciseDTO();
+
+    final uprightRowExercise = UprightRowsExerciseDto();
+
+    final shoulderPressExercise = ShoulderPressesExerciseDTO();
+
+    final flysExercise = ShoulderFlysExerciseDTO();
+
+    final rotationExercise = ShoulderRotationsExerciseDTO();
+
+    final facePullExercise = FacePullsExerciseDto();
+
+    _exercises.add(raisesExercise);
+    _exercises.add(uprightRowExercise);
+    _exercises.add(shoulderPressExercise);
+    _exercises.add(flysExercise);
+    _exercises.add(rotationExercise);
+    _exercises.add(facePullExercise);
+  }
+
   // void _glutesExercise() {
   //   final gluteBridgeExercise = ExerciseDTO(
   //       id: "GLU_01",

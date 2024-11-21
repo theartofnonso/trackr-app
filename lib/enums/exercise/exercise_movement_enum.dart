@@ -1,26 +1,59 @@
-enum ExerciseMovement {
-  overhead("Overhead",
-      "Overhead movements involve lifting or extending weights above your head, focusing on muscles like triceps, shoulders, and back."),
-  internalRotation("Internal",
-      "A movement pattern where the limb rotates towards the midline of the body."),
-  externalRotation("External",
-      "A movement pattern where the limb rotates away from the midline of the body."),
-  lateral("Lateral",
-      "Lateral movements work the sides of your body, engaging muscles like deltoids and obliques to improve balance and coordination."),
-  front("Front",
-      "Front movements involve pushing or pulling weights directly in front of your body, targeting muscles like chest, shoulders, and arms."),
-  reverse("Reverse",
-      "Reverse movements engage muscles on the back of your body, such as rear delts, traps, and lats, to improve posture and pulling strength."),
-  highToLow("High to low", "A movement pattern where the resistance starts above shoulder level and is brought downwards, targeting muscles with a downward force trajectory."),
-  lowToHigh("Low to high", "A movement pattern where the resistance starts below shoulder level and is lifted upwards, engaging muscles with an upward force trajectory."),
-  none("Default", "This option indicates no modification to the original way of performing the exercise.");
+import 'package:tracker_app/dtos/exercises/exercise_dto.dart';
 
-  const ExerciseMovement(this.name, this.description);
+import 'exercise_configuration_key.dart';
 
-  final String name;
+enum ExerciseMovement implements ExerciseConfig {
+  internalRotation(
+      displayName: "Internal",
+      description: "A movement pattern where the limb rotates towards the midline of the body."),
+  externalRotation(
+      displayName: "External",
+      description: "A movement pattern where the limb rotates away from the midline of the body."),
+  lateral(
+      displayName: "Lateral",
+      description:
+          "Lateral movements work the sides of your body, engaging muscles like deltoids and obliques to improve balance and coordination."),
+  front(
+      displayName: "Front",
+      description:
+          "Front movements involve pushing or pulling weights directly in front of your body, targeting muscles like chest, shoulders, and arms."),
+  reverse(
+      displayName: "Reverse",
+      description:
+          "Reverse movements engage muscles on the back of your body, such as rear delts, traps, and lats, to improve posture and pulling strength."),
+  highToLow(
+      displayName: "High to low",
+      description:
+          "A movement pattern where the resistance starts above shoulder level and is brought downwards, targeting muscles with a downward force trajectory."),
+  lowToHigh(
+      displayName: "Low to high",
+      description:
+          "A movement pattern where the resistance starts below shoulder level and is lifted upwards, engaging muscles with an upward force trajectory.");
+
+  const ExerciseMovement({required this.displayName, required this.description});
+
+  @override
+  final String displayName;
+
+  @override
   final String description;
 
-  static ExerciseMovement fromString(String string) {
-    return values.firstWhere((value) => value.toString().toLowerCase() == string.toLowerCase(), orElse: () => none);
+  static ExerciseMovement _fromString(String string) {
+    return values.firstWhere((value) => value.name.toLowerCase() == string.toLowerCase());
+  }
+
+  static ExerciseMovement fromJson(Map<String, dynamic> json) {
+    final displayName = json["name"];
+    return ExerciseMovement._fromString(displayName);
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      "type": ExerciseConfigurationKey.movement,
+      'name': name,
+      'displayName': displayName,
+      'description': description,
+    };
   }
 }

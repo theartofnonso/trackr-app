@@ -1,21 +1,22 @@
 import 'package:tracker_app/dtos/exercise_variant_dto.dart';
 
-import '../../enums/exercise/exercise_configuration_key.dart';
-import '../../enums/exercise/exercise_equipment_enum.dart';
-import '../../enums/exercise/set_type_enums.dart';
-import '../../enums/muscle_group_enums.dart';
+import '../../../enums/exercise/exercise_configuration_key.dart';
+import '../../../enums/exercise/exercise_equipment_enum.dart';
+import '../../../enums/exercise/exercise_lower_body_modality_enum.dart';
+import '../../../enums/exercise/set_type_enums.dart';
+import '../../../enums/muscle_group_enums.dart';
 import '../exercise_dto.dart';
 
-class LegPressExerciseDTO extends ExerciseDTO {
+class LegExtensionsExerciseDTO extends ExerciseDTO {
 
   @override
-  String get id => "QUA_03";
+  String get id => "QUA_04";
 
   @override
-  String get name => "Leg Press";
+  String get name => "Leg Extensions";
 
   @override
-  String get description => "A machine-based exercise that targets the quadriceps, glutes, and hamstrings.";
+  String get description => "An isolation exercise for strengthening the quadriceps using a leg extension machine.";
 
   @override
   List<MuscleGroup> get primaryMuscleGroups => [MuscleGroup.quadriceps];
@@ -28,7 +29,8 @@ class LegPressExerciseDTO extends ExerciseDTO {
     ExerciseConfigurationKey.setType: [SetType.weightsAndReps],
     ExerciseConfigurationKey.equipment: [
       ExerciseEquipment.machine,
-    ]
+    ],
+    ExerciseConfigurationKey.lowerBodyModality: [ExerciseLowerBodyModality.bilateral, ExerciseLowerBodyModality.unilateral]
   };
 
   @override
@@ -37,6 +39,7 @@ class LegPressExerciseDTO extends ExerciseDTO {
         configurations: {
           ExerciseConfigurationKey.setType: SetType.weightsAndReps,
           ExerciseConfigurationKey.equipment: ExerciseEquipment.machine,
+          ExerciseConfigurationKey.lowerBodyModality: ExerciseLowerBodyModality.bilateral
         });
     return variant;
   }

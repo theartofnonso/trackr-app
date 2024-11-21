@@ -14,7 +14,7 @@ import 'package:tracker_app/utils/dialog_utils.dart';
 
 import '../../colors.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
-import '../../dtos/exercise_dto.dart';
+import '../../dtos/exercises/exercise_dto.dart';
 import '../../dtos/sets_dtos/set_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/routine_editors_utils.dart';

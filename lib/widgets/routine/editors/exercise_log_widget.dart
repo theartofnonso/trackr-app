@@ -23,7 +23,7 @@ import 'package:tracker_app/widgets/routine/editors/set_rows/reps_set_row.dart';
 import 'package:tracker_app/widgets/routine/editors/set_rows/weights_and_reps_set_row.dart';
 
 import '../../../colors.dart';
-import '../../../dtos/exercise_dto.dart';
+import '../../../dtos/exercises/exercise_dto.dart';
 import '../../../dtos/sets_dtos/set_dto.dart';
 import '../../../enums/exercise/exercise_configuration_key.dart';
 import '../../../enums/routine_editor_type_enums.dart';

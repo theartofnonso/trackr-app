@@ -21,7 +21,7 @@ import 'package:tracker_app/widgets/pickers/routine_plan_weeks_picker.dart';
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
-import '../../dtos/exercise_dto.dart';
+import '../../dtos/exercises/exercise_dto.dart';
 import '../../dtos/exercise_log_dto.dart';
 import '../../enums/routine_plan_goal.dart';
 import '../../openAI/open_ai.dart';

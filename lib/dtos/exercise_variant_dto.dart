@@ -1,4 +1,4 @@
-import 'package:tracker_app/dtos/exercise_dto.dart';
+import 'package:tracker_app/dtos/exercises/exercise_dto.dart';
 import 'package:tracker_app/enums/exercise/exercise_equipment_enum.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 

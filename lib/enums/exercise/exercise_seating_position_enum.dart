@@ -1,6 +1,6 @@
 import 'package:tracker_app/enums/exercise/exercise_configuration_key.dart';
 
-import '../../dtos/exercise_dto.dart';
+import '../../dtos/exercises/exercise_dto.dart';
 
 enum ExerciseSeatingPosition implements ExerciseConfig {
   incline(displayName: "Incline", description: "Performed at an upward angle to target the upper portion of muscles."),

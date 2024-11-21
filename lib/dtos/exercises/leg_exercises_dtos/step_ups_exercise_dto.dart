@@ -1,21 +1,21 @@
 import 'package:tracker_app/dtos/exercise_variant_dto.dart';
-import 'package:tracker_app/enums/muscle_group_enums.dart';
 
-import '../../enums/exercise/exercise_configuration_key.dart';
-import '../../enums/exercise/exercise_equipment_enum.dart';
-import '../../enums/exercise/set_type_enums.dart';
+import '../../../enums/exercise/exercise_configuration_key.dart';
+import '../../../enums/exercise/exercise_equipment_enum.dart';
+import '../../../enums/exercise/set_type_enums.dart';
+import '../../../enums/muscle_group_enums.dart';
 import '../exercise_dto.dart';
 
-class SquatExerciseDTO extends ExerciseDTO {
+class StepUpsExerciseDTO extends ExerciseDTO {
 
   @override
-  String get id => "QUA_01";
+  String get id => "QUA_05";
 
   @override
-  String get name => "Squats";
+  String get name => "Step Ups";
 
   @override
-  String get description => "Targets the quadriceps, glutes, and hamstrings.";
+  String get description => "Targets the quadriceps and glutes by stepping onto an elevated platform, enhancing lower body strength.";
 
   @override
   List<MuscleGroup> get primaryMuscleGroups => [MuscleGroup.quadriceps];
@@ -26,13 +26,7 @@ class SquatExerciseDTO extends ExerciseDTO {
   @override
   Map<ExerciseConfigurationKey, List<ExerciseConfig>> get configurationOptions => {
     ExerciseConfigurationKey.setType: [SetType.reps, SetType.weightsAndReps],
-    ExerciseConfigurationKey.equipment: [
-      ExerciseEquipment.none,
-      ExerciseEquipment.barbell,
-      ExerciseEquipment.machine,
-      ExerciseEquipment.hackSquatMachine,
-      ExerciseEquipment.smithMachine
-    ]
+    ExerciseConfigurationKey.equipment: [ExerciseEquipment.none, ExerciseEquipment.dumbbell, ExerciseEquipment.kettleBell],
   };
 
   @override

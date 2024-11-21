@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 
-import '../dtos/exercise_dto.dart';
+import '../dtos/exercises/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../enums/exercise/set_type_enums.dart';
 import '../screens/exercise/library/exercise_library_screen.dart';

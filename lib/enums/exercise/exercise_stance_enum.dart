@@ -1,4 +1,4 @@
-import '../../dtos/exercise_dto.dart';
+import '../../dtos/exercises/exercise_dto.dart';
 import 'exercise_configuration_key.dart';
 
 enum ExerciseStance implements ExerciseConfig {
