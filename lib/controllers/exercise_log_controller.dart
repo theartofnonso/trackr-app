@@ -70,7 +70,7 @@ class ExerciseLogController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addSet({required String exerciseId, required List<SetDTO> pastSets, required ExerciseMetric metric}) {
+  void addSet({required String exerciseId, required List<SetDTO> pastSets, required SetType metric}) {
     _exerciseLogRepository.addSet(exerciseId: exerciseId, pastSets: pastSets, metric: metric);
     notifyListeners();
   }

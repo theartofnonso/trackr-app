@@ -1,13 +1,17 @@
 import 'package:collection/collection.dart';
-import 'package:tracker_app/dtos/squat_exercise_dto.dart';
+import 'package:tracker_app/dtos/leg_exercises_dtos/leg_press_exercise_dto.dart';
+import 'package:tracker_app/dtos/leg_exercises_dtos/lunges_exercise_dto.dart';
+import 'package:tracker_app/dtos/leg_exercises_dtos/split_squat_exercise_dto.dart';
+import 'package:tracker_app/dtos/leg_exercises_dtos/squat_exercise_dto.dart';
+import 'package:tracker_app/dtos/leg_exercises_dtos/step_ups_exercise_dto.dart';
 import 'package:tracker_app/enums/exercise/core_movements_enum.dart';
 import 'package:tracker_app/enums/exercise/exercise_equipment_enum.dart';
-import 'package:tracker_app/enums/exercise/exercise_metrics_enums.dart';
 import 'package:tracker_app/enums/exercise/exercise_modality_enum.dart';
 import 'package:tracker_app/enums/exercise/exercise_position_enum.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 
 import '../dtos/exercise_dto.dart';
+import '../dtos/leg_exercises_dtos/leg_extension_exercise_dto.dart';
 import '../enums/exercise/exercise_stance_enum.dart';
 
 class ExerciseRepository {
@@ -126,103 +130,24 @@ class ExerciseRepository {
   // }
 
   void _loadQuadricepsExercises() {
-    final squatsExercise = SquatExerciseDTO(
-      id: "QUA_01",
-      name: "Squats",
-      description: "Targets the quadriceps, glutes, and hamstrings.",
-      primaryMuscleGroups: [MuscleGroup.quadriceps],
-      secondaryMuscleGroups: [MuscleGroup.hamstrings, MuscleGroup.glutes],
-      configurationOptions: {
-        "metrics": [ExerciseMetric.reps, ExerciseMetric.weights],
-        "equipment": [
-          ExerciseEquipment.none,
-          ExerciseEquipment.barbell,
-          ExerciseEquipment.machine,
-          ExerciseEquipment.hackSquatMachine,
-          ExerciseEquipment.smithMachine
-        ]
-      },
-    );
+    final squatsExercise = SquatExerciseDTO();
 
-    // final lungesExercise = ExerciseDTO(
-    //     id: "QUA_02",
-    //     name: "Lunges",
-    //     description: "An exercise emphasizing quadriceps, hamstrings, and glutes during lunging.",
-    //     metrics: [ExerciseMetric.weights, ExerciseMetric.reps],
-    //     modes: [ExerciseModality.unilateral],
-    //     positions: [ExercisePosition.neutral],
-    //     stances: [ExerciseStance.standing],
-    //     equipment: [ExerciseEquipment.barbell, ExerciseEquipment.dumbbell, ExerciseEquipment.none],
-    //     primaryMuscleGroups: [MuscleGroup.quadriceps],
-    //     secondaryMuscleGroups: [MuscleGroup.hamstrings, MuscleGroup.glutes],
-    //     coreMovement: CoreMovement.squat);
-    //
-    // final legPressesExercise = ExerciseDTO(
-    //     id: "QUA_03",
-    //     name: "Leg Presses",
-    //     description: "A machine-based exercise that targets the quadriceps, glutes, and hamstrings.",
-    //     metrics: [ExerciseMetric.weights],
-    //     modes: [ExerciseModality.bilateral, ExerciseModality.unilateral],
-    //     positions: [ExercisePosition.neutral],
-    //     stances: [ExerciseStance.standing],
-    //     equipment: [
-    //       ExerciseEquipment.machine,
-    //     ],
-    //     primaryMuscleGroups: [MuscleGroup.quadriceps],
-    //     secondaryMuscleGroups: [MuscleGroup.hamstrings, MuscleGroup.glutes],
-    //     coreMovement: CoreMovement.squat);
-    //
-    // final legExtensionsExercise = ExerciseDTO(
-    //     id: "QUA_04",
-    //     name: "Leg Extensions",
-    //     description: "An isolation exercise for strengthening the quadriceps using a leg extension machine.",
-    //     metrics: [ExerciseMetric.weights],
-    //     modes: [ExerciseModality.bilateral, ExerciseModality.unilateral],
-    //     positions: [ExercisePosition.neutral],
-    //     stances: [ExerciseStance.seated],
-    //     equipment: [ExerciseEquipment.machine],
-    //     primaryMuscleGroups: [MuscleGroup.quadriceps],
-    //     secondaryMuscleGroups: [MuscleGroup.hamstrings, MuscleGroup.glutes],
-    //     coreMovement: CoreMovement.hinge);
-    //
-    // final stepUpsExercise = ExerciseDTO(
-    //     id: "QUA_05",
-    //     name: "Step Ups",
-    //     description:
-    //         "Works the quadriceps and glutes by stepping onto an elevated platform, enhancing lower body strength.",
-    //     metrics: [ExerciseMetric.reps, ExerciseMetric.weights],
-    //     modes: [ExerciseModality.unilateral],
-    //     positions: [ExercisePosition.neutral],
-    //     stances: [ExerciseStance.standing],
-    //     equipment: [ExerciseEquipment.none, ExerciseEquipment.dumbbell, ExerciseEquipment.kettleBell],
-    //     primaryMuscleGroups: [MuscleGroup.quadriceps],
-    //     secondaryMuscleGroups: [MuscleGroup.hamstrings, MuscleGroup.glutes],
-    //     coreMovement: CoreMovement.lunge);
-    //
-    // final splitSquatsExercise = ExerciseDTO(
-    //     id: "QUA_06",
-    //     name: "Split Squats",
-    //     description: "A single-leg squat variation that isolates the quadriceps and glutes.",
-    //     metrics: [ExerciseMetric.reps, ExerciseMetric.weights],
-    //     modes: [ExerciseModality.unilateral],
-    //     positions: [ExercisePosition.neutral],
-    //     stances: [ExerciseStance.standing],
-    //     equipment: [
-    //       ExerciseEquipment.none,
-    //       ExerciseEquipment.barbell,
-    //       ExerciseEquipment.dumbbell,
-    //       ExerciseEquipment.kettleBell
-    //     ],
-    //     primaryMuscleGroups: [MuscleGroup.quadriceps],
-    //     secondaryMuscleGroups: [MuscleGroup.hamstrings, MuscleGroup.glutes],
-    //     coreMovement: CoreMovement.squat);
+    final lungesExercise = LungesExerciseDTO();
+
+    final legPressExercise = LegPressExerciseDTO();
+
+    final legExtensionsExercise = LegExtensionsExerciseDTO();
+
+    final stepUpsExercise = StepUpsExerciseDTO();
+
+    final splitSquatsExercise = SplitSquatExerciseDTO();
 
     _exercises.add(squatsExercise);
-    // _exercises.add(lungesExercise);
-    // _exercises.add(legPressesExercise);
-    // _exercises.add(legExtensionsExercise);
-    // _exercises.add(stepUpsExercise);
-    // _exercises.add(splitSquatsExercise);
+    _exercises.add(lungesExercise);
+    _exercises.add(legPressExercise);
+    _exercises.add(legExtensionsExercise);
+    _exercises.add(stepUpsExercise);
+    _exercises.add(splitSquatsExercise);
   }
 
   // void _loadHamstringExercises() {

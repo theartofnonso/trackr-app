@@ -19,7 +19,7 @@ import '../../../widgets/exercise/exercise_widget.dart';
 class ExerciseLibraryScreen extends StatefulWidget {
   final bool readOnly;
   final List<String> exercisesToExclude;
-  final ExerciseMetric? exerciseMetric;
+  final SetType? exerciseMetric;
   final MuscleGroup? muscleGroup;
 
   const ExerciseLibraryScreen(

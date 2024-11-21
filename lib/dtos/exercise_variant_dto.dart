@@ -55,9 +55,9 @@ class ExerciseVariantDTO {
     }
   }
 
-  ExerciseMetric getExerciseMetricConfiguration(String key) {
+  SetType getExerciseMetricConfiguration(String key) {
     if (configurations.containsKey(key)) {
-      return configurations[key] as ExerciseMetric;
+      return configurations[key] as SetType;
     } else {
       throw ArgumentError('Configuration key "$key" does not exist in "$name".');
     }

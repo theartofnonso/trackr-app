@@ -91,7 +91,7 @@ ExerciseLogDTO? whereOtherExerciseInSuperSet(
 }
 
 List<Widget> setsToWidgets(
-    {required ExerciseMetric exerciseMetric,
+    {required SetType exerciseMetric,
     required List<SetDTO> sets,
     List<PBDto> pbs = const [],
     required RoutinePreviewType routinePreviewType}) {
@@ -136,7 +136,7 @@ List<Widget> setsToWidgets(
     final pbsForSet = pbsBySet[setDto] ?? [];
 
     switch (exerciseMetric) {
-      case ExerciseMetric.weights:
+      case SetType.weightsAndReps:
         final firstLabel = (setDto as WeightAndRepsSetDTO).weight;
         final secondLabel = (setDto).reps;
         return DoubleSetRow(
@@ -145,10 +145,10 @@ List<Widget> setsToWidgets(
             margin: margin,
             pbs: pbsForSet,
             routinePreviewType: routinePreviewType);
-      case ExerciseMetric.reps:
+      case SetType.reps:
         final label = (setDto as RepsSetDTO).reps;
         return SingleSetRow(label: "$label", margin: margin, routinePreviewType: routinePreviewType);
-      case ExerciseMetric.duration:
+      case SetType.duration:
         if (routinePreviewType == RoutinePreviewType.template) {
           return durationTemplate;
         }
@@ -220,13 +220,13 @@ String copyRoutineAsText(
     }
     for (var i = 0; i < exerciseLog.sets.length; i++) {
       switch (exerciseLog.exerciseVariant.getExerciseMetricConfiguration("metrics")) {
-        case ExerciseMetric.weights:
+        case SetType.weightsAndReps:
           routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].summary()}");
           break;
-        case ExerciseMetric.reps:
+        case SetType.reps:
           routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].summary()}");
           break;
-        case ExerciseMetric.duration:
+        case SetType.duration:
           routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].summary()}");
           break;
       }

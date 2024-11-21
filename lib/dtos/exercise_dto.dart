@@ -15,7 +15,7 @@ abstract class ExerciseConfig {
       case 'ExerciseEquipment':
         return ExerciseEquipment.fromJson(json);
       case 'ExerciseMetric':
-        return ExerciseMetric.fromJson(json);
+        return SetType.fromJson(json);
       default:
         throw ArgumentError('Unknown ExerciseConfig type: ${json['type']}');
     }
@@ -23,20 +23,13 @@ abstract class ExerciseConfig {
 }
 
 abstract class ExerciseDTO {
-  final String id;
-  final String name;
-  final String description;
-  final List<MuscleGroup> primaryMuscleGroups;
-  final List<MuscleGroup> secondaryMuscleGroups;
-  final Map<String, List<ExerciseConfig>> configurationOptions;
+  String get id;
+  String get name;
+  String get description;
+  List<MuscleGroup> get primaryMuscleGroups;
+  List<MuscleGroup> get secondaryMuscleGroups;
+  Map<String, List<ExerciseConfig>> get configurationOptions;
 
-  ExerciseDTO(
-      {required this.id,
-      required this.name,
-      required this.description,
-      required this.primaryMuscleGroups,
-      required this.secondaryMuscleGroups,
-      required this.configurationOptions});
 
   ExerciseVariantDTO createVariant({required Map<String, dynamic> configurations});
 

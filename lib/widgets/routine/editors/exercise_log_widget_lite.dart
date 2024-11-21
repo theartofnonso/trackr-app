@@ -32,12 +32,15 @@ class ExerciseLogLiteWidget extends StatelessWidget {
 
     final exercise = exerciseAndRoutineController.whereExercise(id: exerciseVariant.baseExerciseId);
 
-    final configurationChips = exercise?.configurationOptions.keys.map((String configKey) => SquaredChips(
-      label: configKey.toUpperCase(),
-      color: vibrantGreen,
-    )).toList() ?? [];
+    final configurationChips = exercise.configurationOptions.keys.map((String configKey) {
+      final configValue = exerciseVariant.configurations[configKey]!;
+      return SquaredChips(
+        label: configValue.name.toUpperCase(),
+        color: vibrantGreen,
+      );
+    }).toList();
 
-    return exercise != null ? Container(
+    return Container(
       padding: superSet == null ? const EdgeInsets.symmetric(vertical: 10, horizontal: 10) : const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: sapphireDark80, // Set the background color
@@ -80,6 +83,6 @@ class ExerciseLogLiteWidget extends StatelessWidget {
           ),
         ],
       ),
-    ) : const SizedBox.shrink();
+    );
   }
 }

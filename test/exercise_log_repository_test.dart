@@ -14,7 +14,7 @@ void main() {
       name: "Lying Leg Curl",
       primaryMuscleGroupss: MuscleGroup.hamstrings,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      exerciseMetric: ExerciseMetric.weights,
+      exerciseMetric: SetType.weightsAndReps,
       owner: "");
 
   final plankExercise = ExerciseDTO(
@@ -22,14 +22,14 @@ void main() {
       name: "Plank",
       primaryMuscleGroupss: MuscleGroup.abs,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      metric: ExerciseMetric.duration,
+      type: SetType.duration,
       owner: "");
 
   final benchPressExercise = ExerciseDTO(
       name: "Bench Press",
       primaryMuscleGroups: MuscleGroup.chest,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      exerciseMetric: ExerciseMetric.weights,
+      exerciseMetric: SetType.weightsAndReps,
       owner: "");
 
   final lyingLegCurlExerciseLog1 = ExerciseLogDTO(

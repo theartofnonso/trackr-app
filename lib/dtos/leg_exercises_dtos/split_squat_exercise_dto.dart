@@ -1,17 +1,36 @@
 import 'package:tracker_app/dtos/exercise_variant_dto.dart';
+import 'package:tracker_app/enums/muscle_group_enums.dart';
 
-import '../enums/exercise/exercise_equipment_enum.dart';
-import '../enums/exercise/exercise_metrics_enums.dart';
-import 'exercise_dto.dart';
+import '../../enums/exercise/exercise_equipment_enum.dart';
+import '../../enums/exercise/exercise_metrics_enums.dart';
+import '../exercise_dto.dart';
 
-class SquatExerciseDTO extends ExerciseDTO {
-  SquatExerciseDTO(
-      {required super.id,
-      required super.name,
-      required super.description,
-      required super.primaryMuscleGroups,
-      required super.secondaryMuscleGroups,
-      required super.configurationOptions});
+class SplitSquatExerciseDTO extends ExerciseDTO {
+
+  @override
+  String get id => "QUA_06";
+
+  @override
+  String get name => "Split Squats";
+
+  @override
+  String get description => "A single-leg squat variation that isolates the quadriceps and glutes.";
+
+  @override
+  List<MuscleGroup> get primaryMuscleGroups => [MuscleGroup.quadriceps];
+
+  @override
+  List<MuscleGroup> get secondaryMuscleGroups => [MuscleGroup.hamstrings, MuscleGroup.glutes];
+
+  @override
+  Map<String, List<ExerciseConfig>> get configurationOptions => {
+    "set_type": [SetType.reps, SetType.weightsAndReps],
+    "equipment": [
+      ExerciseEquipment.none,
+      ExerciseEquipment.dumbbell,
+      ExerciseEquipment.kettleBell
+    ]
+  };
 
   @override
   ExerciseVariantDTO createVariant({required Map<String, dynamic> configurations}) {
@@ -41,7 +60,7 @@ class SquatExerciseDTO extends ExerciseDTO {
   ExerciseVariantDTO defaultVariant() {
     final variant = createVariant(
         configurations: {
-          "metrics": ExerciseMetric.reps,
+          "set_type": SetType.reps,
           "equipment": ExerciseEquipment.none,
         });
     return variant;

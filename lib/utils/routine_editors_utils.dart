@@ -49,7 +49,7 @@ void showExercisesInLibrary(
     {required BuildContext context,
     List<String> exercisesToExclude = const [],
     required void Function(List<ExerciseDTO> selectedExercises) onSelected,
-    ExerciseMetric? type,
+    SetType? type,
     MuscleGroup? muscleGroup}) async {
   final exercises = await Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => ExerciseLibraryScreen(

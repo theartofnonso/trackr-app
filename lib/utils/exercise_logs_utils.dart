@@ -43,9 +43,9 @@ Duration totalDurationExerciseLog({required ExerciseLogDTO exerciseLog}) {
 
 int totalRepsForExerciseLog({required ExerciseLogDTO exerciseLog}) => exerciseLog.sets.fold(0, (total, set) {
       final metric = exerciseLog.exerciseVariant.getExerciseMetricConfiguration("metrics");
-      if (metric == ExerciseMetric.reps) {
+      if (metric == SetType.reps) {
         return total + (set as RepsSetDTO).reps;
-      } else if (metric == ExerciseMetric.weights) {
+      } else if (metric == SetType.weightsAndReps) {
         return total + (set as WeightAndRepsSetDTO).reps;
       }
       return 0;
@@ -57,9 +57,9 @@ int highestRepsForExerciseLog({required ExerciseLogDTO exerciseLog}) {
   return exerciseLog.sets
       .map((set) {
         final metric = exerciseLog.exerciseVariant.getExerciseMetricConfiguration("metrics");
-        if (metric == ExerciseMetric.reps) {
+        if (metric == SetType.reps) {
           return (set as RepsSetDTO).reps;
-        } else if (metric == ExerciseMetric.weights) {
+        } else if (metric == SetType.weightsAndReps) {
           return (set as WeightAndRepsSetDTO).reps;
         }
         return 0;
@@ -75,7 +75,7 @@ double heaviestVolumeForExerciseLog({required ExerciseLogDTO exerciseLog}) {
 }
 
 SetDTO heaviestSetVolumeForExerciseLog({required ExerciseLogDTO exerciseLog}) {
-  final emptySet = SetDTO.newType(metric: ExerciseMetric.weights);
+  final emptySet = SetDTO.newType(type: SetType.weightsAndReps);
 
   // Check if there are no sets in the exercise log
   if (exerciseLog.sets.isEmpty) {
@@ -100,7 +100,7 @@ SetDTO heaviestSetVolumeForExerciseLog({required ExerciseLogDTO exerciseLog}) {
 /// Highest value across all [ExerciseDTO]
 
 (String?, SetDTO) heaviestSetVolume({required List<ExerciseLogDTO> exerciseLogs}) {
-  final emptySet = SetDTO.newType(metric: ExerciseMetric.weights);
+  final emptySet = SetDTO.newType(type: SetType.weightsAndReps);
 
   // Return null if there are no past logs
   if (exerciseLogs.isEmpty) return (null, emptySet);
@@ -185,7 +185,7 @@ SetDTO heaviestSetVolumeForExerciseLog({required ExerciseLogDTO exerciseLog}) {
 
 List<PBDto> calculatePBs(
     {required List<ExerciseLogDTO> pastExerciseLogs,
-    required ExerciseMetric exerciseMetric,
+    required SetType exerciseMetric,
     required ExerciseLogDTO exerciseLog}) {
   List<PBDto> pbs = [];
 
@@ -385,20 +385,20 @@ double cumulativeMuscleGroupFamilyFrequency({required List<ExerciseLogDTO> exerc
   return cumulativeFrequency / 56;
 }
 
-bool withWeightsOnly({required ExerciseMetric metric}) {
-  return metric == ExerciseMetric.weights;
+bool withWeightsOnly({required SetType metric}) {
+  return metric == SetType.weightsAndReps;
 }
 
-bool withReps({required ExerciseMetric metric}) {
-  return metric == ExerciseMetric.weights || metric == ExerciseMetric.reps;
+bool withReps({required SetType metric}) {
+  return metric == SetType.weightsAndReps || metric == SetType.reps;
 }
 
-bool withRepsOnly({required ExerciseMetric metric}) {
-  return metric == ExerciseMetric.reps;
+bool withRepsOnly({required SetType metric}) {
+  return metric == SetType.reps;
 }
 
-bool withDurationOnly({required ExerciseMetric metric}) {
-  return metric == ExerciseMetric.duration;
+bool withDurationOnly({required SetType metric}) {
+  return metric == SetType.duration;
 }
 
 int _calculateMuscleScore({required List<ExerciseLogDTO> exerciseLogs}) {

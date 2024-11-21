@@ -1,5 +1,6 @@
 
 import 'package:tracker_app/dtos/set_dto.dart';
+import 'package:tracker_app/enums/exercise/exercise_metrics_enums.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 
 class DurationSetDTO extends SetDTO {
@@ -11,7 +12,10 @@ class DurationSetDTO extends SetDTO {
   Duration get duration => _duration;
 
   @override
-  DurationSetDTO copyWith({Duration? duration, bool? checked}) {
+  SetType get type => SetType.duration;
+
+  @override
+  DurationSetDTO copyWith({Duration? duration, bool? checked, SetType? type}) {
     return DurationSetDTO(duration: duration ?? _duration, checked: checked ?? super.checked);
   }
 
@@ -32,6 +36,6 @@ class DurationSetDTO extends SetDTO {
 
   @override
   String toString() {
-    return 'DurationSetDTO{duration: $_duration, checked: ${super.checked}';
+    return 'DurationSetDTO{duration: $_duration, checked: ${super.checked}, type: $type';
   }
 }

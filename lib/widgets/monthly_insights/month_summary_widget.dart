@@ -49,9 +49,9 @@ class MonthSummaryWidget extends StatelessWidget {
     final totalReps = exerciseLogsWithReps.map((log) {
       final reps = log.sets.map((set) {
         final metric = log.exerciseVariant.getExerciseMetricConfiguration("metrics");
-        if (metric == ExerciseMetric.reps) {
+        if (metric == SetType.reps) {
           return (set as RepsSetDTO).reps;
-        } else if (metric == ExerciseMetric.weights) {
+        } else if (metric == SetType.weightsAndReps) {
           return (set as WeightAndRepsSetDTO).reps;
         }
         return 0;

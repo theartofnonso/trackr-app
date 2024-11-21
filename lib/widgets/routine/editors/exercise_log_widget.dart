@@ -212,14 +212,14 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _loadTextEditingControllers() {
     final sets = widget.exerciseLogDto.sets;
-    final metric = widget.exerciseLogDto.exerciseVariant.getExerciseMetricConfiguration("metrics");
+    final metric = widget.exerciseLogDto.exerciseVariant.getExerciseMetricConfiguration("set_type");
     List<(TextEditingController, TextEditingController)> controllers = [];
     double weight = 0;
     int reps = 0;
     for (var set in sets) {
-      if (metric == ExerciseMetric.reps) {
+      if (metric == SetType.reps) {
         reps = (set as RepsSetDTO).reps;
-      } else if (metric == ExerciseMetric.weights) {
+      } else if (metric == SetType.weightsAndReps) {
         weight = (set as WeightAndRepsSetDTO).weight;
         reps = set.reps;
       }
@@ -255,12 +255,12 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     _selectedConfigurations = Map<String, dynamic>.from(widget.exerciseLogDto.exerciseVariant.configurations);
 
-    if (ExerciseMetric.weights == widget.exerciseLogDto.exerciseVariant.getExerciseMetricConfiguration("metrics") ||
-        ExerciseMetric.reps == widget.exerciseLogDto.exerciseVariant.getExerciseMetricConfiguration("metrics")) {
+    if (SetType.weightsAndReps == widget.exerciseLogDto.exerciseVariant.getExerciseMetricConfiguration("set_type") ||
+        SetType.reps == widget.exerciseLogDto.exerciseVariant.getExerciseMetricConfiguration("set_type")) {
       _loadTextEditingControllers();
     }
     if (widget.editorType == RoutineEditorMode.log &&
-        ExerciseMetric.duration == widget.exerciseLogDto.exerciseVariant.getExerciseMetricConfiguration("metrics")) {
+        SetType.duration == widget.exerciseLogDto.exerciseVariant.getExerciseMetricConfiguration("set_type")) {
       _loadDurationControllers();
     }
   }
@@ -368,18 +368,18 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white.withOpacity(0.8), fontSize: 14),
           ),
           const SizedBox(height: 12),
-          switch (exerciseVariant.getExerciseMetricConfiguration("metrics")) {
-            ExerciseMetric.weights => WeightRepsSetHeader(
+          switch (exerciseVariant.getExerciseMetricConfiguration("set_type")) {
+            SetType.weightsAndReps => WeightRepsSetHeader(
                 editorType: widget.editorType,
                 firstLabel: weightLabel().toUpperCase(),
                 secondLabel: 'REPS',
               ),
-            ExerciseMetric.reps => RepsSetHeader(editorType: widget.editorType),
-            ExerciseMetric.duration => DurationSetHeader(editorType: widget.editorType),
+            SetType.reps => RepsSetHeader(editorType: widget.editorType),
+            SetType.duration => DurationSetHeader(editorType: widget.editorType),
           },
           const SizedBox(height: 8),
           if (sets.isNotEmpty)
-            if (exerciseVariant.getExerciseMetricConfiguration("metrics") == ExerciseMetric.weights)
+            if (exerciseVariant.getExerciseMetricConfiguration("set_type") == SetType.weightsAndReps)
               _WeightAndRepsSetListView(
                 sets: sets.map((set) => set as WeightAndRepsSetDTO).toList(),
                 editorType: widget.editorType,
@@ -391,7 +391,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 onTapWeightEditor: _onTapWeightEditor,
                 onTapRepsEditor: _onTapRepsEditor,
               ),
-          if (exerciseVariant.getExerciseMetricConfiguration("metrics") == ExerciseMetric.reps)
+          if (exerciseVariant.getExerciseMetricConfiguration("set_type") == SetType.reps)
             _RepsSetListView(
               sets: sets.map((set) => set as RepsSetDTO).toList(),
               editorType: widget.editorType,
@@ -402,7 +402,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               onTapWeightEditor: _onTapWeightEditor,
               onTapRepsEditor: _onTapRepsEditor,
             ),
-          if (exerciseVariant.getExerciseMetricConfiguration("metrics") == ExerciseMetric.duration)
+          if (exerciseVariant.getExerciseMetricConfiguration("set_type") == SetType.duration)
             _DurationSetListView(
               sets: sets.map((set) => set as DurationSetDTO).toList(),
               editorType: widget.editorType,
@@ -416,14 +416,14 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               updateDuration: _updateDuration,
             ),
           const SizedBox(height: 8),
-          if (withDurationOnly(metric: exerciseVariant.getExerciseMetricConfiguration("metrics")) && sets.isEmpty)
+          if (withDurationOnly(metric: exerciseVariant.getExerciseMetricConfiguration("set_type")) && sets.isEmpty)
             Center(
               child: Text("Tap + to add a timer",
                   style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white70)),
             ),
           const SizedBox(height: 8),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            if (withWeightsOnly(metric: exerciseVariant.getExerciseMetricConfiguration("metrics")))
+            if (withWeightsOnly(metric: exerciseVariant.getExerciseMetricConfiguration("set_type")))
               IconButton(
                   onPressed: _show1RMRecommendations,
                   icon: const FaIcon(FontAwesomeIcons.solidLightbulb, color: Colors.white, size: 16),
@@ -465,9 +465,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           Navigator.of(context).pop();
           setState(() {
             _selectedConfigurations[configKey] = configuration;
-            print(_selectedConfigurations);
             final newExerciseVariant = baseExercise.createVariant(configurations: _selectedConfigurations);
-            final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: newExerciseVariant);
+            final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: newExerciseVariant, sets: configuration is SetType ? [] : null);
             widget.onUpdate(updatedExerciseLog);
           });
         }, // Provide descriptions if available

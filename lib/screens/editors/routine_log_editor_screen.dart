@@ -57,7 +57,14 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         context: context,
         exercisesToExclude: excludeExercises.map((exercise) => exercise.name).toList(),
         onSelected: (List<ExerciseDTO> selectedExercises) {
-          final variants = selectedExercises.map((exercise) => exercise.defaultVariant()).toList();
+          final variants = selectedExercises.map((exercise) {
+            try {
+              exercise.defaultVariant();
+            } catch(e) {
+              print(e);
+            }
+            return exercise.defaultVariant();
+          }).toList();
           controller.addExerciseLogs(exercisesVariants: variants);
           _cacheLog();
         });

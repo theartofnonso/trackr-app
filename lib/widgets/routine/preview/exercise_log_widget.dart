@@ -73,16 +73,16 @@ class ExerciseLogWidget extends StatelessWidget {
               )
             : const SizedBox.shrink(),
         switch (exerciseMetric) {
-          ExerciseMetric.weights => DoubleSetHeader(
+          SetType.weightsAndReps => DoubleSetHeader(
               firstLabel: weightLabel().toUpperCase(),
               secondLabel: 'REPS',
               routinePreviewType: previewType,
             ),
-          ExerciseMetric.reps => SingleSetHeader(
+          SetType.reps => SingleSetHeader(
               label: 'REPS',
               routinePreviewType: previewType,
             ),
-          ExerciseMetric.duration => SingleSetHeader(
+          SetType.duration => SingleSetHeader(
               label: 'TIME',
               routinePreviewType: previewType,
             ),

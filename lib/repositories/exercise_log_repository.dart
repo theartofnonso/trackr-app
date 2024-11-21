@@ -159,7 +159,7 @@ class ExerciseLogRepository {
     return pastSets.firstWhereIndexedOrNull((i, set) => index == i);
   }
 
-  void addSet({required String exerciseId, required List<SetDTO> pastSets, required ExerciseMetric metric}) {
+  void addSet({required String exerciseId, required List<SetDTO> pastSets, required SetType metric}) {
     int exerciseLogIndex = _indexWhereExerciseId(exerciseId: exerciseId);
 
     if (exerciseLogIndex == -1) {
@@ -170,7 +170,7 @@ class ExerciseLogRepository {
 
     int newIndex = sets.length;
 
-    SetDTO newSet = sets.lastOrNull != null ? sets.last.copyWith(checked: false) : SetDTO.newType(metric: metric);
+    SetDTO newSet = sets.lastOrNull != null ? sets.last.copyWith(checked: false) : SetDTO.newType(type: metric);
 
     SetDTO? pastSet = _wherePastSetOrNull(index: newIndex, pastSets: pastSets);
 

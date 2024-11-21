@@ -15,10 +15,10 @@ void main() {
     name: "Hamstring Exercise",
     primaryMuscleGroups: [MuscleGroup.hamstrings],
     secondaryMuscleGroups: [MuscleGroup.hamstrings],
-    metric: ExerciseMetric.weights,
+    type: SetType.weightsAndReps,
     description: '',
     modality: ExerciseModality.bilateral,
-    equipment: ExerciseMetric.machine,
+    equipment: SetType.machine,
     coreMovement: CoreMovement.hinge,
   );
 
@@ -26,10 +26,10 @@ void main() {
     name: "Quad Exercise",
     primaryMuscleGroups: [MuscleGroup.quadriceps],
     secondaryMuscleGroups: [MuscleGroup.quadriceps],
-    metric: ExerciseMetric.weights,
+    type: SetType.weightsAndReps,
     description: '',
     modality: ExerciseModality.bilateral,
-    equipment: ExerciseMetric.machine,
+    equipment: SetType.machine,
     coreMovement: CoreMovement.squat,
   );
 
@@ -37,80 +37,80 @@ void main() {
       name: "Back Exercise",
       primaryMuscleGroups: [MuscleGroup.back],
       secondaryMuscleGroups: [MuscleGroup.back],
-      metric: ExerciseMetric.weights,
+      type: SetType.weightsAndReps,
       description: '',
       modality: ExerciseModality.bilateral,
-      equipment: ExerciseMetric.machine,
+      equipment: SetType.machine,
       coreMovement: CoreMovement.pull);
 
   final trapsExercise = ExerciseDTO(
       name: "Traps Exercise",
       primaryMuscleGroups: [MuscleGroup.traps],
       secondaryMuscleGroups: [MuscleGroup.traps],
-      metric: ExerciseMetric.weights,
+      type: SetType.weightsAndReps,
       description: '',
       modality: ExerciseModality.bilateral,
-      equipment: ExerciseMetric.machine,
+      equipment: SetType.machine,
       coreMovement: CoreMovement.pull);
 
   final chestExercise = ExerciseDTO(
       name: "Chest Exercise",
       primaryMuscleGroups: [MuscleGroup.chest],
       secondaryMuscleGroups: [MuscleGroup.chest],
-      metric: ExerciseMetric.weights,
+      type: SetType.weightsAndReps,
       description: '',
       modality: ExerciseModality.bilateral,
-      equipment: ExerciseMetric.machine,
+      equipment: SetType.machine,
       coreMovement: CoreMovement.push);
 
   final shouldersExercise = ExerciseDTO(
       name: "Shoulders Exercise",
       primaryMuscleGroups: [MuscleGroup.shoulders],
       secondaryMuscleGroups: [MuscleGroup.shoulders],
-      metric: ExerciseMetric.weights,
+      type: SetType.weightsAndReps,
       description: '',
       modality: ExerciseModality.bilateral,
-      equipment: ExerciseMetric.machine,
+      equipment: SetType.machine,
       coreMovement: CoreMovement.push);
 
   final bicepsExercise = ExerciseDTO(
       name: "Biceps Exercise",
       primaryMuscleGroups: [MuscleGroup.biceps],
       secondaryMuscleGroups: [MuscleGroup.biceps],
-      metric: ExerciseMetric.weights,
+      type: SetType.weightsAndReps,
       description: '',
       modality: ExerciseModality.bilateral,
-      equipment: ExerciseMetric.machine,
+      equipment: SetType.machine,
       coreMovement: CoreMovement.push);
 
   final tricepsExercise = ExerciseDTO(
       name: "Triceps Exercise",
       primaryMuscleGroups: [MuscleGroup.triceps],
       secondaryMuscleGroups: [MuscleGroup.triceps],
-      metric: ExerciseMetric.weights,
+      type: SetType.weightsAndReps,
       description: '',
       modality: ExerciseModality.bilateral,
-      equipment: ExerciseMetric.machine,
+      equipment: SetType.machine,
       coreMovement: CoreMovement.push);
 
   final abs = ExerciseDTO(
       name: "Abs Exercise",
       primaryMuscleGroups: [MuscleGroup.abs],
       secondaryMuscleGroups: [MuscleGroup.abs],
-      metric: ExerciseMetric.weights,
+      type: SetType.weightsAndReps,
       description: '',
       modality: ExerciseModality.bilateral,
-      equipment: ExerciseMetric.machine,
+      equipment: SetType.machine,
       coreMovement: CoreMovement.pull);
 
   final neck = ExerciseDTO(
       name: "Neck Exercise",
       primaryMuscleGroups: [MuscleGroup.neck],
       secondaryMuscleGroups: [MuscleGroup.neck],
-      metric: ExerciseMetric.weights,
+      type: SetType.weightsAndReps,
       description: '',
       modality: ExerciseModality.bilateral,
-      equipment: ExerciseMetric.machine,
+      equipment: SetType.machine,
       coreMovement: CoreMovement.others);
 
   final dayOneDateTimes = generateWeeklyDateTimes(size: 4, startDate: DateTime(2024, 1, 1));

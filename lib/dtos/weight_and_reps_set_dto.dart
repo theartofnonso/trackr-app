@@ -1,6 +1,8 @@
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
+import '../enums/exercise/exercise_metrics_enums.dart';
+
 class WeightAndRepsSetDTO extends SetDTO {
   final double _weight;
   final int _reps;
@@ -12,6 +14,9 @@ class WeightAndRepsSetDTO extends SetDTO {
   double get weight => weightWithConversion(value: _weight);
 
   int get reps => _reps;
+
+  @override
+  SetType get type => SetType.weightsAndReps;
 
   @override
   WeightAndRepsSetDTO copyWith({double? weight, int? reps, bool? checked}) {
@@ -40,6 +45,6 @@ class WeightAndRepsSetDTO extends SetDTO {
 
   @override
   String toString() {
-    return 'WeightAndRepsSetDTO{weight: $_weight, reps: $_reps, checked: ${super.checked}}';
+    return 'WeightAndRepsSetDTO{weight: $_weight, reps: $_reps, checked: ${super.checked}, type: $type}';
   }
 }

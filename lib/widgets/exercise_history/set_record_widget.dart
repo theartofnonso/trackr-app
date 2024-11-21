@@ -10,7 +10,7 @@ import '../routine/preview/set_headers/double_set_header.dart';
 import '../routine/preview/set_rows/double_set_row.dart';
 
 class SetRecordWidget extends StatelessWidget {
-  final ExerciseMetric exerciseMetric;
+  final SetType exerciseMetric;
   final List<SetDTO> sets;
 
   const SetRecordWidget({super.key, required this.exerciseMetric, required this.sets});
@@ -20,7 +20,7 @@ class SetRecordWidget extends StatelessWidget {
     final personaBestSets = personalBestSets(sets: sets);
 
     if (personaBestSets.isEmpty) {
-      personaBestSets.add(SetDTO.newType(metric: exerciseMetric));
+      personaBestSets.add(SetDTO.newType(type: exerciseMetric));
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
