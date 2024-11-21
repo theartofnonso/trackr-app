@@ -57,10 +57,10 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
 
     final configurationOptionsWidgets = exercise.configurationOptions.keys.map((String configKey) => OpacityButtonWidget(
       label: configKey.toUpperCase(),
-      buttonColor: Colors.redAccent,
+      buttonColor: vibrantGreen,
       padding: EdgeInsets.symmetric(horizontal: 0),
       textStyle:
-      GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.redAccent),
+      GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: vibrantGreen),
       onPressed: () => _showConfigurationPicker(configKey: configKey, baseExercise: exercise),
     )).toList() ?? [];
 

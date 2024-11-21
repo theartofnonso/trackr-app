@@ -22,7 +22,7 @@ class SquatExerciseDTO extends ExerciseDTO {
       required List<MuscleGroup> secondaryMuscleGroups,
       required Map<String, dynamic> configurations}) {
     /// Validate configurations
-    Map<String, dynamic> validConfigurations = {};
+    Map<String, ExerciseConfig> validConfigurations = {};
 
     configurations.forEach((key, value) {
       if (configurationOptions.containsKey(key)) {

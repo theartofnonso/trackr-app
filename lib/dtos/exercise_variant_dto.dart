@@ -1,3 +1,4 @@
+import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 
 import '../enums/exercise/exercise_metrics_enums.dart';
@@ -7,7 +8,7 @@ class ExerciseVariantDTO {
   final String name;
   final List<MuscleGroup> primaryMuscleGroups;
   final List<MuscleGroup> secondaryMuscleGroups;
-  final Map<String, dynamic> configurations;
+  final Map<String, ExerciseConfig> configurations;
 
   ExerciseVariantDTO(
       {required this.baseExerciseId,
@@ -35,14 +36,14 @@ class ExerciseVariantDTO {
     final secondaryMuscleGroups = (json["secondary_muscle_groups"] as List<dynamic>)
         .map((muscleGroup) => MuscleGroup.fromString(muscleGroup))
         .toList();
-    final configOptions = json["configurations"] as Map<String, dynamic>;
+    final configurations = json["configurations"] as Map<String, ExerciseConfig>;
 
     return ExerciseVariantDTO(
         baseExerciseId: id,
         name: name,
         primaryMuscleGroups: primaryMuscleGroups,
         secondaryMuscleGroups: secondaryMuscleGroups,
-        configurations: configOptions);
+        configurations: configurations);
   }
 
   dynamic getConfigurationValue(String key) {
@@ -55,7 +56,7 @@ class ExerciseVariantDTO {
 
   ExerciseMetric getExerciseMetricConfiguration(String key) {
     if (configurations.containsKey(key)) {
-      return configurations[key];
+      return configurations[key] as ExerciseMetric;
     } else {
       throw ArgumentError('Configuration key "$key" does not exist in "$name".');
     }
@@ -63,6 +64,6 @@ class ExerciseVariantDTO {
 
   @override
   String toString() {
-    return 'ExerciseVariantDTO{id: $baseExerciseId, name: $name, primaryMuscleGroups: ${primaryMuscleGroups.map((muscleGroup) => muscleGroup.name).join(", ")}, secondaryMuscleGroups: ${secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name).join(", ")}, configurationOptions: $configurations';
+    return 'ExerciseVariantDTO{id: $baseExerciseId, name: $name, primaryMuscleGroups: ${primaryMuscleGroups.map((muscleGroup) => muscleGroup.name).join(", ")}, secondaryMuscleGroups: ${secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name).join(", ")}, configurations: $configurations';
   }
 }

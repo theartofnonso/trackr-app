@@ -284,177 +284,172 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final exercise = exerciseAndRoutineController.whereExercise(id: exerciseVariant.baseExerciseId);
 
-    final configurationOptionsWidgets = exercise?.configurationOptions.keys.map((String configKey) => OpacityButtonWidget(
-      label: configKey.toUpperCase(),
-      buttonColor: vibrantGreen,
-      padding: EdgeInsets.symmetric(horizontal: 0),
-      textStyle:
-      GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: vibrantGreen),
-      onPressed: () => _showConfigurationPicker(configKey: configKey, baseExercise: exercise),
-    )).toList() ?? [];
+    final configurationOptionsWidgets = exerciseVariant.configurations.keys.map((String configKey) {
+      final configValue = exerciseVariant.configurations[configKey]!;
+      return OpacityButtonWidget(
+        label: configValue.name.toUpperCase(),
+        buttonColor: vibrantGreen,
+        padding: EdgeInsets.symmetric(horizontal: 0),
+        textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: vibrantGreen),
+        onPressed: () => _showConfigurationPicker(configKey: configKey, baseExercise: exercise),
+      );
+    }).toList();
 
-    return exercise != null
-        ? Container(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-            decoration: BoxDecoration(
-              color: sapphireDark80, // Set the background color
-              borderRadius: BorderRadius.circular(5), // Set the border radius to make it rounded
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        FocusScope.of(context).unfocus();
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => ExerciseHomeScreen(id: widget.exerciseLogDto.exerciseVariant.baseExerciseId)));
-                      },
-                      child: Text(exerciseVariant.name,
-                          style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
-                    ),
-                    const Spacer(),
-                    MenuAnchor(
-                        style: MenuStyle(
-                          backgroundColor: WidgetStateProperty.all(sapphireDark80),
-                          surfaceTintColor: WidgetStateProperty.all(sapphireDark),
-                        ),
-                        builder: (BuildContext context, MenuController controller, Widget? child) {
-                          return IconButton(
-                            onPressed: () {
-                              if (controller.isOpen) {
-                                controller.close();
-                              } else {
-                                FocusScope.of(context).unfocus();
-                                controller.open();
-                              }
-                            },
-                            icon: const Icon(Icons.more_horiz_rounded, color: Colors.white),
-                            tooltip: 'Show menu',
-                          );
-                        },
-                        menuChildren: _menuActionButtons())
-                  ],
-                ),
-                const SizedBox(height: 6),
-                Wrap(
-                  runSpacing: 8,
-                  spacing: 8,
-                  children: configurationOptionsWidgets),
-                const SizedBox(height: 8),
-                if (superSetExerciseDto != null)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10.0),
-                    child: Text("with ${superSetExerciseDto.exerciseVariant.name}",
-                        style: GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 12)),
-                  ),
-                TextField(
-                  controller: TextEditingController(text: widget.exerciseLogDto.notes),
-                  onChanged: (value) => _updateProcedureNotes(value: value),
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: sapphireLighter)),
-                    filled: true,
-                    fillColor: sapphireDark.withOpacity(0.4),
-                    hintText: "Enter notes",
-                    hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14),
-                  ),
-                  maxLines: null,
-                  cursorColor: Colors.white,
-                  keyboardType: TextInputType.text,
-                  textCapitalization: TextCapitalization.sentences,
-                  style: GoogleFonts.ubuntu(
-                      fontWeight: FontWeight.w400, color: Colors.white.withOpacity(0.8), fontSize: 14),
-                ),
-                const SizedBox(height: 12),
-                switch (exerciseVariant.getExerciseMetricConfiguration("metrics")) {
-                  ExerciseMetric.weights => WeightRepsSetHeader(
-                      editorType: widget.editorType,
-                      firstLabel: weightLabel().toUpperCase(),
-                      secondLabel: 'REPS',
-                    ),
-                  ExerciseMetric.reps => RepsSetHeader(editorType: widget.editorType),
-                  ExerciseMetric.duration => DurationSetHeader(editorType: widget.editorType),
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+      decoration: BoxDecoration(
+        color: sapphireDark80, // Set the background color
+        borderRadius: BorderRadius.circular(5), // Set the border radius to make it rounded
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  FocusScope.of(context).unfocus();
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) =>
+                          ExerciseHomeScreen(id: widget.exerciseLogDto.exerciseVariant.baseExerciseId)));
                 },
-                const SizedBox(height: 8),
-                if (sets.isNotEmpty)
-                  if (exerciseVariant.getExerciseMetricConfiguration("metrics") == ExerciseMetric.weights)
-                    _WeightAndRepsSetListView(
-                      sets: sets.map((set) => set as WeightAndRepsSetDTO).toList(),
-                      editorType: widget.editorType,
-                      updateSetCheck: _updateSetCheck,
-                      removeSet: _removeSet,
-                      updateReps: _updateReps,
-                      updateWeight: _updateWeight,
-                      controllers: _controllers,
-                      onTapWeightEditor: _onTapWeightEditor,
-                      onTapRepsEditor: _onTapRepsEditor,
-                    ),
-                if (exerciseVariant.getExerciseMetricConfiguration("metrics") == ExerciseMetric.reps)
-                  _RepsSetListView(
-                    sets: sets.map((set) => set as RepsSetDTO).toList(),
-                    editorType: widget.editorType,
-                    updateSetCheck: _updateSetCheck,
-                    removeSet: _removeSet,
-                    updateReps: _updateReps,
-                    controllers: _controllers,
-                    onTapWeightEditor: _onTapWeightEditor,
-                    onTapRepsEditor: _onTapRepsEditor,
+                child: Text(exerciseVariant.name,
+                    style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+              ),
+              const Spacer(),
+              MenuAnchor(
+                  style: MenuStyle(
+                    backgroundColor: WidgetStateProperty.all(sapphireDark80),
+                    surfaceTintColor: WidgetStateProperty.all(sapphireDark),
                   ),
-                if (exerciseVariant.getExerciseMetricConfiguration("metrics") == ExerciseMetric.duration)
-                  _DurationSetListView(
-                    sets: sets.map((set) => set as DurationSetDTO).toList(),
-                    editorType: widget.editorType,
-                    updateSetCheck: _updateSetCheck,
-                    removeSet: _removeSet,
-                    controllers: _controllers,
-                    onTapWeightEditor: _onTapWeightEditor,
-                    onTapRepsEditor: _onTapRepsEditor,
-                    durationControllers: _durationControllers,
-                    checkAndUpdateDuration: _checkAndUpdateDuration,
-                    updateDuration: _updateDuration,
-                  ),
-                const SizedBox(height: 8),
-                if (withDurationOnly(metric: exerciseVariant.getExerciseMetricConfiguration("metrics")) && sets.isEmpty)
-                  Center(
-                    child: Text("Tap + to add a timer",
-                        style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white70)),
-                  ),
-                const SizedBox(height: 8),
-                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  if (withWeightsOnly(metric: exerciseVariant.getExerciseMetricConfiguration("metrics")))
-                    IconButton(
-                        onPressed: _show1RMRecommendations,
-                        icon: const FaIcon(FontAwesomeIcons.solidLightbulb, color: Colors.white, size: 16),
-                        style: ButtonStyle(
-                            visualDensity: VisualDensity.compact,
-                            shape: WidgetStateProperty.all(
-                                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
-                  const Spacer(),
-                  IconButton(
-                    onPressed: widget.onResize,
-                    icon: const Icon(Icons.close_fullscreen_rounded, color: Colors.white),
-                    tooltip: 'Maximise card',
-                  ),
-                  const SizedBox(
-                    width: 6,
-                  ),
-                  IconButton(
-                      onPressed: _addSet,
-                      icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 16),
-                      style: ButtonStyle(
-                          visualDensity: VisualDensity.compact,
-                          backgroundColor: WidgetStateProperty.all(sapphireDark.withOpacity(0.2)),
-                          shape:
-                              WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
-                ])
-              ],
+                  builder: (BuildContext context, MenuController controller, Widget? child) {
+                    return IconButton(
+                      onPressed: () {
+                        if (controller.isOpen) {
+                          controller.close();
+                        } else {
+                          FocusScope.of(context).unfocus();
+                          controller.open();
+                        }
+                      },
+                      icon: const Icon(Icons.more_horiz_rounded, color: Colors.white),
+                      tooltip: 'Show menu',
+                    );
+                  },
+                  menuChildren: _menuActionButtons())
+            ],
+          ),
+          const SizedBox(height: 6),
+          Wrap(runSpacing: 8, spacing: 8, children: configurationOptionsWidgets),
+          const SizedBox(height: 8),
+          if (superSetExerciseDto != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10.0),
+              child: Text("with ${superSetExerciseDto.exerciseVariant.name}",
+                  style: GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 12)),
             ),
-          )
-        : const SizedBox.shrink();
+          TextField(
+            controller: TextEditingController(text: widget.exerciseLogDto.notes),
+            onChanged: (value) => _updateProcedureNotes(value: value),
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: sapphireLighter)),
+              filled: true,
+              fillColor: sapphireDark.withOpacity(0.4),
+              hintText: "Enter notes",
+              hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14),
+            ),
+            maxLines: null,
+            cursorColor: Colors.white,
+            keyboardType: TextInputType.text,
+            textCapitalization: TextCapitalization.sentences,
+            style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white.withOpacity(0.8), fontSize: 14),
+          ),
+          const SizedBox(height: 12),
+          switch (exerciseVariant.getExerciseMetricConfiguration("metrics")) {
+            ExerciseMetric.weights => WeightRepsSetHeader(
+                editorType: widget.editorType,
+                firstLabel: weightLabel().toUpperCase(),
+                secondLabel: 'REPS',
+              ),
+            ExerciseMetric.reps => RepsSetHeader(editorType: widget.editorType),
+            ExerciseMetric.duration => DurationSetHeader(editorType: widget.editorType),
+          },
+          const SizedBox(height: 8),
+          if (sets.isNotEmpty)
+            if (exerciseVariant.getExerciseMetricConfiguration("metrics") == ExerciseMetric.weights)
+              _WeightAndRepsSetListView(
+                sets: sets.map((set) => set as WeightAndRepsSetDTO).toList(),
+                editorType: widget.editorType,
+                updateSetCheck: _updateSetCheck,
+                removeSet: _removeSet,
+                updateReps: _updateReps,
+                updateWeight: _updateWeight,
+                controllers: _controllers,
+                onTapWeightEditor: _onTapWeightEditor,
+                onTapRepsEditor: _onTapRepsEditor,
+              ),
+          if (exerciseVariant.getExerciseMetricConfiguration("metrics") == ExerciseMetric.reps)
+            _RepsSetListView(
+              sets: sets.map((set) => set as RepsSetDTO).toList(),
+              editorType: widget.editorType,
+              updateSetCheck: _updateSetCheck,
+              removeSet: _removeSet,
+              updateReps: _updateReps,
+              controllers: _controllers,
+              onTapWeightEditor: _onTapWeightEditor,
+              onTapRepsEditor: _onTapRepsEditor,
+            ),
+          if (exerciseVariant.getExerciseMetricConfiguration("metrics") == ExerciseMetric.duration)
+            _DurationSetListView(
+              sets: sets.map((set) => set as DurationSetDTO).toList(),
+              editorType: widget.editorType,
+              updateSetCheck: _updateSetCheck,
+              removeSet: _removeSet,
+              controllers: _controllers,
+              onTapWeightEditor: _onTapWeightEditor,
+              onTapRepsEditor: _onTapRepsEditor,
+              durationControllers: _durationControllers,
+              checkAndUpdateDuration: _checkAndUpdateDuration,
+              updateDuration: _updateDuration,
+            ),
+          const SizedBox(height: 8),
+          if (withDurationOnly(metric: exerciseVariant.getExerciseMetricConfiguration("metrics")) && sets.isEmpty)
+            Center(
+              child: Text("Tap + to add a timer",
+                  style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white70)),
+            ),
+          const SizedBox(height: 8),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            if (withWeightsOnly(metric: exerciseVariant.getExerciseMetricConfiguration("metrics")))
+              IconButton(
+                  onPressed: _show1RMRecommendations,
+                  icon: const FaIcon(FontAwesomeIcons.solidLightbulb, color: Colors.white, size: 16),
+                  style: ButtonStyle(
+                      visualDensity: VisualDensity.compact,
+                      shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
+            const Spacer(),
+            IconButton(
+              onPressed: widget.onResize,
+              icon: const Icon(Icons.close_fullscreen_rounded, color: Colors.white),
+              tooltip: 'Maximise card',
+            ),
+            const SizedBox(
+              width: 6,
+            ),
+            IconButton(
+                onPressed: _addSet,
+                icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 16),
+                style: ButtonStyle(
+                    visualDensity: VisualDensity.compact,
+                    backgroundColor: WidgetStateProperty.all(sapphireDark.withOpacity(0.2)),
+                    shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
+          ])
+        ],
+      ),
+    );
   }
 
   void _showConfigurationPicker({required String configKey, required ExerciseDTO baseExercise}) {
