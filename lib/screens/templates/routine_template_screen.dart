@@ -389,7 +389,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
           /// [Exercise.duration] exercises do not have sets in templates
           /// This is because we only need to store the duration of the exercise in [RoutineEditorType.log] i.e data is logged in realtime
-          final sets = withDurationOnly(metric: exerciseLog.exerciseVariant.getSetTypeConfiguration("metrics")) ? <SetDTO>[] : uncheckedSets;
+          final sets = withDurationOnly(metric: exerciseLog.exerciseVariant.getSetTypeConfiguration()) ? <SetDTO>[] : uncheckedSets;
           return exerciseLog.copyWith(sets: sets);
         }).toList();
         final templateToCreate = RoutineTemplateDto(

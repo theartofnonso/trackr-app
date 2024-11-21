@@ -1,6 +1,8 @@
 import 'package:tracker_app/dtos/exercise_dto.dart';
+import 'package:tracker_app/enums/exercise/exercise_equipment_enum.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 
+import '../enums/exercise/exercise_configuration_key.dart';
 import '../enums/exercise/set_type_enums.dart';
 
 class ExerciseVariantDTO {
@@ -8,7 +10,7 @@ class ExerciseVariantDTO {
   final String name;
   final List<MuscleGroup> primaryMuscleGroups;
   final List<MuscleGroup> secondaryMuscleGroups;
-  final Map<String, ExerciseConfig> configurations;
+  final Map<ExerciseConfigurationKey, ExerciseConfig> configurations;
 
   ExerciseVariantDTO(
       {required this.baseExerciseId,
@@ -36,7 +38,7 @@ class ExerciseVariantDTO {
     final secondaryMuscleGroups = (json["secondary_muscle_groups"] as List<dynamic>)
         .map((muscleGroup) => MuscleGroup.fromJson(muscleGroup))
         .toList();
-    final configurations = (json['configurations'] as Map<String, dynamic>)
+    final configurations = (json['configurations'] as Map<ExerciseConfigurationKey, dynamic>)
         .map((key, value) => MapEntry(key, ExerciseConfig.fromJson(value)));
 
     return ExerciseVariantDTO(
@@ -47,20 +49,32 @@ class ExerciseVariantDTO {
         configurations: configurations);
   }
 
-  dynamic getConfigurationValue(String key) {
+  ExerciseConfig getConfigurationValue(ExerciseConfigurationKey key) {
     if (configurations.containsKey(key)) {
-      return configurations[key];
+      return configurations[key]!;
     } else {
       throw ArgumentError('Configuration key "$key" does not exist in "$name".');
     }
   }
 
-  SetType getSetTypeConfiguration(String key) {
-    if (configurations.containsKey(key)) {
-      return configurations[key] as SetType;
-    } else {
-      throw ArgumentError('Configuration key "$key" does not exist in "$name".');
-    }
+  SetType getSetTypeConfiguration() => configurations[ExerciseConfigurationKey.setType] as SetType;
+
+  ExerciseEquipment getExerciseEquipmentConfiguration() => configurations[ExerciseConfigurationKey.equipment] as ExerciseEquipment;
+
+  ExerciseVariantDTO copyWith({
+    String? baseExerciseId,
+    String? name,
+    List<MuscleGroup>? primaryMuscleGroups,
+    List<MuscleGroup>? secondaryMuscleGroups,
+    Map<ExerciseConfigurationKey, ExerciseConfig>? configurations,
+  }) {
+    return ExerciseVariantDTO(
+      baseExerciseId: baseExerciseId ?? this.baseExerciseId,
+      name: name ?? this.name,
+      primaryMuscleGroups: primaryMuscleGroups ?? this.primaryMuscleGroups,
+      secondaryMuscleGroups: secondaryMuscleGroups ?? this.secondaryMuscleGroups,
+      configurations: configurations ?? this.configurations,
+    );
   }
 
   @override

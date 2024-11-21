@@ -1,4 +1,5 @@
 import 'package:tracker_app/dtos/exercise_variant_dto.dart';
+import 'package:tracker_app/enums/exercise/exercise_configuration_key.dart';
 import 'package:tracker_app/enums/exercise/set_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 
@@ -29,10 +30,10 @@ abstract class ExerciseDTO {
   String get description;
   List<MuscleGroup> get primaryMuscleGroups;
   List<MuscleGroup> get secondaryMuscleGroups;
-  Map<String, List<ExerciseConfig>> get configurationOptions;
+  Map<ExerciseConfigurationKey, List<ExerciseConfig>> get configurationOptions;
 
 
-  ExerciseVariantDTO createVariant({required Map<String, dynamic> configurations});
+  ExerciseVariantDTO createVariant({required Map<ExerciseConfigurationKey, dynamic> configurations});
 
   ExerciseVariantDTO defaultVariant();
 

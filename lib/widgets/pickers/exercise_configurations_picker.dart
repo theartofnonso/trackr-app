@@ -4,17 +4,18 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
 
 import '../../colors.dart';
+import '../../enums/exercise/exercise_configuration_key.dart';
 import '../buttons/opacity_button_widget.dart';
 import '../dividers/label_container.dart';
 
 class ExerciseConfigurationsPicker<Enum> extends StatefulWidget {
-  final String label;
+  final ExerciseConfigurationKey configurationKey;
   final Enum? initialConfig;
   final List<ExerciseConfig> configurationOptions;
   final void Function(ExerciseConfig configuration) onSelect;
 
   const ExerciseConfigurationsPicker(
-      {super.key, required this.label, this.initialConfig, required this.configurationOptions, required this.onSelect});
+      {super.key, required this.configurationKey, this.initialConfig, required this.configurationOptions, required this.onSelect});
 
   @override
   State<ExerciseConfigurationsPicker> createState() => _ExerciseConfigurationsPickerState();
@@ -37,7 +38,7 @@ class _ExerciseConfigurationsPickerState<Enum> extends State<ExerciseConfigurati
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         LabelContainer(
-          label: widget.label.toUpperCase(),
+          label: widget.configurationKey.name.toUpperCase(),
           description: _selectedConfig.description,
           labelStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 14),
           descriptionStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white70, fontSize: 14),
@@ -63,7 +64,7 @@ class _ExerciseConfigurationsPickerState<Enum> extends State<ExerciseConfigurati
             onPressed: () {
               widget.onSelect(_selectedConfig);
             },
-            label: "Switch to ${_selectedConfig.name}",
+            label: "Switch to ${_selectedConfig.displayName}",
             buttonColor: vibrantGreen,
             padding: const EdgeInsets.all(10.0))
       ],

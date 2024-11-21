@@ -27,7 +27,7 @@ class ExerciseLogWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final otherSuperSet = superSet;
 
-    final exerciseMetric = exerciseLog.exerciseVariant.getSetTypeConfiguration("metrics");
+    final exerciseMetric = exerciseLog.exerciseVariant.getSetTypeConfiguration();
 
     final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 

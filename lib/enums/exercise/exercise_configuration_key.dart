@@ -1,0 +1,4 @@
+enum ExerciseConfigurationKey {
+  setType,
+  equipment,
+}

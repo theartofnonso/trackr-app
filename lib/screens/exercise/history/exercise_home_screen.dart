@@ -10,10 +10,10 @@ import 'package:tracker_app/screens/exercise/history/history_screen.dart';
 
 import '../../../dtos/exercise_dto.dart';
 import '../../../dtos/exercise_log_dto.dart';
+import '../../../enums/exercise/exercise_configuration_key.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../widgets/buttons/opacity_button_widget.dart';
 import '../../../widgets/pickers/exercise_configurations_picker.dart';
-import '../../empty_state_screens/not_found.dart';
 
 class ExerciseHomeScreen extends StatefulWidget {
   static const routeName = "/exercise_home_screen";
@@ -30,15 +30,13 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
   List<ExerciseLogDTO> _exerciseLogs = [];
   List<ExerciseLogDTO> _filteredExerciseLogs = [];
 
-  late Map<String, dynamic> _selectedConfigurations;
+  late Map<ExerciseConfigurationKey, dynamic> _selectedConfigurations;
 
   @override
   Widget build(BuildContext context) {
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
     final exercise = exerciseAndRoutineController.whereExercise(id: widget.id);
-
-    if (exercise == null) return const NotFound();
 
     final completedExerciseLogs = completedExercises(exerciseLogs: _filteredExerciseLogs);
 
@@ -55,14 +53,16 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
     final firstVariant =
         _filteredExerciseLogs.isNotEmpty ? _filteredExerciseLogs.first.exerciseVariant : exercise.defaultVariant();
 
-    final configurationOptionsWidgets = exercise.configurationOptions.keys.map((String configKey) => OpacityButtonWidget(
-      label: configKey.toUpperCase(),
-      buttonColor: vibrantGreen,
-      padding: EdgeInsets.symmetric(horizontal: 0),
-      textStyle:
-      GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: vibrantGreen),
-      onPressed: () => _showConfigurationPicker(configKey: configKey, baseExercise: exercise),
-    )).toList() ?? [];
+    final configurationOptionsWidgets = exercise.configurationOptions.keys
+            .map((ExerciseConfigurationKey configKey) => OpacityButtonWidget(
+                  label: configKey.name.toUpperCase(),
+                  buttonColor: vibrantGreen,
+                  padding: EdgeInsets.symmetric(horizontal: 0),
+                  textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: vibrantGreen),
+                  onPressed: () => _showConfigurationPicker(configKey: configKey, baseExercise: exercise),
+                ))
+            .toList() ??
+        [];
 
     return DefaultTabController(
         length: 2,
@@ -114,10 +114,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
                         width: 1.0, // Border width
                       ), // Adjust the radius as needed
                     ),
-                    child: Wrap(
-                        runSpacing: 8,
-                        spacing: 8,
-                        children: configurationOptionsWidgets),
+                    child: Wrap(runSpacing: 8, spacing: 8, children: configurationOptionsWidgets),
                   ),
                   Expanded(
                     child: TabBarView(
@@ -143,13 +140,13 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
         ));
   }
 
-  void _showConfigurationPicker({required String configKey, required ExerciseDTO baseExercise}) {
+  void _showConfigurationPicker({required ExerciseConfigurationKey configKey, required ExerciseDTO baseExercise}) {
     final options = baseExercise.configurationOptions[configKey]!;
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
         return ExerciseConfigurationsPicker<dynamic>(
-          label: configKey,
+          configurationKey: configKey,
           initialConfig: _selectedConfigurations[configKey],
           configurationOptions: options,
           onSelect: (configuration) {
@@ -168,7 +165,6 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
     super.initState();
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
     _exerciseLogs = exerciseAndRoutineController.exerciseLogsById[widget.id] ?? [];
-   // _selectedConfigurations = Map<String, dynamic>.from(widget..exerciseVariant.configurations);
-
+    // _selectedConfigurations = Map<String, dynamic>.from(widget..exerciseVariant.configurations);
   }
 }

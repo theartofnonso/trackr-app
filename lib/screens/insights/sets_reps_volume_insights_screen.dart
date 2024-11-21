@@ -344,7 +344,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
       exerciseLogs.mapIndexed((index, exerciseLog) {
         final setSummaries = exerciseLog.sets.mapIndexed((index, set) {
-          return switch (exerciseLog.exerciseVariant.getSetTypeConfiguration("metrics")) {
+          return switch (exerciseLog.exerciseVariant.getSetTypeConfiguration()) {
             SetType.weightsAndReps => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
             SetType.reps => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
             SetType.duration => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",

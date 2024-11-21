@@ -25,6 +25,7 @@ import 'package:tracker_app/widgets/routine/editors/set_rows/weights_and_reps_se
 import '../../../colors.dart';
 import '../../../dtos/exercise_dto.dart';
 import '../../../dtos/sets_dtos/set_dto.dart';
+import '../../../enums/exercise/exercise_configuration_key.dart';
 import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../utils/general_utils.dart';
@@ -74,7 +75,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   final List<(TextEditingController, TextEditingController)> _controllers = [];
   final List<DateTime> _durationControllers = [];
 
-  late Map<String, dynamic> _selectedConfigurations;
+  late Map<ExerciseConfigurationKey, ExerciseConfig> _selectedConfigurations;
 
   /// [MenuItemButton]
   List<Widget> _menuActionButtons() {
@@ -133,7 +134,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _addSet() {
-    if (withDurationOnly(metric: widget.exerciseLogDto.exerciseVariant.getSetTypeConfiguration("set_type"))) {
+    if (withDurationOnly(metric: widget.exerciseLogDto.exerciseVariant.getSetTypeConfiguration())) {
       _durationControllers.add(DateTime.now());
     } else {
       _controllers.add((TextEditingController(), TextEditingController()));
@@ -143,12 +144,12 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     Provider.of<ExerciseLogController>(context, listen: false).addSet(
         exerciseId: widget.exerciseLogDto.exerciseVariant.name,
         pastSets: pastSets,
-        metric: widget.exerciseLogDto.exerciseVariant.getSetTypeConfiguration("set_type"));
+        metric: widget.exerciseLogDto.exerciseVariant.getSetTypeConfiguration());
     _cacheLog();
   }
 
   void _removeSet({required int index}) {
-    if (withDurationOnly(metric: widget.exerciseLogDto.exerciseVariant.getSetTypeConfiguration("set_type"))) {
+    if (withDurationOnly(metric: widget.exerciseLogDto.exerciseVariant.getSetTypeConfiguration())) {
       _durationControllers.removeAt(index);
     } else {
       _controllers.removeAt(index);
@@ -213,7 +214,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _loadTextEditingControllers() {
     final sets = widget.exerciseLogDto.sets;
-    final metric = widget.exerciseLogDto.exerciseVariant.getSetTypeConfiguration("set_type");
+    final metric = widget.exerciseLogDto.exerciseVariant.getSetTypeConfiguration();
     List<(TextEditingController, TextEditingController)> controllers = [];
     double weight = 0;
     int reps = 0;
@@ -254,14 +255,14 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   void initState() {
     super.initState();
 
-    _selectedConfigurations = Map<String, dynamic>.from(widget.exerciseLogDto.exerciseVariant.configurations);
+    _selectedConfigurations = Map<ExerciseConfigurationKey, ExerciseConfig>.from(widget.exerciseLogDto.exerciseVariant.configurations);
 
-    if (SetType.weightsAndReps == widget.exerciseLogDto.exerciseVariant.getSetTypeConfiguration("set_type") ||
-        SetType.reps == widget.exerciseLogDto.exerciseVariant.getSetTypeConfiguration("set_type")) {
+    if (SetType.weightsAndReps == widget.exerciseLogDto.exerciseVariant.getSetTypeConfiguration() ||
+        SetType.reps == widget.exerciseLogDto.exerciseVariant.getSetTypeConfiguration()) {
       _loadTextEditingControllers();
     }
     if (widget.editorType == RoutineEditorMode.log &&
-        SetType.duration == widget.exerciseLogDto.exerciseVariant.getSetTypeConfiguration("set_type")) {
+        SetType.duration == widget.exerciseLogDto.exerciseVariant.getSetTypeConfiguration()) {
       _loadDurationControllers();
     }
   }
@@ -285,7 +286,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final exercise = exerciseAndRoutineController.whereExercise(id: exerciseVariant.baseExerciseId);
 
-    final configurationOptionsWidgets = exerciseVariant.configurations.keys.map((String configKey) {
+    final configurationOptionsWidgets = exerciseVariant.configurations.keys.map((ExerciseConfigurationKey configKey) {
       final configValue = exerciseVariant.configurations[configKey]!;
       final configOptions = exercise.configurationOptions[configKey]!;
       final isConfigurable = configOptions.length > 1;
@@ -374,7 +375,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white.withOpacity(0.8), fontSize: 14),
           ),
           const SizedBox(height: 12),
-          switch (exerciseVariant.getSetTypeConfiguration("set_type")) {
+          switch (exerciseVariant.getSetTypeConfiguration()) {
             SetType.weightsAndReps => WeightRepsSetHeader(
                 editorType: widget.editorType,
                 firstLabel: weightLabel().toUpperCase(),
@@ -385,7 +386,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           },
           const SizedBox(height: 8),
           if (sets.isNotEmpty)
-            if (exerciseVariant.getSetTypeConfiguration("set_type") == SetType.weightsAndReps)
+            if (exerciseVariant.getSetTypeConfiguration() == SetType.weightsAndReps)
               _WeightAndRepsSetListView(
                 sets: sets.map((set) => set as WeightAndRepsSetDTO).toList(),
                 editorType: widget.editorType,
@@ -397,7 +398,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 onTapWeightEditor: _onTapWeightEditor,
                 onTapRepsEditor: _onTapRepsEditor,
               ),
-          if (exerciseVariant.getSetTypeConfiguration("set_type") == SetType.reps)
+          if (exerciseVariant.getSetTypeConfiguration() == SetType.reps)
             _RepsSetListView(
               sets: sets.map((set) => set as RepsSetDTO).toList(),
               editorType: widget.editorType,
@@ -408,7 +409,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               onTapWeightEditor: _onTapWeightEditor,
               onTapRepsEditor: _onTapRepsEditor,
             ),
-          if (exerciseVariant.getSetTypeConfiguration("set_type") == SetType.duration)
+          if (exerciseVariant.getSetTypeConfiguration() == SetType.duration)
             _DurationSetListView(
               sets: sets.map((set) => set as DurationSetDTO).toList(),
               editorType: widget.editorType,
@@ -422,14 +423,14 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               updateDuration: _updateDuration,
             ),
           const SizedBox(height: 8),
-          if (withDurationOnly(metric: exerciseVariant.getSetTypeConfiguration("set_type")) && sets.isEmpty)
+          if (withDurationOnly(metric: exerciseVariant.getSetTypeConfiguration()) && sets.isEmpty)
             Center(
               child: Text("Tap + to add a timer",
                   style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white70)),
             ),
           const SizedBox(height: 8),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            if (withWeightsOnly(metric: exerciseVariant.getSetTypeConfiguration("set_type")))
+            if (withWeightsOnly(metric: exerciseVariant.getSetTypeConfiguration()))
               IconButton(
                   onPressed: _show1RMRecommendations,
                   icon: const FaIcon(FontAwesomeIcons.solidLightbulb, color: Colors.white, size: 16),
@@ -458,13 +459,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     );
   }
 
-  void _showConfigurationPicker({required String configKey, required ExerciseDTO baseExercise}) {
+  void _showConfigurationPicker({required ExerciseConfigurationKey configKey, required ExerciseDTO baseExercise}) {
     final options = baseExercise.configurationOptions[configKey]!;
     displayBottomSheet(
       context: context,
       height: 300,
       child: ExerciseConfigurationsPicker<dynamic>(
-        label: configKey,
+        configurationKey: configKey,
         initialConfig: _selectedConfigurations[configKey],
         configurationOptions: options,
         onSelect: (configuration) {

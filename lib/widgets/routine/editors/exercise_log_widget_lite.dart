@@ -5,6 +5,7 @@ import 'package:tracker_app/dtos/exercise_log_dto.dart';
 
 import '../../../colors.dart';
 import '../../../controllers/exercise_and_routine_controller.dart';
+import '../../../enums/exercise/exercise_configuration_key.dart';
 import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../chips/squared_chips.dart';
@@ -32,7 +33,7 @@ class ExerciseLogLiteWidget extends StatelessWidget {
 
     final exercise = exerciseAndRoutineController.whereExercise(id: exerciseVariant.baseExerciseId);
 
-    final configurationChips = exercise.configurationOptions.keys.map((String configKey) {
+    final configurationChips = exercise.configurationOptions.keys.map((ExerciseConfigurationKey configKey) {
       final configValue = exerciseVariant.configurations[configKey]!;
       final configOptions = exercise.configurationOptions[configKey]!;
       final isConfigurable = configOptions.length > 1;

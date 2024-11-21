@@ -219,7 +219,7 @@ String copyRoutineAsText(
       routineText.writeln("  Notes: ${exerciseLog.notes}");
     }
     for (var i = 0; i < exerciseLog.sets.length; i++) {
-      switch (exerciseLog.exerciseVariant.getSetTypeConfiguration("metrics")) {
+      switch (exerciseLog.exerciseVariant.getSetTypeConfiguration()) {
         case SetType.weightsAndReps:
           routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].summary()}");
           break;

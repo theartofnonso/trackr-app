@@ -1,6 +1,7 @@
 import 'package:tracker_app/dtos/exercise_variant_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 
+import '../../enums/exercise/exercise_configuration_key.dart';
 import '../../enums/exercise/exercise_equipment_enum.dart';
 import '../../enums/exercise/set_type_enums.dart';
 import '../exercise_dto.dart';
@@ -23,9 +24,9 @@ class SquatExerciseDTO extends ExerciseDTO {
   List<MuscleGroup> get secondaryMuscleGroups => [MuscleGroup.hamstrings, MuscleGroup.glutes];
 
   @override
-  Map<String, List<ExerciseConfig>> get configurationOptions => {
-    "set_type": [SetType.reps, SetType.weightsAndReps],
-    "equipment": [
+  Map<ExerciseConfigurationKey, List<ExerciseConfig>> get configurationOptions => {
+    ExerciseConfigurationKey.setType: [SetType.reps, SetType.weightsAndReps],
+    ExerciseConfigurationKey.equipment: [
       ExerciseEquipment.none,
       ExerciseEquipment.barbell,
       ExerciseEquipment.machine,
@@ -35,9 +36,9 @@ class SquatExerciseDTO extends ExerciseDTO {
   };
 
   @override
-  ExerciseVariantDTO createVariant({required Map<String, dynamic> configurations}) {
+  ExerciseVariantDTO createVariant({required Map<ExerciseConfigurationKey, dynamic> configurations}) {
     /// Validate configurations
-    Map<String, ExerciseConfig> validConfigurations = {};
+    Map<ExerciseConfigurationKey, ExerciseConfig> validConfigurations = {};
 
     configurations.forEach((key, value) {
       if (configurationOptions.containsKey(key)) {
@@ -62,8 +63,8 @@ class SquatExerciseDTO extends ExerciseDTO {
   ExerciseVariantDTO defaultVariant() {
     final variant = createVariant(
         configurations: {
-          "set_type": SetType.reps,
-          "equipment": ExerciseEquipment.none,
+          ExerciseConfigurationKey.setType: SetType.reps,
+          ExerciseConfigurationKey.equipment: ExerciseEquipment.none,
         });
     return variant;
   }

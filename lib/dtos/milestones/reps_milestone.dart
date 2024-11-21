@@ -84,7 +84,7 @@ class RepsMilestone extends Milestone {
 
         final exerciseLogs = completedExerciseLogs
             .where((exerciseLog) =>
-                exerciseLog.exerciseVariant.getSetTypeConfiguration("metrics") !=
+                exerciseLog.exerciseVariant.getSetTypeConfiguration() !=
                 SetType.duration)
             .where((exerciseLog) {
           final primaryMuscleGroups = exerciseLog.exerciseVariant.primaryMuscleGroups;

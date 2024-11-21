@@ -69,7 +69,7 @@ class _ExerciseLogWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final exerciseType = exerciseLog.exerciseVariant.getSetTypeConfiguration("metrics");
+    final exerciseType = exerciseLog.exerciseVariant.getSetTypeConfiguration();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
