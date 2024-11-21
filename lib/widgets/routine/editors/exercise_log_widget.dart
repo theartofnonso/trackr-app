@@ -465,34 +465,16 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           Navigator.of(context).pop();
           setState(() {
             _selectedConfigurations[configKey] = configuration;
+            print(_selectedConfigurations);
+            final newExerciseVariant = baseExercise.createVariant(configurations: _selectedConfigurations);
+            final updatedExerciseLog = widget.exerciseLogDto.copyWith(exerciseVariant: newExerciseVariant);
+            widget.onUpdate(updatedExerciseLog);
           });
         }, // Provide descriptions if available
       ),
     );
   }
-
-  void _onUpdateExerciseLog(
-      {required String title,
-      required String message,
-      required Function() callback,
-      required String rightActionLabel}) {
-    showBottomSheetWithMultiActions(
-        context: context,
-        title: title,
-        description: message,
-        leftAction: _closeDialog,
-        rightAction: () {
-          _closeDialog();
-          callback();
-        },
-        leftActionLabel: 'Cancel',
-        rightActionLabel: rightActionLabel,
-        isRightActionDestructive: true);
-  }
-
-  void _closeDialog() {
-    Navigator.of(context).pop();
-  }
+  
 }
 
 class _WeightAndRepsSetListView extends StatelessWidget {

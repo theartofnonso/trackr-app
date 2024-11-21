@@ -40,7 +40,7 @@ Map<String, dynamic> _decodeNotificationPayload({required PendingNotificationReq
   if (payloadString != null) {
     final payload = jsonDecode(payloadString);
     final reminderTypeString = payload["type"];
-    final type = DailyReminderType.fromString(reminderTypeString);
+    final type = DailyReminderType.fromJson(reminderTypeString);
     final durationString = payload["duration"];
     final duration = Duration(milliseconds: int.parse(durationString));
     return {"type": type, "duration": duration};

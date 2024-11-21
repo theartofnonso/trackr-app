@@ -2,7 +2,9 @@ enum RoutineScheduleType {
   days,
   none;
 
-  static RoutineScheduleType fromString(String string) {
+  String toJson() => name;
+
+  static RoutineScheduleType fromJson(String string) {
     return RoutineScheduleType.values.firstWhere((value) => value.name.toLowerCase() == string.toLowerCase());
   }
 }

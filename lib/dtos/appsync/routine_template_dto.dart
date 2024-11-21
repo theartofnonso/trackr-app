@@ -60,7 +60,7 @@ class RoutineTemplateDto {
     final scheduledDate = scheduledDateString != null ? DateTime.parse(scheduledDateString) : null;
     final scheduleTypeString = json["scheduleType"];
     final scheduleType =
-        scheduleTypeString != null ? RoutineScheduleType.fromString(scheduleTypeString) : RoutineScheduleType.days;
+        scheduleTypeString != null ? RoutineScheduleType.fromJson(scheduleTypeString) : RoutineScheduleType.days;
     final scheduledDays = json["days"] as List<dynamic>? ?? [];
     final daysOfWeek = scheduledDays.map((day) => DayOfWeek.fromWeekDay(day)).toList();
 

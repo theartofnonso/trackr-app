@@ -42,7 +42,7 @@ Duration totalDurationExerciseLog({required ExerciseLogDTO exerciseLog}) {
 }
 
 int totalRepsForExerciseLog({required ExerciseLogDTO exerciseLog}) => exerciseLog.sets.fold(0, (total, set) {
-      final metric = exerciseLog.exerciseVariant.getExerciseMetricConfiguration("exercise_metric");
+      final metric = exerciseLog.exerciseVariant.getExerciseMetricConfiguration("metrics");
       if (metric == ExerciseMetric.reps) {
         return total + (set as RepsSetDTO).reps;
       } else if (metric == ExerciseMetric.weights) {
@@ -56,7 +56,7 @@ int highestRepsForExerciseLog({required ExerciseLogDTO exerciseLog}) {
 
   return exerciseLog.sets
       .map((set) {
-        final metric = exerciseLog.exerciseVariant.getExerciseMetricConfiguration("exercise_metric");
+        final metric = exerciseLog.exerciseVariant.getExerciseMetricConfiguration("metrics");
         if (metric == ExerciseMetric.reps) {
           return (set as RepsSetDTO).reps;
         } else if (metric == ExerciseMetric.weights) {

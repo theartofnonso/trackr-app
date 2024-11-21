@@ -65,7 +65,7 @@ class ExerciseLogDTO {
     final notes = json["notes"] ?? "";
     final setsJsons = json["sets"] as List<dynamic>;
     final sets = setsJsons.map((json) =>
-        SetDTO.fromJson(jsonDecode(json), metric: exerciseVariant.getExerciseMetricConfiguration("exercise_metric"))).toList();
+        SetDTO.fromJson(jsonDecode(json), metric: exerciseVariant.getExerciseMetricConfiguration("metrics"))).toList();
 
     return ExerciseLogDTO(
         routineLogId: routineLogId,

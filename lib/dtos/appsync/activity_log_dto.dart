@@ -102,5 +102,5 @@ class ActivityLogDto extends Log {
   LogType get logType => LogType.activity;
 
   @override
-  ActivityType get activityType => ActivityType.fromString(name);
+  ActivityType get activityType => ActivityType.fromJson(name);
 }

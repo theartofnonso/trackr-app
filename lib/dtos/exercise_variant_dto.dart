@@ -31,12 +31,13 @@ class ExerciseVariantDTO {
     final id = json["base_exercise_id"];
     final name = json["name"];
     final primaryMuscleGroups = (json["primary_muscle_groups"] as List<dynamic>)
-        .map((muscleGroup) => MuscleGroup.fromString(muscleGroup))
+        .map((muscleGroup) => MuscleGroup.fromJson(muscleGroup))
         .toList();
     final secondaryMuscleGroups = (json["secondary_muscle_groups"] as List<dynamic>)
-        .map((muscleGroup) => MuscleGroup.fromString(muscleGroup))
+        .map((muscleGroup) => MuscleGroup.fromJson(muscleGroup))
         .toList();
-    final configurations = json["configurations"] as Map<String, ExerciseConfig>;
+    final configurations = (json['configurations'] as Map<String, dynamic>)
+        .map((key, value) => MapEntry(key, ExerciseConfig.fromJson(value)));
 
     return ExerciseVariantDTO(
         baseExerciseId: id,

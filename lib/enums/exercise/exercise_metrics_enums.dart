@@ -1,11 +1,11 @@
 import '../../dtos/exercise_dto.dart';
 
 enum ExerciseMetric implements ExerciseConfig {
-  weights("Weights", "Log the weight and reps for strength exercises like bench press or squats curls."),
-  reps("Reps", "Track the number of reps for bodyweight exercises like pull-ups, crunches, or burpees"),
-  duration("Duration", "Record how long you hold or perform time-based exercises like planks or Dead Hang.");
+  weights(name: "Weights", description: "Log the weight and reps for strength exercises like bench press or squats curls."),
+  reps(name: "Reps", description: "Track the number of reps for bodyweight exercises like pull-ups, crunches, or burpees"),
+  duration(name: "Duration", description: "Record how long you hold or perform time-based exercises like planks or Dead Hang.");
 
-  const ExerciseMetric(this.name, this.description);
+  const ExerciseMetric({required this.name, required this.description});
 
   @override
   final String name;
@@ -14,8 +14,20 @@ enum ExerciseMetric implements ExerciseConfig {
   final String description;
 
   static ExerciseMetric fromString(String string) {
-    return values
-        .firstWhere((value) => value.name.toLowerCase() == string.toLowerCase());
+    return values.firstWhere((value) => value.name.toLowerCase() == string.toLowerCase());
+  }
+  
+  static ExerciseMetric fromJson(Map<String, dynamic> json) {
+    final name = json["name"];
+    return ExerciseMetric.fromString(name);
   }
 
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      "type": "ExerciseMetric",
+      'name': name,
+      'description': description,
+    };
+  }
 }

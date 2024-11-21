@@ -30,8 +30,10 @@ enum MuscleGroup {
   // Get all MuscleGroup values sorted alphabetically
   static List<MuscleGroup> get valuesSorted => MuscleGroup.values.toList()..sort((a, b) => a.name.compareTo(b.name));
 
+  String toJson() => name;
+
   // Find a MuscleGroup by its name (case insensitive)
-  static MuscleGroup fromString(String string) {
+  static MuscleGroup fromJson(String string) {
     return MuscleGroup.values.firstWhere(
       (group) => group.name.toLowerCase() == string.toLowerCase(),
     );

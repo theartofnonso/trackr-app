@@ -1,5 +1,4 @@
 import 'package:tracker_app/dtos/exercise_variant_dto.dart';
-import 'package:tracker_app/enums/muscle_group_enums.dart';
 
 import '../enums/exercise/exercise_equipment_enum.dart';
 import '../enums/exercise/exercise_metrics_enums.dart';
@@ -15,12 +14,7 @@ class SquatExerciseDTO extends ExerciseDTO {
       required super.configurationOptions});
 
   @override
-  ExerciseVariantDTO createVariant(
-      {required String baseExerciseId,
-      required String name,
-      required List<MuscleGroup> primaryMuscleGroups,
-      required List<MuscleGroup> secondaryMuscleGroups,
-      required Map<String, dynamic> configurations}) {
+  ExerciseVariantDTO createVariant({required Map<String, dynamic> configurations}) {
     /// Validate configurations
     Map<String, ExerciseConfig> validConfigurations = {};
 
@@ -36,7 +30,7 @@ class SquatExerciseDTO extends ExerciseDTO {
       }
     });
     return ExerciseVariantDTO(
-        baseExerciseId: baseExerciseId,
+        baseExerciseId: id,
         name: name,
         primaryMuscleGroups: primaryMuscleGroups,
         secondaryMuscleGroups: secondaryMuscleGroups,
@@ -46,10 +40,6 @@ class SquatExerciseDTO extends ExerciseDTO {
   @override
   ExerciseVariantDTO defaultVariant() {
     final variant = createVariant(
-        baseExerciseId: id,
-        name: name,
-        primaryMuscleGroups: primaryMuscleGroups,
-        secondaryMuscleGroups: secondaryMuscleGroups,
         configurations: {
           "metrics": ExerciseMetric.reps,
           "equipment": ExerciseEquipment.none,

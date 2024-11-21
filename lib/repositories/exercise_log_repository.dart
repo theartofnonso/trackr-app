@@ -15,7 +15,7 @@ class ExerciseLogRepository {
   void loadExerciseLogs({required List<ExerciseLogDTO> exerciseLogs, required RoutineEditorMode mode}) {
     List<ExerciseLogDTO> logs = [];
     for (var exerciseLog in exerciseLogs) {
-      if (withDurationOnly(metric: exerciseLog.exerciseVariant.getExerciseMetricConfiguration("exercise_metric"))) {
+      if (withDurationOnly(metric: exerciseLog.exerciseVariant.getExerciseMetricConfiguration("metrics"))) {
         if (mode == RoutineEditorMode.log) {
           final checkedSets = exerciseLog.sets.map((set) => set.copyWith(checked: true)).toList();
           final updatedExerciseLog = exerciseLog.copyWith(sets: checkedSets);
@@ -35,7 +35,7 @@ class ExerciseLogRepository {
   List<ExerciseLogDTO> mergeExerciseLogsAndSets() {
     return _exerciseLogs.map((exerciseLog) {
       final sets = exerciseLog.sets;
-      return exerciseLog.copyWith(sets: withDurationOnly(metric: exerciseLog.exerciseVariant.getExerciseMetricConfiguration("exercise_metric")) ? _checkSets(sets) : sets);
+      return exerciseLog.copyWith(sets: withDurationOnly(metric: exerciseLog.exerciseVariant.getExerciseMetricConfiguration("metrics")) ? _checkSets(sets) : sets);
     }).toList();
   }
 

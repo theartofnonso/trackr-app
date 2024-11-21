@@ -389,7 +389,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
           /// [Exercise.duration] exercises do not have sets in templates
           /// This is because we only need to store the duration of the exercise in [RoutineEditorType.log] i.e data is logged in realtime
-          final sets = withDurationOnly(metric: exerciseLog.exerciseVariant.getExerciseMetricConfiguration("exercise_metric")) ? <SetDTO>[] : uncheckedSets;
+          final sets = withDurationOnly(metric: exerciseLog.exerciseVariant.getExerciseMetricConfiguration("metrics")) ? <SetDTO>[] : uncheckedSets;
           return exerciseLog.copyWith(sets: sets);
         }).toList();
         final templateToCreate = RoutineTemplateDto(
@@ -549,7 +549,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
               final exerciseTemplates = recommendedExercises.map((exerciseName) {
                 return exercises.firstWhere((exercise) => exercise.name == exerciseName);
               }).toList();
-              final muscleGroup = MuscleGroup.fromString(muscleGroupString);
+              final muscleGroup = MuscleGroup.fromJson(muscleGroupString);
               return {
                 "muscle_group": muscleGroup,
                 "exercises": [exerciseTemplates[0], exerciseTemplates[1]],
