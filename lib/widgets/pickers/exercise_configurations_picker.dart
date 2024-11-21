@@ -29,7 +29,7 @@ class _ExerciseConfigurationsPickerState<Enum> extends State<ExerciseConfigurati
   Widget build(BuildContext context) {
     final children = widget.configurationOptions
         .map((config) => Center(
-            child: Text(config.name,
+            child: Text(config.displayName,
                 style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 24, color: Colors.white))))
         .toList();
 

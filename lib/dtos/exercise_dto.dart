@@ -6,6 +6,7 @@ import '../enums/exercise/exercise_equipment_enum.dart';
 
 abstract class ExerciseConfig {
   String get name;
+  String get displayName;
   String get description;
 
   Map<String, dynamic> toJson();
@@ -14,7 +15,7 @@ abstract class ExerciseConfig {
     switch (json['type']) {
       case 'ExerciseEquipment':
         return ExerciseEquipment.fromJson(json);
-      case 'ExerciseMetric':
+      case 'SetType':
         return SetType.fromJson(json);
       default:
         throw ArgumentError('Unknown ExerciseConfig type: ${json['type']}');

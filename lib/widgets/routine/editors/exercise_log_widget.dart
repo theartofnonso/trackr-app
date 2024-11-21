@@ -29,6 +29,7 @@ import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/one_rep_max_calculator.dart';
+import '../../chips/squared_chips.dart';
 
 class ExerciseLogWidget extends StatefulWidget {
   final RoutineEditorMode editorType;
@@ -286,12 +287,17 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final configurationOptionsWidgets = exerciseVariant.configurations.keys.map((String configKey) {
       final configValue = exerciseVariant.configurations[configKey]!;
-      return OpacityButtonWidget(
-        label: configValue.name.toUpperCase(),
+      final configOptions = exercise.configurationOptions[configKey]!;
+      final isConfigurable = configOptions.length > 1;
+      return isConfigurable ? OpacityButtonWidget(
+        label: configValue.displayName.toLowerCase(),
         buttonColor: vibrantGreen,
         padding: EdgeInsets.symmetric(horizontal: 0),
-        textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: vibrantGreen),
+        textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 12, color: vibrantGreen),
         onPressed: () => _showConfigurationPicker(configKey: configKey, baseExercise: exercise),
+      ) : SquaredChips(
+        label: configValue.displayName.toLowerCase(),
+        color: Colors.grey,
       );
     }).toList();
 

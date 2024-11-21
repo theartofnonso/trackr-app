@@ -34,9 +34,11 @@ class ExerciseLogLiteWidget extends StatelessWidget {
 
     final configurationChips = exercise.configurationOptions.keys.map((String configKey) {
       final configValue = exerciseVariant.configurations[configKey]!;
+      final configOptions = exercise.configurationOptions[configKey]!;
+      final isConfigurable = configOptions.length > 1;
       return SquaredChips(
-        label: configValue.name.toUpperCase(),
-        color: vibrantGreen,
+        label: configValue.displayName.toLowerCase(),
+        color: isConfigurable ? vibrantGreen : Colors.grey,
       );
     }).toList();
 

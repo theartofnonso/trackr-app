@@ -44,6 +44,7 @@ class StepUpsExerciseDTO extends ExerciseDTO {
         throw ArgumentError('Configuration "$key" is not valid for exercise "$name".');
       }
     });
+
     return ExerciseVariantDTO(
         baseExerciseId: id,
         name: name,

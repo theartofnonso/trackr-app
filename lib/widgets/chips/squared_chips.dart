@@ -18,7 +18,7 @@ class SquaredChips extends StatelessWidget {
             child: Center(
               child: Text(label,
                   textAlign: TextAlign.start,
-                  style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 10, color: color)),
+                  style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 12, color: color)),
             )),
       ],
     );
