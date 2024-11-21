@@ -79,7 +79,6 @@ class _ExerciseConfigurationsPickerState<Enum> extends State<ExerciseConfigurati
     if (widget.configurationOptions.isEmpty) {
       throw ArgumentError('Configuration Options list cannot be empty.');
     }
-    print( widget.initialConfig);
     final initialIndex =
         widget.initialConfig != null ? widget.configurationOptions.indexOf(widget.initialConfig as ExerciseConfig) : 0;
     _selectedConfig = widget.configurationOptions[initialIndex];

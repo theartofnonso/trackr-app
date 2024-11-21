@@ -7,15 +7,15 @@ import '../../enums/exercise/set_type_enums.dart';
 import '../../enums/muscle_group_enums.dart';
 import '../exercise_dto.dart';
 
-class ChestPushUpsExerciseDto extends ExerciseDTO {
+class TricepsPushUpsExerciseDto extends ExerciseDTO {
   @override
-  String get id => "CHT_04";
+  String get id => "CHT_05";
 
   @override
-  String get name => "Push Ups";
+  String get name => "Close-Grip Push Ups";
 
   @override
-  String get description => "Strengthens the chest and triceps with a bodyweight.";
+  String get description => "Focuses on strengthening the triceps by positioning the hands close together.";
 
   @override
   List<MuscleGroup> get primaryMuscleGroups => [MuscleGroup.chest];
