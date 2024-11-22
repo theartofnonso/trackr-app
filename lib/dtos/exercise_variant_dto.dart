@@ -26,9 +26,9 @@ class ExerciseVariantDTO {
       'primary_muscle_groups': primaryMuscleGroups.map((muscleGroup) => muscleGroup.name).toList(),
       'secondary_muscle_groups': secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name).toList(),
       'configurations': configurations.map((key, value) => MapEntry(
-        key.toJson(),
-        value.toJson(),
-      ))
+            key.toJson(),
+            value.toJson(),
+          ))
     };
   }
 
@@ -41,10 +41,13 @@ class ExerciseVariantDTO {
     final secondaryMuscleGroups = (json["secondary_muscle_groups"] as List<dynamic>)
         .map((muscleGroup) => MuscleGroup.fromJson(muscleGroup))
         .toList();
-    final configurations = (json['configurations'] as Map<String, dynamic>).map(
-          (key, value) => MapEntry(ExerciseConfigurationKey.fromJson(key), ExerciseConfigValue.fromJson(value)),
-    );
-
+    final configurationsJsons = (json['configurations'] as Map<String, dynamic>?) ?? <String, dynamic>{};
+    Map<ExerciseConfigurationKey, ExerciseConfigValue> configurations = {};
+    if (configurationsJsons.isNotEmpty) {
+      configurations = configurationsJsons.map(
+            (key, value) => MapEntry(ExerciseConfigurationKey.fromJson(key), ExerciseConfigValue.fromJson(value)),
+      );
+    }
     return ExerciseVariantDTO(
         baseExerciseId: id,
         name: name,
@@ -63,7 +66,8 @@ class ExerciseVariantDTO {
 
   SetType getSetTypeConfiguration() => configurations[ExerciseConfigurationKey.setType] as SetType;
 
-  ExerciseEquipment getExerciseEquipmentConfiguration() => configurations[ExerciseConfigurationKey.equipment] as ExerciseEquipment;
+  ExerciseEquipment getExerciseEquipmentConfiguration() =>
+      configurations[ExerciseConfigurationKey.equipment] as ExerciseEquipment;
 
   ExerciseVariantDTO copyWith({
     String? baseExerciseId,
