@@ -23,6 +23,7 @@ enum ExerciseEquipment implements ExerciseConfigValue {
   smithMachine(displayName: "Smith Machine", description: "Stabilized barbell for squats, presses, and safer lifts."),
   cableMachine(displayName: "Cable Machine", description: "Versatile for isolation and functional exercises"),
   plate(displayName: "Plate", description: "Add resistance to barbells or use for loaded carries."),
+  sandBag(displayName: "Sand Bag", description: "A bag filled with sand, used for functional strength and conditioning exercises."),
   none(displayName: "No Equipment", description: "No equipment needed—perfect for bodyweight exercises.");
 
   const ExerciseEquipment({required this.displayName, required this.description});

@@ -1,5 +1,6 @@
 import 'package:tracker_app/dtos/sets_dtos/set_dto.dart';
 
+import '../enums/exercise/set_type_enums.dart';
 import 'abstract_class/exercise_dto.dart';
 import 'exercise_variant_dto.dart';
 
@@ -56,12 +57,20 @@ class ExerciseLogDTO {
         createdAt: DateTime.now());
   }
 
-  factory ExerciseLogDTO.fromJson({String? routineLogId, DateTime? createdAt, required Map<String, dynamic> json}) {
+  factory ExerciseLogDTO.fromJson({String? routineLogId, DateTime? createdAt, required Map<String, dynamic> json, SetType? set}) {
     final superSetId = json["superSetId"] ?? "";
     final exerciseJson = json["exercise"] as Map<String, dynamic>;
     final exerciseVariant = ExerciseVariantDTO.fromJson(exerciseJson);
     final notes = json["notes"] ?? "";
     final setsJsons = json["sets"] as List<dynamic>;
+    try {
+      print(exerciseVariant);
+      final sets = setsJsons.map((json) =>
+          SetDTO.fromJson(json, setType: exerciseVariant.getSetTypeConfiguration())).toList();
+
+    } catch(d) {
+      print(d);
+    }
     final sets = setsJsons.map((json) =>
         SetDTO.fromJson(json, setType: exerciseVariant.getSetTypeConfiguration())).toList();
 

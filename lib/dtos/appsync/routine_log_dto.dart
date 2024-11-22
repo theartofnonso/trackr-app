@@ -101,14 +101,10 @@ class RoutineLogDto extends Log {
     if (exerciseLogsInJson.isNotEmpty && exerciseLogsInJson.first is String) {
       final newSchema = _transformOldExercisesSchema(oldExercises: exerciseLogsInJson);
 
-        try {
-          exerciseLogs = newSchema
-              .map((json) =>
+      exerciseLogs = newSchema
+          .map((json) =>
               ExerciseLogDTO.fromJson(routineLogId: log.id, createdAt: log.createdAt.getDateTimeInUtc(), json: json))
-              .toList();
-        } catch(e) {
-          print(e);
-        }
+          .toList();
     } else {
       exerciseLogs = exerciseLogsInJson
           .map((json) =>
