@@ -33,11 +33,11 @@ abstract class SetDTO {
     return {"value1": 0, "value2": durationSet.duration.inMilliseconds, "checked": checked};
   }
 
-  factory SetDTO.fromJson(Map<String, dynamic> json, {required SetType metric}) {
+  factory SetDTO.fromJson(Map<String, dynamic> json, {required SetType setType}) {
     final value1 = json["value1"] as num;
     final value2 = json["value2"] as num;
     final checked = json["checked"] as bool;
-    return switch (metric) {
+    return switch (setType) {
       SetType.weightsAndReps => WeightAndRepsSetDTO(weight: value1.toDouble(), reps: value2.toInt(), checked: checked),
       SetType.reps => RepsSetDTO(reps: value2, checked: checked),
       SetType.duration => DurationSetDTO(duration: Duration(milliseconds: value2.toInt()), checked: checked),

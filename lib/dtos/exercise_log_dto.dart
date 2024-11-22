@@ -63,7 +63,25 @@ class ExerciseLogDTO {
     final notes = json["notes"] ?? "";
     final setsJsons = json["sets"] as List<dynamic>;
     final sets = setsJsons.map((json) =>
-        SetDTO.fromJson(json, metric: exerciseVariant.getSetTypeConfiguration())).toList();
+        SetDTO.fromJson(json, setType: exerciseVariant.getSetTypeConfiguration())).toList();
+
+    return ExerciseLogDTO(
+        routineLogId: routineLogId,
+        superSetId: superSetId,
+        exerciseVariant: exerciseVariant,
+        notes: notes,
+        sets: sets,
+        createdAt: createdAt ?? DateTime.now());
+  }
+
+  factory ExerciseLogDTO.fromNewJson({String? routineLogId, DateTime? createdAt, required Map<String, dynamic> json}) {
+    final superSetId = json["superSetId"] ?? "";
+    final exerciseJson = json["exercise"] as Map<String, dynamic>;
+    final exerciseVariant = ExerciseVariantDTO.fromJson(exerciseJson);
+    final notes = json["notes"] ?? "";
+    final setsJsons = json["sets"] as List<dynamic>;
+    final sets = setsJsons.map((json) =>
+        SetDTO.fromJson(json, setType: exerciseVariant.getSetTypeConfiguration())).toList();
 
     return ExerciseLogDTO(
         routineLogId: routineLogId,

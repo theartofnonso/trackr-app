@@ -44,7 +44,7 @@ class AmplifyRoutineLogRepository {
   }
 
   void loadLogStream({required List<RoutineLog> logs}) {
-    _logs = [logs.last].map((log) => RoutineLogDto.toDto(log)).toList();
+    _logs = logs.map((log) => RoutineLogDto.toDto(log)).toList();
     _groupExerciseLogs();
     _calculateMilestones();
   }

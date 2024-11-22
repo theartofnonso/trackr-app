@@ -69,12 +69,9 @@ class RoutineLogDto extends Log {
     final startTime = DateTime.parse(json["startTime"]);
     final endTime = DateTime.parse(json["endTime"]);
     final exerciseLogJsons = json["exercises"] as List<dynamic>;
-    final exerciseLogs = exerciseLogJsons
-        .map((json) {
-          return ExerciseLogDTO.fromJson(
-              routineLogId: "", json: json);
-    })
-        .toList();
+    final exerciseLogs = exerciseLogJsons.map((json) {
+      return ExerciseLogDTO.fromJson(routineLogId: "", json: json);
+    }).toList();
     return RoutineLogDto(
       id: "",
       templateId: templateId,
@@ -92,17 +89,32 @@ class RoutineLogDto extends Log {
 
   factory RoutineLogDto.fromLog({required RoutineLog log}) {
     final json = jsonDecode(log.data);
+
     final templateId = json["templateId"] ?? "";
     final name = json["name"] ?? "";
     final notes = json["notes"] ?? "";
     final summary = json["summary"];
     final startTime = DateTime.parse(json["startTime"]);
     final endTime = DateTime.parse(json["endTime"]);
-    final exerciseLogJsons = json["exercises"] as List<dynamic>;
-    final exerciseLogs = exerciseLogJsons
-        .map((json) => ExerciseLogDTO.fromJson(
-            routineLogId: log.id, createdAt: log.createdAt.getDateTimeInUtc(), json: json))
-        .toList();
+    final exerciseLogsInJson = json["exercises"] as List<dynamic>;
+    List<ExerciseLogDTO> exerciseLogs = [];
+    if (exerciseLogsInJson.isNotEmpty && exerciseLogsInJson.first is String) {
+      final newSchema = _transformOldExercisesSchema(oldExercises: exerciseLogsInJson);
+      try {
+        exerciseLogs = newSchema
+            .map((json) =>
+                ExerciseLogDTO.fromJson(routineLogId: log.id, createdAt: log.createdAt.getDateTimeInUtc(), json: json))
+            .toList();
+      } catch (e) {
+       // Do nothing
+      }
+    } else {
+      exerciseLogs = exerciseLogsInJson
+          .map((json) =>
+              ExerciseLogDTO.fromJson(routineLogId: log.id, createdAt: log.createdAt.getDateTimeInUtc(), json: json))
+          .toList();
+    }
+
     return RoutineLogDto(
       id: log.id,
       templateId: templateId,
@@ -116,6 +128,54 @@ class RoutineLogDto extends Log {
       createdAt: log.createdAt.getDateTimeInUtc(),
       updatedAt: log.updatedAt.getDateTimeInUtc(),
     );
+  }
+
+  static List<Map<String, dynamic>> _transformOldExercisesSchema({required List<dynamic> oldExercises}) {
+    // Process exercises
+    List<Map<String, dynamic>> newExercises = [];
+
+    for (var exerciseStr in oldExercises) {
+      // The exercises are strings of JSON objects, so parse them
+      Map<String, dynamic> oldExercise = jsonDecode(exerciseStr);
+
+      // Initialize new exercise map
+      Map<String, dynamic> newExercise = {
+        'notes': oldExercise['notes'] ?? '',
+        'sets': [],
+        'superSetId': oldExercise['superSetId'] ?? '',
+        'exercise': {
+          'secondary_muscle_groups': oldExercise['exercise']['secondaryMuscleGroups'] ?? [],
+          'base_exercise_id': oldExercise['exercise']['id'] ?? '',
+          'primary_muscle_groups': [oldExercise['exercise']['primaryMuscleGroup'] ?? ''],
+          'configurations': {},
+          'name': oldExercise['exercise']['name'] ?? '',
+        },
+      };
+
+      // Process sets
+      List<dynamic> oldSets = oldExercise['sets'] ?? [];
+      List<dynamic> newSets = [];
+
+      for (var setStr in oldSets) {
+        // The sets are strings of JSON objects, so parse them
+        Map<String, dynamic> oldSet = jsonDecode(setStr);
+
+        // Map old set fields to new set fields
+        Map<String, dynamic> newSet = {
+          'value1': oldSet['value1'] ?? 0,
+          'value2': oldSet['value2'] ?? 0,
+          'checked': oldSet['checked'] ?? false,
+        };
+
+        newSets.add(newSet);
+      }
+
+      newExercise['sets'] = newSets;
+
+      newExercises.add(newExercise);
+    }
+
+    return newExercises;
   }
 
   @override
