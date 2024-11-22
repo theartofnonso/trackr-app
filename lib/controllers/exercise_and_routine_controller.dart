@@ -175,7 +175,6 @@ class ExerciseAndRoutineController extends ChangeNotifier {
     try {
       savedLog = await _amplifyLogRepository.saveLog(logDto: logDto, datetime: datetime);
     } catch (e) {
-      print(e);
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {
       isLoading = false;

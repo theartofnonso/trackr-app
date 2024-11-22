@@ -35,17 +35,23 @@ class ExerciseVariantDTO {
   factory ExerciseVariantDTO.fromJson(Map<String, dynamic> json) {
     final id = json["base_exercise_id"];
     final name = json["name"];
-    final primaryMuscleGroups = (json["primary_muscle_groups"] as List<dynamic>)
-        .map((muscleGroup) => MuscleGroup.fromJson(muscleGroup))
-        .toList();
-    final secondaryMuscleGroups = (json["secondary_muscle_groups"] as List<dynamic>)
-        .map((muscleGroup) => MuscleGroup.fromJson(muscleGroup))
-        .toList();
+    final primaryMuscleGroups = (json["primary_muscle_groups"] as List<dynamic>?)
+            ?.where((muscleGroup) =>
+                MuscleGroup.values.map((muscleGroup) => muscleGroup.name).contains((muscleGroup as String)))
+            .map((muscleGroup) => MuscleGroup.fromJson(muscleGroup))
+            .toList() ??
+        [];
+    final secondaryMuscleGroups = (json["secondary_muscle_groups"] as List<dynamic>?)
+            ?.where((muscleGroup) =>
+                MuscleGroup.values.map((muscleGroup) => muscleGroup.name).contains((muscleGroup as String)))
+            .map((muscleGroup) => MuscleGroup.fromJson(muscleGroup))
+            .toList() ??
+        [];
     final configurationsJsons = (json['configurations'] as Map<String, dynamic>?) ?? <String, dynamic>{};
     Map<ExerciseConfigurationKey, ExerciseConfigValue> configurations = {};
     if (configurationsJsons.isNotEmpty) {
       configurations = configurationsJsons.map(
-            (key, value) => MapEntry(ExerciseConfigurationKey.fromJson(key), ExerciseConfigValue.fromJson(value)),
+        (key, value) => MapEntry(ExerciseConfigurationKey.fromJson(key), ExerciseConfigValue.fromJson(value)),
       );
     }
     return ExerciseVariantDTO(

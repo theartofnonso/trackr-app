@@ -101,15 +101,11 @@ class RoutineLogDto extends Log {
     final exerciseLogsInJson = json["exercises"] as List<dynamic>;
     List<ExerciseLogDTO> exerciseLogs = [];
     if (exerciseLogsInJson.isNotEmpty && exerciseLogsInJson.first is String) {
-     try {
-       final newSchema = _transformOldExercisesSchema(oldExercises: exerciseLogsInJson);
-       exerciseLogs = newSchema
-           .map((json) =>
-           ExerciseLogDTO.fromJson(routineLogId: log.id, createdAt: log.createdAt.getDateTimeInUtc(), json: json))
-           .toList();
-     } catch(e) {
-       print(e);
-     }
+      final newSchema = _transformOldExercisesSchema(oldExercises: exerciseLogsInJson);
+      exerciseLogs = newSchema
+          .map((json) =>
+              ExerciseLogDTO.fromJson(routineLogId: log.id, createdAt: log.createdAt.getDateTimeInUtc(), json: json))
+          .toList();
     } else {
       exerciseLogs = exerciseLogsInJson
           .map((json) =>
@@ -151,7 +147,7 @@ class RoutineLogDto extends Log {
         'sets': [],
         'superSetId': oldExercise['superSetId'] ?? '',
         'exercise': {
-          'secondary_muscle_groups': oldExercise['exercise']['secondaryMuscleGroups'] ?? [],
+          'secondary_muscle_groups': oldExercise['exercise']['secondaryMuscleGroups'] ?? [""],
           'base_exercise_id': oldExercise['exercise']['id'] ?? '',
           'primary_muscle_groups': [oldExercise['exercise']['primaryMuscleGroup'] ?? ''],
           'configurations': <String, dynamic>{
