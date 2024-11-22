@@ -32,7 +32,8 @@ class SquatExerciseDTO extends ExerciseDTO {
       ExerciseEquipment.machine,
       ExerciseEquipment.hackSquatMachine,
       ExerciseEquipment.smithMachine,
-      ExerciseEquipment.kettleBell
+      ExerciseEquipment.kettleBell,
+      ExerciseEquipment.sandBag
     ]
   };
 

@@ -30,7 +30,7 @@ class ShoulderRotationsExerciseDTO extends ExerciseDTO {
   Map<ExerciseConfigurationKey, List<ExerciseConfigValue>> get configurationOptions => {
     ExerciseConfigurationKey.setType: [SetType.reps, SetType.weightsAndReps],
     ExerciseConfigurationKey.stance: [ExerciseStance.seated, ExerciseStance.standing, ExerciseStance.lying],
-    ExerciseConfigurationKey.movement: [ExerciseMovement.internalRotation, ExerciseMovement.internalRotation],
+    ExerciseConfigurationKey.movement: [ExerciseMovement.internalRotation, ExerciseMovement.externalRotation],
     ExerciseConfigurationKey.upperBodyModality: [ExerciseUpperBodyModality.unilateral, ExerciseUpperBodyModality.bilateral],
     ExerciseConfigurationKey.equipment: [
       ExerciseEquipment.dumbbell,
