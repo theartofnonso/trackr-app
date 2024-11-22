@@ -8,17 +8,17 @@ import 'package:tracker_app/dtos/milestones/milestone_dto.dart';
 import 'package:tracker_app/models/RoutineLog.dart';
 import 'package:tracker_app/repositories/amplify/amplify_routine_log_repository.dart';
 
+import '../dtos/abstract_class/exercise_dto.dart';
 import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/appsync/routine_template_dto.dart';
 import '../dtos/appsync/routine_template_plan_dto.dart';
-import '../dtos/abstract_class/exercise_dto.dart';
 import '../dtos/sets_dtos/set_dto.dart';
 import '../enums/exercise/exercise_configuration_key.dart';
 import '../models/RoutineTemplate.dart';
 import '../models/RoutineTemplatePlan.dart';
-import '../repositories/exercise_repository.dart';
 import '../repositories/amplify/amplify_routine_template_plan_repository.dart';
 import '../repositories/amplify/amplify_routine_template_repository.dart';
+import '../repositories/exercise_repository.dart';
 
 class ExerciseAndRoutineController extends ChangeNotifier {
   bool isLoading = false;
@@ -56,7 +56,8 @@ class ExerciseAndRoutineController extends ChangeNotifier {
 
   UnmodifiableListView<Milestone> get newMilestones => _amplifyLogRepository.newMilestones;
 
-  UnmodifiableMapView<String, List<ExerciseLogDTO>> get exerciseLogsByExerciseId => _amplifyLogRepository.exerciseLogsByExerciseId;
+  UnmodifiableMapView<String, List<ExerciseLogDTO>> get exerciseLogsByExerciseId =>
+      _amplifyLogRepository.exerciseLogsByExerciseId;
 
   /// Exercises
   void loadExercises() {
@@ -169,33 +170,43 @@ class ExerciseAndRoutineController extends ChangeNotifier {
   }
 
   Future<RoutineLogDto?> saveLog({required RoutineLogDto logDto, TemporalDateTime? datetime}) async {
+    isLoading = true;
     RoutineLogDto? savedLog;
     try {
       savedLog = await _amplifyLogRepository.saveLog(logDto: logDto, datetime: datetime);
     } catch (e) {
+      print(e);
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {
+      isLoading = false;
+      errorMessage = "";
       notifyListeners();
     }
     return savedLog;
   }
 
   Future<void> updateLog({required RoutineLogDto log}) async {
+    isLoading = true;
     try {
       await _amplifyLogRepository.updateLog(log: log);
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {
+      isLoading = false;
+      errorMessage = "";
       notifyListeners();
     }
   }
 
   Future<void> removeLog({required RoutineLogDto log}) async {
+    isLoading = true;
     try {
       await _amplifyLogRepository.removeLog(log: log);
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {
+      isLoading = false;
+      errorMessage = "";
       notifyListeners();
     }
   }
@@ -253,7 +264,8 @@ class ExerciseAndRoutineController extends ChangeNotifier {
   /// [ExerciseLogDTO] helpers
   List<ExerciseLogDTO> filterExerciseLogsByIdAndConfigurations(
       {required String exerciseId, required Map<ExerciseConfigurationKey, ExerciseConfigValue> configurations}) {
-    return _amplifyLogRepository.filterExerciseLogsByIdAndConfigurations(exerciseId: exerciseId, configurations: configurations);
+    return _amplifyLogRepository.filterExerciseLogsByIdAndConfigurations(
+        exerciseId: exerciseId, configurations: configurations);
   }
 
   /// [ExerciseDTO] Helpers methods

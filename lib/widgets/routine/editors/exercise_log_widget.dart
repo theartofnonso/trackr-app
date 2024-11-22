@@ -133,7 +133,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _addSet() {
-    if (withDurationOnly(metric: widget.exerciseLogDto.exerciseVariant.getSetTypeConfiguration())) {
+    if (withDurationOnly(setType: widget.exerciseLogDto.exerciseVariant.getSetTypeConfiguration())) {
       _durationControllers.add(DateTime.now());
     } else {
       _controllers.add((TextEditingController(), TextEditingController()));
@@ -148,7 +148,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _removeSet({required int index}) {
-    if (withDurationOnly(metric: widget.exerciseLogDto.exerciseVariant.getSetTypeConfiguration())) {
+    if (withDurationOnly(setType: widget.exerciseLogDto.exerciseVariant.getSetTypeConfiguration())) {
       _durationControllers.removeAt(index);
     } else {
       _controllers.removeAt(index);
@@ -420,14 +420,14 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               updateDuration: _updateDuration,
             ),
           const SizedBox(height: 8),
-          if (withDurationOnly(metric: exerciseVariant.getSetTypeConfiguration()) && sets.isEmpty)
+          if (withDurationOnly(setType: exerciseVariant.getSetTypeConfiguration()) && sets.isEmpty)
             Center(
               child: Text("Tap + to add a timer",
                   style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white70)),
             ),
           const SizedBox(height: 8),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            if (withWeightsOnly(metric: exerciseVariant.getSetTypeConfiguration()))
+            if (withWeightsOnly(setType: exerciseVariant.getSetTypeConfiguration()))
               IconButton(
                   onPressed: _show1RMRecommendations,
                   icon: const FaIcon(FontAwesomeIcons.solidLightbulb, color: Colors.white, size: 16),

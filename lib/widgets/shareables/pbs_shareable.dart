@@ -11,7 +11,6 @@ import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../colors.dart';
 import '../../dtos/pb_dto.dart';
-import '../../dtos/sets_dtos/reps_set_dto.dart';
 
 GlobalKey pbsGlobalKey = GlobalKey();
 
@@ -27,13 +26,14 @@ class PBsShareable extends StatelessWidget {
   Widget build(BuildContext context) {
     String? value;
 
-    if (withDurationOnly(metric: pbDto.exerciseVariant.getSetTypeConfiguration())) {
+    if (withDurationOnly(setType: pbDto.exerciseVariant.getSetTypeConfiguration())) {
       value = (set as DurationSetDTO).duration.hmsAnalog();
-    } else if (withWeightsOnly(metric: pbDto.exerciseVariant.getSetTypeConfiguration())) {
+    } else if (withWeightsOnly(setType: pbDto.exerciseVariant.getSetTypeConfiguration())) {
       if (pbDto.pb == PBType.weight) {
         value = "${(set as WeightAndRepsSetDTO).weight}${weightLabel().toUpperCase()}";
       } else {
-        value = "${(set as WeightAndRepsSetDTO).weight}${weightLabel().toUpperCase()} x ${(set as RepsSetDTO).reps}";
+        final weightAndRepsSet = (set as WeightAndRepsSetDTO);
+        value = "${weightAndRepsSet.weight}${weightLabel().toUpperCase()} x ${weightAndRepsSet.reps}";
       }
     }
 

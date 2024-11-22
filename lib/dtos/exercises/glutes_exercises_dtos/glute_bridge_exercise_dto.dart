@@ -1,5 +1,4 @@
 import 'package:tracker_app/dtos/exercise_variant_dto.dart';
-import 'package:tracker_app/enums/exercise/exercise_upper_body_modality_enum.dart';
 
 import '../../../enums/exercise/exercise_configuration_key.dart';
 import '../../../enums/exercise/exercise_equipment_enum.dart';

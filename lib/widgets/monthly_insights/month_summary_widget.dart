@@ -38,20 +38,24 @@ class MonthSummaryWidget extends StatelessWidget {
     final totalHours = Duration(milliseconds: routineLogHoursInMilliSeconds);
 
     final tonnage = exerciseLogs.map((log) {
-      final volume = log.sets.map((set) => (set as WeightAndRepsSetDTO).volume()).sum;
-      return volume;
+      if(log.exerciseVariant.getSetTypeConfiguration() == SetType.weightsAndReps) {
+        final volume = log.sets.map((set) => (set as WeightAndRepsSetDTO).volume()).sum;
+        return volume;
+      }
+      return 0.0;
     }).sum;
 
     final totalVolume = volumeInKOrM(tonnage);
 
     final exerciseLogsWithReps =
-        exerciseLogs.where((exerciseLog) => withReps(metric: exerciseLog.exerciseVariant.getSetTypeConfiguration()));
+        exerciseLogs.where((exerciseLog) => withReps(setType: exerciseLog.exerciseVariant.getSetTypeConfiguration()));
+
     final totalReps = exerciseLogsWithReps.map((log) {
       final reps = log.sets.map((set) {
-        final metric = log.exerciseVariant.getSetTypeConfiguration();
-        if (metric == SetType.reps) {
+        final setType = log.exerciseVariant.getSetTypeConfiguration();
+        if (setType == SetType.reps) {
           return (set as RepsSetDTO).reps;
-        } else if (metric == SetType.weightsAndReps) {
+        } else if (setType == SetType.weightsAndReps) {
           return (set as WeightAndRepsSetDTO).reps;
         }
         return 0;

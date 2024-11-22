@@ -49,6 +49,7 @@ class RowsExerciseDTO extends ExerciseDTO {
         configurations: {
           ExerciseConfigurationKey.setType: SetType.weightsAndReps,
           ExerciseConfigurationKey.equipment: ExerciseEquipment.barbell,
+          ExerciseConfigurationKey.stance: ExerciseStance.bentOver,
           ExerciseConfigurationKey.upperBodyModality: ExerciseUpperBodyModality.bilateral
         });
     return variant;

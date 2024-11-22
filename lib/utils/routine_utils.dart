@@ -91,7 +91,7 @@ ExerciseLogDTO? whereOtherExerciseInSuperSet(
 }
 
 List<Widget> setsToWidgets(
-    {required SetType exerciseMetric,
+    {required SetType setType,
     required List<SetDTO> sets,
     List<PBDto> pbs = const [],
     required RoutinePreviewType routinePreviewType}) {
@@ -118,10 +118,10 @@ List<Widget> setsToWidgets(
 
   Widget emptyState;
 
-  if (withWeightsOnly(metric: exerciseMetric)) {
+  if (withWeightsOnly(setType: setType)) {
     emptyState = const DoubleSetRowEmptyState();
   } else {
-    if (withDurationOnly(metric: exerciseMetric)) {
+    if (withDurationOnly(setType: setType)) {
       emptyState = durationTemplate;
     } else {
       emptyState = const SingleSetRowEmptyState();
@@ -135,7 +135,7 @@ List<Widget> setsToWidgets(
   final widgets = sets.map(((setDto) {
     final pbsForSet = pbsBySet[setDto] ?? [];
 
-    switch (exerciseMetric) {
+    switch (setType) {
       case SetType.weightsAndReps:
         final firstLabel = (setDto as WeightAndRepsSetDTO).weight;
         final secondLabel = (setDto).reps;

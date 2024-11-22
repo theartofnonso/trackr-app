@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:tracker_app/dtos/milestones/milestone_dto.dart';
 import 'package:tracker_app/dtos/sets_dtos/reps_set_dto.dart';
+import 'package:tracker_app/dtos/sets_dtos/weight_and_reps_set_dto.dart';
 import 'package:tracker_app/enums/exercise/set_type_enums.dart';
 import 'package:tracker_app/enums/milestone_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
@@ -96,7 +97,14 @@ class RepsMilestone extends Milestone {
         if (exerciseLogs.isNotEmpty) {
           final reps = exerciseLogs
               .expand((exerciseLog) => exerciseLog.sets)
-              .map((set) => (set as RepsSetDTO).reps)
+              .map((set) {
+                if(set is RepsSetDTO) {
+                  return set.reps;
+                } else if(set is WeightAndRepsSetDTO) {
+                  return set.reps;
+                }
+                return 0;
+          })
               .reduce((value, element) => value + element)
               .toInt();
 

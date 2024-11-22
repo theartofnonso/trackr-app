@@ -27,15 +27,26 @@ class ExerciseLogWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final otherSuperSet = superSet;
 
-    final exerciseMetric = exerciseLog.exerciseVariant.getSetTypeConfiguration();
+    final setType = exerciseLog.exerciseVariant.getSetTypeConfiguration();
 
     final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
     final pastExerciseLogs =
         routineLogController.whereExerciseLogsBefore(exerciseVariant: exerciseLog.exerciseVariant, date: exerciseLog.createdAt);
 
-    final pbs = calculatePBs(pastExerciseLogs: pastExerciseLogs, setType: exerciseMetric, exerciseLog: exerciseLog);
-
+    final pbs = calculatePBs(pastExerciseLogs: pastExerciseLogs, setType: setType, exerciseLog: exerciseLog);
+    //
+    // final configurationChips = exercise.configurationOptions.keys.where((configKey) {
+    //   final configOptions = exercise.configurationOptions[configKey]!;
+    //   return configOptions.length > 1;
+    // }).map((ExerciseConfigurationKey configKey) {
+    //   final configValue = exerciseVariant.configurations[configKey]!;
+    //   return SquaredChips(
+    //     label: configValue.displayName.toLowerCase(),
+    //     color: vibrantGreen,
+    //   );
+    // }).toList();
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -72,7 +83,7 @@ class ExerciseLogWidget extends StatelessWidget {
                 ),
               )
             : const SizedBox.shrink(),
-        switch (exerciseMetric) {
+        switch (setType) {
           SetType.weightsAndReps => DoubleSetHeader(
               firstLabel: weightLabel().toUpperCase(),
               secondLabel: 'REPS',
@@ -89,7 +100,7 @@ class ExerciseLogWidget extends StatelessWidget {
         },
         const SizedBox(height: 8),
         ...setsToWidgets(
-            exerciseMetric: exerciseMetric,
+            setType: setType,
             sets: exerciseLog.sets,
             pbs: previewType == RoutinePreviewType.log ? pbs : [],
             routinePreviewType: previewType),

@@ -1,8 +1,6 @@
 import 'package:tracker_app/dtos/exercise_variant_dto.dart';
-import 'package:tracker_app/enums/exercise/exercise_stance_enum.dart';
 
 import '../../../enums/exercise/exercise_configuration_key.dart';
-import '../../../enums/exercise/exercise_equipment_enum.dart';
 import '../../../enums/exercise/set_type_enums.dart';
 import '../../../enums/muscle_group_enums.dart';
 import '../../abstract_class/exercise_dto.dart';

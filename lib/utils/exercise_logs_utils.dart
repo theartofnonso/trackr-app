@@ -190,7 +190,7 @@ List<PBDto> calculatePBs(
   List<PBDto> pbs = [];
 
   if (pastExerciseLogs.isNotEmpty && exerciseLog.sets.isNotEmpty) {
-    if (withWeightsOnly(metric: setType)) {
+    if (withWeightsOnly(setType: setType)) {
       final pastHeaviestWeight = pastExerciseLogs
           .map((log) => heaviestSetWeightForExerciseLog(exerciseLog: log))
           .map((set) => (set as WeightAndRepsSetDTO).weight)
@@ -214,7 +214,7 @@ List<PBDto> calculatePBs(
       }
     }
 
-    if (withDurationOnly(metric: setType)) {
+    if (withDurationOnly(setType: setType)) {
       final pastLongestDuration = pastExerciseLogs.map((log) => longestDurationForExerciseLog(exerciseLog: log)).max;
 
       final currentLongestDurations =
@@ -385,20 +385,20 @@ double cumulativeMuscleGroupFamilyFrequency({required List<ExerciseLogDTO> exerc
   return cumulativeFrequency / 56;
 }
 
-bool withWeightsOnly({required SetType metric}) {
-  return metric == SetType.weightsAndReps;
+bool withWeightsOnly({required SetType setType}) {
+  return setType == SetType.weightsAndReps;
 }
 
-bool withReps({required SetType metric}) {
-  return metric == SetType.weightsAndReps || metric == SetType.reps;
+bool withReps({required SetType setType}) {
+  return setType == SetType.weightsAndReps || setType == SetType.reps;
 }
 
-bool withRepsOnly({required SetType metric}) {
-  return metric == SetType.reps;
+bool withRepsOnly({required SetType setType}) {
+  return setType == SetType.reps;
 }
 
-bool withDurationOnly({required SetType metric}) {
-  return metric == SetType.duration;
+bool withDurationOnly({required SetType setType}) {
+  return setType == SetType.duration;
 }
 
 int _calculateMuscleScore({required List<ExerciseLogDTO> exerciseLogs}) {
