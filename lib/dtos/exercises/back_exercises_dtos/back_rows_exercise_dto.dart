@@ -20,7 +20,7 @@ class RowsExerciseDTO extends ExerciseDTO {
   String get description => "Targets the lats, traps, and rhomboids.";
 
   @override
-  List<MuscleGroup> get primaryMuscleGroups => [MuscleGroup.biceps];
+  List<MuscleGroup> get primaryMuscleGroups => [MuscleGroup.back];
 
   @override
   List<MuscleGroup> get secondaryMuscleGroups => [];

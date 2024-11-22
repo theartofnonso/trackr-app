@@ -185,12 +185,12 @@ SetDTO heaviestSetVolumeForExerciseLog({required ExerciseLogDTO exerciseLog}) {
 
 List<PBDto> calculatePBs(
     {required List<ExerciseLogDTO> pastExerciseLogs,
-    required SetType exerciseMetric,
+    required SetType setType,
     required ExerciseLogDTO exerciseLog}) {
   List<PBDto> pbs = [];
 
   if (pastExerciseLogs.isNotEmpty && exerciseLog.sets.isNotEmpty) {
-    if (withWeightsOnly(metric: exerciseMetric)) {
+    if (withWeightsOnly(metric: setType)) {
       final pastHeaviestWeight = pastExerciseLogs
           .map((log) => heaviestSetWeightForExerciseLog(exerciseLog: log))
           .map((set) => (set as WeightAndRepsSetDTO).weight)
@@ -214,7 +214,7 @@ List<PBDto> calculatePBs(
       }
     }
 
-    if (withDurationOnly(metric: exerciseMetric)) {
+    if (withDurationOnly(metric: setType)) {
       final pastLongestDuration = pastExerciseLogs.map((log) => longestDurationForExerciseLog(exerciseLog: log)).max;
 
       final currentLongestDurations =

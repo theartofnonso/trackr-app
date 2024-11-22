@@ -67,7 +67,7 @@ class MonthSummaryWidget extends StatelessWidget {
 
       return calculatePBs(
           pastExerciseLogs: pastExerciseLogs,
-          exerciseMetric: exerciseLog.exerciseVariant.getSetTypeConfiguration(),
+          setType: exerciseLog.exerciseVariant.getSetTypeConfiguration(),
           exerciseLog: exerciseLog);
     }).expand((pbs) => pbs);
 

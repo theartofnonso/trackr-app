@@ -96,7 +96,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
           routineLogController.whereExerciseLogsBefore(exerciseVariant: exerciseLog.exerciseVariant, date: exerciseLog.createdAt);
 
       return calculatePBs(
-          pastExerciseLogs: pastExerciseLogs, exerciseMetric: exerciseLog.exerciseVariant.getSetTypeConfiguration(), exerciseLog: exerciseLog);
+          pastExerciseLogs: pastExerciseLogs, setType: exerciseLog.exerciseVariant.getSetTypeConfiguration(), exerciseLog: exerciseLog);
     }).expand((pbs) => pbs);
 
     return Scaffold(

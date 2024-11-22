@@ -34,7 +34,7 @@ class ExerciseLogWidget extends StatelessWidget {
     final pastExerciseLogs =
         routineLogController.whereExerciseLogsBefore(exerciseVariant: exerciseLog.exerciseVariant, date: exerciseLog.createdAt);
 
-    final pbs = calculatePBs(pastExerciseLogs: pastExerciseLogs, exerciseMetric: exerciseMetric, exerciseLog: exerciseLog);
+    final pbs = calculatePBs(pastExerciseLogs: pastExerciseLogs, setType: exerciseMetric, exerciseLog: exerciseLog);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

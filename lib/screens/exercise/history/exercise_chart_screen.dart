@@ -16,7 +16,6 @@ import 'package:tracker_app/widgets/exercise_history/personal_best_widget.dart';
 import '../../../colors.dart';
 import '../../../controllers/exercise_and_routine_controller.dart';
 import '../../../dtos/graph/chart_point_dto.dart';
-import '../../../dtos/sets_dtos/set_dto.dart';
 import '../../../enums/chart_unit_enum.dart';
 import '../../../enums/exercise/set_type_enums.dart';
 import '../../../utils/exercise_logs_utils.dart';
@@ -38,23 +37,11 @@ enum SummaryType {
 }
 
 class ExerciseChartScreen extends StatefulWidget {
-  final (String?, double) heaviestWeight;
-  final (String?, SetDTO) heaviestSet;
-  final (String?, Duration) longestDuration;
-  final (String?, int) mostRepsSet;
-  final (String?, int) mostRepsSession;
+
   final ExerciseVariantDTO exerciseVariant;
   final List<ExerciseLogDTO> exerciseLogs;
 
-  const ExerciseChartScreen(
-      {super.key,
-      required this.heaviestWeight,
-      required this.heaviestSet,
-      required this.longestDuration,
-      required this.mostRepsSet,
-      required this.mostRepsSession,
-      required this.exerciseVariant,
-      required this.exerciseLogs});
+  const ExerciseChartScreen({super.key, required this.exerciseVariant, required this.exerciseLogs});
 
   @override
   State<ExerciseChartScreen> createState() => _ExerciseChartScreenState();
@@ -178,6 +165,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     final weightUnitLabel = weightLabel();
 
     final muscleGroupsIllustrations = [
@@ -309,9 +297,9 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
               padding: const EdgeInsets.only(bottom: 10.0),
               child: _MetricListTile(
                 title: 'Heaviest Weight',
-                trailing: "${widget.heaviestWeight.$2}$weightUnitLabel",
+                trailing: "${heaviestWeight(exerciseLogs: widget.exerciseLogs).$2}$weightUnitLabel",
                 subtitle: 'Heaviest weight in a set',
-                onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),
+                onTap: () => _navigateTo(routineLogId: heaviestWeight(exerciseLogs: widget.exerciseLogs).$1),
                 enabled: widget.exerciseLogs.isNotEmpty,
               ),
             ),
@@ -320,9 +308,9 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
               padding: const EdgeInsets.only(bottom: 10.0),
               child: _MetricListTile(
                   title: 'Heaviest Set Volume',
-                  trailing: widget.heaviestSet.$2.summary(),
+                  trailing: heaviestSetVolume(exerciseLogs: widget.exerciseLogs).$2.summary(),
                   subtitle: 'Heaviest volume in a set',
-                  onTap: () => _navigateTo(routineLogId: widget.heaviestSet.$1),
+                  onTap: () => _navigateTo(routineLogId: heaviestSetVolume(exerciseLogs: widget.exerciseLogs).$1),
                   enabled: widget.exerciseLogs.isNotEmpty),
             ),
           if (withDurationOnly(metric: widget.exerciseVariant.getSetTypeConfiguration()))
@@ -330,9 +318,9 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
               padding: const EdgeInsets.only(bottom: 10.0),
               child: _MetricListTile(
                   title: 'Best Time',
-                  trailing: widget.longestDuration.$2.hmsAnalog(),
+                  trailing: longestDuration(exerciseLogs: widget.exerciseLogs).$2.hmsAnalog(),
                   subtitle: 'Longest time for this exercise',
-                  onTap: () => _navigateTo(routineLogId: widget.longestDuration.$1),
+                  onTap: () => _navigateTo(routineLogId: longestDuration(exerciseLogs: widget.exerciseLogs).$1),
                   enabled: widget.exerciseLogs.isNotEmpty),
             ),
           if (withReps(metric: widget.exerciseVariant.getSetTypeConfiguration()))
@@ -340,9 +328,9 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
               padding: const EdgeInsets.only(bottom: 10.0),
               child: _MetricListTile(
                   title: 'Most Reps (Set)',
-                  trailing: "${widget.mostRepsSet.$2} reps",
+                  trailing: "${mostRepsInSet(exerciseLogs: widget.exerciseLogs).$2} reps",
                   subtitle: 'Most reps in a set',
-                  onTap: () => _navigateTo(routineLogId: widget.mostRepsSet.$1),
+                  onTap: () => _navigateTo(routineLogId: mostRepsInSet(exerciseLogs: widget.exerciseLogs).$1),
                   enabled: widget.exerciseLogs.isNotEmpty),
             ),
           if (withReps(metric: widget.exerciseVariant.getSetTypeConfiguration()))
@@ -350,9 +338,9 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
               padding: const EdgeInsets.only(bottom: 10.0),
               child: _MetricListTile(
                   title: 'Most Reps (Session)',
-                  trailing: "${widget.mostRepsSession.$2} reps",
+                  trailing: "${mostRepsInSession(exerciseLogs: widget.exerciseLogs).$2} reps",
                   subtitle: 'Most reps in a session',
-                  onTap: () => _navigateTo(routineLogId: widget.mostRepsSession.$1),
+                  onTap: () => _navigateTo(routineLogId: mostRepsInSession(exerciseLogs: widget.exerciseLogs).$1),
                   enabled: widget.exerciseLogs.isNotEmpty),
             ),
           if (withWeightsOnly(metric: widget.exerciseVariant.getSetTypeConfiguration()))

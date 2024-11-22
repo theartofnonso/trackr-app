@@ -41,16 +41,6 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
 
     final completedExerciseLogs = completedExercises(exerciseLogs: _exerciseLogs);
 
-    final heaviestSetVolumeRecord = heaviestSetVolume(exerciseLogs: completedExerciseLogs);
-
-    final heaviestWeightRecord = heaviestWeight(exerciseLogs: completedExerciseLogs);
-
-    final longestDurationRecord = longestDuration(exerciseLogs: completedExerciseLogs);
-
-    final mostRepsSetRecord = mostRepsInSet(exerciseLogs: completedExerciseLogs);
-
-    final mostRepsSessionRecord = mostRepsInSession(exerciseLogs: completedExerciseLogs);
-
     final firstVariant =
         _exerciseLogs.isNotEmpty ? _exerciseLogs.first.exerciseVariant : _baseExercise.defaultVariant();
 
@@ -124,13 +114,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
                     child: TabBarView(
                       children: [
                         ExerciseChartScreen(
-                          heaviestWeight: heaviestWeightRecord,
-                          heaviestSet: heaviestSetVolumeRecord,
-                          longestDuration: longestDurationRecord,
-                          mostRepsSet: mostRepsSetRecord,
-                          mostRepsSession: mostRepsSessionRecord,
                           exerciseVariant: firstVariant,
-                          // to BE FIXED
                           exerciseLogs: completedExerciseLogs,
                         ),
                         HistoryScreen(exerciseLogs: completedExerciseLogs),
