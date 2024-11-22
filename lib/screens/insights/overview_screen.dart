@@ -190,7 +190,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               height: 10,
             ),
             const LabelDivider(
-              label: "Log non-resistance training",
+              label: "Log non-strength training",
               labelColor: Colors.white70,
               dividerColor: sapphireLighter,
             ),

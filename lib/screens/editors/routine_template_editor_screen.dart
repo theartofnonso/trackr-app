@@ -18,6 +18,7 @@ import '../../dtos/sets_dtos/set_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/routine_editors_utils.dart';
 import '../../utils/routine_utils.dart';
+import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
 import '../../widgets/routine/editors/exercise_log_widget_lite.dart';
 import '../../widgets/weight_plate_calculator.dart';
@@ -289,13 +290,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                   label:
                       Text("Calculator", style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600)),
                 )
-              : FloatingActionButton(
-                  heroTag: "routine_template_editor_scree_fab",
-                  onPressed: template != null ? _updateRoutineTemplate : _createRoutineTemplate,
-                  backgroundColor: sapphireDark,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                  child: const FaIcon(FontAwesomeIcons.solidSquareCheck, color: Colors.white, size: 28),
-                ),
+              : null,
           body: Container(
             width: double.infinity,
             decoration: const BoxDecoration(
@@ -309,7 +304,8 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
               ),
             ),
             child: SafeArea(
-              minimum: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
+              bottom: false,
+              minimum: const EdgeInsets.only(right: 10.0, left: 10.0),
               child: NotificationListener<UserScrollNotification>(
                 onNotification: (scrollNotification) {
                   if (scrollNotification.direction != ScrollDirection.idle) {
@@ -321,106 +317,122 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                   onTap: _dismissKeyboard,
                   child: Column(
                     children: [
-                      Column(
-                        children: [
-                          TextField(
-                            controller: _templateNameController,
-                            decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(5),
-                                    borderSide: const BorderSide(color: sapphireLighter)),
-                                filled: true,
-                                fillColor: sapphireDark,
-                                hintText: "New workout",
-                                hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14)),
-                            cursorColor: Colors.white,
-                            keyboardType: TextInputType.text,
-                            textCapitalization: TextCapitalization.words,
-                            style: GoogleFonts.ubuntu(
-                                fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
-                          ),
-                          const SizedBox(height: 10),
-                          TextField(
-                            controller: _templateNotesController,
-                            decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(5),
-                                    borderSide: const BorderSide(color: sapphireLighter)),
-                                filled: true,
-                                fillColor: sapphireDark,
-                                hintText: "Notes",
-                                hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14)),
-                            maxLines: null,
-                            cursorColor: Colors.white,
-                            keyboardType: TextInputType.text,
-                            textCapitalization: TextCapitalization.sentences,
-                            style: GoogleFonts.ubuntu(
-                                fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
-                          ),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Column(
+                          children: [
+                            TextField(
+                              controller: _templateNameController,
+                              decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                  enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(5),
+                                      borderSide: const BorderSide(color: sapphireLighter)),
+                                  filled: true,
+                                  fillColor: sapphireDark,
+                                  hintText: "New workout",
+                                  hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14)),
+                              cursorColor: Colors.white,
+                              keyboardType: TextInputType.text,
+                              textCapitalization: TextCapitalization.words,
+                              style: GoogleFonts.ubuntu(
+                                  fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+                            ),
+                            const SizedBox(height: 10),
+                            TextField(
+                              controller: _templateNotesController,
+                              decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                  enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(5),
+                                      borderSide: const BorderSide(color: sapphireLighter)),
+                                  filled: true,
+                                  fillColor: sapphireDark,
+                                  hintText: "Notes",
+                                  hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14)),
+                              maxLines: null,
+                              cursorColor: Colors.white,
+                              keyboardType: TextInputType.text,
+                              textCapitalization: TextCapitalization.sentences,
+                              style: GoogleFonts.ubuntu(
+                                  fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+                            ),
+                          ],
+                        ),
                       ),
-                      const SizedBox(height: 20),
-                      exerciseLogs.isNotEmpty
-                          ? Expanded(
-                              child: ListView.separated(
-                                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                                  padding: const EdgeInsets.only(bottom: 250),
-                                  itemBuilder: (BuildContext context, int index) {
-                                    final exerciseLog = exerciseLogs[index];
-                                    final exerciseName = exerciseLog.exerciseVariant.name;
-                                    final isExerciseMinimised = _minimisedExerciseLogCards.contains(exerciseName);
-                                    return isExerciseMinimised
-                                        ? ExerciseLogLiteWidget(
-                                            key: ValueKey(exerciseName),
-                                            exerciseLogDto: exerciseLog,
-                                            superSet: whereOtherExerciseInSuperSet(
-                                                firstExercise: exerciseLog, exercises: exerciseLogs),
-                                            onMaximise: () =>
-                                                _handleResizedExerciseLogCard(exerciseIdToResize: exerciseName),
-                                          )
-                                        : ExerciseLogWidget(
-                                            key: ValueKey(exerciseName),
-                                            exerciseLogDto: exerciseLog,
-                                            editorType: RoutineEditorMode.edit,
-                                            superSet: whereOtherExerciseInSuperSet(
-                                                firstExercise: exerciseLog, exercises: exerciseLogs),
-                                            onRemoveSuperSet: (String superSetId) => exerciseLogController
-                                                .removeSuperSet(superSetId: exerciseLog.superSetId),
-                                            onRemoveLog: () =>
-                                                exerciseLogController.removeExerciseLog(logId: exerciseName),
-                                            onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
-                                            onSuperSet: () =>
-                                                _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
-                                            onResize: () =>
-                                                _handleResizedExerciseLogCard(exerciseIdToResize: exerciseName),
-                                            isMinimised: _isMinimised(exerciseName),
-                                            onTapWeightEditor: (SetDTO setDto) {
-                                              setState(() {
-                                                _selectedSetDto = setDto;
-                                              });
-                                            },
-                                            onTapRepsEditor: (SetDTO setDto) {
-                                              setState(() {
-                                                _selectedSetDto = null;
-                                              });
-                                            },
-                                            onUpdate: _updateExerciseLog,
-                                          );
-                                  },
-                                  separatorBuilder: (_, __) => const SizedBox(height: 10),
-                                  itemCount: exerciseLogs.length))
-                          : Expanded(
-                            child: const NoListEmptyState(
-                                icon: FaIcon(
-                                  FontAwesomeIcons.solidLightbulb,
-                                  color: Colors.white12,
-                                  size: 48,
-                                ),
-                                message: "Tap the + button to start adding exercises to your workout.",
-                              ),
+                      if (exerciseLogs.isNotEmpty)
+                        Expanded(
+                          child: SingleChildScrollView(
+                            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                            padding: const EdgeInsets.only(bottom: 250),
+                            child: Column(children: [
+                              ...exerciseLogs.map((exerciseLog) {
+                                final exerciseName = exerciseLog.exerciseVariant.name;
+
+                                final isExerciseMinimised = _minimisedExerciseLogCards.contains(exerciseName);
+
+                                return Padding(
+                                  padding: const EdgeInsets.only(top: 20),
+                                  child: isExerciseMinimised
+                                      ? ExerciseLogLiteWidget(
+                                          key: ValueKey(exerciseName),
+                                          exerciseLogDto: exerciseLog,
+                                          superSet: whereOtherExerciseInSuperSet(
+                                              firstExercise: exerciseLog, exercises: exerciseLogs),
+                                          onMaximise: () =>
+                                              _handleResizedExerciseLogCard(exerciseIdToResize: exerciseName),
+                                        )
+                                      : ExerciseLogWidget(
+                                          key: ValueKey(exerciseName),
+                                          exerciseLogDto: exerciseLog,
+                                          editorType: RoutineEditorMode.edit,
+                                          superSet: whereOtherExerciseInSuperSet(
+                                              firstExercise: exerciseLog, exercises: exerciseLogs),
+                                          onRemoveSuperSet: (String superSetId) =>
+                                              exerciseLogController.removeSuperSet(superSetId: exerciseLog.superSetId),
+                                          onRemoveLog: () =>
+                                              exerciseLogController.removeExerciseLog(logId: exerciseName),
+                                          onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
+                                          onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
+                                          onResize: () =>
+                                              _handleResizedExerciseLogCard(exerciseIdToResize: exerciseName),
+                                          isMinimised: _isMinimised(exerciseName),
+                                          onTapWeightEditor: (SetDTO setDto) {
+                                            setState(() {
+                                              _selectedSetDto = setDto;
+                                            });
+                                          },
+                                          onTapRepsEditor: (SetDTO setDto) {
+                                            setState(() {
+                                              _selectedSetDto = null;
+                                            });
+                                          },
+                                          onUpdate: _updateExerciseLog,
+                                        ),
+                                );
+                              }),
+                              const SizedBox(height: 20),
+                              SizedBox(
+                                  width: double.infinity,
+                                  child: OpacityButtonWidget(
+                                      padding: const EdgeInsets.symmetric(vertical: 16),
+                                      buttonColor: vibrantGreen,
+                                      label: template != null ? "Update" : "Create Workout",
+                                      onPressed: template != null ? _updateRoutineTemplate : _createRoutineTemplate))
+                            ]),
                           ),
+                        ),
+                      if (exerciseLogs.isEmpty)
+                        Expanded(
+                          child: const NoListEmptyState(
+                            icon: FaIcon(
+                              FontAwesomeIcons.solidLightbulb,
+                              color: Colors.white12,
+                              size: 48,
+                            ),
+                            message: "Tap the + button to start adding exercises to your workout.",
+                          ),
+                        )
                     ],
                   ),
                 ),

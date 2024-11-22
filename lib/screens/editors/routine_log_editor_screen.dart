@@ -16,6 +16,7 @@ import 'package:tracker_app/dtos/sets_dtos/weight_and_reps_set_dto.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/routine_editors_utils.dart';
+import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:tracker_app/widgets/routine/editors/exercise_log_widget_lite.dart';
 
 import '../../colors.dart';
@@ -304,15 +305,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                     label:
                         Text("Calculator", style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600)),
                   )
-                : FloatingActionButton.extended(
-                    heroTag: UniqueKey(),
-                    onPressed: widget.mode == RoutineEditorMode.log ? _saveLog : _updateLog,
-                    backgroundColor: vibrantGreen.withOpacity(0.1),
-                    enableFeedback: true,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                    label: Text("Finish workout",
-                        style: GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w600)),
-                  ),
+                : null,
             body: Container(
               width: double.infinity,
               decoration: const BoxDecoration(
@@ -327,7 +320,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
               ),
               child: Stack(children: [
                 SafeArea(
-                  minimum: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
+                  bottom: false,
+                  minimum: const EdgeInsets.only(right: 10.0, left: 10.0),
                   child: NotificationListener<UserScrollNotification>(
                     onNotification: (scrollNotification) {
                       if (scrollNotification.direction != ScrollDirection.idle) {
@@ -357,7 +351,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                   ),
                                 );
                               }),
-                              const SizedBox(height: 20),
                             ]),
                           if (exerciseLogs.isNotEmpty)
                             Expanded(
@@ -371,7 +364,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                     final isExerciseMinimised = _minimisedExerciseLogCards.contains(exerciseName);
 
                                     return Padding(
-                                        padding: const EdgeInsets.only(bottom: 20),
+                                        padding: const EdgeInsets.only(top: 20),
                                         child: isExerciseMinimised
                                             ? ExerciseLogLiteWidget(
                                                 key: ValueKey(exerciseName),
@@ -416,7 +409,17 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                                 },
                                                 onUpdate: _updateExerciseLog,
                                               ));
-                                  })
+                                  }),
+                                  const SizedBox(height: 20),
+                                  SizedBox(
+                                      width: double.infinity,
+                                      child: OpacityButtonWidget(
+                                        padding: const EdgeInsets.symmetric(vertical: 16),
+                                        buttonColor: vibrantGreen,
+                                        label:
+                                            widget.mode == RoutineEditorMode.log ? "Finish Session" : "Update Session",
+                                        onPressed: widget.mode == RoutineEditorMode.log ? _saveLog : _updateLog,
+                                      ))
                                 ]),
                               ),
                             ),
