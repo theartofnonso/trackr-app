@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/controllers/analytics_controller.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/enums/training_position_enum.dart';
 import 'package:tracker_app/screens/exercise/muscle_groups_screen.dart';
@@ -239,6 +240,8 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
           owner: "");
 
       await Provider.of<ExerciseAndRoutineController>(context, listen: false).saveExercise(exerciseDto: exercise);
+
+      AnalyticsController.exerciseEvents(eventAction: "create_exercise", exercise: exercise);
       if (mounted) {
         context.pop();
       }
@@ -258,6 +261,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
 
       final updatedExercise = exercise.copyWith(name: exerciseName.trim(), primaryMuscleGroup: _primaryMuscleGroup);
       await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateExercise(exercise: updatedExercise);
+      AnalyticsController.exerciseEvents(eventAction: "create_exercise", exercise: exercise);
       if (mounted) {
         context.pop(updatedExercise);
       }
