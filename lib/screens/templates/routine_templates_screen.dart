@@ -8,7 +8,6 @@ import 'package:tracker_app/extensions/dtos/routine_template_dto_extension.dart'
 import 'package:tracker_app/screens/AI/trkr_coach_chat_screen.dart';
 import 'package:tracker_app/strings/loading_screen_messages.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_button.dart';
-import 'package:tracker_app/widgets/empty_states/routine_empty_state.dart';
 import 'package:tracker_app/widgets/routine/preview/routine_template_grid_item_widget.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
@@ -16,6 +15,7 @@ import '../../dtos/appsync/routine_template_dto.dart';
 import '../../utils/navigation_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/information_containers/information_container_with_background_image.dart';
+import '../empty_state_screens/no_list_empty_state.dart';
 
 class RoutineTemplatesScreen extends StatelessWidget {
   const RoutineTemplatesScreen({super.key});
@@ -44,8 +44,8 @@ class RoutineTemplatesScreen extends StatelessWidget {
       }
 
       final children = templates
-          .map((template) =>
-              RoutineTemplateGridItemWidget(template: template, scheduleSummary: scheduledDaysSummary(template: template)))
+          .map((template) => RoutineTemplateGridItemWidget(
+              template: template, scheduleSummary: scheduledDaysSummary(template: template)))
           .toList();
 
       return Scaffold(
@@ -81,7 +81,16 @@ class RoutineTemplatesScreen extends StatelessWidget {
                             crossAxisSpacing: 10.0,
                             children: children),
                       )
-                    : const RoutineEmptyState(message: "Tap the + button to create workout templates"),
+                    : Expanded(
+                        child: const NoListEmptyState(
+                          icon: FaIcon(
+                            FontAwesomeIcons.solidLightbulb,
+                            color: Colors.white12,
+                            size: 48,
+                          ),
+                          message: "Tap the + button to create workout templates",
+                        ),
+                      ),
               ])));
     });
   }
