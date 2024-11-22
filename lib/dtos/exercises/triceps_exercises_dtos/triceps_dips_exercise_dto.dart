@@ -18,7 +18,7 @@ class TricepsDipsExerciseDTO extends ExerciseDTO {
   String get description => "Strengthens the triceps by using body weight or weights attachments in a dipping motion with support from bars.";
 
   @override
-  List<MuscleGroup> get primaryMuscleGroups => [MuscleGroup.chest];
+  List<MuscleGroup> get primaryMuscleGroups => [MuscleGroup.triceps];
 
   @override
   List<MuscleGroup> get secondaryMuscleGroups => [MuscleGroup.chest, MuscleGroup.shoulders];
