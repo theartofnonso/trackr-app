@@ -28,6 +28,7 @@ class LungesExerciseDTO extends ExerciseDTO {
     ExerciseConfigurationKey.equipment: [
           ExerciseEquipment.none,
           ExerciseEquipment.dumbbell,
+      ExerciseEquipment.sandBag,
           ExerciseEquipment.kettleBell,
         ]
       };

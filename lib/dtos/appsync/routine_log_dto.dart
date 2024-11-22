@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:tracker_app/enums/exercise/set_type_enums.dart';
+
 import '../../enums/activity_type_enums.dart';
 import '../../models/RoutineLog.dart';
 import '../abstract_class/log_class.dart';
@@ -99,12 +101,15 @@ class RoutineLogDto extends Log {
     final exerciseLogsInJson = json["exercises"] as List<dynamic>;
     List<ExerciseLogDTO> exerciseLogs = [];
     if (exerciseLogsInJson.isNotEmpty && exerciseLogsInJson.first is String) {
-      final newSchema = _transformOldExercisesSchema(oldExercises: exerciseLogsInJson);
-
-      exerciseLogs = newSchema
-          .map((json) =>
-              ExerciseLogDTO.fromJson(routineLogId: log.id, createdAt: log.createdAt.getDateTimeInUtc(), json: json))
-          .toList();
+     try {
+       final newSchema = _transformOldExercisesSchema(oldExercises: exerciseLogsInJson);
+       exerciseLogs = newSchema
+           .map((json) =>
+           ExerciseLogDTO.fromJson(routineLogId: log.id, createdAt: log.createdAt.getDateTimeInUtc(), json: json))
+           .toList();
+     } catch(e) {
+       print(e);
+     }
     } else {
       exerciseLogs = exerciseLogsInJson
           .map((json) =>
@@ -134,7 +139,12 @@ class RoutineLogDto extends Log {
     for (final exerciseStr in oldExercises) {
       // The exercises are strings of JSON objects, so parse them
       Map<String, dynamic> oldExercise = jsonDecode(exerciseStr);
-
+      final setType = switch (oldExercise["exercise"]["type"]) {
+        "WR" => SetType.weightsAndReps,
+        "BW" => SetType.reps,
+        "DR" => SetType.duration,
+        _ => SetType.weightsAndReps,
+      };
       // Initialize new exercise map
       Map<String, dynamic> newExercise = {
         'notes': oldExercise['notes'] ?? '',
@@ -144,7 +154,14 @@ class RoutineLogDto extends Log {
           'secondary_muscle_groups': oldExercise['exercise']['secondaryMuscleGroups'] ?? [],
           'base_exercise_id': oldExercise['exercise']['id'] ?? '',
           'primary_muscle_groups': [oldExercise['exercise']['primaryMuscleGroup'] ?? ''],
-          'configurations': <String, dynamic>{},
+          'configurations': <String, dynamic>{
+            "setType": {
+              "displayName": setType.displayName,
+              "name": setType.name,
+              "description": setType.description,
+              "type": "setType"
+            }
+          },
           'name': oldExercise['exercise']['name'] ?? '',
         },
       };

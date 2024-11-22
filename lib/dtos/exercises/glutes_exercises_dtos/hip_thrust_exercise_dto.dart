@@ -33,6 +33,7 @@ class HipThrustsExerciseDto extends ExerciseDTO {
           ExerciseEquipment.kettleBell,
           ExerciseEquipment.smithMachine,
           ExerciseEquipment.machine,
+          ExerciseEquipment.sandBag,
           ExerciseEquipment.plate
         ],
     ExerciseConfigurationKey.lowerBodyModality: [ExerciseLowerBodyModality.unilateral, ExerciseLowerBodyModality.bilateral],

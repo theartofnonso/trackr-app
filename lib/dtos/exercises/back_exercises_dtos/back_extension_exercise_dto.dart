@@ -30,6 +30,7 @@ class BackExtensionExerciseDTO extends ExerciseDTO {
       ExerciseEquipment.dumbbell,
       ExerciseEquipment.machine,
       ExerciseEquipment.plate,
+      ExerciseEquipment.sandBag,
       ExerciseEquipment.kettleBell,
     ],
   };

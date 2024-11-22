@@ -30,6 +30,7 @@ class PlanksExerciseDTO extends ExerciseDTO {
     ExerciseConfigurationKey.layingPosition: [ExerciseLayingPosition.incline, ExerciseLayingPosition.decline, ExerciseLayingPosition.neutral],
     ExerciseConfigurationKey.equipment: [
       ExerciseEquipment.plate,
+      ExerciseEquipment.sandBag,
       ExerciseEquipment.none,
     ],
   };

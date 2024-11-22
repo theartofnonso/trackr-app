@@ -32,6 +32,7 @@ class DeadliftsExerciseDTO extends ExerciseDTO {
           ExerciseEquipment.barbell,
           ExerciseEquipment.smithMachine,
           ExerciseEquipment.dumbbell,
+          ExerciseEquipment.sandBag,
           ExerciseEquipment.kettleBell
         ]
       };

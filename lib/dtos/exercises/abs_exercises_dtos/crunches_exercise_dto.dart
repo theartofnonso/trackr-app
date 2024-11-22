@@ -34,6 +34,7 @@ class CrunchesExerciseDto extends ExerciseDTO {
       ExerciseEquipment.plate,
       ExerciseEquipment.dumbbell,
       ExerciseEquipment.barbell,
+      ExerciseEquipment.sandBag,
       ExerciseEquipment.none,
     ],
   };

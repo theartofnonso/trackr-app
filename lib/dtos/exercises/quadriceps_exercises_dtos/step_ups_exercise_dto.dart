@@ -26,7 +26,7 @@ class StepUpsExerciseDTO extends ExerciseDTO {
   @override
   Map<ExerciseConfigurationKey, List<ExerciseConfigValue>> get configurationOptions => {
     ExerciseConfigurationKey.setType: [SetType.reps, SetType.weightsAndReps],
-    ExerciseConfigurationKey.equipment: [ExerciseEquipment.none, ExerciseEquipment.dumbbell, ExerciseEquipment.kettleBell],
+    ExerciseConfigurationKey.equipment: [ExerciseEquipment.none, ExerciseEquipment.dumbbell, ExerciseEquipment.kettleBell, ExerciseEquipment.barbell, ExerciseEquipment.sandBag,],
   };
 
   @override

@@ -30,6 +30,7 @@ class UprightRowsExerciseDto extends ExerciseDTO {
       ExerciseEquipment.dumbbell,
       ExerciseEquipment.barbell,
       ExerciseEquipment.ezBar,
+      ExerciseEquipment.sandBag,
       ExerciseEquipment.band,
       ExerciseEquipment.cableMachine,
     ]

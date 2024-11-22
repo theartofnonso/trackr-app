@@ -36,6 +36,7 @@ class ShoulderRaisesExerciseDTO extends ExerciseDTO {
       ExerciseEquipment.barbell,
       ExerciseEquipment.band,
       ExerciseEquipment.cableMachine,
+      ExerciseEquipment.sandBag,
       ExerciseEquipment.machine
     ]
   };

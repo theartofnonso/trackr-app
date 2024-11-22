@@ -39,6 +39,7 @@ class RowsExerciseDTO extends ExerciseDTO {
       ExerciseEquipment.tBarHandle,
       ExerciseEquipment.vBarHandle,
       ExerciseEquipment.straightBarHandle,
+      ExerciseEquipment.sandBag,
       ExerciseEquipment.band
     ],
   };

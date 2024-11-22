@@ -33,6 +33,7 @@ class GluteBridgeExerciseDTO extends ExerciseDTO {
           ExerciseEquipment.dumbbell,
           ExerciseEquipment.barbell,
           ExerciseEquipment.kettleBell,
+          ExerciseEquipment.sandBag,
           ExerciseEquipment.plate
         ]
       };

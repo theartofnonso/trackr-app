@@ -26,7 +26,7 @@ class GoodMorningExerciseDTO extends ExerciseDTO {
   @override
   Map<ExerciseConfigurationKey, List<ExerciseConfigValue>> get configurationOptions => {
         ExerciseConfigurationKey.setType: [SetType.weightsAndReps],
-        ExerciseConfigurationKey.equipment: [ExerciseEquipment.barbell, ExerciseEquipment.smithMachine]
+        ExerciseConfigurationKey.equipment: [ExerciseEquipment.barbell, ExerciseEquipment.smithMachine, ExerciseEquipment.sandBag,]
       };
 
   @override
