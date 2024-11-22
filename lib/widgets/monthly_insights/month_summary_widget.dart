@@ -100,7 +100,7 @@ class MonthSummaryWidget extends StatelessWidget {
                     verticalAlignment: TableCellVerticalAlignment.middle,
                     child: Center(
                       child: _TableItem(
-                          title: 'Workouts'.toUpperCase(),
+                          title: 'Sessions'.toUpperCase(),
                           subTitle: "${routineLogs.length}",
                           titleColor: logStreakColor(value: routineLogs.length / 12),
                           subTitleColor: logStreakColor(value: routineLogs.length / 12),
