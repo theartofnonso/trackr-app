@@ -302,7 +302,10 @@ class _MyAppState extends State<MyApp> {
       await Amplify.addPlugin(AmplifyAuthCognito());
       final apiPluginOptions = APIPluginOptions(modelProvider: ModelProvider.instance);
       await Amplify.addPlugin(AmplifyAPI(options: apiPluginOptions));
-      final datastorePluginOptions = DataStorePluginOptions(syncExpressions: [
+      final datastorePluginOptions = DataStorePluginOptions
+        (
+          syncMaxRecords: 1000,
+          syncExpressions: [
         DataStoreSyncExpression(
             ActivityLog.classType, () => ActivityLog.CREATEDAT.between(startOfCurrentYear, endOfCurrentYear)),
         DataStoreSyncExpression(
