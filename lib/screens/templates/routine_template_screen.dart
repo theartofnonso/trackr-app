@@ -176,6 +176,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           ),
           child: SafeArea(
             minimum: const EdgeInsets.all(10.0),
+            bottom: false,
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,

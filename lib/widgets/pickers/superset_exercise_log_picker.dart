@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../colors.dart';
-import '../../../../dtos/exercise_log_dto.dart';
-import '../../../buttons/opacity_button_widget.dart';
-import '../../../empty_states/list_tile_empty_state.dart';
+import '../../colors.dart';
+import '../../dtos/exercise_log_dto.dart';
+import '../buttons/opacity_button_widget.dart';
+import '../empty_states/list_tile_empty_state.dart';
 
 class SuperSetExerciseLogPicker extends StatelessWidget {
   final String title;

@@ -138,6 +138,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
           ),
           child: Stack(children: [
             SafeArea(
+              bottom: false,
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

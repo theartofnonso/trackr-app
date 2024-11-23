@@ -222,8 +222,8 @@ class ExerciseRepository {
 
   /// Helper methods
 
-  ExerciseDTO whereExercise({required String id}) {
-    return exercises.firstWhere((exercise) => exercise.id == id);
+  ExerciseDTO? whereExercise({required String id}) {
+    return exercises.firstWhereOrNull((exercise) => exercise.id == id);
   }
 
   void clear() {

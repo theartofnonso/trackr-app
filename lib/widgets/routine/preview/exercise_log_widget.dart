@@ -38,7 +38,7 @@ class ExerciseLogWidget extends StatelessWidget {
 
     final exercise = exerciseAndRoutineController.whereExercise(id: exerciseLog.exerciseVariant.baseExerciseId);
 
-    final configurationChips = exercise.configurationOptions.keys.where((configKey) {
+    final configurationChips = exercise?.configurationOptions.keys.where((configKey) {
       final configOptions = exercise.configurationOptions[configKey]!;
       return configOptions.length > 1;
     }).map((ExerciseConfigurationKey configKey) {
@@ -50,7 +50,7 @@ class ExerciseLogWidget extends StatelessWidget {
           color: vibrantGreen,
         ),
       );
-    }).toList();
+    }).toList() ?? [];
 
     return GestureDetector(
       onTap: () => Navigator.of(context).push(
@@ -78,7 +78,7 @@ class ExerciseLogWidget extends StatelessWidget {
                         fontSize: 14, color: Colors.white70, fontStyle: FontStyle.italic, fontWeight: FontWeight.w500)),
               ),
             ),
-          Container(
+          configurationChips.isNotEmpty ? Container(
             margin: const EdgeInsets.only(top: 10, bottom: 15),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
@@ -92,7 +92,7 @@ class ExerciseLogWidget extends StatelessWidget {
             child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(mainAxisAlignment: MainAxisAlignment.center, children: configurationChips)),
-          ),
+          ) : const SizedBox(height: 16),
           switch (setType) {
             SetType.weightsAndReps => DoubleSetHeader(
                 firstLabel: weightLabel().toUpperCase(),

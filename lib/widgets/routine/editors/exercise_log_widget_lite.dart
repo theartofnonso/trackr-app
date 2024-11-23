@@ -33,7 +33,7 @@ class ExerciseLogLiteWidget extends StatelessWidget {
 
     final exercise = exerciseAndRoutineController.whereExercise(id: exerciseVariant.baseExerciseId);
 
-    final configurationChips = exercise.configurationOptions.keys.where((configKey) {
+    final configurationOptionsChips = exercise?.configurationOptions.keys.where((configKey) {
       final configOptions = exercise.configurationOptions[configKey]!;
       return configOptions.length > 1;
     }).map((ExerciseConfigurationKey configKey) {
@@ -42,7 +42,7 @@ class ExerciseLogLiteWidget extends StatelessWidget {
         label: configValue.displayName.toLowerCase(),
         color: vibrantGreen,
       );
-    }).toList();
+    }).toList() ?? [];
 
     return Container(
       padding: superSet == null ? const EdgeInsets.symmetric(vertical: 10, horizontal: 10) : const EdgeInsets.all(10),
@@ -83,7 +83,7 @@ class ExerciseLogLiteWidget extends StatelessWidget {
           Wrap(
             runSpacing: 8,
             spacing: 8,
-            children: configurationChips,
+            children: configurationOptionsChips,
           ),
         ],
       ),

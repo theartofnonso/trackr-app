@@ -268,7 +268,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
   }
 
   /// [ExerciseDTO] Helpers methods
-  ExerciseDTO whereExercise({required String id}) {
+  ExerciseDTO? whereExercise({required String id}) {
     return _amplifyExerciseRepository.whereExercise(id: id);
   }
 

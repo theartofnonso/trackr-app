@@ -285,7 +285,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final exercise = exerciseAndRoutineController.whereExercise(id: exerciseVariant.baseExerciseId);
 
-    final configurationOptionsWidgets = exercise.configurationOptions.keys.where((configKey) {
+    final configurationOptionsWidgets = exercise?.configurationOptions.keys.where((configKey) {
       final configOptions = exercise.configurationOptions[configKey]!;
       return configOptions.length > 1;
     }).map((ExerciseConfigurationKey configKey) {
@@ -300,7 +300,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           onPressed: () => _showConfigurationPicker(configKey: configKey, baseExercise: exercise),
         ),
       );
-    }).toList();
+    }).toList() ?? [];
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),

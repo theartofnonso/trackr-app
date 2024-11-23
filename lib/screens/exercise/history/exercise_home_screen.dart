@@ -14,6 +14,7 @@ import '../../../enums/exercise/exercise_configuration_key.dart';
 import '../../../utils/dialog_utils.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../widgets/buttons/opacity_button_widget.dart';
+import '../../../widgets/empty_states/not_found.dart';
 import '../../../widgets/pickers/exercise_configurations_picker.dart';
 
 class ExerciseHomeScreen extends StatefulWidget {
@@ -32,19 +33,22 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
 
   late Map<ExerciseConfigurationKey, ExerciseConfigValue> _selectedConfigurations;
 
-  late ExerciseDTO _baseExercise;
+  ExerciseDTO? _baseExercise;
 
   late ExerciseAndRoutineController _exerciseAndRoutineController;
 
   @override
   Widget build(BuildContext context) {
+    final exercise = _baseExercise;
+
+    if (exercise == null) return const NotFound();
+
     final completedExerciseLogs = completedExercises(exerciseLogs: _exerciseLogs);
 
-    final firstVariant =
-        _exerciseLogs.isNotEmpty ? _exerciseLogs.first.exerciseVariant : _baseExercise.defaultVariant();
+    final firstVariant = _exerciseLogs.isNotEmpty ? _exerciseLogs.first.exerciseVariant : exercise.defaultVariant();
 
-    final configurationOptionsWidgets = _baseExercise.configurationOptions.keys.where((configKey) {
-      final configOptions = _baseExercise.configurationOptions[configKey]!;
+    final configurationOptionsWidgets = exercise.configurationOptions.keys.where((configKey) {
+      final configOptions = exercise.configurationOptions[configKey]!;
       return configOptions.length > 1;
     }).map((ExerciseConfigurationKey configKey) {
       final configValue = firstVariant.configurations[configKey]!;
@@ -55,7 +59,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
           buttonColor: vibrantGreen,
           padding: EdgeInsets.symmetric(horizontal: 0),
           textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 12, color: vibrantGreen),
-          onPressed: () => _showConfigurationPicker(configKey: configKey, baseExercise: _baseExercise),
+          onPressed: () => _showConfigurationPicker(configKey: configKey, baseExercise: exercise),
         ),
       );
     }).toList();
@@ -69,7 +73,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
               icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
               onPressed: context.pop,
             ),
-            title: Text(_baseExercise.name,
+            title: Text(exercise.name,
                 style: GoogleFonts.ubuntu(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
             bottom: TabBar(
               dividerColor: Colors.transparent,
@@ -161,9 +165,13 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
 
     _baseExercise = _exerciseAndRoutineController.whereExercise(id: widget.id);
 
-    _selectedConfigurations = _baseExercise.defaultVariant().configurations;
+    final exercise = _baseExercise;
 
-    _exerciseLogs = _exerciseAndRoutineController.filterExerciseLogsByIdAndConfigurations(
-        exerciseId: widget.id, configurations: _selectedConfigurations);
+    if (exercise != null) {
+      _selectedConfigurations = exercise.defaultVariant().configurations;
+
+      _exerciseLogs = _exerciseAndRoutineController.filterExerciseLogsByIdAndConfigurations(
+          exerciseId: widget.id, configurations: _selectedConfigurations);
+    }
   }
 }
