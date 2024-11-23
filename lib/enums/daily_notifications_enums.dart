@@ -19,7 +19,9 @@ enum DailyReminderType {
 
   daily, weekday;
 
-  static DailyReminderType fromString(String string) {
+  String toJson() => name;
+
+  static DailyReminderType fromJson(String string) {
     return DailyReminderType.values.firstWhere((value) => value.name.toLowerCase() == string.toLowerCase());
   }
 }

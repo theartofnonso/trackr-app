@@ -1,8 +1,11 @@
 import 'dart:convert';
 
+import 'package:tracker_app/enums/exercise/set_type_enums.dart';
+
 import '../../enums/activity_type_enums.dart';
-import '../exercise_log_dto.dart';
+import '../../models/RoutineLog.dart';
 import '../abstract_class/log_class.dart';
+import '../exercise_log_dto.dart';
 
 class RoutineLogDto extends Log {
   @override
@@ -17,7 +20,7 @@ class RoutineLogDto extends Log {
   final DateTime startTime;
   @override
   final DateTime endTime;
-  final List<ExerciseLogDto> exerciseLogs;
+  final List<ExerciseLogDTO> exerciseLogs;
   final String owner;
   @override
   final DateTime createdAt;
@@ -56,32 +59,133 @@ class RoutineLogDto extends Log {
     };
   }
 
-  factory RoutineLogDto.fromJson(Map<String, dynamic> json, {String? owner, DateTime? createdAt, DateTime? updateAt}) {
-    final id = json["id"] ?? "";
+  factory RoutineLogDto.toDto(RoutineLog log) {
+    return RoutineLogDto.fromLog(log: log);
+  }
+
+  factory RoutineLogDto.fromCachedLog({required Map<String, dynamic> json}) {
     final templateId = json["templateId"] ?? "";
     final name = json["name"] ?? "";
     final notes = json["notes"] ?? "";
     final summary = json["summary"];
     final startTime = DateTime.parse(json["startTime"]);
     final endTime = DateTime.parse(json["endTime"]);
-    final exercisesJsons = json["exercises"] as List<dynamic>;
-    final exercises =
-        exercisesJsons.map((json) => ExerciseLogDto.fromJson(routineLogId: id, json: jsonDecode(json))).toList();
-    final createdAtDate = createdAt ?? DateTime.now();
-    final updatedAtDate = updateAt ?? DateTime.now();
+    final exerciseLogJsons = json["exercises"] as List<dynamic>;
+    final exerciseLogs = exerciseLogJsons.map((json) {
+      return ExerciseLogDTO.fromJson(routineLogId: "", json: json);
+    }).toList();
     return RoutineLogDto(
-      id: id,
+      id: "",
       templateId: templateId,
       name: name,
+      exerciseLogs: exerciseLogs,
       notes: notes,
       summary: summary,
       startTime: startTime,
       endTime: endTime,
-      exerciseLogs: exercises,
-      owner: owner ?? "",
-      createdAt: createdAtDate,
-      updatedAt: updatedAtDate,
+      owner: "",
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
     );
+  }
+
+  factory RoutineLogDto.fromLog({required RoutineLog log}) {
+    final json = jsonDecode(log.data);
+
+    final templateId = json["templateId"] ?? "";
+    final name = json["name"] ?? "";
+    final notes = json["notes"] ?? "";
+    final summary = json["summary"];
+    final startTime = DateTime.parse(json["startTime"]);
+    final endTime = DateTime.parse(json["endTime"]);
+    final exerciseLogsInJson = json["exercises"] as List<dynamic>;
+    List<ExerciseLogDTO> exerciseLogs = [];
+    if (exerciseLogsInJson.isNotEmpty && exerciseLogsInJson.first is String) {
+      final newSchema = _transformOldExercisesSchema(oldExercises: exerciseLogsInJson);
+      exerciseLogs = newSchema
+          .map((json) =>
+              ExerciseLogDTO.fromJson(routineLogId: log.id, createdAt: log.createdAt.getDateTimeInUtc(), json: json))
+          .toList();
+    } else {
+      exerciseLogs = exerciseLogsInJson
+          .map((json) =>
+              ExerciseLogDTO.fromJson(routineLogId: log.id, createdAt: log.createdAt.getDateTimeInUtc(), json: json))
+          .toList();
+    }
+
+    return RoutineLogDto(
+      id: log.id,
+      templateId: templateId,
+      name: name,
+      exerciseLogs: exerciseLogs,
+      notes: notes,
+      summary: summary,
+      startTime: startTime,
+      endTime: endTime,
+      owner: log.owner ?? "",
+      createdAt: log.createdAt.getDateTimeInUtc(),
+      updatedAt: log.updatedAt.getDateTimeInUtc(),
+    );
+  }
+
+  static List<Map<String, dynamic>> _transformOldExercisesSchema({required List<dynamic> oldExercises}) {
+    // Process exercises
+    List<Map<String, dynamic>> newExercises = [];
+
+    for (final exerciseStr in oldExercises) {
+      // The exercises are strings of JSON objects, so parse them
+      Map<String, dynamic> oldExercise = jsonDecode(exerciseStr);
+      final setType = switch (oldExercise["exercise"]["type"]) {
+        "WR" => SetType.weightsAndReps,
+        "BW" => SetType.reps,
+        "DR" => SetType.duration,
+        _ => SetType.weightsAndReps,
+      };
+      // Initialize new exercise map
+      Map<String, dynamic> newExercise = {
+        'notes': oldExercise['notes'] ?? '',
+        'sets': [],
+        'superSetId': oldExercise['superSetId'] ?? '',
+        'exercise': {
+          'secondary_muscle_groups': oldExercise['exercise']['secondaryMuscleGroups'] ?? [""],
+          'base_exercise_id': oldExercise['exercise']['id'] ?? '',
+          'primary_muscle_groups': [oldExercise['exercise']['primaryMuscleGroup'] ?? ''],
+          'configurations': <String, dynamic>{
+            "setType": {
+              "displayName": setType.displayName,
+              "name": setType.name,
+              "description": setType.description,
+              "type": "setType"
+            }
+          },
+          'name': oldExercise['exercise']['name'] ?? '',
+        },
+      };
+
+      // Process sets
+      List<dynamic> oldSets = oldExercise['sets'] ?? [];
+      List<dynamic> newSets = [];
+
+      for (var setStr in oldSets) {
+        // The sets are strings of JSON objects, so parse them
+        Map<String, dynamic> oldSet = jsonDecode(setStr);
+
+        // Map old set fields to new set fields
+        Map<String, dynamic> newSet = {
+          'value1': oldSet['value1'] ?? 0,
+          'value2': oldSet['value2'] ?? 0,
+          'checked': oldSet['checked'] ?? false,
+        };
+
+        newSets.add(newSet);
+      }
+
+      newExercise['sets'] = newSets;
+
+      newExercises.add(newExercise);
+    }
+
+    return newExercises;
   }
 
   @override
@@ -93,7 +197,7 @@ class RoutineLogDto extends Log {
     String? summary,
     DateTime? startTime,
     DateTime? endTime,
-    List<ExerciseLogDto>? exerciseLogs,
+    List<ExerciseLogDTO>? exerciseLogs,
     String? owner,
     DateTime? createdAt,
     DateTime? updatedAt,

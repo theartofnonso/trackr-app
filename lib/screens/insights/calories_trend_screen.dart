@@ -44,7 +44,7 @@ class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
       final endOfMonth = month.end;
       final logsForTheMonth = logs.where((log) => log.createdAt.isBetweenInclusive(from: startOfMonth, to: endOfMonth));
       final values = logsForTheMonth
-          .map((log) => calculateCalories(duration: log.duration(), bodyWeight: routineUserController.weight(), activity: log.activityType))
+          .map((log) => calculateCalories(duration: log.duration(), reps: routineUserController.weight(), activity: log.activityType))
           .sum;
       calories.add(values);
       months.add(startOfMonth.abbreviatedMonth());
@@ -59,7 +59,7 @@ class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
       appBar: AppBar(
         backgroundColor: sapphireDark80,
         leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+          icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
           onPressed: context.pop,
         ),
         title: Text("Calories Trend".toUpperCase(),

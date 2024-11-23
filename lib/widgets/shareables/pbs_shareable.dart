@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/dtos/set_dto.dart';
+import 'package:tracker_app/dtos/sets_dtos/duration_set_dto.dart';
+import 'package:tracker_app/dtos/sets_dtos/set_dto.dart';
+import 'package:tracker_app/dtos/sets_dtos/weight_and_reps_set_dto.dart';
 import 'package:tracker_app/enums/pb_enums.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
@@ -14,7 +16,7 @@ GlobalKey pbsGlobalKey = GlobalKey();
 
 class PBsShareable extends StatelessWidget {
   final GlobalKey globalKey;
-  final SetDto set;
+  final SetDTO set;
   final PBDto pbDto;
   final Image? image;
 
@@ -24,13 +26,14 @@ class PBsShareable extends StatelessWidget {
   Widget build(BuildContext context) {
     String? value;
 
-    if (withDurationOnly(type: pbDto.exercise.type)) {
-      value = Duration(milliseconds: set.duration()).hmsAnalog();
-    } else if (withWeightsOnly(type: pbDto.exercise.type)) {
+    if (withDurationOnly(setType: pbDto.exerciseVariant.getSetTypeConfiguration())) {
+      value = (set as DurationSetDTO).duration.hmsAnalog();
+    } else if (withWeightsOnly(setType: pbDto.exerciseVariant.getSetTypeConfiguration())) {
       if (pbDto.pb == PBType.weight) {
-        value = "${set.weight()}${weightLabel().toUpperCase()}";
+        value = "${(set as WeightAndRepsSetDTO).weight}${weightLabel().toUpperCase()}";
       } else {
-        value = "${set.weight()}${weightLabel().toUpperCase()} x ${set.reps()}";
+        final weightAndRepsSet = (set as WeightAndRepsSetDTO);
+        value = "${weightAndRepsSet.weight}${weightLabel().toUpperCase()} x ${weightAndRepsSet.reps}";
       }
     }
 
@@ -98,13 +101,12 @@ class PBsShareable extends StatelessWidget {
                                       color: Colors.white, fontSize: 24, fontWeight: FontWeight.w600)),
                             )
                           : const SizedBox(height: 20),
-                      Text(pbDto.exercise.name,
+                      Text(pbDto.exerciseVariant.name,
                           style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 4),
                       Text(pbDto.pb.description,
                           style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w600)),
                       const SizedBox(height: 30),
-
                     ]),
               ],
             ),

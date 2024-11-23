@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:tracker_app/dtos/appsync/activity_log_dto.dart';
-import 'package:tracker_app/extensions/amplify_models/activity_log_extension.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
 import '../../models/ActivityLog.dart';
@@ -16,7 +15,7 @@ class AmplifyActivityLogRepository {
   UnmodifiableListView<ActivityLogDto> get logs => UnmodifiableListView(_logs);
 
   void loadLogsStream({required List<ActivityLog> logs}) {
-    _logs = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
+    _logs = logs.map((log) => ActivityLogDto.toDto(log)).toList();
   }
 
   Future<void> saveLog({required ActivityLogDto logDto}) async {

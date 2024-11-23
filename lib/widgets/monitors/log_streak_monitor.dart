@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tracker_app/colors.dart';
 
-import '../../utils/general_utils.dart';
-
 class LogStreakMonitor extends StatelessWidget {
   final double value;
   final double width;
@@ -28,9 +26,9 @@ class LogStreakMonitor extends StatelessWidget {
       child: CircularProgressIndicator(
         value: value,
         strokeWidth: strokeWidth,
-        backgroundColor: sapphireDark80,
+        backgroundColor: sapphireDark60,
         strokeCap: strokeCap ?? StrokeCap.butt,
-        valueColor: AlwaysStoppedAnimation<Color>(logStreakColor(value: value)),
+        valueColor: AlwaysStoppedAnimation<Color>(vibrantGreen),
       ),
     );
   }

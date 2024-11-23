@@ -9,7 +9,7 @@ import 'package:tracker_app/dtos/milestones/reps_milestone.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
-import 'package:tracker_app/widgets/label_divider.dart';
+import 'package:tracker_app/widgets/dividers/label_divider.dart';
 import 'package:tracker_app/widgets/shareables/milestone_shareable.dart';
 
 import '../../../colors.dart';
@@ -119,7 +119,7 @@ class MilestoneScreen extends StatelessWidget {
                       alignment: Alignment.topLeft,
                       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                         IconButton(
-                          icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
+                          icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
                           onPressed: context.pop,
                         )
                       ]),

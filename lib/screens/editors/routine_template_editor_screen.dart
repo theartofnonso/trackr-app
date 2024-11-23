@@ -5,22 +5,24 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
-import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
+import 'package:tracker_app/controllers/exercise_log_controller.dart';
+import 'package:tracker_app/dtos/abstract_class/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
+import 'package:tracker_app/dtos/sets_dtos/weight_and_reps_set_dto.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 
 import '../../colors.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
-import '../../dtos/set_dto.dart';
+import '../../dtos/sets_dtos/set_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/routine_editors_utils.dart';
 import '../../utils/routine_utils.dart';
-import '../../widgets/empty_states/exercise_log_empty_state.dart';
+import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
 import '../../widgets/routine/editors/exercise_log_widget_lite.dart';
 import '../../widgets/weight_plate_calculator.dart';
+import '../../widgets/empty_states/no_list_empty_state.dart';
 
 class RoutineTemplateEditorScreen extends StatefulWidget {
   static const routeName = '/routine-template-editor';
@@ -41,34 +43,22 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
 
   final _minimisedExerciseLogCards = <String>[];
 
-  SetDto? _selectedSetDto;
+  SetDTO? _selectedSetDto;
 
   void _selectExercisesInLibrary() async {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
-    final excludeExercises = controller.exerciseLogs.map((exercise) => exercise.exercise).toList();
+    final excludeExercises = controller.exerciseLogs.map((exercise) => exercise.exerciseVariant).toList();
 
     showExercisesInLibrary(
         context: context,
-        excludeExercises: excludeExercises,
-        onSelected: (List<ExerciseDto> selectedExercises) {
-          controller.addExerciseLogs(exercises: selectedExercises);
+        exercisesToExclude: excludeExercises.map((exercise) => exercise.name).toList(),
+        onSelected: (List<ExerciseDTO> selectedExercises) {
+          final variants = selectedExercises.map((exercise) => exercise.defaultVariant()).toList();
+          controller.addExerciseLogs(exercisesVariants: variants);
         });
   }
 
-  void _selectSubstituteExercisesInLibrary({required ExerciseLogDto primaryExerciseLog}) async {
-    final controller = Provider.of<ExerciseLogController>(context, listen: false);
-    final excludeExercises = controller.exerciseLogs.map((exercise) => exercise.exercise).toList();
-
-    showExercisesInLibrary(
-        context: context,
-        excludeExercises: excludeExercises,
-        onSelected: (List<ExerciseDto> selectedExercises) {
-          controller.addAlternates(primaryExerciseId: primaryExerciseLog.id, exercises: selectedExercises);
-          _showSubstituteExercisePicker(primaryExerciseLog: primaryExerciseLog);
-        });
-  }
-
-  void _showSuperSetExercisePicker({required ExerciseLogDto firstExerciseLog}) {
+  void _showSuperSetExercisePicker({required ExerciseLogDTO firstExerciseLog}) {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
     final otherExercises = whereOtherExerciseLogsExcept(exerciseLog: firstExerciseLog, others: controller.exerciseLogs);
     showSuperSetExercisePicker(
@@ -79,7 +69,9 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
           _closeDialog();
           final id = superSetId(firstExerciseLog: firstExerciseLog, secondExerciseLog: secondExerciseLog);
           controller.superSetExerciseLogs(
-              firstExerciseLogId: firstExerciseLog.id, secondExerciseLogId: secondExerciseLog.id, superSetId: id);
+              firstExerciseName: firstExerciseLog.exerciseVariant.name,
+              secondExerciseName: secondExerciseLog.exerciseVariant.name,
+              superSetId: id);
         },
         selectExercisesInLibrary: () {
           _closeDialog();
@@ -87,41 +79,17 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
         });
   }
 
-  void _showSubstituteExercisePicker({required ExerciseLogDto primaryExerciseLog}) {
+  void _showReplaceExercisePicker({required ExerciseLogDTO oldExerciseLog}) {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
-    showSubstituteExercisePicker(
-        context: context,
-        primaryExerciseLog: primaryExerciseLog,
-        otherExercises: primaryExerciseLog.substituteExercises,
-        onSelected: (secondaryExercise) {
-          _closeDialog();
-          final foundExerciseLog = controller.exerciseLogs
-              .firstWhereOrNull((exerciseLog) => exerciseLog.exercise.id == secondaryExercise.id);
-          if (foundExerciseLog == null) {
-            controller.replaceExerciseLog(oldExerciseId: primaryExerciseLog.id, newExercise: secondaryExercise);
-          } else {
-            _showSnackbar("${foundExerciseLog.exercise.name} has already been added");
-          }
-        },
-        onRemoved: (ExerciseDto secondaryExercise) {
-          controller.removeAlternates(
-              primaryExerciseId: primaryExerciseLog.id, secondaryExerciseId: secondaryExercise.id);
-        },
-        selectExercisesInLibrary: () {
-          _closeDialog();
-          _selectSubstituteExercisesInLibrary(primaryExerciseLog: primaryExerciseLog);
-        });
-  }
-
-  void _showReplaceExercisePicker({required ExerciseLogDto oldExerciseLog}) {
-    final controller = Provider.of<ExerciseLogController>(context, listen: false);
-    final excludeExercises = controller.exerciseLogs.map((exercise) => exercise.exercise).toList();
+    final excludeExercises = controller.exerciseLogs.map((exercise) => exercise.exerciseVariant).toList();
 
     showExercisesInLibrary(
         context: context,
-        excludeExercises: excludeExercises,
-        onSelected: (List<ExerciseDto> selectedExercises) {
-          controller.replaceExerciseLog(oldExerciseId: oldExerciseLog.id, newExercise: selectedExercises.first);
+        exercisesToExclude: excludeExercises.map((exercise) => exercise.name).toList(),
+        onSelected: (List<ExerciseDTO> selectedExercises) {
+          controller.replaceExerciseLog(
+              oldExerciseId: oldExerciseLog.exerciseVariant.name,
+              newExerciseVariant: selectedExercises.first.defaultVariant());
         });
   }
 
@@ -185,7 +153,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   }
 
   RoutineTemplateDto _getUpdatedRoutineTemplate(
-      {required RoutineTemplateDto template, List<ExerciseLogDto>? updatedExerciseLogs}) {
+      {required RoutineTemplateDto template, List<ExerciseLogDTO>? updatedExerciseLogs}) {
     final exerciseProvider = Provider.of<ExerciseLogController>(context, listen: false);
     final exerciseLogs = updatedExerciseLogs ?? exerciseProvider.mergeExerciseLogsAndSets();
 
@@ -227,7 +195,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     }
   }
 
-  void _reOrderExerciseLogs({required List<ExerciseLogDto> exerciseLogs}) async {
+  void _reOrderExerciseLogs({required List<ExerciseLogDTO> exerciseLogs}) async {
     final orderedList = await reOrderExerciseLogs(context: context, exerciseLogs: exerciseLogs);
     if (!mounted) {
       return;
@@ -264,6 +232,10 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
 
   bool _isMinimised(String id) {
     return _minimisedExerciseLogCards.firstWhereOrNull((exerciseId) => exerciseId == id) != null;
+  }
+
+  void _updateExerciseLog(ExerciseLogDTO exerciseLog) async {
+    Provider.of<ExerciseLogController>(context, listen: false).updateExerciseLog(newExerciseLog: exerciseLog);
   }
 
   @override
@@ -318,13 +290,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                   label:
                       Text("Calculator", style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600)),
                 )
-              : FloatingActionButton(
-                  heroTag: "routine_template_editor_scree_fab",
-                  onPressed: template != null ? _updateRoutineTemplate : _createRoutineTemplate,
-                  backgroundColor: sapphireDark,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                  child: const FaIcon(FontAwesomeIcons.check, color: Colors.white, size: 28),
-                ),
+              : null,
           body: Container(
             width: double.infinity,
             decoration: const BoxDecoration(
@@ -338,7 +304,8 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
               ),
             ),
             child: SafeArea(
-              minimum: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
+              bottom: false,
+              minimum: const EdgeInsets.only(right: 10.0, left: 10.0),
               child: NotificationListener<UserScrollNotification>(
                 onNotification: (scrollNotification) {
                   if (scrollNotification.direction != ScrollDirection.idle) {
@@ -350,95 +317,122 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                   onTap: _dismissKeyboard,
                   child: Column(
                     children: [
-                      Column(
-                        children: [
-                          TextField(
-                            controller: _templateNameController,
-                            decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(5),
-                                    borderSide: const BorderSide(color: sapphireLighter)),
-                                filled: true,
-                                fillColor: sapphireDark,
-                                hintText: "New workout",
-                                hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14)),
-                            cursorColor: Colors.white,
-                            keyboardType: TextInputType.text,
-                            textCapitalization: TextCapitalization.words,
-                            style: GoogleFonts.ubuntu(
-                                fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
-                          ),
-                          const SizedBox(height: 10),
-                          TextField(
-                            controller: _templateNotesController,
-                            decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(5),
-                                    borderSide: const BorderSide(color: sapphireLighter)),
-                                filled: true,
-                                fillColor: sapphireDark,
-                                hintText: "Notes",
-                                hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14)),
-                            maxLines: null,
-                            cursorColor: Colors.white,
-                            keyboardType: TextInputType.text,
-                            textCapitalization: TextCapitalization.sentences,
-                            style: GoogleFonts.ubuntu(
-                                fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
-                          ),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Column(
+                          children: [
+                            TextField(
+                              controller: _templateNameController,
+                              decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                  enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(5),
+                                      borderSide: const BorderSide(color: sapphireLighter)),
+                                  filled: true,
+                                  fillColor: sapphireDark,
+                                  hintText: "New workout",
+                                  hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14)),
+                              cursorColor: Colors.white,
+                              keyboardType: TextInputType.text,
+                              textCapitalization: TextCapitalization.words,
+                              style: GoogleFonts.ubuntu(
+                                  fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+                            ),
+                            const SizedBox(height: 10),
+                            TextField(
+                              controller: _templateNotesController,
+                              decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                  enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(5),
+                                      borderSide: const BorderSide(color: sapphireLighter)),
+                                  filled: true,
+                                  fillColor: sapphireDark,
+                                  hintText: "Notes",
+                                  hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14)),
+                              maxLines: null,
+                              cursorColor: Colors.white,
+                              keyboardType: TextInputType.text,
+                              textCapitalization: TextCapitalization.sentences,
+                              style: GoogleFonts.ubuntu(
+                                  fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+                            ),
+                          ],
+                        ),
                       ),
-                      const SizedBox(height: 20),
-                      exerciseLogs.isNotEmpty
-                          ? Expanded(
-                              child: ListView.separated(
-                                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                                  padding: const EdgeInsets.only(bottom: 250),
-                                  itemBuilder: (BuildContext context, int index) {
-                                    final log = exerciseLogs[index];
-                                    final logId = log.id;
-                                    final isExerciseMinimised = _minimisedExerciseLogCards.contains(logId);
-                                    return isExerciseMinimised
-                                        ? ExerciseLogLiteWidget(
-                                            key: ValueKey(logId),
-                                            exerciseLogDto: log,
-                                            superSet: whereOtherExerciseInSuperSet(
-                                                firstExercise: log, exercises: exerciseLogs),
-                                            onMaximise: () => _handleResizedExerciseLogCard(exerciseIdToResize: logId),
-                                          )
-                                        : ExerciseLogWidget(
-                                            key: ValueKey(logId),
-                                            exerciseLogDto: log,
-                                            editorType: RoutineEditorMode.edit,
-                                            superSet: whereOtherExerciseInSuperSet(
-                                                firstExercise: log, exercises: exerciseLogs),
-                                            onRemoveSuperSet: (String superSetId) =>
-                                                exerciseLogController.removeSuperSet(superSetId: log.superSetId),
-                                            onRemoveLog: () => exerciseLogController.removeExerciseLog(logId: logId),
-                                            onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: log),
-                                            onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: log),
-                                            onResize: () => _handleResizedExerciseLogCard(exerciseIdToResize: logId),
-                                            isMinimised: _isMinimised(logId),
-                                            onAlternate: () => _showSubstituteExercisePicker(primaryExerciseLog: log),
-                                            onTapWeightEditor: (SetDto setDto) {
-                                              setState(() {
-                                                _selectedSetDto = setDto;
-                                              });
-                                            },
-                                            onTapRepsEditor: (SetDto setDto) {
-                                              setState(() {
-                                                _selectedSetDto = null;
-                                              });
-                                            },
-                                          );
-                                  },
-                                  separatorBuilder: (_, __) => const SizedBox(height: 10),
-                                  itemCount: exerciseLogs.length))
-                          : const ExerciseLogEmptyState(
-                              mode: RoutineEditorMode.edit,
-                              message: "Tap the + button to start adding exercises to your workout"),
+                      if (exerciseLogs.isNotEmpty)
+                        Expanded(
+                          child: SingleChildScrollView(
+                            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                            padding: const EdgeInsets.only(bottom: 250),
+                            child: Column(children: [
+                              ...exerciseLogs.map((exerciseLog) {
+                                final exerciseName = exerciseLog.exerciseVariant.name;
+
+                                final isExerciseMinimised = _minimisedExerciseLogCards.contains(exerciseName);
+
+                                return Padding(
+                                  padding: const EdgeInsets.only(top: 20),
+                                  child: isExerciseMinimised
+                                      ? ExerciseLogLiteWidget(
+                                          key: ValueKey(exerciseName),
+                                          exerciseLogDto: exerciseLog,
+                                          superSet: whereOtherExerciseInSuperSet(
+                                              firstExercise: exerciseLog, exercises: exerciseLogs),
+                                          onMaximise: () =>
+                                              _handleResizedExerciseLogCard(exerciseIdToResize: exerciseName),
+                                        )
+                                      : ExerciseLogWidget(
+                                          key: ValueKey(exerciseName),
+                                          exerciseLogDto: exerciseLog,
+                                          editorType: RoutineEditorMode.edit,
+                                          superSet: whereOtherExerciseInSuperSet(
+                                              firstExercise: exerciseLog, exercises: exerciseLogs),
+                                          onRemoveSuperSet: (String superSetId) =>
+                                              exerciseLogController.removeSuperSet(superSetId: exerciseLog.superSetId),
+                                          onRemoveLog: () =>
+                                              exerciseLogController.removeExerciseLog(logId: exerciseName),
+                                          onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
+                                          onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
+                                          onResize: () =>
+                                              _handleResizedExerciseLogCard(exerciseIdToResize: exerciseName),
+                                          isMinimised: _isMinimised(exerciseName),
+                                          onTapWeightEditor: (SetDTO setDto) {
+                                            setState(() {
+                                              _selectedSetDto = setDto;
+                                            });
+                                          },
+                                          onTapRepsEditor: (SetDTO setDto) {
+                                            setState(() {
+                                              _selectedSetDto = null;
+                                            });
+                                          },
+                                          onUpdate: _updateExerciseLog,
+                                        ),
+                                );
+                              }),
+                              const SizedBox(height: 20),
+                              SizedBox(
+                                  width: double.infinity,
+                                  child: OpacityButtonWidget(
+                                      padding: const EdgeInsets.symmetric(vertical: 16),
+                                      buttonColor: vibrantGreen,
+                                      label: template != null ? "Update" : "Create Workout",
+                                      onPressed: template != null ? _updateRoutineTemplate : _createRoutineTemplate))
+                            ]),
+                          ),
+                        ),
+                      if (exerciseLogs.isEmpty)
+                        Expanded(
+                          child: const NoListEmptyState(
+                            icon: FaIcon(
+                              FontAwesomeIcons.solidLightbulb,
+                              color: Colors.white12,
+                              size: 48,
+                            ),
+                            message: "Tap the + button to start adding exercises to your workout.",
+                          ),
+                        )
                     ],
                   ),
                 ),
@@ -451,7 +445,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   void _showWeightCalculator() {
     displayBottomSheet(
         context: context,
-        child: WeightPlateCalculator(target: _selectedSetDto?.weight().toDouble() ?? 0),
+        child: WeightPlateCalculator(target: (_selectedSetDto as WeightAndRepsSetDTO?)?.weight ?? 0),
         padding: EdgeInsets.zero);
   }
 
@@ -470,7 +464,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     if (exercises != null && exercises.isNotEmpty) {
       final updatedExerciseLogs = exercises.map((exerciseLog) {
         final previousSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
-            .whereSetsForExercise(exercise: exerciseLog.exercise);
+            .whereSetsForExercise(exerciseVariant: exerciseLog.exerciseVariant);
         if (previousSets.isNotEmpty) {
           final unCheckedSets =
               previousSets.take(exerciseLog.sets.length).map((set) => set.copyWith(checked: false)).toList();
@@ -496,7 +490,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
       final isExerciseCompleted = completedSets == exerciseLog.sets.length;
       if (isExerciseCompleted) {
         setState(() {
-          _minimisedExerciseLogCards.add(exerciseLog.id);
+          _minimisedExerciseLogCards.add(exerciseLog.exerciseVariant.name);
         });
       }
     });

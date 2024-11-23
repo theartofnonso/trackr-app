@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
@@ -8,14 +9,14 @@ import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/widgets/empty_states/list_view_empty_state.dart';
 
 import '../../dtos/exercise_log_dto.dart';
-import '../../enums/exercise_type_enums.dart';
+import '../../enums/exercise/set_type_enums.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../routine/preview/set_headers/double_set_header.dart';
 import '../routine/preview/set_headers/single_set_header.dart';
 
 class ExerciseHistoryLogWidget extends StatelessWidget {
-  final ExerciseLogDto exerciseLog;
+  final ExerciseLogDTO exerciseLog;
 
   const ExerciseHistoryLogWidget({
     super.key,
@@ -43,15 +44,15 @@ class ExerciseHistoryLogWidget extends StatelessWidget {
             subtitle: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-              const Icon(
-                Icons.date_range_rounded,
+              const FaIcon(
+                FontAwesomeIcons.calendarDay,
                 color: Colors.white,
                 size: 12,
               ),
-              const SizedBox(width: 1),
+              const SizedBox(width: 4),
               Text(exerciseLog.createdAt.formattedDayAndMonthAndYear(),
                   style: GoogleFonts.ubuntu(
-                      color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12), textAlign: TextAlign.center),
+                      color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 12), textAlign: TextAlign.center),
             ]),
           ),
         ),
@@ -62,14 +63,14 @@ class ExerciseHistoryLogWidget extends StatelessWidget {
 }
 
 class _ExerciseLogWidget extends StatelessWidget {
-  final ExerciseLogDto exerciseLog;
+  final ExerciseLogDTO exerciseLog;
 
   const _ExerciseLogWidget({required this.exerciseLog});
 
   @override
   Widget build(BuildContext context) {
 
-    final exerciseType = exerciseLog.exercise.type;
+    final exerciseType = exerciseLog.exerciseVariant.getSetTypeConfiguration();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,13 +83,11 @@ class _ExerciseLogWidget extends StatelessWidget {
         )
             : const SizedBox.shrink(),
         switch (exerciseType) {
-          ExerciseType.weights => DoubleSetHeader(firstLabel: weightLabel().toUpperCase(), secondLabel: 'REPS', routinePreviewType: RoutinePreviewType.log),
-          ExerciseType.bodyWeight => const SingleSetHeader(label: 'REPS', routinePreviewType: RoutinePreviewType.log),
-          ExerciseType.duration => const SingleSetHeader(label: 'TIME', routinePreviewType: RoutinePreviewType.log),
-          ExerciseType.all => throw Exception("Unable to return Set header for type ExerciseType.all"),
-        },
+          SetType.weightsAndReps => DoubleSetHeader(firstLabel: weightLabel().toUpperCase(), secondLabel: 'REPS', routinePreviewType: RoutinePreviewType.log),
+          SetType.reps => const SingleSetHeader(label: 'REPS', routinePreviewType: RoutinePreviewType.log),
+          SetType.duration => const SingleSetHeader(label: 'TIME', routinePreviewType: RoutinePreviewType.log),},
         const SizedBox(height: 8),
-        ...setsToWidgets(type: exerciseType, sets: exerciseLog.sets, routinePreviewType: RoutinePreviewType.log),
+        ...setsToWidgets(setType: exerciseType, sets: exerciseLog.sets, routinePreviewType: RoutinePreviewType.log),
       ],
     );
   }

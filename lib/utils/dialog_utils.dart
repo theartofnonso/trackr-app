@@ -9,7 +9,7 @@ import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/routine_utils.dart';
 import 'package:tracker_app/widgets/forms/create_routine_user_profile_widget.dart';
-import 'package:tracker_app/widgets/label_divider.dart';
+import 'package:tracker_app/widgets/dividers/label_divider.dart';
 import 'package:tracker_app/widgets/timers/datetime_picker.dart';
 import 'package:tracker_app/widgets/timers/datetime_range_picker.dart';
 
@@ -52,9 +52,9 @@ Future<void> displayBottomSheet(
     required Widget child,
     Gradient? gradient,
     double? height,
-    enabledDrag = true,
+    bool enabledDrag = true,
     bool isDismissible = true,
-      EdgeInsetsGeometry? padding,
+    EdgeInsetsGeometry? padding,
     bool isScrollControlled = false}) {
   return showModalBottomSheet(
       isScrollControlled: isScrollControlled,
@@ -153,13 +153,14 @@ void showActivityPicker(
 }
 
 void showActivityBottomSheet({required BuildContext context, required ActivityLogDto activity}) {
-  final activityType = ActivityType.fromString(activity.name);
+  final activityType = ActivityType.fromJson(activity.name);
 
   final image = activityType.image;
 
   final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
 
-  final calories = calculateCalories(duration: activity.duration(), bodyWeight: routineUserController.weight(), activity: activity.activityType);
+  final calories = calculateCalories(
+      duration: activity.duration(), reps: routineUserController.weight(), activity: activity.activityType);
 
   displayBottomSheet(
       context: context,

@@ -1,71 +1,80 @@
-import 'dart:convert';
+import 'package:tracker_app/dtos/sets_dtos/set_dto.dart';
 
-import 'package:tracker_app/dtos/set_dto.dart';
+import 'abstract_class/exercise_dto.dart';
+import 'exercise_variant_dto.dart';
 
-import 'appsync/exercise_dto.dart';
-
-class ExerciseLogDto {
-  final String id;
+class ExerciseLogDTO {
   final String? routineLogId;
   final String superSetId;
-  final ExerciseDto exercise;
-  final List<ExerciseDto> substituteExercises;
+  final ExerciseVariantDTO exerciseVariant;
   final String notes;
-  final List<SetDto> sets;
+  final List<SetDTO> sets;
   final DateTime createdAt;
 
-  const ExerciseLogDto(this.id, this.routineLogId, this.superSetId, this.exercise, this.notes, this.sets,
-      this.createdAt, this.substituteExercises);
+  const ExerciseLogDTO({required this.routineLogId,
+    required this.superSetId,
+    required this.exerciseVariant,
+    required this.notes,
+    required this.sets,
+    required this.createdAt});
 
-  String toJson() {
+  Map<String, dynamic> toJson() {
     final setJsons = sets.map((set) => set.toJson()).toList();
-    final substituteExercisesJsons = substituteExercises.map((exercise) => exercise.toJson()).toList();
 
-    return jsonEncode({
+    return {
       "superSetId": superSetId,
-      "exercise": exercise.toJson(),
+      "exercise": exerciseVariant.toJson(),
       "notes": notes,
       "sets": setJsons,
-      "substituteExercises": substituteExercisesJsons
-    });
+    };
   }
 
-  ExerciseLogDto copyWith(
-      {String? id,
-      String? routineLogId,
-      String? superSetId,
-      String? exerciseId,
-      ExerciseDto? exercise,
-      String? notes,
-      List<SetDto>? sets,
-      DateTime? createdAt,
-      List<ExerciseDto>? substituteExercises}) {
-    return ExerciseLogDto(
-        id ?? this.id,
-        routineLogId ?? this.routineLogId,
-        superSetId ?? this.superSetId,
-        exercise ?? this.exercise,
-        notes ?? this.notes,
-        sets ?? this.sets,
-        createdAt ?? this.createdAt,
-        substituteExercises ?? this.substituteExercises);
+  ExerciseLogDTO copyWith({String? routineLogId,
+    String? superSetId,
+    String? exerciseId,
+    ExerciseVariantDTO? exerciseVariant,
+    String? notes,
+    List<SetDTO>? sets,
+    DateTime? createdAt}) {
+    return ExerciseLogDTO(
+        routineLogId: routineLogId ?? this.routineLogId,
+        superSetId: superSetId ?? this.superSetId,
+        exerciseVariant: exerciseVariant ?? this.exerciseVariant,
+        notes: notes ?? this.notes,
+        sets: sets ?? this.sets,
+        createdAt: createdAt ?? this.createdAt);
   }
 
-  factory ExerciseLogDto.fromJson({String? routineLogId, DateTime? createdAt, required Map<String, dynamic> json}) {
+  factory ExerciseLogDTO.empty({required ExerciseDTO exercise}) {
+
+    return ExerciseLogDTO(
+        routineLogId: "",
+        superSetId: "",
+        exerciseVariant: exercise.defaultVariant(),
+        notes: "",
+        sets: [],
+        createdAt: DateTime.now());
+  }
+
+  factory ExerciseLogDTO.fromJson({String? routineLogId, DateTime? createdAt, required Map<String, dynamic> json}) {
     final superSetId = json["superSetId"] ?? "";
-    final exerciseJson = json["exercise"];
-    final exercise = ExerciseDto.fromJson(exerciseJson);
+    final exerciseJson = json["exercise"] as Map<String, dynamic>;
+    final exerciseVariant = ExerciseVariantDTO.fromJson(exerciseJson);
     final notes = json["notes"] ?? "";
     final setsJsons = json["sets"] as List<dynamic>;
-    final sets = setsJsons.map((json) => SetDto.fromJson(jsonDecode(json))).toList();
-    final substituteExercisesJson = json["substituteExercises"] as List<dynamic>? ?? [];
-    final substituteExercises = substituteExercisesJson.map((json) => ExerciseDto.fromJson(json)).toList();
-    return ExerciseLogDto(
-        exercise.id, routineLogId, superSetId, exercise, notes, sets, createdAt ?? DateTime.now(), substituteExercises);
+    final sets = setsJsons.map((json) =>
+        SetDTO.fromJson(json, setType: exerciseVariant.getSetTypeConfiguration())).toList();
+    return ExerciseLogDTO(
+        routineLogId: routineLogId,
+        superSetId: superSetId,
+        exerciseVariant: exerciseVariant,
+        notes: notes,
+        sets: sets,
+        createdAt: createdAt ?? DateTime.now());
   }
 
   @override
   String toString() {
-    return 'ExerciseLogDto{id: $id, routineLogId: $routineLogId, superSetId: $superSetId, exercise: $exercise, notes: $notes, sets: $sets, createdAt: $createdAt}';
+    return 'ExerciseLogDto{routineLogId: $routineLogId, superSetId: $superSetId, exercise: $exerciseVariant, notes: $notes, sets: $sets, createdAt: $createdAt}';
   }
 }

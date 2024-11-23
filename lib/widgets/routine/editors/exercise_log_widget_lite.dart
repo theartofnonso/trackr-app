@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 
 import '../../../colors.dart';
+import '../../../controllers/exercise_and_routine_controller.dart';
+import '../../../enums/exercise/exercise_configuration_key.dart';
 import '../../../enums/routine_editor_type_enums.dart';
+import '../../../screens/exercise/history/exercise_home_screen.dart';
+import '../../chips/squared_chips.dart';
 
 class ExerciseLogLiteWidget extends StatelessWidget {
   final RoutineEditorMode editorType;
-
-  final ExerciseLogDto exerciseLogDto;
-  final ExerciseLogDto? superSet;
+  final ExerciseLogDTO exerciseLogDto;
+  final ExerciseLogDTO? superSet;
   final VoidCallback onMaximise;
 
   const ExerciseLogLiteWidget(
@@ -22,6 +26,23 @@ class ExerciseLogLiteWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final superSetExerciseDto = superSet;
+
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context);
+
+    final exerciseVariant = exerciseLogDto.exerciseVariant;
+
+    final exercise = exerciseAndRoutineController.whereExercise(id: exerciseVariant.baseExerciseId);
+
+    final configurationOptionsChips = exercise?.configurationOptions.keys.where((configKey) {
+      final configOptions = exercise.configurationOptions[configKey]!;
+      return configOptions.length > 1;
+    }).map((ExerciseConfigurationKey configKey) {
+      final configValue = exerciseVariant.configurations[configKey]!;
+      return SquaredChips(
+        label: configValue.displayName.toLowerCase(),
+        color: vibrantGreen,
+      );
+    }).toList() ?? [];
 
     return Container(
       padding: superSet == null ? const EdgeInsets.symmetric(vertical: 10, horizontal: 10) : const EdgeInsets.all(10),
@@ -36,11 +57,18 @@ class ExerciseLogLiteWidget extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(exerciseLogDto.exercise.name,
-                    style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+                GestureDetector(
+                  onTap: () {
+                    FocusScope.of(context).unfocus();
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => ExerciseHomeScreen(id: exerciseLogDto.exerciseVariant.baseExerciseId)));
+                  },
+                  child: Text(exerciseLogDto.exerciseVariant.name,
+                      style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+                ),
                 if (superSetExerciseDto != null)
                   Column(children: [
-                    Text("with ${superSetExerciseDto.exercise.name}",
+                    Text("with ${superSetExerciseDto.exerciseVariant.name}",
                         style: GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 12)),
                   ]),
               ],
@@ -52,6 +80,11 @@ class ExerciseLogLiteWidget extends StatelessWidget {
               tooltip: 'Maximise card',
             )
           ]),
+          Wrap(
+            runSpacing: 8,
+            spacing: 8,
+            children: configurationOptionsChips,
+          ),
         ],
       ),
     );

@@ -5,14 +5,14 @@ import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import '../../colors.dart';
 import '../../enums/muscle_group_enums.dart';
 import '../../utils/string_utils.dart';
-import '../chart/muscle_group_family_chart.dart';
+import '../chart/muscle_group_chart.dart';
 import '../routine/preview/date_duration_pb.dart';
 
 GlobalKey routineLogGlobalKey = GlobalKey();
 
 class RoutineLogShareableLite extends StatelessWidget {
   final RoutineLogDto log;
-  final Map<MuscleGroupFamily, double> frequencyData;
+  final Map<MuscleGroup, double> frequencyData;
   final int pbs;
   final Image? image;
 
@@ -89,7 +89,7 @@ class RoutineLogShareableLite extends StatelessWidget {
                                     fontWeight: FontWeight.w500, color: Colors.white70, fontSize: 12)),
                           ])),
                       const SizedBox(height: 8),
-                      MuscleGroupFamilyChart(frequencyData: frequencyData),
+                      MuscleGroupChart(frequencyData: frequencyData),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [

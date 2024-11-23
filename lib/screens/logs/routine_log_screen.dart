@@ -5,16 +5,16 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/dtos/set_dto.dart';
+import 'package:tracker_app/dtos/sets_dtos/set_dto.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
-import 'package:tracker_app/extensions/amplify_models/routine_log_extension.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
+import 'package:tracker_app/strings/loading_screen_messages.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/utils/https_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/backgrounds/trkr_loading_screen.dart';
-import 'package:tracker_app/widgets/chart/muscle_group_family_chart.dart';
+import 'package:tracker_app/widgets/chart/muscle_group_chart.dart';
 
 import '../../../colors.dart';
 import '../../../dtos/exercise_log_dto.dart';
@@ -32,10 +32,10 @@ import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/ai_widgets/trkr_information_container.dart';
+import '../../widgets/empty_states/not_found.dart';
 import '../../widgets/routine/preview/date_duration_pb.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
 import '../AI/trkr_coach_summary_screen.dart';
-import '../empty_state_screens/not_found.dart';
 
 class RoutineLogScreen extends StatefulWidget {
   static const routeName = '/routine_log_screen';
@@ -57,9 +57,11 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
   bool _minimized = true;
 
+  List<String> _messages = defaultLoadingMessages;
+
   @override
   Widget build(BuildContext context) {
-    if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
+    if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen, messages: _messages);
 
     final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
@@ -84,17 +86,17 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     final numberOfCompletedSets = updatedExerciseLogs.expand((exerciseLog) => exerciseLog.sets);
 
-    final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: updatedExerciseLogs);
+    final muscleGroupFamilyFrequencies = muscleGroupFrequency(exerciseLogs: updatedExerciseLogs);
 
     final calories = calculateCalories(
-        duration: updatedLog.duration(), bodyWeight: routineUserController.weight(), activity: log.activityType);
+        duration: updatedLog.duration(), reps: routineUserController.weight(), activity: log.activityType);
 
     final pbs = updatedLog.exerciseLogs.map((exerciseLog) {
       final pastExerciseLogs =
-          routineLogController.whereExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
+          routineLogController.whereExerciseLogsBefore(exerciseVariant: exerciseLog.exerciseVariant, date: exerciseLog.createdAt);
 
       return calculatePBs(
-          pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog);
+          pastExerciseLogs: pastExerciseLogs, setType: exerciseLog.exerciseVariant.getSetTypeConfiguration(), exerciseLog: exerciseLog);
     }).expand((pbs) => pbs);
 
     return Scaffold(
@@ -102,7 +104,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         appBar: AppBar(
             backgroundColor: sapphireDark80,
             leading: IconButton(
-              icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
+              icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
               onPressed: context.pop,
             ),
             title: Text(updatedLog.name,
@@ -136,6 +138,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
           ),
           child: Stack(children: [
             SafeArea(
+              bottom: false,
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -153,7 +156,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                                   color: Colors.white70,
                                   fontSize: 14,
                                   fontStyle: FontStyle.italic,
-                                  fontWeight: FontWeight.w600)),
+                                  fontWeight: FontWeight.w500)),
                         ),
                       ),
 
@@ -231,7 +234,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                                       style: GoogleFonts.ubuntu(
                                           color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
                                   const SizedBox(height: 10),
-                                  MuscleGroupFamilyChart(
+                                  MuscleGroupChart(
                                       frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
                                 ],
                               ),
@@ -248,6 +251,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                                       ? _showSummary()
                                       : _generateSummary(logs: updatedExerciseLogs)),
                             ),
+                          const SizedBox(height: 10),
                           ExerciseLogListView(
                               exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: updatedExerciseLogs),
                               previewType: RoutinePreviewType.log),
@@ -285,7 +289,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     }
   }
 
-  void _generateSummary({required List<ExerciseLogDto> logs}) async {
+  void _generateSummary({required List<ExerciseLogDTO> logs}) async {
     final log = _log;
 
     if (log == null) return;
@@ -301,6 +305,10 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     buffer.writeln(logJsons);
 
     final completeInstructions = buffer.toString();
+
+    setState(() {
+      _messages = loadingTRKRCoachRoutineMessages;
+    });
 
     _showLoadingScreen();
 
@@ -322,16 +330,18 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     _log = routineLogController.logWhereId(id: widget.id);
     if (_log == null) {
       _loading = true;
+      _messages = loadingRoutineMessages;
+
       getAPI(endpoint: "/routine-logs/${widget.id}").then((data) {
         if (data.isNotEmpty) {
           final json = jsonDecode(data);
           final body = json["data"];
-          final routineLog = body["getRoutineLog"];
-          if (routineLog != null) {
-            final routineLogDto = RoutineLog.fromJson(routineLog);
+          final routineLogJson = body["getRoutineLog"];
+          if (routineLogJson != null) {
+            final log = RoutineLog.fromJson(routineLogJson);
             setState(() {
               _loading = false;
-              _log = routineLogDto.dto();
+              _log = RoutineLogDto.toDto(log);
             });
           } else {
             setState(() {
@@ -422,7 +432,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     });
   }
 
-  List<ExerciseLogViewModel> _exerciseLogsToViewModels({required List<ExerciseLogDto> exerciseLogs}) {
+  List<ExerciseLogViewModel> _exerciseLogsToViewModels({required List<ExerciseLogDTO> exerciseLogs}) {
     return exerciseLogs
         .map((exerciseLog) => ExerciseLogViewModel(
             exerciseLog: exerciseLog,
@@ -490,7 +500,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
           /// [Exercise.duration] exercises do not have sets in templates
           /// This is because we only need to store the duration of the exercise in [RoutineEditorType.log] i.e data is log in realtime
-          final sets = withDurationOnly(type: exerciseLog.exercise.type) ? <SetDto>[] : uncheckedSets;
+          final sets = withDurationOnly(setType: exerciseLog.exerciseVariant.getSetTypeConfiguration()) ? <SetDTO>[] : uncheckedSets;
           return exerciseLog.copyWith(sets: sets);
         }).toList();
         final templateToCreate = RoutineTemplateDto(
@@ -506,7 +516,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             .saveTemplate(templateDto: templateToCreate);
         if (mounted) {
           if (createdTemplate != null) {
-            navigateToRoutineTemplatePreview(context: context, template: createdTemplate);
+            navigateToRoutineTemplate(context: context, template: createdTemplate);
           }
         }
       } catch (_) {

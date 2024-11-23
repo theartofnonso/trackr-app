@@ -50,13 +50,13 @@ class _AppBar extends StatelessWidget {
     return Row(
       children: [
         IconButton(
-          icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
+          icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
           onPressed: Navigator.of(context).pop,
         ),
         Expanded(
           child: Text("TRKR Coach".toUpperCase(),
               textAlign: TextAlign.center,
-              style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 16)),
+              style: GoogleFonts.ubuntu(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 16)),
         ),
         IconButton(
           icon: const SizedBox.shrink(),

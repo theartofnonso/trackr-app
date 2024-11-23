@@ -25,7 +25,7 @@ import '../../utils/exercise_logs_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../utils/shareables_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
-import '../../widgets/label_divider.dart';
+import '../../widgets/dividers/label_divider.dart';
 
 class RoutineLogSummaryScreen extends StatefulWidget {
   static const routeName = '/routine_log_summary_screen';
@@ -63,8 +63,8 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
 
     final newMilestones = routineLogController.newMilestones;
 
-    final muscleGroupFamilyFrequencyData =
-        muscleGroupFamilyFrequency(exerciseLogs: updatedLog.exerciseLogs, includeSecondaryMuscleGroups: false);
+    final muscleGroupFrequencyData =
+        muscleGroupFrequency(exerciseLogs: updatedLog.exerciseLogs, includeSecondaryMuscleGroups: false);
 
     List<Widget> milestoneShareAssets = [];
     final milestoneShareAssetsKeys = [];
@@ -80,9 +80,9 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
 
     for (final exerciseLog in updatedLog.exerciseLogs) {
       final pastExerciseLogs =
-          routineLogController.whereExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
+          routineLogController.whereExerciseLogsBefore(exerciseVariant: exerciseLog.exerciseVariant, date: exerciseLog.createdAt);
       final pbs = calculatePBs(
-          pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog);
+          pastExerciseLogs: pastExerciseLogs, setType: exerciseLog.exerciseVariant.getSetTypeConfiguration(), exerciseLog: exerciseLog);
       final setAndPBs = groupBy(pbs, (pb) => pb.set);
       for (final setAndPB in setAndPBs.entries) {
         final pbs = setAndPB.value;
@@ -101,7 +101,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
         SessionMilestoneShareable(label: "${routineLogsForTheYear.length}th", image: _image),
       ...pbShareAssets,
       RoutineLogShareableLite(
-          log: updatedLog, frequencyData: muscleGroupFamilyFrequencyData, pbs: pbShareAssets.length, image: _image),
+          log: updatedLog, frequencyData: muscleGroupFrequencyData, pbs: pbShareAssets.length, image: _image),
     ];
 
     final pagesKeys = [
@@ -122,7 +122,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
         appBar: AppBar(
           backgroundColor: sapphireDark80,
           leading: IconButton(
-            icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
+            icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
             onPressed: context.pop,
           ),
           actions: [

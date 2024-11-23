@@ -20,15 +20,14 @@ import 'package:tracker_app/controllers/notification_controller.dart';
 import 'package:tracker_app/controllers/settings_controller.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/dtos/appsync/routine_template_dto.dart';
-import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
 import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/repositories/amplify/amplify_activity_log_repository.dart';
-import 'package:tracker_app/repositories/amplify/amplify_exercise_repository.dart';
+import 'package:tracker_app/repositories/exercise_repository.dart';
 import 'package:tracker_app/repositories/amplify/amplify_routine_log_repository.dart';
+import 'package:tracker_app/repositories/amplify/amplify_routine_template_plan_repository.dart';
 import 'package:tracker_app/repositories/amplify/amplify_routine_template_repository.dart';
 import 'package:tracker_app/repositories/amplify/amplify_routine_user_repository.dart';
 import 'package:tracker_app/repositories/exercise_log_repository.dart';
-import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_log_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_template_editor_screen.dart';
@@ -42,6 +41,7 @@ import 'package:tracker_app/screens/logs/routine_log_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
+import 'package:tracker_app/screens/templates/plans/routine_template_plan_screen.dart';
 import 'package:tracker_app/screens/templates/routine_template_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/date_utils.dart';
@@ -49,7 +49,8 @@ import 'package:tracker_app/utils/date_utils.dart';
 import 'amplifyconfiguration.dart';
 import 'controllers/activity_log_controller.dart';
 import 'controllers/routine_user_controller.dart';
-import 'dtos/appsync/exercise_dto.dart';
+import 'dtos/appsync/routine_template_plan_dto.dart';
+import 'dtos/abstract_class/exercise_dto.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
 import 'dtos/viewmodels/routine_template_arguments.dart';
 import 'models/ModelProvider.dart';
@@ -97,9 +98,10 @@ void main() async {
       ),
       ChangeNotifierProvider<ExerciseAndRoutineController>(
         create: (BuildContext context) => ExerciseAndRoutineController(
-            amplifyExerciseRepository: AmplifyExerciseRepository(),
+            amplifyExerciseRepository: ExerciseRepository(),
             amplifyTemplateRepository: AmplifyRoutineTemplateRepository(),
-            amplifyLogRepository: AmplifyRoutineLogRepository()),
+            amplifyLogRepository: AmplifyRoutineLogRepository(),
+            amplifyTemplatePlanRepository: AmplifyRoutineTemplatePlanRepository()),
       ),
       ChangeNotifierProvider<ActivityLogController>(
         create: (BuildContext context) => ActivityLogController(AmplifyActivityLogRepository()),
@@ -121,7 +123,7 @@ final _router = GoRouter(
             path: "shared-workout/:id",
             builder: (context, state) {
               final id = state.pathParameters['id'] ?? "";
-              return RoutineTemplateScreen(id: id);
+              return RoutineTemplateScreen(templateId: id);
             },
           ),
           GoRoute(
@@ -154,17 +156,10 @@ final _router = GoRouter(
       },
     ),
     GoRoute(
-      path: ExerciseEditorScreen.routeName,
-      builder: (context, state) {
-        final args = state.extra as ExerciseEditorArguments?;
-        return ExerciseEditorScreen(exercise: args?.exercise);
-      },
-    ),
-    GoRoute(
       path: ExerciseHomeScreen.routeName,
       builder: (context, state) {
-        final args = state.extra as ExerciseDto;
-        return ExerciseHomeScreen(exercise: args);
+        final args = state.extra as ExerciseDTO;
+        return ExerciseHomeScreen(id: args.id);
       },
     ),
     GoRoute(
@@ -208,8 +203,17 @@ final _router = GoRouter(
     GoRoute(
       path: RoutineTemplateScreen.routeName,
       builder: (context, state) {
-        final template = state.extra as RoutineTemplateDto;
-        return RoutineTemplateScreen(id: template.id);
+        final extras = state.extra as Map<String, dynamic>;
+        final template = extras["template"] as RoutineTemplateDto;
+        final templatePlanId = extras["templatePlanId"] as String;
+        return RoutineTemplateScreen(templateId: template.id, templatePlanId: templatePlanId,);
+      },
+    ),
+    GoRoute(
+      path: RoutineTemplatePlanScreen.routeName,
+      builder: (context, state) {
+        final templatePlan = state.extra as RoutineTemplatePlanDto;
+        return RoutineTemplatePlanScreen(id: templatePlan.id);
       },
     ),
     GoRoute(
@@ -298,7 +302,9 @@ class _MyAppState extends State<MyApp> {
       await Amplify.addPlugin(AmplifyAuthCognito());
       final apiPluginOptions = APIPluginOptions(modelProvider: ModelProvider.instance);
       await Amplify.addPlugin(AmplifyAPI(options: apiPluginOptions));
-      final datastorePluginOptions = DataStorePluginOptions(
+      final datastorePluginOptions = DataStorePluginOptions
+        (
+          syncMaxRecords: 1000,
           syncExpressions: [
         DataStoreSyncExpression(
             ActivityLog.classType, () => ActivityLog.CREATEDAT.between(startOfCurrentYear, endOfCurrentYear)),

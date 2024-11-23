@@ -8,7 +8,7 @@ import 'package:tracker_app/colors.dart';
 import '../../dtos/exercise_log_dto.dart';
 
 class ReOrderExercisesScreen extends StatefulWidget {
-  final List<ExerciseLogDto> exercises;
+  final List<ExerciseLogDTO> exercises;
 
   const ReOrderExercisesScreen({super.key, required this.exercises});
 
@@ -18,7 +18,7 @@ class ReOrderExercisesScreen extends StatefulWidget {
 
 class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
   bool _hasReOrdered = false;
-  late List<ExerciseLogDto> _exercises;
+  late List<ExerciseLogDTO> _exercises;
 
   void _reOrderProcedures({required int oldIndex, required int newIndex}) {
     setState(() {
@@ -27,7 +27,7 @@ class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
       if (oldIndex < newIndex) {
         newIndex -= 1;
       }
-      final ExerciseLogDto item = _exercises.removeAt(oldIndex);
+      final ExerciseLogDTO item = _exercises.removeAt(oldIndex);
       _exercises.insert(newIndex, item);
     });
   }
@@ -42,7 +42,7 @@ class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
     final widgets = _exercises
         .mapIndexed((index, exercise) => ListTile(
               key: Key("$index"),
-              title: Text(exercise.exercise.name, style: GoogleFonts.ubuntu()),
+              title: Text(exercise.exerciseVariant.name, style: GoogleFonts.ubuntu()),
               trailing: const Icon(
                 Icons.drag_handle,
                 color: Colors.white,
@@ -61,8 +61,10 @@ class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
           _hasReOrdered
               ? GestureDetector(
                   onTap: _saveReOrdering,
-                  child: Text("Save",
-                      style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.white)))
+                  child: IconButton(
+                    icon: const FaIcon(FontAwesomeIcons.solidSquareCheck, color: Colors.white, size: 28),
+                    onPressed: context.pop,
+                  ))
               : const SizedBox.shrink(),
           const SizedBox(width: 12)
         ],

@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:tracker_app/enums/muscle_group_enums.dart';
 
-import '../dtos/appsync/exercise_dto.dart';
+import '../dtos/abstract_class/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
-import '../enums/exercise_type_enums.dart';
+import '../enums/exercise/set_type_enums.dart';
 import '../screens/exercise/library/exercise_library_screen.dart';
-import '../widgets/routine/editors/pickers/substitute_exercise_picker.dart';
-import '../widgets/routine/editors/pickers/superset_exercise_log_picker.dart';
+import '../widgets/pickers/substitute_exercise_picker.dart';
+import '../widgets/pickers/superset_exercise_log_picker.dart';
 import 'dialog_utils.dart';
 
 void showSuperSetExercisePicker(
     {required BuildContext context,
-    required ExerciseLogDto firstExerciseLog,
-    required List<ExerciseLogDto> otherExerciseLogs,
-    required Function(ExerciseLogDto secondExercise) onSelected,
+    required ExerciseLogDTO firstExerciseLog,
+    required List<ExerciseLogDTO> otherExerciseLogs,
+    required Function(ExerciseLogDTO secondExercise) onSelected,
     required Function() selectExercisesInLibrary}) {
   displayBottomSheet(
     context: context,
     child: SuperSetExerciseLogPicker(
-      title: "Superset ${firstExerciseLog.exercise.name} with",
+      title: "Superset ${firstExerciseLog.exerciseVariant.name} with",
       exercises: otherExerciseLogs,
       onSelect: onSelected,
       onSelectExercisesInLibrary: selectExercisesInLibrary,
@@ -27,15 +28,15 @@ void showSuperSetExercisePicker(
 
 void showSubstituteExercisePicker(
     {required BuildContext context,
-    required ExerciseLogDto primaryExerciseLog,
-    required List<ExerciseDto> otherExercises,
-    required Function(ExerciseDto secondaryExercise) onSelected,
-    required Function(ExerciseDto secondaryExercise) onRemoved,
+    required ExerciseLogDTO primaryExerciseLog,
+    required List<ExerciseDTO> otherExercises,
+    required Function(ExerciseDTO secondaryExercise) onSelected,
+    required Function(ExerciseDTO secondaryExercise) onRemoved,
     required Function() selectExercisesInLibrary}) {
   displayBottomSheet(
     context: context,
     child: SubstituteExercisePicker(
-      title: "Substitute ${primaryExerciseLog.exercise.name} for",
+      title: "Substitute ${primaryExerciseLog.exerciseVariant.name} for",
       exercises: otherExercises,
       onSelect: onSelected,
       onRemove: onRemoved,
@@ -46,14 +47,16 @@ void showSubstituteExercisePicker(
 
 void showExercisesInLibrary(
     {required BuildContext context,
-    required List<ExerciseDto> excludeExercises,
-    required void Function(List<ExerciseDto> selectedExercises) onSelected,
-    ExerciseType type = ExerciseType.all}) async {
+    List<String> exercisesToExclude = const [],
+    required void Function(List<ExerciseDTO> selectedExercises) onSelected,
+    SetType? type,
+    MuscleGroup? muscleGroup}) async {
   final exercises = await Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => ExerciseLibraryScreen(
-            excludeExercises: excludeExercises,
-            type: type,
-          ))) as List<ExerciseDto>?;
+            exercisesToExclude: exercisesToExclude,
+            exerciseMetric: type,
+            muscleGroup: muscleGroup,
+          ))) as List<ExerciseDTO>?;
 
   if (context.mounted) {
     if (exercises != null && exercises.isNotEmpty) {

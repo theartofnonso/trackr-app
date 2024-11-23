@@ -2,7 +2,7 @@ import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 
 import '../../enums/milestone_type_enums.dart';
 
-class Milestone {
+abstract class Milestone {
   final String id;
   final String name;
   final String caption;

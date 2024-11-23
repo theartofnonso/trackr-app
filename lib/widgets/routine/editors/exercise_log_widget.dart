@@ -3,22 +3,29 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
+import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
-import 'package:tracker_app/enums/exercise_type_enums.dart';
+import 'package:tracker_app/dtos/sets_dtos/duration_set_dto.dart';
+import 'package:tracker_app/dtos/sets_dtos/reps_set_dto.dart';
+import 'package:tracker_app/dtos/sets_dtos/weight_and_reps_set_dto.dart';
+import 'package:tracker_app/enums/exercise/set_type_enums.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
+import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
+import 'package:tracker_app/widgets/pickers/exercise_configurations_picker.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/weight_reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_rows/duration_set_row.dart';
 import 'package:tracker_app/widgets/routine/editors/set_rows/reps_set_row.dart';
-import 'package:tracker_app/widgets/routine/editors/set_rows/weights_set_row.dart';
+import 'package:tracker_app/widgets/routine/editors/set_rows/weights_and_reps_set_row.dart';
 
 import '../../../colors.dart';
-import '../../../dtos/set_dto.dart';
+import '../../../dtos/abstract_class/exercise_dto.dart';
+import '../../../dtos/sets_dtos/set_dto.dart';
+import '../../../enums/exercise/exercise_configuration_key.dart';
 import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../utils/general_utils.dart';
@@ -27,8 +34,8 @@ import '../../../utils/one_rep_max_calculator.dart';
 class ExerciseLogWidget extends StatefulWidget {
   final RoutineEditorMode editorType;
 
-  final ExerciseLogDto exerciseLogDto;
-  final ExerciseLogDto? superSet;
+  final ExerciseLogDTO exerciseLogDto;
+  final ExerciseLogDTO? superSet;
 
   final bool isMinimised;
 
@@ -36,19 +43,18 @@ class ExerciseLogWidget extends StatefulWidget {
   final VoidCallback onRemoveLog;
   final VoidCallback onReplaceLog;
   final VoidCallback onSuperSet;
-  final VoidCallback onAlternate;
   final void Function(String superSetId) onRemoveSuperSet;
   final VoidCallback? onCache;
   final VoidCallback onResize;
-  final void Function(SetDto setDto) onTapWeightEditor;
-  final void Function(SetDto setDto) onTapRepsEditor;
+  final void Function(SetDTO setDto) onTapWeightEditor;
+  final void Function(SetDTO setDto) onTapRepsEditor;
+  final void Function(ExerciseLogDTO exerciseLogDto) onUpdate;
 
   const ExerciseLogWidget(
       {super.key,
       this.editorType = RoutineEditorMode.edit,
       required this.exerciseLogDto,
       this.superSet,
-      required this.onAlternate,
       required this.onSuperSet,
       required this.onRemoveSuperSet,
       required this.onRemoveLog,
@@ -57,7 +63,8 @@ class ExerciseLogWidget extends StatefulWidget {
       required this.onResize,
       required this.onTapWeightEditor,
       required this.onTapRepsEditor,
-      required this.isMinimised});
+      required this.isMinimised,
+      required this.onUpdate});
 
   @override
   State<ExerciseLogWidget> createState() => _ExerciseLogWidgetState();
@@ -66,6 +73,8 @@ class ExerciseLogWidget extends StatefulWidget {
 class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   final List<(TextEditingController, TextEditingController)> _controllers = [];
   final List<DateTime> _durationControllers = [];
+
+  late Map<ExerciseConfigurationKey, ExerciseConfigValue> _selectedConfigurations;
 
   /// [MenuItemButton]
   List<Widget> _menuActionButtons() {
@@ -76,10 +85,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           "Replace",
           style: GoogleFonts.ubuntu(color: Colors.white),
         ),
-      ),
-      MenuItemButton(
-        onPressed: widget.onAlternate,
-        child: Text("Substitutes", style: GoogleFonts.ubuntu()),
       ),
       widget.exerciseLogDto.superSetId.isNotEmpty
           ? MenuItemButton(
@@ -101,112 +106,126 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _show1RMRecommendations() {
-    final pastExerciseLogs =
-        Provider.of<ExerciseAndRoutineController>(context, listen: false).exerciseLogsById[widget.exerciseLogDto.id] ?? [];
+    final pastExerciseLogs = Provider.of<ExerciseAndRoutineController>(context, listen: false)
+            .exerciseLogsByExerciseId[widget.exerciseLogDto.exerciseVariant.name] ??
+        [];
     final completedPastExerciseLogs = completedExercises(exerciseLogs: pastExerciseLogs);
     if (completedPastExerciseLogs.isNotEmpty) {
       final previousLog = completedPastExerciseLogs.last;
       final heaviestSetWeight = heaviestSetWeightForExerciseLog(exerciseLog: previousLog);
-      final oneRepMax = average1RM(weight: heaviestSetWeight.weight(), reps: heaviestSetWeight.reps());
+      final oneRepMax =
+          average1RM(weight: (heaviestSetWeight as WeightAndRepsSetDTO).weight, reps: (heaviestSetWeight).reps);
       displayBottomSheet(
           context: context,
-          child: _OneRepMaxSlider(exercise: widget.exerciseLogDto.exercise.name, oneRepMax: oneRepMax));
+          child: _OneRepMaxSlider(exercise: widget.exerciseLogDto.exerciseVariant.name, oneRepMax: oneRepMax));
     } else {
       showBottomSheetWithNoAction(
           context: context,
-          title: widget.exerciseLogDto.exercise.name,
+          title: widget.exerciseLogDto.exerciseVariant.name,
           description: "Keep logging to see recommendations.");
     }
   }
 
   void _updateProcedureNotes({required String value}) {
     Provider.of<ExerciseLogController>(context, listen: false)
-        .updateExerciseLogNotes(exerciseLogId: widget.exerciseLogDto.id, value: value);
+        .updateExerciseLogNotes(exerciseId: widget.exerciseLogDto.exerciseVariant.name, value: value);
     _cacheLog();
   }
 
   void _addSet() {
-    if (withDurationOnly(type: widget.exerciseLogDto.exercise.type)) {
+    if (withDurationOnly(setType: widget.exerciseLogDto.exerciseVariant.getSetTypeConfiguration())) {
       _durationControllers.add(DateTime.now());
     } else {
       _controllers.add((TextEditingController(), TextEditingController()));
     }
     final pastSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
-        .whereSetsForExercise(exercise: widget.exerciseLogDto.exercise);
-    Provider.of<ExerciseLogController>(context, listen: false)
-        .addSet(exerciseLogId: widget.exerciseLogDto.id, pastSets: pastSets);
+        .whereSetsForExercise(exerciseVariant: widget.exerciseLogDto.exerciseVariant);
+    Provider.of<ExerciseLogController>(context, listen: false).addSet(
+        exerciseId: widget.exerciseLogDto.exerciseVariant.name,
+        pastSets: pastSets,
+        metric: widget.exerciseLogDto.exerciseVariant.getSetTypeConfiguration());
     _cacheLog();
   }
 
   void _removeSet({required int index}) {
-    if (withDurationOnly(type: widget.exerciseLogDto.exercise.type)) {
+    if (withDurationOnly(setType: widget.exerciseLogDto.exerciseVariant.getSetTypeConfiguration())) {
       _durationControllers.removeAt(index);
     } else {
       _controllers.removeAt(index);
     }
 
     Provider.of<ExerciseLogController>(context, listen: false)
-        .removeSetForExerciseLog(exerciseLogId: widget.exerciseLogDto.id, index: index);
+        .removeSetForExerciseLog(exerciseId: widget.exerciseLogDto.exerciseVariant.name, index: index);
     _cacheLog();
   }
 
-  void _updateWeight({required int index, required double value, required SetDto setDto}) {
-    final updatedSet = setDto.copyWith(value1: value);
+  void _updateWeight({required int index, required double weight, required SetDTO setDto}) {
+    final updatedSet = (setDto as WeightAndRepsSetDTO).copyWith(weight: weight);
     widget.onTapWeightEditor(updatedSet);
     Provider.of<ExerciseLogController>(context, listen: false)
-        .updateWeight(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
+        .updateWeight(exerciseId: widget.exerciseLogDto.exerciseVariant.name, index: index, setDto: updatedSet);
     _cacheLog();
   }
 
-  void _updateReps({required int index, required num value, required SetDto setDto}) {
-    final updatedSet = setDto.copyWith(value2: value);
+  void _updateReps({required int index, required int reps, required SetDTO setDto}) {
+    final updatedSet =
+        setDto is WeightAndRepsSetDTO ? setDto.copyWith(reps: reps) : (setDto as RepsSetDTO).copyWith(reps: reps);
     Provider.of<ExerciseLogController>(context, listen: false)
-        .updateReps(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
+        .updateReps(exerciseId: widget.exerciseLogDto.exerciseVariant.name, index: index, setDto: updatedSet);
     _cacheLog();
   }
 
   void _checkAndUpdateDuration(
-      {required int index, required Duration duration, required SetDto setDto, required bool checked}) {
+      {required int index, required Duration duration, required SetDTO setDto, required bool checked}) {
     if (setDto.checked) {
-      final duration = setDto.duration();
-      final startTime = DateTime.now().subtract(Duration(milliseconds: duration));
+      final duration = (setDto as DurationSetDTO).duration;
+      final startTime = DateTime.now().subtract(duration);
       _durationControllers[index] = startTime;
       _updateSetCheck(index: index, setDto: setDto);
     } else {
-      final updatedSet = setDto.copyWith(value1: duration.inMilliseconds, checked: checked);
-      Provider.of<ExerciseLogController>(context, listen: false)
-          .updateDuration(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet, notify: checked);
+      final updatedSet = (setDto as DurationSetDTO).copyWith(duration: duration, checked: checked);
+      Provider.of<ExerciseLogController>(context, listen: false).updateDuration(
+          exerciseId: widget.exerciseLogDto.exerciseVariant.name, index: index, setDto: updatedSet, notify: checked);
       _cacheLog();
     }
   }
 
-  void _updateDuration({required int index, required Duration duration, required SetDto setDto}) {
-    SetDto updatedSet = setDto;
+  void _updateDuration({required int index, required Duration duration, required SetDTO setDto}) {
+    SetDTO updatedSet = setDto;
     if (setDto.checked) {
-      updatedSet = setDto.copyWith(value1: duration.inMilliseconds);
+      updatedSet = (setDto as DurationSetDTO).copyWith(duration: duration);
     } else {
-      updatedSet = setDto.copyWith(value1: duration.inMilliseconds, checked: true);
+      updatedSet = (setDto as DurationSetDTO).copyWith(duration: duration, checked: true);
     }
 
-    Provider.of<ExerciseLogController>(context, listen: false)
-        .updateDuration(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet, notify: true);
+    Provider.of<ExerciseLogController>(context, listen: false).updateDuration(
+        exerciseId: widget.exerciseLogDto.exerciseVariant.name, index: index, setDto: updatedSet, notify: true);
     _cacheLog();
   }
 
-  void _updateSetCheck({required int index, required SetDto setDto}) {
+  void _updateSetCheck({required int index, required SetDTO setDto}) {
     final checked = !setDto.checked;
     final updatedSet = setDto.copyWith(checked: checked);
     Provider.of<ExerciseLogController>(context, listen: false)
-        .updateSetCheck(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
+        .updateSetCheck(exerciseId: widget.exerciseLogDto.exerciseVariant.name, index: index, setDto: updatedSet);
     _cacheLog();
   }
 
   void _loadTextEditingControllers() {
     final sets = widget.exerciseLogDto.sets;
+    final metric = widget.exerciseLogDto.exerciseVariant.getSetTypeConfiguration();
     List<(TextEditingController, TextEditingController)> controllers = [];
+    double weight = 0;
+    int reps = 0;
     for (var set in sets) {
-      final value1Controller = TextEditingController(text: set.weight().toString());
-      final value2Controller = TextEditingController(text: set.reps().toString());
+      if (metric == SetType.reps) {
+        reps = (set as RepsSetDTO).reps;
+      } else if (metric == SetType.weightsAndReps) {
+        weight = (set as WeightAndRepsSetDTO).weight;
+        reps = set.reps;
+      }
+      final value1Controller = TextEditingController(text: weight.toString());
+      final value2Controller = TextEditingController(text: reps.toString());
       controllers.add((value1Controller, value2Controller));
     }
     _controllers.addAll(controllers);
@@ -216,26 +235,33 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final sets = widget.exerciseLogDto.sets;
     List<DateTime> controllers = [];
     for (var set in sets) {
-      final duration = set.duration();
-      final startTime = DateTime.now().subtract(Duration(milliseconds: duration));
+      final duration = (set as DurationSetDTO).duration;
+      final startTime = DateTime.now().subtract(duration);
       controllers.add(startTime);
     }
     _durationControllers.addAll(controllers);
   }
 
-  void _onTapWeightEditor({required SetDto setDto}) {
+  void _onTapWeightEditor({required SetDTO setDto}) {
     widget.onTapWeightEditor(setDto);
   }
 
-  void _onTapRepsEditor({required SetDto setDto}) {
+  void _onTapRepsEditor({required SetDTO setDto}) {
     widget.onTapRepsEditor(setDto);
   }
 
   @override
   void initState() {
     super.initState();
-    _loadTextEditingControllers();
-    if (widget.editorType == RoutineEditorMode.log) {
+
+    _selectedConfigurations = widget.exerciseLogDto.exerciseVariant.configurations;
+
+    if (SetType.weightsAndReps == widget.exerciseLogDto.exerciseVariant.getSetTypeConfiguration() ||
+        SetType.reps == widget.exerciseLogDto.exerciseVariant.getSetTypeConfiguration()) {
+      _loadTextEditingControllers();
+    }
+    if (widget.editorType == RoutineEditorMode.log &&
+        SetType.duration == widget.exerciseLogDto.exerciseVariant.getSetTypeConfiguration()) {
       _loadDurationControllers();
     }
   }
@@ -253,10 +279,31 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final superSetExerciseDto = widget.superSet;
 
-    final exerciseType = widget.exerciseLogDto.exercise.type;
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context);
+
+    final exerciseVariant = widget.exerciseLogDto.exerciseVariant;
+
+    final exercise = exerciseAndRoutineController.whereExercise(id: exerciseVariant.baseExerciseId);
+
+    final configurationOptionsWidgets = exercise?.configurationOptions.keys.where((configKey) {
+      final configOptions = exercise.configurationOptions[configKey]!;
+      return configOptions.length > 1;
+    }).map((ExerciseConfigurationKey configKey) {
+      final configValue = exerciseVariant.configurations[configKey]!;
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+        child: OpacityButtonWidget(
+          label: configValue.displayName.toLowerCase(),
+          buttonColor: vibrantGreen,
+          padding: EdgeInsets.symmetric(horizontal: 0),
+          textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 12, color: vibrantGreen),
+          onPressed: () => _showConfigurationPicker(configKey: configKey, baseExercise: exercise),
+        ),
+      );
+    }).toList() ?? [];
 
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
       decoration: BoxDecoration(
         color: sapphireDark80, // Set the background color
         borderRadius: BorderRadius.circular(5), // Set the border radius to make it rounded
@@ -267,30 +314,17 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Expanded(
-                  child: GestureDetector(
+              GestureDetector(
                 onTap: () {
                   FocusScope.of(context).unfocus();
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => ExerciseHomeScreen(exercise: widget.exerciseLogDto.exercise)));
+                      builder: (context) =>
+                          ExerciseHomeScreen(id: widget.exerciseLogDto.exerciseVariant.baseExerciseId)));
                 },
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(widget.exerciseLogDto.exercise.name,
-                        style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
-                    if (superSetExerciseDto != null)
-                      Column(
-                        children: [
-                          Text("with ${superSetExerciseDto.exercise.name}",
-                              style:
-                                  GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 12)),
-                          const SizedBox(height: 10)
-                        ],
-                      ),
-                  ],
-                ),
-              )),
+                child: Text(exerciseVariant.name,
+                    style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+              ),
+              const Spacer(),
               MenuAnchor(
                   style: MenuStyle(
                     backgroundColor: WidgetStateProperty.all(sapphireDark80),
@@ -313,6 +347,17 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   menuChildren: _menuActionButtons())
             ],
           ),
+          const SizedBox(height: 6),
+          SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(mainAxisAlignment: MainAxisAlignment.center, children: configurationOptionsWidgets)),
+          const SizedBox(height: 8),
+          if (superSetExerciseDto != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10.0),
+              child: Text("with ${superSetExerciseDto.exerciseVariant.name}",
+                  style: GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 12)),
+            ),
           TextField(
             controller: TextEditingController(text: widget.exerciseLogDto.notes),
             onChanged: (value) => _updateProcedureNotes(value: value),
@@ -329,45 +374,65 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             cursorColor: Colors.white,
             keyboardType: TextInputType.text,
             textCapitalization: TextCapitalization.sentences,
-            style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+            style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white.withOpacity(0.8), fontSize: 14),
           ),
           const SizedBox(height: 12),
-          switch (exerciseType) {
-            ExerciseType.weights => WeightRepsSetHeader(
+          switch (exerciseVariant.getSetTypeConfiguration()) {
+            SetType.weightsAndReps => WeightRepsSetHeader(
                 editorType: widget.editorType,
                 firstLabel: weightLabel().toUpperCase(),
                 secondLabel: 'REPS',
               ),
-            ExerciseType.bodyWeight => RepsSetHeader(editorType: widget.editorType),
-            ExerciseType.duration => DurationSetHeader(editorType: widget.editorType),
-            ExerciseType.all => throw Exception("Unable to return Set header for type ExerciseType.all"),
+            SetType.reps => RepsSetHeader(editorType: widget.editorType),
+            SetType.duration => DurationSetHeader(editorType: widget.editorType),
           },
           const SizedBox(height: 8),
           if (sets.isNotEmpty)
-            _SetListView(
-              exerciseType: exerciseType,
-              sets: sets,
+            if (exerciseVariant.getSetTypeConfiguration() == SetType.weightsAndReps)
+              _WeightAndRepsSetListView(
+                sets: sets.map((set) => set as WeightAndRepsSetDTO).toList(),
+                editorType: widget.editorType,
+                updateSetCheck: _updateSetCheck,
+                removeSet: _removeSet,
+                updateReps: _updateReps,
+                updateWeight: _updateWeight,
+                controllers: _controllers,
+                onTapWeightEditor: _onTapWeightEditor,
+                onTapRepsEditor: _onTapRepsEditor,
+              ),
+          if (exerciseVariant.getSetTypeConfiguration() == SetType.reps)
+            _RepsSetListView(
+              sets: sets.map((set) => set as RepsSetDTO).toList(),
               editorType: widget.editorType,
               updateSetCheck: _updateSetCheck,
               removeSet: _removeSet,
               updateReps: _updateReps,
-              updateWeight: _updateWeight,
-              checkAndUpdateDuration: _checkAndUpdateDuration,
               controllers: _controllers,
-              durationControllers: _durationControllers,
-              updateDuration: _updateDuration,
               onTapWeightEditor: _onTapWeightEditor,
               onTapRepsEditor: _onTapRepsEditor,
             ),
+          if (exerciseVariant.getSetTypeConfiguration() == SetType.duration)
+            _DurationSetListView(
+              sets: sets.map((set) => set as DurationSetDTO).toList(),
+              editorType: widget.editorType,
+              updateSetCheck: _updateSetCheck,
+              removeSet: _removeSet,
+              controllers: _controllers,
+              onTapWeightEditor: _onTapWeightEditor,
+              onTapRepsEditor: _onTapRepsEditor,
+              durationControllers: _durationControllers,
+              checkAndUpdateDuration: _checkAndUpdateDuration,
+              updateDuration: _updateDuration,
+            ),
           const SizedBox(height: 8),
-          if (withDurationOnly(type: exerciseType) && sets.isEmpty)
+          if (withDurationOnly(setType: exerciseVariant.getSetTypeConfiguration()) && sets.isEmpty)
             Center(
               child: Text("Tap + to add a timer",
                   style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white70)),
             ),
           const SizedBox(height: 8),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            if (withWeightsOnly(type: exerciseType))
+            if (withWeightsOnly(setType: exerciseVariant.getSetTypeConfiguration()))
               IconButton(
                   onPressed: _show1RMRecommendations,
                   icon: const FaIcon(FontAwesomeIcons.solidLightbulb, color: Colors.white, size: 16),
@@ -395,34 +460,135 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       ),
     );
   }
+
+  void _showConfigurationPicker({required ExerciseConfigurationKey configKey, required ExerciseDTO baseExercise}) {
+    final options = baseExercise.configurationOptions[configKey]!;
+    displayBottomSheet(
+      context: context,
+      height: 300,
+      child: ExerciseConfigurationsPicker<dynamic>(
+        configurationKey: configKey,
+        initialConfig: _selectedConfigurations[configKey],
+        configurationOptions: options,
+        onSelect: (configuration) {
+          Navigator.of(context).pop();
+          setState(() {
+            _selectedConfigurations[configKey] = configuration;
+            final newExerciseVariant = baseExercise.createVariant(configurations: _selectedConfigurations);
+            final updatedExerciseLog = widget.exerciseLogDto
+                .copyWith(exerciseVariant: newExerciseVariant, sets: configuration is SetType ? [] : null);
+            widget.onUpdate(updatedExerciseLog);
+          });
+        }, // Provide descriptions if available
+      ),
+    );
+  }
 }
 
-class _SetListView extends StatelessWidget {
-  final ExerciseType exerciseType;
-  final List<SetDto> sets;
+class _WeightAndRepsSetListView extends StatelessWidget {
+  final List<WeightAndRepsSetDTO> sets;
+  final RoutineEditorMode editorType;
+  final List<(TextEditingController, TextEditingController)> controllers;
+  final void Function({required int index}) removeSet;
+  final void Function({required int index, required SetDTO setDto}) updateSetCheck;
+  final void Function({required int index, required int reps, required SetDTO setDto}) updateReps;
+  final void Function({required int index, required double weight, required SetDTO setDto}) updateWeight;
+  final void Function({required SetDTO setDto}) onTapWeightEditor;
+  final void Function({required SetDTO setDto}) onTapRepsEditor;
+
+  const _WeightAndRepsSetListView(
+      {required this.sets,
+      required this.editorType,
+      required this.controllers,
+      required this.updateSetCheck,
+      required this.removeSet,
+      required this.updateReps,
+      required this.updateWeight,
+      required this.onTapWeightEditor,
+      required this.onTapRepsEditor});
+
+  @override
+  Widget build(BuildContext context) {
+    final children = sets.mapIndexed((index, setDto) {
+      return Padding(
+          padding: const EdgeInsets.only(bottom: 8.0),
+          child: WeightsAndRepsSetRow(
+            setDto: setDto,
+            editorType: editorType,
+            onCheck: () => updateSetCheck(index: index, setDto: setDto),
+            onRemoved: () => removeSet(index: index),
+            onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
+            onChangedWeight: (double value) => updateWeight(index: index, weight: value, setDto: setDto),
+            onTapWeightEditor: () => onTapWeightEditor(setDto: setDto),
+            onTapRepsEditor: () => onTapRepsEditor(setDto: setDto),
+            controllers: controllers[index],
+          ));
+    }).toList();
+
+    return Column(children: children);
+  }
+}
+
+class _RepsSetListView extends StatelessWidget {
+  final List<RepsSetDTO> sets;
+  final RoutineEditorMode editorType;
+  final List<(TextEditingController, TextEditingController)> controllers;
+  final void Function({required int index}) removeSet;
+  final void Function({required int index, required SetDTO setDto}) updateSetCheck;
+  final void Function({required int index, required int reps, required SetDTO setDto}) updateReps;
+  final void Function({required SetDTO setDto}) onTapWeightEditor;
+  final void Function({required SetDTO setDto}) onTapRepsEditor;
+
+  const _RepsSetListView(
+      {required this.sets,
+      required this.editorType,
+      required this.controllers,
+      required this.updateSetCheck,
+      required this.removeSet,
+      required this.updateReps,
+      required this.onTapWeightEditor,
+      required this.onTapRepsEditor});
+
+  @override
+  Widget build(BuildContext context) {
+    final children = sets.mapIndexed((index, setDto) {
+      return Padding(
+          padding: const EdgeInsets.only(bottom: 8.0),
+          child: RepsSetRow(
+            setDto: setDto,
+            editorType: editorType,
+            onCheck: () => updateSetCheck(index: index, setDto: setDto),
+            onRemoved: () => removeSet(index: index),
+            onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
+            onTapRepsEditor: () => onTapRepsEditor(setDto: setDto),
+            controllers: controllers[index],
+          ));
+    }).toList();
+
+    return Column(children: children);
+  }
+}
+
+class _DurationSetListView extends StatelessWidget {
+  final List<DurationSetDTO> sets;
   final RoutineEditorMode editorType;
   final List<(TextEditingController, TextEditingController)> controllers;
   final List<DateTime> durationControllers;
-  final void Function({required int index, required SetDto setDto}) updateSetCheck;
   final void Function({required int index}) removeSet;
-  final void Function({required int index, required num value, required SetDto setDto}) updateReps;
-  final void Function({required int index, required double value, required SetDto setDto}) updateWeight;
-  final void Function({required int index, required Duration duration, required SetDto setDto, required bool checked})
+  final void Function({required int index, required SetDTO setDto}) updateSetCheck;
+  final void Function({required int index, required Duration duration, required SetDTO setDto, required bool checked})
       checkAndUpdateDuration;
-  final void Function({required int index, required Duration duration, required SetDto setDto}) updateDuration;
-  final void Function({required SetDto setDto}) onTapWeightEditor;
-  final void Function({required SetDto setDto}) onTapRepsEditor;
+  final void Function({required int index, required Duration duration, required SetDTO setDto}) updateDuration;
+  final void Function({required SetDTO setDto}) onTapWeightEditor;
+  final void Function({required SetDTO setDto}) onTapRepsEditor;
 
-  const _SetListView(
-      {required this.exerciseType,
-      required this.sets,
+  const _DurationSetListView(
+      {required this.sets,
       required this.editorType,
       required this.controllers,
       required this.durationControllers,
       required this.updateSetCheck,
       required this.removeSet,
-      required this.updateReps,
-      required this.updateWeight,
       required this.checkAndUpdateDuration,
       required this.updateDuration,
       required this.onTapWeightEditor,
@@ -431,28 +597,9 @@ class _SetListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final children = sets.mapIndexed((index, setDto) {
-      final setWidget = switch (exerciseType) {
-        ExerciseType.weights => WeightsSetRow(
-            setDto: setDto,
-            editorType: editorType,
-            onCheck: () => updateSetCheck(index: index, setDto: setDto),
-            onRemoved: () => removeSet(index: index),
-            onChangedReps: (num value) => updateReps(index: index, value: value, setDto: setDto),
-            onChangedWeight: (double value) => updateWeight(index: index, value: value, setDto: setDto),
-            onTapWeightEditor: () => onTapWeightEditor(setDto: setDto),
-            onTapRepsEditor: () => onTapRepsEditor(setDto: setDto),
-            controllers: controllers[index],
-          ),
-        ExerciseType.bodyWeight => RepsSetRow(
-            setDto: setDto,
-            editorType: editorType,
-            onCheck: () => updateSetCheck(index: index, setDto: setDto),
-            onRemoved: () => removeSet(index: index),
-            onChangedReps: (num value) => updateReps(index: index, value: value, setDto: setDto),
-            onTapRepsEditor: () => onTapRepsEditor(setDto: setDto),
-            controllers: controllers[index],
-          ),
-        ExerciseType.duration => DurationSetRow(
+      return Padding(
+          padding: const EdgeInsets.only(bottom: 8.0),
+          child: DurationSetRow(
             setDto: setDto,
             editorType: editorType,
             onCheck: () => updateSetCheck(index: index, setDto: setDto),
@@ -461,11 +608,7 @@ class _SetListView extends StatelessWidget {
                 checkAndUpdateDuration(index: index, duration: duration, setDto: setDto, checked: checked ?? false),
             startTime: durationControllers.isNotEmpty ? durationControllers[index] : DateTime.now(),
             onupdateDuration: (Duration duration) => updateDuration(index: index, duration: duration, setDto: setDto),
-          ),
-        ExerciseType.all => throw Exception("Unable to return Set widget for type ExerciseType.all"),
-      };
-
-      return Padding(padding: const EdgeInsets.only(bottom: 8.0), child: setWidget);
+          ));
     }).toList();
 
     return Column(children: children);

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:tracker_app/dtos/set_dto.dart';
-import 'package:tracker_app/enums/exercise_type_enums.dart';
+import 'package:tracker_app/dtos/sets_dtos/set_dto.dart';
+import 'package:tracker_app/dtos/sets_dtos/weight_and_reps_set_dto.dart';
+import 'package:tracker_app/enums/exercise/set_type_enums.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../enums/routine_preview_type_enum.dart';
@@ -9,17 +10,17 @@ import '../routine/preview/set_headers/double_set_header.dart';
 import '../routine/preview/set_rows/double_set_row.dart';
 
 class SetRecordWidget extends StatelessWidget {
-  final ExerciseType exerciseType;
-  final List<SetDto> sets;
+  final SetType exerciseMetric;
+  final List<SetDTO> sets;
 
-  const SetRecordWidget({super.key, required this.exerciseType, required this.sets});
+  const SetRecordWidget({super.key, required this.exerciseMetric, required this.sets});
 
   @override
   Widget build(BuildContext context) {
     final personaBestSets = personalBestSets(sets: sets);
 
     if (personaBestSets.isEmpty) {
-      personaBestSets.add(const SetDto(0, 0, false));
+      personaBestSets.add(SetDTO.newType(type: exerciseMetric));
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -27,8 +28,8 @@ class SetRecordWidget extends StatelessWidget {
         DoubleSetHeader(firstLabel: "Reps", secondLabel: 'Personal Best (${weightLabel().toUpperCase()})', routinePreviewType: RoutinePreviewType.log),
         const SizedBox(height: 8),
         ...personaBestSets.map((set) {
-          final firstLabel = set.reps();
-          final secondLabel = set.weight();
+          final firstLabel = (set as WeightAndRepsSetDTO).reps;
+          final secondLabel = set.weight;
           return DoubleSetRow(first: "$firstLabel", second: "$secondLabel", margin: const EdgeInsets.only(bottom: 6.0), routinePreviewType: RoutinePreviewType.log,);
         }),
       ],

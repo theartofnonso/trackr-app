@@ -29,6 +29,24 @@ type RoutineTemplate
   id: ID!
   owner: String
   data: AWSJSON!
+  templatePlanID: ID @index(name: "byRoutineTemplatePlan")
+  templatePlan: RoutineTemplatePlan @belongsTo(fields: ["templatePlanID"])
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type RoutineTemplatePlan
+     @model
+     @auth(
+        rules: [
+          { allow: owner},
+          { allow: public, operations: [read], provider: iam }
+        ]
+     ) {
+  id: ID!
+  owner: String
+  data: AWSJSON!
+  templates: [RoutineTemplate] @hasMany(indexName: "byRoutineTemplatePlan", fields: ["id"])
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
 }

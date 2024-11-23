@@ -1,20 +1,21 @@
 import 'package:collection/collection.dart';
+import 'package:tracker_app/dtos/exercise_variant_dto.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 
-import '../dtos/appsync/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
-import '../dtos/set_dto.dart';
+import '../dtos/sets_dtos/set_dto.dart';
+import '../enums/exercise/set_type_enums.dart';
 import '../enums/routine_editor_type_enums.dart';
 
 class ExerciseLogRepository {
-  List<ExerciseLogDto> _exerciseLogs = [];
+  List<ExerciseLogDTO> _exerciseLogs = [];
 
-  UnmodifiableListView<ExerciseLogDto> get exerciseLogs => UnmodifiableListView(_exerciseLogs);
+  UnmodifiableListView<ExerciseLogDTO> get exerciseLogs => UnmodifiableListView(_exerciseLogs);
 
-  void loadExerciseLogs({required List<ExerciseLogDto> exerciseLogs, required RoutineEditorMode mode}) {
-    List<ExerciseLogDto> logs = [];
+  void loadExerciseLogs({required List<ExerciseLogDTO> exerciseLogs, required RoutineEditorMode mode}) {
+    List<ExerciseLogDTO> logs = [];
     for (var exerciseLog in exerciseLogs) {
-      if (withDurationOnly(type: exerciseLog.exercise.type)) {
+      if (withDurationOnly(setType: exerciseLog.exerciseVariant.getSetTypeConfiguration())) {
         if (mode == RoutineEditorMode.log) {
           final checkedSets = exerciseLog.sets.map((set) => set.copyWith(checked: true)).toList();
           final updatedExerciseLog = exerciseLog.copyWith(sets: checkedSets);
@@ -31,35 +32,49 @@ class ExerciseLogRepository {
     _exerciseLogs = logs;
   }
 
-  List<ExerciseLogDto> mergeExerciseLogsAndSets() {
+  List<ExerciseLogDTO> mergeExerciseLogsAndSets() {
     return _exerciseLogs.map((exerciseLog) {
       final sets = exerciseLog.sets;
-      return exerciseLog.copyWith(sets: withDurationOnly(type: exerciseLog.exercise.type) ? _checkSets(sets) : sets);
+      return exerciseLog.copyWith(sets: withDurationOnly(setType: exerciseLog.exerciseVariant.getSetTypeConfiguration()) ? _checkSets(sets) : sets);
     }).toList();
   }
 
-  List<ExerciseLogDto> mergeAndCheckPastExerciseLogsAndSets({required DateTime datetime}) {
+  List<ExerciseLogDTO> mergeAndCheckPastExerciseLogsAndSets({required DateTime datetime}) {
     return _exerciseLogs.map((exerciseLog) {
       final sets = _checkSets(exerciseLog.sets);
       return exerciseLog.copyWith(sets: sets, createdAt: datetime);
     }).toList();
   }
 
-  List<SetDto> _checkSets(List<SetDto> sets) {
+  List<SetDTO> _checkSets(List<SetDTO> sets) {
     return sets.map((set) => set.copyWith(checked: true)).toList();
   }
 
-  void addExerciseLogs({required List<ExerciseDto> exercises}) {
-    final logsToAdd = exercises.map((exercise) => _createExerciseLog(exercise)).toList();
+  void addExerciseLogs({required List<ExerciseVariantDTO> exerciseVariants}) {
+    final logsToAdd = exerciseVariants.map((exerciseVariant) => _createExerciseLog(exerciseVariant)).toList();
     _exerciseLogs = [..._exerciseLogs, ...logsToAdd];
   }
 
-  void reOrderExerciseLogs({required List<ExerciseLogDto> reOrderedList}) {
+  void updateExerciseLog({required ExerciseLogDTO newExerciseLog}) {
+    final exerciseLogIndex = _indexWhereExerciseId(exerciseId: newExerciseLog.exerciseVariant.name);
+
+    if (exerciseLogIndex > -1) {
+
+      List<ExerciseLogDTO> exerciseLogs = List<ExerciseLogDTO>.from(_exerciseLogs);
+
+      exerciseLogs[exerciseLogIndex] = newExerciseLog;
+
+      _exerciseLogs = [...exerciseLogs];
+
+    }
+  }
+
+  void reOrderExerciseLogs({required List<ExerciseLogDTO> reOrderedList}) {
     _exerciseLogs = reOrderedList;
   }
 
-  void removeExerciseLog({required String logId}) {
-    final exerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: logId);
+  void removeExerciseLog({required String exerciseId}) {
+    final exerciseLogIndex = _indexWhereExerciseId(exerciseId: exerciseId);
     if (exerciseLogIndex == -1) {
       return;
     }
@@ -75,37 +90,33 @@ class ExerciseLogRepository {
 
     _exerciseLogs = [...exerciseLogs];
 
-    _removeAllSetsForExerciseLog(exerciseLogId: logId);
+    _removeAllSetsForExerciseLog(exerciseId: exerciseId);
   }
 
-  void replaceExercise({required String oldExerciseId, required ExerciseDto newExercise, }) {
-    final oldExerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: oldExerciseId);
-    final oldExerciseLog = _whereExerciseLog(exerciseLogId: oldExerciseId);
+  void replaceExercise({required String oldExerciseName, required ExerciseVariantDTO newExerciseVariant}) {
+    final oldExerciseLogIndex = _indexWhereExerciseId(exerciseId: oldExerciseName);
+    final oldExerciseLog = _whereExerciseLog(exerciseId: oldExerciseName);
     if (oldExerciseLogIndex == -1 || oldExerciseLog == null) {
       return;
     }
 
-    List<ExerciseLogDto> exerciseLogs = List<ExerciseLogDto>.from(_exerciseLogs);
+    List<ExerciseLogDTO> exerciseLogs = List<ExerciseLogDTO>.from(_exerciseLogs);
 
-    exerciseLogs[oldExerciseLogIndex] = oldExerciseLog.copyWith(id: newExercise.id, exercise: newExercise, sets: []);
+    exerciseLogs[oldExerciseLogIndex] = oldExerciseLog.copyWith(exerciseVariant: newExerciseVariant, sets: []);
 
     _exerciseLogs = [...exerciseLogs];
-
-    removeSubstituteExercises(primaryExerciseId: newExercise.id, secondaryExerciseId: newExercise.id);
-
-    addSubstituteExercises(primaryExerciseId: newExercise.id, exercises: [oldExerciseLog.exercise]);
   }
 
-  void _removeAllSetsForExerciseLog({required String exerciseLogId}) {
+  void _removeAllSetsForExerciseLog({required String exerciseId}) {
     // Check if exercise exists
-    final exerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: exerciseLogId);
+    final exerciseLogIndex = _indexWhereExerciseId(exerciseId: exerciseId);
 
     if (exerciseLogIndex == -1) {
       return;
     }
 
     // Creating a new list by copying the original list
-    List<ExerciseLogDto> newExerciseLogs = _copyExerciseLogs();
+    List<ExerciseLogDTO> newExerciseLogs = _copyExerciseLogs();
 
     final exerciseLog = newExerciseLogs[exerciseLogIndex];
     newExerciseLogs[exerciseLogIndex] = exerciseLog.copyWith(sets: []);
@@ -114,21 +125,21 @@ class ExerciseLogRepository {
     _exerciseLogs = newExerciseLogs;
   }
 
-  void updateExerciseLogNotes({required String exerciseLogId, required String value}) {
-    final exerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: exerciseLogId);
+  void updateExerciseLogNotes({required String exerciseId, required String value}) {
+    final exerciseLogIndex = _indexWhereExerciseId(exerciseId: exerciseId);
     final exerciseLog = _exerciseLogs[exerciseLogIndex];
     _exerciseLogs[exerciseLogIndex] = exerciseLog.copyWith(notes: value);
   }
 
   void addSuperSets(
-      {required String firstExerciseLogId, required String secondExerciseLogId, required String superSetId}) {
-    final firstExerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: firstExerciseLogId);
-    final secondExerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: secondExerciseLogId);
+      {required String firstExerciseName, required String secondExerciseName, required String superSetId}) {
+    final firstExerciseLogIndex = _indexWhereExerciseId(exerciseId: firstExerciseName);
+    final secondExerciseLogIndex = _indexWhereExerciseId(exerciseId: secondExerciseName);
 
     if (firstExerciseLogIndex == -1 && secondExerciseLogIndex == -1) {
       return;
     }
-    List<ExerciseLogDto> updatedExerciseLogs = List<ExerciseLogDto>.from(_exerciseLogs);
+    List<ExerciseLogDTO> updatedExerciseLogs = List<ExerciseLogDTO>.from(_exerciseLogs);
 
     updatedExerciseLogs[firstExerciseLogIndex] =
         updatedExerciseLogs[firstExerciseLogIndex].copyWith(superSetId: superSetId);
@@ -139,59 +150,29 @@ class ExerciseLogRepository {
 
     _exerciseLogs = [...reorderedLogs];
   }
-
-  void addSubstituteExercises({required String primaryExerciseId, required List<ExerciseDto> exercises}) {
-    final primaryExerciseIndex = _indexWhereExerciseLog(exerciseLogId: primaryExerciseId);
-
-    if (primaryExerciseIndex == -1) {
-      return;
-    }
-
-    List<ExerciseLogDto> updatedExerciseLogs = List<ExerciseLogDto>.from(_exerciseLogs);
-
-    updatedExerciseLogs[primaryExerciseIndex].substituteExercises.addAll(exercises);
-
-    _exerciseLogs = [...updatedExerciseLogs];
-
-  }
-
-  void removeSubstituteExercises({required String primaryExerciseId, required String secondaryExerciseId}) {
-    final primaryExerciseIndex = _indexWhereExerciseLog(exerciseLogId: primaryExerciseId);
-
-    if (primaryExerciseIndex == -1) {
-      return;
-    }
-
-    List<ExerciseLogDto> updatedExerciseLogs = List<ExerciseLogDto>.from(_exerciseLogs);
-
-    updatedExerciseLogs[primaryExerciseIndex].substituteExercises.removeWhere((exercise) => exercise.id == secondaryExerciseId);
-
-    _exerciseLogs = [...updatedExerciseLogs];
-
-  }
-
+  
   void removeSuperSet({required String superSetId}) {
     _removeSuperSet(superSetId: superSetId);
   }
 
-  SetDto? _wherePastSetOrNull({required int index, required List<SetDto> pastSets}) {
+  SetDTO? _wherePastSetOrNull({required int index, required List<SetDTO> pastSets}) {
     return pastSets.firstWhereIndexedOrNull((i, set) => index == i);
   }
 
-  void addSet({required String exerciseLogId, required List<SetDto> pastSets}) {
-    int exerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: exerciseLogId);
+  void addSet({required String exerciseId, required List<SetDTO> pastSets, required SetType metric}) {
+    int exerciseLogIndex = _indexWhereExerciseId(exerciseId: exerciseId);
 
     if (exerciseLogIndex == -1) {
       return;
     }
 
-    final sets = _setsForExerciseLog(exerciseLogId: exerciseLogId);
+    final sets = _setsForExerciseLog(exerciseId: exerciseId);
 
     int newIndex = sets.length;
 
-    SetDto newSet = sets.lastOrNull != null ? sets.last.copyWith(checked: false) : const SetDto(0, 0, false);
+    SetDTO newSet = sets.lastOrNull != null ? sets.last.copyWith(checked: false) : SetDTO.newType(type: metric);
 
-    SetDto? pastSet = _wherePastSetOrNull(index: newIndex, pastSets: pastSets);
+    SetDTO? pastSet = _wherePastSetOrNull(index: newIndex, pastSets: pastSets);
 
     if (pastSet != null) {
       newSet = pastSet.copyWith(checked: false);
@@ -200,7 +181,7 @@ class ExerciseLogRepository {
     sets.add(newSet);
 
     // Creating a new list by copying the original list
-    List<ExerciseLogDto> newExerciseLogs = _copyExerciseLogs();
+    List<ExerciseLogDTO> newExerciseLogs = _copyExerciseLogs();
 
     // Updating the exerciseLog
     final exerciseLog = newExerciseLogs[exerciseLogIndex];
@@ -210,15 +191,15 @@ class ExerciseLogRepository {
     _exerciseLogs = newExerciseLogs;
   }
 
-  void removeSet({required String exerciseLogId, required int index}) {
-    int exerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: exerciseLogId);
+  void removeSet({required String exerciseId, required int index}) {
+    int exerciseLogIndex = _indexWhereExerciseId(exerciseId: exerciseId);
 
     if (exerciseLogIndex == -1) {
       return;
     }
 
     // Creating a new list by copying the original list
-    List<ExerciseLogDto> newExerciseLogs = _copyExerciseLogs();
+    List<ExerciseLogDTO> newExerciseLogs = _copyExerciseLogs();
 
     // Updating the exerciseLog
     final exerciseLog = newExerciseLogs[exerciseLogIndex];
@@ -234,15 +215,15 @@ class ExerciseLogRepository {
 
   }
 
-  void _updateSet({required String exerciseLogId, required int index, required SetDto set}) {
-    int exerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: exerciseLogId);
+  void _updateSet({required String exerciseId, required int index, required SetDTO set}) {
+    int exerciseLogIndex = _indexWhereExerciseId(exerciseId: exerciseId);
 
     if (exerciseLogIndex == -1) {
       return;
     }
 
     // Creating a new list by copying the original list
-    List<ExerciseLogDto> newExerciseLogs = _copyExerciseLogs();
+    List<ExerciseLogDTO> newExerciseLogs = _copyExerciseLogs();
 
     // Updating the exerciseLog
     final exerciseLog = newExerciseLogs[exerciseLogIndex];
@@ -257,45 +238,45 @@ class ExerciseLogRepository {
     }
   }
 
-  void updateWeight({required String exerciseLogId, required int index, required SetDto setDto}) {
-    _updateSet(exerciseLogId: exerciseLogId, index: index, set: setDto);
+  void updateWeight({required String exerciseId, required int index, required SetDTO setDto}) {
+    _updateSet(exerciseId: exerciseId, index: index, set: setDto);
   }
 
-  void updateReps({required String exerciseLogId, required int index, required SetDto setDto}) {
-    _updateSet(exerciseLogId: exerciseLogId, index: index, set: setDto);
+  void updateReps({required String exerciseId, required int index, required SetDTO setDto}) {
+    _updateSet(exerciseId: exerciseId, index: index, set: setDto);
   }
 
-  void updateDuration({required String exerciseLogId, required int index, required SetDto setDto}) {
-    _updateSet(exerciseLogId: exerciseLogId, index: index, set: setDto);
+  void updateDuration({required String exerciseId, required int index, required SetDTO setDto}) {
+    _updateSet(exerciseId: exerciseId, index: index, set: setDto);
   }
 
-  void updateSetCheck({required String exerciseLogId, required int index, required SetDto setDto}) {
-    _updateSet(exerciseLogId: exerciseLogId, index: index, set: setDto);
+  void updateSetCheck({required String exerciseId, required int index, required SetDTO setDto}) {
+    _updateSet(exerciseId: exerciseId, index: index, set: setDto);
   }
 
   /// Helper functions
 
-  ExerciseLogDto _createExerciseLog(ExerciseDto exercise, {String? notes}) {
-    return ExerciseLogDto(exercise.id, null, "", exercise, notes ?? "", [], DateTime.now(), []);
+  ExerciseLogDTO _createExerciseLog(ExerciseVariantDTO exerciseVariant) {
+    return ExerciseLogDTO(routineLogId: "", superSetId: "", exerciseVariant: exerciseVariant, notes: "", sets: [], createdAt: DateTime.now());
   }
 
-  List<ExerciseLogDto> completedExerciseLogs() {
+  List<ExerciseLogDTO> completedExerciseLogs() {
     return _exerciseLogs.where((exercise) {
       final numberOfCompletedSets = exercise.sets.where((set) => set.checked);
-      return numberOfCompletedSets.length == exercise.sets.length;
+      return numberOfCompletedSets.isNotEmpty && numberOfCompletedSets.length == exercise.sets.length;
     }).toList();
   }
 
-  List<SetDto> completedSets() {
+  List<SetDTO> completedSets() {
     return _exerciseLogs.expand((exerciseLog) => exerciseLog.sets).where((set) => set.checked).toList();
   }
 
   void _removeSuperSet({required String superSetId}) {
     // Create a new list where modifications will be made
-    List<ExerciseLogDto> updatedExerciseLogs = [];
+    List<ExerciseLogDTO> updatedExerciseLogs = [];
 
     // Iterate over the original exerciseLogs list
-    for (ExerciseLogDto exerciseLog in _exerciseLogs) {
+    for (ExerciseLogDTO exerciseLog in _exerciseLogs) {
       if (exerciseLog.superSetId == superSetId) {
         // Create a new exerciseLogDto with an updated superSetId
         updatedExerciseLogs.add(exerciseLog.copyWith(superSetId: ""));
@@ -309,8 +290,8 @@ class ExerciseLogRepository {
     _exerciseLogs = updatedExerciseLogs;
   }
 
-  Iterable<ExerciseLogDto> _reOrderSuperSets({required List<ExerciseLogDto> oldExerciseLogs}) {
-    Set<ExerciseLogDto> reorderedLogs = {};
+  Iterable<ExerciseLogDTO> _reOrderSuperSets({required List<ExerciseLogDTO> oldExerciseLogs}) {
+    Set<ExerciseLogDTO> reorderedLogs = {};
     for (final exerciseLog in oldExerciseLogs) {
       if (exerciseLog.superSetId.isEmpty) {
         reorderedLogs.add(exerciseLog);
@@ -323,12 +304,12 @@ class ExerciseLogRepository {
     return reorderedLogs;
   }
 
-  int _indexWhereExerciseLog({required String exerciseLogId}) {
-    return _exerciseLogs.indexWhere((exerciseLog) => exerciseLog.id == exerciseLogId);
+  int _indexWhereExerciseId({required String exerciseId}) {
+    return _exerciseLogs.indexWhere((exerciseLog) => exerciseLog.exerciseVariant.name == exerciseId);
   }
 
-  List<SetDto> _setsForExerciseLog({required String exerciseLogId}) {
-    final exerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: exerciseLogId);
+  List<SetDTO> _setsForExerciseLog({required String exerciseId}) {
+    final exerciseLogIndex = _indexWhereExerciseId(exerciseId: exerciseId);
     if (exerciseLogIndex == -1) {
       return [];
     }
@@ -336,12 +317,12 @@ class ExerciseLogRepository {
     return exerciseLog.sets;
   }
 
-  ExerciseLogDto? _whereExerciseLog({required String exerciseLogId}) {
-    return _exerciseLogs.firstWhereOrNull((exerciseLog) => exerciseLog.id == exerciseLogId);
+  ExerciseLogDTO? _whereExerciseLog({required String exerciseId}) {
+    return _exerciseLogs.firstWhereOrNull((exerciseLog) => exerciseLog.exerciseVariant.name == exerciseId);
   }
 
-  List<ExerciseLogDto> _copyExerciseLogs() {
-    return List<ExerciseLogDto>.from(_exerciseLogs);
+  List<ExerciseLogDTO> _copyExerciseLogs() {
+    return List<ExerciseLogDTO>.from(_exerciseLogs);
   }
 
   void clear() {

@@ -1,24 +1,16 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
-import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
-import 'package:tracker_app/utils/navigation_utils.dart';
-import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
-import '../../strings.dart';
-import '../../utils/exercise_logs_utils.dart';
-import '../../utils/general_utils.dart';
 import '../../utils/shareables_utils.dart';
 import '../calendar/calendar.dart';
 import 'log_streak_monitor.dart';
-import 'muscle_trend_monitor.dart';
 
 GlobalKey monitorKey = GlobalKey();
 
@@ -38,20 +30,7 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
 
     final monthlyProgress = routineLogsByDay.length / 12;
 
-    final muscleScorePercentage =
-        calculateMuscleScoreForLogs(routineLogs: routineLogs);
-
     return Stack(children: [
-      if (showInfo)
-        Positioned.fill(
-          left: 12,
-          child: GestureDetector(
-            onTap: () => _showMonitorInfo(context: context),
-            child: const Align(
-                alignment: Alignment.bottomLeft,
-                child: FaIcon(FontAwesomeIcons.circleInfo, color: Colors.white38, size: 18)),
-          ),
-        ),
       if (showInfo)
         Positioned.fill(
           right: 12,
@@ -66,31 +45,16 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           GestureDetector(
-              onTap: () => navigateToRoutineLogs(context: context, dateTime: dateTime),
-              child: Container(
-                color: Colors.transparent,
-                width: 80,
-                child: _MonitorScore(
-                  value: "${routineLogsByDay.length} ${pluralize(word: "day", count: routineLogsByDay.length)}",
-                  title: "Log Streak",
-                  color: logStreakColor(value: monthlyProgress),
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                ),
-              )),
-          const SizedBox(width: 20),
-          GestureDetector(
             child: Stack(alignment: Alignment.center, children: [
               LogStreakMonitor(
                   value: monthlyProgress,
-                  width: 100,
-                  height: 100,
+                  width: 80,
+                  height: 80,
                   strokeWidth: 6,
                   decoration: BoxDecoration(
-                    color: sapphireDark.withOpacity(0.35),
+                    color: sapphireDark80.withOpacity(0.35),
                     borderRadius: BorderRadius.circular(100),
                   )),
-              MuscleTrendMonitor(
-                  value: muscleScorePercentage / 100, width: 70, height: 70, strokeWidth: 6),
               Image.asset(
                 'images/trkr.png',
                 fit: BoxFit.contain,
@@ -99,29 +63,9 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
               )
             ]),
           ),
-          const SizedBox(width: 20),
-          GestureDetector(
-            onTap: () {
-              context.push(SetsAndRepsVolumeInsightsScreen.routeName);
-            },
-            child: Container(
-              color: Colors.transparent,
-              width: 80,
-              child: _MonitorScore(
-                value: "$muscleScorePercentage%",
-                color: Colors.white,
-                title: "Muscle",
-                crossAxisAlignment: CrossAxisAlignment.start,
-              ),
-            ),
-          ),
         ],
       ),
     ]);
-  }
-
-  void _showMonitorInfo({required BuildContext context}) {
-    showBottomSheetWithNoAction(context: context, title: "Streak and Muscle", description: overviewMonitor);
   }
 
   void _showShareBottomSheet({required BuildContext context}) {
@@ -215,42 +159,5 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
             ),
           ],
         ));
-  }
-}
-
-class _MonitorScore extends StatelessWidget {
-  final String value;
-  final String title;
-  final Color color;
-  final CrossAxisAlignment crossAxisAlignment;
-
-  const _MonitorScore(
-      {required this.value, required this.title, required this.color, required this.crossAxisAlignment});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: crossAxisAlignment,
-      children: [
-        Text(
-          value,
-          style: GoogleFonts.ubuntu(
-            color: color,
-            fontSize: 18,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          title.toUpperCase(),
-          textAlign: TextAlign.center,
-          style: GoogleFonts.ubuntu(
-            color: color.withOpacity(0.7),
-            fontSize: 10,
-            fontWeight: FontWeight.w800,
-          ),
-        )
-      ],
-    );
   }
 }

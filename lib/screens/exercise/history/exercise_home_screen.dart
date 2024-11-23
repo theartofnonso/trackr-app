@@ -5,97 +5,67 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
-import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_chart_screen.dart';
-import 'package:tracker_app/screens/exercise/history/exercise_video_screen.dart';
 import 'package:tracker_app/screens/exercise/history/history_screen.dart';
-import 'package:tracker_app/shared_prefs.dart';
 
-import '../../../dtos/appsync/exercise_dto.dart';
+import '../../../dtos/abstract_class/exercise_dto.dart';
 import '../../../dtos/exercise_log_dto.dart';
+import '../../../enums/exercise/exercise_configuration_key.dart';
 import '../../../utils/dialog_utils.dart';
 import '../../../utils/exercise_logs_utils.dart';
-import '../../../utils/navigation_utils.dart';
-import '../../empty_state_screens/not_found.dart';
+import '../../../widgets/buttons/opacity_button_widget.dart';
+import '../../../widgets/empty_states/not_found.dart';
+import '../../../widgets/pickers/exercise_configurations_picker.dart';
 
 class ExerciseHomeScreen extends StatefulWidget {
   static const routeName = "/exercise_home_screen";
 
-  final ExerciseDto exercise;
+  final String id;
 
-  const ExerciseHomeScreen({super.key, required this.exercise});
+  const ExerciseHomeScreen({super.key, required this.id});
 
   @override
   State<ExerciseHomeScreen> createState() => _ExerciseHomeScreenState();
 }
 
 class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
-  ExerciseDto? _exercise;
+  List<ExerciseLogDTO> _exerciseLogs = [];
 
-  Map<String, List<ExerciseLogDto>>? _exerciseLogsById;
+  late Map<ExerciseConfigurationKey, ExerciseConfigValue> _selectedConfigurations;
 
-  void _deleteExercise(BuildContext context) async {
-    context.pop();
-    try {
-      await Provider.of<ExerciseAndRoutineController>(context, listen: false).removeExercise(exercise: widget.exercise);
-      if (context.mounted) {
-        context.pop();
-      }
-    } catch (_) {
-      if (context.mounted) {
-        showSnackbar(
-            context: context,
-            icon: const Icon(Icons.info_outline),
-            message: "Oops, we are unable delete this exercise");
-      }
-    }
-  }
+  ExerciseDTO? _baseExercise;
+
+  late ExerciseAndRoutineController _exerciseAndRoutineController;
 
   @override
   Widget build(BuildContext context) {
-    final exercise = _exercise;
+    final exercise = _baseExercise;
 
     if (exercise == null) return const NotFound();
 
-    final exerciseLogs = _exerciseLogsById?[exercise.id] ?? [];
+    final completedExerciseLogs = completedExercises(exerciseLogs: _exerciseLogs);
 
-    final completedExerciseLogs = completedExercises(exerciseLogs: exerciseLogs);
+    final firstVariant = _exerciseLogs.isNotEmpty ? _exerciseLogs.first.exerciseVariant : exercise.defaultVariant();
 
-    final heaviestSetVolumeRecord = heaviestSetVolume(exerciseLogs: completedExerciseLogs);
-
-    final heaviestWeightRecord = heaviestWeight(exerciseLogs: completedExerciseLogs);
-
-    final longestDurationRecord = longestDuration(exerciseLogs: completedExerciseLogs);
-
-    final mostRepsSetRecord = mostRepsInSet(exerciseLogs: completedExerciseLogs);
-
-    final mostRepsSessionRecord = mostRepsInSession(exerciseLogs: completedExerciseLogs);
-
-    final menuActions = [
-      MenuItemButton(
-        onPressed: _navigateToExerciseEditor,
-        child: const Text("Edit"),
-      ),
-      MenuItemButton(
-        onPressed: () {
-          showBottomSheetWithMultiActions(
-              context: context,
-              title: "Delete exercise?",
-              description: "Are you sure you want to delete this exercise?",
-              leftAction: Navigator.of(context).pop,
-              rightAction: () => _deleteExercise(context),
-              leftActionLabel: 'Cancel',
-              rightActionLabel: 'Delete',
-              isRightActionDestructive: true);
-        },
-        child: Text("Delete", style: GoogleFonts.ubuntu(color: Colors.red)),
-      )
-    ];
-
-    final hasVideo = exercise.video != null;
+    final configurationOptionsWidgets = exercise.configurationOptions.keys.where((configKey) {
+      final configOptions = exercise.configurationOptions[configKey]!;
+      return configOptions.length > 1;
+    }).map((ExerciseConfigurationKey configKey) {
+      final configValue = firstVariant.configurations[configKey]!;
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+        child: OpacityButtonWidget(
+          label: configValue.displayName.toLowerCase(),
+          buttonColor: vibrantGreen,
+          padding: EdgeInsets.symmetric(horizontal: 0),
+          textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 12, color: vibrantGreen),
+          onPressed: () => _showConfigurationPicker(configKey: configKey, baseExercise: exercise),
+        ),
+      );
+    }).toList();
 
     return DefaultTabController(
-        length: hasVideo ? 3 : 2,
+        length: 2,
         child: Scaffold(
           appBar: AppBar(
             backgroundColor: sapphireDark80,
@@ -114,40 +84,8 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
                 Tab(
                     child: Text("History",
                         style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
-                if (hasVideo)
-                  Tab(
-                      child: Text("Video",
-                          style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
               ],
             ),
-            actions: exercise.owner == SharedPrefs().userId
-                ? [
-                    MenuAnchor(
-                      style: MenuStyle(
-                        backgroundColor: WidgetStateProperty.all(sapphireDark80),
-                        surfaceTintColor: WidgetStateProperty.all(sapphireDark),
-                      ),
-                      builder: (BuildContext context, MenuController controller, Widget? child) {
-                        return IconButton(
-                          onPressed: () {
-                            if (controller.isOpen) {
-                              controller.close();
-                            } else {
-                              controller.open();
-                            }
-                          },
-                          icon: const Icon(
-                            Icons.more_vert_rounded,
-                            color: Colors.white,
-                            size: 24,
-                          ),
-                          tooltip: 'Show menu',
-                        );
-                      },
-                      menuChildren: menuActions,
-                    )
-                  ]
-                : null,
           ),
           body: Container(
             width: double.infinity,
@@ -162,19 +100,36 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
               ),
             ),
             child: SafeArea(
-              child: TabBarView(
+              bottom: false,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  ExerciseChartScreen(
-                    heaviestWeight: heaviestWeightRecord,
-                    heaviestSet: heaviestSetVolumeRecord,
-                    longestDuration: longestDurationRecord,
-                    mostRepsSet: mostRepsSetRecord,
-                    mostRepsSession: mostRepsSessionRecord,
-                    exercise: exercise,
-                    exerciseLogs: completedExerciseLogs,
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 18.0, horizontal: 10),
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.transparent, // Makes the background transparent
+                      borderRadius: BorderRadius.circular(5.0),
+                      border: Border.all(
+                        color: sapphireLighter, // Border color
+                        width: 1.0, // Border width
+                      ), // Adjust the radius as needed
+                    ),
+                    child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: configurationOptionsWidgets)),
                   ),
-                  HistoryScreen(exerciseLogs: completedExerciseLogs),
-                  if (hasVideo) ExerciseVideoScreen(exercise: exercise)
+                  Expanded(
+                    child: TabBarView(
+                      children: [
+                        ExerciseChartScreen(
+                          exerciseVariant: firstVariant,
+                          exerciseLogs: completedExerciseLogs,
+                        ),
+                        HistoryScreen(exerciseLogs: completedExerciseLogs),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -182,24 +137,41 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
         ));
   }
 
-  void _navigateToExerciseEditor() async {
-    final exercise = _exercise;
-    if (exercise != null) {
-      final arguments = ExerciseEditorArguments(exercise: exercise);
-      final updatedExercise = await navigateToExerciseEditor(context: context, arguments: arguments);
-      if (updatedExercise != null) {
-        setState(() {
-          _exercise = updatedExercise;
-        });
-      }
-    }
+  void _showConfigurationPicker({required ExerciseConfigurationKey configKey, required ExerciseDTO baseExercise}) {
+    final options = baseExercise.configurationOptions[configKey]!;
+    displayBottomSheet(
+      context: context,
+      height: 300,
+      child: ExerciseConfigurationsPicker<dynamic>(
+        configurationKey: configKey,
+        initialConfig: _selectedConfigurations[configKey],
+        configurationOptions: options,
+        onSelect: (configuration) {
+          Navigator.of(context).pop();
+          setState(() {
+            _selectedConfigurations[configKey] = configuration;
+            _exerciseLogs = _exerciseAndRoutineController.filterExerciseLogsByIdAndConfigurations(
+                exerciseId: widget.id, configurations: _selectedConfigurations);
+          });
+        }, // Provide descriptions if available
+      ),
+    );
   }
 
   @override
   void initState() {
     super.initState();
-    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-    _exerciseLogsById = routineLogController.exerciseLogsById;
-    _exercise = widget.exercise;
+    _exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+
+    _baseExercise = _exerciseAndRoutineController.whereExercise(id: widget.id);
+
+    final exercise = _baseExercise;
+
+    if (exercise != null) {
+      _selectedConfigurations = exercise.defaultVariant().configurations;
+
+      _exerciseLogs = _exerciseAndRoutineController.filterExerciseLogsByIdAndConfigurations(
+          exerciseId: widget.id, configurations: _selectedConfigurations);
+    }
   }
 }

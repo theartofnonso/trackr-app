@@ -11,7 +11,6 @@ import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/exercise_log_dto.dart';
-import '../../dtos/set_dto.dart';
 import '../../enums/routine_preview_type_enum.dart';
 import '../../openAI/open_ai.dart';
 import '../../openAI/open_ai_functions.dart';
@@ -24,7 +23,9 @@ import '../../widgets/routine/preview/exercise_log_listview.dart';
 class TRKRCoachChatScreen extends StatefulWidget {
   static const routeName = '/routine_ai_context_screen';
 
-  const TRKRCoachChatScreen({super.key});
+  final List<String> loadingMessages;
+
+  const TRKRCoachChatScreen({super.key, required this.loadingMessages});
 
   @override
   State<TRKRCoachChatScreen> createState() => _TRKRCoachChatScreenState();
@@ -39,7 +40,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_loading) return TRKRLoadingScreen(action: _cancelLoadingScreen);
+    if (_loading) return TRKRLoadingScreen(action: _cancelLoadingScreen, messages: widget.loadingMessages);
 
     final routineTemplate = _routineTemplate;
 
@@ -134,7 +135,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
   }
 
   void _showSnackbar(String message, {Widget? icon}) {
-    showSnackbar(context: context, icon: icon ?? const Icon(Icons.info_outline), message: message);
+    showSnackbar(context: context, icon: icon ?? const FaIcon(FontAwesomeIcons.circleInfo), message: message);
   }
 
   void _cancelLoadingScreen() {
@@ -172,12 +173,19 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
 
     final StringBuffer buffer = StringBuffer();
 
-    buffer.writeln(personalTrainerInstructionForWorkouts);
-    buffer.writeln("For each muscle group, suggest two exercises.");
-    buffer.writeln("Ensure one exercise targets the muscle group primarily or secondarily.");
-    buffer.writeln("Both exercises must engage the muscle group from both the lengthened and shortened positions.");
+    buffer.writeln(userInstruction);
 
-    final completeSystemInstructions = buffer.toString();
+    buffer.writeln();
+
+    buffer.writeln("Instructions");
+    buffer.writeln("1. Create a workout");
+    buffer.writeln("2. For each muscle group, suggest 2 exercises that are sufficient.");
+    buffer.writeln(
+        "3. Ensure a balanced combination of exercises engaging all muscle groups from both the lengthened and shortened positions.");
+    buffer.writeln(
+        "4. Ensure variety while sticking to exercises similar in nature to the exercise ids listed above if any.");
+
+    final completeInstructions = buffer.toString();
 
     final tool = await runMessageWithTools(
         systemInstruction: personalTrainerInstructionForWorkouts,
@@ -193,21 +201,19 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
           final exercises = Provider.of<ExerciseAndRoutineController>(context, listen: false).exercises;
           final functionCallPayload = await createFunctionCallPayload(
               toolId: toolId,
-              systemInstruction: completeSystemInstructions,
-              user: userInstruction,
+              systemInstruction: personalTrainerInstructionForWorkouts,
+              user: completeInstructions,
               responseFormat: newRoutineTemplateResponseFormat,
               exercises: exercises);
           final jsonString = await runMessageWithFunctionCallResult(payload: functionCallPayload);
           if (jsonString != null) {
             final json = jsonDecode(jsonString);
-            final exerciseIds = json["exercises"] as List<dynamic>;
+            final exerciseNames = json["exercises"] as List<dynamic>;
             final workoutName = json["workout_name"] ?? "A workout";
             final workoutCaption = json["workout_caption"] ?? "A workout created by TRKR Coach";
-            final exerciseTemplates = exerciseIds.map((exerciseId) {
-              final exerciseInLibrary = exercises.firstWhere((exercise) => exercise.id == exerciseId);
-              final exerciseTemplate = ExerciseLogDto(exerciseInLibrary.id, "", "", exerciseInLibrary,
-                  exerciseInLibrary.description ?? "", [const SetDto(0, 0, false)], DateTime.now(), []);
-              return exerciseTemplate;
+            final exerciseTemplates = exerciseNames.map((exerciseId) {
+              final exerciseInLibrary = exercises.firstWhere((exercise) => exercise.name == exerciseId);
+              return ExerciseLogDTO.empty(exercise: exerciseInLibrary);
             }).toList();
             templateDto = RoutineTemplateDto(
                 id: "",
@@ -252,7 +258,7 @@ class _AppBar extends StatelessWidget {
     return Row(
       children: [
         IconButton(
-          icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
+          icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
           onPressed: Navigator.of(context).pop,
         ),
         Expanded(
@@ -262,7 +268,7 @@ class _AppBar extends StatelessWidget {
         ),
         canPerformPositiveAction
             ? IconButton(
-                icon: const FaIcon(FontAwesomeIcons.check, color: Colors.white, size: 28),
+                icon: const FaIcon(FontAwesomeIcons.solidSquareCheck, color: Colors.white, size: 28),
                 onPressed: positiveAction,
               )
             : const IconButton(

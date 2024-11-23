@@ -54,7 +54,7 @@ class RoutineUserController extends ChangeNotifier {
   }
 
   double weight() {
-    return _amplifyRoutineUserRepository.user?.weight ?? 0;
+    return (_amplifyRoutineUserRepository.user?.weight ?? 0).toDouble();
   }
 
   void clear() {

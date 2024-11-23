@@ -6,16 +6,16 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/extensions/amplify_models/routine_template_extension.dart';
 import 'package:tracker_app/screens/AI/trkr_coach_exercise_recommendation_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
+import 'package:tracker_app/strings/loading_screen_messages.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/exercise_log_dto.dart';
-import '../../dtos/set_dto.dart';
+import '../../dtos/sets_dtos/set_dto.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../dtos/viewmodels/routine_template_arguments.dart';
 import '../../enums/muscle_group_enums.dart';
@@ -34,17 +34,19 @@ import '../../utils/routine_utils.dart';
 import '../../utils/string_utils.dart';
 import '../../widgets/ai_widgets/trkr_information_container.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
-import '../../widgets/chart/muscle_group_family_chart.dart';
+import '../../widgets/chart/muscle_group_chart.dart';
+import '../../widgets/empty_states/not_found.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
-import '../empty_state_screens/not_found.dart';
 import 'routine_day_planner.dart';
 
 class RoutineTemplateScreen extends StatefulWidget {
   static const routeName = '/routine_template_screen';
 
-  final String id;
+  final String templateId;
 
-  const RoutineTemplateScreen({super.key, required this.id});
+  final String templatePlanId;
+
+  const RoutineTemplateScreen({super.key, required this.templateId, this.templatePlanId = ""});
 
   @override
   State<RoutineTemplateScreen> createState() => _RoutineTemplateScreenState();
@@ -57,43 +59,11 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   bool _minimized = true;
 
-  void _deleteRoutine({required RoutineTemplateDto template}) async {
-    try {
-      await Provider.of<ExerciseAndRoutineController>(context, listen: false).removeTemplate(template: template);
-      if (mounted) {
-        context.pop();
-      }
-    } catch (e) {
-      if (mounted) {
-        showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Unable to remove workout");
-      }
-    } finally {
-      _toggleLoadingState();
-    }
-  }
-
-  void _toggleLoadingState() {
-    setState(() {
-      _loading = !_loading;
-    });
-  }
-
-  void _navigateToRoutineTemplateEditor() async {
-    final template = _template;
-    if (template != null) {
-      final arguments = RoutineTemplateArguments(template: template);
-      final updatedTemplate = await navigateToRoutineTemplateEditor(context: context, arguments: arguments);
-      if (updatedTemplate != null) {
-        setState(() {
-          _template = updatedTemplate;
-        });
-      }
-    }
-  }
+  List<String> _messages = defaultLoadingMessages;
 
   @override
   Widget build(BuildContext context) {
-    if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
+    if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen, messages: _messages);
 
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
@@ -113,9 +83,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     final numberOfSets = template.exerciseTemplates.expand((exerciseTemplate) => exerciseTemplate.sets);
     final setsSummary = "${numberOfSets.length} ${pluralize(word: "Set", count: numberOfSets.length)}";
 
-    final updatedExerciseLogs = completedExercises(exerciseLogs: template.exerciseTemplates);
-
-    final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: updatedExerciseLogs);
+    final muscleGroupFamilyFrequencies = muscleGroupFrequency(exerciseLogs: template.exerciseTemplates);
 
     final menuActions = [
       MenuItemButton(
@@ -123,11 +91,11 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           leadingIcon: FaIcon(FontAwesomeIcons.solidPenToSquare, size: 16),
           child: Text("Edit", style: GoogleFonts.ubuntu())),
       MenuItemButton(
-          onPressed: () => _createTemplate(copy: true),
+          onPressed: _duplicateTemplate,
           leadingIcon: FaIcon(Icons.copy, size: 16),
           child: Text("Copy", style: GoogleFonts.ubuntu())),
       MenuItemButton(
-        onPressed: () => _updateTemplateSchedule(template: template),
+        onPressed: _updateTemplateSchedule,
         leadingIcon: FaIcon(FontAwesomeIcons.solidClock, size: 16),
         child: Text("Schedule", style: GoogleFonts.ubuntu(color: Colors.white)),
       ),
@@ -136,21 +104,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           onPressed: _showBottomSheet,
           child: Text("Share", style: GoogleFonts.ubuntu())),
       MenuItemButton(
-        onPressed: () {
-          showBottomSheetWithMultiActions(
-              context: context,
-              title: "Delete workout?",
-              description: "Are you sure you want to delete this workout?",
-              leftAction: Navigator.of(context).pop,
-              rightAction: () {
-                context.pop();
-                _toggleLoadingState();
-                _deleteRoutine(template: template);
-              },
-              leftActionLabel: 'Cancel',
-              rightActionLabel: 'Delete',
-              isRightActionDestructive: true);
-        },
+        onPressed: _deleteRoutineTemplate,
         leadingIcon: FaIcon(
           FontAwesomeIcons.trash,
           size: 16,
@@ -163,7 +117,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
             heroTag: UniqueKey,
-            onPressed: template.owner == SharedPrefs().userId ? _launchRoutineLogEditor : _createTemplate,
+            onPressed: template.owner == SharedPrefs().userId ? _launchRoutineLogEditor : _duplicateTemplate,
             backgroundColor: sapphireDark,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: template.owner == SharedPrefs().userId
@@ -222,6 +176,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           ),
           child: SafeArea(
             minimum: const EdgeInsets.all(10.0),
+            bottom: false,
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -250,7 +205,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                                 color: Colors.white70,
                                 fontSize: 14,
                                 fontStyle: FontStyle.italic,
-                                fontWeight: FontWeight.w600)),
+                                fontWeight: FontWeight.w500)),
                       ),
                     ),
 
@@ -313,11 +268,11 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                                   color: Colors.white70, size: 16),
                           ]),
                           const SizedBox(height: 10),
-                          Text("Here's a breakdown of the muscle groups in your ${template.name} workout plan.",
+                          Text("Here's a breakdown of the muscle groups in your ${template.name} workout.",
                               style:
                                   GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
                           const SizedBox(height: 10),
-                          MuscleGroupFamilyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
+                          MuscleGroupChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
                         ],
                       ),
                     ),
@@ -331,6 +286,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                               "Achieving your fitness goals is easier with a structured plan. Ask the TRKR Coach to optimize your workouts and help you succeed!",
                           onTap: _runRoutineAnalysis),
                     ),
+                  const SizedBox(height: 10),
                   ExerciseLogListView(
                     exerciseLogs: exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
                     previewType: RoutinePreviewType.template,
@@ -340,6 +296,25 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
             ),
           ),
         ));
+  }
+
+  void _deleteRoutineTemplate() {
+    final template = _template;
+    if (template != null) {
+      showBottomSheetWithMultiActions(
+          context: context,
+          title: "Delete workout?",
+          description: "Are you sure you want to delete this workout?",
+          leftAction: Navigator.of(context).pop,
+          rightAction: () {
+            context.pop();
+            _toggleLoadingState();
+            _deleteRoutine();
+          },
+          leftActionLabel: 'Cancel',
+          rightActionLabel: 'Delete',
+          isRightActionDestructive: true);
+    }
   }
 
   void _showLoadingScreen() {
@@ -354,6 +329,43 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     });
   }
 
+  void _deleteRoutine() async {
+    final template = _template;
+    if (template != null) {
+      try {
+        await Provider.of<ExerciseAndRoutineController>(context, listen: false).removeTemplate(template: template);
+        if (mounted) {
+          context.pop();
+        }
+      } catch (e) {
+        if (mounted) {
+          showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Unable to remove workout");
+        }
+      } finally {
+        _toggleLoadingState();
+      }
+    }
+  }
+
+  void _toggleLoadingState() {
+    setState(() {
+      _loading = !_loading;
+    });
+  }
+
+  void _navigateToRoutineTemplateEditor() async {
+    final template = _template;
+    if (template != null) {
+      final arguments = RoutineTemplateArguments(template: template);
+      final updatedTemplate = await navigateToRoutineTemplateEditor(context: context, arguments: arguments);
+      if (updatedTemplate != null) {
+        setState(() {
+          _template = updatedTemplate;
+        });
+      }
+    }
+  }
+
   void _onMinimiseMuscleGroupSplit() {
     setState(() {
       _minimized = !_minimized;
@@ -363,12 +375,12 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   void _launchRoutineLogEditor() {
     final template = _template;
     if (template != null) {
-      final arguments = RoutineLogArguments(log: template.log(), editorMode: RoutineEditorMode.log);
+      final arguments = RoutineLogArguments(log: template.toLog(), editorMode: RoutineEditorMode.log);
       navigateToRoutineLogEditor(context: context, arguments: arguments);
     }
   }
 
-  void _createTemplate({bool copy = false}) async {
+  void _duplicateTemplate() async {
     final template = _template;
     if (template != null) {
       _showLoadingScreen();
@@ -379,12 +391,14 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
           /// [Exercise.duration] exercises do not have sets in templates
           /// This is because we only need to store the duration of the exercise in [RoutineEditorType.log] i.e data is logged in realtime
-          final sets = withDurationOnly(type: exerciseLog.exercise.type) ? <SetDto>[] : uncheckedSets;
+          final sets = withDurationOnly(setType: exerciseLog.exerciseVariant.getSetTypeConfiguration())
+              ? <SetDTO>[]
+              : uncheckedSets;
           return exerciseLog.copyWith(sets: sets);
         }).toList();
         final templateToCreate = RoutineTemplateDto(
             id: "",
-            name: copy ? "Copy of ${template.name}" : template.name,
+            name: "Copy of ${template.name}",
             notes: template.notes,
             exerciseTemplates: exercises,
             owner: "",
@@ -395,7 +409,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
             .saveTemplate(templateDto: templateToCreate);
         if (mounted) {
           if (createdTemplate != null) {
-            navigateToRoutineTemplatePreview(context: context, template: createdTemplate);
+            navigateToRoutineTemplate(context: context, template: createdTemplate);
           }
         }
       } catch (_) {
@@ -413,19 +427,25 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   void _loadData() {
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-    _template = exerciseAndRoutineController.templateWhere(id: widget.id);
+    if (widget.templatePlanId.isNotEmpty) {
+      _template = exerciseAndRoutineController.templateByTemplatePlanId(id: widget.templatePlanId);
+    } else {
+      _template = exerciseAndRoutineController.templateWhere(id: widget.templateId);
+    }
+
     if (_template == null) {
       _loading = true;
-      getAPI(endpoint: "/routine-templates/${widget.id}").then((data) {
+      _messages = loadingRoutineMessages;
+      getAPI(endpoint: "/routine-templates/${widget.templateId}").then((data) {
         if (data.isNotEmpty) {
           final json = jsonDecode(data);
           final body = json["data"];
-          final routineTemplate = body["getRoutineTemplate"];
-          if (routineTemplate != null) {
-            final routineTemplateDto = RoutineTemplate.fromJson(routineTemplate);
+          final routineTemplateJson = body["getRoutineTemplate"];
+          if (routineTemplateJson != null) {
+            final template = RoutineTemplate.fromJson(routineTemplateJson);
             setState(() {
               _loading = false;
-              _template = routineTemplateDto.dto();
+              _template = RoutineTemplateDto.toDto(template);
             });
           } else {
             setState(() {
@@ -441,6 +461,10 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     final template = _template;
 
     if (template != null) {
+      setState(() {
+        _messages = loadingTRKRCoachRoutineMessages;
+      });
+
       _showLoadingScreen();
 
       final muscleGroupAndExercises = await _runFunctionMessage(template: template);
@@ -448,22 +472,22 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       _hideLoadingScreen();
 
       if (mounted) {
-        final originalExerciseTemplates = template.exerciseTemplates.map((template) => template.exercise).toList();
-        final exerciseIds = await navigateWithSlideTransition(
+        final originalExerciseTemplates =
+            template.exerciseTemplates.map((template) => template.exerciseVariant).toList();
+        final recommendedExerciseNames = await navigateWithSlideTransition(
                 context: context,
-                child: TrkrCoachExerciseRecommendationScreen(
+                child: TRKRCoachExerciseRecommendationScreen(
                     muscleGroupAndExercises: muscleGroupAndExercises,
-                    originalExerciseTemplates: originalExerciseTemplates)) as List<String>? ??
+                    originalExerciseVariants: originalExerciseTemplates)) as List<String>? ??
             [];
 
-        if (exerciseIds.isNotEmpty) {
+        if (recommendedExerciseNames.isNotEmpty) {
           if (mounted) {
             final exercises = Provider.of<ExerciseAndRoutineController>(context, listen: false).exercises;
 
-            final exerciseTemplates = exerciseIds.map((exerciseId) {
-              final exerciseInLibrary = exercises.firstWhere((exercise) => exercise.id == exerciseId);
-              final exerciseTemplate = ExerciseLogDto(
-                  exerciseInLibrary.id, "", "", exerciseInLibrary, "", [const SetDto(0, 0, false)], DateTime.now(), []);
+            final exerciseTemplates = recommendedExerciseNames.map((exerciseName) {
+              final exerciseInLibrary = exercises.firstWhere((exercise) => exercise.name == exerciseName);
+              final exerciseTemplate = ExerciseLogDTO.empty(exercise: exerciseInLibrary);
               return exerciseTemplate;
             }).toList();
             final originalTemplates = template.exerciseTemplates;
@@ -480,33 +504,29 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   Future<List<Map<String, dynamic>>> _runFunctionMessage({required RoutineTemplateDto template}) async {
     List<Map<String, dynamic>> muscleGroupAndExercises = [];
 
-    final listOfExerciseJsons = template.exerciseTemplates
-        .map((exerciseTemplate) => jsonEncode({
-              "id": exerciseTemplate.exercise.id,
-              "name": exerciseTemplate.exercise.name,
-            }))
-        .toList();
-
     final StringBuffer buffer = StringBuffer();
 
     buffer.writeln(
         "For Each Exercise in my selection, recommend an alternative exercise that meets the following criteria.");
-    buffer.writeln("\n");
-    buffer.writeln("Criteria 1 - Muscle Group Training Requirements:");
-    buffer.writeln("Dual Exercises: Ensure each muscle group is trained with two exercises:");
-    buffer.writeln("Primary Exercise: One from my original selection.");
+
+    buffer.writeln();
+
+    buffer.writeln("1. Ensure each muscle group is trained with two exercises:");
+    buffer.writeln("2. One from my original selection.");
+    buffer.writeln("3. A recommended alternative to adequately target the muscle group.");
     buffer.writeln(
-        "Secondary Exercise: A recommended alternative if the original selection doesn't adequately target the muscle group.");
-    buffer.writeln("\n");
-    buffer.writeln("Criteria 2 - Targeting Specifications:");
-    buffer.writeln(
-        "Primary or Secondary Focus: Exercises should target the muscle group either primarily or secondarily.");
-    buffer.writeln("Range of Motion: Both exercises must engage the muscle group in:");
-    buffer.writeln("Lengthened Position");
-    buffer.writeln("Shortened Position");
-    buffer.writeln("\n");
-    buffer.writeln("Exercise Selection:");
-    buffer.writeln(listOfExerciseJsons);
+        "4. The recommended alternative should not be a variation of the original exercise. Compare exercise names to ensure they are not variations of the same exercise.");
+    buffer
+        .writeln("6. Incorporate both compound and isolation exercises where appropriate to optimize muscle targeting");
+
+    buffer.writeln();
+
+    buffer.writeln("My original Exercise Selection:");
+    for (final exerciseTemplate in template.exerciseTemplates) {
+      buffer.writeln(
+          "Exercise Name: ${exerciseTemplate.exerciseVariant.name}\nExercise Name: ${exerciseTemplate.exerciseVariant.name}");
+      buffer.writeln();
+    }
 
     final completeUserInstructions = buffer.toString();
 
@@ -532,10 +552,10 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
               final muscleGroupString = json["muscle_group"];
               final recommendedExercises = json["recommended_exercises"] as List<dynamic>;
               final rationale = json["rationale"];
-              final exerciseTemplates = recommendedExercises.map((exerciseId) {
-                return exercises.firstWhere((exercise) => exercise.id == exerciseId);
+              final exerciseTemplates = recommendedExercises.map((exerciseName) {
+                return exercises.firstWhere((exercise) => exercise.name == exerciseName);
               }).toList();
-              final muscleGroup = MuscleGroup.fromString(muscleGroupString);
+              final muscleGroup = MuscleGroup.fromJson(muscleGroupString);
               return {
                 "muscle_group": muscleGroup,
                 "exercises": [exerciseTemplates[0], exerciseTemplates[1]],
@@ -558,14 +578,18 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     });
   }
 
-  void _updateTemplateSchedule({required RoutineTemplateDto template}) async {
-    final updatedTemplate =
-        await displayBottomSheet(context: context, child: RoutineDayPlanner(template: template)) as RoutineTemplateDto?;
+  void _updateTemplateSchedule() async {
+    final template = _template;
 
-    if (updatedTemplate != null) {
-      setState(() {
-        _template = updatedTemplate;
-      });
+    if (template != null) {
+      final updatedTemplate = await displayBottomSheet(context: context, child: RoutineDayPlanner(template: template))
+          as RoutineTemplateDto?;
+
+      if (updatedTemplate != null) {
+        setState(() {
+          _template = updatedTemplate;
+        });
+      }
     }
   }
 

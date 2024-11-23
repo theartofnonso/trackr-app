@@ -54,7 +54,9 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
 
   @override
   Widget build(BuildContext context) {
-    if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
+    if (_loading) {
+      return TRKRLoadingScreen(action: _hideLoadingScreen);
+    }
 
     return Scaffold(
       body: Container(
@@ -109,8 +111,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       ),
                     ),
                     segments: [
-                      ButtonSegment<WeightUnit>(value: WeightUnit.kg, label: Text(WeightUnit.kg.name)),
-                      ButtonSegment<WeightUnit>(value: WeightUnit.lbs, label: Text(WeightUnit.lbs.name)),
+                      ButtonSegment<WeightUnit>(value: WeightUnit.kg, label: Text(WeightUnit.kg.name.toUpperCase())),
+                      ButtonSegment<WeightUnit>(value: WeightUnit.lbs, label: Text(WeightUnit.lbs.name.toUpperCase())),
                     ],
                     selected: <WeightUnit>{_weightUnitType},
                     onSelectionChanged: (Set<WeightUnit> unitType) {
@@ -149,15 +151,15 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     });
                   },
                 ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 8),
-                      OutlineListTile(onTap: _navigateToUserProfile, title: "Profile", trailing: "manage profile"),
-                    ],
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 8),
+                    OutlineListTile(onTap: _navigateToUserProfile, title: "Profile", trailing: "manage profile"),
+                  ],
+                ),
                 const SizedBox(height: 8),
-                OutlineListTile(onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "manage exercises"),
+                OutlineListTile(onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "view insights"),
                 if (Platform.isIOS)
                   Column(children: [
                     const SizedBox(height: 8),
@@ -169,7 +171,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 const SizedBox(height: 8),
                 OutlineListTile(onTap: _sendFeedback, title: "Feedback", trailing: "Help us improve"),
                 const SizedBox(height: 8),
-                OutlineListTile(onTap: _visitTRKR, title: "Visit TRKR"),
+                OutlineListTile(onTap: _visitTRKR, title: "Visit TRKR", trailing: "Follow us on socials"),
                 const SizedBox(height: 8),
                 OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
                 const SizedBox(height: 8),

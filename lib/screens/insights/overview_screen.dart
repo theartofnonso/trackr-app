@@ -9,6 +9,7 @@ import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/shared_prefs.dart';
+import 'package:tracker_app/strings/loading_screen_messages.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 
@@ -23,15 +24,12 @@ import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_text_widget.dart';
-import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/calendar/calendar.dart';
-import '../../widgets/label_divider.dart';
-import '../../widgets/monitors/log_streak_muscle_trend_monitor.dart';
-import '../../widgets/monthly_insights/log_streak_chart_widget.dart';
+import '../../widgets/dividers/label_divider.dart';
 import '../../widgets/routine/preview/activity_log_widget.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
 import '../AI/trkr_coach_chat_screen.dart';
-import 'monthly_insights_screen.dart';
+import '../../widgets/monthly_insights/monthly_insights_widget.dart';
 
 class OverviewScreen extends StatefulWidget {
   final ScrollController scrollController;
@@ -49,13 +47,10 @@ class OverviewScreen extends StatefulWidget {
 class _OverviewScreenState extends State<OverviewScreen> {
   DateTime _selectedDateTime = DateTime.now().withoutTime();
 
-  bool _loading = false;
-
   TextEditingController? _textEditingController;
 
   @override
   Widget build(BuildContext context) {
-    if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     /// Be notified of changes
     Provider.of<ExerciseAndRoutineController>(context, listen: true);
@@ -63,9 +58,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      floatingActionButton: _loading
-          ? null
-          : FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
               heroTag: "fab_overview_screen",
               onPressed: _showBottomSheet,
               backgroundColor: sapphireDark,
@@ -94,8 +87,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       controller: widget.scrollController,
                       padding: const EdgeInsets.only(bottom: 150),
                       child: Column(children: [
-                        const SizedBox(height: 12),
-                        LogStreakMuscleTrendMonitor(dateTime: widget.dateTimeRange.start),
+                     //   const SizedBox(height: 12),
+                       // LogStreakMuscleTrendMonitor(dateTime: widget.dateTimeRange.start),
                         if (SharedPrefs().showCalendar)
                           Padding(
                             padding: const EdgeInsets.only(top: 16.0),
@@ -111,9 +104,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                             ),
                           ),
                         const SizedBox(height: 12),
-                        MonthlyInsightsScreen(dateTimeRange: widget.dateTimeRange),
-                        const SizedBox(height: 18),
-                        LogStreakChartWidget(),
+                        MonthlyInsightsWidget(dateTimeRange: widget.dateTimeRange),
                       ])),
                 )
                 // Add more widgets here for exercise insights
@@ -142,12 +133,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
     } else {
       showSnackbar(context: context, icon: const Icon(Icons.info_outline_rounded), message: "${log.name} is running");
     }
-  }
-
-  void _hideLoadingScreen() {
-    setState(() {
-      _loading = false;
-    });
   }
 
   void _showBottomSheet() {
@@ -201,7 +186,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               height: 10,
             ),
             const LabelDivider(
-              label: "Log non-resistance training",
+              label: "Log non-strength training",
               labelColor: Colors.white70,
               dividerColor: sapphireLighter,
             ),
@@ -288,10 +273,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   void _switchToAIContext() async {
     final result =
-        await navigateWithSlideTransition(context: context, child: const TRKRCoachChatScreen()) as RoutineTemplateDto?;
+        await navigateWithSlideTransition(context: context, child: const TRKRCoachChatScreen(loadingMessages: loadingTRKRCoachRoutineMessages)) as RoutineTemplateDto?;
     if (result != null) {
       if (context.mounted) {
-        final arguments = RoutineLogArguments(log: result.log(), editorMode: RoutineEditorMode.log);
+        final arguments = RoutineLogArguments(log: result.toLog(), editorMode: RoutineEditorMode.log);
         if (mounted) {
           navigateToRoutineLogEditor(context: context, arguments: arguments);
         }

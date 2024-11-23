@@ -1,6 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:tracker_app/dtos/milestones/milestone_dto.dart';
-import 'package:tracker_app/enums/exercise_type_enums.dart';
+import 'package:tracker_app/dtos/sets_dtos/reps_set_dto.dart';
+import 'package:tracker_app/dtos/sets_dtos/weight_and_reps_set_dto.dart';
+import 'package:tracker_app/enums/exercise/set_type_enums.dart';
 import 'package:tracker_app/enums/milestone_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 
@@ -28,13 +30,9 @@ class RepsMilestone extends Milestone {
       MuscleGroup.back => "Back Attack",
       MuscleGroup.calves => "Calves Do Grow",
       MuscleGroup.chest => "Pectacular",
-      MuscleGroup.forearms => "Popeye's Pride",
       MuscleGroup.glutes => "Dump Truck",
       MuscleGroup.hamstrings => "Hammies Award",
-      MuscleGroup.lats => "Wing Commander",
-      MuscleGroup.neck => "No Neck",
       MuscleGroup.shoulders => "Jonny Bravo",
-      MuscleGroup.traps => "Trap King",
       MuscleGroup.triceps => "Tri Titan",
       MuscleGroup.quadriceps => "Quadzilla",
       _ => "No Milestone"
@@ -48,13 +46,9 @@ class RepsMilestone extends Milestone {
       MuscleGroup.back,
       MuscleGroup.calves,
       MuscleGroup.chest,
-      MuscleGroup.forearms,
       MuscleGroup.glutes,
       MuscleGroup.hamstrings,
-      MuscleGroup.lats,
-      MuscleGroup.neck,
       MuscleGroup.shoulders,
-      MuscleGroup.traps,
       MuscleGroup.triceps,
       MuscleGroup.quadriceps
     ];
@@ -62,7 +56,7 @@ class RepsMilestone extends Milestone {
       final description =
           'Focus on building strength and endurance in your ${muscleGroup.name} by committing to this challenge. Consistency and dedication will be key as you target your goals each week.';
       final caption = "Accumulate ${1}k reps of ${muscleGroup.name} training";
-      final rule = "Accumulate reps targeting your ${muscleGroup.name} in every training session.";
+      final rule = "Accumulate ${1}k reps targeting your ${muscleGroup.name} in every training session.";
       final milestoneName = _milestoneName(muscleGroup: muscleGroup).toUpperCase();
       return RepsMilestone(
           id: "Reps_Milestone_${milestoneName}_$index",
@@ -86,24 +80,31 @@ class RepsMilestone extends Milestone {
     List<RoutineLogDto> qualifyingLogs = [];
 
     for (final log in logs) {
-
       if (sumOfReps < target) {
-
         final completedExerciseLogs = completedExercises(exerciseLogs: log.exerciseLogs);
 
         final exerciseLogs = completedExerciseLogs
-            .where((exerciseLog) => exerciseLog.exercise.type != ExerciseType.duration)
+            .where((exerciseLog) =>
+                exerciseLog.exerciseVariant.getSetTypeConfiguration() !=
+                SetType.duration)
             .where((exerciseLog) {
-          final primaryMuscleGroup = exerciseLog.exercise.primaryMuscleGroup;
-          final secondaryMuscleGroups = exerciseLog.exercise.secondaryMuscleGroups;
-          final muscleGroups = [primaryMuscleGroup, ...secondaryMuscleGroups];
+          final primaryMuscleGroups = exerciseLog.exerciseVariant.primaryMuscleGroups;
+          final secondaryMuscleGroups = exerciseLog.exerciseVariant.secondaryMuscleGroups;
+          final muscleGroups = [...primaryMuscleGroups, ...secondaryMuscleGroups];
           return muscleGroups.contains(muscleGroup);
         });
 
         if (exerciseLogs.isNotEmpty) {
           final reps = exerciseLogs
               .expand((exerciseLog) => exerciseLog.sets)
-              .map((set) => set.reps())
+              .map((set) {
+                if(set is RepsSetDTO) {
+                  return set.reps;
+                } else if(set is WeightAndRepsSetDTO) {
+                  return set.reps;
+                }
+                return 0;
+          })
               .reduce((value, element) => value + element)
               .toInt();
 

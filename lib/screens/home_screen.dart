@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/models/ActivityLog.dart';
-import 'package:tracker_app/models/Exercise.dart';
 import 'package:tracker_app/models/RoutineUser.dart';
 import 'package:tracker_app/screens/home_tab_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
@@ -22,6 +21,7 @@ import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../enums/routine_editor_type_enums.dart';
 import '../models/RoutineLog.dart';
 import '../models/RoutineTemplate.dart';
+import '../models/RoutineTemplatePlan.dart';
 import '../utils/app_analytics.dart';
 import 'milestones/milestones_home_screen.dart';
 
@@ -42,8 +42,8 @@ class _HomeScreenState extends State<HomeScreen> {
   StreamSubscription<QuerySnapshot<RoutineUser>>? _routineUserStream;
   StreamSubscription<QuerySnapshot<RoutineLog>>? _routineLogStream;
   StreamSubscription<QuerySnapshot<RoutineTemplate>>? _routineTemplateStream;
+  StreamSubscription<QuerySnapshot<RoutineTemplatePlan>>? _routineTemplatePlanStream;
   StreamSubscription<QuerySnapshot<ActivityLog>>? _activityLogStream;
-  StreamSubscription<QuerySnapshot<Exercise>>? _exerciseStream;
 
   @override
   Widget build(BuildContext context) {
@@ -116,10 +116,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _loadAppData() {
+    Provider.of<ExerciseAndRoutineController>(context, listen: false).loadExercises();
     _observeRoutineUserQuery();
-    _observeExerciseQuery();
     _observeRoutineLogQuery();
     _observeRoutineTemplateQuery();
+    _observeRoutineTemplatePlanQuery();
     _observeActivityLogQuery();
   }
 
@@ -134,20 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void _observeExerciseQuery() async {
-    final controller = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-    await controller.loadLocalExercises();
-    _exerciseStream = Amplify.DataStore.observeQuery(
-      Exercise.classType,
-      sortBy: [Exercise.CREATEDAT.ascending()],
-    ).listen((QuerySnapshot<Exercise> snapshot) {
-      if (mounted) {
-        controller.streamExercises(exercises: snapshot.items);
-      }
-    });
-  }
-
-  void _observeRoutineTemplateQuery() {
+  void _observeRoutineTemplateQuery() async {
     _routineTemplateStream = Amplify.DataStore.observeQuery(
       RoutineTemplate.classType,
       sortBy: [RoutineTemplate.CREATEDAT.descending()],
@@ -158,13 +146,25 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _observeRoutineTemplatePlanQuery() {
+    _routineTemplatePlanStream = Amplify.DataStore.observeQuery(
+      RoutineTemplatePlan.classType,
+      sortBy: [RoutineTemplatePlan.CREATEDAT.descending()],
+    ).listen((QuerySnapshot<RoutineTemplatePlan> snapshot) {
+      if (mounted) {
+        Provider.of<ExerciseAndRoutineController>(context, listen: false)
+            .streamTemplatePlans(templatePlans: snapshot.items);
+      }
+    });
+  }
+
   void _observeRoutineLogQuery() {
     _routineLogStream = Amplify.DataStore.observeQuery(
       RoutineLog.classType,
       sortBy: [RoutineLog.CREATEDAT.ascending()],
     ).listen((QuerySnapshot<RoutineLog> snapshot) {
       if (mounted) {
-        Provider.of<ExerciseAndRoutineController>(context, listen: false).streamLogs(logs: snapshot.items);
+       Provider.of<ExerciseAndRoutineController>(context, listen: false).streamLogs(logs: snapshot.items);
       }
     });
   }
@@ -218,8 +218,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
-    _exerciseStream?.cancel();
     _routineTemplateStream?.cancel();
+    _routineTemplatePlanStream?.cancel();
     _routineLogStream?.cancel();
     _activityLogStream?.cancel();
     _routineUserStream?.cancel();

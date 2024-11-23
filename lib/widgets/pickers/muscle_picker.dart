@@ -18,7 +18,7 @@ class MusclePicker extends StatefulWidget {
 }
 
 class _MusclePickerState extends State<MusclePicker> {
-  MuscleGroup _muscleGroup = MuscleGroup.none;
+  MuscleGroup _muscleGroup = MuscleGroup.abs;
 
   FixedExtentScrollController? _scrollController;
 
