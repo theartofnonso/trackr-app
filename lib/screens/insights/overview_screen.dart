@@ -26,8 +26,6 @@ import '../../utils/navigation_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_text_widget.dart';
 import '../../widgets/calendar/calendar.dart';
 import '../../widgets/dividers/label_divider.dart';
-import '../../widgets/monitors/log_streak_muscle_trend_monitor.dart';
-import '../../widgets/monthly_insights/log_streak_chart_widget.dart';
 import '../../widgets/routine/preview/activity_log_widget.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
 import '../AI/trkr_coach_chat_screen.dart';
@@ -106,9 +104,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                             ),
                           ),
                         const SizedBox(height: 12),
-                        MonthlyInsightsScreen(dateTimeRange: widget.dateTimeRange),
-                        const SizedBox(height: 18),
-                        LogStreakChartWidget(),
+                        MonthlyInsightsWidget(dateTimeRange: widget.dateTimeRange),
                       ])),
                 )
                 // Add more widgets here for exercise insights

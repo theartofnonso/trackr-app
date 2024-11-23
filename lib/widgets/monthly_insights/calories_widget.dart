@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/screens/insights/calories_trend_screen.dart';
@@ -10,12 +9,13 @@ import 'package:tracker_app/utils/routine_utils.dart';
 import '../../colors.dart';
 import '../../controllers/routine_user_controller.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
+import '../../utils/navigation_utils.dart';
 
-class CaloriesWidget extends StatelessWidget {
+class CaloriesTrendsWidget extends StatelessWidget {
   final List<RoutineLogDto> thisMonthLogs;
   final List<RoutineLogDto> lastMonthLogs;
 
-  const CaloriesWidget({super.key, required this.thisMonthLogs, required this.lastMonthLogs});
+  const CaloriesTrendsWidget({super.key, required this.thisMonthLogs, required this.lastMonthLogs});
 
   @override
   Widget build(BuildContext context) {
@@ -33,9 +33,7 @@ class CaloriesWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(5),
       ),
       child: ListTile(
-        onTap: () {
-          context.push(CaloriesTrendScreen.routeName);
-        },
+        onTap: () => _showCaloriesTrendsScreen(context: context),
         tileColor: sapphireDark80,
         contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 20),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -68,5 +66,11 @@ class CaloriesWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _showCaloriesTrendsScreen({required BuildContext context}) {
+    navigateWithSlideTransition(
+        context: context,
+        child: CaloriesTrendScreen());
   }
 }
