@@ -16,7 +16,7 @@ void main() {
       name: "Lying Leg Curl",
       primaryMuscleGroup: MuscleGroup.hamstrings,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      exerciseMetric: SetType.weightsAndReps,
+      setType: SetType.weightsAndReps,
       owner: "");
 
   final plankExercise = ExerciseDTO(
@@ -24,7 +24,7 @@ void main() {
       name: "Plank",
       primaryMuscleGroup: MuscleGroup.abs,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      exerciseMetric: SetType.duration,
+      setType: SetType.duration,
       owner: "");
 
   final benchPressExercise = ExerciseDTO(
@@ -32,7 +32,7 @@ void main() {
       name: "Bench Press",
       primaryMuscleGroup: MuscleGroup.chest,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      exerciseMetric: SetType.weightsAndReps,
+      setType: SetType.weightsAndReps,
       owner: "");
 
   final lyingLegCurlExerciseLog1 = ExerciseLogDTO(
@@ -191,7 +191,7 @@ void main() {
 
       final result = calculatePBs(
           pastExerciseLogs: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2],
-          exerciseMetrics: SetType.weightsAndReps,
+          setType: SetType.weightsAndReps,
           exerciseLog: pbLog);
 
       expect(result.length, 1);
@@ -218,7 +218,7 @@ void main() {
 
       final result = calculatePBs(
           pastExerciseLogs: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2, lyingLegCurlExerciseLog3],
-          exerciseMetrics: SetType.weightsAndReps,
+          setType: SetType.weightsAndReps,
           exerciseLog: pbLog);
 
       expect(result.length, 1);
@@ -248,7 +248,7 @@ void main() {
 
       final result = calculatePBs(
           pastExerciseLogs: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2, lyingLegCurlExerciseLog3],
-          exerciseMetrics: SetType.weightsAndReps,
+          setType: SetType.weightsAndReps,
           exerciseLog: pbLog);
 
       expect(result.length, 2);
@@ -278,7 +278,7 @@ void main() {
 
       final result = calculatePBs(
           pastExerciseLogs: [plankExerciseLog1, plankExerciseLog2],
-          exerciseMetrics: SetType.duration,
+          setType: SetType.duration,
           exerciseLog: pbLog);
 
       expect(result.length, 1);
@@ -289,7 +289,7 @@ void main() {
 
     test("Has [PBType.weight, PBType.volume, PBType.durations]", () {
       final pbLog1 = ExerciseLogDTO(
-          lyingLegCurlExercise.type,
+          lyingLegCurlExercise.getSetTypeConfiguration(),
           "routineLogId4",
           "superSetId",
           lyingLegCurlExercise,
@@ -325,7 +325,7 @@ void main() {
       final result = pbLogs
           .map((log) => calculatePBs(
               pastExerciseLogs: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2, lyingLegCurlExerciseLog3],
-              exerciseMetrics: log.exerciseVariant.exerciseMetric,
+              setType: log.exerciseVariant.getSetTypeConfiguration(),
               exerciseLog: log))
           .expand((pbs) => pbs)
           .toList();
@@ -368,7 +368,7 @@ group ("Template changes", () {
   test("Different exercises", () {
 
     final newExerciseLog = ExerciseLogDTO(
-        benchPressExercise.type,
+        benchPressExercise.getSetTypeConfiguration(),
         "routineLogId1",
         "superSetId",
         benchPressExercise,

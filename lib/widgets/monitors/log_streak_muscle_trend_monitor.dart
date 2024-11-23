@@ -8,7 +8,6 @@ import 'package:tracker_app/utils/dialog_utils.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
-import '../../strings.dart';
 import '../../utils/shareables_utils.dart';
 import '../calendar/calendar.dart';
 import 'log_streak_monitor.dart';
@@ -67,10 +66,6 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
         ],
       ),
     ]);
-  }
-
-  void _showMonitorInfo({required BuildContext context}) {
-    showBottomSheetWithNoAction(context: context, title: "Streak and Muscle", description: overviewMonitor);
   }
 
   void _showShareBottomSheet({required BuildContext context}) {

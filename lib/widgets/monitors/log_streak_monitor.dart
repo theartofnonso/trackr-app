@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tracker_app/colors.dart';
 
-import '../../utils/general_utils.dart';
-
 class LogStreakMonitor extends StatelessWidget {
   final double value;
   final double width;
