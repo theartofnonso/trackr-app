@@ -7,21 +7,21 @@ import 'package:tracker_app/enums/exercise/set_type_enums.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 
 import '../../../controllers/exercise_and_routine_controller.dart';
+import '../../../enums/exercise/exercise_configuration_key.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/routine_utils.dart';
+import '../../chips/squared_chips.dart';
 import '../preview/set_headers/double_set_header.dart';
 import '../preview/set_headers/single_set_header.dart';
 
 class ExerciseLogWidget extends StatelessWidget {
   final ExerciseLogDTO exerciseLog;
   final ExerciseLogDTO? superSet;
-  final EdgeInsetsGeometry? padding;
   final RoutinePreviewType previewType;
 
-  const ExerciseLogWidget(
-      {super.key, required this.exerciseLog, required this.superSet, this.padding, required this.previewType});
+  const ExerciseLogWidget({super.key, required this.exerciseLog, required this.superSet, required this.previewType});
 
   @override
   Widget build(BuildContext context) {
@@ -29,82 +29,93 @@ class ExerciseLogWidget extends StatelessWidget {
 
     final setType = exerciseLog.exerciseVariant.getSetTypeConfiguration();
 
-    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
-    final pastExerciseLogs =
-        routineLogController.whereExerciseLogsBefore(exerciseVariant: exerciseLog.exerciseVariant, date: exerciseLog.createdAt);
+    final pastExerciseLogs = exerciseAndRoutineController.whereExerciseLogsBefore(
+        exerciseVariant: exerciseLog.exerciseVariant, date: exerciseLog.createdAt);
 
     final pbs = calculatePBs(pastExerciseLogs: pastExerciseLogs, setType: setType, exerciseLog: exerciseLog);
-    //
-    // final configurationChips = exercise.configurationOptions.keys.where((configKey) {
-    //   final configOptions = exercise.configurationOptions[configKey]!;
-    //   return configOptions.length > 1;
-    // }).map((ExerciseConfigurationKey configKey) {
-    //   final configValue = exerciseVariant.configurations[configKey]!;
-    //   return SquaredChips(
-    //     label: configValue.displayName.toLowerCase(),
-    //     color: vibrantGreen,
-    //   );
-    // }).toList();
-    
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          dense: true,
-          onTap: () {
-            Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => ExerciseHomeScreen(id: exerciseLog.exerciseVariant.baseExerciseId)));
-          },
-          title: Text(exerciseLog.exerciseVariant.name,
+
+    final exercise = exerciseAndRoutineController.whereExercise(id: exerciseLog.exerciseVariant.baseExerciseId);
+
+    final configurationChips = exercise.configurationOptions.keys.where((configKey) {
+      final configOptions = exercise.configurationOptions[configKey]!;
+      return configOptions.length > 1;
+    }).map((ExerciseConfigurationKey configKey) {
+      final configValue = exerciseLog.exerciseVariant.configurations[configKey]!;
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+        child: SquaredChips(
+          label: configValue.displayName.toLowerCase(),
+          color: vibrantGreen,
+        ),
+      );
+    }).toList();
+
+    return GestureDetector(
+      onTap: () => Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => ExerciseHomeScreen(id: exerciseLog.exerciseVariant.baseExerciseId))),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(exerciseLog.exerciseVariant.name,
               style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
               textAlign: TextAlign.center),
-          subtitle: otherSuperSet != null
-              ? Padding(
-                  padding: const EdgeInsets.only(bottom: 10.0),
-                  child: Text("with ${otherSuperSet.exerciseVariant.name}",
-                      style: GoogleFonts.ubuntu(color: vibrantGreen, fontSize: 12, fontWeight: FontWeight.w600),
-                      textAlign: TextAlign.center),
-                )
-              : null,
-        ),
-        exerciseLog.notes.isNotEmpty
-            ? Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Center(
-                  child: Text(exerciseLog.notes,
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.ubuntu(
-                          fontSize: 14,
-                          color: Colors.white70,
-                          fontStyle: FontStyle.italic,
-                          fontWeight: FontWeight.w600)),
-                ),
-              )
-            : const SizedBox.shrink(),
-        switch (setType) {
-          SetType.weightsAndReps => DoubleSetHeader(
-              firstLabel: weightLabel().toUpperCase(),
-              secondLabel: 'REPS',
-              routinePreviewType: previewType,
+          if (otherSuperSet != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10.0),
+              child: Text("with ${otherSuperSet.exerciseVariant.name}",
+                  style: GoogleFonts.ubuntu(color: vibrantGreen, fontSize: 12, fontWeight: FontWeight.w600),
+                  textAlign: TextAlign.center),
             ),
-          SetType.reps => SingleSetHeader(
-              label: 'REPS',
-              routinePreviewType: previewType,
+          if (exerciseLog.notes.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Center(
+                child: Text(exerciseLog.notes,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.ubuntu(
+                        fontSize: 14, color: Colors.white70, fontStyle: FontStyle.italic, fontWeight: FontWeight.w500)),
+              ),
             ),
-          SetType.duration => SingleSetHeader(
-              label: 'TIME',
-              routinePreviewType: previewType,
+          Container(
+            margin: const EdgeInsets.only(top: 10, bottom: 15),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.transparent, // Makes the background transparent
+              borderRadius: BorderRadius.circular(5.0),
+              border: Border.all(
+                color: sapphireLight, // Border color
+                width: 1.0, // Border width
+              ), // Adjust the radius as needed
             ),
-        },
-        const SizedBox(height: 8),
-        ...setsToWidgets(
-            setType: setType,
-            sets: exerciseLog.sets,
-            pbs: previewType == RoutinePreviewType.log ? pbs : [],
-            routinePreviewType: previewType),
-      ],
+            child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(mainAxisAlignment: MainAxisAlignment.center, children: configurationChips)),
+          ),
+          switch (setType) {
+            SetType.weightsAndReps => DoubleSetHeader(
+                firstLabel: weightLabel().toUpperCase(),
+                secondLabel: 'REPS',
+                routinePreviewType: previewType,
+              ),
+            SetType.reps => SingleSetHeader(
+                label: 'REPS',
+                routinePreviewType: previewType,
+              ),
+            SetType.duration => SingleSetHeader(
+                label: 'TIME',
+                routinePreviewType: previewType,
+              ),
+          },
+          const SizedBox(height: 8),
+          ...setsToWidgets(
+              setType: setType,
+              sets: exerciseLog.sets,
+              pbs: previewType == RoutinePreviewType.log ? pbs : [],
+              routinePreviewType: previewType),
+        ],
+      ),
     );
   }
 }

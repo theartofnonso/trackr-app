@@ -56,7 +56,7 @@ class RepsMilestone extends Milestone {
       final description =
           'Focus on building strength and endurance in your ${muscleGroup.name} by committing to this challenge. Consistency and dedication will be key as you target your goals each week.';
       final caption = "Accumulate ${1}k reps of ${muscleGroup.name} training";
-      final rule = "Accumulate reps targeting your ${muscleGroup.name} in every training session.";
+      final rule = "Accumulate ${1}k reps targeting your ${muscleGroup.name} in every training session.";
       final milestoneName = _milestoneName(muscleGroup: muscleGroup).toUpperCase();
       return RepsMilestone(
           id: "Reps_Milestone_${milestoneName}_$index",

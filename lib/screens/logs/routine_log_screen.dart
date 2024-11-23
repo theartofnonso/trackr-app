@@ -155,7 +155,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                                   color: Colors.white70,
                                   fontSize: 14,
                                   fontStyle: FontStyle.italic,
-                                  fontWeight: FontWeight.w600)),
+                                  fontWeight: FontWeight.w500)),
                         ),
                       ),
 
@@ -250,6 +250,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                                       ? _showSummary()
                                       : _generateSummary(logs: updatedExerciseLogs)),
                             ),
+                          const SizedBox(height: 10),
                           ExerciseLogListView(
                               exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: updatedExerciseLogs),
                               previewType: RoutinePreviewType.log),

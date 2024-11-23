@@ -290,12 +290,15 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       return configOptions.length > 1;
     }).map((ExerciseConfigurationKey configKey) {
       final configValue = exerciseVariant.configurations[configKey]!;
-      return OpacityButtonWidget(
-        label: configValue.displayName.toLowerCase(),
-        buttonColor: vibrantGreen,
-        padding: EdgeInsets.symmetric(horizontal: 0),
-        textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 12, color: vibrantGreen),
-        onPressed: () => _showConfigurationPicker(configKey: configKey, baseExercise: exercise),
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+        child: OpacityButtonWidget(
+          label: configValue.displayName.toLowerCase(),
+          buttonColor: vibrantGreen,
+          padding: EdgeInsets.symmetric(horizontal: 0),
+          textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 12, color: vibrantGreen),
+          onPressed: () => _showConfigurationPicker(configKey: configKey, baseExercise: exercise),
+        ),
       );
     }).toList();
 
@@ -345,7 +348,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             ],
           ),
           const SizedBox(height: 6),
-          Wrap(runSpacing: 8, spacing: 8, children: configurationOptionsWidgets),
+          SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(mainAxisAlignment: MainAxisAlignment.center, children: configurationOptionsWidgets)),
           const SizedBox(height: 8),
           if (superSetExerciseDto != null)
             Padding(

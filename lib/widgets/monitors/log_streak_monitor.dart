@@ -28,9 +28,9 @@ class LogStreakMonitor extends StatelessWidget {
       child: CircularProgressIndicator(
         value: value,
         strokeWidth: strokeWidth,
-        backgroundColor: sapphireDark80,
+        backgroundColor: sapphireDark60,
         strokeCap: strokeCap ?? StrokeCap.butt,
-        valueColor: AlwaysStoppedAnimation<Color>(logStreakColor(value: value)),
+        valueColor: AlwaysStoppedAnimation<Color>(vibrantGreen),
       ),
     );
   }

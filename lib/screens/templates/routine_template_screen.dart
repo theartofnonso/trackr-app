@@ -204,7 +204,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                                 color: Colors.white70,
                                 fontSize: 14,
                                 fontStyle: FontStyle.italic,
-                                fontWeight: FontWeight.w600)),
+                                fontWeight: FontWeight.w500)),
                       ),
                     ),
 
@@ -285,6 +285,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                               "Achieving your fitness goals is easier with a structured plan. Ask the TRKR Coach to optimize your workouts and help you succeed!",
                           onTap: _runRoutineAnalysis),
                     ),
+                  const SizedBox(height: 10),
                   ExerciseLogListView(
                     exerciseLogs: exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
                     previewType: RoutinePreviewType.template,
@@ -389,7 +390,9 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
           /// [Exercise.duration] exercises do not have sets in templates
           /// This is because we only need to store the duration of the exercise in [RoutineEditorType.log] i.e data is logged in realtime
-          final sets = withDurationOnly(setType: exerciseLog.exerciseVariant.getSetTypeConfiguration()) ? <SetDTO>[] : uncheckedSets;
+          final sets = withDurationOnly(setType: exerciseLog.exerciseVariant.getSetTypeConfiguration())
+              ? <SetDTO>[]
+              : uncheckedSets;
           return exerciseLog.copyWith(sets: sets);
         }).toList();
         final templateToCreate = RoutineTemplateDto(
@@ -423,7 +426,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   void _loadData() {
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-    if(widget.templatePlanId.isNotEmpty) {
+    if (widget.templatePlanId.isNotEmpty) {
       _template = exerciseAndRoutineController.templateByTemplatePlanId(id: widget.templatePlanId);
     } else {
       _template = exerciseAndRoutineController.templateWhere(id: widget.templateId);
@@ -468,7 +471,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       _hideLoadingScreen();
 
       if (mounted) {
-        final originalExerciseTemplates = template.exerciseTemplates.map((template) => template.exerciseVariant).toList();
+        final originalExerciseTemplates =
+            template.exerciseTemplates.map((template) => template.exerciseVariant).toList();
         final recommendedExerciseNames = await navigateWithSlideTransition(
                 context: context,
                 child: TRKRCoachExerciseRecommendationScreen(
@@ -518,7 +522,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
     buffer.writeln("My original Exercise Selection:");
     for (final exerciseTemplate in template.exerciseTemplates) {
-      buffer.writeln("Exercise Name: ${exerciseTemplate.exerciseVariant.name}\nExercise Name: ${exerciseTemplate.exerciseVariant.name}");
+      buffer.writeln(
+          "Exercise Name: ${exerciseTemplate.exerciseVariant.name}\nExercise Name: ${exerciseTemplate.exerciseVariant.name}");
       buffer.writeln();
     }
 

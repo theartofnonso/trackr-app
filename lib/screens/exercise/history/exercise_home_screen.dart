@@ -38,7 +38,6 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final completedExerciseLogs = completedExercises(exerciseLogs: _exerciseLogs);
 
     final firstVariant =
@@ -49,12 +48,15 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
       return configOptions.length > 1;
     }).map((ExerciseConfigurationKey configKey) {
       final configValue = firstVariant.configurations[configKey]!;
-      return OpacityButtonWidget(
-        label: configValue.displayName.toLowerCase(),
-        buttonColor: vibrantGreen,
-        padding: EdgeInsets.symmetric(horizontal: 0),
-        textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 12, color: vibrantGreen),
-        onPressed: () => _showConfigurationPicker(configKey: configKey, baseExercise: _baseExercise),
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+        child: OpacityButtonWidget(
+          label: configValue.displayName.toLowerCase(),
+          buttonColor: vibrantGreen,
+          padding: EdgeInsets.symmetric(horizontal: 0),
+          textStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 12, color: vibrantGreen),
+          onPressed: () => _showConfigurationPicker(configKey: configKey, baseExercise: _baseExercise),
+        ),
       );
     }).toList();
 
@@ -94,11 +96,12 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
               ),
             ),
             child: SafeArea(
+              bottom: false,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                    margin: const EdgeInsets.symmetric(vertical: 18.0),
+                    margin: const EdgeInsets.symmetric(vertical: 18.0, horizontal: 10),
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: Colors.transparent, // Makes the background transparent
@@ -108,7 +111,9 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
                         width: 1.0, // Border width
                       ), // Adjust the radius as needed
                     ),
-                    child: Wrap(runSpacing: 8, spacing: 8, children: configurationOptionsWidgets),
+                    child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: configurationOptionsWidgets)),
                   ),
                   Expanded(
                     child: TabBarView(
@@ -141,7 +146,8 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
           Navigator.of(context).pop();
           setState(() {
             _selectedConfigurations[configKey] = configuration;
-            _exerciseLogs = _exerciseAndRoutineController.filterExerciseLogsByIdAndConfigurations(exerciseId: widget.id, configurations: _selectedConfigurations);
+            _exerciseLogs = _exerciseAndRoutineController.filterExerciseLogsByIdAndConfigurations(
+                exerciseId: widget.id, configurations: _selectedConfigurations);
           });
         }, // Provide descriptions if available
       ),
@@ -157,7 +163,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
 
     _selectedConfigurations = _baseExercise.defaultVariant().configurations;
 
-    _exerciseLogs = _exerciseAndRoutineController.filterExerciseLogsByIdAndConfigurations(exerciseId: widget.id, configurations: _selectedConfigurations);
-
+    _exerciseLogs = _exerciseAndRoutineController.filterExerciseLogsByIdAndConfigurations(
+        exerciseId: widget.id, configurations: _selectedConfigurations);
   }
 }

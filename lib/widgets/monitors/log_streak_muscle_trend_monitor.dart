@@ -44,16 +44,6 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
     return Stack(children: [
       if (showInfo)
         Positioned.fill(
-          left: 12,
-          child: GestureDetector(
-            onTap: () => _showMonitorInfo(context: context),
-            child: const Align(
-                alignment: Alignment.bottomLeft,
-                child: FaIcon(FontAwesomeIcons.circleInfo, color: Colors.white38, size: 18)),
-          ),
-        ),
-      if (showInfo)
-        Positioned.fill(
           right: 12,
           child: GestureDetector(
             onTap: () => _showShareBottomSheet(context: context),
@@ -66,31 +56,16 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           GestureDetector(
-              onTap: () => navigateToRoutineLogs(context: context, dateTime: dateTime),
-              child: Container(
-                color: Colors.transparent,
-                width: 80,
-                child: _MonitorScore(
-                  value: "${routineLogsByDay.length} ${pluralize(word: "day", count: routineLogsByDay.length)}",
-                  title: "Log Streak",
-                  color: logStreakColor(value: monthlyProgress),
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                ),
-              )),
-          const SizedBox(width: 20),
-          GestureDetector(
             child: Stack(alignment: Alignment.center, children: [
               LogStreakMonitor(
                   value: monthlyProgress,
-                  width: 100,
-                  height: 100,
+                  width: 80,
+                  height: 80,
                   strokeWidth: 6,
                   decoration: BoxDecoration(
-                    color: sapphireDark.withOpacity(0.35),
+                    color: sapphireDark80.withOpacity(0.35),
                     borderRadius: BorderRadius.circular(100),
                   )),
-              MuscleTrendMonitor(
-                  value: muscleScorePercentage / 100, width: 70, height: 70, strokeWidth: 6),
               Image.asset(
                 'images/trkr.png',
                 fit: BoxFit.contain,
@@ -98,22 +73,6 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
                 height: 8, // Adjust the height as needed
               )
             ]),
-          ),
-          const SizedBox(width: 20),
-          GestureDetector(
-            onTap: () {
-              context.push(SetsAndRepsVolumeInsightsScreen.routeName);
-            },
-            child: Container(
-              color: Colors.transparent,
-              width: 80,
-              child: _MonitorScore(
-                value: "$muscleScorePercentage%",
-                color: Colors.white,
-                title: "Muscle",
-                crossAxisAlignment: CrossAxisAlignment.start,
-              ),
-            ),
           ),
         ],
       ),

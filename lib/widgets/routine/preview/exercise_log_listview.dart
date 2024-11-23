@@ -14,10 +14,12 @@ class ExerciseLogListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final widgets = exerciseLogs.map((exerciseLog) {
-      return ExerciseLogWidget(
-        padding: const EdgeInsets.only(bottom: 8),
-        exerciseLog: exerciseLog.exerciseLog,
-        superSet: exerciseLog.superSet, previewType: previewType
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 20),
+        child: ExerciseLogWidget(
+          exerciseLog: exerciseLog.exerciseLog,
+          superSet: exerciseLog.superSet, previewType: previewType
+        ),
       );
     }).toList();
     return Column(children: widgets);
