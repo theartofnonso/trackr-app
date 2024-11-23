@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
@@ -43,15 +44,15 @@ class ExerciseHistoryLogWidget extends StatelessWidget {
             subtitle: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-              const Icon(
-                Icons.date_range_rounded,
+              const FaIcon(
+                FontAwesomeIcons.calendarDay,
                 color: Colors.white,
                 size: 12,
               ),
-              const SizedBox(width: 1),
+              const SizedBox(width: 4),
               Text(exerciseLog.createdAt.formattedDayAndMonthAndYear(),
                   style: GoogleFonts.ubuntu(
-                      color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12), textAlign: TextAlign.center),
+                      color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 12), textAlign: TextAlign.center),
             ]),
           ),
         ),
