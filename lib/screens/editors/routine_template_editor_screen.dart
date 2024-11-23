@@ -22,7 +22,7 @@ import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
 import '../../widgets/routine/editors/exercise_log_widget_lite.dart';
 import '../../widgets/weight_plate_calculator.dart';
-import '../empty_state_screens/no_list_empty_state.dart';
+import '../../widgets/empty_states/no_list_empty_state.dart';
 
 class RoutineTemplateEditorScreen extends StatefulWidget {
   static const routeName = '/routine-template-editor';

@@ -177,7 +177,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                 const SizedBox(height: 8),
                 SingleChildScrollView(
                     scrollDirection: Axis.horizontal, child: Row(children: muscleGroups)),
-                const SizedBox(height: 18),
+                const SizedBox(height: 12),
                 TRKRInformationContainer(
                   ctaLabel: "Review your ${_selectedMuscleGroup.name} training",
                   description: _selectedMuscleGroup.description,

@@ -13,9 +13,9 @@ import '../../../utils/dialog_utils.dart';
 import '../../../utils/routine_utils.dart';
 import '../../../utils/string_utils.dart';
 import '../../../widgets/backgrounds/trkr_loading_screen.dart';
+import '../../../widgets/empty_states/not_found.dart';
 import '../../../widgets/routine/preview/routine_template_grid_item_widget.dart';
-import '../../empty_state_screens/no_list_empty_state.dart';
-import '../../empty_state_screens/not_found.dart';
+import '../../../widgets/empty_states/no_list_empty_state.dart';
 
 class RoutineTemplatePlanScreen extends StatefulWidget {
   static const routeName = '/routine_template_plan_screen';

@@ -61,8 +61,10 @@ class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
           _hasReOrdered
               ? GestureDetector(
                   onTap: _saveReOrdering,
-                  child: Text("Save",
-                      style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.white)))
+                  child: IconButton(
+                    icon: const FaIcon(FontAwesomeIcons.solidSquareCheck, color: Colors.white, size: 28),
+                    onPressed: context.pop,
+                  ))
               : const SizedBox.shrink(),
           const SizedBox(width: 12)
         ],

@@ -29,7 +29,7 @@ import '../../utils/routine_utils.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
 import '../../widgets/timers/routine_timer.dart';
 import '../../widgets/weight_plate_calculator.dart';
-import '../empty_state_screens/no_list_empty_state.dart';
+import '../../widgets/empty_states/no_list_empty_state.dart';
 
 class RoutineLogEditorScreen extends StatefulWidget {
   static const routeName = '/routine-log-editor';

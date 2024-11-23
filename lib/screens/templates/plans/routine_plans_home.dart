@@ -10,7 +10,7 @@ import '../../../colors.dart';
 import '../../../controllers/exercise_and_routine_controller.dart';
 import '../../../utils/string_utils.dart';
 import '../../../widgets/information_containers/information_container_with_background_image.dart';
-import '../../empty_state_screens/no_list_empty_state.dart';
+import '../../../widgets/empty_states/no_list_empty_state.dart';
 
 class RoutinePlansHome extends StatelessWidget {
   const RoutinePlansHome({super.key});

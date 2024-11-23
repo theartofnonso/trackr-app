@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 
 import '../../../widgets/exercise_history/exercise_history_log_widget.dart';
-import '../../empty_state_screens/no_list_empty_state.dart';
+import '../../../widgets/empty_states/no_list_empty_state.dart';
 
 class HistoryScreen extends StatelessWidget {
   final List<ExerciseLogDTO> exerciseLogs;
