@@ -29,7 +29,7 @@ import '../../widgets/dividers/label_divider.dart';
 import '../../widgets/routine/preview/activity_log_widget.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
 import '../AI/trkr_coach_chat_screen.dart';
-import 'monthly_insights_screen.dart';
+import '../../widgets/monthly_insights/monthly_insights_widget.dart';
 
 class OverviewScreen extends StatefulWidget {
   final ScrollController scrollController;

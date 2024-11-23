@@ -6,7 +6,7 @@ import 'package:tracker_app/widgets/monthly_insights/training_summary_widget.dar
 
 import '../../controllers/activity_log_controller.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
-import '../../widgets/monthly_insights/calories_trends_widget.dart';
+import 'calories_trends_widget.dart';
 
 class MonthlyInsightsWidget extends StatelessWidget {
   final DateTimeRange dateTimeRange;
