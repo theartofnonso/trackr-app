@@ -52,6 +52,7 @@ import 'controllers/routine_user_controller.dart';
 import 'dtos/appsync/exercise_dto.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
 import 'dtos/viewmodels/routine_template_arguments.dart';
+import 'logger.dart';
 import 'models/ModelProvider.dart';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -59,6 +60,10 @@ import 'firebase_options.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 
 void main() async {
+  final logger = getLogger(className: "main");
+
+  logger.i("Application starting...");
+
   WidgetsFlutterBinding.ensureInitialized();
 
   await SharedPrefs().init();
@@ -70,9 +75,9 @@ void main() async {
       options: DefaultFirebaseOptions.currentPlatform,
     );
     FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
-    print("Firebase initialized");
+    logger.i("Firebase initialized");
   } catch(e) {
-    print("Failed to initialize Firebase: $e");
+    logger.e("Failed to initialize Firebase", error: e);
   }
 
   const DarwinInitializationSettings iOSInitializationSettingsDarwin = DarwinInitializationSettings(
