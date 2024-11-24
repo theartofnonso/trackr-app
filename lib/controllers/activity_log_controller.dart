@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/models/ActivityLog.dart';
 
 import '../dtos/appsync/activity_log_dto.dart';
+import '../logger.dart';
 import '../repositories/amplify/amplify_activity_log_repository.dart';
 
 class ActivityLogController extends ChangeNotifier {
   String errorMessage = '';
 
   late AmplifyActivityLogRepository _amplifyActivityLogRepository;
+
+  final logger = getLogger(className: "ActivityLogController");
 
   ActivityLogController(AmplifyActivityLogRepository amplifyLogRepository) {
     _amplifyActivityLogRepository = amplifyLogRepository;
@@ -27,6 +30,7 @@ class ActivityLogController extends ChangeNotifier {
       _amplifyActivityLogRepository.saveLog(logDto: logDto);
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
+      logger.e("Error saving log", error: e);
     } finally {
       notifyListeners();
     }
@@ -37,6 +41,7 @@ class ActivityLogController extends ChangeNotifier {
       await _amplifyActivityLogRepository.updateLog(log: log);
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
+      logger.e("Error updating log", error: e);
     } finally {
       notifyListeners();
     }
@@ -47,6 +52,7 @@ class ActivityLogController extends ChangeNotifier {
       await _amplifyActivityLogRepository.removeLog(log: log);
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
+      logger.e("Error removing log", error: e);
     } finally {
       notifyListeners();
     }

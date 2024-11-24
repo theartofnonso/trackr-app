@@ -15,6 +15,7 @@ import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/exercise_dto.dart';
 import '../../enums/exercise_type_enums.dart';
+import '../../logger.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/information_containers/information_container.dart';
 import '../exercise/exercise_type_screen.dart';
@@ -37,6 +38,8 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   late ExerciseType _exerciseType;
 
   bool _isInputFieldVisible = false;
+
+  final logger = getLogger(className: "_ExerciseEditorScreenState");
 
   @override
   Widget build(BuildContext context) {
@@ -240,8 +243,8 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
           owner: "");
 
       await Provider.of<ExerciseAndRoutineController>(context, listen: false).saveExercise(exerciseDto: exercise);
-
       AnalyticsController.exerciseEvents(eventAction: "create_exercise", exercise: exercise);
+      logger.i("created exercise ${exercise.toString()}");
       if (mounted) {
         context.pop();
       }
@@ -262,6 +265,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
       final updatedExercise = exercise.copyWith(name: exerciseName.trim(), primaryMuscleGroup: _primaryMuscleGroup);
       await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateExercise(exercise: updatedExercise);
       AnalyticsController.exerciseEvents(eventAction: "create_exercise", exercise: exercise);
+      logger.i("updated exercise ${exercise.toString()}");
       if (mounted) {
         context.pop(updatedExercise);
       }

@@ -5,10 +5,13 @@ import '../dtos/appsync/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/set_dto.dart';
 import '../enums/routine_editor_type_enums.dart';
+import '../logger.dart';
 import '../repositories/exercise_log_repository.dart';
 
 class ExerciseLogController extends ChangeNotifier {
   late ExerciseLogRepository _exerciseLogRepository;
+
+  final logger = getLogger(className: "ExerciseLogController");
 
   ExerciseLogController(ExerciseLogRepository exerciseLogRepository) {
     _exerciseLogRepository = exerciseLogRepository;
@@ -18,6 +21,7 @@ class ExerciseLogController extends ChangeNotifier {
 
   void loadExerciseLogs({required List<ExerciseLogDto> exerciseLogs, required RoutineEditorMode mode}) {
     _exerciseLogRepository.loadExerciseLogs(exerciseLogs: exerciseLogs, mode: mode);
+    logger.i("load exercise log: ${exerciseLogs}: ${mode}");
   }
 
   List<ExerciseLogDto> mergeExerciseLogsAndSets() {
@@ -30,6 +34,7 @@ class ExerciseLogController extends ChangeNotifier {
 
   void addExerciseLogs({required List<ExerciseDto> exercises}) {
     _exerciseLogRepository.addExerciseLogs(exercises: exercises);
+    logger.i("load exercise log: ${exercises}");
     notifyListeners();
   }
 
