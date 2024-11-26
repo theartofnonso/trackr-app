@@ -17,7 +17,7 @@ import '../../dtos/set_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/routine_editors_utils.dart';
 import '../../utils/routine_utils.dart';
-import '../../widgets/empty_states/exercise_log_empty_state.dart';
+import '../../widgets/empty_states/no_list_empty_state.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
 import '../../widgets/routine/editors/exercise_log_widget_lite.dart';
 import '../../widgets/weight_plate_calculator.dart';
@@ -436,9 +436,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                                   },
                                   separatorBuilder: (_, __) => const SizedBox(height: 10),
                                   itemCount: exerciseLogs.length))
-                          : const ExerciseLogEmptyState(
-                              mode: RoutineEditorMode.edit,
-                              message: "Tap the + button to start adding exercises to your workout"),
+                          : const NoListEmptyState(message: "Tap the + button to start adding exercises to your workout template"),
                     ],
                   ),
                 ),

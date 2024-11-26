@@ -16,7 +16,7 @@ import '../../../dtos/exercise_log_dto.dart';
 import '../../../utils/dialog_utils.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/navigation_utils.dart';
-import '../../empty_state_screens/not_found.dart';
+import '../../../widgets/empty_states/not_found.dart';
 
 class ExerciseHomeScreen extends StatefulWidget {
   static const routeName = "/exercise_home_screen";

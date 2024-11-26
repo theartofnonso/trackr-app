@@ -8,13 +8,13 @@ import 'package:tracker_app/extensions/dtos/routine_template_dto_extension.dart'
 import 'package:tracker_app/screens/AI/trkr_coach_chat_screen.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_button.dart';
-import 'package:tracker_app/widgets/empty_states/routine_empty_state.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../utils/routine_utils.dart';
+import '../../widgets/empty_states/no_list_empty_state.dart';
 import '../../widgets/information_containers/information_container_with_background_image.dart';
 
 class RoutineTemplatesScreen extends StatelessWidget {
@@ -105,7 +105,7 @@ class RoutineTemplatesScreen extends StatelessWidget {
                               crossAxisSpacing: 10.0,
                               children: children),
                         )
-                      : const RoutineEmptyState(),
+                      : const NoListEmptyState(message: "It might feel quiet now, but tap the + button to create a workout or ask TRKR coach for help."),
                 ])),
           ));
     });

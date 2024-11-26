@@ -35,8 +35,8 @@ import '../../utils/string_utils.dart';
 import '../../widgets/ai_widgets/trkr_information_container.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/chart/muscle_group_family_chart.dart';
+import '../../widgets/empty_states/not_found.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
-import '../empty_state_screens/not_found.dart';
 import 'routine_day_planner.dart';
 
 class RoutineTemplateScreen extends StatefulWidget {
@@ -113,9 +113,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     final numberOfSets = template.exerciseTemplates.expand((exerciseTemplate) => exerciseTemplate.sets);
     final setsSummary = "${numberOfSets.length} ${pluralize(word: "Set", count: numberOfSets.length)}";
 
-    final updatedExerciseLogs = completedExercises(exerciseLogs: template.exerciseTemplates);
-
-    final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: updatedExerciseLogs);
+    final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: template.exerciseTemplates);
 
     final menuActions = [
       MenuItemButton(

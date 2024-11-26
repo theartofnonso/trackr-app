@@ -7,7 +7,7 @@ import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
 import '../../utils/dialog_utils.dart';
 import '../../utils/navigation_utils.dart';
-import '../empty_states/routine_log_empty_state.dart';
+import '../empty_states/no_list_empty_state.dart';
 import '../routine/preview/activity_log_widget.dart';
 
 class ActivitiesWidget extends StatelessWidget {
@@ -126,7 +126,7 @@ class _LogsScreen extends StatelessWidget {
                               Divider(color: Colors.white70.withOpacity(0.1)),
                           itemCount: activities.length),
                     )
-                  : const RoutineLogEmptyState(),
+                  : const NoListEmptyState(message: "It might feel quiet now, but your logged activities will soon appear here."),
             ],
           ),
         ),
