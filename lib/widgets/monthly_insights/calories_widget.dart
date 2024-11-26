@@ -8,12 +8,12 @@ import 'package:tracker_app/utils/routine_utils.dart';
 
 import '../../colors.dart';
 import '../../controllers/routine_user_controller.dart';
-import '../../dtos/appsync/routine_log_dto.dart';
+import '../../dtos/abstract_class/log_class.dart';
 import '../../utils/navigation_utils.dart';
 
 class CaloriesWidget extends StatelessWidget {
-  final List<RoutineLogDto> thisMonthLogs;
-  final List<RoutineLogDto> lastMonthLogs;
+  final List<Log> thisMonthLogs;
+  final List<Log> lastMonthLogs;
 
   const CaloriesWidget({super.key, required this.thisMonthLogs, required this.lastMonthLogs});
 
