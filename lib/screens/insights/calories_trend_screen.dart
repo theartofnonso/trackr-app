@@ -103,7 +103,7 @@ class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
                                     GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                               ),
                               TextSpan(
-                                text: "CALORIES".toUpperCase(),
+                                text: "kcal".toUpperCase(),
                                 style:
                                     GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                               ),
