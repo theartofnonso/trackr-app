@@ -12,6 +12,7 @@ import 'package:tracker_app/utils/date_utils.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
+import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 import 'package:tracker_app/widgets/empty_states/horizontal_stacked_bars_empty_state.dart';
 
 import '../../colors.dart';
@@ -178,7 +179,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                 TRKRInformationContainer(
                   ctaLabel: "Review your ${_selectedMuscleGroup.name} training",
                   description: _selectedMuscleGroup.description,
-                  onTap: () => _generateSummary(logs: exerciseLogs),
+                  onTap: () => _generateReport(logs: exerciseLogs),
                 ),
                 const SizedBox(height: 20),
                 Row(
@@ -309,8 +310,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     });
   }
 
-
-  void _generateSummary({required List<ExerciseLogDto> logs}) {
+  void _generateReport({required List<ExerciseLogDto> logs}) {
     if (logs.isEmpty) {
       showSnackbar(
           context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: "You don't have any logs");
@@ -338,6 +338,11 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
           if (response != null) {
             navigateWithSlideTransition(context: context, child: TRKRCoachSummaryScreen(content: response));
           }
+        }
+      }).catchError((_) {
+        _hideLoadingScreen();
+        if(mounted) {
+          showSnackbar(context: context, icon: TRKRCoachWidget(), message: "Oops! I am unable to generate your ${_selectedMuscleGroup.name} report");
         }
       });
     }

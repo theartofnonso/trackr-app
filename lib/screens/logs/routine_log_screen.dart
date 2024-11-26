@@ -30,6 +30,7 @@ import '../../strings/ai_prompts.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/routine_utils.dart';
+import '../../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../widgets/ai_widgets/trkr_information_container.dart';
 import '../../widgets/empty_states/not_found.dart';
 import '../../widgets/routine/preview/date_duration_pb.dart';
@@ -245,7 +246,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                                       "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
                                   onTap: () => updatedLog.summary != null
                                       ? _showSummary()
-                                      : _generateSummary(logs: updatedExerciseLogs)),
+                                      : _generateReport(logs: updatedExerciseLogs)),
                             ),
                           ExerciseLogListView(
                               exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: updatedExerciseLogs)),
@@ -283,7 +284,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     }
   }
 
-  void _generateSummary({required List<ExerciseLogDto> logs}) async {
+  void _generateReport({required List<ExerciseLogDto> logs}) async {
     final log = _log;
 
     if (log == null) return;
@@ -302,17 +303,24 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     _showLoadingScreen();
 
-    final summary = await runMessage(system: routineLogSystemInstruction, user: completeInstructions);
-
-    _hideLoadingScreen();
-
-    if (summary != null) {
-      _saveSummary(response: summary, log: log);
-
-      if (mounted) {
-        navigateWithSlideTransition(context: context, child: TRKRCoachSummaryScreen(content: summary));
+    runMessage(system: routineLogSystemInstruction, user: completeInstructions).then((response) {
+      _hideLoadingScreen();
+      if (response != null) {
+        final jsonString = jsonEncode(response);
+        _saveSummary(response: jsonString, log: log);
+        if (mounted) {
+          navigateWithSlideTransition(context: context, child: TRKRCoachSummaryScreen(content: response));
+        }
       }
-    }
+    }).catchError((_) {
+      _hideLoadingScreen();
+      if (mounted) {
+        showSnackbar(
+            context: context,
+            icon: TRKRCoachWidget(),
+            message: "Oops! I am unable to generate your ${log.name} report");
+      }
+    });
   }
 
   void _loadData() {

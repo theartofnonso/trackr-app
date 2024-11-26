@@ -1,5 +1,4 @@
-import 'dart:convert';
-
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/analytics_controller.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
+import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/strings/ai_prompts.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 
@@ -160,19 +160,11 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
       _showLoadingScreen();
       _clearTextEditing();
 
-      final routineTemplate = await _runFunctionMessage(userInstruction: userPrompt);
-
-      setState(() {
-        _routineTemplate = routineTemplate;
-      });
-
-      _hideLoadingScreen();
+      _runFunctionMessage(userInstruction: userPrompt);
     }
   }
 
-  Future<RoutineTemplateDto?> _runFunctionMessage({required String userInstruction}) async {
-    RoutineTemplateDto? templateDto;
-
+  Future<void> _runFunctionMessage({required String userInstruction}) async {
     final StringBuffer buffer = StringBuffer();
 
     buffer.writeln(personalTrainerInstructionForWorkouts);
@@ -182,51 +174,109 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
 
     final completeSystemInstructions = buffer.toString();
 
-    final tool = await runMessageWithTools(
+    _showLoadingScreen();
+
+    try {
+      final tool = await runMessageWithTools(
         systemInstruction: personalTrainerInstructionForWorkouts,
         userInstruction: userInstruction,
-        callback: (message) {
-          _showSnackbar("Oops, I can only assist you with workouts.", icon: TRKRCoachWidget());
-        });
-    if (tool != null) {
-      final toolId = tool['id'];
-      final toolName = tool['name']; // A function
-      if (toolName == "list_exercises") {
-        if (mounted) {
-          final exercises = Provider.of<ExerciseAndRoutineController>(context, listen: false).exercises;
-          final functionCallPayload = await createFunctionCallPayload(
-              toolId: toolId,
-              systemInstruction: completeSystemInstructions,
-              user: userInstruction,
-              responseFormat: newRoutineTemplateResponseFormat,
-              exercises: exercises);
-          final jsonString = await runMessageWithFunctionCallResult(payload: functionCallPayload);
-          if (jsonString != null) {
-            final json = jsonDecode(jsonString);
-            final exerciseIds = json["exercises"] as List<dynamic>;
-            final workoutName = json["workout_name"] ?? "A workout";
-            final workoutCaption = json["workout_caption"] ?? "A workout created by TRKR Coach";
-            final exerciseTemplates = exerciseIds.map((exerciseId) {
-              final exerciseInLibrary = exercises.firstWhere((exercise) => exercise.id == exerciseId);
-              final exerciseTemplate = ExerciseLogDto(exerciseInLibrary.id, "", "", exerciseInLibrary,
-                  exerciseInLibrary.description ?? "", [const SetDto(0, 0, false)], DateTime.now(), []);
-              return exerciseTemplate;
-            }).toList();
-            templateDto = RoutineTemplateDto(
-                id: "",
-                name: workoutName,
-                exerciseTemplates: exerciseTemplates,
-                notes: workoutCaption,
-                owner: SharedPrefs().userId,
-                createdAt: DateTime.now(),
-                updatedAt: DateTime.now());
-          }
-        }
-      } else {
-        _showSnackbar("Oops, I can only assist you with workouts.", icon: TRKRCoachWidget());
+      );
+
+      if (tool == null) return;
+
+      final toolId = tool['id'] ?? "";
+      final toolName = tool['name'] ?? "";
+
+      if (toolName != "list_exercises") {
+        _handleUnsupportedTool();
+        return;
       }
+
+      if (!mounted) return;
+
+      final exercises = Provider.of<ExerciseAndRoutineController>(
+        context,
+        listen: false,
+      ).exercises;
+
+      await _recommendExercises(
+          toolId: toolId, completeSystemInstructions: completeSystemInstructions, userInstruction: userInstruction, exercises: exercises);
+    } catch (e) {
+      _showSnackbar(
+        "Oops, I can only assist you with creating workouts.",
+        icon: TRKRCoachWidget(),
+      );
     }
-    return templateDto;
+  }
+
+  void _handleUnsupportedTool() {
+    _hideLoadingScreen();
+    _showSnackbar(
+      "Oops, I can only assist you with workouts.",
+      icon: TRKRCoachWidget(),
+    );
+  }
+
+  Future<void> _recommendExercises(
+      {required String toolId, required String completeSystemInstructions, required String userInstruction, required List<ExerciseDto> exercises}) async {
+
+    final functionCallPayload = createFunctionCallPayload(
+      toolId: toolId,
+      systemInstruction: completeSystemInstructions,
+      user: userInstruction,
+      responseFormat: newRoutineTemplateResponseFormat,
+      exercises: exercises,
+    );
+
+    try {
+      final functionCallResult = await runMessageWithFunctionCallPayload(payload: functionCallPayload);
+
+      if (functionCallResult == null) return;
+
+      final exerciseIds = List<String>.from(functionCallResult["exercises"]);
+      final workoutName = functionCallResult["workout_name"] ?? "A workout";
+      final workoutCaption = functionCallResult["workout_caption"] ?? "A workout created by TRKR Coach";
+
+      final exerciseTemplates = _createExerciseTemplates(exerciseIds, exercises);
+
+      setState(() {
+        _routineTemplate = RoutineTemplateDto(
+          id: "",
+          name: workoutName,
+          exerciseTemplates: exerciseTemplates,
+          notes: workoutCaption,
+          owner: SharedPrefs().userId,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+      });
+      _hideLoadingScreen();
+    } catch (e) {
+      _showSnackbar(
+        "Oops, I can only assist you with creating workouts.",
+        icon: TRKRCoachWidget(),
+      );
+    }
+  }
+
+  List<ExerciseLogDto> _createExerciseTemplates(List<String> exerciseIds, List<ExerciseDto> exercises) {
+    return exerciseIds
+        .map((exerciseId) {
+          final exerciseInLibrary = exercises.firstWhereOrNull((exercise) => exercise.id == exerciseId);
+          if (exerciseInLibrary == null) return null;
+          return ExerciseLogDto(
+            exerciseInLibrary.id,
+            "",
+            "",
+            exerciseInLibrary,
+            exerciseInLibrary.description ?? "",
+            [const SetDto(0, 0, false)],
+            DateTime.now(),
+            [],
+          );
+        })
+        .whereType<ExerciseLogDto>()
+        .toList();
   }
 
   void _clearTextEditing() {
