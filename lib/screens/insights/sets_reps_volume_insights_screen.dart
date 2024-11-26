@@ -27,6 +27,7 @@ import '../../utils/exercise_logs_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../widgets/ai_widgets/trkr_information_container.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
+import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/chart/bar_chart.dart';
 import '../../widgets/chart/horizontal_stacked_bars.dart';
 import '../../widgets/chart/legend.dart';
@@ -121,6 +122,24 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
             : repsTrendColor(reps: value.toInt()))
         .toList();
 
+    final muscleGroups = MuscleGroup.values
+        .sorted((a, b) => a.name.compareTo(b.name))
+        .map((muscleGroup) => Padding(
+      padding: const EdgeInsets.only(right: 6.0),
+      child: OpacityButtonWidget(
+          onPressed: () => _onSelectMuscleGroup(newMuscleGroup: muscleGroup),
+          padding: EdgeInsets.symmetric(horizontal: 0),
+          textStyle: GoogleFonts.ubuntu(
+              fontWeight: FontWeight.bold,
+              fontSize: 10,
+              color: muscleGroup == _selectedMuscleGroup ? vibrantGreen : Colors.white70),
+          buttonColor: muscleGroup == _selectedMuscleGroup ? vibrantGreen : null,
+          label: muscleGroup.name.toUpperCase()),
+    ))
+        .toList();
+
+    final muscleGroupScrollViewHalf = MuscleGroup.values.length ~/ 2;
+
     return Scaffold(
       appBar: widget.canPop ? AppBar(
         backgroundColor: sapphireDark80,
@@ -149,45 +168,12 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: sapphireDark.withOpacity(0.6), // Background color
-                    borderRadius: BorderRadius.circular(5), // Border radius
-                  ),
-                  child: DropdownButton<MuscleGroup>(
-                    menuMaxHeight: 200,
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                    isExpanded: true,
-                    borderRadius: BorderRadius.circular(8),
-                    isDense: true,
-                    value: _selectedMuscleGroup,
-                    hint: Text("Muscle group",
-                        style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14)),
-                    underline: Container(
-                      color: Colors.transparent,
-                    ),
-                    style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
-                    onChanged: (MuscleGroup? value) {
-                      if (value != null) {
-                        setState(() {
-                          _selectedMuscleGroup = value;
-                        });
-                      }
-                    },
-                    items: MuscleGroup.values.map<DropdownMenuItem<MuscleGroup>>((MuscleGroup muscleGroup) {
-                      return DropdownMenuItem<MuscleGroup>(
-                        value: muscleGroup,
-                        child: Text(muscleGroup.name,
-                            style: GoogleFonts.ubuntu(
-                                color: _selectedMuscleGroup == muscleGroup ? Colors.white : Colors.white70,
-                                fontWeight: _selectedMuscleGroup == muscleGroup ? FontWeight.bold : FontWeight.w500,
-                                fontSize: 14)),
-                      );
-                    }).toList(),
-                  ),
-                ),
+                SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(children: muscleGroups.sublist(0, muscleGroupScrollViewHalf))),
+                SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(children: muscleGroups.sublist(muscleGroupScrollViewHalf))),
                 const SizedBox(height: 18),
                 TRKRInformationContainer(
                   ctaLabel: "Review your ${_selectedMuscleGroup.name} training",
@@ -316,6 +302,13 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       _loading = false;
     });
   }
+
+  void _onSelectMuscleGroup({required MuscleGroup newMuscleGroup}) {
+    setState(() {
+      _selectedMuscleGroup = newMuscleGroup;
+    });
+  }
+
 
   void _generateSummary({required List<ExerciseLogDto> logs}) {
     if (logs.isEmpty) {
