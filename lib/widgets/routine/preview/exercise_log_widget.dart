@@ -4,13 +4,12 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
-import 'package:tracker_app/enums/routine_preview_type_enum.dart';
+import 'package:tracker_app/widgets/routine/preview/sets_listview.dart';
 
 import '../../../controllers/exercise_and_routine_controller.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/general_utils.dart';
-import '../../../utils/routine_utils.dart';
 import '../preview/set_headers/double_set_header.dart';
 import '../preview/set_headers/single_set_header.dart';
 
@@ -18,10 +17,8 @@ class ExerciseLogWidget extends StatelessWidget {
   final ExerciseLogDto exerciseLog;
   final ExerciseLogDto? superSet;
   final EdgeInsetsGeometry? padding;
-  final RoutinePreviewType previewType;
 
-  const ExerciseLogWidget(
-      {super.key, required this.exerciseLog, required this.superSet, this.padding, required this.previewType});
+  const ExerciseLogWidget({super.key, required this.exerciseLog, required this.superSet, this.padding});
 
   @override
   Widget build(BuildContext context) {
@@ -73,27 +70,12 @@ class ExerciseLogWidget extends StatelessWidget {
               )
             : const SizedBox.shrink(),
         switch (exerciseType) {
-          ExerciseType.weights => DoubleSetHeader(
-              firstLabel: weightLabel().toUpperCase(),
-              secondLabel: 'REPS',
-              routinePreviewType: previewType,
-            ),
-          ExerciseType.bodyWeight => SingleSetHeader(
-              label: 'REPS',
-              routinePreviewType: previewType,
-            ),
-          ExerciseType.duration => SingleSetHeader(
-              label: 'TIME',
-              routinePreviewType: previewType,
-            ),
-          ExerciseType.all => throw Exception("Unable to return Set header for type ExerciseType.all"),
+          ExerciseType.weights => DoubleSetHeader(firstLabel: weightLabel().toUpperCase(), secondLabel: 'REPS'),
+          ExerciseType.bodyWeight => SingleSetHeader(label: 'REPS'),
+          ExerciseType.duration => SingleSetHeader(label: 'TIME'),
         },
         const SizedBox(height: 8),
-        ...setsToWidgets(
-            type: exerciseType,
-            sets: exerciseLog.sets,
-            pbs: previewType == RoutinePreviewType.log ? pbs : [],
-            routinePreviewType: previewType),
+        SetsListview(type: exerciseType, sets: exerciseLog.sets, pbs: pbs)
       ],
     );
   }

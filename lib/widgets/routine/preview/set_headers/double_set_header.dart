@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../enums/routine_preview_type_enum.dart';
 
 class DoubleSetHeader extends StatelessWidget {
   final String firstLabel;
   final String secondLabel;
-  final RoutinePreviewType routinePreviewType;
 
-  const DoubleSetHeader({super.key, required this.firstLabel, required this.secondLabel, required this.routinePreviewType});
+  const DoubleSetHeader({super.key, required this.firstLabel, required this.secondLabel});
 
   @override
   Widget build(BuildContext context) {

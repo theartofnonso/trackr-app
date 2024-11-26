@@ -7,9 +7,8 @@ import 'exercise_log_widget.dart';
 class ExerciseLogListView extends StatelessWidget {
 
   final List<ExerciseLogViewModel> exerciseLogs;
-  final RoutinePreviewType previewType;
 
-  const ExerciseLogListView({super.key, required this.exerciseLogs, required this.previewType});
+  const ExerciseLogListView({super.key, required this.exerciseLogs});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +16,7 @@ class ExerciseLogListView extends StatelessWidget {
       return ExerciseLogWidget(
         padding: const EdgeInsets.only(bottom: 8),
         exerciseLog: exerciseLog.exerciseLog,
-        superSet: exerciseLog.superSet, previewType: previewType
+        superSet: exerciseLog.superSet,
       );
     }).toList();
     return Column(children: widgets);

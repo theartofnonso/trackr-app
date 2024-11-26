@@ -331,7 +331,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                     ),
                   ExerciseLogListView(
                     exerciseLogs: exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
-                    previewType: RoutinePreviewType.template,
                   ),
                 ],
               ),

@@ -61,10 +61,13 @@ class _TrkrCoachExerciseRecommendationScreenState extends State<TrkrCoachExercis
       height: double.infinity,
       padding: const EdgeInsets.all(10.0),
       decoration: BoxDecoration(
-        gradient: SweepGradient(
-          colors: [Colors.green.shade900, Colors.blue.shade900],
-          stops: const [0, 1],
-          center: Alignment.topRight,
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            sapphireDark80,
+            sapphireDark,
+          ],
         ),
       ),
       child: SafeArea(

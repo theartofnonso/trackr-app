@@ -149,13 +149,13 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     });
                   },
                 ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 8),
-                      OutlineListTile(onTap: _navigateToUserProfile, title: "Profile", trailing: "manage profile"),
-                    ],
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 8),
+                    OutlineListTile(onTap: _navigateToUserProfile, title: "Profile", trailing: "manage profile"),
+                  ],
+                ),
                 const SizedBox(height: 8),
                 OutlineListTile(onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "manage exercises"),
                 if (Platform.isIOS)

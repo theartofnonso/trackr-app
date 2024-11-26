@@ -10,10 +10,10 @@ import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/strings/ai_prompts.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 
+import '../../colors.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/exercise_log_dto.dart';
 import '../../dtos/set_dto.dart';
-import '../../enums/routine_preview_type_enum.dart';
 import '../../openAI/open_ai.dart';
 import '../../openAI/open_ai_functions.dart';
 import '../../shared_prefs.dart';
@@ -50,10 +50,13 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
       height: double.infinity,
       padding: const EdgeInsets.all(10.0),
       decoration: BoxDecoration(
-        gradient: SweepGradient(
-          colors: [Colors.green.shade900, Colors.blue.shade900],
-          stops: const [0, 1],
-          center: Alignment.topRight,
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            sapphireDark80,
+            sapphireDark,
+          ],
         ),
       ),
       child: SafeArea(
@@ -65,9 +68,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
                 ? Expanded(
                     child: SingleChildScrollView(
                       child: ExerciseLogListView(
-                        exerciseLogs: exerciseLogsToViewModels(exerciseLogs: routineTemplate.exerciseTemplates),
-                        previewType: RoutinePreviewType.ai,
-                      ),
+                          exerciseLogs: exerciseLogsToViewModels(exerciseLogs: routineTemplate.exerciseTemplates)),
                     ),
                   )
                 : Expanded(
@@ -310,44 +311,17 @@ class _HeroWidget extends StatelessWidget {
                       text: " ",
                       style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)),
                   TextSpan(
-                      text: "Start with the suggestions below.",
+                      text: "Try saying",
                       style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)),
+                  TextSpan(
+                      text: " ",
+                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)),
+                  TextSpan(
+                      text: 'I want to train "mention muscle group(s)"',
+                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white)),
                 ],
               ),
-            ),
-            const SizedBox(height: 10),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-              decoration: BoxDecoration(
-                color: Colors.white10.withOpacity(0.1), // Background color of the container
-                borderRadius: BorderRadius.circular(5), // Rounded corners
-              ),
-              child: Text("Create a fullbody workout",
-                  style: GoogleFonts.ubuntu(
-                      color: Colors.white.withOpacity(0.8), fontSize: 12, fontWeight: FontWeight.w600)),
-            ),
-            const SizedBox(height: 10),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-              decoration: BoxDecoration(
-                color: Colors.white10.withOpacity(0.1), // Background color of the container
-                borderRadius: BorderRadius.circular(5), // Rounded corners
-              ),
-              child: Text("Help me create a back and biceps workout",
-                  style: GoogleFonts.ubuntu(
-                      color: Colors.white.withOpacity(0.8), fontSize: 12, fontWeight: FontWeight.w600)),
-            ),
-            const SizedBox(height: 10),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-              decoration: BoxDecoration(
-                color: Colors.white10.withOpacity(0.1), // Background color of the container
-                borderRadius: BorderRadius.circular(5), // Rounded corners
-              ),
-              child: Text("I need a machine-only workout",
-                  style: GoogleFonts.ubuntu(
-                      color: Colors.white.withOpacity(0.8), fontSize: 12, fontWeight: FontWeight.w600)),
-            ),
+            )
           ]),
         )
       ]),

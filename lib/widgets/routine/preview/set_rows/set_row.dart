@@ -2,16 +2,14 @@ import 'package:flutter/material.dart';
 
 import '../../../../colors.dart';
 import '../../../../dtos/pb_dto.dart';
-import '../../../../enums/routine_preview_type_enum.dart';
 import '../../../pbs/pb_icon.dart';
 
 class SetRow extends StatelessWidget {
   final EdgeInsets? margin;
   final List<PBDto> pbs;
   final Widget child;
-  final RoutinePreviewType routinePreviewType;
 
-  const SetRow({super.key, this.margin, this.pbs = const [], required this.child, required this.routinePreviewType});
+  const SetRow({super.key, this.margin, this.pbs = const [], required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -25,11 +23,11 @@ class SetRow extends StatelessWidget {
     return Container(
       margin: margin,
       decoration: BoxDecoration(
-        color: routinePreviewType != RoutinePreviewType.ai ? sapphireDark80 : Colors.white10.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(5.0),
-        border: pbs.isNotEmpty ? Border.all(color: Colors.white12, width: 1) : routinePreviewType == RoutinePreviewType.ai ? Border.all(color: Colors.white38, width: 0.5,) : null // Border color
-        // Radius for rounded corners
-      ),
+          color: sapphireDark80,
+          borderRadius: BorderRadius.circular(5.0),
+          border: pbs.isNotEmpty ? Border.all(color: Colors.white12, width: 1) : null // Border color
+          // Radius for rounded corners
+          ),
       padding: pbs.isNotEmpty ? const EdgeInsets.only(top: 16) : const EdgeInsets.symmetric(vertical: 16.0),
       child: Column(
         children: [

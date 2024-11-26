@@ -36,7 +36,6 @@ class ExerciseLogWidget extends StatefulWidget {
   final VoidCallback onRemoveLog;
   final VoidCallback onReplaceLog;
   final VoidCallback onSuperSet;
-  final VoidCallback onAlternate;
   final void Function(String superSetId) onRemoveSuperSet;
   final VoidCallback? onCache;
   final VoidCallback onResize;
@@ -48,7 +47,6 @@ class ExerciseLogWidget extends StatefulWidget {
       this.editorType = RoutineEditorMode.edit,
       required this.exerciseLogDto,
       this.superSet,
-      required this.onAlternate,
       required this.onSuperSet,
       required this.onRemoveSuperSet,
       required this.onRemoveLog,
@@ -76,10 +74,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           "Replace",
           style: GoogleFonts.ubuntu(color: Colors.white),
         ),
-      ),
-      MenuItemButton(
-        onPressed: widget.onAlternate,
-        child: Text("Substitutes", style: GoogleFonts.ubuntu()),
       ),
       widget.exerciseLogDto.superSetId.isNotEmpty
           ? MenuItemButton(
@@ -339,8 +333,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 secondLabel: 'REPS',
               ),
             ExerciseType.bodyWeight => RepsSetHeader(editorType: widget.editorType),
-            ExerciseType.duration => DurationSetHeader(editorType: widget.editorType),
-            ExerciseType.all => throw Exception("Unable to return Set header for type ExerciseType.all"),
+            ExerciseType.duration => DurationSetHeader(editorType: widget.editorType)
           },
           const SizedBox(height: 8),
           if (sets.isNotEmpty)
@@ -462,7 +455,6 @@ class _SetListView extends StatelessWidget {
             startTime: durationControllers.isNotEmpty ? durationControllers[index] : DateTime.now(),
             onupdateDuration: (Duration duration) => updateDuration(index: index, duration: duration, setDto: setDto),
           ),
-        ExerciseType.all => throw Exception("Unable to return Set widget for type ExerciseType.all"),
       };
 
       return Padding(padding: const EdgeInsets.only(bottom: 8.0), child: setWidget);
