@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../colors.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
 import '../../screens/insights/sets_reps_volume_insights_screen.dart';
 import '../../utils/exercise_logs_utils.dart';
+import '../../utils/navigation_utils.dart';
 
 class MuscleScoreWidget extends StatelessWidget {
   final List<RoutineLogDto> thisMonthLogs;
@@ -27,9 +27,7 @@ class MuscleScoreWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(5),
       ),
       child: ListTile(
-        onTap: () {
-          context.push(SetsAndRepsVolumeInsightsScreen.routeName);
-        },
+        onTap: () => _showSetsAndRepsVolumeInsightsScreen(context: context),
         tileColor: sapphireDark80,
         contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 20),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -67,5 +65,9 @@ class MuscleScoreWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _showSetsAndRepsVolumeInsightsScreen({required BuildContext context}) {
+    navigateWithSlideTransition(context: context, child: SetsAndRepsVolumeInsightsScreen());
   }
 }

@@ -1,17 +1,17 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
-import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
+import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
+import '../../screens/insights/sets_reps_volume_insights_screen.dart';
 import '../../strings.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
@@ -66,7 +66,7 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           GestureDetector(
-              onTap: () => navigateToRoutineLogs(context: context, dateTime: dateTime),
+              onTap: () => _showRoutineLogsScreen(context: context),
               child: Container(
                 color: Colors.transparent,
                 width: 80,
@@ -101,9 +101,7 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
           ),
           const SizedBox(width: 20),
           GestureDetector(
-            onTap: () {
-              context.push(SetsAndRepsVolumeInsightsScreen.routeName);
-            },
+            onTap: () => _showSetsAndRepsVolumeInsightsScreen(context: context),
             child: Container(
               color: Colors.transparent,
               width: 80,
@@ -118,6 +116,14 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
         ],
       ),
     ]);
+  }
+
+  void _showSetsAndRepsVolumeInsightsScreen({required BuildContext context}) {
+    navigateWithSlideTransition(context: context, child: SetsAndRepsVolumeInsightsScreen());
+  }
+
+  void _showRoutineLogsScreen({required BuildContext context}) {
+    navigateWithSlideTransition(context: context, child: RoutineLogsScreen(dateTime: dateTime));
   }
 
   void _showMonitorInfo({required BuildContext context}) {
