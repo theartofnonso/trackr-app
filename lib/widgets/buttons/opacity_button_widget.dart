@@ -9,6 +9,7 @@ class OpacityButtonWidget extends StatelessWidget {
   final bool loading;
   final Color? buttonColor;
   final EdgeInsets? padding;
+  final TextStyle? textStyle;
   final VisualDensity? visualDensity;
 
   const OpacityButtonWidget(
@@ -19,6 +20,7 @@ class OpacityButtonWidget extends StatelessWidget {
       this.loadingLabel = "loading",
       this.loading = false,
       this.buttonColor,
+        this.textStyle,
       this.padding,
       this.visualDensity = VisualDensity.compact});
 
@@ -48,7 +50,7 @@ class OpacityButtonWidget extends StatelessWidget {
             children: [
               Text(loading ? loadingLabel : label,
                   textAlign: TextAlign.start,
-                  style: GoogleFonts.ubuntu(
+                  style: textStyle ?? GoogleFonts.ubuntu(
                       fontWeight: FontWeight.w600,
                       fontSize: 16,
                       color: action != null ? buttonColor : buttonColor?.withOpacity(0.2))),
