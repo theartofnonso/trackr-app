@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../colors.dart';
 import '../../widgets/ai_widgets/trkr_coach_message_widget.dart';
 
 class TRKRCoachSummaryScreen extends StatelessWidget {
@@ -19,10 +20,13 @@ class TRKRCoachSummaryScreen extends StatelessWidget {
       width: double.infinity,
       height: double.infinity,
       decoration: BoxDecoration(
-        gradient: SweepGradient(
-          colors: [Colors.green.shade900, Colors.blue.shade900],
-          stops: const [0, 1],
-          center: Alignment.topRight,
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            sapphireDark80,
+            sapphireDark,
+          ],
         ),
       ),
       child: SafeArea(

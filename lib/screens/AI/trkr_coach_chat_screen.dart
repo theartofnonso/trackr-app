@@ -10,6 +10,7 @@ import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/strings/ai_prompts.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 
+import '../../colors.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/exercise_log_dto.dart';
 import '../../dtos/set_dto.dart';
@@ -50,10 +51,13 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
       height: double.infinity,
       padding: const EdgeInsets.all(10.0),
       decoration: BoxDecoration(
-        gradient: SweepGradient(
-          colors: [Colors.green.shade900, Colors.blue.shade900],
-          stops: const [0, 1],
-          center: Alignment.topRight,
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            sapphireDark80,
+            sapphireDark,
+          ],
         ),
       ),
       child: SafeArea(
@@ -65,9 +69,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
                 ? Expanded(
                     child: SingleChildScrollView(
                       child: ExerciseLogListView(
-                        exerciseLogs: exerciseLogsToViewModels(exerciseLogs: routineTemplate.exerciseTemplates),
-                        previewType: RoutinePreviewType.ai,
-                      ),
+                        exerciseLogs: exerciseLogsToViewModels(exerciseLogs: routineTemplate.exerciseTemplates)),
                     ),
                   )
                 : Expanded(

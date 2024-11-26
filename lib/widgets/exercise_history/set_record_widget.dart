@@ -24,12 +24,12 @@ class SetRecordWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        DoubleSetHeader(firstLabel: "Reps", secondLabel: 'Personal Best (${weightLabel().toUpperCase()})', routinePreviewType: RoutinePreviewType.log),
+        DoubleSetHeader(firstLabel: "Reps", secondLabel: 'Personal Best (${weightLabel().toUpperCase()})'),
         const SizedBox(height: 8),
         ...personaBestSets.map((set) {
           final firstLabel = set.reps();
           final secondLabel = set.weight();
-          return DoubleSetRow(first: "$firstLabel", second: "$secondLabel", margin: const EdgeInsets.only(bottom: 6.0), routinePreviewType: RoutinePreviewType.log,);
+          return DoubleSetRow(first: "$firstLabel", second: "$secondLabel", margin: const EdgeInsets.only(bottom: 6.0));
         }),
       ],
     );

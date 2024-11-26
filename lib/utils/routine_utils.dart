@@ -86,10 +86,8 @@ ExerciseLogDto? whereOtherExerciseInSuperSet(
 List<Widget> setsToWidgets(
     {required ExerciseType type,
     required List<SetDto> sets,
-    List<PBDto> pbs = const [],
-    required RoutinePreviewType routinePreviewType}) {
+    List<PBDto> pbs = const []}) {
   final durationTemplate = SetRow(
-      routinePreviewType: routinePreviewType,
       margin: const EdgeInsets.only(bottom: 6),
       pbs: const [],
       child: Table(columnWidths: const <int, TableColumnWidth>{
@@ -136,17 +134,16 @@ List<Widget> setsToWidgets(
             first: "$firstLabel",
             second: "$secondLabel",
             margin: margin,
-            pbs: pbsForSet,
-            routinePreviewType: routinePreviewType);
+            pbs: pbsForSet);
       case ExerciseType.bodyWeight:
         final label = setDto.reps();
-        return SingleSetRow(label: "$label", margin: margin, routinePreviewType: routinePreviewType);
+        return SingleSetRow(label: "$label", margin: margin);
       case ExerciseType.duration:
-        if (routinePreviewType == RoutinePreviewType.template) {
-          return durationTemplate;
-        }
+        // if (routinePreviewType == RoutinePreviewType.template) {
+        //   return durationTemplate;
+        // }
         final label = Duration(milliseconds: setDto.duration()).hmsAnalog();
-        return SingleSetRow(label: label, margin: margin, pbs: pbsForSet, routinePreviewType: routinePreviewType);
+        return SingleSetRow(label: label, margin: margin, pbs: pbsForSet);
       case ExerciseType.all:
         throw Exception("Unable to create Set widget for type ExerciseType.all");
     }

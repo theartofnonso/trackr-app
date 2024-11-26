@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
-import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/amplify_models/routine_log_extension.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -249,8 +248,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                                       : _generateSummary(logs: updatedExerciseLogs)),
                             ),
                           ExerciseLogListView(
-                              exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: updatedExerciseLogs),
-                              previewType: RoutinePreviewType.log),
+                              exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: updatedExerciseLogs)),
                         ],
                       ),
                     )
