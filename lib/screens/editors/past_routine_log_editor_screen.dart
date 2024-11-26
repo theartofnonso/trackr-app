@@ -56,19 +56,6 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
         });
   }
 
-  void _selectSubstituteExercisesInLibrary({required ExerciseLogDto primaryExerciseLog}) async {
-    final controller = Provider.of<ExerciseLogController>(context, listen: false);
-    final excludeExercises = controller.exerciseLogs.map((exercise) => exercise.exercise).toList();
-
-    showExercisesInLibrary(
-        context: context,
-        excludeExercises: excludeExercises,
-        onSelected: (List<ExerciseDto> selectedExercises) {
-          controller.addAlternates(primaryExerciseId: primaryExerciseLog.id, exercises: selectedExercises);
-          _showSubstituteExercisePicker(primaryExerciseLog: primaryExerciseLog);
-        });
-  }
-
   void _showSuperSetExercisePicker({required ExerciseLogDto firstExerciseLog}) {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
     final otherExercises = whereOtherExerciseLogsExcept(exerciseLog: firstExerciseLog, others: controller.exerciseLogs);
@@ -85,32 +72,6 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
         selectExercisesInLibrary: () {
           _closeDialog();
           _selectExercisesInLibrary();
-        });
-  }
-
-  void _showSubstituteExercisePicker({required ExerciseLogDto primaryExerciseLog}) {
-    final controller = Provider.of<ExerciseLogController>(context, listen: false);
-    showSubstituteExercisePicker(
-        context: context,
-        primaryExerciseLog: primaryExerciseLog,
-        otherExercises: primaryExerciseLog.substituteExercises,
-        onSelected: (secondaryExercise) {
-          _closeDialog();
-          final foundExerciseLog = controller.exerciseLogs
-              .firstWhereOrNull((exerciseLog) => exerciseLog.exercise.id == secondaryExercise.id);
-          if (foundExerciseLog == null) {
-            controller.replaceExerciseLog(oldExerciseId: primaryExerciseLog.id, newExercise: secondaryExercise);
-          } else {
-            _showSnackbar("${foundExerciseLog.exercise.name} has already been added");
-          }
-        },
-        onRemoved: (ExerciseDto secondaryExercise) {
-          controller.removeAlternates(
-              primaryExerciseId: primaryExerciseLog.id, secondaryExerciseId: secondaryExercise.id);
-        },
-        selectExercisesInLibrary: () {
-          _closeDialog();
-          _selectSubstituteExercisesInLibrary(primaryExerciseLog: primaryExerciseLog);
         });
   }
 
@@ -385,7 +346,6 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
                                             onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: log),
                                             onResize: () => _handleResizedExerciseLogCard(exerciseIdToResize: logId),
                                             isMinimised: _isMinimised(logId),
-                                            onAlternate: () => _showSubstituteExercisePicker(primaryExerciseLog: log),
                                             onTapWeightEditor: (SetDto setDto) {
                                               setState(() {
                                                 _selectedSetDto = setDto;

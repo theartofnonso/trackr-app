@@ -18,10 +18,10 @@ import '../../editors/exercise_editor_screen.dart';
 class ExerciseLibraryScreen extends StatefulWidget {
   final bool readOnly;
   final List<ExerciseDto> excludeExercises;
-  final ExerciseType type;
+  final ExerciseType? type;
 
   const ExerciseLibraryScreen(
-      {super.key, this.readOnly = false, this.excludeExercises = const [], this.type = ExerciseType.all});
+      {super.key, this.readOnly = false, this.excludeExercises = const [], this.type});
 
   @override
   State<ExerciseLibraryScreen> createState() => _ExerciseLibraryScreenState();
@@ -41,11 +41,13 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
     List<ExerciseDto> searchResults = [];
 
+    final exerciseType = widget.type;
+
     searchResults = Provider.of<ExerciseAndRoutineController>(context, listen: false)
         .exercises
         .where((exercise) => !widget.excludeExercises.contains(exercise))
         .where((exercise) => exercise.name.toLowerCase().contains(query.toLowerCase()))
-        .where((exercise) => widget.type == ExerciseType.all ? true : exercise.type == widget.type)
+        .where((exercise) => exerciseType != null ? exercise.type == widget.type : true)
         .toList();
 
     if (_selectedMuscleGroup != null) {
@@ -214,10 +216,13 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   }
 
   void _loadOrSyncExercises() {
+
+    final exerciseType = widget.type;
+
     _filteredExercises = Provider.of<ExerciseAndRoutineController>(context, listen: false)
         .exercises
         .where((exercise) => !widget.excludeExercises.contains(exercise))
-        .where((exercise) => widget.type == ExerciseType.all ? true : exercise.type == widget.type)
+        .where((exercise) => exerciseType != null ? exercise.type == widget.type : true)
         .toList();
   }
 

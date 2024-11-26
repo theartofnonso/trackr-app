@@ -36,8 +36,6 @@ class SetsListview extends StatelessWidget {
         case ExerciseType.duration:
           final label = Duration(milliseconds: setDto.duration()).hmsAnalog();
           return SingleSetRow(label: label, margin: margin, pbs: pbsForSet);
-        case ExerciseType.all:
-          throw Exception("Unable to create Set widget for type ExerciseType.all");
       }
     })).toList();
 

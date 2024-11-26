@@ -84,8 +84,7 @@ class _ExerciseLogWidget extends StatelessWidget {
         switch (exerciseType) {
           ExerciseType.weights => DoubleSetHeader(firstLabel: weightLabel().toUpperCase(), secondLabel: 'REPS'),
           ExerciseType.bodyWeight => const SingleSetHeader(label: 'REPS'),
-          ExerciseType.duration => const SingleSetHeader(label: 'TIME'),
-          ExerciseType.all => throw Exception("Unable to return Set header for type ExerciseType.all"),
+          ExerciseType.duration => const SingleSetHeader(label: 'TIME')
         },
         const SizedBox(height: 8),
         SetsListview(type: exerciseType, sets: exerciseLog.sets, pbs: [])

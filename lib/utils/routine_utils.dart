@@ -146,8 +146,6 @@ String copyRoutineAsText(
         case ExerciseType.duration:
           routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].durationSummary()}");
           break;
-        case ExerciseType.all:
-          // Do nothing here
       }
     }
   }
