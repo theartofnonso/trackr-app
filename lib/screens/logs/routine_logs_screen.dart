@@ -32,7 +32,7 @@ class RoutineLogsScreen extends StatelessWidget {
         title: Text("$month Resistance Training".toUpperCase(),
             style: GoogleFonts.ubuntu(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
         leading: IconButton(
-            icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+            icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
             onPressed: Navigator.of(context).pop),
       ),
       body: Container(
