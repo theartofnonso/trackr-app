@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
-import 'package:tracker_app/widgets/empty_states/routine_log_empty_state.dart';
+import 'package:tracker_app/widgets/empty_states/no_list_empty_state.dart';
 import 'package:tracker_app/widgets/routine/preview/activity_log_widget.dart';
 
 import '../../controllers/activity_log_controller.dart';
@@ -70,7 +70,7 @@ class ActivityLogsScreen extends StatelessWidget {
                               Divider(color: Colors.white70.withOpacity(0.1)),
                           itemCount: logs.length),
                     )
-                  : const RoutineLogEmptyState(),
+                  : const NoListEmptyState(message: "It might feel quiet now, but your logged activities will soon appear here."),
             ],
           ),
         ),

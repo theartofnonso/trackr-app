@@ -3,7 +3,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/screens/empty_state_screens/not_found.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:tracker_app/widgets/label_divider.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/double_textfield.dart';
@@ -12,6 +11,7 @@ import 'package:tracker_app/widgets/user_icon_widget.dart';
 import '../../colors.dart';
 import '../../controllers/routine_user_controller.dart';
 import '../../dtos/appsync/routine_user_dto.dart';
+import '../../widgets/empty_states/not_found.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({

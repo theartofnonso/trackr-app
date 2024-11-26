@@ -25,7 +25,7 @@ import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/set_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/routine_utils.dart';
-import '../../widgets/empty_states/exercise_log_empty_state.dart';
+import '../../widgets/empty_states/no_list_empty_state.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
 import '../../widgets/timers/routine_timer.dart';
 import '../../widgets/weight_plate_calculator.dart';
@@ -478,9 +478,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                               ),
                             ),
                           if (exerciseLogs.isEmpty)
-                            const ExerciseLogEmptyState(
-                                mode: RoutineEditorMode.log,
-                                message: "Tap the + button to start adding exercises to your log"),
+                            const NoListEmptyState(message: "Tap the + button to start adding exercises to your workout session"),
                         ],
                       ),
                     ),

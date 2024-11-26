@@ -5,9 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
-import 'package:tracker_app/widgets/empty_states/routine_log_empty_state.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
+import '../../widgets/empty_states/no_list_empty_state.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
 
 class RoutineLogsScreen extends StatelessWidget {
@@ -29,7 +29,7 @@ class RoutineLogsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: sapphireDark80,
-        title: Text("$month Resistance Training".toUpperCase(),
+        title: Text("$month Strength Training".toUpperCase(),
             style: GoogleFonts.ubuntu(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
         leading: IconButton(
             icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
@@ -66,7 +66,7 @@ class RoutineLogsScreen extends StatelessWidget {
                               Divider(color: Colors.white70.withOpacity(0.1)),
                           itemCount: logs.length),
                     )
-                  : const RoutineLogEmptyState(),
+                  : const NoListEmptyState(message: "It might feel quiet now, but your logged workouts will soon appear here."),
             ],
           ),
         ),

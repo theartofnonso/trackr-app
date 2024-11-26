@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
-import 'package:tracker_app/widgets/empty_states/exercise_empty_state.dart';
 import 'package:tracker_app/widgets/search_bar.dart';
 
 import '../../../colors.dart';
@@ -12,6 +11,7 @@ import '../../../controllers/exercise_and_routine_controller.dart';
 import '../../../dtos/appsync/exercise_dto.dart';
 import '../../../enums/muscle_group_enums.dart';
 import '../../../utils/navigation_utils.dart';
+import '../../../widgets/empty_states/no_list_empty_state.dart';
 import '../../../widgets/exercise/exercise_widget.dart';
 import '../../editors/exercise_editor_screen.dart';
 
@@ -204,7 +204,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                               itemCount: _filteredExercises.length),
                         ),
                       )
-                    : const ExerciseEmptyState(),
+                    : const NoListEmptyState(message: "It might feel quiet now, but exercises including yours will soon appear here."),
               ],
             ),
           ),
