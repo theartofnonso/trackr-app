@@ -76,7 +76,7 @@ class AnalyticsController extends ChangeNotifier {
   static Future<void> exerciseEvents({required String eventAction, required ExerciseDto exercise}) async {
     await FirebaseAnalytics.instance.logEvent(
       name: eventAction,
-      parameters: Map<String, Object>.from(exercise.toJson() as Map<String, dynamic>),
+      parameters: Map<String, Object>.from(exercise.toJson()),
     );
   }
 }

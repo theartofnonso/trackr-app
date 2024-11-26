@@ -38,7 +38,7 @@ class MonthlyInsightsScreen extends StatelessWidget {
         .whereLogsIsSameMonth(dateTime: dateTimeRange.start)
         .sorted((a, b) => b.createdAt.compareTo(a.createdAt));
 
-    final lastMonthActivityLogs = routineLogController
+    final lastMonthActivityLogs = activitiesController
         .whereLogsIsSameMonth(dateTime: lastMonth)
         .sorted((a, b) => b.createdAt.compareTo(a.createdAt));
 
@@ -55,7 +55,7 @@ class MonthlyInsightsScreen extends StatelessWidget {
         const SizedBox(height: 12),
         CaloriesWidget(thisMonthLogs: thisMonthLogs, lastMonthLogs: lastMonthLogs),
         const SizedBox(height: 12),
-        ActivitiesWidget(activities: thisMonthsActivityLogs),
+        ActivitiesWidget(thisMonthsActivities: thisMonthsActivityLogs, lastMonthsActivities: lastMonthActivityLogs),
         const SizedBox(height: 12),
         MuscleScoreWidget(thisMonthLogs: thisMonthRoutineLogs, lastMonthLogs: lastMonthRoutineLogs),
         if (thisMonthRoutineLogs.isNotEmpty)

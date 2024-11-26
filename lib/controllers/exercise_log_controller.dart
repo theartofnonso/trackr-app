@@ -21,7 +21,7 @@ class ExerciseLogController extends ChangeNotifier {
 
   void loadExerciseLogs({required List<ExerciseLogDto> exerciseLogs, required RoutineEditorMode mode}) {
     _exerciseLogRepository.loadExerciseLogs(exerciseLogs: exerciseLogs, mode: mode);
-    logger.i("load exercise log: ${exerciseLogs}: ${mode}");
+    logger.i("load exercise log: $exerciseLogs: $mode");
   }
 
   List<ExerciseLogDto> mergeExerciseLogsAndSets() {
@@ -34,7 +34,7 @@ class ExerciseLogController extends ChangeNotifier {
 
   void addExerciseLogs({required List<ExerciseDto> exercises}) {
     _exerciseLogRepository.addExerciseLogs(exercises: exercises);
-    logger.i("load exercise log: ${exercises}");
+    logger.i("load exercise log: $exercises");
     notifyListeners();
   }
 

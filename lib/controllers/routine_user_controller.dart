@@ -27,11 +27,11 @@ class RoutineUserController extends ChangeNotifier {
     RoutineUserDto? savedUser;
     try {
       savedUser = await _amplifyRoutineUserRepository.saveUser(userDto: userDto);
-      logger.i("saved user ${userDto}");
+      logger.i("saved user $userDto");
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
       savedUser = null;
-      logger.e("Error saving user ${userDto}",error: e);
+      logger.e("Error saving user $userDto",error: e);
     } finally {
       notifyListeners();
     }
@@ -41,10 +41,10 @@ class RoutineUserController extends ChangeNotifier {
   Future<void> updateUser({required RoutineUserDto userDto}) async {
     try {
       await _amplifyRoutineUserRepository.updateUser(userDto: userDto);
-      logger.i("update user ${userDto}");
+      logger.i("update user $userDto");
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
-      logger.e("Error updating user ${userDto}",error: e);
+      logger.e("Error updating user $userDto",error: e);
     } finally {
       notifyListeners();
     }
@@ -53,10 +53,10 @@ class RoutineUserController extends ChangeNotifier {
   Future<void> removeUser({required RoutineUserDto userDto}) async {
     try {
       await _amplifyRoutineUserRepository.removeUser(userDto: userDto);
-      logger.i("remove user ${userDto}");
+      logger.i("remove user $userDto");
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
-      logger.e("Error removing user ${userDto}",error: e);
+      logger.e("Error removing user $userDto",error: e);
     } finally {
       notifyListeners();
     }

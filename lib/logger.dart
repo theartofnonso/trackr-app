@@ -1,6 +1,6 @@
 import 'package:logger/logger.dart';
 import 'package:uuid/uuid.dart';
-import 'AppLogger.dart';
+import 'app_logger.dart';
 
 final String uuid = Uuid().v4();
 
