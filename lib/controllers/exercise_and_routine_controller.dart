@@ -76,7 +76,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
     isLoading = true;
     try {
      await _amplifyExerciseRepository.saveExercise(exerciseDto: exerciseDto);
-     logger.i("saved exercise: ${exerciseDto}");
+     logger.i("saved exercise: $exerciseDto");
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
       logger.e("Error saving exercise", error: e);
@@ -97,7 +97,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
             _amplifyTemplateRepository.syncTemplatesWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
             notifyListeners();
           });
-      logger.i("updated exercise: ${exercise}");
+      logger.i("updated exercise: $exercise");
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
       logger.e("Error updating exercise", error: e);
@@ -112,7 +112,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
     isLoading = true;
     try {
       await _amplifyExerciseRepository.removeExercise(exercise: exercise);
-      logger.i("remove exercise: ${exercise}");
+      logger.i("remove exercise: $exercise");
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
       logger.e("Error removing exercise", error: e);
@@ -135,7 +135,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
     isLoading = true;
     try {
       savedTemplate = await _amplifyTemplateRepository.saveTemplate(templateDto: templateDto);
-      logger.i("save template: ${templateDto}");
+      logger.i("save template: $templateDto");
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
       logger.e("Error saving exercise template", error: e);
@@ -151,7 +151,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
     isLoading = true;
     try {
       await _amplifyTemplateRepository.updateTemplate(template: template);
-      logger.i("update template: ${template}");
+      logger.i("update template: $template");
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
       logger.e("Error updating exercise template", error: e);
@@ -166,7 +166,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
     isLoading = true;
     try {
       await _amplifyTemplateRepository.updateTemplateSetsOnly(templateId: templateId, newExercises: newExercises);
-      logger.i("update template sets: ${templateId} : ${newExercises}");
+      logger.i("update template sets: $templateId : $newExercises");
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
       logger.e("Error updating exercise template sets", error: e);
@@ -181,7 +181,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
     isLoading = true;
     try {
       await _amplifyTemplateRepository.removeTemplate(template: template);
-      logger.i("remove template: ${template}");
+      logger.i("remove template: $template");
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
       logger.e("Error removing exercise template", error: e);
@@ -206,7 +206,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
     RoutineLogDto? savedLog;
     try {
       savedLog = await _amplifyLogRepository.saveLog(logDto: logDto, datetime: datetime);
-      logger.i("save log: ${logDto} : ${datetime}");
+      logger.i("save log: $logDto : $datetime");
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
       logger.e("Error saving log exercise", error: e);
@@ -219,7 +219,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
   Future<void> updateLog({required RoutineLogDto log}) async {
     try {
       await _amplifyLogRepository.updateLog(log: log);
-      logger.i("update log: ${log}");
+      logger.i("update log: $log");
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
       logger.e("Error update log", error: e);
@@ -231,7 +231,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
   Future<void> removeLog({required RoutineLogDto log}) async {
     try {
       await _amplifyLogRepository.removeLog(log: log);
-      logger.i("remove log: ${log}");
+      logger.i("remove log: $log");
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
       logger.e("Error remove log", error: e);
