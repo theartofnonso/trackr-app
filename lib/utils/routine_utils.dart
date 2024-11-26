@@ -1,28 +1,19 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
-import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/week_days_extension.dart';
 import 'package:tracker_app/utils/string_utils.dart';
-import 'package:tracker_app/widgets/empty_states/double_set_row_empty_state.dart';
 
 import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/appsync/routine_template_dto.dart';
 import '../dtos/exercise_log_dto.dart';
-import '../dtos/pb_dto.dart';
-import '../dtos/set_dto.dart';
 import '../dtos/viewmodels/exercise_log_view_model.dart';
 import '../enums/activity_type_enums.dart';
 import '../enums/routine_schedule_type_enums.dart';
 import '../enums/template_changes_type_message_enums.dart';
 import '../screens/exercise/reorder_exercises_screen.dart';
-import '../widgets/empty_states/single_set_row_empty_state.dart';
-import '../widgets/routine/preview/set_rows/double_set_row.dart';
-import '../widgets/routine/preview/set_rows/set_row.dart';
-import '../widgets/routine/preview/set_rows/single_set_row.dart';
 import 'exercise_logs_utils.dart';
 import 'general_utils.dart';
 
@@ -81,75 +72,6 @@ ExerciseLogDto? whereOtherExerciseInSuperSet(
       exercise.superSetId.isNotEmpty &&
       exercise.superSetId == firstExercise.superSetId &&
       exercise.exercise.id != firstExercise.exercise.id);
-}
-
-List<Widget> setsToWidgets(
-    {required ExerciseType type,
-    required List<SetDto> sets,
-    List<PBDto> pbs = const []}) {
-  final durationTemplate = SetRow(
-      margin: const EdgeInsets.only(bottom: 6),
-      pbs: const [],
-      child: Table(columnWidths: const <int, TableColumnWidth>{
-        0: FlexColumnWidth(),
-      }, children: const <TableRow>[
-        TableRow(children: [
-          TableCell(
-            verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Center(
-              child: FaIcon(
-                FontAwesomeIcons.solidClock,
-                color: Colors.white70,
-                size: 16,
-              ),
-            ),
-          ),
-        ]),
-      ]));
-
-  Widget emptyState;
-
-  if (withWeightsOnly(type: type)) {
-    emptyState = const DoubleSetRowEmptyState();
-  } else {
-    if (withDurationOnly(type: type)) {
-      emptyState = durationTemplate;
-    } else {
-      emptyState = const SingleSetRowEmptyState();
-    }
-  }
-
-  const margin = EdgeInsets.only(bottom: 6.0);
-
-  final pbsBySet = groupBy(pbs, (pb) => pb.set);
-
-  final widgets = sets.map(((setDto) {
-    final pbsForSet = pbsBySet[setDto] ?? [];
-
-    switch (type) {
-      case ExerciseType.weights:
-        final firstLabel = setDto.weight();
-        final secondLabel = setDto.reps();
-        return DoubleSetRow(
-            first: "$firstLabel",
-            second: "$secondLabel",
-            margin: margin,
-            pbs: pbsForSet);
-      case ExerciseType.bodyWeight:
-        final label = setDto.reps();
-        return SingleSetRow(label: "$label", margin: margin);
-      case ExerciseType.duration:
-        // if (routinePreviewType == RoutinePreviewType.template) {
-        //   return durationTemplate;
-        // }
-        final label = Duration(milliseconds: setDto.duration()).hmsAnalog();
-        return SingleSetRow(label: label, margin: margin, pbs: pbsForSet);
-      case ExerciseType.all:
-        throw Exception("Unable to create Set widget for type ExerciseType.all");
-    }
-  })).toList();
-
-  return widgets.isNotEmpty ? widgets : [emptyState];
 }
 
 Map<String, List<ExerciseLogDto>> groupExerciseLogsByExerciseId({required List<RoutineLogDto> routineLogs}) {
