@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/analytics_controller.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
+import 'package:tracker_app/dtos/open_ai_response_schema_dtos/new_routine_dto.dart';
 import 'package:tracker_app/strings/ai_prompts.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 
@@ -224,7 +225,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
       toolId: toolId,
       systemInstruction: completeSystemInstructions,
       user: userInstruction,
-      responseFormat: newRoutineTemplateResponseFormat,
+      responseFormat: newRoutineResponseFormat,
       exercises: exercises,
     );
 
@@ -233,18 +234,16 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
 
       if (functionCallResult == null) return;
 
-      final exerciseIds = List<String>.from(functionCallResult["exercises"]);
-      final workoutName = functionCallResult["workout_name"] ?? "A workout";
-      final workoutCaption = functionCallResult["workout_caption"] ?? "A workout created by TRKR Coach";
+      NewRoutineDto newRoutineDto = NewRoutineDto.fromJson(functionCallResult);
 
-      final exerciseTemplates = _createExerciseTemplates(exerciseIds, exercises);
+      final exerciseTemplates = _createExerciseTemplates(newRoutineDto.exercises, exercises);
 
       setState(() {
         _routineTemplate = RoutineTemplateDto(
           id: "",
-          name: workoutName,
+          name: newRoutineDto.workoutName,
           exerciseTemplates: exerciseTemplates,
-          notes: workoutCaption,
+          notes: newRoutineDto.workoutCaption,
           owner: SharedPrefs().userId,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),

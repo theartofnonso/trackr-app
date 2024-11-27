@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +10,8 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/health_and_fitness_stats.dart';
+import 'package:tracker_app/openAI/open_ai_functions.dart';
+import 'package:tracker_app/screens/AI/routine_logs_report_screen.dart';
 import 'package:tracker_app/utils/date_utils.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/general_utils.dart';
@@ -18,8 +22,10 @@ import 'package:tracker_app/widgets/empty_states/horizontal_stacked_bars_empty_s
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
+import '../../dtos/open_ai_response_schema_dtos/routine_logs_report_dto.dart';
 import '../../dtos/set_dto.dart';
 import '../../enums/chart_unit_enum.dart';
+import '../../enums/exercise_type_enums.dart';
 import '../../enums/muscle_group_enums.dart';
 import '../../enums/sets_reps_volume_enum.dart';
 import '../../openAI/open_ai.dart';
@@ -32,7 +38,6 @@ import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/chart/bar_chart.dart';
 import '../../widgets/chart/horizontal_stacked_bars.dart';
 import '../../widgets/chart/legend.dart';
-import '../AI/trkr_coach_summary_screen.dart';
 
 class SetsAndRepsVolumeInsightsScreen extends StatefulWidget {
   static const routeName = '/sets_and_reps_volume_insights_screen';
@@ -126,31 +131,33 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     final muscleGroups = MuscleGroup.values
         .sorted((a, b) => a.name.compareTo(b.name))
         .map((muscleGroup) => Padding(
-      padding: const EdgeInsets.only(right: 6.0),
-      child: OpacityButtonWidget(
-          onPressed: () => _onSelectMuscleGroup(newMuscleGroup: muscleGroup),
-          padding: EdgeInsets.symmetric(horizontal: 0),
-          textStyle: GoogleFonts.ubuntu(
-              fontWeight: FontWeight.bold,
-              fontSize: 10,
-              color: muscleGroup == _selectedMuscleGroup ? vibrantGreen : Colors.white70),
-          buttonColor: muscleGroup == _selectedMuscleGroup ? vibrantGreen : null,
-          label: muscleGroup.name.toUpperCase()),
-    ))
+              padding: const EdgeInsets.only(right: 6.0),
+              child: OpacityButtonWidget(
+                  onPressed: () => _onSelectMuscleGroup(newMuscleGroup: muscleGroup),
+                  padding: EdgeInsets.symmetric(horizontal: 0),
+                  textStyle: GoogleFonts.ubuntu(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 10,
+                      color: muscleGroup == _selectedMuscleGroup ? vibrantGreen : Colors.white70),
+                  buttonColor: muscleGroup == _selectedMuscleGroup ? vibrantGreen : null,
+                  label: muscleGroup.name.toUpperCase()),
+            ))
         .toList();
 
     final muscleGroupScrollViewHalf = MuscleGroup.values.length ~/ 2;
 
     return Scaffold(
-      appBar: widget.canPop ? AppBar(
-        backgroundColor: sapphireDark80,
-        leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
-          onPressed: context.pop,
-        ),
-        title: Text("Muscle Trend".toUpperCase(),
-            style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
-      ) : null,
+      appBar: widget.canPop
+          ? AppBar(
+              backgroundColor: sapphireDark80,
+              leading: IconButton(
+                icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
+                onPressed: context.pop,
+              ),
+              title: Text("Muscle Trend".toUpperCase(),
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+            )
+          : null,
       body: Container(
         width: double.infinity,
         decoration: const BoxDecoration(
@@ -179,7 +186,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                 TRKRInformationContainer(
                   ctaLabel: "Review your ${_selectedMuscleGroup.name} training",
                   description: _selectedMuscleGroup.description,
-                  onTap: () => _generateReport(logs: exerciseLogs),
+                  onTap: () => _generateReport(exerciseLogs: exerciseLogs),
                 ),
                 const SizedBox(height: 20),
                 Row(
@@ -197,11 +204,13 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                             children: [
                               TextSpan(
                                 text: " ",
-                                style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                                style:
+                                    GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                               ),
                               TextSpan(
                                 text: _metricLabel().toUpperCase(),
-                                style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                                style:
+                                    GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                               ),
                             ],
                           ),
@@ -310,39 +319,69 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     });
   }
 
-  void _generateReport({required List<ExerciseLogDto> logs}) {
-    if (logs.isEmpty) {
+  void _generateReport({required List<ExerciseLogDto> exerciseLogs}) {
+    if (exerciseLogs.isEmpty) {
       showSnackbar(
           context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: "You don't have any logs");
     } else {
-      final startDate = logs.first.createdAt.withoutTime();
-      final endDate = logs.last.createdAt.withoutTime();
+      final startDate = exerciseLogs.first.createdAt.withoutTime();
+      final endDate = exerciseLogs.last.createdAt.withoutTime();
 
       final userInstructions =
           "Review my workout logs for ${_selectedMuscleGroup.name} from $startDate to $endDate and provide feedback. Please note, that my weights are in ${weightLabel()}";
 
-      final logJsons = logs.map((log) => log.toJson());
-
       final StringBuffer buffer = StringBuffer();
 
       buffer.writeln(userInstructions);
-      buffer.writeln(logJsons);
+
+      buffer.writeln();
+
+      for (final exerciseLog in exerciseLogs) {
+        final setSummaries = exerciseLog.sets.mapIndexed((index, set) {
+          return switch (exerciseLog.exercise.type) {
+            ExerciseType.weights => "Set ${index + 1}: ${exerciseLog.sets[index].weightsSummary()}",
+            ExerciseType.bodyWeight => "Set ${index + 1}: ${exerciseLog.sets[index].repsSummary()}",
+            ExerciseType.duration => "Set ${index + 1}: ${exerciseLog.sets[index].durationSummary()}",
+          };
+        }).toList();
+
+        buffer.writeln("Exercise: ${exerciseLog.exercise.name}");
+        buffer.writeln("Date: ${exerciseLog.createdAt.withoutTime().formattedDayAndMonthAndYear()}");
+        buffer.writeln("Sets: $setSummaries");
+
+        buffer.writeln();
+      }
 
       final completeInstructions = buffer.toString();
 
       _showLoadingScreen();
 
-      runMessage(system: routineLogSystemInstruction, user: completeInstructions).then((response) {
+      runMessage(
+              system: routineLogSystemInstruction,
+              user: completeInstructions,
+              responseFormat: routineLogsReportResponseFormat)
+          .then((response) {
         _hideLoadingScreen();
         if (mounted) {
           if (response != null) {
-            navigateWithSlideTransition(context: context, child: TRKRCoachSummaryScreen(content: response));
+            // Deserialize the JSON string
+            Map<String, dynamic> jsonData = jsonDecode(response);
+
+            // Create an instance of ExerciseLogsResponse
+            RoutineLogsReportDto report = RoutineLogsReportDto.fromJson(jsonData);
+            navigateWithSlideTransition(
+                context: context,
+                child: RoutineLogsReportScreen(
+                    muscleGroup: _selectedMuscleGroup, report: report, exerciseLogs: exerciseLogs));
           }
         }
       }).catchError((_) {
         _hideLoadingScreen();
-        if(mounted) {
-          showSnackbar(context: context, icon: TRKRCoachWidget(), message: "Oops! I am unable to generate your ${_selectedMuscleGroup.name} report");
+        if (mounted) {
+          showSnackbar(
+              context: context,
+              icon: TRKRCoachWidget(),
+              message: "Oops! I am unable to generate your ${_selectedMuscleGroup.name} report");
         }
       });
     }

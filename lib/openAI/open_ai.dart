@@ -15,15 +15,16 @@ final headers = {
   'Content-Type': 'application/json',
 };
 
-Future<Map<String, dynamic>?> runMessage({required String system, required String user}) async {
-  Map<String, dynamic>? message;
+Future<dynamic> runMessage({required String system, required String user, required responseFormat}) async {
+  dynamic message;
 
   final body = jsonEncode({
     "model": "gpt-4o-mini",
     "messages": [
       {"role": "system", "content": system},
-      {"role": "user", "content": user}
+      {"role": "user", "content": user},
     ],
+    "response_format": responseFormat
   });
 
   final response = await http.post(
@@ -36,7 +37,6 @@ Future<Map<String, dynamic>?> runMessage({required String system, required Strin
     final body = jsonDecode(response.body);
 
     final choices = body['choices'];
-
     if (choices.isNotEmpty) {
       message = choices[0]['message']['content'];
     }

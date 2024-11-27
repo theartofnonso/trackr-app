@@ -8,7 +8,7 @@ const openAIFunctionTools = [
   {"type": "function", "function": listExercisesFunctionTool}
 ];
 
-const newRoutineTemplateResponseFormat = {
+const newRoutineResponseFormat = {
   "type": "json_schema",
   "json_schema": {
     "name": "new_workout_response",
@@ -23,6 +23,104 @@ const newRoutineTemplateResponseFormat = {
         "workout_caption": {"type": "string", "description": "A brief caption that summarises the workout"}
       },
       "required": ["exercises", "workout_name", "workout_caption"],
+      "additionalProperties": false
+    },
+    "strict": true
+  }
+};
+
+const routineLogsReportResponseFormat = {
+  "type": "json_schema",
+  "json_schema": {
+    "name": "historical_exercise_logs_response",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "introduction": {
+          "type": "string",
+          "description": "Brief introduction summarizing the overall training report."
+        },
+        "exercise_reports": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "exercise_name": {"type": "string", "description": "The name of the exercise."},
+              "heaviest_weight": {
+                "type": "string",
+                "description": "Summary of heaviest weight lifted for this exercise."
+              },
+              "heaviest_volume": {
+                "type": "string",
+                "description": "Summary of heaviest total volume (weight x reps) lifted for this exercise."
+              },
+              "drops_in_performance": {
+                "type": "array",
+                "description":
+                "List of brief summary of training sessions where there was a decline in performance compared to previous sessions.",
+                "items": {"type": "string", "description": "Description of the drop in performance compared to previous sessions."}
+              },
+              "comments": {
+                "type": "string",
+                "description":
+                "Overall summary of the exercise performance across all training sessions, including any notable trends or observations."
+              }
+            },
+            "required": ["exercise_name", "heaviest_weight", "heaviest_volume", "drops_in_performance", "comments"],
+            "additionalProperties": false
+          }
+        },
+        "suggestions": {"type": "string", "description": "Brief summary of suggestions for future improvements."}
+      },
+      "required": ["introduction", "exercise_reports", "suggestions"],
+      "additionalProperties": false
+    },
+    "strict": true
+  }
+};
+
+const routineLogReportResponseFormat = {
+  "type": "json_schema",
+  "json_schema": {
+    "name": "current_exercise_logs_response",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "introduction": {
+          "type": "string",
+          "description": "Brief introduction summarizing the overall training report."
+        },
+        "exercise_reports": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "exercise_name": {"type": "string", "description": "The name of the exercise."},
+              "achievements": {
+                "type": "array",
+                "description":
+                "List of brief summary of training sessions where there was an improvement in performance across sets compared to previous sessions.",
+                "items": {"type": "string", "description": "Description of an improvement in performance across sets compared to previous sessions."}
+              },
+              "improvements": {
+                "type": "array",
+                "description":
+                "List of brief summary of training sessions where there was a decline in performance across sets compared to previous sessions.",
+                "items": {"type": "string", "description": "Description of an decline in performance across sets compared to previous sessions."}
+              },
+              "comments": {
+                "type": "string",
+                "description":
+                "Overall summary of the exercise performance compared to previous training sessions, including any notable trends or observations."
+              }
+            },
+            "required": ["exercise_name", "achievements", "improvements", "comments"],
+            "additionalProperties": false
+          }
+        },
+        "suggestions": {"type": "string", "description": "Brief summary of suggestions for future improvements."}
+      },
+      "required": ["introduction", "exercise_reports", "suggestions"],
       "additionalProperties": false
     },
     "strict": true
