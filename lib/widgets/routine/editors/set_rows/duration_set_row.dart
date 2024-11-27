@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/dtos/set_dtos/duration_set_dto.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 
-import '../../../../dtos/set_dto.dart';
 import '../../../../enums/routine_editor_type_enums.dart';
 import '../../../../utils/dialog_utils.dart';
 import '../../../timers/routine_timer.dart';
@@ -11,7 +11,7 @@ import '../set_check_button.dart';
 import '../set_delete_button.dart';
 
 class DurationSetRow extends StatelessWidget {
-  final SetDto setDto;
+  final DurationSetDto setDto;
   final RoutineEditorMode editorType;
   final VoidCallback onRemoved;
   final VoidCallback onCheck;
@@ -37,7 +37,7 @@ class DurationSetRow extends StatelessWidget {
   void _selectTime({required BuildContext context}) {
     displayTimePicker(
         context: context,
-        initialDuration: Duration(milliseconds: setDto.duration()),
+        initialDuration: setDto.duration,
         mode: CupertinoTimerPickerMode.hms,
         onChangedDuration: (Duration duration) {
           Navigator.of(context).pop();
@@ -72,7 +72,7 @@ class DurationSetRow extends StatelessWidget {
                 height: 50,
                 child: Center(
                   child: editorType == RoutineEditorMode.edit || setDto.checked
-                      ? Text(Duration(milliseconds: setDto.duration()).hmsDigital(),
+                      ? Text(setDto.duration.hmsDigital(),
                           style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600))
                       : RoutineTimer(
                           startTime: startTime,

@@ -3,20 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
+import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
+import '../../dtos/set_dtos/reps_dto.dart';
+import '../../dtos/set_dtos/weight_and_reps_dto.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/string_utils.dart';
 
-class MonthSummaryWidget extends StatelessWidget {
+class MonthlyTrainingSummaryWidget extends StatelessWidget {
   final List<RoutineLogDto> routineLogs;
   final DateTime dateTime;
 
-  const MonthSummaryWidget({
+  const MonthlyTrainingSummaryWidget({
     super.key,
     required this.routineLogs, required this.dateTime,
   });
@@ -34,15 +37,26 @@ class MonthSummaryWidget extends StatelessWidget {
     final totalHours = Duration(milliseconds: routineLogHoursInMilliSeconds);
 
     final tonnage = exerciseLogs.map((log) {
-      final volume = log.sets.map((set) => set.volume()).sum;
-      return volume;
+      if(log.exercise.type == ExerciseType.weights) {
+        final volume = log.sets.map((set) => (set as WeightAndRepsSetDto).volume()).sum;
+        return volume;
+      }
+      return 0.0;
     }).sum;
 
     final totalVolume = volumeInKOrM(tonnage);
 
     final exerciseLogsWithReps = exerciseLogs.where((exerciseLog) => withReps(type: exerciseLog.exercise.type));
     final totalReps = exerciseLogsWithReps.map((log) {
-      final reps = log.sets.map((set) => set.reps()).sum;
+      final reps = log.sets.map((set) {
+        final exerciseType = log.exercise.type;
+        if (exerciseType == ExerciseType.bodyWeight) {
+          return (set as RepsSetDto).reps;
+        } else if (exerciseType == ExerciseType.weights) {
+          return (set as WeightAndRepsSetDto).reps;
+        }
+        return 0;
+      }).sum;
       return reps;
     }).sum;
 

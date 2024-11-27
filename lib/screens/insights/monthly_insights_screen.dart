@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/widgets/monthly_insights/activities_widget.dart';
-import 'package:tracker_app/widgets/monthly_insights/month_summary_widget.dart';
+import 'package:tracker_app/widgets/monthly_insights/monthly_training_summary_widget.dart';
 
 import '../../controllers/activity_log_controller.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
@@ -48,7 +48,7 @@ class MonthlyInsightsScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        MonthSummaryWidget(
+        MonthlyTrainingSummaryWidget(
           routineLogs: thisMonthRoutineLogs,
           dateTime: dateTimeRange.start,
         ),

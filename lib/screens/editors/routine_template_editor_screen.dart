@@ -13,7 +13,8 @@ import 'package:tracker_app/utils/dialog_utils.dart';
 
 import '../../colors.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
-import '../../dtos/set_dto.dart';
+import '../../dtos/set_dtos/set_dto.dart';
+import '../../dtos/set_dtos/weight_and_reps_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/routine_editors_utils.dart';
 import '../../utils/routine_utils.dart';
@@ -409,7 +410,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   void _showWeightCalculator() {
     displayBottomSheet(
         context: context,
-        child: WeightPlateCalculator(target: _selectedSetDto?.weight().toDouble() ?? 0),
+        child: WeightPlateCalculator(target: (_selectedSetDto as WeightAndRepsSetDto?)?.weight ?? 0),
         padding: EdgeInsets.zero);
   }
 

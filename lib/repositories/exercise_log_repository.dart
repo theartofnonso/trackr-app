@@ -3,7 +3,7 @@ import 'package:tracker_app/utils/exercise_logs_utils.dart';
 
 import '../dtos/appsync/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
-import '../dtos/set_dto.dart';
+import '../dtos/set_dtos/set_dto.dart';
 import '../enums/routine_editor_type_enums.dart';
 
 class ExerciseLogRepository {
@@ -81,7 +81,7 @@ class ExerciseLogRepository {
   void replaceExercise({required String oldExerciseId, required ExerciseDto newExercise, }) {
     final oldExerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: oldExerciseId);
     final oldExerciseLog = _whereExerciseLog(exerciseLogId: oldExerciseId);
-    if (oldExerciseLogIndex == -1 || oldExerciseLog == null) {
+    if (oldExerciseLogIndex == -1) {
       return;
     }
 
@@ -189,7 +189,9 @@ class ExerciseLogRepository {
 
     int newIndex = sets.length;
 
-    SetDto newSet = sets.lastOrNull != null ? sets.last.copyWith(checked: false) : const SetDto(0, 0, false);
+    final exerciseLog = _whereExerciseLog(exerciseLogId: exerciseLogId);
+
+    SetDto newSet = sets.lastOrNull != null ? sets.last.copyWith(checked: false) : SetDto.newType(type: exerciseLog.exercise.type);
 
     SetDto? pastSet = _wherePastSetOrNull(index: newIndex, pastSets: pastSets);
 
@@ -203,8 +205,8 @@ class ExerciseLogRepository {
     List<ExerciseLogDto> newExerciseLogs = _copyExerciseLogs();
 
     // Updating the exerciseLog
-    final exerciseLog = newExerciseLogs[exerciseLogIndex];
-    newExerciseLogs[exerciseLogIndex] = exerciseLog.copyWith(sets: sets);
+    final newExerciseLog = newExerciseLogs[exerciseLogIndex];
+    newExerciseLogs[exerciseLogIndex] = newExerciseLog.copyWith(sets: sets);
 
     // Assign the new list to maintain immutability
     _exerciseLogs = newExerciseLogs;
@@ -327,6 +329,10 @@ class ExerciseLogRepository {
     return _exerciseLogs.indexWhere((exerciseLog) => exerciseLog.id == exerciseLogId);
   }
 
+  ExerciseLogDto _whereExerciseLog({required String exerciseLogId}) {
+    return _exerciseLogs.firstWhere((exerciseLog) => exerciseLog.id == exerciseLogId);
+  }
+
   List<SetDto> _setsForExerciseLog({required String exerciseLogId}) {
     final exerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: exerciseLogId);
     if (exerciseLogIndex == -1) {
@@ -334,10 +340,6 @@ class ExerciseLogRepository {
     }
     final exerciseLog = _exerciseLogs[exerciseLogIndex];
     return exerciseLog.sets;
-  }
-
-  ExerciseLogDto? _whereExerciseLog({required String exerciseLogId}) {
-    return _exerciseLogs.firstWhereOrNull((exerciseLog) => exerciseLog.id == exerciseLogId);
   }
 
   List<ExerciseLogDto> _copyExerciseLogs() {

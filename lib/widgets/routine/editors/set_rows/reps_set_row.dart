@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:tracker_app/dtos/set_dtos/reps_dto.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/int_textfield.dart';
 
-import '../../../../dtos/set_dto.dart';
 import '../../../../enums/routine_editor_type_enums.dart';
 import '../set_check_button.dart';
 import '../set_delete_button.dart';
 
 class RepsSetRow extends StatelessWidget {
-  final SetDto setDto;
+  final RepsSetDto setDto;
   final RoutineEditorMode editorType;
   final VoidCallback onRemoved;
   final VoidCallback onCheck;
   final void Function() onTapRepsEditor;
-  final (TextEditingController, TextEditingController) controllers;
-  final void Function(num value) onChangedReps;
+  final TextEditingController controller;
+  final void Function(int reps) onChangedReps;
 
   const RepsSetRow({
     super.key,
@@ -21,13 +21,13 @@ class RepsSetRow extends StatelessWidget {
     required this.editorType,
     required this.onRemoved,
     required this.onCheck,
-    required this.controllers,
+    required this.controller,
     required this.onChangedReps, required this.onTapRepsEditor,
   });
 
   @override
   Widget build(BuildContext context) {
-    int reps = setDto.reps().toInt();
+    int reps = (setDto).reps;
 
     return Table(
       border: TableBorder.all(color: Colors.white.withOpacity(0.1), borderRadius: BorderRadius.circular(5)),
@@ -52,7 +52,7 @@ class RepsSetRow extends StatelessWidget {
               value: reps,
               onChanged: onChangedReps,
               onTap: onTapRepsEditor,
-              controller: controllers.$2,
+              controller: controller,
             ),
           ),
           if (editorType == RoutineEditorMode.log)

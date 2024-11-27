@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
+import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
@@ -15,7 +16,7 @@ import 'package:tracker_app/widgets/exercise_history/personal_best_widget.dart';
 import '../../../colors.dart';
 import '../../../controllers/exercise_and_routine_controller.dart';
 import '../../../dtos/graph/chart_point_dto.dart';
-import '../../../dtos/set_dto.dart';
+import '../../../dtos/set_dtos/set_dto.dart';
 import '../../../enums/chart_unit_enum.dart';
 import '../../../enums/exercise_type_enums.dart';
 import '../../../utils/exercise_logs_utils.dart';
@@ -73,7 +74,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   void _heaviestWeightPerLog() {
     final sets = widget.exerciseLogs.map((log) => heaviestSetWeightForExerciseLog(exerciseLog: log)).toList();
     setState(() {
-      _chartPoints = sets.mapIndexed((index, set) => ChartPointDto(index, set.weight())).toList();
+      _chartPoints = sets.mapIndexed((index, set) => ChartPointDto(index, (set as WeightAndRepsSetDto).weight)).toList();
       _summaryType = SummaryType.weight;
       _chartUnit = ChartUnit.weight;
     });
@@ -316,7 +317,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
               padding: const EdgeInsets.only(bottom: 10.0),
               child: _MetricListTile(
                   title: 'Heaviest Set Volume',
-                  trailing: "${widget.heaviestSet.$2.weight()}$weightUnitLabel x ${widget.heaviestSet.$2.reps()}",
+                  trailing: "${(widget.heaviestSet.$2 as WeightAndRepsSetDto).weight}$weightUnitLabel x ${(widget.heaviestSet.$2 as WeightAndRepsSetDto).reps}",
                   subtitle: 'Heaviest volume in a set',
                   onTap: () => _navigateTo(routineLogId: widget.heaviestSet.$1),
                   enabled: widget.exerciseLogs.isNotEmpty),

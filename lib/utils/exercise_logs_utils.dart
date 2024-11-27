@@ -6,7 +6,10 @@ import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import '../dtos/appsync/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/pb_dto.dart';
-import '../dtos/set_dto.dart';
+import '../dtos/set_dtos/duration_set_dto.dart';
+import '../dtos/set_dtos/reps_dto.dart';
+import '../dtos/set_dtos/set_dto.dart';
+import '../dtos/set_dtos/weight_and_reps_dto.dart';
 import '../enums/exercise_type_enums.dart';
 import '../enums/muscle_group_enums.dart';
 import '../enums/pb_enums.dart';
@@ -16,50 +19,76 @@ import '../enums/template_changes_type_message_enums.dart';
 
 SetDto heaviestSetWeightForExerciseLog({required ExerciseLogDto exerciseLog}) {
   if (exerciseLog.sets.isEmpty) {
-    return const SetDto(0, 0, false);
+    return const WeightAndRepsSetDto(weight: 0, reps: 0, checked: false);
   }
 
   return exerciseLog.sets.reduce((SetDto currentHeaviest, SetDto nextSet) =>
-      (nextSet.weight() > currentHeaviest.weight()) ? nextSet : currentHeaviest);
+      ((nextSet as WeightAndRepsSetDto).weight > (currentHeaviest as WeightAndRepsSetDto).weight)
+          ? nextSet
+          : currentHeaviest);
 }
 
 Duration longestDurationForExerciseLog({required ExerciseLogDto exerciseLog}) {
   return exerciseLog.sets
-      .map((set) => Duration(milliseconds: set.duration()))
+      .whereType<DurationSetDto>()
+      .map((set) => (set).duration)
       .fold(Duration.zero, (max, duration) => duration > max ? duration : max);
 }
 
 Duration totalDurationExerciseLog({required ExerciseLogDto exerciseLog}) {
-  return exerciseLog.sets.fold<Duration>(
-    Duration.zero,
-    (total, set) => total + Duration(milliseconds: set.duration()),
-  );
+  return exerciseLog.sets.whereType<DurationSetDto>().fold<Duration>(
+        Duration.zero,
+        (total, set) => total + (set).duration,
+      );
 }
 
-int totalRepsForExerciseLog({required ExerciseLogDto exerciseLog}) =>
-    exerciseLog.sets.fold(0, (total, set) => total + set.reps());
+int totalRepsForExerciseLog({required ExerciseLogDto exerciseLog}) => exerciseLog.sets.fold(0, (total, set) {
+      final exerciseType = exerciseLog.exercise.type;
+      if (exerciseType == ExerciseType.bodyWeight) {
+        return total + (set as RepsSetDto).reps;
+      } else if (exerciseType == ExerciseType.weights) {
+        return total + (set as WeightAndRepsSetDto).reps;
+      }
+      return 0;
+    });
 
 int highestRepsForExerciseLog({required ExerciseLogDto exerciseLog}) {
   if (exerciseLog.sets.isEmpty) return 0;
 
-  return exerciseLog.sets.map((set) => set.reps()).reduce((curr, next) => curr > next ? curr : next).toInt();
+  return exerciseLog.sets
+      .map((set) {
+        final exerciseType = exerciseLog.exercise.type;
+        if (exerciseType == ExerciseType.bodyWeight) {
+          return (set as RepsSetDto).reps;
+        } else if (exerciseType == ExerciseType.weights) {
+          return (set as WeightAndRepsSetDto).reps;
+        }
+        return 0;
+      })
+      .reduce((curr, next) => curr > next ? curr : next)
+      .toInt();
 }
 
 double heaviestVolumeForExerciseLog({required ExerciseLogDto exerciseLog}) {
-  return exerciseLog.sets.map((set) => set.volume()).fold(0.0, (prev, element) => element > prev ? element : prev);
+  return exerciseLog.sets
+      .whereType<WeightAndRepsSetDto>()
+      .map((set) => (set).volume())
+      .fold(0.0, (prev, element) => element > prev ? element : prev);
 }
 
 SetDto heaviestSetVolumeForExerciseLog({required ExerciseLogDto exerciseLog}) {
+  final emptySet = SetDto.newType(type: ExerciseType.weights);
+
   // Check if there are no sets in the exercise log
   if (exerciseLog.sets.isEmpty) {
-    return const SetDto(0, 0, false);
+    return emptySet;
   }
 
   double heaviestVolume = 0;
-  SetDto heaviestSet = const SetDto(0, 0, false);
+  SetDto heaviestSet = emptySet;
 
   for (final set in exerciseLog.sets) {
-    final volume = set.volume();
+    final volume = (set as WeightAndRepsSetDto).volume();
 
     if (volume > heaviestVolume) {
       heaviestVolume = volume;
@@ -70,28 +99,26 @@ SetDto heaviestSetVolumeForExerciseLog({required ExerciseLogDto exerciseLog}) {
   return heaviestSet;
 }
 
-DateTime dateTimePerLog({required ExerciseLogDto log}) {
-  return log.createdAt;
-}
-
 /// Highest value across all [ExerciseDto]
 
 (String?, SetDto) heaviestSetVolume({required List<ExerciseLogDto> exerciseLogs}) {
-  // Return null if there are no past logs
-  if (exerciseLogs.isEmpty) return ("", const SetDto(0, 0, false));
+  final emptySet = SetDto.newType(type: ExerciseType.weights);
 
-  SetDto heaviestSet = exerciseLogs.first.sets.first;
-  String? logId = exerciseLogs.first.routineLogId;
+  // Return null if there are no past logs
+  if (exerciseLogs.isEmpty) return (null, emptySet);
+
+  String? logId;
+  SetDto heaviestSet = emptySet;
 
   num heaviestVolume = 0.0;
 
-  for (var log in exerciseLogs) {
+  for (final log in exerciseLogs) {
     final currentSet = heaviestSetVolumeForExerciseLog(exerciseLog: log);
-    final currentVolume = currentSet.volume();
+    final currentVolume = (currentSet as WeightAndRepsSetDto).volume();
     if (currentVolume > heaviestVolume) {
+      logId = log.routineLogId;
       heaviestVolume = currentVolume;
       heaviestSet = currentSet;
-      logId = log.routineLogId;
     }
   }
 
@@ -99,16 +126,14 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
 }
 
 (String?, double) heaviestWeight({required List<ExerciseLogDto> exerciseLogs}) {
-  double heaviestWeight = 0;
   String? logId;
+  double heaviestWeight = 0;
   if (exerciseLogs.isNotEmpty) {
-    heaviestWeight = exerciseLogs.first.sets.first.weight();
-    logId = exerciseLogs.first.routineLogId;
-    for (var log in exerciseLogs) {
-      final weight = heaviestSetWeightForExerciseLog(exerciseLog: log).weight();
+    for (final log in exerciseLogs) {
+      final weight = (heaviestSetWeightForExerciseLog(exerciseLog: log) as WeightAndRepsSetDto).weight;
       if (weight > heaviestWeight) {
-        heaviestWeight = weight;
         logId = log.routineLogId;
+        heaviestWeight = weight;
       }
     }
   }
@@ -116,16 +141,14 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
 }
 
 (String?, int) mostRepsInSet({required List<ExerciseLogDto> exerciseLogs}) {
-  int highestReps = 0;
   String? logId;
+  int highestReps = 0;
   if (exerciseLogs.isNotEmpty) {
-    highestReps = exerciseLogs.first.sets.first.reps().toInt();
-    logId = exerciseLogs.first.routineLogId;
-    for (var log in exerciseLogs) {
+    for (final log in exerciseLogs) {
       final reps = highestRepsForExerciseLog(exerciseLog: log);
       if (reps > highestReps) {
-        highestReps = reps;
         logId = log.routineLogId;
+        highestReps = reps;
       }
     }
   }
@@ -133,16 +156,14 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
 }
 
 (String?, int) mostRepsInSession({required List<ExerciseLogDto> exerciseLogs}) {
-  int mostReps = 0;
   String? logId;
+  int mostReps = 0;
   if (exerciseLogs.isNotEmpty) {
-    mostReps = exerciseLogs.first.sets.first.reps().toInt();
-    logId = exerciseLogs.first.routineLogId;
-    for (var log in exerciseLogs) {
+    for (final log in exerciseLogs) {
       final reps = totalRepsForExerciseLog(exerciseLog: log);
       if (reps > mostReps) {
-        mostReps = reps;
         logId = log.routineLogId;
+        mostReps = reps;
       }
     }
   }
@@ -153,13 +174,11 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
   Duration longestDuration = Duration.zero;
   String? logId;
   if (exerciseLogs.isNotEmpty) {
-    longestDuration = Duration(milliseconds: exerciseLogs.first.sets.first.duration());
-    logId = exerciseLogs.first.routineLogId;
-    for (var log in exerciseLogs) {
+    for (final log in exerciseLogs) {
       final duration = longestDurationForExerciseLog(exerciseLog: log);
       if (duration > longestDuration) {
-        longestDuration = duration;
         logId = log.routineLogId;
+        longestDuration = duration;
       }
     }
   }
@@ -176,21 +195,24 @@ List<PBDto> calculatePBs(
     if (withWeightsOnly(type: exerciseType)) {
       final pastHeaviestWeight = pastExerciseLogs
           .map((log) => heaviestSetWeightForExerciseLog(exerciseLog: log))
-          .map((set) => set.weight())
+          .whereType<WeightAndRepsSetDto>()
+          .map((set) => set.weight)
           .max;
       final pastHeaviestSetVolume = pastExerciseLogs.map((log) => heaviestVolumeForExerciseLog(exerciseLog: log)).max;
 
-      final currentHeaviestWeightSets = exerciseLog.sets.where((set) => set.weight() > pastHeaviestWeight);
+      final currentHeaviestWeightSets =
+          exerciseLog.sets.whereType<WeightAndRepsSetDto>().where((set) => (set).weight > pastHeaviestWeight);
       if (currentHeaviestWeightSets.isNotEmpty) {
         final heaviestWeightSet =
-            currentHeaviestWeightSets.reduce((curr, next) => (curr.volume()) > (next.volume()) ? curr : next);
+            currentHeaviestWeightSets.reduce((curr, next) => ((curr).volume()) > ((next).volume()) ? curr : next);
         pbs.add(PBDto(set: heaviestWeightSet, exercise: exerciseLog.exercise, pb: PBType.weight));
       }
 
-      final currentHeaviestVolumeSets = exerciseLog.sets.where((set) => (set.volume()) > pastHeaviestSetVolume);
+      final currentHeaviestVolumeSets =
+          exerciseLog.sets.where((set) => ((set as WeightAndRepsSetDto).volume()) > pastHeaviestSetVolume);
       if (currentHeaviestVolumeSets.isNotEmpty) {
-        final heaviestVolumeSet =
-            currentHeaviestVolumeSets.reduce((curr, next) => (curr.volume()) > (next.volume()) ? curr : next);
+        final heaviestVolumeSet = currentHeaviestVolumeSets.reduce((curr, next) =>
+            ((curr as WeightAndRepsSetDto).volume()) > ((next as WeightAndRepsSetDto).volume()) ? curr : next);
         pbs.add(PBDto(set: heaviestVolumeSet, exercise: exerciseLog.exercise, pb: PBType.volume));
       }
     }
@@ -199,10 +221,10 @@ List<PBDto> calculatePBs(
       final pastLongestDuration = pastExerciseLogs.map((log) => longestDurationForExerciseLog(exerciseLog: log)).max;
 
       final currentLongestDurations =
-          exerciseLog.sets.where((set) => Duration(milliseconds: set.duration()) > pastLongestDuration);
+          exerciseLog.sets.whereType<DurationSetDto>().where((set) => (set).duration > pastLongestDuration);
       if (currentLongestDurations.isNotEmpty) {
-        final longestDurationSet = currentLongestDurations.reduce((curr, next) =>
-            Duration(milliseconds: curr.duration()) > Duration(milliseconds: next.duration()) ? curr : next);
+        final longestDurationSet =
+            currentLongestDurations.reduce((curr, next) => (curr).duration > (next).duration ? curr : next);
         pbs.add(PBDto(set: longestDurationSet, exercise: exerciseLog.exercise, pb: PBType.duration));
       }
     }
@@ -277,10 +299,12 @@ TemplateChange? hasSetValueChanged({
   required List<ExerciseLogDto> exerciseLogs1,
   required List<ExerciseLogDto> exerciseLogs2,
 }) {
-  final exerciseLog1Volume =
-      exerciseLogs1.expand((logs) => logs.sets).fold(0.0, (previousValue, set) => previousValue + (set.volume()));
-  final exerciseLog2Volume =
-      exerciseLogs2.expand((logs) => logs.sets).fold(0.0, (previousValue, set) => previousValue + (set.volume()));
+  final exerciseLog1Volume = exerciseLogs1
+      .expand((logs) => logs.sets)
+      .fold(0.0, (previousValue, set) => previousValue + ((set as WeightAndRepsSetDto).volume()));
+  final exerciseLog2Volume = exerciseLogs2
+      .expand((logs) => logs.sets)
+      .fold(0.0, (previousValue, set) => previousValue + ((set as WeightAndRepsSetDto).volume()));
 
   return exerciseLog1Volume != exerciseLog2Volume ? TemplateChange.setValue : null;
 }

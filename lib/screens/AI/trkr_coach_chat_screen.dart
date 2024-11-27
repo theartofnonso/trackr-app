@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -14,7 +16,7 @@ import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../colors.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/exercise_log_dto.dart';
-import '../../dtos/set_dto.dart';
+import '../../dtos/set_dtos/set_dto.dart';
 import '../../openAI/open_ai.dart';
 import '../../openAI/open_ai_functions.dart';
 import '../../shared_prefs.dart';
@@ -41,7 +43,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_loading) return TRKRLoadingScreen(action: _cancelLoadingScreen);
+    if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     final routineTemplate = _routineTemplate;
 
@@ -140,12 +142,6 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
     showSnackbar(context: context, icon: icon ?? const Icon(Icons.info_outline), message: message);
   }
 
-  void _cancelLoadingScreen() {
-    setState(() {
-      _loading = true;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -168,10 +164,11 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
   Future<void> _runFunctionMessage({required String userInstruction}) async {
     final StringBuffer buffer = StringBuffer();
 
-    buffer.writeln(personalTrainerInstructionForWorkouts);
-    buffer.writeln("For each muscle group, suggest two exercises.");
-    buffer.writeln("Ensure one exercise targets the muscle group primarily or secondarily.");
-    buffer.writeln("Both exercises must engage the muscle group from both the lengthened and shortened positions.");
+    buffer.writeln(userInstruction);
+
+    buffer.writeln();
+
+    buffer.writeln("Note: Suggest a balanced combination of exercises engaging all muscle groups.");
 
     final completeSystemInstructions = buffer.toString();
 
@@ -189,7 +186,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
       final toolName = tool['name'] ?? "";
 
       if (toolName != "list_exercises") {
-        _handleUnsupportedTool();
+        _handleError();
         return;
       }
 
@@ -199,18 +196,14 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
         context,
         listen: false,
       ).exercises;
-
       await _recommendExercises(
           toolId: toolId, completeSystemInstructions: completeSystemInstructions, userInstruction: userInstruction, exercises: exercises);
     } catch (e) {
-      _showSnackbar(
-        "Oops, I can only assist you with creating workouts.",
-        icon: TRKRCoachWidget(),
-      );
+      _handleError();
     }
   }
 
-  void _handleUnsupportedTool() {
+  void _handleError() {
     _hideLoadingScreen();
     _showSnackbar(
       "Oops, I can only assist you with workouts.",
@@ -234,7 +227,10 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
 
       if (functionCallResult == null) return;
 
-      NewRoutineDto newRoutineDto = NewRoutineDto.fromJson(functionCallResult);
+      // Deserialize the JSON string
+      Map<String, dynamic> json = jsonDecode(functionCallResult);
+
+      NewRoutineDto newRoutineDto = NewRoutineDto.fromJson(json);
 
       final exerciseTemplates = _createExerciseTemplates(newRoutineDto.exercises, exercises);
 
@@ -251,10 +247,8 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
       });
       _hideLoadingScreen();
     } catch (e) {
-      _showSnackbar(
-        "Oops, I can only assist you with creating workouts.",
-        icon: TRKRCoachWidget(),
-      );
+      print(e);
+      _handleError();
     }
   }
 
@@ -269,7 +263,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
             "",
             exerciseInLibrary,
             exerciseInLibrary.description ?? "",
-            [const SetDto(0, 0, false)],
+            [SetDto.newType(type: exerciseInLibrary.type)],
             DateTime.now(),
             [],
           );

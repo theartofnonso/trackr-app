@@ -7,7 +7,6 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/open_ai_response_schema_dtos/routine_log_report_dto.dart';
-import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/extensions/amplify_models/routine_log_extension.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/openAI/open_ai_functions.dart';
@@ -25,6 +24,7 @@ import '../../controllers/exercise_and_routine_controller.dart';
 import '../../controllers/routine_user_controller.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
+import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/viewmodels/exercise_log_view_model.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/exercise_type_enums.dart';
@@ -324,10 +324,10 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         _saveSummary(response: jsonString, log: log);
         if (mounted) {
           // Deserialize the JSON string
-          Map<String, dynamic> jsonData = jsonDecode(response);
+          Map<String, dynamic> json = jsonDecode(response);
 
           // Create an instance of ExerciseLogsResponse
-          RoutineLogReportDto report = RoutineLogReportDto.fromJson(jsonData);
+          RoutineLogReportDto report = RoutineLogReportDto.fromJson(json);
           navigateWithSlideTransition(
               context: context,
               child: RoutineLogReportScreen(
@@ -350,9 +350,9 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
   List<String> _generateSetSummaries(ExerciseLogDto exerciseLog) {
     final setSummaries = exerciseLog.sets.mapIndexed((index, set) {
       return switch (exerciseLog.exercise.type) {
-        ExerciseType.weights => "Set ${index + 1}: ${exerciseLog.sets[index].weightsSummary()}",
-        ExerciseType.bodyWeight => "Set ${index + 1}: ${exerciseLog.sets[index].repsSummary()}",
-        ExerciseType.duration => "Set ${index + 1}: ${exerciseLog.sets[index].durationSummary()}",
+        ExerciseType.weights => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
+        ExerciseType.bodyWeight => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
+        ExerciseType.duration => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
       };
     }).toList();
     return setSummaries;

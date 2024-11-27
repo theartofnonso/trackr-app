@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
-import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/extensions/amplify_models/routine_template_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -11,6 +10,7 @@ import 'package:tracker_app/shared_prefs.dart';
 import '../../dtos/appsync/exercise_dto.dart';
 import '../../dtos/exercise_log_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
+import '../../dtos/set_dtos/set_dto.dart';
 
 class AmplifyRoutineTemplateRepository {
   List<RoutineTemplateDto> _templates = [];

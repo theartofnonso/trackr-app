@@ -23,7 +23,9 @@ import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../dtos/open_ai_response_schema_dtos/routine_logs_report_dto.dart';
-import '../../dtos/set_dto.dart';
+import '../../dtos/set_dtos/reps_dto.dart';
+import '../../dtos/set_dtos/set_dto.dart';
+import '../../dtos/set_dtos/weight_and_reps_dto.dart';
 import '../../enums/chart_unit_enum.dart';
 import '../../enums/exercise_type_enums.dart';
 import '../../enums/muscle_group_enums.dart';
@@ -339,9 +341,9 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       for (final exerciseLog in exerciseLogs) {
         final setSummaries = exerciseLog.sets.mapIndexed((index, set) {
           return switch (exerciseLog.exercise.type) {
-            ExerciseType.weights => "Set ${index + 1}: ${exerciseLog.sets[index].weightsSummary()}",
-            ExerciseType.bodyWeight => "Set ${index + 1}: ${exerciseLog.sets[index].repsSummary()}",
-            ExerciseType.duration => "Set ${index + 1}: ${exerciseLog.sets[index].durationSummary()}",
+            ExerciseType.weights => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
+            ExerciseType.bodyWeight => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
+            ExerciseType.duration => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
           };
         }).toList();
 
@@ -365,10 +367,10 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
         if (mounted) {
           if (response != null) {
             // Deserialize the JSON string
-            Map<String, dynamic> jsonData = jsonDecode(response);
+            Map<String, dynamic> json = jsonDecode(response);
 
             // Create an instance of ExerciseLogsResponse
-            RoutineLogsReportDto report = RoutineLogsReportDto.fromJson(jsonData);
+            RoutineLogsReportDto report = RoutineLogsReportDto.fromJson(json);
             navigateWithSlideTransition(
                 context: context,
                 child: RoutineLogsReportScreen(
@@ -398,8 +400,15 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   num _calculateMetric({required List<SetDto> sets}) {
     return switch (_metric) {
       SetRepsVolumeReps.sets => sets.length,
-      SetRepsVolumeReps.reps => sets.map((set) => set.reps()).sum,
-      SetRepsVolumeReps.volume => sets.map((set) => set.volume()).sum,
+      SetRepsVolumeReps.reps => sets.map((set) {
+        if (set is RepsSetDto) {
+          return set.reps;
+        } else if (set is WeightAndRepsSetDto) {
+          return set.reps;
+        }
+        return 0;
+      }).sum,
+      SetRepsVolumeReps.volume => sets.map((set) => (set as WeightAndRepsSetDto).volume()).sum,
     };
   }
 
