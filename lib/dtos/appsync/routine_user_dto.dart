@@ -1,18 +1,37 @@
+import 'dart:convert';
+
+import '../../models/RoutineUser.dart';
+
 class RoutineUserDto {
   final String id;
   final String cognitoUserId;
   final String name;
   final String email;
-  final double weight;
+  final num weight;
   final String owner;
 
   RoutineUserDto(
       {required this.id,
-      required this.name,
-      required this.cognitoUserId,
-      required this.email,
-      required this.weight,
-      required this.owner});
+        required this.name,
+        required this.cognitoUserId,
+        required this.email,
+        required this.weight,
+        required this.owner});
+
+  factory RoutineUserDto.toDto(RoutineUser user) {
+    final json = jsonDecode(user.data);
+    return RoutineUserDto.fromJson(json, model: user);
+  }
+
+  factory RoutineUserDto.fromJson(Map<String, dynamic> json, {required RoutineUser model}) {
+    final cognitoUserId = json["cognitoUserId"] ?? "";
+    final name = json["name"] ?? "";
+    final email = json["email"] ?? "";
+    final weight = (json["weight"]) ?? 0.0;
+
+    return RoutineUserDto(
+        id: model.id, name: name, cognitoUserId: cognitoUserId, email: email, weight: weight, owner: model.owner ?? "");
+  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -21,19 +40,7 @@ class RoutineUserDto {
       'name': name,
       'email': email,
       'weight': weight,
-      'owner': owner,
     };
-  }
-
-  factory RoutineUserDto.fromJson(Map<String, dynamic> json) {
-    final id = json['id'] ?? "";
-    final cognitoUserId = json["cognitoUserId"] ?? "";
-    final name = json["name"] ?? "";
-    final email = json["email"] ?? "";
-    final weight = json["weight"] ?? 0.0;
-    final owner = json["owner"] ?? "";
-    return RoutineUserDto(
-        id: id, name: name, cognitoUserId: cognitoUserId, email: email, weight: weight, owner: owner.toString());
   }
 
   RoutineUserDto copyWith({
