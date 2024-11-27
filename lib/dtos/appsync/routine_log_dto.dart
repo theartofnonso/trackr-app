@@ -109,7 +109,7 @@ class RoutineLogDto extends Log {
     List<ExerciseLogDto> exerciseLogs = [];
     if (exerciseLogsInJson.isNotEmpty && exerciseLogsInJson.first is String) {
       exerciseLogs = exerciseLogsInJson
-          .map((json) => ExerciseLogDto.fromJson(routineLogId: log.id, json: jsonDecode(json)))
+          .map((json) => ExerciseLogDto.fromJson(routineLogId: log.id, json: jsonDecode(json), createdAt: log.createdAt.getDateTimeInUtc()))
           .toList();
     } else {
       exerciseLogs = exerciseLogsInJson
