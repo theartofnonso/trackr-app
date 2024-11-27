@@ -365,10 +365,10 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
         if (mounted) {
           if (response != null) {
             // Deserialize the JSON string
-            Map<String, dynamic> jsonData = jsonDecode(response);
+            Map<String, dynamic> json = jsonDecode(response);
 
             // Create an instance of ExerciseLogsResponse
-            RoutineLogsReportDto report = RoutineLogsReportDto.fromJson(jsonData);
+            RoutineLogsReportDto report = RoutineLogsReportDto.fromJson(json);
             navigateWithSlideTransition(
                 context: context,
                 child: RoutineLogsReportScreen(

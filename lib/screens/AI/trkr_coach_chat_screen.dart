@@ -164,10 +164,11 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
   Future<void> _runFunctionMessage({required String userInstruction}) async {
     final StringBuffer buffer = StringBuffer();
 
-    buffer.writeln(personalTrainerInstructionForWorkouts);
-    buffer.writeln("For each muscle group, suggest two exercises.");
-    buffer.writeln("Ensure one exercise targets the muscle group primarily or secondarily.");
-    buffer.writeln("Both exercises must engage the muscle group from both the lengthened and shortened positions.");
+    buffer.writeln(userInstruction);
+
+    buffer.writeln();
+    
+    buffer.writeln("Note: Suggest a balanced combination of exercises engaging all muscle groups.");
 
     final completeSystemInstructions = buffer.toString();
 
