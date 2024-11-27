@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 
+import 'package:tracker_app/models/ModelProvider.dart';
+
 import '../../enums/exercise_type_enums.dart';
 import '../../enums/muscle_group_enums.dart';
 
@@ -41,6 +43,15 @@ class ExerciseDto {
       'creditSource': creditSource?.toString(),
       'credit': credit
     };
+  }
+
+  factory ExerciseDto.toDto(Exercise exercise) {
+    return ExerciseDto.fromExercise(exercise: exercise);
+  }
+
+  factory ExerciseDto.fromExercise({required Exercise exercise}) {
+    final json = jsonDecode(exercise.data);
+    return ExerciseDto.fromJson(json);
   }
 
   factory ExerciseDto.fromJson(Map<String, dynamic> json) {

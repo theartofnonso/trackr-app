@@ -77,7 +77,7 @@ class AmplifyExerciseRepository {
   }
 
   void loadExerciseStream({required List<Exercise> exercises, required VoidCallback onData}) {
-    _userExercises = exercises.map((exercise) => exercise.dtoUser()).toList();
+    _userExercises = exercises.map((exercise) => ExerciseDto.toDto(exercise)).toList();
     onData();
   }
 

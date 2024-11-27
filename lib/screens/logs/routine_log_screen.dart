@@ -7,7 +7,6 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/open_ai_response_schema_dtos/routine_log_report_dto.dart';
-import 'package:tracker_app/extensions/amplify_models/routine_log_extension.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/openAI/open_ai_functions.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
@@ -368,12 +367,12 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         if (data.isNotEmpty) {
           final json = jsonDecode(data);
           final body = json["data"];
-          final routineLog = body["getRoutineLog"];
-          if (routineLog != null) {
-            final routineLogDto = RoutineLog.fromJson(routineLog);
+          final routineLogJson = body["getRoutineLog"];
+          if (routineLogJson != null) {
+            final log = RoutineLog.fromJson(routineLogJson);
             setState(() {
               _loading = false;
-              _log = routineLogDto.dto();
+              _log = RoutineLogDto.toDto(log);
             });
           } else {
             setState(() {

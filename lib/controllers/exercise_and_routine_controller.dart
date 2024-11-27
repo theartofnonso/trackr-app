@@ -162,21 +162,6 @@ class ExerciseAndRoutineController extends ChangeNotifier {
     }
   }
 
-  Future<void> updateTemplateSetsOnly({required String templateId, required List<ExerciseLogDto> newExercises}) async {
-    isLoading = true;
-    try {
-      await _amplifyTemplateRepository.updateTemplateSetsOnly(templateId: templateId, newExercises: newExercises);
-      logger.i("update template sets: $templateId : $newExercises");
-    } catch (e) {
-      errorMessage = "Oops! Something went wrong. Please try again later.";
-      logger.e("Error updating exercise template sets", error: e);
-    } finally {
-      isLoading = false;
-      errorMessage = "";
-      notifyListeners();
-    }
-  }
-
   Future<void> removeTemplate({required RoutineTemplateDto template}) async {
     isLoading = true;
     try {
