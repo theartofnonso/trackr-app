@@ -324,10 +324,10 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         _saveSummary(response: jsonString, log: log);
         if (mounted) {
           // Deserialize the JSON string
-          Map<String, dynamic> jsonData = jsonDecode(response);
+          Map<String, dynamic> json = jsonDecode(response);
 
           // Create an instance of ExerciseLogsResponse
-          RoutineLogReportDto report = RoutineLogReportDto.fromJson(jsonData);
+          RoutineLogReportDto report = RoutineLogReportDto.fromJson(json);
           navigateWithSlideTransition(
               context: context,
               child: RoutineLogReportScreen(

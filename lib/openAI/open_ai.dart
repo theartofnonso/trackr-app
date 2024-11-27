@@ -130,14 +130,14 @@ Map<String, dynamic> createFunctionCallPayload(
   return payload;
 }
 
-Future<Map<String, dynamic>?> runMessageWithFunctionCallPayload({required Map<String, dynamic> payload}) async {
-  Map<String, dynamic>? message;
+Future<dynamic> runMessageWithFunctionCallPayload({required Map<String, dynamic> payload}) async {
+  dynamic message;
 
   // Send POST request
   final response = await http.post(
     Uri.parse(_completionsAPIEndpoint),
     headers: headers,
-    body: payload,
+    body: jsonEncode(payload),
   );
 
   if (response.statusCode == 200) {
