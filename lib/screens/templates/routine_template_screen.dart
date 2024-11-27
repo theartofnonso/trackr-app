@@ -6,7 +6,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/extensions/amplify_models/routine_template_extension.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 
@@ -345,7 +344,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   void _launchRoutineLogEditor() {
     final template = _template;
     if (template != null) {
-      final arguments = RoutineLogArguments(log: template.log(), editorMode: RoutineEditorMode.log);
+      final arguments = RoutineLogArguments(log: template.toLog(), editorMode: RoutineEditorMode.log);
       navigateToRoutineLogEditor(context: context, arguments: arguments);
     }
   }
@@ -404,10 +403,10 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           final body = json["data"];
           final routineTemplate = body["getRoutineTemplate"];
           if (routineTemplate != null) {
-            final routineTemplateDto = RoutineTemplate.fromJson(routineTemplate);
+            final template = RoutineTemplate.fromJson(routineTemplate);
             setState(() {
               _loading = false;
-              _template = routineTemplateDto.dto();
+              _template = RoutineTemplateDto.toDto(template);
             });
           } else {
             setState(() {

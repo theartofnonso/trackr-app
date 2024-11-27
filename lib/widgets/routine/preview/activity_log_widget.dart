@@ -20,7 +20,7 @@ class ActivityLogWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final activityType = ActivityType.fromString(activity.name);
+    final activityType = ActivityType.fromJson(activity.name);
 
     final image = activityType.image;
 

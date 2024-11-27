@@ -286,11 +286,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 
   void _switchToAIContext() async {
-    final result =
-        await navigateWithSlideTransition(context: context, child: const TRKRCoachChatScreen()) as RoutineTemplateDto?;
+    final result = await navigateWithSlideTransition(
+        context: context,
+        child: const TRKRCoachChatScreen()) as RoutineTemplateDto?;
     if (result != null) {
       if (context.mounted) {
-        final arguments = RoutineLogArguments(log: result.log(), editorMode: RoutineEditorMode.log);
+        final arguments = RoutineLogArguments(log: result.toLog(), editorMode: RoutineEditorMode.log);
         if (mounted) {
           navigateToRoutineLogEditor(context: context, arguments: arguments);
         }
