@@ -26,6 +26,7 @@ import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/set_dtos/weight_and_reps_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/routine_utils.dart';
+import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
 import '../../widgets/timers/routine_timer.dart';
@@ -146,8 +147,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   void _discardLog() {
     showBottomSheetWithMultiActions(
         context: context,
-        title: "Discard workout?",
-        description: "Do you want to discard this workout",
+        title: "Discard session?",
+        description: "Do you want to discard this session",
         leftAction: _closeDialog,
         rightAction: () {
           _closeDialog();
@@ -164,7 +165,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
       showBottomSheetWithMultiActions(
           context: context,
           title: 'Running Session',
-          description: "Do you want to end workout?",
+          description: "Do you want to end session?",
           leftAction: context.pop,
           rightAction: () {
             _closeDialog();
@@ -320,15 +321,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                     label:
                         Text("Calculator", style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600)),
                   )
-                : FloatingActionButton.extended(
-                    heroTag: UniqueKey(),
-                    onPressed: widget.mode == RoutineEditorMode.log ? _saveLog : _updateLog,
-                    backgroundColor: vibrantGreen.withOpacity(0.1),
-                    enableFeedback: true,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                    label: Text("Finish workout",
-                        style: GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w600)),
-                  ),
+                : null,
             body: Container(
               width: double.infinity,
               decoration: const BoxDecoration(
@@ -343,6 +336,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
               ),
               child: Stack(children: [
                 SafeArea(
+                  bottom: false,
                   minimum: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
                   child: NotificationListener<UserScrollNotification>(
                     onNotification: (scrollNotification) {
@@ -382,58 +376,66 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                 padding: const EdgeInsets.only(bottom: 250),
                                 child: Column(children: [
                                   ...exerciseLogs.map((exerciseLog) {
-                                    final log = exerciseLog;
-                                    final exerciseId = log.id;
-
-                                    final isExerciseMinimised = _minimisedExerciseLogCards.contains(exerciseId);
+                                    final isExerciseMinimised = _minimisedExerciseLogCards.contains(exerciseLog.id);
 
                                     return Padding(
                                         padding: const EdgeInsets.only(bottom: 20),
                                         child: isExerciseMinimised
                                             ? ExerciseLogLiteWidget(
-                                                key: ValueKey(exerciseId),
-                                                exerciseLogDto: log,
+                                                key: ValueKey(exerciseLog.id),
+                                                exerciseLogDto: exerciseLog,
                                                 superSet: whereOtherExerciseInSuperSet(
-                                                    firstExercise: log, exercises: exerciseLogs),
+                                                    firstExercise: exerciseLog, exercises: exerciseLogs),
                                                 onMaximise: () =>
-                                                    _handleResizedExerciseLogCard(exerciseIdToResize: exerciseId),
+                                                    _handleResizedExerciseLogCard(exerciseIdToResize: exerciseLog.id),
                                               )
                                             : ExerciseLogWidget(
-                                                key: ValueKey(exerciseId),
-                                                exerciseLogDto: log,
+                                                key: ValueKey(exerciseLog.id),
+                                                exerciseLogDto: exerciseLog,
                                                 editorType: RoutineEditorMode.log,
                                                 superSet: whereOtherExerciseInSuperSet(
-                                                    firstExercise: log, exercises: exerciseLogs),
+                                                    firstExercise: exerciseLog, exercises: exerciseLogs),
                                                 onRemoveSuperSet: (String superSetId) {
-                                                  exerciseLogController.removeSuperSet(superSetId: log.superSetId);
+                                                  exerciseLogController.removeSuperSet(superSetId: exerciseLog.superSetId);
                                                   _cacheLog();
                                                 },
                                                 onRemoveLog: () {
-                                                  exerciseLogController.removeExerciseLog(logId: exerciseId);
+                                                  exerciseLogController.removeExerciseLog(logId: exerciseLog.id);
                                                   _cacheLog();
                                                 },
-                                                onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: log),
+                                                onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
                                                 onCache: _cacheLog,
-                                                onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: log),
+                                                onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
                                                 onResize: () =>
-                                                    _handleResizedExerciseLogCard(exerciseIdToResize: exerciseId),
-                                                isMinimised: _isMinimised(exerciseId),
+                                                    _handleResizedExerciseLogCard(exerciseIdToResize: exerciseLog.id),
+                                                isMinimised: _isMinimised(exerciseLog.id),
                                                 onTapWeightEditor: (SetDto setDto) {
                                                   setState(() {
                                                     _selectedSetDto = setDto;
                                                   });
-                                                }, onTapRepsEditor: (SetDto setDto) {
-                                          setState(() {
-                                            _selectedSetDto = null;
-                                          });
-                                        },
+                                                },
+                                                onTapRepsEditor: (SetDto setDto) {
+                                                  setState(() {
+                                                    _selectedSetDto = null;
+                                                  });
+                                                },
                                               ));
-                                  })
+                                  }),
+                                  SizedBox(
+                                      width: double.infinity,
+                                      child: OpacityButtonWidget(
+                                        padding: const EdgeInsets.symmetric(vertical: 16),
+                                        buttonColor: vibrantGreen,
+                                        label:
+                                            widget.mode == RoutineEditorMode.log ? "Finish Session" : "Update Session",
+                                        onPressed: widget.mode == RoutineEditorMode.log ? _saveLog : _updateLog,
+                                      ))
                                 ]),
                               ),
                             ),
                           if (exerciseLogs.isEmpty)
-                            const NoListEmptyState(message: "Tap the + button to start adding exercises to your workout session"),
+                            const NoListEmptyState(
+                                message: "Tap the + button to start adding exercises to your workout session"),
                         ],
                       ),
                     ),

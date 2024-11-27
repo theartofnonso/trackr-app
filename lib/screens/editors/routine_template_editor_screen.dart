@@ -5,8 +5,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
+import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
@@ -18,6 +18,7 @@ import '../../dtos/set_dtos/weight_and_reps_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/routine_editors_utils.dart';
 import '../../utils/routine_utils.dart';
+import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
 import '../../widgets/routine/editors/exercise_log_widget_lite.dart';
@@ -280,13 +281,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                   label:
                       Text("Calculator", style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600)),
                 )
-              : FloatingActionButton(
-                  heroTag: "routine_template_editor_scree_fab",
-                  onPressed: template != null ? _updateRoutineTemplate : _createRoutineTemplate,
-                  backgroundColor: sapphireDark,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                  child: const FaIcon(FontAwesomeIcons.check, color: Colors.white, size: 28),
-                ),
+              : null,
           body: Container(
             width: double.infinity,
             decoration: const BoxDecoration(
@@ -300,6 +295,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
               ),
             ),
             child: SafeArea(
+              bottom: false,
               minimum: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
               child: NotificationListener<UserScrollNotification>(
                 onNotification: (scrollNotification) {
@@ -348,56 +344,71 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                             keyboardType: TextInputType.text,
                             textCapitalization: TextCapitalization.sentences,
                             style: GoogleFonts.ubuntu(
-                                fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+                                fontWeight: FontWeight.w400, color: Colors.white.withOpacity(0.8), fontSize: 14),
                           ),
                         ],
                       ),
                       const SizedBox(height: 20),
-                      exerciseLogs.isNotEmpty
-                          ? Expanded(
-                              child: ListView.separated(
-                                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                                  padding: const EdgeInsets.only(bottom: 250),
-                                  itemBuilder: (BuildContext context, int index) {
-                                    final log = exerciseLogs[index];
-                                    final logId = log.id;
-                                    final isExerciseMinimised = _minimisedExerciseLogCards.contains(logId);
-                                    return isExerciseMinimised
-                                        ? ExerciseLogLiteWidget(
-                                            key: ValueKey(logId),
-                                            exerciseLogDto: log,
-                                            superSet: whereOtherExerciseInSuperSet(
-                                                firstExercise: log, exercises: exerciseLogs),
-                                            onMaximise: () => _handleResizedExerciseLogCard(exerciseIdToResize: logId),
-                                          )
-                                        : ExerciseLogWidget(
-                                            key: ValueKey(logId),
-                                            exerciseLogDto: log,
-                                            editorType: RoutineEditorMode.edit,
-                                            superSet: whereOtherExerciseInSuperSet(
-                                                firstExercise: log, exercises: exerciseLogs),
-                                            onRemoveSuperSet: (String superSetId) =>
-                                                exerciseLogController.removeSuperSet(superSetId: log.superSetId),
-                                            onRemoveLog: () => exerciseLogController.removeExerciseLog(logId: logId),
-                                            onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: log),
-                                            onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: log),
-                                            onResize: () => _handleResizedExerciseLogCard(exerciseIdToResize: logId),
-                                            isMinimised: _isMinimised(logId),
-                                            onTapWeightEditor: (SetDto setDto) {
-                                              setState(() {
-                                                _selectedSetDto = setDto;
-                                              });
-                                            },
-                                            onTapRepsEditor: (SetDto setDto) {
-                                              setState(() {
-                                                _selectedSetDto = null;
-                                              });
-                                            },
-                                          );
-                                  },
-                                  separatorBuilder: (_, __) => const SizedBox(height: 10),
-                                  itemCount: exerciseLogs.length))
-                          : const NoListEmptyState(message: "Tap the + button to start adding exercises to your workout template"),
+                      if (exerciseLogs.isNotEmpty)
+                        Expanded(
+                          child: SingleChildScrollView(
+                              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                              padding: const EdgeInsets.only(bottom: 250),
+                              child: Column(children: [
+                                ...exerciseLogs.map((exerciseLog) {
+                                  final isExerciseMinimised = _minimisedExerciseLogCards.contains(exerciseLog.id);
+                                  return Padding(
+                                      padding: const EdgeInsets.only(bottom: 20),
+                                      child: isExerciseMinimised
+                                          ? ExerciseLogLiteWidget(
+                                              key: ValueKey(exerciseLog.id),
+                                              exerciseLogDto: exerciseLog,
+                                              superSet: whereOtherExerciseInSuperSet(
+                                                  firstExercise: exerciseLog, exercises: exerciseLogs),
+                                              onMaximise: () =>
+                                                  _handleResizedExerciseLogCard(exerciseIdToResize: exerciseLog.id),
+                                            )
+                                          : ExerciseLogWidget(
+                                              key: ValueKey(exerciseLog.id),
+                                              exerciseLogDto: exerciseLog,
+                                              editorType: RoutineEditorMode.edit,
+                                              superSet: whereOtherExerciseInSuperSet(
+                                                  firstExercise: exerciseLog, exercises: exerciseLogs),
+                                              onRemoveSuperSet: (String superSetId) => exerciseLogController
+                                                  .removeSuperSet(superSetId: exerciseLog.superSetId),
+                                              onRemoveLog: () =>
+                                                  exerciseLogController.removeExerciseLog(logId: exerciseLog.id),
+                                              onReplaceLog: () =>
+                                                  _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
+                                              onSuperSet: () =>
+                                                  _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
+                                              onResize: () =>
+                                                  _handleResizedExerciseLogCard(exerciseIdToResize: exerciseLog.id),
+                                              isMinimised: _isMinimised(exerciseLog.id),
+                                              onTapWeightEditor: (SetDto setDto) {
+                                                setState(() {
+                                                  _selectedSetDto = setDto;
+                                                });
+                                              },
+                                              onTapRepsEditor: (SetDto setDto) {
+                                                setState(() {
+                                                  _selectedSetDto = null;
+                                                });
+                                              },
+                                            ));
+                                }),
+                                SizedBox(
+                                    width: double.infinity,
+                                    child: OpacityButtonWidget(
+                                        padding: const EdgeInsets.symmetric(vertical: 16),
+                                        buttonColor: vibrantGreen,
+                                        label: template != null ? "Update Workout" : "Create Workout",
+                                        onPressed: template != null ? _updateRoutineTemplate : _createRoutineTemplate))
+                              ])),
+                        ),
+                      if (exerciseLogs.isEmpty)
+                        const NoListEmptyState(
+                            message: "Tap the + button to start adding exercises to your workout template"),
                     ],
                   ),
                 ),

@@ -212,6 +212,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
             ),
           ),
           child: SafeArea(
+            bottom: false,
             minimum: const EdgeInsets.all(10.0),
             child: SingleChildScrollView(
               child: Column(

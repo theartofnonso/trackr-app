@@ -63,6 +63,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
         ),
       ),
       child: SafeArea(
+        bottom: false,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

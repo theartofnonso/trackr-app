@@ -39,6 +39,7 @@ class RoutineLogsReportScreen extends StatelessWidget {
             ),
           ),
           child: SafeArea(
+            bottom: false,
             minimum: const EdgeInsets.only(bottom: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
