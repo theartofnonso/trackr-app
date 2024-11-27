@@ -81,6 +81,7 @@ class RoutineTemplatesScreen extends StatelessWidget {
               ),
             ),
             child: SafeArea(
+                bottom: false,
                 minimum: const EdgeInsets.all(10.0),
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   const SizedBox(height: 16),

@@ -147,6 +147,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
             ),
           ),
           child: SafeArea(
+            bottom: false,
             minimum: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

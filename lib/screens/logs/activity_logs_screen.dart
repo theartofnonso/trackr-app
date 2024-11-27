@@ -49,6 +49,7 @@ class ActivityLogsScreen extends StatelessWidget {
           ),
         ),
         child: SafeArea(
+          bottom: false,
           minimum: const EdgeInsets.all(10.0),
           child: Column(
             children: [

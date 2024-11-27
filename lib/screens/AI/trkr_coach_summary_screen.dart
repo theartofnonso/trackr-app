@@ -30,6 +30,7 @@ class TRKRCoachSummaryScreen extends StatelessWidget {
         ),
       ),
       child: SafeArea(
+        bottom: false,
         minimum: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

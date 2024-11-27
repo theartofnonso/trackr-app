@@ -336,6 +336,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
               ),
               child: Stack(children: [
                 SafeArea(
+                  bottom: false,
                   minimum: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
                   child: NotificationListener<UserScrollNotification>(
                     onNotification: (scrollNotification) {
@@ -375,42 +376,39 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                 padding: const EdgeInsets.only(bottom: 250),
                                 child: Column(children: [
                                   ...exerciseLogs.map((exerciseLog) {
-                                    final log = exerciseLog;
-                                    final exerciseId = log.id;
-
-                                    final isExerciseMinimised = _minimisedExerciseLogCards.contains(exerciseId);
+                                    final isExerciseMinimised = _minimisedExerciseLogCards.contains(exerciseLog.id);
 
                                     return Padding(
                                         padding: const EdgeInsets.only(bottom: 20),
                                         child: isExerciseMinimised
                                             ? ExerciseLogLiteWidget(
-                                                key: ValueKey(exerciseId),
-                                                exerciseLogDto: log,
+                                                key: ValueKey(exerciseLog.id),
+                                                exerciseLogDto: exerciseLog,
                                                 superSet: whereOtherExerciseInSuperSet(
-                                                    firstExercise: log, exercises: exerciseLogs),
+                                                    firstExercise: exerciseLog, exercises: exerciseLogs),
                                                 onMaximise: () =>
-                                                    _handleResizedExerciseLogCard(exerciseIdToResize: exerciseId),
+                                                    _handleResizedExerciseLogCard(exerciseIdToResize: exerciseLog.id),
                                               )
                                             : ExerciseLogWidget(
-                                                key: ValueKey(exerciseId),
-                                                exerciseLogDto: log,
+                                                key: ValueKey(exerciseLog.id),
+                                                exerciseLogDto: exerciseLog,
                                                 editorType: RoutineEditorMode.log,
                                                 superSet: whereOtherExerciseInSuperSet(
-                                                    firstExercise: log, exercises: exerciseLogs),
+                                                    firstExercise: exerciseLog, exercises: exerciseLogs),
                                                 onRemoveSuperSet: (String superSetId) {
-                                                  exerciseLogController.removeSuperSet(superSetId: log.superSetId);
+                                                  exerciseLogController.removeSuperSet(superSetId: exerciseLog.superSetId);
                                                   _cacheLog();
                                                 },
                                                 onRemoveLog: () {
-                                                  exerciseLogController.removeExerciseLog(logId: exerciseId);
+                                                  exerciseLogController.removeExerciseLog(logId: exerciseLog.id);
                                                   _cacheLog();
                                                 },
-                                                onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: log),
+                                                onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
                                                 onCache: _cacheLog,
-                                                onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: log),
+                                                onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
                                                 onResize: () =>
-                                                    _handleResizedExerciseLogCard(exerciseIdToResize: exerciseId),
-                                                isMinimised: _isMinimised(exerciseId),
+                                                    _handleResizedExerciseLogCard(exerciseIdToResize: exerciseLog.id),
+                                                isMinimised: _isMinimised(exerciseLog.id),
                                                 onTapWeightEditor: (SetDto setDto) {
                                                   setState(() {
                                                     _selectedSetDto = setDto;
