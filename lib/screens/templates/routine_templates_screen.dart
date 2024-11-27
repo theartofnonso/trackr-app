@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
+import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/extensions/dtos/routine_template_dto_extension.dart';
 import 'package:tracker_app/screens/AI/trkr_coach_chat_screen.dart';
 import 'package:tracker_app/utils/string_utils.dart';
@@ -11,7 +12,6 @@ import 'package:tracker_app/widgets/ai_widgets/trkr_coach_button.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
-import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
@@ -51,7 +51,7 @@ class RoutineTemplatesScreen extends StatelessWidget {
 
       final muscleGroupFamilies = exercisesByMuscleGroupFamily.keys.toSet();
 
-      final listOfPopularMuscleGroupFamilies = popularMuscleGroupFamilies().toSet();
+      final listOfPopularMuscleGroupFamilies = MuscleGroupFamily.values.toSet();
 
       final untrainedMuscleGroups = listOfPopularMuscleGroupFamilies.difference(muscleGroupFamilies);
 

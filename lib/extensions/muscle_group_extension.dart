@@ -15,7 +15,6 @@ extension MuscleGroupExtension on MuscleGroup {
       MuscleGroup.forearms => "forearms",
       MuscleGroup.frontShoulder => "frontshoulder",
       MuscleGroup.shoulders => "frontshoulder",
-      MuscleGroup.fullBody => "fullbody",
       MuscleGroup.glutes => "glutes",
       MuscleGroup.hamstrings => "hamstrings",
       MuscleGroup.lats => "lats",

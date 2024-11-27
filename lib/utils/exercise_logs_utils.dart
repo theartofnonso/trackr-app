@@ -315,12 +315,10 @@ Map<MuscleGroupFamily, double> muscleGroupFamilyFrequency(
 
   // Counting the occurrences of each MuscleGroup
   for (var log in exerciseLogs) {
-    if (log.exercise.primaryMuscleGroup.family != MuscleGroupFamily.fullBody) {
-      frequencyMap.update(log.exercise.primaryMuscleGroup.family, (value) => value + 1, ifAbsent: () => 1);
-      if (includeSecondaryMuscleGroups) {
-        for (var muscleGroup in log.exercise.secondaryMuscleGroups) {
-          frequencyMap.update(muscleGroup.family, (value) => value + 1, ifAbsent: () => 1);
-        }
+    frequencyMap.update(log.exercise.primaryMuscleGroup.family, (value) => value + 1, ifAbsent: () => 1);
+    if (includeSecondaryMuscleGroups) {
+      for (var muscleGroup in log.exercise.secondaryMuscleGroups) {
+        frequencyMap.update(muscleGroup.family, (value) => value + 1, ifAbsent: () => 1);
       }
     }
   }
@@ -353,10 +351,12 @@ Map<MuscleGroupFamily, int> _muscleGroupFamilyCountOn4WeeksScale({required List<
         .map((muscleGroup) => muscleGroup.family);
     final muscleGroupFamilies = {...primaryMuscleGroupFamilies, ...secondaryMuscleGroupFamilies};
 
+    /// We don't report these muscle groups
+    muscleGroupFamilies.remove(MuscleGroupFamily.neck);
+    muscleGroupFamilies.remove(MuscleGroupFamily.none);
+
     for (var family in muscleGroupFamilies) {
-      if (family != MuscleGroupFamily.fullBody) {
-        frequencyMap.update(family, (value) => value >= 8 ? 8 : value + 1, ifAbsent: () => 1);
-      }
+      frequencyMap.update(family, (value) => value >= 8 ? 8 : value + 1, ifAbsent: () => 1);
     }
   }
 
@@ -388,7 +388,7 @@ double cumulativeMuscleGroupFamilyFrequency({required List<ExerciseLogDto> exerc
 
   final cumulativeFrequency = frequencyMap.entries.map((entry) => entry.value).sum;
 
-  return cumulativeFrequency / 56;
+  return cumulativeFrequency / 48;
 }
 
 bool withWeightsOnly({required ExerciseType type}) {

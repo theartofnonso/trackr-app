@@ -273,7 +273,7 @@
     "id": "FLB24",
     "name": "Squat Jerk",
     "primaryMuscleGroup": "Full Body",
-    "secondaryMuscleGroups": ["shoulders", "quadriceps", "glutes", "hamstrings", "triceps", "back", "abs", "traps"],
+    "secondaryMuscleGroups": ["quadriceps", "glutes", "hamstrings", "triceps", "back", "abs", "traps"],
     "type": "WR",
     "description": "Combines strength and mobility in the legs, shoulders, and core.",
     "trainingPosition": "None"
@@ -281,8 +281,8 @@
   {
     "id": "FLB25",
     "name": "Split Jerk",
-    "primaryMuscleGroup": "Full Body",
-    "secondaryMuscleGroups": ["shoulders", "quadriceps", "glutes", "hamstrings", "triceps", "back", "abs", "traps"],
+    "primaryMuscleGroup": "front shoulder",
+    "secondaryMuscleGroups": ["quadriceps", "glutes", "hamstrings", "triceps", "back", "abs", "traps"],
     "type": "WR",
     "video": "https://www.youtube.com/watch?v=GUDkOtraHHY",
     "creditSource": "https://www.youtube.com/@crossfit",

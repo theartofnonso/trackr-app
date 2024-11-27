@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
+import '../../enums/muscle_group_enums.dart';
 import '../../utils/exercise_logs_utils.dart';
-import '../../utils/general_utils.dart';
 import '../../utils/string_utils.dart';
 import '../chart/muscle_group_family_frequency_chart.dart';
 
@@ -30,13 +30,13 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
 
     final muscleGroupFamilies = muscleGroupFamilyFrequencies.keys.toSet();
 
-    final listOfPopularMuscleGroupFamilies = popularMuscleGroupFamilies().toSet();
+    final listOfPopularMuscleGroupFamilies = MuscleGroupFamily.values.toSet();
 
     final untrainedMuscleGroups = listOfPopularMuscleGroupFamilies.difference(muscleGroupFamilies);
 
     String untrainedMuscleGroupsNames = joinWithAnd(items: untrainedMuscleGroups.map((muscle) => muscle.name).toList());
 
-    if (untrainedMuscleGroups.length == popularMuscleGroupFamilies().length) {
+    if (untrainedMuscleGroups.length == MuscleGroupFamily.values.length) {
       untrainedMuscleGroupsNames = "any muscle groups";
     }
 
