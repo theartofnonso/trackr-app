@@ -86,8 +86,8 @@ class RoutineLogReportScreen extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16),
                       child: LabelContainerDivider(
                           labelAlignment: LabelAlignment.left,
-                          label: "Analysis".toUpperCase(),
-                          description: "See your personal best achievements across all recorded training sessions.",
+                          label: "training and performance".toUpperCase(),
+                          description: "Review your performance in comparison to previous sessions.",
                           labelStyle:
                               GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
                           descriptionStyle: GoogleFonts.ubuntu(
