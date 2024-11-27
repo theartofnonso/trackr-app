@@ -16,7 +16,7 @@ import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../colors.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/exercise_log_dto.dart';
-import '../../dtos/set_dto.dart';
+import '../../dtos/set_dtos/set_dto.dart';
 import '../../openAI/open_ai.dart';
 import '../../openAI/open_ai_functions.dart';
 import '../../shared_prefs.dart';
@@ -167,7 +167,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
     buffer.writeln(userInstruction);
 
     buffer.writeln();
-    
+
     buffer.writeln("Note: Suggest a balanced combination of exercises engaging all muscle groups.");
 
     final completeSystemInstructions = buffer.toString();
@@ -263,7 +263,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
             "",
             exerciseInLibrary,
             exerciseInLibrary.description ?? "",
-            [const SetDto(0, 0, false)],
+            [SetDto.newType(type: exerciseInLibrary.type)],
             DateTime.now(),
             [],
           );

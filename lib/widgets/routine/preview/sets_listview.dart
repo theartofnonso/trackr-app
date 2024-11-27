@@ -1,11 +1,14 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:tracker_app/dtos/set_dtos/duration_set_dto.dart';
+import 'package:tracker_app/dtos/set_dtos/reps_dto.dart';
+import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/routine/preview/set_rows/double_set_row.dart';
 import 'package:tracker_app/widgets/routine/preview/set_rows/single_set_row.dart';
 
 import '../../../dtos/pb_dto.dart';
-import '../../../dtos/set_dto.dart';
+import '../../../dtos/set_dtos/set_dto.dart';
 import '../../../enums/exercise_type_enums.dart';
 
 class SetsListview extends StatelessWidget {
@@ -27,14 +30,14 @@ class SetsListview extends StatelessWidget {
 
       switch (type) {
         case ExerciseType.weights:
-          final firstLabel = setDto.weight();
-          final secondLabel = setDto.reps();
+          final firstLabel = (setDto as WeightAndRepsSetDto).weight;
+          final secondLabel = setDto.reps;
           return DoubleSetRow(first: "$firstLabel", second: "$secondLabel", margin: margin, pbs: pbsForSet);
         case ExerciseType.bodyWeight:
-          final label = setDto.reps();
+          final label = (setDto as RepsSetDto).reps;
           return SingleSetRow(label: "$label", margin: margin);
         case ExerciseType.duration:
-          final label = Duration(milliseconds: setDto.duration()).hmsAnalog();
+          final label = (setDto as DurationSetDto).duration.hmsAnalog();
           return SingleSetRow(label: label, margin: margin, pbs: pbsForSet);
       }
     })).toList();

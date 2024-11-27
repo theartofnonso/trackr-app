@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:tracker_app/dtos/set_dto.dart';
+import 'package:tracker_app/dtos/set_dtos/set_dto.dart';
 
 import 'appsync/exercise_dto.dart';
 

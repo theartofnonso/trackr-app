@@ -138,13 +138,13 @@ String copyRoutineAsText(
     for (var i = 0; i < exerciseLog.sets.length; i++) {
       switch (exerciseLog.exercise.type) {
         case ExerciseType.weights:
-          routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].weightsSummary()}");
+          routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].summary()}");
           break;
         case ExerciseType.bodyWeight:
-          routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].repsSummary()}");
+          routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].summary()}");
           break;
         case ExerciseType.duration:
-          routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].durationSummary()}");
+          routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].summary()}");
           break;
       }
     }
