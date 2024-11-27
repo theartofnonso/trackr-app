@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import '../../enums/activity_type_enums.dart';
 import '../exercise_log_dto.dart';
@@ -66,7 +65,7 @@ class RoutineLogDto extends Log {
     final endTime = DateTime.parse(json["endTime"]);
     final exercisesJsons = json["exercises"] as List<dynamic>;
     final exercises =
-        exercisesJsons.map((json) => ExerciseLogDto.fromJson(routineLogId: id, json: jsonDecode(json))).toList();
+        exercisesJsons.map((json) => ExerciseLogDto.fromJson(routineLogId: id, json: json)).toList();
     final createdAtDate = createdAt ?? DateTime.now();
     final updatedAtDate = updateAt ?? DateTime.now();
     return RoutineLogDto(
