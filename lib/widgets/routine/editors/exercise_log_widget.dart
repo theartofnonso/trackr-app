@@ -253,9 +253,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   @override
   void initState() {
     super.initState();
-    _loadWeightAndRepsControllers();
     if (widget.exerciseLogDto.exercise.type == ExerciseType.weights) {
-      _loadRepsControllers();
+      _loadWeightAndRepsControllers();
     } else if (widget.exerciseLogDto.exercise.type == ExerciseType.bodyWeight) {
       _loadRepsControllers();
     } else {
@@ -352,7 +351,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             cursorColor: Colors.white,
             keyboardType: TextInputType.text,
             textCapitalization: TextCapitalization.sentences,
-            style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+            style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white.withOpacity(0.8), fontSize: 14),
           ),
           const SizedBox(height: 12),
           switch (exerciseType) {
