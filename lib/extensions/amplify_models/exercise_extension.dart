@@ -6,7 +6,6 @@ import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import '../../enums/exercise_type_enums.dart';
-import '../../enums/training_position_enum.dart';
 
 extension ExerciseExtension on Exercise {
   static ExerciseDto dtoLocal(dynamic json) {
@@ -17,8 +16,6 @@ extension ExerciseExtension on Exercise {
     final secondaryMuscleGroupJson = json["secondaryMuscleGroups"] as List<dynamic>;
     final secondaryMuscleGroups =
         secondaryMuscleGroupJson.map((muscleGroup) => MuscleGroup.fromString(muscleGroup)).toList();
-    final trainingPositionString = json["trainingPosition"] ?? "";
-    final trainingPosition = TrainingPosition.fromString(trainingPositionString);
     final typeString = json["type"];
     final video = json["video"];
     final videoUri = video != null ? Uri.parse(video) : null;
@@ -32,7 +29,6 @@ extension ExerciseExtension on Exercise {
         primaryMuscleGroup: primaryMuscleGroup,
         secondaryMuscleGroups: secondaryMuscleGroups,
         type: ExerciseType.fromString(typeString),
-        trainingPosition: trainingPosition,
         video: videoUri,
         description: description,
         creditSource: creditSourceUri,
@@ -52,7 +48,6 @@ extension ExerciseExtension on Exercise {
         name: name,
         primaryMuscleGroup: primaryMuscleGroup,
         secondaryMuscleGroups: [],
-        trainingPosition: TrainingPosition.none,
         type: type,
         owner: owner ?? SharedPrefs().userId);
   }

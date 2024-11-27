@@ -247,7 +247,6 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
       });
       _hideLoadingScreen();
     } catch (e) {
-      print(e);
       _handleError();
     }
   }
@@ -265,7 +264,6 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
             exerciseInLibrary.description ?? "",
             [SetDto.newType(type: exerciseInLibrary.type)],
             DateTime.now(),
-            [],
           );
         })
         .whereType<ExerciseLogDto>()

@@ -5,7 +5,6 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
-import 'package:tracker_app/extensions/amplify_models/routine_log_extension.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/utils/routine_utils.dart';
 
@@ -43,7 +42,7 @@ class AmplifyRoutineLogRepository {
   }
 
   void loadLogStream({required List<RoutineLog> logs, required VoidCallback onLoaded}) {
-    _logs = logs.map((log) => log.dto()).toList();
+    _logs = logs.map((log) => RoutineLogDto.toDto(log)).toList();
     _groupExerciseLogs();
     _calculateMilestones();
     onLoaded();
@@ -115,7 +114,7 @@ class AmplifyRoutineLogRepository {
     final cache = SharedPrefs().cachedRoutineLog;
     if (cache.isNotEmpty) {
       final json = jsonDecode(cache);
-      routineLog = RoutineLogDto.fromJson(json, owner: SharedPrefs().userId);
+      routineLog = RoutineLogDto.fromCachedLog(json: json);
     }
     return routineLog;
   }
