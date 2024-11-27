@@ -90,10 +90,6 @@ class ExerciseLogRepository {
     exerciseLogs[oldExerciseLogIndex] = oldExerciseLog.copyWith(id: newExercise.id, exercise: newExercise, sets: []);
 
     _exerciseLogs = [...exerciseLogs];
-
-    removeSubstituteExercises(primaryExerciseId: newExercise.id, secondaryExerciseId: newExercise.id);
-
-    addSubstituteExercises(primaryExerciseId: newExercise.id, exercises: [oldExerciseLog.exercise]);
   }
 
   void _removeAllSetsForExerciseLog({required String exerciseLogId}) {
@@ -138,36 +134,6 @@ class ExerciseLogRepository {
     final reorderedLogs = _reOrderSuperSets(oldExerciseLogs: updatedExerciseLogs);
 
     _exerciseLogs = [...reorderedLogs];
-  }
-
-  void addSubstituteExercises({required String primaryExerciseId, required List<ExerciseDto> exercises}) {
-    final primaryExerciseIndex = _indexWhereExerciseLog(exerciseLogId: primaryExerciseId);
-
-    if (primaryExerciseIndex == -1) {
-      return;
-    }
-
-    List<ExerciseLogDto> updatedExerciseLogs = List<ExerciseLogDto>.from(_exerciseLogs);
-
-    updatedExerciseLogs[primaryExerciseIndex].substituteExercises.addAll(exercises);
-
-    _exerciseLogs = [...updatedExerciseLogs];
-
-  }
-
-  void removeSubstituteExercises({required String primaryExerciseId, required String secondaryExerciseId}) {
-    final primaryExerciseIndex = _indexWhereExerciseLog(exerciseLogId: primaryExerciseId);
-
-    if (primaryExerciseIndex == -1) {
-      return;
-    }
-
-    List<ExerciseLogDto> updatedExerciseLogs = List<ExerciseLogDto>.from(_exerciseLogs);
-
-    updatedExerciseLogs[primaryExerciseIndex].substituteExercises.removeWhere((exercise) => exercise.id == secondaryExerciseId);
-
-    _exerciseLogs = [...updatedExerciseLogs];
-
   }
 
   void removeSuperSet({required String superSetId}) {
@@ -278,7 +244,7 @@ class ExerciseLogRepository {
   /// Helper functions
 
   ExerciseLogDto _createExerciseLog(ExerciseDto exercise, {String? notes}) {
-    return ExerciseLogDto(exercise.id, null, "", exercise, notes ?? "", [], DateTime.now(), []);
+    return ExerciseLogDto(exercise.id, null, "", exercise, notes ?? "", [], DateTime.now());
   }
 
   List<ExerciseLogDto> completedExerciseLogs() {

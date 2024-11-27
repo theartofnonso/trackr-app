@@ -1,25 +1,37 @@
+import 'dart:convert';
 
 import '../../enums/activity_type_enums.dart';
-import '../exercise_log_dto.dart';
+import '../../models/RoutineLog.dart';
 import '../abstract_class/log_class.dart';
+import '../exercise_log_dto.dart';
 
 class RoutineLogDto extends Log {
   @override
   final String id;
+
   final String templateId;
+
   @override
   final String name;
+
   @override
   final String notes;
+
   final String? summary;
+
   @override
   final DateTime startTime;
+
   @override
   final DateTime endTime;
+
   final List<ExerciseLogDto> exerciseLogs;
+
   final String owner;
+
   @override
   final DateTime createdAt;
+
   @override
   final DateTime updatedAt;
 
@@ -55,31 +67,69 @@ class RoutineLogDto extends Log {
     };
   }
 
-  factory RoutineLogDto.fromJson(Map<String, dynamic> json, {String? owner, DateTime? createdAt, DateTime? updateAt}) {
-    final id = json["id"] ?? "";
+  factory RoutineLogDto.toDto(RoutineLog log) {
+    return RoutineLogDto.fromLog(log: log);
+  }
+
+  factory RoutineLogDto.fromCachedLog({required Map<String, dynamic> json}) {
     final templateId = json["templateId"] ?? "";
     final name = json["name"] ?? "";
     final notes = json["notes"] ?? "";
     final summary = json["summary"];
     final startTime = DateTime.parse(json["startTime"]);
     final endTime = DateTime.parse(json["endTime"]);
-    final exercisesJsons = json["exercises"] as List<dynamic>;
-    final exercises =
-        exercisesJsons.map((json) => ExerciseLogDto.fromJson(routineLogId: id, json: json)).toList();
-    final createdAtDate = createdAt ?? DateTime.now();
-    final updatedAtDate = updateAt ?? DateTime.now();
+    final exerciseLogJsons = json["exercises"] as List<dynamic>;
+    final exerciseLogs = exerciseLogJsons.map((json) {
+      return ExerciseLogDto.fromJson(routineLogId: "", json: json);
+    }).toList();
     return RoutineLogDto(
-      id: id,
+      id: "",
       templateId: templateId,
       name: name,
+      exerciseLogs: exerciseLogs,
       notes: notes,
       summary: summary,
       startTime: startTime,
       endTime: endTime,
-      exerciseLogs: exercises,
-      owner: owner ?? "",
-      createdAt: createdAtDate,
-      updatedAt: updatedAtDate,
+      owner: "",
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+  }
+
+  factory RoutineLogDto.fromLog({required RoutineLog log}) {
+    final json = jsonDecode(log.data);
+    final templateId = json["templateId"] ?? "";
+    final name = json["name"] ?? "";
+    final notes = json["notes"] ?? "";
+    final summary = json["summary"];
+    final startTime = DateTime.parse(json["startTime"]);
+    final endTime = DateTime.parse(json["endTime"]);
+    final exerciseLogsInJson = json["exercises"] as List<dynamic>;
+    List<ExerciseLogDto> exerciseLogs = [];
+    if (exerciseLogsInJson.isNotEmpty && exerciseLogsInJson.first is String) {
+      exerciseLogs = exerciseLogsInJson
+          .map((json) => ExerciseLogDto.fromJson(routineLogId: log.id, json: jsonDecode(json)))
+          .toList();
+    } else {
+      exerciseLogs = exerciseLogsInJson
+          .map((json) =>
+              ExerciseLogDto.fromJson(routineLogId: log.id, createdAt: log.createdAt.getDateTimeInUtc(), json: json))
+          .toList();
+    }
+
+    return RoutineLogDto(
+      id: log.id,
+      templateId: templateId,
+      name: name,
+      exerciseLogs: exerciseLogs,
+      notes: notes,
+      summary: summary,
+      startTime: startTime,
+      endTime: endTime,
+      owner: log.owner ?? "",
+      createdAt: log.createdAt.getDateTimeInUtc(),
+      updatedAt: log.updatedAt.getDateTimeInUtc(),
     );
   }
 
