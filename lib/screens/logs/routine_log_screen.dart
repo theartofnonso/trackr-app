@@ -1,12 +1,16 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/dtos/open_ai_response_schema_dtos/routine_log_report_dto.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/extensions/amplify_models/routine_log_extension.dart';
+import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
+import 'package:tracker_app/openAI/open_ai_functions.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/general_utils.dart';
@@ -23,6 +27,7 @@ import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/viewmodels/exercise_log_view_model.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
+import '../../enums/exercise_type_enums.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../models/RoutineLog.dart';
 import '../../openAI/open_ai.dart';
@@ -30,11 +35,12 @@ import '../../strings/ai_prompts.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/routine_utils.dart';
+import '../../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../widgets/ai_widgets/trkr_information_container.dart';
 import '../../widgets/empty_states/not_found.dart';
 import '../../widgets/routine/preview/date_duration_pb.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
-import '../AI/trkr_coach_summary_screen.dart';
+import '../AI/routine_log_report_screen.dart';
 
 class RoutineLogScreen extends StatefulWidget {
   static const routeName = '/routine_log_screen';
@@ -243,9 +249,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                                   ctaLabel: updatedLog.summary != null ? "Review your feedback" : "Ask for feedback",
                                   description:
                                       "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
-                                  onTap: () => updatedLog.summary != null
-                                      ? _showSummary()
-                                      : _generateSummary(logs: updatedExerciseLogs)),
+                                  onTap: () => _generateReport(exerciseLogs: updatedExerciseLogs)),
                             ),
                           ExerciseLogListView(
                               exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: updatedExerciseLogs)),
@@ -268,51 +272,90 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     });
   }
 
-  void _showSummary() {
-    final log = _log;
-
-    if (log != null) {
-      final summary = log.summary;
-      if (summary != null) {
-        navigateWithSlideTransition(
-            context: context,
-            child: TRKRCoachSummaryScreen(
-              content: summary,
-            ));
-      }
-    }
-  }
-
-  void _generateSummary({required List<ExerciseLogDto> logs}) async {
+  void _generateReport({required List<ExerciseLogDto> exerciseLogs}) async {
     final log = _log;
 
     if (log == null) return;
 
     final userInstructions =
-        "Review my ${log.name} workout log and provide feedback. Please note, that my weights are in ${weightLabel()}";
-
-    final logJsons = logs.map((log) => log.toJson());
+        "Review my ${log.name} current workout log, compare it to previous logs and generate a report. Please note, that my weights are in ${weightLabel()}";
 
     final StringBuffer buffer = StringBuffer();
 
     buffer.writeln(userInstructions);
-    buffer.writeln(logJsons);
+
+    buffer.writeln();
+
+    final exerciseAndRoutineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+
+    for (final exerciseLog in exerciseLogs) {
+      buffer.writeln("Current Exercise Log for: ${exerciseLog.exercise.name}");
+      List<String> setSummaries = _generateSetSummaries(exerciseLog);
+      buffer.writeln("Current Sets: $setSummaries");
+
+      buffer.writeln();
+
+      buffer.writeln("Past Exercise Logs for ${exerciseLog.exercise.name}");
+
+      final pastExerciseLogs = exerciseAndRoutineLogController.whereExerciseLogsBefore(
+          exercise: exerciseLog.exercise, date: exerciseLog.createdAt.withoutTime());
+
+      for (final pastExerciseLog in pastExerciseLogs) {
+        buffer.writeln("Date: ${pastExerciseLog.createdAt.withoutTime().formattedDayAndMonthAndYear()}");
+        List<String> pastSetSummaries = _generateSetSummaries(exerciseLog);
+        buffer.writeln("Past Sets: $pastSetSummaries");
+
+        buffer.writeln();
+      }
+    }
 
     final completeInstructions = buffer.toString();
 
     _showLoadingScreen();
 
-    final summary = await runMessage(system: routineLogSystemInstruction, user: completeInstructions);
+    runMessage(
+            system: routineLogSystemInstruction,
+            user: completeInstructions,
+            responseFormat: routineLogReportResponseFormat)
+        .then((response) {
+      _hideLoadingScreen();
+      if (response != null) {
+        final jsonString = jsonEncode(response);
+        _saveSummary(response: jsonString, log: log);
+        if (mounted) {
+          // Deserialize the JSON string
+          Map<String, dynamic> jsonData = jsonDecode(response);
 
-    _hideLoadingScreen();
-
-    if (summary != null) {
-      _saveSummary(response: summary, log: log);
-
-      if (mounted) {
-        navigateWithSlideTransition(context: context, child: TRKRCoachSummaryScreen(content: summary));
+          // Create an instance of ExerciseLogsResponse
+          RoutineLogReportDto report = RoutineLogReportDto.fromJson(jsonData);
+          navigateWithSlideTransition(
+              context: context,
+              child: RoutineLogReportScreen(
+                report: report,
+                routineLog: log,
+              ));
+        }
       }
-    }
+    }).catchError((e) {
+      _hideLoadingScreen();
+      if (mounted) {
+        showSnackbar(
+            context: context,
+            icon: TRKRCoachWidget(),
+            message: "Oops! I am unable to generate your ${log.name} report");
+      }
+    });
+  }
+
+  List<String> _generateSetSummaries(ExerciseLogDto exerciseLog) {
+    final setSummaries = exerciseLog.sets.mapIndexed((index, set) {
+      return switch (exerciseLog.exercise.type) {
+        ExerciseType.weights => "Set ${index + 1}: ${exerciseLog.sets[index].weightsSummary()}",
+        ExerciseType.bodyWeight => "Set ${index + 1}: ${exerciseLog.sets[index].repsSummary()}",
+        ExerciseType.duration => "Set ${index + 1}: ${exerciseLog.sets[index].durationSummary()}",
+      };
+    }).toList();
+    return setSummaries;
   }
 
   void _loadData() {
