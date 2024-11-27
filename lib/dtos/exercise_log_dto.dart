@@ -57,7 +57,7 @@ class ExerciseLogDto {
     final exercise = ExerciseDto.fromJson(exerciseJson);
     final notes = json["notes"] ?? "";
     final setsJsons = json["sets"] as List<dynamic>;
-    final sets = setsJsons.map((json) => SetDto.fromJson(jsonDecode(json))).toList();
+    final sets = setsJsons.map((json) => SetDto.fromJson(jsonDecode(json), exerciseType: exercise.type)).toList();
     final substituteExercisesJson = json["substituteExercises"] as List<dynamic>? ?? [];
     final substituteExercises = substituteExercisesJson.map((json) => ExerciseDto.fromJson(json)).toList();
     return ExerciseLogDto(

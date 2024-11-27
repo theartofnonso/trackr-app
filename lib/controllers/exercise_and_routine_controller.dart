@@ -10,7 +10,6 @@ import 'package:tracker_app/repositories/amplify/amplify_routine_log_repository.
 import '../dtos/appsync/exercise_dto.dart';
 import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/appsync/routine_template_dto.dart';
-import '../dtos/set_dto.dart';
 import '../dtos/set_dtos/set_dto.dart';
 import '../logger.dart';
 import '../models/Exercise.dart';

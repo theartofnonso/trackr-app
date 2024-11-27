@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../dtos/appsync/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
-import '../dtos/set_dto.dart';
+import '../dtos/set_dtos/set_dto.dart';
 import '../enums/routine_editor_type_enums.dart';
 import '../logger.dart';
 import '../repositories/exercise_log_repository.dart';
