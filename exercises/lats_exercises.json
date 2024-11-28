@@ -307,5 +307,117 @@
     "creditSource": "https://www.youtube.com/@Bodybuildingcom",
     "credit": "Bodybuilding.com",
     "description": "Enhances lat and chest engagement by performing pullovers on a decline bench."
+  },
+  {
+    "id": "LAT31",
+    "name": "Cable Close Grip Seated Row",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroups": ["biceps", "forearms", "shoulders", "traps"],
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=lJoozxC0Rns",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym",
+    "description": "Targets the middle back and lats using a close grip for improved contraction."
+  },
+  {
+    "id": "LAT32",
+    "name": "Cable Wide Grip Seated Row",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroups": ["biceps", "forearms", "shoulders", "traps"],
+    "type": "WR",
+    "description": "Emphasizes the upper back and rear delts with a wide grip."
+  },
+  {
+    "id": "LAT33",
+    "name": "Dumbbell Row",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroups": ["biceps", "forearms", "shoulders", "abs"],
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=8rsNZElMd5I",
+    "creditSource": "https://www.youtube.com/@TheGymGroupUK",
+    "credit": "TheGymGroup",
+    "description": "Works the lats and rhomboids with unilateral dumbbell movement."
+  },
+  {
+    "id": "LAT34",
+    "name": "Inverted Row with Underhand Grip",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroups": ["biceps", "forearms", "shoulders", "abs"],
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=0AsxBmXeOIo",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym",
+    "description": "Focuses on the lats and biceps using an underhand grip for added tension."
+  },
+  {
+    "id": "LAT35",
+    "name": "Seal Row",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroups": ["biceps", "forearms", "shoulders"],
+    "type": "WR",
+    "description": "Engages the lats and middle back using a chest-supported rowing motion."
+  },
+  {
+    "id": "LAT36",
+    "name": "Seated Machine Row",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroups": ["biceps", "forearms", "shoulders"],
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=lFLzkTLt3Ok",
+    "creditSource": "https://www.youtube.com/@thirdspacelondon8746",
+    "credit": "Third Space London",
+    "description": "Isolates the middle and upper back muscles with machine-guided resistance."
+  },
+  {
+    "id": "LAT37",
+    "name": "Bent Over Row (Band)",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroups": ["biceps", "forearms", "shoulders", "abs"],
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=lH2gdwzI2dU",
+    "creditSource": "https://www.youtube.com/@OnnitAcademy",
+    "credit": "Onnit Academy",
+    "description": "Works the back and lats using band resistance for dynamic rowing."
+  },
+  {
+    "id": "LAT38",
+    "name": "Chest Supported Incline Row (Dumbbell)",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroups": ["biceps", "forearms", "shoulders"],
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=Nx0TzjgsI-0",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym",
+    "description": "Targets the lats and upper back while minimizing lower back strain."
+  },
+  {
+    "id": "LAT39",
+    "name": "Renegade Row",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroups": ["biceps", "forearms", "shoulders", "abs"],
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=LYzYIXvL0C8",
+    "creditSource": "https://www.youtube.com/@TheGymGroupUK",
+    "credit": "TheGymGroup",
+    "description": "Combines rowing and core engagement with alternating dumbbell rows in a plank position."
+  },
+  {
+    "id": "LAT40",
+    "name": "Kroc Row",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroups": ["biceps", "forearms"],
+    "type": "WR",
+    "description": "A high-rep, heavy dumbbell row focusing on building upper back and grip strength."
+  },
+  {
+    "id": "LAT41",
+    "name": "Gorilla Row",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroups": ["biceps", "forearms", "shoulders", "abs"],
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=eYYwfpcEn0I",
+    "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
+    "credit": "Functional Bodybuilding",
+    "description": "Targets the lats, traps, and core with alternating dumbbell rows."
   }
 ]

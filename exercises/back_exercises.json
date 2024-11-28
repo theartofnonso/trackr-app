@@ -8,64 +8,12 @@
     "description": "Strengthens the lower back, focusing on the spinal erectors."
   },
   {
-    "id": "BAC2",
-    "name": "Cable Close Grip Seated Row",
-    "primaryMuscleGroup": "back",
-    "secondaryMuscleGroups": ["lats", "biceps", "forearms", "shoulders", "traps"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=lJoozxC0Rns",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "Targets the middle back and lats using a close grip for improved contraction."
-  },
-  {
-    "id": "BAC3",
-    "name": "Cable Wide Grip Seated Row",
-    "primaryMuscleGroup": "back",
-    "secondaryMuscleGroups": ["lats", "biceps", "forearms", "shoulders", "traps"],
-    "type": "WR",
-    "description": "Emphasizes the upper back and rear delts with a wide grip."
-  },
-  {
-    "id": "BAC4",
-    "name": "Dumbbell Row",
-    "primaryMuscleGroup": "back",
-    "secondaryMuscleGroups": ["lats", "biceps", "forearms", "shoulders", "abs"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=8rsNZElMd5I",
-    "creditSource": "https://www.youtube.com/@TheGymGroupUK",
-    "credit": "TheGymGroup",
-    "description": "Works the lats and rhomboids with unilateral dumbbell movement."
-  },
-  {
     "id": "BAC5",
     "name": "Floor Back Extension",
     "primaryMuscleGroup": "back",
     "secondaryMuscleGroups": ["glutes", "hamstrings", "abs"],
     "type": "BW",
     "description": "Targets the lower back, focusing on spinal mobility and core strength."
-  },
-  {
-    "id": "BAC6",
-    "name": "Inverted Row",
-    "primaryMuscleGroup": "back",
-    "secondaryMuscleGroups": ["lats", "biceps", "forearms", "shoulders", "abs"],
-    "type": "BW",
-    "video": "https://www.youtube.com/watch?v=0AsxBmXeOIo",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "Engages the upper and middle back with bodyweight resistance."
-  },
-  {
-    "id": "BAC7",
-    "name": "Inverted Row with Underhand Grip",
-    "primaryMuscleGroup": "back",
-    "secondaryMuscleGroups": ["lats", "biceps", "forearms", "shoulders", "abs"],
-    "type": "BW",
-    "video": "https://www.youtube.com/watch?v=0AsxBmXeOIo",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "Focuses on the lats and biceps using an underhand grip for added tension."
   },
   {
     "id": "BAC8",
@@ -112,36 +60,6 @@
     "description": "Focuses on the upper back and traps with a partial deadlift movement."
   },
   {
-    "id": "BAC12",
-    "name": "Seal Row",
-    "primaryMuscleGroup": "back",
-    "secondaryMuscleGroups": ["lats", "biceps", "forearms", "shoulders"],
-    "type": "WR",
-    "description": "Engages the lats and middle back using a chest-supported rowing motion."
-  },
-  {
-    "id": "BAC13",
-    "name": "Seated Machine Row",
-    "primaryMuscleGroup": "back",
-    "secondaryMuscleGroups": ["lats", "biceps", "forearms", "shoulders"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=lFLzkTLt3Ok",
-    "creditSource": "https://www.youtube.com/@thirdspacelondon8746",
-    "credit": "Third Space London",
-    "description": "Isolates the middle and upper back muscles with machine-guided resistance."
-  },
-  {
-    "id": "BAC14",
-    "name": "T-Bar Row",
-    "primaryMuscleGroup": "back",
-    "secondaryMuscleGroups": ["lats", "biceps", "forearms", "shoulders", "traps", "abs"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=hYo72r8Ivso",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "Targets the lats, traps, and rhomboids with heavy rowing using a T-bar."
-  },
-  {
     "id": "BAC15",
     "name": "Superman",
     "primaryMuscleGroup": "back",
@@ -177,50 +95,6 @@
     "description": "Strengthens the lower back and glutes with added weight resistance."
   },
   {
-    "id": "BAC19",
-    "name": "Bent Over Row (Band)",
-    "primaryMuscleGroup": "back",
-    "secondaryMuscleGroups": ["lats", "biceps", "forearms", "shoulders", "abs"],
-    "type": "BW",
-    "video": "https://www.youtube.com/watch?v=lH2gdwzI2dU",
-    "creditSource": "https://www.youtube.com/@OnnitAcademy",
-    "credit": "Onnit Academy",
-    "description": "Works the back and lats using band resistance for dynamic rowing."
-  },
-  {
-    "id": "BAC20",
-    "name": "Bent Over Row (Barbell)",
-    "primaryMuscleGroup": "back",
-    "secondaryMuscleGroups": ["lats", "biceps", "forearms", "shoulders", "abs"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=44vWeFLC_J0",
-    "creditSource": "https://www.youtube.com/@TheGymGroupUK",
-    "credit": "TheGymGroup",
-    "description": "Targets the lats, traps, and rhomboids using a barbell in a bent-over position."
-  },
-  {
-    "id": "BAC21",
-    "name": "Bent Over Row (Dumbbell)",
-    "primaryMuscleGroup": "back",
-    "secondaryMuscleGroups": ["lats", "biceps", "forearms", "shoulders", "abs"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=6gvmcqr226U",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "Works the lats and middle back with a unilateral rowing motion."
-  },
-  {
-    "id": "BAC22",
-    "name": "Chest Supported Incline Row (Dumbbell)",
-    "primaryMuscleGroup": "back",
-    "secondaryMuscleGroups": ["lats", "biceps", "forearms", "shoulders"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=Nx0TzjgsI-0",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "Targets the lats and upper back while minimizing lower back strain."
-  },
-  {
     "id": "BAC23",
     "name": "Chest Supported Reverse Fly (Dumbbell)",
     "primaryMuscleGroup": "back",
@@ -241,17 +115,6 @@
     "creditSource": "https://www.youtube.com/@thirdspacelondon8746",
     "credit": "Third Space London",
     "description": "Improves grip strength and decompresses the spine, engaging the lats and shoulders."
-  },
-  {
-    "id": "BAC25",
-    "name": "Gorilla Row",
-    "primaryMuscleGroup": "back",
-    "secondaryMuscleGroups": ["lats", "biceps", "forearms", "shoulders", "abs"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=eYYwfpcEn0I",
-    "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
-    "credit": "Functional Bodybuilding",
-    "description": "Targets the lats, traps, and core with alternating dumbbell rows."
   },
   {
     "id": "BAC26",
@@ -281,50 +144,6 @@
     "description": "Isolates the rear delts and upper back with machine-guided movement."
   },
   {
-    "id": "BAC29",
-    "name": "Renegade Row",
-    "primaryMuscleGroup": "back",
-    "secondaryMuscleGroups": ["lats", "biceps", "forearms", "shoulders", "abs"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=LYzYIXvL0C8",
-    "creditSource": "https://www.youtube.com/@TheGymGroupUK",
-    "credit": "TheGymGroup",
-    "description": "Combines rowing and core engagement with alternating dumbbell rows in a plank position."
-  },
-  {
-    "id": "BAC30",
-    "name": "Pull-Up",
-    "primaryMuscleGroup": "back",
-    "secondaryMuscleGroups": ["lats", "biceps", "forearms", "shoulders", "abs"],
-    "type": "BW",
-    "video": "https://www.youtube.com/watch?v=eGo4IYlbE5g",
-    "creditSource": "https://www.youtube.com/@Calisthenicmovement",
-    "credit": "Calisthenic Movement",
-    "description": "A bodyweight exercise that targets the lats and upper back by pulling the body up to a bar."
-  },
-  {
-    "id": "BAC31",
-    "name": "Chin-Up",
-    "primaryMuscleGroup": "back",
-    "secondaryMuscleGroups": ["lats", "biceps", "forearms", "shoulders", "abs"],
-    "type": "BW",
-    "video": "https://www.youtube.com/watch?v=bE6vF6d1MVw",
-    "creditSource": "https://www.youtube.com/@Calisthenicmovement",
-    "credit": "Calisthenic Movement",
-    "description": "A variation of the pull-up using an underhand grip to emphasize the biceps and lats."
-  },
-  {
-    "id": "BAC32",
-    "name": "Lat Pulldown (Cable)",
-    "primaryMuscleGroup": "back",
-    "secondaryMuscleGroups": ["lats", "biceps", "shoulders"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=CAwf7n6Luuc",
-    "creditSource": "https://www.youtube.com/@ScottHermanFitness",
-    "credit": "Scott Herman",
-    "description": "Targets the lats and upper back by pulling a bar down towards the chest using cable resistance."
-  },
-  {
     "id": "BAC33",
     "name": "Face Pull (Cable)",
     "primaryMuscleGroup": "back",
@@ -334,17 +153,6 @@
     "creditSource": "https://www.youtube.com/@JeffCavaliere",
     "credit": "Athlean-X",
     "description": "Strengthens the upper back and rear delts by pulling a rope attachment towards the face."
-  },
-  {
-    "id": "BAC34",
-    "name": "Straight-Arm Pulldown (Cable)",
-    "primaryMuscleGroup": "back",
-    "secondaryMuscleGroups": ["lats", "triceps"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=-RHti9n6d4s",
-    "creditSource": "https://www.youtube.com/@ScottHermanFitness",
-    "credit": "Scott Herman",
-    "description": "Isolates the lats by pulling the bar down with straight arms, engaging the back without bicep involvement."
   },
   {
     "id": "BAC35",
@@ -378,33 +186,6 @@
     "creditSource": "https://www.youtube.com/@ScottHermanFitness",
     "credit": "Scott Herman",
     "description": "Engages the traps and shoulders by lifting a barbell vertically to chest height."
-  },
-  {
-    "id": "BAC38",
-    "name": "Kroc Row",
-    "primaryMuscleGroup": "back",
-    "secondaryMuscleGroups": ["lats", "biceps", "forearms"],
-    "type": "WR",
-    "description": "A high-rep, heavy dumbbell row focusing on building upper back and grip strength."
-  },
-  {
-    "id": "BAC39",
-    "name": "Meadows Row",
-    "primaryMuscleGroup": "back",
-    "secondaryMuscleGroups": ["lats", "rear delts", "traps"],
-    "type": "WR",
-    "description": "A unilateral landmine row variation that targets the upper back and lats."
-  },
-  {
-    "id": "BAC40",
-    "name": "Landmine Row",
-    "primaryMuscleGroup": "back",
-    "secondaryMuscleGroups": ["lats", "biceps", "forearms", "shoulders"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=QfASkypJemQ",
-    "creditSource": "https://www.youtube.com/@ScottHermanFitness",
-    "credit": "Scott Herman",
-    "description": "Targets the back muscles using a barbell anchored at one end in a landmine setup."
   },
   {
     "id": "BAC41",

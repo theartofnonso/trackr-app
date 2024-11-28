@@ -258,16 +258,5 @@
     "creditSource": "https://www.youtube.com/@ScottHermanFitness",
     "credit": "Scott Herman Fitness",
     "description": "Isolates the hamstrings by curling one leg at a time from a standing position using a leg curl machine."
-  },
-  {
-    "id": "HAM26",
-    "name": "Bulgarian Split Squat",
-    "primaryMuscleGroup": "hamstrings",
-    "secondaryMuscleGroups": ["glutes", "quadriceps", "abs"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=2C-uNgKwPLE",
-    "creditSource": "https://www.youtube.com/@ScottHermanFitness",
-    "credit": "Scott Herman Fitness",
-    "description": "A unilateral exercise that targets the hamstrings and glutes by performing a split squat with the rear foot elevated."
   }
 ]
