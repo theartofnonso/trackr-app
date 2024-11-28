@@ -13,7 +13,7 @@ class MuscleGroupFamily {
   static const MuscleGroupFamily shoulders = MuscleGroupFamily._("Shoulders");
   static const MuscleGroupFamily core = MuscleGroupFamily._("Core");
   static const MuscleGroupFamily neck = MuscleGroupFamily._("Neck");
-  static const MuscleGroupFamily none = MuscleGroupFamily._("None");
+  static const MuscleGroupFamily all = MuscleGroupFamily._("All");
 
   // List of all families
   static List<MuscleGroupFamily> get values => [
@@ -70,7 +70,7 @@ class MuscleGroup {
       "Calves enable ankle flexion, essential for running, jumping, and stability in lower-body movements.");
   static const MuscleGroup neck =
       MuscleGroup._("Neck", MuscleGroupFamily.neck, "Neck muscles help stabilize the head and support posture.");
-  static const MuscleGroup none = MuscleGroup._("None", MuscleGroupFamily.none, "No specific muscle group targeted.");
+  static const MuscleGroup all = MuscleGroup._("All", MuscleGroupFamily.all, "No specific muscle group targeted.");
 
   // List of all muscle groups
   static List<MuscleGroup> get values => [
@@ -103,7 +103,7 @@ class MuscleGroup {
   static MuscleGroup fromString(String string) {
     return MuscleGroup.values.firstWhere(
       (group) => group.name.toLowerCase() == string.toLowerCase(),
-      orElse: () => MuscleGroup.none,
+      orElse: () => MuscleGroup.all,
     );
   }
 }

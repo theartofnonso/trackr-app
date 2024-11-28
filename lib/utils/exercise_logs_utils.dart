@@ -353,7 +353,7 @@ Map<MuscleGroupFamily, int> _muscleGroupFamilyCountOn4WeeksScale({required List<
 
     /// We don't report these muscle groups
     muscleGroupFamilies.remove(MuscleGroupFamily.neck);
-    muscleGroupFamilies.remove(MuscleGroupFamily.none);
+    muscleGroupFamilies.remove(MuscleGroupFamily.all);
 
     for (var family in muscleGroupFamilies) {
       frequencyMap.update(family, (value) => value >= 8 ? 8 : value + 1, ifAbsent: () => 1);
