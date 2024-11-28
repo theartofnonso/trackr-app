@@ -3,13 +3,12 @@
     "id": "SHD1",
     "name": "Band External Shoulder Rotation",
     "primaryMuscleGroup": "back shoulder",
-    "secondaryMuscleGroups": ["back", "forearms"],
+    "secondaryMuscleGroups": ["forearms"],
     "type": "BW",
     "video": "https://www.youtube.com/watch?v=xeO-6L7YtpI",
     "creditSource": "https://www.youtube.com/@denvyr",
     "credit": "Denvyr | Realistic Fitness Dietitian",
-    "description": "Targets the rotator cuff muscles for improved shoulder stability.",
-    "trainingPosition": "Shortened"
+    "description": "Targets the rotator cuff muscles for improved shoulder stability."
   },
   {
     "id": "SHD2",
@@ -17,8 +16,7 @@
     "primaryMuscleGroup": "front shoulder",
     "secondaryMuscleGroups": ["chest", "lats", "forearms"],
     "type": "BW",
-    "description": "Engages the internal rotator muscles to enhance shoulder strength and mobility.",
-    "trainingPosition": "Shortened"
+    "description": "Engages the internal rotator muscles to enhance shoulder strength and mobility."
   },
   {
     "id": "SHD3",
@@ -29,8 +27,7 @@
     "video": "https://www.youtube.com/watch?v=MnDpmNYUjbc",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
     "credit": "Functional Bodybuilding",
-    "description": "Strengthens the rear deltoids and upper back muscles.",
-    "trainingPosition": "Shortened"
+    "description": "Strengthens the rear deltoids and upper back muscles."
   },
   {
     "id": "SHD4",
@@ -41,8 +38,7 @@
     "video": "https://www.youtube.com/watch?v=_od0CCC6DEM",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Primarily targets the front deltoid muscles to build shoulder size.",
-    "trainingPosition": "Shortened"
+    "description": "Primarily targets the front deltoid muscles to build shoulder size."
   },
   {
     "id": "SHD5",
@@ -50,8 +46,7 @@
     "primaryMuscleGroup": "back shoulder",
     "secondaryMuscleGroups": ["back", "traps", "biceps", "forearms"],
     "type": "WR",
-    "description": "Focuses on rear deltoids and upper back for improved posture and strength.",
-    "trainingPosition": "Shortened"
+    "description": "Focuses on rear deltoids and upper back for improved posture and strength."
   },
   {
     "id": "SHD6",
@@ -62,8 +57,7 @@
     "video": "https://www.youtube.com/watch?v=8UvsRWUb0YU",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Works the shoulders and traps for shoulder development.",
-    "trainingPosition": "Shortened"
+    "description": "Works the shoulders and traps for shoulder development."
   },
   {
     "id": "SHD7",
@@ -74,8 +68,7 @@
     "video": "https://www.youtube.com/watch?v=ADWlvYopJuY",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
     "credit": "Functional Bodybuilding",
-    "description": "Targets all three heads of the deltoid muscle for complete shoulder engagement.",
-    "trainingPosition": "Shortened"
+    "description": "Targets all three heads of the deltoid muscle for complete shoulder engagement."
   },
   {
     "id": "SHD8",
@@ -86,8 +79,7 @@
     "video": "https://www.youtube.com/watch?v=Z5FA9aq3L6A",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Isolates the lateral deltoid to widen and strengthen the shoulders.",
-    "trainingPosition": "Shortened"
+    "description": "Isolates the lateral deltoid to widen and strengthen the shoulders."
   },
   {
     "id": "SHD9",
@@ -95,8 +87,7 @@
     "primaryMuscleGroup": "back shoulder",
     "secondaryMuscleGroups": ["back", "traps", "biceps", "forearms"],
     "type": "WR",
-    "description": "Activates the rear deltoids and upper back muscles.",
-    "trainingPosition": "Shortened"
+    "description": "Activates the rear deltoids and upper back muscles."
   },
   {
     "id": "SHD10",
@@ -107,8 +98,7 @@
     "video": "https://www.youtube.com/watch?v=zkP0MsTcIVU",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Emphasizes the front deltoid for shoulder strength and definition.",
-    "trainingPosition": "Shortened"
+    "description": "Emphasizes the front deltoid for shoulder strength and definition."
   },
   {
     "id": "SHD11",
@@ -116,8 +106,7 @@
     "primaryMuscleGroup": "front shoulder",
     "secondaryMuscleGroups": ["chest", "lats", "forearms"],
     "type": "WR",
-    "description": "Targets internal rotator muscles to build shoulder stability.",
-    "trainingPosition": "Shortened"
+    "description": "Targets internal rotator muscles to build shoulder stability."
   },
   {
     "id": "SHD12",
@@ -125,8 +114,7 @@
     "primaryMuscleGroup": "back shoulder",
     "secondaryMuscleGroups": ["back", "traps", "forearms"],
     "type": "WR",
-    "description": "Strengthens the external rotator muscles for better shoulder control.",
-    "trainingPosition": "Shortened"
+    "description": "Strengthens the external rotator muscles for better shoulder control."
   },
   {
     "id": "SHD13",
@@ -137,8 +125,7 @@
     "video": "https://www.youtube.com/watch?v=gN1Sc6KkK7Q",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
     "credit": "TheGymGroup",
-    "description": "Engages the lateral deltoids to build shoulder width and definition.",
-    "trainingPosition": "Shortened"
+    "description": "Engages the lateral deltoids to build shoulder width and definition."
   },
   {
     "id": "SHD14",
@@ -146,8 +133,7 @@
     "primaryMuscleGroup": "back shoulder",
     "secondaryMuscleGroups": ["back", "traps", "biceps", "forearms"],
     "type": "WR",
-    "description": "Activates the rear deltoids and back muscles to improve upper body posture.",
-    "trainingPosition": "Shortened"
+    "description": "Activates the rear deltoids and back muscles to improve upper body posture."
   },
   {
     "id": "SHD15",
@@ -158,8 +144,7 @@
     "video": "https://www.youtube.com/watch?v=aI2hGzsAMXs",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Targets the shoulder muscles for overall size and strength.",
-    "trainingPosition": "Shortened"
+    "description": "Targets the shoulder muscles for overall size and strength."
   },
   {
     "id": "SHD16",
@@ -170,8 +155,7 @@
     "video": "https://www.youtube.com/watch?v=0Po47vvj9g4",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Improves shoulder health by targeting the rear delts and upper back.",
-    "trainingPosition": "Shortened"
+    "description": "Improves shoulder health by targeting the rear delts and upper back."
   },
   {
     "id": "SHD17",
@@ -179,8 +163,7 @@
     "primaryMuscleGroup": "front shoulder",
     "secondaryMuscleGroups": ["traps", "abs", "forearms"],
     "type": "WR",
-    "description": "Focuses on endurance in the front deltoids for static shoulder strength.",
-    "trainingPosition": "Shortened"
+    "description": "Focuses on endurance in the front deltoids for static shoulder strength."
   },
   {
     "id": "SHD18",
@@ -191,8 +174,7 @@
     "video": "https://www.youtube.com/watch?v=D6FJe6rFuY0",
     "creditSource": "https://www.youtube.com/@OPEXFitness",
     "credit": "OPEXFitness",
-    "description": "Enhances shoulder stability by targeting external rotator muscles.",
-    "trainingPosition": "Shortened"
+    "description": "Enhances shoulder stability by targeting external rotator muscles."
   },
   {
     "id": "SHD19",
@@ -200,8 +182,7 @@
     "primaryMuscleGroup": "front shoulder",
     "secondaryMuscleGroups": ["chest", "lats", "forearms"],
     "type": "WR",
-    "description": "Targets internal rotator muscles to build shoulder stability.",
-    "trainingPosition": "Shortened"
+    "description": "Targets internal rotator muscles to build shoulder stability."
   },
   {
     "id": "SHD20",
@@ -209,8 +190,7 @@
     "primaryMuscleGroup": "front shoulder",
     "secondaryMuscleGroups": ["traps", "forearms"],
     "type": "WR",
-    "description": "Isolates the lateral deltoids to increase shoulder width.",
-    "trainingPosition": "Shortened"
+    "description": "Isolates the lateral deltoids to increase shoulder width."
   },
   {
     "id": "SHD21",
@@ -221,8 +201,7 @@
     "video": "https://www.youtube.com/watch?v=GcY6TZxfS0k",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Targets the shoulders and triceps for strength and mass.",
-    "trainingPosition": "Shortened"
+    "description": "Targets the shoulders and triceps for strength and mass."
   },
   {
     "id": "SHD22",
@@ -233,8 +212,7 @@
     "video": "https://www.youtube.com/watch?v=Xlpn6ylPiW8",
     "creditSource": "https://www.youtube.com/@judithramosvaldes9695",
     "credit": "Judith Ramos Valdes",
-    "description": "Hits the rear delts and upper back for improved posture.",
-    "trainingPosition": "Shortened"
+    "description": "Hits the rear delts and upper back for improved posture."
   },
   {
     "id": "SHD23",
@@ -242,8 +220,7 @@
     "primaryMuscleGroup": "front shoulder",
     "secondaryMuscleGroups": ["triceps", "traps", "abs", "forearms"],
     "type": "WR",
-    "description": "Develops shoulder mass and strength with overhead pressing motion.",
-    "trainingPosition": "Shortened"
+    "description": "Develops shoulder mass and strength with overhead pressing motion."
   },
   {
     "id": "SHD24",
@@ -254,8 +231,7 @@
     "video": "https://www.youtube.com/watch?v=HHEmtCuuPss",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
     "credit": "Functional Bodybuilding",
-    "description": "Targets the front delts to build strength and definition.",
-    "trainingPosition": "Shortened"
+    "description": "Targets the front delts to build strength and definition."
   },
   {
     "id": "SHD25",
@@ -263,8 +239,7 @@
     "primaryMuscleGroup": "front shoulder",
     "secondaryMuscleGroups": ["triceps", "quadriceps", "glutes", "hamstrings", "calves", "abs", "back"],
     "type": "WR",
-    "description": "A full-body movement that primarily targets the shoulders and helps build explosive power.",
-    "trainingPosition": "Shortened"
+    "description": "A full-body movement that primarily targets the shoulders and helps build explosive power."
   },
   {
     "id": "SHD26",
@@ -275,8 +250,7 @@
     "video": "https://www.youtube.com/watch?v=HKx22sWywxc",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Engages shoulders, triceps, and core with a dynamic push to lift the weight overhead.",
-    "trainingPosition": "Shortened"
+    "description": "Engages shoulders, triceps, and core with a dynamic push to lift the weight overhead."
   },
   {
     "id": "SHD27",
@@ -287,8 +261,7 @@
     "video": "https://www.youtube.com/watch?v=LuiunkyM4go",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
     "credit": "Functional Bodybuilding",
-    "description": "Targets the rear deltoids and upper back muscles to improve shoulder stability.",
-    "trainingPosition": "Shortened"
+    "description": "Targets the rear deltoids and upper back muscles to improve shoulder stability."
   },
   {
     "id": "SHD28",
@@ -299,8 +272,7 @@
     "video": "https://www.youtube.com/watch?v=ZHiwyJbj8Dw",
     "creditSource": "https://www.youtube.com/@denvyr",
     "credit": "Denvyr | Realistic Fitness Dietitian",
-    "description": "Strengthens the rear deltoids and upper back, enhancing posture and shoulder support.",
-    "trainingPosition": "Shortened"
+    "description": "Strengthens the rear deltoids and upper back, enhancing posture and shoulder support."
   },
   {
     "id": "SHD29",
@@ -308,8 +280,7 @@
     "primaryMuscleGroup": "back shoulder",
     "secondaryMuscleGroups": ["back", "traps"],
     "type": "WR",
-    "description": "Isolates the rear deltoids for improved shoulder and upper back strength.",
-    "trainingPosition": "Shortened"
+    "description": "Isolates the rear deltoids for improved shoulder and upper back strength."
   },
   {
     "id": "SHD30",
@@ -320,8 +291,7 @@
     "video": "https://www.youtube.com/watch?v=TsduLWuhlFM",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Builds shoulder and triceps strength through controlled overhead pressing.",
-    "trainingPosition": "Shortened"
+    "description": "Builds shoulder and triceps strength through controlled overhead pressing."
   },
   {
     "id": "SHD31",
@@ -329,8 +299,7 @@
     "primaryMuscleGroup": "front shoulder",
     "secondaryMuscleGroups": ["triceps", "traps", "abs", "forearms"],
     "type": "WR",
-    "description": "Focuses on shoulder muscle development with added core stability due to the barbell's weight.",
-    "trainingPosition": "Shortened"
+    "description": "Focuses on shoulder muscle development with added core stability due to the barbell's weight."
   },
   {
     "id": "SHD32",
@@ -338,8 +307,7 @@
     "primaryMuscleGroup": "front shoulder",
     "secondaryMuscleGroups": ["triceps", "traps", "forearms"],
     "type": "WR",
-    "description": "Provides controlled overhead pressing to target the shoulders without needing balance.",
-    "trainingPosition": "Shortened"
+    "description": "Provides controlled overhead pressing to target the shoulders without needing balance."
   },
   {
     "id": "SHD33",
@@ -347,8 +315,7 @@
     "primaryMuscleGroup": "back shoulder",
     "secondaryMuscleGroups": ["triceps", "traps", "back", "abs", "forearms"],
     "type": "WR",
-    "description": "Works the shoulders and traps, emphasizing flexibility and mobility in the shoulders.",
-    "trainingPosition": "Shortened"
+    "description": "Works the shoulders and traps, emphasizing flexibility and mobility in the shoulders."
   },
   {
     "id": "SHD34",
@@ -359,8 +326,7 @@
     "video": "https://www.youtube.com/watch?v=jeJttN2EWCo",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "A variation of the shoulder press that activates all three heads of the deltoid muscles.",
-    "trainingPosition": "Shortened"
+    "description": "A variation of the shoulder press that activates all three heads of the deltoid muscles."
   },
   {
     "id": "SHD35",
@@ -371,8 +337,7 @@
     "video": "https://www.youtube.com/watch?v=C6At19Q9i2Q",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
     "credit": "Functional Bodybuilding",
-    "description": "A bodyweight exercise that engages the shoulders, core, and stabilizers for balance.",
-    "trainingPosition": "Shortened"
+    "description": "A bodyweight exercise that engages the shoulders, core, and stabilizers for balance."
   },
   {
     "id": "SHD36",
@@ -383,8 +348,7 @@
     "video": "https://www.youtube.com/watch?v=WNz7O59GORA",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Targets the deltoids and traps to enhance shoulder strength and stability.",
-    "trainingPosition": "Shortened"
+    "description": "Targets the deltoids and traps to enhance shoulder strength and stability."
   },
   {
     "id": "SHD37",
@@ -395,8 +359,7 @@
     "video": "https://www.youtube.com/watch?v=Rd5AsxOGqss",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Strengthens the shoulders and traps while offering more range of motion with dumbbells.",
-    "trainingPosition": "Shortened"
+    "description": "Strengthens the shoulders and traps while offering more range of motion with dumbbells."
   },
   {
     "id": "SHD38",
@@ -407,8 +370,7 @@
     "video": "https://www.youtube.com/watch?v=Z5FA9aq3L6A",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Isolates the lateral deltoid for shoulder width and definition with continuous tension.",
-    "trainingPosition": "Shortened"
+    "description": "Isolates the lateral deltoid for shoulder width and definition with continuous tension."
   },
   {
     "id": "SHD39",
@@ -419,8 +381,7 @@
     "video": "https://www.youtube.com/watch?v=Y0Bxr57uPbk",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Builds overall shoulder strength, also involving the triceps and upper chest.",
-    "trainingPosition": "Shortened"
+    "description": "Builds overall shoulder strength, also involving the triceps and upper chest."
   },
   {
     "id": "SHD40",
@@ -428,8 +389,7 @@
     "primaryMuscleGroup": "front shoulder",
     "secondaryMuscleGroups": ["triceps", "traps", "abs", "forearms"],
     "type": "WR",
-    "description": "Focuses on shoulder development with guided bar movement for safety and control.",
-    "trainingPosition": "Shortened"
+    "description": "Focuses on shoulder development with guided bar movement for safety and control."
   },
   {
     "id": "SHD41",
@@ -440,8 +400,7 @@
     "video": "https://www.youtube.com/watch?v=vtH93qBItdk",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Engages the front deltoids with consistent tension from the cable machine.",
-    "trainingPosition": "Shortened"
+    "description": "Engages the front deltoids with consistent tension from the cable machine."
   },
   {
     "id": "SHD42",
@@ -452,8 +411,7 @@
     "video": "https://www.youtube.com/watch?v=gDHQX1iend4",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Strengthens the shoulder stabilizers and upper back muscles for improved posture.",
-    "trainingPosition": "Shortened"
+    "description": "Strengthens the shoulder stabilizers and upper back muscles for improved posture."
   },
   {
     "id": "SHD43",
@@ -461,8 +419,7 @@
     "primaryMuscleGroup": "front shoulder",
     "secondaryMuscleGroups": ["chest", "traps", "abs", "forearms"],
     "type": "WR",
-    "description": "Works the anterior deltoid with resistance from a band, enhancing shoulder mobility.",
-    "trainingPosition": "Shortened"
+    "description": "Works the anterior deltoid with resistance from a band, enhancing shoulder mobility."
   },
   {
     "id": "SHD44",
@@ -473,8 +430,7 @@
     "video": "https://www.youtube.com/watch?v=HN8HYJTOl8c",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Targets the front deltoids by raising a weighted plate for shoulder strength.",
-    "trainingPosition": "Shortened"
+    "description": "Targets the front deltoids by raising a weighted plate for shoulder strength."
   },
   {
     "id": "SHD45",
@@ -485,7 +441,116 @@
     "video": "https://www.youtube.com/watch?v=xDrYB81QXmY",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Focuses on the lateral deltoids to build shoulder width and definition.",
-    "trainingPosition": "Shortened"
+    "description": "Focuses on the lateral deltoids to build shoulder width and definition."
+  },
+  {
+    "id": "SHD46",
+    "name": "Handstand Push-Up",
+    "primaryMuscleGroup": "front shoulder",
+    "secondaryMuscleGroups": ["triceps", "abs", "back"],
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=9ZB3qJxpAeo",
+    "creditSource": "https://www.youtube.com/@Calisthenicmovement",
+    "credit": "Calisthenic Movement",
+    "description": "A bodyweight exercise that builds shoulder and triceps strength by pressing the body upward while in a handstand position."
+  },
+  {
+    "id": "SHD47",
+    "name": "Pike Push-Up",
+    "primaryMuscleGroup": "front shoulder",
+    "secondaryMuscleGroups": ["triceps", "abs", "back"],
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=Nt-_J6RtxvE",
+    "creditSource": "https://www.youtube.com/@Calisthenicmovement",
+    "credit": "Calisthenic Movement",
+    "description": "An effective bodyweight exercise that targets the shoulders by mimicking a vertical press in a pike position."
+  },
+  {
+    "id": "SHD48",
+    "name": "Landmine Press",
+    "primaryMuscleGroup": "front shoulder",
+    "secondaryMuscleGroups": ["triceps", "chest", "abs"],
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=c9GvE5aLK3M",
+    "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
+    "credit": "Functional Bodybuilding",
+    "description": "A compound exercise that works the shoulders and triceps by pressing a barbell anchored on one end."
+  },
+  {
+    "id": "SHD49",
+    "name": "Bradford Press",
+    "primaryMuscleGroup": "front shoulder",
+    "secondaryMuscleGroups": ["back shoulder", "triceps", "traps", "forearms"],
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=iljVg0D1v4g",
+    "creditSource": "https://www.youtube.com/@muscleandstrength",
+    "credit": "Muscle & Strength",
+    "description": "Combines the front and behind the neck press to engage all heads of the deltoid muscle."
+  },
+  {
+    "id": "SHD50",
+    "name": "Scaption Raise",
+    "primaryMuscleGroup": "front shoulder",
+    "secondaryMuscleGroups": ["back shoulder", "traps", "abs", "forearms"],
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=YqPhXARhtrQ",
+    "creditSource": "https://www.youtube.com/@functionalpatterns",
+    "credit": "Functional Patterns",
+    "description": "Raises dumbbells in the scapular plane to target the shoulder stabilizers and reduce impingement."
+  },
+  {
+    "id": "SHD51",
+    "name": "Around the World (Plate)",
+    "primaryMuscleGroup": "front shoulder",
+    "secondaryMuscleGroups": ["back shoulder", "traps", "abs", "forearms"],
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=K_9Jt7h6pms",
+    "creditSource": "https://www.youtube.com/@KAGEDMUSCLE",
+    "credit": "Kaged Muscle",
+    "description": "Rotates a weight plate around the head to engage all shoulder muscles and improve mobility."
+  },
+  {
+    "id": "SHD52",
+    "name": "Lateral Raise (Band)",
+    "primaryMuscleGroup": "front shoulder",
+    "secondaryMuscleGroups": ["traps", "forearms"],
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=aEvfK0Cj-6c",
+    "creditSource": "https://www.youtube.com/@ResistanceBandTraining",
+    "credit": "Resistance Band Training",
+    "description": "Performs lateral raises using a resistance band for continuous tension on the deltoids."
+  },
+  {
+    "id": "SHD53",
+    "name": "Cuban Press",
+    "primaryMuscleGroup": "back shoulder",
+    "secondaryMuscleGroups": ["front shoulder", "traps", "biceps", "forearms"],
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=yMRLCm3XjPk",
+    "creditSource": "https://www.youtube.com/@ScottHermanFitness",
+    "credit": "Scott Herman Fitness",
+    "description": "Combines an upright row with an external rotation and press to work the entire shoulder complex."
+  },
+  {
+    "id": "SHD54",
+    "name": "Wall Slides",
+    "primaryMuscleGroup": "back shoulder",
+    "secondaryMuscleGroups": ["back", "abs"],
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=mg5zZgNYzXI",
+    "creditSource": "https://www.youtube.com/@PrecisionMovement",
+    "credit": "Precision Movement",
+    "description": "Improves shoulder mobility and strengthens the stabilizer muscles by sliding the arms up and down a wall."
+  },
+  {
+    "id": "SHD55",
+    "name": "Reverse Fly (Band)",
+    "primaryMuscleGroup": "back shoulder",
+    "secondaryMuscleGroups": ["back", "traps", "forearms"],
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=hjGrHBpfqCo",
+    "creditSource": "https://www.youtube.com/@ResistanceBandTraining",
+    "credit": "Resistance Band Training",
+    "description": "Targets the rear deltoids using a resistance band to strengthen the upper back and improve posture."
   }
 ]
