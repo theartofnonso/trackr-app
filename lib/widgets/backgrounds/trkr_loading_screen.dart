@@ -17,11 +17,11 @@ class TRKRLoadingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final children = defaultLoadingMessages
         .map((message) => TypewriterAnimatedText(
-      message,
+      message.toUpperCase(),
       speed: Duration(milliseconds: 90),
       textStyle: GoogleFonts.ubuntu(
         fontSize: 16.0,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w900,
         color: Colors.white,
       ),
     ))
