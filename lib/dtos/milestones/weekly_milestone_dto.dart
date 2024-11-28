@@ -19,7 +19,7 @@ class WeeklyMilestone extends Milestone {
       required super.description,
       required super.rule,
       required super.target,
-      this.muscleGroupFamily = MuscleGroupFamily.all,
+      this.muscleGroupFamily = MuscleGroupFamily.fullBody,
       required super.progress,
       required super.type});
 

@@ -182,7 +182,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     final weightUnitLabel = weightLabel();
 
     final muscleGroupsIllustrations = [widget.exercise.primaryMuscleGroup, ...widget.exercise.secondaryMuscleGroups]
-        .where((muscleGroup) => muscleGroup != MuscleGroup.all)
+        .where((muscleGroup) => muscleGroup != MuscleGroup.fullBody)
         .map((muscleGroup) {
       return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
         Image.asset(

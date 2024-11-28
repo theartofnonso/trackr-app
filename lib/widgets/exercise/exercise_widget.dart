@@ -70,7 +70,7 @@ class ExerciseWidget extends StatelessWidget {
                   const SizedBox(
                     height: 6,
                   ),
-                  exercise.primaryMuscleGroup == MuscleGroup.all
+                  exercise.primaryMuscleGroup == MuscleGroup.fullBody
                       ? Text(listWithAnd(strings: secondaryMuscleGroupNames),
                           style: GoogleFonts.ubuntu(
                               color: Colors.deepOrangeAccent, fontWeight: FontWeight.w500, fontSize: 11))

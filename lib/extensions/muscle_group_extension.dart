@@ -22,7 +22,7 @@ extension MuscleGroupExtension on MuscleGroup {
       MuscleGroup.traps => "traps",
       MuscleGroup.triceps => "triceps",
       MuscleGroup.quadriceps => "quadriceps",
-      MuscleGroup.all => "fullbody",
+      MuscleGroup.fullBody => "fullbody",
       _ => "",
     };
   }

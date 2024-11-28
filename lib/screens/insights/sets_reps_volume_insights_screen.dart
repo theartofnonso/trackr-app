@@ -79,6 +79,8 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       return muscleGroups.contains(_selectedMuscleGroup);
     }).toList();
 
+    print(exerciseLogs.length);
+
     final weeksInYear = generateWeeksInRange(range: dateRange);
     List<num> trends = [];
     List<String> weeks = [];
