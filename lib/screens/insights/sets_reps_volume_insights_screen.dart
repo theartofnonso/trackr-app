@@ -70,17 +70,11 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
     final logs = routineLogController.whereLogsIsWithinRange(range: dateRange);
-
-    final exerciseController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-
+    
     final exerciseLogs = logs
         .map((log) => completedExercises(exerciseLogs: log.exerciseLogs))
         .expand((exerciseLogs) => exerciseLogs)
-        .map((exerciseLog) {
-      final foundExercise = exerciseController.exercises
-          .firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.id == exerciseLog.exercise.id);
-      return foundExercise != null ? exerciseLog.copyWith(exercise: foundExercise) : exerciseLog;
-    }).where((exerciseLog) {
+        .where((exerciseLog) {
       final muscleGroups = [exerciseLog.exercise.primaryMuscleGroup, ...exerciseLog.exercise.secondaryMuscleGroups];
       return muscleGroups.contains(_selectedMuscleGroup);
     }).toList();
@@ -401,13 +395,13 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     return switch (_metric) {
       SetRepsVolumeReps.sets => sets.length,
       SetRepsVolumeReps.reps => sets.map((set) {
-        if (set is RepsSetDto) {
-          return set.reps;
-        } else if (set is WeightAndRepsSetDto) {
-          return set.reps;
-        }
-        return 0;
-      }).sum,
+          if (set is RepsSetDto) {
+            return set.reps;
+          } else if (set is WeightAndRepsSetDto) {
+            return set.reps;
+          }
+          return 0;
+        }).sum,
       SetRepsVolumeReps.volume => sets.map((set) => (set as WeightAndRepsSetDto).volume()).sum,
     };
   }
