@@ -5,8 +5,7 @@
     "primaryMuscleGroup": "back",
     "secondaryMuscleGroups": ["glutes", "hamstrings", "abs"],
     "type": "BW",
-    "description": "Strengthens the lower back, focusing on the spinal erectors.",
-    "trainingPosition": "Lengthened"
+    "description": "Strengthens the lower back, focusing on the spinal erectors."
   },
   {
     "id": "BAC2",
@@ -17,8 +16,7 @@
     "video": "https://www.youtube.com/watch?v=lJoozxC0Rns",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Targets the middle back and lats using a close grip for improved contraction.",
-    "trainingPosition": "Shortened"
+    "description": "Targets the middle back and lats using a close grip for improved contraction."
   },
   {
     "id": "BAC3",
@@ -26,8 +24,7 @@
     "primaryMuscleGroup": "back",
     "secondaryMuscleGroups": ["lats", "biceps", "forearms", "shoulders", "traps"],
     "type": "WR",
-    "description": "Emphasizes the upper back and rear delts with a wide grip.",
-    "trainingPosition": "Shortened"
+    "description": "Emphasizes the upper back and rear delts with a wide grip."
   },
   {
     "id": "BAC4",
@@ -38,8 +35,7 @@
     "video": "https://www.youtube.com/watch?v=8rsNZElMd5I",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
     "credit": "TheGymGroup",
-    "description": "Works the lats and rhomboids with unilateral dumbbell movement.",
-    "trainingPosition": "Shortened"
+    "description": "Works the lats and rhomboids with unilateral dumbbell movement."
   },
   {
     "id": "BAC5",
@@ -47,8 +43,7 @@
     "primaryMuscleGroup": "back",
     "secondaryMuscleGroups": ["glutes", "hamstrings", "abs"],
     "type": "BW",
-    "description": "Targets the lower back, focusing on spinal mobility and core strength.",
-    "trainingPosition": "Lengthened"
+    "description": "Targets the lower back, focusing on spinal mobility and core strength."
   },
   {
     "id": "BAC6",
@@ -59,8 +54,7 @@
     "video": "https://www.youtube.com/watch?v=0AsxBmXeOIo",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Engages the upper and middle back with bodyweight resistance.",
-    "trainingPosition": "Shortened"
+    "description": "Engages the upper and middle back with bodyweight resistance."
   },
   {
     "id": "BAC7",
@@ -71,8 +65,7 @@
     "video": "https://www.youtube.com/watch?v=0AsxBmXeOIo",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Focuses on the lats and biceps using an underhand grip for added tension.",
-    "trainingPosition": "Shortened"
+    "description": "Focuses on the lats and biceps using an underhand grip for added tension."
   },
   {
     "id": "BAC8",
@@ -83,8 +76,18 @@
     "video": "https://www.youtube.com/watch?v=NFXqqvZGAHY",
     "creditSource": "https://www.youtube.com/@marcusfilly",
     "credit": "Marcus Filly",
-    "description": "Improves flexibility and strength in the lower back and hamstrings.",
-    "trainingPosition": "Lengthened"
+    "description": "Improves flexibility and strength in the lower back and hamstrings."
+  },
+  {
+    "id": "BAC9",
+    "name": "Deadlift",
+    "primaryMuscleGroup": "back",
+    "secondaryMuscleGroups": ["glutes", "hamstrings", "forearms", "abs"],
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=1ZXobu7JvvE",
+    "creditSource": "https://www.youtube.com/@barbelllogic",
+    "credit": "Barbell Logic",
+    "description": "A compound movement that targets the entire posterior chain, including the lower back, glutes, and hamstrings."
   },
   {
     "id": "BAC10",
@@ -95,8 +98,7 @@
     "video": "https://www.youtube.com/watch?v=Wv7f0uIKh8o",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Targets the entire back with a strict barbell row from the floor.",
-    "trainingPosition": "Shortened"
+    "description": "Targets the entire back with a strict barbell row from the floor."
   },
   {
     "id": "BAC11",
@@ -107,8 +109,7 @@
     "video": "https://www.youtube.com/watch?v=9vYBWV5OeKg",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Focuses on the upper back and traps with a partial deadlift movement.",
-    "trainingPosition": "Lengthened"
+    "description": "Focuses on the upper back and traps with a partial deadlift movement."
   },
   {
     "id": "BAC12",
@@ -116,8 +117,7 @@
     "primaryMuscleGroup": "back",
     "secondaryMuscleGroups": ["lats", "biceps", "forearms", "shoulders"],
     "type": "WR",
-    "description": "Engages the lats and middle back using a chest-supported rowing motion.",
-    "trainingPosition": "Shortened"
+    "description": "Engages the lats and middle back using a chest-supported rowing motion."
   },
   {
     "id": "BAC13",
@@ -128,8 +128,7 @@
     "video": "https://www.youtube.com/watch?v=lFLzkTLt3Ok",
     "creditSource": "https://www.youtube.com/@thirdspacelondon8746",
     "credit": "Third Space London",
-    "description": "Isolates the middle and upper back muscles with machine-guided resistance.",
-    "trainingPosition": "Shortened"
+    "description": "Isolates the middle and upper back muscles with machine-guided resistance."
   },
   {
     "id": "BAC14",
@@ -140,8 +139,7 @@
     "video": "https://www.youtube.com/watch?v=hYo72r8Ivso",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Targets the lats, traps, and rhomboids with heavy rowing using a T-bar.",
-    "trainingPosition": "Shortened"
+    "description": "Targets the lats, traps, and rhomboids with heavy rowing using a T-bar."
   },
   {
     "id": "BAC15",
@@ -152,8 +150,7 @@
     "video": "https://www.youtube.com/watch?v=kTMBsUwEGPM",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Strengthens the lower back and glutes with a bodyweight floor exercise.",
-    "trainingPosition": "Shortened"
+    "description": "Strengthens the lower back and glutes with a bodyweight floor exercise."
   },
   {
     "id": "BAC16",
@@ -161,8 +158,7 @@
     "primaryMuscleGroup": "back",
     "secondaryMuscleGroups": ["glutes", "hamstrings", "abs"],
     "type": "WR",
-    "description": "Strengthens the lower back with controlled machine resistance.",
-    "trainingPosition": "Lengthened"
+    "description": "Strengthens the lower back with controlled machine resistance."
   },
   {
     "id": "BAC17",
@@ -170,8 +166,7 @@
     "primaryMuscleGroup": "back",
     "secondaryMuscleGroups": ["glutes", "hamstrings", "abs"],
     "type": "BW",
-    "description": "Targets the lower back and hamstrings with a bodyweight hyperextension.",
-    "trainingPosition": "Lengthened"
+    "description": "Targets the lower back and hamstrings with a bodyweight hyperextension."
   },
   {
     "id": "BAC18",
@@ -179,8 +174,7 @@
     "primaryMuscleGroup": "back",
     "secondaryMuscleGroups": ["glutes", "hamstrings", "abs"],
     "type": "WR",
-    "description": "Strengthens the lower back and glutes with added weight resistance.",
-    "trainingPosition": "Lengthened"
+    "description": "Strengthens the lower back and glutes with added weight resistance."
   },
   {
     "id": "BAC19",
@@ -191,8 +185,7 @@
     "video": "https://www.youtube.com/watch?v=lH2gdwzI2dU",
     "creditSource": "https://www.youtube.com/@OnnitAcademy",
     "credit": "Onnit Academy",
-    "description": "Works the back and lats using band resistance for dynamic rowing.",
-    "trainingPosition": "Shortened"
+    "description": "Works the back and lats using band resistance for dynamic rowing."
   },
   {
     "id": "BAC20",
@@ -203,8 +196,7 @@
     "video": "https://www.youtube.com/watch?v=44vWeFLC_J0",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
     "credit": "TheGymGroup",
-    "description": "Targets the lats, traps, and rhomboids using a barbell in a bent-over position.",
-    "trainingPosition": "Shortened"
+    "description": "Targets the lats, traps, and rhomboids using a barbell in a bent-over position."
   },
   {
     "id": "BAC21",
@@ -215,8 +207,7 @@
     "video": "https://www.youtube.com/watch?v=6gvmcqr226U",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Works the lats and middle back with a unilateral rowing motion.",
-    "trainingPosition": "Shortened"
+    "description": "Works the lats and middle back with a unilateral rowing motion."
   },
   {
     "id": "BAC22",
@@ -227,8 +218,7 @@
     "video": "https://www.youtube.com/watch?v=Nx0TzjgsI-0",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Targets the lats and upper back while minimizing lower back strain.",
-    "trainingPosition": "Shortened"
+    "description": "Targets the lats and upper back while minimizing lower back strain."
   },
   {
     "id": "BAC23",
@@ -239,8 +229,7 @@
     "video": "https://www.youtube.com/watch?v=Z__dp9rhlcw",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
     "credit": "Functional Bodybuilding",
-    "description": "Engages the rear delts and upper back with a reverse fly motion.",
-    "trainingPosition": "Shortened"
+    "description": "Engages the rear delts and upper back with a reverse fly motion."
   },
   {
     "id": "BAC24",
@@ -251,8 +240,7 @@
     "video": "https://www.youtube.com/watch?v=PCepgMpQEgQ",
     "creditSource": "https://www.youtube.com/@thirdspacelondon8746",
     "credit": "Third Space London",
-    "description": "Improves grip strength and decompresses the spine, engaging the lats and shoulders.",
-    "trainingPosition": "Lengthened"
+    "description": "Improves grip strength and decompresses the spine, engaging the lats and shoulders."
   },
   {
     "id": "BAC25",
@@ -263,8 +251,7 @@
     "video": "https://www.youtube.com/watch?v=eYYwfpcEn0I",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
     "credit": "Functional Bodybuilding",
-    "description": "Targets the lats, traps, and core with alternating dumbbell rows.",
-    "trainingPosition": "Shortened"
+    "description": "Targets the lats, traps, and core with alternating dumbbell rows."
   },
   {
     "id": "BAC26",
@@ -272,8 +259,7 @@
     "primaryMuscleGroup": "back",
     "secondaryMuscleGroups": ["shoulders", "traps", "abs"],
     "type": "WR",
-    "description": "Engages the rear delts and upper back using cable resistance for a reverse fly motion.",
-    "trainingPosition": "Shortened"
+    "description": "Engages the rear delts and upper back using cable resistance for a reverse fly motion."
   },
   {
     "id": "BAC27",
@@ -284,8 +270,7 @@
     "video": "https://www.youtube.com/watch?v=BR7HUuzm1C8",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
     "credit": "TheGymGroup",
-    "description": "Strengthens the rear delts and upper back with a dumbbell reverse fly.",
-    "trainingPosition": "Shortened"
+    "description": "Strengthens the rear delts and upper back with a dumbbell reverse fly."
   },
   {
     "id": "BAC28",
@@ -293,8 +278,7 @@
     "primaryMuscleGroup": "back",
     "secondaryMuscleGroups": ["shoulders", "traps", "abs"],
     "type": "WR",
-    "description": "Isolates the rear delts and upper back with machine-guided movement.",
-    "trainingPosition": "Shortened"
+    "description": "Isolates the rear delts and upper back with machine-guided movement."
   },
   {
     "id": "BAC29",
@@ -305,7 +289,140 @@
     "video": "https://www.youtube.com/watch?v=LYzYIXvL0C8",
     "creditSource": "https://www.youtube.com/@TheGymGroupUK",
     "credit": "TheGymGroup",
-    "description": "Combines rowing and core engagement with alternating dumbbell rows in a plank position.",
-    "trainingPosition": "Shortened"
+    "description": "Combines rowing and core engagement with alternating dumbbell rows in a plank position."
+  },
+  {
+    "id": "BAC30",
+    "name": "Pull-Up",
+    "primaryMuscleGroup": "back",
+    "secondaryMuscleGroups": ["lats", "biceps", "forearms", "shoulders", "abs"],
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=eGo4IYlbE5g",
+    "creditSource": "https://www.youtube.com/@Calisthenicmovement",
+    "credit": "Calisthenic Movement",
+    "description": "A bodyweight exercise that targets the lats and upper back by pulling the body up to a bar."
+  },
+  {
+    "id": "BAC31",
+    "name": "Chin-Up",
+    "primaryMuscleGroup": "back",
+    "secondaryMuscleGroups": ["lats", "biceps", "forearms", "shoulders", "abs"],
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=bE6vF6d1MVw",
+    "creditSource": "https://www.youtube.com/@Calisthenicmovement",
+    "credit": "Calisthenic Movement",
+    "description": "A variation of the pull-up using an underhand grip to emphasize the biceps and lats."
+  },
+  {
+    "id": "BAC32",
+    "name": "Lat Pulldown (Cable)",
+    "primaryMuscleGroup": "back",
+    "secondaryMuscleGroups": ["lats", "biceps", "shoulders"],
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=CAwf7n6Luuc",
+    "creditSource": "https://www.youtube.com/@ScottHermanFitness",
+    "credit": "Scott Herman",
+    "description": "Targets the lats and upper back by pulling a bar down towards the chest using cable resistance."
+  },
+  {
+    "id": "BAC33",
+    "name": "Face Pull (Cable)",
+    "primaryMuscleGroup": "back",
+    "secondaryMuscleGroups": ["rear delts", "traps", "shoulders"],
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=rep-qVOkqgk",
+    "creditSource": "https://www.youtube.com/@JeffCavaliere",
+    "credit": "Athlean-X",
+    "description": "Strengthens the upper back and rear delts by pulling a rope attachment towards the face."
+  },
+  {
+    "id": "BAC34",
+    "name": "Straight-Arm Pulldown (Cable)",
+    "primaryMuscleGroup": "back",
+    "secondaryMuscleGroups": ["lats", "triceps"],
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=-RHti9n6d4s",
+    "creditSource": "https://www.youtube.com/@ScottHermanFitness",
+    "credit": "Scott Herman",
+    "description": "Isolates the lats by pulling the bar down with straight arms, engaging the back without bicep involvement."
+  },
+  {
+    "id": "BAC35",
+    "name": "Good Morning (Barbell)",
+    "primaryMuscleGroup": "back",
+    "secondaryMuscleGroups": ["hamstrings", "glutes"],
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=vKPGe8zb2S4",
+    "creditSource": "https://www.youtube.com/@barbelllogic",
+    "credit": "Barbell Logic",
+    "description": "Strengthens the lower back, glutes, and hamstrings through hip hinging with a barbell on the shoulders."
+  },
+  {
+    "id": "BAC36",
+    "name": "Shrug (Barbell)",
+    "primaryMuscleGroup": "back",
+    "secondaryMuscleGroups": ["traps"],
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=Se4QFI6XHZk",
+    "creditSource": "https://www.youtube.com/@barbelllogic",
+    "credit": "Barbell Logic",
+    "description": "Targets the trapezius muscles by lifting the shoulders upwards while holding a barbell."
+  },
+  {
+    "id": "BAC37",
+    "name": "Upright Row (Barbell)",
+    "primaryMuscleGroup": "back",
+    "secondaryMuscleGroups": ["shoulders", "traps"],
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=V1oKp8bB3U0",
+    "creditSource": "https://www.youtube.com/@ScottHermanFitness",
+    "credit": "Scott Herman",
+    "description": "Engages the traps and shoulders by lifting a barbell vertically to chest height."
+  },
+  {
+    "id": "BAC38",
+    "name": "Kroc Row",
+    "primaryMuscleGroup": "back",
+    "secondaryMuscleGroups": ["lats", "biceps", "forearms"],
+    "type": "WR",
+    "description": "A high-rep, heavy dumbbell row focusing on building upper back and grip strength."
+  },
+  {
+    "id": "BAC39",
+    "name": "Meadows Row",
+    "primaryMuscleGroup": "back",
+    "secondaryMuscleGroups": ["lats", "rear delts", "traps"],
+    "type": "WR",
+    "description": "A unilateral landmine row variation that targets the upper back and lats."
+  },
+  {
+    "id": "BAC40",
+    "name": "Landmine Row",
+    "primaryMuscleGroup": "back",
+    "secondaryMuscleGroups": ["lats", "biceps", "forearms", "shoulders"],
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=QfASkypJemQ",
+    "creditSource": "https://www.youtube.com/@ScottHermanFitness",
+    "credit": "Scott Herman",
+    "description": "Targets the back muscles using a barbell anchored at one end in a landmine setup."
+  },
+  {
+    "id": "BAC41",
+    "name": "Reverse Plank",
+    "primaryMuscleGroup": "back",
+    "secondaryMuscleGroups": ["glutes", "hamstrings", "abs", "shoulders"],
+    "type": "DR",
+    "video": "https://www.youtube.com/watch?v=0fhGHTCq6pI",
+    "creditSource": "https://www.youtube.com/@FitnessBlender",
+    "credit": "Fitness Blender",
+    "description": "Strengthens the lower back and glutes by holding the body in a reverse plank position."
+  },
+  {
+    "id": "BAC42",
+    "name": "Superman Hold",
+    "primaryMuscleGroup": "back",
+    "secondaryMuscleGroups": ["glutes", "hamstrings"],
+    "type": "DR",
+    "description": "An isometric hold of the Superman position to strengthen the lower back and glutes."
   }
 ]
