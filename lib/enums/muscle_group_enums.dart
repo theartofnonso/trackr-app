@@ -70,7 +70,7 @@ class MuscleGroup {
       "Calves enable ankle flexion, essential for running, jumping, and stability in lower-body movements.");
   static const MuscleGroup neck =
       MuscleGroup._("Neck", MuscleGroupFamily.neck, "Neck muscles help stabilize the head and support posture.");
-  static const MuscleGroup all = MuscleGroup._("All", MuscleGroupFamily.all, "No specific muscle group targeted.");
+  static const MuscleGroup all = MuscleGroup._("Full Body", MuscleGroupFamily.all, "No specific muscle group targeted.");
 
   // List of all muscle groups
   static List<MuscleGroup> get values => [
@@ -92,6 +92,7 @@ class MuscleGroup {
         hamstrings,
         quadriceps,
         calves,
+    all
       ].sorted((a, b) => a.name.compareTo(b.name));
 
   // Get all muscle groups by a specific family
