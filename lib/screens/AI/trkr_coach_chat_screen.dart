@@ -87,39 +87,41 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
                     ),
                   ),
             const SizedBox(height: 12),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _textEditingController,
-                    decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                        enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: const BorderSide(color: Colors.white10)),
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: const BorderSide(color: Colors.white30)),
-                        filled: true,
-                        fillColor: Colors.white10,
-                        hintText: "Describe your workout",
-                        hintStyle:
-                            GoogleFonts.ubuntu(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w400)),
-                    maxLines: null,
-                    cursorColor: Colors.white,
-                    showCursor: true,
-                    keyboardType: TextInputType.text,
-                    textCapitalization: TextCapitalization.sentences,
-                    style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white, fontSize: 16),
+            SafeArea(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _textEditingController,
+                      decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              borderSide: const BorderSide(color: Colors.white10)),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              borderSide: const BorderSide(color: Colors.white30)),
+                          filled: true,
+                          fillColor: Colors.white10,
+                          hintText: "Describe your workout",
+                          hintStyle:
+                              GoogleFonts.ubuntu(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w400)),
+                      maxLines: null,
+                      cursorColor: Colors.white,
+                      showCursor: true,
+                      keyboardType: TextInputType.text,
+                      textCapitalization: TextCapitalization.sentences,
+                      style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white, fontSize: 16),
+                    ),
                   ),
-                ),
-                IconButton(
-                  onPressed: _runMessage,
-                  icon: const FaIcon(FontAwesomeIcons.paperPlane),
-                  color: Colors.white,
-                )
-              ],
+                  IconButton(
+                    onPressed: _runMessage,
+                    icon: const FaIcon(FontAwesomeIcons.paperPlane),
+                    color: Colors.white,
+                  )
+                ],
+              ),
             ),
           ],
         ),
