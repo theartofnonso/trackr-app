@@ -126,7 +126,10 @@ class ExerciseAndRoutineController extends ChangeNotifier {
   /// Templates
 
   void streamTemplates({required List<RoutineTemplate> templates}) {
-    _amplifyTemplateRepository.loadTemplatesStream(templates: templates);
+    _amplifyTemplateRepository.loadTemplatesStream(templates: templates, onLoaded: () {
+      _amplifyTemplateRepository.syncTemplatesWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
+      notifyListeners();
+    });
     notifyListeners();
   }
 
@@ -182,7 +185,6 @@ class ExerciseAndRoutineController extends ChangeNotifier {
   void streamLogs({required List<RoutineLog> logs}) {
     _amplifyLogRepository.loadLogStream(logs: logs, onLoaded: () {
       _amplifyLogRepository.syncLogsWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
-      _amplifyTemplateRepository.syncTemplatesWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
       notifyListeners();
     });
   }

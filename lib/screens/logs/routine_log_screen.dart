@@ -253,6 +253,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                             ),
                           ExerciseLogListView(
                               exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: updatedExerciseLogs)),
+                          const SizedBox(height: 60,)
                         ],
                       ),
                     )

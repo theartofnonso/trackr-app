@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
@@ -14,8 +15,9 @@ class AmplifyRoutineTemplateRepository {
 
   UnmodifiableListView<RoutineTemplateDto> get templates => UnmodifiableListView(_templates);
 
-  void loadTemplatesStream({required List<RoutineTemplate> templates}) {
+  void loadTemplatesStream({required List<RoutineTemplate> templates, required VoidCallback onLoaded}) {
     _templates = templates.map((log) => RoutineTemplateDto.toDto(log)).toList();
+    onLoaded();
   }
 
   Future<RoutineTemplateDto> saveTemplate({required RoutineTemplateDto templateDto}) async {

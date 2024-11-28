@@ -316,6 +316,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                   ExerciseLogListView(
                     exerciseLogs: exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
                   ),
+                  const SizedBox(height: 60,)
                 ],
               ),
             ),
