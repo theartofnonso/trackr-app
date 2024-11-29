@@ -298,7 +298,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                 IconButton(
                     key: const Key('select_exercises_in_library_btn'),
                     onPressed: _selectExercisesInLibrary,
-                    icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white)),
+                    icon: const FaIcon(FontAwesomeIcons.solidSquarePlus, color: Colors.white)),
                 if (exerciseLogs.length > 1)
                   IconButton(
                       onPressed: () => _reOrderExerciseLogs(exerciseLogs: exerciseLogs),

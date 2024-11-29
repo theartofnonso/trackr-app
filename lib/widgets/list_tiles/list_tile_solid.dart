@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 class SolidListTile extends StatelessWidget {
   final String title;
   final String? subtitle;
+  final Widget? leading;
   final Widget? trailingSubtitle;
   final String? trailing;
   final void Function()? onTap;
@@ -14,6 +15,7 @@ class SolidListTile extends StatelessWidget {
     super.key,
     required this.title,
     this.subtitle,
+    this.leading,
     this.trailingSubtitle,
     this.trailing,
     this.onTap,
@@ -36,6 +38,7 @@ class SolidListTile extends StatelessWidget {
       child: ListTile(
         onTap: onTap,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        leading: leading,
         title: Text(title,
             overflow: TextOverflow.ellipsis,
             style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),

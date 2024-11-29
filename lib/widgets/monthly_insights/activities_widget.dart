@@ -86,7 +86,7 @@ class _LogsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: sapphireDark80,
-        title: Text("Activities".toUpperCase(),
+        title: Text("${DateTime.now().formattedFullMonth()} Activities".toUpperCase(),
             style: GoogleFonts.ubuntu(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
         leading: IconButton(
             icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../colors.dart';
@@ -16,7 +17,8 @@ class RoutineLogWidget extends StatelessWidget {
   final String trailing;
   final bool isEditable;
 
-  const RoutineLogWidget({super.key, required this.log, required this.color, required this.trailing, this.isEditable = true});
+  const RoutineLogWidget(
+      {super.key, required this.log, required this.color, required this.trailing, this.isEditable = true});
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +36,18 @@ class RoutineLogWidget extends StatelessWidget {
 
     return SolidListTile(
         title: log.name,
+        leading: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            color: vibrantGreen, // Background color
+            borderRadius: BorderRadius.circular(5), // Rounded corners
+          ),
+          child: Image.asset(
+            'icons/dumbbells.png',
+            fit: BoxFit.contain,
+            height: 24, color: sapphireDark, // Adjust the height as needed
+          ),
+        ),
         subtitle:
             "${completedExerciseLogsAndSets.length} ${pluralize(word: "exercise", count: completedExerciseLogsAndSets.length)}",
         trailing: trailing,

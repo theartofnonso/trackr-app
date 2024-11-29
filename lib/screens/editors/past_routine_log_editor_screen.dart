@@ -222,7 +222,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
                 onPressed: _checkForUnsavedChanges),
             actions: [
               IconButton(
-                  onPressed: _selectExercisesInLibrary, icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white)),
+                  onPressed: _selectExercisesInLibrary, icon: const FaIcon(FontAwesomeIcons.solidSquarePlus, color: Colors.white)),
               if (exerciseLogs.length > 1)
                 IconButton(
                     onPressed: () => _reOrderExerciseLogs(exerciseLogs: exerciseLogs),
