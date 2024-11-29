@@ -16,7 +16,6 @@ import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../colors.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/exercise_log_dto.dart';
-import '../../dtos/set_dtos/set_dto.dart';
 import '../../openAI/open_ai.dart';
 import '../../openAI/open_ai_functions.dart';
 import '../../shared_prefs.dart';

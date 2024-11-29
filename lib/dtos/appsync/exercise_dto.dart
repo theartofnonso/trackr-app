@@ -51,10 +51,10 @@ class ExerciseDto {
 
   factory ExerciseDto.fromExercise({required Exercise exercise}) {
     final json = jsonDecode(exercise.data);
-    return ExerciseDto.fromJson(json);
+    return ExerciseDto.fromJson(json, owner: exercise.owner);
   }
 
-  factory ExerciseDto.fromJson(Map<String, dynamic> json) {
+  factory ExerciseDto.fromJson(Map<String, dynamic> json, {String? owner}) {
     final id = json['id'] ?? "";
     final name = json["name"] ?? "";
     final primaryMuscleGroupString = json["primaryMuscleGroup"] ?? "";
@@ -64,7 +64,6 @@ class ExerciseDto {
         secondaryMuscleGroupString.map((muscleGroup) => MuscleGroup.fromString(muscleGroup)).toList();
     final typeJson = json["type"] ?? "";
     final type = ExerciseType.fromString(typeJson);
-    final owner = json["owner"] ?? "";
     final video = json["video"];
     final description = json["description"] ?? "";
     final videoUri = video != null ? Uri.parse(video) : null;
@@ -79,7 +78,7 @@ class ExerciseDto {
         type: type,
         video: videoUri,
         description: description,
-        owner: owner.toString(),
+        owner: owner ?? "",
         creditSource: creditSourceUri,
         credit: credit);
   }

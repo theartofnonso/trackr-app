@@ -19,18 +19,18 @@ class RoutineUserDto {
         required this.owner});
 
   factory RoutineUserDto.toDto(RoutineUser user) {
-    final json = jsonDecode(user.data);
-    return RoutineUserDto.fromJson(json, model: user);
+    return RoutineUserDto.fromJson(user);
   }
 
-  factory RoutineUserDto.fromJson(Map<String, dynamic> json, {required RoutineUser model}) {
+  factory RoutineUserDto.fromJson(RoutineUser user) {
+    final json = jsonDecode(user.data);
     final cognitoUserId = json["cognitoUserId"] ?? "";
     final name = json["name"] ?? "";
     final email = json["email"] ?? "";
     final weight = (json["weight"]) ?? 0.0;
 
     return RoutineUserDto(
-        id: model.id, name: name, cognitoUserId: cognitoUserId, email: email, weight: weight, owner: model.owner ?? "");
+        id: user.id, name: name, cognitoUserId: cognitoUserId, email: email, weight: weight, owner: user.owner ?? "");
   }
 
   Map<String, dynamic> toJson() {

@@ -1,10 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
-import 'package:tracker_app/dtos/set_dto.dart';
+import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
-import 'package:tracker_app/enums/training_position_enum.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 
 import 'date_utils.dart';
@@ -15,7 +14,6 @@ void main() {
       name: "Hamstring Exercise",
       primaryMuscleGroup: MuscleGroup.hamstrings,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
       owner: "");
 
@@ -24,7 +22,6 @@ void main() {
       name: "Quad Exercise",
       primaryMuscleGroup: MuscleGroup.quadriceps,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
       owner: "");
 
@@ -33,7 +30,6 @@ void main() {
       name: "Back Exercise",
       primaryMuscleGroup: MuscleGroup.lats,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
       owner: "");
 
@@ -42,7 +38,6 @@ void main() {
       name: "Traps Exercise",
       primaryMuscleGroup: MuscleGroup.traps,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
       owner: "");
 
@@ -51,7 +46,6 @@ void main() {
       name: "Chest Exercise",
       primaryMuscleGroup: MuscleGroup.chest,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
       owner: "");
 
@@ -60,7 +54,6 @@ void main() {
       name: "Shoulders Exercise",
       primaryMuscleGroup: MuscleGroup.shoulders,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
       owner: "");
 
@@ -69,7 +62,6 @@ void main() {
       name: "Biceps Exercise",
       primaryMuscleGroup: MuscleGroup.biceps,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
       owner: "");
 
@@ -78,7 +70,6 @@ void main() {
       name: "Triceps Exercise",
       primaryMuscleGroup: MuscleGroup.triceps,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
       owner: "");
 
@@ -87,7 +78,6 @@ void main() {
       name: "Abs Exercise",
       primaryMuscleGroup: MuscleGroup.abs,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.duration,
       owner: "");
 
@@ -96,7 +86,6 @@ void main() {
       name: "Neck Exercise",
       primaryMuscleGroup: MuscleGroup.neck,
       secondaryMuscleGroups: [MuscleGroup.neck],
-      trainingPosition: TrainingPosition.lengthened,
       type: ExerciseType.weights,
       owner: "");
 
@@ -106,312 +95,322 @@ void main() {
   final hamstring1ExerciseLogs = List.generate(
       dayOneDateTimes.length,
       (index) => ExerciseLogDto(
-          hamstringExercise.id,
-          "legDayOneSession$index",
-          "",
-          hamstringExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayOneDateTimes[index],
-          []));
+            id: "hamstring1ExerciseLog$index",
+            routineLogId: "legDayOneSession$index",
+            superSetId: "",
+            exercise: hamstringExercise,
+            notes: "notes",
+            sets: [
+              const WeightAndRepsSetDto(weight: 80.0, reps: 15, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 8, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 6, checked: true),
+            ],
+            createdAt: dayOneDateTimes[index],
+          ));
+
   final hamstring2ExerciseLogs = List.generate(
-      dayOneDateTimes.length,
-          (index) => ExerciseLogDto(
-          hamstringExercise.id,
-          "legDayOneSession$index",
-          "",
-          hamstringExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-              dayTwoDateTimes[index],
-          []));
+      dayTwoDateTimes.length,
+      (index) => ExerciseLogDto(
+            id: "hamstring2ExerciseLog$index",
+            routineLogId: "legDayOneSession$index",
+            superSetId: "",
+            exercise: hamstringExercise,
+            notes: "notes",
+            sets: [
+              const WeightAndRepsSetDto(weight: 80.0, reps: 15, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 8, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 6, checked: true),
+            ],
+            createdAt: dayTwoDateTimes[index],
+          ));
 
   final quad1ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
       (index) => ExerciseLogDto(
-          quadExercise.id,
-          "legDayTwoSession$index",
-          "",
-          quadExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayOneDateTimes[index],
-          []));
+            id: "quad1ExerciseLog$index",
+            routineLogId: "legDayTwoSession$index",
+            superSetId: "",
+            exercise: quadExercise,
+            notes: "notes",
+            sets: [
+              const WeightAndRepsSetDto(weight: 80.0, reps: 15, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 8, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 6, checked: true),
+            ],
+            createdAt: dayOneDateTimes[index],
+          ));
+
   final quad2ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
-          (index) => ExerciseLogDto(
-          quadExercise.id,
-          "legDayTwoSession$index",
-          "",
-          quadExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayTwoDateTimes[index],
-          []));
+      (index) => ExerciseLogDto(
+            id: "quad2ExerciseLog$index",
+            routineLogId: "legDayTwoSession$index",
+            superSetId: "",
+            exercise: quadExercise,
+            notes: "notes",
+            sets: [
+              const WeightAndRepsSetDto(weight: 80.0, reps: 15, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 8, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 6, checked: true),
+            ],
+            createdAt: dayTwoDateTimes[index],
+          ));
 
   final chest1ExerciseLogs = List.generate(
       dayOneDateTimes.length,
       (index) => ExerciseLogDto(
-          chestExercise.id,
-          "chestDayOneSession$index",
-          "",
-          chestExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayOneDateTimes[index],
-          []));
+            id: "chest1ExerciseLog$index",
+            routineLogId: "chestDayOneSession$index",
+            superSetId: "",
+            exercise: chestExercise,
+            notes: "notes",
+            sets: [
+              const WeightAndRepsSetDto(weight: 80.0, reps: 15, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 8, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 6, checked: true),
+            ],
+            createdAt: dayOneDateTimes[index],
+          ));
+
   final chest2ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
       (index) => ExerciseLogDto(
-          chestExercise.id,
-          "chestDayTwoSession$index",
-          "",
-          chestExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayTwoDateTimes[index],
-          []));
+            id: "chest2ExerciseLog$index",
+            routineLogId: "chestDayTwoSession$index",
+            superSetId: "",
+            exercise: chestExercise,
+            notes: "notes",
+            sets: [
+              const WeightAndRepsSetDto(weight: 80.0, reps: 15, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 8, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 6, checked: true),
+            ],
+            createdAt: dayTwoDateTimes[index],
+          ));
 
   final back1ExerciseLogs = List.generate(
       dayOneDateTimes.length,
       (index) => ExerciseLogDto(
-          backExercise.id,
-          "backDayOneSession$index",
-          "",
-          backExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayOneDateTimes[index],
-          []));
+            id: "back1ExerciseLog$index",
+            routineLogId: "backDayOneSession$index",
+            superSetId: "",
+            exercise: backExercise,
+            notes: "notes",
+            sets: [
+              const WeightAndRepsSetDto(weight: 80.0, reps: 15, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 8, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 6, checked: true),
+            ],
+            createdAt: dayOneDateTimes[index],
+          ));
+
   final back2ExerciseLogs = List.generate(
-      dayOneDateTimes.length,
-          (index) => ExerciseLogDto(
-          backExercise.id,
-          "backDayOneSession$index",
-          "",
-          backExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayTwoDateTimes[index],
-          []));
+      dayTwoDateTimes.length,
+      (index) => ExerciseLogDto(
+            id: "back2ExerciseLog$index",
+            routineLogId: "backDayTwoSession$index",
+            superSetId: "",
+            exercise: backExercise,
+            notes: "notes",
+            sets: [
+              const WeightAndRepsSetDto(weight: 80.0, reps: 15, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 8, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 6, checked: true),
+            ],
+            createdAt: dayTwoDateTimes[index],
+          ));
 
   final traps1ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
       (index) => ExerciseLogDto(
-          trapsExercise.id,
-          "backDayTwoSession$index",
-          "",
-          trapsExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayOneDateTimes[index],
-          []));
+            id: "traps1ExerciseLog$index",
+            routineLogId: "backDayTwoSession$index",
+            superSetId: "",
+            exercise: trapsExercise,
+            notes: "notes",
+            sets: [
+              const WeightAndRepsSetDto(weight: 80.0, reps: 15, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 8, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 6, checked: true),
+            ],
+            createdAt: dayOneDateTimes[index],
+          ));
+
   final traps2ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
-          (index) => ExerciseLogDto(
-          trapsExercise.id,
-          "backDayTwoSession$index",
-          "",
-          trapsExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayTwoDateTimes[index],
-          []));
+      (index) => ExerciseLogDto(
+            id: "traps2ExerciseLog$index",
+            routineLogId: "backDayTwoSession$index",
+            superSetId: "",
+            exercise: trapsExercise,
+            notes: "notes",
+            sets: [
+              const WeightAndRepsSetDto(weight: 80.0, reps: 15, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 8, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 6, checked: true),
+            ],
+            createdAt: dayTwoDateTimes[index],
+          ));
 
   final shoulders1ExerciseLogs = List.generate(
       dayOneDateTimes.length,
       (index) => ExerciseLogDto(
-          shouldersExercise.id,
-          "shouldersDayOneSession$index",
-          "",
-          shouldersExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayOneDateTimes[index],
-          []));
+            id: "shoulders1ExerciseLog$index",
+            routineLogId: "shouldersDayOneSession$index",
+            superSetId: "",
+            exercise: shouldersExercise,
+            notes: "notes",
+            sets: [
+              const WeightAndRepsSetDto(weight: 80.0, reps: 15, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 8, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 6, checked: true),
+            ],
+            createdAt: dayOneDateTimes[index],
+          ));
+
   final shoulders2ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
       (index) => ExerciseLogDto(
-          shouldersExercise.id,
-          "shouldersDayTwoSession$index",
-          "",
-          shouldersExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayTwoDateTimes[index],
-          []));
+            id: "shoulders2ExerciseLog$index",
+            routineLogId: "shouldersDayTwoSession$index",
+            superSetId: "",
+            exercise: shouldersExercise,
+            notes: "notes",
+            sets: [
+              const WeightAndRepsSetDto(weight: 80.0, reps: 15, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 8, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 6, checked: true),
+            ],
+            createdAt: dayTwoDateTimes[index],
+          ));
 
   final biceps1ExerciseLogs = List.generate(
       dayOneDateTimes.length,
       (index) => ExerciseLogDto(
-          bicepsExercise.id,
-          "bicepsDayOneSession$index",
-          "",
-          bicepsExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayTwoDateTimes[index],
-          []));
+            id: "biceps1ExerciseLog$index",
+            routineLogId: "bicepsDayOneSession$index",
+            superSetId: "",
+            exercise: bicepsExercise,
+            notes: "notes",
+            sets: [
+              const WeightAndRepsSetDto(weight: 80.0, reps: 15, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 8, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 6, checked: true),
+            ],
+            createdAt: dayTwoDateTimes[index],
+          ));
+
   final biceps2ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
       (index) => ExerciseLogDto(
-          bicepsExercise.id,
-          "bicepsDayTwoSession$index",
-          "",
-          bicepsExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayTwoDateTimes[index],
-          []));
+            id: "biceps2ExerciseLog$index",
+            routineLogId: "bicepsDayTwoSession$index",
+            superSetId: "",
+            exercise: bicepsExercise,
+            notes: "notes",
+            sets: [
+              const WeightAndRepsSetDto(weight: 80.0, reps: 15, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 8, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 6, checked: true),
+            ],
+            createdAt: dayTwoDateTimes[index],
+          ));
 
   final triceps1ExerciseLogs = List.generate(
       dayOneDateTimes.length,
       (index) => ExerciseLogDto(
-          tricepsExercise.id,
-          "tricepsDayOneSession$index",
-          "",
-          tricepsExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayOneDateTimes[index],
-          []));
+            id: "triceps1ExerciseLog$index",
+            routineLogId: "tricepsDayOneSession$index",
+            superSetId: "",
+            exercise: tricepsExercise,
+            notes: "notes",
+            sets: [
+              const WeightAndRepsSetDto(weight: 80.0, reps: 15, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 8, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 6, checked: true),
+            ],
+            createdAt: dayOneDateTimes[index],
+          ));
+
   final triceps2ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
       (index) => ExerciseLogDto(
-          tricepsExercise.id,
-          "tricepsDayTwoSession$index",
-          "",
-          tricepsExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayTwoDateTimes[index],
-          []));
+            id: "triceps2ExerciseLog$index",
+            routineLogId: "tricepsDayTwoSession$index",
+            superSetId: "",
+            exercise: tricepsExercise,
+            notes: "notes",
+            sets: [
+              const WeightAndRepsSetDto(weight: 80.0, reps: 15, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 8, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 6, checked: true),
+            ],
+            createdAt: dayTwoDateTimes[index],
+          ));
 
   final abs1ExerciseLogs = List.generate(
       dayOneDateTimes.length,
       (index) => ExerciseLogDto(
-          abs.id,
-          "coreDayOneSession$index",
-          "",
-          abs,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayOneDateTimes[index],
-          []));
+            id: "abs1ExerciseLog$index",
+            routineLogId: "coreDayOneSession$index",
+            superSetId: "",
+            exercise: abs,
+            notes: "notes",
+            sets: [
+              const WeightAndRepsSetDto(weight: 80.0, reps: 15, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 8, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 6, checked: true),
+            ],
+            createdAt: dayOneDateTimes[index],
+          ));
+
   final abs2ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
       (index) => ExerciseLogDto(
-          abs.id,
-          "coreDayTwoSession$index",
-          "",
-          abs,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayTwoDateTimes[index],
-          []));
+            id: "abs2ExerciseLog$index",
+            routineLogId: "coreDayTwoSession$index",
+            superSetId: "",
+            exercise: abs,
+            notes: "notes",
+            sets: [
+              const WeightAndRepsSetDto(weight: 80.0, reps: 15, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 8, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 6, checked: true),
+            ],
+            createdAt: dayTwoDateTimes[index],
+          ));
 
   final neck1ExerciseLogs = List.generate(
       dayOneDateTimes.length,
-          (index) => ExerciseLogDto(
-          abs.id,
-          "neckDayOneSession$index",
-          "",
-          neck,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayOneDateTimes[index],
-          []));
+      (index) => ExerciseLogDto(
+            id: "neck1ExerciseLog$index",
+            routineLogId: "neckDayOneSession$index",
+            superSetId: "",
+            exercise: neck,
+            notes: "notes",
+            sets: [
+              const WeightAndRepsSetDto(weight: 80.0, reps: 15, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 8, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 6, checked: true),
+            ],
+            createdAt: dayOneDateTimes[index],
+          ));
+
   final neck2ExerciseLogs = List.generate(
       dayTwoDateTimes.length,
-          (index) => ExerciseLogDto(
-          abs.id,
-          "neckDayTwoSession$index",
-          "",
-          neck,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayTwoDateTimes[index],
-          []));
+      (index) => ExerciseLogDto(
+            id: "neck2ExerciseLog$index",
+            routineLogId: "neckDayTwoSession$index",
+            superSetId: "",
+            exercise: neck,
+            notes: "notes",
+            sets: [
+              const WeightAndRepsSetDto(weight: 80.0, reps: 15, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 8, checked: true),
+              const WeightAndRepsSetDto(weight: 100.0, reps: 6, checked: true),
+            ],
+            createdAt: dayTwoDateTimes[index],
+          ));
 
   test("Has completed monthly single muscle target", () {
     final exerciseLogs = [
