@@ -16,6 +16,7 @@ import 'package:tracker_app/utils/https_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/backgrounds/trkr_loading_screen.dart';
 import 'package:tracker_app/widgets/chart/muscle_group_family_chart.dart';
+import 'package:tracker_app/widgets/information_containers/information_container_lite.dart';
 
 import '../../../colors.dart';
 import '../../../dtos/exercise_log_dto.dart';
@@ -209,6 +210,15 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                         ],
                       ),
                     ),
+                    if (routineUserController.user != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10.0, left: 10, right: 10),
+                        child: InformationContainerLite(
+                          content:
+                              "Set up your user profile in the settings to view the number of calories burned.",
+                          color: Colors.deepOrange,
+                        ),
+                      ),
                     const SizedBox(height: 22),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
