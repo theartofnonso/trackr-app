@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../dtos/appsync/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
-import '../dtos/set_dto.dart';
+import '../dtos/set_dtos/set_dto.dart';
 import '../enums/routine_editor_type_enums.dart';
 import '../logger.dart';
 import '../repositories/exercise_log_repository.dart';
@@ -21,7 +21,7 @@ class ExerciseLogController extends ChangeNotifier {
 
   void loadExerciseLogs({required List<ExerciseLogDto> exerciseLogs, required RoutineEditorMode mode}) {
     _exerciseLogRepository.loadExerciseLogs(exerciseLogs: exerciseLogs, mode: mode);
-    logger.i("load exercise log: ${exerciseLogs}: ${mode}");
+    logger.i("load exercise log: $exerciseLogs: $mode");
   }
 
   List<ExerciseLogDto> mergeExerciseLogsAndSets() {
@@ -34,7 +34,7 @@ class ExerciseLogController extends ChangeNotifier {
 
   void addExerciseLogs({required List<ExerciseDto> exercises}) {
     _exerciseLogRepository.addExerciseLogs(exercises: exercises);
-    logger.i("load exercise log: ${exercises}");
+    logger.i("load exercise log: $exercises");
     notifyListeners();
   }
 
@@ -71,16 +71,6 @@ class ExerciseLogController extends ChangeNotifier {
 
   void addSet({required String exerciseLogId, required List<SetDto> pastSets}) {
     _exerciseLogRepository.addSet(exerciseLogId: exerciseLogId, pastSets: pastSets);
-    notifyListeners();
-  }
-
-  void addAlternates({required String primaryExerciseId, required List<ExerciseDto> exercises}) {
-    _exerciseLogRepository.addSubstituteExercises(primaryExerciseId: primaryExerciseId, exercises: exercises);
-    notifyListeners();
-  }
-
-  void removeAlternates({required String primaryExerciseId, required String secondaryExerciseId}) {
-    _exerciseLogRepository.removeSubstituteExercises(primaryExerciseId: primaryExerciseId, secondaryExerciseId: secondaryExerciseId);
     notifyListeners();
   }
 

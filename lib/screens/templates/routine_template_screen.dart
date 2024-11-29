@@ -6,25 +6,18 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/extensions/amplify_models/routine_template_extension.dart';
-import 'package:tracker_app/screens/AI/trkr_coach_exercise_recommendation_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
-import '../../dtos/exercise_log_dto.dart';
-import '../../dtos/set_dto.dart';
+import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../dtos/viewmodels/routine_template_arguments.dart';
-import '../../enums/muscle_group_enums.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../enums/routine_preview_type_enum.dart';
 import '../../models/RoutineTemplate.dart';
-import '../../openAI/open_ai.dart';
-import '../../openAI/open_ai_functions.dart';
-import '../../strings/ai_prompts.dart';
 import '../../urls.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
@@ -32,11 +25,10 @@ import '../../utils/https_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../utils/string_utils.dart';
-import '../../widgets/ai_widgets/trkr_information_container.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/chart/muscle_group_family_chart.dart';
+import '../../widgets/empty_states/not_found.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
-import '../empty_state_screens/not_found.dart';
 import 'routine_day_planner.dart';
 
 class RoutineTemplateScreen extends StatefulWidget {
@@ -113,9 +105,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     final numberOfSets = template.exerciseTemplates.expand((exerciseTemplate) => exerciseTemplate.sets);
     final setsSummary = "${numberOfSets.length} ${pluralize(word: "Set", count: numberOfSets.length)}";
 
-    final updatedExerciseLogs = completedExercises(exerciseLogs: template.exerciseTemplates);
-
-    final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: updatedExerciseLogs);
+    final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: template.exerciseTemplates);
 
     final menuActions = [
       MenuItemButton(
@@ -221,6 +211,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
             ),
           ),
           child: SafeArea(
+            bottom: false,
             minimum: const EdgeInsets.all(10.0),
             child: SingleChildScrollView(
               child: Column(
@@ -322,19 +313,10 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                       ),
                     ),
                   ),
-                  if (template.owner == SharedPrefs().userId)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10.0),
-                      child: TRKRInformationContainer(
-                          ctaLabel: "Ask for a review",
-                          description:
-                              "Achieving your fitness goals is easier with a structured plan. Ask the TRKR Coach to optimize your workouts and help you succeed!",
-                          onTap: _runRoutineAnalysis),
-                    ),
                   ExerciseLogListView(
                     exerciseLogs: exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
-                    previewType: RoutinePreviewType.template,
                   ),
+                  const SizedBox(height: 60,)
                 ],
               ),
             ),
@@ -363,7 +345,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   void _launchRoutineLogEditor() {
     final template = _template;
     if (template != null) {
-      final arguments = RoutineLogArguments(log: template.log(), editorMode: RoutineEditorMode.log);
+      final arguments = RoutineLogArguments(log: template.toLog(), editorMode: RoutineEditorMode.log);
       navigateToRoutineLogEditor(context: context, arguments: arguments);
     }
   }
@@ -422,10 +404,10 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           final body = json["data"];
           final routineTemplate = body["getRoutineTemplate"];
           if (routineTemplate != null) {
-            final routineTemplateDto = RoutineTemplate.fromJson(routineTemplate);
+            final template = RoutineTemplate.fromJson(routineTemplate);
             setState(() {
               _loading = false;
-              _template = routineTemplateDto.dto();
+              _template = RoutineTemplateDto.toDto(template);
             });
           } else {
             setState(() {
@@ -437,127 +419,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     }
   }
 
-  void _runRoutineAnalysis() async {
-    final template = _template;
-
-    if (template != null) {
-      _showLoadingScreen();
-
-      final muscleGroupAndExercises = await _runFunctionMessage(template: template);
-
-      _hideLoadingScreen();
-
-      if (mounted) {
-        final originalExerciseTemplates = template.exerciseTemplates.map((template) => template.exercise).toList();
-        final exerciseIds = await navigateWithSlideTransition(
-                context: context,
-                child: TrkrCoachExerciseRecommendationScreen(
-                    muscleGroupAndExercises: muscleGroupAndExercises,
-                    originalExerciseTemplates: originalExerciseTemplates)) as List<String>? ??
-            [];
-
-        if (exerciseIds.isNotEmpty) {
-          if (mounted) {
-            final exercises = Provider.of<ExerciseAndRoutineController>(context, listen: false).exercises;
-
-            final exerciseTemplates = exerciseIds.map((exerciseId) {
-              final exerciseInLibrary = exercises.firstWhere((exercise) => exercise.id == exerciseId);
-              final exerciseTemplate = ExerciseLogDto(
-                  exerciseInLibrary.id, "", "", exerciseInLibrary, "", [const SetDto(0, 0, false)], DateTime.now(), []);
-              return exerciseTemplate;
-            }).toList();
-            final originalTemplates = template.exerciseTemplates;
-
-            final updatedTemplate = template.copyWith(exerciseTemplates: [...originalTemplates, ...exerciseTemplates]);
-
-            _updateTemplate(template: updatedTemplate);
-          }
-        }
-      }
-    }
-  }
-
-  Future<List<Map<String, dynamic>>> _runFunctionMessage({required RoutineTemplateDto template}) async {
-    List<Map<String, dynamic>> muscleGroupAndExercises = [];
-
-    final listOfExerciseJsons = template.exerciseTemplates
-        .map((exerciseTemplate) => jsonEncode({
-              "id": exerciseTemplate.exercise.id,
-              "name": exerciseTemplate.exercise.name,
-            }))
-        .toList();
-
-    final StringBuffer buffer = StringBuffer();
-
-    buffer.writeln(
-        "For Each Exercise in my selection, recommend an alternative exercise that meets the following criteria.");
-    buffer.writeln("\n");
-    buffer.writeln("Criteria 1 - Muscle Group Training Requirements:");
-    buffer.writeln("Dual Exercises: Ensure each muscle group is trained with two exercises:");
-    buffer.writeln("Primary Exercise: One from my original selection.");
-    buffer.writeln(
-        "Secondary Exercise: A recommended alternative if the original selection doesn't adequately target the muscle group.");
-    buffer.writeln("\n");
-    buffer.writeln("Criteria 2 - Targeting Specifications:");
-    buffer.writeln(
-        "Primary or Secondary Focus: Exercises should target the muscle group either primarily or secondarily.");
-    buffer.writeln("Range of Motion: Both exercises must engage the muscle group in:");
-    buffer.writeln("Lengthened Position");
-    buffer.writeln("Shortened Position");
-    buffer.writeln("\n");
-    buffer.writeln("Exercise Selection:");
-    buffer.writeln(listOfExerciseJsons);
-
-    final completeUserInstructions = buffer.toString();
-
-    final tool = await runMessageWithTools(
-        systemInstruction: personalTrainerInstructionForWorkouts, userInstruction: completeUserInstructions);
-    if (tool != null) {
-      final toolId = tool['id'];
-      final toolName = tool['name']; // A function
-      if (toolName == "list_exercises") {
-        if (mounted) {
-          final exercises = Provider.of<ExerciseAndRoutineController>(context, listen: false).exercises;
-          final functionCallPayload = await createFunctionCallPayload(
-              toolId: toolId,
-              systemInstruction: personalTrainerInstructionForWorkouts,
-              user: completeUserInstructions,
-              responseFormat: exercisesRecommendationResponseFormat,
-              exercises: exercises);
-          final jsonString = await runMessageWithFunctionCallResult(payload: functionCallPayload);
-          if (jsonString != null) {
-            final json = jsonDecode(jsonString);
-            final exercisesJson = json["exercises"] as List<dynamic>;
-            muscleGroupAndExercises = exercisesJson.map((json) {
-              final muscleGroupString = json["muscle_group"];
-              final recommendedExercises = json["recommended_exercises"] as List<dynamic>;
-              final rationale = json["rationale"];
-              final exerciseTemplates = recommendedExercises.map((exerciseId) {
-                return exercises.firstWhere((exercise) => exercise.id == exerciseId);
-              }).toList();
-              final muscleGroup = MuscleGroup.fromString(muscleGroupString);
-              return {
-                "muscle_group": muscleGroup,
-                "exercises": [exerciseTemplates[0], exerciseTemplates[1]],
-                "rationale": rationale
-              };
-            }).toList();
-          }
-        }
-      } else {
-        _showSnackbar("I'm sorry, I cannot assist with that request.");
-      }
-    }
-    return muscleGroupAndExercises;
-  }
-
-  void _updateTemplate({required RoutineTemplateDto template}) async {
-    await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateTemplate(template: template);
-    setState(() {
-      _template = template;
-    });
-  }
-
   void _updateTemplateSchedule({required RoutineTemplateDto template}) async {
     final updatedTemplate =
         await displayBottomSheet(context: context, child: RoutineDayPlanner(template: template)) as RoutineTemplateDto?;
@@ -567,10 +428,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
         _template = updatedTemplate;
       });
     }
-  }
-
-  void _showSnackbar(String message) {
-    showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: message);
   }
 
   void _showBottomSheet() {
@@ -612,7 +469,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                       Clipboard.setData(data).then((_) {
                         if (mounted) {
                           context.pop();
-                          showSnackbar(context: context, icon: const Icon(Icons.check), message: "Workout link copied");
+                          showSnackbar(context: context, icon: const FaIcon(FontAwesomeIcons.solidSquareCheck), message: "Workout link copied");
                         }
                       });
                     },

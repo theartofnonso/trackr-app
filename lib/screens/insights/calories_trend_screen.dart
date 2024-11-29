@@ -59,7 +59,7 @@ class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
       appBar: AppBar(
         backgroundColor: sapphireDark80,
         leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+          icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
           onPressed: context.pop,
         ),
         title: Text("Calories Trend".toUpperCase(),
@@ -103,7 +103,7 @@ class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
                                     GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                               ),
                               TextSpan(
-                                text: "CALORIES".toUpperCase(),
+                                text: "kcal".toUpperCase(),
                                 style:
                                     GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                               ),

@@ -4,19 +4,22 @@ import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:tracker_app/dtos/appsync/activity_log_dto.dart';
-import 'package:tracker_app/extensions/amplify_models/activity_log_extension.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
+import '../../logger.dart';
 import '../../models/ActivityLog.dart';
 import '../../shared_prefs.dart';
 
 class AmplifyActivityLogRepository {
+
+  final logger = getLogger(className: "AmplifyActivityLogRepository");
+
   List<ActivityLogDto> _logs = [];
 
   UnmodifiableListView<ActivityLogDto> get logs => UnmodifiableListView(_logs);
 
   void loadLogsStream({required List<ActivityLog> logs}) {
-    _logs = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
+    _logs = logs.map((log) => ActivityLogDto.toDto(log)).toList();
   }
 
   Future<void> saveLog({required ActivityLogDto logDto}) async {
@@ -25,6 +28,8 @@ class AmplifyActivityLogRepository {
     final logToCreate = ActivityLog(data: jsonEncode(logDto), createdAt: datetime, updatedAt: datetime, owner: SharedPrefs().userId);
 
     await Amplify.DataStore.save<ActivityLog>(logToCreate);
+
+    logger.i("Created activity log: $logDto");
   }
 
   Future<void> updateLog({required ActivityLogDto log}) async {
@@ -39,6 +44,7 @@ class AmplifyActivityLogRepository {
       final updatedAt = TemporalDateTime.withOffset(log.updatedAt, Duration.zero);
       final newLog = oldLog.copyWith(data: jsonEncode(log), createdAt: startTime, updatedAt: updatedAt);
       await Amplify.DataStore.save<ActivityLog>(newLog);
+      logger.i("Updated activity log: $log");
     }
   }
 
@@ -51,6 +57,7 @@ class AmplifyActivityLogRepository {
     if (result.isNotEmpty) {
       final oldTemplate = result.first;
       await Amplify.DataStore.delete<ActivityLog>(oldTemplate);
+      logger.i("Removed activity log: $log");
     }
   }
 

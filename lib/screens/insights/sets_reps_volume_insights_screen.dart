@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,17 +10,24 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/health_and_fitness_stats.dart';
+import 'package:tracker_app/openAI/open_ai_functions.dart';
+import 'package:tracker_app/screens/AI/routine_logs_report_screen.dart';
 import 'package:tracker_app/utils/date_utils.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
+import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 import 'package:tracker_app/widgets/empty_states/horizontal_stacked_bars_empty_state.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
-import '../../dtos/set_dto.dart';
+import '../../dtos/open_ai_response_schema_dtos/routine_logs_report_dto.dart';
+import '../../dtos/set_dtos/reps_dto.dart';
+import '../../dtos/set_dtos/set_dto.dart';
+import '../../dtos/set_dtos/weight_and_reps_dto.dart';
 import '../../enums/chart_unit_enum.dart';
+import '../../enums/exercise_type_enums.dart';
 import '../../enums/muscle_group_enums.dart';
 import '../../enums/sets_reps_volume_enum.dart';
 import '../../openAI/open_ai.dart';
@@ -27,10 +36,10 @@ import '../../utils/exercise_logs_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../widgets/ai_widgets/trkr_information_container.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
+import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/chart/bar_chart.dart';
 import '../../widgets/chart/horizontal_stacked_bars.dart';
 import '../../widgets/chart/legend.dart';
-import '../AI/trkr_coach_summary_screen.dart';
 
 class SetsAndRepsVolumeInsightsScreen extends StatefulWidget {
   static const routeName = '/sets_and_reps_volume_insights_screen';
@@ -62,16 +71,10 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     final logs = routineLogController.whereLogsIsWithinRange(range: dateRange);
 
-    final exerciseController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-
     final exerciseLogs = logs
         .map((log) => completedExercises(exerciseLogs: log.exerciseLogs))
         .expand((exerciseLogs) => exerciseLogs)
-        .map((exerciseLog) {
-      final foundExercise = exerciseController.exercises
-          .firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.id == exerciseLog.exercise.id);
-      return foundExercise != null ? exerciseLog.copyWith(exercise: foundExercise) : exerciseLog;
-    }).where((exerciseLog) {
+        .where((exerciseLog) {
       final muscleGroups = [exerciseLog.exercise.primaryMuscleGroup, ...exerciseLog.exercise.secondaryMuscleGroups];
       return muscleGroups.contains(_selectedMuscleGroup);
     }).toList();
@@ -121,16 +124,36 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
             : repsTrendColor(reps: value.toInt()))
         .toList();
 
+    final muscleGroups = MuscleGroup.values
+        .sorted((a, b) => a.name.compareTo(b.name))
+        .map((muscleGroup) => Padding(
+              padding: const EdgeInsets.only(right: 6.0),
+              child: OpacityButtonWidget(
+                  onPressed: () => _onSelectMuscleGroup(newMuscleGroup: muscleGroup),
+                  padding: EdgeInsets.symmetric(horizontal: 0),
+                  textStyle: GoogleFonts.ubuntu(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 10,
+                      color: muscleGroup == _selectedMuscleGroup ? vibrantGreen : Colors.white70),
+                  buttonColor: muscleGroup == _selectedMuscleGroup ? vibrantGreen : null,
+                  label: muscleGroup.name.toUpperCase()),
+            ))
+        .toList();
+
+    final muscleGroupScrollViewHalf = MuscleGroup.values.length ~/ 2;
+
     return Scaffold(
-      appBar: widget.canPop ? AppBar(
-        backgroundColor: sapphireDark80,
-        leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-          onPressed: context.pop,
-        ),
-        title: Text("Muscle Trend".toUpperCase(),
-            style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
-      ) : null,
+      appBar: widget.canPop
+          ? AppBar(
+              backgroundColor: sapphireDark80,
+              leading: IconButton(
+                icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
+                onPressed: context.pop,
+              ),
+              title: Text("Muscle Trend".toUpperCase(),
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+            )
+          : null,
       body: Container(
         width: double.infinity,
         decoration: const BoxDecoration(
@@ -149,50 +172,17 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: sapphireDark.withOpacity(0.6), // Background color
-                    borderRadius: BorderRadius.circular(5), // Border radius
-                  ),
-                  child: DropdownButton<MuscleGroup>(
-                    menuMaxHeight: 200,
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                    isExpanded: true,
-                    borderRadius: BorderRadius.circular(8),
-                    isDense: true,
-                    value: _selectedMuscleGroup,
-                    hint: Text("Muscle group",
-                        style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14)),
-                    underline: Container(
-                      color: Colors.transparent,
-                    ),
-                    style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
-                    onChanged: (MuscleGroup? value) {
-                      if (value != null) {
-                        setState(() {
-                          _selectedMuscleGroup = value;
-                        });
-                      }
-                    },
-                    items: MuscleGroup.values.map<DropdownMenuItem<MuscleGroup>>((MuscleGroup muscleGroup) {
-                      return DropdownMenuItem<MuscleGroup>(
-                        value: muscleGroup,
-                        child: Text(muscleGroup.name,
-                            style: GoogleFonts.ubuntu(
-                                color: _selectedMuscleGroup == muscleGroup ? Colors.white : Colors.white70,
-                                fontWeight: _selectedMuscleGroup == muscleGroup ? FontWeight.bold : FontWeight.w500,
-                                fontSize: 14)),
-                      );
-                    }).toList(),
-                  ),
-                ),
+                SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(children: muscleGroups.sublist(0, muscleGroupScrollViewHalf))),
+                SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(children: muscleGroups.sublist(muscleGroupScrollViewHalf))),
                 const SizedBox(height: 18),
                 TRKRInformationContainer(
                   ctaLabel: "Review your ${_selectedMuscleGroup.name} training",
                   description: _selectedMuscleGroup.description,
-                  onTap: () => _generateSummary(logs: exerciseLogs),
+                  onTap: () => _generateReport(exerciseLogs: exerciseLogs),
                 ),
                 const SizedBox(height: 20),
                 Row(
@@ -210,11 +200,13 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                             children: [
                               TextSpan(
                                 text: " ",
-                                style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                                style:
+                                    GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                               ),
                               TextSpan(
                                 text: _metricLabel().toUpperCase(),
-                                style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                                style:
+                                    GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                               ),
                             ],
                           ),
@@ -317,34 +309,87 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     });
   }
 
-  void _generateSummary({required List<ExerciseLogDto> logs}) {
-    if (logs.isEmpty) {
+  void _onSelectMuscleGroup({required MuscleGroup newMuscleGroup}) {
+    setState(() {
+      _selectedMuscleGroup = newMuscleGroup;
+    });
+  }
+
+  void _generateReport({required List<ExerciseLogDto> exerciseLogs}) {
+
+    final exerciseLogsWithPrimaryMuscleGroups = exerciseLogs
+        .where((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup == _selectedMuscleGroup).toList();
+
+    if (exerciseLogsWithPrimaryMuscleGroups.isEmpty) {
       showSnackbar(
           context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: "You don't have any logs");
     } else {
-      final startDate = logs.first.createdAt.withoutTime();
-      final endDate = logs.last.createdAt.withoutTime();
+      final endDate = exerciseLogsWithPrimaryMuscleGroups.last.createdAt.withoutTime();
+
+      // Get the current date
+      final now = DateTime.now();
+
+      // Determine the start of the month
+      final startOfMonth = DateTime(now.year, now.month, 1);
+
+      // Determine the end of the month
+      final endOfMonth = DateTime(now.year, now.month + 1, 0);
 
       final userInstructions =
-          "Review my workout logs for ${_selectedMuscleGroup.name} from $startDate to $endDate and provide feedback. Please note, that my weights are in ${weightLabel()}";
-
-      final logJsons = logs.map((log) => log.toJson());
+          "Analyze my workout logs for ${_selectedMuscleGroup.name} between $startOfMonth and $endOfMonth then compare them to logs for the same muscle group from $endOfMonth to $endDate. Provide feedback on performance trends, volume, and intensity during these periods. Note that my weights are logged in ${weightLabel()}";
 
       final StringBuffer buffer = StringBuffer();
 
       buffer.writeln(userInstructions);
-      buffer.writeln(logJsons);
+
+      buffer.writeln();
+
+      for (final exerciseLog in exerciseLogsWithPrimaryMuscleGroups) {
+        final setSummaries = exerciseLog.sets.mapIndexed((index, set) {
+          return switch (exerciseLog.exercise.type) {
+            ExerciseType.weights => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
+            ExerciseType.bodyWeight => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
+            ExerciseType.duration => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
+          };
+        }).toList();
+
+        buffer.writeln("Exercise: ${exerciseLog.exercise.name}");
+        buffer.writeln("Date: ${exerciseLog.createdAt.withoutTime().formattedDayAndMonthAndYear()}");
+        buffer.writeln("Sets: $setSummaries");
+
+        buffer.writeln();
+      }
 
       final completeInstructions = buffer.toString();
 
       _showLoadingScreen();
 
-      runMessage(system: routineLogSystemInstruction, user: completeInstructions).then((response) {
+      runMessage(
+              system: routineLogSystemInstruction,
+              user: completeInstructions,
+              responseFormat: routineLogsReportResponseFormat)
+          .then((response) {
         _hideLoadingScreen();
         if (mounted) {
           if (response != null) {
-            navigateWithSlideTransition(context: context, child: TRKRCoachSummaryScreen(content: response));
+            // Deserialize the JSON string
+            Map<String, dynamic> json = jsonDecode(response);
+
+            // Create an instance of ExerciseLogsResponse
+            RoutineLogsReportDto report = RoutineLogsReportDto.fromJson(json);
+            navigateWithSlideTransition(
+                context: context,
+                child: RoutineLogsReportScreen(
+                    muscleGroup: _selectedMuscleGroup, report: report, exerciseLogs: exerciseLogsWithPrimaryMuscleGroups));
           }
+        }
+      }).catchError((_) {
+        _hideLoadingScreen();
+        if (mounted) {
+          showSnackbar(
+              context: context,
+              icon: TRKRCoachWidget(),
+              message: "Oops! I am unable to generate your ${_selectedMuscleGroup.name} report");
         }
       });
     }
@@ -361,8 +406,15 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   num _calculateMetric({required List<SetDto> sets}) {
     return switch (_metric) {
       SetRepsVolumeReps.sets => sets.length,
-      SetRepsVolumeReps.reps => sets.map((set) => set.reps()).sum,
-      SetRepsVolumeReps.volume => sets.map((set) => set.volume()).sum,
+      SetRepsVolumeReps.reps => sets.map((set) {
+          if (set is RepsSetDto) {
+            return set.reps;
+          } else if (set is WeightAndRepsSetDto) {
+            return set.reps;
+          }
+          return 0;
+        }).sum,
+      SetRepsVolumeReps.volume => sets.map((set) => (set as WeightAndRepsSetDto).volume()).sum,
     };
   }
 

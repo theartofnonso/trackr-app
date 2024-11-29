@@ -5,8 +5,7 @@
     "primaryMuscleGroup": "glutes",
     "secondaryMuscleGroups": ["abductors"],
     "type": "BW",
-    "description": "Targets the gluteus medius to enhance hip stability and lateral strength.",
-    "trainingPosition": "Shortened"
+    "description": "Targets the gluteus medius to enhance hip stability and lateral strength."
   },
   {
     "id": "GLT2",
@@ -17,8 +16,7 @@
     "video": "https://www.youtube.com/watch?v=f2rO8ZCMan8",
     "creditSource": "https://www.youtube.com/@denvyr",
     "credit": "Denvyr | Realistic Fitness Dietitian",
-    "description": "Engages the glutes and hamstrings while focusing on hip hinge movement.",
-    "trainingPosition": "Lengthened"
+    "description": "Engages the glutes and hamstrings while focusing on hip hinge movement."
   },
   {
     "id": "GLT3",
@@ -29,8 +27,7 @@
     "video": "https://www.youtube.com/watch?v=T53YCkATff8",
     "creditSource": "https://www.youtube.com/@denvyr",
     "credit": "Denvyr | Realistic Fitness Dietitian",
-    "description": "Activates the gluteus medius to improve hip strength and stabilization.",
-    "trainingPosition": "Shortened"
+    "description": "Activates the gluteus medius to improve hip strength and stabilization."
   },
   {
     "id": "GLT4",
@@ -41,8 +38,7 @@
     "video": "https://www.youtube.com/watch?v=N6t2Fv0SKGc",
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
     "credit": "Functional Bodybuilding",
-    "description": "Targets the gluteus maximus through fast, repetitive hip thrusts.",
-    "trainingPosition": "Shortened"
+    "description": "Targets the gluteus maximus through fast, repetitive hip thrusts."
   },
   {
     "id": "GLT5",
@@ -50,8 +46,7 @@
     "primaryMuscleGroup": "glutes",
     "secondaryMuscleGroups": ["abductors", "abs"],
     "type": "BW",
-    "description": "Focuses on the gluteus medius, improving mobility and hip strength.",
-    "trainingPosition": "Shortened"
+    "description": "Focuses on the gluteus medius, improving mobility and hip strength."
   },
   {
     "id": "GLT6",
@@ -62,8 +57,7 @@
     "video": "https://www.youtube.com/watch?v=wklI-e2WpFQ",
     "creditSource": "https://www.youtube.com/@OnnitAcademy",
     "credit": "Onnit Academy",
-    "description": "Isolates the gluteus maximus with rapid pumping hip movements.",
-    "trainingPosition": "Shortened"
+    "description": "Isolates the gluteus maximus with rapid pumping hip movements."
   },
   {
     "id": "GLT7",
@@ -74,8 +68,7 @@
     "video": "https://www.youtube.com/watch?v=tqp5XQPpTxY",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Engages the glutes and lower back by lifting hips from the floor.",
-    "trainingPosition": "Shortened"
+    "description": "Engages the glutes and lower back by lifting hips from the floor."
   },
   {
     "id": "GLT8",
@@ -86,8 +79,18 @@
     "video": "https://www.youtube.com/watch?v=EtSJ8rwm5M8",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Isolates and strengthens the glutes while engaging the lower back for stability.",
-    "trainingPosition": "Shortened"
+    "description": "Isolates and strengthens the glutes while engaging the lower back for stability."
+  },
+  {
+    "id": "GLT9",
+    "name": "Barbell Back Squat",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroups": ["quadriceps", "hamstrings", "back"],
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=ultWZbUMPL8",
+    "creditSource": "https://www.youtube.com/@ScottHermanFitness",
+    "credit": "Scott Herman",
+    "description": "Compound exercise targeting the glutes and lower body through squatting with a barbell."
   },
   {
     "id": "GLT10",
@@ -98,8 +101,7 @@
     "video": "https://www.youtube.com/watch?v=7XuNzi5rcj4",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Targets the gluteus maximus for strength and size through hip extension.",
-    "trainingPosition": "Shortened"
+    "description": "Targets the gluteus maximus for strength and size through hip extension."
   },
   {
     "id": "GLT11",
@@ -110,8 +112,7 @@
     "video": "https://www.youtube.com/watch?v=ZSPmIyX9RZs",
     "creditSource": "https://www.youtube.com/@RenaissancePeriodization",
     "credit": "Renaissance Periodization",
-    "description": "Machine-assisted glute isolation exercise, focusing on hip thrust movement.",
-    "trainingPosition": "Shortened"
+    "description": "Machine-assisted glute isolation exercise, focusing on hip thrust movement."
   },
   {
     "id": "GLT12",
@@ -119,8 +120,7 @@
     "primaryMuscleGroup": "glutes",
     "secondaryMuscleGroups": ["abductors", "adductors"],
     "type": "BW",
-    "description": "Targets the gluteus medius with lateral stepping to improve hip stability.",
-    "trainingPosition": "Shortened"
+    "description": "Targets the gluteus medius with lateral stepping to improve hip stability."
   },
   {
     "id": "GLT13",
@@ -128,8 +128,7 @@
     "primaryMuscleGroup": "glutes",
     "secondaryMuscleGroups": ["hamstrings"],
     "type": "WR",
-    "description": "Isolates the glutes through backward kicking movement on a machine.",
-    "trainingPosition": "Shortened"
+    "description": "Isolates the glutes through backward kicking movement on a machine."
   },
   {
     "id": "GLT14",
@@ -140,8 +139,7 @@
     "video": "https://www.youtube.com/watch?v=sVfp4LN9niA",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Single-leg version of the glute bridge for improved unilateral strength.",
-    "trainingPosition": "Shortened"
+    "description": "Single-leg version of the glute bridge for improved unilateral strength."
   },
   {
     "id": "GLT15",
@@ -152,8 +150,7 @@
     "video": "https://www.youtube.com/watch?v=xRoPfiYGo00",
     "creditSource": "https://www.youtube.com/@OnnitAcademy",
     "credit": "Onnit Academy",
-    "description": "Unilateral glute exercise focusing on hip extension and balance.",
-    "trainingPosition": "Shortened"
+    "description": "Unilateral glute exercise focusing on hip extension and balance."
   },
   {
     "id": "GLT16",
@@ -161,8 +158,18 @@
     "primaryMuscleGroup": "glutes",
     "secondaryMuscleGroups": ["hamstrings"],
     "type": "WR",
-    "description": "Targets the glutes by pushing the leg back against resistance in a machine.",
-    "trainingPosition": "Shortened"
+    "description": "Targets the glutes by pushing the leg back against resistance in a machine."
+  },
+  {
+    "id": "GLT17",
+    "name": "Kettlebell Swings",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroups": ["hamstrings", "back", "shoulders"],
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=YSxCM8JljJ4",
+    "creditSource": "https://www.youtube.com/@StrongFirst",
+    "credit": "StrongFirst",
+    "description": "Dynamic movement that strengthens the glutes and posterior chain with kettlebell swings."
   },
   {
     "id": "GLT18",
@@ -173,8 +180,18 @@
     "video": "https://www.youtube.com/watch?v=vzU5xrs1gMQ",
     "creditSource": "https://www.youtube.com/@marcusfilly",
     "credit": "Marcus Filly",
-    "description": "Engages glutes and core for stability and coordination through opposite limb extension.",
-    "trainingPosition": "Shortened"
+    "description": "Engages glutes and core for stability and coordination through opposite limb extension."
+  },
+  {
+    "id": "GLT19",
+    "name": "Bulgarian Split Squat",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroups": ["quadriceps", "hamstrings"],
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=2C-uNgKwPLE",
+    "creditSource": "https://www.youtube.com/@BodybuildingcomVideoSeries",
+    "credit": "Bodybuilding.com",
+    "description": "Single-leg exercise that targets the glutes and legs with a rear foot elevated squat."
   },
   {
     "id": "GLT20",
@@ -185,8 +202,7 @@
     "video": "https://www.youtube.com/watch?v=aweBS7K71l8",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Strengthens glutes with heavy resistance through barbell hip thrusts.",
-    "trainingPosition": "Shortened"
+    "description": "Strengthens glutes with heavy resistance through barbell hip thrusts."
   },
   {
     "id": "GLT21",
@@ -194,8 +210,18 @@
     "primaryMuscleGroup": "glutes",
     "secondaryMuscleGroups": ["hamstrings", "back"],
     "type": "BW",
-    "description": "Engages the glutes and lower back through reverse extension of the legs.",
-    "trainingPosition": "Shortened"
+    "description": "Engages the glutes and lower back through reverse extension of the legs."
+  },
+  {
+    "id": "GLT22",
+    "name": "Cable Hip Abduction",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroups": ["abductors"],
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=DkG_v3hsl0E",
+    "creditSource": "https://www.youtube.com/@ScottHermanFitness",
+    "credit": "Scott Herman",
+    "description": "Isolates the gluteus medius by moving the leg away from the body using cable resistance."
   },
   {
     "id": "GLT23",
@@ -206,8 +232,7 @@
     "video": "https://www.youtube.com/watch?v=ETnhBWeWK74",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Adds weight to the single-leg hip thrust for greater glute activation.",
-    "trainingPosition": "Shortened"
+    "description": "Adds weight to the single-leg hip thrust for greater glute activation."
   },
   {
     "id": "GLT24",
@@ -215,8 +240,7 @@
     "primaryMuscleGroup": "glutes",
     "secondaryMuscleGroups": ["abductors", "adductors"],
     "type": "BW",
-    "description": "Strengthens the glutes and hips by walking laterally with resistance.",
-    "trainingPosition": "Shortened"
+    "description": "Strengthens the glutes and hips by walking laterally with resistance."
   },
   {
     "id": "GLT25",
@@ -227,8 +251,7 @@
     "video": "https://www.youtube.com/watch?v=BNDw4ciQoQI",
     "creditSource": "https://www.youtube.com/@nuffieldhealth",
     "credit": "Nuffield Health",
-    "description": "Bodyweight exercise that isolates the glutes with a backward kicking motion.",
-    "trainingPosition": "Shortened"
+    "description": "Bodyweight exercise that isolates the glutes with a backward kicking motion."
   },
   {
     "id": "GLT26",
@@ -239,8 +262,7 @@
     "video": "https://www.youtube.com/watch?v=SqO-VUEak2M",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Isolates the glutes using a cable machine for added resistance.",
-    "trainingPosition": "Shortened"
+    "description": "Isolates the glutes using a cable machine for added resistance."
   },
   {
     "id": "GLT27",
@@ -251,8 +273,18 @@
     "video": "https://www.youtube.com/watch?v=1u-b25VJVFU",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Uses a dumbbell for added resistance to strengthen the glutes.",
-    "trainingPosition": "Shortened"
+    "description": "Uses a dumbbell for added resistance to strengthen the glutes."
+  },
+  {
+    "id": "GLT28",
+    "name": "Sumo Deadlift",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroups": ["hamstrings", "back", "quadriceps"],
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=NBR_QUa7HuI",
+    "creditSource": "https://www.youtube.com/@RenaissancePeriodization",
+    "credit": "Renaissance Periodization",
+    "description": "Compound lift focusing on the glutes and posterior chain using a wide stance deadlift."
   },
   {
     "id": "GLT29",
@@ -263,7 +295,6 @@
     "video": "https://www.youtube.com/watch?v=cruqsnAyU6A",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym",
-    "description": "Strengthens the glutes with added dumbbell resistance during a hip-lifting movement.",
-    "trainingPosition": "Shortened"
+    "description": "Strengthens the glutes with added dumbbell resistance during a hip-lifting movement."
   }
 ]

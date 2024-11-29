@@ -1,4 +1,4 @@
-import 'package:tracker_app/dtos/set_dto.dart';
+import 'package:tracker_app/dtos/set_dtos/set_dto.dart';
 
 import '../enums/pb_enums.dart';
 import 'appsync/exercise_dto.dart';

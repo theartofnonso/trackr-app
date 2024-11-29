@@ -58,7 +58,7 @@ class CustomBarChart extends StatelessWidget {
               alignment: BarChartAlignment.spaceEvenly,
               extraLinesData: extraLinesData,
             ),
-            swapAnimationDuration: Duration.zero,
+            duration: Duration.zero,
           )
         : const Center(child: FaIcon(FontAwesomeIcons.chartSimple, color: sapphireDark, size: 120));
   }

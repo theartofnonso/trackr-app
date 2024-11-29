@@ -1,1 +1,1 @@
-enum RoutinePreviewType {log, template, ai}
+enum RoutinePreviewType {log, template}

@@ -5,9 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/dtos/appsync/activity_log_dto.dart';
-import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
+import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
@@ -31,6 +31,7 @@ import '../../widgets/monthly_insights/log_streak_chart_widget.dart';
 import '../../widgets/routine/preview/activity_log_widget.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
 import '../AI/trkr_coach_chat_screen.dart';
+import '../editors/routine_log_editor_screen.dart';
 import 'monthly_insights_screen.dart';
 
 class OverviewScreen extends StatefulWidget {
@@ -137,8 +138,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           owner: "",
           createdAt: DateTime.now(),
           updatedAt: DateTime.now());
-      final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log);
-      navigateToRoutineLogEditor(context: context, arguments: arguments);
+      navigateWithSlideTransition(context: context, child: RoutineLogEditorScreen(log: log, mode: RoutineEditorMode.log));
     } else {
       showSnackbar(context: context, icon: const Icon(Icons.info_outline_rounded), message: "${log.name} is running");
     }
@@ -192,8 +192,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           owner: "",
                           createdAt: datetimeRange.start,
                           updatedAt: datetimeRange.end);
-                      final routineLogArguments = PastRoutineLogArguments(log: log);
-                      navigateToPastRoutineLogEditor(context: context, arguments: routineLogArguments);
+                      navigateWithSlideTransition(context: context, child: PastRoutineLogEditorScreen(log: log));
                     });
               },
             ),
@@ -287,11 +286,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 
   void _switchToAIContext() async {
-    final result =
-        await navigateWithSlideTransition(context: context, child: const TRKRCoachChatScreen()) as RoutineTemplateDto?;
+    final result = await navigateWithSlideTransition(
+        context: context,
+        child: const TRKRCoachChatScreen()) as RoutineTemplateDto?;
     if (result != null) {
       if (context.mounted) {
-        final arguments = RoutineLogArguments(log: result.log(), editorMode: RoutineEditorMode.log);
+        final arguments = RoutineLogArguments(log: result.toLog(), editorMode: RoutineEditorMode.log);
         if (mounted) {
           navigateToRoutineLogEditor(context: context, arguments: arguments);
         }

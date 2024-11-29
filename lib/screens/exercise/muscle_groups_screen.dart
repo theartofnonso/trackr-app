@@ -121,7 +121,7 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
 
     _searchController = TextEditingController();
 
-    _muscleGroups = MuscleGroup.values.map((muscleGroup) {
+    _muscleGroups = MuscleGroup.values.where((muscleGroup) => muscleGroup != MuscleGroup.fullBody).map((muscleGroup) {
       return MuscleGroupDto(muscleGroup: muscleGroup, selected: widget.previousMuscleGroup == muscleGroup);
     }).toList();
 

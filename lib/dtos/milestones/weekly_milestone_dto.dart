@@ -19,7 +19,7 @@ class WeeklyMilestone extends Milestone {
       required super.description,
       required super.rule,
       required super.target,
-      this.muscleGroupFamily = MuscleGroupFamily.none,
+      this.muscleGroupFamily = MuscleGroupFamily.fullBody,
       required super.progress,
       required super.type});
 
@@ -94,14 +94,30 @@ class WeeklyMilestone extends Milestone {
     if (logs.isEmpty) return (0, []);
 
     List<RoutineLogDto> weekendLogs = [];
-    for (final week in weeks) {
+    DateTime now = DateTime.now();
+
+    for (var week in weeks) {
+      // Skip weeks that haven't ended yet
+      if (week.end.isAfter(now)) {
+        // Check if the current week has passed the weekend
+        if (now.weekday != DateTime.saturday && now.weekday != DateTime.sunday && now.weekday != DateTime.monday) {
+          continue;
+        } else {
+          // Adjust the week to include only dates up to now
+          week = DateTimeRange(start: week.start, end: now);
+        }
+      }
+
       final logsForTheWeek = logs.where((log) => log.createdAt.isWithinRange(range: week));
+
       final saturdayOrSundayLogs = logsForTheWeek
           .where((log) => log.createdAt.weekday == DateTime.saturday || log.createdAt.weekday == DateTime.sunday);
+
       if (saturdayOrSundayLogs.isNotEmpty) {
         weekendLogs.addAll(saturdayOrSundayLogs);
       } else {
-        if (weekendLogs.length < target) {
+        // Only reset if we haven't met the target yet and we're not in the current week
+        if (weekendLogs.length < target && week.end.isBefore(now)) {
           weekendLogs = [];
         }
       }

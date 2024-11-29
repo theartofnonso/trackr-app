@@ -122,7 +122,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
         appBar: AppBar(
           backgroundColor: sapphireDark80,
           leading: IconButton(
-            icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
+            icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
             onPressed: context.pop,
           ),
           actions: [
@@ -174,7 +174,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
                           if (result.status == ShareResultStatus.success) {
                             showSnackbar(
                                 context: context,
-                                icon: const FaIcon(FontAwesomeIcons.circleCheck),
+                                icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
                                 message: "Content Shared");
                           }
                         }
@@ -196,7 +196,6 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
   }
 
   void _showCopyBottomSheet() {
-
     final listOfCompletedExercises = completedExercises(exerciseLogs: widget.log.exerciseLogs);
 
     final updatedLog = widget.log.copyWith(exerciseLogs: listOfCompletedExercises);
@@ -236,7 +235,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
                     Clipboard.setData(data).then((_) {
                       if (mounted) {
                         Navigator.of(context).pop();
-                        showSnackbar(context: context, icon: const Icon(Icons.check), message: "Workout link copied");
+                        showSnackbar(context: context, icon: const FaIcon(FontAwesomeIcons.solidSquareCheck), message: "Workout link copied");
                       }
                     });
                   },
@@ -273,7 +272,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
                 Clipboard.setData(data).then((_) {
                   if (mounted) {
                     Navigator.of(context).pop();
-                    showSnackbar(context: context, icon: const Icon(Icons.check), message: "Workout log copied");
+                    showSnackbar(context: context, icon: const FaIcon(FontAwesomeIcons.solidSquareCheck), message: "Workout log copied");
                   }
                 });
               },

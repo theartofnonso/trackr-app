@@ -7,10 +7,14 @@ import 'package:flutter/services.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/extensions/amplify_models/exercise_extension.dart';
 
+import '../../logger.dart';
 import '../../models/Exercise.dart';
 import '../../shared_prefs.dart';
 
 class AmplifyExerciseRepository {
+
+  final logger = getLogger(className: "AmplifyExerciseRepository");
+
   List<ExerciseDto> _localExercises = [];
   List<ExerciseDto> _userExercises = [];
 
@@ -77,7 +81,7 @@ class AmplifyExerciseRepository {
   }
 
   void loadExerciseStream({required List<Exercise> exercises, required VoidCallback onData}) {
-    _userExercises = exercises.map((exercise) => exercise.dtoUser()).toList();
+    _userExercises = exercises.map((exercise) => ExerciseDto.toDto(exercise)).toList();
     onData();
   }
 
@@ -88,18 +92,20 @@ class AmplifyExerciseRepository {
         Exercise(data: jsonEncode(exerciseDto), createdAt: now, updatedAt: now, owner: SharedPrefs().userId);
 
     await Amplify.DataStore.save<Exercise>(exerciseToCreate);
+
+    logger.i("saved exercise: $exerciseDto");
   }
 
-  Future<void> updateExercise({required ExerciseDto exercise, required VoidCallback onUpdated}) async {
+  Future<void> updateExercise({required ExerciseDto exercise}) async {
     final result = (await Amplify.DataStore.query(
       Exercise.classType,
       where: Exercise.ID.eq(exercise.id),
     ));
-
     if (result.isNotEmpty) {
       final oldExercise = result.first;
       final newExercise = oldExercise.copyWith(data: jsonEncode(exercise));
       await Amplify.DataStore.save<Exercise>(newExercise);
+      logger.i("updated exercise: $exercise");
     }
   }
 
@@ -112,6 +118,7 @@ class AmplifyExerciseRepository {
     if (result.isNotEmpty) {
       final oldTemplate = result.first;
       await Amplify.DataStore.delete<Exercise>(oldTemplate);
+      logger.i("remove exercise: $exercise");
     }
   }
 

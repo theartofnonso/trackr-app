@@ -108,7 +108,7 @@ class _RoutineDayPlannerState extends State<RoutineDayPlanner> {
 
   void _updateRoutineTemplateDays() async {
     _selectedDays.sort((a, b) => a.index.compareTo(b.index));
-    final template = widget.template.copyWith(scheduledDays: _selectedDays, scheduleType: RoutineScheduleType.days, scheduleIntervals: 0, scheduledDate: null);
+    final template = widget.template.copyWith(scheduledDays: _selectedDays, scheduleType: RoutineScheduleType.days, scheduledDate: null);
     await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateTemplate(template: template);
     if (mounted) {
       Navigator.of(context).pop(template);

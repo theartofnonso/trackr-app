@@ -22,10 +22,12 @@ import '../../controllers/analytics_controller.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/exercise_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
-import '../../dtos/set_dto.dart';
+import '../../dtos/set_dtos/set_dto.dart';
+import '../../dtos/set_dtos/weight_and_reps_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/routine_utils.dart';
-import '../../widgets/empty_states/exercise_log_empty_state.dart';
+import '../../widgets/buttons/opacity_button_widget.dart';
+import '../../widgets/empty_states/no_list_empty_state.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
 import '../../widgets/timers/routine_timer.dart';
 import '../../widgets/weight_plate_calculator.dart';
@@ -62,19 +64,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         });
   }
 
-  void _selectSubstituteExercisesInLibrary({required ExerciseLogDto primaryExerciseLog}) async {
-    final controller = Provider.of<ExerciseLogController>(context, listen: false);
-    final excludeExercises = controller.exerciseLogs.map((exercise) => exercise.exercise).toList();
-    showExercisesInLibrary(
-        context: context,
-        excludeExercises: excludeExercises,
-        onSelected: (List<ExerciseDto> selectedExercises) {
-          controller.addAlternates(primaryExerciseId: primaryExerciseLog.id, exercises: selectedExercises);
-          _showSubstituteExercisePicker(primaryExerciseLog: primaryExerciseLog);
-          _cacheLog();
-        });
-  }
-
   void _showSuperSetExercisePicker({required ExerciseLogDto firstExerciseLog}) {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
     final otherExercises = whereOtherExerciseLogsExcept(exerciseLog: firstExerciseLog, others: controller.exerciseLogs);
@@ -92,37 +81,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         selectExercisesInLibrary: () {
           _closeDialog();
           _selectExercisesInLibrary();
-        });
-  }
-
-  void _showSubstituteExercisePicker({required ExerciseLogDto primaryExerciseLog}) {
-    final controller = Provider.of<ExerciseLogController>(context, listen: false);
-    showSubstituteExercisePicker(
-        context: context,
-        primaryExerciseLog: primaryExerciseLog,
-        otherExercises: primaryExerciseLog.substituteExercises,
-        onSelected: (secondaryExercise) {
-          _closeDialog();
-          final foundExerciseLog = controller.exerciseLogs
-              .firstWhereOrNull((exerciseLog) => exerciseLog.exercise.id == secondaryExercise.id);
-          if (foundExerciseLog == null) {
-            controller.replaceExerciseLog(oldExerciseId: primaryExerciseLog.id, newExercise: secondaryExercise);
-            _cacheLog();
-          } else {
-            showSnackbar(
-                context: context,
-                icon: const FaIcon(FontAwesomeIcons.circleInfo),
-                message: "${foundExerciseLog.exercise.name} has already been added");
-          }
-        },
-        onRemoved: (ExerciseDto secondaryExercise) {
-          controller.removeAlternates(
-              primaryExerciseId: primaryExerciseLog.id, secondaryExerciseId: secondaryExercise.id);
-          _cacheLog();
-        },
-        selectExercisesInLibrary: () {
-          _closeDialog();
-          _selectSubstituteExercisesInLibrary(primaryExerciseLog: primaryExerciseLog);
         });
   }
 
@@ -189,8 +147,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   void _discardLog() {
     showBottomSheetWithMultiActions(
         context: context,
-        title: "Discard workout?",
-        description: "Do you want to discard this workout",
+        title: "Discard session?",
+        description: "Do you want to discard this session",
         leftAction: _closeDialog,
         rightAction: () {
           _closeDialog();
@@ -207,7 +165,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
       showBottomSheetWithMultiActions(
           context: context,
           title: 'Running Session',
-          description: "Do you want to end workout?",
+          description: "Do you want to end session?",
           leftAction: context.pop,
           rightAction: () {
             _closeDialog();
@@ -340,7 +298,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                 IconButton(
                     key: const Key('select_exercises_in_library_btn'),
                     onPressed: _selectExercisesInLibrary,
-                    icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white)),
+                    icon: const FaIcon(FontAwesomeIcons.solidSquarePlus, color: Colors.white)),
                 if (exerciseLogs.length > 1)
                   IconButton(
                       onPressed: () => _reOrderExerciseLogs(exerciseLogs: exerciseLogs),
@@ -363,15 +321,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                     label:
                         Text("Calculator", style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600)),
                   )
-                : FloatingActionButton.extended(
-                    heroTag: UniqueKey(),
-                    onPressed: widget.mode == RoutineEditorMode.log ? _saveLog : _updateLog,
-                    backgroundColor: vibrantGreen.withOpacity(0.1),
-                    enableFeedback: true,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                    label: Text("Finish workout",
-                        style: GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w600)),
-                  ),
+                : null,
             body: Container(
               width: double.infinity,
               decoration: const BoxDecoration(
@@ -386,6 +336,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
               ),
               child: Stack(children: [
                 SafeArea(
+                  bottom: false,
                   minimum: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
                   child: NotificationListener<UserScrollNotification>(
                     onNotification: (scrollNotification) {
@@ -425,62 +376,66 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                 padding: const EdgeInsets.only(bottom: 250),
                                 child: Column(children: [
                                   ...exerciseLogs.map((exerciseLog) {
-                                    final log = exerciseLog;
-                                    final exerciseId = log.id;
-
-                                    final isExerciseMinimised = _minimisedExerciseLogCards.contains(exerciseId);
+                                    final isExerciseMinimised = _minimisedExerciseLogCards.contains(exerciseLog.id);
 
                                     return Padding(
                                         padding: const EdgeInsets.only(bottom: 20),
                                         child: isExerciseMinimised
                                             ? ExerciseLogLiteWidget(
-                                                key: ValueKey(exerciseId),
-                                                exerciseLogDto: log,
+                                                key: ValueKey(exerciseLog.id),
+                                                exerciseLogDto: exerciseLog,
                                                 superSet: whereOtherExerciseInSuperSet(
-                                                    firstExercise: log, exercises: exerciseLogs),
+                                                    firstExercise: exerciseLog, exercises: exerciseLogs),
                                                 onMaximise: () =>
-                                                    _handleResizedExerciseLogCard(exerciseIdToResize: exerciseId),
+                                                    _handleResizedExerciseLogCard(exerciseIdToResize: exerciseLog.id),
                                               )
                                             : ExerciseLogWidget(
-                                                key: ValueKey(exerciseId),
-                                                exerciseLogDto: log,
+                                                key: ValueKey(exerciseLog.id),
+                                                exerciseLogDto: exerciseLog,
                                                 editorType: RoutineEditorMode.log,
                                                 superSet: whereOtherExerciseInSuperSet(
-                                                    firstExercise: log, exercises: exerciseLogs),
+                                                    firstExercise: exerciseLog, exercises: exerciseLogs),
                                                 onRemoveSuperSet: (String superSetId) {
-                                                  exerciseLogController.removeSuperSet(superSetId: log.superSetId);
+                                                  exerciseLogController.removeSuperSet(superSetId: exerciseLog.superSetId);
                                                   _cacheLog();
                                                 },
                                                 onRemoveLog: () {
-                                                  exerciseLogController.removeExerciseLog(logId: exerciseId);
+                                                  exerciseLogController.removeExerciseLog(logId: exerciseLog.id);
                                                   _cacheLog();
                                                 },
-                                                onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: log),
+                                                onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
                                                 onCache: _cacheLog,
-                                                onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: log),
+                                                onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
                                                 onResize: () =>
-                                                    _handleResizedExerciseLogCard(exerciseIdToResize: exerciseId),
-                                                isMinimised: _isMinimised(exerciseId),
-                                                onAlternate: () =>
-                                                    _showSubstituteExercisePicker(primaryExerciseLog: log),
+                                                    _handleResizedExerciseLogCard(exerciseIdToResize: exerciseLog.id),
+                                                isMinimised: _isMinimised(exerciseLog.id),
                                                 onTapWeightEditor: (SetDto setDto) {
                                                   setState(() {
                                                     _selectedSetDto = setDto;
                                                   });
-                                                }, onTapRepsEditor: (SetDto setDto) {
-                                          setState(() {
-                                            _selectedSetDto = null;
-                                          });
-                                        },
+                                                },
+                                                onTapRepsEditor: (SetDto setDto) {
+                                                  setState(() {
+                                                    _selectedSetDto = null;
+                                                  });
+                                                },
                                               ));
-                                  })
+                                  }),
+                                  SizedBox(
+                                      width: double.infinity,
+                                      child: OpacityButtonWidget(
+                                        padding: const EdgeInsets.symmetric(vertical: 16),
+                                        buttonColor: vibrantGreen,
+                                        label:
+                                            widget.mode == RoutineEditorMode.log ? "Finish Session" : "Update Session",
+                                        onPressed: widget.mode == RoutineEditorMode.log ? _saveLog : _updateLog,
+                                      ))
                                 ]),
                               ),
                             ),
                           if (exerciseLogs.isEmpty)
-                            const ExerciseLogEmptyState(
-                                mode: RoutineEditorMode.log,
-                                message: "Tap the + button to start adding exercises to your log"),
+                            const NoListEmptyState(
+                                message: "Tap the + button to start adding exercises to your workout session"),
                         ],
                       ),
                     ),
@@ -493,7 +448,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   void _showWeightCalculator() {
     displayBottomSheet(
         context: context,
-        child: WeightPlateCalculator(target: _selectedSetDto?.weight().toDouble() ?? 0),
+        child: WeightPlateCalculator(target: (_selectedSetDto as WeightAndRepsSetDto?)?.weight ?? 0),
         padding: EdgeInsets.zero);
   }
 

@@ -119,7 +119,7 @@ class MilestoneScreen extends StatelessWidget {
                       alignment: Alignment.topLeft,
                       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                         IconButton(
-                          icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
+                          icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
                           onPressed: context.pop,
                         )
                       ]),

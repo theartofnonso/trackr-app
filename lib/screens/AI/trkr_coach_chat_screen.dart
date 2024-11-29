@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -7,13 +8,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/analytics_controller.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
+import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
+import 'package:tracker_app/dtos/open_ai_response_schema_dtos/new_routine_dto.dart';
+import 'package:tracker_app/dtos/set_dtos/set_dto.dart';
 import 'package:tracker_app/strings/ai_prompts.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 
+import '../../colors.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/exercise_log_dto.dart';
-import '../../dtos/set_dto.dart';
-import '../../enums/routine_preview_type_enum.dart';
 import '../../openAI/open_ai.dart';
 import '../../openAI/open_ai_functions.dart';
 import '../../shared_prefs.dart';
@@ -40,7 +43,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_loading) return TRKRLoadingScreen(action: _cancelLoadingScreen);
+    if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     final routineTemplate = _routineTemplate;
 
@@ -50,13 +53,17 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
       height: double.infinity,
       padding: const EdgeInsets.all(10.0),
       decoration: BoxDecoration(
-        gradient: SweepGradient(
-          colors: [Colors.green.shade900, Colors.blue.shade900],
-          stops: const [0, 1],
-          center: Alignment.topRight,
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            sapphireDark80,
+            sapphireDark,
+          ],
         ),
       ),
       child: SafeArea(
+        bottom: false,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -65,9 +72,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
                 ? Expanded(
                     child: SingleChildScrollView(
                       child: ExerciseLogListView(
-                        exerciseLogs: exerciseLogsToViewModels(exerciseLogs: routineTemplate.exerciseTemplates),
-                        previewType: RoutinePreviewType.ai,
-                      ),
+                          exerciseLogs: exerciseLogsToViewModels(exerciseLogs: routineTemplate.exerciseTemplates)),
                     ),
                   )
                 : Expanded(
@@ -82,39 +87,41 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
                     ),
                   ),
             const SizedBox(height: 12),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _textEditingController,
-                    decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                        enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: const BorderSide(color: Colors.white10)),
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: const BorderSide(color: Colors.white30)),
-                        filled: true,
-                        fillColor: Colors.white10,
-                        hintText: "Describe your workout",
-                        hintStyle:
-                            GoogleFonts.ubuntu(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w400)),
-                    maxLines: null,
-                    cursorColor: Colors.white,
-                    showCursor: true,
-                    keyboardType: TextInputType.text,
-                    textCapitalization: TextCapitalization.sentences,
-                    style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white, fontSize: 16),
+            SafeArea(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _textEditingController,
+                      decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              borderSide: const BorderSide(color: Colors.white10)),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              borderSide: const BorderSide(color: Colors.white30)),
+                          filled: true,
+                          fillColor: Colors.white10,
+                          hintText: "Describe your workout",
+                          hintStyle:
+                              GoogleFonts.ubuntu(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w400)),
+                      maxLines: null,
+                      cursorColor: Colors.white,
+                      showCursor: true,
+                      keyboardType: TextInputType.text,
+                      textCapitalization: TextCapitalization.sentences,
+                      style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white, fontSize: 16),
+                    ),
                   ),
-                ),
-                IconButton(
-                  onPressed: _runMessage,
-                  icon: const FaIcon(FontAwesomeIcons.paperPlane),
-                  color: Colors.white,
-                )
-              ],
+                  IconButton(
+                    onPressed: _runMessage,
+                    icon: const FaIcon(FontAwesomeIcons.paperPlane),
+                    color: Colors.white,
+                  )
+                ],
+              ),
             ),
           ],
         ),
@@ -138,12 +145,6 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
     showSnackbar(context: context, icon: icon ?? const Icon(Icons.info_outline), message: message);
   }
 
-  void _cancelLoadingScreen() {
-    setState(() {
-      _loading = true;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -159,73 +160,127 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
       _showLoadingScreen();
       _clearTextEditing();
 
-      final routineTemplate = await _runFunctionMessage(userInstruction: userPrompt);
-
-      setState(() {
-        _routineTemplate = routineTemplate;
-      });
-
-      _hideLoadingScreen();
+      _runFunctionMessage(userInstruction: userPrompt);
     }
   }
 
-  Future<RoutineTemplateDto?> _runFunctionMessage({required String userInstruction}) async {
-    RoutineTemplateDto? templateDto;
-
+  Future<void> _runFunctionMessage({required String userInstruction}) async {
     final StringBuffer buffer = StringBuffer();
 
-    buffer.writeln(personalTrainerInstructionForWorkouts);
-    buffer.writeln("For each muscle group, suggest two exercises.");
-    buffer.writeln("Ensure one exercise targets the muscle group primarily or secondarily.");
-    buffer.writeln("Both exercises must engage the muscle group from both the lengthened and shortened positions.");
+    buffer.writeln(userInstruction);
+
+    buffer.writeln();
+
+    buffer.writeln("Note: Suggest a balanced combination of exercises engaging all muscle groups.");
 
     final completeSystemInstructions = buffer.toString();
 
-    final tool = await runMessageWithTools(
+    _showLoadingScreen();
+
+    try {
+      final tool = await runMessageWithTools(
         systemInstruction: personalTrainerInstructionForWorkouts,
         userInstruction: userInstruction,
-        callback: (message) {
-          _showSnackbar("Oops, I can only assist you with workouts.", icon: TRKRCoachWidget());
-        });
-    if (tool != null) {
-      final toolId = tool['id'];
-      final toolName = tool['name']; // A function
-      if (toolName == "list_exercises") {
-        if (mounted) {
-          final exercises = Provider.of<ExerciseAndRoutineController>(context, listen: false).exercises;
-          final functionCallPayload = await createFunctionCallPayload(
-              toolId: toolId,
-              systemInstruction: completeSystemInstructions,
-              user: userInstruction,
-              responseFormat: newRoutineTemplateResponseFormat,
-              exercises: exercises);
-          final jsonString = await runMessageWithFunctionCallResult(payload: functionCallPayload);
-          if (jsonString != null) {
-            final json = jsonDecode(jsonString);
-            final exerciseIds = json["exercises"] as List<dynamic>;
-            final workoutName = json["workout_name"] ?? "A workout";
-            final workoutCaption = json["workout_caption"] ?? "A workout created by TRKR Coach";
-            final exerciseTemplates = exerciseIds.map((exerciseId) {
-              final exerciseInLibrary = exercises.firstWhere((exercise) => exercise.id == exerciseId);
-              final exerciseTemplate = ExerciseLogDto(exerciseInLibrary.id, "", "", exerciseInLibrary,
-                  exerciseInLibrary.description ?? "", [const SetDto(0, 0, false)], DateTime.now(), []);
-              return exerciseTemplate;
-            }).toList();
-            templateDto = RoutineTemplateDto(
-                id: "",
-                name: workoutName,
-                exerciseTemplates: exerciseTemplates,
-                notes: workoutCaption,
-                owner: SharedPrefs().userId,
-                createdAt: DateTime.now(),
-                updatedAt: DateTime.now());
-          }
-        }
-      } else {
-        _showSnackbar("Oops, I can only assist you with workouts.", icon: TRKRCoachWidget());
+      );
+
+      if (tool == null) {
+        _handleError();
+        return;
       }
+
+      final toolId = tool['id'] ?? "";
+      final toolName = tool['name'] ?? "";
+
+      if (toolName != "list_exercises") {
+        _handleError();
+        return;
+      }
+
+      if (!mounted) return;
+
+      final exercises = Provider.of<ExerciseAndRoutineController>(
+        context,
+        listen: false,
+      ).exercises;
+      await _recommendExercises(
+          toolId: toolId,
+          completeSystemInstructions: completeSystemInstructions,
+          userInstruction: userInstruction,
+          exercises: exercises);
+    } catch (e) {
+      _handleError();
     }
-    return templateDto;
+  }
+
+  void _handleError() {
+    _hideLoadingScreen();
+    _showSnackbar(
+      "Oops, I can only assist you with workouts.",
+      icon: TRKRCoachWidget(),
+    );
+  }
+
+  Future<void> _recommendExercises(
+      {required String toolId,
+      required String completeSystemInstructions,
+      required String userInstruction,
+      required List<ExerciseDto> exercises}) async {
+    final functionCallPayload = createFunctionCallPayload(
+      toolId: toolId,
+      systemInstruction: completeSystemInstructions,
+      user: userInstruction,
+      responseFormat: newRoutineResponseFormat,
+      exercises: exercises,
+    );
+
+    try {
+      final functionCallResult = await runMessageWithFunctionCallPayload(payload: functionCallPayload);
+
+      if (functionCallResult == null) {
+        _handleError();
+        return;
+      }
+
+      // Deserialize the JSON string
+      Map<String, dynamic> json = jsonDecode(functionCallResult);
+
+      NewRoutineDto newRoutineDto = NewRoutineDto.fromJson(json);
+
+      final exerciseTemplates = _createExerciseTemplates(newRoutineDto.exercises, exercises);
+
+      setState(() {
+        _routineTemplate = RoutineTemplateDto(
+          id: "",
+          name: newRoutineDto.workoutName,
+          exerciseTemplates: exerciseTemplates,
+          notes: newRoutineDto.workoutCaption,
+          owner: SharedPrefs().userId,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+      });
+      _hideLoadingScreen();
+    } catch (e) {
+      _handleError();
+    }
+  }
+
+  List<ExerciseLogDto> _createExerciseTemplates(List<String> exerciseIds, List<ExerciseDto> exercises) {
+    return exerciseIds
+        .map((exerciseId) {
+          final exerciseInLibrary = exercises.firstWhereOrNull((exercise) => exercise.id == exerciseId);
+          if (exerciseInLibrary == null) return null;
+          return ExerciseLogDto(
+              id: exerciseInLibrary.id,
+              routineLogId: "",
+              superSetId: "",
+              exercise: exerciseInLibrary,
+              notes: exerciseInLibrary.description ?? "",
+              sets: [SetDto.newType(type: exerciseInLibrary.type)],
+              createdAt: DateTime.now());
+        })
+        .whereType<ExerciseLogDto>()
+        .toList();
   }
 
   void _clearTextEditing() {
@@ -254,7 +309,7 @@ class _AppBar extends StatelessWidget {
     return Row(
       children: [
         IconButton(
-          icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
+          icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
           onPressed: Navigator.of(context).pop,
         ),
         Expanded(
@@ -264,7 +319,7 @@ class _AppBar extends StatelessWidget {
         ),
         canPerformPositiveAction
             ? IconButton(
-                icon: const FaIcon(FontAwesomeIcons.check, color: Colors.white, size: 28),
+                icon: const FaIcon(FontAwesomeIcons.solidSquareCheck, color: Colors.white, size: 28),
                 onPressed: positiveAction,
               )
             : const IconButton(
@@ -310,44 +365,17 @@ class _HeroWidget extends StatelessWidget {
                       text: " ",
                       style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)),
                   TextSpan(
-                      text: "Start with the suggestions below.",
+                      text: "Try saying",
                       style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)),
+                  TextSpan(
+                      text: " ",
+                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)),
+                  TextSpan(
+                      text: 'I want to train "mention muscle group(s)"',
+                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white)),
                 ],
               ),
-            ),
-            const SizedBox(height: 10),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-              decoration: BoxDecoration(
-                color: Colors.white10.withOpacity(0.1), // Background color of the container
-                borderRadius: BorderRadius.circular(5), // Rounded corners
-              ),
-              child: Text("Create a fullbody workout",
-                  style: GoogleFonts.ubuntu(
-                      color: Colors.white.withOpacity(0.8), fontSize: 12, fontWeight: FontWeight.w600)),
-            ),
-            const SizedBox(height: 10),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-              decoration: BoxDecoration(
-                color: Colors.white10.withOpacity(0.1), // Background color of the container
-                borderRadius: BorderRadius.circular(5), // Rounded corners
-              ),
-              child: Text("Help me create a back and biceps workout",
-                  style: GoogleFonts.ubuntu(
-                      color: Colors.white.withOpacity(0.8), fontSize: 12, fontWeight: FontWeight.w600)),
-            ),
-            const SizedBox(height: 10),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-              decoration: BoxDecoration(
-                color: Colors.white10.withOpacity(0.1), // Background color of the container
-                borderRadius: BorderRadius.circular(5), // Rounded corners
-              ),
-              child: Text("I need a machine-only workout",
-                  style: GoogleFonts.ubuntu(
-                      color: Colors.white.withOpacity(0.8), fontSize: 12, fontWeight: FontWeight.w600)),
-            ),
+            )
           ]),
         )
       ]),

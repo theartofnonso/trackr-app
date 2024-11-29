@@ -153,7 +153,7 @@ void showActivityPicker(
 }
 
 void showActivityBottomSheet({required BuildContext context, required ActivityLogDto activity}) {
-  final activityType = ActivityType.fromString(activity.name);
+  final activityType = ActivityType.fromJson(activity.name);
 
   final image = activityType.image;
 
@@ -291,9 +291,7 @@ void showCreateProfileBottomSheet({required BuildContext context}) {
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
-          child: const SingleChildScrollView(
-            child: CreateRoutineUserProfileWidget(),
-          ),
+          child: const CreateRoutineUserProfileWidget(),
         );
       });
 }

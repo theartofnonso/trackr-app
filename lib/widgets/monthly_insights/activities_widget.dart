@@ -7,16 +7,23 @@ import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
 import '../../utils/dialog_utils.dart';
 import '../../utils/navigation_utils.dart';
-import '../empty_states/routine_log_empty_state.dart';
+import '../empty_states/no_list_empty_state.dart';
 import '../routine/preview/activity_log_widget.dart';
 
 class ActivitiesWidget extends StatelessWidget {
-  final List<ActivityLogDto> activities;
+  final List<ActivityLogDto> thisMonthsActivities;
+  final List<ActivityLogDto> lastMonthsActivities;
 
-  const ActivitiesWidget({super.key, required this.activities});
+  const ActivitiesWidget({super.key, required this.thisMonthsActivities, required this.lastMonthsActivities});
 
   @override
   Widget build(BuildContext context) {
+
+    final thisMonthCount = thisMonthsActivities.length;
+    final lastMonthCount = lastMonthsActivities.length;
+
+    final improved = thisMonthCount > lastMonthCount;
+
     return Container(
       decoration: BoxDecoration(
         color: sapphireDark80,
@@ -32,8 +39,28 @@ class ActivitiesWidget extends StatelessWidget {
             style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
         subtitle: Text("All activities outside your training",
             style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w400)),
-        trailing: Text("${activities.length}",
-            style: GoogleFonts.ubuntu(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w900, fontSize: 20)),
+        trailing: Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("$thisMonthCount",
+                    style: GoogleFonts.ubuntu(
+                        color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w900, fontSize: 20)),
+                Text("$lastMonthCount",
+                    style: GoogleFonts.ubuntu(color: Colors.white54, fontWeight: FontWeight.w900, fontSize: 12))
+              ],
+            ),
+            const SizedBox(width: 4),
+            FaIcon(
+              improved ? FontAwesomeIcons.arrowUp : FontAwesomeIcons.arrowDown,
+              color: improved ? vibrantGreen : Colors.deepOrange,
+              size: 12,
+            )
+          ],
+        )
       ),
     );
   }
@@ -42,7 +69,7 @@ class ActivitiesWidget extends StatelessWidget {
     navigateWithSlideTransition(
         context: context,
         child: _LogsScreen(
-          activities: activities,
+          activities: thisMonthsActivities,
         ));
   }
 }
@@ -59,10 +86,10 @@ class _LogsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: sapphireDark80,
-        title: Text("Activities".toUpperCase(),
+        title: Text("${DateTime.now().formattedFullMonth()} Activities".toUpperCase(),
             style: GoogleFonts.ubuntu(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
         leading: IconButton(
-            icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+            icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
             onPressed: Navigator.of(context).pop),
       ),
       body: Container(
@@ -99,7 +126,7 @@ class _LogsScreen extends StatelessWidget {
                               Divider(color: Colors.white70.withOpacity(0.1)),
                           itemCount: activities.length),
                     )
-                  : const RoutineLogEmptyState(),
+                  : const NoListEmptyState(message: "It might feel quiet now, but your logged activities will soon appear here."),
             ],
           ),
         ),

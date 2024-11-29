@@ -7,7 +7,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/analytics_controller.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
-import 'package:tracker_app/enums/training_position_enum.dart';
 import 'package:tracker_app/screens/exercise/muscle_groups_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 
@@ -67,10 +66,10 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
             ),
             actions: [
               exercise != null
-                  ? GestureDetector(
-                      onTap: _updateExercise,
-                      child: Text("Update",
-                          style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.white)))
+                  ? IconButton(
+                      icon: const FaIcon(FontAwesomeIcons.solidSquareCheck, color: Colors.white, size: 28),
+                      onPressed: _updateExercise,
+                    )
                   : const SizedBox.shrink(),
               const SizedBox(width: 12)
             ],
@@ -117,7 +116,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                     InformationContainer(
                         leadingIcon: FaIcon(FontAwesomeIcons.lightbulb, size: 16),
                         title: 'Tip',
-                        description: "Tap text in white to edit.\nExercise type is not editable once created.",
+                        description: "Tap text in white to edit.",
                         color: Colors.transparent),
                     SizedBox(height: 20),
                   ]),
@@ -238,7 +237,6 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
           name: exerciseName,
           primaryMuscleGroup: _primaryMuscleGroup,
           secondaryMuscleGroups: [],
-          trainingPosition: TrainingPosition.none,
           type: _exerciseType,
           owner: "");
 
@@ -262,12 +260,11 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
       final exercise = widget.exercise;
       if (exercise == null) return;
 
-      final updatedExercise = exercise.copyWith(name: exerciseName.trim(), primaryMuscleGroup: _primaryMuscleGroup);
-      await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateExercise(exercise: updatedExercise);
+      final exerciseToBeUpdated = exercise.copyWith(name: exerciseName.trim(), primaryMuscleGroup: _primaryMuscleGroup);
+      await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateExercise(exercise: exerciseToBeUpdated);
       AnalyticsController.exerciseEvents(eventAction: "create_exercise", exercise: exercise);
-      logger.i("updated exercise ${exercise.toString()}");
       if (mounted) {
-        context.pop(updatedExercise);
+        context.pop(exerciseToBeUpdated);
       }
     }
   }

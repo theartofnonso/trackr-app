@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../enums/routine_preview_type_enum.dart';
-
 class SingleSetHeader extends StatelessWidget {
   final String label;
   final TextAlign textAlign;
-  final RoutinePreviewType routinePreviewType;
 
-  const SingleSetHeader({super.key, required this.label, this.textAlign = TextAlign.center, required this.routinePreviewType});
+  const SingleSetHeader({super.key, required this.label, this.textAlign = TextAlign.center});
 
   @override
   Widget build(BuildContext context) {
-
     return Table(
       columnWidths: const <int, TableColumnWidth>{
         0: FlexColumnWidth(),

@@ -62,7 +62,7 @@ enum ActivityType {
   final double met;
   final String? image;
 
-  static ActivityType fromString(String string) {
+  static ActivityType fromJson(String string) {
     return ActivityType.values.firstWhere((value) => value.name.toLowerCase() == string.toLowerCase());
   }
 }

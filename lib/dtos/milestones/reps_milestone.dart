@@ -6,6 +6,8 @@ import 'package:tracker_app/enums/muscle_group_enums.dart';
 
 import '../../utils/exercise_logs_utils.dart';
 import '../appsync/routine_log_dto.dart';
+import '../set_dtos/reps_dto.dart';
+import '../set_dtos/weight_and_reps_dto.dart';
 
 class RepsMilestone extends Milestone {
   final MuscleGroup muscleGroup;
@@ -86,9 +88,7 @@ class RepsMilestone extends Milestone {
     List<RoutineLogDto> qualifyingLogs = [];
 
     for (final log in logs) {
-
       if (sumOfReps < target) {
-
         final completedExerciseLogs = completedExercises(exerciseLogs: log.exerciseLogs);
 
         final exerciseLogs = completedExerciseLogs
@@ -103,7 +103,14 @@ class RepsMilestone extends Milestone {
         if (exerciseLogs.isNotEmpty) {
           final reps = exerciseLogs
               .expand((exerciseLog) => exerciseLog.sets)
-              .map((set) => set.reps())
+              .map((set) {
+                if (set is RepsSetDto) {
+                  return set.reps;
+                } else if (set is WeightAndRepsSetDto) {
+                  return set.reps;
+                }
+                return 0;
+              })
               .reduce((value, element) => value + element)
               .toInt();
 

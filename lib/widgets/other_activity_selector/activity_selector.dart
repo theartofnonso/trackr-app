@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/enums/activity_type_enums.dart';
 
 import '../../colors.dart';
-import '../empty_states/text_empty_state.dart';
+import '../empty_states/no_list_empty_state.dart';
 import '../search_bar.dart';
 
 class ActivitySelectorScreen extends StatefulWidget {
@@ -30,7 +30,7 @@ class _ActivitySelectorScreenState extends State<ActivitySelectorScreen> {
       appBar: AppBar(
         backgroundColor: sapphireDark80,
         leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
+          icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
           onPressed: context.pop,
         ),
         title: Text("Select An Activity".toUpperCase(),
@@ -92,7 +92,7 @@ class _ActivitySelectorScreenState extends State<ActivitySelectorScreen> {
                         ),
                       ),
                     ))
-                  : const Expanded(child: Center(child: TextEmptyState(message: "We don't have this activity")))
+                  : NoListEmptyState(message: 'We don\'t have "${_searchController.text} activity')
             ],
           ),
         ),

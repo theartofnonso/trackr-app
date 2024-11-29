@@ -8,7 +8,7 @@ const openAIFunctionTools = [
   {"type": "function", "function": listExercisesFunctionTool}
 ];
 
-const newRoutineTemplateResponseFormat = {
+const newRoutineResponseFormat = {
   "type": "json_schema",
   "json_schema": {
     "name": "new_workout_response",
@@ -29,37 +29,86 @@ const newRoutineTemplateResponseFormat = {
   }
 };
 
-const exercisesRecommendationResponseFormat = {
+const routineLogsReportResponseFormat = {
   "type": "json_schema",
   "json_schema": {
-    "name": "exercises_recommendation_response",
-    "description": "A response format providing exercise recommendations for each muscle group provided by the user.",
+    "name": "historical_exercise_logs_response",
     "schema": {
       "type": "object",
       "properties": {
-        "exercises": {
+        "introduction": {
+          "type": "string",
+          "description": "Brief introduction summarizing the overall training report."
+        },
+        "exercise_reports": {
           "type": "array",
-          "description": "List of muscle groups with their corresponding recommendations.",
           "items": {
             "type": "object",
             "properties": {
-              "muscle_group": {
+              "exercise_name": {"type": "string", "description": "The name of the exercise."},
+              "heaviest_weight": {
                 "type": "string",
-                "description": "Name of the muscle group provided by the user."
+                "description": "Summary of heaviest weight lifted for this exercise."
               },
-              "recommended_exercises": {
-                "type": "array",
-                "description": "Array containing the Ids of 2 exercise recommendations",
-                "items": {"type": "string", "description": "Ids of the recommended exercises found in the list of exercises provided"},
+              "heaviest_volume": {
+                "type": "string",
+                "description": "Summary of heaviest total volume (weight x reps) lifted for this exercise."
               },
-              "rationale": {"type": "string", "description": "Brief caption explaining the reason for the recommendation"}
+              "comments": {
+                "type": "string",
+                "description":
+                "Overall summary of the exercise performance across all training sessions, including any notable trends or observations."
+              }
             },
-            "required": ["muscle_group", "recommended_exercises", "rationale"],
+            "required": ["exercise_name", "heaviest_weight", "heaviest_volume", "comments"],
             "additionalProperties": false
-          },
+          }
         },
+        "suggestions": {"type": "string", "description": "Brief summary of suggestions for future improvements."}
       },
-      "required": ["exercises"],
+      "required": ["introduction", "exercise_reports", "suggestions"],
+      "additionalProperties": false
+    },
+    "strict": true
+  }
+};
+
+const routineLogReportResponseFormat = {
+  "type": "json_schema",
+  "json_schema": {
+    "name": "current_exercise_logs_response",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "introduction": {
+          "type": "string",
+          "description": "Brief introduction summarizing the overall training report."
+        },
+        "exercise_reports": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "exercise_name": {"type": "string", "description": "The name of the exercise."},
+              "achievements": {
+                "type": "array",
+                "description":
+                "List of brief summary of training sessions where there was an improvement in performance across sets compared to previous sessions.",
+                "items": {"type": "string", "description": "Description of an improvement in performance across sets compared to previous sessions."}
+              },
+              "comments": {
+                "type": "string",
+                "description":
+                "Overall summary of the exercise performance compared to previous training sessions, including any notable trends or observations."
+              }
+            },
+            "required": ["exercise_name", "achievements", "comments"],
+            "additionalProperties": false
+          }
+        },
+        "suggestions": {"type": "string", "description": "Brief summary of suggestions for future improvements."}
+      },
+      "required": ["introduction", "exercise_reports", "suggestions"],
       "additionalProperties": false
     },
     "strict": true

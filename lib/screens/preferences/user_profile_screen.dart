@@ -3,7 +3,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/screens/empty_state_screens/not_found.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:tracker_app/widgets/label_divider.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/double_textfield.dart';
@@ -12,6 +11,7 @@ import 'package:tracker_app/widgets/user_icon_widget.dart';
 import '../../colors.dart';
 import '../../controllers/routine_user_controller.dart';
 import '../../dtos/appsync/routine_user_dto.dart';
+import '../../widgets/empty_states/not_found.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({
@@ -61,6 +61,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               child: UserIconWidget(size: 60, iconSize: 22),
             ),
             const SizedBox(
+              height: 20,
+            ),
+            Center(
+              child: Text(user.name.toUpperCase(),
+                  style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white),
+                  textAlign: TextAlign.center),
+            ),
+            const SizedBox(
               height: 40,
             ),
             const LabelDivider(
@@ -80,7 +88,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
                   textAlign: TextAlign.start),
-              subtitle: Text("We use your weight to calculate your calories burned",
+              subtitle: Text("We use your weight to calculate your calories burned.",
                   style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.white70),
                   textAlign: TextAlign.start),
               trailing: Container(

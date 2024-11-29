@@ -1,10 +1,10 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
-import 'package:tracker_app/widgets/empty_states/exercise_empty_state.dart';
 import 'package:tracker_app/widgets/search_bar.dart';
 
 import '../../../colors.dart';
@@ -12,16 +12,17 @@ import '../../../controllers/exercise_and_routine_controller.dart';
 import '../../../dtos/appsync/exercise_dto.dart';
 import '../../../enums/muscle_group_enums.dart';
 import '../../../utils/navigation_utils.dart';
+import '../../../widgets/buttons/opacity_button_widget.dart';
+import '../../../widgets/empty_states/no_list_empty_state.dart';
 import '../../../widgets/exercise/exercise_widget.dart';
 import '../../editors/exercise_editor_screen.dart';
 
 class ExerciseLibraryScreen extends StatefulWidget {
   final bool readOnly;
   final List<ExerciseDto> excludeExercises;
-  final ExerciseType type;
+  final ExerciseType? type;
 
-  const ExerciseLibraryScreen(
-      {super.key, this.readOnly = false, this.excludeExercises = const [], this.type = ExerciseType.all});
+  const ExerciseLibraryScreen({super.key, this.readOnly = false, this.excludeExercises = const [], this.type});
 
   @override
   State<ExerciseLibraryScreen> createState() => _ExerciseLibraryScreenState();
@@ -30,7 +31,7 @@ class ExerciseLibraryScreen extends StatefulWidget {
 class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   late TextEditingController _searchController;
 
-  MuscleGroup? _selectedMuscleGroup;
+  final List<MuscleGroup> _selectedMuscleGroups = [];
 
   /// Holds a list of [ExerciseDto] when filtering through a search
   List<ExerciseDto> _filteredExercises = [];
@@ -41,15 +42,18 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
     List<ExerciseDto> searchResults = [];
 
+    final exerciseType = widget.type;
+
     searchResults = Provider.of<ExerciseAndRoutineController>(context, listen: false)
         .exercises
         .where((exercise) => !widget.excludeExercises.contains(exercise))
         .where((exercise) => exercise.name.toLowerCase().contains(query.toLowerCase()))
-        .where((exercise) => widget.type == ExerciseType.all ? true : exercise.type == widget.type)
+        .where((exercise) => exerciseType != null ? exercise.type == widget.type : true)
         .toList();
 
-    if (_selectedMuscleGroup != null) {
-      searchResults = searchResults.where((exercise) => exercise.primaryMuscleGroup == _selectedMuscleGroup).toList();
+    if (_selectedMuscleGroups.isNotEmpty) {
+      searchResults =
+          searchResults.where((exercise) => _selectedMuscleGroups.contains(exercise.primaryMuscleGroup)).toList();
     }
 
     searchResults.sort((a, b) => a.name.compareTo(b.name));
@@ -90,7 +94,23 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final muscleGroups = MuscleGroup.values;
+    final muscleGroups = MuscleGroup.values
+        .sorted((a, b) => a.name.compareTo(b.name))
+        .map((muscleGroup) => Padding(
+              padding: const EdgeInsets.only(right: 6.0),
+              child: OpacityButtonWidget(
+                  onPressed: () => _onSelectMuscleGroup(newMuscleGroup: muscleGroup),
+                  padding: EdgeInsets.symmetric(horizontal: 0),
+                  textStyle: GoogleFonts.ubuntu(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 10,
+                      color: _getMuscleGroup(muscleGroup: muscleGroup) != null ? vibrantGreen : Colors.white70),
+                  buttonColor: _getMuscleGroup(muscleGroup: muscleGroup) != null ? vibrantGreen : null,
+                  label: muscleGroup.name.toUpperCase()),
+            ))
+        .toList();
+
+    final muscleGroupScrollViewHalf = MuscleGroup.values.length ~/ 2;
 
     return Scaffold(
       appBar: AppBar(
@@ -127,6 +147,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
             ),
           ),
           child: SafeArea(
+            bottom: false,
             minimum: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -137,52 +158,12 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                     onClear: _clearSearch,
                     controller: _searchController),
                 const SizedBox(height: 10),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: sapphireDark, // Background color
-                    borderRadius: BorderRadius.circular(5), // Border radius
-                  ),
-                  child: DropdownButton<MuscleGroup>(
-                    menuMaxHeight: 400,
-                    isExpanded: true,
-                    isDense: true,
-                    value: _selectedMuscleGroup,
-                    hint: Text("Filter by muscle group",
-                        style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14)),
-                    icon: GestureDetector(
-                      onTap: () {
-                        _selectedMuscleGroup = null;
-                        _runSearch("Nil");
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: _selectedMuscleGroup == null
-                            ? const FaIcon(FontAwesomeIcons.chevronDown, color: Colors.white70, size: 16)
-                            : const FaIcon(FontAwesomeIcons.circleXmark, color: Colors.white, size: 18),
-                      ),
-                    ),
-                    underline: Container(
-                      color: Colors.transparent,
-                    ),
-                    style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
-                    onChanged: (MuscleGroup? value) {
-                      _selectedMuscleGroup = value;
-                      _runSearch("Nil");
-                    },
-                    items: muscleGroups.map<DropdownMenuItem<MuscleGroup>>((MuscleGroup muscleGroup) {
-                      return DropdownMenuItem<MuscleGroup>(
-                        value: muscleGroup,
-                        child: Text(muscleGroup.name,
-                            style: GoogleFonts.ubuntu(
-                                color: _selectedMuscleGroup == muscleGroup ? Colors.white : Colors.white70,
-                                fontWeight: _selectedMuscleGroup == muscleGroup ? FontWeight.bold : FontWeight.w500,
-                                fontSize: 14)),
-                      );
-                    }).toList(),
-                  ),
-                ),
+                SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(children: muscleGroups.sublist(0, muscleGroupScrollViewHalf))),
+                SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(children: muscleGroups.sublist(muscleGroupScrollViewHalf))),
                 const SizedBox(height: 18),
                 _filteredExercises.isNotEmpty
                     ? Expanded(
@@ -204,7 +185,8 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                               itemCount: _filteredExercises.length),
                         ),
                       )
-                    : const ExerciseEmptyState(),
+                    : const NoListEmptyState(
+                        message: "It might feel quiet now, but exercises including yours will soon appear here."),
               ],
             ),
           ),
@@ -214,12 +196,30 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   }
 
   void _loadOrSyncExercises() {
+    final exerciseType = widget.type;
+
     _filteredExercises = Provider.of<ExerciseAndRoutineController>(context, listen: false)
         .exercises
         .where((exercise) => !widget.excludeExercises.contains(exercise))
-        .where((exercise) => widget.type == ExerciseType.all ? true : exercise.type == widget.type)
+        .where((exercise) => exerciseType != null ? exercise.type == widget.type : true)
         .toList();
   }
+
+  void _onSelectMuscleGroup({required MuscleGroup newMuscleGroup}) {
+    final oldMuscleGroup =
+        _selectedMuscleGroups.firstWhereOrNull((previousMuscleGroup) => previousMuscleGroup == newMuscleGroup);
+    setState(() {
+      if (oldMuscleGroup != null) {
+        _selectedMuscleGroups.remove(oldMuscleGroup);
+      } else {
+        _selectedMuscleGroups.add(newMuscleGroup);
+      }
+      _runSearch("");
+    });
+  }
+
+  MuscleGroup? _getMuscleGroup({required MuscleGroup muscleGroup}) =>
+      _selectedMuscleGroups.firstWhereOrNull((previousMuscleGroup) => previousMuscleGroup == muscleGroup);
 
   @override
   void initState() {

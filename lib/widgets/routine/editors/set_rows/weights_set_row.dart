@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/double_textfield.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/int_textfield.dart';
 
-import '../../../../dtos/set_dto.dart';
 import '../../../../enums/routine_editor_type_enums.dart';
 import '../set_check_button.dart';
 import '../set_delete_button.dart';
 
 class WeightsSetRow extends StatelessWidget {
-  final SetDto setDto;
+  final WeightAndRepsSetDto setDto;
   final RoutineEditorMode editorType;
   final VoidCallback onRemoved;
   final VoidCallback onCheck;
@@ -33,8 +33,8 @@ class WeightsSetRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    num weight = setDto.weight();
-    int reps = setDto.reps().toInt();
+    double weight = setDto.weight;
+    int reps = setDto.reps;
 
     return Table(
       border: TableBorder.all(color: Colors.white.withOpacity(0.1), borderRadius: BorderRadius.circular(5)),
@@ -53,7 +53,8 @@ class WeightsSetRow extends StatelessWidget {
       children: [
         TableRow(children: [
           TableCell(
-              verticalAlignment: TableCellVerticalAlignment.middle, child: Center(child: SetDeleteButton(onDelete: onRemoved))),
+              verticalAlignment: TableCellVerticalAlignment.middle,
+              child: Center(child: SetDeleteButton(onDelete: onRemoved))),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: DoubleTextField(

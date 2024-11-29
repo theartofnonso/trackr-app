@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 
-import '../../../widgets/empty_states/list_view_empty_state.dart';
-import '../../../widgets/exercise_history/exercise_history_log_widget.dart';
+import '../../../widgets/empty_states/no_list_empty_state.dart';
+import '../../../widgets/exercise_history/exercise_log_history_widget.dart';
 
-class HistoryScreen extends StatelessWidget {
+class ExerciseLogHistoryScreen extends StatelessWidget {
   final List<ExerciseLogDto> exerciseLogs;
 
-  const HistoryScreen({super.key, required this.exerciseLogs});
+  const ExerciseLogHistoryScreen({super.key, required this.exerciseLogs});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class HistoryScreen extends StatelessWidget {
                 separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
                 itemCount: exerciseLogs.length),
           )
-              : const ListViewEmptyState(),
+              : const NoListEmptyState(message: "It might feel quiet now, but your logged exercises will soon appear here."),
         ],
       ),
     );
