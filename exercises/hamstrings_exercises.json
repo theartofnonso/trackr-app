@@ -134,17 +134,6 @@
     "description": "A dumbbell variation of the deadlift, emphasizing hamstring and glute strength."
   },
   {
-    "id": "HAM14",
-    "name": "Sumo Deadlift",
-    "primaryMuscleGroup": "hamstrings",
-    "secondaryMuscleGroups": ["glutes", "quadriceps", "adductors", "back", "forearms", "abs"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=IGmNuGEpHc0",
-    "creditSource": "https://www.youtube.com/@TheGymGroupUK",
-    "credit": "TheGymGroup",
-    "description": "A wider stance deadlift that targets the hamstrings and glutes with less stress on the lower back."
-  },
-  {
     "id": "HAM15",
     "name": "Stiff-Legged Deadlift",
     "primaryMuscleGroup": "hamstrings",
@@ -194,17 +183,6 @@
     "description": "Targets hamstrings and glutes using the Smith machine for stability and controlled range of motion."
   },
   {
-    "id": "HAM20",
-    "name": "Kettlebell Swing",
-    "primaryMuscleGroup": "hamstrings",
-    "secondaryMuscleGroups": ["glutes", "back", "abs"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=YSx5qjKQlwo",
-    "creditSource": "https://www.youtube.com/@TheGymGroupUK",
-    "credit": "TheGymGroup",
-    "description": "A dynamic movement that targets the hamstrings and glutes through explosive hip extension using a kettlebell."
-  },
-  {
     "id": "HAM21",
     "name": "Stability Ball Leg Curl",
     "primaryMuscleGroup": "hamstrings",
@@ -214,28 +192,6 @@
     "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
     "credit": "Functional Bodybuilding",
     "description": "Engages the hamstrings and core by curling the legs using a stability ball while lying on your back."
-  },
-  {
-    "id": "HAM22",
-    "name": "Cable Pull-Through",
-    "primaryMuscleGroup": "hamstrings",
-    "secondaryMuscleGroups": ["glutes", "back", "abs"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=vsMZ-Uxg-fE",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym",
-    "description": "Targets the hamstrings and glutes by pulling a cable between the legs from a standing position."
-  },
-  {
-    "id": "HAM23",
-    "name": "Reverse Hyperextension",
-    "primaryMuscleGroup": "hamstrings",
-    "secondaryMuscleGroups": ["glutes", "lower back"],
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=yhBwT4Sx9Sg",
-    "creditSource": "https://www.youtube.com/@MarkWildman",
-    "credit": "Mark Wildman",
-    "description": "Strengthens the hamstrings and lower back by lifting the legs upward while lying face down on a reverse hyper machine."
   },
   {
     "id": "HAM24",
