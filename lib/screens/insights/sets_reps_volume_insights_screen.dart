@@ -320,11 +320,19 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       showSnackbar(
           context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: "You don't have any logs");
     } else {
-      final startDate = exerciseLogs.first.createdAt.withoutTime();
       final endDate = exerciseLogs.last.createdAt.withoutTime();
 
+      // Get the current date
+      final now = DateTime.now();
+
+      // Determine the start of the month
+      final startOfMonth = DateTime(now.year, now.month, 1);
+
+      // Determine the end of the month
+      final endOfMonth = DateTime(now.year, now.month + 1, 0);
+
       final userInstructions =
-          "Review my workout logs for ${_selectedMuscleGroup.name} from $startDate to $endDate and provide feedback. Please note, that my weights are in ${weightLabel()}";
+          "Analyze my workout logs for ${_selectedMuscleGroup.name} between $startOfMonth and $endOfMonth then compare them to logs for the same muscle group from $endOfMonth to $endDate Provide feedback on performance trends, volume, and intensity during these periods. Note that my weights are logged in ${weightLabel()}";
 
       final StringBuffer buffer = StringBuffer();
 

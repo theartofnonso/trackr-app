@@ -246,7 +246,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 12.0),
                               child: TRKRInformationContainer(
-                                  ctaLabel: updatedLog.summary != null ? "Review your feedback" : "Ask for feedback",
+                                  ctaLabel: "Review your feedback",
                                   description:
                                       "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
                                   onTap: () => _generateReport(exerciseLogs: updatedExerciseLogs)),
