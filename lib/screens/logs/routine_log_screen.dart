@@ -210,7 +210,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                         ],
                       ),
                     ),
-                    if (routineUserController.user != null)
+                    if (routineUserController.user == null)
                       Padding(
                         padding: const EdgeInsets.only(top: 10.0, left: 10, right: 10),
                         child: InformationContainerLite(

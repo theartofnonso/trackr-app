@@ -291,9 +291,7 @@ void showCreateProfileBottomSheet({required BuildContext context}) {
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
-          child: const SingleChildScrollView(
-            child: CreateRoutineUserProfileWidget(),
-          ),
+          child: const CreateRoutineUserProfileWidget(),
         );
       });
 }
