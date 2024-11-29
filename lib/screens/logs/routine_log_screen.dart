@@ -246,7 +246,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 12.0),
                               child: TRKRInformationContainer(
-                                  ctaLabel: "Review your feedback",
+                                  ctaLabel: "Ask for feedback",
                                   description:
                                       "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
                                   onTap: () => _generateReport(exerciseLogs: updatedExerciseLogs)),
@@ -280,21 +280,22 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     if (log == null) return;
 
-    final userInstructions =
-        "Review my ${log.name} current workout log, compare it to previous logs and generate a report. Please note, that my weights are in ${weightLabel()}";
-
     final StringBuffer buffer = StringBuffer();
-
-    buffer.writeln(userInstructions);
-
-    buffer.writeln();
 
     final exerciseAndRoutineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
+    buffer.writeln("Analyze my exercise logs in ${log.name}");
+
+    buffer.writeln();
+
     for (final exerciseLog in exerciseLogs) {
-      buffer.writeln("Current Exercise Log for: ${exerciseLog.exercise.name}");
+      buffer.writeln("Analyze ${exerciseLog.exercise.name}");
       List<String> setSummaries = _generateSetSummaries(exerciseLog);
       buffer.writeln("Current Sets: $setSummaries");
+
+      buffer.writeln();
+
+      buffer.writeln("Compare ${exerciseLog.exercise.name} to previous logs");
 
       buffer.writeln();
 
@@ -308,8 +309,11 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         List<String> pastSetSummaries = _generateSetSummaries(exerciseLog);
         buffer.writeln("Past Sets: $pastSetSummaries");
 
-        buffer.writeln();
+        buffer.writeln(
+            "Provide feedback on performance trends, volume, and intensity during these periods. Note that my weights are logged in ${weightLabel()}");
       }
+
+      buffer.writeln("Compare ${exerciseLog.exercise.name} to previous logs");
     }
 
     final completeInstructions = buffer.toString();
@@ -323,8 +327,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         .then((response) {
       _hideLoadingScreen();
       if (response != null) {
-        final jsonString = jsonEncode(response);
-        _saveSummary(response: jsonString, log: log);
         if (mounted) {
           // Deserialize the JSON string
           Map<String, dynamic> json = jsonDecode(response);
@@ -511,14 +513,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             });
           });
     }
-  }
-
-  void _saveSummary({required RoutineLogDto log, required String response}) async {
-    final updatedLog = log.copyWith(summary: response);
-    await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateLog(log: updatedLog);
-    setState(() {
-      _log = updatedLog;
-    });
   }
 
   void _createTemplate() async {

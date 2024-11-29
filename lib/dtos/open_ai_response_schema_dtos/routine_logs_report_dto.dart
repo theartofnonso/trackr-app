@@ -24,14 +24,12 @@ class ExerciseReport {
   final String exerciseName;
   final String heaviestWeight;
   final String heaviestVolume;
-  final List<String> dropsInPerformance;
   final String comments;
 
   ExerciseReport({
     required this.exerciseName,
     required this.heaviestWeight,
     required this.heaviestVolume,
-    required this.dropsInPerformance,
     required this.comments,
   });
 
@@ -40,7 +38,6 @@ class ExerciseReport {
       exerciseName: json['exercise_name'] as String,
       heaviestWeight: json['heaviest_weight'] as String,
       heaviestVolume: json['heaviest_volume'] as String,
-      dropsInPerformance: (json['drops_in_performance'] as List<dynamic>).map((item) => item as String).toList(),
       comments: json['comments'] as String,
     );
   }

@@ -24,13 +24,11 @@ class RoutineLogReportDto {
 class ExerciseReport {
   final String exerciseName;
   final List<String> achievements;
-  final List<String> improvements;
   final String comments;
 
   ExerciseReport({
     required this.exerciseName,
     required this.achievements,
-    required this.improvements,
     required this.comments,
   });
 
@@ -38,7 +36,6 @@ class ExerciseReport {
     return ExerciseReport(
       exerciseName: json['exercise_name'] as String,
       achievements: List<String>.from(json['achievements'] as List),
-      improvements: List<String>.from(json['improvements'] as List),
       comments: json['comments'] as String,
     );
   }

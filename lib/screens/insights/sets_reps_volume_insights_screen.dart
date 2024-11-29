@@ -316,11 +316,15 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   }
 
   void _generateReport({required List<ExerciseLogDto> exerciseLogs}) {
-    if (exerciseLogs.isEmpty) {
+
+    final exerciseLogsWithPrimaryMuscleGroups = exerciseLogs
+        .where((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup == _selectedMuscleGroup).toList();
+
+    if (exerciseLogsWithPrimaryMuscleGroups.isEmpty) {
       showSnackbar(
           context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: "You don't have any logs");
     } else {
-      final endDate = exerciseLogs.last.createdAt.withoutTime();
+      final endDate = exerciseLogsWithPrimaryMuscleGroups.last.createdAt.withoutTime();
 
       // Get the current date
       final now = DateTime.now();
@@ -332,7 +336,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       final endOfMonth = DateTime(now.year, now.month + 1, 0);
 
       final userInstructions =
-          "Analyze my workout logs for ${_selectedMuscleGroup.name} between $startOfMonth and $endOfMonth then compare them to logs for the same muscle group from $endOfMonth to $endDate Provide feedback on performance trends, volume, and intensity during these periods. Note that my weights are logged in ${weightLabel()}";
+          "Analyze my workout logs for ${_selectedMuscleGroup.name} between $startOfMonth and $endOfMonth then compare them to logs for the same muscle group from $endOfMonth to $endDate. Provide feedback on performance trends, volume, and intensity during these periods. Note that my weights are logged in ${weightLabel()}";
 
       final StringBuffer buffer = StringBuffer();
 
@@ -340,7 +344,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
       buffer.writeln();
 
-      for (final exerciseLog in exerciseLogs) {
+      for (final exerciseLog in exerciseLogsWithPrimaryMuscleGroups) {
         final setSummaries = exerciseLog.sets.mapIndexed((index, set) {
           return switch (exerciseLog.exercise.type) {
             ExerciseType.weights => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
@@ -376,7 +380,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
             navigateWithSlideTransition(
                 context: context,
                 child: RoutineLogsReportScreen(
-                    muscleGroup: _selectedMuscleGroup, report: report, exerciseLogs: exerciseLogs));
+                    muscleGroup: _selectedMuscleGroup, report: report, exerciseLogs: exerciseLogsWithPrimaryMuscleGroups));
           }
         }
       }).catchError((_) {

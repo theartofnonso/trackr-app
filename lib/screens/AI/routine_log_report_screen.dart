@@ -151,35 +151,6 @@ class RoutineLogReportScreen extends StatelessWidget {
                                                 ))
                                             .toList()),
                                   ),
-                                if (data.improvements.isNotEmpty)
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                                    child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: data.improvements
-                                            .map((content) => Padding(
-                                                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                                                  child: Row(
-                                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                                    children: [
-                                                      FaIcon(
-                                                        FontAwesomeIcons.arrowRightLong,
-                                                        size: 16,
-                                                        color: Colors.white70,
-                                                      ),
-                                                      const SizedBox(width: 10),
-                                                      Expanded(
-                                                        child: Text(content,
-                                                            style: GoogleFonts.ubuntu(
-                                                                color: Colors.deepOrange,
-                                                                fontWeight: FontWeight.w400,
-                                                                fontSize: 16)),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ))
-                                            .toList()),
-                                  ),
                                 Text(data.comments,
                                     style: GoogleFonts.ubuntu(
                                         color: Colors.white70, fontWeight: FontWeight.w400, fontSize: 16)),

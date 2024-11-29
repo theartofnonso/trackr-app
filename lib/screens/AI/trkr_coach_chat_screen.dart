@@ -183,7 +183,10 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
         userInstruction: userInstruction,
       );
 
-      if (tool == null) return;
+      if (tool == null) {
+        _handleError();
+        return;
+      }
 
       final toolId = tool['id'] ?? "";
       final toolName = tool['name'] ?? "";
@@ -233,7 +236,10 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
     try {
       final functionCallResult = await runMessageWithFunctionCallPayload(payload: functionCallPayload);
 
-      if (functionCallResult == null) return;
+      if (functionCallResult == null) {
+        _handleError();
+        return;
+      }
 
       // Deserialize the JSON string
       Map<String, dynamic> json = jsonDecode(functionCallResult);
