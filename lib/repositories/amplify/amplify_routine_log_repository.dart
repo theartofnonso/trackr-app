@@ -16,11 +16,15 @@ import '../../dtos/milestones/milestone_dto.dart';
 import '../../dtos/milestones/reps_milestone.dart';
 import '../../dtos/milestones/weekly_milestone_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
+import '../../logger.dart';
 import '../../models/RoutineLog.dart';
 import '../../models/RoutineTemplate.dart';
 import '../../shared_prefs.dart';
 
 class AmplifyRoutineLogRepository {
+
+  final logger = getLogger(className: "AmplifyRoutineLogRepository");
+
   List<RoutineLogDto> _logs = [];
 
   UnmodifiableListView<RoutineLogDto> get logs => UnmodifiableListView(_logs);
@@ -73,6 +77,8 @@ class AmplifyRoutineLogRepository {
     // Get newly achieved milestone
     _newMilestones = updatedMilestones.difference(previousMilestones).toList();
 
+    logger.i("save log: $logDto : $datetime");
+
     return updatedRoutineWithExerciseIds;
   }
 
@@ -88,6 +94,7 @@ class AmplifyRoutineLogRepository {
       final updatedAt = TemporalDateTime.withOffset(log.updatedAt, Duration.zero);
       final newLog = oldLog.copyWith(data: jsonEncode(log), createdAt: startTime, updatedAt: updatedAt);
       await Amplify.DataStore.save<RoutineLog>(newLog);
+      logger.i("update log: $log");
     }
   }
 
@@ -100,6 +107,7 @@ class AmplifyRoutineLogRepository {
     if (result.isNotEmpty) {
       final oldTemplate = result.first;
       await Amplify.DataStore.delete<RoutineLog>(oldTemplate);
+      logger.i("remove log: $log");
     }
   }
 

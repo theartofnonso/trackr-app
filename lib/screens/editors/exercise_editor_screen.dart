@@ -260,12 +260,11 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
       final exercise = widget.exercise;
       if (exercise == null) return;
 
-      final updatedExercise = exercise.copyWith(name: exerciseName.trim(), primaryMuscleGroup: _primaryMuscleGroup);
-      await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateExercise(exercise: updatedExercise);
+      final exerciseToBeUpdated = exercise.copyWith(name: exerciseName.trim(), primaryMuscleGroup: _primaryMuscleGroup);
+      await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateExercise(exercise: exerciseToBeUpdated);
       AnalyticsController.exerciseEvents(eventAction: "create_exercise", exercise: exercise);
-      logger.i("updated exercise ${exercise.toString()}");
       if (mounted) {
-        context.pop(updatedExercise);
+        context.pop(exerciseToBeUpdated);
       }
     }
   }

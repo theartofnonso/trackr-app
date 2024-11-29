@@ -34,6 +34,7 @@ class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
 
   /// Navigate to previous screen
   void _saveReOrdering() {
+    print(_exercises);
     Navigator.of(context).pop(_exercises);
   }
 
@@ -59,12 +60,10 @@ class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
         ),
         actions: [
           _hasReOrdered
-              ? GestureDetector(
-                  onTap: _saveReOrdering,
-                  child: IconButton(
-                    icon: const FaIcon(FontAwesomeIcons.solidSquareCheck, color: Colors.white, size: 28),
-                    onPressed: context.pop,
-                  ))
+              ? IconButton(
+                  icon: const FaIcon(FontAwesomeIcons.solidSquareCheck, color: Colors.white, size: 28),
+                  onPressed: _saveReOrdering,
+                )
               : const SizedBox.shrink(),
           const SizedBox(width: 12)
         ],

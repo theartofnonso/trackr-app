@@ -9,8 +9,12 @@ import 'package:tracker_app/shared_prefs.dart';
 
 import '../../dtos/appsync/exercise_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
+import '../../logger.dart';
 
 class AmplifyRoutineTemplateRepository {
+
+  final logger = getLogger(className: "AmplifyRoutineTemplateRepository");
+
   List<RoutineTemplateDto> _templates = [];
 
   UnmodifiableListView<RoutineTemplateDto> get templates => UnmodifiableListView(_templates);
@@ -27,6 +31,8 @@ class AmplifyRoutineTemplateRepository {
 
     await Amplify.DataStore.save<RoutineTemplate>(templateToCreate);
 
+    logger.i("save template: $templateDto");
+
     final updatedWithId = templateDto.copyWith(id: templateToCreate.id);
 
     return updatedWithId;
@@ -42,6 +48,7 @@ class AmplifyRoutineTemplateRepository {
       final oldTemplate = result.first;
       final newTemplate = oldTemplate.copyWith(data: jsonEncode(template));
       await Amplify.DataStore.save<RoutineTemplate>(newTemplate);
+      logger.i("update template: $template");
     }
   }
 
@@ -54,6 +61,7 @@ class AmplifyRoutineTemplateRepository {
     if (result.isNotEmpty) {
       final oldTemplate = result.first;
       await Amplify.DataStore.delete<RoutineTemplate>(oldTemplate);
+      logger.i("remove template: $template");
     }
   }
 
