@@ -259,15 +259,14 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
         .map((exerciseId) {
           final exerciseInLibrary = exercises.firstWhereOrNull((exercise) => exercise.id == exerciseId);
           if (exerciseInLibrary == null) return null;
-          return ExerciseLogDto(
-            exerciseInLibrary.id,
-            "",
-            "",
-            exerciseInLibrary,
-            exerciseInLibrary.description ?? "",
-            [SetDto.newType(type: exerciseInLibrary.type)],
-            DateTime.now(),
-          );
+          ExerciseLogDto(
+              id: exerciseInLibrary.id,
+              routineLogId: "",
+              superSetId: "",
+              exercise: exerciseInLibrary,
+              notes: exerciseInLibrary.description ?? "",
+              sets: [],
+              createdAt: DateTime.now());
         })
         .whereType<ExerciseLogDto>()
         .toList();

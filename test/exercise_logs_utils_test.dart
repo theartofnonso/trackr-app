@@ -16,7 +16,6 @@ void main() {
       id: "id_exercise1",
       name: "Lying Leg Curl",
       primaryMuscleGroup: MuscleGroup.hamstrings,
-      trainingPosition: TrainingPosition.lengthened,
       secondaryMuscleGroups: [MuscleGroup.hamstrings],
       type: ExerciseType.weights,
       owner: "");
