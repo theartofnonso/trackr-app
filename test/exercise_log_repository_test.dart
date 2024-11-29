@@ -36,7 +36,7 @@ void main() {
       owner: "");
 
   final legCurlExerciseLog = ExerciseLogDto(
-      id: "id_legCurlExercise",
+      id: lyingLegCurlExercise.id,
       routineLogId: "routineLogId1",
       exercise: lyingLegCurlExercise,
       superSetId: "superSetId",
@@ -49,7 +49,7 @@ void main() {
       createdAt: DateTime(2023, 12, 1));
 
   final plankExerciseLog = ExerciseLogDto(
-      id: "id_plankExercise",
+      id: plankExercise.id,
       routineLogId: "routineLogId1",
       superSetId: "superSetId",
       exercise: plankExercise,
@@ -62,7 +62,7 @@ void main() {
       createdAt: DateTime.now());
 
   final benchPressExerciseLog = ExerciseLogDto(
-    id: "id_benchPressExercise",
+    id: benchPressExercise.id,
       routineLogId: "routineLogId1",
       superSetId: "superSetId",
       exercise: benchPressExercise,
