@@ -32,14 +32,14 @@ class RoutineLogWidget extends StatelessWidget {
         leading: Container(
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
           decoration: BoxDecoration(
-            color: vibrantGreen, // Background color
+            color: sapphireDark60, // Background color
             borderRadius: BorderRadius.circular(5), // Rounded corners
           ),
           child: Image.asset(
             'icons/dumbbells.png',
             fit: BoxFit.contain,
             height: 24,
-            color: sapphireDark, // Adjust the height as needed
+            color: vibrantGreen, // Adjust the height as needed
           ),
         ),
         title: Text(log.name,
