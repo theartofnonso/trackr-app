@@ -321,8 +321,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         buffer.writeln(
             "Provide feedback on performance trends, volume, and intensity during these periods. Note that my weights are logged in ${weightLabel()}");
       }
-
-      buffer.writeln("Compare ${exerciseLog.exercise.name} to previous logs");
     }
 
     final completeInstructions = buffer.toString();
