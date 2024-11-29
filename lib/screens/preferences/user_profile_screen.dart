@@ -61,6 +61,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               child: UserIconWidget(size: 60, iconSize: 22),
             ),
             const SizedBox(
+              height: 20,
+            ),
+            Center(
+              child: Text(user.email.toUpperCase(),
+                  style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white),
+                  textAlign: TextAlign.center),
+            ),
+            const SizedBox(
               height: 40,
             ),
             const LabelDivider(

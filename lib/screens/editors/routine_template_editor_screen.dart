@@ -132,7 +132,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     if (template != null) {
       showBottomSheetWithMultiActions(
           context: context,
-          description: "Update workout?",
+          description: "Do you update workout?",
           leftAction: _closeDialog,
           rightAction: () {
             _closeDialog();
