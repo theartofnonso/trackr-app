@@ -55,7 +55,6 @@ class ExerciseDto {
   }
 
   factory ExerciseDto.fromJson(Map<String, dynamic> json, {String? owner}) {
-    print(json);
     final id = json["id"] ?? "";
     final name = json["name"] ?? "";
     final primaryMuscleGroupString = json["primaryMuscleGroup"] ?? "";

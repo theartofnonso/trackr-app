@@ -75,7 +75,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     final sets = widget.exerciseLogs.map((log) => heaviestWeightInSetForExerciseLog(exerciseLog: log)).toList();
     setState(() {
       _chartPoints =
-          sets.mapIndexed((index, set) => ChartPointDto(index, (set as WeightAndRepsSetDto).weight)).toList();
+          sets.mapIndexed((index, set) => ChartPointDto(index, (set).weight)).toList();
       _summaryType = SummaryType.weight;
       _chartUnit = ChartUnit.weight;
     });
