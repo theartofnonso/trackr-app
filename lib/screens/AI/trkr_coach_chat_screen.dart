@@ -16,7 +16,6 @@ import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../colors.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/exercise_log_dto.dart';
-import '../../dtos/set_dtos/set_dto.dart';
 import '../../openAI/open_ai.dart';
 import '../../openAI/open_ai_functions.dart';
 import '../../shared_prefs.dart';
@@ -259,15 +258,14 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
         .map((exerciseId) {
           final exerciseInLibrary = exercises.firstWhereOrNull((exercise) => exercise.id == exerciseId);
           if (exerciseInLibrary == null) return null;
-          return ExerciseLogDto(
-            exerciseInLibrary.id,
-            "",
-            "",
-            exerciseInLibrary,
-            exerciseInLibrary.description ?? "",
-            [SetDto.newType(type: exerciseInLibrary.type)],
-            DateTime.now(),
-          );
+          ExerciseLogDto(
+              id: exerciseInLibrary.id,
+              routineLogId: "",
+              superSetId: "",
+              exercise: exerciseInLibrary,
+              notes: exerciseInLibrary.description ?? "",
+              sets: [],
+              createdAt: DateTime.now());
         })
         .whereType<ExerciseLogDto>()
         .toList();

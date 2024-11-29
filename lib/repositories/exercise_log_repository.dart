@@ -243,8 +243,15 @@ class ExerciseLogRepository {
 
   /// Helper functions
 
-  ExerciseLogDto _createExerciseLog(ExerciseDto exercise, {String? notes}) {
-    return ExerciseLogDto(exercise.id, null, "", exercise, notes ?? "", [], DateTime.now());
+  ExerciseLogDto _createExerciseLog(ExerciseDto exercise, {String notes = ""}) {
+    return ExerciseLogDto(
+        id: exercise.id,
+        routineLogId: "",
+        superSetId: "",
+        exercise: exercise,
+        notes: notes,
+        sets: [],
+        createdAt: DateTime.now());
   }
 
   List<ExerciseLogDto> completedExerciseLogs() {

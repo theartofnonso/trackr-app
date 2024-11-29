@@ -8,7 +8,6 @@ import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 
 import '../colors.dart';
-import '../enums/muscle_group_enums.dart';
 import '../shared_prefs.dart';
 
 bool isDefaultWeightUnit() {
