@@ -64,7 +64,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               height: 20,
             ),
             Center(
-              child: Text(user.email.toUpperCase(),
+              child: Text(user.name.toUpperCase(),
                   style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white),
                   textAlign: TextAlign.center),
             ),
