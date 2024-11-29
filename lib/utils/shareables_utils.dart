@@ -56,7 +56,7 @@ void onShare({required BuildContext context, required GlobalKey globalKey, EdgeI
                 if (context.mounted) {
                   if (result.status == ShareResultStatus.success) {
                     showSnackbar(
-                        context: context, icon: const FaIcon(FontAwesomeIcons.circleCheck), message: "Content Shared");
+                        context: context, icon: const FaIcon(FontAwesomeIcons.solidSquareCheck), message: "Content Shared");
 
                   }
                 }

@@ -33,23 +33,22 @@ class ActivityLogWidget extends StatelessWidget {
       child: ListTile(
         onTap: onTap,
         tileColor: color,
-        contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 20),
+        contentPadding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         leading: Container(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          width: 60,
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
           decoration: BoxDecoration(
             color: Colors.greenAccent, // Background color
             borderRadius: BorderRadius.circular(5), // Rounded corners
           ),
           child: image != null
-              ? Image.asset(
-                  'icons/$image.png',
-                  fit: BoxFit.contain,
-                  height: 24,
-                  color: sapphireDark, // Adjust the height as needed
-                )
-              : FaIcon(activityType.icon, color: sapphireDark),
+                ? Image.asset(
+                    'icons/$image.png',
+                    fit: BoxFit.contain,
+                    height: 24,
+                    color: sapphireDark, // Adjust the height as needed
+                  )
+                : FaIcon(activityType.icon, color: sapphireDark, size: 20,),
         ),
         title: Text(activity.name.toUpperCase(),
             style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),

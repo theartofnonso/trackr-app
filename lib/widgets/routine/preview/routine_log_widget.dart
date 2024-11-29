@@ -26,11 +26,11 @@ class RoutineLogWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(5),
       ),
       child: ListTile(
+        contentPadding: const EdgeInsets.symmetric( horizontal: 16),
         onTap: () => navigateToRoutineLogPreview(context: context, log: log, isEditable: isEditable),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         leading: Container(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          width: 60,
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
           decoration: BoxDecoration(
             color: vibrantGreen, // Background color
             borderRadius: BorderRadius.circular(5), // Rounded corners
