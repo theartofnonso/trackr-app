@@ -100,14 +100,14 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _show1RMRecommendations() {
     final pastExerciseLogs =
-        Provider.of<ExerciseAndRoutineController>(context, listen: false).exerciseLogsById[widget.exerciseLogDto.id] ??
+        Provider.of<ExerciseAndRoutineController>(context, listen: false).exerciseLogsByExerciseId[widget.exerciseLogDto.id] ??
             [];
     final completedPastExerciseLogs = completedExercises(exerciseLogs: pastExerciseLogs);
     if (completedPastExerciseLogs.isNotEmpty) {
       final previousLog = completedPastExerciseLogs.last;
-      final heaviestSetWeight = heaviestSetWeightForExerciseLog(exerciseLog: previousLog);
+      final heaviestSetWeight = heaviestWeightInSetForExerciseLog(exerciseLog: previousLog);
       final oneRepMax =
-          average1RM(weight: (heaviestSetWeight as WeightAndRepsSetDto).weight, reps: (heaviestSetWeight).reps);
+          average1RM(weight: (heaviestSetWeight).weight, reps: (heaviestSetWeight).reps);
       displayBottomSheet(
           context: context,
           child: _OneRepMaxSlider(exercise: widget.exerciseLogDto.exercise.name, oneRepMax: oneRepMax));

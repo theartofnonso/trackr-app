@@ -12,7 +12,6 @@ import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
-import 'package:tracker_app/widgets/exercise_history/personal_best_widget.dart';
 
 import '../../../colors.dart';
 import '../../../controllers/exercise_and_routine_controller.dart';
@@ -73,7 +72,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   final PageController _controller = PageController(initialPage: 0);
 
   void _heaviestWeightPerLog() {
-    final sets = widget.exerciseLogs.map((log) => heaviestSetWeightForExerciseLog(exerciseLog: log)).toList();
+    final sets = widget.exerciseLogs.map((log) => heaviestWeightInSetForExerciseLog(exerciseLog: log)).toList();
     setState(() {
       _chartPoints =
           sets.mapIndexed((index, set) => ChartPointDto(index, (set as WeightAndRepsSetDto).weight)).toList();
@@ -172,7 +171,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     if (routineLogId != null) {
       final routineLog = Provider.of<ExerciseAndRoutineController>(context, listen: false).logWhereId(id: routineLogId);
       if (routineLog != null) {
-        context.push(RoutineLogScreen.routeName, extra: routineLog);
+        context.push(RoutineLogScreen.routeName, extra: {"log": routineLog, "showSummary": false, "isEditable": false});
       }
     }
   }
@@ -356,7 +355,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                   onTap: () => _navigateTo(routineLogId: widget.mostRepsSession.$1),
                   enabled: widget.exerciseLogs.isNotEmpty),
             ),
-          if (withWeightsOnly(type: widget.exercise.type)) PersonalBestWidget(exercise: widget.exercise),
+          const SizedBox(height: 10)
         ],
       ),
     ));

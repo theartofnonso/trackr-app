@@ -66,10 +66,10 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
             ),
             actions: [
               exercise != null
-                  ? GestureDetector(
-                      onTap: _updateExercise,
-                      child: Text("Update",
-                          style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.white)))
+                  ? IconButton(
+                      icon: const FaIcon(FontAwesomeIcons.solidSquareCheck, color: Colors.white, size: 28),
+                      onPressed: _updateExercise,
+                    )
                   : const SizedBox.shrink(),
               const SizedBox(width: 12)
             ],
@@ -116,7 +116,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                     InformationContainer(
                         leadingIcon: FaIcon(FontAwesomeIcons.lightbulb, size: 16),
                         title: 'Tip',
-                        description: "Tap text in white to edit.\nExercise type is not editable once created.",
+                        description: "Tap text in white to edit.",
                         color: Colors.transparent),
                     SizedBox(height: 20),
                   ]),

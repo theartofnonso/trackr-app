@@ -21,7 +21,8 @@ class MonthlyTrainingSummaryWidget extends StatelessWidget {
 
   const MonthlyTrainingSummaryWidget({
     super.key,
-    required this.routineLogs, required this.dateTime,
+    required this.routineLogs,
+    required this.dateTime,
   });
 
   @override
@@ -37,7 +38,7 @@ class MonthlyTrainingSummaryWidget extends StatelessWidget {
     final totalHours = Duration(milliseconds: routineLogHoursInMilliSeconds);
 
     final tonnage = exerciseLogs.map((log) {
-      if(log.exercise.type == ExerciseType.weights) {
+      if (log.exercise.type == ExerciseType.weights) {
         final volume = log.sets.map((set) => (set as WeightAndRepsSetDto).volume()).sum;
         return volume;
       }

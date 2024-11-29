@@ -93,7 +93,7 @@ void main() {
 
   group("Test on single ExerciseLogDto", () {
     test("Heaviest set weight for exercise log", () {
-      final result = heaviestSetWeightForExerciseLog(exerciseLog: legCurlExerciseLog1);
+      final result = heaviestWeightInSetForExerciseLog(exerciseLog: legCurlExerciseLog1);
       expect(result, legCurlExerciseLog1.sets[1]);
     });
 

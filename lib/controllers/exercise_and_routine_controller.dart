@@ -50,7 +50,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
 
   UnmodifiableListView<Milestone> get newMilestones => _amplifyLogRepository.newMilestones;
 
-  UnmodifiableMapView<String, List<ExerciseLogDto>> get exerciseLogsById => _amplifyLogRepository.exerciseLogsById;
+  UnmodifiableMapView<String, List<ExerciseLogDto>> get exerciseLogsByExerciseId => _amplifyLogRepository.exerciseLogsByExerciseId;
 
   /// Exercises
 

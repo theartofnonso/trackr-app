@@ -33,12 +33,12 @@ class AmplifyRoutineLogRepository {
 
   UnmodifiableListView<Milestone> get newMilestones => UnmodifiableListView(_newMilestones);
 
-  Map<String, List<ExerciseLogDto>> _exerciseLogsById = {};
+  Map<String, List<ExerciseLogDto>> _exerciseLogsByExerciseId = {};
 
-  UnmodifiableMapView<String, List<ExerciseLogDto>> get exerciseLogsById => UnmodifiableMapView(_exerciseLogsById);
+  UnmodifiableMapView<String, List<ExerciseLogDto>> get exerciseLogsByExerciseId => UnmodifiableMapView(_exerciseLogsByExerciseId);
 
   void _groupExerciseLogs() {
-    _exerciseLogsById = groupExerciseLogsByExerciseId(routineLogs: _logs);
+    _exerciseLogsByExerciseId = groupExerciseLogsByExerciseId(routineLogs: _logs);
   }
 
   void loadLogStream({required List<RoutineLog> logs, required VoidCallback onLoaded}) {
@@ -174,17 +174,17 @@ class AmplifyRoutineLogRepository {
   }
 
   List<SetDto> whereSetsForExercise({required ExerciseDto exercise}) {
-    final exerciseLogs = _exerciseLogsById[exercise.id]?.reversed ?? [];
+    final exerciseLogs = _exerciseLogsByExerciseId[exercise.id]?.reversed ?? [];
     return exerciseLogs.isNotEmpty ? exerciseLogs.first.sets : [];
   }
 
   List<SetDto> whereSetsForExerciseBefore({required ExerciseDto exercise, required DateTime date}) {
-    final exerciseLogs = _exerciseLogsById[exercise.id]?.where((log) => log.createdAt.isBefore(date)) ?? [];
+    final exerciseLogs = _exerciseLogsByExerciseId[exercise.id]?.where((log) => log.createdAt.isBefore(date)) ?? [];
     return exerciseLogs.isNotEmpty ? exerciseLogs.first.sets : [];
   }
 
   List<ExerciseLogDto> whereExerciseLogsBefore({required ExerciseDto exercise, required DateTime date}) {
-    return _exerciseLogsById[exercise.id]?.where((log) => log.createdAt.isBefore(date)).toList() ?? [];
+    return _exerciseLogsByExerciseId[exercise.id]?.where((log) => log.createdAt.isBefore(date)).toList() ?? [];
   }
 
   /// RoutineLog for the following [DateTime]
@@ -231,7 +231,7 @@ class AmplifyRoutineLogRepository {
 
   void clear() {
     _logs.clear();
-    _exerciseLogsById.clear();
+    _exerciseLogsByExerciseId.clear();
     _milestones.clear();
     _newMilestones.clear();
   }

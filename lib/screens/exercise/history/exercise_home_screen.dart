@@ -12,7 +12,6 @@ import 'package:tracker_app/screens/exercise/history/history_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import '../../../dtos/appsync/exercise_dto.dart';
-import '../../../dtos/exercise_log_dto.dart';
 import '../../../utils/dialog_utils.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/navigation_utils.dart';
@@ -31,8 +30,6 @@ class ExerciseHomeScreen extends StatefulWidget {
 
 class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
   ExerciseDto? _exercise;
-
-  Map<String, List<ExerciseLogDto>>? _exerciseLogsById;
 
   void _deleteExercise(BuildContext context) async {
     context.pop();
@@ -57,7 +54,9 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
 
     if (exercise == null) return const NotFound();
 
-    final exerciseLogs = _exerciseLogsById?[exercise.id] ?? [];
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+
+    final exerciseLogs = exerciseAndRoutineController.exerciseLogsByExerciseId[exercise.id] ?? [];
 
     final completedExerciseLogs = completedExercises(exerciseLogs: exerciseLogs);
 
@@ -162,6 +161,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
               ),
             ),
             child: SafeArea(
+              bottom: false,
               child: TabBarView(
                 children: [
                   ExerciseChartScreen(
@@ -173,7 +173,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
                     exercise: exercise,
                     exerciseLogs: completedExerciseLogs,
                   ),
-                  HistoryScreen(exerciseLogs: completedExerciseLogs),
+                  ExerciseLogHistoryScreen(exerciseLogs: completedExerciseLogs),
                   if (hasVideo) ExerciseVideoScreen(exercise: exercise)
                 ],
               ),
@@ -198,8 +198,6 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
   @override
   void initState() {
     super.initState();
-    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-    _exerciseLogsById = routineLogController.exerciseLogsById;
     _exercise = widget.exercise;
   }
 }

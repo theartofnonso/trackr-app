@@ -4,7 +4,7 @@ import '../dtos/set_dtos/set_dto.dart';
 import '../dtos/set_dtos/weight_and_reps_dto.dart';
 
 List<SetDto> personalBestSets({required List<SetDto> sets}) {
-  var groupedByReps = groupBy(sets, (set) => (set as WeightAndRepsSetDto).reps);
+  final groupedByReps = groupBy(sets, (set) => (set as WeightAndRepsSetDto).reps);
 
   final setsWithHeaviestWeight = <SetDto>[];
 

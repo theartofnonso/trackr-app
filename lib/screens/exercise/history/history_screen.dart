@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 
 import '../../../widgets/empty_states/no_list_empty_state.dart';
-import '../../../widgets/exercise_history/exercise_history_log_widget.dart';
+import '../../../widgets/exercise_history/exercise_log_history_widget.dart';
 
-class HistoryScreen extends StatelessWidget {
+class ExerciseLogHistoryScreen extends StatelessWidget {
   final List<ExerciseLogDto> exerciseLogs;
 
-  const HistoryScreen({super.key, required this.exerciseLogs});
+  const ExerciseLogHistoryScreen({super.key, required this.exerciseLogs});
 
   @override
   Widget build(BuildContext context) {
