@@ -34,7 +34,6 @@ class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
 
   /// Navigate to previous screen
   void _saveReOrdering() {
-    print(_exercises);
     Navigator.of(context).pop(_exercises);
   }
 

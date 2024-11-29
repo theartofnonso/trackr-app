@@ -10,6 +10,7 @@ import 'package:tracker_app/controllers/analytics_controller.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/dtos/open_ai_response_schema_dtos/new_routine_dto.dart';
+import 'package:tracker_app/dtos/set_dtos/set_dto.dart';
 import 'package:tracker_app/strings/ai_prompts.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 
@@ -199,7 +200,10 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
         listen: false,
       ).exercises;
       await _recommendExercises(
-          toolId: toolId, completeSystemInstructions: completeSystemInstructions, userInstruction: userInstruction, exercises: exercises);
+          toolId: toolId,
+          completeSystemInstructions: completeSystemInstructions,
+          userInstruction: userInstruction,
+          exercises: exercises);
     } catch (e) {
       _handleError();
     }
@@ -214,8 +218,10 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
   }
 
   Future<void> _recommendExercises(
-      {required String toolId, required String completeSystemInstructions, required String userInstruction, required List<ExerciseDto> exercises}) async {
-
+      {required String toolId,
+      required String completeSystemInstructions,
+      required String userInstruction,
+      required List<ExerciseDto> exercises}) async {
     final functionCallPayload = createFunctionCallPayload(
       toolId: toolId,
       systemInstruction: completeSystemInstructions,
@@ -258,13 +264,13 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
         .map((exerciseId) {
           final exerciseInLibrary = exercises.firstWhereOrNull((exercise) => exercise.id == exerciseId);
           if (exerciseInLibrary == null) return null;
-          ExerciseLogDto(
+          return ExerciseLogDto(
               id: exerciseInLibrary.id,
               routineLogId: "",
               superSetId: "",
               exercise: exerciseInLibrary,
               notes: exerciseInLibrary.description ?? "",
-              sets: [],
+              sets: [SetDto.newType(type: exerciseInLibrary.type)],
               createdAt: DateTime.now());
         })
         .whereType<ExerciseLogDto>()
