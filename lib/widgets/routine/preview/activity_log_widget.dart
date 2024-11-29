@@ -15,12 +15,12 @@ class ActivityLogWidget extends StatelessWidget {
     super.key,
     required this.activity,
     required this.trailing,
-    this.onTap, required this.color,
+    this.onTap,
+    required this.color,
   });
 
   @override
   Widget build(BuildContext context) {
-
     final activityType = ActivityType.fromJson(activity.name);
 
     final image = activityType.image;
@@ -36,23 +36,25 @@ class ActivityLogWidget extends StatelessWidget {
         contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 20),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         leading: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          width: 60,
           decoration: BoxDecoration(
             color: Colors.greenAccent, // Background color
             borderRadius: BorderRadius.circular(5), // Rounded corners
           ),
-          child: image != null ? Image.asset(
-              'icons/$image.png',
-              fit: BoxFit.contain,
-              height: 24,
-            color: sapphireDark,// Adjust the height as needed
-            ) : FaIcon(activityType.icon, color: sapphireDark),
+          child: image != null
+              ? Image.asset(
+                  'icons/$image.png',
+                  fit: BoxFit.contain,
+                  height: 24,
+                  color: sapphireDark, // Adjust the height as needed
+                )
+              : FaIcon(activityType.icon, color: sapphireDark),
         ),
         title: Text(activity.name.toUpperCase(),
             style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
         trailing: Text(trailing,
-            style: GoogleFonts.ubuntu(
-                color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14)),
+            style: GoogleFonts.ubuntu(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14)),
       ),
     );
   }
