@@ -306,10 +306,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
       buffer.writeln("Compare ${exerciseLog.exercise.name} to previous logs");
 
-      buffer.writeln();
-
-      buffer.writeln("Past Exercise Logs for ${exerciseLog.exercise.name}");
-
       final pastExerciseLogs = exerciseAndRoutineLogController.whereExerciseLogsBefore(
           exercise: exerciseLog.exercise, date: exerciseLog.createdAt.withoutTime());
 
@@ -318,10 +314,11 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         List<String> pastSetSummaries = _generateSetSummaries(exerciseLog);
         buffer.writeln("Past Sets: $pastSetSummaries");
 
-        buffer.writeln(
-            "Provide feedback on performance trends, volume, and intensity during these periods. Note that my weights are logged in ${weightLabel()}");
       }
     }
+
+    buffer.writeln(
+        "Provide feedback on performance trends, volume, and intensity during these periods. Note that my weights are logged in ${weightLabel()}");
 
     final completeInstructions = buffer.toString();
 
