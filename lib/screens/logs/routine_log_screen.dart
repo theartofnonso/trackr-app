@@ -214,8 +214,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                       Padding(
                         padding: const EdgeInsets.only(top: 10.0, left: 10, right: 10),
                         child: InformationContainerLite(
-                          content:
-                              "Set up your user profile in the settings to view the number of calories burned.",
+                          content: "Set up your user profile in the settings to view the number of calories burned.",
                           color: Colors.deepOrange,
                         ),
                       ),
