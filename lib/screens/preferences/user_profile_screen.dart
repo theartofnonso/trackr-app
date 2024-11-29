@@ -88,7 +88,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
                   textAlign: TextAlign.start),
-              subtitle: Text("We use your weight to calculate your calories burned",
+              subtitle: Text("We use your weight to calculate your calories burned.",
                   style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.white70),
                   textAlign: TextAlign.start),
               trailing: Container(
