@@ -148,27 +148,38 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
           ),
           child: SafeArea(
             bottom: false,
-            minimum: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
+            minimum: const EdgeInsets.only(bottom: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CSearchBar(
-                    hintText: "Search exercises",
-                    onChanged: _runSearch,
-                    onClear: _clearSearch,
-                    controller: _searchController),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: CSearchBar(
+                      hintText: "Search exercises",
+                      onChanged: _runSearch,
+                      onClear: _clearSearch,
+                      controller: _searchController),
+                ),
                 const SizedBox(height: 10),
                 SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
-                    child: Row(children: muscleGroups.sublist(0, muscleGroupScrollViewHalf))),
+                    child: Row(children: [
+                      const SizedBox(width: 10),
+                      ...muscleGroups.sublist(0, muscleGroupScrollViewHalf),
+                      const SizedBox(width: 10)
+                    ])),
                 SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
-                    child: Row(children: muscleGroups.sublist(muscleGroupScrollViewHalf))),
+                    child: Row(children: [
+                      const SizedBox(width: 10),
+                      ...muscleGroups.sublist(muscleGroupScrollViewHalf),
+                      const SizedBox(width: 10)
+                    ])),
                 const SizedBox(height: 18),
                 _filteredExercises.isNotEmpty
                     ? Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
                           child: ListView.separated(
                               padding: const EdgeInsets.only(bottom: 250),
                               itemBuilder: (BuildContext context, int index) => ExerciseWidget(
