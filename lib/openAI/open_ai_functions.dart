@@ -98,10 +98,7 @@ const routineLogReportResponseFormat = {
                 "type": "object",
                 "description": "Details of the current exercise performance.",
                 "properties": {
-                  "date": {
-                    "type": "string",
-                    "description": "The date of the current exercise session."
-                  },
+                  "date": {"type": "string", "description": "The date of the current exercise session."},
                   "sets": {
                     "type": "array",
                     "description": "List of sets performed in the current session.",
@@ -133,10 +130,7 @@ const routineLogReportResponseFormat = {
                 "items": {
                   "type": "object",
                   "properties": {
-                    "date": {
-                      "type": "string",
-                      "description": "The date of the previous exercise session."
-                    },
+                    "date": {"type": "string", "description": "The date of the previous exercise session."},
                     "sets": {
                       "type": "array",
                       "description": "List of sets performed in the previous session.",
@@ -163,9 +157,8 @@ const routineLogReportResponseFormat = {
                 }
               },
               "achievements": {
-                "type": "array",
-                "description": "List of improvements in performance compared to previous sessions.",
-                "items": {"type": "string", "description": "A description of a specific achievement or improvement."}
+                "type": "string",
+                "description": "A description of achievements or improvements compared to previous sessions."
               },
               "comments": {
                 "type": "string",

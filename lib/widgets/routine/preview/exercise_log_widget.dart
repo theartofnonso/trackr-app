@@ -18,7 +18,7 @@ class ExerciseLogWidget extends StatelessWidget {
   final ExerciseLogDto? superSet;
   final EdgeInsetsGeometry? padding;
 
-  const ExerciseLogWidget({super.key, required this.exerciseLog, required this.superSet, this.padding});
+  const ExerciseLogWidget({super.key, required this.exerciseLog, this.superSet, this.padding});
 
   @override
   Widget build(BuildContext context) {

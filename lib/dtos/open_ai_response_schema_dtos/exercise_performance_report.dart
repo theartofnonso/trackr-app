@@ -12,9 +12,8 @@ class ExercisePerformanceReport {
   factory ExercisePerformanceReport.fromJson(Map<String, dynamic> json) {
     return ExercisePerformanceReport(
       introduction: json['introduction'] as String,
-      exerciseReports: (json['exercise_reports'] as List)
-          .map((e) => ExerciseReport.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      exerciseReports:
+          (json['exercise_reports'] as List).map((e) => ExerciseReport.fromJson(e as Map<String, dynamic>)).toList(),
       suggestions: json['suggestions'] as String,
     );
   }
@@ -32,7 +31,7 @@ class ExerciseReport {
   final String exerciseName;
   final Performance currentPerformance;
   final List<Performance> previousPerformance;
-  final List<String> achievements;
+  final String achievements;
   final String comments;
 
   ExerciseReport({
@@ -46,12 +45,10 @@ class ExerciseReport {
   factory ExerciseReport.fromJson(Map<String, dynamic> json) {
     return ExerciseReport(
       exerciseName: json['exercise_name'] as String,
-      currentPerformance:
-      Performance.fromJson(json['current_performance'] as Map<String, dynamic>),
-      previousPerformance: (json['previous_performance'] as List)
-          .map((e) => Performance.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      achievements: List<String>.from(json['achievements'] as List),
+      currentPerformance: Performance.fromJson(json['current_performance'] as Map<String, dynamic>),
+      previousPerformance:
+          (json['previous_performance'] as List).map((e) => Performance.fromJson(e as Map<String, dynamic>)).toList(),
+      achievements: json['achievements'] as String,
       comments: json['comments'] as String,
     );
   }
@@ -60,8 +57,7 @@ class ExerciseReport {
     return {
       'exercise_name': exerciseName,
       'current_performance': currentPerformance.toJson(),
-      'previous_performance':
-      previousPerformance.map((e) => e.toJson()).toList(),
+      'previous_performance': previousPerformance.map((e) => e.toJson()).toList(),
       'achievements': achievements,
       'comments': comments,
     };
@@ -82,9 +78,7 @@ class Performance {
   factory Performance.fromJson(Map<String, dynamic> json) {
     return Performance(
       date: json['date'] as String,
-      sets: (json['sets'] as List)
-          .map((e) => Set.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      sets: (json['sets'] as List).map((e) => Set.fromJson(e as Map<String, dynamic>)).toList(),
       totalVolume: json['total_volume'] as double,
     );
   }
@@ -109,9 +103,12 @@ class Set {
 
   factory Set.fromJson(Map<String, dynamic> json) {
     return Set(
-      weight: json['weight'] as double,
-      repetitions: json['repetitions'] as int,
-    );
+        weight: (json['weight'] is int)
+            ? (json['weight'] as int).toDouble()
+            : (json['weight'] is double)
+            ? json['weight'] as double
+            : double.tryParse(json['weight'].toString()) ?? 0.0,
+        repetitions: int.tryParse((json['repetitions'].toString())) ?? 0);
   }
 
   Map<String, dynamic> toJson() {

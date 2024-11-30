@@ -33,7 +33,6 @@ Future<dynamic> runMessage({required String system, required String user, requir
     body: body,
   );
 
-  print(response.body);
   if (response.statusCode == 200) {
     final body = jsonDecode(response.body);
 
