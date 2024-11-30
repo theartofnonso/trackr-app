@@ -100,7 +100,6 @@ const routineLogReportResponseFormat = {
                 "properties": {
                   "date": {
                     "type": "string",
-                    "format": "date",
                     "description": "The date of the current exercise session."
                   },
                   "sets": {
@@ -136,7 +135,6 @@ const routineLogReportResponseFormat = {
                   "properties": {
                     "date": {
                       "type": "string",
-                      "format": "date",
                       "description": "The date of the previous exercise session."
                     },
                     "sets": {

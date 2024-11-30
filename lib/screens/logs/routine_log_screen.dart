@@ -6,7 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/dtos/open_ai_response_schema_dtos/routine_log_report_dto.dart';
+import 'package:tracker_app/dtos/open_ai_response_schema_dtos/exercise_performance_report.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/openAI/open_ai_functions.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
@@ -305,7 +305,8 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
       buffer.writeln("Current Sets for ${currentExerciseLog.exercise.name}: $currentSetSummaries");
 
       final pastExerciseLogs = exerciseAndRoutineLogController
-          .whereExerciseLogsBefore(exercise: currentExerciseLog.exercise, date: currentExerciseLog.createdAt.withoutTime())
+          .whereExerciseLogsBefore(
+              exercise: currentExerciseLog.exercise, date: currentExerciseLog.createdAt.withoutTime())
           .sorted((a, b) => b.createdAt.compareTo(a.createdAt));
 
       for (final pastExerciseLog in pastExerciseLogs) {
@@ -319,8 +320,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     buffer.writeln();
 
-    buffer.writeln(
-        """
+    buffer.writeln("""
           Please provide feedback on the following aspects of my workout performance:
             1.	Weights Lifted: Analyze the progression or consistency in the weights I’ve used.
 	          2.	Repetitions: Evaluate the number of repetitions performed per set and identify any trends or changes.
@@ -343,7 +343,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
           Map<String, dynamic> json = jsonDecode(response);
 
           // Create an instance of ExerciseLogsResponse
-          RoutineLogReportDto report = RoutineLogReportDto.fromJson(json);
+          ExercisePerformanceReport report = ExercisePerformanceReport.fromJson(json);
           navigateWithSlideTransition(
               context: context,
               child: RoutineLogReportScreen(
