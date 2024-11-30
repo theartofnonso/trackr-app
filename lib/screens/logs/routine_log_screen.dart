@@ -27,7 +27,6 @@ import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/viewmodels/exercise_log_view_model.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
-import '../../enums/exercise_type_enums.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../models/RoutineLog.dart';
 import '../../openAI/open_ai.dart';
@@ -35,6 +34,7 @@ import '../../strings/ai_prompts.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/routine_utils.dart';
+import '../../utils/sets_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../widgets/ai_widgets/trkr_information_container.dart';
 import '../../widgets/empty_states/not_found.dart';
@@ -258,7 +258,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                                   ctaLabel: "Ask for feedback",
                                   description:
                                       "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
-                                  onTap: () => _generateReport(exerciseLogs: updatedExerciseLogs)),
+                                  onTap: () => _generateReport(currentExerciseLogs: updatedExerciseLogs)),
                             ),
                           ExerciseLogListView(
                               exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: updatedExerciseLogs)),
@@ -284,7 +284,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     });
   }
 
-  void _generateReport({required List<ExerciseLogDto> exerciseLogs}) async {
+  void _generateReport({required List<ExerciseLogDto> currentExerciseLogs}) async {
     final log = _log;
 
     if (log == null) return;
@@ -300,20 +300,24 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     buffer.writeln();
 
-    for (final exerciseLog in exerciseLogs) {
-      List<String> setSummaries = _generateSetSummaries(exerciseLog);
-      buffer.writeln("Current Sets for ${exerciseLog.exercise.name}: $setSummaries");
+    for (final currentExerciseLog in currentExerciseLogs) {
+      List<String> currentSetSummaries = generateSetSummaries(currentExerciseLog);
+      buffer.writeln("Current Sets for ${currentExerciseLog.exercise.name}: $currentSetSummaries");
 
       final pastExerciseLogs = exerciseAndRoutineLogController
-          .whereExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt.withoutTime())
+          .whereExerciseLogsBefore(exercise: currentExerciseLog.exercise, date: currentExerciseLog.createdAt.withoutTime())
           .sorted((a, b) => b.createdAt.compareTo(a.createdAt));
 
       for (final pastExerciseLog in pastExerciseLogs) {
-        List<String> pastSetSummaries = _generateSetSummaries(exerciseLog);
+        List<String> pastSetSummaries = generateSetSummaries(currentExerciseLog);
         buffer.writeln(
-            "Past sets for ${exerciseLog.exercise.name} logged on ${pastExerciseLog.createdAt.withoutTime().formattedDayAndMonthAndYear()}: $pastSetSummaries");
+            "Past sets for ${currentExerciseLog.exercise.name} logged on ${pastExerciseLog.createdAt.withoutTime().formattedDayAndMonthAndYear()}: $pastSetSummaries");
       }
+
+      buffer.writeln();
     }
+
+    buffer.writeln();
 
     buffer.writeln(
         """
@@ -357,17 +361,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             message: "Oops! I am unable to generate your ${log.name} report");
       }
     });
-  }
-
-  List<String> _generateSetSummaries(ExerciseLogDto exerciseLog) {
-    final setSummaries = exerciseLog.sets.mapIndexed((index, set) {
-      return switch (exerciseLog.exercise.type) {
-        ExerciseType.weights => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
-        ExerciseType.bodyWeight => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
-        ExerciseType.duration => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
-      };
-    }).toList();
-    return setSummaries;
   }
 
   void _loadData() {

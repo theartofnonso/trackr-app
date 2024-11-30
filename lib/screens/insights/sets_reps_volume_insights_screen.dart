@@ -27,13 +27,13 @@ import '../../dtos/set_dtos/reps_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/set_dtos/weight_and_reps_dto.dart';
 import '../../enums/chart_unit_enum.dart';
-import '../../enums/exercise_type_enums.dart';
 import '../../enums/muscle_group_enums.dart';
 import '../../enums/sets_reps_volume_enum.dart';
 import '../../openAI/open_ai.dart';
 import '../../strings/ai_prompts.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/navigation_utils.dart';
+import '../../utils/sets_utils.dart';
 import '../../widgets/ai_widgets/trkr_information_container.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
@@ -326,45 +326,31 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       return;
     }
 
-    final endDate = exerciseLogsWithPrimaryMuscleGroups.last.createdAt.withoutTime();
-
-    // Get the current date
-    final now = DateTime.now();
-
-    // Determine the start of the month
-    final startOfMonth = DateTime(now.year, now.month, 1);
-
-    // Determine the end of the month
-    final endOfMonth = DateTime(now.year, now.month + 1, 0);
-
-    final userInstructions =
-        "Analyze my workout logs for ${_selectedMuscleGroup.name} between $startOfMonth and $endOfMonth then compare them to logs for the same muscle group from $endOfMonth to $endDate. Provide feedback on performance trends, volume, and intensity during these periods. Note that my weights are logged in ${weightLabel()}";
-
     final StringBuffer buffer = StringBuffer();
 
     buffer.writeln(
-        "Please analyze my performance for ${_selectedMuscleGroup.name} training by comparing the sets in each exercise with ones from my previous logs for the same exercise.");
-
-
-    buffer.writeln(userInstructions);
+        "Please analyze my performance for ${_selectedMuscleGroup.name} training by comparing the sets in each exercise.");
 
     buffer.writeln();
 
     for (final exerciseLog in exerciseLogsWithPrimaryMuscleGroups) {
-      final setSummaries = exerciseLog.sets.mapIndexed((index, set) {
-        return switch (exerciseLog.exercise.type) {
-          ExerciseType.weights => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
-          ExerciseType.bodyWeight => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
-          ExerciseType.duration => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
-        };
-      }).toList();
-
-      buffer.writeln("Exercise: ${exerciseLog.exercise.name}");
-      buffer.writeln("Date: ${exerciseLog.createdAt.withoutTime().formattedDayAndMonthAndYear()}");
-      buffer.writeln("Sets: $setSummaries");
+      List<String> setSummaries = generateSetSummaries(exerciseLog);
+      buffer.writeln("Sets logged for ${exerciseLog.exercise.name} on ${exerciseLog.createdAt.withoutTime().formattedDayAndMonthAndYear()}: $setSummaries");
 
       buffer.writeln();
     }
+
+    buffer.writeln();
+
+    buffer.writeln(
+        """
+          Please provide feedback on the following aspects of my ${_selectedMuscleGroup.name} training performance:
+            1.	Weights Lifted: Analyze the progression or consistency in the weights I’ve used.
+	          2.	Repetitions: Evaluate the number of repetitions performed per set and identify any trends or changes.
+	          3.	Volume Lifted: Calculate the total volume lifted (weight × repetitions) and provide insights into its progression over time.
+	          4.	Number of Sets: Assess the number of sets performed and how it aligns with my overall workout goals.
+          Note: All weights are logged in ${weightLabel()}
+        """);
 
     final completeInstructions = buffer.toString();
 
