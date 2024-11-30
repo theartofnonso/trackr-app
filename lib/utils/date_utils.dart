@@ -82,3 +82,24 @@ List<DateTimeRange> generateMonthsInRange({required DateTimeRange range}) {
 
   return months;
 }
+
+List<Map<String, DateTime>> getDatesRangesFromToday({required int size}) {
+  DateTime now = DateTime.now();
+  List<Map<String, DateTime>> monthRanges = [];
+
+  for (int i = 1; i <= size; i++) {
+    DateTime targetMonth = DateTime(now.year, now.month - i, 1);
+    int year = targetMonth.year;
+    int month = targetMonth.month;
+
+    DateTime startOfMonth = DateTime(year, month, 1);
+    DateTime endOfMonth = DateTime(year, month + 1, 1).subtract(Duration(days: 1));
+
+    monthRanges.add({
+      'start': startOfMonth,
+      'end': endOfMonth,
+    });
+  }
+
+  return monthRanges;
+}

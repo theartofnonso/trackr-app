@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/dtos/appsync/activity_log_dto.dart';
+import 'package:tracker_app/dtos/exercise_log_dto.dart';
+import 'package:tracker_app/dtos/pb_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
@@ -15,14 +17,20 @@ import 'package:tracker_app/widgets/ai_widgets/trkr_information_container.dart';
 
 import '../../controllers/activity_log_controller.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
+import '../../controllers/routine_user_controller.dart';
 import '../../dtos/abstract_class/log_class.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
+import '../../dtos/set_dtos/weight_and_reps_dto.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/activity_type_enums.dart';
+import '../../enums/exercise_type_enums.dart';
 import '../../enums/routine_editor_type_enums.dart';
+import '../../utils/date_utils.dart';
+import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
+import '../../utils/routine_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_text_widget.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/calendar/calendar.dart';
@@ -63,6 +71,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
     Provider.of<ExerciseAndRoutineController>(context, listen: true);
     Provider.of<ActivityLogController>(context, listen: true);
 
+    final shouldShowMonthlyInsights = SharedPrefs().showMonthlyInsights;
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       floatingActionButton: _loading
@@ -98,16 +108,16 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       child: Column(children: [
                         const SizedBox(height: 12),
                         LogStreakMuscleTrendMonitor(dateTime: widget.dateTimeRange.start),
-                        if(SharedPrefs().showMonthlyInsights)
+                        if (SharedPrefs().showMonthlyInsights)
                           Padding(
-                          padding: const EdgeInsets.only(top: 24.0),
-                          child: TRKRInformationContainer(
-                              ctaLabel:
-                                  "View ${DateTime.now().subtract(const Duration(days: 29)).formattedFullMonth()} insights",
-                              description:
-                                  "It’s a new month of training, but before we dive in, let’s reflect on your past performance and plan for this month.",
-                              onTap: () {}),
-                        ),
+                            padding: const EdgeInsets.only(top: 24.0),
+                            child: TRKRInformationContainer(
+                                ctaLabel:
+                                    "View ${DateTime.now().subtract(const Duration(days: 29)).formattedFullMonth()} insights",
+                                description:
+                                    "It’s a new month of training, but before we dive in, let’s reflect on your past performance and plan for this month.",
+                                onTap: _showMonthlyInsights),
+                          ),
                         if (SharedPrefs().showCalendar)
                           Padding(
                             padding: const EdgeInsets.only(top: 16.0),
@@ -156,10 +166,109 @@ class _OverviewScreenState extends State<OverviewScreen> {
     }
   }
 
+  void _showLoadingScreen() {
+    setState(() {
+      _loading = true;
+    });
+  }
+
   void _hideLoadingScreen() {
     setState(() {
       _loading = false;
     });
+  }
+
+  void _showMonthlyInsights() {
+    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+
+    final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
+
+    final lastThreeMonthsDateRanges = getDatesRangesFromToday(size: 3);
+
+    List<RoutineLogDto> lastThreeMonthsRoutineLogs = [];
+
+    List<ActivityLogDto> lastThreeMonthsActivityLogs = [];
+
+    final exerciseAndRoutineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+
+    final activityLogController = Provider.of<ActivityLogController>(context, listen: false);
+
+    for (final range in lastThreeMonthsDateRanges) {
+      final start = range["start"]!;
+      final end = range["end"]!;
+
+      final routineLogs = exerciseAndRoutineLogController.whereLogsIsWithinRange(range: DateTimeRange(start: start, end: end));
+
+      final activityLogs = activityLogController.whereLogsIsWithinRange(range: DateTimeRange(start: start, end: end));
+
+      lastThreeMonthsRoutineLogs.addAll(routineLogs);
+
+      lastThreeMonthsActivityLogs.addAll(activityLogs);
+    }
+
+    // Helper function to get muscles trained from exercise logs
+    List<String> getMusclesTrained(List<ExerciseLogDto> exerciseLogs) {
+      return exerciseLogs
+          .expand((exerciseLog) => [
+                exerciseLog.exercise.primaryMuscleGroup.name,
+                ...exerciseLog.exercise.secondaryMuscleGroups.map((mg) => mg.name),
+              ])
+          .toSet()
+          .toList();
+    }
+
+    // Helper function to calculate total volume lifted
+    double calculateTotalVolumeLifted(List<ExerciseLogDto> exerciseLogs) {
+      return exerciseLogs
+          .where((eLog) => eLog.exercise.type == ExerciseType.weights)
+          .expand((eLog) => eLog.sets)
+          .whereType<WeightAndRepsSetDto>()
+          .map((set) => set.volume())
+          .fold(0.0, (total, volume) => total + volume);
+    }
+
+    // Helper function to get personal bests from exercise logs
+    List<PBDto> getPersonalBests(List<ExerciseLogDto> exerciseLogs, ExerciseAndRoutineController routineLogController) {
+      return exerciseLogs.expand((exerciseLog) {
+        final pastExerciseLogs = routineLogController.whereExerciseLogsBefore(
+          exercise: exerciseLog.exercise,
+          date: exerciseLog.createdAt,
+        );
+
+        return calculatePBs(
+          pastExerciseLogs: pastExerciseLogs,
+          exerciseType: exerciseLog.exercise.type,
+          exerciseLog: exerciseLog,
+        );
+      }).toList();
+    }
+
+    List<ActivityLogDto> activityLogs = lastThreeMonthsActivityLogs.map((activityLog) => activityLog.).toList();
+
+    final StringBuffer buffer = StringBuffer();
+
+    buffer.writeln("Analyze my training logs from ${lastThreeMonthsDateRanges.first["start"]} to ${lastThreeMonthsDateRanges.last["end"]}");
+
+    buffer.writeln("Compare my performance from ${lastThreeMonthsDateRanges.first["start"]} to ${lastThreeMonthsDateRanges.first["end"]} to the previous months of training");
+
+    // Main processing
+    for (final log in lastThreeMonthsRoutineLogs) {
+      final musclesTrained = getMusclesTrained(log.exerciseLogs);
+      final exercises = log.exerciseLogs.map((exerciseLog) => exerciseLog.exercise.name).toList();
+      final volumeLifted = calculateTotalVolumeLifted(log.exerciseLogs);
+      final caloriesBurned = calculateCalories(
+        duration: log.duration(),
+        bodyWeight: routineUserController.weight(),
+        activity: log.activityType,
+      );
+      final personalBests = getPersonalBests(log.exerciseLogs, routineLogController);
+
+
+    }
+
+
+
+    _showLoadingScreen();
   }
 
   void _showBottomSheet() {

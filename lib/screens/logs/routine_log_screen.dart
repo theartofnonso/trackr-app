@@ -289,9 +289,9 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     if (log == null) return;
 
-    final StringBuffer buffer = StringBuffer();
-
     final exerciseAndRoutineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+
+    final StringBuffer buffer = StringBuffer();
 
     buffer.writeln("Analyze my exercise logs in ${log.name}");
 

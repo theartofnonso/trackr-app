@@ -88,6 +88,10 @@ class ActivityLogController extends ChangeNotifier {
     return _amplifyActivityLogRepository.whereLogsIsSameYear(dateTime: dateTime);
   }
 
+  List<ActivityLogDto> whereLogsIsWithinRange({required DateTimeRange range}) {
+    return _amplifyActivityLogRepository.whereLogsIsWithinRange(range: range);
+  }
+
   void clear() {
     _amplifyActivityLogRepository.clear();
     notifyListeners();
