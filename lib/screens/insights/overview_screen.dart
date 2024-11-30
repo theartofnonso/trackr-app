@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -6,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/dtos/appsync/activity_log_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
+import 'package:tracker_app/dtos/open_ai_response_schema_dtos/monthly_training_report.dart';
 import 'package:tracker_app/dtos/pb_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
@@ -27,6 +30,7 @@ import '../../enums/activity_type_enums.dart';
 import '../../enums/exercise_type_enums.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../openAI/open_ai.dart';
+import '../../openAI/open_ai_functions.dart';
 import '../../strings/ai_prompts.dart';
 import '../../utils/date_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
@@ -41,6 +45,7 @@ import '../../widgets/monitors/log_streak_muscle_trend_monitor.dart';
 import '../../widgets/monthly_insights/log_streak_chart_widget.dart';
 import '../../widgets/routine/preview/activity_log_widget.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
+import '../AI/monthly_training_report_screen.dart';
 import '../AI/trkr_coach_chat_screen.dart';
 import '../editors/routine_log_editor_screen.dart';
 import 'monthly_insights_screen.dart';
@@ -286,7 +291,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
       buffer.writeln("Amount of volume Lifted: $volumeLifted}");
       buffer.writeln("Amount of calories burned: $caloriesBurned}");
       buffer.writeln("Number of personal bests: $personalBests}");
-      buffer.writeln("Number of personal bests: $personalBests}");
+      buffer.writeln("Duration of workout: ${log.duration().hmsAnalog()}}");
 
       buffer.writeln();
     }
@@ -300,9 +305,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
     final completeInstructions = buffer.toString();
 
     runMessage(
-        system: routineLogSystemInstruction,
-        user: completeInstructions,
-        responseFormat: routineLogReportResponseFormat)
+            system: routineLogSystemInstruction,
+            user: completeInstructions,
+            responseFormat: monthlyReportResponseFormat)
         .then((response) {
       _hideLoadingScreen();
       if (response != null) {
@@ -311,12 +316,13 @@ class _OverviewScreenState extends State<OverviewScreen> {
           Map<String, dynamic> json = jsonDecode(response);
 
           // Create an instance of ExerciseLogsResponse
-          RoutineLogReportDto report = RoutineLogReportDto.fromJson(json);
+          MonthlyTrainingReport report = MonthlyTrainingReport.fromJson(json);
           navigateWithSlideTransition(
               context: context,
-              child: RoutineLogReportScreen(
-                report: report,
-                routineLog: log,
+              child: MonthlyTrainingReportScreen(
+                monthlyTrainingReport: report,
+                routineLogs: lastThreeMonthsRoutineLogs,
+                activityLogs: lastThreeMonthsActivityLogs,
               ));
         }
       }
