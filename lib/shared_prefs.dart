@@ -86,12 +86,12 @@ class SharedPrefs {
     _sharedPrefs?.setString(_userEmailKey, value);
   }
 
-  /// Untrained muscle group families
-  final String cachedUntrainedMGFNotificationKey = "cached_untrained_MGF_notification_key";
+  /// Show insights for the month
+  final String _showMonthlyInsightsKey = "show_monthly_insights_key";
 
-  String get cachedUntrainedMGFNotification => _sharedPrefs?.getString(cachedUntrainedMGFNotificationKey) ?? "{}";
+  bool get showMonthlyInsights => _sharedPrefs?.getBool(_showMonthlyInsightsKey) ?? false;
 
-  set cachedUntrainedMGFNotification(String value) {
-    _sharedPrefs?.setString(cachedUntrainedMGFNotificationKey, value);
+  set showMonthlyInsights(bool value) {
+    _sharedPrefs?.setBool(_showMonthlyInsightsKey, value);
   }
 }

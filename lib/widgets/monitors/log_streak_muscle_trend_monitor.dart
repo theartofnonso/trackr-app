@@ -12,7 +12,7 @@ import 'package:tracker_app/utils/string_utils.dart';
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../screens/insights/sets_reps_volume_insights_screen.dart';
-import '../../strings.dart';
+import '../../strings/strings.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/shareables_utils.dart';

@@ -11,6 +11,7 @@ import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart'
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
+import 'package:tracker_app/widgets/ai_widgets/trkr_information_container.dart';
 
 import '../../controllers/activity_log_controller.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
@@ -97,6 +98,16 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       child: Column(children: [
                         const SizedBox(height: 12),
                         LogStreakMuscleTrendMonitor(dateTime: widget.dateTimeRange.start),
+                        if(SharedPrefs().showMonthlyInsights)
+                          Padding(
+                          padding: const EdgeInsets.only(top: 24.0),
+                          child: TRKRInformationContainer(
+                              ctaLabel:
+                                  "View ${DateTime.now().subtract(const Duration(days: 29)).formattedFullMonth()} insights",
+                              description:
+                                  "It’s a new month of training, but before we dive in, let’s reflect on your past performance and plan for this month.",
+                              onTap: () {}),
+                        ),
                         if (SharedPrefs().showCalendar)
                           Padding(
                             padding: const EdgeInsets.only(top: 16.0),
@@ -138,7 +149,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
           owner: "",
           createdAt: DateTime.now(),
           updatedAt: DateTime.now());
-      navigateWithSlideTransition(context: context, child: RoutineLogEditorScreen(log: log, mode: RoutineEditorMode.log));
+      navigateWithSlideTransition(
+          context: context, child: RoutineLogEditorScreen(log: log, mode: RoutineEditorMode.log));
     } else {
       showSnackbar(context: context, icon: const Icon(Icons.info_outline_rounded), message: "${log.name} is running");
     }
@@ -286,9 +298,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 
   void _switchToAIContext() async {
-    final result = await navigateWithSlideTransition(
-        context: context,
-        child: const TRKRCoachChatScreen()) as RoutineTemplateDto?;
+    final result =
+        await navigateWithSlideTransition(context: context, child: const TRKRCoachChatScreen()) as RoutineTemplateDto?;
     if (result != null) {
       if (context.mounted) {
         final arguments = RoutineLogArguments(log: result.toLog(), editorMode: RoutineEditorMode.log);
