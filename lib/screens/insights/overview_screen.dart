@@ -26,6 +26,8 @@ import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/activity_type_enums.dart';
 import '../../enums/exercise_type_enums.dart';
 import '../../enums/routine_editor_type_enums.dart';
+import '../../openAI/open_ai.dart';
+import '../../strings/ai_prompts.dart';
 import '../../utils/date_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
@@ -248,16 +250,15 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     final lastMonthsStartDate = lastThreeMonthsDateRanges.first["start"];
 
-    final lastMonthsEndDate = lastThreeMonthsDateRanges.first["end"];
-
     buffer.writeln("""
-        Please provide a comparative analysis of my training logs from $lastMonthsStartDate to $lastMonthsEndDate, comparing them with my training data from the preceding months. 
-        The report should focus on
+        Please provide a comparative analysis of my training logs from ${lastMonthsStartDate?.formattedFullMonth()}, comparing them with my training data from the preceding months. 
+        The report should focus on:
             - Exercise selection
             - Muscles trained
             - Total volume lifted
             - Calories burned
             - Personal bests achieved
+            - Hours spent training
             - Consistency and frequency of workouts
             - Any notable improvements or regressions
         Highlight any trends or patterns that could help optimize my future training sessions.
@@ -285,9 +286,49 @@ class _OverviewScreenState extends State<OverviewScreen> {
       buffer.writeln("Amount of volume Lifted: $volumeLifted}");
       buffer.writeln("Amount of calories burned: $caloriesBurned}");
       buffer.writeln("Number of personal bests: $personalBests}");
+      buffer.writeln("Number of personal bests: $personalBests}");
 
       buffer.writeln();
     }
+
+    buffer.writeln();
+
+    for (final log in lastThreeMonthsActivityLogs) {
+      buffer.writeln("Activity Log for ${log.name}");
+    }
+
+    final completeInstructions = buffer.toString();
+
+    runMessage(
+        system: routineLogSystemInstruction,
+        user: completeInstructions,
+        responseFormat: routineLogReportResponseFormat)
+        .then((response) {
+      _hideLoadingScreen();
+      if (response != null) {
+        if (mounted) {
+          // Deserialize the JSON string
+          Map<String, dynamic> json = jsonDecode(response);
+
+          // Create an instance of ExerciseLogsResponse
+          RoutineLogReportDto report = RoutineLogReportDto.fromJson(json);
+          navigateWithSlideTransition(
+              context: context,
+              child: RoutineLogReportScreen(
+                report: report,
+                routineLog: log,
+              ));
+        }
+      }
+    }).catchError((e) {
+      _hideLoadingScreen();
+      if (mounted) {
+        showSnackbar(
+            context: context,
+            icon: TRKRCoachWidget(),
+            message: "Oops! I am unable to generate your ${lastMonthsStartDate?.formattedFullMonth()} report");
+      }
+    });
   }
 
   void _showBottomSheet() {
