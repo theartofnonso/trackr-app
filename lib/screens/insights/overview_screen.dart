@@ -276,7 +276,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     // Main processing
     for (final log in lastThreeMonthsRoutineLogs) {
       final musclesTrained = getMusclesTrained(log.exerciseLogs);
-      final exercises = log.exerciseLogs.map((exerciseLog) => exerciseLog.exercise.name).toList();
+      final exercises = log.exerciseLogs.map((exerciseLog) => exerciseLog.exercise.name).toSet().toList();
       final volumeLifted = calculateTotalVolumeLifted(log.exerciseLogs);
       final caloriesBurned = calculateCalories(
         duration: log.duration(),
@@ -320,6 +320,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           navigateWithSlideTransition(
               context: context,
               child: MonthlyTrainingReportScreen(
+                dateTime: lastMonthsStartDate!,
                 monthlyTrainingReport: report,
                 routineLogs: lastThreeMonthsRoutineLogs,
                 activityLogs: lastThreeMonthsActivityLogs,
