@@ -316,83 +316,90 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   }
 
   void _generateReport({required List<ExerciseLogDto> exerciseLogs}) {
-
-    final exerciseLogsWithPrimaryMuscleGroups = exerciseLogs
-        .where((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup == _selectedMuscleGroup).toList();
+    final exerciseLogsWithPrimaryMuscleGroups =
+        exerciseLogs.where((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup == _selectedMuscleGroup).toList();
 
     if (exerciseLogsWithPrimaryMuscleGroups.isEmpty) {
       showSnackbar(
           context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: "You don't have any logs");
-    } else {
-      final endDate = exerciseLogsWithPrimaryMuscleGroups.last.createdAt.withoutTime();
 
-      // Get the current date
-      final now = DateTime.now();
+      return;
+    }
 
-      // Determine the start of the month
-      final startOfMonth = DateTime(now.year, now.month, 1);
+    final endDate = exerciseLogsWithPrimaryMuscleGroups.last.createdAt.withoutTime();
 
-      // Determine the end of the month
-      final endOfMonth = DateTime(now.year, now.month + 1, 0);
+    // Get the current date
+    final now = DateTime.now();
 
-      final userInstructions =
-          "Analyze my workout logs for ${_selectedMuscleGroup.name} between $startOfMonth and $endOfMonth then compare them to logs for the same muscle group from $endOfMonth to $endDate. Provide feedback on performance trends, volume, and intensity during these periods. Note that my weights are logged in ${weightLabel()}";
+    // Determine the start of the month
+    final startOfMonth = DateTime(now.year, now.month, 1);
 
-      final StringBuffer buffer = StringBuffer();
+    // Determine the end of the month
+    final endOfMonth = DateTime(now.year, now.month + 1, 0);
 
-      buffer.writeln(userInstructions);
+    final userInstructions =
+        "Analyze my workout logs for ${_selectedMuscleGroup.name} between $startOfMonth and $endOfMonth then compare them to logs for the same muscle group from $endOfMonth to $endDate. Provide feedback on performance trends, volume, and intensity during these periods. Note that my weights are logged in ${weightLabel()}";
+
+    final StringBuffer buffer = StringBuffer();
+
+    buffer.writeln(
+        "Please analyze my performance for ${_selectedMuscleGroup.name} training by comparing the sets in each exercise with ones from my previous logs for the same exercise.");
+
+
+    buffer.writeln(userInstructions);
+
+    buffer.writeln();
+
+    for (final exerciseLog in exerciseLogsWithPrimaryMuscleGroups) {
+      final setSummaries = exerciseLog.sets.mapIndexed((index, set) {
+        return switch (exerciseLog.exercise.type) {
+          ExerciseType.weights => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
+          ExerciseType.bodyWeight => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
+          ExerciseType.duration => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
+        };
+      }).toList();
+
+      buffer.writeln("Exercise: ${exerciseLog.exercise.name}");
+      buffer.writeln("Date: ${exerciseLog.createdAt.withoutTime().formattedDayAndMonthAndYear()}");
+      buffer.writeln("Sets: $setSummaries");
 
       buffer.writeln();
-
-      for (final exerciseLog in exerciseLogsWithPrimaryMuscleGroups) {
-        final setSummaries = exerciseLog.sets.mapIndexed((index, set) {
-          return switch (exerciseLog.exercise.type) {
-            ExerciseType.weights => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
-            ExerciseType.bodyWeight => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
-            ExerciseType.duration => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
-          };
-        }).toList();
-
-        buffer.writeln("Exercise: ${exerciseLog.exercise.name}");
-        buffer.writeln("Date: ${exerciseLog.createdAt.withoutTime().formattedDayAndMonthAndYear()}");
-        buffer.writeln("Sets: $setSummaries");
-
-        buffer.writeln();
-      }
-
-      final completeInstructions = buffer.toString();
-
-      _showLoadingScreen();
-
-      runMessage(
-              system: routineLogSystemInstruction,
-              user: completeInstructions,
-              responseFormat: routineLogsReportResponseFormat)
-          .then((response) {
-        _hideLoadingScreen();
-        if (mounted) {
-          if (response != null) {
-            // Deserialize the JSON string
-            Map<String, dynamic> json = jsonDecode(response);
-
-            // Create an instance of ExerciseLogsResponse
-            RoutineLogsReportDto report = RoutineLogsReportDto.fromJson(json);
-            navigateWithSlideTransition(
-                context: context,
-                child: RoutineLogsReportScreen(
-                    muscleGroup: _selectedMuscleGroup, report: report, exerciseLogs: exerciseLogsWithPrimaryMuscleGroups));
-          }
-        }
-      }).catchError((_) {
-        _hideLoadingScreen();
-        if (mounted) {
-          showSnackbar(
-              context: context,
-              icon: TRKRCoachWidget(),
-              message: "Oops! I am unable to generate your ${_selectedMuscleGroup.name} report");
-        }
-      });
     }
+
+    final completeInstructions = buffer.toString();
+
+    _showLoadingScreen();
+
+    runMessage(
+            system: routineLogSystemInstruction,
+            user: completeInstructions,
+            responseFormat: routineLogsReportResponseFormat)
+        .then((response) {
+      _hideLoadingScreen();
+      if (mounted) {
+        if (response != null) {
+          // Deserialize the JSON string
+          Map<String, dynamic> json = jsonDecode(response);
+
+          // Create an instance of ExerciseLogsResponse
+          RoutineLogsReportDto report = RoutineLogsReportDto.fromJson(json);
+          navigateWithSlideTransition(
+              context: context,
+              child: RoutineLogsReportScreen(
+                  muscleGroup: _selectedMuscleGroup,
+                  report: report,
+                  exerciseLogs: exerciseLogsWithPrimaryMuscleGroups));
+        }
+      }
+    }).catchError((_) {
+      _hideLoadingScreen();
+      if (mounted) {
+        showSnackbar(
+            context: context,
+            icon: TRKRCoachWidget(),
+            message: "Oops! I am unable to generate your ${_selectedMuscleGroup.name} report");
+      }
+    });
   }
 
   int _weightWhere({required List<num> values, required bool Function(num) condition}) {

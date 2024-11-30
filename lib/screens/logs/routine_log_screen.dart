@@ -289,40 +289,43 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     if (log == null) return;
 
+    _showLoadingScreen();
+
     final exerciseAndRoutineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
     final StringBuffer buffer = StringBuffer();
 
-    buffer.writeln("Analyze my exercise logs in ${log.name}");
+    buffer.writeln(
+        "Please analyze my performance in my ${log.name} workout by comparing the sets in each exercise with ones from my previous logs for the same exercise.");
 
     buffer.writeln();
 
     for (final exerciseLog in exerciseLogs) {
-      buffer.writeln("Analyze ${exerciseLog.exercise.name}");
       List<String> setSummaries = _generateSetSummaries(exerciseLog);
-      buffer.writeln("Current Sets: $setSummaries");
+      buffer.writeln("Current Sets for ${exerciseLog.exercise.name}: $setSummaries");
 
-      buffer.writeln();
-
-      buffer.writeln("Compare ${exerciseLog.exercise.name} to previous logs");
-
-      final pastExerciseLogs = exerciseAndRoutineLogController.whereExerciseLogsBefore(
-          exercise: exerciseLog.exercise, date: exerciseLog.createdAt.withoutTime());
+      final pastExerciseLogs = exerciseAndRoutineLogController
+          .whereExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt.withoutTime())
+          .sorted((a, b) => b.createdAt.compareTo(a.createdAt));
 
       for (final pastExerciseLog in pastExerciseLogs) {
-        buffer.writeln("Date: ${pastExerciseLog.createdAt.withoutTime().formattedDayAndMonthAndYear()}");
         List<String> pastSetSummaries = _generateSetSummaries(exerciseLog);
-        buffer.writeln("Past Sets: $pastSetSummaries");
-
+        buffer.writeln(
+            "Past sets for ${exerciseLog.exercise.name} logged on ${pastExerciseLog.createdAt.withoutTime().formattedDayAndMonthAndYear()}: $pastSetSummaries");
       }
     }
 
     buffer.writeln(
-        "Provide feedback on performance trends, volume, and intensity during these periods. Note that my weights are logged in ${weightLabel()}");
+        """
+          Please provide feedback on the following aspects of my workout performance:
+            1.	Weights Lifted: Analyze the progression or consistency in the weights I’ve used.
+	          2.	Repetitions: Evaluate the number of repetitions performed per set and identify any trends or changes.
+	          3.	Volume Lifted: Calculate the total volume lifted (weight × repetitions) and provide insights into its progression over time.
+	          4.	Number of Sets: Assess the number of sets performed and how it aligns with my overall workout goals.
+          Note: All weights are logged in ${weightLabel()}
+        """);
 
     final completeInstructions = buffer.toString();
-
-    _showLoadingScreen();
 
     runMessage(
             system: routineLogSystemInstruction,

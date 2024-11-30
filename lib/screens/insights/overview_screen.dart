@@ -179,9 +179,13 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 
   void _showMonthlyInsights() {
-    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+    _showLoadingScreen();
 
     final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
+
+    final exerciseAndRoutineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+
+    final activityLogController = Provider.of<ActivityLogController>(context, listen: false);
 
     final lastThreeMonthsDateRanges = getDatesRangesFromToday(size: 3);
 
@@ -189,15 +193,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     List<ActivityLogDto> lastThreeMonthsActivityLogs = [];
 
-    final exerciseAndRoutineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-
-    final activityLogController = Provider.of<ActivityLogController>(context, listen: false);
-
     for (final range in lastThreeMonthsDateRanges) {
       final start = range["start"]!;
       final end = range["end"]!;
 
-      final routineLogs = exerciseAndRoutineLogController.whereLogsIsWithinRange(range: DateTimeRange(start: start, end: end));
+      final routineLogs =
+          exerciseAndRoutineLogController.whereLogsIsWithinRange(range: DateTimeRange(start: start, end: end));
 
       final activityLogs = activityLogController.whereLogsIsWithinRange(range: DateTimeRange(start: start, end: end));
 
@@ -228,9 +229,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
     }
 
     // Helper function to get personal bests from exercise logs
-    List<PBDto> getPersonalBests(List<ExerciseLogDto> exerciseLogs, ExerciseAndRoutineController routineLogController) {
+    List<PBDto> getPersonalBests(List<ExerciseLogDto> exerciseLogs) {
       return exerciseLogs.expand((exerciseLog) {
-        final pastExerciseLogs = routineLogController.whereExerciseLogsBefore(
+        final pastExerciseLogs = exerciseAndRoutineLogController.whereExerciseLogsBefore(
           exercise: exerciseLog.exercise,
           date: exerciseLog.createdAt,
         );
@@ -243,13 +244,28 @@ class _OverviewScreenState extends State<OverviewScreen> {
       }).toList();
     }
 
-    List<ActivityLogDto> activityLogs = lastThreeMonthsActivityLogs.map((activityLog) => activityLog.).toList();
-
     final StringBuffer buffer = StringBuffer();
 
-    buffer.writeln("Analyze my training logs from ${lastThreeMonthsDateRanges.first["start"]} to ${lastThreeMonthsDateRanges.last["end"]}");
+    final lastMonthsStartDate = lastThreeMonthsDateRanges.first["start"];
 
-    buffer.writeln("Compare my performance from ${lastThreeMonthsDateRanges.first["start"]} to ${lastThreeMonthsDateRanges.first["end"]} to the previous months of training");
+    final lastMonthsEndDate = lastThreeMonthsDateRanges.first["end"];
+
+    buffer.writeln("""
+        Please provide a comparative analysis of my training logs from $lastMonthsStartDate to $lastMonthsEndDate, comparing them with my training data from the preceding months. 
+        The report should focus on
+            - Exercise selection
+            - Muscles trained
+            - Total volume lifted
+            - Calories burned
+            - Personal bests achieved
+            - Consistency and frequency of workouts
+            - Any notable improvements or regressions
+        Highlight any trends or patterns that could help optimize my future training sessions.
+        
+        Lastly, please provide a summary of the number of activities the user has logged outside of strength training. 
+        If the user has logged few or no such activities, focus on encouraging them to engage in and record more non-strength training exercises. 
+        The report should highlight the benefits of incorporating a variety of activities into their fitness regimen and offer suggestions on how they can diversify their workouts.
+""");
 
     // Main processing
     for (final log in lastThreeMonthsRoutineLogs) {
@@ -261,14 +277,17 @@ class _OverviewScreenState extends State<OverviewScreen> {
         bodyWeight: routineUserController.weight(),
         activity: log.activityType,
       );
-      final personalBests = getPersonalBests(log.exerciseLogs, routineLogController);
+      final personalBests = getPersonalBests(log.exerciseLogs);
 
+      buffer.writeln("Log for ${log.name}");
+      buffer.writeln("List of exercises performed: $exercises}");
+      buffer.writeln("List of muscles trained: $musclesTrained}");
+      buffer.writeln("Amount of volume Lifted: $volumeLifted}");
+      buffer.writeln("Amount of calories burned: $caloriesBurned}");
+      buffer.writeln("Number of personal bests: $personalBests}");
 
+      buffer.writeln();
     }
-
-
-
-    _showLoadingScreen();
   }
 
   void _showBottomSheet() {
