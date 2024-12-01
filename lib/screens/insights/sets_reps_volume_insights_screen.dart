@@ -361,8 +361,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     buffer.writeln();
 
-    try {
-      buffer.writeln("""
+    buffer.writeln("""
           Please provide feedback on the following aspects of my ${_selectedMuscleGroup.name} training performance:
               1.	Weights Lifted: Analyze the progression or consistency in the weights I’ve used.
       	          2.	Repetitions: Evaluate the number of repetitions performed per set and identify any trends or changes.
@@ -371,9 +370,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
             Note: All weights are measured in ${weightLabel()}.
             Note: Your report should sound personal.
           """);
-    } catch (e, s) {
-      print(s);
-    }
 
     final completeInstructions = buffer.toString();
 

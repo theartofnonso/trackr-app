@@ -28,7 +28,7 @@ class TRKRInformationContainer extends StatelessWidget {
         child: Container(
           margin: const EdgeInsets.all(1), // Border width
           decoration: BoxDecoration(
-            color: sapphireDark,
+            color: sapphireDark80,
             borderRadius: BorderRadius.circular(5),
           ),
           child: Padding(

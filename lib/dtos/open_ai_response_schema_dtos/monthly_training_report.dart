@@ -2,7 +2,6 @@ class MonthlyTrainingReport {
   final String introduction;
   final String exercisesSummary;
   final String musclesTrainedSummary;
-  final String volumeLiftedSummary;
   final String caloriesBurnedSummary;
   final String personalBestsSummary;
   final String workoutDurationSummary;
@@ -14,7 +13,6 @@ class MonthlyTrainingReport {
     required this.introduction,
     required this.exercisesSummary,
     required this.musclesTrainedSummary,
-    required this.volumeLiftedSummary,
     required this.caloriesBurnedSummary,
     required this.personalBestsSummary,
     required this.workoutDurationSummary,
@@ -29,7 +27,6 @@ class MonthlyTrainingReport {
       introduction: json['introduction'] as String,
       exercisesSummary: json['exercises_summary'] as String,
       musclesTrainedSummary: json['muscles_trained_summary'] as String,
-      volumeLiftedSummary: json['volume_lifted_summary'] as String,
       caloriesBurnedSummary: json['calories_burned_summary'] as String,
       personalBestsSummary: json['personal_bests_summary'] as String,
       workoutDurationSummary: json['workout_duration_summary'] as String,
@@ -45,7 +42,6 @@ class MonthlyTrainingReport {
       'introduction': introduction,
       'exercises_summary': exercisesSummary,
       'muscles_trained_summary': musclesTrainedSummary,
-      'volume_lifted_summary': volumeLiftedSummary,
       'calories_burned_summary': caloriesBurnedSummary,
       'personal_bests_summary': personalBestsSummary,
       'workout_duration_summary': workoutDurationSummary,

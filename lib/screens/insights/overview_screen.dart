@@ -9,7 +9,6 @@ import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/dtos/appsync/activity_log_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/open_ai_response_schema_dtos/monthly_training_report.dart';
-import 'package:tracker_app/dtos/pb_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
@@ -24,10 +23,8 @@ import '../../controllers/routine_user_controller.dart';
 import '../../dtos/abstract_class/log_class.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
-import '../../dtos/set_dtos/weight_and_reps_dto.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/activity_type_enums.dart';
-import '../../enums/exercise_type_enums.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../openAI/open_ai.dart';
 import '../../openAI/open_ai_functions.dart';
@@ -80,6 +77,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     final shouldShowMonthlyInsights = SharedPrefs().showMonthlyInsights;
 
+    final isNewMonth = widget.dateTimeRange.start.subtract(const Duration(days: 29)).month ==
+        DateTime.now().subtract(const Duration(days: 29)).month;
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       floatingActionButton: _loading
@@ -115,7 +115,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       child: Column(children: [
                         const SizedBox(height: 12),
                         LogStreakMuscleTrendMonitor(dateTime: widget.dateTimeRange.start),
-                        if (SharedPrefs().showMonthlyInsights)
+                        if (SharedPrefs().showMonthlyInsights && isNewMonth)
                           Padding(
                             padding: const EdgeInsets.only(top: 24.0),
                             child: TRKRInformationContainer(
@@ -225,18 +225,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
           .toList();
     }
 
-    // Helper function to calculate total volume lifted
-    double calculateTotalVolumeLifted(List<ExerciseLogDto> exerciseLogs) {
-      return exerciseLogs
-          .where((eLog) => eLog.exercise.type == ExerciseType.weights)
-          .expand((eLog) => eLog.sets)
-          .whereType<WeightAndRepsSetDto>()
-          .map((set) => set.volume())
-          .fold(0.0, (total, volume) => total + volume);
-    }
-
     // Helper function to get personal bests from exercise logs
-    List<PBDto> getPersonalBests(List<ExerciseLogDto> exerciseLogs) {
+    List<String> getPersonalBests(List<ExerciseLogDto> exerciseLogs) {
       return exerciseLogs.expand((exerciseLog) {
         final pastExerciseLogs = exerciseAndRoutineLogController.whereExerciseLogsBefore(
           exercise: exerciseLog.exercise,
@@ -248,7 +238,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           exerciseType: exerciseLog.exercise.type,
           exerciseLog: exerciseLog,
         );
-      }).toList();
+      }).map((pbDto) => pbDto.pb.description).toList();
     }
 
     final StringBuffer buffer = StringBuffer();
@@ -260,7 +250,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
         The report should focus on:
             - Exercise selection
             - Muscles trained
-            - Total volume lifted
             - Calories burned
             - Personal bests achieved
             - Hours spent training
@@ -280,7 +269,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
       final completedExerciseLogs = completedExercises(exerciseLogs: log.exerciseLogs);
       final musclesTrained = getMusclesTrained(completedExerciseLogs);
       final exercises = log.exerciseLogs.map((exerciseLog) => exerciseLog.exercise.name).toSet().toList();
-      final volumeLifted = calculateTotalVolumeLifted(log.exerciseLogs);
       final caloriesBurned = calculateCalories(
         duration: log.duration(),
         bodyWeight: routineUserController.weight(),
@@ -291,11 +279,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
       buffer.writeln("Log information for ${log.name} workout in ${log.createdAt.formattedFullMonth}");
       buffer.writeln("List of exercises performed: $exercises}");
       buffer.writeln("List of muscles trained: $musclesTrained}");
-      buffer.writeln("Amount of volume Lifted: $volumeLifted}");
       buffer.writeln("Amount of calories burned: $caloriesBurned}");
-      buffer.writeln("Number of personal bests: $personalBests}");
+      buffer.writeln("Personal bests: $personalBests}");
       buffer.writeln("Duration of workout: ${log.duration().hmsAnalog()}}");
-
       buffer.writeln();
     }
 
@@ -325,8 +311,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
               child: MonthlyTrainingReportScreen(
                 dateTime: lastMonthsStartDate!,
                 monthlyTrainingReport: report,
-                routineLogs: lastThreeMonthsRoutineLogs,
-                activityLogs: lastThreeMonthsActivityLogs,
+                routineLogs: exerciseAndRoutineLogController.whereLogsIsSameMonth(dateTime: DateTime.now().subtract(const Duration(days: 29))),
+                activityLogs: activityLogController.whereLogsIsSameMonth(dateTime: DateTime.now().subtract(const Duration(days: 29))),
               ));
         }
       }

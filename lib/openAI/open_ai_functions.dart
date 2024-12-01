@@ -203,11 +203,6 @@ const monthlyReportResponseFormat = {
           "type": "string",
           "description": "A summary of muscle groups trained, highlighting focus areas and any potential imbalances."
         },
-        "volume_lifted_summary": {
-          "type": "string",
-          "description":
-              "An overview of the total volume lifted, with comparisons to previous periods and insights on progression."
-        },
         "calories_burned_summary": {
           "type": "string",
           "description":
@@ -242,7 +237,6 @@ const monthlyReportResponseFormat = {
         "introduction",
         "exercises_summary",
         "muscles_trained_summary",
-        "volume_lifted_summary",
         "calories_burned_summary",
         "personal_bests_summary",
         "workout_duration_summary",

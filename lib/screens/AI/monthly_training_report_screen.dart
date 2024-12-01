@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/appsync/activity_log_dto.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
 import '../../colors.dart';
+import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/open_ai_response_schema_dtos/monthly_training_report.dart';
 import '../../enums/activity_type_enums.dart';
 import '../../utils/exercise_logs_utils.dart';
@@ -13,6 +15,7 @@ import '../../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../widgets/calendar/calendar.dart';
 import '../../widgets/chart/muscle_group_family_chart.dart';
 import '../../widgets/dividers/label_container_divider.dart';
+import '../../widgets/shareables/pbs_shareable.dart';
 
 class MonthlyTrainingReportScreen extends StatelessWidget {
   final DateTime dateTime;
@@ -53,6 +56,22 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
         .toList();
 
     final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: exerciseLogsWithCompletedSets);
+
+    final exerciseAndRoutineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+
+    final pbs = routineLogs
+        .expand((routineLog) => routineLog.exerciseLogs)
+        .map((exerciseLog) {
+          final pastExerciseLogs = exerciseAndRoutineLogController.whereExerciseLogsBefore(
+              exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
+
+          return calculatePBs(
+              pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog);
+        })
+        .expand((pbs) => pbs)
+        .map((pb) =>
+            SizedBox(width: 400, height: 400, child: PBsShareable(set: pb.set, pbDto: pb, globalKey: GlobalKey())))
+        .toList();
 
     return Scaffold(
         appBar: AppBar(
@@ -165,32 +184,22 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16),
                         child: LabelContainerDivider(
-                            labelAlignment: LabelAlignment.left,
-                            label: "Volume".toUpperCase(),
-                            description: monthlyTrainingReport.volumeLiftedSummary,
-                            labelStyle:
-                                GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
-                            descriptionStyle: GoogleFonts.ubuntu(
-                              color: Colors.white70,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 16,
-                            ),
-                            dividerColor: sapphireLighter),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16),
-                        child: LabelContainerDivider(
-                            labelAlignment: LabelAlignment.left,
-                            label: "Personal Bests".toUpperCase(),
-                            description: monthlyTrainingReport.personalBestsSummary,
-                            labelStyle:
-                                GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
-                            descriptionStyle: GoogleFonts.ubuntu(
-                              color: Colors.white70,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 16,
-                            ),
-                            dividerColor: sapphireLighter),
+                          labelAlignment: LabelAlignment.left,
+                          label: "Personal Bests".toUpperCase(),
+                          description: monthlyTrainingReport.personalBestsSummary,
+                          labelStyle:
+                              GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
+                          descriptionStyle: GoogleFonts.ubuntu(
+                            color: Colors.white70,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 16,
+                          ),
+                          dividerColor: sapphireLighter,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            child: SingleChildScrollView(scrollDirection: Axis.horizontal, child: Row(children: pbs)),
+                          ),
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16),
