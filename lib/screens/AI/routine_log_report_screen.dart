@@ -209,18 +209,6 @@ class _ExerciseReportWidget extends StatelessWidget {
                   fontWeight: FontWeight.w400,
                   fontSize: 16,
                 ),
-                dividerColor: sapphireLighter),
-            const SizedBox(height: 12),
-            LabelContainerDivider(
-                labelAlignment: LabelAlignment.left,
-                label: "Comments".toUpperCase(),
-                description: exerciseReport.comments,
-                labelStyle: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
-                descriptionStyle: GoogleFonts.ubuntu(
-                  color: Colors.white70,
-                  fontWeight: FontWeight.w400,
-                  fontSize: 16,
-                ),
                 dividerColor: sapphireLighter)
           ],
         ));
