@@ -300,7 +300,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     buffer.writeln();
 
     for (final log in lastThreeMonthsActivityLogs) {
-      buffer.writeln("Activity Log for ${log.name}");
+      buffer.writeln("Activity Log for ${log.name} on ${log.createdAt.formattedFullMonth}");
     }
 
     final completeInstructions = buffer.toString();
