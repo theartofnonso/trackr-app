@@ -271,7 +271,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
         Lastly, please provide a summary of the number of activities the user has logged outside of strength training. 
         If the user has logged few or no such activities, focus on encouraging them to engage in and record more non-strength training exercises. 
         The report should highlight the benefits of incorporating a variety of activities into their fitness regimen and offer suggestions on how they can diversify their workouts.
-        Note: All weights are logged in ${weightLabel()}
+        Note: All weights are measured in ${weightLabel()}
 """);
 
     // Main processing
