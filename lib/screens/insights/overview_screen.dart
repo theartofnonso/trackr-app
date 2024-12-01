@@ -286,7 +286,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
       );
       final personalBests = getPersonalBests(log.exerciseLogs);
 
-      buffer.writeln("Log for ${log.name}");
+      buffer.writeln("Log for ${log.name} on ${log.createdAt.formattedFullMonth}");
       buffer.writeln("List of exercises performed: $exercises}");
       buffer.writeln("List of muscles trained: $musclesTrained}");
       buffer.writeln("Amount of volume Lifted: $volumeLifted}");
