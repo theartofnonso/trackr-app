@@ -203,7 +203,7 @@ class _ExerciseReportWidget extends StatelessWidget {
                 labelAlignment: LabelAlignment.left,
                 label: "Achievements".toUpperCase(),
                 description: exerciseReport.achievements,
-                labelStyle: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
+                labelStyle: GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w900, fontSize: 16),
                 descriptionStyle: GoogleFonts.ubuntu(
                   color: Colors.white70,
                   fontWeight: FontWeight.w400,
