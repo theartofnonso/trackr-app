@@ -37,7 +37,6 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
       return _ActivityChip(image: image, activityType: activityType);
     }).toList();
 
-
     final exercises = routineLogs
         .map((routineLog) => completedExercises(exerciseLogs: routineLog.exerciseLogs))
         .expand((exerciseLogs) => exerciseLogs)
@@ -46,8 +45,7 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
 
     final exercisesScrollViewHalf = exercises.length > 10 ? exercises.length ~/ 2 : exercises.length;
 
-    final exercisesChildren = exercises.map((exerciseName) => _Chip(label: exerciseName))
-        .toList();
+    final exercisesChildren = exercises.map((exerciseName) => _Chip(label: exerciseName)).toList();
 
     final exerciseLogsWithCompletedSets = routineLogs
         .map((routineLog) => completedExercises(exerciseLogs: routineLog.exerciseLogs))
@@ -105,42 +103,44 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16),
                         child: LabelContainerDivider(
-                            labelAlignment: LabelAlignment.left,
-                            label: "Exercises".toUpperCase(),
-                            description: monthlyTrainingReport.exercisesSummary,
-                            labelStyle:
-                                GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
-                            descriptionStyle: GoogleFonts.ubuntu(
-                              color: Colors.white70,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 16,
-                            ),
-                            dividerColor: sapphireLighter, child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                              child: exercisesScrollViewHalf == exercisesChildren.length ? SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Wrap(
-                                      spacing: 6,
-                                      children: [
-                                        ...exercisesChildren.sublist(0, exercisesScrollViewHalf),
-                                      ])) : Column(children: [
-                                SingleChildScrollView(
+                          labelAlignment: LabelAlignment.left,
+                          label: "Exercises".toUpperCase(),
+                          description: monthlyTrainingReport.exercisesSummary,
+                          labelStyle:
+                              GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
+                          descriptionStyle: GoogleFonts.ubuntu(
+                            color: Colors.white70,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 16,
+                          ),
+                          dividerColor: sapphireLighter,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: exercisesScrollViewHalf == exercisesChildren.length
+                                ? SingleChildScrollView(
                                     scrollDirection: Axis.horizontal,
-                                    child: Wrap(
-                                      spacing: 6,
-                                        children: [
+                                    child: Wrap(spacing: 6, children: [
                                       ...exercisesChildren.sublist(0, exercisesScrollViewHalf),
-                                    ])),
-                                const SizedBox(height: 10,),
-                                SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: Wrap(
-                                        spacing: 6,
-                                        children: [
-                                      ...exercisesChildren.sublist(exercisesScrollViewHalf),
-                                    ])),
-                              ],),
-                            ),),
+                                    ]))
+                                : Column(
+                                    children: [
+                                      SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          child: Wrap(spacing: 6, children: [
+                                            ...exercisesChildren.sublist(0, exercisesScrollViewHalf),
+                                          ])),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          child: Wrap(spacing: 6, children: [
+                                            ...exercisesChildren.sublist(exercisesScrollViewHalf),
+                                          ])),
+                                    ],
+                                  ),
+                          ),
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16),
