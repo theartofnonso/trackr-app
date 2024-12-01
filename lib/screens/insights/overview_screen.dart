@@ -275,7 +275,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     // Main processing
     for (final log in lastThreeMonthsRoutineLogs) {
-      final musclesTrained = getMusclesTrained(log.exerciseLogs);
+      final completedExerciseLogs = completedExercises(exerciseLogs: log.exerciseLogs);
+      final musclesTrained = getMusclesTrained(completedExerciseLogs);
       final exercises = log.exerciseLogs.map((exerciseLog) => exerciseLog.exercise.name).toSet().toList();
       final volumeLifted = calculateTotalVolumeLifted(log.exerciseLogs);
       final caloriesBurned = calculateCalories(

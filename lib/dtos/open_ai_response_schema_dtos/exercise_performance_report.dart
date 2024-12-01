@@ -79,7 +79,7 @@ class Performance {
     return Performance(
       date: json['date'] as String,
       sets: (json['sets'] as List).map((e) => Set.fromJson(e as Map<String, dynamic>)).toList(),
-      totalVolume: json['total_volume'] as double,
+      totalVolume: (json['total_volume'] as num).toDouble() ,
     );
   }
 
@@ -102,13 +102,10 @@ class Set {
   });
 
   factory Set.fromJson(Map<String, dynamic> json) {
+
     return Set(
-        weight: (json['weight'] is int)
-            ? (json['weight'] as int).toDouble()
-            : (json['weight'] is double)
-            ? json['weight'] as double
-            : double.tryParse(json['weight'].toString()) ?? 0.0,
-        repetitions: int.tryParse((json['repetitions'].toString())) ?? 0);
+        weight: (json["weight"] as num).toDouble(),
+        repetitions: (json["repetitions"] as num).toInt());
   }
 
   Map<String, dynamic> toJson() {
