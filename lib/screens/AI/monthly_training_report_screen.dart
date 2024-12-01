@@ -1,18 +1,24 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/appsync/activity_log_dto.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
+import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
+import 'package:tracker_app/enums/chart_unit_enum.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
+import 'package:tracker_app/utils/routine_utils.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
+import '../../controllers/routine_user_controller.dart';
 import '../../dtos/open_ai_response_schema_dtos/monthly_training_report.dart';
 import '../../enums/activity_type_enums.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../widgets/calendar/calendar.dart';
+import '../../widgets/chart/line_chart_widget.dart';
 import '../../widgets/chart/muscle_group_family_chart.dart';
 import '../../widgets/dividers/label_container_divider.dart';
 import '../../widgets/shareables/pbs_shareable.dart';
@@ -72,6 +78,14 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
         .map((pb) =>
             SizedBox(width: 400, height: 400, child: PBsShareable(set: pb.set, pbDto: pb, globalKey: GlobalKey())))
         .toList();
+
+    final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
+
+    final calories = routineLogs.map((log) => calculateCalories(duration: log.duration(), bodyWeight: (routineUserController.user?.weight)?.toDouble() ?? 0.0, activity: log.activityType));
+
+    final chartPoints = calories.mapIndexed((index, calories) => ChartPointDto(index, calories)).toList();
+
+    final dateTimes = routineLogs.map((log) => log.createdAt.formattedMonth()).toList();
 
     return Scaffold(
         appBar: AppBar(
@@ -204,17 +218,26 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16),
                         child: LabelContainerDivider(
-                            labelAlignment: LabelAlignment.left,
-                            label: "Calories Burned".toUpperCase(),
-                            description: monthlyTrainingReport.caloriesBurnedSummary,
-                            labelStyle:
-                                GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
-                            descriptionStyle: GoogleFonts.ubuntu(
-                              color: Colors.white70,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 16,
+                          labelAlignment: LabelAlignment.left,
+                          label: "Calories Burned".toUpperCase(),
+                          description: monthlyTrainingReport.caloriesBurnedSummary,
+                          labelStyle:
+                              GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
+                          descriptionStyle: GoogleFonts.ubuntu(
+                            color: Colors.white70,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 16,
+                          ),
+                          dividerColor: sapphireLighter,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 16, right: 16, bottom: 16),
+                            child: LineChartWidget(
+                              chartPoints: chartPoints,
+                              periods: dateTimes,
+                              unit: ChartUnit.number,
                             ),
-                            dividerColor: sapphireLighter),
+                          ),
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16),
