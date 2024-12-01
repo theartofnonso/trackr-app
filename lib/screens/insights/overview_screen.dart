@@ -29,7 +29,6 @@ import '../../enums/routine_editor_type_enums.dart';
 import '../../openAI/open_ai.dart';
 import '../../openAI/open_ai_functions.dart';
 import '../../strings/ai_prompts.dart';
-import '../../utils/date_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
@@ -194,25 +193,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     final activityLogController = Provider.of<ActivityLogController>(context, listen: false);
 
-    final lastThreeMonthsDateRanges = getDatesRangesFromToday(size: 3);
+    final lastMonthDate = DateTime.now().subtract(const Duration(days: 29));
 
-    List<RoutineLogDto> lastThreeMonthsRoutineLogs = [];
+    List<RoutineLogDto> lastMonthRoutineLogs = exerciseAndRoutineLogController.whereLogsIsSameMonth(dateTime: lastMonthDate);
 
-    List<ActivityLogDto> lastThreeMonthsActivityLogs = [];
-
-    for (final range in lastThreeMonthsDateRanges) {
-      final start = range["start"]!;
-      final end = range["end"]!;
-
-      final routineLogs =
-          exerciseAndRoutineLogController.whereLogsIsWithinRange(range: DateTimeRange(start: start, end: end));
-
-      final activityLogs = activityLogController.whereLogsIsWithinRange(range: DateTimeRange(start: start, end: end));
-
-      lastThreeMonthsRoutineLogs.addAll(routineLogs);
-
-      lastThreeMonthsActivityLogs.addAll(activityLogs);
-    }
+    List<ActivityLogDto> lastMonthActivityLogs = activityLogController.whereLogsIsSameMonth(dateTime: lastMonthDate);
 
     // Helper function to get muscles trained from exercise logs
     List<String> getMusclesTrained(List<ExerciseLogDto> exerciseLogs) {
@@ -243,10 +228,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     final StringBuffer buffer = StringBuffer();
 
-    final lastMonthsStartDate = lastThreeMonthsDateRanges.first["start"];
-
     buffer.writeln("""
-        Please provide a comparative analysis of my training logs from ${lastMonthsStartDate?.formattedFullMonth()}, comparing them with my training data from the preceding months. 
+        Please provide a comparative analysis of my training logs for ${lastMonthDate.formattedFullMonth()}. 
         The report should focus on:
             - Exercise selection
             - Muscles trained
@@ -265,7 +248,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 """);
 
     // Main processing
-    for (final log in lastThreeMonthsRoutineLogs) {
+    for (final log in lastMonthRoutineLogs) {
       final completedExerciseLogs = completedExercises(exerciseLogs: log.exerciseLogs);
       final musclesTrained = getMusclesTrained(completedExerciseLogs);
       final exercises = log.exerciseLogs.map((exerciseLog) => exerciseLog.exercise.name).toSet().toList();
@@ -287,7 +270,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     buffer.writeln();
 
-    for (final log in lastThreeMonthsActivityLogs) {
+    for (final log in lastMonthActivityLogs) {
       buffer.writeln("Logged ${log.name} activity in ${log.createdAt.formattedFullMonth}");
     }
 
@@ -309,9 +292,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
           navigateWithSlideTransition(
               context: context,
               child: MonthlyTrainingReportScreen(
-                dateTime: lastMonthsStartDate!,
+                dateTime: lastMonthDate,
                 monthlyTrainingReport: report,
-                routineLogs: exerciseAndRoutineLogController.whereLogsIsSameMonth(dateTime: DateTime.now().subtract(const Duration(days: 29))),
+                routineLogs: lastMonthRoutineLogs,
                 activityLogs: activityLogController.whereLogsIsSameMonth(dateTime: DateTime.now().subtract(const Duration(days: 29))),
               ));
         }
@@ -322,7 +305,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
         showSnackbar(
             context: context,
             icon: TRKRCoachWidget(),
-            message: "Oops! I am unable to generate your ${lastMonthsStartDate?.formattedFullMonth()} report");
+            message: "Oops! I am unable to generate your ${lastMonthDate.formattedFullMonth()} report");
       }
     });
   }
