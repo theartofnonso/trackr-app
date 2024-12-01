@@ -271,7 +271,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
         Lastly, please provide a summary of the number of activities the user has logged outside of strength training. 
         If the user has logged few or no such activities, focus on encouraging them to engage in and record more non-strength training exercises. 
         The report should highlight the benefits of incorporating a variety of activities into their fitness regimen and offer suggestions on how they can diversify their workouts.
-        Note: All weights are measured in ${weightLabel()}
+        Note: All weights are measured in ${weightLabel()}.
+        Note: Your report should sound personal.
 """);
 
     // Main processing
@@ -287,7 +288,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
       );
       final personalBests = getPersonalBests(log.exerciseLogs);
 
-      buffer.writeln("Log for ${log.name} on ${log.createdAt.formattedFullMonth}");
+      buffer.writeln("Log information for ${log.name} workout in ${log.createdAt.formattedFullMonth}");
       buffer.writeln("List of exercises performed: $exercises}");
       buffer.writeln("List of muscles trained: $musclesTrained}");
       buffer.writeln("Amount of volume Lifted: $volumeLifted}");
@@ -301,7 +302,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     buffer.writeln();
 
     for (final log in lastThreeMonthsActivityLogs) {
-      buffer.writeln("Activity Log for ${log.name} on ${log.createdAt.formattedFullMonth}");
+      buffer.writeln("Logged ${log.name} activity in ${log.createdAt.formattedFullMonth}");
     }
 
     final completeInstructions = buffer.toString();

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/controllers/analytics_controller.dart';
 import 'package:tracker_app/screens/insights/overview_screen.dart';
@@ -36,20 +35,11 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
             child: SafeArea(
               child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 14.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        FaIcon(FontAwesomeIcons.bell),
-                        CalendarNavigator(
-                          onMonthChange: _onMonthChange,
-                          enabled: _tabIndex == 0,
-                        ),
-                       const SizedBox(width: 18,)
-                      ],
-                    ),
-                  ),
+                  Center(
+                      child: CalendarNavigator(
+                    onMonthChange: _onMonthChange,
+                    enabled: _tabIndex == 0,
+                  )),
                   TabBar(
                     controller: _tabController,
                     dividerColor: Colors.transparent,
@@ -72,7 +62,9 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
                           dateTimeRange: _monthDateTimeRange,
                           scrollController: widget.scrollController,
                         ),
-                        SetsAndRepsVolumeInsightsScreen(canPop: false,)
+                        SetsAndRepsVolumeInsightsScreen(
+                          canPop: false,
+                        )
                       ],
                     ),
                   ),

@@ -326,7 +326,8 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 	          2.	Repetitions: Evaluate the number of repetitions performed per set and identify any trends or changes.
 	          3.	Volume Lifted: Calculate the total volume lifted (weight × repetitions) and provide insights into its progression over time.
 	          4.	Number of Sets: Assess the number of sets performed and how it aligns with my overall workout goals.
-          Note: All weights are measured in ${weightLabel()}
+          Note: All weights are measured in ${weightLabel()}.
+          Note: Your report should sound personal.
         """);
 
     final completeInstructions = buffer.toString();
