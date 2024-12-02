@@ -107,24 +107,22 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   }
 
   Future<void> _doCreateRoutineLog() async {
-    final routineLog = _routineLog();
+    final routineLogToBeCreated = _routineLog().copyWith(endTime: DateTime.now());
 
-    final routineLogToBeUpdated = routineLog.copyWith(endTime: DateTime.now());
-
-    final updatedRoutineLog =
-        await Provider.of<ExerciseAndRoutineController>(context, listen: false).saveLog(logDto: routineLogToBeUpdated);
+    final createdRoutineLog =
+        await Provider.of<ExerciseAndRoutineController>(context, listen: false).saveLog(logDto: routineLogToBeCreated);
 
     AnalyticsController.workoutSessionEvent(eventAction: "workout_session_logged");
 
-    _navigateBack(routineLog: updatedRoutineLog);
+    _navigateBack(routineLog: createdRoutineLog);
   }
 
   Future<void> _doUpdateRoutineLog() async {
-    final routineLog = _routineLog();
+    final routineLogToBeUpdated = _routineLog();
 
-    await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateLog(log: routineLog);
+    await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateLog(log: routineLogToBeUpdated);
 
-    _navigateBack(routineLog: routineLog);
+    _navigateBack(routineLog: routineLogToBeUpdated);
   }
 
   bool _isRoutinePartiallyComplete() {
@@ -179,9 +177,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   void _cacheLog() {
     if (widget.mode == RoutineEditorMode.log) {
-      final routineLog = _routineLog();
-      final updatedRoutineLog = routineLog.copyWith(endTime: DateTime.now());
-      Provider.of<ExerciseAndRoutineController>(context, listen: false).cacheLog(logDto: updatedRoutineLog);
+      final routineLogToBeCached = _routineLog().copyWith(endTime: DateTime.now());
+      Provider.of<ExerciseAndRoutineController>(context, listen: false).cacheLog(logDto: routineLogToBeCached);
     }
   }
 

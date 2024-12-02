@@ -33,7 +33,7 @@ class ExerciseLogRepository {
 
   List<ExerciseLogDto> mergeExerciseLogsAndSets() {
     return _exerciseLogs.map((exerciseLog) {
-      final sets = exerciseLog.sets;
+      final sets = exerciseLog.sets.where((set) => set.checked).toList();
       return exerciseLog.copyWith(sets: withDurationOnly(type: exerciseLog.exercise.type) ? _checkSets(sets) : sets);
     }).toList();
   }
