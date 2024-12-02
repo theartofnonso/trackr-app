@@ -23,12 +23,12 @@ class RoutineDayPlanner extends StatefulWidget {
 }
 
 class _RoutineDayPlannerState extends State<RoutineDayPlanner> {
-  final List<DayOfWeek> _selectedDays = [];
+  List<DayOfWeek> _selectedDays = [];
 
   void _toggleDay(DayOfWeek day) {
     setState(() {
       if (_selectedDays.contains(day)) {
-        _selectedDays.remove(day);
+        _selectedDays = _selectedDays.where((selectedDay) => selectedDay != day).toList();
       } else {
         _selectedDays.add(day);
       }
@@ -103,7 +103,7 @@ class _RoutineDayPlannerState extends State<RoutineDayPlanner> {
   @override
   void initState() {
     super.initState();
-    _selectedDays.addAll(widget.template.scheduledDays);
+    _selectedDays = widget.template.scheduledDays;
   }
 
   void _updateRoutineTemplateDays() async {

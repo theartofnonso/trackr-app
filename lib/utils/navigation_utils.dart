@@ -20,8 +20,7 @@ import '../screens/logs/routine_logs_screen.dart';
 import '../screens/logs/routine_log_screen.dart';
 import '../screens/templates/routine_template_screen.dart';
 
-Future<ExerciseDto?> navigateToExerciseEditor(
-    {required BuildContext context, ExerciseEditorArguments? arguments}) async {
+Future<ExerciseDto?> navigateToExerciseEditor({required BuildContext context, ExerciseEditorArguments? arguments}) async {
   AnalyticsController.logPageNavigation(page: ExerciseEditorScreen.routeName);
   final exercise = await context.push(ExerciseEditorScreen.routeName, extra: arguments) as ExerciseDto?;
   return exercise;

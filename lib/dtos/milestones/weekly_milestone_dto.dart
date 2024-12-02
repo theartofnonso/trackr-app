@@ -114,7 +114,7 @@ class WeeklyMilestone extends Milestone {
           .where((log) => log.createdAt.weekday == DateTime.saturday || log.createdAt.weekday == DateTime.sunday);
 
       if (saturdayOrSundayLogs.isNotEmpty) {
-        weekendLogs.addAll(saturdayOrSundayLogs);
+        weekendLogs.add(saturdayOrSundayLogs.first);
       } else {
         // Only reset if we haven't met the target yet and we're not in the current week
         if (weekendLogs.length < target && week.end.isBefore(now)) {
