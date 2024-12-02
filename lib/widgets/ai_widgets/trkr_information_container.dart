@@ -34,18 +34,28 @@ class TRKRInformationContainer extends StatelessWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-            child: Row(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-              Expanded(
-                child: Text(
-                    description,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                  Expanded(
+                    child: Text(
+                        description,
+                        textAlign: TextAlign.left,
+                        style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white, fontSize: 14)),
+                  ),
+                  const SizedBox(width: 22),
+                  FaIcon(FontAwesomeIcons.solidLightbulb, color: Colors.white70,)
+                ],),
+                const SizedBox(height: 4),
+                Text(
+                    ctaLabel,
                     textAlign: TextAlign.left,
-                    style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white, fontSize: 14)),
-              ),
-              const SizedBox(width: 22),
-              FaIcon(FontAwesomeIcons.solidSquareCheck, color: vibrantGreen,)
-            ],),
+                    style: GoogleFonts.ubuntu(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 14))
+              ],
+            ),
           ),
         ),
       ),
