@@ -8,6 +8,7 @@ import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
 import 'package:tracker_app/enums/chart_unit_enum.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
+import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/routine_utils.dart';
 
 import '../../colors.dart';
@@ -81,11 +82,20 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
 
     final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
 
-    final calories = routineLogs.map((log) => calculateCalories(duration: log.duration(), bodyWeight: (routineUserController.user?.weight)?.toDouble() ?? 0.0, activity: log.activityType));
+    final calories = routineLogs.map((log) => calculateCalories(
+        duration: log.duration(),
+        bodyWeight: (routineUserController.user?.weight)?.toDouble() ?? 0.0,
+        activity: log.activityType));
 
     final chartPoints = calories.mapIndexed((index, calories) => ChartPointDto(index, calories)).toList();
 
     final dateTimes = routineLogs.map((log) => log.createdAt.formattedMonth()).toList();
+
+    final durations = routineLogs.map((log) => log.duration().inMilliseconds).toList();
+
+    final minDuration = Duration(milliseconds: durations.min);
+    final avgDuration = Duration(milliseconds: durations.average.ceil());
+    final maxDuration = Duration(milliseconds: durations.max);
 
     return Scaffold(
         appBar: AppBar(
@@ -242,17 +252,53 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16),
                         child: LabelContainerDivider(
-                            labelAlignment: LabelAlignment.left,
-                            label: "Training Duration".toUpperCase(),
-                            description: monthlyTrainingReport.workoutDurationSummary,
-                            labelStyle:
-                                GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
-                            descriptionStyle: GoogleFonts.ubuntu(
-                              color: Colors.white70,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 16,
+                          labelAlignment: LabelAlignment.left,
+                          label: "Training Duration".toUpperCase(),
+                          description: monthlyTrainingReport.workoutDurationSummary,
+                          labelStyle:
+                              GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
+                          descriptionStyle: GoogleFonts.ubuntu(
+                            color: Colors.white70,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 16,
+                          ),
+                          dividerColor: sapphireLighter,
+                          child: SizedBox(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                _RowItem(
+                                  subTitle: "Min",
+                                  title: minDuration.hmDigital(),
+                                  titleColor: Colors.white,
+                                  subTitleColor: Colors.white70,
+                                ),
+                                Expanded(
+                                    child: const Divider(
+                                  color: Colors.white70,
+                                  height: 0.5,
+                                )),
+                                _RowItem(
+                                  subTitle: "Avg",
+                                  title: avgDuration.hmDigital(),
+                                  titleColor: Colors.white,
+                                  subTitleColor: Colors.white70,
+                                ),
+                                Expanded(
+                                    child: const Divider(
+                                  color: Colors.white70,
+                                  height: 0.5,
+                                )),
+                                _RowItem(
+                                  subTitle: "Max",
+                                  title: maxDuration.hmDigital(),
+                                  titleColor: Colors.white,
+                                  subTitleColor: Colors.white70,
+                                )
+                              ],
                             ),
-                            dividerColor: sapphireLighter),
+                          ),
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16),
@@ -360,5 +406,51 @@ class _Chip extends StatelessWidget {
           label.toUpperCase(),
           style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.black, fontSize: 12),
         ));
+  }
+}
+
+class _RowItem extends StatelessWidget {
+  final String title;
+  final String subTitle;
+  final Color titleColor;
+  final Color subTitleColor;
+
+  const _RowItem({
+    required this.title,
+    required this.subTitle,
+    required this.titleColor,
+    required this.subTitleColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 100,
+      width: 100,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Text(
+            title,
+            style: GoogleFonts.ubuntu(
+              color: titleColor,
+              fontSize: 20,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            subTitle.toUpperCase(),
+            textAlign: TextAlign.center,
+            style: GoogleFonts.ubuntu(
+              color: subTitleColor.withOpacity(0.6),
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
+          )
+        ],
+      ),
+    );
   }
 }
