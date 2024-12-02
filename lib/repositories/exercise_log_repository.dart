@@ -253,7 +253,7 @@ class ExerciseLogRepository {
         superSetId: "",
         exercise: exercise,
         notes: notes,
-        sets: [],
+        sets: [SetDto.newType(type: exercise.type)],
         createdAt: DateTime.now());
   }
 
