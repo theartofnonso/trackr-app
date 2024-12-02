@@ -99,7 +99,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   RoutineLogDto _routineLog() {
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
 
-    final exerciseLogs = exerciseLogController.mergeExerciseLogsAndSets();
+    final exerciseLogs = exerciseLogController.mergeExerciseLogsAndSets(mode: RoutineEditorMode.log);
 
     final routineLog = widget.log.copyWith(exerciseLogs: exerciseLogs);
 
@@ -127,7 +127,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   bool _isRoutinePartiallyComplete() {
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
-    final exerciseLogs = exerciseLogController.mergeExerciseLogsAndSets();
+    final exerciseLogs = exerciseLogController.mergeExerciseLogsAndSets(mode: RoutineEditorMode.log);
     return exerciseLogs.any((log) => log.sets.any((set) => set.isNotEmpty() && set.checked));
   }
 

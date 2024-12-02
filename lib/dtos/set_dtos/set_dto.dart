@@ -29,9 +29,10 @@ abstract class SetDto {
     } else if (this is RepsSetDto) {
       final repSet = this as RepsSetDto;
       return {"value1": 0, "value2": repSet.reps, "checked": checked};
+    } else {
+      final durationSet = this as DurationSetDto;
+      return {"value1": 0, "value2": durationSet.duration.inMilliseconds, "checked": checked};
     }
-    final durationSet = this as DurationSetDto;
-    return {"value1": 0, "value2": durationSet.duration.inMilliseconds, "checked": checked};
   }
 
   factory SetDto.fromJson(Map<String, dynamic> json, {required ExerciseType exerciseType}) {

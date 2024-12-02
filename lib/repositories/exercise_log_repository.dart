@@ -13,7 +13,7 @@ class ExerciseLogRepository {
 
   void loadExerciseLogs({required List<ExerciseLogDto> exerciseLogs, required RoutineEditorMode mode}) {
     List<ExerciseLogDto> logs = [];
-    for (var exerciseLog in exerciseLogs) {
+    for (final exerciseLog in exerciseLogs) {
       if (withDurationOnly(type: exerciseLog.exercise.type)) {
         if (mode == RoutineEditorMode.log) {
           final checkedSets = exerciseLog.sets.map((set) => set.copyWith(checked: true)).toList();
@@ -31,18 +31,17 @@ class ExerciseLogRepository {
     _exerciseLogs = logs;
   }
 
-  List<ExerciseLogDto> mergeExerciseLogsAndSets() {
-    return _exerciseLogs.map((exerciseLog) {
-      final sets = exerciseLog.sets.where((set) => set.checked).toList();
-      return exerciseLog.copyWith(sets: withDurationOnly(type: exerciseLog.exercise.type) ? _checkSets(sets) : sets);
-    }).toList();
-  }
+  List<ExerciseLogDto> mergeExerciseLogsAndSets({required RoutineEditorMode mode}) {
+    if(mode == RoutineEditorMode.log) {
+      return _exerciseLogs.map((exerciseLog) {
+        return exerciseLog.copyWith(sets: withDurationOnly(type: exerciseLog.exercise.type) ? _checkSets(exerciseLog.sets) : exerciseLog.sets);
+      }).toList();
+    }
 
-  List<ExerciseLogDto> mergeAndCheckPastExerciseLogsAndSets({required DateTime datetime}) {
     return _exerciseLogs.map((exerciseLog) {
-      final sets = _checkSets(exerciseLog.sets);
-      return exerciseLog.copyWith(sets: sets, createdAt: datetime);
+      return exerciseLog.copyWith(sets: exerciseLog.sets);
     }).toList();
+
   }
 
   List<SetDto> _checkSets(List<SetDto> sets) {
