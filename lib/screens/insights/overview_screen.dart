@@ -33,6 +33,7 @@ import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../utils/routine_utils.dart';
+import '../../widgets/ai_widgets/trkr_coach_button.dart';
 import '../../widgets/ai_widgets/trkr_coach_text_widget.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/calendar/calendar.dart';
@@ -74,10 +75,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
     Provider.of<ExerciseAndRoutineController>(context, listen: true);
     Provider.of<ActivityLogController>(context, listen: true);
 
-    final shouldShowMonthlyInsights = SharedPrefs().showMonthlyInsights;
+    DateTime today = DateTime.now();
+    DateTime currentMonthStart = DateTime(today.year, today.month, 1);
+    bool canNavigateNext = !widget.dateTimeRange.start.monthlyStartDate().isAtSameMomentAs(currentMonthStart);
 
-    final isNewMonth = widget.dateTimeRange.start.subtract(const Duration(days: 29)).month ==
-        DateTime.now().subtract(const Duration(days: 29)).month;
+    /// Logic to determine whether to show new monthly insights widget
+    final isStartOfNewMonth = today.day == 1;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -114,7 +117,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       child: Column(children: [
                         const SizedBox(height: 12),
                         LogStreakMuscleTrendMonitor(dateTime: widget.dateTimeRange.start),
-                        if (SharedPrefs().showMonthlyInsights && isNewMonth)
+                        if (isStartOfNewMonth)
                           Padding(
                             padding: const EdgeInsets.only(top: 24.0),
                             child: TRKRInformationContainer(
@@ -122,7 +125,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
                                     "View ${DateTime.now().subtract(const Duration(days: 29)).formattedFullMonth()} insights",
                                 description:
                                     "It’s a new month of training, but before we dive in, let’s reflect on your past performance and plan for this month.",
-                                onTap: _showMonthlyInsights),
+                                onTap: () =>
+                                    _showMonthlyInsights(datetime: DateTime.now().subtract(const Duration(days: 29)))),
                           ),
                         if (SharedPrefs().showCalendar)
                           Padding(
@@ -137,6 +141,16 @@ class _OverviewScreenState extends State<OverviewScreen> {
                                 _LogsListView(dateTime: _selectedDateTime),
                               ],
                             ),
+                          ),
+                        if (canNavigateNext)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 12),
+                              TRKRCoachButton(
+                                  label: "Review ${widget.dateTimeRange.start.formattedFullMonth()} insights.",
+                                  onTap: () => _showMonthlyInsights(datetime: widget.dateTimeRange.start)),
+                            ],
                           ),
                         const SizedBox(height: 12),
                         MonthlyInsightsScreen(dateTimeRange: widget.dateTimeRange),
@@ -184,7 +198,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     });
   }
 
-  void _showMonthlyInsights() {
+  void _showMonthlyInsights({required DateTime datetime}) {
     _showLoadingScreen();
 
     final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
@@ -193,11 +207,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     final activityLogController = Provider.of<ActivityLogController>(context, listen: false);
 
-    final lastMonthDate = DateTime.now().subtract(const Duration(days: 29));
+    List<RoutineLogDto> lastMonthRoutineLogs = exerciseAndRoutineLogController.whereLogsIsSameMonth(dateTime: datetime);
 
-    List<RoutineLogDto> lastMonthRoutineLogs = exerciseAndRoutineLogController.whereLogsIsSameMonth(dateTime: lastMonthDate);
-
-    List<ActivityLogDto> lastMonthActivityLogs = activityLogController.whereLogsIsSameMonth(dateTime: lastMonthDate);
+    List<ActivityLogDto> lastMonthActivityLogs = activityLogController.whereLogsIsSameMonth(dateTime: datetime);
 
     // Helper function to get muscles trained from exercise logs
     List<String> getMusclesTrained(List<ExerciseLogDto> exerciseLogs) {
@@ -212,24 +224,27 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     // Helper function to get personal bests from exercise logs
     List<String> getPersonalBests(List<ExerciseLogDto> exerciseLogs) {
-      return exerciseLogs.expand((exerciseLog) {
-        final pastExerciseLogs = exerciseAndRoutineLogController.whereExerciseLogsBefore(
-          exercise: exerciseLog.exercise,
-          date: exerciseLog.createdAt,
-        );
+      return exerciseLogs
+          .expand((exerciseLog) {
+            final pastExerciseLogs = exerciseAndRoutineLogController.whereExerciseLogsBefore(
+              exercise: exerciseLog.exercise,
+              date: exerciseLog.createdAt,
+            );
 
-        return calculatePBs(
-          pastExerciseLogs: pastExerciseLogs,
-          exerciseType: exerciseLog.exercise.type,
-          exerciseLog: exerciseLog,
-        );
-      }).map((pbDto) => pbDto.pb.description).toList();
+            return calculatePBs(
+              pastExerciseLogs: pastExerciseLogs,
+              exerciseType: exerciseLog.exercise.type,
+              exerciseLog: exerciseLog,
+            );
+          })
+          .map((pbDto) => pbDto.pb.description)
+          .toList();
     }
 
     final StringBuffer buffer = StringBuffer();
 
     buffer.writeln("""
-        Please provide a comparative analysis of my training logs for ${lastMonthDate.formattedFullMonth()}. 
+        Please provide a comparative analysis of my training logs for ${datetime.formattedFullMonth()}. 
         The report should focus on:
             - Exercise selection
             - Muscles trained
@@ -292,10 +307,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
           navigateWithSlideTransition(
               context: context,
               child: MonthlyTrainingReportScreen(
-                dateTime: lastMonthDate,
+                dateTime: datetime,
                 monthlyTrainingReport: report,
                 routineLogs: lastMonthRoutineLogs,
-                activityLogs: activityLogController.whereLogsIsSameMonth(dateTime: DateTime.now().subtract(const Duration(days: 29))),
+                activityLogs: activityLogController.whereLogsIsSameMonth(dateTime: datetime),
               ));
         }
       }
@@ -305,7 +320,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
         showSnackbar(
             context: context,
             icon: TRKRCoachWidget(),
-            message: "Oops! I am unable to generate your ${lastMonthDate.formattedFullMonth()} report");
+            message: "Oops! I am unable to generate your ${datetime.formattedFullMonth()} report");
       }
     });
   }
