@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
@@ -45,6 +46,7 @@ import '../../widgets/routine/preview/routine_log_widget.dart';
 import '../AI/monthly_training_report_screen.dart';
 import '../AI/trkr_coach_chat_screen.dart';
 import '../editors/routine_log_editor_screen.dart';
+import '../logs/routine_log_screen.dart';
 import 'monthly_insights_screen.dart';
 
 class OverviewScreen extends StatefulWidget {
@@ -125,8 +127,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                                     "View ${today.subtract(const Duration(days: 29)).formattedFullMonth()} insights",
                                 description:
                                     "It’s a new month of training, but before we dive in, let’s reflect on your past performance and plan for this month.",
-                                onTap: () =>
-                                    _showMonthlyInsights(datetime: today.subtract(const Duration(days: 29)))),
+                                onTap: () => _showMonthlyInsights(datetime: today.subtract(const Duration(days: 29)))),
                           ),
                         if (SharedPrefs().showCalendar)
                           Padding(
@@ -179,8 +180,13 @@ class _OverviewScreenState extends State<OverviewScreen> {
           owner: "",
           createdAt: DateTime.now(),
           updatedAt: DateTime.now());
-      navigateWithSlideTransition(
+      final recentLog = await navigateWithSlideTransition(
           context: context, child: RoutineLogEditorScreen(log: log, mode: RoutineEditorMode.log));
+      if (recentLog != null) {
+        if (mounted) {
+          context.push(RoutineLogScreen.routeName, extra: {"log": recentLog, "showSummary": true, "isEditable": true});
+        }
+      }
     } else {
       showSnackbar(context: context, icon: const Icon(Icons.info_outline_rounded), message: "${log.name} is running");
     }

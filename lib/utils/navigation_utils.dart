@@ -32,9 +32,14 @@ Future<RoutineTemplateDto?> navigateToRoutineTemplateEditor({required BuildConte
   return template;
 }
 
-void navigateToPastRoutineLogEditor({required BuildContext context, required PastRoutineLogArguments arguments}) {
+void navigateToPastRoutineLogEditor({required BuildContext context, required PastRoutineLogArguments arguments}) async {
   AnalyticsController.logPageNavigation(page: PastRoutineLogEditorScreen.routeName);
-  context.push(PastRoutineLogEditorScreen.routeName, extra: arguments);
+  final log = await context.push(PastRoutineLogEditorScreen.routeName, extra: arguments);
+  if (log != null) {
+    if (context.mounted) {
+      context.push(RoutineLogScreen.routeName, extra: {"log": log, "showSummary": true, "isEditable": true});
+    }
+  }
 }
 
 Future<void> navigateToRoutineLogEditor({required BuildContext context, required RoutineLogArguments arguments}) async {
