@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
@@ -23,6 +24,7 @@ import '../../utils/dialog_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/uri_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
+import '../../widgets/information_containers/information_container_with_background_image.dart';
 import '../exercise/library/exercise_library_screen.dart';
 
 enum WeightUnit {
@@ -79,6 +81,18 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                GestureDetector(
+                  onTap: _openStoreListing,
+                  child: BackgroundInformationContainer(
+                      image: 'images/people_legs.jpg',
+                      containerColor: sapphireDark,
+                      content: "Loving TRKR? Share the love! Your feedback helps us grow and improve.",
+                      textStyle: GoogleFonts.ubuntu(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white.withOpacity(0.9),
+                      )),
+                ),
                 ListTile(
                   title: Text("Weight",
                       style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
@@ -207,6 +221,12 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     setState(() {
       _loading = false;
     });
+  }
+
+  void _openStoreListing() {
+    final InAppReview inAppReview = InAppReview.instance;
+
+    inAppReview.openStoreListing(appStoreId: appStoreId);
   }
 
   void _sendFeedback() async {

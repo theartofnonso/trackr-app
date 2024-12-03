@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/open_ai_response_schema_dtos/exercise_performance_report.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
@@ -82,6 +83,8 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     final log = _log;
 
     if (log == null) return const NotFound();
+
+    _shouldAskForAppRating();
 
     final updatedExerciseLogs = completedExercises(exerciseLogs: log.exerciseLogs);
 
@@ -276,6 +279,26 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             ),
           ]),
         ));
+  }
+
+  void _shouldAskForAppRating() async {
+    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
+    List<RoutineLogDto> routineLogsForTheYear =
+        routineLogController.whereLogsIsSameYear(dateTime: DateTime.now().withoutTime());
+
+    bool isMultipleOf10(int number) {
+      return number % 10 == 0;
+    }
+
+    final hasLoggedTenSessions = isMultipleOf10(routineLogsForTheYear.length);
+
+    if (hasLoggedTenSessions) {
+      final InAppReview inAppReview = InAppReview.instance;
+      final isAvailable = await inAppReview.isAvailable();
+      if (isAvailable) {
+        inAppReview.requestReview();
+      }
+    }
   }
 
   void _onMinimiseMuscleGroupSplit() {
