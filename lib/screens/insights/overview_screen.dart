@@ -122,11 +122,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
                             padding: const EdgeInsets.only(top: 24.0),
                             child: TRKRInformationContainer(
                                 ctaLabel:
-                                    "View ${DateTime.now().subtract(const Duration(days: 29)).formattedFullMonth()} insights",
+                                    "View ${today.subtract(const Duration(days: 29)).formattedFullMonth()} insights",
                                 description:
                                     "It’s a new month of training, but before we dive in, let’s reflect on your past performance and plan for this month.",
                                 onTap: () =>
-                                    _showMonthlyInsights(datetime: DateTime.now().subtract(const Duration(days: 29)))),
+                                    _showMonthlyInsights(datetime: today.subtract(const Duration(days: 29)))),
                           ),
                         if (SharedPrefs().showCalendar)
                           Padding(
