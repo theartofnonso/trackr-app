@@ -86,13 +86,13 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     _shouldAskForAppRating();
 
-    final updatedExerciseLogs = completedExercises(exerciseLogs: log.exerciseLogs);
+    final completedExerciseLogs = completedExercises(exerciseLogs: log.exerciseLogs);
 
-    final updatedLog = log.copyWith(exerciseLogs: updatedExerciseLogs);
+    final updatedLog = log.copyWith(exerciseLogs: completedExerciseLogs);
 
-    final numberOfCompletedSets = updatedExerciseLogs.expand((exerciseLog) => exerciseLog.sets);
+    final numberOfCompletedSets = completedExerciseLogs.expand((exerciseLog) => exerciseLog.sets);
 
-    final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: updatedExerciseLogs);
+    final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: completedExerciseLogs);
 
     final calories = calculateCalories(
         duration: updatedLog.duration(), bodyWeight: routineUserController.weight(), activity: log.activityType);
@@ -179,7 +179,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                             width: 10,
                           ),
                           _StatisticWidget(
-                            title: "${updatedExerciseLogs.length}",
+                            title: "${completedExerciseLogs.length}",
                             subtitle: "Exercises",
                             image: "dumbbells",
                           ),
@@ -261,10 +261,10 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                                   ctaLabel: "Ask for feedback",
                                   description:
                                       "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
-                                  onTap: () => _generateReport(currentExerciseLogs: updatedExerciseLogs)),
+                                  onTap: () => _generateReport(currentExerciseLogs: completedExerciseLogs)),
                             ),
                           ExerciseLogListView(
-                              exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: updatedExerciseLogs)),
+                              exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogs)),
                           const SizedBox(
                             height: 60,
                           )

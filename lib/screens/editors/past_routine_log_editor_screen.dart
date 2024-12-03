@@ -108,19 +108,37 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
     showSnackbar(context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: message);
   }
 
+  bool _isRoutinePartiallyComplete() {
+    final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
+    final exerciseLogs = exerciseLogController.mergeExerciseLogsAndSets(mode: RoutineEditorMode.log);
+
+    final hasAnyCompletedSet =  exerciseLogs.any((log) => log.sets.any((set) => set.isNotEmpty() && set.checked));
+
+    if (!hasAnyCompletedSet) {
+      _showSnackbar("Workout must have completed set(s)");
+    }
+
+    return hasAnyCompletedSet;
+  }
+
   void _createLog() async {
     if (!_validateRoutineTemplateInputs()) return;
 
+    if(!_isRoutinePartiallyComplete()) return;
+
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
 
-    final exercises = exerciseLogController.mergeExerciseLogsAndSets(mode: RoutineEditorMode.edit);
+    final exerciseLogs = exerciseLogController.mergeExerciseLogsAndSets(mode: RoutineEditorMode.edit).map((exerciseLog) {
+      final checkedSets = exerciseLog.sets.map((set) => set.copyWith(checked: true)).toList();
+      return exerciseLog.copyWith(sets: checkedSets);
+    }).toList();
 
     final routineName =
         _templateNameController.text.trim().isNotEmpty ? _templateNameController.text.trim() : widget.log.name;
     final routineNotes =
         _templateNotesController.text.trim().isNotEmpty ? _templateNotesController.text.trim() : widget.log.notes;
 
-    final updatedLog = widget.log.copyWith(name: routineName, notes: routineNotes, exerciseLogs: exercises);
+    final updatedLog = widget.log.copyWith(name: routineName, notes: routineNotes, exerciseLogs: exerciseLogs);
 
     if (widget.log.id.isEmpty) {
       final datetime = TemporalDateTime.withOffset(updatedLog.startTime, Duration.zero);
