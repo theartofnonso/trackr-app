@@ -78,9 +78,18 @@ class RoutineLogDto extends Log {
     final startTime = DateTime.parse(json["startTime"]);
     final endTime = DateTime.parse(json["endTime"]);
     final exerciseLogJsons = json["exercises"] as List<dynamic>;
-    final exerciseLogs = exerciseLogJsons.map((json) {
-      return ExerciseLogDto.fromJson(routineLogId: "", json: json);
+
+    final exerciseLogs = exerciseLogJsons.map((item) {
+      if (item is String) {
+        final decodedJson = jsonDecode(item) as Map<String, dynamic>;
+        return ExerciseLogDto.fromJson(routineLogId: "", json: decodedJson);
+      } else if (item is Map<String, dynamic>) {
+        return ExerciseLogDto.fromJson(routineLogId: "", json: item);
+      } else {
+        throw Exception('Invalid type in exerciseLogJsons: ${item.runtimeType}');
+      }
     }).toList();
+
     return RoutineLogDto(
       id: "",
       templateId: templateId,
