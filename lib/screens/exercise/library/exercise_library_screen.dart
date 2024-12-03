@@ -36,6 +36,8 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   /// Holds a list of [ExerciseDto] when filtering through a search
   List<ExerciseDto> _filteredExercises = [];
 
+  bool _shouldShowOwnerExercises = false;
+
   /// Search through the list of exercises
   void _runSearch(_) {
     final query = _searchController.text.toLowerCase().trim();
@@ -54,6 +56,12 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     if (_selectedMuscleGroups.isNotEmpty) {
       searchResults =
           searchResults.where((exercise) => _selectedMuscleGroups.contains(exercise.primaryMuscleGroup)).toList();
+    }
+
+    if(_shouldShowOwnerExercises) {
+      print("called");
+      searchResults =
+          searchResults.where((exercise) => exercise.owner.isNotEmpty).toList();
     }
 
     searchResults.sort((a, b) => a.name.compareTo(b.name));
@@ -165,6 +173,16 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                     scrollDirection: Axis.horizontal,
                     child: Row(children: [
                       const SizedBox(width: 10),
+                      OpacityButtonWidget(
+                          onPressed: _toggleOwnerExercises,
+                          padding: EdgeInsets.symmetric(horizontal: 0),
+                          textStyle: GoogleFonts.ubuntu(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
+                              color: _shouldShowOwnerExercises ? vibrantBlue : Colors.white70),
+                          buttonColor: _shouldShowOwnerExercises ? vibrantBlue : Colors.black,
+                          label: "Your Exercises".toUpperCase()),
+                      const SizedBox(width: 6),
                       ...muscleGroups.sublist(0, muscleGroupScrollViewHalf),
                       const SizedBox(width: 10)
                     ])),
@@ -214,6 +232,15 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         .where((exercise) => !widget.excludeExercises.contains(exercise))
         .where((exercise) => exerciseType != null ? exercise.type == widget.type : true)
         .toList();
+
+    _runSearch("");
+  }
+
+  void _toggleOwnerExercises() {
+    setState(() {
+      _shouldShowOwnerExercises = !_shouldShowOwnerExercises;
+    });
+    _runSearch("");
   }
 
   void _onSelectMuscleGroup({required MuscleGroup newMuscleGroup}) {
