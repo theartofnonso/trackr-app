@@ -3,6 +3,8 @@ import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,7 +18,6 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
-import 'package:tracker_app/controllers/notification_controller.dart';
 import 'package:tracker_app/controllers/settings_controller.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/dtos/appsync/routine_template_dto.dart';
@@ -52,12 +53,9 @@ import 'controllers/routine_user_controller.dart';
 import 'dtos/appsync/exercise_dto.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
 import 'dtos/viewmodels/routine_template_arguments.dart';
+import 'firebase_options.dart';
 import 'logger.dart';
 import 'models/ModelProvider.dart';
-
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 
 void main() async {
   final logger = getLogger(className: "main");
@@ -76,7 +74,7 @@ void main() async {
     );
     FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
     logger.i("Firebase initialized");
-  } catch(e) {
+  } catch (e) {
     logger.e("Failed to initialize Firebase", error: e);
   }
 
@@ -107,9 +105,6 @@ void main() async {
     appRunner: () => runApp(MultiProvider(providers: [
       ChangeNotifierProvider<SettingsController>(
         create: (BuildContext context) => SettingsController(),
-      ),
-      ChangeNotifierProvider<NotificationController>(
-        create: (BuildContext context) => NotificationController(),
       ),
       ChangeNotifierProvider<RoutineUserController>(
         create: (BuildContext context) => RoutineUserController(AmplifyRoutineUserRepository()),
@@ -322,8 +317,7 @@ class _MyAppState extends State<MyApp> {
       await Amplify.addPlugin(AmplifyAuthCognito());
       final apiPluginOptions = APIPluginOptions(modelProvider: ModelProvider.instance);
       await Amplify.addPlugin(AmplifyAPI(options: apiPluginOptions));
-      final datastorePluginOptions = DataStorePluginOptions(
-          syncExpressions: [
+      final datastorePluginOptions = DataStorePluginOptions(syncExpressions: [
         DataStoreSyncExpression(
             ActivityLog.classType, () => ActivityLog.CREATEDAT.between(startOfCurrentYear, endOfCurrentYear)),
         DataStoreSyncExpression(

@@ -21,7 +21,6 @@ import '../../colors.dart';
 import '../../controllers/analytics_controller.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/exercise_dto.dart';
-import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/set_dtos/weight_and_reps_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
@@ -100,7 +99,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   RoutineLogDto _routineLog() {
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
 
-    final exerciseLogs = exerciseLogController.mergeExerciseLogsAndSets();
+    final exerciseLogs = exerciseLogController.mergeExerciseLogsAndSets(mode: RoutineEditorMode.log);
 
     final routineLog = widget.log.copyWith(exerciseLogs: exerciseLogs);
 
@@ -108,39 +107,27 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   }
 
   Future<void> _doCreateRoutineLog() async {
-    final routineLog = _routineLog();
+    final routineLogToBeCreated = _routineLog().copyWith(endTime: DateTime.now());
 
-    final routineLogToBeUpdated = routineLog.copyWith(endTime: DateTime.now());
-
-    final updatedRoutineLog =
-        await Provider.of<ExerciseAndRoutineController>(context, listen: false).saveLog(logDto: routineLogToBeUpdated);
+    final createdRoutineLog =
+        await Provider.of<ExerciseAndRoutineController>(context, listen: false).saveLog(logDto: routineLogToBeCreated);
 
     AnalyticsController.workoutSessionEvent(eventAction: "workout_session_logged");
 
-    if (updatedRoutineLog != null) {
-      if (updatedRoutineLog.templateId.isNotEmpty) {
-        await _updateRoutineTemplate(log: updatedRoutineLog);
-      }
-    }
-    _navigateBack(routineLog: updatedRoutineLog);
+    _navigateBack(routineLog: createdRoutineLog);
   }
 
   Future<void> _doUpdateRoutineLog() async {
-    final routineLog = _routineLog();
+    final routineLogToBeUpdated = _routineLog();
 
-    await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateLog(log: routineLog);
+    await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateLog(log: routineLogToBeUpdated);
 
-    _updateRoutineTemplate(log: routineLog);
-
-    if (routineLog.templateId.isNotEmpty) {
-      await _updateRoutineTemplate(log: routineLog);
-    }
-    _navigateBack(routineLog: routineLog);
+    _navigateBack(routineLog: routineLogToBeUpdated);
   }
 
   bool _isRoutinePartiallyComplete() {
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
-    final exerciseLogs = exerciseLogController.mergeExerciseLogsAndSets();
+    final exerciseLogs = exerciseLogController.mergeExerciseLogsAndSets(mode: RoutineEditorMode.log);
     return exerciseLogs.any((log) => log.sets.any((set) => set.isNotEmpty() && set.checked));
   }
 
@@ -188,19 +175,10 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     }
   }
 
-  Future<void> _updateRoutineTemplate({required RoutineLogDto log}) async {
-    final template =
-        Provider.of<ExerciseAndRoutineController>(context, listen: false).templateWhere(id: widget.log.templateId);
-    if (template != null) {
-      await _doUpdateTemplate(log: log, templateToUpdate: template);
-    }
-  }
-
   void _cacheLog() {
     if (widget.mode == RoutineEditorMode.log) {
-      final routineLog = _routineLog();
-      final updatedRoutineLog = routineLog.copyWith(endTime: DateTime.now());
-      Provider.of<ExerciseAndRoutineController>(context, listen: false).cacheLog(logDto: updatedRoutineLog);
+      final routineLogToBeCached = _routineLog().copyWith(endTime: DateTime.now());
+      Provider.of<ExerciseAndRoutineController>(context, listen: false).cacheLog(logDto: routineLogToBeCached);
     }
   }
 
@@ -234,15 +212,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
       _cleanUpSession();
     }
     context.pop(routineLog);
-  }
-
-  Future<void> _doUpdateTemplate({required RoutineLogDto log, required RoutineTemplateDto templateToUpdate}) async {
-    final exerciseLogs = log.exerciseLogs.map((exerciseLog) {
-      final newSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
-      return exerciseLog.copyWith(sets: newSets);
-    }).toList();
-    final updatedTemplate = templateToUpdate.copyWith(exerciseTemplates: exerciseLogs);
-    await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateTemplate(template: updatedTemplate);
   }
 
   /// Handle collapsed ExerciseLogWidget
@@ -396,16 +365,19 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                                 superSet: whereOtherExerciseInSuperSet(
                                                     firstExercise: exerciseLog, exercises: exerciseLogs),
                                                 onRemoveSuperSet: (String superSetId) {
-                                                  exerciseLogController.removeSuperSet(superSetId: exerciseLog.superSetId);
+                                                  exerciseLogController.removeSuperSet(
+                                                      superSetId: exerciseLog.superSetId);
                                                   _cacheLog();
                                                 },
                                                 onRemoveLog: () {
                                                   exerciseLogController.removeExerciseLog(logId: exerciseLog.id);
                                                   _cacheLog();
                                                 },
-                                                onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
+                                                onSuperSet: () =>
+                                                    _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
                                                 onCache: _cacheLog,
-                                                onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
+                                                onReplaceLog: () =>
+                                                    _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
                                                 onResize: () =>
                                                     _handleResizedExerciseLogCard(exerciseIdToResize: exerciseLog.id),
                                                 isMinimised: _isMinimised(exerciseLog.id),
@@ -458,7 +430,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     WidgetsBinding.instance.addObserver(this);
 
-    _initializeProcedureData();
+    _loadExerciseLogs();
 
     _onDisposeCallback = Provider.of<ExerciseLogController>(context, listen: false).onClear;
 
@@ -467,20 +439,17 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     });
   }
 
-  void _initializeProcedureData() {
+  void _loadExerciseLogs() {
     final exerciseLogs = widget.log.exerciseLogs;
     final updatedExerciseLogs = exerciseLogs.map((exerciseLog) {
       final previousSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
           .whereSetsForExercise(exercise: exerciseLog.exercise);
-      if (previousSets.isNotEmpty) {
-        final hasCurrentSets = exerciseLog.sets.isNotEmpty;
-        final unCheckedSets = previousSets
-            .take(exerciseLog.sets.length)
-            .mapIndexed((index, set) => set.copyWith(checked: hasCurrentSets ? exerciseLog.sets[index].checked : false))
-            .toList();
-        return exerciseLog.copyWith(sets: unCheckedSets);
-      }
-      return exerciseLog;
+      final sets = previousSets.isNotEmpty ? previousSets : exerciseLog.sets;
+      final unCheckedSets = sets
+          .take(exerciseLog.sets.length)
+          .mapIndexed((index, set) => set.copyWith(checked: exerciseLog.sets[index].checked))
+          .toList();
+      return exerciseLog.copyWith(sets: unCheckedSets);
     }).toList();
     Provider.of<ExerciseLogController>(context, listen: false)
         .loadExerciseLogs(exerciseLogs: updatedExerciseLogs, mode: widget.mode);

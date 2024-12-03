@@ -13,7 +13,7 @@ class ExerciseLogRepository {
 
   void loadExerciseLogs({required List<ExerciseLogDto> exerciseLogs, required RoutineEditorMode mode}) {
     List<ExerciseLogDto> logs = [];
-    for (var exerciseLog in exerciseLogs) {
+    for (final exerciseLog in exerciseLogs) {
       if (withDurationOnly(type: exerciseLog.exercise.type)) {
         if (mode == RoutineEditorMode.log) {
           final checkedSets = exerciseLog.sets.map((set) => set.copyWith(checked: true)).toList();
@@ -31,18 +31,18 @@ class ExerciseLogRepository {
     _exerciseLogs = logs;
   }
 
-  List<ExerciseLogDto> mergeExerciseLogsAndSets() {
-    return _exerciseLogs.map((exerciseLog) {
-      final sets = exerciseLog.sets;
-      return exerciseLog.copyWith(sets: withDurationOnly(type: exerciseLog.exercise.type) ? _checkSets(sets) : sets);
-    }).toList();
-  }
+  List<ExerciseLogDto> mergeExerciseLogsAndSets({required RoutineEditorMode mode}) {
+    if(mode == RoutineEditorMode.log) {
+      return _exerciseLogs.map((exerciseLog) {
+        final setsForNonDuration = exerciseLog.sets.where((set) => set.checked).toList();
+        return exerciseLog.copyWith(sets: withDurationOnly(type: exerciseLog.exercise.type) ? _checkSets(exerciseLog.sets) : setsForNonDuration);
+      }).toList();
+    }
 
-  List<ExerciseLogDto> mergeAndCheckPastExerciseLogsAndSets({required DateTime datetime}) {
     return _exerciseLogs.map((exerciseLog) {
-      final sets = _checkSets(exerciseLog.sets);
-      return exerciseLog.copyWith(sets: sets, createdAt: datetime);
+      return exerciseLog.copyWith(sets: exerciseLog.sets);
     }).toList();
+
   }
 
   List<SetDto> _checkSets(List<SetDto> sets) {
@@ -78,7 +78,10 @@ class ExerciseLogRepository {
     _removeAllSetsForExerciseLog(exerciseLogId: logId);
   }
 
-  void replaceExercise({required String oldExerciseId, required ExerciseDto newExercise, }) {
+  void replaceExercise({
+    required String oldExerciseId,
+    required ExerciseDto newExercise,
+  }) {
     final oldExerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: oldExerciseId);
     final oldExerciseLog = _whereExerciseLog(exerciseLogId: oldExerciseId);
     if (oldExerciseLogIndex == -1) {
@@ -157,7 +160,8 @@ class ExerciseLogRepository {
 
     final exerciseLog = _whereExerciseLog(exerciseLogId: exerciseLogId);
 
-    SetDto newSet = sets.lastOrNull != null ? sets.last.copyWith(checked: false) : SetDto.newType(type: exerciseLog.exercise.type);
+    SetDto newSet =
+        sets.lastOrNull != null ? sets.last.copyWith(checked: false) : SetDto.newType(type: exerciseLog.exercise.type);
 
     SetDto? pastSet = _wherePastSetOrNull(index: newIndex, pastSets: pastSets);
 
@@ -190,7 +194,7 @@ class ExerciseLogRepository {
 
     // Updating the exerciseLog
     final exerciseLog = newExerciseLogs[exerciseLogIndex];
-    final sets =  exerciseLog.sets;
+    final sets = exerciseLog.sets;
     if (index >= 0 || index < sets.length) {
       sets.removeAt(index);
 
@@ -199,7 +203,6 @@ class ExerciseLogRepository {
       // Assign the new list to maintain immutability
       _exerciseLogs = newExerciseLogs;
     }
-
   }
 
   void _updateSet({required String exerciseLogId, required int index, required SetDto set}) {
@@ -214,7 +217,7 @@ class ExerciseLogRepository {
 
     // Updating the exerciseLog
     final exerciseLog = newExerciseLogs[exerciseLogIndex];
-    final sets =  exerciseLog.sets;
+    final sets = exerciseLog.sets;
     if (index >= 0 || index < sets.length) {
       sets[index] = set;
 
@@ -250,14 +253,14 @@ class ExerciseLogRepository {
         superSetId: "",
         exercise: exercise,
         notes: notes,
-        sets: [],
+        sets: [SetDto.newType(type: exercise.type)],
         createdAt: DateTime.now());
   }
 
   List<ExerciseLogDto> completedExerciseLogs() {
     return _exerciseLogs.where((exercise) {
-      final numberOfCompletedSets = exercise.sets.where((set) => set.checked);
-      return numberOfCompletedSets.length == exercise.sets.length;
+      final hasCompletedSets = exercise.sets.where((set) => set.checked).isNotEmpty;
+      return hasCompletedSets;
     }).toList();
   }
 

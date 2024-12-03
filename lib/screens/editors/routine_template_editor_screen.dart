@@ -111,7 +111,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     if (!_validateRoutineTemplateInputs()) return;
 
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
-    final exercises = exerciseLogController.mergeExerciseLogsAndSets();
+    final exercises = exerciseLogController.mergeExerciseLogsAndSets(mode: RoutineEditorMode.edit);
 
     final template = RoutineTemplateDto(
         id: "",
@@ -150,7 +150,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   RoutineTemplateDto _getUpdatedRoutineTemplate(
       {required RoutineTemplateDto template, List<ExerciseLogDto>? updatedExerciseLogs}) {
     final exerciseProvider = Provider.of<ExerciseLogController>(context, listen: false);
-    final exerciseLogs = updatedExerciseLogs ?? exerciseProvider.mergeExerciseLogsAndSets();
+    final exerciseLogs = updatedExerciseLogs ?? exerciseProvider.mergeExerciseLogsAndSets(mode: RoutineEditorMode.edit);
 
     return template.copyWith(
         name: _templateNameController.text.trim(),
@@ -170,7 +170,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   void _checkForUnsavedChanges() {
     final exerciseProvider = Provider.of<ExerciseLogController>(context, listen: false);
     final exerciseLog1 = widget.template?.exerciseTemplates ?? [];
-    final exerciseLog2 = exerciseProvider.mergeExerciseLogsAndSets();
+    final exerciseLog2 = exerciseProvider.mergeExerciseLogsAndSets(mode: RoutineEditorMode.edit);
     final unsavedChangesMessage = checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
     if (unsavedChangesMessage.isNotEmpty) {
       showBottomSheetWithMultiActions(

@@ -113,7 +113,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
 
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
 
-    final exercises = exerciseLogController.mergeAndCheckExerciseLogsAndSets(datetime: widget.log.startTime);
+    final exercises = exerciseLogController.mergeExerciseLogsAndSets(mode: RoutineEditorMode.edit);
 
     final routineName =
         _templateNameController.text.trim().isNotEmpty ? _templateNameController.text.trim() : widget.log.name;
@@ -136,7 +136,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
   void _checkForUnsavedChanges() {
     final exerciseProvider = Provider.of<ExerciseLogController>(context, listen: false);
     final exerciseLog1 = widget.log.exerciseLogs;
-    final exerciseLog2 = exerciseProvider.mergeAndCheckExerciseLogsAndSets(datetime: widget.log.startTime);
+    final exerciseLog2 = exerciseProvider.mergeExerciseLogsAndSets(mode: RoutineEditorMode.edit);
     final unsavedChangesMessage = checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
     if (unsavedChangesMessage.isNotEmpty) {
       showBottomSheetWithMultiActions(

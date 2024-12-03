@@ -53,11 +53,7 @@ class MonthlyInsightsScreen extends StatelessWidget {
           dateTime: dateTimeRange.start,
         ),
         const SizedBox(height: 12),
-        CaloriesWidget(thisMonthLogs: thisMonthLogs, lastMonthLogs: lastMonthLogs),
-        const SizedBox(height: 12),
         ActivitiesWidget(thisMonthsActivities: thisMonthsActivityLogs, lastMonthsActivities: lastMonthActivityLogs),
-        const SizedBox(height: 12),
-        MuscleScoreWidget(thisMonthLogs: thisMonthRoutineLogs, lastMonthLogs: lastMonthRoutineLogs),
         if (thisMonthRoutineLogs.isNotEmpty)
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,6 +62,10 @@ class MonthlyInsightsScreen extends StatelessWidget {
               MuscleGroupFamilyFrequencyWidget(logs: thisMonthRoutineLogs),
             ],
           ),
+        const SizedBox(height: 12),
+        CaloriesWidget(thisMonthLogs: thisMonthLogs, lastMonthLogs: lastMonthLogs),
+        const SizedBox(height: 12),
+        MuscleScoreWidget(thisMonthLogs: thisMonthRoutineLogs, lastMonthLogs: lastMonthRoutineLogs),
       ],
     );
   }

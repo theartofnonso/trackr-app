@@ -24,6 +24,11 @@ class MuscleGroupFamily {
         shoulders,
         core,
       ];
+
+  @override
+  String toString() {
+    return name;
+  }
 }
 
 class MuscleGroup {
@@ -106,5 +111,10 @@ class MuscleGroup {
       (group) => group.name.toLowerCase() == string.toLowerCase(),
       orElse: () => MuscleGroup.fullBody,
     );
+  }
+
+  @override
+  String toString() {
+    return name;
   }
 }

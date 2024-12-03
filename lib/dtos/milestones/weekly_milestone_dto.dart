@@ -65,25 +65,42 @@ class WeeklyMilestone extends Milestone {
     return [mondayMilestone, weekendMilestone, legDayMilestone];
   }
 
-  static (double, List<RoutineLogDto>) _calculateMondayProgress(
-      {required List<RoutineLogDto> logs, required int target, required List<DateTimeRange> weeks}) {
+  static (double, List<RoutineLogDto>) _calculateMondayProgress({
+    required List<RoutineLogDto> logs,
+    required int target,
+    required List<DateTimeRange> weeks,
+  }) {
     if (logs.isEmpty) return (0, []);
 
     List<RoutineLogDto> mondayLogs = [];
-    for (final week in weeks) {
-      final logsForTheWeek = logs.where((log) => log.createdAt.isWithinRange(range: week));
-      final mondayLog = logsForTheWeek.firstWhereOrNull((log) => log.createdAt.weekday == DateTime.monday);
+    final now = DateTime.now();
+
+    // Process weeks in reverse order (from most recent to oldest)
+    for (final week in weeks.reversed) {
+      final logsForTheWeek = logs.where(
+        (log) => log.createdAt.isWithinRange(range: week),
+      );
+
+      final mondayLog = logsForTheWeek.firstWhereOrNull(
+        (log) => log.createdAt.weekday == DateTime.monday,
+      );
+
       if (mondayLog != null) {
         mondayLogs.add(mondayLog);
       } else {
-        if (mondayLogs.length < target) {
-          mondayLogs = [];
+        // Only reset the streak if the week is over
+        if (week.end.isBefore(now)) {
+          break; // Streak is broken
         }
+      }
+
+      // Stop if we have reached the target number of logs
+      if (mondayLogs.length >= target) {
+        break;
       }
     }
 
     final qualifyingLogs = mondayLogs.take(target).toList();
-
     final progress = qualifyingLogs.length / target;
 
     return (progress, qualifyingLogs);
@@ -114,7 +131,7 @@ class WeeklyMilestone extends Milestone {
           .where((log) => log.createdAt.weekday == DateTime.saturday || log.createdAt.weekday == DateTime.sunday);
 
       if (saturdayOrSundayLogs.isNotEmpty) {
-        weekendLogs.addAll(saturdayOrSundayLogs);
+        weekendLogs.add(saturdayOrSundayLogs.first);
       } else {
         // Only reset if we haven't met the target yet and we're not in the current week
         if (weekendLogs.length < target && week.end.isBefore(now)) {

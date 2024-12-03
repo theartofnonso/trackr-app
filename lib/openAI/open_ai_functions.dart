@@ -57,7 +57,7 @@ const routineLogsReportResponseFormat = {
               "comments": {
                 "type": "string",
                 "description":
-                "Overall summary of the exercise performance across all training sessions, including any notable trends or observations."
+                    "Overall summary of the exercise performance across all training sessions, including any notable trends or observations."
               }
             },
             "required": ["exercise_name", "heaviest_weight", "heaviest_volume", "comments"],
@@ -76,39 +76,174 @@ const routineLogsReportResponseFormat = {
 const routineLogReportResponseFormat = {
   "type": "json_schema",
   "json_schema": {
-    "name": "current_exercise_logs_response",
+    "name": "exercise_performance_report",
     "schema": {
+      "title": "Exercise Performance Report",
+      "description":
+          "A structured report analyzing the user's performance on current exercises compared to previous sessions.",
       "type": "object",
       "properties": {
         "introduction": {
           "type": "string",
-          "description": "Brief introduction summarizing the overall training report."
+          "description": "An overview summarizing the key highlights of the training report."
         },
         "exercise_reports": {
           "type": "array",
+          "description": "A list of detailed reports for each exercise performed.",
           "items": {
             "type": "object",
             "properties": {
               "exercise_name": {"type": "string", "description": "The name of the exercise."},
-              "achievements": {
+              "current_performance": {
+                "type": "object",
+                "description": "Details of the current exercise performance.",
+                "properties": {
+                  "date": {"type": "string", "description": "The date of the current exercise session."},
+                  "sets": {
+                    "type": "array",
+                    "description": "List of sets performed in the current session.",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "weight": {"type": "number", "description": "The weight used in the set."},
+                        "repetitions": {
+                          "type": "integer",
+                          "description": "The number of repetitions performed in the set."
+                        }
+                      },
+                      "required": ["weight", "repetitions"],
+                      "additionalProperties": false
+                    }
+                  },
+                  "total_volume": {
+                    "type": "number",
+                    "description":
+                        "The total volume lifted in the current session (sum of weight × repetitions for all sets)."
+                  }
+                },
+                "required": ["date", "sets", "total_volume"],
+                "additionalProperties": false
+              },
+              "previous_performance": {
                 "type": "array",
-                "description":
-                "List of brief summary of training sessions where there was an improvement in performance across sets compared to previous sessions.",
-                "items": {"type": "string", "description": "Description of an improvement in performance across sets compared to previous sessions."}
+                "description": "Details of previous exercise performances for comparison.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "date": {"type": "string", "description": "The date of the previous exercise session."},
+                    "sets": {
+                      "type": "array",
+                      "description": "List of sets performed in the previous session.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "weight": {"type": "number", "description": "The weight used in the set."},
+                          "repetitions": {
+                            "type": "integer",
+                            "description": "The number of repetitions performed in the set."
+                          }
+                        },
+                        "required": ["weight", "repetitions"],
+                        "additionalProperties": false
+                      }
+                    },
+                    "total_volume": {
+                      "type": "number",
+                      "description": "The total volume lifted in the previous session."
+                    }
+                  },
+                  "required": ["date", "sets", "total_volume"],
+                  "additionalProperties": false
+                }
+              },
+              "achievements": {
+                "type": "string",
+                "description": "A description of achievements or improvements compared to previous sessions."
               },
               "comments": {
                 "type": "string",
-                "description":
-                "Overall summary of the exercise performance compared to previous training sessions, including any notable trends or observations."
+                "description": "Overall analysis of performance trends, including notable observations."
               }
             },
-            "required": ["exercise_name", "achievements", "comments"],
+            "required": ["exercise_name", "current_performance", "previous_performance", "achievements", "comments"],
             "additionalProperties": false
           }
         },
-        "suggestions": {"type": "string", "description": "Brief summary of suggestions for future improvements."}
+        "suggestions": {
+          "type": "string",
+          "description": "Personalized suggestions for future improvements and goal setting."
+        }
       },
       "required": ["introduction", "exercise_reports", "suggestions"],
+      "additionalProperties": false
+    },
+    "strict": true
+  }
+};
+
+const monthlyReportResponseFormat = {
+  "type": "json_schema",
+  "json_schema": {
+    "name": "monthly_training_report",
+    "schema": {
+      "title": "Monthly Training Report",
+      "description": "A structured report summarizing the user's training performance over the past month.",
+      "type": "object",
+      "properties": {
+        "introduction": {
+          "type": "string",
+          "description": "A brief introduction summarizing the overall training performance and key highlights."
+        },
+        "exercises_summary": {
+          "type": "string",
+          "description":
+              "An analysis of the exercises performed, including frequency, variety, and any new exercises introduced."
+        },
+        "muscles_trained_summary": {
+          "type": "string",
+          "description": "A summary of muscle groups trained, highlighting focus areas and any potential imbalances."
+        },
+        "calories_burned_summary": {
+          "type": "string",
+          "description":
+              "A summary of total calories burned, discussing energy expenditure trends and factors influencing changes."
+        },
+        "personal_bests_summary": {
+          "type": "string",
+          "description": "Details of personal bests achieved, including exercises, weights, reps, and dates."
+        },
+        "workout_duration_summary": {
+          "type": "string",
+          "description":
+              "An analysis of workout durations, noting average session lengths and any significant variations."
+        },
+        "activities_summary": {
+          "type": "string",
+          "description":
+              "A summary of activities logged outside of strength training, emphasizing the importance of variety."
+        },
+        "consistency_summary": {
+          "type": "string",
+          "description":
+              "An evaluation of workout consistency, including frequency of training sessions and adherence to the schedule."
+        },
+        "recommendations": {
+          "type": "string",
+          "description":
+              "Personalized suggestions for improving training performance, addressing weaknesses, and setting future goals."
+        }
+      },
+      "required": [
+        "introduction",
+        "exercises_summary",
+        "muscles_trained_summary",
+        "calories_burned_summary",
+        "personal_bests_summary",
+        "workout_duration_summary",
+        "activities_summary",
+        "consistency_summary",
+        "recommendations"
+      ],
       "additionalProperties": false
     },
     "strict": true

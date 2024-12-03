@@ -6,7 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/dtos/open_ai_response_schema_dtos/routine_log_report_dto.dart';
+import 'package:tracker_app/dtos/open_ai_response_schema_dtos/exercise_performance_report.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/openAI/open_ai_functions.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
@@ -27,7 +27,6 @@ import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/viewmodels/exercise_log_view_model.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
-import '../../enums/exercise_type_enums.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../models/RoutineLog.dart';
 import '../../openAI/open_ai.dart';
@@ -35,6 +34,7 @@ import '../../strings/ai_prompts.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/routine_utils.dart';
+import '../../utils/sets_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../widgets/ai_widgets/trkr_information_container.dart';
 import '../../widgets/empty_states/not_found.dart';
@@ -258,7 +258,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                                   ctaLabel: "Ask for feedback",
                                   description:
                                       "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
-                                  onTap: () => _generateReport(exerciseLogs: updatedExerciseLogs)),
+                                  onTap: () => _generateReport(currentExerciseLogs: updatedExerciseLogs)),
                             ),
                           ExerciseLogListView(
                               exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: updatedExerciseLogs)),
@@ -284,50 +284,53 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     });
   }
 
-  void _generateReport({required List<ExerciseLogDto> exerciseLogs}) async {
+  void _generateReport({required List<ExerciseLogDto> currentExerciseLogs}) async {
     final log = _log;
 
     if (log == null) return;
 
-    final StringBuffer buffer = StringBuffer();
+    _showLoadingScreen();
 
     final exerciseAndRoutineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
-    buffer.writeln("Analyze my exercise logs in ${log.name}");
+    final StringBuffer buffer = StringBuffer();
+
+    buffer.writeln(
+        "Please analyze my performance in my ${log.name} workout by comparing the sets in each exercise with ones from my previous logs for the same exercise.");
 
     buffer.writeln();
 
-    for (final exerciseLog in exerciseLogs) {
-      buffer.writeln("Analyze ${exerciseLog.exercise.name}");
-      List<String> setSummaries = _generateSetSummaries(exerciseLog);
-      buffer.writeln("Current Sets: $setSummaries");
+    for (final currentExerciseLog in currentExerciseLogs) {
+      List<String> currentSetSummaries = generateSetSummaries(currentExerciseLog);
+      buffer.writeln("Current Sets for ${currentExerciseLog.exercise.name}: $currentSetSummaries");
 
-      buffer.writeln();
-
-      buffer.writeln("Compare ${exerciseLog.exercise.name} to previous logs");
-
-      buffer.writeln();
-
-      buffer.writeln("Past Exercise Logs for ${exerciseLog.exercise.name}");
-
-      final pastExerciseLogs = exerciseAndRoutineLogController.whereExerciseLogsBefore(
-          exercise: exerciseLog.exercise, date: exerciseLog.createdAt.withoutTime());
+      final pastExerciseLogs = exerciseAndRoutineLogController
+          .whereExerciseLogsBefore(
+              exercise: currentExerciseLog.exercise, date: currentExerciseLog.createdAt.withoutTime())
+          .sorted((a, b) => b.createdAt.compareTo(a.createdAt));
 
       for (final pastExerciseLog in pastExerciseLogs) {
-        buffer.writeln("Date: ${pastExerciseLog.createdAt.withoutTime().formattedDayAndMonthAndYear()}");
-        List<String> pastSetSummaries = _generateSetSummaries(exerciseLog);
-        buffer.writeln("Past Sets: $pastSetSummaries");
-
+        List<String> pastSetSummaries = generateSetSummaries(currentExerciseLog);
         buffer.writeln(
-            "Provide feedback on performance trends, volume, and intensity during these periods. Note that my weights are logged in ${weightLabel()}");
+            "Past sets for ${currentExerciseLog.exercise.name} logged on ${pastExerciseLog.createdAt.withoutTime().formattedDayAndMonthAndYear()}: $pastSetSummaries");
       }
 
-      buffer.writeln("Compare ${exerciseLog.exercise.name} to previous logs");
+      buffer.writeln();
     }
 
-    final completeInstructions = buffer.toString();
+    buffer.writeln();
 
-    _showLoadingScreen();
+    buffer.writeln("""
+          Please provide feedback on the following aspects of my workout performance:
+            1.	Weights Lifted: Analyze the progression or consistency in the weights I’ve used.
+	          2.	Repetitions: Evaluate the number of repetitions performed per set and identify any trends or changes.
+	          3.	Volume Lifted: Calculate the total volume lifted (weight × repetitions) and provide insights into its progression over time.
+	          4.	Number of Sets: Assess the number of sets performed and how it aligns with my overall workout goals.
+          Note: All weights are measured in ${weightLabel()}.
+          Note: Your report should sound personal.
+        """);
+
+    final completeInstructions = buffer.toString();
 
     runMessage(
             system: routineLogSystemInstruction,
@@ -341,7 +344,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
           Map<String, dynamic> json = jsonDecode(response);
 
           // Create an instance of ExerciseLogsResponse
-          RoutineLogReportDto report = RoutineLogReportDto.fromJson(json);
+          ExercisePerformanceReport report = ExercisePerformanceReport.fromJson(json);
           navigateWithSlideTransition(
               context: context,
               child: RoutineLogReportScreen(
@@ -359,17 +362,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             message: "Oops! I am unable to generate your ${log.name} report");
       }
     });
-  }
-
-  List<String> _generateSetSummaries(ExerciseLogDto exerciseLog) {
-    final setSummaries = exerciseLog.sets.mapIndexed((index, set) {
-      return switch (exerciseLog.exercise.type) {
-        ExerciseType.weights => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
-        ExerciseType.bodyWeight => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
-        ExerciseType.duration => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
-      };
-    }).toList();
-    return setSummaries;
   }
 
   void _loadData() {

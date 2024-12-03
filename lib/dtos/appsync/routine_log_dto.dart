@@ -60,7 +60,6 @@ class RoutineLogDto extends Log {
       'templateId': templateId,
       'name': name,
       'notes': notes,
-      'summary': summary,
       'startTime': startTime.toIso8601String(),
       'endTime': endTime.toIso8601String(),
       'exercises': exerciseLogs.map((exercise) => exercise.toJson()).toList(),
