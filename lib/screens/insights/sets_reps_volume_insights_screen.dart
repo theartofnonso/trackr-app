@@ -426,7 +426,12 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
           }
           return 0;
         }).sum,
-      SetRepsVolumeReps.volume => sets.map((set) => (set as WeightAndRepsSetDto).volume()).sum,
+      SetRepsVolumeReps.volume => sets.map((set) {
+        if (set is WeightAndRepsSetDto) {
+          return set.volume();
+        }
+        return 0;
+      }).sum,
     };
   }
 

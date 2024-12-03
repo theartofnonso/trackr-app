@@ -15,3 +15,6 @@ const shareableRoutineUrl = "https://TRKR.FIT/shared-workout";
 
 /// Share Routine Log
 const shareableRoutineLogUrl = "https://TRKR.FIT/shared-workout-log";
+
+/// App Store ID
+const appStoreId = "id6474073502";
