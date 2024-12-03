@@ -322,7 +322,7 @@ Map<MuscleGroupFamily, double> muscleGroupFamilyFrequency({
   final frequencyMap = <MuscleGroupFamily, int>{};
 
   // Counting the occurrences of each MuscleGroup, excluding MuscleGroupFamily.fullBody
-  for (var log in exerciseLogs) {
+  for (final log in exerciseLogs) {
     final primaryFamily = log.exercise.primaryMuscleGroup.family;
     if (primaryFamily != MuscleGroupFamily.fullBody) {
       frequencyMap.update(primaryFamily, (value) => value + 1, ifAbsent: () => 1);
