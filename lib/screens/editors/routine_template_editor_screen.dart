@@ -84,7 +84,9 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
         context: context,
         excludeExercises: excludeExercises,
         onSelected: (List<ExerciseDto> selectedExercises) {
-          controller.replaceExerciseLog(oldExerciseId: oldExerciseLog.id, newExercise: selectedExercises.first);
+          final pastSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
+              .whereSetsForExercise(exercise: selectedExercises.first);
+          controller.replaceExerciseLog(oldExerciseId: oldExerciseLog.id, newExercise: selectedExercises.first, pastSets: pastSets);
         });
   }
 

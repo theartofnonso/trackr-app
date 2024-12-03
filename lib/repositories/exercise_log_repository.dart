@@ -81,6 +81,7 @@ class ExerciseLogRepository {
   void replaceExercise({
     required String oldExerciseId,
     required ExerciseDto newExercise,
+    required List<SetDto> pastSets
   }) {
     final oldExerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: oldExerciseId);
     final oldExerciseLog = _whereExerciseLog(exerciseLogId: oldExerciseId);
@@ -90,7 +91,15 @@ class ExerciseLogRepository {
 
     List<ExerciseLogDto> exerciseLogs = List<ExerciseLogDto>.from(_exerciseLogs);
 
-    exerciseLogs[oldExerciseLogIndex] = oldExerciseLog.copyWith(id: newExercise.id, exercise: newExercise, sets: [SetDto.newType(type: newExercise.type)]);
+    SetDto newSet = SetDto.newType(type: newExercise.type);
+
+    SetDto? pastSet = _wherePastSetOrNull(index: 0, pastSets: pastSets);
+
+    if (pastSet != null) {
+      newSet = pastSet.copyWith(checked: false);
+    }
+
+    exerciseLogs[oldExerciseLogIndex] = oldExerciseLog.copyWith(id: newExercise.id, exercise: newExercise, sets: [newSet]);
 
     _exerciseLogs = [...exerciseLogs];
   }
