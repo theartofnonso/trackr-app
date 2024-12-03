@@ -34,7 +34,8 @@ class ExerciseLogRepository {
   List<ExerciseLogDto> mergeExerciseLogsAndSets({required RoutineEditorMode mode}) {
     if(mode == RoutineEditorMode.log) {
       return _exerciseLogs.map((exerciseLog) {
-        return exerciseLog.copyWith(sets: withDurationOnly(type: exerciseLog.exercise.type) ? _checkSets(exerciseLog.sets) : exerciseLog.sets);
+        final setsForNonDuration = exerciseLog.sets.where((set) => set.checked).toList();
+        return exerciseLog.copyWith(sets: withDurationOnly(type: exerciseLog.exercise.type) ? _checkSets(exerciseLog.sets) : setsForNonDuration);
       }).toList();
     }
 
