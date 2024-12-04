@@ -274,15 +274,15 @@ void main() {
     final exerciseLogRepository = ExerciseLogRepository();
 
     exerciseLogRepository.loadExerciseLogs(
-        exerciseLogs: [legCurlExerciseLog, plankExerciseLog, benchPressExerciseLog],
+        exerciseLogs: [benchPressExerciseLog, plankExerciseLog, legCurlExerciseLog],
         mode: RoutineEditorMode.log);
 
-    final mergedLogs = exerciseLogRepository.mergeExerciseLogsAndSets();
+    final mergedLogs = exerciseLogRepository.mergeExerciseLogsAndSets(mode: RoutineEditorMode.log);
 
     expect(mergedLogs.expand((element) => element.sets).length, 9);
   });
 
-  test("All [ExerciseVariant.baseExerciseId.duration] sets must be checked when merging", () {
+  test("All [ExerciseType.duration] sets must be checked when merging", () {
     final exerciseLogRepository = ExerciseLogRepository();
 
     final plankExerciseLog = ExerciseLogDto(
@@ -314,7 +314,7 @@ void main() {
         index: 1,
         setDto: const DurationSetDto(duration: Duration(milliseconds: 100000), checked: false));
 
-    final mergedLogs = exerciseLogRepository.mergeExerciseLogsAndSets();
+    final mergedLogs = exerciseLogRepository.mergeExerciseLogsAndSets(mode: RoutineEditorMode.log);
 
     final plankLog = mergedLogs.firstWhereOrNull(
             (log) => log.id == plankExerciseLog.id);

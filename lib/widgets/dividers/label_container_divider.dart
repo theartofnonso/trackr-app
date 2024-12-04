@@ -6,6 +6,7 @@ class LabelContainerDivider extends StatelessWidget {
   final String label;
   final String description;
   final TextStyle labelStyle;
+  final Widget? child;
   final TextStyle descriptionStyle;
   final Color dividerColor;
   final LabelAlignment labelAlignment;
@@ -15,6 +16,7 @@ class LabelContainerDivider extends StatelessWidget {
         required this.label,
         required this.description,
         required this.labelStyle,
+        this.child,
         required this.descriptionStyle,
         required this.dividerColor,
         this.labelAlignment = LabelAlignment.left});
@@ -45,6 +47,7 @@ class LabelContainerDivider extends StatelessWidget {
                 label,
                 style: labelStyle,
               )),
+        child ?? SizedBox.shrink(),
         Padding(
             padding: EdgeInsets.only(top: 6, right: 10),
             child: Text(

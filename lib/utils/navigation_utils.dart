@@ -20,8 +20,7 @@ import '../screens/logs/routine_logs_screen.dart';
 import '../screens/logs/routine_log_screen.dart';
 import '../screens/templates/routine_template_screen.dart';
 
-Future<ExerciseDto?> navigateToExerciseEditor(
-    {required BuildContext context, ExerciseEditorArguments? arguments}) async {
+Future<ExerciseDto?> navigateToExerciseEditor({required BuildContext context, ExerciseEditorArguments? arguments}) async {
   AnalyticsController.logPageNavigation(page: ExerciseEditorScreen.routeName);
   final exercise = await context.push(ExerciseEditorScreen.routeName, extra: arguments) as ExerciseDto?;
   return exercise;
@@ -33,9 +32,14 @@ Future<RoutineTemplateDto?> navigateToRoutineTemplateEditor({required BuildConte
   return template;
 }
 
-void navigateToPastRoutineLogEditor({required BuildContext context, required PastRoutineLogArguments arguments}) {
+void navigateToPastRoutineLogEditor({required BuildContext context, required PastRoutineLogArguments arguments}) async {
   AnalyticsController.logPageNavigation(page: PastRoutineLogEditorScreen.routeName);
-  context.push(PastRoutineLogEditorScreen.routeName, extra: arguments);
+  final log = await context.push(PastRoutineLogEditorScreen.routeName, extra: arguments);
+  if (log != null) {
+    if (context.mounted) {
+      context.push(RoutineLogScreen.routeName, extra: {"log": log, "showSummary": true, "isEditable": true});
+    }
+  }
 }
 
 Future<void> navigateToRoutineLogEditor({required BuildContext context, required RoutineLogArguments arguments}) async {

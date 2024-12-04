@@ -57,11 +57,11 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
 
     final updatedLog = widget.log.copyWith(exerciseLogs: updatedExerciseLogs);
 
-    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
     List<RoutineLogDto> routineLogsForTheYear =
-        routineLogController.whereLogsIsSameYear(dateTime: DateTime.now().withoutTime());
+        exerciseAndRoutineController.whereLogsIsSameYear(dateTime: DateTime.now().withoutTime());
 
-    final newMilestones = routineLogController.newMilestones;
+    final newMilestones = exerciseAndRoutineController.newMilestones;
 
     final muscleGroupFamilyFrequencyData =
         muscleGroupFamilyFrequency(exerciseLogs: updatedLog.exerciseLogs, includeSecondaryMuscleGroups: false);
@@ -79,8 +79,8 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
     final pbShareAssetsKeys = [];
 
     for (final exerciseLog in updatedLog.exerciseLogs) {
-      final pastExerciseLogs =
-          routineLogController.whereExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
+      final pastExerciseLogs = exerciseAndRoutineController.whereExerciseLogsBefore(
+          exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
       final pbs = calculatePBs(
           pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog);
       final setAndPBs = groupBy(pbs, (pb) => pb.set);
@@ -235,7 +235,10 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
                     Clipboard.setData(data).then((_) {
                       if (mounted) {
                         Navigator.of(context).pop();
-                        showSnackbar(context: context, icon: const FaIcon(FontAwesomeIcons.solidSquareCheck), message: "Workout link copied");
+                        showSnackbar(
+                            context: context,
+                            icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
+                            message: "Workout link copied");
                       }
                     });
                   },
@@ -272,7 +275,10 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
                 Clipboard.setData(data).then((_) {
                   if (mounted) {
                     Navigator.of(context).pop();
-                    showSnackbar(context: context, icon: const FaIcon(FontAwesomeIcons.solidSquareCheck), message: "Workout log copied");
+                    showSnackbar(
+                        context: context,
+                        icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
+                        message: "Workout log copied");
                   }
                 });
               },

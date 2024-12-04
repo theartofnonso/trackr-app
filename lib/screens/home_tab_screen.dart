@@ -62,7 +62,9 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
                           dateTimeRange: _monthDateTimeRange,
                           scrollController: widget.scrollController,
                         ),
-                        SetsAndRepsVolumeInsightsScreen(canPop: false,)
+                        SetsAndRepsVolumeInsightsScreen(
+                          canPop: false,
+                        )
                       ],
                     ),
                   ),

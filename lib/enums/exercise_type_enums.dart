@@ -13,6 +13,4 @@ enum ExerciseType {
     return ExerciseType.values.firstWhere((value) => value.id.toLowerCase() == string.toLowerCase());
   }
 
-  static List<ExerciseType> validValues = [ExerciseType.weights, ExerciseType.bodyWeight, ExerciseType.duration];
-
 }

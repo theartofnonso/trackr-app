@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/appsync/activity_log_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
@@ -98,6 +99,11 @@ class AmplifyActivityLogRepository {
   List<ActivityLogDto> whereLogsIsSameYear({required DateTime dateTime}) {
     return _logs.where((log) => log.createdAt.isSameYear(dateTime)).toList();
   }
+
+  List<ActivityLogDto> whereLogsIsWithinRange({required DateTimeRange range}) {
+    return _logs.where((log) => log.createdAt.isBetweenInclusive(from: range.start, to: range.end)).toList();
+  }
+
 
   void clear() {
     _logs.clear();

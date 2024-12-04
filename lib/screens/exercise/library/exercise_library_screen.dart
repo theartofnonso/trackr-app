@@ -36,6 +36,8 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   /// Holds a list of [ExerciseDto] when filtering through a search
   List<ExerciseDto> _filteredExercises = [];
 
+  bool _shouldShowOwnerExercises = false;
+
   /// Search through the list of exercises
   void _runSearch(_) {
     final query = _searchController.text.toLowerCase().trim();
@@ -54,6 +56,12 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     if (_selectedMuscleGroups.isNotEmpty) {
       searchResults =
           searchResults.where((exercise) => _selectedMuscleGroups.contains(exercise.primaryMuscleGroup)).toList();
+    }
+
+    if(_shouldShowOwnerExercises) {
+      print("called");
+      searchResults =
+          searchResults.where((exercise) => exercise.owner.isNotEmpty).toList();
     }
 
     searchResults.sort((a, b) => a.name.compareTo(b.name));
@@ -148,27 +156,48 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
           ),
           child: SafeArea(
             bottom: false,
-            minimum: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
+            minimum: const EdgeInsets.only(bottom: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CSearchBar(
-                    hintText: "Search exercises",
-                    onChanged: _runSearch,
-                    onClear: _clearSearch,
-                    controller: _searchController),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: CSearchBar(
+                      hintText: "Search exercises",
+                      onChanged: _runSearch,
+                      onClear: _clearSearch,
+                      controller: _searchController),
+                ),
                 const SizedBox(height: 10),
                 SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
-                    child: Row(children: muscleGroups.sublist(0, muscleGroupScrollViewHalf))),
+                    child: Row(children: [
+                      const SizedBox(width: 10),
+                      OpacityButtonWidget(
+                          onPressed: _toggleOwnerExercises,
+                          padding: EdgeInsets.symmetric(horizontal: 0),
+                          textStyle: GoogleFonts.ubuntu(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
+                              color: _shouldShowOwnerExercises ? vibrantBlue : Colors.white70),
+                          buttonColor: _shouldShowOwnerExercises ? vibrantBlue : Colors.black,
+                          label: "Your Exercises".toUpperCase()),
+                      const SizedBox(width: 6),
+                      ...muscleGroups.sublist(0, muscleGroupScrollViewHalf),
+                      const SizedBox(width: 10)
+                    ])),
                 SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
-                    child: Row(children: muscleGroups.sublist(muscleGroupScrollViewHalf))),
+                    child: Row(children: [
+                      const SizedBox(width: 10),
+                      ...muscleGroups.sublist(muscleGroupScrollViewHalf),
+                      const SizedBox(width: 10)
+                    ])),
                 const SizedBox(height: 18),
                 _filteredExercises.isNotEmpty
                     ? Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
                           child: ListView.separated(
                               padding: const EdgeInsets.only(bottom: 250),
                               itemBuilder: (BuildContext context, int index) => ExerciseWidget(
@@ -203,6 +232,15 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         .where((exercise) => !widget.excludeExercises.contains(exercise))
         .where((exercise) => exerciseType != null ? exercise.type == widget.type : true)
         .toList();
+
+    _runSearch("");
+  }
+
+  void _toggleOwnerExercises() {
+    setState(() {
+      _shouldShowOwnerExercises = !_shouldShowOwnerExercises;
+    });
+    _runSearch("");
   }
 
   void _onSelectMuscleGroup({required MuscleGroup newMuscleGroup}) {

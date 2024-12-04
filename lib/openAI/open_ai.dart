@@ -19,7 +19,7 @@ Future<dynamic> runMessage({required String system, required String user, requir
   dynamic message;
 
   final body = jsonEncode({
-    "model": "gpt-4o-mini",
+    "model": "gpt-4o",
     "messages": [
       {"role": "system", "content": system},
       {"role": "user", "content": user},
@@ -50,7 +50,7 @@ Future<Map<String, dynamic>?> runMessageWithTools(
   Map<String, dynamic>? tools;
 
   final body = jsonEncode({
-    "model": "gpt-4o-mini",
+    "model": "gpt-4o",
     "messages": [
       {"role": "system", "content": systemInstruction},
       {"role": "user", "content": userInstruction}
@@ -117,7 +117,7 @@ Map<String, dynamic> createFunctionCallPayload(
   };
 
   final payload = {
-    "model": "gpt-4o-mini",
+    "model": "gpt-4o",
     "messages": [
       {"role": "system", "content": systemInstruction},
       {"role": "user", "content": user},
