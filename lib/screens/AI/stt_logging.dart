@@ -15,6 +15,7 @@ import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/widgets/empty_states/no_list_empty_state.dart';
 import 'package:tracker_app/widgets/routine/preview/set_headers/double_set_header.dart';
+import 'package:tracker_app/widgets/routine/preview/set_headers/single_set_header.dart';
 import 'package:tracker_app/widgets/routine/preview/set_rows/single_set_row.dart';
 
 import '../../colors.dart';
@@ -118,7 +119,7 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
                           title: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SingleSetRow(label: "Reps".toUpperCase()),
+                              SingleSetHeader(label: "Reps".toUpperCase()),
                               const SizedBox(height: 6),
                               SingleSetRow(label: "${(set as RepsSetDto).reps}"),
                             ],
