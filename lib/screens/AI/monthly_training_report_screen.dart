@@ -62,7 +62,7 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
         .expand((exerciseLogs) => exerciseLogs)
         .toList();
 
-    final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: exerciseLogsWithCompletedSets);
+    final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: exerciseLogsWithCompletedSets, includeSecondaryMuscleGroups: false);
 
     final exerciseAndRoutineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
