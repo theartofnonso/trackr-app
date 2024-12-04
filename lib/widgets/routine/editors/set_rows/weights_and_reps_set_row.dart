@@ -7,7 +7,7 @@ import '../../../../enums/routine_editor_type_enums.dart';
 import '../set_check_button.dart';
 import '../set_delete_button.dart';
 
-class WeightsSetRow extends StatelessWidget {
+class WeightsAndRepsSetRow extends StatelessWidget {
   final WeightAndRepsSetDto setDto;
   final RoutineEditorMode editorType;
   final VoidCallback onRemoved;
@@ -18,7 +18,7 @@ class WeightsSetRow extends StatelessWidget {
   final void Function() onTapRepsEditor;
   final (TextEditingController, TextEditingController) controllers;
 
-  const WeightsSetRow({
+  const WeightsAndRepsSetRow({
     super.key,
     required this.setDto,
     required this.editorType,

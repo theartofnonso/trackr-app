@@ -16,10 +16,10 @@ import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/reps_set_header.dart';
-import 'package:tracker_app/widgets/routine/editors/set_headers/weight_reps_set_header.dart';
+import 'package:tracker_app/widgets/routine/editors/set_headers/weight_and_reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_rows/duration_set_row.dart';
 import 'package:tracker_app/widgets/routine/editors/set_rows/reps_set_row.dart';
-import 'package:tracker_app/widgets/routine/editors/set_rows/weights_set_row.dart';
+import 'package:tracker_app/widgets/routine/editors/set_rows/weights_and_reps_set_row.dart';
 
 import '../../../colors.dart';
 import '../../../dtos/set_dtos/reps_dto.dart';
@@ -48,19 +48,20 @@ class ExerciseLogWidget extends StatefulWidget {
   final void Function(SetDto setDto) onTapWeightEditor;
   final void Function(SetDto setDto) onTapRepsEditor;
 
-  const ExerciseLogWidget({super.key,
-    this.editorType = RoutineEditorMode.edit,
-    required this.exerciseLogDto,
-    this.superSet,
-    required this.onSuperSet,
-    required this.onRemoveSuperSet,
-    required this.onRemoveLog,
-    this.onCache,
-    required this.onReplaceLog,
-    required this.onResize,
-    required this.onTapWeightEditor,
-    required this.onTapRepsEditor,
-    required this.isMinimised});
+  const ExerciseLogWidget(
+      {super.key,
+      this.editorType = RoutineEditorMode.edit,
+      required this.exerciseLogDto,
+      this.superSet,
+      required this.onSuperSet,
+      required this.onRemoveSuperSet,
+      required this.onRemoveLog,
+      this.onCache,
+      required this.onReplaceLog,
+      required this.onResize,
+      required this.onTapWeightEditor,
+      required this.onTapRepsEditor,
+      required this.isMinimised});
 
   @override
   State<ExerciseLogWidget> createState() => _ExerciseLogWidgetState();
@@ -83,13 +84,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       ),
       widget.exerciseLogDto.superSetId.isNotEmpty
           ? MenuItemButton(
-        onPressed: () => widget.onRemoveSuperSet(widget.exerciseLogDto.superSetId),
-        child: Text("Remove Super-set", style: GoogleFonts.ubuntu(color: Colors.red)),
-      )
+              onPressed: () => widget.onRemoveSuperSet(widget.exerciseLogDto.superSetId),
+              child: Text("Remove Super-set", style: GoogleFonts.ubuntu(color: Colors.red)),
+            )
           : MenuItemButton(
-        onPressed: widget.onSuperSet,
-        child: Text("Super-set", style: GoogleFonts.ubuntu()),
-      ),
+              onPressed: widget.onSuperSet,
+              child: Text("Super-set", style: GoogleFonts.ubuntu()),
+            ),
       MenuItemButton(
         onPressed: widget.onRemoveLog,
         child: Text(
@@ -101,17 +102,14 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _show1RMRecommendations() {
-    final pastExerciseLogs =
-        Provider
-            .of<ExerciseAndRoutineController>(context, listen: false)
+    final pastExerciseLogs = Provider.of<ExerciseAndRoutineController>(context, listen: false)
             .exerciseLogsByExerciseId[widget.exerciseLogDto.id] ??
-            [];
+        [];
     final completedPastExerciseLogs = completedExercises(exerciseLogs: pastExerciseLogs);
     if (completedPastExerciseLogs.isNotEmpty) {
       final previousLog = completedPastExerciseLogs.last;
       final heaviestSetWeight = heaviestWeightInSetForExerciseLog(exerciseLog: previousLog);
-      final oneRepMax =
-      average1RM(weight: (heaviestSetWeight).weight, reps: (heaviestSetWeight).reps);
+      final oneRepMax = average1RM(weight: (heaviestSetWeight).weight, reps: (heaviestSetWeight).reps);
       displayBottomSheet(
           context: context,
           child: _OneRepMaxSlider(exercise: widget.exerciseLogDto.exercise.name, oneRepMax: oneRepMax));
@@ -172,7 +170,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _updateReps({required int index, required int reps, required SetDto setDto}) {
     final updatedSet =
-    setDto is WeightAndRepsSetDto ? setDto.copyWith(reps: reps) : (setDto as RepsSetDto).copyWith(reps: reps);
+        setDto is WeightAndRepsSetDto ? setDto.copyWith(reps: reps) : (setDto as RepsSetDto).copyWith(reps: reps);
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateReps(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
     _cacheLog();
@@ -299,28 +297,28 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             children: [
               Expanded(
                   child: GestureDetector(
-                    onTap: () {
-                      FocusScope.of(context).unfocus();
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => ExerciseHomeScreen(exercise: widget.exerciseLogDto.exercise)));
-                    },
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(widget.exerciseLogDto.exercise.name,
-                            style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
-                        if (superSetExerciseDto != null)
-                          Column(
-                            children: [
-                              Text("with ${superSetExerciseDto.exercise.name}",
-                                  style:
+                onTap: () {
+                  FocusScope.of(context).unfocus();
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => ExerciseHomeScreen(exercise: widget.exerciseLogDto.exercise)));
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(widget.exerciseLogDto.exercise.name,
+                        style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+                    if (superSetExerciseDto != null)
+                      Column(
+                        children: [
+                          Text("with ${superSetExerciseDto.exercise.name}",
+                              style:
                                   GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 12)),
-                              const SizedBox(height: 10)
-                            ],
-                          ),
-                      ],
-                    ),
-                  )),
+                          const SizedBox(height: 10)
+                        ],
+                      ),
+                  ],
+                ),
+              )),
               MenuAnchor(
                   style: MenuStyle(
                     backgroundColor: WidgetStateProperty.all(sapphireDark80),
@@ -363,53 +361,49 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           ),
           const SizedBox(height: 12),
           switch (exerciseType) {
-            ExerciseType.weights =>
-                WeightRepsSetHeader(
-                  editorType: widget.editorType,
-                  firstLabel: weightLabel().toUpperCase(),
-                  secondLabel: 'REPS',
-                ),
+            ExerciseType.weights => WeightAndRepsSetHeader(
+                editorType: widget.editorType,
+                firstLabel: weightLabel().toUpperCase(),
+                secondLabel: 'REPS',
+              ),
             ExerciseType.bodyWeight => RepsSetHeader(editorType: widget.editorType),
             ExerciseType.duration => DurationSetHeader(editorType: widget.editorType)
           },
           const SizedBox(height: 8),
           if (sets.isNotEmpty)
             switch (exerciseType) {
-              ExerciseType.weights =>
-                  _WeightAndRepsSetListView(
-                    sets: sets.map((set) => set as WeightAndRepsSetDto).toList(),
-                    editorType: widget.editorType,
-                    updateSetCheck: _updateSetCheck,
-                    removeSet: _removeSet,
-                    updateReps: _updateReps,
-                    updateWeight: _updateWeight,
-                    controllers: _weightAndRepsControllers,
-                    onTapWeightEditor: _onTapWeightEditor,
-                    onTapRepsEditor: _onTapRepsEditor,
-                  ),
-              ExerciseType.bodyWeight =>
-                  _RepsSetListView(
-                    sets: sets.map((set) => set as RepsSetDto).toList(),
-                    editorType: widget.editorType,
-                    updateSetCheck: _updateSetCheck,
-                    removeSet: _removeSet,
-                    updateReps: _updateReps,
-                    controllers: _repsControllers,
-                    onTapWeightEditor: _onTapWeightEditor,
-                    onTapRepsEditor: _onTapRepsEditor,
-                  ),
-              ExerciseType.duration =>
-                  _DurationSetListView(
-                    sets: sets.map((set) => set as DurationSetDto).toList(),
-                    editorType: widget.editorType,
-                    updateSetCheck: _updateSetCheck,
-                    removeSet: _removeSet,
-                    controllers: _durationControllers,
-                    onTapWeightEditor: _onTapWeightEditor,
-                    onTapRepsEditor: _onTapRepsEditor,
-                    checkAndUpdateDuration: _checkAndUpdateDuration,
-                    updateDuration: _updateDuration,
-                  ),
+              ExerciseType.weights => _WeightAndRepsSetListView(
+                  sets: sets.map((set) => set as WeightAndRepsSetDto).toList(),
+                  editorType: widget.editorType,
+                  updateSetCheck: _updateSetCheck,
+                  removeSet: _removeSet,
+                  updateReps: _updateReps,
+                  updateWeight: _updateWeight,
+                  controllers: _weightAndRepsControllers,
+                  onTapWeightEditor: _onTapWeightEditor,
+                  onTapRepsEditor: _onTapRepsEditor,
+                ),
+              ExerciseType.bodyWeight => _RepsSetListView(
+                  sets: sets.map((set) => set as RepsSetDto).toList(),
+                  editorType: widget.editorType,
+                  updateSetCheck: _updateSetCheck,
+                  removeSet: _removeSet,
+                  updateReps: _updateReps,
+                  controllers: _repsControllers,
+                  onTapWeightEditor: _onTapWeightEditor,
+                  onTapRepsEditor: _onTapRepsEditor,
+                ),
+              ExerciseType.duration => _DurationSetListView(
+                  sets: sets.map((set) => set as DurationSetDto).toList(),
+                  editorType: widget.editorType,
+                  updateSetCheck: _updateSetCheck,
+                  removeSet: _removeSet,
+                  controllers: _durationControllers,
+                  onTapWeightEditor: _onTapWeightEditor,
+                  onTapRepsEditor: _onTapRepsEditor,
+                  checkAndUpdateDuration: _checkAndUpdateDuration,
+                  updateDuration: _updateDuration,
+                ),
             },
           const SizedBox(height: 8),
           if (withDurationOnly(type: exerciseType) && sets.isEmpty)
@@ -419,10 +413,14 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             ),
           const SizedBox(height: 8),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            GestureDetector(
-                onTap: () => _stt(),
-                child: TRKRCoachWidget()),
-            const SizedBox(width: 6),
+            if (withReps(type: exerciseType))
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  GestureDetector(onTap: () => _stt(), child: TRKRCoachWidget()),
+                  const SizedBox(width: 6),
+                ],
+              ),
             if (withWeightsOnly(type: exerciseType))
               IconButton(
                   onPressed: _show1RMRecommendations,
@@ -464,22 +462,23 @@ class _WeightAndRepsSetListView extends StatelessWidget {
   final void Function({required SetDto setDto}) onTapWeightEditor;
   final void Function({required SetDto setDto}) onTapRepsEditor;
 
-  const _WeightAndRepsSetListView({required this.sets,
-    required this.editorType,
-    required this.controllers,
-    required this.updateSetCheck,
-    required this.removeSet,
-    required this.updateReps,
-    required this.updateWeight,
-    required this.onTapWeightEditor,
-    required this.onTapRepsEditor});
+  const _WeightAndRepsSetListView(
+      {required this.sets,
+      required this.editorType,
+      required this.controllers,
+      required this.updateSetCheck,
+      required this.removeSet,
+      required this.updateReps,
+      required this.updateWeight,
+      required this.onTapWeightEditor,
+      required this.onTapRepsEditor});
 
   @override
   Widget build(BuildContext context) {
     final children = sets.mapIndexed((index, setDto) {
       return Padding(
           padding: const EdgeInsets.only(bottom: 8.0),
-          child: WeightsSetRow(
+          child: WeightsAndRepsSetRow(
             setDto: setDto,
             editorType: editorType,
             onCheck: () => updateSetCheck(index: index, setDto: setDto),
@@ -506,14 +505,15 @@ class _RepsSetListView extends StatelessWidget {
   final void Function({required SetDto setDto}) onTapWeightEditor;
   final void Function({required SetDto setDto}) onTapRepsEditor;
 
-  const _RepsSetListView({required this.sets,
-    required this.editorType,
-    required this.controllers,
-    required this.updateSetCheck,
-    required this.removeSet,
-    required this.updateReps,
-    required this.onTapWeightEditor,
-    required this.onTapRepsEditor});
+  const _RepsSetListView(
+      {required this.sets,
+      required this.editorType,
+      required this.controllers,
+      required this.updateSetCheck,
+      required this.removeSet,
+      required this.updateReps,
+      required this.onTapWeightEditor,
+      required this.onTapRepsEditor});
 
   @override
   Widget build(BuildContext context) {
@@ -542,20 +542,21 @@ class _DurationSetListView extends StatelessWidget {
   final void Function({required int index}) removeSet;
   final void Function({required int index, required SetDto setDto}) updateSetCheck;
   final void Function({required int index, required Duration duration, required SetDto setDto, required bool checked})
-  checkAndUpdateDuration;
+      checkAndUpdateDuration;
   final void Function({required int index, required Duration duration, required SetDto setDto}) updateDuration;
   final void Function({required SetDto setDto}) onTapWeightEditor;
   final void Function({required SetDto setDto}) onTapRepsEditor;
 
-  const _DurationSetListView({required this.sets,
-    required this.editorType,
-    required this.controllers,
-    required this.updateSetCheck,
-    required this.removeSet,
-    required this.checkAndUpdateDuration,
-    required this.updateDuration,
-    required this.onTapWeightEditor,
-    required this.onTapRepsEditor});
+  const _DurationSetListView(
+      {required this.sets,
+      required this.editorType,
+      required this.controllers,
+      required this.updateSetCheck,
+      required this.removeSet,
+      required this.checkAndUpdateDuration,
+      required this.updateDuration,
+      required this.onTapWeightEditor,
+      required this.onTapRepsEditor});
 
   @override
   Widget build(BuildContext context) {
@@ -632,12 +633,7 @@ class _OneRepMaxSliderState extends State<_OneRepMaxSlider> {
             ],
           ),
         ),
-        Slider(value: _reps,
-            onChanged: onChanged,
-            min: 1,
-            max: 20,
-            divisions: 20,
-            thumbColor: vibrantGreen),
+        Slider(value: _reps, onChanged: onChanged, min: 1, max: 20, divisions: 20, thumbColor: vibrantGreen),
       ],
     );
   }

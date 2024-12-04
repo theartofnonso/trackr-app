@@ -249,3 +249,54 @@ const monthlyReportResponseFormat = {
     "strict": true
   }
 };
+
+const logWeightAndRepsIntentResponseFormat = {
+  "type": "json_schema",
+  "json_schema": {
+    "name": "log_weight_and_repetitions_intent",
+    "schema": {
+      "title": "Log Weight and Repetitions Intent Action",
+      "description": "A structured output for user action when logging weight and repetitions for a set in a workout routine.",
+      "type": "object",
+      "properties": {
+        "weight": {
+          "type": "number",
+          "description": "Amount of weight lifted."
+        },
+        "repetitions": {
+          "type": "integer",
+          "description": "Number of repetitions."
+        }
+      },
+      "required": [
+        "weight",
+        "repetitions",
+      ],
+      "additionalProperties": false
+    },
+    "strict": true
+  }
+};
+
+const logRepsIntentResponseFormat = {
+  "type": "json_schema",
+  "json_schema": {
+    "name": "log_repetitions_intent",
+    "schema": {
+      "title": "Log Repetitions Intent Action",
+      "description": "A structured output for user action when logging repetitions for a set in a workout routine.",
+      "type": "object",
+      "properties": {
+        "repetitions": {
+          "type": "integer",
+          "description": "Number of repetitions."
+        }
+      },
+      "required": [
+        "repetitions",
+      ],
+      "additionalProperties": false
+    },
+    "strict": true
+  }
+};

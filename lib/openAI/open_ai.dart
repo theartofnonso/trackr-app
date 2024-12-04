@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../dtos/appsync/exercise_dto.dart';
+import '../enums/open_ai_models.dart';
 import '../openAI/open_ai_functions.dart';
 
 const String _apiKey =
@@ -15,11 +16,11 @@ final headers = {
   'Content-Type': 'application/json',
 };
 
-Future<dynamic> runMessage({required String system, required String user, required responseFormat}) async {
+Future<dynamic> runMessage({required String system, required String user, required responseFormat, OpenAIModel model = OpenAIModel.fourOMini}) async {
   dynamic message;
 
   final body = jsonEncode({
-    "model": "gpt-4o",
+    "model": model.name,
     "messages": [
       {"role": "system", "content": system},
       {"role": "user", "content": user},
@@ -46,11 +47,11 @@ Future<dynamic> runMessage({required String system, required String user, requir
 }
 
 Future<Map<String, dynamic>?> runMessageWithTools(
-    {required String systemInstruction, required String userInstruction}) async {
+    {required String systemInstruction, required String userInstruction, OpenAIModel model = OpenAIModel.fourOMini}) async {
   Map<String, dynamic>? tools;
 
   final body = jsonEncode({
-    "model": "gpt-4o",
+    "model": model.name,
     "messages": [
       {"role": "system", "content": systemInstruction},
       {"role": "user", "content": userInstruction}
@@ -87,7 +88,7 @@ Map<String, dynamic> createFunctionCallPayload(
     required String systemInstruction,
     required String user,
     required Map<String, Object> responseFormat,
-    required List<ExerciseDto> exercises}) {
+    required List<ExerciseDto> exercises, OpenAIModel model = OpenAIModel.fourOMini}) {
   final functionCallMessage = {
     "role": "assistant",
     "tool_calls": [
@@ -117,7 +118,7 @@ Map<String, dynamic> createFunctionCallPayload(
   };
 
   final payload = {
-    "model": "gpt-4o",
+    "model": model.name,
     "messages": [
       {"role": "system", "content": systemInstruction},
       {"role": "user", "content": user},
