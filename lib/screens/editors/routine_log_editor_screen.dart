@@ -408,8 +408,13 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                               ),
                             ),
                           if (exerciseLogs.isEmpty)
-                            const NoListEmptyState(
-                                message: "Tap the + button to start adding exercises to your workout session"),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                child: const NoListEmptyState(
+                                    message: "Tap the + button to start adding exercises to your workout session"),
+                              ),
+                            ),
                         ],
                       ),
                     ),

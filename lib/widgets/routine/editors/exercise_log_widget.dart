@@ -127,7 +127,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     _cacheLog();
   }
 
-  void _addSet() {
+  void _addController() {
     if (withDurationOnly(type: widget.exerciseLogDto.exercise.type)) {
       _durationControllers.add(DateTime.now());
     } else {
@@ -137,6 +137,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         _repsControllers.add(TextEditingController());
       }
     }
+  }
+
+  void _addSet() {
+    _addController();
     final pastSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
         .whereSetsForExercise(exercise: widget.exerciseLogDto.exercise);
     Provider.of<ExerciseLogController>(context, listen: false)
@@ -212,12 +216,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     _cacheLog();
   }
 
-  void _overwriteSets(List<SetDto> sets) {
-    Provider.of<ExerciseLogController>(context, listen: false)
-        .overwriteSets(exerciseLogId: widget.exerciseLogDto.id, sets: sets);
-    _cacheLog();
-  }
-
   void _loadWeightAndRepsControllers() {
     final sets = widget.exerciseLogDto.sets;
     List<(TextEditingController, TextEditingController)> controllers = [];
@@ -283,6 +281,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             as List<SetDto>?;
     if (sets != null) {
       if (mounted) {
+        for (final _ in sets) {
+          _addController();
+        }
         Provider.of<ExerciseLogController>(context, listen: false)
             .overwriteSets(exerciseLogId: widget.exerciseLogDto.id, sets: sets);
         _cacheLog();

@@ -202,7 +202,6 @@ class ExerciseLogRepository {
 
     // Updating the exerciseLog
     final exerciseLog = newExerciseLogs[exerciseLogIndex];
-    print(sets);
 
     newExerciseLogs[exerciseLogIndex] = exerciseLog.copyWith(sets: sets);
 

@@ -13,6 +13,7 @@ import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
 import 'package:tracker_app/openAI/open_ai_functions.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/utils/general_utils.dart';
+import 'package:tracker_app/widgets/empty_states/no_list_empty_state.dart';
 import 'package:tracker_app/widgets/routine/preview/set_headers/double_set_header.dart';
 import 'package:tracker_app/widgets/routine/preview/set_rows/single_set_row.dart';
 
@@ -58,14 +59,14 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
           title: Text("Logging ${widget.exerciseLog.exercise.name}".toUpperCase(),
               style: GoogleFonts.ubuntu(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
           leading: IconButton(
-              icon: const FaIcon(FontAwesomeIcons.solidSquareCheck, color: Colors.white, size: 28),
+              icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
               onPressed: Navigator.of(context).pop),
           actions: [
             if (_sets.isNotEmpty)
               IconButton(
                 onPressed: _navigateBack,
                 icon: FaIcon(
-                  FontAwesomeIcons.squareCheck,
+                  FontAwesomeIcons.solidSquareCheck,
                 ),
               )
           ],
@@ -73,9 +74,9 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
         floatingActionButton: FloatingActionButton(
             heroTag: "routine_log_screen",
             onPressed: _startListening,
-            backgroundColor: sapphireDark,
+            backgroundColor: _isListening ? vibrantGreen : sapphireDark,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-            child: FaIcon(FontAwesomeIcons.microphone, color: _isListening ? vibrantGreen : Colors.white)),
+            child: FaIcon(FontAwesomeIcons.microphone, color: _isListening ? Colors.black : Colors.white)),
         body: Container(
           width: double.infinity,
           height: double.infinity,
@@ -91,38 +92,41 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
           ),
           child: SafeArea(
             bottom: false,
-            child: ListView.separated(
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  final set = _sets[index];
-                  if (withWeightsOnly(type: exerciseType)) {
-                    final weightAndRepsSet = set as WeightAndRepsSetDto;
-                    return ListTile(
-                      leading: TRKRCoachWidget(),
-                      title: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          DoubleSetHeader(firstLabel: weightLabel().toUpperCase(), secondLabel: "REPS"),
-                          const SizedBox(height: 6),
-                          DoubleSetRow(
-                              first: '${weightAndRepsSet.weight}${weightLabel()}', second: '${weightAndRepsSet.reps}'),
-                        ],
-                      ),
-                    );
-                  }
-                  return ListTile(
-                      leading: TRKRCoachWidget(),
-                      title: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SingleSetRow(label: "Reps".toUpperCase()),
-                          const SizedBox(height: 6),
-                          SingleSetRow(label: "${(set as RepsSetDto).reps}"),
-                        ],
-                      ));
-                },
-                separatorBuilder: (context, index) => SizedBox(height: 12),
-                itemCount: _sets.length),
+            child: _sets.isNotEmpty
+                ? ListView.separated(
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      final set = _sets[index];
+                      if (withWeightsOnly(type: exerciseType)) {
+                        final weightAndRepsSet = set as WeightAndRepsSetDto;
+                        return ListTile(
+                          leading: TRKRCoachWidget(),
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              DoubleSetHeader(firstLabel: weightLabel().toUpperCase(), secondLabel: "REPS"),
+                              const SizedBox(height: 6),
+                              DoubleSetRow(
+                                  first: '${weightAndRepsSet.weight}${weightLabel()}',
+                                  second: '${weightAndRepsSet.reps}'),
+                            ],
+                          ),
+                        );
+                      }
+                      return ListTile(
+                          leading: TRKRCoachWidget(),
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SingleSetRow(label: "Reps".toUpperCase()),
+                              const SizedBox(height: 6),
+                              SingleSetRow(label: "${(set as RepsSetDto).reps}"),
+                            ],
+                          ));
+                    },
+                    separatorBuilder: (context, index) => SizedBox(height: 12),
+                    itemCount: _sets.length)
+                : NoListEmptyState(message: "It might feel quiet now, but your logged sets will soon appear here.."),
           ),
         ));
   }
@@ -148,7 +152,6 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
     super.initState();
     _speech = stt.SpeechToText();
     _speech.initialize(onStatus: (status) {
-      print(status);
       setState(() {
         _isListening = status == "listening";
       });
@@ -197,14 +200,12 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
             WeightsAndRepsSetIntent intent = WeightsAndRepsSetIntent.fromJson(json);
             final set = WeightAndRepsSetDto(weight: intent.weight, reps: intent.repetitions, checked: true);
             _sets.add(set);
-            print("Log weight: ${intent.weight}, repetitions: ${intent.repetitions}");
           }
 
           if (withRepsOnly(type: exerciseType)) {
             RepsSetIntent intent = RepsSetIntent.fromJson(json);
             final set = RepsSetDto(reps: intent.repetitions, checked: true);
             _sets.add(set);
-            print("Log repetitions: ${intent.repetitions}");
           }
         }
       }
@@ -220,7 +221,6 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
   void _disposeContext() {
     _speech.stop();
     _sets = [];
-    print("c");
   }
 
   @override
