@@ -12,7 +12,6 @@ import 'package:tracker_app/dtos/set_dtos/set_dto.dart';
 import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
 import 'package:tracker_app/openAI/open_ai_functions.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
-import 'package:tracker_app/widgets/empty_states/no_list_empty_state.dart';
 import 'package:tracker_app/widgets/routine/preview/exercise_log_widget.dart';
 
 import '../../colors.dart';
@@ -88,14 +87,11 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
             ),
           ),
           child: SafeArea(
-            bottom: false,
-            minimum: const EdgeInsets.all(10.0),
-            child: _sets.isNotEmpty
-                ? Column(
-                    children: [_HeroWidget(), const SizedBox(height: 10), ExerciseLogWidget(exerciseLog: exerciseLog)],
-                  )
-                : NoListEmptyState(message: "It might feel quiet now, but your logged sets will soon appear here.."),
-          ),
+              bottom: false,
+              minimum: const EdgeInsets.all(10.0),
+              child: Column(
+                children: [_HeroWidget(), const SizedBox(height: 10), ExerciseLogWidget(exerciseLog: exerciseLog)],
+              )),
         ));
   }
 
@@ -118,6 +114,7 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
   @override
   void initState() {
     super.initState();
+    _sets = widget.exerciseLog.sets;
     _speech = stt.SpeechToText();
     _speech.initialize(onStatus: (status) {
       setState(() {
@@ -223,7 +220,7 @@ class _HeroWidget extends StatelessWidget {
                       text: " ",
                       style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)),
                   TextSpan(
-                      text: "can help you create awesome workouts",
+                      text: "can help you log sets with your voice only",
                       style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)),
                   TextSpan(
                       text: ".",
@@ -238,7 +235,7 @@ class _HeroWidget extends StatelessWidget {
                       text: " ",
                       style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)),
                   TextSpan(
-                      text: 'I want to train "mention muscle group(s)"',
+                      text: 'Log 25kg for 10 reps',
                       style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white)),
                 ],
               ),
