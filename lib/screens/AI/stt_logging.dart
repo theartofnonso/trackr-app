@@ -12,11 +12,8 @@ import 'package:tracker_app/dtos/set_dtos/set_dto.dart';
 import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
 import 'package:tracker_app/openAI/open_ai_functions.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
-import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/widgets/empty_states/no_list_empty_state.dart';
-import 'package:tracker_app/widgets/routine/preview/set_headers/double_set_header.dart';
-import 'package:tracker_app/widgets/routine/preview/set_headers/single_set_header.dart';
-import 'package:tracker_app/widgets/routine/preview/set_rows/single_set_row.dart';
+import 'package:tracker_app/widgets/routine/preview/exercise_log_widget.dart';
 
 import '../../colors.dart';
 import '../../dtos/open_ai_response_schema_dtos/reps_set_intent.dart';
@@ -26,7 +23,6 @@ import '../../strings/ai_prompts.dart';
 import '../../utils/dialog_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
-import '../../widgets/routine/preview/set_rows/double_set_row.dart';
 
 class STTLoggingScreen extends StatefulWidget {
   final ExerciseLogDto exerciseLog;
@@ -52,7 +48,7 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
   Widget build(BuildContext context) {
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
-    final exerciseType = widget.exerciseLog.exercise.type;
+    final exerciseLog = widget.exerciseLog.copyWith(sets: _sets);
 
     return Scaffold(
         appBar: AppBar(
@@ -93,40 +89,11 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
           ),
           child: SafeArea(
             bottom: false,
+            minimum: const EdgeInsets.all(10.0),
             child: _sets.isNotEmpty
-                ? ListView.separated(
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      final set = _sets[index];
-                      if (withWeightsOnly(type: exerciseType)) {
-                        final weightAndRepsSet = set as WeightAndRepsSetDto;
-                        return ListTile(
-                          leading: TRKRCoachWidget(),
-                          title: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              DoubleSetHeader(firstLabel: weightLabel().toUpperCase(), secondLabel: "REPS"),
-                              const SizedBox(height: 6),
-                              DoubleSetRow(
-                                  first: '${weightAndRepsSet.weight}${weightLabel()}',
-                                  second: '${weightAndRepsSet.reps}'),
-                            ],
-                          ),
-                        );
-                      }
-                      return ListTile(
-                          leading: TRKRCoachWidget(),
-                          title: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SingleSetHeader(label: "Reps".toUpperCase()),
-                              const SizedBox(height: 6),
-                              SingleSetRow(label: "${(set as RepsSetDto).reps}"),
-                            ],
-                          ));
-                    },
-                    separatorBuilder: (context, index) => SizedBox(height: 12),
-                    itemCount: _sets.length)
+                ? Column(
+                    children: [_HeroWidget(), const SizedBox(height: 10), ExerciseLogWidget(exerciseLog: exerciseLog)],
+                  )
                 : NoListEmptyState(message: "It might feel quiet now, but your logged sets will soon appear here.."),
           ),
         ));
@@ -228,5 +195,57 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
   void dispose() {
     _disposeContext();
     super.dispose();
+  }
+}
+
+class _HeroWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        const TRKRCoachWidget(),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            RichText(
+              text: TextSpan(
+                text: "Hey there!",
+                style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white, height: 1.5),
+                children: <TextSpan>[
+                  TextSpan(
+                      text: " ",
+                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)),
+                  TextSpan(
+                      text: "TRKR Coach",
+                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white)),
+                  TextSpan(
+                      text: " ",
+                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)),
+                  TextSpan(
+                      text: "can help you create awesome workouts",
+                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)),
+                  TextSpan(
+                      text: ".",
+                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)),
+                  TextSpan(
+                      text: " ",
+                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)),
+                  TextSpan(
+                      text: "Try saying",
+                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)),
+                  TextSpan(
+                      text: " ",
+                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)),
+                  TextSpan(
+                      text: 'I want to train "mention muscle group(s)"',
+                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white)),
+                ],
+              ),
+            )
+          ]),
+        )
+      ]),
+    );
   }
 }
