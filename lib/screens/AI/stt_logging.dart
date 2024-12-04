@@ -26,16 +26,16 @@ import '../../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/routine/preview/set_rows/double_set_row.dart';
 
-class STTLogging extends StatefulWidget {
+class STTLoggingScreen extends StatefulWidget {
   final ExerciseLogDto exerciseLog;
 
-  const STTLogging({super.key, required this.exerciseLog});
+  const STTLoggingScreen({super.key, required this.exerciseLog});
 
   @override
-  State<STTLogging> createState() => _STTLoggingState();
+  State<STTLoggingScreen> createState() => _STTLoggingScreenState();
 }
 
-class _STTLoggingState extends State<STTLogging> {
+class _STTLoggingScreenState extends State<STTLoggingScreen> {
   late stt.SpeechToText _speech;
 
   bool _isListening = false;
@@ -54,63 +54,75 @@ class _STTLoggingState extends State<STTLogging> {
 
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: sapphireDark,
+          backgroundColor: sapphireDark80,
           title: Text("Logging ${widget.exerciseLog.exercise.name}".toUpperCase(),
               style: GoogleFonts.ubuntu(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
           leading: IconButton(
-              icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
+              icon: const FaIcon(FontAwesomeIcons.solidSquareCheck, color: Colors.white, size: 28),
               onPressed: Navigator.of(context).pop),
-          actions: [IconButton(
-            onPressed: _startListening,
-            icon: FaIcon(
-              FontAwesomeIcons.microphone,
-              color: _isListening ? vibrantGreen : Colors.white,
-            ),
-          )],
+          actions: [
+            if (_sets.isNotEmpty)
+              IconButton(
+                onPressed: _navigateBack,
+                icon: FaIcon(
+                  FontAwesomeIcons.squareCheck,
+                ),
+              )
+          ],
         ),
+        floatingActionButton: FloatingActionButton(
+            heroTag: "routine_log_screen",
+            onPressed: _startListening,
+            backgroundColor: sapphireDark,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+            child: FaIcon(FontAwesomeIcons.microphone, color: _isListening ? vibrantGreen : Colors.white)),
         body: Container(
           width: double.infinity,
           height: double.infinity,
-          color: sapphireDark,
-          child: SafeArea(
-            child: SingleChildScrollView(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                ListView.separated(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      final set = _sets[index];
-                      if (withWeightsOnly(type: exerciseType)) {
-                        final weightAndRepsSet = set as WeightAndRepsSetDto;
-                        return ListTile(
-                          leading: TRKRCoachWidget(),
-                          title: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              DoubleSetHeader(firstLabel: weightLabel().toUpperCase(), secondLabel: "REPS"),
-                              const SizedBox(height: 6),
-                              DoubleSetRow(
-                                  first: '${weightAndRepsSet.weight}${weightLabel()}',
-                                  second: '${weightAndRepsSet.reps}'),
-                            ],
-                          ),
-                        );
-                      }
-                      return ListTile(
-                          leading: TRKRCoachWidget(),
-                          title: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SingleSetRow(label: "Reps".toUpperCase()),
-                              const SizedBox(height: 6),
-                              SingleSetRow(label: "${(set as RepsSetDto).reps}"),
-                            ],
-                          ));
-                    },
-                    separatorBuilder: (context, index) => SizedBox(height: 12),
-                    itemCount: _sets.length),
-              ]),
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                sapphireDark80,
+                sapphireDark,
+              ],
             ),
+          ),
+          child: SafeArea(
+            bottom: false,
+            child: ListView.separated(
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  final set = _sets[index];
+                  if (withWeightsOnly(type: exerciseType)) {
+                    final weightAndRepsSet = set as WeightAndRepsSetDto;
+                    return ListTile(
+                      leading: TRKRCoachWidget(),
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          DoubleSetHeader(firstLabel: weightLabel().toUpperCase(), secondLabel: "REPS"),
+                          const SizedBox(height: 6),
+                          DoubleSetRow(
+                              first: '${weightAndRepsSet.weight}${weightLabel()}', second: '${weightAndRepsSet.reps}'),
+                        ],
+                      ),
+                    );
+                  }
+                  return ListTile(
+                      leading: TRKRCoachWidget(),
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SingleSetRow(label: "Reps".toUpperCase()),
+                          const SizedBox(height: 6),
+                          SingleSetRow(label: "${(set as RepsSetDto).reps}"),
+                        ],
+                      ));
+                },
+                separatorBuilder: (context, index) => SizedBox(height: 12),
+                itemCount: _sets.length),
           ),
         ));
   }
@@ -125,17 +137,24 @@ class _STTLoggingState extends State<STTLogging> {
         });
   }
 
+  void _navigateBack() {
+    if (_sets.isNotEmpty) {
+      Navigator.of(context).pop(_sets);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _speech = stt.SpeechToText();
     _speech.initialize(onStatus: (status) {
+      print(status);
       setState(() {
         _isListening = status == "listening";
       });
 
       if (status == "done") {
-        if(!_loading) {
+        if (!_loading) {
           _showLoadingScreen();
           _analyseIntent();
         }
@@ -198,10 +217,15 @@ class _STTLoggingState extends State<STTLogging> {
     });
   }
 
-  @override
-  void dispose() {
+  void _disposeContext() {
     _speech.stop();
     _sets = [];
+    print("c");
+  }
+
+  @override
+  void dispose() {
+    _disposeContext();
     super.dispose();
   }
 }

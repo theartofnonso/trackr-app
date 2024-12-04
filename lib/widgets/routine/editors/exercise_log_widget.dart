@@ -121,7 +121,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     }
   }
 
-  void _updateProcedureNotes({required String value}) {
+  void _updateExerciseLogNotes({required String value}) {
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateExerciseLogNotes(exerciseLogId: widget.exerciseLogDto.id, value: value);
     _cacheLog();
@@ -212,6 +212,12 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     _cacheLog();
   }
 
+  void _overwriteSets(List<SetDto> sets) {
+    Provider.of<ExerciseLogController>(context, listen: false)
+        .overwriteSets(exerciseLogId: widget.exerciseLogDto.id, sets: sets);
+    _cacheLog();
+  }
+
   void _loadWeightAndRepsControllers() {
     final sets = widget.exerciseLogDto.sets;
     List<(TextEditingController, TextEditingController)> controllers = [];
@@ -272,7 +278,16 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _stt() async {
-    navigateWithSlideTransition(context: context, child: STTLogging(exerciseLog: widget.exerciseLogDto));
+    final sets =
+        await navigateWithSlideTransition(context: context, child: STTLoggingScreen(exerciseLog: widget.exerciseLogDto))
+            as List<SetDto>?;
+    if (sets != null) {
+      if (mounted) {
+        Provider.of<ExerciseLogController>(context, listen: false)
+            .overwriteSets(exerciseLogId: widget.exerciseLogDto.id, sets: sets);
+        _cacheLog();
+      }
+    }
   }
 
   @override
@@ -343,7 +358,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           ),
           TextField(
             controller: TextEditingController(text: widget.exerciseLogDto.notes),
-            onChanged: (value) => _updateProcedureNotes(value: value),
+            onChanged: (value) => _updateExerciseLogNotes(value: value),
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               enabledBorder: OutlineInputBorder(

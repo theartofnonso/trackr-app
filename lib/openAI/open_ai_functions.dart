@@ -256,17 +256,12 @@ const logWeightAndRepsIntentResponseFormat = {
     "name": "log_weight_and_repetitions_intent",
     "schema": {
       "title": "Log Weight and Repetitions Intent Action",
-      "description": "A structured output for user action when logging weight and repetitions for a set in a workout routine.",
+      "description":
+          "A structured output for user action when logging weight and repetitions for a set in a workout routine.",
       "type": "object",
       "properties": {
-        "weight": {
-          "type": "number",
-          "description": "Amount of weight lifted."
-        },
-        "repetitions": {
-          "type": "integer",
-          "description": "Number of repetitions."
-        }
+        "weight": {"type": "number", "description": "Amount of weight lifted."},
+        "repetitions": {"type": "integer", "description": "Number of repetitions."}
       },
       "required": [
         "weight",
@@ -287,10 +282,7 @@ const logRepsIntentResponseFormat = {
       "description": "A structured output for user action when logging repetitions for a set in a workout routine.",
       "type": "object",
       "properties": {
-        "repetitions": {
-          "type": "integer",
-          "description": "Number of repetitions."
-        }
+        "repetitions": {"type": "integer", "description": "Number of repetitions."}
       },
       "required": [
         "repetitions",

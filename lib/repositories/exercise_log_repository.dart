@@ -32,17 +32,18 @@ class ExerciseLogRepository {
   }
 
   List<ExerciseLogDto> mergeExerciseLogsAndSets({required RoutineEditorMode mode}) {
-    if(mode == RoutineEditorMode.log) {
+    if (mode == RoutineEditorMode.log) {
       return _exerciseLogs.map((exerciseLog) {
         final setsForNonDuration = exerciseLog.sets.where((set) => set.checked).toList();
-        return exerciseLog.copyWith(sets: withDurationOnly(type: exerciseLog.exercise.type) ? _checkSets(exerciseLog.sets) : setsForNonDuration);
+        return exerciseLog.copyWith(
+            sets:
+                withDurationOnly(type: exerciseLog.exercise.type) ? _checkSets(exerciseLog.sets) : setsForNonDuration);
       }).toList();
     }
 
     return _exerciseLogs.map((exerciseLog) {
       return exerciseLog.copyWith(sets: exerciseLog.sets);
     }).toList();
-
   }
 
   List<SetDto> _checkSets(List<SetDto> sets) {
@@ -78,11 +79,8 @@ class ExerciseLogRepository {
     _removeAllSetsForExerciseLog(exerciseLogId: logId);
   }
 
-  void replaceExercise({
-    required String oldExerciseId,
-    required ExerciseDto newExercise,
-    required List<SetDto> pastSets
-  }) {
+  void replaceExercise(
+      {required String oldExerciseId, required ExerciseDto newExercise, required List<SetDto> pastSets}) {
     final oldExerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: oldExerciseId);
     final oldExerciseLog = _whereExerciseLog(exerciseLogId: oldExerciseId);
     if (oldExerciseLogIndex == -1) {
@@ -99,7 +97,8 @@ class ExerciseLogRepository {
       newSet = pastSet.copyWith(checked: false);
     }
 
-    exerciseLogs[oldExerciseLogIndex] = oldExerciseLog.copyWith(id: newExercise.id, exercise: newExercise, sets: [newSet]);
+    exerciseLogs[oldExerciseLogIndex] =
+        oldExerciseLog.copyWith(id: newExercise.id, exercise: newExercise, sets: [newSet]);
 
     _exerciseLogs = [...exerciseLogs];
   }
@@ -186,6 +185,26 @@ class ExerciseLogRepository {
     // Updating the exerciseLog
     final newExerciseLog = newExerciseLogs[exerciseLogIndex];
     newExerciseLogs[exerciseLogIndex] = newExerciseLog.copyWith(sets: sets);
+
+    // Assign the new list to maintain immutability
+    _exerciseLogs = newExerciseLogs;
+  }
+
+  void overwriteSets({required String exerciseLogId, required List<SetDto> sets}) {
+    int exerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: exerciseLogId);
+
+    if (exerciseLogIndex == -1) {
+      return;
+    }
+
+    // Creating a new list by copying the original list
+    List<ExerciseLogDto> newExerciseLogs = _copyExerciseLogs();
+
+    // Updating the exerciseLog
+    final exerciseLog = newExerciseLogs[exerciseLogIndex];
+    print(sets);
+
+    newExerciseLogs[exerciseLogIndex] = exerciseLog.copyWith(sets: sets);
 
     // Assign the new list to maintain immutability
     _exerciseLogs = newExerciseLogs;
