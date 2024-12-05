@@ -164,12 +164,14 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> with RouteAware {
         child: SafeArea(
           bottom: false,
           minimum: const EdgeInsets.all(10.0),
-          child: Column(
-            children: [
-              _HeroWidget(),
-              const SizedBox(height: 10),
-              ExerciseLogWidget(exerciseLog: exerciseLog),
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                _HeroWidget(),
+                const SizedBox(height: 10),
+                ExerciseLogWidget(exerciseLog: exerciseLog),
+              ],
+            ),
           ),
         ),
       ),
