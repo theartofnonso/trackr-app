@@ -44,7 +44,7 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> with RouteAware {
   @override
   void initState() {
     super.initState();
-    _sets = widget.exerciseLog.sets;
+    _sets = widget.exerciseLog.sets.where((set) => set.isNotEmpty()).toList();
     _initSpeech();
   }
 
@@ -98,6 +98,7 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> with RouteAware {
 
   @override
   void didPopNext() {
+    print("gggggg");
     // Called when this route becomes active again
     _initSpeech(); // Re-initialize the speech object
   }
