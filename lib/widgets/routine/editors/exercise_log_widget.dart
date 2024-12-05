@@ -68,9 +68,9 @@ class ExerciseLogWidget extends StatefulWidget {
 }
 
 class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
-  final List<(TextEditingController, TextEditingController)> _weightAndRepsControllers = [];
-  final List<TextEditingController> _repsControllers = [];
-  final List<DateTime> _durationControllers = [];
+  List<(TextEditingController, TextEditingController)> _weightAndRepsControllers = [];
+  List<TextEditingController> _repsControllers = [];
+  List<DateTime> _durationControllers = [];
 
   /// [MenuItemButton]
   List<Widget> _menuActionButtons() {
@@ -127,40 +127,66 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     _cacheLog();
   }
 
-  void _addController() {
+  void _loadControllers() {
+    _clearControllers();
+
     if (withDurationOnly(type: widget.exerciseLogDto.exercise.type)) {
-      _durationControllers.add(DateTime.now());
-    } else {
-      if (withWeightsOnly(type: widget.exerciseLogDto.exercise.type)) {
-        _weightAndRepsControllers.add((TextEditingController(), TextEditingController()));
-      } else {
-        _repsControllers.add(TextEditingController());
+      _loadDurationControllers();
+    }
+    if (withWeightsOnly(type: widget.exerciseLogDto.exercise.type)) {
+      _loadWeightAndRepsControllers();
+    }
+    if (withRepsOnly(type: widget.exerciseLogDto.exercise.type)) {
+      _loadRepsControllers();
+    }
+  }
+
+  void _clearControllers() {
+    if (withDurationOnly(type: widget.exerciseLogDto.exercise.type)) {
+      _durationControllers = [];
+    }
+    if (withWeightsOnly(type: widget.exerciseLogDto.exercise.type)) {
+      _weightAndRepsControllers = [];
+    }
+    if (withRepsOnly(type: widget.exerciseLogDto.exercise.type)) {
+      _repsControllers = [];
+    }
+  }
+
+  void _disposeControllers() {
+    if (withDurationOnly(type: widget.exerciseLogDto.exercise.type)) {
+      // Duration is not have any controller to dispose
+    }
+    if (withWeightsOnly(type: widget.exerciseLogDto.exercise.type)) {
+      for (final controllerPair in _weightAndRepsControllers) {
+        controllerPair.$1.dispose();
+        controllerPair.$2.dispose();
+      }
+    }
+    if (withRepsOnly(type: widget.exerciseLogDto.exercise.type)) {
+      for (final controller in _repsControllers) {
+        controller.dispose();
       }
     }
   }
 
   void _addSet() {
-    _addController();
     final pastSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
         .whereSetsForExercise(exercise: widget.exerciseLogDto.exercise);
     Provider.of<ExerciseLogController>(context, listen: false)
         .addSet(exerciseLogId: widget.exerciseLogDto.id, pastSets: pastSets);
+
+    _loadControllers();
+
     _cacheLog();
   }
 
   void _removeSet({required int index}) {
-    if (withDurationOnly(type: widget.exerciseLogDto.exercise.type)) {
-      _durationControllers.removeAt(index);
-    } else {
-      if (withWeightsOnly(type: widget.exerciseLogDto.exercise.type)) {
-        _weightAndRepsControllers.removeAt(index);
-      } else {
-        _repsControllers.removeAt(index);
-      }
-    }
-
     Provider.of<ExerciseLogController>(context, listen: false)
         .removeSetForExerciseLog(exerciseLogId: widget.exerciseLogDto.id, index: index);
+
+    _loadControllers();
+
     _cacheLog();
   }
 
@@ -169,6 +195,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     widget.onTapWeightEditor(updatedSet);
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateWeight(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
+
+    _loadControllers();
+
     _cacheLog();
   }
 
@@ -177,6 +206,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         setDto is WeightAndRepsSetDto ? setDto.copyWith(reps: reps) : (setDto as RepsSetDto).copyWith(reps: reps);
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateReps(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
+
+    _loadControllers();
+
     _cacheLog();
   }
 
@@ -191,6 +223,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       final updatedSet = (setDto as DurationSetDto).copyWith(duration: duration, checked: checked);
       Provider.of<ExerciseLogController>(context, listen: false)
           .updateDuration(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet, notify: checked);
+
+      _loadControllers();
+
       _cacheLog();
     }
   }
@@ -205,6 +240,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateDuration(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet, notify: true);
+
+    _loadControllers();
+
     _cacheLog();
   }
 
@@ -213,6 +251,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final updatedSet = setDto.copyWith(checked: checked);
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateSetCheck(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
+
+    _loadControllers();
+
     _cacheLog();
   }
 
@@ -259,13 +300,14 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   @override
   void initState() {
     super.initState();
-    if (widget.exerciseLogDto.exercise.type == ExerciseType.weights) {
-      _loadWeightAndRepsControllers();
-    } else if (widget.exerciseLogDto.exercise.type == ExerciseType.bodyWeight) {
-      _loadRepsControllers();
-    } else {
-      _loadDurationControllers();
-    }
+    _loadControllers();
+  }
+
+
+  @override
+  void dispose() {
+    _disposeControllers();
+    super.dispose();
   }
 
   void _cacheLog() {
@@ -281,11 +323,11 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             as List<SetDto>?;
     if (sets != null) {
       if (mounted) {
-        for (final _ in sets) {
-          _addController();
-        }
         Provider.of<ExerciseLogController>(context, listen: false)
             .overwriteSets(exerciseLogId: widget.exerciseLogDto.id, sets: sets);
+
+        _loadControllers();
+
         _cacheLog();
       }
     }

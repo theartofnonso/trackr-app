@@ -57,6 +57,9 @@ import 'firebase_options.dart';
 import 'logger.dart';
 import 'models/ModelProvider.dart';
 
+// Define a global RouteObserver
+final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();
+
 void main() async {
   final logger = getLogger(className: "main");
 
@@ -125,6 +128,7 @@ void main() async {
 }
 
 final _router = GoRouter(
+  observers: [routeObserver],
   initialLocation: "/",
   routes: [
     GoRoute(
