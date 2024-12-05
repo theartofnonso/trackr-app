@@ -93,6 +93,7 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> with RouteAware {
   void _disposeSpeech() {
     _speech.stop();
     _speech.cancel();
+    _sets = [];
   }
 
   @override
