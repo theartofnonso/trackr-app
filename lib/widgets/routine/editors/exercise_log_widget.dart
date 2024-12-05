@@ -321,7 +321,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     if (sets != null) {
       if (mounted) {
 
-        _loadControllers(sets: widget.exerciseLogDto.sets);
+        _loadControllers(sets: sets);
 
         Provider.of<ExerciseLogController>(context, listen: false)
             .overwriteSets(exerciseLogId: widget.exerciseLogDto.id, sets: sets);
