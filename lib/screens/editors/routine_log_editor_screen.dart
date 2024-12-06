@@ -93,7 +93,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         onSelected: (List<ExerciseDto> selectedExercises) {
           final pastSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
               .whereSetsForExercise(exercise: selectedExercises.first);
-          controller.replaceExerciseLog(oldExerciseId: oldExerciseLog.id, newExercise: selectedExercises.first, pastSets: pastSets);
+          controller.replaceExerciseLog(
+              oldExerciseId: oldExerciseLog.id, newExercise: selectedExercises.first, pastSets: pastSets);
           _cacheLog();
         });
   }
@@ -448,18 +449,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   void _loadExerciseLogs() {
     final exerciseLogs = widget.log.exerciseLogs;
-    final updatedExerciseLogs = exerciseLogs.map((exerciseLog) {
-      final previousSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
-          .whereSetsForExercise(exercise: exerciseLog.exercise);
-      final sets = previousSets.isNotEmpty ? previousSets : exerciseLog.sets;
-      final unCheckedSets = sets
-          .take(exerciseLog.sets.length)
-          .mapIndexed((index, set) => set.copyWith(checked: exerciseLog.sets[index].checked))
-          .toList();
-      return exerciseLog.copyWith(sets: unCheckedSets);
-    }).toList();
     Provider.of<ExerciseLogController>(context, listen: false)
-        .loadExerciseLogs(exerciseLogs: updatedExerciseLogs, mode: widget.mode);
+        .loadExerciseLogs(exerciseLogs: exerciseLogs, mode: widget.mode);
     _minimiseOrMaximiseCards();
   }
 
