@@ -50,6 +50,7 @@ import 'package:tracker_app/utils/date_utils.dart';
 import 'amplifyconfiguration.dart';
 import 'controllers/activity_log_controller.dart';
 import 'controllers/routine_user_controller.dart';
+import 'controllers/stt_controller.dart';
 import 'dtos/appsync/exercise_dto.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
 import 'dtos/viewmodels/routine_template_arguments.dart';
@@ -106,6 +107,9 @@ void main() async {
       options.tracesSampleRate = 1.0;
     },
     appRunner: () => runApp(MultiProvider(providers: [
+      ChangeNotifierProvider<STTController>(
+        create: (BuildContext context) => STTController(),
+      ),
       ChangeNotifierProvider<SettingsController>(
         create: (BuildContext context) => SettingsController(),
       ),

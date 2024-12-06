@@ -1,26 +1,14 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:speech_to_text/speech_to_text.dart' as stt;
-import 'package:speech_to_text/speech_to_text.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
-import 'package:tracker_app/dtos/open_ai_response_schema_dtos/weights_and_reps_set_intent.dart';
 import 'package:tracker_app/dtos/set_dtos/set_dto.dart';
-import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
-import 'package:tracker_app/openAI/open_ai_functions.dart';
-import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/widgets/routine/preview/exercise_log_widget.dart';
 
 import '../../colors.dart';
-import '../../dtos/open_ai_response_schema_dtos/reps_set_intent.dart';
-import '../../dtos/set_dtos/reps_dto.dart';
-import '../../main.dart';
-import '../../openAI/open_ai.dart';
-import '../../strings/ai_prompts.dart';
-import '../../utils/dialog_utils.dart';
+import '../../controllers/stt_controller.dart';
 import '../../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 
@@ -33,81 +21,29 @@ class STTLoggingScreen extends StatefulWidget {
   State<STTLoggingScreen> createState() => _STTLoggingScreenState();
 }
 
-class _STTLoggingScreenState extends State<STTLoggingScreen> with RouteAware {
-  late stt.SpeechToText _speech;
-
-  bool _isListening = false;
-  String _userPrompt = "";
-  bool _loading = false;
+class _STTLoggingScreenState extends State<STTLoggingScreen> {
   List<SetDto> _sets = [];
 
   @override
   void initState() {
     super.initState();
+    context.read<STTController>().initialize();
     _sets = widget.exerciseLog.sets.where((set) => set.isNotEmpty()).toList();
-    _initSpeech();
-  }
-
-  // Initialize the speech object
-  void _initSpeech() {
-    _speech = stt.SpeechToText();
-    _speech.initialize(
-      onStatus: (status) {
-        setState(() {
-          _isListening = status == "listening";
-        });
-
-        if (status == "done") {
-          if (!_loading) {
-            _showLoadingScreen();
-            _analyseIntent();
-          }
-        }
-      },
-      onError: (_) {
-        showSnackbar(
-          context: context,
-          icon: const FaIcon(FontAwesomeIcons.circleInfo),
-          message: "Oops! Unable to initialise speech listener",
-        );
-      },
-    );
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Subscribe to the RouteObserver
-    routeObserver.subscribe(this, ModalRoute.of(context)!);
-  }
-
-  @override
-  void dispose() {
-    // Unsubscribe from the RouteObserver
-    routeObserver.unsubscribe(this);
-    _disposeSpeech();
-    super.dispose();
-  }
-
-  // Dispose of the speech object
-  void _disposeSpeech() {
-    _speech.stop();
-    _speech.cancel();
-    _sets = [];
-  }
-
-  @override
-  void didPopNext() {
-    print("gggggg");
-    // Called when this route becomes active again
-    _initSpeech(); // Re-initialize the speech object
+    //_sets = widget.exerciseLog.sets.where((set) => set.isNotEmpty()).toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
+    final sttController = context.watch<STTController>();
 
-    final exerciseLog = widget.exerciseLog.copyWith(sets: _sets);
+    final exerciseLog = widget.exerciseLog.copyWith(sets: sttController.sets);
+
+    if (sttController.isAnalysing) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     return Scaffold(
       appBar: AppBar(
@@ -129,7 +65,7 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> with RouteAware {
           onPressed: Navigator.of(context).pop,
         ),
         actions: [
-          if (_sets.isNotEmpty)
+          if (sttController.sets.isNotEmpty)
             IconButton(
               onPressed: _navigateBack,
               icon: const FaIcon(
@@ -140,12 +76,12 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> with RouteAware {
       ),
       floatingActionButton: FloatingActionButton(
         heroTag: "routine_log_screen",
-        onPressed: _startListening,
-        backgroundColor: _isListening ? vibrantGreen : sapphireDark,
+        onPressed: () => _startListening(),
+        backgroundColor: sttController.listeningStatus == STTListeningStatus.listening ? vibrantGreen : sapphireDark,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         child: FaIcon(
           FontAwesomeIcons.microphone,
-          color: _isListening ? Colors.black : Colors.white,
+          color: sttController.listeningStatus == STTListeningStatus.listening ? Colors.black : Colors.white,
         ),
       ),
       body: Container(
@@ -180,84 +116,20 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> with RouteAware {
 
   Future<void> _startListening() async {
     await HapticFeedback.heavyImpact();
-    _speech.listen(
-      listenOptions: SpeechListenOptions(listenMode: stt.ListenMode.dictation),
-      listenFor: const Duration(seconds: 3),
-      onResult: (result) {
-        _userPrompt = result.recognizedWords;
-      },
-    );
+    if (mounted) {
+      context.read<STTController>().listen();
+    }
   }
 
   void _navigateBack() {
     if (_sets.isNotEmpty) {
       Navigator.of(context).pop(_sets);
+      context.read<STTController>().reset();
     }
   }
 
-  void _showLoadingScreen() {
-    setState(() {
-      _loading = true;
-    });
-  }
-
   void _hideLoadingScreen() {
-    setState(() {
-      _loading = false;
-    });
-  }
-
-  void _analyseIntent() {
-    final exerciseType = widget.exerciseLog.exercise.type;
-    final responseFormat = withWeightsOnly(type: exerciseType)
-        ? logWeightAndRepsIntentResponseFormat
-        : logRepsIntentResponseFormat;
-    final systemInstructions = withWeightsOnly(type: exerciseType)
-        ? weightAndRepsLoggingContext
-        : repetitionsLoggingContext;
-
-    runMessage(
-      system: systemInstructions,
-      user: _userPrompt,
-      responseFormat: responseFormat,
-    ).then((response) {
-      _hideLoadingScreen();
-      if (response != null && mounted) {
-        // Deserialize the JSON string
-        Map<String, dynamic> json = jsonDecode(response);
-
-        // Create an instance of the appropriate SetDto
-        if (withWeightsOnly(type: exerciseType)) {
-          WeightsAndRepsSetIntent intent = WeightsAndRepsSetIntent.fromJson(json);
-          final set = WeightAndRepsSetDto(
-            weight: intent.weight,
-            reps: intent.repetitions,
-            checked: true,
-          );
-          setState(() {
-            _sets.add(set);
-          });
-        } else if (withRepsOnly(type: exerciseType)) {
-          RepsSetIntent intent = RepsSetIntent.fromJson(json);
-          final set = RepsSetDto(
-            reps: intent.repetitions,
-            checked: true,
-          );
-          setState(() {
-            _sets.add(set);
-          });
-        }
-      }
-    }).catchError((e) {
-      _hideLoadingScreen();
-      if (mounted) {
-        showSnackbar(
-          context: context,
-          icon: TRKRCoachWidget(),
-          message: "Oops! I am unable to understand your request",
-        );
-      }
-    });
+    context.read<STTController>().stopAnalysing();
   }
 }
 
@@ -272,63 +144,58 @@ class _HeroWidget extends StatelessWidget {
           const TRKRCoachWidget(),
           const SizedBox(width: 10),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                RichText(
-                  text: TextSpan(
-                    text: "Hey there!",
+            child: RichText(
+              text: TextSpan(
+                text: "Hey there!",
+                style: GoogleFonts.ubuntu(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.white,
+                  height: 1.5,
+                ),
+                children: <TextSpan>[
+                  TextSpan(
+                    text: " ",
                     style: GoogleFonts.ubuntu(
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
                       color: Colors.white,
-                      height: 1.5,
                     ),
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: " ",
-                        style: GoogleFonts.ubuntu(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.white,
-                        ),
-                      ),
-                      TextSpan(
-                        text: "TRKR Coach",
-                        style: GoogleFonts.ubuntu(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
-                      ),
-                      TextSpan(
-                        text: " can help you log sets with your voice only.",
-                        style: GoogleFonts.ubuntu(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.white,
-                        ),
-                      ),
-                      TextSpan(
-                        text: " Try saying ",
-                        style: GoogleFonts.ubuntu(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.white,
-                        ),
-                      ),
-                      TextSpan(
-                        text: 'Log 25kg for 10 reps',
-                        style: GoogleFonts.ubuntu(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
                   ),
-                ),
-              ],
+                  TextSpan(
+                    text: "TRKR Coach",
+                    style: GoogleFonts.ubuntu(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
+                  TextSpan(
+                    text: " can help you log sets with your voice only.",
+                    style: GoogleFonts.ubuntu(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white,
+                    ),
+                  ),
+                  TextSpan(
+                    text: " Try saying ",
+                    style: GoogleFonts.ubuntu(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white,
+                    ),
+                  ),
+                  TextSpan(
+                    text: 'Log 25kg for 10 reps',
+                    style: GoogleFonts.ubuntu(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
