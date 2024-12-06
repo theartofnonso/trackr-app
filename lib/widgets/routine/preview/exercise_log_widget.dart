@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
-import 'package:tracker_app/widgets/information_containers/information_container_lite.dart';
 import 'package:tracker_app/widgets/routine/preview/sets_listview.dart';
 
 import '../../../controllers/exercise_and_routine_controller.dart';
@@ -76,7 +75,18 @@ class ExerciseLogWidget extends StatelessWidget {
           ExerciseType.duration => SingleSetHeader(label: 'TIME'),
         },
         const SizedBox(height: 8),
-        exerciseLog.sets.isNotEmpty ? SetsListview(type: exerciseType, sets: exerciseLog.sets, pbs: pbs) : Center(child: InformationContainerLite(content: "No sets have been logged for this exercise yet.", color: Colors.deepOrange))
+        exerciseLog.sets.isNotEmpty
+            ? SetsListview(type: exerciseType, sets: exerciseLog.sets, pbs: pbs)
+            : Center(
+                child: Container(
+                margin: const EdgeInsets.symmetric(vertical: 12),
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                decoration:
+                    BoxDecoration(color: Colors.deepOrange.withOpacity(0.2), borderRadius: BorderRadius.circular(5)),
+                child: Text("No Sets have been logged for this exercise",
+                    style: GoogleFonts.ubuntu(
+                        fontSize: 12, height: 1.4, color: Colors.deepOrange, fontWeight: FontWeight.w600)),
+              ))
       ],
     );
   }
