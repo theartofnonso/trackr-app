@@ -31,6 +31,13 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
     _sets = widget.exerciseLog.sets.where((set) => set.isNotEmpty()).toList();
   }
 
+
+  @override
+  void dispose() {
+    super.dispose();
+    context.read<STTController>().reset();
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
