@@ -37,8 +37,7 @@ class STTController extends ChangeNotifier {
 
   bool _speechAvailable = false;
   STTState _state = STTState.notListening;
-  List<SetDto> _sets = [];
-  String _recognizedWords = "";
+  final List<SetDto> _sets = [];
 
   bool get speechAvailable => _speechAvailable;
 
@@ -69,14 +68,17 @@ class STTController extends ChangeNotifier {
   /// Reset the internal state and recognized sets.
   void reset() {
     _sets.clear();
-    _recognizedWords = "";
     _speech.cancel();
     _speech.stop();
   }
 
   /// Internal callback when speech recognition receives partial or final results.
   void _onSpeechResult(SpeechRecognitionResult result) {
-    _recognizedWords = result.recognizedWords;
+    final recognizedWords = result.recognizedWords;
+    if (result.finalResult && recognizedWords.isNotEmpty) {
+      _setState(STTState.analysing);
+      _analyseIntent(userPrompt: recognizedWords);
+    }
   }
 
   /// Internal callback when speech recognition status changes.
@@ -84,13 +86,7 @@ class STTController extends ChangeNotifier {
     // The possible statuses are: "done", "listening", "notListening"
     // When done, we begin analysis of the recognized words.
     final status = STTState.fromString(string);
-    if (status == STTState.done) {
-      print(string);
-      _setState(STTState.analysing);
-      _analyseIntent(userPrompt: _recognizedWords);
-    } else {
-      _setState(status);
-    }
+    _setState(status);
   }
 
   /// Internal callback if an error occurs during speech recognition.
@@ -100,7 +96,6 @@ class STTController extends ChangeNotifier {
 
   /// Analyse the recognized words using OpenAI to determine the user's intent.
   Future<void> _analyseIntent({required String userPrompt}) async {
-
     // In a real scenario, you'd determine the exerciseType from context or passed data.
     final exerciseType = ExerciseType.weights;
     final isWithWeights = withWeightsOnly(type: exerciseType);
