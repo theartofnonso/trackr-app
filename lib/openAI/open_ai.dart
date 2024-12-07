@@ -65,15 +65,12 @@ Future<Map<String, dynamic>?> runMessageWithTools(
     "tools": openAIFunctionTools,
   });
 
-  print(body);
-
   final response = await http.post(
     Uri.parse(_completionsAPIEndpoint),
     headers: headers,
     body: body,
   );
 
-  print(response.body);
   if (response.statusCode == 200) {
     final body = jsonDecode(response.body);
     final choices = body['choices'] as List<dynamic>;

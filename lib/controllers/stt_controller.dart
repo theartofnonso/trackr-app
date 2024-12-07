@@ -8,9 +8,9 @@ import 'package:speech_to_text/speech_to_text.dart';
 import 'package:tracker_app/enums/exercise_logging_function.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 
-import '../dtos/open_ai_response_schema_dtos/reps_set_intent.dart';
+import '../dtos/open_ai_response_schema_dtos/reps.dart';
 import '../dtos/open_ai_response_schema_dtos/tool_dto.dart';
-import '../dtos/open_ai_response_schema_dtos/weights_and_reps_set_intent.dart';
+import '../dtos/open_ai_response_schema_dtos/weight_and_reps.dart';
 import '../dtos/set_dtos/reps_dto.dart';
 import '../dtos/set_dtos/set_dto.dart';
 import '../dtos/set_dtos/weight_and_reps_dto.dart';
@@ -39,7 +39,7 @@ class STTController extends ChangeNotifier {
 
   bool _speechAvailable = false;
   STTState _state = STTState.notListening;
-  final List<SetDto> _sets = [];
+  List<SetDto> _sets = [];
 
   bool get speechAvailable => _speechAvailable;
 
@@ -78,7 +78,7 @@ class STTController extends ChangeNotifier {
   void _onSpeechResult({required ExerciseType exerciseType, required SpeechRecognitionResult result}) {
     final recognizedWords = result.recognizedWords;
     if (result.finalResult && recognizedWords.isNotEmpty) {
-      //_analyseIntent(userPrompt: recognizedWords, exerciseType: exerciseType);
+      print(recognizedWords);
       _analyse(userPrompt: recognizedWords, exerciseType: exerciseType);
     }
   }
@@ -92,7 +92,7 @@ class STTController extends ChangeNotifier {
     _setState(STTState.analysing);
 
     final json = await runMessageWithTools(
-      systemInstruction: personalTrainerInstructionForWorkouts,
+      systemInstruction: personalTrainerInstructionForWorkoutLogging,
       userInstruction: userPrompt,
     );
 
@@ -102,34 +102,39 @@ class STTController extends ChangeNotifier {
     }
 
     final tool = ToolDto.fromJson(json);
+
     final function = ExerciseLoggingFunction.fromString(tool.name);
     switch (function) {
       case ExerciseLoggingFunction.addSet:
-        final responseFormat =
-            withWeightsOnly(type: exerciseType) ? logWeightAndRepsIntentResponseFormat : logRepsIntentResponseFormat;
-        final systemInstructions =
-            withWeightsOnly(type: exerciseType) ? weightAndRepsLoggingContext : repetitionsLoggingContext;
-
         _addSet(
-            tool: tool,
-            systemInstruction: systemInstructions,
-            responseFormat: responseFormat,
-            userInstruction: userPrompt,
-            exerciseType: exerciseType);
+            tool: tool, systemInstruction: addSetInstruction, userInstruction: userPrompt, exerciseType: exerciseType);
         break;
       case ExerciseLoggingFunction.removeSet:
-      // Call function to remove set
+        _updateSets(
+            tool: tool,
+            systemInstruction: removeSetInstruction,
+            userInstruction: userPrompt,
+            exerciseType: exerciseType,
+            function: ExerciseLoggingFunction.removeSet);
+        break;
       case ExerciseLoggingFunction.updateSet:
-      // Call function to update set
+        _updateSets(
+            tool: tool,
+            systemInstruction: updateSetInstruction,
+            userInstruction: userPrompt,
+            exerciseType: exerciseType,
+            function: ExerciseLoggingFunction.updateSet);
+        break;
     }
   }
 
   Future<void> _addSet(
       {required ToolDto tool,
       required String systemInstruction,
-      required Map<String, Object> responseFormat,
       required String userInstruction,
       required ExerciseType exerciseType}) async {
+    final responseFormat = withWeightsOnly(type: exerciseType) ? weightAndRepsResponseFormat : repsResponseFormat;
+
     final functionCallPayload = createFunctionCallPayload(
         tool: tool,
         systemInstruction: systemInstruction,
@@ -149,22 +154,79 @@ class STTController extends ChangeNotifier {
       // Deserialize the JSON string
       Map<String, dynamic> json = jsonDecode(functionCallResult);
 
-      final isWithWeights = withWeightsOnly(type: exerciseType);
-
-      if (isWithWeights) {
-        final intent = WeightsAndRepsSetIntent.fromJson(json);
-        _sets.add(WeightAndRepsSetDto(
-          weight: intent.weight,
-          reps: intent.repetitions,
-          checked: true,
-        ));
-      } else {
-        final intent = RepsSetIntent.fromJson(json);
-        _sets.add(RepsSetDto(
-          reps: intent.repetitions,
-          checked: true,
-        ));
+      switch (exerciseType) {
+        case ExerciseType.weights:
+          final set = WeightAndReps.toDto(json, checked: true);
+          _sets.add(set);
+          break;
+        case ExerciseType.bodyWeight:
+          final set = Reps.toDto(json, checked: true);
+          _sets.add(set);
+        case ExerciseType.duration:
+        // TODO: Handle this case.
       }
+
+      _setState(STTState.notListening);
+    } catch (e) {
+      _setState(STTState.error);
+    }
+  }
+
+  Future<void> _updateSets(
+      {required ToolDto tool,
+      required String systemInstruction,
+      required String userInstruction,
+      required ExerciseLoggingFunction function,
+      required ExerciseType exerciseType}) async {
+    final listOfSetsJsons = {
+      "sets": _sets.map((set) {
+        return switch (set.type) {
+          ExerciseType.weights => {
+              "weight": (set as WeightAndRepsSetDto).weight,
+              "repetitions": set.reps,
+            },
+          ExerciseType.bodyWeight => {
+              "repetitions": (set as RepsSetDto).reps,
+            },
+          ExerciseType.duration => throw UnimplementedError(),
+        };
+      }).toList(),
+    };
+
+    final responseFormat =
+        withWeightsOnly(type: exerciseType) ? weightAndRepsListResponseFormat : repsListResponseFormat;
+
+    final functionCallPayload = createFunctionCallPayload(
+        tool: tool,
+        systemInstruction: systemInstruction,
+        user: userInstruction,
+        responseFormat: responseFormat,
+        functionName: function.name,
+        extra: jsonEncode(listOfSetsJsons));
+
+    try {
+      final functionCallResult = await runMessageWithFunctionCallPayload(payload: functionCallPayload);
+
+      if (functionCallResult == null) {
+        _setState(STTState.error);
+        return;
+      }
+
+      // Deserialize the JSON string
+      Map<String, dynamic> json = jsonDecode(functionCallResult);
+      final setsInJson = json["sets"] as List<dynamic>;
+
+      switch (exerciseType) {
+        case ExerciseType.weights:
+          _sets = setsInJson.map((json) => WeightAndReps.toDto(json, checked: true)).toList();
+          break;
+        case ExerciseType.bodyWeight:
+          _sets = setsInJson.map((json) => Reps.toDto(json, checked: true)).toList();
+          break;
+        case ExerciseType.duration:
+        // TODO: Handle this case.
+      }
+
       _setState(STTState.notListening);
     } catch (e) {
       _setState(STTState.error);

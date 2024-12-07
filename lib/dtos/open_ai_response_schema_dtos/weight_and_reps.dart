@@ -1,18 +1,20 @@
 
-class WeightsAndRepsSetIntent {
+import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
+
+class WeightAndReps {
   final double weight;
   final int repetitions;
 
-  WeightsAndRepsSetIntent({
+  WeightAndReps({
     required this.weight,
     required this.repetitions
   });
 
   // Factory constructor to parse JSON into a LogSetIntent object
-  factory WeightsAndRepsSetIntent.fromJson(Map<String, dynamic> json) {
-    return WeightsAndRepsSetIntent(
+  static WeightAndRepsSetDto toDto(Map<String, dynamic> json, {bool checked = false}) {
+    return WeightAndRepsSetDto(
       weight: (json['weight'] as num).toDouble(),
-      repetitions: json['repetitions'] as int,
+      reps: json['repetitions'] as int, checked: checked,
     );
   }
 

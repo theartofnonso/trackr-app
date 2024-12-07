@@ -240,7 +240,7 @@ const monthlyReportResponseFormat = {
   }
 };
 
-const logWeightAndRepsIntentResponseFormat = {
+const weightAndRepsResponseFormat = {
   "type": "json_schema",
   "json_schema": {
     "name": "log_weight_and_repetitions_intent",
@@ -263,7 +263,7 @@ const logWeightAndRepsIntentResponseFormat = {
   }
 };
 
-const logRepsIntentResponseFormat = {
+const repsResponseFormat = {
   "type": "json_schema",
   "json_schema": {
     "name": "log_repetitions_intent",
@@ -277,6 +277,65 @@ const logRepsIntentResponseFormat = {
       "required": [
         "repetitions",
       ],
+      "additionalProperties": false
+    },
+    "strict": true
+  }
+};
+
+const weightAndRepsListResponseFormat = {
+  "type": "json_schema",
+  "json_schema": {
+    "name": "weight_and_repetitions_list",
+    "schema": {
+      "title": "Weight and Repetitions List",
+      "description": "A structured output containing multiple sets, each with weight and repetitions, for a workout routine.",
+      "type": "object",
+      "properties": {
+        "sets": {
+          "type": "array",
+          "description": "A list of updated sets, each with weight and repetitions",
+          "items": {
+            "type": "object",
+            "properties": {
+              "weight": {"type": "number", "description": "Amount of weight lifted."},
+              "repetitions": {"type": "integer", "description": "Number of repetitions."}
+            },
+            "required": ["weight", "repetitions"],
+            "additionalProperties": false
+          }
+        },
+      },
+      "required": ["sets"],
+      "additionalProperties": false
+    },
+    "strict": true
+  }
+};
+
+const repsListResponseFormat = {
+  "type": "json_schema",
+  "json_schema": {
+    "name": "repetitions_list",
+    "schema": {
+      "title": "Repetitions List",
+      "description": "A structured output containing multiple sets, each with repetitions, for a workout routine.",
+      "type": "object",
+      "properties": {
+        "sets": {
+          "type": "array",
+          "description": "A list of updated sets, each with repetitions",
+          "items": {
+            "type": "object",
+            "properties": {
+              "repetitions": {"type": "integer", "description": "Number of repetitions."}
+            },
+            "required": ["repetitions"],
+            "additionalProperties": false
+          }
+        },
+      },
+      "required": ["sets"],
       "additionalProperties": false
     },
     "strict": true
