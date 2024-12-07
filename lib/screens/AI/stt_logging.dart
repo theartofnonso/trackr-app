@@ -36,6 +36,10 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
     context.read<STTController>().reset();
   }
 
+  void _closeSpeech() {
+    context.read<STTController>().closeSpeech();
+  }
+
   @override
   Widget build(BuildContext context) {
     final sttController = context.watch<STTController>();
@@ -66,7 +70,7 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
             size: 28,
           ),
           onPressed: () {
-            _reset();
+            _closeSpeech();
             Navigator.of(context).pop();
           },
         ),

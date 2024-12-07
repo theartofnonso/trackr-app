@@ -50,12 +50,12 @@ class STTController extends ChangeNotifier {
   /// Initializes the speech recognition service.
   Future<void> initialize({required List<SetDto> initialSets}) async {
     if (!_speechAvailable) {
-      _sets = initialSets;
       _speechAvailable = await _speech.initialize(
         onError: _onSpeechError,
       );
-      notifyListeners();
     }
+    _sets = initialSets;
+    notifyListeners();
   }
 
   /// Start listening for user speech input.
@@ -72,6 +72,10 @@ class STTController extends ChangeNotifier {
   /// Reset the internal state and recognized sets.
   void reset() {
     _sets.clear();
+    closeSpeech();
+  }
+
+  void closeSpeech() {
     _speech.cancel();
     _speech.stop();
   }
