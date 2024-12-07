@@ -107,11 +107,13 @@ class RoutineTemplatesScreen extends StatelessWidget {
                               children: children),
                         )
                       : Expanded(
-                        child: Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: const NoListEmptyState(message: "It might feel quiet now, but tap the + button to create a workout or ask TRKR coach for help."),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: const NoListEmptyState(
+                                message:
+                                    "It might feel quiet now, but tap the + button to create a workout or ask TRKR coach for help."),
+                          ),
                         ),
-                      ),
                 ])),
           ));
     });
@@ -160,11 +162,7 @@ class _RoutineWidget extends StatelessWidget {
                         sapphireDark,
                       ],
                     )
-                  : null,
-              boxShadow: [
-                BoxShadow(
-                    color: sapphireDark.withOpacity(0.5), spreadRadius: 5, blurRadius: 7, offset: const Offset(0, 3))
-              ]),
+                  : null),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(
               template.name,
