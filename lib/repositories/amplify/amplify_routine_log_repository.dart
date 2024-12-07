@@ -190,11 +190,14 @@ class AmplifyRoutineLogRepository {
 
   List<SetDto> whereSetsForExerciseBefore({required ExerciseDto exercise, required DateTime date}) {
     final exerciseLogs = _exerciseLogsByExerciseId[exercise.id]?.where((log) => log.createdAt.isBefore(date)) ?? [];
-    return exerciseLogs.isNotEmpty ? exerciseLogs.first.sets : [];
+    final completedExercises = loggedExercises(exerciseLogs: exerciseLogs.toList());
+    return completedExercises.isNotEmpty ? completedExercises.first.sets : [];
   }
 
   List<ExerciseLogDto> whereExerciseLogsBefore({required ExerciseDto exercise, required DateTime date}) {
-    return _exerciseLogsByExerciseId[exercise.id]?.where((log) => log.createdAt.isBefore(date)).toList() ?? [];
+    final exerciseLogs =  _exerciseLogsByExerciseId[exercise.id]?.where((log) => log.createdAt.isBefore(date)).toList() ?? [];
+    final completedExercises = loggedExercises(exerciseLogs: exerciseLogs.toList());
+    return completedExercises;
   }
 
   /// RoutineLog for the following [DateTime]
