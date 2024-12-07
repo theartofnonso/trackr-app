@@ -147,7 +147,7 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
                         ),
                         dividerColor: sapphireLighter),
                     const SizedBox(height: 12),
-                    SetsListview(type: widget.exerciseLog.exercise.type, sets: updatedExerciseLog.sets)
+                    SetsListview(type: widget.exerciseLog.exercise.type, sets: updatedExerciseLog.sets.isNotEmpty ? updatedExerciseLog.sets : widget.exerciseLog.sets)
                   ],
                 ),
               ],
