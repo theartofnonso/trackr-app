@@ -48,7 +48,7 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
     }).toList();
 
     final exercises = routineLogs
-        .map((routineLog) => completedExercises(exerciseLogs: routineLog.exerciseLogs))
+        .map((routineLog) => loggedExercises(exerciseLogs: routineLog.exerciseLogs))
         .expand((exerciseLogs) => exerciseLogs)
         .map((exerciseLog) => exerciseLog.exercise.name)
         .toSet();
@@ -58,7 +58,7 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
     final exercisesChildren = exercises.map((exerciseName) => _Chip(label: exerciseName)).toList();
 
     final exerciseLogsWithCompletedSets = routineLogs
-        .map((routineLog) => completedExercises(exerciseLogs: routineLog.exerciseLogs))
+        .map((routineLog) => loggedExercises(exerciseLogs: routineLog.exerciseLogs))
         .expand((exerciseLogs) => exerciseLogs)
         .toList();
 

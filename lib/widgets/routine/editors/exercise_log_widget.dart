@@ -105,7 +105,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final pastExerciseLogs = Provider.of<ExerciseAndRoutineController>(context, listen: false)
             .exerciseLogsByExerciseId[widget.exerciseLogDto.id] ??
         [];
-    final completedPastExerciseLogs = completedExercises(exerciseLogs: pastExerciseLogs);
+    final completedPastExerciseLogs = loggedExercises(exerciseLogs: pastExerciseLogs);
     if (completedPastExerciseLogs.isNotEmpty) {
       final previousLog = completedPastExerciseLogs.last;
       final heaviestSetWeight = heaviestWeightInSetForExerciseLog(exerciseLog: previousLog);

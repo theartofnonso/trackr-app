@@ -72,7 +72,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     final logs = routineLogController.whereLogsIsWithinRange(range: dateRange);
 
     final exerciseLogs = logs
-        .map((log) => completedExercises(exerciseLogs: log.exerciseLogs))
+        .map((log) => loggedExercises(exerciseLogs: log.exerciseLogs))
         .expand((exerciseLogs) => exerciseLogs)
         .where((exerciseLog) {
       final muscleGroups = [exerciseLog.exercise.primaryMuscleGroup, ...exerciseLog.exercise.secondaryMuscleGroups];

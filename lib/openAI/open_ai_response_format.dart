@@ -73,6 +73,10 @@ const routineLogReportResponseFormat = {
           "A structured report analyzing the user's performance on current exercises compared to previous sessions.",
       "type": "object",
       "properties": {
+        "title": {
+          "type": "string",
+          "description": "The name of the current workout session."
+        },
         "introduction": {
           "type": "string",
           "description": "An overview summarizing the key highlights of the training report."
@@ -164,7 +168,7 @@ const routineLogReportResponseFormat = {
           "description": "Personalized suggestions for future improvements and goal setting."
         }
       },
-      "required": ["introduction", "exercise_reports", "suggestions"],
+      "required": ["title", "introduction", "exercise_reports", "suggestions"],
       "additionalProperties": false
     },
     "strict": true

@@ -23,7 +23,7 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
   Widget build(BuildContext context) {
 
     final exerciseLogs = widget.logs
-        .map((log) => completedExercises(exerciseLogs: log.exerciseLogs))
+        .map((log) => loggedExercises(exerciseLogs: log.exerciseLogs))
         .expand((exerciseLogs) => exerciseLogs).toList();
 
     final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequencyOn4WeeksScale(exerciseLogs: exerciseLogs);

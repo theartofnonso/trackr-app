@@ -58,7 +58,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
 
     final exerciseLogs = exerciseAndRoutineController.exerciseLogsByExerciseId[exercise.id] ?? [];
 
-    final completedExerciseLogs = completedExercises(exerciseLogs: exerciseLogs);
+    final completedExerciseLogs = loggedExercises(exerciseLogs: exerciseLogs);
 
     final heaviestSetVolumeRecord = heaviestSetVolume(exerciseLogs: completedExerciseLogs);
 

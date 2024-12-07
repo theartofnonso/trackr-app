@@ -24,6 +24,10 @@ import '../../dtos/appsync/exercise_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/set_dtos/weight_and_reps_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
+import '../../openAI/open_ai.dart';
+import '../../openAI/open_ai_response_format.dart';
+import '../../strings/ai_prompts.dart';
+import '../../utils/routine_log_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
@@ -213,8 +217,40 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   void _navigateBack({RoutineLogDto? routineLog}) async {
     if (widget.mode == RoutineEditorMode.log) {
       _cleanUpSession();
+      final log = routineLog;
+      if (log != null) {
+        _generateReport(routineLog: log);
+      }
     }
     context.pop(routineLog);
+  }
+
+  void _generateReport({required RoutineLogDto routineLog}) async {
+    String instruction = prepareLogInstruction(context: context, routineLog: routineLog);
+
+    runMessage(
+            system: routineLogSystemInstruction,
+            user: instruction,
+            responseFormat: routineLogReportResponseFormat)
+        .then((response) {
+      if (response != null) {
+        if (Platform.isIOS) {
+          FlutterLocalNotificationsPlugin().show(
+              900,
+              "${routineLog.name} report is ready",
+              "Your report is now ready for review",
+              const NotificationDetails(
+                iOS: DarwinNotificationDetails(
+                  presentAlert: false,
+                  presentBadge: false,
+                  presentSound: false,
+                  presentBanner: false,
+                ),
+              ),
+              payload: response);
+        }
+      }
+    });
   }
 
   /// Handle collapsed ExerciseLogWidget
@@ -483,11 +519,11 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     if (state == AppLifecycleState.paused) {
       if (Platform.isIOS) {
-        FlutterLocalNotificationsPlugin().periodicallyShow(
+        FlutterLocalNotificationsPlugin().periodicallyShowWithDuration(
             999,
             "${widget.log.name} is still running",
             "Tap to continue training",
-            RepeatInterval.hourly,
+            const Duration(minutes: 10),
             const NotificationDetails(
               iOS: DarwinNotificationDetails(
                 presentAlert: false,

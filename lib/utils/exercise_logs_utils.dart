@@ -432,7 +432,7 @@ int _calculateMuscleScore({required List<ExerciseLogDto> exerciseLogs}) {
   return percentageScore;
 }
 
-List<ExerciseLogDto> completedExercises({required List<ExerciseLogDto> exerciseLogs}) {
+List<ExerciseLogDto> loggedExercises({required List<ExerciseLogDto> exerciseLogs}) {
   return exerciseLogs.where((exerciseLog) {
     final completedSets = exerciseLog.sets.where((set) => set.isNotEmpty() && set.checked);
     return completedSets.isNotEmpty;

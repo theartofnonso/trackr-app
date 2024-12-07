@@ -53,7 +53,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final updatedExerciseLogs = completedExercises(exerciseLogs: widget.log.exerciseLogs);
+    final updatedExerciseLogs = loggedExercises(exerciseLogs: widget.log.exerciseLogs);
 
     final updatedLog = widget.log.copyWith(exerciseLogs: updatedExerciseLogs);
 
@@ -196,7 +196,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
   }
 
   void _showCopyBottomSheet() {
-    final listOfCompletedExercises = completedExercises(exerciseLogs: widget.log.exerciseLogs);
+    final listOfCompletedExercises = loggedExercises(exerciseLogs: widget.log.exerciseLogs);
 
     final updatedLog = widget.log.copyWith(exerciseLogs: listOfCompletedExercises);
 

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
@@ -29,6 +31,7 @@ import 'package:tracker_app/repositories/amplify/amplify_routine_log_repository.
 import 'package:tracker_app/repositories/amplify/amplify_routine_template_repository.dart';
 import 'package:tracker_app/repositories/amplify/amplify_routine_user_repository.dart';
 import 'package:tracker_app/repositories/exercise_log_repository.dart';
+import 'package:tracker_app/screens/AI/routine_log_report_screen.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_log_editor_screen.dart';
@@ -52,14 +55,43 @@ import 'controllers/activity_log_controller.dart';
 import 'controllers/routine_user_controller.dart';
 import 'controllers/stt_controller.dart';
 import 'dtos/appsync/exercise_dto.dart';
+import 'dtos/open_ai_response_schema_dtos/exercise_performance_report.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
 import 'dtos/viewmodels/routine_template_arguments.dart';
 import 'firebase_options.dart';
 import 'logger.dart';
 import 'models/ModelProvider.dart';
 
-// Define a global RouteObserver
-final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+// Top-level callback function
+@pragma('vm:entry-point')
+void onDidReceiveNotificationResponse(NotificationResponse response) {
+  final String? payload = response.payload;
+  if (payload != null) {
+    Map<String, dynamic> json = jsonDecode(payload);
+
+    // Create an instance of ExerciseLogsResponse
+    ExercisePerformanceReport report = ExercisePerformanceReport.fromJson(json);
+
+    navigatorKey.currentState?.push(PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => RoutineLogReportScreen(
+        report: report,
+      ),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(0.0, 1.0);
+        const end = Offset.zero;
+        const curve = Curves.ease;
+        final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        final offsetAnimation = animation.drive(tween);
+        return SlideTransition(
+          position: offsetAnimation,
+          child: child,
+        );
+      },
+    ));
+  }
+}
 
 void main() async {
   final logger = getLogger(className: "main");
@@ -93,7 +125,8 @@ void main() async {
   const initializationSettings =
       InitializationSettings(iOS: iOSInitializationSettingsDarwin, android: androidInitializationSettings);
 
-  await FlutterLocalNotificationsPlugin().initialize(initializationSettings);
+  await FlutterLocalNotificationsPlugin()
+      .initialize(initializationSettings, onDidReceiveNotificationResponse: onDidReceiveNotificationResponse);
 
   tz.initializeTimeZones();
 
@@ -132,8 +165,8 @@ void main() async {
 }
 
 final _router = GoRouter(
-  observers: [routeObserver],
   initialLocation: "/",
+  navigatorKey: navigatorKey,
   routes: [
     GoRoute(
         path: "/", // Define the path for Home Screen

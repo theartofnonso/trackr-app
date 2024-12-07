@@ -1,9 +1,11 @@
 class ExercisePerformanceReport {
+  final String title;
   final String introduction;
   final List<ExerciseReport> exerciseReports;
   final String suggestions;
 
   ExercisePerformanceReport({
+    required this.title,
     required this.introduction,
     required this.exerciseReports,
     required this.suggestions,
@@ -11,6 +13,7 @@ class ExercisePerformanceReport {
 
   factory ExercisePerformanceReport.fromJson(Map<String, dynamic> json) {
     return ExercisePerformanceReport(
+      title: json['title'] as String,
       introduction: json['introduction'] as String,
       exerciseReports:
           (json['exercise_reports'] as List).map((e) => ExerciseReport.fromJson(e as Map<String, dynamic>)).toList(),
@@ -20,6 +23,7 @@ class ExercisePerformanceReport {
 
   Map<String, dynamic> toJson() {
     return {
+      'title': title,
       'introduction': introduction,
       'exercise_reports': exerciseReports.map((e) => e.toJson()).toList(),
       'suggestions': suggestions,
@@ -79,7 +83,7 @@ class Performance {
     return Performance(
       date: json['date'] as String,
       sets: (json['sets'] as List).map((e) => Set.fromJson(e as Map<String, dynamic>)).toList(),
-      totalVolume: (json['total_volume'] as num).toDouble() ,
+      totalVolume: (json['total_volume'] as num).toDouble(),
     );
   }
 
@@ -102,10 +106,7 @@ class Set {
   });
 
   factory Set.fromJson(Map<String, dynamic> json) {
-
-    return Set(
-        weight: (json["weight"] as num).toDouble(),
-        repetitions: (json["repetitions"] as num).toInt());
+    return Set(weight: (json["weight"] as num).toDouble(), repetitions: (json["repetitions"] as num).toInt());
   }
 
   Map<String, dynamic> toJson() {
