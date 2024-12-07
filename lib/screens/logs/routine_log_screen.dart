@@ -9,7 +9,7 @@ import 'package:in_app_review/in_app_review.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/open_ai_response_schema_dtos/exercise_performance_report.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
-import 'package:tracker_app/openAI/open_ai_functions.dart';
+import 'package:tracker_app/openAI/open_ai_response_format.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/general_utils.dart';
