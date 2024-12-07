@@ -25,7 +25,12 @@ class ExerciseLogHistoryScreen extends StatelessWidget {
                 separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
                 itemCount: exerciseLogs.length),
           )
-              : const NoListEmptyState(message: "It might feel quiet now, but your logged exercises will soon appear here."),
+              : Expanded(
+                child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: const NoListEmptyState(message: "It might feel quiet now, but your logged exercises will soon appear here."),
+                ),
+              ),
         ],
       ),
     );

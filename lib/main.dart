@@ -50,12 +50,16 @@ import 'package:tracker_app/utils/date_utils.dart';
 import 'amplifyconfiguration.dart';
 import 'controllers/activity_log_controller.dart';
 import 'controllers/routine_user_controller.dart';
+import 'controllers/stt_controller.dart';
 import 'dtos/appsync/exercise_dto.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
 import 'dtos/viewmodels/routine_template_arguments.dart';
 import 'firebase_options.dart';
 import 'logger.dart';
 import 'models/ModelProvider.dart';
+
+// Define a global RouteObserver
+final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();
 
 void main() async {
   final logger = getLogger(className: "main");
@@ -103,6 +107,9 @@ void main() async {
       options.tracesSampleRate = 1.0;
     },
     appRunner: () => runApp(MultiProvider(providers: [
+      ChangeNotifierProvider<STTController>(
+        create: (BuildContext context) => STTController(),
+      ),
       ChangeNotifierProvider<SettingsController>(
         create: (BuildContext context) => SettingsController(),
       ),
@@ -125,6 +132,7 @@ void main() async {
 }
 
 final _router = GoRouter(
+  observers: [routeObserver],
   initialLocation: "/",
   routes: [
     GoRoute(

@@ -33,7 +33,9 @@ class MilestoneScreen extends StatelessWidget {
       confettiController.play();
     });
 
-    final children = milestone.progress.$2.mapIndexed((index, log) {
+    final sortedMilestones = milestone.progress.$2.sorted((a, b) => b.createdAt.compareTo(a.createdAt));
+
+    final children = sortedMilestones.mapIndexed((index, log) {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: Column(

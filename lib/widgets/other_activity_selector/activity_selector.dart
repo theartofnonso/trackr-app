@@ -67,14 +67,16 @@ class _ActivitySelectorScreenState extends State<ActivitySelectorScreen> {
                         itemBuilder: (context, index) {
                           final image = _filteredActivities[index].image;
                           return ListTile(
-                            leading: image != null ? Image.asset(
-                              'icons/$image.png',
-                              fit: BoxFit.contain,
-                              height: 24, // Adjust the height as needed
-                            ) : Icon(
-                              _filteredActivities[index].icon,
-                              color: Colors.white,
-                            ), // Placeholder icon
+                            leading: image != null
+                                ? Image.asset(
+                                    'icons/$image.png',
+                                    fit: BoxFit.contain,
+                                    height: 24, // Adjust the height as needed
+                                  )
+                                : Icon(
+                                    _filteredActivities[index].icon,
+                                    color: Colors.white,
+                                  ), // Placeholder icon
                             title: Text(_filteredActivities[index].name.toUpperCase(),
                                 style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400)),
                             onTap: () {
@@ -92,7 +94,13 @@ class _ActivitySelectorScreenState extends State<ActivitySelectorScreen> {
                         ),
                       ),
                     ))
-                  : NoListEmptyState(message: 'We don\'t have "${_searchController.text} activity')
+                  : Expanded(
+                      child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: NoListEmptyState(
+                          message:
+                              'We don\'t have "${_searchController.text.isNotEmpty ? _searchController.text : "Any"}" activity'),
+                    ))
             ],
           ),
         ),

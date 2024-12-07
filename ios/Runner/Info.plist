@@ -61,5 +61,9 @@
 	<string>https://eu.posthog.com</string>
 	<key>com.posthog.posthog.CAPTURE_APPLICATION_LIFECYCLE_EVENTS</key>
 	<true/>
+	<key>NSMicrophoneUsageDescription</key>
+    <string>TRKR requires microphone access to enable voice-activated commands when training.</string>
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>TRKR uses speech to text for hands-free logging of your sets, reps, and weights.</string>
 </dict>
 </plist>

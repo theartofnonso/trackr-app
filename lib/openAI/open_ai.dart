@@ -1,9 +1,10 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:tracker_app/dtos/open_ai_response_schema_dtos/tool_dto.dart';
 
-import '../dtos/appsync/exercise_dto.dart';
-import '../openAI/open_ai_functions.dart';
+import '../enums/open_ai_models.dart';
+import 'open_ai_functions.dart';
 
 const String _apiKey =
     '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';
@@ -15,11 +16,15 @@ final headers = {
   'Content-Type': 'application/json',
 };
 
-Future<dynamic> runMessage({required String system, required String user, required responseFormat}) async {
+Future<dynamic> runMessage(
+    {required String system,
+    required String user,
+    required responseFormat,
+    OpenAIModel model = OpenAIModel.fourOMini}) async {
   dynamic message;
 
   final body = jsonEncode({
-    "model": "gpt-4o",
+    "model": model.name,
     "messages": [
       {"role": "system", "content": system},
       {"role": "user", "content": user},
@@ -46,11 +51,13 @@ Future<dynamic> runMessage({required String system, required String user, requir
 }
 
 Future<Map<String, dynamic>?> runMessageWithTools(
-    {required String systemInstruction, required String userInstruction}) async {
+    {required String systemInstruction,
+    required String userInstruction,
+    OpenAIModel model = OpenAIModel.fourOMini}) async {
   Map<String, dynamic>? tools;
 
   final body = jsonEncode({
-    "model": "gpt-4o",
+    "model": model.name,
     "messages": [
       {"role": "system", "content": systemInstruction},
       {"role": "user", "content": userInstruction}
@@ -83,41 +90,28 @@ Future<Map<String, dynamic>?> runMessageWithTools(
 }
 
 Map<String, dynamic> createFunctionCallPayload(
-    {required dynamic toolId,
+    {required ToolDto tool,
     required String systemInstruction,
     required String user,
     required Map<String, Object> responseFormat,
-    required List<ExerciseDto> exercises}) {
+    required String functionName,
+    required String extra,
+    OpenAIModel model = OpenAIModel.fourOMini}) {
   final functionCallMessage = {
     "role": "assistant",
     "tool_calls": [
       {
-        "id": toolId,
+        "id": tool.id,
         "type": "function",
-        "function": {"arguments": "{}", "name": "list_exercises"}
+        "function": {"arguments": "{}", "name": functionName}
       }
     ]
   };
 
-  final listOfExerciseJsons = exercises
-      .map((exercise) => jsonEncode({
-            "id": exercise.id,
-            "name": exercise.name,
-            "primary_muscle_group": exercise.primaryMuscleGroup.name,
-            "secondary_muscle_groups": exercise.secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name).toList()
-          }))
-      .toList();
-
-  final functionCallResultMessage = {
-    "role": "tool",
-    "content": jsonEncode({
-      "exercises": listOfExerciseJsons,
-    }),
-    "tool_call_id": toolId
-  };
+  final functionCallResultMessage = {"role": "tool", "content": extra, "tool_call_id": tool.id};
 
   final payload = {
-    "model": "gpt-4o",
+    "model": model.name,
     "messages": [
       {"role": "system", "content": systemInstruction},
       {"role": "user", "content": user},

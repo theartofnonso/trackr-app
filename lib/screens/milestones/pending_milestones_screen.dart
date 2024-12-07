@@ -4,9 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/dtos/milestones/milestone_dto.dart';
 
+import '../../widgets/empty_states/no_list_empty_state.dart';
 import '../../widgets/information_containers/information_container_with_background_image.dart';
 import '../../widgets/milestones/milestone_grid_item.dart';
-import '../../widgets/empty_states/no_list_empty_state.dart';
 
 class PendingMilestonesScreen extends StatelessWidget {
   final List<Milestone> milestones;
@@ -16,16 +16,6 @@ class PendingMilestonesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final children = milestones.map((milestone) => MilestoneGridItem(milestone: milestone)).toList();
-
-    if (children.isEmpty) {
-      return NoListEmptyState(
-          icon: FaIcon(
-            FontAwesomeIcons.trophy,
-            color: Colors.white12,
-            size: 48,
-          ),
-          message: "Hurray, you have successfully completed all milestones for ${DateTime.now().year}.");
-    }
 
     return Scaffold(
         backgroundColor: Colors.transparent,
@@ -60,7 +50,21 @@ class PendingMilestonesScreen extends StatelessWidget {
                       mainAxisSpacing: 10.0,
                       crossAxisSpacing: 10.0,
                       children: children),
-                )
+                ),
+                if (children.isEmpty)
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: NoListEmptyState(
+                          icon: FaIcon(
+                            FontAwesomeIcons.trophy,
+                            color: Colors.white12,
+                            size: 48,
+                          ),
+                          message:
+                              "Hurray, you have successfully completed all milestones for ${DateTime.now().year}."),
+                    ),
+                  )
               ])),
         ));
   }

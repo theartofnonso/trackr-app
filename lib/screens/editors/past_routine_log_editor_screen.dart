@@ -393,8 +393,13 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
                                 ]))
                         ),
                       if (exerciseLogs.isEmpty)
-                        const NoListEmptyState(
-                            message: "Tap the + button to start adding exercises to your past workout session"),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: const NoListEmptyState(
+                                message: "Tap the + button to start adding exercises to your past workout session"),
+                          ),
+                        ),
                     ],
                   ),
                 ),
