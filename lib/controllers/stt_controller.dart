@@ -48,11 +48,13 @@ class STTController extends ChangeNotifier {
   List<SetDto> get sets => List.unmodifiable(_sets);
 
   /// Initializes the speech recognition service.
-  Future<void> initialize() async {
+  Future<void> initialize({required List<SetDto> initialSets}) async {
     if (!_speechAvailable) {
+      _sets = initialSets;
       _speechAvailable = await _speech.initialize(
         onError: _onSpeechError,
       );
+      notifyListeners();
     }
   }
 

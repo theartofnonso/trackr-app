@@ -28,7 +28,7 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
     super.initState();
     // Initialize speech recognition when the screen opens
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<STTController>().initialize();
+      context.read<STTController>().initialize(initialSets: widget.exerciseLog.sets);
     });
   }
 
@@ -139,7 +139,7 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
                     LabelContainerDivider(
                         label: "New Sets".toUpperCase(),
                         description: "Currently logged sets for ${widget.exerciseLog.exercise.name}",
-                        labelStyle: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14),
+                        labelStyle: GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w900, fontSize: 14),
                         descriptionStyle: GoogleFonts.ubuntu(
                           color: Colors.white70,
                           fontWeight: FontWeight.w400,
@@ -147,7 +147,7 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
                         ),
                         dividerColor: sapphireLighter),
                     const SizedBox(height: 12),
-                    SetsListview(type: widget.exerciseLog.exercise.type, sets: updatedExerciseLog.sets.isNotEmpty ? updatedExerciseLog.sets : widget.exerciseLog.sets)
+                    SetsListview(type: widget.exerciseLog.exercise.type, sets: updatedExerciseLog.sets)
                   ],
                 ),
               ],
@@ -183,7 +183,7 @@ class _HeroWidget extends StatelessWidget {
             text: TextSpan(
               text: "Hey there!",
               style: GoogleFonts.ubuntu(
-                fontSize: 16,
+                fontSize: 14,
                 fontWeight: FontWeight.w400,
                 color: Colors.white,
                 height: 1.5,
@@ -192,7 +192,7 @@ class _HeroWidget extends StatelessWidget {
                 TextSpan(
                   text: " ",
                   style: GoogleFonts.ubuntu(
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.w400,
                     color: Colors.white,
                   ),
@@ -200,7 +200,7 @@ class _HeroWidget extends StatelessWidget {
                 TextSpan(
                   text: "TRKR Coach",
                   style: GoogleFonts.ubuntu(
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.w700,
                     color: Colors.white,
                   ),
@@ -208,7 +208,7 @@ class _HeroWidget extends StatelessWidget {
                 TextSpan(
                   text: " can help you log sets with your voice only.",
                   style: GoogleFonts.ubuntu(
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.w400,
                     color: Colors.white,
                   ),
@@ -217,7 +217,7 @@ class _HeroWidget extends StatelessWidget {
                 TextSpan(
                   text: "- Try saying ",
                   style: GoogleFonts.ubuntu(
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.w400,
                     color: Colors.white,
                   ),
@@ -225,7 +225,7 @@ class _HeroWidget extends StatelessWidget {
                 TextSpan(
                   text: 'Log 25kg for 10 reps',
                   style: GoogleFonts.ubuntu(
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.w700,
                     color: Colors.white,
                   ),
@@ -234,7 +234,7 @@ class _HeroWidget extends StatelessWidget {
                 TextSpan(
                   text: "- Or even ",
                   style: GoogleFonts.ubuntu(
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.w400,
                     color: Colors.white,
                   ),
@@ -242,7 +242,7 @@ class _HeroWidget extends StatelessWidget {
                 TextSpan(
                   text: 'Remove last set',
                   style: GoogleFonts.ubuntu(
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.w700,
                     color: Colors.white,
                   ),
@@ -251,7 +251,7 @@ class _HeroWidget extends StatelessWidget {
                 TextSpan(
                   text: "- You can say ",
                   style: GoogleFonts.ubuntu(
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.w400,
                     color: Colors.white,
                   ),
@@ -259,7 +259,7 @@ class _HeroWidget extends StatelessWidget {
                 TextSpan(
                   text: 'Update the second set with 25kg',
                   style: GoogleFonts.ubuntu(
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.w700,
                     color: Colors.white,
                   ),
