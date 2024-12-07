@@ -300,7 +300,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     _loadControllers(sets: widget.exerciseLogDto.sets);
   }
 
-
   @override
   void dispose() {
     _disposeControllers();
@@ -320,7 +319,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             as List<SetDto>?;
     if (sets != null) {
       if (mounted) {
-
         _loadControllers(sets: sets);
 
         Provider.of<ExerciseLogController>(context, listen: false)
@@ -469,14 +467,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             ),
           const SizedBox(height: 8),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            if (withReps(type: exerciseType))
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  GestureDetector(onTap: () => _stt(), child: TRKRCoachWidget()),
-                  const SizedBox(width: 6),
-                ],
-              ),
+            if (withReps(type: exerciseType)) GestureDetector(onTap: () => _stt(), child: TRKRCoachWidget()),
+            const Spacer(),
             if (withWeightsOnly(type: exerciseType))
               IconButton(
                   onPressed: _show1RMRecommendations,
@@ -484,7 +476,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   style: ButtonStyle(
                       visualDensity: VisualDensity.compact,
                       shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
-            const Spacer(),
             IconButton(
               onPressed: widget.onResize,
               icon: const Icon(Icons.close_fullscreen_rounded, color: Colors.white),
