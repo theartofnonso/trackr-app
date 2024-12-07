@@ -127,7 +127,7 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
     final controller = context.read<STTController>();
 
     // Start listening again
-    await controller.startListening();
+    await controller.startListening(exerciseType: widget.exerciseLog.exercise.type);
   }
 }
 

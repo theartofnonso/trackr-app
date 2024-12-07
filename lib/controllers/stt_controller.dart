@@ -55,12 +55,12 @@ class STTController extends ChangeNotifier {
   }
 
   /// Start listening for user speech input.
-  Future<void> startListening() async {
+  Future<void> startListening({required ExerciseType exerciseType}) async {
     if (!_speechAvailable) return;
     _setState(STTState.listening);
     await _speech.listen(
       listenFor: const Duration(seconds: 5),
-      onResult: _onSpeechResult,
+      onResult: (result) => _onSpeechResult(exerciseType: exerciseType, result: result),
       listenOptions: SpeechListenOptions(listenMode: stt.ListenMode.dictation),
     );
   }
@@ -73,10 +73,10 @@ class STTController extends ChangeNotifier {
   }
 
   /// Internal callback when speech recognition receives partial or final results.
-  void _onSpeechResult(SpeechRecognitionResult result) {
+  void _onSpeechResult({required ExerciseType exerciseType, required SpeechRecognitionResult result}) {
     final recognizedWords = result.recognizedWords;
     if (result.finalResult && recognizedWords.isNotEmpty) {
-      _analyseIntent(userPrompt: recognizedWords);
+      _analyseIntent(userPrompt: recognizedWords, exerciseType: exerciseType);
     }
   }
 
@@ -86,11 +86,10 @@ class STTController extends ChangeNotifier {
   }
 
   /// Analyse the recognized words using OpenAI to determine the user's intent.
-  Future<void> _analyseIntent({required String userPrompt}) async {
+  Future<void> _analyseIntent({required String userPrompt, required ExerciseType exerciseType}) async {
     _setState(STTState.analysing);
 
     // In a real scenario, you'd determine the exerciseType from context or passed data.
-    final exerciseType = ExerciseType.weights;
     final isWithWeights = withWeightsOnly(type: exerciseType);
 
     final responseFormat = isWithWeights ? logWeightAndRepsIntentResponseFormat : logRepsIntentResponseFormat;
