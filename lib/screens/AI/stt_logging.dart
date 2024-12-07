@@ -38,10 +38,10 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
   Widget build(BuildContext context) {
     final sttController = context.watch<STTController>();
 
+    if (sttController.state == STTState.analysing) return TRKRLoadingScreen();
+
     // Updated ExerciseLog with the recognized sets.
     final updatedExerciseLog = widget.exerciseLog.copyWith(sets: sttController.sets);
-
-    if (sttController.state == STTState.analysing) return TRKRLoadingScreen();
 
     return Scaffold(
       appBar: AppBar(

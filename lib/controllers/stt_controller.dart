@@ -49,7 +49,6 @@ class STTController extends ChangeNotifier {
   Future<void> initialize() async {
     if (!_speechAvailable) {
       _speechAvailable = await _speech.initialize(
-        onStatus: _onSpeechStatus,
         onError: _onSpeechError,
       );
     }
@@ -58,6 +57,7 @@ class STTController extends ChangeNotifier {
   /// Start listening for user speech input.
   Future<void> startListening() async {
     if (!_speechAvailable) return;
+    _setState(STTState.listening);
     await _speech.listen(
       listenFor: const Duration(seconds: 5),
       onResult: _onSpeechResult,
@@ -76,17 +76,8 @@ class STTController extends ChangeNotifier {
   void _onSpeechResult(SpeechRecognitionResult result) {
     final recognizedWords = result.recognizedWords;
     if (result.finalResult && recognizedWords.isNotEmpty) {
-      _setState(STTState.analysing);
       _analyseIntent(userPrompt: recognizedWords);
     }
-  }
-
-  /// Internal callback when speech recognition status changes.
-  void _onSpeechStatus(String string) {
-    // The possible statuses are: "done", "listening", "notListening"
-    // When done, we begin analysis of the recognized words.
-    final status = STTState.fromString(string);
-    _setState(status);
   }
 
   /// Internal callback if an error occurs during speech recognition.
@@ -96,6 +87,8 @@ class STTController extends ChangeNotifier {
 
   /// Analyse the recognized words using OpenAI to determine the user's intent.
   Future<void> _analyseIntent({required String userPrompt}) async {
+    _setState(STTState.analysing);
+
     // In a real scenario, you'd determine the exerciseType from context or passed data.
     final exerciseType = ExerciseType.weights;
     final isWithWeights = withWeightsOnly(type: exerciseType);
