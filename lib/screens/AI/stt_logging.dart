@@ -4,10 +4,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
+import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/controllers/stt_controller.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
-import 'package:tracker_app/widgets/routine/preview/exercise_log_widget.dart';
+import 'package:tracker_app/widgets/dividers/label_container_divider.dart';
+import 'package:tracker_app/widgets/routine/preview/sets_listview.dart';
 
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 
@@ -42,6 +44,9 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
 
     // Updated ExerciseLog with the recognized sets.
     final updatedExerciseLog = widget.exerciseLog.copyWith(sets: sttController.sets);
+
+    final previousSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
+        .whereSetsForExercise(exercise: widget.exerciseLog.exercise);
 
     return Scaffold(
       appBar: AppBar(
@@ -109,8 +114,42 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
             child: Column(
               children: [
                 _HeroWidget(),
-                const SizedBox(height: 10),
-                ExerciseLogWidget(exerciseLog: updatedExerciseLog),
+                const SizedBox(height: 20),
+                if (previousSets.isNotEmpty)
+                  Column(
+                    children: [
+                      LabelContainerDivider(
+                          label: "Previous Sets".toUpperCase(),
+                          description: "Previously logged sets for ${widget.exerciseLog.exercise.name}",
+                          labelStyle:
+                              GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14),
+                          descriptionStyle: GoogleFonts.ubuntu(
+                            color: Colors.white70,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 12,
+                          ),
+                          dividerColor: sapphireLighter),
+                      const SizedBox(height: 12),
+                      SetsListview(type: widget.exerciseLog.exercise.type, sets: previousSets),
+                      const SizedBox(height: 16),
+                    ],
+                  ),
+                Column(
+                  children: [
+                    LabelContainerDivider(
+                        label: "New Sets".toUpperCase(),
+                        description: "Currently logged sets for ${widget.exerciseLog.exercise.name}",
+                        labelStyle: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14),
+                        descriptionStyle: GoogleFonts.ubuntu(
+                          color: Colors.white70,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 12,
+                        ),
+                        dividerColor: sapphireLighter),
+                    const SizedBox(height: 12),
+                    SetsListview(type: widget.exerciseLog.exercise.type, sets: updatedExerciseLog.sets)
+                  ],
+                ),
               ],
             ),
           ),
@@ -174,8 +213,9 @@ class _HeroWidget extends StatelessWidget {
                     color: Colors.white,
                   ),
                 ),
+                TextSpan(text: "\n"),
                 TextSpan(
-                  text: " Try saying ",
+                  text: "- Try saying ",
                   style: GoogleFonts.ubuntu(
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
@@ -184,6 +224,40 @@ class _HeroWidget extends StatelessWidget {
                 ),
                 TextSpan(
                   text: 'Log 25kg for 10 reps',
+                  style: GoogleFonts.ubuntu(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
+                TextSpan(text: "\n"),
+                TextSpan(
+                  text: "- Or even ",
+                  style: GoogleFonts.ubuntu(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.white,
+                  ),
+                ),
+                TextSpan(
+                  text: 'Remove last set',
+                  style: GoogleFonts.ubuntu(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
+                TextSpan(text: "\n"),
+                TextSpan(
+                  text: "- You can say ",
+                  style: GoogleFonts.ubuntu(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.white,
+                  ),
+                ),
+                TextSpan(
+                  text: 'Update the second set with 25kg',
                   style: GoogleFonts.ubuntu(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,

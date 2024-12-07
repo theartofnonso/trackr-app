@@ -75,25 +75,7 @@ class ExerciseLogWidget extends StatelessWidget {
           ExerciseType.duration => SingleSetHeader(label: 'TIME'),
         },
         const SizedBox(height: 8),
-        exerciseLog.sets.isNotEmpty
-            ? SetsListview(type: exerciseType, sets: exerciseLog.sets, pbs: pbs)
-            : Center(
-                child: Container(
-                width: double.infinity,
-                margin: const EdgeInsets.symmetric(vertical: 12),
-                padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5), // Circular border radius
-                  border: Border.all(
-                    color: Colors.deepOrange.withOpacity(0.2), // Border color
-                    width: 2, // Border width
-                  ),
-                ),
-                child: Text("No Sets have been logged for this exercise",
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.ubuntu(
-                        fontSize: 12, height: 1.4, color: Colors.deepOrange, fontWeight: FontWeight.w600)),
-              ))
+        SetsListview(type: exerciseType, sets: exerciseLog.sets, pbs: pbs)
       ],
     );
   }
