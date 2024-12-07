@@ -365,15 +365,8 @@ Map<MuscleGroupFamily, int> _muscleGroupFamilyCountOn4WeeksScale({
         .map((log) => log.exercise.primaryMuscleGroup.family)
         .where((family) => family != MuscleGroupFamily.fullBody);
 
-    final secondaryMuscleGroupFamilies = logAndDate.value
-        .map((log) => log.exercise.secondaryMuscleGroups)
-        .expand((muscleGroups) => muscleGroups)
-        .map((muscleGroup) => muscleGroup.family)
-        .where((family) => family != MuscleGroupFamily.fullBody);
-
     final muscleGroupFamilies = {
-      ...primaryMuscleGroupFamilies,
-      ...secondaryMuscleGroupFamilies,
+      ...primaryMuscleGroupFamilies
     };
 
     // We don't report these muscle groups
