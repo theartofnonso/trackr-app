@@ -62,7 +62,10 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         context: context,
         excludeExercises: excludeExercises,
         onSelected: (List<ExerciseDto> selectedExercises) {
-          controller.addExerciseLogs(exercises: selectedExercises);
+          final onlyExercise = selectedExercises.first;
+          final pastSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
+              .whereSetsForExercise(exercise: onlyExercise);
+          controller.addExerciseLog(exercise: onlyExercise, pastSets: pastSets);
           _cacheLog();
         });
   }

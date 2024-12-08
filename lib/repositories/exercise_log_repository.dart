@@ -50,9 +50,19 @@ class ExerciseLogRepository {
     return sets.map((set) => set.copyWith(checked: true)).toList();
   }
 
-  void addExerciseLogs({required List<ExerciseDto> exercises}) {
-    final logsToAdd = exercises.map((exercise) => _createExerciseLog(exercise)).toList();
-    _exerciseLogs = [..._exerciseLogs, ...logsToAdd];
+  void addExerciseLog({required ExerciseDto exercise, required List<SetDto> pastSets}) {
+
+    SetDto newSet = SetDto.newType(type: exercise.type);
+
+    SetDto? pastSet = _wherePastSetOrNull(index: 0, pastSets: pastSets);
+
+    if (pastSet != null) {
+      newSet = pastSet.copyWith(checked: false);
+    }
+
+    final logToAdd = _createExerciseLog(exercise, pastSets: [newSet]);
+
+    _exerciseLogs = [..._exerciseLogs, logToAdd];
   }
 
   void reOrderExerciseLogs({required List<ExerciseLogDto> reOrderedList}) {
@@ -273,14 +283,14 @@ class ExerciseLogRepository {
 
   /// Helper functions
 
-  ExerciseLogDto _createExerciseLog(ExerciseDto exercise, {String notes = ""}) {
+  ExerciseLogDto _createExerciseLog(ExerciseDto exercise, {String notes = "", List<SetDto> pastSets = const []}) {
     return ExerciseLogDto(
         id: exercise.id,
         routineLogId: "",
         superSetId: "",
         exercise: exercise,
         notes: notes,
-        sets: [SetDto.newType(type: exercise.type)],
+        sets: pastSets,
         createdAt: DateTime.now());
   }
 

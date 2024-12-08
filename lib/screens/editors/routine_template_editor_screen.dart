@@ -53,7 +53,10 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
         context: context,
         excludeExercises: excludeExercises,
         onSelected: (List<ExerciseDto> selectedExercises) {
-          controller.addExerciseLogs(exercises: selectedExercises);
+          final onlyExercise = selectedExercises.first;
+          final pastSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
+              .whereSetsForExercise(exercise: onlyExercise);
+          controller.addExerciseLog(exercise: onlyExercise, pastSets: pastSets);
         });
   }
 
@@ -86,7 +89,8 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
         onSelected: (List<ExerciseDto> selectedExercises) {
           final pastSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
               .whereSetsForExercise(exercise: selectedExercises.first);
-          controller.replaceExerciseLog(oldExerciseId: oldExerciseLog.id, newExercise: selectedExercises.first, pastSets: pastSets);
+          controller.replaceExerciseLog(
+              oldExerciseId: oldExerciseLog.id, newExercise: selectedExercises.first, pastSets: pastSets);
         });
   }
 
@@ -260,7 +264,8 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                 onPressed: _checkForUnsavedChanges),
             actions: [
               IconButton(
-                  onPressed: _selectExercisesInLibrary, icon: const FaIcon(FontAwesomeIcons.solidSquarePlus, color: Colors.white)),
+                  onPressed: _selectExercisesInLibrary,
+                  icon: const FaIcon(FontAwesomeIcons.solidSquarePlus, color: Colors.white)),
               if (exerciseLogs.length > 1)
                 IconButton(
                     onPressed: () => _reOrderExerciseLogs(exerciseLogs: exerciseLogs),
