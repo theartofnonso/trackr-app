@@ -196,8 +196,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateWeight(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
 
-    _loadControllers(sets: widget.exerciseLogDto.sets);
-
     _cacheLog();
   }
 
@@ -206,8 +204,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         setDto is WeightAndRepsSetDto ? setDto.copyWith(reps: reps) : (setDto as RepsSetDto).copyWith(reps: reps);
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateReps(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
-
-    _loadControllers(sets: widget.exerciseLogDto.sets);
 
     _cacheLog();
   }
