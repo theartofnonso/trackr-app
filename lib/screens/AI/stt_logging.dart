@@ -28,7 +28,8 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
     super.initState();
     // Initialize speech recognition when the screen opens
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<STTController>().initialize(initialSets: widget.exerciseLog.sets);
+      final sets = widget.exerciseLog.sets.where((set) => set.isNotEmpty()).toList();
+      context.read<STTController>().initialize(initialSets: sets);
     });
   }
 
