@@ -28,7 +28,7 @@ class SetsListview extends StatelessWidget {
     final widgets = sets.map(((setDto) {
       final pbsForSet = pbsBySet[setDto] ?? [];
 
-      switch (type) {
+      switch (setDto.type) {
         case ExerciseType.weights:
           final firstLabel = (setDto as WeightAndRepsSetDto).weight;
           final secondLabel = setDto.reps;
