@@ -126,7 +126,12 @@ class _LogsScreen extends StatelessWidget {
                               Divider(color: Colors.white70.withOpacity(0.1)),
                           itemCount: activities.length),
                     )
-                  : const NoListEmptyState(message: "It might feel quiet now, but your logged activities will soon appear here."),
+                  : Expanded(
+                    child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: const NoListEmptyState(message: "It might feel quiet now, but your logged activities will soon appear here."),
+                    ),
+                  ),
             ],
           ),
         ),

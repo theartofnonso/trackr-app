@@ -89,7 +89,7 @@ class RepsMilestone extends Milestone {
 
     for (final log in logs) {
       if (sumOfReps < target) {
-        final completedExerciseLogs = completedExercises(exerciseLogs: log.exerciseLogs);
+        final completedExerciseLogs = loggedExercises(exerciseLogs: log.exerciseLogs);
 
         final exerciseLogs = completedExerciseLogs
             .where((exerciseLog) => exerciseLog.exercise.type != ExerciseType.duration)

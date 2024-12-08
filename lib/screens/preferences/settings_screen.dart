@@ -84,7 +84,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 GestureDetector(
                   onTap: _openStoreListing,
                   child: BackgroundInformationContainer(
-                      image: 'images/people_legs.jpg',
+                      image: 'images/boy_and_girl.jpg',
                       containerColor: sapphireDark,
                       content: "Loving TRKR? Share the love! Your feedback helps us grow and improve.",
                       textStyle: GoogleFonts.ubuntu(

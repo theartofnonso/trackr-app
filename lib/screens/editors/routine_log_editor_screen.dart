@@ -24,6 +24,10 @@ import '../../dtos/appsync/exercise_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/set_dtos/weight_and_reps_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
+import '../../openAI/open_ai.dart';
+import '../../openAI/open_ai_response_format.dart';
+import '../../strings/ai_prompts.dart';
+import '../../utils/routine_log_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
@@ -58,7 +62,10 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         context: context,
         excludeExercises: excludeExercises,
         onSelected: (List<ExerciseDto> selectedExercises) {
-          controller.addExerciseLogs(exercises: selectedExercises);
+          final onlyExercise = selectedExercises.first;
+          final pastSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
+              .whereSetsForExercise(exercise: onlyExercise);
+          controller.addExerciseLog(exercise: onlyExercise, pastSets: pastSets);
           _cacheLog();
         });
   }
@@ -93,7 +100,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         onSelected: (List<ExerciseDto> selectedExercises) {
           final pastSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
               .whereSetsForExercise(exercise: selectedExercises.first);
-          controller.replaceExerciseLog(oldExerciseId: oldExerciseLog.id, newExercise: selectedExercises.first, pastSets: pastSets);
+          controller.replaceExerciseLog(
+              oldExerciseId: oldExerciseLog.id, newExercise: selectedExercises.first, pastSets: pastSets);
           _cacheLog();
         });
   }
@@ -212,8 +220,40 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   void _navigateBack({RoutineLogDto? routineLog}) async {
     if (widget.mode == RoutineEditorMode.log) {
       _cleanUpSession();
+      final log = routineLog;
+      if (log != null) {
+        _generateReport(routineLog: log);
+      }
     }
     context.pop(routineLog);
+  }
+
+  void _generateReport({required RoutineLogDto routineLog}) async {
+    String instruction = prepareLogInstruction(context: context, routineLog: routineLog);
+
+    runMessage(
+            system: routineLogSystemInstruction,
+            user: instruction,
+            responseFormat: routineLogReportResponseFormat)
+        .then((response) {
+      if (response != null) {
+        if (Platform.isIOS) {
+          FlutterLocalNotificationsPlugin().show(
+              900,
+              "${routineLog.name} report is ready",
+              "Your report is now ready for review",
+              const NotificationDetails(
+                iOS: DarwinNotificationDetails(
+                  presentAlert: false,
+                  presentBadge: false,
+                  presentSound: false,
+                  presentBanner: false,
+                ),
+              ),
+              payload: response);
+        }
+      }
+    });
   }
 
   /// Handle collapsed ExerciseLogWidget
@@ -408,8 +448,13 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                               ),
                             ),
                           if (exerciseLogs.isEmpty)
-                            const NoListEmptyState(
-                                message: "Tap the + button to start adding exercises to your workout session"),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                child: const NoListEmptyState(
+                                    message: "Tap the + button to start adding exercises to your workout session"),
+                              ),
+                            ),
                         ],
                       ),
                     ),
@@ -443,18 +488,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   void _loadExerciseLogs() {
     final exerciseLogs = widget.log.exerciseLogs;
-    final updatedExerciseLogs = exerciseLogs.map((exerciseLog) {
-      final previousSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
-          .whereSetsForExercise(exercise: exerciseLog.exercise);
-      final sets = previousSets.isNotEmpty ? previousSets : exerciseLog.sets;
-      final unCheckedSets = sets
-          .take(exerciseLog.sets.length)
-          .mapIndexed((index, set) => set.copyWith(checked: exerciseLog.sets[index].checked))
-          .toList();
-      return exerciseLog.copyWith(sets: unCheckedSets);
-    }).toList();
     Provider.of<ExerciseLogController>(context, listen: false)
-        .loadExerciseLogs(exerciseLogs: updatedExerciseLogs, mode: widget.mode);
+        .loadExerciseLogs(exerciseLogs: exerciseLogs, mode: widget.mode);
     _minimiseOrMaximiseCards();
   }
 
@@ -487,11 +522,11 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     if (state == AppLifecycleState.paused) {
       if (Platform.isIOS) {
-        FlutterLocalNotificationsPlugin().periodicallyShow(
+        FlutterLocalNotificationsPlugin().periodicallyShowWithDuration(
             999,
             "${widget.log.name} is still running",
             "Tap to continue training",
-            RepeatInterval.hourly,
+            const Duration(minutes: 10),
             const NotificationDetails(
               iOS: DarwinNotificationDetails(
                 presentAlert: false,

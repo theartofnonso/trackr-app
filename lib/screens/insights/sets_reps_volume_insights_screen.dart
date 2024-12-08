@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/health_and_fitness_stats.dart';
-import 'package:tracker_app/openAI/open_ai_functions.dart';
+import 'package:tracker_app/openAI/open_ai_response_format.dart';
 import 'package:tracker_app/screens/AI/routine_logs_report_screen.dart';
 import 'package:tracker_app/utils/date_utils.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
@@ -72,7 +72,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     final logs = routineLogController.whereLogsIsWithinRange(range: dateRange);
 
     final exerciseLogs = logs
-        .map((log) => completedExercises(exerciseLogs: log.exerciseLogs))
+        .map((log) => loggedExercises(exerciseLogs: log.exerciseLogs))
         .expand((exerciseLogs) => exerciseLogs)
         .where((exerciseLog) {
       final muscleGroups = [exerciseLog.exercise.primaryMuscleGroup, ...exerciseLog.exercise.secondaryMuscleGroups];

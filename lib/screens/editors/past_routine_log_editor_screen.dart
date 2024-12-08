@@ -54,7 +54,10 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
         context: context,
         excludeExercises: excludeExercises,
         onSelected: (List<ExerciseDto> selectedExercises) {
-          controller.addExerciseLogs(exercises: selectedExercises);
+          final onlyExercise = selectedExercises.first;
+          final pastSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
+              .whereSetsForExercise(exercise: onlyExercise);
+          controller.addExerciseLog(exercise: onlyExercise, pastSets: pastSets);
         });
   }
 
@@ -393,8 +396,13 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
                                 ]))
                         ),
                       if (exerciseLogs.isEmpty)
-                        const NoListEmptyState(
-                            message: "Tap the + button to start adding exercises to your past workout session"),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: const NoListEmptyState(
+                                message: "Tap the + button to start adding exercises to your past workout session"),
+                          ),
+                        ),
                     ],
                   ),
                 ),

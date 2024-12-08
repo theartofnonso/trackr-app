@@ -18,7 +18,7 @@ class RoutineLogWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final completedExerciseLogsAndSets = completedExercises(exerciseLogs: log.exerciseLogs);
+    final completedExerciseLogsAndSets = loggedExercises(exerciseLogs: log.exerciseLogs);
 
     return Container(
       decoration: BoxDecoration(

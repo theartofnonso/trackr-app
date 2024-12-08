@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/set_dtos/duration_set_dto.dart';
 import 'package:tracker_app/dtos/set_dtos/reps_dto.dart';
 import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
@@ -20,7 +21,6 @@ class SetsListview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     const margin = EdgeInsets.only(bottom: 6.0);
 
     final pbsBySet = groupBy(pbs, (pb) => pb.set);
@@ -28,7 +28,7 @@ class SetsListview extends StatelessWidget {
     final widgets = sets.map(((setDto) {
       final pbsForSet = pbsBySet[setDto] ?? [];
 
-      switch (type) {
+      switch (setDto.type) {
         case ExerciseType.weights:
           final firstLabel = (setDto as WeightAndRepsSetDto).weight;
           final secondLabel = setDto.reps;
@@ -42,8 +42,24 @@ class SetsListview extends StatelessWidget {
       }
     })).toList();
 
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: widgets);
+    return sets.isNotEmpty
+        ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: widgets)
+        : Center(
+            child: Container(
+            width: double.infinity,
+            margin: const EdgeInsets.symmetric(vertical: 12),
+            padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5), // Circular border radius
+              border: Border.all(
+                color: Colors.deepOrange.withOpacity(0.2), // Border color
+                width: 2, // Border width
+              ),
+            ),
+            child: Text("No Sets have been logged for this exercise",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.ubuntu(
+                    fontSize: 12, height: 1.4, color: Colors.deepOrange, fontWeight: FontWeight.w600)),
+          ));
   }
 }

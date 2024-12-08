@@ -67,7 +67,12 @@ class RoutineLogsScreen extends StatelessWidget {
                               Divider(color: Colors.white70.withOpacity(0.1)),
                           itemCount: logs.length),
                     )
-                  : const NoListEmptyState(message: "It might feel quiet now, but your logged workouts will soon appear here."),
+                  : Expanded(
+                    child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: const NoListEmptyState(message: "It might feel quiet now, but your logged workouts will soon appear here."),
+                    ),
+                  ),
             ],
           ),
         ),
