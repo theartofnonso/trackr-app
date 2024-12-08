@@ -49,7 +49,7 @@ class ExerciseLogLiteWidget extends StatelessWidget {
                 ],
               ),
               const Spacer(),
-              const FaIcon(FontAwesomeIcons.solidSquareCaretDown, color: Colors.white)
+              const FaIcon(FontAwesomeIcons.caretDown, color: Colors.white)
             ]),
           ],
         ),
