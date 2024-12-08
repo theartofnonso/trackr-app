@@ -113,7 +113,7 @@ class STTController extends ChangeNotifier {
     switch (function) {
       case ExerciseLoggingFunction.addSet:
         _addSet(
-            tool: tool, systemInstruction: addSetInstruction, userInstruction: userPrompt, exerciseType: exerciseType);
+            tool: tool, userInstruction: userPrompt, exerciseType: exerciseType);
         break;
       case ExerciseLoggingFunction.removeSet:
         _updateSets(
@@ -136,9 +136,9 @@ class STTController extends ChangeNotifier {
 
   Future<void> _addSet(
       {required ToolDto tool,
-      required String systemInstruction,
       required String userInstruction,
       required ExerciseType exerciseType}) async {
+    final systemInstruction = withWeightsOnly(type: exerciseType) ? addWeightAndRepsSetInstruction : addRepsSetInstruction;
     final responseFormat = withWeightsOnly(type: exerciseType) ? weightAndRepsResponseFormat : repsResponseFormat;
 
     final functionCallPayload = createFunctionCallPayload(

@@ -27,7 +27,9 @@ class ExerciseLogLiteWidget extends StatelessWidget {
     return GestureDetector(
       onTap: onMaximise,
       child: Container(
-        padding: superSet == null ? const EdgeInsets.symmetric(vertical: 20, horizontal: 10) : const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
+        padding: superSet == null
+            ? const EdgeInsets.symmetric(vertical: 20, horizontal: 10)
+            : const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
         decoration: BoxDecoration(
           color: sapphireDark80, // Set the background color
           borderRadius: BorderRadius.circular(5), // Set the border radius to make it rounded
@@ -49,7 +51,10 @@ class ExerciseLogLiteWidget extends StatelessWidget {
                 ],
               ),
               const Spacer(),
-              const FaIcon(FontAwesomeIcons.caretDown, color: Colors.white)
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: const FaIcon(FontAwesomeIcons.caretDown, color: Colors.white, size: 20),
+              )
             ]),
           ],
         ),
