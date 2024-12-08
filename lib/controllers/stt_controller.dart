@@ -84,7 +84,6 @@ class STTController extends ChangeNotifier {
   void _onSpeechResult({required ExerciseType exerciseType, required SpeechRecognitionResult result}) {
     final recognizedWords = result.recognizedWords;
     if (result.finalResult && recognizedWords.isNotEmpty) {
-      print(recognizedWords);
       _analyse(userPrompt: recognizedWords, exerciseType: exerciseType);
     }
   }
@@ -138,12 +137,11 @@ class STTController extends ChangeNotifier {
       {required ToolDto tool,
       required String userInstruction,
       required ExerciseType exerciseType}) async {
-    final systemInstruction = withWeightsOnly(type: exerciseType) ? addWeightAndRepsSetInstruction : addRepsSetInstruction;
     final responseFormat = withWeightsOnly(type: exerciseType) ? weightAndRepsResponseFormat : repsResponseFormat;
 
     final functionCallPayload = createFunctionCallPayload(
         tool: tool,
-        systemInstruction: systemInstruction,
+        systemInstruction: addSetInstruction,
         user: userInstruction,
         responseFormat: responseFormat,
         functionName: ExerciseLoggingFunction.addSet.name,

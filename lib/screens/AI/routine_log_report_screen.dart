@@ -28,7 +28,7 @@ class RoutineLogReportScreen extends StatelessWidget {
             icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
             onPressed: Navigator.of(context).pop,
           ),
-          title: Text("${report.title}".toUpperCase(),
+          title: Text(report.title.toUpperCase(),
               textAlign: TextAlign.center,
               style: GoogleFonts.ubuntu(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 16)),
           centerTitle: true,

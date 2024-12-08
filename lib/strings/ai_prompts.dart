@@ -6,15 +6,12 @@ const personalTrainerInstructionForWorkouts =
 
 const personalTrainerInstructionForWorkoutLogging =
     "As a personal fitness trainer, use the supplied tools to assist the user with logging a set during a workout. Refuse to answer questions that are outside this scope. Analyze the user's intent and provide structured data based on their commands for the following actions: "
-    "\n\n- **Log a Set:** Extract structured data such as the amount of weight and/or the number of repetitions to log a set. Example: 'Log 50kg for 10 reps.'"
+    "\n\n- **Log a Set:** Extract structured data such as the amount of weight and/or the number of repetitions to log a set."
     "\n\n- **Remove a Set:** Identify the set to be removed by extracting structured data based on the user's command. The user may specify the set by index (e.g., 'remove set 2'), by using relative position words (e.g., 'remove the last set', 'remove the first set'), or by other descriptive phrases. Example: 'Remove my last set.'"
     "\n\n- **Update a Set:** Extract structured data to update an existing set based on the user's command. The user may specify the set by index or relative position (e.g., 'update set 2', 'update the first set') and provide the updated values for weight and/or repetitions. If the user provides only one value (e.g., weight or reps), extract the value provided and leave the other unchanged. Example: 'Change set 3 to 60kg and 8 reps.'";
 
-const addWeightAndRepsSetInstruction =
-    "As a personal fitness trainer, analyze the intent behind my command to log weight and repetitions, and extract structured data for the amount of weight and the number of repetitions.";
-
-const addRepsSetInstruction =
-    "As a personal fitness trainer, analyze the intent behind my command to log weight and repetitions, and extract structured data for the number of repetitions.";
+const addSetInstruction =
+    "As a personal fitness trainer, analyze the intent behind my command to log weight and/or repetitions, and extract structured data for the amount of weight and/or the number of repetitions.";
 
 const removeSetInstruction =
     "As a personal fitness trainer, analyze the intent behind my command to remove a set. The user may specify the set to be removed by providing the index (e.g., 'remove set 2'), by using relative position words (e.g., 'remove the last set', 'remove the first set'), or by other descriptive phrases. Extract structured data indicating the set index or position (e.g., first, last) to identify the set to remove.";
