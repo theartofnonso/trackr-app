@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:tracker_app/dtos/appsync/routine_user_dto.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 
@@ -26,6 +27,8 @@ class AmplifyRoutineUserRepository {
         username: userDto.name, data: jsonEncode(userDto), createdAt: now, updatedAt: now, owner: SharedPrefs().userId);
 
     await Amplify.DataStore.save<RoutineUser>(userToCreate);
+
+    Posthog().capture(eventName: userDto.name, properties: userDto.toJson());
 
     final updatedUserWithId = userDto.copyWith(id: userToCreate.id, owner: SharedPrefs().userId);
 

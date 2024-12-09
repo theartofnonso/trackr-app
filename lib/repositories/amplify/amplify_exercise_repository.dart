@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/extensions/amplify_models/exercise_extension.dart';
 
@@ -92,6 +93,8 @@ class AmplifyExerciseRepository {
         Exercise(data: jsonEncode(exerciseDto), createdAt: now, updatedAt: now, owner: SharedPrefs().userId);
 
     await Amplify.DataStore.save<Exercise>(exerciseToCreate);
+
+    Posthog().capture(eventName: exerciseDto.name, properties: exerciseDto.toJson());
 
     logger.i("saved exercise: $exerciseDto");
   }

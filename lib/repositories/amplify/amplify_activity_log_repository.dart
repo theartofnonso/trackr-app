@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:tracker_app/dtos/appsync/activity_log_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
@@ -30,6 +31,7 @@ class AmplifyActivityLogRepository {
 
     await Amplify.DataStore.save<ActivityLog>(logToCreate);
 
+    Posthog().capture(eventName: logDto.name, properties: logDto.toJson());
     logger.i("Created activity log: $logDto");
   }
 
