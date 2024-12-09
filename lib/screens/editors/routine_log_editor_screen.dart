@@ -8,6 +8,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
@@ -23,6 +24,7 @@ import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/exercise_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/set_dtos/weight_and_reps_dto.dart';
+import '../../enums/posthog_analytics_event.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../openAI/open_ai.dart';
 import '../../openAI/open_ai_response_format.dart';
@@ -222,7 +224,9 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
       _cleanUpSession();
       final log = routineLog;
       if (log != null) {
-        _generateReport(routineLog: log);
+        if (Platform.isIOS) {
+          _generateReport(routineLog: log);
+        }
       }
     }
     context.pop(routineLog);
@@ -231,27 +235,24 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   void _generateReport({required RoutineLogDto routineLog}) async {
     String instruction = prepareLogInstruction(context: context, routineLog: routineLog);
 
-    runMessage(
-            system: routineLogSystemInstruction,
-            user: instruction,
-            responseFormat: routineLogReportResponseFormat)
+    runMessage(system: routineLogSystemInstruction, user: instruction, responseFormat: routineLogReportResponseFormat)
         .then((response) {
       if (response != null) {
-        if (Platform.isIOS) {
-          FlutterLocalNotificationsPlugin().show(
-              900,
-              "${routineLog.name} report is ready",
-              "Your report is now ready for review",
-              const NotificationDetails(
-                iOS: DarwinNotificationDetails(
-                  presentAlert: false,
-                  presentBadge: false,
-                  presentSound: false,
-                  presentBanner: false,
-                ),
+        Posthog().capture(eventName: PostHogAnalyticsEvent.generateRoutineLogReport.displayName);
+
+        FlutterLocalNotificationsPlugin().show(
+            900,
+            "${routineLog.name} report is ready",
+            "Your report is now ready for review",
+            const NotificationDetails(
+              iOS: DarwinNotificationDetails(
+                presentAlert: false,
+                presentBadge: false,
+                presentSound: true,
+                presentBanner: false,
               ),
-              payload: response);
-        }
+            ),
+            payload: response);
       }
     });
   }

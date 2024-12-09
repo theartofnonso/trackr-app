@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/dtos/appsync/activity_log_dto.dart';
@@ -26,6 +27,7 @@ import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/activity_type_enums.dart';
+import '../../enums/posthog_analytics_event.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../openAI/open_ai.dart';
 import '../../openAI/open_ai_response_format.dart';
@@ -127,7 +129,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                                     "View ${today.subtract(const Duration(days: 29)).formattedFullMonth()} insights",
                                 description:
                                     "It’s a new month of training, but before we dive in, let’s reflect on your past performance and plan for this month.",
-                                onTap: () => _showMonthlyInsights(datetime: today.subtract(const Duration(days: 29)))),
+                                onTap: () => _generateMonthlyInsightsReport(datetime: today.subtract(const Duration(days: 29)))),
                           ),
                         if (SharedPrefs().showCalendar)
                           Padding(
@@ -150,7 +152,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                               const SizedBox(height: 12),
                               TRKRCoachButton(
                                   label: "Review ${widget.dateTimeRange.start.formattedFullMonth()} insights.",
-                                  onTap: () => _showMonthlyInsights(datetime: widget.dateTimeRange.start)),
+                                  onTap: () => _generateMonthlyInsightsReport(datetime: widget.dateTimeRange.start)),
                             ],
                           ),
                         const SizedBox(height: 12),
@@ -204,7 +206,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     });
   }
 
-  void _showMonthlyInsights({required DateTime datetime}) {
+  void _generateMonthlyInsightsReport({required DateTime datetime}) {
     _showLoadingScreen();
 
     final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
@@ -213,9 +215,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     final activityLogController = Provider.of<ActivityLogController>(context, listen: false);
 
-    List<RoutineLogDto> lastMonthRoutineLogs = exerciseAndRoutineLogController.whereLogsIsSameMonth(dateTime: datetime);
+    List<RoutineLogDto> routineLogs = exerciseAndRoutineLogController.whereLogsIsSameMonth(dateTime: datetime);
 
-    List<ActivityLogDto> lastMonthActivityLogs = activityLogController.whereLogsIsSameMonth(dateTime: datetime);
+    List<ActivityLogDto> activityLogs = activityLogController.whereLogsIsSameMonth(dateTime: datetime);
 
     // Helper function to get muscles trained from exercise logs
     List<String> getMusclesTrained(List<ExerciseLogDto> exerciseLogs) {
@@ -269,7 +271,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 """);
 
     // Main processing
-    for (final log in lastMonthRoutineLogs) {
+    for (final log in routineLogs) {
       final completedExerciseLogs = loggedExercises(exerciseLogs: log.exerciseLogs);
       final musclesTrained = getMusclesTrained(completedExerciseLogs);
       final exercises = log.exerciseLogs.map((exerciseLog) => exerciseLog.exercise.name).toSet().toList();
@@ -291,7 +293,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     buffer.writeln();
 
-    for (final log in lastMonthActivityLogs) {
+    for (final log in activityLogs) {
       buffer.writeln("Logged ${log.name} activity in ${log.createdAt.formattedFullMonth}");
     }
 
@@ -302,7 +304,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
             user: completeInstructions,
             responseFormat: monthlyReportResponseFormat)
         .then((response) {
+
+      Posthog().capture(eventName: PostHogAnalyticsEvent.generateMonthlyInsights.displayName);
+
       _hideLoadingScreen();
+
       if (response != null) {
         if (mounted) {
           // Deserialize the JSON string
@@ -315,7 +321,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               child: MonthlyTrainingReportScreen(
                 dateTime: datetime,
                 monthlyTrainingReport: report,
-                routineLogs: lastMonthRoutineLogs,
+                routineLogs: routineLogs,
                 activityLogs: activityLogController.whereLogsIsSameMonth(dateTime: datetime),
               ));
         }

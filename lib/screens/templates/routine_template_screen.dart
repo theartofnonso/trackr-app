@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
@@ -15,6 +16,7 @@ import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../dtos/viewmodels/routine_template_arguments.dart';
+import '../../enums/posthog_analytics_event.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../enums/routine_preview_type_enum.dart';
 import '../../models/RoutineTemplate.dart';
@@ -468,7 +470,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                       final data = ClipboardData(text: workoutLink);
                       Clipboard.setData(data).then((_) {
                         if (mounted) {
-                          context.pop();
+                          Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineTemplateAsLink.displayName);
+                          Navigator.of(context).pop();
                           showSnackbar(context: context, icon: const FaIcon(FontAwesomeIcons.solidSquareCheck), message: "Workout link copied");
                         }
                       });
@@ -500,6 +503,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
               ),
               OpacityButtonWidget(
                 onPressed: () {
+                  Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineTemplateAsText.displayName);
                   HapticFeedback.heavyImpact();
                   final data = ClipboardData(text: workoutText);
                   Clipboard.setData(data).then((_) {

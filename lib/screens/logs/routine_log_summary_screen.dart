@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -19,6 +20,7 @@ import 'package:tracker_app/widgets/shareables/session_milestone_shareable.dart'
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
+import '../../enums/posthog_analytics_event.dart';
 import '../../urls.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
@@ -172,6 +174,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
                       captureImage(key: pagesKeys[index], pixelRatio: 3.5).then((result) {
                         if (context.mounted) {
                           if (result.status == ShareResultStatus.success) {
+                            Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineLogSummary.displayName);
                             showSnackbar(
                                 context: context,
                                 icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
@@ -230,6 +233,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
                 const SizedBox(width: 6),
                 OpacityButtonWidget(
                   onPressed: () {
+                    Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineLogAsLink.displayName);
                     HapticFeedback.heavyImpact();
                     final data = ClipboardData(text: workoutLogLink);
                     Clipboard.setData(data).then((_) {
@@ -238,7 +242,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
                         showSnackbar(
                             context: context,
                             icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
-                            message: "Workout link copied");
+                            message: "Workout log link copied");
                       }
                     });
                   },
@@ -270,6 +274,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
             ),
             OpacityButtonWidget(
               onPressed: () {
+                Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineLogAsText.displayName);
                 HapticFeedback.heavyImpact();
                 final data = ClipboardData(text: workoutLogText);
                 Clipboard.setData(data).then((_) {

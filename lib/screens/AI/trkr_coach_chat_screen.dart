@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/analytics_controller.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
@@ -18,6 +19,7 @@ import '../../colors.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/exercise_log_dto.dart';
 import '../../dtos/open_ai_response_schema_dtos/tool_dto.dart';
+import '../../enums/posthog_analytics_event.dart';
 import '../../openAI/open_ai.dart';
 import '../../openAI/open_ai_response_format.dart';
 import '../../shared_prefs.dart';
@@ -252,7 +254,9 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
       }
 
       // Deserialize the JSON string
-      Map<String, dynamic> json = jsonDecode(functionCallResult);
+      Map<String, Object> json = jsonDecode(functionCallResult);
+
+      Posthog().capture(eventName: PostHogAnalyticsEvent.createRoutineTemplateAI.displayName, properties: json);
 
       NewRoutineDto newRoutineDto = NewRoutineDto.fromJson(json);
 

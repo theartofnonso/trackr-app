@@ -12,12 +12,12 @@ import 'package:tracker_app/widgets/dividers/label_container_divider.dart';
 import '../../dtos/exercise_log_dto.dart';
 import '../../dtos/open_ai_response_schema_dtos/routine_logs_report_dto.dart';
 
-class RoutineLogsReportScreen extends StatelessWidget {
+class MuscleGroupTrainingReportScreen extends StatelessWidget {
   final MuscleGroup muscleGroup;
   final List<ExerciseLogDto> exerciseLogs;
   final RoutineLogsReportDto report;
 
-  const RoutineLogsReportScreen(
+  const MuscleGroupTrainingReportScreen(
       {super.key, required this.muscleGroup, required this.report, required this.exerciseLogs});
 
   @override

@@ -18,6 +18,7 @@ import '../../dtos/milestones/milestone_dto.dart';
 import '../../dtos/milestones/reps_milestone.dart';
 import '../../dtos/milestones/weekly_milestone_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
+import '../../enums/posthog_analytics_event.dart';
 import '../../logger.dart';
 import '../../models/RoutineLog.dart';
 import '../../models/RoutineTemplate.dart';
@@ -65,7 +66,7 @@ class AmplifyRoutineLogRepository {
 
     await Amplify.DataStore.save<RoutineLog>(logToCreate);
 
-    Posthog().capture(eventName: logDto.name, properties: logDto.toJson());
+    Posthog().capture(eventName: PostHogAnalyticsEvent.logRoutine.displayName, properties: logDto.toJson());
 
     final updatedRoutineLogWithId = logDto.copyWith(id: logToCreate.id);
     final updatedRoutineWithExerciseIds = updatedRoutineLogWithId.copyWith(

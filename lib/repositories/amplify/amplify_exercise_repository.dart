@@ -8,6 +8,7 @@ import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/extensions/amplify_models/exercise_extension.dart';
 
+import '../../enums/posthog_analytics_event.dart';
 import '../../logger.dart';
 import '../../models/Exercise.dart';
 import '../../shared_prefs.dart';
@@ -94,7 +95,7 @@ class AmplifyExerciseRepository {
 
     await Amplify.DataStore.save<Exercise>(exerciseToCreate);
 
-    Posthog().capture(eventName: exerciseDto.name, properties: exerciseDto.toJson());
+    Posthog().capture(eventName: PostHogAnalyticsEvent.createExercise.displayName, properties: exerciseDto.toJson());
 
     logger.i("saved exercise: $exerciseDto");
   }

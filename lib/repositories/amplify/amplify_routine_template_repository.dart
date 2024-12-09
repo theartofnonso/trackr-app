@@ -10,6 +10,7 @@ import 'package:tracker_app/shared_prefs.dart';
 
 import '../../dtos/appsync/exercise_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
+import '../../enums/posthog_analytics_event.dart';
 import '../../logger.dart';
 
 class AmplifyRoutineTemplateRepository {
@@ -32,7 +33,7 @@ class AmplifyRoutineTemplateRepository {
 
     await Amplify.DataStore.save<RoutineTemplate>(templateToCreate);
 
-    Posthog().capture(eventName: templateDto.name, properties: templateDto.toJson());
+    Posthog().capture(eventName: PostHogAnalyticsEvent.createRoutineTemplate.displayName, properties: templateDto.toJson());
 
     logger.i("save template: $templateDto");
 
