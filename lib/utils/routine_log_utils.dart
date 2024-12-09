@@ -52,6 +52,5 @@ String prepareLogInstruction({required BuildContext context, required RoutineLog
         """);
 
   final completeInstructions = buffer.toString();
-  print(completeInstructions);
   return completeInstructions;
 }
