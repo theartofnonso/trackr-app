@@ -28,9 +28,9 @@ class ExerciseLogController extends ChangeNotifier {
     return _exerciseLogRepository.mergeExerciseLogsAndSets(mode: mode);
   }
 
-  void addExerciseLogs({required List<ExerciseDto> exercises}) {
-    _exerciseLogRepository.addExerciseLogs(exercises: exercises);
-    logger.i("load exercise log: $exercises");
+  void addExerciseLog({required ExerciseDto exercise, required List<SetDto> pastSets}) {
+    _exerciseLogRepository.addExerciseLog(exercise: exercise, pastSets: pastSets);
+    logger.i("load exercise log: $exercise");
     notifyListeners();
   }
 
@@ -67,6 +67,11 @@ class ExerciseLogController extends ChangeNotifier {
 
   void addSet({required String exerciseLogId, required List<SetDto> pastSets}) {
     _exerciseLogRepository.addSet(exerciseLogId: exerciseLogId, pastSets: pastSets);
+    notifyListeners();
+  }
+
+  void overwriteSets({required String exerciseLogId, required List<SetDto> sets}) {
+    _exerciseLogRepository.overwriteSets(exerciseLogId: exerciseLogId, sets: sets);
     notifyListeners();
   }
 

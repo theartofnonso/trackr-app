@@ -29,7 +29,7 @@ class MuscleScoreChartWidget extends StatelessWidget {
 
     for (var logsAndMonths in logsAndMonths.entries) {
       final exerciseLogsForTheMonth =
-          logsAndMonths.value.expand((log) => completedExercises(exerciseLogs: log.exerciseLogs)).toList();
+          logsAndMonths.value.expand((log) => loggedExercises(exerciseLogs: log.exerciseLogs)).toList();
 
       final muscleScorePercentage = calculateMuscleScoreForLogs(routineLogs: logsAndMonths.value);
 

@@ -305,12 +305,21 @@ TemplateChange? hasSetValueChanged({
   required List<ExerciseLogDto> exerciseLogs1,
   required List<ExerciseLogDto> exerciseLogs2,
 }) {
-  final exerciseLog1Volume = exerciseLogs1
-      .expand((logs) => logs.sets)
-      .fold(0.0, (previousValue, set) => previousValue + ((set as WeightAndRepsSetDto).volume()));
-  final exerciseLog2Volume = exerciseLogs2
-      .expand((logs) => logs.sets)
-      .fold(0.0, (previousValue, set) => previousValue + ((set as WeightAndRepsSetDto).volume()));
+  final exerciseLog1Volume = exerciseLogs1.expand((logs) => logs.sets).fold(0.0, (previousValue, set) {
+    return switch (set.type) {
+      ExerciseType.weights => previousValue + (set as WeightAndRepsSetDto).volume(),
+      ExerciseType.bodyWeight => previousValue + (set as RepsSetDto).reps,
+      ExerciseType.duration => previousValue + (set as DurationSetDto).duration.inMilliseconds,
+    };
+  });
+
+  final exerciseLog2Volume = exerciseLogs2.expand((logs) => logs.sets).fold(0.0, (previousValue, set) {
+    return switch (set.type) {
+      ExerciseType.weights => previousValue + (set as WeightAndRepsSetDto).volume(),
+      ExerciseType.bodyWeight => previousValue + (set as RepsSetDto).reps,
+      ExerciseType.duration => previousValue + (set as DurationSetDto).duration.inMilliseconds,
+    };
+  });
 
   return exerciseLog1Volume != exerciseLog2Volume ? TemplateChange.setValue : null;
 }
@@ -365,16 +374,7 @@ Map<MuscleGroupFamily, int> _muscleGroupFamilyCountOn4WeeksScale({
         .map((log) => log.exercise.primaryMuscleGroup.family)
         .where((family) => family != MuscleGroupFamily.fullBody);
 
-    final secondaryMuscleGroupFamilies = logAndDate.value
-        .map((log) => log.exercise.secondaryMuscleGroups)
-        .expand((muscleGroups) => muscleGroups)
-        .map((muscleGroup) => muscleGroup.family)
-        .where((family) => family != MuscleGroupFamily.fullBody);
-
-    final muscleGroupFamilies = {
-      ...primaryMuscleGroupFamilies,
-      ...secondaryMuscleGroupFamilies,
-    };
+    final muscleGroupFamilies = {...primaryMuscleGroupFamilies};
 
     // We don't report these muscle groups
     muscleGroupFamilies.remove(MuscleGroupFamily.neck);
@@ -439,7 +439,7 @@ int _calculateMuscleScore({required List<ExerciseLogDto> exerciseLogs}) {
   return percentageScore;
 }
 
-List<ExerciseLogDto> completedExercises({required List<ExerciseLogDto> exerciseLogs}) {
+List<ExerciseLogDto> loggedExercises({required List<ExerciseLogDto> exerciseLogs}) {
   return exerciseLogs.where((exerciseLog) {
     final completedSets = exerciseLog.sets.where((set) => set.isNotEmpty() && set.checked);
     return completedSets.isNotEmpty;

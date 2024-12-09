@@ -17,8 +17,9 @@ import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../colors.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/exercise_log_dto.dart';
+import '../../dtos/open_ai_response_schema_dtos/tool_dto.dart';
 import '../../openAI/open_ai.dart';
-import '../../openAI/open_ai_functions.dart';
+import '../../openAI/open_ai_response_format.dart';
 import '../../shared_prefs.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/routine_utils.dart';
@@ -178,35 +179,32 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
     _showLoadingScreen();
 
     try {
-      final tool = await runMessageWithTools(
+      final json = await runMessageWithTools(
         systemInstruction: personalTrainerInstructionForWorkouts,
         userInstruction: userInstruction,
       );
 
-      if (tool == null) {
+      if (json == null) {
         _handleError();
         return;
       }
 
-      final toolId = tool['id'] ?? "";
-      final toolName = tool['name'] ?? "";
+      final tool = ToolDto.fromJson(json);
 
-      if (toolName != "list_exercises") {
-        _handleError();
-        return;
+      if (tool.name == "list_exercises") {
+        if (!mounted) return;
+
+        final exercises = Provider.of<ExerciseAndRoutineController>(
+          context,
+          listen: false,
+        ).exercises;
+
+        await _recommendExercises(
+            tool: tool,
+            systemInstruction: completeSystemInstructions,
+            userInstruction: userInstruction,
+            exercises: exercises);
       }
-
-      if (!mounted) return;
-
-      final exercises = Provider.of<ExerciseAndRoutineController>(
-        context,
-        listen: false,
-      ).exercises;
-      await _recommendExercises(
-          toolId: toolId,
-          completeSystemInstructions: completeSystemInstructions,
-          userInstruction: userInstruction,
-          exercises: exercises);
     } catch (e) {
       _handleError();
     }
@@ -221,17 +219,29 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
   }
 
   Future<void> _recommendExercises(
-      {required String toolId,
-      required String completeSystemInstructions,
+      {required ToolDto tool,
+      required String systemInstruction,
       required String userInstruction,
       required List<ExerciseDto> exercises}) async {
+    final listOfExerciseJsons = {
+      "exercises": exercises
+          .map((exercise) => {
+                "id": exercise.id,
+                "name": exercise.name,
+                "primary_muscle_group": exercise.primaryMuscleGroup.name,
+                "secondary_muscle_groups":
+                    exercise.secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name).toList()
+              })
+          .toList(),
+    };
+
     final functionCallPayload = createFunctionCallPayload(
-      toolId: toolId,
-      systemInstruction: completeSystemInstructions,
-      user: userInstruction,
-      responseFormat: newRoutineResponseFormat,
-      exercises: exercises,
-    );
+        tool: tool,
+        systemInstruction: systemInstruction,
+        user: userInstruction,
+        responseFormat: newRoutineResponseFormat,
+        functionName: "list_exercises",
+        extra: jsonEncode(listOfExerciseJsons));
 
     try {
       final functionCallResult = await runMessageWithFunctionCallPayload(payload: functionCallPayload);

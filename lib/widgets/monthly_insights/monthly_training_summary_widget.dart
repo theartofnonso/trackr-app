@@ -28,7 +28,7 @@ class MonthlyTrainingSummaryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final exerciseLogs = routineLogs
-        .map((log) => completedExercises(exerciseLogs: log.exerciseLogs))
+        .map((log) => loggedExercises(exerciseLogs: log.exerciseLogs))
         .expand((exerciseLogs) => exerciseLogs);
 
     final sets = exerciseLogs.expand((exercise) => exercise.sets);

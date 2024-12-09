@@ -58,10 +58,8 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
           searchResults.where((exercise) => _selectedMuscleGroups.contains(exercise.primaryMuscleGroup)).toList();
     }
 
-    if(_shouldShowOwnerExercises) {
-      print("called");
-      searchResults =
-          searchResults.where((exercise) => exercise.owner.isNotEmpty).toList();
+    if (_shouldShowOwnerExercises) {
+      searchResults = searchResults.where((exercise) => exercise.owner.isNotEmpty).toList();
     }
 
     searchResults.sort((a, b) => a.name.compareTo(b.name));
@@ -214,8 +212,13 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                               itemCount: _filteredExercises.length),
                         ),
                       )
-                    : const NoListEmptyState(
-                        message: "It might feel quiet now, but exercises including yours will soon appear here."),
+                    : Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: const NoListEmptyState(
+                              message: "It might feel quiet now, but exercises including yours will soon appear here."),
+                        ),
+                      ),
               ],
             ),
           ),

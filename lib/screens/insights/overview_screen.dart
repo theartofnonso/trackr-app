@@ -28,7 +28,7 @@ import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/activity_type_enums.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../openAI/open_ai.dart';
-import '../../openAI/open_ai_functions.dart';
+import '../../openAI/open_ai_response_format.dart';
 import '../../strings/ai_prompts.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
@@ -270,7 +270,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     // Main processing
     for (final log in lastMonthRoutineLogs) {
-      final completedExerciseLogs = completedExercises(exerciseLogs: log.exerciseLogs);
+      final completedExerciseLogs = loggedExercises(exerciseLogs: log.exerciseLogs);
       final musclesTrained = getMusclesTrained(completedExerciseLogs);
       final exercises = log.exerciseLogs.map((exerciseLog) => exerciseLog.exercise.name).toSet().toList();
       final caloriesBurned = calculateCalories(
