@@ -197,18 +197,17 @@ class _HomeScreenState extends State<HomeScreen> {
     final signInDetails = authUser.signInDetails.toJson();
     SharedPrefs().userId = authUser.userId;
     SharedPrefs().userEmail = signInDetails["username"] as String;
+    Posthog().identify(userId: SharedPrefs().userId);
     AnalyticsController.loginAnalytics(isFirstLaunch: SharedPrefs().firstLaunch);
   }
 
   void _runSetup() async {
-    await Posthog().screen(
-      screenName: 'Nonso Screen',
-    );
     if (SharedPrefs().firstLaunch) {
       _cacheUser();
       _loadAppData();
       SharedPrefs().firstLaunch = false;
     } else {
+      Posthog().identify(userId: SharedPrefs().userId);
       AnalyticsController.loginAnalytics(isFirstLaunch: SharedPrefs().firstLaunch);
       _loadAppData();
       _loadCachedLog();
