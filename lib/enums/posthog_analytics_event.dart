@@ -5,9 +5,9 @@ enum PostHogAnalyticsEvent {
   logActivity(displayName: "log:activity"),
 
   /// Creating
-  createRoutineTemplate(displayName: "create:routine_template_create"),
-  createRoutineTemplateAI(displayName: "create:routine_template_ai_generate"),
-  createExercise(displayName: "create:exercise_create"),
+  createRoutineTemplate(displayName: "create:routine_template"),
+  createRoutineTemplateAI(displayName: "create:routine_template_ai"),
+  createExercise(displayName: "create:exercise"),
 
   /// Reports
   generateRoutineLogReport(displayName: "report:routine_log_session_generate"),
