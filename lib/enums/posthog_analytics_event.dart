@@ -1,20 +1,28 @@
 enum PostHogAnalyticsEvent {
-  logRoutine(displayName: "Workout Session Logged"),
-  createRoutineTemplate(displayName: "Workout Template Created"),
-  logActivity(displayName: "Activity Logged"),
-  createRoutineTemplateAI(displayName: "Workout Template Created With AI"),
-  generateRoutineLogReport(displayName: "Workout Session Report Generated"),
-  generateMonthlyInsights(displayName: "Monthly Insights Generated"),
-  generateMuscleGroupTrainingReport(displayName: "Muscle Group Training Report Generated"),
-  shareRoutineLogSummary(displayName: "Routine Log Summary Shared"),
-  shareCalendar(displayName: "Calender Shared"),
-  shareMonitor(displayName: "Monitor Shared"),
-  shareMilesStone(displayName: "Milestone Shared"),
-  shareRoutineLogAsLink(displayName: "Routine Log as Link Shared"),
-  shareRoutineTemplateAsLink(displayName: "Routine Template as Link Shared"),
-  shareRoutineLogAsText(displayName: "Routine Log as Text Shared"),
-  shareRoutineTemplateAsText(displayName: "Routine Template as Text Shared"),
-  createExercise(displayName: "Exercise Created");
+
+  /// Logging
+  logRoutine(displayName: "log:routine_log_create"),
+  logActivity(displayName: "log:activity_create"),
+
+  /// Creating
+  createRoutineTemplate(displayName: "create:routine_template_create"),
+  createRoutineTemplateAI(displayName: "create:routine_template_ai_generate"),
+  createExercise(displayName: "create:exercise_create"),
+
+  /// Reports
+  generateRoutineLogReport(displayName: "report:routine_log_session_generate"),
+  generateMonthlyInsights(displayName: "report:monthly_insights_generate"),
+  generateMuscleGroupTrainingReport(displayName: "report:muscle_group_training_generate"),
+
+  /// Sharing
+  shareRoutineLogSummary(displayName: "share:routine_log_summary"),
+  shareCalendar(displayName: "share:calender"),
+  shareMonitor(displayName: "share:monitor"),
+  shareMilesStone(displayName: "share:milestone"),
+  shareRoutineLogAsLink(displayName: "share:routine_log_as_link"),
+  shareRoutineLogAsText(displayName: "share:routine_log_as_text"),
+  shareRoutineTemplateAsLink(displayName: "share:routine_template_as_link"),
+  shareRoutineTemplateAsText(displayName: "share:routine_template_as_text"),;
 
   final String displayName;
 
