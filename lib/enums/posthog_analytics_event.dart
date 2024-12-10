@@ -1,7 +1,7 @@
 enum PostHogAnalyticsEvent {
 
   /// Logging
-  logRoutine(displayName: "log:routine_log"),
+  logRoutine(displayName: "log:routine"),
   logActivity(displayName: "log:activity"),
 
   /// Creating
