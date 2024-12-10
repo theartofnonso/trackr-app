@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -129,7 +130,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
                                     "View ${today.subtract(const Duration(days: 29)).formattedFullMonth()} insights",
                                 description:
                                     "It’s a new month of training, but before we dive in, let’s reflect on your past performance and plan for this month.",
-                                onTap: () => _generateMonthlyInsightsReport(datetime: today.subtract(const Duration(days: 29)))),
+                                onTap: () =>
+                                    _generateMonthlyInsightsReport(datetime: today.subtract(const Duration(days: 29)))),
                           ),
                         if (SharedPrefs().showCalendar)
                           Padding(
@@ -304,9 +306,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
             user: completeInstructions,
             responseFormat: monthlyReportResponseFormat)
         .then((response) {
-
-      Posthog().capture(eventName: PostHogAnalyticsEvent.generateMonthlyInsights.displayName);
-
+      if (kReleaseMode) {
+        Posthog().capture(eventName: PostHogAnalyticsEvent.generateMonthlyInsights.displayName);
+      }
       _hideLoadingScreen();
 
       if (response != null) {

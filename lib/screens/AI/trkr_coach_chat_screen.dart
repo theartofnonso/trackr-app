@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -256,7 +257,9 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
       // Deserialize the JSON string
       Map<String, Object> json = jsonDecode(functionCallResult);
 
-      Posthog().capture(eventName: PostHogAnalyticsEvent.createRoutineTemplateAI.displayName, properties: json);
+      if(kReleaseMode) {
+        Posthog().capture(eventName: PostHogAnalyticsEvent.createRoutineTemplateAI.displayName, properties: json);
+      }
 
       NewRoutineDto newRoutineDto = NewRoutineDto.fromJson(json);
 

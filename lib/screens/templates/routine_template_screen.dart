@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -318,7 +319,9 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                   ExerciseLogListView(
                     exerciseLogs: exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
                   ),
-                  const SizedBox(height: 60,)
+                  const SizedBox(
+                    height: 60,
+                  )
                 ],
               ),
             ),
@@ -470,9 +473,14 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                       final data = ClipboardData(text: workoutLink);
                       Clipboard.setData(data).then((_) {
                         if (mounted) {
-                          Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineTemplateAsLink.displayName);
+                          if (kReleaseMode) {
+                            Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineTemplateAsLink.displayName);
+                          }
                           Navigator.of(context).pop();
-                          showSnackbar(context: context, icon: const FaIcon(FontAwesomeIcons.solidSquareCheck), message: "Workout link copied");
+                          showSnackbar(
+                              context: context,
+                              icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
+                              message: "Workout link copied");
                         }
                       });
                     },
@@ -503,7 +511,9 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
               ),
               OpacityButtonWidget(
                 onPressed: () {
-                  Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineTemplateAsText.displayName);
+                  if (kReleaseMode) {
+                    Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineTemplateAsText.displayName);
+                  }
                   HapticFeedback.heavyImpact();
                   final data = ClipboardData(text: workoutText);
                   Clipboard.setData(data).then((_) {

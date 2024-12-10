@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
@@ -14,7 +15,6 @@ import '../../models/Exercise.dart';
 import '../../shared_prefs.dart';
 
 class AmplifyExerciseRepository {
-
   final logger = getLogger(className: "AmplifyExerciseRepository");
 
   List<ExerciseDto> _localExercises = [];
@@ -95,7 +95,9 @@ class AmplifyExerciseRepository {
 
     await Amplify.DataStore.save<Exercise>(exerciseToCreate);
 
-    Posthog().capture(eventName: PostHogAnalyticsEvent.createExercise.displayName, properties: exerciseDto.toJson());
+    if (kReleaseMode) {
+      Posthog().capture(eventName: PostHogAnalyticsEvent.createExercise.displayName, properties: exerciseDto.toJson());
+    }
 
     logger.i("saved exercise: $exerciseDto");
   }

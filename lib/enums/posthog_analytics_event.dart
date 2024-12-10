@@ -15,7 +15,7 @@ enum PostHogAnalyticsEvent {
   generateMuscleGroupTrainingReport(displayName: "report:muscle_group_training_generate"),
 
   /// Sharing
-  
+
   shareRoutineLogSummary(displayName: "routine_log_summary:routine_log_stats_share"),
   shareRoutineLogAsLink(displayName: "routine_log_summary:routine_log_link_copy"),
   shareRoutineLogAsText(displayName: "routine_log_summary:routine_log_text_copy"),

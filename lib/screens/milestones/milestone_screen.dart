@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:confetti/confetti.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -261,7 +262,9 @@ class MilestoneScreen extends StatelessWidget {
   }
 
   void _shareMilestoneSummary({required BuildContext context}) {
-    Posthog().capture(eventName: PostHogAnalyticsEvent.shareMilesStone.displayName);
+    if(kReleaseMode) {
+      Posthog().capture(eventName: PostHogAnalyticsEvent.shareMilesStone.displayName);
+    }
     onShare(
         context: context,
         globalKey: milestoneGlobalKey,

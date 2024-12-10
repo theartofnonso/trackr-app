@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
@@ -66,7 +67,9 @@ class AmplifyRoutineLogRepository {
 
     await Amplify.DataStore.save<RoutineLog>(logToCreate);
 
-    Posthog().capture(eventName: PostHogAnalyticsEvent.logRoutine.displayName, properties: logDto.toJson());
+    if(kReleaseMode) {
+      Posthog().capture(eventName: PostHogAnalyticsEvent.logRoutine.displayName, properties: logDto.toJson());
+    }
 
     final updatedRoutineLogWithId = logDto.copyWith(id: logToCreate.id);
     final updatedRoutineWithExerciseIds = updatedRoutineLogWithId.copyWith(

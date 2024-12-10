@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -33,7 +34,10 @@ class AmplifyRoutineTemplateRepository {
 
     await Amplify.DataStore.save<RoutineTemplate>(templateToCreate);
 
-    Posthog().capture(eventName: PostHogAnalyticsEvent.createRoutineTemplate.displayName, properties: templateDto.toJson());
+    if(kReleaseMode) {
+      Posthog().capture(
+          eventName: PostHogAnalyticsEvent.createRoutineTemplate.displayName, properties: templateDto.toJson());
+    }
 
     logger.i("save template: $templateDto");
 
