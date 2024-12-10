@@ -246,9 +246,9 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
             "Your report is now ready for review",
             const NotificationDetails(
               iOS: DarwinNotificationDetails(
-                presentAlert: false,
+                presentAlert: true,
                 presentBadge: false,
-                presentSound: true,
+                presentSound: false,
                 presentBanner: false,
               ),
             ),
