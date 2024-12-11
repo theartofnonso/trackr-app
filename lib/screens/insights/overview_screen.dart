@@ -95,6 +95,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     final scheduledToday = scheduledTemplates.firstOrNull;
 
+    final logsForCurrentDay =
+        exerciseAndRoutineController.whereLogsIsSameDay(dateTime: DateTime.now().withoutTime()).toList();
+
+    final hasTodayScheduleBeenLogged =
+        logsForCurrentDay.firstWhereOrNull((log) => log.templateId == scheduledToday?.id) != null;
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       floatingActionButton: _loading
@@ -146,7 +152,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
                             onTap: () => navigateToRoutineTemplatePreview(context: context, template: scheduledToday),
                             child: Padding(
                               padding: const EdgeInsets.only(top: 20.0),
-                              child: _ScheduledRoutineCard(scheduledToday: scheduledToday),
+                              child: _ScheduledRoutineCard(
+                                  scheduledToday: scheduledToday, isLogged: hasTodayScheduleBeenLogged),
                             ),
                           ),
                         if (SharedPrefs().showCalendar)
@@ -517,12 +524,16 @@ class _OverviewScreenState extends State<OverviewScreen> {
 }
 
 class _ScheduledRoutineCard extends StatelessWidget {
-  const _ScheduledRoutineCard({required this.scheduledToday});
+  const _ScheduledRoutineCard({required this.scheduledToday, required this.isLogged});
 
   final RoutineTemplateDto scheduledToday;
 
+  final bool isLogged;
+
   @override
   Widget build(BuildContext context) {
+    final sets = scheduledToday.exerciseTemplates.expand((exercises) => exercises.sets);
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -576,22 +587,15 @@ class _ScheduledRoutineCard extends StatelessWidget {
                           color: vibrantGreen, // Adjust the height as needed
                         ),
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "${scheduledToday.exerciseTemplates.length}",
-                            style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w900, color: Colors.white),
-                          ),
-                          Text(
-                            pluralize(word: "Exercise", count: scheduledToday.exerciseTemplates.length).toUpperCase(),
-                            style: GoogleFonts.ubuntu(fontSize: 10, fontWeight: FontWeight.w500),
-                          ),
-                        ],
+                      Text(
+                        "${scheduledToday.exerciseTemplates.length} ${pluralize(word: "Exercise", count: scheduledToday.exerciseTemplates.length).toUpperCase()}",
+                        style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w900, color: Colors.white),
                       )
                     ],
                   ),
-                  const SizedBox(width: 50,),
+                  const SizedBox(
+                    width: 16,
+                  ),
                   Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
                     spacing: 6,
@@ -612,22 +616,9 @@ class _ScheduledRoutineCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "${scheduledToday.exerciseTemplates.expand((exercises) => exercises.sets).length}",
-                            style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w900, color: Colors.white),
-                          ),
-                          Text(
-                            pluralize(
-                                    word: "Set",
-                                    count:
-                                        scheduledToday.exerciseTemplates.expand((exercises) => exercises.sets).length)
-                                .toUpperCase(),
-                            style: GoogleFonts.ubuntu(fontSize: 10, fontWeight: FontWeight.w500),
-                          ),
-                        ],
+                      Text(
+                        "${sets.length} ${pluralize(word: "Set", count: sets.length).toUpperCase()}",
+                        style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w900, color: Colors.white),
                       )
                     ],
                   ),
@@ -636,7 +627,27 @@ class _ScheduledRoutineCard extends StatelessWidget {
             ]),
           ),
           const SizedBox(width: 20),
-          FaIcon(FontAwesomeIcons.calendarDay, size: 20,)
+          isLogged
+              ? Container(
+                  width: 30,
+                  height: 30,
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: vibrantGreen.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                  child: Center(
+                    child: FaIcon(
+                      FontAwesomeIcons.check,
+                      size: 12,
+                      color: vibrantGreen,
+                    ),
+                  ),
+                )
+              : FaIcon(
+                  FontAwesomeIcons.calendarDay,
+                  size: 20,
+                )
         ],
       ),
     );
