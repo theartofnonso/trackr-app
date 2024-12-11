@@ -555,20 +555,34 @@ class _ScheduledRoutineCard extends StatelessWidget {
                   ],
                 ),
               const SizedBox(height: 20),
-              Text(
-                "${scheduledToday.exerciseTemplates.length} ${pluralize(word: "Exercise", count: scheduledToday.exerciseTemplates.length)}",
-                style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w500),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
-              ),
-              const SizedBox(
-                height: 6,
-              ),
-              Text(
-                "${scheduledToday.exerciseTemplates.expand((exercises) => exercises.sets).length} ${pluralize(word: "Set", count: scheduledToday.exerciseTemplates.expand((exercises) => exercises.sets).length)}",
-                style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w500),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
+              Wrap(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                    decoration: BoxDecoration(
+                      color: vibrantGreen,
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                    child: Text(
+                      "${scheduledToday.exerciseTemplates.length} ${pluralize(word: "Exercise", count: scheduledToday.exerciseTemplates.length).toUpperCase()}",
+                      style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.black),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 6,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                    decoration: BoxDecoration(
+                      color: vibrantBlue,
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                    child: Text(
+                      "${scheduledToday.exerciseTemplates.expand((exercises) => exercises.sets).length} ${pluralize(word: "Set", count: scheduledToday.exerciseTemplates.expand((exercises) => exercises.sets).length).toUpperCase()}",
+                      style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.black),
+                    ),
+                  ),
+                ],
               ),
             ]),
           ),
