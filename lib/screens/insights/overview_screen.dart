@@ -635,7 +635,8 @@ class _ScheduledRoutineCard extends StatelessWidget {
               ),
             ]),
           ),
-          FaIcon(FontAwesomeIcons.calendarDay)
+          const SizedBox(width: 20),
+          FaIcon(FontAwesomeIcons.calendarDay, size: 20,)
         ],
       ),
     );
