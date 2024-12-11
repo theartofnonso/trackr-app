@@ -33,7 +33,7 @@ class DaysMilestone extends Milestone {
           'Prove your dedication by logging ${days.length} days of training. This challenge is for the truly committed.';
       final caption = 'Train for ${days.length} days';
       final rule = 'Log ${days.length} days of training to complete this ${days.length}-Day Challenge.';
-      final loadLogsAndProgress = _calculateLogsAndProgress(logs: logs, target: days.length);
+      final loadLogsAndProgress = calculateLogsAndProgress(logs: logs, target: days.length);
       return DaysMilestone(
           id: "Days_Milestone_${days.length}_$index",
           name: '${days.length} Days of Gains'.toUpperCase(),
@@ -46,7 +46,7 @@ class DaysMilestone extends Milestone {
     }).toList();
   }
 
-  static (double, List<RoutineLogDto>) _calculateLogsAndProgress({required List<RoutineLogDto> logs, required int target}) {
+  static (double, List<RoutineLogDto>) calculateLogsAndProgress({required List<RoutineLogDto> logs, required int target}) {
 
     if(logs.isEmpty) return (0, []);
 
