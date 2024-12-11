@@ -213,20 +213,24 @@ class _Day extends StatelessWidget {
 
   Color _getBackgroundColor() {
     if (hasRoutineLog) {
-      return vibrantGreen;
+      return vibrantGreen.withOpacity(0.1);
     }
     if (hasActivityLog) {
-      return Colors.greenAccent;
+      return Colors.greenAccent.withOpacity(0.1);
     } else {
       return sapphireDark80.withOpacity(0.5);
     }
   }
 
   Color _getTextColor() {
-    if (SharedPrefs().showCalendarDates) {
-      return hasRoutineLog || hasActivityLog ? Colors.black : Colors.white70;
+    if (hasRoutineLog) {
+      return vibrantGreen;
     }
-    return Colors.transparent;
+    if (hasActivityLog) {
+      return Colors.greenAccent;
+    } else {
+      return Colors.white;
+    }
   }
 
   Border? _dateBorder() {

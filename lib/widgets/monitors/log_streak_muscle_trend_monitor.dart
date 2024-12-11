@@ -1,7 +1,9 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
@@ -11,6 +13,7 @@ import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
+import '../../enums/posthog_analytics_event.dart';
 import '../../screens/insights/sets_reps_volume_insights_screen.dart';
 import '../../strings/strings.dart';
 import '../../utils/exercise_logs_utils.dart';
@@ -164,6 +167,9 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
   }
 
   void _onShareMonitor({required BuildContext context}) {
+    if(kReleaseMode) {
+      Posthog().capture(eventName: PostHogAnalyticsEvent.shareMonitor.displayName);
+    }
     onShare(
         context: context,
         globalKey: monitorKey,
@@ -200,6 +206,9 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
   }
 
   void _onShareCalendar({required BuildContext context}) {
+    if(kReleaseMode) {
+      Posthog().capture(eventName: PostHogAnalyticsEvent.shareCalendar.displayName);
+    }
     onShare(
         context: context,
         globalKey: calendarKey,

@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:in_app_review/in_app_review.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/open_ai_response_schema_dtos/exercise_performance_report.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
@@ -26,6 +28,7 @@ import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/viewmodels/exercise_log_view_model.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
+import '../../enums/posthog_analytics_event.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../models/RoutineLog.dart';
 import '../../openAI/open_ai.dart';
@@ -153,7 +156,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                     if (updatedLog.notes.isNotEmpty)
                       Center(
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 20, right: 10, bottom: 10, left: 10),
+                          padding: const EdgeInsets.only(top: 20, right: 10, bottom: 20, left: 10),
                           child: Text('"${updatedLog.notes}"',
                               textAlign: TextAlign.center,
                               style: GoogleFonts.ubuntu(
@@ -244,7 +247,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                                   const SizedBox(height: 10),
                                   Text("Here's a breakdown of the muscle groups in your ${log.name} workout log.",
                                       style: GoogleFonts.ubuntu(
-                                          color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
+                                          color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w400)),
                                   const SizedBox(height: 10),
                                   MuscleGroupFamilyChart(
                                       frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
@@ -318,6 +321,9 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         .then((response) {
       _hideLoadingScreen();
       if (response != null) {
+        if(kReleaseMode) {
+          Posthog().capture(eventName: PostHogAnalyticsEvent.generateRoutineLogReport.displayName);
+        }
         if (mounted) {
           // Deserialize the JSON string
           Map<String, dynamic> json = jsonDecode(response);

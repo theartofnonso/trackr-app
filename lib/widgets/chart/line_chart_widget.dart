@@ -22,22 +22,21 @@ class LineChartWidget extends StatelessWidget {
       required this.chartPoints,
       required this.periods,
       required this.unit,
-      this.extraLinesData, this.maxY, this.interval = 10});
+      this.extraLinesData,
+      this.maxY,
+      this.interval = 10});
 
-  static const List<Color> gradientColors = [
-    sapphireLight,
-    Colors.white38
-  ];
+  static const List<Color> gradientColors = [sapphireLight, Colors.white38];
 
   @override
   Widget build(BuildContext context) {
-
     return chartPoints.isNotEmpty
         ? Center(
             child: AspectRatio(
               aspectRatio: 1.5,
               child: LineChart(LineChartData(
-                maxY: maxY,
+                  gridData: FlGridData(drawVerticalLine: false),
+                  maxY: maxY,
                   minY: 0,
                   titlesData: FlTitlesData(
                     show: true,
@@ -58,7 +57,7 @@ class LineChartWidget extends StatelessWidget {
                       sideTitles: SideTitles(
                         showTitles: true,
                         interval: interval,
-                        getTitlesWidget:  _bottomTitleWidgets,
+                        getTitlesWidget: _bottomTitleWidgets,
                       ),
                     ),
                   ),
@@ -68,7 +67,6 @@ class LineChartWidget extends StatelessWidget {
                   extraLinesData: extraLinesData,
                   lineBarsData: [
                     LineChartBarData(
-                        //isStepLineChart: true,
                         spots: chartPoints.map((point) {
                           return FlSpot(point.x.toDouble(), point.y.toDouble());
                         }).toList(),
@@ -102,11 +100,11 @@ class LineChartWidget extends StatelessWidget {
   }
 
   String _weightTitle({required double value}) {
-      if (unit == ChartUnit.weight) {
-        return volumeInKOrM(value, showLessThan1k: false);
-      } else if (unit == ChartUnit.duration) {
-        return Duration(milliseconds: value.toInt()).msDigital();
-      }
+    if (unit == ChartUnit.weight) {
+      return volumeInKOrM(value, showLessThan1k: false);
+    } else if (unit == ChartUnit.duration) {
+      return Duration(milliseconds: value.toInt()).msDigital();
+    }
 
     return "${value.toInt()}";
   }

@@ -3,10 +3,13 @@ import 'dart:convert';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:tracker_app/dtos/appsync/activity_log_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
+import '../../enums/posthog_analytics_event.dart';
 import '../../logger.dart';
 import '../../models/ActivityLog.dart';
 import '../../shared_prefs.dart';
@@ -29,6 +32,10 @@ class AmplifyActivityLogRepository {
     final logToCreate = ActivityLog(data: jsonEncode(logDto), createdAt: datetime, updatedAt: datetime, owner: SharedPrefs().userId);
 
     await Amplify.DataStore.save<ActivityLog>(logToCreate);
+
+    if(kReleaseMode) {
+      Posthog().capture(eventName: PostHogAnalyticsEvent.logActivity.displayName, properties: logDto.toJson());
+    }
 
     logger.i("Created activity log: $logDto");
   }
