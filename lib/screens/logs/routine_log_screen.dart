@@ -190,7 +190,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                           _StatisticWidget(
                             title: "${numberOfCompletedSets.length}",
                             subtitle: "Sets",
-                            icon: FontAwesomeIcons.listOl,
+                            icon: FontAwesomeIcons.hashtag,
                           ),
                           const SizedBox(
                             width: 10,
