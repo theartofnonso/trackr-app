@@ -216,7 +216,6 @@ class STTController extends ChangeNotifier {
         return;
       }
 
-      print(functionCallResult);
       // Deserialize the JSON string
       Map<String, dynamic> json = jsonDecode(functionCallResult);
       final setsInJson = json["sets"] as List<dynamic>;

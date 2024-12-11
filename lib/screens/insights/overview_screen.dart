@@ -555,7 +555,7 @@ class _ScheduledRoutineCard extends StatelessWidget {
                   ],
                 ),
               const SizedBox(height: 20),
-              Wrap(
+              Row(
                 children: [
                   Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
@@ -591,9 +591,7 @@ class _ScheduledRoutineCard extends StatelessWidget {
                       )
                     ],
                   ),
-                  const SizedBox(
-                    width: 18,
-                  ),
+                  const SizedBox(width: 50,),
                   Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
                     spacing: 6,

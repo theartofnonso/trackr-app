@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import '../dtos/appsync/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/set_dtos/set_dto.dart';
-import '../enums/routine_editor_type_enums.dart';
 import '../logger.dart';
 import '../repositories/exercise_log_repository.dart';
 
@@ -19,13 +18,9 @@ class ExerciseLogController extends ChangeNotifier {
 
   UnmodifiableListView<ExerciseLogDto> get exerciseLogs => _exerciseLogRepository.exerciseLogs;
 
-  void loadExerciseLogs({required List<ExerciseLogDto> exerciseLogs, required RoutineEditorMode mode}) {
-    _exerciseLogRepository.loadExerciseLogs(exerciseLogs: exerciseLogs, mode: mode);
-    logger.i("load exercise log: $exerciseLogs: $mode");
-  }
-
-  List<ExerciseLogDto> mergeExerciseLogsAndSets({required RoutineEditorMode mode}) {
-    return _exerciseLogRepository.mergeExerciseLogsAndSets(mode: mode);
+  void loadExerciseLogs({required List<ExerciseLogDto> exerciseLogs}) {
+    _exerciseLogRepository.loadExerciseLogs(exerciseLogs: exerciseLogs);
+    logger.i("load exercise logs");
   }
 
   void addExerciseLog({required ExerciseDto exercise, required List<SetDto> pastSets}) {

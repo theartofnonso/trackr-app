@@ -117,7 +117,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     if (!_validateRoutineTemplateInputs()) return;
 
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
-    final exercises = exerciseLogController.mergeExerciseLogsAndSets(mode: RoutineEditorMode.edit);
+    final exercises = exerciseLogController.exerciseLogs;
 
     final template = RoutineTemplateDto(
         id: "",
@@ -156,7 +156,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   RoutineTemplateDto _getUpdatedRoutineTemplate(
       {required RoutineTemplateDto template, List<ExerciseLogDto>? updatedExerciseLogs}) {
     final exerciseProvider = Provider.of<ExerciseLogController>(context, listen: false);
-    final exerciseLogs = updatedExerciseLogs ?? exerciseProvider.mergeExerciseLogsAndSets(mode: RoutineEditorMode.edit);
+    final exerciseLogs = updatedExerciseLogs ?? exerciseProvider.exerciseLogs;
 
     return template.copyWith(
         name: _templateNameController.text.trim(),
@@ -176,7 +176,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   void _checkForUnsavedChanges() {
     final exerciseProvider = Provider.of<ExerciseLogController>(context, listen: false);
     final exerciseLog1 = widget.template?.exerciseTemplates ?? [];
-    final exerciseLog2 = exerciseProvider.mergeExerciseLogsAndSets(mode: RoutineEditorMode.edit);
+    final exerciseLog2 = exerciseProvider.exerciseLogs;
     final unsavedChangesMessage = checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
     if (unsavedChangesMessage.isNotEmpty) {
       showBottomSheetWithMultiActions(
@@ -460,8 +460,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
         }
         return exerciseLog;
       }).toList();
-      Provider.of<ExerciseLogController>(context, listen: false)
-          .loadExerciseLogs(exerciseLogs: updatedExerciseLogs, mode: RoutineEditorMode.edit);
+      Provider.of<ExerciseLogController>(context, listen: false).loadExerciseLogs(exerciseLogs: updatedExerciseLogs);
       _minimiseOrMaximiseCards();
     }
   }

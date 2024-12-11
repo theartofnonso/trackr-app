@@ -1,40 +1,19 @@
 import 'package:collection/collection.dart';
-import 'package:tracker_app/utils/exercise_logs_utils.dart';
 
 import '../dtos/appsync/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/set_dtos/set_dto.dart';
-import '../enums/routine_editor_type_enums.dart';
 
 class ExerciseLogRepository {
   List<ExerciseLogDto> _exerciseLogs = [];
 
   UnmodifiableListView<ExerciseLogDto> get exerciseLogs => UnmodifiableListView(_exerciseLogs);
 
-  void loadExerciseLogs({required List<ExerciseLogDto> exerciseLogs, required RoutineEditorMode mode}) {
-
+  void loadExerciseLogs({required List<ExerciseLogDto> exerciseLogs}) {
     _exerciseLogs = exerciseLogs;
   }
 
-  List<ExerciseLogDto> mergeExerciseLogsAndSets({required RoutineEditorMode mode}) {
-    if (mode == RoutineEditorMode.log) {
-      return _exerciseLogs.map((exerciseLog) {
-        final setsForNonDuration = exerciseLog.sets.where((set) => set.checked).toList();
-        return exerciseLog.copyWith(sets: withDurationOnly(type: exerciseLog.exercise.type) ? _checkSets(exerciseLog.sets) : setsForNonDuration);
-      }).toList();
-    }
-
-    return _exerciseLogs.map((exerciseLog) {
-      return exerciseLog.copyWith(sets: exerciseLog.sets);
-    }).toList();
-  }
-
-  List<SetDto> _checkSets(List<SetDto> sets) {
-    return sets.map((set) => set.copyWith(checked: true)).toList();
-  }
-
   void addExerciseLog({required ExerciseDto exercise, required List<SetDto> pastSets}) {
-
     SetDto newSet = SetDto.newType(type: exercise.type);
 
     SetDto? pastSet = _wherePastSetOrNull(index: 0, pastSets: pastSets);
@@ -215,9 +194,10 @@ class ExerciseLogRepository {
     // Updating the exerciseLog
     final exerciseLog = newExerciseLogs[exerciseLogIndex];
     final sets = exerciseLog.sets;
-    if (index >= 0 || index < sets.length) {
-      sets.removeAt(index);
 
+    // Use && to check that index is within bounds
+    if (index >= 0 && index < sets.length) {
+      sets.removeAt(index);
       newExerciseLogs[exerciseLogIndex] = exerciseLog.copyWith(sets: sets);
 
       // Assign the new list to maintain immutability

@@ -328,6 +328,8 @@ Map<MuscleGroupFamily, double> muscleGroupFamilyFrequency({
   required List<ExerciseLogDto> exerciseLogs,
   bool includeSecondaryMuscleGroups = true,
 }) {
+  if (exerciseLogs.isEmpty) return <MuscleGroupFamily, double>{};
+
   final frequencyMap = <MuscleGroupFamily, int>{};
 
   // Counting the occurrences of each MuscleGroup, excluding MuscleGroupFamily.fullBody
@@ -346,6 +348,8 @@ Map<MuscleGroupFamily, double> muscleGroupFamilyFrequency({
       }
     }
   }
+
+  if(frequencyMap.isEmpty) return <MuscleGroupFamily, double>{};
 
   final totalCount = frequencyMap.values.reduce((a, b) => a + b);
   final scaledFrequencyMap = <MuscleGroupFamily, double>{};

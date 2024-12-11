@@ -115,7 +115,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
 
   bool _isRoutinePartiallyComplete() {
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
-    final exerciseLogs = exerciseLogController.mergeExerciseLogsAndSets(mode: RoutineEditorMode.log);
+    final exerciseLogs = exerciseLogController.exerciseLogs;
 
     final hasAnyCompletedSet =  exerciseLogs.any((log) => log.sets.any((set) => set.isNotEmpty() && set.checked));
 
@@ -133,7 +133,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
 
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
 
-    final exerciseLogs = exerciseLogController.mergeExerciseLogsAndSets(mode: RoutineEditorMode.edit).map((exerciseLog) {
+    final exerciseLogs = exerciseLogController.exerciseLogs.map((exerciseLog) {
       final checkedSets = exerciseLog.sets.map((set) => set.copyWith(checked: true)).toList();
       return exerciseLog.copyWith(sets: checkedSets);
     }).toList();
@@ -159,7 +159,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
   void _checkForUnsavedChanges() {
     final exerciseProvider = Provider.of<ExerciseLogController>(context, listen: false);
     final exerciseLog1 = widget.log.exerciseLogs;
-    final exerciseLog2 = exerciseProvider.mergeExerciseLogsAndSets(mode: RoutineEditorMode.edit);
+    final exerciseLog2 = exerciseProvider.exerciseLogs;
     final unsavedChangesMessage = checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
     if (unsavedChangesMessage.isNotEmpty) {
       showBottomSheetWithMultiActions(
@@ -443,7 +443,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
         return exerciseLog;
       }).toList();
       Provider.of<ExerciseLogController>(context, listen: false)
-          .loadExerciseLogs(exerciseLogs: updatedExerciseLogs, mode: RoutineEditorMode.edit);
+          .loadExerciseLogs(exerciseLogs: updatedExerciseLogs);
       _minimiseOrMaximiseCards();
     }
   }

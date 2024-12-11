@@ -1,13 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
-DateTimeRange yearToEndTimeRange({required DateTime datetime}) {
-  final now = datetime.withoutTime();
-  final start = DateTime(now.year, 1);
-  final end = DateTime(now.year, 12, 31);
-  return DateTimeRange(start: start, end: end);
-}
-
 DateTimeRange yearToDateTimeRange({required DateTime datetime}) {
   final now = datetime.withoutTime();
   final start = DateTime(now.year, 1);
@@ -32,21 +25,26 @@ List<DateTimeRange> generateWeeksInRange({required DateTimeRange range}) {
     return weeks; // Return empty list if dates are invalid
   }
 
-  DateTime currentStartDate = DateTime(range.start.year, range.start.month, range.start.day - (range.start.weekday - 1) % 7);
+  // Align currentStartDate to the beginning of the week containing range.start.
+  // Assuming weeks start on Monday. In Dart, Monday is weekday = 1.
+  // This shifts the start date back to Monday of that week.
+  final weekDayIndex = (range.start.weekday - 1) % 7;
+  DateTime currentStartDate = DateTime(range.start.year, range.start.month, range.start.day - weekDayIndex);
 
   while (!currentStartDate.isAfter(range.end)) {
-    // Calculate the end date for the current week
+    // Calculate the end date for the current week (6 days after the start)
     DateTime currentEndDate = currentStartDate.add(const Duration(days: 6));
 
     // If the calculated end date is after the overall end date, adjust it
-    if (currentEndDate.isAfter(currentEndDate)) {
-      currentEndDate = currentEndDate;
+    if (currentEndDate.isAfter(range.end)) {
+      currentEndDate = range.end;
     }
 
     weeks.add(DateTimeRange(start: currentStartDate, end: currentEndDate));
 
-    // Move to the next week
+    // Move to the next week (the day after the current week's end)
     currentStartDate = currentEndDate.add(const Duration(days: 1));
+
   }
 
   return weeks;
@@ -83,23 +81,10 @@ List<DateTimeRange> generateMonthsInRange({required DateTimeRange range}) {
   return months;
 }
 
-List<Map<String, DateTime>> getDatesRangesFromToday({required int size}) {
-  DateTime now = DateTime.now();
-  List<Map<String, DateTime>> monthRanges = [];
-
-  for (int i = 1; i <= size; i++) {
-    DateTime targetMonth = DateTime(now.year, now.month - i, 1);
-    int year = targetMonth.year;
-    int month = targetMonth.month;
-
-    DateTime startOfMonth = DateTime(year, month, 1);
-    DateTime endOfMonth = DateTime(year, month + 1, 1).subtract(Duration(days: 1));
-
-    monthRanges.add({
-      'start': startOfMonth,
-      'end': endOfMonth,
-    });
-  }
-
-  return monthRanges;
+DateTimeRange thisMonthDateRange({DateTime? endDate}) {
+  final now = DateTime.now();
+  final currentWeekDate = DateTime(now.year, now.month, now.day);
+  final startOfMonth = DateTime(currentWeekDate.year, currentWeekDate.month, 1);
+  final endOfMonth = endDate ?? DateTime(currentWeekDate.year, currentWeekDate.month + 1, 0);
+  return DateTimeRange(start: startOfMonth, end: endOfMonth);
 }

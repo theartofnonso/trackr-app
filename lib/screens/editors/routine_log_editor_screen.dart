@@ -112,7 +112,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   RoutineLogDto _routineLog() {
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
 
-    final exerciseLogs = exerciseLogController.mergeExerciseLogsAndSets(mode: RoutineEditorMode.log);
+    final exerciseLogs = exerciseLogController.exerciseLogs;
 
     final routineLog = widget.log.copyWith(exerciseLogs: exerciseLogs);
 
@@ -140,7 +140,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   bool _isRoutinePartiallyComplete() {
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
-    final exerciseLogs = exerciseLogController.mergeExerciseLogsAndSets(mode: RoutineEditorMode.log);
+    final exerciseLogs = exerciseLogController.exerciseLogs;
     return exerciseLogs.any((log) => log.sets.any((set) => set.isNotEmpty() && set.checked));
   }
 
@@ -492,7 +492,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   void _loadExerciseLogs() {
     final exerciseLogs = widget.log.exerciseLogs;
     Provider.of<ExerciseLogController>(context, listen: false)
-        .loadExerciseLogs(exerciseLogs: exerciseLogs, mode: widget.mode);
+        .loadExerciseLogs(exerciseLogs: exerciseLogs);
     _minimiseOrMaximiseCards();
   }
 

@@ -71,7 +71,6 @@ Future<Map<String, dynamic>?> runMessageWithTools(
     body: body,
   );
 
-  print(response.body);
   if (response.statusCode == 200) {
     final body = jsonDecode(response.body);
     final choices = body['choices'] as List<dynamic>;
