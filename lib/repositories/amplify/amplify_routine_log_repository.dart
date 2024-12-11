@@ -26,7 +26,6 @@ import '../../models/RoutineTemplate.dart';
 import '../../shared_prefs.dart';
 
 class AmplifyRoutineLogRepository {
-
   final logger = getLogger(className: "AmplifyRoutineLogRepository");
 
   List<RoutineLogDto> _logs = [];
@@ -43,7 +42,8 @@ class AmplifyRoutineLogRepository {
 
   Map<String, List<ExerciseLogDto>> _exerciseLogsByExerciseId = {};
 
-  UnmodifiableMapView<String, List<ExerciseLogDto>> get exerciseLogsByExerciseId => UnmodifiableMapView(_exerciseLogsByExerciseId);
+  UnmodifiableMapView<String, List<ExerciseLogDto>> get exerciseLogsByExerciseId =>
+      UnmodifiableMapView(_exerciseLogsByExerciseId);
 
   void _groupExerciseLogs() {
     _exerciseLogsByExerciseId = groupExerciseLogsByExerciseId(routineLogs: _logs);
@@ -57,17 +57,17 @@ class AmplifyRoutineLogRepository {
   }
 
   Future<RoutineLogDto> saveLog({required RoutineLogDto logDto, TemporalDateTime? datetime}) async {
-
     // Capture current list of completed milestones
     final previousMilestones = completedMilestones().toSet();
 
     final now = datetime ?? TemporalDateTime.now();
 
-    final logToCreate = RoutineLog(data: jsonEncode(logDto), createdAt: now, updatedAt: now, owner: SharedPrefs().userId);
+    final logToCreate =
+        RoutineLog(data: jsonEncode(logDto), createdAt: now, updatedAt: now, owner: SharedPrefs().userId);
 
     await Amplify.DataStore.save<RoutineLog>(logToCreate);
 
-    if(kReleaseMode) {
+    if (kReleaseMode) {
       Posthog().capture(eventName: PostHogAnalyticsEvent.logRoutine.displayName, properties: logDto.toJson());
     }
 
@@ -136,45 +136,37 @@ class AmplifyRoutineLogRepository {
   }
 
   void _calculateMilestones() {
-
     List<Milestone> milestones = [];
 
     final logsForTheYear = whereLogsIsSameYear(dateTime: DateTime.now().withoutTime());
 
     /// Add Weekly Challenges
     final weeklyMilestones = WeeklyMilestone.loadMilestones(logs: logsForTheYear);
-    for (final milestone in weeklyMilestones) {
-      milestones.add(milestone);
-    }
+    milestones.addAll(weeklyMilestones);
 
     /// Add Days Challenges
     final daysMilestones = DaysMilestone.loadMilestones(logs: logsForTheYear);
-    for (final milestone in daysMilestones) {
-      milestones.add(milestone);
-    }
+    milestones.addAll(daysMilestones);
 
     /// Add Reps Milestones
     final repsMilestones = RepsMilestone.loadMilestones(logs: logsForTheYear);
-    for (final milestone in repsMilestones) {
-      milestones.add(milestone);
-    }
+    milestones.addAll(repsMilestones);
 
     /// Add Hours Milestones
     final hoursMilestones = HoursMilestone.loadMilestones(logs: logsForTheYear);
-    for (final milestone in hoursMilestones) {
-      milestones.add(milestone);
-    }
+    milestones.addAll(hoursMilestones);
 
     milestones.sort((a, b) => a.name.compareTo(b.name));
 
     _milestones = milestones;
-
   }
 
   void syncLogsWithExercisesFromLibrary({required List<ExerciseDto> exercises}) {
     final updatedLogs = _logs.map((log) {
-      final updatedExerciseLogs =  log.exerciseLogs.map((exerciseLog) {
-        final foundExercise = exercises.firstWhere((exerciseInLibrary) => exerciseInLibrary.id == exerciseLog.exercise.id, orElse: () => exerciseLog.exercise);
+      final updatedExerciseLogs = log.exerciseLogs.map((exerciseLog) {
+        final foundExercise = exercises.firstWhere(
+            (exerciseInLibrary) => exerciseInLibrary.id == exerciseLog.exercise.id,
+            orElse: () => exerciseLog.exercise);
         return exerciseLog.copyWith(exercise: foundExercise);
       }).toList();
       return log.copyWith(exerciseLogs: updatedExerciseLogs);
@@ -202,7 +194,8 @@ class AmplifyRoutineLogRepository {
   }
 
   List<ExerciseLogDto> whereExerciseLogsBefore({required ExerciseDto exercise, required DateTime date}) {
-    final exerciseLogs =  _exerciseLogsByExerciseId[exercise.id]?.where((log) => log.createdAt.isBefore(date)).toList() ?? [];
+    final exerciseLogs =
+        _exerciseLogsByExerciseId[exercise.id]?.where((log) => log.createdAt.isBefore(date)).toList() ?? [];
     final completedExercises = loggedExercises(exerciseLogs: exerciseLogs.toList());
     return completedExercises;
   }
@@ -243,11 +236,12 @@ class AmplifyRoutineLogRepository {
     return _logs.where((log) => log.createdAt.isBetweenInclusive(from: range.start, to: range.end)).toList();
   }
 
-
   /// Milestones
-  UnmodifiableListView<Milestone> pendingMilestones() => UnmodifiableListView(_milestones.where((milestone) => milestone.progress.$1 < 1));
+  UnmodifiableListView<Milestone> pendingMilestones() =>
+      UnmodifiableListView(_milestones.where((milestone) => milestone.progress.$1 < 1));
 
-  UnmodifiableListView<Milestone> completedMilestones() => UnmodifiableListView(milestones.where((milestone) => milestone.progress.$1 == 1));
+  UnmodifiableListView<Milestone> completedMilestones() =>
+      UnmodifiableListView(milestones.where((milestone) => milestone.progress.$1 == 1));
 
   void clear() {
     _logs.clear();

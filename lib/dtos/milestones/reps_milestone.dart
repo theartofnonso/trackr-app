@@ -12,6 +12,8 @@ import '../set_dtos/weight_and_reps_dto.dart';
 class RepsMilestone extends Milestone {
   final MuscleGroup muscleGroup;
 
+
+
   RepsMilestone(
       {required super.id,
       required super.name,
@@ -43,7 +45,7 @@ class RepsMilestone extends Milestone {
     };
   }
 
-  static List<Milestone> loadMilestones({required List<RoutineLogDto> logs}) {
+  static List<RepsMilestone> loadMilestones({required List<RoutineLogDto> logs}) {
     final muscleGroups = [
       MuscleGroup.abs,
       MuscleGroup.biceps,
