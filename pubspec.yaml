@@ -69,8 +69,6 @@ dependencies:
   confetti: ^0.8.0
   logger: ^2.5.0
   uuid: ^4.5.1
-  get_it: ^8.0.2
-  ansicolor: ^2.0.3
   animated_text_kit: ^4.2.2
   in_app_review: ^2.0.10
   speech_to_text: ^6.6.0
