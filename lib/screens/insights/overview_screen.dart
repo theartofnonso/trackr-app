@@ -536,10 +536,10 @@ class _ScheduledRoutineCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: sapphireDark60,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(5),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
