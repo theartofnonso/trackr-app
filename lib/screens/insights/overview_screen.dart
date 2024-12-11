@@ -551,7 +551,7 @@ class _ScheduledRoutineCard extends StatelessWidget {
                     ),
                   ],
                 ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 20),
               Text(
                 "${scheduledToday.exerciseTemplates.length} ${pluralize(word: "Exercise", count: scheduledToday.exerciseTemplates.length)}",
                 style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w500),
