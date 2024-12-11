@@ -74,8 +74,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   void _heaviestWeightPerLog() {
     final sets = widget.exerciseLogs.map((log) => heaviestWeightInSetForExerciseLog(exerciseLog: log)).toList();
     setState(() {
-      _chartPoints =
-          sets.mapIndexed((index, set) => ChartPointDto(index, (set).weight)).toList();
+      _chartPoints = sets.mapIndexed((index, set) => ChartPointDto(index, (set).weight)).toList();
       _summaryType = SummaryType.weight;
       _chartUnit = ChartUnit.weight;
     });
@@ -253,6 +252,10 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                             onPressed: _heaviestWeightPerLog,
                             label: SummaryType.weight.label,
                             padding: const EdgeInsets.only(right: 5.0),
+                            textStyle: GoogleFonts.ubuntu(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14,
+                                color: _buttonColor(type: SummaryType.weight)),
                             buttonColor: _buttonColor(type: SummaryType.weight)),
                       ),
                     if (withWeightsOnly(type: widget.exercise.type))
@@ -262,6 +265,10 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                             onPressed: _heaviestSetVolumePerLog,
                             label: SummaryType.setVolume.label,
                             padding: const EdgeInsets.only(right: 5.0),
+                            textStyle: GoogleFonts.ubuntu(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14,
+                                color: _buttonColor(type: SummaryType.setVolume)),
                             buttonColor: _buttonColor(type: SummaryType.setVolume)),
                       ),
                     if (withReps(type: widget.exercise.type))
@@ -271,6 +278,10 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                             onPressed: _highestRepsForLog,
                             label: SummaryType.mostReps.label,
                             padding: const EdgeInsets.only(right: 5.0),
+                            textStyle: GoogleFonts.ubuntu(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14,
+                                color: _buttonColor(type: SummaryType.mostReps)),
                             buttonColor: _buttonColor(type: SummaryType.mostReps)),
                       ),
                     if (withReps(type: widget.exercise.type))
@@ -280,6 +291,10 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                             onPressed: _totalRepsForLog,
                             label: SummaryType.sessionReps.label,
                             padding: const EdgeInsets.only(right: 5.0),
+                            textStyle: GoogleFonts.ubuntu(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14,
+                                color: _buttonColor(type: SummaryType.sessionReps)),
                             buttonColor: _buttonColor(type: SummaryType.sessionReps)),
                       ),
                     if (withDurationOnly(type: widget.exercise.type))
@@ -289,6 +304,10 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                             onPressed: _longestDurationPerLog,
                             label: SummaryType.bestTime.label,
                             padding: const EdgeInsets.only(right: 5.0),
+                            textStyle: GoogleFonts.ubuntu(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14,
+                                color: _buttonColor(type: SummaryType.bestTime)),
                             buttonColor: _buttonColor(type: SummaryType.bestTime)),
                       ),
                     if (withDurationOnly(type: widget.exercise.type))
@@ -298,6 +317,10 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                             onPressed: _totalTimePerLog,
                             label: SummaryType.sessionTimes.label,
                             padding: const EdgeInsets.only(right: 5.0),
+                            textStyle: GoogleFonts.ubuntu(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14,
+                                color: _buttonColor(type: SummaryType.sessionTimes)),
                             buttonColor: _buttonColor(type: SummaryType.sessionTimes)),
                       ),
                   ],
