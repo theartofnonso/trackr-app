@@ -12,32 +12,15 @@ class ExerciseLogRepository {
   UnmodifiableListView<ExerciseLogDto> get exerciseLogs => UnmodifiableListView(_exerciseLogs);
 
   void loadExerciseLogs({required List<ExerciseLogDto> exerciseLogs, required RoutineEditorMode mode}) {
-    List<ExerciseLogDto> logs = [];
-    for (final exerciseLog in exerciseLogs) {
-      if (withDurationOnly(type: exerciseLog.exercise.type)) {
-        if (mode == RoutineEditorMode.log) {
-          final checkedSets = exerciseLog.sets.map((set) => set.copyWith(checked: true)).toList();
-          final updatedExerciseLog = exerciseLog.copyWith(sets: checkedSets);
-          logs.add(updatedExerciseLog);
-          continue;
-        } else {
-          final updatedExerciseLog = exerciseLog.copyWith(sets: []);
-          logs.add(updatedExerciseLog);
-          continue;
-        }
-      }
-      logs.add(exerciseLog);
-    }
-    _exerciseLogs = logs;
+
+    _exerciseLogs = exerciseLogs;
   }
 
   List<ExerciseLogDto> mergeExerciseLogsAndSets({required RoutineEditorMode mode}) {
     if (mode == RoutineEditorMode.log) {
       return _exerciseLogs.map((exerciseLog) {
         final setsForNonDuration = exerciseLog.sets.where((set) => set.checked).toList();
-        return exerciseLog.copyWith(
-            sets:
-                withDurationOnly(type: exerciseLog.exercise.type) ? _checkSets(exerciseLog.sets) : setsForNonDuration);
+        return exerciseLog.copyWith(sets: withDurationOnly(type: exerciseLog.exercise.type) ? _checkSets(exerciseLog.sets) : setsForNonDuration);
       }).toList();
     }
 
