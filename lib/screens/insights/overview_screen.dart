@@ -557,30 +557,81 @@ class _ScheduledRoutineCard extends StatelessWidget {
               const SizedBox(height: 20),
               Wrap(
                 children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                    decoration: BoxDecoration(
-                      color: vibrantGreen,
-                      borderRadius: BorderRadius.circular(3),
-                    ),
-                    child: Text(
-                      "${scheduledToday.exerciseTemplates.length} ${pluralize(word: "Exercise", count: scheduledToday.exerciseTemplates.length).toUpperCase()}",
-                      style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.black),
-                    ),
+                  Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 6,
+                    children: [
+                      Container(
+                        width: 30,
+                        height: 30,
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: vibrantGreen.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                        child: Image.asset(
+                          'icons/dumbbells.png',
+                          fit: BoxFit.contain,
+                          height: 20,
+                          color: vibrantGreen, // Adjust the height as needed
+                        ),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "${scheduledToday.exerciseTemplates.length}",
+                            style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w900, color: Colors.white),
+                          ),
+                          Text(
+                            pluralize(word: "Exercise", count: scheduledToday.exerciseTemplates.length).toUpperCase(),
+                            style: GoogleFonts.ubuntu(fontSize: 10, fontWeight: FontWeight.w500),
+                          ),
+                        ],
+                      )
+                    ],
                   ),
                   const SizedBox(
-                    width: 6,
+                    width: 18,
                   ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                    decoration: BoxDecoration(
-                      color: vibrantBlue,
-                      borderRadius: BorderRadius.circular(3),
-                    ),
-                    child: Text(
-                      "${scheduledToday.exerciseTemplates.expand((exercises) => exercises.sets).length} ${pluralize(word: "Set", count: scheduledToday.exerciseTemplates.expand((exercises) => exercises.sets).length).toUpperCase()}",
-                      style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.black),
-                    ),
+                  Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 6,
+                    children: [
+                      Container(
+                        width: 30,
+                        height: 30,
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: vibrantBlue.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                        child: Center(
+                          child: FaIcon(
+                            FontAwesomeIcons.hashtag,
+                            color: vibrantBlue,
+                            size: 14,
+                          ),
+                        ),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "${scheduledToday.exerciseTemplates.expand((exercises) => exercises.sets).length}",
+                            style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w900, color: Colors.white),
+                          ),
+                          Text(
+                            pluralize(
+                                    word: "Set",
+                                    count:
+                                        scheduledToday.exerciseTemplates.expand((exercises) => exercises.sets).length)
+                                .toUpperCase(),
+                            style: GoogleFonts.ubuntu(fontSize: 10, fontWeight: FontWeight.w500),
+                          ),
+                        ],
+                      )
+                    ],
                   ),
                 ],
               ),
