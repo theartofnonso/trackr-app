@@ -171,20 +171,61 @@ class _RoutineWidget extends StatelessWidget {
               maxLines: 2,
             ),
             const Spacer(),
-            Text(
-              "${exercises.length} ${pluralize(word: "Exercise", count: exercises.length)}",
-              style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w500),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
+            Wrap(
+              children: [
+                Container(
+                  width: 20,
+                  height: 20,
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: vibrantGreen.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                  child: Image.asset(
+                    'icons/dumbbells.png',
+                    fit: BoxFit.contain,
+                    height: 14,
+                    color: vibrantGreen, // Adjust the height as needed
+                  ),
+                ),
+                const SizedBox(width: 6,),
+                Text(
+                  "${exercises.length} ${pluralize(word: "Exercise", count: exercises.length)}",
+                  style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w500),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                ),
+              ],
             ),
             const SizedBox(
               height: 6,
             ),
-            Text(
-              "${sets.length} ${pluralize(word: "Set", count: sets.length)}",
-              style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w500),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
+            Wrap(
+              children: [
+                Container(
+                  width: 20,
+                  height: 20,
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: vibrantBlue.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                  child: Center(
+                    child: FaIcon(
+                      FontAwesomeIcons.hashtag,
+                      color: vibrantBlue,
+                      size: 11,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 6,),
+                Text(
+                  "${sets.length} ${pluralize(word: "Set", count: sets.length)}",
+                  style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w500),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                ),
+              ],
             ),
             const SizedBox(height: 8),
             Divider(
