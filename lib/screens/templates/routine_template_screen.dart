@@ -237,7 +237,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                   if (template.notes.isNotEmpty)
                     Center(
                       child: Padding(
-                        padding: const EdgeInsets.only(top: 20, bottom: 10),
+                        padding: const EdgeInsets.only(top: 20, bottom: 20),
                         child: Text('"${template.notes}"',
                             textAlign: TextAlign.center,
                             style: GoogleFonts.ubuntu(
@@ -309,7 +309,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                           const SizedBox(height: 10),
                           Text("Here's a breakdown of the muscle groups in your ${template.name} workout plan.",
                               style:
-                                  GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
+                                  GoogleFonts.ubuntu(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w400)),
                           const SizedBox(height: 10),
                           MuscleGroupFamilyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
                         ],

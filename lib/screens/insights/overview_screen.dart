@@ -13,6 +13,7 @@ import 'package:tracker_app/dtos/appsync/activity_log_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/open_ai_response_schema_dtos/monthly_training_report.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
+import 'package:tracker_app/extensions/dtos/routine_template_dto_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -37,6 +38,7 @@ import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../utils/routine_utils.dart';
+import '../../utils/string_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_button.dart';
 import '../../widgets/ai_widgets/trkr_coach_text_widget.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
@@ -77,7 +79,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     /// Be notified of changes
-    Provider.of<ExerciseAndRoutineController>(context, listen: true);
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
     Provider.of<ActivityLogController>(context, listen: true);
 
     DateTime today = DateTime.now();
@@ -86,6 +88,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     /// Logic to determine whether to show new monthly insights widget
     final isStartOfNewMonth = today.day == 1;
+
+    final templates = exerciseAndRoutineController.templates;
+
+    final scheduledTemplates = templates.where((template) => template.isScheduledToday());
+
+    final scheduledToday = scheduledTemplates.firstOrNull;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -132,6 +140,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
                                     "It’s a new month of training, but before we dive in, let’s reflect on your past performance and plan for this month.",
                                 onTap: () =>
                                     _generateMonthlyInsightsReport(datetime: today.subtract(const Duration(days: 29)))),
+                          ),
+                        if (scheduledToday != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 20.0),
+                            child: _ScheduledRoutineCard(scheduledToday: scheduledToday),
                           ),
                         if (SharedPrefs().showCalendar)
                           Padding(
@@ -497,6 +510,69 @@ class _OverviewScreenState extends State<OverviewScreen> {
   void dispose() {
     _textEditingController?.dispose();
     super.dispose();
+  }
+}
+
+class _ScheduledRoutineCard extends StatelessWidget {
+  const _ScheduledRoutineCard({required this.scheduledToday});
+
+  final RoutineTemplateDto scheduledToday;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: sapphireDark60,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(
+                scheduledToday.name,
+                style: GoogleFonts.ubuntu(fontSize: 18, fontWeight: FontWeight.w900),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+              ),
+              if (scheduledToday.notes.isNotEmpty)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 10),
+                    Text(
+                      scheduledToday.notes,
+                      style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white70),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    ),
+                  ],
+                ),
+              const SizedBox(height: 40),
+              Text(
+                "${scheduledToday.exerciseTemplates.length} ${pluralize(word: "Exercise", count: scheduledToday.exerciseTemplates.length)}",
+                style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w500),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+              ),
+              const SizedBox(
+                height: 6,
+              ),
+              Text(
+                "${scheduledToday.exerciseTemplates.expand((exercises) => exercises.sets).length} ${pluralize(word: "Set", count: scheduledToday.exerciseTemplates.expand((exercises) => exercises.sets).length)}",
+                style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w500),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+              ),
+            ]),
+          ),
+          FaIcon(FontAwesomeIcons.calendarDay)
+        ],
+      ),
+    );
   }
 }
 

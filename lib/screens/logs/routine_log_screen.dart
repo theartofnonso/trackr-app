@@ -156,7 +156,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                     if (updatedLog.notes.isNotEmpty)
                       Center(
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 20, right: 10, bottom: 10, left: 10),
+                          padding: const EdgeInsets.only(top: 20, right: 10, bottom: 20, left: 10),
                           child: Text('"${updatedLog.notes}"',
                               textAlign: TextAlign.center,
                               style: GoogleFonts.ubuntu(
@@ -247,7 +247,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                                   const SizedBox(height: 10),
                                   Text("Here's a breakdown of the muscle groups in your ${log.name} workout log.",
                                       style: GoogleFonts.ubuntu(
-                                          color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
+                                          color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w400)),
                                   const SizedBox(height: 10),
                                   MuscleGroupFamilyChart(
                                       frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
