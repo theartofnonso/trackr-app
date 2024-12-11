@@ -33,7 +33,7 @@ class RoutineUserDto {
         id: user.id, name: name, cognitoUserId: cognitoUserId, email: email, weight: weight, owner: user.owner ?? "");
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, Object> toJson() {
     return {
       'id': id,
       'cognitoUserId': cognitoUserId,

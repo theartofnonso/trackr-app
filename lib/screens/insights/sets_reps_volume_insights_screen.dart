@@ -2,16 +2,18 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/health_and_fitness_stats.dart';
 import 'package:tracker_app/openAI/open_ai_response_format.dart';
-import 'package:tracker_app/screens/AI/routine_logs_report_screen.dart';
+import 'package:tracker_app/screens/AI/muscle_group_training_report_screen.dart';
 import 'package:tracker_app/utils/date_utils.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/general_utils.dart';
@@ -28,6 +30,7 @@ import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/set_dtos/weight_and_reps_dto.dart';
 import '../../enums/chart_unit_enum.dart';
 import '../../enums/muscle_group_enums.dart';
+import '../../enums/posthog_analytics_event.dart';
 import '../../enums/sets_reps_volume_enum.dart';
 import '../../openAI/open_ai.dart';
 import '../../strings/ai_prompts.dart';
@@ -380,6 +383,9 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
             user: completeInstructions,
             responseFormat: routineLogsReportResponseFormat)
         .then((response) {
+      if(kReleaseMode) {
+        Posthog().capture(eventName: PostHogAnalyticsEvent.generateMuscleGroupTrainingReport.displayName);
+      }
       _hideLoadingScreen();
       if (mounted) {
         if (response != null) {
@@ -390,7 +396,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
           RoutineLogsReportDto report = RoutineLogsReportDto.fromJson(json);
           navigateWithSlideTransition(
               context: context,
-              child: RoutineLogsReportScreen(
+              child: MuscleGroupTrainingReportScreen(
                   muscleGroup: _selectedMuscleGroup,
                   report: report,
                   exerciseLogs: exerciseLogsWithPrimaryMuscleGroups));

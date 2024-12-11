@@ -3,7 +3,9 @@ import 'dart:convert';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
@@ -17,6 +19,7 @@ import '../../dtos/milestones/milestone_dto.dart';
 import '../../dtos/milestones/reps_milestone.dart';
 import '../../dtos/milestones/weekly_milestone_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
+import '../../enums/posthog_analytics_event.dart';
 import '../../logger.dart';
 import '../../models/RoutineLog.dart';
 import '../../models/RoutineTemplate.dart';
@@ -63,6 +66,10 @@ class AmplifyRoutineLogRepository {
     final logToCreate = RoutineLog(data: jsonEncode(logDto), createdAt: now, updatedAt: now, owner: SharedPrefs().userId);
 
     await Amplify.DataStore.save<RoutineLog>(logToCreate);
+
+    if(kReleaseMode) {
+      Posthog().capture(eventName: PostHogAnalyticsEvent.logRoutine.displayName, properties: logDto.toJson());
+    }
 
     final updatedRoutineLogWithId = logDto.copyWith(id: logToCreate.id);
     final updatedRoutineWithExerciseIds = updatedRoutineLogWithId.copyWith(

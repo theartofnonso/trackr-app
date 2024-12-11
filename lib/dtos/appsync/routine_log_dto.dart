@@ -54,7 +54,7 @@ class RoutineLogDto extends Log {
     return endTime.difference(startTime);
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, Object> toJson() {
     return {
       'id': id,
       'templateId': templateId,

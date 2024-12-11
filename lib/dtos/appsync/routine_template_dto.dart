@@ -31,14 +31,14 @@ class RoutineTemplateDto {
       required this.owner,
       this.scheduleType = RoutineScheduleType.none});
 
-  Map<String, dynamic> toJson() {
+  Map<String, Object> toJson() {
     return {
       "id": id,
       'name': name,
       'notes': notes,
       'exercises': exerciseTemplates.map((exercise) => exercise.toJson()).toList(),
       'days': scheduledDays.map((dayOfWeek) => dayOfWeek.day).toList(),
-      "scheduledDate": scheduledDate?.toIso8601String(),
+      "scheduledDate": scheduledDate?.toIso8601String() ?? "",
       "scheduleType": scheduleType.name,
     };
   }

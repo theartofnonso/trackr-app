@@ -30,7 +30,7 @@ class ExerciseDto {
       this.credit,
       required this.owner});
 
-  Map<String, dynamic> toJson() {
+  Map<String, Object> toJson() {
     return {
       'id': id,
       'name': name,
@@ -38,10 +38,10 @@ class ExerciseDto {
       'secondaryMuscleGroups': secondaryMuscleGroups.map((muscleGroup) => jsonEncode(muscleGroup.name)).toList(),
       'type': type.id,
       'owner': owner,
-      'description': description,
-      'video': video?.toString(),
-      'creditSource': creditSource?.toString(),
-      'credit': credit
+      'description': description ?? "",
+      'video': video?.toString() ?? "",
+      'creditSource': creditSource?.toString() ?? "",
+      'credit': credit ?? ""
     };
   }
 

@@ -1,16 +1,19 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/dtos/appsync/activity_log_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/open_ai_response_schema_dtos/monthly_training_report.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
+import 'package:tracker_app/extensions/dtos/routine_template_dto_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -26,6 +29,7 @@ import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/activity_type_enums.dart';
+import '../../enums/posthog_analytics_event.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../openAI/open_ai.dart';
 import '../../openAI/open_ai_response_format.dart';
@@ -34,6 +38,7 @@ import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../utils/routine_utils.dart';
+import '../../utils/string_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_button.dart';
 import '../../widgets/ai_widgets/trkr_coach_text_widget.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
@@ -74,7 +79,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     /// Be notified of changes
-    Provider.of<ExerciseAndRoutineController>(context, listen: true);
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
     Provider.of<ActivityLogController>(context, listen: true);
 
     DateTime today = DateTime.now();
@@ -83,6 +88,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     /// Logic to determine whether to show new monthly insights widget
     final isStartOfNewMonth = today.day == 1;
+
+    final templates = exerciseAndRoutineController.templates;
+
+    final scheduledTemplates = templates.where((template) => template.isScheduledToday());
+
+    final scheduledToday = scheduledTemplates.firstOrNull;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -127,7 +138,16 @@ class _OverviewScreenState extends State<OverviewScreen> {
                                     "View ${today.subtract(const Duration(days: 29)).formattedFullMonth()} insights",
                                 description:
                                     "It’s a new month of training, but before we dive in, let’s reflect on your past performance and plan for this month.",
-                                onTap: () => _showMonthlyInsights(datetime: today.subtract(const Duration(days: 29)))),
+                                onTap: () =>
+                                    _generateMonthlyInsightsReport(datetime: today.subtract(const Duration(days: 29)))),
+                          ),
+                        if (scheduledToday != null)
+                          GestureDetector(
+                            onTap: () => navigateToRoutineTemplatePreview(context: context, template: scheduledToday),
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 20.0),
+                              child: _ScheduledRoutineCard(scheduledToday: scheduledToday),
+                            ),
                           ),
                         if (SharedPrefs().showCalendar)
                           Padding(
@@ -150,7 +170,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                               const SizedBox(height: 12),
                               TRKRCoachButton(
                                   label: "Review ${widget.dateTimeRange.start.formattedFullMonth()} insights.",
-                                  onTap: () => _showMonthlyInsights(datetime: widget.dateTimeRange.start)),
+                                  onTap: () => _generateMonthlyInsightsReport(datetime: widget.dateTimeRange.start)),
                             ],
                           ),
                         const SizedBox(height: 12),
@@ -204,7 +224,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     });
   }
 
-  void _showMonthlyInsights({required DateTime datetime}) {
+  void _generateMonthlyInsightsReport({required DateTime datetime}) {
     _showLoadingScreen();
 
     final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
@@ -213,9 +233,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     final activityLogController = Provider.of<ActivityLogController>(context, listen: false);
 
-    List<RoutineLogDto> lastMonthRoutineLogs = exerciseAndRoutineLogController.whereLogsIsSameMonth(dateTime: datetime);
+    List<RoutineLogDto> routineLogs = exerciseAndRoutineLogController.whereLogsIsSameMonth(dateTime: datetime);
 
-    List<ActivityLogDto> lastMonthActivityLogs = activityLogController.whereLogsIsSameMonth(dateTime: datetime);
+    List<ActivityLogDto> activityLogs = activityLogController.whereLogsIsSameMonth(dateTime: datetime);
 
     // Helper function to get muscles trained from exercise logs
     List<String> getMusclesTrained(List<ExerciseLogDto> exerciseLogs) {
@@ -269,7 +289,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 """);
 
     // Main processing
-    for (final log in lastMonthRoutineLogs) {
+    for (final log in routineLogs) {
       final completedExerciseLogs = loggedExercises(exerciseLogs: log.exerciseLogs);
       final musclesTrained = getMusclesTrained(completedExerciseLogs);
       final exercises = log.exerciseLogs.map((exerciseLog) => exerciseLog.exercise.name).toSet().toList();
@@ -291,7 +311,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     buffer.writeln();
 
-    for (final log in lastMonthActivityLogs) {
+    for (final log in activityLogs) {
       buffer.writeln("Logged ${log.name} activity in ${log.createdAt.formattedFullMonth}");
     }
 
@@ -302,7 +322,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
             user: completeInstructions,
             responseFormat: monthlyReportResponseFormat)
         .then((response) {
+      if (kReleaseMode) {
+        Posthog().capture(eventName: PostHogAnalyticsEvent.generateMonthlyInsights.displayName);
+      }
       _hideLoadingScreen();
+
       if (response != null) {
         if (mounted) {
           // Deserialize the JSON string
@@ -315,7 +339,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               child: MonthlyTrainingReportScreen(
                 dateTime: datetime,
                 monthlyTrainingReport: report,
-                routineLogs: lastMonthRoutineLogs,
+                routineLogs: routineLogs,
                 activityLogs: activityLogController.whereLogsIsSameMonth(dateTime: datetime),
               ));
         }
@@ -489,6 +513,134 @@ class _OverviewScreenState extends State<OverviewScreen> {
   void dispose() {
     _textEditingController?.dispose();
     super.dispose();
+  }
+}
+
+class _ScheduledRoutineCard extends StatelessWidget {
+  const _ScheduledRoutineCard({required this.scheduledToday});
+
+  final RoutineTemplateDto scheduledToday;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: sapphireDark60,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(
+                scheduledToday.name,
+                style: GoogleFonts.ubuntu(fontSize: 18, fontWeight: FontWeight.w900),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+              ),
+              if (scheduledToday.notes.isNotEmpty)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 10),
+                    Text(
+                      scheduledToday.notes,
+                      style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white70),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    ),
+                  ],
+                ),
+              const SizedBox(height: 20),
+              Wrap(
+                children: [
+                  Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 6,
+                    children: [
+                      Container(
+                        width: 30,
+                        height: 30,
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: vibrantGreen.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                        child: Image.asset(
+                          'icons/dumbbells.png',
+                          fit: BoxFit.contain,
+                          height: 20,
+                          color: vibrantGreen, // Adjust the height as needed
+                        ),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "${scheduledToday.exerciseTemplates.length}",
+                            style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w900, color: Colors.white),
+                          ),
+                          Text(
+                            pluralize(word: "Exercise", count: scheduledToday.exerciseTemplates.length).toUpperCase(),
+                            style: GoogleFonts.ubuntu(fontSize: 10, fontWeight: FontWeight.w500),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                  const SizedBox(
+                    width: 18,
+                  ),
+                  Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 6,
+                    children: [
+                      Container(
+                        width: 30,
+                        height: 30,
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: vibrantBlue.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                        child: Center(
+                          child: FaIcon(
+                            FontAwesomeIcons.hashtag,
+                            color: vibrantBlue,
+                            size: 14,
+                          ),
+                        ),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "${scheduledToday.exerciseTemplates.expand((exercises) => exercises.sets).length}",
+                            style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w900, color: Colors.white),
+                          ),
+                          Text(
+                            pluralize(
+                                    word: "Set",
+                                    count:
+                                        scheduledToday.exerciseTemplates.expand((exercises) => exercises.sets).length)
+                                .toUpperCase(),
+                            style: GoogleFonts.ubuntu(fontSize: 10, fontWeight: FontWeight.w500),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            ]),
+          ),
+          FaIcon(FontAwesomeIcons.calendarDay)
+        ],
+      ),
+    );
   }
 }
 

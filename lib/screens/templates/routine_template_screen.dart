@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
@@ -15,6 +17,7 @@ import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../dtos/viewmodels/routine_template_arguments.dart';
+import '../../enums/posthog_analytics_event.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../enums/routine_preview_type_enum.dart';
 import '../../models/RoutineTemplate.dart';
@@ -234,7 +237,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                   if (template.notes.isNotEmpty)
                     Center(
                       child: Padding(
-                        padding: const EdgeInsets.only(top: 20, bottom: 10),
+                        padding: const EdgeInsets.only(top: 20, bottom: 20),
                         child: Text('"${template.notes}"',
                             textAlign: TextAlign.center,
                             style: GoogleFonts.ubuntu(
@@ -306,7 +309,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                           const SizedBox(height: 10),
                           Text("Here's a breakdown of the muscle groups in your ${template.name} workout plan.",
                               style:
-                                  GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
+                                  GoogleFonts.ubuntu(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w400)),
                           const SizedBox(height: 10),
                           MuscleGroupFamilyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
                         ],
@@ -316,7 +319,9 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                   ExerciseLogListView(
                     exerciseLogs: exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
                   ),
-                  const SizedBox(height: 60,)
+                  const SizedBox(
+                    height: 60,
+                  )
                 ],
               ),
             ),
@@ -468,8 +473,14 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                       final data = ClipboardData(text: workoutLink);
                       Clipboard.setData(data).then((_) {
                         if (mounted) {
-                          context.pop();
-                          showSnackbar(context: context, icon: const FaIcon(FontAwesomeIcons.solidSquareCheck), message: "Workout link copied");
+                          if (kReleaseMode) {
+                            Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineTemplateAsLink.displayName);
+                          }
+                          Navigator.of(context).pop();
+                          showSnackbar(
+                              context: context,
+                              icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
+                              message: "Workout link copied");
                         }
                       });
                     },
@@ -500,6 +511,9 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
               ),
               OpacityButtonWidget(
                 onPressed: () {
+                  if (kReleaseMode) {
+                    Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineTemplateAsText.displayName);
+                  }
                   HapticFeedback.heavyImpact();
                   final data = ClipboardData(text: workoutText);
                   Clipboard.setData(data).then((_) {

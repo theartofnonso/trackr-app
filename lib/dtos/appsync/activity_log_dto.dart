@@ -60,7 +60,7 @@ class ActivityLogDto extends Log {
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, Object> toJson() {
     return {
       'id': id,
       'name': name,
