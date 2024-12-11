@@ -142,9 +142,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
                                     _generateMonthlyInsightsReport(datetime: today.subtract(const Duration(days: 29)))),
                           ),
                         if (scheduledToday != null)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 20.0),
-                            child: _ScheduledRoutineCard(scheduledToday: scheduledToday),
+                          GestureDetector(
+                            onTap: () => navigateToRoutineTemplatePreview(context: context, template: scheduledToday),
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 20.0),
+                              child: _ScheduledRoutineCard(scheduledToday: scheduledToday),
+                            ),
                           ),
                         if (SharedPrefs().showCalendar)
                           Padding(
