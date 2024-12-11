@@ -279,12 +279,42 @@ void main() {
   test("completedSets returns only the sets that are checked across all logs", () {
     final exerciseLogRepository = ExerciseLogRepository();
 
+    // Mock exercise logs
+    final legCurlExerciseLog = ExerciseLogDto(
+      id: lyingLegCurlExercise.id,
+      routineLogId: "routineLogId2",
+      exercise: lyingLegCurlExercise,
+      superSetId: "superSetId",
+      notes: "notes",
+      sets: [
+        const WeightAndRepsSetDto(weight: 80, reps: 5, checked: true),
+        const WeightAndRepsSetDto(weight: 100, reps: 8, checked: true),
+        const WeightAndRepsSetDto(weight: 100, reps: 6, checked: true),
+      ],
+      createdAt: DateTime(2023, 12, 1),
+    );
+
+    final benchPressExerciseLog = ExerciseLogDto(
+      id: benchPressExercise.id,
+      routineLogId: "routineLogId1",
+      superSetId: "superSetId",
+      exercise: benchPressExercise,
+      notes: "notes",
+      sets: [
+        const WeightAndRepsSetDto(weight: 80, reps: 15, checked: true),
+        const WeightAndRepsSetDto(weight: 110, reps: 18, checked: true),
+        const WeightAndRepsSetDto(weight: 120, reps: 16, checked: true),
+      ],
+      createdAt: DateTime(2023, 12, 1),
+    );
+
     exerciseLogRepository.loadExerciseLogs(exerciseLogs: [benchPressExerciseLog, legCurlExerciseLog]);
 
     final completed = exerciseLogRepository.completedSets();
-    print(completed);
+
     // All sets in these logs are checked (from initial data)
     final totalSets = legCurlExerciseLog.sets.length + benchPressExerciseLog.sets.length;
+
     expect(completed.length, totalSets);
   });
 
