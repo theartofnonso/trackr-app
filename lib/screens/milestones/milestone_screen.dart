@@ -19,7 +19,6 @@ import '../../enums/milestone_type_enums.dart';
 import '../../enums/posthog_analytics_event.dart';
 import '../../utils/challenge_utils.dart';
 import '../../utils/shareables_utils.dart';
-import '../../widgets/empty_states/list_tile_empty_state.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
 
 class MilestoneScreen extends StatelessWidget {
@@ -224,18 +223,29 @@ class MilestoneScreen extends StatelessWidget {
                         shouldCapitalise: true,
                       ),
                     ),
-                    children.isNotEmpty
+                    !children.isNotEmpty
                         ? SafeArea(
                             top: false,
                             child: Column(
                               children: [...children],
                             ))
-                        : Padding(
-                            padding: const EdgeInsets.only(top: 16.0, left: 20),
-                            child: const ListTileEmptyState(
-                              color: sapphireLighter,
+                        : Center(
+                            child: Container(
+                            width: double.infinity,
+                            margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                            padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5), // Circular border radius
+                              border: Border.all(
+                                color: Colors.deepOrange.withOpacity(0.2), // Border color
+                                width: 2, // Border width
+                              ),
                             ),
-                          ),
+                            child: Text("No sessions have been logged for this milestone",
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.ubuntu(
+                                    fontSize: 12, height: 1.4, color: Colors.deepOrange, fontWeight: FontWeight.w600)),
+                          )),
                   ]),
                 ),
               ),
@@ -262,7 +272,7 @@ class MilestoneScreen extends StatelessWidget {
   }
 
   void _shareMilestoneSummary({required BuildContext context}) {
-    if(kReleaseMode) {
+    if (kReleaseMode) {
       Posthog().capture(eventName: PostHogAnalyticsEvent.shareMilesStone.displayName);
     }
     onShare(
