@@ -56,7 +56,8 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
           showSnackbar(
               context: context,
               icon: const TRKRCoachWidget(),
-              message: "Microphone access is required to continue. Please grant permission to use your microphone and try again");
+              message:
+                  "Microphone access is required to continue. Please grant permission to use your microphone and try again");
           break;
         case STTState.error:
           showSnackbar(
@@ -136,6 +137,19 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: [
+                Container(
+                  width: 60, // Set the width of the container
+                  height: 24, // Set the height of the container
+                  decoration: BoxDecoration(
+                    color: vibrantBlue.withOpacity(0.1), // Background color
+                    borderRadius: BorderRadius.circular(3), // Rounded corners
+                  ),
+                  child: Center(
+                    child: Text("Beta".toUpperCase(),
+                        style: GoogleFonts.ubuntu(color: vibrantBlue, fontWeight: FontWeight.bold, fontSize: 12)),
+                  ),
+                ),
+                const SizedBox(height: 20),
                 _HeroWidget(),
                 const SizedBox(height: 20),
                 if (previousSets.isNotEmpty)
