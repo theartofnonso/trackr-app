@@ -95,7 +95,7 @@ class RoutineTemplatesScreen extends StatelessWidget {
                         color: Colors.white.withOpacity(0.9),
                       )),
                   const SizedBox(height: 16),
-                  TRKRCoachButton(label: "Describe a workout", onTap: () => _switchToAIContext(context: context)),
+                  TRKRCoachButton(label: "Tap to describe a workout", onTap: () => _switchToAIContext(context: context)),
                   const SizedBox(height: 16),
                   templates.isNotEmpty
                       ? Expanded(
