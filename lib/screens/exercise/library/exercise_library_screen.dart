@@ -42,8 +42,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   void _runSearch(_) {
     final query = _searchController.text.toLowerCase().trim();
 
-    if(query.isEmpty) return;
-
     List<ExerciseDto> searchResults = [];
 
     final exerciseType = widget.type;
@@ -52,10 +50,12 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         .exercises
         .where((exercise) => !widget.excludeExercises.contains(exercise))
         .where((exercise) {
+          if (query.isEmpty) return true;
+
           final exerciseParts = exercise.name.toLowerCase().split(RegExp(r'[\s-]+'));
           final queryParts = query.toLowerCase().split(RegExp(r'[\s-]+'));
 
-          return queryParts.any((queryPart) => exerciseParts.contains(queryPart));
+          return queryParts.every((queryPart) => exerciseParts.contains(queryPart));
         })
         .where((exercise) => exerciseType != null ? exercise.type == widget.type : true)
         .toList();
