@@ -113,7 +113,7 @@ class STTController extends ChangeNotifier {
   Future<void> _analyseAudio() async {
     final recordedFilePath = _recordedFilePath;
 
-    final file = File(recordedFilePath ?? "");
+    final file = File(recordedFilePath);
 
     // Make sure the file exists
     if (!file.existsSync()) {
