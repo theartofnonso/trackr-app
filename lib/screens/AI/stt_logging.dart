@@ -11,6 +11,7 @@ import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 import 'package:tracker_app/widgets/dividers/label_container_divider.dart';
 import 'package:tracker_app/widgets/routine/preview/sets_listview.dart';
 
+import '../../utils/dialog_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 
 class STTLoggingScreen extends StatefulWidget {
@@ -43,6 +44,15 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
     final sttController = context.watch<STTController>();
 
     if (sttController.state == STTState.analysing) return TRKRLoadingScreen();
+
+    if (sttController.state == STTState.error) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showSnackbar(
+            context: context,
+            icon: const TRKRCoachWidget(),
+            message: "Oops! Unable to help with that request.");
+      });
+    }
 
     // Updated ExerciseLog with the recognized sets.
     final updatedExerciseLog = widget.exerciseLog.copyWith(sets: sttController.sets);
