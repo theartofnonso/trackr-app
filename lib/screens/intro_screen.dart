@@ -118,72 +118,95 @@ class LogStreakMonitorOnboardingScreen extends StatelessWidget {
       minimum: const EdgeInsets.all(10.0),
       child: Column(
         children: [
-          Column(
-            spacing: 50,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  LogStreakMonitor(
-                      value: 0.4,
-                      width: 120,
-                      height: 120,
-                      strokeWidth: 8,
-                      decoration: BoxDecoration(
-                        color: sapphireDark.withOpacity(0.35),
-                        borderRadius: BorderRadius.circular(100),
-                      )),
-                  Image.asset(
-                    'images/trkr.png',
-                    fit: BoxFit.contain,
-                    color: Colors.white54,
-                    height: 8, // Adjust the height as needed
-                  )
-                ],
-              ),
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  LogStreakMonitor(
-                      value: 0.6,
-                      width: 120,
-                      height: 120,
-                      strokeWidth: 8,
-                      decoration: BoxDecoration(
-                        color: sapphireDark.withOpacity(0.35),
-                        borderRadius: BorderRadius.circular(100),
-                      )),
-                  Image.asset(
-                    'images/trkr.png',
-                    fit: BoxFit.contain,
-                    color: Colors.white54,
-                    height: 8, // Adjust the height as needed
-                  )
-                ],
-              ),
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  LogStreakMonitor(
-                      value: 0.8,
-                      width: 120,
-                      height: 120,
-                      strokeWidth: 8,
-                      decoration: BoxDecoration(
-                        color: sapphireDark.withOpacity(0.35),
-                        borderRadius: BorderRadius.circular(100),
-                      )),
-                  Image.asset(
-                    'images/trkr.png',
-                    fit: BoxFit.contain,
-                    color: Colors.white54,
-                    height: 8, // Adjust the height as needed
-                  )
-                ],
-              )
-            ],
+          const Spacer(),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: Wrap(
+              runSpacing: 40,
+              spacing: 40,
+              children: [
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    LogStreakMonitor(
+                        value: 0.2,
+                        width: 120,
+                        height: 120,
+                        strokeWidth: 8,
+                        decoration: BoxDecoration(
+                          color: sapphireDark.withOpacity(0.35),
+                          borderRadius: BorderRadius.circular(100),
+                        )),
+                    Image.asset(
+                      'images/trkr.png',
+                      fit: BoxFit.contain,
+                      color: Colors.white54,
+                      height: 8, // Adjust the height as needed
+                    )
+                  ],
+                ),
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    LogStreakMonitor(
+                        value: 0.4,
+                        width: 120,
+                        height: 120,
+                        strokeWidth: 8,
+                        decoration: BoxDecoration(
+                          color: sapphireDark.withOpacity(0.35),
+                          borderRadius: BorderRadius.circular(100),
+                        )),
+                    Image.asset(
+                      'images/trkr.png',
+                      fit: BoxFit.contain,
+                      color: Colors.white54,
+                      height: 8, // Adjust the height as needed
+                    )
+                  ],
+                ),
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    LogStreakMonitor(
+                        value: 0.6,
+                        width: 120,
+                        height: 120,
+                        strokeWidth: 8,
+                        decoration: BoxDecoration(
+                          color: sapphireDark.withOpacity(0.35),
+                          borderRadius: BorderRadius.circular(100),
+                        )),
+                    Image.asset(
+                      'images/trkr.png',
+                      fit: BoxFit.contain,
+                      color: Colors.white54,
+                      height: 8, // Adjust the height as needed
+                    )
+                  ],
+                ),
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    LogStreakMonitor(
+                        value: 0.8,
+                        width: 120,
+                        height: 120,
+                        strokeWidth: 8,
+                        decoration: BoxDecoration(
+                          color: sapphireDark.withOpacity(0.35),
+                          borderRadius: BorderRadius.circular(100),
+                        )),
+                    Image.asset(
+                      'images/trkr.png',
+                      fit: BoxFit.contain,
+                      color: Colors.white54,
+                      height: 8, // Adjust the height as needed
+                    )
+                  ],
+                )
+              ],
+            ),
           ),
           const Spacer(),
           LabelDivider(
