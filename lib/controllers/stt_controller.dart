@@ -49,12 +49,17 @@ class STTController extends ChangeNotifier {
 
   final _record = AudioRecorder();
 
-  String? _recordedFilePath;
+  String _recordedFilePath = "";
 
   /// Initializes the speech recognition service.
   Future<void> initialize({required ExerciseType exerciseType, required List<SetDto> initialSets}) async {
     _exerciseType = exerciseType;
     _sets = initialSets;
+
+    // Get a directory to store the recording
+    final dir = await getApplicationDocumentsDirectory();
+    _recordedFilePath = '${dir.path}/myFile.m4a';
+
     notifyListeners();
   }
 
@@ -62,17 +67,12 @@ class STTController extends ChangeNotifier {
   Future<void> startListening() async {
     // Check for permissions
     if (await _record.hasPermission()) {
-      // Get a directory to store the recording
-      final dir = await getApplicationDocumentsDirectory();
-      final filePath = '${dir.path}/myFile.m4a';
 
       // Start recording to a file
       await _record.start(
         const RecordConfig(),
-        path: filePath,
+        path: _recordedFilePath,
       );
-
-      _recordedFilePath = filePath;
 
       _setState(STTState.listening);
     } else {
@@ -91,8 +91,8 @@ class STTController extends ChangeNotifier {
 
     // path should match _recordedFilePath if successful
     // Now we have a recorded audio file at `path`
-
     // Call _analyse with the recorded file path
+
     if (path != null && File(path).existsSync()) {
       await _analyseAudio();
     }
@@ -104,7 +104,7 @@ class STTController extends ChangeNotifier {
   void reset() async {
     _sets.clear();
     _recordedFilePath = "";
-    _recordedFilePath = null;
+    _recordedFilePath = "";
     await _record.cancel();
     await _record.dispose();
     _setState(STTState.notListening);
