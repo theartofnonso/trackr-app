@@ -8,7 +8,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:tracker_app/dtos/milestones/milestone_dto.dart';
 import 'package:tracker_app/dtos/milestones/reps_milestone.dart';
-import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/widgets/label_divider.dart';
@@ -19,7 +18,6 @@ import '../../enums/milestone_type_enums.dart';
 import '../../enums/posthog_analytics_event.dart';
 import '../../utils/challenge_utils.dart';
 import '../../utils/shareables_utils.dart';
-import '../../widgets/routine/preview/routine_log_widget.dart';
 
 class MilestoneScreen extends StatelessWidget {
   final Milestone milestone;
@@ -36,24 +34,6 @@ class MilestoneScreen extends StatelessWidget {
     });
 
     final sortedMilestones = milestone.progress.$2.sorted((a, b) => b.createdAt.compareTo(a.createdAt));
-
-    final children = sortedMilestones.mapIndexed((index, log) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: Column(
-          children: [
-            RoutineLogWidget(
-                log: log, color: Colors.transparent, trailing: log.createdAt.durationSinceOrDate(), isEditable: false),
-            if (index < milestone.progress.$2.length - 1)
-              Divider(
-                color: Colors.white70.withOpacity(0.1),
-                indent: 20,
-                endIndent: 20,
-              )
-          ],
-        ),
-      );
-    });
 
     return Stack(alignment: Alignment.topCenter, children: [
       Scaffold(

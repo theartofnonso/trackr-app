@@ -37,11 +37,9 @@ enum STTState {
 }
 
 class STTController extends ChangeNotifier {
-  bool _speechAvailable = false;
+
   STTState _state = STTState.notListening;
   List<SetDto> _sets = [];
-
-  bool get speechAvailable => _speechAvailable;
 
   STTState get state => _state;
 
