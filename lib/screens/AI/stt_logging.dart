@@ -28,8 +28,9 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
     super.initState();
     // Initialize speech recognition when the screen opens
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final sets = widget.exerciseLog.sets.where((set) => set.isNotEmpty()).toList();
-      context.read<STTController>().initialize(initialSets: sets);
+      final exerciseLog = widget.exerciseLog;
+      final sets = exerciseLog.sets.where((set) => set.isNotEmpty()).toList();
+      context.read<STTController>().initialize(initialSets: sets, exerciseType: exerciseLog.exercise.type);
     });
   }
 
@@ -38,7 +39,7 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
   }
 
   void _closeSpeech() {
-    context.read<STTController>().closeSpeech();
+    context.read<STTController>().reset();
   }
 
   @override
@@ -171,7 +172,7 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
     final controller = context.read<STTController>();
 
     // Start listening again
-    await controller.startListening(exerciseType: widget.exerciseLog.exercise.type);
+    controller.state == STTState.notListening ? controller.startListening() : controller.stopListening();
   }
 }
 

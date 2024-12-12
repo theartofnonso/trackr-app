@@ -73,6 +73,7 @@ dependencies:
   in_app_review: ^2.0.10
   speech_to_text: ^6.6.0
   posthog_flutter: ^4.7.1
+  record: ^5.2.0
 
 dev_dependencies:
   flutter_launcher_icons: ^0.14.1
