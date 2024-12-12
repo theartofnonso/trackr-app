@@ -64,6 +64,50 @@ import 'models/ModelProvider.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
+final _themeData = ThemeData(
+  scaffoldBackgroundColor: sapphireDark,
+  colorScheme: const ColorScheme(
+    brightness: Brightness.dark,
+    primary: Colors.white,
+    onPrimary: Colors.white,
+    secondary: Colors.white,
+    onSecondary: Colors.white,
+    error: Colors.white,
+    onError: Colors.black,
+    surface: sapphireDark,
+    onSurface: Colors.white,
+  ),
+  appBarTheme: const AppBarTheme(
+    backgroundColor: sapphireDark,
+    surfaceTintColor: sapphireDark,
+  ),
+  scrollbarTheme: ScrollbarThemeData(
+    thumbColor: WidgetStateProperty.all(Colors.green),
+    trackColor: WidgetStateProperty.all(Colors.white.withOpacity(0.2)),
+  ),
+  snackBarTheme: const SnackBarThemeData(
+      backgroundColor: sapphireDark,
+      actionBackgroundColor: sapphireLighter,
+      contentTextStyle: TextStyle(color: sapphireDark)),
+  tabBarTheme: const TabBarTheme(labelColor: Colors.white, unselectedLabelColor: Colors.white70),
+  inputDecorationTheme: InputDecorationTheme(
+    contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+    focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: sapphireLight)),
+    enabledBorder:
+    OutlineInputBorder(borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: Colors.black)),
+    filled: true,
+    fillColor: sapphireLighter,
+    hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14),
+  ),
+  filledButtonTheme: FilledButtonThemeData(
+    style: ButtonStyle(
+        foregroundColor: WidgetStateProperty.all(Colors.white),
+        backgroundColor: WidgetStateProperty.all(sapphireLight),
+        shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
+  ),
+  useMaterial3: true,
+);
+
 // Top-level callback function
 @pragma('vm:entry-point')
 void onDidReceiveNotificationResponse(NotificationResponse response) {
@@ -303,6 +347,10 @@ final _router = GoRouter(
       builder: (context, state) => const SetsAndRepsVolumeInsightsScreen(),
     ),
     GoRoute(
+      path: IntroScreen.routeName,
+      builder: (context, state) => IntroScreen(themeData: _themeData),
+    ),
+    GoRoute(
       path: CaloriesTrendScreen.routeName,
       builder: (context, state) => const CaloriesTrendScreen(),
     ),
@@ -376,50 +424,6 @@ class _MyAppState extends State<MyApp> {
       _isFirstLaunch = false;
     });
   }
-
-  final _themeData = ThemeData(
-    scaffoldBackgroundColor: sapphireDark,
-    colorScheme: const ColorScheme(
-      brightness: Brightness.dark,
-      primary: Colors.white,
-      onPrimary: Colors.white,
-      secondary: Colors.white,
-      onSecondary: Colors.white,
-      error: Colors.white,
-      onError: Colors.black,
-      surface: sapphireDark,
-      onSurface: Colors.white,
-    ),
-    appBarTheme: const AppBarTheme(
-      backgroundColor: sapphireDark,
-      surfaceTintColor: sapphireDark,
-    ),
-    scrollbarTheme: ScrollbarThemeData(
-      thumbColor: WidgetStateProperty.all(Colors.green),
-      trackColor: WidgetStateProperty.all(Colors.white.withOpacity(0.2)),
-    ),
-    snackBarTheme: const SnackBarThemeData(
-        backgroundColor: sapphireDark,
-        actionBackgroundColor: sapphireLighter,
-        contentTextStyle: TextStyle(color: sapphireDark)),
-    tabBarTheme: const TabBarTheme(labelColor: Colors.white, unselectedLabelColor: Colors.white70),
-    inputDecorationTheme: InputDecorationTheme(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: sapphireLight)),
-      enabledBorder:
-          OutlineInputBorder(borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: Colors.black)),
-      filled: true,
-      fillColor: sapphireLighter,
-      hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14),
-    ),
-    filledButtonTheme: FilledButtonThemeData(
-      style: ButtonStyle(
-          foregroundColor: WidgetStateProperty.all(Colors.white),
-          backgroundColor: WidgetStateProperty.all(sapphireLight),
-          shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
-    ),
-    useMaterial3: true,
-  );
 
   // This widget is the root of your application.
   @override

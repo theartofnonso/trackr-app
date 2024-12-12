@@ -4,6 +4,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -27,6 +28,7 @@ import '../../utils/uri_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/information_containers/information_container_with_background_image.dart';
 import '../exercise/library/exercise_library_screen.dart';
+import '../intro_screen.dart';
 
 enum WeightUnit {
   kg,
@@ -186,6 +188,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 const SizedBox(height: 8),
                 OutlineListTile(onTap: _visitTRKR, title: "Visit TRKR"),
                 const SizedBox(height: 8),
+                OutlineListTile(onTap: _navigateTutorialScreen, title: "Tutorial", trailing: "Learn about TRKR"),
+                const SizedBox(height: 8),
                 OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
                 const SizedBox(height: 8),
                 OutlineListTile(onTap: _delete, title: "Delete Account", trailing: SharedPrefs().userEmail),
@@ -312,6 +316,10 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
             )
           ]),
         ));
+  }
+
+  void _navigateTutorialScreen() {
+    context.push(IntroScreen.routeName);
   }
 
   void _logout() async {

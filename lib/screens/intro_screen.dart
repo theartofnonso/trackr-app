@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:tracker_app/shared_prefs.dart';
 
 import '../colors.dart';
 import '../dtos/milestones/reps_milestone.dart';
@@ -15,10 +18,12 @@ import '../widgets/monitors/log_streak_monitor.dart';
 import '../widgets/monitors/muscle_trend_monitor.dart';
 
 class IntroScreen extends StatefulWidget {
-  final ThemeData themeData;
-  final VoidCallback onComplete;
+  static const routeName = "/intro_screen";
 
-  const IntroScreen({super.key, required this.themeData, required this.onComplete});
+  final ThemeData themeData;
+  final VoidCallback? onComplete;
+
+  const IntroScreen({super.key, required this.themeData, this.onComplete});
 
   @override
   State<IntroScreen> createState() => _IntroScreenState();
@@ -35,12 +40,22 @@ class _IntroScreenState extends State<IntroScreen> {
       MuscleTrendMonitorOnboardingScreen(),
       TRKRCoachOnboardingScreen(),
       MilestonesOnboardingScreen(),
-      EndOnboardingScreen(onLongPress: widget.onComplete)
+      if (SharedPrefs().firstLaunch) EndOnboardingScreen(onLongPress: widget.onComplete ?? () {})
     ];
 
     return MaterialApp(
       theme: widget.themeData,
       home: Scaffold(
+          appBar: AppBar(
+              backgroundColor: sapphireDark80,
+              leading: !SharedPrefs().firstLaunch
+                  ? IconButton(
+                      icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+                      onPressed: () => context.pop(),
+                    )
+                  : null,
+              title: Text("Welcome to TRKR",
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w900))),
           body: Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
@@ -54,7 +69,6 @@ class _IntroScreenState extends State<IntroScreen> {
               ),
               child: Column(
                 children: [
-                  const SizedBox(height: 20),
                   Expanded(
                     child: PageView.builder(
                       scrollDirection: Axis.horizontal,
