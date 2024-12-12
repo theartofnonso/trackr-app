@@ -35,7 +35,7 @@ class WeeklyMilestone extends Milestone {
             'Kickstart your week with energy and dedication. Commit to a Monday workout to set a positive tone for the days ahead, ensuring consistent progress towards your fitness goals.',
         caption: "Train every Monday",
         target: 16,
-        progress: _calculateMondayProgress(logs: logs, target: 16, weeks: weeksInYear),
+        progress: calculateMondayProgress(logs: logs, target: 16, weeks: weeksInYear),
         rule: "Log at least one training session every Monday for 16 consecutive weeks.",
         type: MilestoneType.weekly);
 
@@ -46,7 +46,7 @@ class WeeklyMilestone extends Milestone {
             'Maximize your weekends by dedicating time to intense training sessions. Push your limits and achieve significant fitness milestones by committing to workouts every weekend.',
         caption: "Train every weekend",
         target: 16,
-        progress: _calculateWeekendProgress(logs: logs, target: 16, weeks: weeksInYear),
+        progress: calculateWeekendProgress(logs: logs, target: 16, weeks: weeksInYear),
         rule: "Log at least one training session every weekend (Saturday or Sunday) for 16 consecutive weeks.",
         type: MilestoneType.weekly);
 
@@ -57,7 +57,7 @@ class WeeklyMilestone extends Milestone {
             'Commit to your fitness goals by never skipping leg day. Strengthen your lower body through consistent training, enhancing your overall physique and performance.',
         caption: "Train legs weekly",
         target: 16,
-        progress: _calculateLegProgress(logs: logs, target: 16, weeks: weeksInYear),
+        progress: calculateLegProgress(logs: logs, target: 16, weeks: weeksInYear),
         muscleGroupFamily: MuscleGroupFamily.legs,
         rule: "Log at least one leg-focused training session every week for 16 consecutive weeks.",
         type: MilestoneType.weekly);
@@ -65,7 +65,7 @@ class WeeklyMilestone extends Milestone {
     return [mondayMilestone, weekendMilestone, legDayMilestone];
   }
 
-  static (double, List<RoutineLogDto>) _calculateMondayProgress({
+  static (double, List<RoutineLogDto>) calculateMondayProgress({
     required List<RoutineLogDto> logs,
     required int target,
     required List<DateTimeRange> weeks,
@@ -106,7 +106,7 @@ class WeeklyMilestone extends Milestone {
     return (progress, qualifyingLogs);
   }
 
-  static (double, List<RoutineLogDto>) _calculateWeekendProgress(
+  static (double, List<RoutineLogDto>) calculateWeekendProgress(
       {required List<RoutineLogDto> logs, required int target, required List<DateTimeRange> weeks}) {
     if (logs.isEmpty) return (0, []);
 
@@ -147,7 +147,7 @@ class WeeklyMilestone extends Milestone {
     return (progress, qualifyingLogs);
   }
 
-  static (double, List<RoutineLogDto>) _calculateLegProgress(
+  static (double, List<RoutineLogDto>) calculateLegProgress(
       {required List<RoutineLogDto> logs, required int target, required List<DateTimeRange> weeks}) {
     if (logs.isEmpty) return (0, []);
 
