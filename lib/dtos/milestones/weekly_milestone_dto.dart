@@ -106,16 +106,17 @@ class WeeklyMilestone extends Milestone {
     return (progress, qualifyingLogs);
   }
 
-  static (double, List<RoutineLogDto>) calculateWeekendProgress(
-      {required List<RoutineLogDto> logs, required int target, required List<DateTimeRange> weeks}) {
+  static (double, List<RoutineLogDto>) calculateWeekendProgress({required List<RoutineLogDto> logs, required int target, required List<DateTimeRange> weeks}) {
     if (logs.isEmpty) return (0, []);
 
     List<RoutineLogDto> weekendLogs = [];
-    DateTime now = DateTime.now();
+    DateTime now = DateTime.now().withoutTime();
 
     for (var week in weeks) {
       // Skip weeks that haven't ended yet
-      if (week.end.isAfter(now)) {
+
+      if (week.end.isAfter(now) || week.end.isAtSameMomentAs(now)) {
+
         // Check if the current week has passed the weekend
         if (now.weekday != DateTime.saturday && now.weekday != DateTime.sunday && now.weekday != DateTime.monday) {
           continue;
