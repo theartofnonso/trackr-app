@@ -104,7 +104,6 @@ class STTController extends ChangeNotifier {
   void reset() async {
     _sets.clear();
     _recordedFilePath = "";
-    _recordedFilePath = "";
     await _record.cancel();
     await _record.dispose();
     _setState(STTState.notListening);
