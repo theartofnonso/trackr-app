@@ -10,11 +10,11 @@ class NewRoutineDto {
   });
 
   // Factory method to create a Workout instance from JSON
-  factory NewRoutineDto.fromJson(Map<String, Object> json) {
+  factory NewRoutineDto.fromJson(Map<String, dynamic> json) {
     return NewRoutineDto(
-      exercises: List<String>.from(json['exercises'] as List<String>),
-      workoutName: json['workout_name'] as String,
-      workoutCaption: json['workout_caption'] as String,
+      exercises: List<String>.from(json['exercises']),
+      workoutName: json['workout_name'],
+      workoutCaption: json['workout_caption'],
     );
   }
 

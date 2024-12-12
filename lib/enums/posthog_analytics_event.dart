@@ -6,7 +6,6 @@ enum PostHogAnalyticsEvent {
 
   /// Creating
   createRoutineTemplate(displayName: "routine_template_editor:routine_template_create"),
-  createRoutineTemplateAI(displayName: "ai_chat:routine_template_create"),
   createExercise(displayName: "exercise_editor:exercise_create"),
 
   /// Reports

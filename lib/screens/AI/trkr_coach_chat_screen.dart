@@ -1,12 +1,10 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/analytics_controller.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
@@ -20,7 +18,6 @@ import '../../colors.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/exercise_log_dto.dart';
 import '../../dtos/open_ai_response_schema_dtos/tool_dto.dart';
-import '../../enums/posthog_analytics_event.dart';
 import '../../openAI/open_ai.dart';
 import '../../openAI/open_ai_response_format.dart';
 import '../../shared_prefs.dart';
@@ -195,7 +192,6 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
       final tool = ToolDto.fromJson(json);
 
       if (tool.name == "list_exercises") {
-
         if (!mounted) return;
 
         final exercises = Provider.of<ExerciseAndRoutineController>(
@@ -210,8 +206,6 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
             exercises: exercises);
       }
     } catch (e) {
-
-      print(e);
       _handleError();
     }
   }
@@ -258,11 +252,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
       }
 
       // Deserialize the JSON string
-      Map<String, Object> json = jsonDecode(functionCallResult);
-
-      if(kReleaseMode) {
-        Posthog().capture(eventName: PostHogAnalyticsEvent.createRoutineTemplateAI.displayName, properties: json);
-      }
+      Map<String, dynamic> json = jsonDecode(functionCallResult);
 
       NewRoutineDto newRoutineDto = NewRoutineDto.fromJson(json);
 
