@@ -39,7 +39,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   bool _shouldShowOwnerExercises = false;
 
   /// Search through the list of exercises
-  void _runSearch(_) {
+  void _runSearch() {
     final query = _searchController.text.toLowerCase().trim();
 
     List<ExerciseDto> searchResults = [];
@@ -78,7 +78,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   void _clearSearch() {
     _searchController.clear();
-    _runSearch("Nil");
+    _runSearch();
   }
 
   /// Select an exercise
@@ -169,7 +169,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: CSearchBar(
                       hintText: "Search exercises",
-                      onChanged: _runSearch,
+                      onChanged: (_) => _runSearch(),
                       onClear: _clearSearch,
                       controller: _searchController),
                 ),
@@ -243,14 +243,14 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         .where((exercise) => exerciseType != null ? exercise.type == widget.type : true)
         .toList();
 
-    _runSearch("");
+    _runSearch();
   }
 
   void _toggleOwnerExercises() {
     setState(() {
       _shouldShowOwnerExercises = !_shouldShowOwnerExercises;
     });
-    _runSearch("");
+    _runSearch();
   }
 
   void _onSelectMuscleGroup({required MuscleGroup newMuscleGroup}) {
@@ -262,7 +262,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
       } else {
         _selectedMuscleGroups.add(newMuscleGroup);
       }
-      _runSearch("");
+      _runSearch();
     });
   }
 
