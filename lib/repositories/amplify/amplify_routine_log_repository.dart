@@ -24,6 +24,7 @@ import '../../logger.dart';
 import '../../models/RoutineLog.dart';
 import '../../models/RoutineTemplate.dart';
 import '../../shared_prefs.dart';
+import '../../utils/date_utils.dart';
 
 class AmplifyRoutineLogRepository {
   final logger = getLogger(className: "AmplifyRoutineLogRepository");
@@ -138,10 +139,16 @@ class AmplifyRoutineLogRepository {
   void _calculateMilestones() {
     List<Milestone> milestones = [];
 
-    final logsForTheYear = whereLogsIsSameYear(dateTime: DateTime.now().withoutTime());
+    final now = DateTime.now().withoutTime();
+
+    final dateRange = yearToDateTimeRange(datetime: now);
+
+    final weeksInYear = generateWeeksInRange(range: dateRange);
+
+    final logsForTheYear = whereLogsIsSameYear(dateTime: now);
 
     /// Add Weekly Challenges
-    final weeklyMilestones = WeeklyMilestone.loadMilestones(logs: logsForTheYear);
+    final weeklyMilestones = WeeklyMilestone.loadMilestones(logs: logsForTheYear, weeksInYear: weeksInYear, datetime: DateTime.now().withoutTime());
     milestones.addAll(weeklyMilestones);
 
     /// Add Days Challenges

@@ -6,7 +6,6 @@ import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 
 import '../../enums/milestone_type_enums.dart';
-import '../../utils/date_utils.dart';
 import '../appsync/routine_log_dto.dart';
 
 class WeeklyMilestone extends Milestone {
@@ -23,10 +22,7 @@ class WeeklyMilestone extends Milestone {
       required super.progress,
       required super.type});
 
-  static List<Milestone> loadMilestones({required List<RoutineLogDto> logs}) {
-    final dateRange = yearToDateTimeRange(datetime: DateTime.now());
-
-    final weeksInYear = generateWeeksInRange(range: dateRange);
+  static List<Milestone> loadMilestones({required List<RoutineLogDto> logs, required List<DateTimeRange> weeksInYear, required DateTime datetime}) {
 
     final mondayMilestone = WeeklyMilestone(
         id: 'NMAMC_002',
@@ -35,7 +31,7 @@ class WeeklyMilestone extends Milestone {
             'Kickstart your week with energy and dedication. Commit to a Monday workout to set a positive tone for the days ahead, ensuring consistent progress towards your fitness goals.',
         caption: "Train every Monday",
         target: 16,
-        progress: calculateMondayProgress(logs: logs, target: 16, weeks: weeksInYear),
+        progress: calculateMondayProgress(logs: logs, target: 16, weeks: weeksInYear, datetime: datetime),
         rule: "Log at least one training session every Monday for 16 consecutive weeks.",
         type: MilestoneType.weekly);
 
@@ -46,7 +42,7 @@ class WeeklyMilestone extends Milestone {
             'Maximize your weekends by dedicating time to intense training sessions. Push your limits and achieve significant fitness milestones by committing to workouts every weekend.',
         caption: "Train every weekend",
         target: 16,
-        progress: calculateWeekendProgress(logs: logs, target: 16, weeks: weeksInYear),
+        progress: calculateWeekendProgress(logs: logs, target: 16, weeks: weeksInYear, datetime: datetime),
         rule: "Log at least one training session every weekend (Saturday or Sunday) for 16 consecutive weeks.",
         type: MilestoneType.weekly);
 
@@ -69,11 +65,12 @@ class WeeklyMilestone extends Milestone {
     required List<RoutineLogDto> logs,
     required int target,
     required List<DateTimeRange> weeks,
+    required DateTime datetime
   }) {
     if (logs.isEmpty) return (0, []);
 
     List<RoutineLogDto> mondayLogs = [];
-    final now = DateTime.now();
+    final now = datetime;
 
     // Process weeks in reverse order (from most recent to oldest)
     for (final week in weeks.reversed) {
@@ -106,11 +103,11 @@ class WeeklyMilestone extends Milestone {
     return (progress, qualifyingLogs);
   }
 
-  static (double, List<RoutineLogDto>) calculateWeekendProgress({required List<RoutineLogDto> logs, required int target, required List<DateTimeRange> weeks}) {
+  static (double, List<RoutineLogDto>) calculateWeekendProgress({required List<RoutineLogDto> logs, required int target, required List<DateTimeRange> weeks, required DateTime datetime}) {
     if (logs.isEmpty) return (0, []);
 
     List<RoutineLogDto> weekendLogs = [];
-    DateTime now = DateTime.now().withoutTime();
+    DateTime now = datetime;
 
     for (var week in weeks) {
       // Skip weeks that haven't ended yet

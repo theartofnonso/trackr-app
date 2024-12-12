@@ -18,9 +18,7 @@ extension DayOfWeekExtension on DayOfWeek {
         return 'Saturday';
       case DayOfWeek.sunday:
         return 'Sunday';
-      default:
-        return '';
-    }
+      }
   }
 
   String get shortName {
@@ -39,8 +37,6 @@ extension DayOfWeekExtension on DayOfWeek {
         return 'Sat';
       case DayOfWeek.sunday:
         return 'Sun';
-      default:
-        return '';
-    }
+      }
   }
 }

@@ -212,40 +212,6 @@ class MilestoneScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: LabelDivider(
-                        label: "History",
-                        labelColor: Colors.white70,
-                        dividerColor: sapphireLighter,
-                        fontSize: 14,
-                        shouldCapitalise: true,
-                      ),
-                    ),
-                    !children.isNotEmpty
-                        ? SafeArea(
-                            top: false,
-                            child: Column(
-                              children: [...children],
-                            ))
-                        : Center(
-                            child: Container(
-                            width: double.infinity,
-                            margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-                            padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5), // Circular border radius
-                              border: Border.all(
-                                color: Colors.deepOrange.withOpacity(0.2), // Border color
-                                width: 2, // Border width
-                              ),
-                            ),
-                            child: Text("No sessions have been logged for this milestone",
-                                textAlign: TextAlign.center,
-                                style: GoogleFonts.ubuntu(
-                                    fontSize: 12, height: 1.4, color: Colors.deepOrange, fontWeight: FontWeight.w600)),
-                          )),
                   ]),
                 ),
               ),
