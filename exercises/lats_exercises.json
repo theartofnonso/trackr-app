@@ -12,7 +12,7 @@
   },
   {
     "id": "LAT2",
-    "name": "Pull Up (Assisted)",
+    "name": "Pull-Up (Assisted)",
     "primaryMuscleGroup": "lats",
     "secondaryMuscleGroups": ["biceps", "forearms", "traps", "back", "shoulders", "abs"],
     "type": "WR",
@@ -23,7 +23,7 @@
   },
   {
     "id": "LAT3",
-    "name": "Pull Up (Band)",
+    "name": "Pull-Up (Band)",
     "primaryMuscleGroup": "lats",
     "secondaryMuscleGroups": ["biceps", "forearms", "traps", "back", "shoulders", "abs"],
     "type": "BW",
@@ -97,7 +97,7 @@
   },
   {
     "id": "LAT10",
-    "name": "Pull Up",
+    "name": "Pull-Up",
     "primaryMuscleGroup": "lats",
     "secondaryMuscleGroups": ["biceps", "forearms", "back", "traps", "shoulders", "abs"],
     "type": "BW",
@@ -162,7 +162,7 @@
   },
   {
     "id": "LAT17",
-    "name": "Pull Up (Weighted)",
+    "name": "Pull-Up (Weighted)",
     "primaryMuscleGroup": "lats",
     "secondaryMuscleGroups": ["biceps", "forearms", "back", "traps", "shoulders", "abs"],
     "type": "WR",
