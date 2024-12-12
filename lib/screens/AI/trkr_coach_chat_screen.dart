@@ -195,6 +195,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
       final tool = ToolDto.fromJson(json);
 
       if (tool.name == "list_exercises") {
+
         if (!mounted) return;
 
         final exercises = Provider.of<ExerciseAndRoutineController>(
@@ -209,6 +210,8 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
             exercises: exercises);
       }
     } catch (e) {
+
+      print(e);
       _handleError();
     }
   }

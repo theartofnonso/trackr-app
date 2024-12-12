@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -32,8 +31,6 @@ class MilestoneScreen extends StatelessWidget {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       confettiController.play();
     });
-
-    final sortedMilestones = milestone.progress.$2.sorted((a, b) => b.createdAt.compareTo(a.createdAt));
 
     return Stack(alignment: Alignment.topCenter, children: [
       Scaffold(

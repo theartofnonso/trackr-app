@@ -48,7 +48,6 @@ class RoutineTemplateDto {
   }
 
   factory RoutineTemplateDto.fromTemplate({required RoutineTemplate template}) {
-    print(template);
     final json = jsonDecode(template.data);
     final name = json["name"] ?? "";
     final notes = json["notes"] ?? "";

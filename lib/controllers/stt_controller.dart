@@ -76,7 +76,6 @@ class STTController extends ChangeNotifier {
 
       _setState(STTState.listening);
     } else {
-      print("hj");
       _setState(STTState.noPermission);
     }
   }
@@ -172,9 +171,7 @@ class STTController extends ChangeNotifier {
             break;
         }
       } else {
-        // Handle error
-        final errorBody = await response.stream.bytesToString();
-        print("Error uploading file. Status: ${response.statusCode}, Body: $errorBody");
+        _setState(STTState.error);
       }
     } catch (e) {
       _setState(STTState.error);
