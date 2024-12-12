@@ -25,7 +25,6 @@ enum STTState {
   notListening,
   listening,
   analysing,
-  done,
   noPermission,
   error;
 

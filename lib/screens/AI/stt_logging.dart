@@ -45,14 +45,25 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
 
     if (sttController.state == STTState.analysing) return TRKRLoadingScreen();
 
-    if (sttController.state == STTState.error) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        showSnackbar(
-            context: context,
-            icon: const TRKRCoachWidget(),
-            message: "Oops! Unable to help with that request.");
-      });
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      switch (sttController.state) {
+        case STTState.notListening:
+        case STTState.listening:
+        case STTState.analysing:
+          // Do Nothing
+          break;
+        case STTState.noPermission:
+          showSnackbar(
+              context: context,
+              icon: const TRKRCoachWidget(),
+              message: "Microphone access is required to continue. Please grant permission to use your microphone and try again");
+          break;
+        case STTState.error:
+          showSnackbar(
+              context: context, icon: const TRKRCoachWidget(), message: "Oops! Unable to help with that request.");
+          break;
+      }
+    });
 
     // Updated ExerciseLog with the recognized sets.
     final updatedExerciseLog = widget.exerciseLog.copyWith(sets: sttController.sets);
