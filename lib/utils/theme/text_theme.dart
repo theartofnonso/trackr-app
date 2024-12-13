@@ -21,7 +21,7 @@ class TRKRTextTheme {
     labelMedium: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.black),
     labelLarge: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.black),
 
-    bodySmall: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.black),
+    bodySmall: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.black),
     bodyMedium: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.black),
     bodyLarge: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.black),
   );
@@ -43,7 +43,7 @@ class TRKRTextTheme {
     labelMedium: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white),
     labelLarge: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white),
 
-    bodySmall: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.white),
+    bodySmall: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white),
     bodyMedium: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.white),
     bodyLarge: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white),
   );

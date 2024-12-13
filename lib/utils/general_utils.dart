@@ -167,6 +167,6 @@ Color repsTrendColor({required int reps}) {
   }
 }
 
-Color muscleFamilyFrequencyColor({required double value}) {
-  return Colors.white.withOpacity(value);
+Color muscleFamilyFrequencyColor({required bool isDarkMode, required double value}) {
+  return isDarkMode ? Colors.white.withOpacity(value) : Colors.black.withOpacity(value);
 }

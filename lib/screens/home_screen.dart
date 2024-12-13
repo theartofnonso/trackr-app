@@ -47,6 +47,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final screens = [
       HomeTabScreen(
         scrollController: _scrollController,
@@ -62,9 +66,9 @@ class _HomeScreenState extends State<HomeScreen> {
         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
         height: 60,
         destinations: [
-          const NavigationDestination(
+           NavigationDestination(
             icon: FaIcon(FontAwesomeIcons.house, color: Colors.grey),
-            selectedIcon: FaIcon(FontAwesomeIcons.house, color: Colors.white),
+            selectedIcon: FaIcon(FontAwesomeIcons.house, color: isDarkMode ? Colors.white : Colors.black),
             label: 'Home',
           ),
           NavigationDestination(
@@ -78,17 +82,18 @@ class _HomeScreenState extends State<HomeScreen> {
               'icons/dumbbells.png',
               fit: BoxFit.contain,
               height: 34, // Adjust the height as needed
+              color: isDarkMode ? Colors.white : Colors.black,
             ),
             label: 'Workouts',
           ),
-          const NavigationDestination(
+           NavigationDestination(
             icon: FaIcon(FontAwesomeIcons.trophy, color: Colors.grey),
-            selectedIcon: FaIcon(FontAwesomeIcons.trophy, color: Colors.white),
+            selectedIcon: FaIcon(FontAwesomeIcons.trophy, color: isDarkMode ? Colors.white : Colors.black),
             label: 'Challenges',
           ),
-          const NavigationDestination(
+           NavigationDestination(
             icon: FaIcon(FontAwesomeIcons.gear, color: Colors.grey),
-            selectedIcon: FaIcon(FontAwesomeIcons.gear, color: Colors.white),
+            selectedIcon: FaIcon(FontAwesomeIcons.gear, color: isDarkMode ? Colors.white : Colors.black),
             label: 'Challenges',
           ),
         ],

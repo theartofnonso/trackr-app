@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import '../../dtos/appsync/routine_log_dto.dart';
 import '../../enums/muscle_group_enums.dart';
 import '../../utils/exercise_logs_utils.dart';
@@ -22,9 +22,13 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
   @override
   Widget build(BuildContext context) {
 
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final exerciseLogs = widget.logs
         .map((log) => loggedExercises(exerciseLogs: log.exerciseLogs))
-        .expand((exerciseLogs) => exerciseLogs).toList();
+        .expand((exerciseLogs) => exerciseLogs)
+        .toList();
 
     final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequencyOn4WeeksScale(exerciseLogs: exerciseLogs);
 
@@ -46,8 +50,7 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
         color: Colors.transparent,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
-            Text("Muscle Groups Frequency".toUpperCase(),
-                style: Theme.of(context).textTheme.titleMedium),
+            Text("Muscle Groups Frequency".toUpperCase(), style: Theme.of(context).textTheme.titleMedium),
             const Spacer(),
             if (muscleGroupFamilyFrequencies.length > 3)
               FaIcon(_minimized ? FontAwesomeIcons.angleDown : FontAwesomeIcons.angleUp, size: 16),
@@ -55,26 +58,24 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
           const SizedBox(height: 10),
           Text(
               "Train a variety of muscle groups to avoid muscle imbalances and prevent injury. On average each muscle group should be trained at least 2 times a week.",
-              style: Theme.of(context).textTheme.bodySmall),
+              style: isDarkMode
+                  ? Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white70)
+                  : Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white)),
           const SizedBox(height: 10),
           MuscleGroupFamilyFrequencyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
           if (untrainedMuscleGroups.isNotEmpty)
             Column(
               children: [
                 RichText(
-                    text: TextSpan(
-                        text: "You have not trained",
-                        style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500),
-                        children: [
-                      const TextSpan(text: " "),
-                      TextSpan(
-                          text: untrainedMuscleGroupsNames,
-                          style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)),
-                      const TextSpan(text: " "),
-                      const TextSpan(
-                          text: "this month",
-                          style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
-                    ])),
+                    text:
+                        TextSpan(text: "You have not trained", style: Theme.of(context).textTheme.bodySmall, children: [
+                  const TextSpan(text: " "),
+                  TextSpan(
+                      text: untrainedMuscleGroupsNames,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold)),
+                  const TextSpan(text: " "),
+                  TextSpan(text: "this month", style: Theme.of(context).textTheme.bodySmall),
+                ])),
               ],
             ),
         ]),

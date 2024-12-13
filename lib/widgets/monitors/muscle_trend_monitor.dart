@@ -22,6 +22,10 @@ class MuscleTrendMonitor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     return Container(
       width: width,
       height: height,
@@ -29,9 +33,9 @@ class MuscleTrendMonitor extends StatelessWidget {
       child: CircularProgressIndicator(
         value: value,
         strokeWidth: strokeWidth,
-        backgroundColor: sapphireDark80,
+        backgroundColor: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
         strokeCap: strokeCap ?? StrokeCap.butt,
-        valueColor: AlwaysStoppedAnimation<Color>(muscleFamilyFrequencyColor(value: value)),
+        valueColor: AlwaysStoppedAnimation<Color>(muscleFamilyFrequencyColor(value: value, isDarkMode: isDarkMode)),
       ),
     );
   }

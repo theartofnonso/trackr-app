@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../colors.dart';
@@ -45,6 +44,9 @@ class _LinearBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final unscaledFrequency = frequency * 8;
 
     final remainder = 8 - unscaledFrequency.toInt();
@@ -52,7 +54,7 @@ class _LinearBar extends StatelessWidget {
     final bar = Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
-        color: sapphireDark.withOpacity(0.3),
+        color: isDarkMode ? sapphireDark80 : Colors.grey.shade100,
         borderRadius: BorderRadius.circular(5),
       ),
       child: Row(
@@ -63,15 +65,17 @@ class _LinearBar extends StatelessWidget {
               children: [
                 LinearProgressIndicator(
                   value: frequency,
-                  backgroundColor: sapphireDark,
-                  color: muscleFamilyFrequencyColor(value: frequency),
+                  backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade400,
+                  color: muscleFamilyFrequencyColor(value: frequency, isDarkMode: isDarkMode),
                   minHeight: 25,
                   borderRadius: BorderRadius.circular(3.0), // Border r
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: Text(muscleGroupFamily.name.toUpperCase(),
-                      style: GoogleFonts.ubuntu(fontWeight: FontWeight.w700, color: sapphireDark, fontSize: 12)),
+                      style: isDarkMode
+                          ? Theme.of(context).textTheme.bodySmall
+                          : Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white)),
                 )
               ],
             ),
@@ -81,9 +85,7 @@ class _LinearBar extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(width: 10),
-                SizedBox(
-                    width: 32,
-                    child: Text("$remainder left", style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12))),
+                SizedBox(width: 32, child: Text("$remainder left", style: Theme.of(context).textTheme.bodySmall)),
               ],
             ),
         ],

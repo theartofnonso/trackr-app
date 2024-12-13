@@ -131,7 +131,7 @@ class CustomBarChart extends StatelessWidget {
 
   Widget _leftTitleWidgets(double value, TitleMeta meta) {
     final style = GoogleFonts.ubuntu(
-      fontWeight: FontWeight.w600,
+      fontWeight: FontWeight.w500,
       fontSize: 9,
     );
 
@@ -152,9 +152,8 @@ class CustomBarChart extends StatelessWidget {
   Widget _bottomTitleWidgets(double value, TitleMeta meta) {
     final modifiedDateTimes = periods.length == 1 ? [...periods, ...periods] : periods;
     final style = GoogleFonts.ubuntu(
-      fontWeight: FontWeight.w600,
-      fontSize: 10,
-      color: Colors.white70,
+      fontWeight: FontWeight.w500,
+      fontSize: 9,
     );
     return SideTitleWidget(
       fitInside: SideTitleFitInsideData.disable(),

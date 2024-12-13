@@ -33,6 +33,10 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
     final routineLogs = exerciseAndRoutineController.whereLogsIsSameMonth(dateTime: dateTime);
@@ -52,7 +56,7 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
             onTap: () => _showMonitorInfo(context: context),
             child: const Align(
                 alignment: Alignment.bottomLeft,
-                child: FaIcon(FontAwesomeIcons.circleInfo, color: Colors.white38, size: 18)),
+                child: FaIcon(FontAwesomeIcons.circleInfo, size: 18)),
           ),
         ),
       if (showInfo)
@@ -62,7 +66,7 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
             onTap: () => _showShareBottomSheet(context: context),
             child: const Align(
                 alignment: Alignment.bottomRight,
-                child: FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 19)),
+                child: FaIcon(FontAwesomeIcons.arrowUpFromBracket, size: 19)),
           ),
         ),
       Row(
@@ -89,7 +93,6 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
                   height: 100,
                   strokeWidth: 6,
                   decoration: BoxDecoration(
-                    color: sapphireDark.withOpacity(0.35),
                     borderRadius: BorderRadius.circular(100),
                   )),
               MuscleTrendMonitor(
@@ -97,7 +100,7 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
               Image.asset(
                 'images/trkr.png',
                 fit: BoxFit.contain,
-                color: Colors.white54,
+                color: isDarkMode ? Colors.white70 : Colors.black87,
                 height: 8, // Adjust the height as needed
               )
             ]),
@@ -105,8 +108,7 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
           const SizedBox(width: 20),
           GestureDetector(
             onTap: () => _showSetsAndRepsVolumeInsightsScreen(context: context),
-            child: Container(
-              color: Colors.transparent,
+            child: SizedBox(
               width: 80,
               child: _MonitorScore(
                 value: "$muscleScorePercentage%",
@@ -206,6 +208,10 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
   }
 
   void _onShareCalendar({required BuildContext context}) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     if(kReleaseMode) {
       Posthog().capture(eventName: PostHogAnalyticsEvent.shareCalendar.displayName);
     }
@@ -226,7 +232,8 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
             Image.asset(
               'images/trkr.png',
               fit: BoxFit.contain,
-              height: 8, // Adjust the height as needed
+              height: 8,
+              color: isDarkMode ? Colors.white70 : Colors.black87,// Adjust the height as needed
             ),
           ],
         ));
@@ -249,21 +256,12 @@ class _MonitorScore extends StatelessWidget {
       children: [
         Text(
           value,
-          style: GoogleFonts.ubuntu(
-            color: color,
-            fontSize: 18,
-            fontWeight: FontWeight.w800,
-          ),
+          style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: 4),
         Text(
           title.toUpperCase(),
-          textAlign: TextAlign.center,
-          style: GoogleFonts.ubuntu(
-            color: color.withOpacity(0.7),
-            fontSize: 10,
-            fontWeight: FontWeight.w800,
-          ),
+          textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall,
         )
       ],
     );
