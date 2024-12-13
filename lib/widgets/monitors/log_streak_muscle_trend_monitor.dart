@@ -11,7 +11,6 @@ import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 
-import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../enums/posthog_analytics_event.dart';
 import '../../screens/insights/sets_reps_volume_insights_screen.dart';

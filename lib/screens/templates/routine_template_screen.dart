@@ -285,12 +285,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     });
   }
 
-  void _onMinimiseMuscleGroupSplit() {
-    setState(() {
-      _minimized = !_minimized;
-    });
-  }
-
   void _launchRoutineLogEditor() {
     final template = _template;
     if (template != null) {

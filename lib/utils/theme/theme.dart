@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/utils/theme/app_bar_theme.dart';
 import 'package:tracker_app/utils/theme/flaoting_action_button_theme.dart';
 import 'package:tracker_app/utils/theme/input_textfield_theme.dart';

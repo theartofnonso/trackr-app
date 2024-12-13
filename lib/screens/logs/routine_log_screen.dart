@@ -247,12 +247,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     }
   }
 
-  void _onMinimiseMuscleGroupSplit() {
-    setState(() {
-      _minimized = !_minimized;
-    });
-  }
-
   void _generateReport() async {
     final log = _log;
 
