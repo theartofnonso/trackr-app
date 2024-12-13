@@ -4,7 +4,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
-import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/extensions/dtos/routine_template_dto_extension.dart';
 import 'package:tracker_app/screens/AI/trkr_coach_chat_screen.dart';
 import 'package:tracker_app/utils/string_utils.dart';
@@ -43,79 +42,52 @@ class RoutineTemplatesScreen extends StatelessWidget {
         }
       }
 
-      final exerciseTemplates =
-          routineTemplates.map((template) => template.exerciseTemplates).expand((exercises) => exercises).toList();
-
-      final exercisesByMuscleGroupFamily =
-          groupBy(exerciseTemplates, (exercise) => exercise.exercise.primaryMuscleGroup.family);
-
-      final muscleGroupFamilies = exercisesByMuscleGroupFamily.keys.toSet();
-
-      final listOfPopularMuscleGroupFamilies = MuscleGroupFamily.values.toSet();
-
-      final untrainedMuscleGroups = listOfPopularMuscleGroupFamilies.difference(muscleGroupFamilies);
-
       final children = templates
           .map((template) =>
               _RoutineWidget(template: template, scheduleSummary: scheduledDaysSummary(template: template)))
           .toList();
 
       return Scaffold(
-          backgroundColor: Colors.transparent,
           floatingActionButton: FloatingActionButton(
             heroTag: "fab_routines_screen",
             onPressed: () => navigateToRoutineTemplateEditor(context: context),
-            backgroundColor: sapphireDark.withOpacity(untrainedMuscleGroups.isNotEmpty ? 0.6 : 1),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: const FaIcon(FontAwesomeIcons.plus, size: 28),
           ),
-          body: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  sapphireDark80,
-                  sapphireDark,
-                ],
-              ),
-            ),
-            child: SafeArea(
-                bottom: false,
-                minimum: const EdgeInsets.all(10.0),
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  const SizedBox(height: 16),
-                  BackgroundInformationContainer(
-                      image: 'images/lace.jpg',
-                      containerColor: Colors.blue.shade900,
-                      content: "A structured plan is essential for achieving your fitness goals. Try creating one.",
-                      textStyle: GoogleFonts.ubuntu(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.white.withOpacity(0.9),
-                      )),
-                  const SizedBox(height: 16),
-                  TRKRCoachButton(label: "Tap to describe a workout", onTap: () => _switchToAIContext(context: context)),
-                  const SizedBox(height: 16),
-                  templates.isNotEmpty
-                      ? Expanded(
-                          child: GridView.count(
-                              crossAxisCount: 2,
-                              childAspectRatio: 1,
-                              mainAxisSpacing: 10.0,
-                              crossAxisSpacing: 10.0,
-                              children: children),
-                        )
-                      : Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                            child: const NoListEmptyState(
-                                message:
-                                    "It might feel quiet now, but tap the + button to create a workout or ask TRKR coach for help."),
-                          ),
+          body: SafeArea(
+              bottom: false,
+              minimum: const EdgeInsets.all(10.0),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const SizedBox(height: 16),
+                BackgroundInformationContainer(
+                    image: 'images/lace.jpg',
+                    containerColor: Colors.blue.shade900,
+                    content: "A structured plan is essential for achieving your fitness goals. Try creating one.",
+                    textStyle: GoogleFonts.ubuntu(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white.withOpacity(0.9),
+                    )),
+                const SizedBox(height: 16),
+                TRKRCoachButton(label: "Tap to describe a workout", onTap: () => _switchToAIContext(context: context)),
+                const SizedBox(height: 16),
+                templates.isNotEmpty
+                    ? Expanded(
+                        child: GridView.count(
+                            crossAxisCount: 2,
+                            childAspectRatio: 1,
+                            mainAxisSpacing: 10.0,
+                            crossAxisSpacing: 10.0,
+                            children: children),
+                      )
+                    : Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: const NoListEmptyState(
+                              message:
+                                  "It might feel quiet now, but tap the + button to create a workout or ask TRKR coach for help."),
                         ),
-                ])),
-          ));
+                      ),
+              ])));
     });
   }
 
@@ -144,6 +116,9 @@ class _RoutineWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final exercises = template.exerciseTemplates;
     final sets = template.exerciseTemplates.expand((exercise) => exercise.sets);
     return GestureDetector(
@@ -151,22 +126,11 @@ class _RoutineWidget extends StatelessWidget {
       child: Container(
           padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
-              color: sapphireDark80,
-              borderRadius: BorderRadius.circular(10),
-              gradient: template.isScheduledToday()
-                  ? const LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        sapphireDark80,
-                        sapphireDark,
-                      ],
-                    )
-                  : null),
+              color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, borderRadius: BorderRadius.circular(10)),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(
               template.name,
-              style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w700),
+              style: Theme.of(context).textTheme.titleSmall,
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
             ),
@@ -188,10 +152,12 @@ class _RoutineWidget extends StatelessWidget {
                     color: vibrantGreen, // Adjust the height as needed
                   ),
                 ),
-                const SizedBox(width: 6,),
+                const SizedBox(
+                  width: 6,
+                ),
                 Text(
                   "${exercises.length} ${pluralize(word: "Exercise", count: exercises.length)}",
-                  style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w500),
+                  style: Theme.of(context).textTheme.bodySmall,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                 ),
@@ -218,10 +184,12 @@ class _RoutineWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: 6,),
+                const SizedBox(
+                  width: 6,
+                ),
                 Text(
                   "${sets.length} ${pluralize(word: "Set", count: sets.length)}",
-                  style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w500),
+                  style: Theme.of(context).textTheme.bodySmall,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                 ),
@@ -229,11 +197,11 @@ class _RoutineWidget extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Divider(
-                color: template.isScheduledToday() ? vibrantGreen.withOpacity(0.2) : sapphireLighter, endIndent: 10),
+                color: template.isScheduledToday() ? vibrantGreen.withOpacity(0.2) : isDarkMode ? Colors.white10 : Colors.black12, endIndent: 10),
             const SizedBox(height: 8),
             Text(
               scheduleSummary,
-              style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400),
+              style: Theme.of(context).textTheme.bodySmall,
               overflow: TextOverflow.ellipsis,
             ),
           ])),

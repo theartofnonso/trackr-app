@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tracker_app/utils/theme/flaoting_action_button_theme.dart';
 import 'package:tracker_app/utils/theme/navigation_bar_theme.dart';
 import 'package:tracker_app/utils/theme/text_theme.dart';
 
@@ -17,7 +18,8 @@ class TRKRTheme {
       textTheme: TRKRTextTheme.lightTextTheme,
       iconTheme: TRKRIconTheme.lightIconTheme,
       listTileTheme: TRKRListTileTheme.lightTheme,
-      navigationBarTheme: TRKRNavigationBarTheme.lightNavigationBarTheme);
+      navigationBarTheme: TRKRNavigationBarTheme.lightNavigationBarTheme,
+  floatingActionButtonTheme: TRKRFloatingActionButtonTheme.lightTheme);
 
   static ThemeData darkTheme = ThemeData(
       useMaterial3: true,
@@ -28,5 +30,6 @@ class TRKRTheme {
       textTheme: TRKRTextTheme.darkTextTheme,
       iconTheme: TRKRIconTheme.darkIconTheme,
       listTileTheme: TRKRListTileTheme.darkTheme,
+      floatingActionButtonTheme: TRKRFloatingActionButtonTheme.darkTheme,
       navigationBarTheme: TRKRNavigationBarTheme.darkNavigationBarTheme);
 }

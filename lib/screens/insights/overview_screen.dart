@@ -76,6 +76,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     /// Be notified of changes
@@ -108,9 +112,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           : FloatingActionButton(
               heroTag: "fab_overview_screen",
               onPressed: _showBottomSheet,
-              backgroundColor: sapphireDark,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-              child: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 24),
+              child: const FaIcon(FontAwesomeIcons.plus, size: 24),
             ),
       body: SafeArea(
           minimum: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
