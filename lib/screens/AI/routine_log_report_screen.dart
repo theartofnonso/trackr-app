@@ -12,6 +12,7 @@ import 'package:tracker_app/widgets/dividers/label_container_divider.dart';
 import 'package:tracker_app/widgets/routine/preview/exercise_log_widget.dart';
 
 import '../../dtos/open_ai_response_schema_dtos/exercise_performance_report.dart';
+import '../../utils/general_utils.dart';
 
 class RoutineLogReportScreen extends StatelessWidget {
   final ExercisePerformanceReport report;
@@ -30,94 +31,99 @@ class RoutineLogReportScreen extends StatelessWidget {
               textAlign: TextAlign.center),
           centerTitle: true,
         ),
-        body: SafeArea(
-          bottom: false,
-          minimum: const EdgeInsets.all(10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ListTile(
-                        tileColor: Colors.transparent,
-                        leading: TRKRCoachWidget(),
-                        titleAlignment: ListTileTitleAlignment.top,
-                        title: Text(report.introduction,
-                            style: Theme.of(context).textTheme.bodyMedium),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16),
-                        child: LabelContainerDivider(
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: themeGradient(context: context),
+          ),
+          child: SafeArea(
+            bottom: false,
+            minimum: const EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ListTile(
+                          tileColor: Colors.transparent,
+                          leading: TRKRCoachWidget(),
+                          titleAlignment: ListTileTitleAlignment.top,
+                          title: Text(report.introduction,
+                              style: Theme.of(context).textTheme.bodyMedium),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16),
+                          child: LabelContainerDivider(
+                              labelAlignment: LabelAlignment.left,
+                              label: "training and performance".toUpperCase(),
+                              description: "Review your performance in comparison to previous sessions.",
+                              labelStyle: Theme.of(context).textTheme.bodyLarge!,
+                              descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
+                              dividerColor: sapphireLighter),
+                        ),
+                        ListView.separated(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              final exerciseReport = report.exerciseReports[index];
+                              final sets = exerciseReport.currentPerformance.sets
+                                  .map((set) =>
+                                  WeightAndRepsSetDto(weight: set.weight, reps: set.repetitions, checked: true))
+                                  .toList();
+                              final exerciseLog = ExerciseLogDto(
+                                  id: '',
+                                  routineLogId: '',
+                                  superSetId: '',
+                                  exercise: ExerciseDto(
+                                      id: "",
+                                      name: exerciseReport.exerciseName,
+                                      primaryMuscleGroup: MuscleGroup.fullBody,
+                                      secondaryMuscleGroups: [],
+                                      type: ExerciseType.weights,
+                                      owner: ""),
+                                  notes: exerciseReport.comments,
+                                  sets: sets,
+                                  createdAt: DateTime.now());
+                              return _ExerciseReportWidget(exerciseLog: exerciseLog, exerciseReport: exerciseReport);
+                            },
+                            separatorBuilder: (context, index) => SizedBox(height: 20),
+                            itemCount: report.exerciseReports.length),
+                        LabelContainerDivider(
                             labelAlignment: LabelAlignment.left,
-                            label: "training and performance".toUpperCase(),
-                            description: "Review your performance in comparison to previous sessions.",
+                            label: "Recommendations".toUpperCase(),
+                            description:
+                            "Here are some tailored recommendations to help you optimize your future training sessions.",
                             labelStyle: Theme.of(context).textTheme.bodyLarge!,
                             descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
                             dividerColor: sapphireLighter),
-                      ),
-                      ListView.separated(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            final exerciseReport = report.exerciseReports[index];
-                            final sets = exerciseReport.currentPerformance.sets
-                                .map((set) =>
-                                WeightAndRepsSetDto(weight: set.weight, reps: set.repetitions, checked: true))
-                                .toList();
-                            final exerciseLog = ExerciseLogDto(
-                                id: '',
-                                routineLogId: '',
-                                superSetId: '',
-                                exercise: ExerciseDto(
-                                    id: "",
-                                    name: exerciseReport.exerciseName,
-                                    primaryMuscleGroup: MuscleGroup.fullBody,
-                                    secondaryMuscleGroups: [],
-                                    type: ExerciseType.weights,
-                                    owner: ""),
-                                notes: exerciseReport.comments,
-                                sets: sets,
-                                createdAt: DateTime.now());
-                            return _ExerciseReportWidget(exerciseLog: exerciseLog, exerciseReport: exerciseReport);
-                          },
-                          separatorBuilder: (context, index) => SizedBox(height: 20),
-                          itemCount: report.exerciseReports.length),
-                      LabelContainerDivider(
-                          labelAlignment: LabelAlignment.left,
-                          label: "Recommendations".toUpperCase(),
-                          description:
-                          "Here are some tailored recommendations to help you optimize your future training sessions.",
-                          labelStyle: Theme.of(context).textTheme.bodyLarge!,
-                          descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
-                          dividerColor: sapphireLighter),
-                      ListTile(
-                        tileColor: Colors.transparent,
-                        leading: TRKRCoachWidget(),
-                        titleAlignment: ListTileTitleAlignment.top,
-                        title: MarkdownBody(
-                          data: report.suggestions,
-                          styleSheet: MarkdownStyleSheet(
-                            h1: Theme.of(context).textTheme.bodyLarge,
-                            h2: Theme.of(context).textTheme.bodyLarge,
-                            h3: Theme.of(context).textTheme.bodyLarge,
-                            h4: Theme.of(context).textTheme.bodyLarge,
-                            h5: Theme.of(context).textTheme.bodyLarge,
-                            h6: Theme.of(context).textTheme.bodyLarge,
-                            p: Theme.of(context).textTheme.bodyMedium,
+                        ListTile(
+                          tileColor: Colors.transparent,
+                          leading: TRKRCoachWidget(),
+                          titleAlignment: ListTileTitleAlignment.top,
+                          title: MarkdownBody(
+                            data: report.suggestions,
+                            styleSheet: MarkdownStyleSheet(
+                              h1: Theme.of(context).textTheme.bodyLarge,
+                              h2: Theme.of(context).textTheme.bodyLarge,
+                              h3: Theme.of(context).textTheme.bodyLarge,
+                              h4: Theme.of(context).textTheme.bodyLarge,
+                              h5: Theme.of(context).textTheme.bodyLarge,
+                              h6: Theme.of(context).textTheme.bodyLarge,
+                              p: Theme.of(context).textTheme.bodyMedium,
+                            ),
                           ),
-                        ),
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-            ],
+                const SizedBox(
+                  height: 10,
+                ),
+              ],
+            ),
           ),
         ));
   }

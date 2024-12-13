@@ -24,6 +24,7 @@ import '../../models/RoutineTemplate.dart';
 import '../../urls.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
+import '../../utils/general_utils.dart';
 import '../../utils/https_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../utils/routine_utils.dart';
@@ -198,76 +199,81 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                 : const SizedBox.shrink()
           ],
         ),
-        body: SafeArea(
-          bottom: false,
-          minimum: const EdgeInsets.all(10.0),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              spacing: 20,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const FaIcon(
-                      FontAwesomeIcons.solidClock,
-                      size: 12,
-                    ),
-                    const SizedBox(width: 6),
-                    Text(scheduledDaysSummary(template: template, showFullName: true),
-                        style: Theme.of(context).textTheme.bodyMedium),
-                  ],
-                ),
-                if (template.notes.isNotEmpty)
-                  Center(
-                    child: Text('"${template.notes}"',
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic)),
-                  ),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
-                    color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, // Set the background color
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: Table(
-                    border: TableBorder.symmetric(inside: BorderSide(color: isDarkMode ? sapphireLighter.withOpacity(0.4) : Colors.white, width: 2)),
-                    columnWidths: const <int, TableColumnWidth>{
-                      0: FlexColumnWidth(),
-                      1: FlexColumnWidth(),
-                    },
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: themeGradient(context: context),
+          ),
+          child: SafeArea(
+            bottom: false,
+            minimum: const EdgeInsets.all(10.0),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                spacing: 20,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      TableRow(children: [
-                        TableCell(
-                          verticalAlignment: TableCellVerticalAlignment.middle,
-                          child: Center(
-                            child: Text(
-                                "${template.exerciseTemplates.length} ${pluralize(word: "Exercise", count: template.exerciseTemplates.length)}",
-                                style: Theme.of(context).textTheme.bodyMedium),
-                          ),
-                        ),
-                        TableCell(
-                          verticalAlignment: TableCellVerticalAlignment.middle,
-                          child: Center(
-                            child: Text(setsSummary, style: Theme.of(context).textTheme.bodyMedium),
-                          ),
-                        ),
-                      ]),
+                      const FaIcon(
+                        FontAwesomeIcons.solidClock,
+                        size: 12,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(scheduledDaysSummary(template: template, showFullName: true),
+                          style: Theme.of(context).textTheme.bodyMedium),
                     ],
                   ),
-                ),
-                MuscleGroupSplitChart(
-                    title: "Muscle Groups Split",
-                    description: "Here's a breakdown of the muscle groups in your ${template.name} workout plan.",
-                    muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
-                    minimized: _minimized),
-                ExerciseLogListView(
-                  exerciseLogs: exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
-                ),
-                const SizedBox(
-                  height: 60,
-                )
-              ],
+                  if (template.notes.isNotEmpty)
+                    Center(
+                      child: Text('"${template.notes}"',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic)),
+                    ),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
+                      color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, // Set the background color
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: Table(
+                      border: TableBorder.symmetric(inside: BorderSide(color: isDarkMode ? sapphireLighter.withOpacity(0.4) : Colors.white, width: 2)),
+                      columnWidths: const <int, TableColumnWidth>{
+                        0: FlexColumnWidth(),
+                        1: FlexColumnWidth(),
+                      },
+                      children: [
+                        TableRow(children: [
+                          TableCell(
+                            verticalAlignment: TableCellVerticalAlignment.middle,
+                            child: Center(
+                              child: Text(
+                                  "${template.exerciseTemplates.length} ${pluralize(word: "Exercise", count: template.exerciseTemplates.length)}",
+                                  style: Theme.of(context).textTheme.bodyMedium),
+                            ),
+                          ),
+                          TableCell(
+                            verticalAlignment: TableCellVerticalAlignment.middle,
+                            child: Center(
+                              child: Text(setsSummary, style: Theme.of(context).textTheme.bodyMedium),
+                            ),
+                          ),
+                        ]),
+                      ],
+                    ),
+                  ),
+                  MuscleGroupSplitChart(
+                      title: "Muscle Groups Split",
+                      description: "Here's a breakdown of the muscle groups in your ${template.name} workout plan.",
+                      muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
+                      minimized: _minimized),
+                  ExerciseLogListView(
+                    exerciseLogs: exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
+                  ),
+                  const SizedBox(
+                    height: 60,
+                  )
+                ],
+              ),
             ),
           ),
         ));

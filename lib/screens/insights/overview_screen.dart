@@ -76,8 +76,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
 
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
@@ -113,71 +111,76 @@ class _OverviewScreenState extends State<OverviewScreen> {
               onPressed: _showBottomSheet,
               child: const FaIcon(FontAwesomeIcons.plus, size: 24),
             ),
-      body: SafeArea(
-          minimum: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                    controller: widget.scrollController,
-                    padding: const EdgeInsets.only(bottom: 150),
-                    child: Column(children: [
-                      const SizedBox(height: 12),
-                      LogStreakMuscleTrendMonitor(dateTime: widget.dateTimeRange.start),
-                      if (isStartOfNewMonth)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 24.0),
-                          child: TRKRInformationContainer(
-                              ctaLabel:
-                                  "View ${today.subtract(const Duration(days: 29)).formattedFullMonth()} insights",
-                              description:
-                                  "It’s a new month of training, but before we dive in, let’s reflect on your past performance and plan for this month.",
-                              onTap: () =>
-                                  _generateMonthlyInsightsReport(datetime: today.subtract(const Duration(days: 29)))),
-                        ),
-                      if (scheduledToday != null)
-                        GestureDetector(
-                          onTap: () => navigateToRoutineTemplatePreview(context: context, template: scheduledToday),
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 20.0),
-                            child: _ScheduledRoutineCard(
-                                scheduledToday: scheduledToday, isLogged: hasTodayScheduleBeenLogged),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: themeGradient(context: context),
+        ),
+        child: SafeArea(
+            minimum: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                      controller: widget.scrollController,
+                      padding: const EdgeInsets.only(bottom: 150),
+                      child: Column(children: [
+                        const SizedBox(height: 12),
+                        LogStreakMuscleTrendMonitor(dateTime: widget.dateTimeRange.start),
+                        if (isStartOfNewMonth)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 24.0),
+                            child: TRKRInformationContainer(
+                                ctaLabel:
+                                    "View ${today.subtract(const Duration(days: 29)).formattedFullMonth()} insights",
+                                description:
+                                    "It’s a new month of training, but before we dive in, let’s reflect on your past performance and plan for this month.",
+                                onTap: () =>
+                                    _generateMonthlyInsightsReport(datetime: today.subtract(const Duration(days: 29)))),
                           ),
-                        ),
-                      if (SharedPrefs().showCalendar)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 16.0),
-                          child: Column(
+                        if (scheduledToday != null)
+                          GestureDetector(
+                            onTap: () => navigateToRoutineTemplatePreview(context: context, template: scheduledToday),
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 20.0),
+                              child: _ScheduledRoutineCard(
+                                  scheduledToday: scheduledToday, isLogged: hasTodayScheduleBeenLogged),
+                            ),
+                          ),
+                        if (SharedPrefs().showCalendar)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 16.0),
+                            child: Column(
+                              children: [
+                                Calendar(
+                                  onSelectDate: _onChangedDateTime,
+                                  dateTime: widget.dateTimeRange.start,
+                                ),
+                                const SizedBox(height: 10),
+                                _LogsListView(dateTime: _selectedDateTime),
+                              ],
+                            ),
+                          ),
+                        if (canNavigateNext)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Calendar(
-                                onSelectDate: _onChangedDateTime,
-                                dateTime: widget.dateTimeRange.start,
-                              ),
-                              const SizedBox(height: 10),
-                              _LogsListView(dateTime: _selectedDateTime),
+                              const SizedBox(height: 12),
+                              TRKRCoachButton(
+                                  label: "Review ${widget.dateTimeRange.start.formattedFullMonth()} insights.",
+                                  onTap: () => _generateMonthlyInsightsReport(datetime: widget.dateTimeRange.start)),
                             ],
                           ),
-                        ),
-                      if (canNavigateNext)
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 12),
-                            TRKRCoachButton(
-                                label: "Review ${widget.dateTimeRange.start.formattedFullMonth()} insights.",
-                                onTap: () => _generateMonthlyInsightsReport(datetime: widget.dateTimeRange.start)),
-                          ],
-                        ),
-                      const SizedBox(height: 12),
-                      MonthlyInsightsScreen(dateTimeRange: widget.dateTimeRange),
-                      const SizedBox(height: 18),
-                      LogStreakChartWidget(),
-                    ])),
-              )
-              // Add more widgets here for exercise insights
-            ],
-          )),
+                        const SizedBox(height: 12),
+                        MonthlyInsightsScreen(dateTimeRange: widget.dateTimeRange),
+                        const SizedBox(height: 18),
+                        LogStreakChartWidget(),
+                      ])),
+                )
+                // Add more widgets here for exercise insights
+              ],
+            )),
+      ),
     );
   }
 
@@ -359,7 +362,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
         child: SafeArea(
           child: Column(children: [
             ListTile(
-              dense: true,
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.play, size: 18),
               horizontalTitleGap: 6,
@@ -370,7 +372,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               },
             ),
             ListTile(
-              dense: true,
+              
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.clockRotateLeft, size: 18),
               horizontalTitleGap: 6,
@@ -409,7 +411,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               height: 6,
             ),
             ListTile(
-              dense: true,
+              
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(
                 FontAwesomeIcons.circlePlus,
@@ -451,7 +453,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
         child: SafeArea(
           child: Column(children: [
             ListTile(
-              dense: true,
+              
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.play, size: 18),
               horizontalTitleGap: 6,
@@ -474,7 +476,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               height: 6,
             ),
             ListTile(
-              dense: true,
+              
               contentPadding: EdgeInsets.zero,
               leading: const TRKRCoachWidget(),
               horizontalTitleGap: 10,

@@ -29,6 +29,7 @@ import '../../enums/routine_editor_type_enums.dart';
 import '../../openAI/open_ai.dart';
 import '../../openAI/open_ai_response_format.dart';
 import '../../strings/ai_prompts.dart';
+import '../../utils/general_utils.dart';
 import '../../utils/routine_log_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
@@ -328,100 +329,105 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                         Text("Calculator", style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600)),
                   )
                 : null,
-            body: SafeArea(
-              bottom: false,
-              minimum: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
-              child: GestureDetector(
-                onTap: _dismissKeyboard,
-                child: Column(
-                  spacing: 20,
-                  children: [
-                    if (widget.mode == RoutineEditorMode.log)
-                      Column(children: [
-                        Consumer<ExerciseLogController>(
-                            builder: (BuildContext context, ExerciseLogController provider, Widget? child) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: _RoutineLogOverview(
-                              exercisesSummary:
-                                  "${provider.completedExerciseLog().length}/${provider.exerciseLogs.length}",
-                              setsSummary:
-                                  "${provider.completedSets().length}/${provider.exerciseLogs.expand((exerciseLog) => exerciseLog.sets).length}",
-                              timer: RoutineTimer(
-                                startTime: widget.log.startTime,
+            body: Container(
+              decoration: BoxDecoration(
+                gradient: themeGradient(context: context),
+              ),
+              child: SafeArea(
+                bottom: false,
+                minimum: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
+                child: GestureDetector(
+                  onTap: _dismissKeyboard,
+                  child: Column(
+                    spacing: 20,
+                    children: [
+                      if (widget.mode == RoutineEditorMode.log)
+                        Column(children: [
+                          Consumer<ExerciseLogController>(
+                              builder: (BuildContext context, ExerciseLogController provider, Widget? child) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8.0),
+                              child: _RoutineLogOverview(
+                                exercisesSummary:
+                                    "${provider.completedExerciseLog().length}/${provider.exerciseLogs.length}",
+                                setsSummary:
+                                    "${provider.completedSets().length}/${provider.exerciseLogs.expand((exerciseLog) => exerciseLog.sets).length}",
+                                timer: RoutineTimer(
+                                  startTime: widget.log.startTime,
+                                ),
                               ),
-                            ),
-                          );
-                        }),
-                      ]),
-                    if (exerciseLogs.isNotEmpty)
-                      Expanded(
-                        child: SingleChildScrollView(
-                          padding: const EdgeInsets.only(bottom: 250),
-                          child: Column(spacing: 20, children: [
-                            ...exerciseLogs.map((exerciseLog) {
-                              final isExerciseMinimised = _minimisedExerciseLogCards.contains(exerciseLog.id);
+                            );
+                          }),
+                        ]),
+                      if (exerciseLogs.isNotEmpty)
+                        Expanded(
+                          child: SingleChildScrollView(
+                            padding: const EdgeInsets.only(bottom: 250),
+                            child: Column(spacing: 20, children: [
+                              ...exerciseLogs.map((exerciseLog) {
+                                final isExerciseMinimised = _minimisedExerciseLogCards.contains(exerciseLog.id);
 
-                              return isExerciseMinimised
-                                  ? ExerciseLogLiteWidget(
-                                      key: ValueKey(exerciseLog.id),
-                                      exerciseLogDto: exerciseLog,
-                                      superSet: whereOtherExerciseInSuperSet(
-                                          firstExercise: exerciseLog, exercises: exerciseLogs),
-                                      onMaximise: () =>
-                                          _handleResizedExerciseLogCard(exerciseIdToResize: exerciseLog.id),
-                                    )
-                                  : ExerciseLogWidget(
-                                      key: ValueKey(exerciseLog.id),
-                                      exerciseLogDto: exerciseLog,
-                                      editorType: RoutineEditorMode.log,
-                                      superSet: whereOtherExerciseInSuperSet(
-                                          firstExercise: exerciseLog, exercises: exerciseLogs),
-                                      onRemoveSuperSet: (String superSetId) {
-                                        exerciseLogController.removeSuperSet(superSetId: exerciseLog.superSetId);
-                                        _cacheLog();
-                                      },
-                                      onRemoveLog: () {
-                                        exerciseLogController.removeExerciseLog(logId: exerciseLog.id);
-                                        _cacheLog();
-                                      },
-                                      onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
-                                      onCache: _cacheLog,
-                                      onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
-                                      onResize: () => _handleResizedExerciseLogCard(exerciseIdToResize: exerciseLog.id),
-                                      isMinimised: _isMinimised(exerciseLog.id),
-                                      onTapWeightEditor: (SetDto setDto) {
-                                        setState(() {
-                                          _selectedSetDto = setDto;
-                                        });
-                                      },
-                                      onTapRepsEditor: (SetDto setDto) {
-                                        setState(() {
-                                          _selectedSetDto = null;
-                                        });
-                                      },
-                                    );
-                            }),
-                            SizedBox(
-                                width: double.infinity,
-                                child: OpacityButtonWidget(
-                                  padding: const EdgeInsets.symmetric(vertical: 16),
-                                  buttonColor: vibrantGreen,
-                                  label: widget.mode == RoutineEditorMode.log ? "Finish Session" : "Update Session",
-                                  onPressed: widget.mode == RoutineEditorMode.log ? _saveLog : _updateLog,
-                                ))
-                          ]),
+                                return isExerciseMinimised
+                                    ? ExerciseLogLiteWidget(
+                                        key: ValueKey(exerciseLog.id),
+                                        exerciseLogDto: exerciseLog,
+                                        superSet: whereOtherExerciseInSuperSet(
+                                            firstExercise: exerciseLog, exercises: exerciseLogs),
+                                        onMaximise: () =>
+                                            _handleResizedExerciseLogCard(exerciseIdToResize: exerciseLog.id),
+                                      )
+                                    : ExerciseLogWidget(
+                                        key: ValueKey(exerciseLog.id),
+                                        exerciseLogDto: exerciseLog,
+                                        editorType: RoutineEditorMode.log,
+                                        superSet: whereOtherExerciseInSuperSet(
+                                            firstExercise: exerciseLog, exercises: exerciseLogs),
+                                        onRemoveSuperSet: (String superSetId) {
+                                          exerciseLogController.removeSuperSet(superSetId: exerciseLog.superSetId);
+                                          _cacheLog();
+                                        },
+                                        onRemoveLog: () {
+                                          exerciseLogController.removeExerciseLog(logId: exerciseLog.id);
+                                          _cacheLog();
+                                        },
+                                        onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
+                                        onCache: _cacheLog,
+                                        onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
+                                        onResize: () => _handleResizedExerciseLogCard(exerciseIdToResize: exerciseLog.id),
+                                        isMinimised: _isMinimised(exerciseLog.id),
+                                        onTapWeightEditor: (SetDto setDto) {
+                                          setState(() {
+                                            _selectedSetDto = setDto;
+                                          });
+                                        },
+                                        onTapRepsEditor: (SetDto setDto) {
+                                          setState(() {
+                                            _selectedSetDto = null;
+                                          });
+                                        },
+                                      );
+                              }),
+                              SizedBox(
+                                  width: double.infinity,
+                                  child: OpacityButtonWidget(
+                                    padding: const EdgeInsets.symmetric(vertical: 16),
+                                    buttonColor: vibrantGreen,
+                                    label: widget.mode == RoutineEditorMode.log ? "Finish Session" : "Update Session",
+                                    onPressed: widget.mode == RoutineEditorMode.log ? _saveLog : _updateLog,
+                                  ))
+                            ]),
+                          ),
                         ),
-                      ),
-                    if (exerciseLogs.isEmpty)
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: const NoListEmptyState(
-                              message: "Tap the + button to start adding exercises to your workout session"),
+                      if (exerciseLogs.isEmpty)
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: const NoListEmptyState(
+                                message: "Tap the + button to start adding exercises to your workout session"),
+                          ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             )));

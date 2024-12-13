@@ -140,24 +140,20 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
         child: SafeArea(
           child: Column(children: [
             ListTile(
-              dense: true,
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(Icons.monitor_heart_rounded, size: 18),
               horizontalTitleGap: 6,
-              title: Text("Share Streak and Muscle Monitor",
-                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              title: Text("Share Streak and Muscle Monitor"),
               onTap: () {
                 Navigator.of(context).pop();
                 _onShareMonitor(context: context);
               },
             ),
             ListTile(
-              dense: true,
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.calendar, size: 18),
               horizontalTitleGap: 6,
-              title: Text("Share Log Calendar",
-                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              title: Text("Share Log Calendar"),
               onTap: () {
                 Navigator.of(context).pop();
                 _onShareCalendar(context: context);

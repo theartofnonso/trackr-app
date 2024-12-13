@@ -13,7 +13,7 @@ class TRKRAppBarTheme {
       titleTextStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.black, fontSize: 16));
 
   static AppBarTheme darkTheme = AppBarTheme(
-      backgroundColor: sapphireDark,
+      backgroundColor: sapphireDark80,
       foregroundColor: Colors.white,
       actionsIconTheme: IconThemeData(color: Colors.black),
       titleTextStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16));

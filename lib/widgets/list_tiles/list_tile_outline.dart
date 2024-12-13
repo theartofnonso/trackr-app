@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../colors.dart';
-import '../../utils/theme/list_title_theme.dart';
-
 class OutlineListTile extends StatelessWidget {
   final String title;
   final String? trailing;
@@ -12,19 +9,8 @@ class OutlineListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
     final trailing = this.trailing;
 
-    return Theme(data: Theme.of(context).copyWith(listTileTheme: isDarkMode ? TRKRListTileTheme.darkTheme : TRKRListTileTheme.lightTheme),
-        child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        splashColor: sapphireLighter,
-        onTap: onTap,
-        title: Text(title),
-        trailing: trailing != null ? Text(trailing) : null));
+    return ListTile(onTap: onTap, title: Text(title), trailing: trailing != null ? Text(trailing) : null);
   }
 }

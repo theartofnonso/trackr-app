@@ -65,130 +65,135 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     return Scaffold(
-      body: SafeArea(
-        bottom: false,
-        minimum: EdgeInsets.all(10),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              GestureDetector(
-                onTap: _openStoreListing,
-                child: BackgroundInformationContainer(
-                    image: 'images/boy_and_girl.jpg',
-                    containerColor: sapphireDark,
-                    content: "Loving TRKR? Share the love! Your feedback helps us grow and improve.",
-                    textStyle: GoogleFonts.ubuntu(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.white.withOpacity(0.9),
-                    )),
-              ),
-              ListTile(
-                tileColor: Colors.transparent,
-                title: Text("Weight"),
-                subtitle: Text("Choose kg or lbs"),
-                trailing: SegmentedButton(
-                  showSelectedIcon: false,
-                  style: ButtonStyle(
-                    visualDensity: const VisualDensity(
-                        horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity),
-                    shape: WidgetStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    )),
-                    backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                      (Set<WidgetState> states) {
-                        if (states.contains(WidgetState.selected)) {
-                          return isDarkMode ? Colors.white : Colors.black;
-                        }
-                        return isDarkMode ? Colors.black : Colors.white;
-                      },
-                    ),
-                    foregroundColor: WidgetStateProperty.resolveWith<Color>(
-                      (Set<WidgetState> states) {
-                        if (states.contains(WidgetState.selected)) {
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: themeGradient(context: context),
+        ),
+        child: SafeArea(
+          bottom: false,
+          minimum: EdgeInsets.all(10),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                GestureDetector(
+                  onTap: _openStoreListing,
+                  child: BackgroundInformationContainer(
+                      image: 'images/boy_and_girl.jpg',
+                      containerColor: sapphireDark,
+                      content: "Loving TRKR? Share the love! Your feedback helps us grow and improve.",
+                      textStyle: GoogleFonts.ubuntu(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white.withOpacity(0.9),
+                      )),
+                ),
+                ListTile(
+                  tileColor: Colors.transparent,
+                  title: Text("Weight"),
+                  subtitle: Text("Choose kg or lbs"),
+                  trailing: SegmentedButton(
+                    showSelectedIcon: false,
+                    style: ButtonStyle(
+                      visualDensity: const VisualDensity(
+                          horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity),
+                      shape: WidgetStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      )),
+                      backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                        (Set<WidgetState> states) {
+                          if (states.contains(WidgetState.selected)) {
+                            return isDarkMode ? Colors.white : Colors.black;
+                          }
                           return isDarkMode ? Colors.black : Colors.white;
-                        }
-                        return isDarkMode ? Colors.white : Colors.black;
-                      },
+                        },
+                      ),
+                      foregroundColor: WidgetStateProperty.resolveWith<Color>(
+                        (Set<WidgetState> states) {
+                          if (states.contains(WidgetState.selected)) {
+                            return isDarkMode ? Colors.black : Colors.white;
+                          }
+                          return isDarkMode ? Colors.white : Colors.black;
+                        },
+                      ),
                     ),
+                    segments: [
+                      ButtonSegment<WeightUnit>(value: WeightUnit.kg, label: Text(WeightUnit.kg.name)),
+                      ButtonSegment<WeightUnit>(value: WeightUnit.lbs, label: Text(WeightUnit.lbs.name)),
+                    ],
+                    selected: <WeightUnit>{_weightUnitType},
+                    onSelectionChanged: (Set<WeightUnit> unitType) {
+                      setState(() {
+                        _weightUnitType = unitType.first;
+                      });
+                      toggleWeightUnit(unit: _weightUnitType);
+                    },
                   ),
-                  segments: [
-                    ButtonSegment<WeightUnit>(value: WeightUnit.kg, label: Text(WeightUnit.kg.name)),
-                    ButtonSegment<WeightUnit>(value: WeightUnit.lbs, label: Text(WeightUnit.lbs.name)),
-                  ],
-                  selected: <WeightUnit>{_weightUnitType},
-                  onSelectionChanged: (Set<WeightUnit> unitType) {
+                ),
+                const SizedBox(height: 8),
+                SwitchListTile(
+                  tileColor: Colors.transparent,
+                  activeColor: vibrantGreen,
+                  title: Text('Show calendar'),
+                  value: SharedPrefs().showCalendar,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                  onChanged: (bool value) {
                     setState(() {
-                      _weightUnitType = unitType.first;
+                      SharedPrefs().showCalendar = value;
+                      Provider.of<SettingsController>(context, listen: false).notify();
                     });
-                    toggleWeightUnit(unit: _weightUnitType);
                   },
                 ),
-              ),
-              const SizedBox(height: 8),
-              SwitchListTile(
-                tileColor: Colors.transparent,
-                activeColor: vibrantGreen,
-                title: Text('Show calendar'),
-                value: SharedPrefs().showCalendar,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                onChanged: (bool value) {
-                  setState(() {
-                    SharedPrefs().showCalendar = value;
-                    Provider.of<SettingsController>(context, listen: false).notify();
-                  });
-                },
-              ),
-              const SizedBox(height: 8),
-              SwitchListTile(
-                tileColor: Colors.transparent,
-                activeColor: vibrantGreen,
-                title: Text(
-                  'Show calendar dates',
+                const SizedBox(height: 8),
+                SwitchListTile(
+                  tileColor: Colors.transparent,
+                  activeColor: vibrantGreen,
+                  title: Text(
+                    'Show calendar dates',
+                  ),
+                  value: SharedPrefs().showCalendarDates,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                  onChanged: (bool value) {
+                    setState(() {
+                      SharedPrefs().showCalendarDates = value;
+                      Provider.of<SettingsController>(context, listen: false).notify();
+                    });
+                  },
                 ),
-                value: SharedPrefs().showCalendarDates,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                onChanged: (bool value) {
-                  setState(() {
-                    SharedPrefs().showCalendarDates = value;
-                    Provider.of<SettingsController>(context, listen: false).notify();
-                  });
-                },
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 8),
-                  OutlineListTile(onTap: _navigateToUserProfile, title: "Profile", trailing: "manage profile"),
-                ],
-              ),
-              const SizedBox(height: 8),
-              OutlineListTile(onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "manage exercises"),
-              if (Platform.isIOS)
-                Column(children: [
-                  const SizedBox(height: 8),
-                  OutlineListTile(
-                      onTap: _navigateToNotificationSettings,
-                      title: "Notifications",
-                      trailing: _notificationEnabled ? "Enabled" : "Disabled"),
-                ]),
-              const SizedBox(height: 8),
-              OutlineListTile(onTap: _sendFeedback, title: "Feedback", trailing: "Help us improve"),
-              const SizedBox(height: 8),
-              OutlineListTile(onTap: _visitTRKR, title: "Visit TRKR", trailing: "Follow us on socials"),
-              const SizedBox(height: 8),
-              OutlineListTile(onTap: _navigateTutorialScreen, title: "Tutorials", trailing: "Learn about TRKR"),
-              const SizedBox(height: 8),
-              OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
-              const SizedBox(height: 8),
-              OutlineListTile(onTap: _delete, title: "Delete Account", trailing: SharedPrefs().userEmail),
-              const SizedBox(height: 10),
-              Center(
-                child: Text(_appVersion,
-                    style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
-              ),
-            ],
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 8),
+                    OutlineListTile(onTap: _navigateToUserProfile, title: "Profile", trailing: "manage profile"),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                OutlineListTile(onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "manage exercises"),
+                if (Platform.isIOS)
+                  Column(children: [
+                    const SizedBox(height: 8),
+                    OutlineListTile(
+                        onTap: _navigateToNotificationSettings,
+                        title: "Notifications",
+                        trailing: _notificationEnabled ? "Enabled" : "Disabled"),
+                  ]),
+                const SizedBox(height: 8),
+                OutlineListTile(onTap: _sendFeedback, title: "Feedback", trailing: "Help us improve"),
+                const SizedBox(height: 8),
+                OutlineListTile(onTap: _visitTRKR, title: "Visit TRKR", trailing: "Follow us on socials"),
+                const SizedBox(height: 8),
+                OutlineListTile(onTap: _navigateTutorialScreen, title: "Tutorials", trailing: "Learn about TRKR"),
+                const SizedBox(height: 8),
+                OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
+                const SizedBox(height: 8),
+                OutlineListTile(onTap: _delete, title: "Delete Account", trailing: SharedPrefs().userEmail),
+                const SizedBox(height: 10),
+                Center(
+                  child: Text(_appVersion,
+                      style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -280,7 +285,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         child: SafeArea(
           child: Column(children: [
             ListTile(
-              dense: true,
+              
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.globe, size: 18),
               horizontalTitleGap: 6,
@@ -291,7 +296,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               },
             ),
             ListTile(
-              dense: true,
+              
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.instagram, size: 20),
               horizontalTitleGap: 6,

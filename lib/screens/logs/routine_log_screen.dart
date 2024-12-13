@@ -34,6 +34,7 @@ import '../../openAI/open_ai.dart';
 import '../../strings/ai_prompts.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
+import '../../utils/general_utils.dart';
 import '../../utils/routine_log_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_widget.dart';
@@ -126,102 +127,107 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                 onPressed: _showBottomSheet,
                 child: const FaIcon(FontAwesomeIcons.penToSquare))
             : null,
-        body: SafeArea(
-          bottom: false,
-          child: SingleChildScrollView(
-            child: Column(
-              spacing: 20,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                    child:
-                        DateDurationPBWidget(dateTime: updatedLog.createdAt, duration: updatedLog.duration(), pbs: 0)),
-                if (updatedLog.notes.isNotEmpty)
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: themeGradient(context: context),
+          ),
+          child: SafeArea(
+            bottom: false,
+            child: SingleChildScrollView(
+              child: Column(
+                spacing: 20,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Center(
-                    child: Padding(
+                      child:
+                          DateDurationPBWidget(dateTime: updatedLog.createdAt, duration: updatedLog.duration(), pbs: 0)),
+                  if (updatedLog.notes.isNotEmpty)
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Text('"${updatedLog.notes}"',
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic)),
+                      ),
+                    ),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        _StatisticWidget(
+                          title: "${completedExerciseLogs.length}",
+                          subtitle: "Exercises",
+                          image: "dumbbells",
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        _StatisticWidget(
+                          title: "${numberOfCompletedSets.length}",
+                          subtitle: "Sets",
+                          icon: FontAwesomeIcons.hashtag,
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        _StatisticWidget(
+                          title: "$calories",
+                          subtitle: "Calories",
+                          icon: FontAwesomeIcons.fire,
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        _StatisticWidget(
+                          title: "${pbs.length}",
+                          subtitle: "PBs",
+                          icon: FontAwesomeIcons.solidStar,
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        )
+                      ],
+                    ),
+                  ),
+                  if (routineUserController.user == null)
+                    Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Text('"${updatedLog.notes}"',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic)),
+                      child: InformationContainerLite(
+                        content: "Set up your user profile in the settings to view the number of calories burned.",
+                        color: Colors.deepOrange,
+                      ),
                     ),
-                  ),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      _StatisticWidget(
-                        title: "${completedExerciseLogs.length}",
-                        subtitle: "Exercises",
-                        image: "dumbbells",
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      _StatisticWidget(
-                        title: "${numberOfCompletedSets.length}",
-                        subtitle: "Sets",
-                        icon: FontAwesomeIcons.hashtag,
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      _StatisticWidget(
-                        title: "$calories",
-                        subtitle: "Calories",
-                        icon: FontAwesomeIcons.fire,
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      _StatisticWidget(
-                        title: "${pbs.length}",
-                        subtitle: "PBs",
-                        icon: FontAwesomeIcons.solidStar,
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      )
-                    ],
-                  ),
-                ),
-                if (routineUserController.user == null)
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: InformationContainerLite(
-                      content: "Set up your user profile in the settings to view the number of calories burned.",
-                      color: Colors.deepOrange,
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Column(
+                      spacing: 20,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MuscleGroupSplitChart(
+                            title: "Muscle Groups Split",
+                            description: "Here's a breakdown of the muscle groups in your ${log.name} workout log.",
+                            muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
+                            minimized: _minimized),
+                        if (updatedLog.owner == SharedPrefs().userId && widget.isEditable)
+                          TRKRInformationContainer(
+                              ctaLabel: "Ask for feedback",
+                              description:
+                                  "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
+                              onTap: _generateReport),
+                        ExerciseLogListView(exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogs)),
+                        const SizedBox(
+                          height: 60,
+                        )
+                      ],
                     ),
-                  ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Column(
-                    spacing: 20,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      MuscleGroupSplitChart(
-                          title: "Muscle Groups Split",
-                          description: "Here's a breakdown of the muscle groups in your ${log.name} workout log.",
-                          muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
-                          minimized: _minimized),
-                      if (updatedLog.owner == SharedPrefs().userId && widget.isEditable)
-                        TRKRInformationContainer(
-                            ctaLabel: "Ask for feedback",
-                            description:
-                                "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
-                            onTap: _generateReport),
-                      ExerciseLogListView(exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogs)),
-                      const SizedBox(
-                        height: 60,
-                      )
-                    ],
-                  ),
-                )
-                //
-                // const EdgeInsets.only(right: 10, bottom: 10, left: 10)
-              ],
+                  )
+                  //
+                  // const EdgeInsets.only(right: 10, bottom: 10, left: 10)
+                ],
+              ),
             ),
           ),
         ));
@@ -333,7 +339,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         child: SafeArea(
           child: Column(children: [
             ListTile(
-              dense: true,
+              
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.solidPenToSquare, size: 18),
               horizontalTitleGap: 6,
@@ -342,7 +348,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
               onTap: _editLog,
             ),
             ListTile(
-              dense: true,
+              
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.solidClock, size: 18),
               horizontalTitleGap: 6,
@@ -351,7 +357,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
               onTap: _editDuration,
             ),
             ListTile(
-              dense: true,
+              
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.solidFloppyDisk, size: 18),
               horizontalTitleGap: 6,
@@ -360,7 +366,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
               onTap: _createTemplate,
             ),
             ListTile(
-              dense: true,
+              
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(
                 FontAwesomeIcons.trash,

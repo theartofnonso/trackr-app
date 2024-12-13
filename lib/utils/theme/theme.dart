@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/utils/theme/app_bar_theme.dart';
 import 'package:tracker_app/utils/theme/flaoting_action_button_theme.dart';
 import 'package:tracker_app/utils/theme/input_textfield_theme.dart';
@@ -23,19 +25,25 @@ class TRKRTheme {
       navigationBarTheme: TRKRNavigationBarTheme.lightNavigationBarTheme,
       appBarTheme: TRKRAppBarTheme.lightTheme,
       inputDecorationTheme: TRKRInputTextFieldTheme.lightTheme,
+      tabBarTheme: TabBarThemeData(
+        indicatorColor: Colors.black,
+      ),
       floatingActionButtonTheme: TRKRFloatingActionButtonTheme.lightTheme);
 
   static ThemeData darkTheme = ThemeData(
       useMaterial3: true,
       fontFamily: "Ubuntu",
       brightness: Brightness.dark,
-      scaffoldBackgroundColor: Colors.black,
-      primaryColor: Color.fromRGBO(43, 242, 12, 1),
+      scaffoldBackgroundColor: sapphireDark80,
+      primaryColor: Colors.black,
       textTheme: TRKRTextTheme.darkTextTheme,
       iconTheme: TRKRIconTheme.darkIconTheme,
       listTileTheme: TRKRListTileTheme.darkTheme,
       floatingActionButtonTheme: TRKRFloatingActionButtonTheme.darkTheme,
       appBarTheme: TRKRAppBarTheme.darkTheme,
       inputDecorationTheme: TRKRInputTextFieldTheme.darkTheme,
+      tabBarTheme: TabBarThemeData(
+        indicatorColor: Colors.white,
+      ),
       navigationBarTheme: TRKRNavigationBarTheme.darkNavigationBarTheme);
 }

@@ -26,7 +26,7 @@ class SuperSetExerciseLogPicker extends StatelessWidget {
               onTap: () {
                 onSelect(exercise);
               },
-              dense: true,
+              
       contentPadding: EdgeInsets.zero,
               title: Text(exercise.exercise.name,
                   style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 15)),

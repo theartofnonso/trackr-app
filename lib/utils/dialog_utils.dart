@@ -219,7 +219,7 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
           height: 4,
         ),
         ListTile(
-          dense: true,
+          
           contentPadding: EdgeInsets.zero,
           leading: const FaIcon(FontAwesomeIcons.penToSquare, size: 18),
           horizontalTitleGap: 6,
@@ -244,7 +244,7 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
           },
         ),
         ListTile(
-          dense: true,
+          
           contentPadding: EdgeInsets.zero,
           leading: const FaIcon(
             FontAwesomeIcons.trash,
@@ -294,13 +294,13 @@ void showBottomSheetWithNoAction({required BuildContext context, required String
       context: context,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(title,
-            style: GoogleFonts.ubuntu(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
+            style: Theme.of(context).textTheme.titleMedium,
             textAlign: TextAlign.start),
         const SizedBox(
           height: 4,
         ),
         Text(description,
-            style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white),
+            style: Theme.of(context).textTheme.bodyMedium,
             textAlign: TextAlign.start)
       ]));
 }

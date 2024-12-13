@@ -11,6 +11,7 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 
 import '../../utils/dialog_utils.dart';
+import '../../utils/general_utils.dart';
 import '../../utils/timezone_utils.dart';
 
 Duration _timeForSchedule({required PendingNotificationRequest? schedule}) {
@@ -75,10 +76,15 @@ class NotificationsScreen extends StatelessWidget {
             "Notifications",
           ),
         ),
-        body: SafeArea(
-          minimum: const EdgeInsets.all(10.0),
-          child: SingleChildScrollView(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [const _NotificationListView()]),
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: themeGradient(context: context),
+          ),
+          child: SafeArea(
+            minimum: const EdgeInsets.all(10.0),
+            child: SingleChildScrollView(
+              child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [const _NotificationListView()]),
+            ),
           ),
         ));
   }
@@ -114,7 +120,7 @@ class _NotificationSwitch extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(title, style: Theme.of(context).textTheme.titleSmall),
               if (enabled)
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

@@ -11,6 +11,7 @@ import 'package:tracker_app/widgets/ai_widgets/trkr_coach_button.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
+import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
@@ -21,6 +22,7 @@ class RoutineTemplatesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Consumer<ExerciseAndRoutineController>(builder: (_, provider, __) {
       final routineTemplates = List<RoutineTemplateDto>.from(provider.templates);
 
@@ -53,41 +55,47 @@ class RoutineTemplatesScreen extends StatelessWidget {
             onPressed: () => navigateToRoutineTemplateEditor(context: context),
             child: const FaIcon(FontAwesomeIcons.plus, size: 28),
           ),
-          body: SafeArea(
-              bottom: false,
-              minimum: const EdgeInsets.all(10.0),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                const SizedBox(height: 16),
-                BackgroundInformationContainer(
-                    image: 'images/lace.jpg',
-                    containerColor: Colors.blue.shade900,
-                    content: "A structured plan is essential for achieving your fitness goals. Try creating one.",
-                    textStyle: GoogleFonts.ubuntu(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.white.withOpacity(0.9),
-                    )),
-                const SizedBox(height: 16),
-                TRKRCoachButton(label: "Tap to describe a workout", onTap: () => _switchToAIContext(context: context)),
-                const SizedBox(height: 16),
-                templates.isNotEmpty
-                    ? Expanded(
-                        child: GridView.count(
-                            crossAxisCount: 2,
-                            childAspectRatio: 1,
-                            mainAxisSpacing: 10.0,
-                            crossAxisSpacing: 10.0,
-                            children: children),
-                      )
-                    : Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: const NoListEmptyState(
-                              message:
-                                  "It might feel quiet now, but tap the + button to create a workout or ask TRKR coach for help."),
+          body: Container(
+            decoration: BoxDecoration(
+              gradient: themeGradient(context: context),
+            ),
+            child: SafeArea(
+                bottom: false,
+                minimum: const EdgeInsets.all(10.0),
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  const SizedBox(height: 16),
+                  BackgroundInformationContainer(
+                      image: 'images/lace.jpg',
+                      containerColor: Colors.blue.shade900,
+                      content: "A structured plan is essential for achieving your fitness goals. Try creating one.",
+                      textStyle: GoogleFonts.ubuntu(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white.withOpacity(0.9),
+                      )),
+                  const SizedBox(height: 16),
+                  TRKRCoachButton(
+                      label: "Tap to describe a workout", onTap: () => _switchToAIContext(context: context)),
+                  const SizedBox(height: 16),
+                  templates.isNotEmpty
+                      ? Expanded(
+                          child: GridView.count(
+                              crossAxisCount: 2,
+                              childAspectRatio: 1,
+                              mainAxisSpacing: 10.0,
+                              crossAxisSpacing: 10.0,
+                              children: children),
+                        )
+                      : Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: const NoListEmptyState(
+                                message:
+                                    "It might feel quiet now, but tap the + button to create a workout or ask TRKR coach for help."),
+                          ),
                         ),
-                      ),
-              ])));
+                ])),
+          ));
     });
   }
 
@@ -197,7 +205,12 @@ class _RoutineWidget extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Divider(
-                color: template.isScheduledToday() ? vibrantGreen.withOpacity(0.2) : isDarkMode ? Colors.white10 : Colors.black12, endIndent: 10),
+                color: template.isScheduledToday()
+                    ? vibrantGreen.withOpacity(0.2)
+                    : isDarkMode
+                        ? Colors.white10
+                        : Colors.black12,
+                endIndent: 10),
             const SizedBox(height: 8),
             Text(
               scheduleSummary,

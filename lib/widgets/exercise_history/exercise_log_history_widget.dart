@@ -37,7 +37,7 @@ class ExerciseHistoryLogWidget extends StatelessWidget {
           data: ThemeData(splashColor: sapphireLight),
           child: ListTile(
             contentPadding: EdgeInsets.zero,
-            dense: true,
+            
             title: Text(routineLog.name,
                 style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white),
                 textAlign: TextAlign.center),

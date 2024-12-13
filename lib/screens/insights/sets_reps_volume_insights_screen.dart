@@ -152,148 +152,153 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                   style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
             )
           : null,
-      body: SafeArea(
-        minimum: const EdgeInsets.only(top: 10, bottom: 20),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(children: [
-                    const SizedBox(width: 10),
-                    ...muscleGroups.sublist(0, muscleGroupScrollViewHalf),
-                    const SizedBox(width: 10)
-                  ])),
-              SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(children: [
-                    const SizedBox(width: 10),
-                    ...muscleGroups.sublist(muscleGroupScrollViewHalf),
-                    const SizedBox(width: 10)
-                  ])),
-              const SizedBox(height: 18),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  TRKRInformationContainer(
-                    ctaLabel: "Review your ${_selectedMuscleGroup.name} training",
-                    description: _selectedMuscleGroup.description,
-                    onTap: () => _generateReport(exerciseLogs: exerciseLogs),
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          RichText(
-                            text: TextSpan(
-                              text:
-                              "${_metric == SetRepsVolumeReps.volume ? volumeInKOrM(avgValue.toDouble(), showLessThan1k: false) : avgValue}",
-                              style:
-                              GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 28),
-                              children: [
-                                TextSpan(
-                                  text: " ",
-                                  style: GoogleFonts.ubuntu(
-                                      color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
-                                ),
-                                TextSpan(
-                                  text: _metricLabel().toUpperCase(),
-                                  style: GoogleFonts.ubuntu(
-                                      color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
-                                ),
-                              ],
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: themeGradient(context: context),
+        ),
+        child: SafeArea(
+          minimum: const EdgeInsets.only(top: 10, bottom: 20),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(children: [
+                      const SizedBox(width: 10),
+                      ...muscleGroups.sublist(0, muscleGroupScrollViewHalf),
+                      const SizedBox(width: 10)
+                    ])),
+                SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(children: [
+                      const SizedBox(width: 10),
+                      ...muscleGroups.sublist(muscleGroupScrollViewHalf),
+                      const SizedBox(width: 10)
+                    ])),
+                const SizedBox(height: 18),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    TRKRInformationContainer(
+                      ctaLabel: "Review your ${_selectedMuscleGroup.name} training",
+                      description: _selectedMuscleGroup.description,
+                      onTap: () => _generateReport(exerciseLogs: exerciseLogs),
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            RichText(
+                              text: TextSpan(
+                                text:
+                                "${_metric == SetRepsVolumeReps.volume ? volumeInKOrM(avgValue.toDouble(), showLessThan1k: false) : avgValue}",
+                                style:
+                                GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 28),
+                                children: [
+                                  TextSpan(
+                                    text: " ",
+                                    style: GoogleFonts.ubuntu(
+                                        color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                                  ),
+                                  TextSpan(
+                                    text: _metricLabel().toUpperCase(),
+                                    style: GoogleFonts.ubuntu(
+                                        color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                          Text(
-                            "WEEKLY AVERAGE",
-                            style:
-                            GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 10),
-                          ),
-                        ],
-                      ),
-                      CupertinoSlidingSegmentedControl<SetRepsVolumeReps>(
-                        backgroundColor: sapphireDark,
-                        thumbColor: sapphireLight,
-                        groupValue: _metric,
-                        children: {
-                          SetRepsVolumeReps.reps: SizedBox(
-                              width: 40,
-                              child:
-                              Text(SetRepsVolumeReps.reps.name, style: textStyle, textAlign: TextAlign.center)),
-                          SetRepsVolumeReps.sets: SizedBox(
-                              width: 40,
-                              child:
-                              Text(SetRepsVolumeReps.sets.name, style: textStyle, textAlign: TextAlign.center)),
-                          SetRepsVolumeReps.volume: SizedBox(
-                              width: 40,
-                              child:
-                              Text(SetRepsVolumeReps.volume.name, style: textStyle, textAlign: TextAlign.center)),
-                        },
-                        onValueChanged: (SetRepsVolumeReps? value) {
-                          if (value != null) {
-                            setState(() {
-                              _metric = value;
-                            });
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 60),
-                  SizedBox(
-                      height: 250,
-                      child: CustomBarChart(
-                        chartPoints: chartPoints,
-                        periods: months,
-                        barColors: _metric != SetRepsVolumeReps.volume ? barColors : null,
-                        unit: _chartUnit(),
-                        bottomTitlesInterval: 5,
-                        showTopTitles: false,
-                        showLeftTitles: true,
-                        reservedSize: _reservedSize(),
-                      )),
-                  const SizedBox(height: 10),
-                  if (_isRepsOrSetsMetric())
-                    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text(
-                        "${_metric.name} Breakdown".toUpperCase(),
-                        style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 12),
-                      ),
-                      const SizedBox(height: 14),
-                      hasWeights
-                          ? HorizontalStackedBars(weights: weights, colors: weightColors)
-                          : const HorizontalStackedBarsEmptyState(),
-                      const SizedBox(height: 10),
-                      Legend(
-                        title: "$totalOptimal",
-                        suffix: "x",
-                        subTitle: 'Optimal (>${_optimalSetsOrRepsValue()} ${_metric.name})',
-                        color: vibrantGreen,
-                      ),
-                      const SizedBox(height: 6),
-                      Legend(
-                        title: "$totalSufficient",
-                        suffix: "x",
-                        subTitle:
-                        'Sufficient (${_sufficientSetsOrRepsValue()}-${_optimalSetsOrRepsValue()} ${_metric.name})',
-                        color: vibrantBlue,
-                      ),
-                      const SizedBox(height: 6),
-                      Legend(
-                        title: "$totalMinimum", //
-                        suffix: "x",
-                        subTitle: 'Minimum (<${_sufficientSetsOrRepsValue()} ${_metric.name})',
-                        color: Colors.deepOrangeAccent,
-                      ),
-                    ]),
-                ]),
-              )
-            ],
+                            Text(
+                              "WEEKLY AVERAGE",
+                              style:
+                              GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 10),
+                            ),
+                          ],
+                        ),
+                        CupertinoSlidingSegmentedControl<SetRepsVolumeReps>(
+                          backgroundColor: sapphireDark,
+                          thumbColor: sapphireLight,
+                          groupValue: _metric,
+                          children: {
+                            SetRepsVolumeReps.reps: SizedBox(
+                                width: 40,
+                                child:
+                                Text(SetRepsVolumeReps.reps.name, style: textStyle, textAlign: TextAlign.center)),
+                            SetRepsVolumeReps.sets: SizedBox(
+                                width: 40,
+                                child:
+                                Text(SetRepsVolumeReps.sets.name, style: textStyle, textAlign: TextAlign.center)),
+                            SetRepsVolumeReps.volume: SizedBox(
+                                width: 40,
+                                child:
+                                Text(SetRepsVolumeReps.volume.name, style: textStyle, textAlign: TextAlign.center)),
+                          },
+                          onValueChanged: (SetRepsVolumeReps? value) {
+                            if (value != null) {
+                              setState(() {
+                                _metric = value;
+                              });
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 60),
+                    SizedBox(
+                        height: 250,
+                        child: CustomBarChart(
+                          chartPoints: chartPoints,
+                          periods: months,
+                          barColors: _metric != SetRepsVolumeReps.volume ? barColors : null,
+                          unit: _chartUnit(),
+                          bottomTitlesInterval: 5,
+                          showTopTitles: false,
+                          showLeftTitles: true,
+                          reservedSize: _reservedSize(),
+                        )),
+                    const SizedBox(height: 10),
+                    if (_isRepsOrSetsMetric())
+                      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text(
+                          "${_metric.name} Breakdown".toUpperCase(),
+                          style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 12),
+                        ),
+                        const SizedBox(height: 14),
+                        hasWeights
+                            ? HorizontalStackedBars(weights: weights, colors: weightColors)
+                            : const HorizontalStackedBarsEmptyState(),
+                        const SizedBox(height: 10),
+                        Legend(
+                          title: "$totalOptimal",
+                          suffix: "x",
+                          subTitle: 'Optimal (>${_optimalSetsOrRepsValue()} ${_metric.name})',
+                          color: vibrantGreen,
+                        ),
+                        const SizedBox(height: 6),
+                        Legend(
+                          title: "$totalSufficient",
+                          suffix: "x",
+                          subTitle:
+                          'Sufficient (${_sufficientSetsOrRepsValue()}-${_optimalSetsOrRepsValue()} ${_metric.name})',
+                          color: vibrantBlue,
+                        ),
+                        const SizedBox(height: 6),
+                        Legend(
+                          title: "$totalMinimum", //
+                          suffix: "x",
+                          subTitle: 'Minimum (<${_sufficientSetsOrRepsValue()} ${_metric.name})',
+                          color: Colors.deepOrangeAccent,
+                        ),
+                      ]),
+                  ]),
+                )
+              ],
+            ),
           ),
         ),
       ),

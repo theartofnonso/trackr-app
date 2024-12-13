@@ -11,6 +11,7 @@ import 'package:tracker_app/widgets/dividers/label_container_divider.dart';
 
 import '../../dtos/exercise_log_dto.dart';
 import '../../dtos/open_ai_response_schema_dtos/routine_logs_report_dto.dart';
+import '../../utils/general_utils.dart';
 
 class MuscleGroupTrainingReportScreen extends StatelessWidget {
   final MuscleGroup muscleGroup;
@@ -28,16 +29,9 @@ class MuscleGroupTrainingReportScreen extends StatelessWidget {
         body: Container(
       width: double.infinity,
       height: double.infinity,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            sapphireDark80,
-            sapphireDark,
-          ],
-        ),
-      ),
+          decoration: BoxDecoration(
+            gradient: themeGradient(context: context),
+          ),
       child: SafeArea(
         bottom: false,
         minimum: const EdgeInsets.only(bottom: 10),

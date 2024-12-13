@@ -17,7 +17,7 @@ class MuscleGroupWidget extends StatelessWidget {
       ),
       child: ListTile(
         onTap: onTap,
-        dense: true,
+        
         title: Text(muscleGroupDto.muscleGroup.name,
             style: GoogleFonts.ubuntu(
                 color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),

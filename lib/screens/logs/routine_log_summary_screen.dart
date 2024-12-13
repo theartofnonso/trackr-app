@@ -292,7 +292,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
         child: SafeArea(
           child: Column(children: [
             ListTile(
-              dense: true,
+              
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.camera, size: 18),
               horizontalTitleGap: 6,
@@ -300,7 +300,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
               onTap: () => _pickFromLibrary(camera: true),
             ),
             ListTile(
-              dense: true,
+              
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.images, size: 18),
               horizontalTitleGap: 6,
@@ -318,7 +318,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
                   dividerColor: sapphireLighter,
                 ),
                 ListTile(
-                  dense: true,
+                  
                   contentPadding: EdgeInsets.zero,
                   title: Text("Remove Image",
                       style: GoogleFonts.ubuntu(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),

@@ -20,6 +20,7 @@ import '../../openAI/open_ai.dart';
 import '../../openAI/open_ai_response_format.dart';
 import '../../shared_prefs.dart';
 import '../../utils/dialog_utils.dart';
+import '../../utils/general_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
@@ -65,54 +66,59 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
                   )
           ],
         ),
-        body: SafeArea(
-          bottom: false,
-          minimum: EdgeInsets.all(10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              routineTemplate != null
-                  ? Expanded(
-                      child: SingleChildScrollView(
-                        child: ExerciseLogListView(
-                            exerciseLogs: exerciseLogsToViewModels(exerciseLogs: routineTemplate.exerciseTemplates)),
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: themeGradient(context: context),
+          ),
+          child: SafeArea(
+            bottom: false,
+            minimum: EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                routineTemplate != null
+                    ? Expanded(
+                        child: SingleChildScrollView(
+                          child: ExerciseLogListView(
+                              exerciseLogs: exerciseLogsToViewModels(exerciseLogs: routineTemplate.exerciseTemplates)),
+                        ),
+                      )
+                    : Expanded(
+                        child: Column(
+                          children: [
+                            const SizedBox(
+                              height: 12,
+                            ),
+                            _HeroWidget(),
+                            const Spacer()
+                          ],
+                        ),
                       ),
-                    )
-                  : Expanded(
-                      child: Column(
-                        children: [
-                          const SizedBox(
-                            height: 12,
-                          ),
-                          _HeroWidget(),
-                          const Spacer()
-                        ],
+                const SizedBox(height: 12),
+                SafeArea(
+                  minimum: EdgeInsets.all(10),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _textEditingController,
+                          decoration: InputDecoration(hintText: "Describe your workout"),
+                          maxLines: null,
+                          showCursor: true,
+                          keyboardType: TextInputType.text,
+                          textCapitalization: TextCapitalization.sentences,
+                        ),
                       ),
-                    ),
-              const SizedBox(height: 12),
-              SafeArea(
-                minimum: EdgeInsets.all(10),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _textEditingController,
-                        decoration: InputDecoration(hintText: "Describe your workout"),
-                        maxLines: null,
-                        showCursor: true,
-                        keyboardType: TextInputType.text,
-                        textCapitalization: TextCapitalization.sentences,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: _runMessage,
-                      icon: const FaIcon(FontAwesomeIcons.paperPlane),
-                    )
-                  ],
+                      IconButton(
+                        onPressed: _runMessage,
+                        icon: const FaIcon(FontAwesomeIcons.paperPlane),
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ));
   }

@@ -17,6 +17,7 @@ import '../../controllers/routine_user_controller.dart';
 import '../../dtos/open_ai_response_schema_dtos/monthly_training_report.dart';
 import '../../enums/activity_type_enums.dart';
 import '../../utils/exercise_logs_utils.dart';
+import '../../utils/general_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../widgets/calendar/calendar.dart';
 import '../../widgets/chart/line_chart_widget.dart';
@@ -114,14 +115,7 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
           width: double.infinity,
           height: double.infinity,
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                sapphireDark80,
-                sapphireDark,
-              ],
-            ),
+            gradient: themeGradient(context: context),
           ),
           child: SafeArea(
               bottom: false,

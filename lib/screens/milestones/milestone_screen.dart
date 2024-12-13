@@ -44,106 +44,96 @@ class MilestoneScreen extends StatelessWidget {
                 onPressed: () => _shareMilestoneSummary(context: context),
                 child: const FaIcon(FontAwesomeIcons.rocket))
             : null,
-        body: Column(
-          children: [
-            SizedBox(
-              height: 200,
-              width: double.infinity,
-              child: Stack(children: [
-                Positioned.fill(
-                    child: Image.asset(
-                  'images/man_woman.jpg',
-                  fit: BoxFit.cover,
-                )),
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        sapphireDark.withOpacity(0.4),
-                        sapphireDark.withOpacity(0.8),
-                        sapphireDark,
-                      ],
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: themeGradient(context: context),
+          ),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 200,
+                width: double.infinity,
+                child: Stack(children: [
+                  Positioned.fill(
+                      child: Image.asset(
+                    'images/man_woman.jpg',
+                    fit: BoxFit.cover,
+                  )),
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          sapphireDark.withOpacity(0.4),
+                          sapphireDark.withOpacity(0.8),
+                          sapphireDark,
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(milestone.name.toUpperCase(),
-                            style: GoogleFonts.ubuntu(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 22)),
-                      ],
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(milestone.name.toUpperCase(),
+                              style: GoogleFonts.ubuntu(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 22)),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                SafeArea(
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      IconButton(
-                        icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
-                        onPressed: context.pop,
-                      )
-                    ]),
-                  ),
-                )
-              ]),
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      children: [
-                        Center(child: Text(milestone.description, style: Theme.of(context).textTheme.bodyMedium)),
-                        const SizedBox(height: 20),
-                        LabelDivider(
-                            label: "Details",
-                            labelColor: isDarkMode ? Colors.white70 : Colors.black,
-                            dividerColor: sapphireLighter),
-                        const SizedBox(height: 16),
-                        Column(
-                          spacing: 10,
-                          children: [
-                            Theme(
-                              data: Theme.of(context).copyWith(
-                                  listTileTheme:
-                                      isDarkMode ? TRKRListTileTheme.darkTheme : TRKRListTileTheme.lightTheme),
-                              child: ListTile(
+                  SafeArea(
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                        IconButton(
+                          icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
+                          onPressed: context.pop,
+                        )
+                      ]),
+                    ),
+                  )
+                ]),
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        children: [
+                          Center(child: Text(milestone.description, style: Theme.of(context).textTheme.bodyMedium)),
+                          const SizedBox(height: 20),
+                          LabelDivider(
+                              label: "Details",
+                              labelColor: isDarkMode ? Colors.white70 : Colors.black,
+                              dividerColor: sapphireLighter),
+                          const SizedBox(height: 16),
+                          Column(
+                            spacing: 10,
+                            children: [
+                              ListTile(
                                 titleAlignment: ListTileTitleAlignment.threeLine,
                                 leading: const FaIcon(
                                   FontAwesomeIcons.book,
                                 ),
                                 title: Text(milestone.rule),
                               ),
-                            ),
-                            Theme(
-                              data: Theme.of(context).copyWith(
-                                  listTileTheme:
-                                      isDarkMode ? TRKRListTileTheme.darkTheme : TRKRListTileTheme.lightTheme),
-                              child: ListTile(
+                              ListTile(
                                 titleAlignment: ListTileTitleAlignment.threeLine,
                                 leading: const FaIcon(
                                   FontAwesomeIcons.trophy,
                                 ),
                                 title: Text(challengeTargetSummary(type: milestone.type, target: milestone.target)),
                               ),
-                            ),
-                            if (milestone.type == MilestoneType.reps)
-                              Theme(
-                                data: Theme.of(context).copyWith(
-                                    listTileTheme:
-                                        isDarkMode ? TRKRListTileTheme.darkTheme : TRKRListTileTheme.lightTheme),
-                                child: ListTile(
+                              if (milestone.type == MilestoneType.reps)
+                                ListTile(
                                   titleAlignment: ListTileTitleAlignment.center,
                                   leading: Image.asset(
                                     'muscles_illustration/${(milestone as RepsMilestone).muscleGroup.illustration()}.png',
@@ -154,41 +144,41 @@ class MilestoneScreen extends StatelessWidget {
                                   title: Text((milestone as RepsMilestone).muscleGroup.name,
                                       maxLines: 2, overflow: TextOverflow.ellipsis, textAlign: TextAlign.start),
                                 ),
-                              ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: isDarkMode ? sapphireDark80 : Colors.grey.shade100,
-                            borderRadius: BorderRadius.circular(5),
+                            ],
                           ),
-                          child: LinearProgressIndicator(
-                            value: milestone.progress.$1,
-                            backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade400,
-                            color: setsMilestoneColor(progress: milestone.progress.$1),
-                            minHeight: 25,
-                            borderRadius: BorderRadius.circular(3.0), // Border r
+                          const SizedBox(
+                            height: 20,
                           ),
-                        ),
-                        const SizedBox(height: 16),
-                        milestone.progress.$1 > 0
-                            ? milestone.progress.$1 == 1
-                                ? _CompletedMessage(target: milestone.target, description: _targetDescription())
-                                : _ProgressMessage(
-                                    remainder: remainder, target: milestone.target, description: _targetDescription())
-                            : Text("Keep up the training to see your progress grow for this challenge.",
-                                style: Theme.of(context).textTheme.bodyLarge),
-                      ],
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: isDarkMode ? sapphireDark80 : Colors.grey.shade100,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: LinearProgressIndicator(
+                              value: milestone.progress.$1,
+                              backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade400,
+                              color: setsMilestoneColor(progress: milestone.progress.$1),
+                              minHeight: 25,
+                              borderRadius: BorderRadius.circular(3.0), // Border r
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          milestone.progress.$1 > 0
+                              ? milestone.progress.$1 == 1
+                                  ? _CompletedMessage(target: milestone.target, description: _targetDescription())
+                                  : _ProgressMessage(
+                                      remainder: remainder, target: milestone.target, description: _targetDescription())
+                              : Text("Keep up the training to see your progress grow for this challenge.",
+                                  style: Theme.of(context).textTheme.bodyLarge),
+                        ],
+                      ),
                     ),
-                  ),
-                ]),
+                  ]),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       milestone.progress.$1 == 1

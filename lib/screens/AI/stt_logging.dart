@@ -12,6 +12,7 @@ import 'package:tracker_app/widgets/dividers/label_container_divider.dart';
 import 'package:tracker_app/widgets/routine/preview/sets_listview.dart';
 
 import '../../utils/dialog_utils.dart';
+import '../../utils/general_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 
 class STTLoggingScreen extends StatefulWidget {
@@ -121,15 +122,8 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              sapphireDark80,
-              sapphireDark,
-            ],
-          ),
+        decoration: BoxDecoration(
+          gradient: themeGradient(context: context),
         ),
         child: SafeArea(
           bottom: false,
