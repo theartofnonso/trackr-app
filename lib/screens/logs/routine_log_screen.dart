@@ -112,8 +112,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
               icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
               onPressed: context.pop,
             ),
-            title: Text(updatedLog.name,
-                style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+            title: Text(updatedLog.name),
             actions: updatedLog.owner == SharedPrefs().userId && widget.isEditable
                 ? [
                     IconButton(

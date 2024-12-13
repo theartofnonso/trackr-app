@@ -23,7 +23,6 @@ class MilestonesHomeScreen extends StatelessWidget {
         child: Scaffold(
           appBar: AppBar(
             toolbarHeight: 0,
-            backgroundColor: sapphireDark80,
             bottom: TabBar(
               dividerColor: Colors.transparent,
               tabs: [
@@ -36,32 +35,19 @@ class MilestonesHomeScreen extends StatelessWidget {
               ],
             ),
           ),
-          body: Container(
-            width: double.infinity,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  sapphireDark80,
-                  sapphireDark,
-                ],
-              ),
-            ),
-            child: SafeArea(
-              child: Column(
-                children: [
-                  const SizedBox(height: 22),
-                  Expanded(
-                    child: TabBarView(
-                      children: [
-                        PendingMilestonesScreen(milestones: pendingMilestones),
-                        CompletedMilestonesScreen(milestones: completedMilestones)
-                      ],
-                    ),
+          body: SafeArea(
+            child: Column(
+              children: [
+                const SizedBox(height: 22),
+                Expanded(
+                  child: TabBarView(
+                    children: [
+                      PendingMilestonesScreen(milestones: pendingMilestones),
+                      CompletedMilestonesScreen(milestones: completedMilestones)
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ));

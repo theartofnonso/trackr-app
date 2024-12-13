@@ -35,13 +35,11 @@ class DateDurationPBWidget extends StatelessWidget {
           children: [
             const FaIcon(
               FontAwesomeIcons.calendarDay,
-              color: Colors.white,
               size: 14,
             ),
             const SizedBox(width: 6),
             Text(datetimeSummary,
-                style:
-                    GoogleFonts.ubuntu(color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                style: Theme.of(context).textTheme.bodySmall),
           ],
         ),
         const SizedBox(width: 10),
@@ -50,13 +48,11 @@ class DateDurationPBWidget extends StatelessWidget {
           children: [
             const FaIcon(
               FontAwesomeIcons.solidClock,
-              color: Colors.white,
               size: 14,
             ),
             const SizedBox(width: 6),
             Text(duration.hmsAnalog(),
-                style:
-                    GoogleFonts.ubuntu(color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                style: Theme.of(context).textTheme.bodySmall),
           ],
         ),
         const SizedBox(width: 10),
