@@ -59,7 +59,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -98,16 +97,15 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       borderRadius: BorderRadius.circular(5.0),
                     )),
                     backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                          (Set<WidgetState> states) {
+                      (Set<WidgetState> states) {
                         if (states.contains(WidgetState.selected)) {
-
                           return isDarkMode ? Colors.white : Colors.black;
                         }
                         return isDarkMode ? Colors.black : Colors.white;
                       },
                     ),
                     foregroundColor: WidgetStateProperty.resolveWith<Color>(
-                          (Set<WidgetState> states) {
+                      (Set<WidgetState> states) {
                         if (states.contains(WidgetState.selected)) {
                           return isDarkMode ? Colors.black : Colors.white;
                         }
@@ -146,7 +144,9 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               SwitchListTile(
                 tileColor: Colors.transparent,
                 activeColor: vibrantGreen,
-                title: Text('Show calendar dates',),
+                title: Text(
+                  'Show calendar dates',
+                ),
                 value: SharedPrefs().showCalendarDates,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                 onChanged: (bool value) {
@@ -284,8 +284,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.globe, size: 18),
               horizontalTitleGap: 6,
-              title: Text("On the web",
-                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              title: Text("On the web", style: Theme.of(context).textTheme.bodyLarge),
               onTap: () {
                 Navigator.of(context).pop();
                 openUrl(url: trackrWebUrl, context: context);
@@ -294,10 +293,9 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
             ListTile(
               dense: true,
               contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(FontAwesomeIcons.instagram, size: 18),
+              leading: const FaIcon(FontAwesomeIcons.instagram, size: 20),
               horizontalTitleGap: 6,
-              title: Text("On Instagram",
-                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              title: Text("On Instagram", style: Theme.of(context).textTheme.bodyLarge),
               onTap: () {
                 Navigator.of(context).pop();
                 openUrl(url: instagramUrl, context: context);

@@ -4,7 +4,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/analytics_controller.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
@@ -14,7 +13,6 @@ import 'package:tracker_app/dtos/set_dtos/set_dto.dart';
 import 'package:tracker_app/strings/ai_prompts.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 
-import '../../colors.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/exercise_log_dto.dart';
 import '../../dtos/open_ai_response_schema_dtos/tool_dto.dart';
@@ -49,85 +47,74 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
     final routineTemplate = _routineTemplate;
 
     return Scaffold(
-        body: Container(
-      width: double.infinity,
-      height: double.infinity,
-      padding: const EdgeInsets.all(10.0),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            sapphireDark80,
-            sapphireDark,
-          ],
-        ),
-      ),
-      child: SafeArea(
-        bottom: false,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _AppBar(positiveAction: _navigateBack, canPerformPositiveAction: routineTemplate != null),
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
+            onPressed: _navigateBack,
+          ),
+          title: Text("TRKR Coach".toUpperCase()),
+          actions: [
             routineTemplate != null
-                ? Expanded(
-                    child: SingleChildScrollView(
-                      child: ExerciseLogListView(
-                          exerciseLogs: exerciseLogsToViewModels(exerciseLogs: routineTemplate.exerciseTemplates)),
-                    ),
+                ? IconButton(
+                    icon: const FaIcon(FontAwesomeIcons.solidSquareCheck, size: 28),
+                    onPressed: _hideLoadingScreen,
                   )
-                : Expanded(
-                    child: Column(
-                      children: [
-                        const SizedBox(
-                          height: 12,
-                        ),
-                        _HeroWidget(),
-                        const Spacer()
-                      ],
-                    ),
-                  ),
-            const SizedBox(height: 12),
-            SafeArea(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _textEditingController,
-                      decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                          enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              borderSide: const BorderSide(color: Colors.white10)),
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              borderSide: const BorderSide(color: Colors.white30)),
-                          filled: true,
-                          fillColor: Colors.white10,
-                          hintText: "Describe your workout",
-                          hintStyle:
-                              GoogleFonts.ubuntu(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w400)),
-                      maxLines: null,
-                      cursorColor: Colors.white,
-                      showCursor: true,
-                      keyboardType: TextInputType.text,
-                      textCapitalization: TextCapitalization.sentences,
-                      style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white, fontSize: 16),
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: _runMessage,
-                    icon: const FaIcon(FontAwesomeIcons.paperPlane),
-                    color: Colors.white,
+                : const IconButton(
+                    icon: SizedBox.shrink(),
+                    onPressed: null,
                   )
-                ],
-              ),
-            ),
           ],
         ),
-      ),
-    ));
+        body: SafeArea(
+          bottom: false,
+          minimum: EdgeInsets.all(10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              routineTemplate != null
+                  ? Expanded(
+                      child: SingleChildScrollView(
+                        child: ExerciseLogListView(
+                            exerciseLogs: exerciseLogsToViewModels(exerciseLogs: routineTemplate.exerciseTemplates)),
+                      ),
+                    )
+                  : Expanded(
+                      child: Column(
+                        children: [
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          _HeroWidget(),
+                          const Spacer()
+                        ],
+                      ),
+                    ),
+              const SizedBox(height: 12),
+              SafeArea(
+                minimum: EdgeInsets.all(10),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _textEditingController,
+                        decoration: InputDecoration(hintText: "Describe your workout"),
+                        maxLines: null,
+                        showCursor: true,
+                        keyboardType: TextInputType.text,
+                        textCapitalization: TextCapitalization.sentences,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: _runMessage,
+                      icon: const FaIcon(FontAwesomeIcons.paperPlane),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ));
   }
 
   void _showLoadingScreen() {
@@ -308,39 +295,6 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
   }
 }
 
-class _AppBar extends StatelessWidget {
-  final VoidCallback positiveAction;
-  final bool canPerformPositiveAction;
-
-  const _AppBar({required this.positiveAction, this.canPerformPositiveAction = false});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        IconButton(
-          icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
-          onPressed: Navigator.of(context).pop,
-        ),
-        Expanded(
-          child: Text("TRKR Coach".toUpperCase(),
-              textAlign: TextAlign.center,
-              style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 16)),
-        ),
-        canPerformPositiveAction
-            ? IconButton(
-                icon: const FaIcon(FontAwesomeIcons.solidSquareCheck, size: 28),
-                onPressed: positiveAction,
-              )
-            : const IconButton(
-                icon: SizedBox.shrink(),
-                onPressed: null,
-              )
-      ],
-    );
-  }
-}
-
 class _HeroWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -354,35 +308,18 @@ class _HeroWidget extends StatelessWidget {
             RichText(
               text: TextSpan(
                 text: "Hey there!",
-                style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white, height: 1.5),
+                style: Theme.of(context).textTheme.bodyLarge,
                 children: <TextSpan>[
+                  TextSpan(text: " ", style: Theme.of(context).textTheme.bodyLarge),
+                  TextSpan(text: "TRKR Coach", style: Theme.of(context).textTheme.bodyLarge),
+                  TextSpan(text: " ", style: Theme.of(context).textTheme.bodyLarge),
+                  TextSpan(text: "can help you create awesome workouts", style: Theme.of(context).textTheme.bodyLarge),
+                  TextSpan(text: ".", style: Theme.of(context).textTheme.bodyLarge),
+                  TextSpan(text: " ", style: Theme.of(context).textTheme.bodyLarge),
+                  TextSpan(text: "Try saying", style: Theme.of(context).textTheme.bodyLarge),
+                  TextSpan(text: " ", style: Theme.of(context).textTheme.bodyLarge),
                   TextSpan(
-                      text: " ",
-                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)),
-                  TextSpan(
-                      text: "TRKR Coach",
-                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white)),
-                  TextSpan(
-                      text: " ",
-                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)),
-                  TextSpan(
-                      text: "can help you create awesome workouts",
-                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)),
-                  TextSpan(
-                      text: ".",
-                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)),
-                  TextSpan(
-                      text: " ",
-                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)),
-                  TextSpan(
-                      text: "Try saying",
-                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)),
-                  TextSpan(
-                      text: " ",
-                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)),
-                  TextSpan(
-                      text: 'I want to train "mention muscle group(s)"',
-                      style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white)),
+                      text: 'I want to train "mention muscle group(s)"', style: Theme.of(context).textTheme.bodyLarge),
                 ],
               ),
             )

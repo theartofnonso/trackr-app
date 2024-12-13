@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
@@ -23,133 +22,102 @@ class RoutineLogReportScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: sapphireDark80,
           leading: IconButton(
             icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
             onPressed: Navigator.of(context).pop,
           ),
           title: Text(report.title.toUpperCase(),
-              textAlign: TextAlign.center,
-              style: GoogleFonts.ubuntu(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 16)),
+              textAlign: TextAlign.center),
           centerTitle: true,
         ),
-        body: Container(
-          width: double.infinity,
-          height: double.infinity,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                sapphireDark80,
-                sapphireDark,
-              ],
-            ),
-          ),
-          child: SafeArea(
-            bottom: false,
-            minimum: const EdgeInsets.only(bottom: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ListTile(
-                          leading: TRKRCoachWidget(),
-                          titleAlignment: ListTileTitleAlignment.top,
-                          title: Text(report.introduction,
-                              style:
-                                  GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 16)),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16),
-                          child: LabelContainerDivider(
-                              labelAlignment: LabelAlignment.left,
-                              label: "training and performance".toUpperCase(),
-                              description: "Review your performance in comparison to previous sessions.",
-                              labelStyle:
-                                  GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
-                              descriptionStyle: GoogleFonts.ubuntu(
-                                color: Colors.white70,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 16,
-                              ),
-                              dividerColor: sapphireLighter),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: ListView.separated(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                final exerciseReport = report.exerciseReports[index];
-                                final sets = exerciseReport.currentPerformance.sets
-                                    .map((set) =>
-                                        WeightAndRepsSetDto(weight: set.weight, reps: set.repetitions, checked: true))
-                                    .toList();
-                                final exerciseLog = ExerciseLogDto(
-                                    id: '',
-                                    routineLogId: '',
-                                    superSetId: '',
-                                    exercise: ExerciseDto(
-                                        id: "",
-                                        name: exerciseReport.exerciseName,
-                                        primaryMuscleGroup: MuscleGroup.fullBody,
-                                        secondaryMuscleGroups: [],
-                                        type: ExerciseType.weights,
-                                        owner: ""),
-                                    notes: exerciseReport.comments,
-                                    sets: sets,
-                                    createdAt: DateTime.now());
-                                return _ExerciseReportWidget(exerciseLog: exerciseLog, exerciseReport: exerciseReport);
-                              },
-                              separatorBuilder: (context, index) => SizedBox(height: 20),
-                              itemCount: report.exerciseReports.length),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16),
-                          child: LabelContainerDivider(
-                              labelAlignment: LabelAlignment.left,
-                              label: "Recommendations".toUpperCase(),
-                              description:
-                                  "Here are some tailored recommendations to help you optimize your future training sessions.",
-                              labelStyle:
-                                  GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
-                              descriptionStyle: GoogleFonts.ubuntu(
-                                color: Colors.white70,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 16,
-                              ),
-                              dividerColor: sapphireLighter),
-                        ),
-                        ListTile(
-                          leading: TRKRCoachWidget(),
-                          titleAlignment: ListTileTitleAlignment.top,
-                          title: MarkdownBody(
-                            data: report.suggestions,
-                            styleSheet: MarkdownStyleSheet(
-                              h1: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
-                              h2: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
-                              h3: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700),
-                              h4: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
-                              h5: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
-                              h6: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
-                              p: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w400),
-                            ),
+        body: SafeArea(
+          bottom: false,
+          minimum: const EdgeInsets.all(10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ListTile(
+                        tileColor: Colors.transparent,
+                        leading: TRKRCoachWidget(),
+                        titleAlignment: ListTileTitleAlignment.top,
+                        title: Text(report.introduction,
+                            style: Theme.of(context).textTheme.bodyMedium),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16),
+                        child: LabelContainerDivider(
+                            labelAlignment: LabelAlignment.left,
+                            label: "training and performance".toUpperCase(),
+                            description: "Review your performance in comparison to previous sessions.",
+                            labelStyle: Theme.of(context).textTheme.bodyLarge!,
+                            descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
+                            dividerColor: sapphireLighter),
+                      ),
+                      ListView.separated(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            final exerciseReport = report.exerciseReports[index];
+                            final sets = exerciseReport.currentPerformance.sets
+                                .map((set) =>
+                                WeightAndRepsSetDto(weight: set.weight, reps: set.repetitions, checked: true))
+                                .toList();
+                            final exerciseLog = ExerciseLogDto(
+                                id: '',
+                                routineLogId: '',
+                                superSetId: '',
+                                exercise: ExerciseDto(
+                                    id: "",
+                                    name: exerciseReport.exerciseName,
+                                    primaryMuscleGroup: MuscleGroup.fullBody,
+                                    secondaryMuscleGroups: [],
+                                    type: ExerciseType.weights,
+                                    owner: ""),
+                                notes: exerciseReport.comments,
+                                sets: sets,
+                                createdAt: DateTime.now());
+                            return _ExerciseReportWidget(exerciseLog: exerciseLog, exerciseReport: exerciseReport);
+                          },
+                          separatorBuilder: (context, index) => SizedBox(height: 20),
+                          itemCount: report.exerciseReports.length),
+                      LabelContainerDivider(
+                          labelAlignment: LabelAlignment.left,
+                          label: "Recommendations".toUpperCase(),
+                          description:
+                          "Here are some tailored recommendations to help you optimize your future training sessions.",
+                          labelStyle: Theme.of(context).textTheme.bodyLarge!,
+                          descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
+                          dividerColor: sapphireLighter),
+                      ListTile(
+                        tileColor: Colors.transparent,
+                        leading: TRKRCoachWidget(),
+                        titleAlignment: ListTileTitleAlignment.top,
+                        title: MarkdownBody(
+                          data: report.suggestions,
+                          styleSheet: MarkdownStyleSheet(
+                            h1: Theme.of(context).textTheme.bodyLarge,
+                            h2: Theme.of(context).textTheme.bodyLarge,
+                            h3: Theme.of(context).textTheme.bodyLarge,
+                            h4: Theme.of(context).textTheme.bodyLarge,
+                            h5: Theme.of(context).textTheme.bodyLarge,
+                            h6: Theme.of(context).textTheme.bodyLarge,
+                            p: Theme.of(context).textTheme.bodyMedium,
                           ),
-                        )
-                      ],
-                    ),
+                        ),
+                      )
+                    ],
                   ),
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+            ],
           ),
         ));
   }
@@ -185,12 +153,8 @@ class _ExerciseReportWidget extends StatelessWidget {
                 labelAlignment: LabelAlignment.left,
                 label: "Achievements".toUpperCase(),
                 description: exerciseReport.achievements,
-                labelStyle: GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w900, fontSize: 16),
-                descriptionStyle: GoogleFonts.ubuntu(
-                  color: Colors.white70,
-                  fontWeight: FontWeight.w400,
-                  fontSize: 16,
-                ),
+                labelStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(color: vibrantGreen),
+                descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
                 dividerColor: sapphireLighter)
           ],
         ));

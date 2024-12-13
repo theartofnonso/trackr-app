@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
@@ -37,18 +36,17 @@ class ExerciseLogWidget extends StatelessWidget {
             .push(MaterialPageRoute(builder: (context) => ExerciseHomeScreen(exercise: exerciseLog.exercise)));
       },
       child: Column(
-        spacing: 8,
+        spacing: 12,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(exerciseLog.exercise.name, style: Theme.of(context).textTheme.titleSmall, textAlign: TextAlign.center),
+          Text(exerciseLog.exercise.name, style: Theme.of(context).textTheme.titleMedium, textAlign: TextAlign.center),
           if (otherSuperSet != null)
             Text("with ${otherSuperSet.exercise.name}",
                 style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center),
           if (exerciseLog.notes.isNotEmpty)
             Text(exerciseLog.notes,
                 textAlign: TextAlign.center,
-                style: GoogleFonts.ubuntu(
-                    fontSize: 14, color: Colors.white70, fontStyle: FontStyle.italic, fontWeight: FontWeight.w600)),
+                style: Theme.of(context).textTheme.bodyMedium),
           switch (exerciseType) {
             ExerciseType.weights => DoubleSetHeader(firstLabel: weightLabel().toUpperCase(), secondLabel: 'REPS'),
             ExerciseType.bodyWeight => SingleSetHeader(label: 'REPS'),

@@ -23,6 +23,14 @@ class OpacityButtonWidget extends StatelessWidget {
       this.padding,
       this.visualDensity = VisualDensity.compact});
 
+  Color? _themeBackgroundColor({required bool isDarkMode}) {
+    return isDarkMode ? buttonColor?.withOpacity(0.15) : buttonColor;
+  }
+
+  Color _defaultBackgroundColor({required bool isDarkMode}) {
+    return isDarkMode ? Colors.white.withOpacity(0.15) : Colors.grey.shade400;
+  }
+
   @override
   Widget build(BuildContext context) {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
@@ -34,7 +42,7 @@ class OpacityButtonWidget extends StatelessWidget {
         style: ButtonStyle(
           visualDensity: visualDensity,
           backgroundColor: WidgetStateProperty.all(
-              isDarkMode ? buttonColor?.withOpacity(0.15) : buttonColor ?? Colors.white.withOpacity(0.15)),
+              _themeBackgroundColor(isDarkMode: isDarkMode) ?? _defaultBackgroundColor(isDarkMode: isDarkMode)),
           shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
           overlayColor: WidgetStateProperty.resolveWith<Color?>(
             (Set<WidgetState> states) {
