@@ -111,7 +111,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         if (states.contains(WidgetState.selected)) {
                           return isDarkMode ? Colors.black : Colors.white;
                         }
-                        return isDarkMode ? Colors.black : Colors.white;
+                        return isDarkMode ? Colors.white : Colors.black;
                       },
                     ),
                   ),
