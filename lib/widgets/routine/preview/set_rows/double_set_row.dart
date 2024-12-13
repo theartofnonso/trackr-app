@@ -21,7 +21,7 @@ class DoubleSetRow extends StatelessWidget {
     return SetRow(
         pbs: pbs,
         child: Table(
-            border: TableBorder.symmetric(inside: BorderSide(color: sapphireLighter.withOpacity(0.4), width: 1.5)),
+            border: TableBorder.symmetric(inside: BorderSide(color: isDarkMode ? sapphireLighter.withOpacity(0.4) : Colors.white, width: 1.5)),
             columnWidths: const <int, TableColumnWidth>{
               0: FlexColumnWidth(1),
               1: FlexColumnWidth(1),

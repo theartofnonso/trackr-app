@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class OpacityButtonWidget extends StatelessWidget {
   final void Function()? onPressed;
@@ -14,25 +13,28 @@ class OpacityButtonWidget extends StatelessWidget {
 
   const OpacityButtonWidget(
       {super.key,
-       this.onPressed,
-        this.onLongPress,
+      this.onPressed,
+      this.onLongPress,
       required this.label,
       this.loadingLabel = "loading",
       this.loading = false,
       this.buttonColor,
-        this.textStyle,
+      this.textStyle,
       this.padding,
       this.visualDensity = VisualDensity.compact});
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
 
     final action = onPressed ?? onLongPress;
 
     return TextButton(
         style: ButtonStyle(
           visualDensity: visualDensity,
-          backgroundColor: WidgetStateProperty.all(buttonColor?.withOpacity(0.15) ?? Colors.white.withOpacity(0.15)),
+          backgroundColor: WidgetStateProperty.all(
+              isDarkMode ? buttonColor?.withOpacity(0.15) : buttonColor ?? Colors.white.withOpacity(0.15)),
           shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
           overlayColor: WidgetStateProperty.resolveWith<Color?>(
             (Set<WidgetState> states) {
@@ -50,10 +52,13 @@ class OpacityButtonWidget extends StatelessWidget {
             children: [
               Text(loading ? loadingLabel : label,
                   textAlign: TextAlign.start,
-                  style: textStyle ?? GoogleFonts.ubuntu(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                      color: action != null ? buttonColor : buttonColor?.withOpacity(0.2))),
+                  style: textStyle ??
+                      Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: action != null
+                              ? isDarkMode
+                                  ? buttonColor
+                                  : Colors.black
+                              : buttonColor?.withOpacity(0.2))),
               loading
                   ? const Padding(
                       padding: EdgeInsets.only(left: 6.0),

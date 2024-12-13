@@ -327,6 +327,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final sets = widget.exerciseLogDto.sets;
 
     final superSetExerciseDto = widget.superSet;
@@ -336,7 +340,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: sapphireDark80, // Set the background color
+        color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, // Set the background color
         borderRadius: BorderRadius.circular(5), // Set the border radius to make it rounded
       ),
       child: Column(
@@ -356,13 +360,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(widget.exerciseLogDto.exercise.name,
-                        style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+                        style: Theme.of(context).textTheme.titleSmall),
                     if (superSetExerciseDto != null)
                       Column(
                         children: [
                           Text("with ${superSetExerciseDto.exercise.name}",
                               style:
-                                  GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 12)),
+                              Theme.of(context).textTheme.bodyMedium),
                           const SizedBox(height: 10)
                         ],
                       ),
@@ -395,11 +399,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             controller: TextEditingController(text: widget.exerciseLogDto.notes),
             onChanged: (value) => _updateExerciseLogNotes(value: value),
             decoration: InputDecoration(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: sapphireLighter)),
-              filled: true,
-              fillColor: sapphireDark.withOpacity(0.4),
               hintText: "Enter notes",
               hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14),
             ),
@@ -407,7 +406,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             cursorColor: Colors.white,
             keyboardType: TextInputType.text,
             textCapitalization: TextCapitalization.sentences,
-            style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white.withOpacity(0.8), fontSize: 14),
           ),
           const SizedBox(height: 12),
           switch (exerciseType) {
@@ -459,7 +457,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           if (withDurationOnly(type: exerciseType) && sets.isEmpty)
             Center(
               child: Text("Tap + to add a timer",
-                  style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white70)),
+                  style: Theme.of(context).textTheme.bodySmall),
             ),
           const SizedBox(height: 8),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -468,13 +466,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             if (withWeightsOnly(type: exerciseType))
               IconButton(
                   onPressed: _show1RMRecommendations,
-                  icon: const FaIcon(FontAwesomeIcons.solidLightbulb, color: Colors.white, size: 16),
+                  icon: const FaIcon(FontAwesomeIcons.solidLightbulb, size: 16),
                   style: ButtonStyle(
                       visualDensity: VisualDensity.compact,
                       shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
             IconButton(
               onPressed: widget.onResize,
-              icon: const Icon(Icons.close_fullscreen_rounded, color: Colors.white),
+              icon: const Icon(Icons.close_fullscreen_rounded),
               tooltip: 'Maximise card',
             ),
             const SizedBox(
@@ -482,7 +480,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             ),
             IconButton(
                 onPressed: _addSet,
-                icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 16),
+                icon: const FaIcon(FontAwesomeIcons.plus, size: 16),
                 style: ButtonStyle(
                     visualDensity: VisualDensity.compact,
                     backgroundColor: WidgetStateProperty.all(sapphireDark.withOpacity(0.2)),

@@ -3,6 +3,7 @@ import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/double_textfield.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/int_textfield.dart';
 
+import '../../../../colors.dart';
 import '../../../../enums/routine_editor_type_enums.dart';
 import '../set_check_button.dart';
 import '../set_delete_button.dart';
@@ -33,11 +34,16 @@ class WeightsAndRepsSetRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     double weight = setDto.weight;
     int reps = setDto.reps;
 
     return Table(
-      border: TableBorder.all(color: Colors.white.withOpacity(0.1), borderRadius: BorderRadius.circular(5)),
+      border: TableBorder.all(color: isDarkMode ? sapphireLighter.withOpacity(0.4) : Colors.white, borderRadius: BorderRadius.circular(5)),
       columnWidths: editorType == RoutineEditorMode.edit
           ? <int, TableColumnWidth>{
               0: const FixedColumnWidth(50),

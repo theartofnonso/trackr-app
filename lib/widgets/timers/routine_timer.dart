@@ -7,10 +7,9 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 class RoutineTimer extends StatefulWidget {
   final DateTime startTime;
   final bool digital;
-  final Color? color;
   final void Function(Duration duration)? onChangedDuration;
 
-  const RoutineTimer({super.key, required this.startTime, this.color = Colors.white, this.digital = false, this.onChangedDuration});
+  const RoutineTimer({super.key, required this.startTime, this.digital = false, this.onChangedDuration});
 
   @override
   State<RoutineTimer> createState() => _RoutineTimerState();
@@ -23,7 +22,7 @@ class _RoutineTimerState extends State<RoutineTimer> {
   @override
   Widget build(BuildContext context) {
     return Text(widget.digital ? _elapsedDuration.hmsDigital() : _elapsedDuration.hmsAnalog(),
-        style: GoogleFonts.ubuntu(color: widget.color, fontWeight: FontWeight.w600));
+        style: Theme.of(context).textTheme.bodyMedium);
   }
 
   @override

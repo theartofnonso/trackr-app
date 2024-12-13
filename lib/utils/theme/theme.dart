@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/utils/theme/app_bar_theme.dart';
 import 'package:tracker_app/utils/theme/flaoting_action_button_theme.dart';
+import 'package:tracker_app/utils/theme/input_textfield_theme.dart';
 import 'package:tracker_app/utils/theme/navigation_bar_theme.dart';
 import 'package:tracker_app/utils/theme/text_theme.dart';
 
@@ -22,6 +23,7 @@ class TRKRTheme {
       listTileTheme: TRKRListTileTheme.lightTheme,
       navigationBarTheme: TRKRNavigationBarTheme.lightNavigationBarTheme,
       appBarTheme: TRKRAppBarTheme.lightTheme,
+      inputDecorationTheme: TRKRInputTextFieldTheme.lightTheme,
       floatingActionButtonTheme: TRKRFloatingActionButtonTheme.lightTheme);
 
   static ThemeData darkTheme = ThemeData(
@@ -35,5 +37,6 @@ class TRKRTheme {
       listTileTheme: TRKRListTileTheme.darkTheme,
       floatingActionButtonTheme: TRKRFloatingActionButtonTheme.darkTheme,
       appBarTheme: TRKRAppBarTheme.darkTheme,
+      inputDecorationTheme: TRKRInputTextFieldTheme.darkTheme,
       navigationBarTheme: TRKRNavigationBarTheme.darkNavigationBarTheme);
 }
