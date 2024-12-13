@@ -39,7 +39,7 @@ class TRKRInformationContainer extends StatelessWidget {
                         style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white, fontSize: 14)),
                   ),
                   const SizedBox(width: 22),
-                  FaIcon(FontAwesomeIcons.solidLightbulb)
+                  FaIcon(FontAwesomeIcons.solidLightbulb, color: Colors.white,)
                 ],),
               const SizedBox(height: 6),
               Text(

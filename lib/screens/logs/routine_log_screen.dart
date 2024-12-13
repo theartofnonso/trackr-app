@@ -179,7 +179,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                       _StatisticWidget(
                         title: "${pbs.length}",
                         subtitle: "PBs",
-                        icon: FontAwesomeIcons.star,
+                        icon: FontAwesomeIcons.solidStar,
                       ),
                       const SizedBox(
                         width: 10,

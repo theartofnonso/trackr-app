@@ -119,11 +119,8 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
         floatingActionButton: FloatingActionButton(
             heroTag: "routine_log_screen",
             onPressed: _showCopyBottomSheet,
-            backgroundColor: sapphireDark,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: const FaIcon(Icons.copy)),
         appBar: AppBar(
-          backgroundColor: sapphireDark80,
           leading: IconButton(
             icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
             onPressed: context.pop,
@@ -135,62 +132,50 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
             )
           ],
         ),
-        body: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                sapphireDark80,
-                sapphireDark,
-              ],
-            ),
-          ),
-          child: SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 30),
-                AspectRatio(
-                  aspectRatio: 1,
-                  child: PageView.builder(
-                    scrollDirection: Axis.horizontal,
-                    controller: _pageController,
-                    itemCount: pages.length,
-                    itemBuilder: (_, index) {
-                      return pages[index % pages.length];
-                    },
-                  ),
-                ),
-                const Spacer(),
-                SmoothPageIndicator(
+        body: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 30),
+              AspectRatio(
+                aspectRatio: 1,
+                child: PageView.builder(
+                  scrollDirection: Axis.horizontal,
                   controller: _pageController,
-                  count: pages.length,
-                  effect: const ExpandingDotsEffect(activeDotColor: vibrantGreen),
+                  itemCount: pages.length,
+                  itemBuilder: (_, index) {
+                    return pages[index % pages.length];
+                  },
                 ),
-                const SizedBox(height: 30),
-                OpacityButtonWidget(
-                    onPressed: () {
-                      final index = _pageController.page!.toInt();
-                      captureImage(key: pagesKeys[index], pixelRatio: 3.5).then((result) {
-                        if (context.mounted) {
-                          if (result.status == ShareResultStatus.success) {
-    if(kReleaseMode) {
-      Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineLogSummary.displayName);
-    }
-    showSnackbar(
-                                context: context,
-                                icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
-                                message: "Content Shared");
+              ),
+              const Spacer(),
+              SmoothPageIndicator(
+                controller: _pageController,
+                count: pages.length,
+                effect: const ExpandingDotsEffect(activeDotColor: vibrantGreen),
+              ),
+              const SizedBox(height: 30),
+              OpacityButtonWidget(
+                  onPressed: () {
+                    final index = _pageController.page!.toInt();
+                    captureImage(key: pagesKeys[index], pixelRatio: 3.5).then((result) {
+                      if (context.mounted) {
+                        if (result.status == ShareResultStatus.success) {
+                          if(kReleaseMode) {
+                            Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineLogSummary.displayName);
                           }
+                          showSnackbar(
+                              context: context,
+                              icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
+                              message: "Content Shared");
                         }
-                      });
-                    },
-                    label: "Share",
-                    buttonColor: vibrantGreen,
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14))
-              ],
-            ),
+                      }
+                    });
+                  },
+                  label: "Share",
+                  buttonColor: vibrantGreen,
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14))
+            ],
           ),
         ),
       ),
@@ -311,8 +296,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.camera, size: 18),
               horizontalTitleGap: 6,
-              title: Text("Camera",
-                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              title: Text("Camera"),
               onTap: () => _pickFromLibrary(camera: true),
             ),
             ListTile(
@@ -320,8 +304,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.images, size: 18),
               horizontalTitleGap: 6,
-              title: Text("Library",
-                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              title: Text("Library"),
               onTap: () => _pickFromLibrary(camera: false),
             ),
             if (_hasImage)

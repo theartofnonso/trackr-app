@@ -33,12 +33,12 @@ class MilestoneShareable extends StatelessWidget {
                     )
                   : null,
               gradient: imageFile == null
-                  ? const LinearGradient(
+                  ?  LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        sapphireDark80,
-                        sapphireDark,
+                        Colors.grey.shade200,
+                Colors.grey.shade400,
                       ],
                     )
                   : null,
