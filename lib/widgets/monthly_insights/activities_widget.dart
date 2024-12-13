@@ -31,8 +31,6 @@ class ActivitiesWidget extends StatelessWidget {
       data: Theme.of(context).copyWith(listTileTheme: isDarkMode ? TRKRListTileTheme.darkTheme : TRKRListTileTheme.lightTheme),
       child: ListTile(
           onTap: () => _showActivityLogs(context: context),
-          contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 20),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
           leading: const FaIcon(FontAwesomeIcons.personWalking),
           title: Text("Activities".toUpperCase()),
           subtitle: Text("All activities outside your training"),

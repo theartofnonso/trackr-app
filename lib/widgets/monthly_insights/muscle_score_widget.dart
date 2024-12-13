@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../colors.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
@@ -30,8 +29,6 @@ class MuscleScoreWidget extends StatelessWidget {
           .copyWith(listTileTheme: isDarkMode ? TRKRListTileTheme.darkTheme : TRKRListTileTheme.lightTheme),
       child: ListTile(
         onTap: () => _showSetsAndRepsVolumeInsightsScreen(context: context),
-        contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 20),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         leading: Image.asset(
           'icons/dumbbells.png',
           fit: BoxFit.contain,

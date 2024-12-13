@@ -35,8 +35,6 @@ class CaloriesWidget extends StatelessWidget {
         data: Theme.of(context).copyWith(listTileTheme: isDarkMode ? TRKRListTileTheme.darkTheme : TRKRListTileTheme.lightTheme),
       child: ListTile(
         onTap: () => _showCaloriesScreen(context: context),
-        contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 20),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         leading: const FaIcon(FontAwesomeIcons.fire),
         title: Text("Calories".toUpperCase()),
         subtitle: Text("Amount of energy expenditure"),

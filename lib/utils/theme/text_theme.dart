@@ -23,7 +23,7 @@ class TRKRTextTheme {
 
     bodySmall: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.black),
     bodyMedium: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.black),
-    bodyLarge: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.black),
+    bodyLarge: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.black),
   );
 
   static TextTheme darkTextTheme = TextTheme(
@@ -45,6 +45,6 @@ class TRKRTextTheme {
 
     bodySmall: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white),
     bodyMedium: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.white),
-    bodyLarge: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white),
+    bodyLarge: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.white),
   );
 }

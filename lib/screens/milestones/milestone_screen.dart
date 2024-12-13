@@ -17,6 +17,7 @@ import '../../enums/milestone_type_enums.dart';
 import '../../enums/posthog_analytics_event.dart';
 import '../../utils/challenge_utils.dart';
 import '../../utils/shareables_utils.dart';
+import '../../utils/theme/list_title_theme.dart';
 
 class MilestoneScreen extends StatelessWidget {
   final Milestone milestone;
@@ -25,6 +26,10 @@ class MilestoneScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final remainder = (milestone.progress.$1 * milestone.target).toInt();
 
     final confettiController = ConfettiController();
@@ -34,166 +39,154 @@ class MilestoneScreen extends StatelessWidget {
 
     return Stack(alignment: Alignment.topCenter, children: [
       Scaffold(
-        backgroundColor: sapphireDark,
         floatingActionButton: milestone.progress.$1 == 1
             ? FloatingActionButton(
                 heroTag: "milestone_screen",
                 onPressed: () => _shareMilestoneSummary(context: context),
-                backgroundColor: sapphireDark,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                 child: const FaIcon(FontAwesomeIcons.rocket))
             : null,
-        body: Container(
-          width: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                sapphireDark80,
-                sapphireDark,
-              ],
+        body: Column(
+          children: [
+            SizedBox(
+              height: 200,
+              width: double.infinity,
+              child: Stack(children: [
+                Positioned.fill(
+                    child: Image.asset(
+                  'images/man_woman.jpg',
+                  fit: BoxFit.cover,
+                )),
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        sapphireDark.withOpacity(0.4),
+                        sapphireDark.withOpacity(0.8),
+                        sapphireDark,
+                      ],
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(milestone.name.toUpperCase(),
+                            style: GoogleFonts.ubuntu(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 22)),
+                      ],
+                    ),
+                  ),
+                ),
+                SafeArea(
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                      IconButton(
+                        icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
+                        onPressed: context.pop,
+                      )
+                    ]),
+                  ),
+                )
+              ]),
             ),
-          ),
-          child: Column(
-            children: [
-              SizedBox(
-                height: 200,
-                width: double.infinity,
-                child: Stack(children: [
-                  Positioned.fill(
-                      child: Image.asset(
-                    'images/man_woman.jpg',
-                    fit: BoxFit.cover,
-                  )),
-                  Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          sapphireDark.withOpacity(0.4),
-                          sapphireDark.withOpacity(0.8),
-                          sapphireDark,
-                        ],
-                      ),
+            Expanded(
+              child: SingleChildScrollView(
+                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      children: [
+                        Center(
+                            child: Text(milestone.description,
+                                style: Theme.of(context).textTheme.bodyMedium)),
+                        const SizedBox(height: 20),
+                        LabelDivider(label: "Details", labelColor: isDarkMode ? Colors.white70 : Colors.black, dividerColor: sapphireLighter),
+                        const SizedBox(height: 16),
+                       Column(
+                         spacing: 10,
+                         children: [
+                         Theme(
+                           data: Theme.of(context).copyWith(listTileTheme: isDarkMode ? TRKRListTileTheme.darkTheme : TRKRListTileTheme.lightTheme),
+                           child: ListTile(
+                             titleAlignment: ListTileTitleAlignment.threeLine,
+                             leading: const FaIcon(
+                               FontAwesomeIcons.book,
+                             ),
+                             title: Text(milestone.rule,
+                                 style: Theme.of(context).textTheme.bodyMedium),
+                           ),
+                         ),
+                         Theme(
+                           data: Theme.of(context).copyWith(listTileTheme: isDarkMode ? TRKRListTileTheme.darkTheme : TRKRListTileTheme.lightTheme),
+                           child: ListTile(
+                             titleAlignment: ListTileTitleAlignment.threeLine,
+                             leading: const FaIcon(
+                               FontAwesomeIcons.trophy,
+                             ),
+                             title: Text(challengeTargetSummary(type: milestone.type, target: milestone.target),
+                                 style: Theme.of(context).textTheme.bodyMedium),
+                           ),
+                         ),
+                         if (milestone.type == MilestoneType.reps)
+                           Theme(
+                             data: Theme.of(context).copyWith(listTileTheme: isDarkMode ? TRKRListTileTheme.darkTheme : TRKRListTileTheme.lightTheme),
+                             child: ListTile(
+                               titleAlignment: ListTileTitleAlignment.center,
+                               leading: Image.asset(
+                                 'muscles_illustration/${(milestone as RepsMilestone).muscleGroup.illustration()}.png',
+                                 fit: BoxFit.cover,
+                                 filterQuality: FilterQuality.low,
+                                 height: 32,
+                               ),
+                               title: Text((milestone as RepsMilestone).muscleGroup.name,
+                                   maxLines: 2,
+                                   overflow: TextOverflow.ellipsis,
+                                   style: Theme.of(context).textTheme.bodyMedium,
+                                   textAlign: TextAlign.start),
+                             ),
+                           ),
+                       ],),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: isDarkMode ? sapphireDark80 : Colors.grey.shade100,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: LinearProgressIndicator(
+                            value: milestone.progress.$1,
+                            backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade400,
+                            color: setsMilestoneColor(progress: milestone.progress.$1),
+                            minHeight: 25,
+                            borderRadius: BorderRadius.circular(3.0), // Border r
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        milestone.progress.$1 > 0
+                            ? milestone.progress.$1 == 1
+                                ? _CompletedMessage(target: milestone.target, description: _targetDescription())
+                                : _ProgressMessage(
+                                    remainder: remainder, target: milestone.target, description: _targetDescription())
+                            : Text("Keep up the training to see your progress grow for this challenge.",
+                                style: Theme.of(context).textTheme.bodyLarge),
+                      ],
                     ),
                   ),
-                  Align(
-                    alignment: Alignment.bottomLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(milestone.name.toUpperCase(),
-                              style:
-                                  GoogleFonts.ubuntu(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 22)),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SafeArea(
-                    child: Align(
-                      alignment: Alignment.topLeft,
-                      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                        IconButton(
-                          icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
-                          onPressed: context.pop,
-                        )
-                      ]),
-                    ),
-                  )
                 ]),
               ),
-              Expanded(
-                child: SingleChildScrollView(
-                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        children: [
-                          Center(
-                              child: Text(milestone.description,
-                                  style: GoogleFonts.ubuntu(
-                                      fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400, height: 1.8))),
-                          const SizedBox(height: 20),
-                          const LabelDivider(
-                              label: "Details", labelColor: Colors.white70, dividerColor: sapphireLighter),
-                          const SizedBox(height: 16),
-                          ListTile(
-                            titleAlignment: ListTileTitleAlignment.threeLine,
-                            leading: const FaIcon(
-                              FontAwesomeIcons.book,
-                              color: Colors.white70,
-                            ),
-                            title: Text(milestone.rule,
-                                style:
-                                    GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400)),
-                          ),
-                          ListTile(
-                            titleAlignment: ListTileTitleAlignment.threeLine,
-                            leading: const FaIcon(
-                              FontAwesomeIcons.trophy,
-                              color: Colors.white70,
-                            ),
-                            title: Text(challengeTargetSummary(type: milestone.type, target: milestone.target),
-                                style:
-                                    GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400)),
-                          ),
-                          if (milestone.type == MilestoneType.reps)
-                            ListTile(
-                              titleAlignment: ListTileTitleAlignment.center,
-                              leading: Image.asset(
-                                'muscles_illustration/${(milestone as RepsMilestone).muscleGroup.illustration()}.png',
-                                fit: BoxFit.cover,
-                                filterQuality: FilterQuality.low,
-                                height: 32,
-                              ),
-                              title: Text((milestone as RepsMilestone).muscleGroup.name,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: GoogleFonts.ubuntu(
-                                      fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
-                                  textAlign: TextAlign.start),
-                            ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: sapphireDark.withOpacity(0.3),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: LinearProgressIndicator(
-                              value: milestone.progress.$1,
-                              backgroundColor: sapphireDark,
-                              color: setsMilestoneColor(progress: milestone.progress.$1),
-                              minHeight: 25,
-                              borderRadius: BorderRadius.circular(3.0), // Border r
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          milestone.progress.$1 > 0
-                              ? milestone.progress.$1 == 1
-                                  ? _CompletedMessage(target: milestone.target, description: _targetDescription())
-                                  : _ProgressMessage(
-                                      remainder: remainder, target: milestone.target, description: _targetDescription())
-                              : Text("Keep up the training to see your progress grow for this challenge.",
-                                  style: GoogleFonts.ubuntu(
-                                      fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400, height: 1.5)),
-                        ],
-                      ),
-                    ),
-                  ]),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
       milestone.progress.$1 == 1
@@ -230,7 +223,7 @@ class MilestoneScreen extends StatelessWidget {
                 const FaIcon(FontAwesomeIcons.award, color: vibrantGreen, size: 32),
                 const SizedBox(height: 20),
                 Text(milestone.name,
-                    style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w900)),
+                    style: Theme.of(context).textTheme.bodySmall),
                 Text(milestone.caption,
                     style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w600)),
                 const SizedBox(height: 50),
@@ -256,18 +249,18 @@ class _ProgressMessage extends StatelessWidget {
     return RichText(
         text: TextSpan(
             text: "Great job! You have conquered",
-            style: GoogleFonts.ubuntu(height: 1.5, color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w500),
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w300),
             children: [
           const TextSpan(text: " "),
           TextSpan(
               text: "$remainder",
-              style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold)),
           const TextSpan(text: " "),
           const TextSpan(text: "out of"),
           const TextSpan(text: " "),
           TextSpan(
               text: "$target $description",
-              style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold)),
           const TextSpan(text: " "),
           const TextSpan(text: "in this challenge. Keep training to reach the finish line!"),
         ]));
