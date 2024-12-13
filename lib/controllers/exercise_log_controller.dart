@@ -19,7 +19,8 @@ class ExerciseLogController extends ChangeNotifier {
   UnmodifiableListView<ExerciseLogDto> get exerciseLogs => _exerciseLogRepository.exerciseLogs;
 
   void loadExerciseLogs({required List<ExerciseLogDto> exerciseLogs}) {
-    _exerciseLogRepository.loadExerciseLogs(exerciseLogs: exerciseLogs);
+    final updatedExerciseLogs = exerciseLogs.map((exerciseLog) => exerciseLog.copyWith(sets: [])).toList();
+    _exerciseLogRepository.loadExerciseLogs(exerciseLogs: updatedExerciseLogs);
     logger.i("load exercise logs");
   }
 

@@ -64,9 +64,8 @@ class RoutineTemplateDto {
               routineLogId: template.id, createdAt: template.createdAt.getDateTimeInUtc(), json: json))
           .toList();
     }
-
-    final scheduledDateString = json["scheduledDate"];
-    final scheduledDate = scheduledDateString != null ? DateTime.parse(scheduledDateString) : null;
+    final scheduledDateString = (json["scheduledDate"] as String?) ?? "";
+    final scheduledDate = scheduledDateString.isNotEmpty ? DateTime.parse(scheduledDateString) : null;
     final scheduleTypeString = json["scheduleType"];
     final scheduleType =
         scheduleTypeString != null ? RoutineScheduleType.fromJson(scheduleTypeString) : RoutineScheduleType.days;

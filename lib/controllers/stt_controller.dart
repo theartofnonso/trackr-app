@@ -1,12 +1,13 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:speech_to_text/speech_recognition_error.dart';
-import 'package:speech_to_text/speech_recognition_result.dart';
-import 'package:speech_to_text/speech_to_text.dart' as stt;
-import 'package:speech_to_text/speech_to_text.dart';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+import 'package:record/record.dart';
 import 'package:tracker_app/enums/exercise_logging_function.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
+import 'package:tracker_app/enums/open_ai_models.dart';
 
 import '../dtos/open_ai_response_schema_dtos/reps.dart';
 import '../dtos/open_ai_response_schema_dtos/tool_dto.dart';
@@ -24,7 +25,7 @@ enum STTState {
   notListening,
   listening,
   analysing,
-  done,
+  noPermission,
   error;
 
   static STTState fromString(String string) {
@@ -35,109 +36,148 @@ enum STTState {
 }
 
 class STTController extends ChangeNotifier {
-  final stt.SpeechToText _speech = stt.SpeechToText();
 
-  bool _speechAvailable = false;
   STTState _state = STTState.notListening;
   List<SetDto> _sets = [];
-
-  bool get speechAvailable => _speechAvailable;
 
   STTState get state => _state;
 
   List<SetDto> get sets => List.unmodifiable(_sets);
 
+  ExerciseType _exerciseType = ExerciseType.weights;
+
+  final _record = AudioRecorder();
+
+  String _recordedFilePath = "";
+
   /// Initializes the speech recognition service.
-  Future<void> initialize({required List<SetDto> initialSets}) async {
-    if (!_speechAvailable) {
-      _speechAvailable = await _speech.initialize(
-        onError: _onSpeechError,
-      );
-    }
+  Future<void> initialize({required ExerciseType exerciseType, required List<SetDto> initialSets}) async {
+    _exerciseType = exerciseType;
     _sets = initialSets;
+
+    // Get a directory to store the recording
+    final dir = await getApplicationDocumentsDirectory();
+    _recordedFilePath = '${dir.path}/myFile.m4a';
+
     notifyListeners();
   }
 
   /// Start listening for user speech input.
-  Future<void> startListening({required ExerciseType exerciseType}) async {
-    if (!_speechAvailable) return;
-    _setState(STTState.listening);
-    await _speech.listen(
-      listenFor: const Duration(seconds: 5),
-      onResult: (result) => _onSpeechResult(exerciseType: exerciseType, result: result),
-      listenOptions: SpeechListenOptions(listenMode: stt.ListenMode.dictation),
-    );
+  Future<void> startListening() async {
+    // Check for permissions
+    if (await _record.hasPermission()) {
+
+      // Start recording to a file
+      await _record.start(
+        const RecordConfig(),
+        path: _recordedFilePath,
+      );
+
+      _setState(STTState.listening);
+    } else {
+      _setState(STTState.noPermission);
+    }
+  }
+
+  /// Stop listening for user speech input.
+  Future<void> stopListening() async {
+    if (_state == STTState.notListening) return;
+
+    // Stop the recording
+    final path = await _record.stop();
+
+    _setState(STTState.notListening);
+
+    // path should match _recordedFilePath if successful
+    // Now we have a recorded audio file at `path`
+    // Call _analyse with the recorded file path
+
+    if (path != null && File(path).existsSync()) {
+      await _analyseAudio();
+    }
+
+    await _record.dispose();
   }
 
   /// Reset the internal state and recognized sets.
-  void reset() {
+  void reset() async {
     _sets.clear();
-    closeSpeech();
+    _recordedFilePath = "";
+    await _record.cancel();
+    await _record.dispose();
+    _setState(STTState.notListening);
   }
 
-  void closeSpeech() {
-    _speech.cancel();
-    _speech.stop();
-  }
+  Future<void> _analyseAudio() async {
+    final recordedFilePath = _recordedFilePath;
 
-  /// Internal callback when speech recognition receives partial or final results.
-  void _onSpeechResult({required ExerciseType exerciseType, required SpeechRecognitionResult result}) {
-    final recognizedWords = result.recognizedWords;
-    if (result.finalResult && recognizedWords.isNotEmpty) {
-      _analyse(userPrompt: recognizedWords, exerciseType: exerciseType);
-    }
-  }
+    final file = File(recordedFilePath);
 
-  /// Internal callback if an error occurs during speech recognition.
-  void _onSpeechError(SpeechRecognitionError errorNotification) {
-    _setState(STTState.error);
-  }
-
-  Future<void> _analyse({required String userPrompt, required ExerciseType exerciseType}) async {
-    _setState(STTState.analysing);
-
-    final json = await runMessageWithTools(
-      systemInstruction: personalTrainerInstructionForWorkoutLogging,
-      userInstruction: userPrompt,
-    );
-
-    if (json == null) {
-      _setState(STTState.error);
+    // Make sure the file exists
+    if (!file.existsSync()) {
       return;
     }
 
-    final tool = ToolDto.fromJson(json);
+    _setState(STTState.analysing);
 
-    final function = ExerciseLoggingFunction.fromString(tool.name);
-    switch (function) {
-      case ExerciseLoggingFunction.addSet:
-        _addSet(
-            tool: tool, userInstruction: userPrompt, exerciseType: exerciseType);
-        break;
-      case ExerciseLoggingFunction.removeSet:
-        _updateSets(
-            tool: tool,
-            systemInstruction: removeSetInstruction,
-            userInstruction: userPrompt,
-            exerciseType: exerciseType,
-            function: ExerciseLoggingFunction.removeSet);
-        break;
-      case ExerciseLoggingFunction.updateSet:
-        _updateSets(
-            tool: tool,
-            systemInstruction: updateSetInstruction,
-            userInstruction: userPrompt,
-            exerciseType: exerciseType,
-            function: ExerciseLoggingFunction.updateSet);
-        break;
+    final url = Uri.https("api.openai.com", "/v1/audio/transcriptions");
+    final request = http.MultipartRequest('POST', url);
+    request.headers['Authorization'] = 'Bearer $apiKey';
+    request.fields['model'] = OpenAIModel.whisper.name;
+    request.files.add(await http.MultipartFile.fromPath("file", file.path));
+
+    try {
+      // Send the request
+      final response = await request.send();
+
+      // Parse the response
+      if (response.statusCode == 200) {
+        // Successful upload
+        final responseBody = await http.Response.fromStream(response);
+        final userPrompt = jsonDecode(responseBody.body)["text"];
+
+        final jsonToCallTool = await runMessageWithTools(
+          systemInstruction: personalTrainerInstructionForWorkoutLogging,
+          userInstruction: userPrompt,
+        );
+
+        if (jsonToCallTool == null) {
+          _setState(STTState.error);
+          return;
+        }
+
+        final tool = ToolDto.fromJson(jsonToCallTool);
+
+        final function = ExerciseLoggingFunction.fromString(tool.name);
+        switch (function) {
+          case ExerciseLoggingFunction.addSet:
+            _addSet(tool: tool, userInstruction: userPrompt);
+            break;
+          case ExerciseLoggingFunction.removeSet:
+            _updateSets(
+                tool: tool,
+                systemInstruction: removeSetInstruction,
+                userInstruction: userPrompt,
+                function: ExerciseLoggingFunction.removeSet);
+            break;
+          case ExerciseLoggingFunction.updateSet:
+            _updateSets(
+                tool: tool,
+                systemInstruction: updateSetInstruction,
+                userInstruction: userPrompt,
+                function: ExerciseLoggingFunction.updateSet);
+            break;
+        }
+      } else {
+        _setState(STTState.error);
+      }
+    } catch (e) {
+      _setState(STTState.error);
     }
   }
 
-  Future<void> _addSet(
-      {required ToolDto tool,
-      required String userInstruction,
-      required ExerciseType exerciseType}) async {
-    final responseFormat = withWeightsOnly(type: exerciseType) ? weightAndRepsResponseFormat : repsResponseFormat;
+  Future<void> _addSet({required ToolDto tool, required String userInstruction}) async {
+    final responseFormat = withWeightsOnly(type: _exerciseType) ? weightAndRepsResponseFormat : repsResponseFormat;
 
     final functionCallPayload = createFunctionCallPayload(
         tool: tool,
@@ -158,7 +198,7 @@ class STTController extends ChangeNotifier {
       // Deserialize the JSON string
       Map<String, dynamic> json = jsonDecode(functionCallResult);
 
-      switch (exerciseType) {
+      switch (_exerciseType) {
         case ExerciseType.weights:
           final set = WeightAndReps.toDto(json, checked: true);
           _sets.add(set);
@@ -180,8 +220,7 @@ class STTController extends ChangeNotifier {
       {required ToolDto tool,
       required String systemInstruction,
       required String userInstruction,
-      required ExerciseLoggingFunction function,
-      required ExerciseType exerciseType}) async {
+      required ExerciseLoggingFunction function}) async {
     final listOfSetsJsons = {
       "sets": _sets.map((set) {
         return switch (set.type) {
@@ -198,7 +237,7 @@ class STTController extends ChangeNotifier {
     };
 
     final responseFormat =
-        withWeightsOnly(type: exerciseType) ? weightAndRepsListResponseFormat : repsListResponseFormat;
+        withWeightsOnly(type: _exerciseType) ? weightAndRepsListResponseFormat : repsListResponseFormat;
 
     final functionCallPayload = createFunctionCallPayload(
         tool: tool,
@@ -220,7 +259,7 @@ class STTController extends ChangeNotifier {
       Map<String, dynamic> json = jsonDecode(functionCallResult);
       final setsInJson = json["sets"] as List<dynamic>;
 
-      switch (exerciseType) {
+      switch (_exerciseType) {
         case ExerciseType.weights:
           _sets = setsInJson.map((json) => WeightAndReps.toDto(json, checked: true)).toList();
           break;

@@ -11,6 +11,7 @@ import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 import 'package:tracker_app/widgets/dividers/label_container_divider.dart';
 import 'package:tracker_app/widgets/routine/preview/sets_listview.dart';
 
+import '../../utils/dialog_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 
 class STTLoggingScreen extends StatefulWidget {
@@ -28,8 +29,9 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
     super.initState();
     // Initialize speech recognition when the screen opens
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final sets = widget.exerciseLog.sets.where((set) => set.isNotEmpty()).toList();
-      context.read<STTController>().initialize(initialSets: sets);
+      final exerciseLog = widget.exerciseLog;
+      final sets = exerciseLog.sets.where((set) => set.isNotEmpty()).toList();
+      context.read<STTController>().initialize(initialSets: sets, exerciseType: exerciseLog.exercise.type);
     });
   }
 
@@ -37,15 +39,32 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
     context.read<STTController>().reset();
   }
 
-  void _closeSpeech() {
-    context.read<STTController>().closeSpeech();
-  }
-
   @override
   Widget build(BuildContext context) {
     final sttController = context.watch<STTController>();
 
     if (sttController.state == STTState.analysing) return TRKRLoadingScreen();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      switch (sttController.state) {
+        case STTState.notListening:
+        case STTState.listening:
+        case STTState.analysing:
+          // Do Nothing
+          break;
+        case STTState.noPermission:
+          showSnackbar(
+              context: context,
+              icon: const TRKRCoachWidget(),
+              message:
+                  "Microphone access is required to continue. Please grant permission to use your microphone and try again");
+          break;
+        case STTState.error:
+          showSnackbar(
+              context: context, icon: const TRKRCoachWidget(), message: "Oops! Unable to help with that request.");
+          break;
+      }
+    });
 
     // Updated ExerciseLog with the recognized sets.
     final updatedExerciseLog = widget.exerciseLog.copyWith(sets: sttController.sets);
@@ -71,7 +90,7 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
             size: 28,
           ),
           onPressed: () {
-            _closeSpeech();
+            _reset();
             Navigator.of(context).pop();
           },
         ),
@@ -118,6 +137,19 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: [
+                Container(
+                  width: 60, // Set the width of the container
+                  height: 24, // Set the height of the container
+                  decoration: BoxDecoration(
+                    color: vibrantBlue.withOpacity(0.1), // Background color
+                    borderRadius: BorderRadius.circular(3), // Rounded corners
+                  ),
+                  child: Center(
+                    child: Text("Beta".toUpperCase(),
+                        style: GoogleFonts.ubuntu(color: vibrantBlue, fontWeight: FontWeight.bold, fontSize: 12)),
+                  ),
+                ),
+                const SizedBox(height: 20),
                 _HeroWidget(),
                 const SizedBox(height: 20),
                 if (previousSets.isNotEmpty)
@@ -171,7 +203,7 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
     final controller = context.read<STTController>();
 
     // Start listening again
-    await controller.startListening(exerciseType: widget.exerciseLog.exercise.type);
+    controller.state == STTState.notListening ? controller.startListening() : controller.stopListening();
   }
 }
 

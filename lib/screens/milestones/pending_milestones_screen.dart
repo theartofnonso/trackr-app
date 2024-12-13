@@ -43,28 +43,28 @@ class PendingMilestonesScreen extends StatelessWidget {
                       color: Colors.white.withOpacity(0.9),
                     )),
                 const SizedBox(height: 20),
-                Expanded(
-                  child: GridView.count(
-                      crossAxisCount: 2,
-                      childAspectRatio: 0.8,
-                      mainAxisSpacing: 10.0,
-                      crossAxisSpacing: 10.0,
-                      children: children),
-                ),
-                if (children.isEmpty)
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: NoListEmptyState(
-                          icon: FaIcon(
-                            FontAwesomeIcons.trophy,
-                            color: Colors.white12,
-                            size: 48,
-                          ),
-                          message:
-                              "Hurray, you have successfully completed all milestones for ${DateTime.now().year}."),
-                    ),
-                  )
+                children.isNotEmpty
+                    ? Expanded(
+                        child: GridView.count(
+                            crossAxisCount: 2,
+                            childAspectRatio: 0.8,
+                            mainAxisSpacing: 10.0,
+                            crossAxisSpacing: 10.0,
+                            children: children),
+                      )
+                    : Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: NoListEmptyState(
+                              icon: FaIcon(
+                                FontAwesomeIcons.trophy,
+                                color: Colors.white12,
+                                size: 48,
+                              ),
+                              message:
+                                  "Hurray, you have successfully completed all milestones for ${DateTime.now().year}."),
+                        ),
+                      )
               ])),
         ));
   }

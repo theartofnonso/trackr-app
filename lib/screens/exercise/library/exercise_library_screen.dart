@@ -39,7 +39,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   bool _shouldShowOwnerExercises = false;
 
   /// Search through the list of exercises
-  void _runSearch(_) {
+  void _runSearch() {
     final query = _searchController.text.toLowerCase().trim();
 
     List<ExerciseDto> searchResults = [];
@@ -49,7 +49,14 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     searchResults = Provider.of<ExerciseAndRoutineController>(context, listen: false)
         .exercises
         .where((exercise) => !widget.excludeExercises.contains(exercise))
-        .where((exercise) => exercise.name.toLowerCase().contains(query.toLowerCase()))
+        .where((exercise) {
+          if (query.isEmpty) return true;
+
+          final exerciseParts = exercise.name.toLowerCase().split(RegExp(r'[\s-]+'));
+          final queryParts = query.toLowerCase().split(RegExp(r'[\s-]+'));
+
+          return queryParts.every((queryPart) => exerciseParts.contains(queryPart));
+        })
         .where((exercise) => exerciseType != null ? exercise.type == widget.type : true)
         .toList();
 
@@ -71,7 +78,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   void _clearSearch() {
     _searchController.clear();
-    _runSearch("Nil");
+    _runSearch();
   }
 
   /// Select an exercise
@@ -162,7 +169,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: CSearchBar(
                       hintText: "Search exercises",
-                      onChanged: _runSearch,
+                      onChanged: (_) => _runSearch(),
                       onClear: _clearSearch,
                       controller: _searchController),
                 ),
@@ -236,14 +243,14 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         .where((exercise) => exerciseType != null ? exercise.type == widget.type : true)
         .toList();
 
-    _runSearch("");
+    _runSearch();
   }
 
   void _toggleOwnerExercises() {
     setState(() {
       _shouldShowOwnerExercises = !_shouldShowOwnerExercises;
     });
-    _runSearch("");
+    _runSearch();
   }
 
   void _onSelectMuscleGroup({required MuscleGroup newMuscleGroup}) {
@@ -255,7 +262,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
       } else {
         _selectedMuscleGroups.add(newMuscleGroup);
       }
-      _runSearch("");
+      _runSearch();
     });
   }
 
