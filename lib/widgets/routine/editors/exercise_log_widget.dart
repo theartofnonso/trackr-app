@@ -400,10 +400,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             onChanged: (value) => _updateExerciseLogNotes(value: value),
             decoration: InputDecoration(
               hintText: "Enter notes",
-              hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14),
             ),
             maxLines: null,
-            cursorColor: Colors.white,
             keyboardType: TextInputType.text,
             textCapitalization: TextCapitalization.sentences,
           ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../enums/routine_editor_type_enums.dart';
 
@@ -8,7 +7,8 @@ class WeightAndRepsSetHeader extends StatelessWidget {
   final String firstLabel;
   final String secondLabel;
 
-  const WeightAndRepsSetHeader({super.key, required this.editorType, required this.firstLabel, required this.secondLabel});
+  const WeightAndRepsSetHeader(
+      {super.key, required this.editorType, required this.firstLabel, required this.secondLabel});
 
   @override
   Widget build(BuildContext context) {
@@ -33,15 +33,11 @@ class WeightAndRepsSetHeader extends StatelessWidget {
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Text(firstLabel,
-                style: Theme.of(context).textTheme.bodySmall,
-                textAlign: TextAlign.center),
+            child: Text(firstLabel, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center),
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Text(secondLabel,
-                style: Theme.of(context).textTheme.bodySmall,
-                textAlign: TextAlign.center),
+            child: Text(secondLabel, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center),
           ),
           if (editorType == RoutineEditorMode.log)
             const TableCell(

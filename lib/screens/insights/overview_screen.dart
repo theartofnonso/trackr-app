@@ -76,7 +76,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -352,6 +351,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 
   void _showBottomSheet() {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     displayBottomSheet(
         context: context,
         child: SafeArea(
@@ -361,8 +363,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.play, size: 18),
               horizontalTitleGap: 6,
-              title: Text("Log new session",
-                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              title: Text("Log new session", style: Theme.of(context).textTheme.bodyLarge),
               onTap: () {
                 Navigator.of(context).pop();
                 _showLogNewSessionBottomSheet();
@@ -373,8 +374,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.clockRotateLeft, size: 18),
               horizontalTitleGap: 6,
-              title: Text("Log past session",
-                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              title: Text("Log past session", style: Theme.of(context).textTheme.bodyLarge),
               onTap: () {
                 Navigator.of(context).pop();
                 showDatetimeRangePicker(
@@ -400,9 +400,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
             const SizedBox(
               height: 10,
             ),
-            const LabelDivider(
+            LabelDivider(
               label: "Log non-resistance training",
-              labelColor: Colors.white70,
+              labelColor: isDarkMode ? Colors.white70 : Colors.black,
               dividerColor: sapphireLighter,
             ),
             const SizedBox(
@@ -443,6 +443,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 
   void _showLogNewSessionBottomSheet() {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     displayBottomSheet(
         context: context,
         child: SafeArea(
@@ -453,7 +456,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               leading: const FaIcon(FontAwesomeIcons.play, size: 18),
               horizontalTitleGap: 6,
               title: Text("Log new session",
-                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+                  style: Theme.of(context).textTheme.bodyLarge),
               onTap: () {
                 Navigator.of(context).pop();
                 _logEmptyRoutine();
@@ -462,9 +465,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
             const SizedBox(
               height: 10,
             ),
-            const LabelDivider(
+             LabelDivider(
               label: "Don't know what to train?",
-              labelColor: Colors.white70,
+              labelColor: isDarkMode ? Colors.white70 : Colors.black,
               dividerColor: sapphireLighter,
             ),
             const SizedBox(
@@ -521,7 +524,6 @@ class _ScheduledRoutineCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 

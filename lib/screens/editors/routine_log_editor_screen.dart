@@ -334,6 +334,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
               child: GestureDetector(
                 onTap: _dismissKeyboard,
                 child: Column(
+                  spacing: 20,
                   children: [
                     if (widget.mode == RoutineEditorMode.log)
                       Column(children: [
@@ -352,7 +353,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                             ),
                           );
                         }),
-                        const SizedBox(height: 20),
                       ]),
                     if (exerciseLogs.isNotEmpty)
                       Expanded(

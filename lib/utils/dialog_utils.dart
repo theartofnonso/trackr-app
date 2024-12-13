@@ -18,7 +18,6 @@ import '../controllers/activity_log_controller.dart';
 import '../controllers/routine_user_controller.dart';
 import '../dtos/appsync/activity_log_dto.dart';
 import '../widgets/buttons/opacity_button_widget.dart';
-import '../widgets/buttons/solid_button_widget.dart';
 import '../widgets/other_activity_selector/activity_picker.dart';
 import '../widgets/timers/hour_timer_picker.dart';
 import '../widgets/timers/time_picker.dart';
@@ -56,6 +55,11 @@ Future<void> displayBottomSheet(
     bool isDismissible = true,
       EdgeInsetsGeometry? padding,
     bool isScrollControlled = false}) {
+
+
+  Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+  final isDarkMode = systemBrightness == Brightness.dark;
+
   return showModalBottomSheet(
       isScrollControlled: isScrollControlled,
       isDismissible: isDismissible,
@@ -70,15 +74,7 @@ Future<void> displayBottomSheet(
                 width: double.infinity,
                 padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 decoration: BoxDecoration(
-                  gradient: gradient ??
-                      const LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          sapphireDark80,
-                          sapphireDark,
-                        ],
-                      ),
+                  color: isDarkMode ? sapphireDark80 : Colors.grey.shade100,
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20),
@@ -327,14 +323,14 @@ void showBottomSheetWithMultiActions(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(title,
-              style: GoogleFonts.ubuntu(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
+              style: Theme.of(context).textTheme.titleLarge,
               textAlign: TextAlign.start),
           Text(description,
-              style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white70),
+              style: Theme.of(context).textTheme.titleSmall,
               textAlign: TextAlign.start),
           const SizedBox(height: 16),
           Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-            SolidButtonWidget(
+            OpacityButtonWidget(
                 onPressed: leftAction,
                 label: leftActionLabel,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10)),
