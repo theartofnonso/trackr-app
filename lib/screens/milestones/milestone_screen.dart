@@ -26,7 +26,6 @@ class MilestoneScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -105,56 +104,59 @@ class MilestoneScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(20.0),
                     child: Column(
                       children: [
-                        Center(
-                            child: Text(milestone.description,
-                                style: Theme.of(context).textTheme.bodyMedium)),
+                        Center(child: Text(milestone.description, style: Theme.of(context).textTheme.bodyMedium)),
                         const SizedBox(height: 20),
-                        LabelDivider(label: "Details", labelColor: isDarkMode ? Colors.white70 : Colors.black, dividerColor: sapphireLighter),
+                        LabelDivider(
+                            label: "Details",
+                            labelColor: isDarkMode ? Colors.white70 : Colors.black,
+                            dividerColor: sapphireLighter),
                         const SizedBox(height: 16),
-                       Column(
-                         spacing: 10,
-                         children: [
-                         Theme(
-                           data: Theme.of(context).copyWith(listTileTheme: isDarkMode ? TRKRListTileTheme.darkTheme : TRKRListTileTheme.lightTheme),
-                           child: ListTile(
-                             titleAlignment: ListTileTitleAlignment.threeLine,
-                             leading: const FaIcon(
-                               FontAwesomeIcons.book,
-                             ),
-                             title: Text(milestone.rule,
-                                 style: Theme.of(context).textTheme.bodyMedium),
-                           ),
-                         ),
-                         Theme(
-                           data: Theme.of(context).copyWith(listTileTheme: isDarkMode ? TRKRListTileTheme.darkTheme : TRKRListTileTheme.lightTheme),
-                           child: ListTile(
-                             titleAlignment: ListTileTitleAlignment.threeLine,
-                             leading: const FaIcon(
-                               FontAwesomeIcons.trophy,
-                             ),
-                             title: Text(challengeTargetSummary(type: milestone.type, target: milestone.target),
-                                 style: Theme.of(context).textTheme.bodyMedium),
-                           ),
-                         ),
-                         if (milestone.type == MilestoneType.reps)
-                           Theme(
-                             data: Theme.of(context).copyWith(listTileTheme: isDarkMode ? TRKRListTileTheme.darkTheme : TRKRListTileTheme.lightTheme),
-                             child: ListTile(
-                               titleAlignment: ListTileTitleAlignment.center,
-                               leading: Image.asset(
-                                 'muscles_illustration/${(milestone as RepsMilestone).muscleGroup.illustration()}.png',
-                                 fit: BoxFit.cover,
-                                 filterQuality: FilterQuality.low,
-                                 height: 32,
-                               ),
-                               title: Text((milestone as RepsMilestone).muscleGroup.name,
-                                   maxLines: 2,
-                                   overflow: TextOverflow.ellipsis,
-                                   style: Theme.of(context).textTheme.bodyMedium,
-                                   textAlign: TextAlign.start),
-                             ),
-                           ),
-                       ],),
+                        Column(
+                          spacing: 10,
+                          children: [
+                            Theme(
+                              data: Theme.of(context).copyWith(
+                                  listTileTheme:
+                                      isDarkMode ? TRKRListTileTheme.darkTheme : TRKRListTileTheme.lightTheme),
+                              child: ListTile(
+                                titleAlignment: ListTileTitleAlignment.threeLine,
+                                leading: const FaIcon(
+                                  FontAwesomeIcons.book,
+                                ),
+                                title: Text(milestone.rule),
+                              ),
+                            ),
+                            Theme(
+                              data: Theme.of(context).copyWith(
+                                  listTileTheme:
+                                      isDarkMode ? TRKRListTileTheme.darkTheme : TRKRListTileTheme.lightTheme),
+                              child: ListTile(
+                                titleAlignment: ListTileTitleAlignment.threeLine,
+                                leading: const FaIcon(
+                                  FontAwesomeIcons.trophy,
+                                ),
+                                title: Text(challengeTargetSummary(type: milestone.type, target: milestone.target)),
+                              ),
+                            ),
+                            if (milestone.type == MilestoneType.reps)
+                              Theme(
+                                data: Theme.of(context).copyWith(
+                                    listTileTheme:
+                                        isDarkMode ? TRKRListTileTheme.darkTheme : TRKRListTileTheme.lightTheme),
+                                child: ListTile(
+                                  titleAlignment: ListTileTitleAlignment.center,
+                                  leading: Image.asset(
+                                    'muscles_illustration/${(milestone as RepsMilestone).muscleGroup.illustration()}.png',
+                                    fit: BoxFit.cover,
+                                    filterQuality: FilterQuality.low,
+                                    height: 32,
+                                  ),
+                                  title: Text((milestone as RepsMilestone).muscleGroup.name,
+                                      maxLines: 2, overflow: TextOverflow.ellipsis, textAlign: TextAlign.start),
+                                ),
+                              ),
+                          ],
+                        ),
                         const SizedBox(
                           height: 20,
                         ),
@@ -222,8 +224,7 @@ class MilestoneScreen extends StatelessWidget {
               children: [
                 const FaIcon(FontAwesomeIcons.award, color: vibrantGreen, size: 32),
                 const SizedBox(height: 20),
-                Text(milestone.name,
-                    style: Theme.of(context).textTheme.bodySmall),
+                Text(milestone.name, style: Theme.of(context).textTheme.bodySmall),
                 Text(milestone.caption,
                     style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w600)),
                 const SizedBox(height: 50),
@@ -253,8 +254,7 @@ class _ProgressMessage extends StatelessWidget {
             children: [
           const TextSpan(text: " "),
           TextSpan(
-              text: "$remainder",
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold)),
+              text: "$remainder", style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold)),
           const TextSpan(text: " "),
           const TextSpan(text: "out of"),
           const TextSpan(text: " "),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../colors.dart';
+import '../../utils/theme/list_title_theme.dart';
 
 class OutlineListTile extends StatelessWidget {
   final String title;
@@ -13,20 +14,18 @@ class OutlineListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final trailing = this.trailing;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: sapphireDark.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          splashColor: sapphireLighter,
-          onTap: onTap,
-          title: Text(title, style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
-          trailing: trailing != null ? Text(trailing, style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12)) : null),
-    );
+    return Theme(data: Theme.of(context).copyWith(listTileTheme: isDarkMode ? TRKRListTileTheme.darkTheme : TRKRListTileTheme.lightTheme),
+        child: ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        splashColor: sapphireLighter,
+        onTap: onTap,
+        title: Text(title),
+        trailing: trailing != null ? Text(trailing) : null));
   }
 }
