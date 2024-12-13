@@ -29,47 +29,43 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
     return DefaultTabController(
         length: 2,
         child: Scaffold(
-          body: Container(
-            width: double.infinity,
-            color: sapphireDark80,
-            child: SafeArea(
-              child: Column(
-                children: [
-                  Center(
-                      child: CalendarNavigator(
-                    onMonthChange: _onMonthChange,
-                    enabled: _tabIndex == 0,
-                  )),
-                  TabBar(
+          body: SafeArea(
+            child: Column(
+              children: [
+                Center(
+                    child: CalendarNavigator(
+                      onMonthChange: _onMonthChange,
+                      enabled: _tabIndex == 0,
+                    )),
+                TabBar(
+                  controller: _tabController,
+                  dividerColor: Colors.transparent,
+                  tabs: [
+                    Tab(
+                        child: Text("Overview".toUpperCase(),
+                            style:
+                            Theme.of(context).textTheme.labelMedium)),
+                    Tab(
+                        child: Text("Trends".toUpperCase(),
+                            style:
+                            Theme.of(context).textTheme.labelMedium)),
+                  ],
+                ),
+                Expanded(
+                  child: TabBarView(
                     controller: _tabController,
-                    dividerColor: Colors.transparent,
-                    tabs: [
-                      Tab(
-                          child: Text("Overview".toUpperCase(),
-                              style:
-                                  GoogleFonts.ubuntu(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w700))),
-                      Tab(
-                          child: Text("Trends".toUpperCase(),
-                              style:
-                                  GoogleFonts.ubuntu(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w700))),
+                    children: [
+                      OverviewScreen(
+                        dateTimeRange: _monthDateTimeRange,
+                        scrollController: widget.scrollController,
+                      ),
+                      SetsAndRepsVolumeInsightsScreen(
+                        canPop: false,
+                      )
                     ],
                   ),
-                  Expanded(
-                    child: TabBarView(
-                      controller: _tabController,
-                      children: [
-                        OverviewScreen(
-                          dateTimeRange: _monthDateTimeRange,
-                          scrollController: widget.scrollController,
-                        ),
-                        SetsAndRepsVolumeInsightsScreen(
-                          canPop: false,
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ));

@@ -50,7 +50,7 @@ class _IntroScreenState extends State<IntroScreen> {
               backgroundColor: sapphireDark80,
               leading: !SharedPrefs().firstLaunch
                   ? IconButton(
-                      icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+                      icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
                       onPressed: () => context.pop(),
                     )
                   : null,

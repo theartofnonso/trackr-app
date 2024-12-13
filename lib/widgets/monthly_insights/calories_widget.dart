@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/screens/insights/calories_trend_screen.dart';
 import 'package:tracker_app/utils/routine_utils.dart';
+import 'package:tracker_app/utils/theme/list_title_theme.dart';
 
 import '../../colors.dart';
 import '../../controllers/routine_user_controller.dart';
@@ -20,6 +21,9 @@ class CaloriesWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
 
     final thisMonthCount = thisMonthLogs.map((log) => calculateCalories(duration: log.duration(), bodyWeight: routineUserController.weight(), activity: log.activityType)).sum;
@@ -27,21 +31,15 @@ class CaloriesWidget extends StatelessWidget {
 
     final improved = thisMonthCount > lastMonthCount;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: sapphireDark80,
-        borderRadius: BorderRadius.circular(5),
-      ),
+    return Theme(
+        data: Theme.of(context).copyWith(listTileTheme: isDarkMode ? TRKRListTileTheme.darkTheme : TRKRListTileTheme.lightTheme),
       child: ListTile(
         onTap: () => _showCaloriesScreen(context: context),
-        tileColor: sapphireDark80,
         contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 20),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        leading: const FaIcon(FontAwesomeIcons.fire, color: Colors.white70),
-        title: Text("Calories".toUpperCase(),
-            style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
-        subtitle: Text("Amount of energy expenditure",
-            style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w400)),
+        leading: const FaIcon(FontAwesomeIcons.fire),
+        title: Text("Calories".toUpperCase()),
+        subtitle: Text("Amount of energy expenditure"),
         trailing: Wrap(
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
@@ -50,10 +48,9 @@ class CaloriesWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text("$thisMonthCount",
-                    style: GoogleFonts.ubuntu(
-                        color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w900, fontSize: 20)),
+                    style: Theme.of(context).textTheme.titleMedium),
                 Text("$lastMonthCount",
-                    style: GoogleFonts.ubuntu(color: Colors.white54, fontWeight: FontWeight.w900, fontSize: 12))
+                    style: Theme.of(context).textTheme.titleSmall)
               ],
             ),
             const SizedBox(width: 4),

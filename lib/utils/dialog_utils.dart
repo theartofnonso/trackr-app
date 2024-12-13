@@ -174,7 +174,6 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
                   )
                 : FaIcon(
                     activityType.icon,
-                    color: Colors.white,
                   ),
             const SizedBox(
               width: 8,
@@ -198,7 +197,6 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
           children: [
             const FaIcon(
               FontAwesomeIcons.calendarDay,
-              color: Colors.white70,
               size: 12,
             ),
             const SizedBox(width: 4),
@@ -208,7 +206,6 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
             const SizedBox(width: 12),
             const FaIcon(
               FontAwesomeIcons.fire,
-              color: Colors.white70,
               size: 12,
             ),
             const SizedBox(width: 4),

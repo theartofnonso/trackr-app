@@ -58,7 +58,6 @@ class PendingMilestonesScreen extends StatelessWidget {
                           child: NoListEmptyState(
                               icon: FaIcon(
                                 FontAwesomeIcons.trophy,
-                                color: Colors.white12,
                                 size: 48,
                               ),
                               message:

@@ -319,7 +319,7 @@ class _AppBar extends StatelessWidget {
     return Row(
       children: [
         IconButton(
-          icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
+          icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
           onPressed: Navigator.of(context).pop,
         ),
         Expanded(
@@ -329,7 +329,7 @@ class _AppBar extends StatelessWidget {
         ),
         canPerformPositiveAction
             ? IconButton(
-                icon: const FaIcon(FontAwesomeIcons.solidSquareCheck, color: Colors.white, size: 28),
+                icon: const FaIcon(FontAwesomeIcons.solidSquareCheck, size: 28),
                 onPressed: positiveAction,
               )
             : const IconButton(

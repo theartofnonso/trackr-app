@@ -301,7 +301,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
             appBar: AppBar(
               backgroundColor: sapphireDark80,
               leading: IconButton(
-                  icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+                  icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
                   onPressed: _discardLog),
               title: Text(
                 widget.log.name,
@@ -311,11 +311,11 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                 IconButton(
                     key: const Key('select_exercises_in_library_btn'),
                     onPressed: _selectExercisesInLibrary,
-                    icon: const FaIcon(FontAwesomeIcons.solidSquarePlus, color: Colors.white)),
+                    icon: const FaIcon(FontAwesomeIcons.solidSquarePlus)),
                 if (exerciseLogs.length > 1)
                   IconButton(
                       onPressed: () => _reOrderExerciseLogs(exerciseLogs: exerciseLogs),
-                      icon: const FaIcon(FontAwesomeIcons.barsStaggered, color: Colors.white))
+                      icon: const FaIcon(FontAwesomeIcons.barsStaggered))
               ],
             ),
             floatingActionButton: isKeyboardOpen && _selectedSetDto != null

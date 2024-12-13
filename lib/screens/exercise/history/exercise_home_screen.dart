@@ -99,7 +99,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
           appBar: AppBar(
             backgroundColor: sapphireDark80,
             leading: IconButton(
-              icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+              icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
               onPressed: context.pop,
             ),
             title: Text(exercise.name,

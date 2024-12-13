@@ -259,16 +259,16 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
           appBar: AppBar(
             backgroundColor: sapphireDark80,
             leading: IconButton(
-                icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+                icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
                 onPressed: _checkForUnsavedChanges),
             actions: [
               IconButton(
                   onPressed: _selectExercisesInLibrary,
-                  icon: const FaIcon(FontAwesomeIcons.solidSquarePlus, color: Colors.white)),
+                  icon: const FaIcon(FontAwesomeIcons.solidSquarePlus)),
               if (exerciseLogs.length > 1)
                 IconButton(
                     onPressed: () => _reOrderExerciseLogs(exerciseLogs: exerciseLogs),
-                    icon: const FaIcon(FontAwesomeIcons.barsStaggered, color: Colors.white)),
+                    icon: const FaIcon(FontAwesomeIcons.barsStaggered)),
             ],
           ),
           floatingActionButton: isKeyboardOpen && _selectedSetDto != null

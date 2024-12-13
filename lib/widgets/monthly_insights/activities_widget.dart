@@ -7,6 +7,7 @@ import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
 import '../../utils/dialog_utils.dart';
 import '../../utils/navigation_utils.dart';
+import '../../utils/theme/list_title_theme.dart';
 import '../empty_states/no_list_empty_state.dart';
 import '../routine/preview/activity_log_widget.dart';
 
@@ -18,50 +19,44 @@ class ActivitiesWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
 
     final thisMonthCount = thisMonthsActivities.length;
     final lastMonthCount = lastMonthsActivities.length;
 
     final improved = thisMonthCount > lastMonthCount;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: sapphireDark80,
-        borderRadius: BorderRadius.circular(5),
-      ),
+    return Theme(
+      data: Theme.of(context).copyWith(listTileTheme: isDarkMode ? TRKRListTileTheme.darkTheme : TRKRListTileTheme.lightTheme),
       child: ListTile(
-        onTap: () => _showActivityLogs(context: context),
-        tileColor: sapphireDark80,
-        contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 20),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        leading: const FaIcon(FontAwesomeIcons.personWalking, color: Colors.white70),
-        title: Text("Activities".toUpperCase(),
-            style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
-        subtitle: Text("All activities outside your training",
-            style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w400)),
-        trailing: Wrap(
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("$thisMonthCount",
-                    style: GoogleFonts.ubuntu(
-                        color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w900, fontSize: 20)),
-                Text("$lastMonthCount",
-                    style: GoogleFonts.ubuntu(color: Colors.white54, fontWeight: FontWeight.w900, fontSize: 12))
-              ],
-            ),
-            const SizedBox(width: 4),
-            FaIcon(
-              improved ? FontAwesomeIcons.arrowUp : FontAwesomeIcons.arrowDown,
-              color: improved ? vibrantGreen : Colors.deepOrange,
-              size: 12,
-            )
-          ],
-        )
-      ),
+          onTap: () => _showActivityLogs(context: context),
+          contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 20),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          leading: const FaIcon(FontAwesomeIcons.personWalking),
+          title: Text("Activities".toUpperCase()),
+          subtitle: Text("All activities outside your training"),
+          trailing: Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("$thisMonthCount",
+                      style: Theme.of(context).textTheme.titleMedium),
+                  Text("$lastMonthCount",
+                      style: Theme.of(context).textTheme.titleSmall)
+                ],
+              ),
+              const SizedBox(width: 4),
+              FaIcon(
+                improved ? FontAwesomeIcons.arrowUp : FontAwesomeIcons.arrowDown,
+                color: improved ? vibrantGreen : Colors.deepOrange,
+                size: 12,
+              )
+            ],
+          )),
     );
   }
 
@@ -89,8 +84,7 @@ class _LogsScreen extends StatelessWidget {
         title: Text("${DateTime.now().formattedFullMonth()} Activities".toUpperCase(),
             style: GoogleFonts.ubuntu(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
         leading: IconButton(
-            icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
-            onPressed: Navigator.of(context).pop),
+            icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28), onPressed: Navigator.of(context).pop),
       ),
       body: Container(
         width: double.infinity,
@@ -127,11 +121,12 @@ class _LogsScreen extends StatelessWidget {
                           itemCount: activities.length),
                     )
                   : Expanded(
-                    child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: const NoListEmptyState(message: "It might feel quiet now, but your logged activities will soon appear here."),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: const NoListEmptyState(
+                            message: "It might feel quiet now, but your logged activities will soon appear here."),
+                      ),
                     ),
-                  ),
             ],
           ),
         ),

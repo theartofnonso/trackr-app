@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
 import '../../utils/date_utils.dart';
@@ -87,10 +86,7 @@ class _CalendarNavigatorState extends State<CalendarNavigator> {
                 ? _currentDate.formattedMonthAndYear().toUpperCase()
                 : "Trends for the past year".toUpperCase(),
             textAlign: TextAlign.center,
-            style: GoogleFonts.ubuntu(
-              fontSize: 12,
-              fontWeight: FontWeight.w900,
-            )),
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.bold)),
         IconButton(
             onPressed: canNavigateNext && widget.enabled ? _goToNextMonth : null,
             icon: FaIcon(FontAwesomeIcons.arrowRightLong,

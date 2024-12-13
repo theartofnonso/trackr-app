@@ -47,16 +47,15 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
             Text("Muscle Groups Frequency".toUpperCase(),
-                style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+                style: Theme.of(context).textTheme.titleMedium),
             const Spacer(),
             if (muscleGroupFamilyFrequencies.length > 3)
-              FaIcon(_minimized ? FontAwesomeIcons.angleDown : FontAwesomeIcons.angleUp,
-                  color: Colors.white70, size: 16),
+              FaIcon(_minimized ? FontAwesomeIcons.angleDown : FontAwesomeIcons.angleUp, size: 16),
           ]),
           const SizedBox(height: 10),
           Text(
               "Train a variety of muscle groups to avoid muscle imbalances and prevent injury. On average each muscle group should be trained at least 2 times a week.",
-              style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w400)),
+              style: Theme.of(context).textTheme.bodySmall),
           const SizedBox(height: 10),
           MuscleGroupFamilyFrequencyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
           if (untrainedMuscleGroups.isNotEmpty)

@@ -129,7 +129,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
       appBar: AppBar(
         backgroundColor: sapphireDark80,
         leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+          icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
           onPressed: () => context.pop(),
         ),
       ),
@@ -138,7 +138,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         onPressed: _navigateToExerciseEditor,
         backgroundColor: sapphireDark,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        child: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 28),
+        child: const FaIcon(FontAwesomeIcons.plus, size: 28),
       ),
       body: NotificationListener(
         onNotification: (scrollNotification) {

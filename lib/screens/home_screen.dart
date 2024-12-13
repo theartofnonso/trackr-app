@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/models/ActivityLog.dart';
 import 'package:tracker_app/models/Exercise.dart';
@@ -62,10 +61,6 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: NavigationBar(
         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
         height: 60,
-        indicatorColor: Colors.transparent,
-        backgroundColor: sapphireDark80,
-        surfaceTintColor: Colors.black,
-        overlayColor: WidgetStateColor.resolveWith((states) => Colors.transparent),
         destinations: [
           const NavigationDestination(
             icon: FaIcon(FontAwesomeIcons.house, color: Colors.grey),

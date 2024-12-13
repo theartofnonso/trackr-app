@@ -27,6 +27,10 @@ class MonthlyTrainingSummaryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final exerciseLogs = routineLogs
         .map((log) => loggedExercises(exerciseLogs: log.exerciseLogs))
         .expand((exerciseLogs) => exerciseLogs);
@@ -74,17 +78,16 @@ class MonthlyTrainingSummaryWidget extends StatelessWidget {
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
         decoration: BoxDecoration(
-          color: sapphireDark80,
-          border: Border.all(color: sapphireDark80.withOpacity(0.8), width: 2),
+          color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
           children: [
             Text("Summary of ${dateTime.formattedFullMonth()} Training".toUpperCase(),
-                style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+              style: Theme.of(context).textTheme.titleSmall,),
             const SizedBox(height: 30),
             Table(
-              border: TableBorder.symmetric(inside: BorderSide(color: sapphireLighter.withOpacity(0.4), width: 2)),
+              border: TableBorder.symmetric(inside: BorderSide(color: isDarkMode ? sapphireLighter.withOpacity(0.4) : Colors.grey.shade100, width: 2)),
               columnWidths: const <int, TableColumnWidth>{
                 0: FlexColumnWidth(),
                 1: FlexColumnWidth(),
@@ -193,21 +196,13 @@ class _TableItem extends StatelessWidget {
         children: <Widget>[
           Text(
             subTitle,
-            style: GoogleFonts.ubuntu(
-              color: titleColor,
-              fontSize: 20,
-              fontWeight: FontWeight.w900,
-            ),
+            style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: 4),
           Text(
             title,
             textAlign: TextAlign.center,
-            style: GoogleFonts.ubuntu(
-              color: subTitleColor.withOpacity(0.6),
-              fontSize: 10,
-              fontWeight: FontWeight.bold,
-            ),
+            style: Theme.of(context).textTheme.labelSmall,
           )
         ],
       ),

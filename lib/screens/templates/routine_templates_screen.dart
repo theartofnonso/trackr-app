@@ -67,7 +67,7 @@ class RoutineTemplatesScreen extends StatelessWidget {
             onPressed: () => navigateToRoutineTemplateEditor(context: context),
             backgroundColor: sapphireDark.withOpacity(untrainedMuscleGroups.isNotEmpty ? 0.6 : 1),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-            child: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 28),
+            child: const FaIcon(FontAwesomeIcons.plus, size: 28),
           ),
           body: Container(
             decoration: const BoxDecoration(

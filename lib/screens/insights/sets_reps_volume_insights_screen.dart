@@ -150,7 +150,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
           ? AppBar(
               backgroundColor: sapphireDark80,
               leading: IconButton(
-                icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
+                icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
                 onPressed: context.pop,
               ),
               title: Text("Muscle Trend".toUpperCase(),

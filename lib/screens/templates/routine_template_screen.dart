@@ -160,13 +160,13 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
             backgroundColor: sapphireDark,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: template.owner == SharedPrefs().userId
-                ? const FaIcon(FontAwesomeIcons.play, color: Colors.white, size: 24)
+                ? const FaIcon(FontAwesomeIcons.play, size: 24)
                 : const FaIcon(FontAwesomeIcons.download)),
         backgroundColor: sapphireDark,
         appBar: AppBar(
           backgroundColor: sapphireDark80,
           leading: IconButton(
-            icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+            icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
             onPressed: context.pop,
           ),
           centerTitle: true,
@@ -225,7 +225,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                     children: [
                       const FaIcon(
                         FontAwesomeIcons.solidClock,
-                        color: Colors.white,
                         size: 12,
                       ),
                       const SizedBox(width: 6),
@@ -303,8 +302,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                                     color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
                             const Spacer(),
                             if (muscleGroupFamilyFrequencies.length > 3)
-                              FaIcon(_minimized ? FontAwesomeIcons.angleDown : FontAwesomeIcons.angleUp,
-                                  color: Colors.white70, size: 16),
+                              FaIcon(_minimized ? FontAwesomeIcons.angleDown : FontAwesomeIcons.angleUp, size: 16),
                           ]),
                           const SizedBox(height: 10),
                           Text("Here's a breakdown of the muscle groups in your ${template.name} workout plan.",
@@ -454,7 +452,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const FaIcon(FontAwesomeIcons.link, size: 14, color: Colors.white70),
+                  const FaIcon(FontAwesomeIcons.link, size: 14),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(workoutLink,

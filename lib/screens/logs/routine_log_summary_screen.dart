@@ -125,12 +125,12 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
         appBar: AppBar(
           backgroundColor: sapphireDark80,
           leading: IconButton(
-            icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
+            icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
             onPressed: context.pop,
           ),
           actions: [
             IconButton(
-              icon: const FaIcon(FontAwesomeIcons.camera, color: Colors.white, size: 24),
+              icon: const FaIcon(FontAwesomeIcons.camera, size: 24),
               onPressed: _showBottomSheet,
             )
           ],
@@ -221,7 +221,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const FaIcon(FontAwesomeIcons.link, size: 14, color: Colors.white70),
+                const FaIcon(FontAwesomeIcons.link, size: 14),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(workoutLogLink,

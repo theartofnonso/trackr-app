@@ -61,13 +61,13 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
           appBar: AppBar(
             backgroundColor: sapphireDark80,
             leading: IconButton(
-              icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+              icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
               onPressed: context.pop,
             ),
             actions: [
               exercise != null
                   ? IconButton(
-                      icon: const FaIcon(FontAwesomeIcons.solidSquareCheck, color: Colors.white, size: 28),
+                      icon: const FaIcon(FontAwesomeIcons.solidSquareCheck, size: 28),
                       onPressed: _updateExercise,
                     )
                   : const SizedBox.shrink(),

@@ -111,7 +111,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         appBar: AppBar(
             backgroundColor: sapphireDark80,
             leading: IconButton(
-              icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
+              icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
               onPressed: context.pop,
             ),
             title: Text(updatedLog.name,
@@ -120,7 +120,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                 ? [
                     IconButton(
                         onPressed: () => _onShareLog(log: log),
-                        icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18)),
+                        icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, size: 18)),
                   ]
                 : []),
         floatingActionButton: updatedLog.owner == SharedPrefs().userId && widget.isEditable
@@ -601,7 +601,7 @@ class _StatisticWidget extends StatelessWidget {
             color: Colors.white70,
             height: 14, // Adjust the height as needed
           )
-        : FaIcon(icon, size: 14, color: Colors.white70);
+        : FaIcon(icon, size: 14);
 
     return Container(
       width: 140,

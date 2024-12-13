@@ -58,7 +58,6 @@ class CompletedMilestonesScreen extends StatelessWidget {
                           child: const NoListEmptyState(
                               icon: FaIcon(
                                 FontAwesomeIcons.trophy,
-                                color: Colors.white12,
                                 size: 48,
                               ),
                               message: "It might feel quiet now, but your completed milestones will soon appear here."),
