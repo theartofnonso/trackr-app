@@ -12,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -49,6 +48,7 @@ import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/templates/routine_template_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/date_utils.dart';
+import 'package:tracker_app/utils/theme/theme.dart';
 
 import 'amplifyconfiguration.dart';
 import 'controllers/activity_log_controller.dart';
@@ -77,34 +77,7 @@ final _themeData = ThemeData(
     surface: sapphireDark,
     onSurface: Colors.white,
   ),
-  appBarTheme: const AppBarTheme(
-    backgroundColor: sapphireDark,
-    surfaceTintColor: sapphireDark,
-  ),
-  scrollbarTheme: ScrollbarThemeData(
-    thumbColor: WidgetStateProperty.all(Colors.green),
-    trackColor: WidgetStateProperty.all(Colors.white.withOpacity(0.2)),
-  ),
-  snackBarTheme: const SnackBarThemeData(
-      backgroundColor: sapphireDark,
-      actionBackgroundColor: sapphireLighter,
-      contentTextStyle: TextStyle(color: sapphireDark)),
-  tabBarTheme: const TabBarTheme(labelColor: Colors.white, unselectedLabelColor: Colors.white70),
-  inputDecorationTheme: InputDecorationTheme(
-    contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-    focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: sapphireLight)),
-    enabledBorder:
-    OutlineInputBorder(borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: Colors.black)),
-    filled: true,
-    fillColor: sapphireLighter,
-    hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14),
-  ),
-  filledButtonTheme: FilledButtonThemeData(
-    style: ButtonStyle(
-        foregroundColor: WidgetStateProperty.all(Colors.white),
-        backgroundColor: WidgetStateProperty.all(sapphireLight),
-        shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
-  ),
+  tabBarTheme: const TabBarTheme(labelColor: Colors.blue, unselectedLabelColor: Colors.white70),
   useMaterial3: true,
 );
 
@@ -439,7 +412,9 @@ class _MyAppState extends State<MyApp> {
             child: MaterialApp.router(
               debugShowCheckedModeBanner: false,
               builder: Authenticator.builder(),
-              theme: _themeData,
+              themeMode: ThemeMode.system,
+              theme: TRKRTheme.lightTheme,
+              darkTheme: TRKRTheme.darkTheme,
               routerConfig: _router,
             ),
           );
