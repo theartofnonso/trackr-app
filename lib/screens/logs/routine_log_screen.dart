@@ -107,9 +107,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     }).expand((pbs) => pbs);
 
     return Scaffold(
-        backgroundColor: sapphireDark,
         appBar: AppBar(
-            backgroundColor: sapphireDark80,
             leading: IconButton(
               icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
               onPressed: context.pop,
@@ -127,132 +125,106 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             ? FloatingActionButton(
                 heroTag: "routine_log_screen",
                 onPressed: _showBottomSheet,
-                backgroundColor: sapphireDark,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                 child: const FaIcon(FontAwesomeIcons.penToSquare))
             : null,
-        body: Container(
-          width: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                sapphireDark80,
-                sapphireDark,
+        body: SafeArea(
+          bottom: false,
+          child: SingleChildScrollView(
+            child: Column(
+              spacing: 20,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                    child:
+                        DateDurationPBWidget(dateTime: updatedLog.createdAt, duration: updatedLog.duration(), pbs: 0)),
+                if (updatedLog.notes.isNotEmpty)
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Text('"${updatedLog.notes}"',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic)),
+                    ),
+                  ),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      _StatisticWidget(
+                        title: "${completedExerciseLogs.length}",
+                        subtitle: "Exercises",
+                        image: "dumbbells",
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      _StatisticWidget(
+                        title: "${numberOfCompletedSets.length}",
+                        subtitle: "Sets",
+                        icon: FontAwesomeIcons.hashtag,
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      _StatisticWidget(
+                        title: "$calories",
+                        subtitle: "Calories",
+                        icon: FontAwesomeIcons.fire,
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      _StatisticWidget(
+                        title: "${pbs.length}",
+                        subtitle: "PBs",
+                        icon: FontAwesomeIcons.star,
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      )
+                    ],
+                  ),
+                ),
+                if (routineUserController.user == null)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: InformationContainerLite(
+                      content: "Set up your user profile in the settings to view the number of calories burned.",
+                      color: Colors.deepOrange,
+                    ),
+                  ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Column(
+                    spacing: 20,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      MuscleGroupSplitChart(
+                          title: "Muscle Groups Split",
+                          description: "Here's a breakdown of the muscle groups in your ${log.name} workout log.",
+                          muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
+                          minimized: _minimized),
+                      if (updatedLog.owner == SharedPrefs().userId && widget.isEditable)
+                        TRKRInformationContainer(
+                            ctaLabel: "Ask for feedback",
+                            description:
+                                "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
+                            onTap: _generateReport),
+                      ExerciseLogListView(exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogs)),
+                      const SizedBox(
+                        height: 60,
+                      )
+                    ],
+                  ),
+                )
+                //
+                // const EdgeInsets.only(right: 10, bottom: 10, left: 10)
               ],
             ),
           ),
-          child: Stack(children: [
-            SafeArea(
-              bottom: false,
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Center(
-                        child: DateDurationPBWidget(
-                            dateTime: updatedLog.createdAt, duration: updatedLog.duration(), pbs: 0)),
-                    if (updatedLog.notes.isNotEmpty)
-                      Center(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 20, right: 10, bottom: 20, left: 10),
-                          child: Text('"${updatedLog.notes}"',
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic)),
-                        ),
-                      ),
-
-                    /// Keep this spacing for when notes isn't available
-                    if (updatedLog.notes.isEmpty)
-                      const SizedBox(
-                        height: 20,
-                      ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          _StatisticWidget(
-                            title: "${completedExerciseLogs.length}",
-                            subtitle: "Exercises",
-                            image: "dumbbells",
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          _StatisticWidget(
-                            title: "${numberOfCompletedSets.length}",
-                            subtitle: "Sets",
-                            icon: FontAwesomeIcons.hashtag,
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          _StatisticWidget(
-                            title: "$calories",
-                            subtitle: "Calories",
-                            icon: FontAwesomeIcons.fire,
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          _StatisticWidget(
-                            title: "${pbs.length}",
-                            subtitle: "PBs",
-                            icon: FontAwesomeIcons.star,
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          )
-                        ],
-                      ),
-                    ),
-                    if (routineUserController.user == null)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10.0, left: 10, right: 10),
-                        child: InformationContainerLite(
-                          content: "Set up your user profile in the settings to view the number of calories burned.",
-                          color: Colors.deepOrange,
-                        ),
-                      ),
-                    const SizedBox(height: 22),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          MuscleGroupSplitChart(
-                              title: "Muscle Groups Split",
-                              description: "Here's a breakdown of the muscle groups in your ${log.name} workout log.",
-                              muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
-                              minimized: _minimized),
-                          if (updatedLog.owner == SharedPrefs().userId && widget.isEditable)
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 12.0),
-                              child: TRKRInformationContainer(
-                                  ctaLabel: "Ask for feedback",
-                                  description:
-                                      "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
-                                  onTap: _generateReport),
-                            ),
-                          ExerciseLogListView(
-                              exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogs)),
-                          const SizedBox(
-                            height: 60,
-                          )
-                        ],
-                      ),
-                    )
-                    //
-                    // const EdgeInsets.only(right: 10, bottom: 10, left: 10)
-                  ],
-                ),
-              ),
-            ),
-          ]),
         ));
   }
 
@@ -568,11 +540,14 @@ class _StatisticWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final leading = image != null
         ? Image.asset(
             'icons/$image.png',
             fit: BoxFit.contain,
-            color: Colors.white70,
+            color: isDarkMode ? Colors.white : Colors.black,
             height: 14, // Adjust the height as needed
           )
         : FaIcon(icon, size: 14);
@@ -581,7 +556,7 @@ class _StatisticWidget extends StatelessWidget {
       width: 140,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: sapphireDark60, // Background color of the container
+        color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, // Background color of the container
         borderRadius: BorderRadius.circular(5), // Border radius for rounded corners
       ),
       child: Column(
@@ -594,14 +569,13 @@ class _StatisticWidget extends StatelessWidget {
               const SizedBox(
                 width: 6,
               ),
-              Text(subtitle.toUpperCase(),
-                  style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.bold))
+              Text(subtitle.toUpperCase(), style: Theme.of(context).textTheme.bodySmall)
             ],
           ),
           const SizedBox(
             height: 6,
           ),
-          Text(title, style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900))
+          Text(title, style: Theme.of(context).textTheme.titleLarge)
         ],
       ),
     );

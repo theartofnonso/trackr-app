@@ -204,6 +204,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
+              spacing: 20,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -219,21 +220,11 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                 ),
                 if (template.notes.isNotEmpty)
                   Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 20, bottom: 20),
-                      child: Text('"${template.notes}"',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic)),
-                    ),
-                  ),
-
-                /// Keep this spacing for when notes isn't available
-                if (template.notes.isEmpty)
-                  const SizedBox(
-                    height: 20,
+                    child: Text('"${template.notes}"',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic)),
                   ),
                 Container(
-                  margin: const EdgeInsets.only(bottom: 12),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
                     color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, // Set the background color
@@ -265,7 +256,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 10),
                 MuscleGroupSplitChart(
                     title: "Muscle Groups Split",
                     description: "Here's a breakdown of the muscle groups in your ${template.name} workout plan.",
