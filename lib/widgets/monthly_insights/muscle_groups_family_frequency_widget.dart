@@ -22,9 +22,6 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
   @override
   Widget build(BuildContext context) {
 
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
     final exerciseLogs = widget.logs
         .map((log) => loggedExercises(exerciseLogs: log.exerciseLogs))
         .expand((exerciseLogs) => exerciseLogs)
@@ -48,37 +45,25 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
       onTap: _onTap,
       child: Container(
         color: Colors.transparent,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(children: [
-            Text("Muscle Groups Frequency".toUpperCase(), style: Theme.of(context).textTheme.titleMedium),
-            const Spacer(),
-            if (muscleGroupFamilyFrequencies.length > 3)
-              FaIcon(_minimized ? FontAwesomeIcons.angleDown : FontAwesomeIcons.angleUp, size: 16),
-          ]),
-          const SizedBox(height: 10),
-          Text(
-              "Train a variety of muscle groups to avoid muscle imbalances and prevent injury. On average each muscle group should be trained at least 2 times a week.",
-              style: isDarkMode
-                  ? Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white70)
-                  : Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white)),
-          const SizedBox(height: 10),
-          MuscleGroupFamilyFrequencyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
-          if (untrainedMuscleGroups.isNotEmpty)
-            Column(
-              children: [
-                RichText(
-                    text:
-                        TextSpan(text: "You have not trained", style: Theme.of(context).textTheme.bodySmall, children: [
-                  const TextSpan(text: " "),
-                  TextSpan(
-                      text: untrainedMuscleGroupsNames,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold)),
-                  const TextSpan(text: " "),
-                  TextSpan(text: "this month", style: Theme.of(context).textTheme.bodySmall),
-                ])),
-              ],
-            ),
-        ]),
+        child: Column(
+          children: [
+            MuscleGroupSplitChart(
+              title: "Muscle Groups Frequency",
+                description: "Train a variety of muscle groups to avoid muscle imbalances and prevent injury. On average each muscle group should be trained at least 2 times a week.",
+                muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
+                minimized: _minimized),
+            if (untrainedMuscleGroups.isNotEmpty)
+              RichText(
+                  text: TextSpan(text: "You have not trained", style: Theme.of(context).textTheme.bodySmall, children: [
+                const TextSpan(text: " "),
+                TextSpan(
+                    text: untrainedMuscleGroupsNames,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold)),
+                const TextSpan(text: " "),
+                TextSpan(text: "this month", style: Theme.of(context).textTheme.bodySmall),
+              ])),
+          ],
+        ),
       ),
     );
   }
@@ -87,5 +72,46 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
     setState(() {
       _minimized = !_minimized;
     });
+  }
+}
+
+class MuscleGroupSplitChart extends StatelessWidget {
+  const MuscleGroupSplitChart({
+    super.key,
+    required this.muscleGroupFamilyFrequencies,
+    required bool minimized,
+    required this.title,
+    required this.description
+  }) : _minimized = minimized;
+
+
+  final String title;
+  final String description;
+  final Map<MuscleGroupFamily, double> muscleGroupFamilyFrequencies;
+  final bool _minimized;
+
+  @override
+  Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
+
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Row(children: [
+        Text(title.toUpperCase(), style: Theme.of(context).textTheme.titleMedium),
+        const Spacer(),
+        if (muscleGroupFamilyFrequencies.length > 3)
+          FaIcon(_minimized ? FontAwesomeIcons.angleDown : FontAwesomeIcons.angleUp, size: 16),
+      ]),
+      const SizedBox(height: 10),
+      Text(
+          description,
+          style: isDarkMode
+              ? Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white70)
+              : Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.black)),
+      const SizedBox(height: 10),
+      MuscleGroupFamilyFrequencyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
+    ]);
   }
 }

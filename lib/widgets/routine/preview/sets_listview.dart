@@ -21,45 +21,50 @@ class SetsListview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const margin = EdgeInsets.only(bottom: 6.0);
+    if (sets.isEmpty) {
+      return Center(
+          child: Container(
+        width: double.infinity,
+        margin: const EdgeInsets.symmetric(vertical: 12),
+        padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5), // Circular border radius
+          border: Border.all(
+            color: Colors.deepOrange.withOpacity(0.2), // Border color
+            width: 2, // Border width
+          ),
+        ),
+        child: Text("No Sets have been logged for this exercise",
+            textAlign: TextAlign.center,
+            style:
+                GoogleFonts.ubuntu(fontSize: 12, height: 1.4, color: Colors.deepOrange, fontWeight: FontWeight.w600)),
+      ));
+    }
 
     final pbsBySet = groupBy(pbs, (pb) => pb.set);
 
-    final widgets = sets.map(((setDto) {
-      final pbsForSet = pbsBySet[setDto] ?? [];
-
-      switch (setDto.type) {
-        case ExerciseType.weights:
-          final firstLabel = (setDto as WeightAndRepsSetDto).weight;
-          final secondLabel = setDto.reps;
-          return DoubleSetRow(first: "$firstLabel", second: "$secondLabel", margin: margin, pbs: pbsForSet);
-        case ExerciseType.bodyWeight:
-          final label = (setDto as RepsSetDto).reps;
-          return SingleSetRow(label: "$label", margin: margin);
-        case ExerciseType.duration:
-          final label = (setDto as DurationSetDto).duration.hmsAnalog();
-          return SingleSetRow(label: label, margin: margin, pbs: pbsForSet);
-      }
-    })).toList();
-
-    return sets.isNotEmpty
-        ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: widgets)
-        : Center(
-            child: Container(
-            width: double.infinity,
-            margin: const EdgeInsets.symmetric(vertical: 12),
-            padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5), // Circular border radius
-              border: Border.all(
-                color: Colors.deepOrange.withOpacity(0.2), // Border color
-                width: 2, // Border width
-              ),
-            ),
-            child: Text("No Sets have been logged for this exercise",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.ubuntu(
-                    fontSize: 12, height: 1.4, color: Colors.deepOrange, fontWeight: FontWeight.w600)),
-          ));
+    return ListView.separated(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemBuilder: (context, index) {
+          final set = sets[index];
+          final pbsForSet = pbsBySet[set] ?? [];
+          switch (set.type) {
+            case ExerciseType.weights:
+              final firstLabel = (set as WeightAndRepsSetDto).weight;
+              final secondLabel = set.reps;
+              return DoubleSetRow(first: "$firstLabel", second: "$secondLabel", pbs: pbsForSet);
+            case ExerciseType.bodyWeight:
+              final label = (set as RepsSetDto).reps;
+              return SingleSetRow(label: "$label");
+            case ExerciseType.duration:
+              final label = (set as DurationSetDto).duration.hmsAnalog();
+              return SingleSetRow(label: label, pbs: pbsForSet);
+          }
+        },
+        separatorBuilder: (context, index) {
+          return SizedBox(height: 8);
+        },
+        itemCount: sets.length);
   }
 }

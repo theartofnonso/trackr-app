@@ -20,7 +20,7 @@ import '../../utils/exercise_logs_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../widgets/calendar/calendar.dart';
 import '../../widgets/chart/line_chart_widget.dart';
-import '../../widgets/chart/muscle_group_family_chart.dart';
+import '../../widgets/chart/muscle_group_family_frequency_chart.dart';
 import '../../widgets/dividers/label_container_divider.dart';
 import '../../widgets/shareables/pbs_shareable.dart';
 
@@ -62,7 +62,8 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
         .expand((exerciseLogs) => exerciseLogs)
         .toList();
 
-    final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: exerciseLogsWithCompletedSets, includeSecondaryMuscleGroups: false);
+    final muscleGroupFamilyFrequencies =
+        muscleGroupFamilyFrequency(exerciseLogs: exerciseLogsWithCompletedSets, includeSecondaryMuscleGroups: false);
 
     final exerciseAndRoutineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
@@ -201,8 +202,8 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
                             dividerColor: sapphireLighter,
                             child: Padding(
                               padding: const EdgeInsets.only(top: 8.0),
-                              child:
-                                  MuscleGroupFamilyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: false),
+                              child: MuscleGroupFamilyFrequencyChart(
+                                  frequencyData: muscleGroupFamilyFrequencies, minimized: false),
                             )),
                       ),
                       Padding(

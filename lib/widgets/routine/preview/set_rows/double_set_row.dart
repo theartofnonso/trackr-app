@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/widgets/routine/preview/set_rows/set_row.dart';
 
 import '../../../../colors.dart';
@@ -16,8 +15,10 @@ class DoubleSetRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     return SetRow(
-        margin: margin,
         pbs: pbs,
         child: Table(
             border: TableBorder.symmetric(inside: BorderSide(color: sapphireLighter.withOpacity(0.4), width: 1.5)),
@@ -29,12 +30,12 @@ class DoubleSetRow extends StatelessWidget {
               TableRow(children: [
                 TableCell(
                   verticalAlignment: TableCellVerticalAlignment.middle,
-                  child: Text(first, style: GoogleFonts.ubuntu(color: Colors.white), textAlign: TextAlign.center),
+                  child: Text(first, style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
                 ),
                 TableCell(
                     verticalAlignment: TableCellVerticalAlignment.middle,
                     child:
-                        Text(second, style: GoogleFonts.ubuntu(color: Colors.white), textAlign: TextAlign.center))
+                        Text(second, style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center))
               ]),
             ]));
   }

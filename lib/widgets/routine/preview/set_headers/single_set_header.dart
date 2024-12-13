@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class SingleSetHeader extends StatelessWidget {
   final String label;
@@ -18,7 +17,7 @@ class SingleSetHeader extends StatelessWidget {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: Text(label,
-                style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 12),
+                style: Theme.of(context).textTheme.bodyMedium,
                 textAlign: textAlign),
           ),
         ]),

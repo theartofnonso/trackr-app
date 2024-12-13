@@ -16,7 +16,6 @@ import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/https_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/backgrounds/trkr_loading_screen.dart';
-import 'package:tracker_app/widgets/chart/muscle_group_family_chart.dart';
 import 'package:tracker_app/widgets/information_containers/information_container_lite.dart';
 
 import '../../../colors.dart';
@@ -40,6 +39,7 @@ import '../../utils/routine_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../widgets/ai_widgets/trkr_information_container.dart';
 import '../../widgets/empty_states/not_found.dart';
+import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
 import '../../widgets/routine/preview/date_duration_pb.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
 import '../AI/routine_log_report_screen.dart';
@@ -159,11 +159,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                           padding: const EdgeInsets.only(top: 20, right: 10, bottom: 20, left: 10),
                           child: Text('"${updatedLog.notes}"',
                               textAlign: TextAlign.center,
-                              style: GoogleFonts.ubuntu(
-                                  color: Colors.white70,
-                                  fontSize: 14,
-                                  fontStyle: FontStyle.italic,
-                                  fontWeight: FontWeight.w600)),
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic)),
                         ),
                       ),
 
@@ -228,33 +224,11 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          GestureDetector(
-                            onTap: _onMinimiseMuscleGroupSplit,
-                            child: Container(
-                              color: Colors.transparent,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(children: [
-                                    Text("Muscle Groups Split".toUpperCase(),
-                                        style: GoogleFonts.ubuntu(
-                                            color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
-                                    const Spacer(),
-                                    if (muscleGroupFamilyFrequencies.length > 3)
-                                      FaIcon(_minimized ? FontAwesomeIcons.angleDown : FontAwesomeIcons.angleUp,
-                                          color: Colors.white70, size: 16),
-                                  ]),
-                                  const SizedBox(height: 10),
-                                  Text("Here's a breakdown of the muscle groups in your ${log.name} workout log.",
-                                      style: GoogleFonts.ubuntu(
-                                          color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w400)),
-                                  const SizedBox(height: 10),
-                                  MuscleGroupFamilyChart(
-                                      frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
-                                ],
-                              ),
-                            ),
-                          ),
+                          MuscleGroupSplitChart(
+                              title: "Muscle Groups Split",
+                              description: "Here's a breakdown of the muscle groups in your ${log.name} workout log.",
+                              muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
+                              minimized: _minimized),
                           if (updatedLog.owner == SharedPrefs().userId && widget.isEditable)
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -321,7 +295,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         .then((response) {
       _hideLoadingScreen();
       if (response != null) {
-        if(kReleaseMode) {
+        if (kReleaseMode) {
           Posthog().capture(eventName: PostHogAnalyticsEvent.generateRoutineLogReport.displayName);
         }
         if (mounted) {

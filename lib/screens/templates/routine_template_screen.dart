@@ -29,8 +29,8 @@ import '../../utils/navigation_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../utils/string_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
-import '../../widgets/chart/muscle_group_family_chart.dart';
 import '../../widgets/empty_states/not_found.dart';
+import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
 import 'routine_day_planner.dart';
 
@@ -88,6 +88,9 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
@@ -157,21 +160,16 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
         floatingActionButton: FloatingActionButton(
             heroTag: UniqueKey,
             onPressed: template.owner == SharedPrefs().userId ? _launchRoutineLogEditor : _createTemplate,
-            backgroundColor: sapphireDark,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: template.owner == SharedPrefs().userId
                 ? const FaIcon(FontAwesomeIcons.play, size: 24)
                 : const FaIcon(FontAwesomeIcons.download)),
-        backgroundColor: sapphireDark,
         appBar: AppBar(
-          backgroundColor: sapphireDark80,
           leading: IconButton(
             icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
             onPressed: context.pop,
           ),
           centerTitle: true,
-          title: Text(template.name,
-              style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+          title: Text(template.name),
           actions: [
             template.owner == SharedPrefs().userId
                 ? MenuAnchor(
@@ -190,7 +188,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                         },
                         icon: const Icon(
                           Icons.more_vert_rounded,
-                          color: Colors.white,
                           size: 24,
                         ),
                         tooltip: 'Show menu',
@@ -201,127 +198,86 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                 : const SizedBox.shrink()
           ],
         ),
-        body: Container(
-          width: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                sapphireDark80,
-                sapphireDark,
-              ],
-            ),
-          ),
-          child: SafeArea(
-            bottom: false,
-            minimum: const EdgeInsets.all(10.0),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+        body: SafeArea(
+          bottom: false,
+          minimum: const EdgeInsets.all(10.0),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const FaIcon(
+                      FontAwesomeIcons.solidClock,
+                      size: 12,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(scheduledDaysSummary(template: template, showFullName: true),
+                        style: Theme.of(context).textTheme.bodyMedium),
+                  ],
+                ),
+                if (template.notes.isNotEmpty)
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 20, bottom: 20),
+                      child: Text('"${template.notes}"',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic)),
+                    ),
+                  ),
+
+                /// Keep this spacing for when notes isn't available
+                if (template.notes.isEmpty)
+                  const SizedBox(
+                    height: 20,
+                  ),
+                Container(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
+                    color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, // Set the background color
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: Table(
+                    border: const TableBorder.symmetric(inside: BorderSide(color: sapphireLighter, width: 2)),
+                    columnWidths: const <int, TableColumnWidth>{
+                      0: FlexColumnWidth(),
+                      1: FlexColumnWidth(),
+                    },
                     children: [
-                      const FaIcon(
-                        FontAwesomeIcons.solidClock,
-                        size: 12,
-                      ),
-                      const SizedBox(width: 6),
-                      Text(scheduledDaysSummary(template: template, showFullName: true),
-                          style: GoogleFonts.ubuntu(
-                              color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                      TableRow(children: [
+                        TableCell(
+                          verticalAlignment: TableCellVerticalAlignment.middle,
+                          child: Center(
+                            child: Text(
+                                "${template.exerciseTemplates.length} ${pluralize(word: "Exercise", count: template.exerciseTemplates.length)}",
+                                style: Theme.of(context).textTheme.bodyMedium),
+                          ),
+                        ),
+                        TableCell(
+                          verticalAlignment: TableCellVerticalAlignment.middle,
+                          child: Center(
+                            child: Text(setsSummary, style: Theme.of(context).textTheme.bodyMedium),
+                          ),
+                        ),
+                      ]),
                     ],
                   ),
-                  if (template.notes.isNotEmpty)
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 20, bottom: 20),
-                        child: Text('"${template.notes}"',
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.ubuntu(
-                                color: Colors.white70,
-                                fontSize: 14,
-                                fontStyle: FontStyle.italic,
-                                fontWeight: FontWeight.w600)),
-                      ),
-                    ),
-
-                  /// Keep this spacing for when notes isn't available
-                  if (template.notes.isEmpty)
-                    const SizedBox(
-                      height: 20,
-                    ),
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 12),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
-                      color: sapphireDark.withOpacity(0.4), // Set the background color
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: Table(
-                      border: const TableBorder.symmetric(inside: BorderSide(color: sapphireLighter, width: 2)),
-                      columnWidths: const <int, TableColumnWidth>{
-                        0: FlexColumnWidth(),
-                        1: FlexColumnWidth(),
-                      },
-                      children: [
-                        TableRow(children: [
-                          TableCell(
-                            verticalAlignment: TableCellVerticalAlignment.middle,
-                            child: Center(
-                              child: Text(
-                                  "${template.exerciseTemplates.length} ${pluralize(word: "Exercise", count: template.exerciseTemplates.length)}",
-                                  style: GoogleFonts.ubuntu(
-                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-                            ),
-                          ),
-                          TableCell(
-                            verticalAlignment: TableCellVerticalAlignment.middle,
-                            child: Center(
-                              child: Text(setsSummary,
-                                  style: GoogleFonts.ubuntu(
-                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-                            ),
-                          ),
-                        ]),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  GestureDetector(
-                    onTap: _onMinimiseMuscleGroupSplit,
-                    child: Container(
-                      color: Colors.transparent,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(children: [
-                            Text("Muscle Groups Split".toUpperCase(),
-                                style: GoogleFonts.ubuntu(
-                                    color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
-                            const Spacer(),
-                            if (muscleGroupFamilyFrequencies.length > 3)
-                              FaIcon(_minimized ? FontAwesomeIcons.angleDown : FontAwesomeIcons.angleUp, size: 16),
-                          ]),
-                          const SizedBox(height: 10),
-                          Text("Here's a breakdown of the muscle groups in your ${template.name} workout plan.",
-                              style:
-                                  GoogleFonts.ubuntu(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w400)),
-                          const SizedBox(height: 10),
-                          MuscleGroupFamilyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
-                        ],
-                      ),
-                    ),
-                  ),
-                  ExerciseLogListView(
-                    exerciseLogs: exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
-                  ),
-                  const SizedBox(
-                    height: 60,
-                  )
-                ],
-              ),
+                ),
+                const SizedBox(height: 10),
+                MuscleGroupSplitChart(
+                    title: "Muscle Groups Split",
+                    description: "Here's a breakdown of the muscle groups in your ${template.name} workout plan.",
+                    muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
+                    minimized: _minimized),
+                ExerciseLogListView(
+                  exerciseLogs: exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
+                ),
+                const SizedBox(
+                  height: 60,
+                )
+              ],
             ),
           ),
         ));

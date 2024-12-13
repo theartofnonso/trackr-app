@@ -5,14 +5,17 @@ import '../../../../dtos/pb_dto.dart';
 import '../../../pbs/pb_icon.dart';
 
 class SetRow extends StatelessWidget {
-  final EdgeInsets? margin;
   final List<PBDto> pbs;
   final Widget child;
 
-  const SetRow({super.key, this.margin, this.pbs = const [], required this.child});
+  const SetRow({super.key, this.pbs = const [], required this.child});
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final pbsForSet = pbs
         .map((pb) => Padding(
               padding: const EdgeInsets.symmetric(horizontal: 6.0),
@@ -21,9 +24,8 @@ class SetRow extends StatelessWidget {
         .toList();
 
     return Container(
-      margin: margin,
       decoration: BoxDecoration(
-          color: sapphireDark80,
+          color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
           borderRadius: BorderRadius.circular(5.0),
           border: pbs.isNotEmpty ? Border.all(color: Colors.white12, width: 1) : null // Border color
           // Radius for rounded corners

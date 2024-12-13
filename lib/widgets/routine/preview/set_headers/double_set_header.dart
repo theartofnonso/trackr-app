@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class DoubleSetHeader extends StatelessWidget {
   final String firstLabel;
@@ -19,13 +18,13 @@ class DoubleSetHeader extends StatelessWidget {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: Text(firstLabel,
-                style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 12),
+                style: Theme.of(context).textTheme.bodyMedium,
                 textAlign: TextAlign.center),
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: Text(secondLabel,
-                style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 12),
+                style: Theme.of(context).textTheme.bodyMedium,
                 textAlign: TextAlign.center),
           ),
         ]),
