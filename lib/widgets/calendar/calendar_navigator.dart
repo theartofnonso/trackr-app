@@ -60,6 +60,9 @@ class _CalendarNavigatorState extends State<CalendarNavigator> {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     DateTime today = DateTime.now();
     DateTime currentMonthStart = DateTime(today.year, today.month, 1);
     bool canNavigateNext = !_currentDate.monthlyStartDate().isAtSameMomentAs(currentMonthStart);
@@ -75,11 +78,7 @@ class _CalendarNavigatorState extends State<CalendarNavigator> {
         IconButton(
             onPressed: canNavigatePrevious && widget.enabled ? _goToPreviousMonth : null,
             icon: FaIcon(FontAwesomeIcons.arrowLeftLong,
-                color: canNavigatePrevious && widget.enabled
-                    ? Colors.white
-                    : widget.enabled
-                        ? Colors.white30
-                        : Colors.transparent,
+                color: _getArrowIconColour(isDarkMode: isDarkMode, canNavigate: canNavigatePrevious && widget.enabled),
                 size: 16)),
         Text(
             widget.enabled
@@ -90,13 +89,16 @@ class _CalendarNavigatorState extends State<CalendarNavigator> {
         IconButton(
             onPressed: canNavigateNext && widget.enabled ? _goToNextMonth : null,
             icon: FaIcon(FontAwesomeIcons.arrowRightLong,
-                color: canNavigateNext && widget.enabled
-                    ? Colors.white
-                    : widget.enabled
-                        ? Colors.white30
-                        : Colors.transparent,
+                color: _getArrowIconColour(isDarkMode: isDarkMode, canNavigate: canNavigateNext && widget.enabled),
                 size: 16)),
       ],
     );
+  }
+
+  Color _getArrowIconColour({required bool isDarkMode, required bool canNavigate}) {
+    if (isDarkMode) {
+      return canNavigate ? Colors.white : Colors.white30;
+    }
+    return canNavigate ? Colors.black : Colors.grey.shade300;
   }
 }

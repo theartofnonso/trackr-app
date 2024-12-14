@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -43,6 +42,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     final exerciseEditorController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
     if (exerciseEditorController.errorMessage.isNotEmpty) {
@@ -53,14 +53,10 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
 
     final exercise = widget.exercise;
 
-    final inactiveStyle = GoogleFonts.ubuntu(color: Colors.white70, fontSize: 22, fontWeight: FontWeight.w600);
-    final activeStyle = GoogleFonts.ubuntu(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w600);
-
     return PopScope(
         canPop: false,
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: sapphireDark80,
             leading: IconButton(
               icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
               onPressed: context.pop,
@@ -83,37 +79,39 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
             child: SafeArea(
               minimum: const EdgeInsets.all(10),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: RichText(
-                      text: TextSpan(style: const TextStyle(height: 2.0), children: [
-                    TextSpan(text: "Train ", style: inactiveStyle),
-                    TextSpan(
-                        text: "${_primaryMuscleGroup.name} \n",
-                        recognizer: TapGestureRecognizer()..onTap = _navigateToMuscleGroupsScreen,
-                        style: activeStyle),
-                    TextSpan(text: "with ", style: inactiveStyle),
-                    TextSpan(
-                        text: "${_exerciseName ?? "exercise name"} \n",
-                        recognizer: TapGestureRecognizer()..onTap = _showInputTextField,
-                        style: activeStyle),
-                    TextSpan(text: "using ", style: inactiveStyle),
-                    TextSpan(
-                        text: _exerciseType.name,
-                        recognizer: TapGestureRecognizer()..onTap = _navigateToExerciseTypeScreen,
-                        style: exercise == null ? activeStyle : inactiveStyle),
-                  ])),
+                if (!_isInputFieldVisible)
+                  InformationContainer(
+                      leadingIcon: FaIcon(FontAwesomeIcons.lightbulb, size: 16),
+                      title: 'Tip',
+                      description: "Tap buttons to edit.",
+                      color: Colors.transparent),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text("Select muscle to train", style: Theme.of(context).textTheme.titleMedium),
+                    const Spacer(),
+                    OpacityButtonWidget(label: _primaryMuscleGroup.name, onPressed: _navigateToMuscleGroupsScreen)
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text("Enter exercise name", style: Theme.of(context).textTheme.titleMedium),
+                    const Spacer(),
+                    OpacityButtonWidget(label: _exerciseName ?? "exercise name", onPressed: _showInputTextField)
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text("Select how to log this exercise", style: Theme.of(context).textTheme.titleMedium),
+                    const Spacer(),
+                    OpacityButtonWidget(label: _exerciseType.name, onPressed: _navigateToExerciseTypeScreen)
+                  ],
                 ),
                 const Spacer(),
-                if (!_isInputFieldVisible)
-                  const Column(children: [
-                    InformationContainer(
-                        leadingIcon: FaIcon(FontAwesomeIcons.lightbulb, size: 16),
-                        title: 'Tip',
-                        description: "Tap text in white to edit.",
-                        color: Colors.transparent),
-                    SizedBox(height: 20),
-                  ]),
                 if (!_isInputFieldVisible && _exerciseName != null && exercise == null)
                   SizedBox(
                     width: double.infinity,
@@ -255,7 +253,8 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
       if (exercise == null) return;
 
       final exerciseToBeUpdated = exercise.copyWith(name: exerciseName.trim(), primaryMuscleGroup: _primaryMuscleGroup);
-      await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateExercise(exercise: exerciseToBeUpdated);
+      await Provider.of<ExerciseAndRoutineController>(context, listen: false)
+          .updateExercise(exercise: exerciseToBeUpdated);
       AnalyticsController.exerciseEvents(eventAction: "create_exercise", exercise: exercise);
       if (mounted) {
         context.pop(exerciseToBeUpdated);
