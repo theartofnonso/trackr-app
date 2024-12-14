@@ -83,7 +83,7 @@ class MonthlyTrainingSummaryWidget extends StatelessWidget {
         child: Column(
           children: [
             Text("Summary of ${dateTime.formattedFullMonth()} Training".toUpperCase(),
-              style: Theme.of(context).textTheme.titleSmall),
+              style: Theme.of(context).textTheme.bodyMedium),
             const SizedBox(height: 30),
             Table(
               border: TableBorder.symmetric(inside: BorderSide(color: isDarkMode ? sapphireLighter.withOpacity(0.4) : Colors.grey.shade100, width: 2)),
