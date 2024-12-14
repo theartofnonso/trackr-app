@@ -176,6 +176,10 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final weightUnitLabel = weightLabel();
 
     final muscleGroupsIllustrations = [widget.exercise.primaryMuscleGroup, ...widget.exercise.secondaryMuscleGroups]
@@ -215,8 +219,8 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                     child: SmoothPageIndicator(
                         controller: _controller,
                         count: muscleGroupsIllustrations.length,
-                        effect: const WormEffect(
-                            activeDotColor: vibrantGreen, dotWidth: 8.0, dotHeight: 8.0, dotColor: Colors.white12),
+                        effect: WormEffect(
+                            activeDotColor: vibrantGreen, dotWidth: 8.0, dotHeight: 8.0, dotColor: isDarkMode ? Colors.white12 : Colors.grey.shade200),
                         axisDirection: Axis.vertical),
                   ),
                 ),
