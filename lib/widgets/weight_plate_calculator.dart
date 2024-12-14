@@ -23,6 +23,9 @@ class _WeightCalculatorState extends State<WeightPlateCalculator> {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final plates = _PlatesEnum.values
         .map((plate) => Padding(
               padding: const EdgeInsets.only(right: 8.0),
@@ -59,14 +62,12 @@ class _WeightCalculatorState extends State<WeightPlateCalculator> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text("${weightWithConversion(value: widget.target)}${weightLabel()}".toUpperCase(),
-              textAlign: TextAlign.center,
-              style: GoogleFonts.ubuntu(fontSize: 28, color: Colors.white, fontWeight: FontWeight.w900)),
+              textAlign: TextAlign.center, style: Theme.of(context).textTheme.headlineLarge),
           const SizedBox(
             height: 2,
           ),
           Text("Target Weight".toUpperCase(),
-              textAlign: TextAlign.start,
-              style: GoogleFonts.ubuntu(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w600)),
+              textAlign: TextAlign.start, style: Theme.of(context).textTheme.bodyMedium),
           const SizedBox(
             height: 18,
           ),
@@ -80,13 +81,13 @@ class _WeightCalculatorState extends State<WeightPlateCalculator> {
               child: Text(
                   "Closest estimate is ${weightWithConversion(value: weightEstimate)}${weightLabel()}".toUpperCase(),
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.ubuntu(fontSize: 12, color: Colors.deepOrange, fontWeight: FontWeight.w700)),
+                  style: Theme.of(context).textTheme.bodyMedium),
             ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16),
             child: LabelDivider(
                 label: "Available Weights (${weightLabel()})".toUpperCase(),
-                labelColor: Colors.white70,
+                labelColor: isDarkMode ? Colors.white70 : Colors.black,
                 dividerColor: sapphireLighter),
           ),
           SingleChildScrollView(
@@ -99,9 +100,9 @@ class _WeightCalculatorState extends State<WeightPlateCalculator> {
             padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16),
             child: LabelDivider(
               label: "Available Bar (${weightLabel()})".toUpperCase(),
-              labelColor: Colors.white70,
+              labelColor: isDarkMode ? Colors.white70 : Colors.black,
               dividerColor: sapphireLighter,
-              leftToRight: false,
+              leftToRight: true,
             ),
           ),
           SingleChildScrollView(
@@ -172,6 +173,9 @@ class _Bar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(children: [
@@ -179,15 +183,18 @@ class _Bar extends StatelessWidget {
         Container(
             width: 100,
             height: 20,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [
-                  Colors.white24,
-                  Colors.white70,
-                ],
-              ),
+            decoration: BoxDecoration(
+              color: isDarkMode ? null : Colors.grey.shade400,
+              gradient: isDarkMode
+                  ? LinearGradient(
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                      colors: [
+                        Colors.white24,
+                        Colors.white70,
+                      ],
+                    )
+                  : null,
             ),
             child: Center(
               child: Text("${weightWithConversion(value: bar.weight)}",
@@ -204,19 +211,22 @@ class _Bar extends StatelessWidget {
         Container(
             width: 10,
             height: 20,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               borderRadius: BorderRadius.only(
                 topRight: Radius.circular(5),
                 bottomRight: Radius.circular(5),
               ),
-              gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [
-                  Colors.white24,
-                  Colors.white70,
-                ],
-              ),
+              color: isDarkMode ? null : Colors.grey.shade400,
+              gradient: isDarkMode
+                  ? LinearGradient(
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                      colors: [
+                        Colors.white24,
+                        Colors.white70,
+                      ],
+                    )
+                  : null,
             )),
         SizedBox(width: 16)
       ]),

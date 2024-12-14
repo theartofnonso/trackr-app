@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class OpacityCircleButtonWidget extends StatelessWidget {
   final void Function()? onPressed;
@@ -16,22 +15,35 @@ class OpacityCircleButtonWidget extends StatelessWidget {
       this.padding,
       this.visualDensity = VisualDensity.compact});
 
+  Color? _themeForegroundColor({required bool isDarkMode}) {
+    return isDarkMode ? buttonColor : Colors.black;
+  }
+
+  Color? _themeBackgroundColor({required bool isDarkMode}) {
+    return isDarkMode ? buttonColor?.withOpacity(0.15) : buttonColor;
+  }
+
+  Color _defaultBackgroundColor({required bool isDarkMode}) {
+    return isDarkMode ? Colors.white.withOpacity(0.15) : Colors.grey.shade200;
+  }
+
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     return GestureDetector(
       onTap: onPressed,
       child: Container(
         padding: padding,
         decoration: BoxDecoration(
-          color: buttonColor?.withOpacity(0.15) ?? Colors.white.withOpacity(0.15),
+          color: _themeBackgroundColor(isDarkMode: isDarkMode) ?? _defaultBackgroundColor(isDarkMode: isDarkMode),
           shape: BoxShape.circle,
         ),
         child: Text(label,
             textAlign: TextAlign.start,
-            style: GoogleFonts.ubuntu(
-                fontWeight: FontWeight.w600,
-                fontSize: 12,
-                color: onPressed != null ? buttonColor : buttonColor?.withOpacity(0.2))),
+            style:
+                Theme.of(context).textTheme.bodySmall?.copyWith(color: _themeForegroundColor(isDarkMode: isDarkMode))),
       ),
     );
   }

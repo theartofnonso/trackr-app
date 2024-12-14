@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
@@ -220,6 +221,9 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
 
     final routineTemplateController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
@@ -285,6 +289,10 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
                           ),
                           keyboardType: TextInputType.text,
                           textCapitalization: TextCapitalization.words,
+                          style: GoogleFonts.ubuntu(
+                              fontWeight: FontWeight.w400,
+                              color: isDarkMode ? Colors.white : Colors.black,
+                              fontSize: 14),
                         ),
                         TextField(
                           controller: _templateNotesController,
@@ -294,6 +302,10 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
                           maxLines: null,
                           keyboardType: TextInputType.text,
                           textCapitalization: TextCapitalization.sentences,
+                          style: GoogleFonts.ubuntu(
+                              fontWeight: FontWeight.w400,
+                              color: isDarkMode ? Colors.white : Colors.black,
+                              fontSize: 14),
                         ),
                       ],
                     ),

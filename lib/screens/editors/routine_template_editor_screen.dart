@@ -237,6 +237,10 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final template = widget.template;
 
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
@@ -271,17 +275,15 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
               ? FloatingActionButton.extended(
                   heroTag: UniqueKey(),
                   onPressed: _showWeightCalculator,
-                  backgroundColor: Colors.white.withOpacity(0.1),
                   enableFeedback: true,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                   icon: Image.asset(
                     'icons/dumbbells.png',
                     fit: BoxFit.contain,
-                    color: Colors.white,
+                    color: isDarkMode ? Colors.black : Colors.white,
                     height: 24, // Adjust the height as needed
                   ),
                   label:
-                      Text("Calculator", style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600)),
+                      Text("Calculator"),
                 )
               : null,
           body: Container(
@@ -304,9 +306,10 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                           decoration: InputDecoration(
                             hintText: "New workout",
                           ),
-                          cursorColor: Colors.white,
                           keyboardType: TextInputType.text,
                           textCapitalization: TextCapitalization.words,
+                          style: GoogleFonts.ubuntu(
+                              fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white : Colors.black, fontSize: 14),
                         ),
                         TextField(
                           controller: _templateNotesController,
@@ -316,6 +319,8 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                           maxLines: null,
                           keyboardType: TextInputType.text,
                           textCapitalization: TextCapitalization.sentences,
+                          style: GoogleFonts.ubuntu(
+                              fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white : Colors.black, fontSize: 14),
                         ),
                       ],
                     ),

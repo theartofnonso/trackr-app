@@ -124,7 +124,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       MenuItemButton(
         onPressed: () => _updateTemplateSchedule(template: template),
         leadingIcon: FaIcon(FontAwesomeIcons.solidClock, size: 16),
-        child: Text("Schedule", style: GoogleFonts.ubuntu(color: Colors.white)),
+        child: Text("Schedule", style: GoogleFonts.ubuntu()),
       ),
       MenuItemButton(
           leadingIcon: FaIcon(FontAwesomeIcons.arrowUpFromBracket, size: 16),

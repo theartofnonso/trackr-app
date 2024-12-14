@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../colors.dart';
-
 class TRKRInputTextFieldTheme {
   TRKRInputTextFieldTheme._();
 
@@ -13,18 +11,18 @@ class TRKRInputTextFieldTheme {
     focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(5), borderSide: BorderSide(color: Colors.white)),
     filled: true,
-    fillColor: Colors.grey.shade400,
-    hintStyle: GoogleFonts.ubuntu(color: Colors.black, fontSize: 14),
+    fillColor: Colors.grey.shade200,
+    hintStyle: GoogleFonts.ubuntu(color: Colors.grey.shade600, fontSize: 14),
   );
 
   static InputDecorationTheme darkTheme = InputDecorationTheme(
     contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
     enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: sapphireLighter)),
+        borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: Colors.grey)),
     focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: sapphireLighter)),
+        borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: Colors.grey)),
     filled: true,
-    fillColor: sapphireDark,
+    fillColor: Colors.transparent,
     hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14),
   );
 }
