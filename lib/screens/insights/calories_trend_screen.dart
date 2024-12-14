@@ -27,8 +27,6 @@ class CaloriesTrendScreen extends StatefulWidget {
 class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
   @override
   Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
 
     final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 

@@ -4,8 +4,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/enums/activity_type_enums.dart';
+import 'package:tracker_app/utils/general_utils.dart';
 
-import '../../colors.dart';
 import '../empty_states/no_list_empty_state.dart';
 import '../search_bar.dart';
 
@@ -26,27 +26,21 @@ class _ActivitySelectorScreenState extends State<ActivitySelectorScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: sapphireDark80,
         leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
+          icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
           onPressed: context.pop,
         ),
-        title: Text("Select An Activity".toUpperCase(),
-            style: GoogleFonts.ubuntu(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
+        title: Text("Select An Activity".toUpperCase()),
       ),
       body: Container(
         width: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              sapphireDark80,
-              sapphireDark,
-            ],
-          ),
+        decoration: BoxDecoration(
+          gradient: themeGradient(context: context),
         ),
         child: SafeArea(
           minimum: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
@@ -71,11 +65,11 @@ class _ActivitySelectorScreenState extends State<ActivitySelectorScreen> {
                                 ? Image.asset(
                                     'icons/$image.png',
                                     fit: BoxFit.contain,
+                                    color: isDarkMode ? Colors.white : Colors.black,
                                     height: 24, // Adjust the height as needed
                                   )
                                 : Icon(
                                     _filteredActivities[index].icon,
-                                    color: Colors.white,
                                   ), // Placeholder icon
                             title: Text(_filteredActivities[index].name.toUpperCase(),
                                 style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400)),
@@ -85,13 +79,7 @@ class _ActivitySelectorScreenState extends State<ActivitySelectorScreen> {
                             },
                           );
                         },
-                        separatorBuilder: (BuildContext context, int index) => const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 10.0),
-                          child: Divider(
-                            height: 0.1,
-                            color: sapphireLighter,
-                          ),
-                        ),
+                        separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 10),
                       ),
                     ))
                   : Expanded(

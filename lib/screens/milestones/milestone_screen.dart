@@ -17,7 +17,6 @@ import '../../enums/milestone_type_enums.dart';
 import '../../enums/posthog_analytics_event.dart';
 import '../../utils/challenge_utils.dart';
 import '../../utils/shareables_utils.dart';
-import '../../utils/theme/list_title_theme.dart';
 
 class MilestoneScreen extends StatelessWidget {
   final Milestone milestone;
@@ -38,12 +37,6 @@ class MilestoneScreen extends StatelessWidget {
 
     return Stack(alignment: Alignment.topCenter, children: [
       Scaffold(
-        floatingActionButton: milestone.progress.$1 == 1
-            ? FloatingActionButton(
-                heroTag: "milestone_screen",
-                onPressed: () => _shareMilestoneSummary(context: context),
-                child: const FaIcon(FontAwesomeIcons.rocket))
-            : null,
         body: Container(
           decoration: BoxDecoration(
             gradient: themeGradient(context: context),

@@ -6,7 +6,6 @@ import '../../dtos/appsync/routine_log_dto.dart';
 import '../../screens/insights/sets_reps_volume_insights_screen.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/navigation_utils.dart';
-import '../../utils/theme/list_title_theme.dart';
 
 class MuscleScoreWidget extends StatelessWidget {
   final List<RoutineLogDto> thisMonthLogs;

@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
@@ -71,11 +70,10 @@ class _ActivityPickerState extends State<ActivityPicker> {
             onTap: _navigateToActivitySelector,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             leading:
-                selectedActivity != null ? leadingWidget : const FaIcon(FontAwesomeIcons.personWalking, color: Colors.white70),
+                selectedActivity != null ? leadingWidget : const FaIcon(FontAwesomeIcons.personWalking),
             title: Text(
               selectedActivity != null ? selectedActivity.name : "Select Activity".toUpperCase(),
-              style: GoogleFonts.ubuntu(
-                  color: Colors.white, fontWeight: FontWeight.w600, fontSize: selectedActivity != null ? 16 : 12),
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
             trailing: const FaIcon(FontAwesomeIcons.arrowRightLong),
           ),
@@ -83,7 +81,7 @@ class _ActivityPickerState extends State<ActivityPicker> {
           Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
             Text(
               "Duration".toUpperCase(),
-              style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 10),
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
             Expanded(
               child: Container(
@@ -97,7 +95,7 @@ class _ActivityPickerState extends State<ActivityPicker> {
           ListTile(
               title: Text(
                 "Start Time",
-                style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
+                style: Theme.of(context).textTheme.bodyLarge
               ),
               trailing: SizedBox(
                 width: 150,
@@ -128,7 +126,7 @@ class _ActivityPickerState extends State<ActivityPicker> {
           ListTile(
               title: Text(
                 "End Time",
-                style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
+                style: Theme.of(context).textTheme.bodyLarge,
               ),
               trailing: SizedBox(
                 width: 150,

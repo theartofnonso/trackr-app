@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/colors.dart';
+import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../dtos/exercise_log_dto.dart';
 
@@ -40,23 +40,26 @@ class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
   @override
   Widget build(BuildContext context) {
     final widgets = _exercises
-        .mapIndexed((index, exercise) => ListTile(
+        .mapIndexed((index, exercise) => Padding(
               key: Key("$index"),
-              title: Text(exercise.exercise.name, style: GoogleFonts.ubuntu()),
-              trailing: const Icon(
-                Icons.drag_handle,
-                color: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              child: ListTile(
+                title: Text(exercise.exercise.name, style: GoogleFonts.ubuntu()),
+                trailing: const Icon(
+                  Icons.drag_handle,
+                ),
               ),
             ))
         .toList();
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: sapphireDark80,
         leading: IconButton(
           icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
           onPressed: context.pop,
         ),
+        title: Text("Reorder Exercises".toUpperCase()),
+        centerTitle: true,
         actions: [
           _hasReOrdered
               ? IconButton(
@@ -67,23 +70,19 @@ class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
           const SizedBox(width: 12)
         ],
       ),
-      body: Container(
-        width: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              sapphireDark80,
-              sapphireDark,
-            ],
+      body: SafeArea(
+        minimum: const EdgeInsets.all(10.0),
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            gradient: themeGradient(context: context),
           ),
+          child: ReorderableListView(
+              physics: const NeverScrollableScrollPhysics(),
+              buildDefaultDragHandles: true,
+              children: widgets,
+              onReorder: (int oldIndex, int newIndex) => _reOrderProcedures(oldIndex: oldIndex, newIndex: newIndex)),
         ),
-        child: ReorderableListView(
-            physics: const NeverScrollableScrollPhysics(),
-            buildDefaultDragHandles: true,
-            children: widgets,
-            onReorder: (int oldIndex, int newIndex) => _reOrderProcedures(oldIndex: oldIndex, newIndex: newIndex)),
       ),
     );
   }

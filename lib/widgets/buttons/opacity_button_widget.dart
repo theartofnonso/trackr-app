@@ -23,6 +23,10 @@ class OpacityButtonWidget extends StatelessWidget {
       this.padding,
       this.visualDensity = VisualDensity.compact});
 
+  Color? _themeForegroundColor({required bool isDarkMode}) {
+    return isDarkMode ? buttonColor : Colors.white;
+  }
+
   Color? _themeBackgroundColor({required bool isDarkMode}) {
     return isDarkMode ? buttonColor?.withOpacity(0.15) : buttonColor;
   }
@@ -35,8 +39,6 @@ class OpacityButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
-
-    final action = onPressed ?? onLongPress;
 
     return TextButton(
         style: ButtonStyle(
@@ -61,12 +63,10 @@ class OpacityButtonWidget extends StatelessWidget {
               Text(loading ? loadingLabel : label,
                   textAlign: TextAlign.start,
                   style: textStyle ??
-                      Theme.of(context).textTheme.titleSmall?.copyWith(
-                          color: action != null
-                              ? isDarkMode
-                                  ? buttonColor
-                                  : Colors.black
-                              : buttonColor?.withOpacity(0.2))),
+                      Theme.of(context)
+                          .textTheme
+                          .bodyLarge
+                          ?.copyWith(color: _themeForegroundColor(isDarkMode: isDarkMode))),
               loading
                   ? const Padding(
                       padding: EdgeInsets.only(left: 6.0),

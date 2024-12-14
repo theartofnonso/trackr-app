@@ -4,7 +4,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/screens/insights/calories_trend_screen.dart';
 import 'package:tracker_app/utils/routine_utils.dart';
-import 'package:tracker_app/utils/theme/list_title_theme.dart';
 
 import '../../colors.dart';
 import '../../controllers/routine_user_controller.dart';
