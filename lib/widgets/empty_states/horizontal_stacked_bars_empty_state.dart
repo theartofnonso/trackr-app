@@ -7,8 +7,14 @@ class HorizontalStackedBarsEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
+    final colors = isDarkMode ? [Colors.white60, Colors.white38, Colors.white24] : [Colors.grey.shade400, Colors.grey.shade600, Colors.grey.shade200];
+
     // Define the weights and colors for the bars
-    final List<Bar> bars = [3, 2, 1].mapIndexed((index, value) => Bar(weight: value, color: [Colors.white60, Colors.white38, Colors.white24][index])).toList();
+    final List<Bar> bars = [3, 2, 1].mapIndexed((index, value) => Bar(weight: value, color: colors[index])).toList();
 
     // Calculate the total weight
     final int totalWeight = bars.fold(0, (previousValue, bar) => previousValue + bar.weight);

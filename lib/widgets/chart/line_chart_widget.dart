@@ -31,8 +31,7 @@ class LineChartWidget extends StatelessWidget {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final List<Color> gradientColors =
-        isDarkMode ? [sapphireLight, Colors.white38] : [Colors.black, Colors.black12];
+    final List<Color> gradientColors = isDarkMode ? [sapphireLight, Colors.white38] : [Colors.black, Colors.black];
 
     return chartPoints.isNotEmpty
         ? Center(
@@ -74,15 +73,7 @@ class LineChartWidget extends StatelessWidget {
                         spots: chartPoints.map((point) {
                           return FlSpot(point.x.toDouble(), point.y.toDouble());
                         }).toList(),
-                        gradient: LinearGradient(
-                          colors: gradientColors,
-                        ),
-                        belowBarData: BarAreaData(
-                          show: true,
-                          gradient: LinearGradient(
-                            colors: [gradientColors[0].withOpacity(0.1), gradientColors[1]],
-                          ),
-                        ),
+                        color: isDarkMode ? Colors.white70 : Colors.grey.shade600,
                         isCurved: true)
                   ])),
             ),

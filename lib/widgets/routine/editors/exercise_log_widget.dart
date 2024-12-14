@@ -327,7 +327,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -359,14 +358,21 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(widget.exerciseLogDto.exercise.name,
-                        style: Theme.of(context).textTheme.titleSmall),
+                    Text(widget.exerciseLogDto.exercise.name, style: Theme.of(context).textTheme.titleMedium),
                     if (superSetExerciseDto != null)
                       Column(
                         children: [
-                          Text("with ${superSetExerciseDto.exercise.name}",
-                              style:
-                              Theme.of(context).textTheme.bodyMedium),
+                          Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: [
+                              FaIcon(
+                                FontAwesomeIcons.link,
+                                size: 10,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(superSetExerciseDto.exercise.name, style: Theme.of(context).textTheme.bodyMedium),
+                            ],
+                          ),
                           const SizedBox(height: 10)
                         ],
                       ),
@@ -388,7 +394,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                           controller.open();
                         }
                       },
-                      icon: const Icon(Icons.more_horiz_rounded, color: Colors.white),
+                      icon: const Icon(Icons.more_horiz_rounded),
                       tooltip: 'Show menu',
                     );
                   },
@@ -454,8 +460,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           const SizedBox(height: 8),
           if (withDurationOnly(type: exerciseType) && sets.isEmpty)
             Center(
-              child: Text("Tap + to add a timer",
-                  style: Theme.of(context).textTheme.bodySmall),
+              child: Text("Tap + to add a timer", style: Theme.of(context).textTheme.bodySmall),
             ),
           const SizedBox(height: 8),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [

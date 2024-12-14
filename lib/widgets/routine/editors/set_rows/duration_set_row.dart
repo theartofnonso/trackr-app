@@ -53,7 +53,7 @@ class DurationSetRow extends StatelessWidget {
     final isDarkMode = systemBrightness == Brightness.dark;
 
     return Table(
-      border: TableBorder.all(color: isDarkMode ? sapphireLighter.withOpacity(0.4) : Colors.white, borderRadius: BorderRadius.circular(5)),
+      border: TableBorder.all(color: isDarkMode ? Colors.white10 : Colors.white, borderRadius: BorderRadius.circular(5)),
       columnWidths: editorType == RoutineEditorMode.edit
           ? <int, TableColumnWidth>{
               0: const FixedColumnWidth(50),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class NoListEmptyState extends StatelessWidget {
   final Widget? icon;
@@ -14,12 +13,11 @@ class NoListEmptyState extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          icon ?? FaIcon(FontAwesomeIcons.solidLightbulb, size: 38, color: Colors.white38),
+          icon ?? FaIcon(FontAwesomeIcons.solidLightbulb, size: 38),
           const SizedBox(height: 16),
           Text(message,
               textAlign: TextAlign.center,
-              style: GoogleFonts.ubuntu(
-                  color: Colors.white38, fontSize: 16, fontStyle: FontStyle.italic, fontWeight: FontWeight.w600))
+              style: Theme.of(context).textTheme.bodyLarge)
         ]);
   }
 }

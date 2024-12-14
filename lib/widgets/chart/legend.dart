@@ -35,11 +35,11 @@ class Legend extends StatelessWidget {
               child: RichText(
                 text: TextSpan(
                   text: title,
-                  style: Theme.of(context).textTheme.bodySmall,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
                   children: <TextSpan>[
                     TextSpan(
                       text: suffix,
-                      style: Theme.of(context).textTheme.bodySmall,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
                     ),
                   ],
                 ),
