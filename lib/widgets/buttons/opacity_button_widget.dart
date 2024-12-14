@@ -24,7 +24,7 @@ class OpacityButtonWidget extends StatelessWidget {
       this.visualDensity = VisualDensity.compact});
 
   Color? _themeForegroundColor({required bool isDarkMode}) {
-    return isDarkMode ? buttonColor : Colors.white;
+    return isDarkMode ? buttonColor : Colors.black;
   }
 
   Color? _themeBackgroundColor({required bool isDarkMode}) {
@@ -32,7 +32,7 @@ class OpacityButtonWidget extends StatelessWidget {
   }
 
   Color _defaultBackgroundColor({required bool isDarkMode}) {
-    return isDarkMode ? Colors.white.withOpacity(0.15) : Colors.grey.shade400;
+    return isDarkMode ? Colors.white.withOpacity(0.15) : Colors.grey.shade200;
   }
 
   @override
