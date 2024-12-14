@@ -88,6 +88,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     _shouldAskForAppRating();
 
+    // We only want to see all logged exercises and sets
     final completedExerciseLogs = loggedExercises(exerciseLogs: log.exerciseLogs);
 
     final updatedLog = log.copyWith(exerciseLogs: completedExerciseLogs);
@@ -139,8 +140,8 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Center(
-                      child:
-                          DateDurationPBWidget(dateTime: updatedLog.createdAt, duration: updatedLog.duration(), pbs: 0)),
+                      child: DateDurationPBWidget(
+                          dateTime: updatedLog.createdAt, duration: updatedLog.duration(), pbs: 0)),
                   if (updatedLog.notes.isNotEmpty)
                     Center(
                       child: Padding(
@@ -217,7 +218,8 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                               description:
                                   "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
                               onTap: _generateReport),
-                        ExerciseLogListView(exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogs)),
+                        ExerciseLogListView(
+                            exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogs)),
                         const SizedBox(
                           height: 60,
                         )
@@ -339,7 +341,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         child: SafeArea(
           child: Column(children: [
             ListTile(
-              
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.solidPenToSquare, size: 18),
               horizontalTitleGap: 6,
@@ -347,7 +348,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
               onTap: _editLog,
             ),
             ListTile(
-              
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.solidClock, size: 18),
               horizontalTitleGap: 6,
@@ -355,7 +355,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
               onTap: _editDuration,
             ),
             ListTile(
-              
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.solidFloppyDisk, size: 18),
               horizontalTitleGap: 6,
@@ -363,7 +362,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
               onTap: _createTemplate,
             ),
             ListTile(
-              
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(
                 FontAwesomeIcons.trash,

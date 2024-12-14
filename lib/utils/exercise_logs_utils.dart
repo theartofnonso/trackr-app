@@ -447,6 +447,9 @@ List<ExerciseLogDto> loggedExercises({required List<ExerciseLogDto> exerciseLogs
   return exerciseLogs.where((exerciseLog) {
     final completedSets = exerciseLog.sets.where((set) => set.isNotEmpty() && set.checked);
     return completedSets.isNotEmpty;
+  }).map((log) {
+    final sets = log.sets.where((set) => set.isNotEmpty() && set.checked).toList();
+    return log.copyWith(sets: sets);
   }).toList();
 }
 
