@@ -29,9 +29,8 @@ class RoutineLogsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: sapphireDark80,
         title: Text("$month Strength Training".toUpperCase(),
-            style: GoogleFonts.ubuntu(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
+            style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w600)),
         leading: IconButton(
             icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
             onPressed: Navigator.of(context).pop),

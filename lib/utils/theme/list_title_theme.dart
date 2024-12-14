@@ -7,7 +7,7 @@ class TRKRListTileTheme {
   TRKRListTileTheme._();
 
   static ListTileThemeData lightTheme = ListTileThemeData(
-    tileColor: Colors.grey.shade200,
+    tileColor: Colors.grey.shade300,
     textColor: Colors.black,
     iconColor: Colors.black,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -18,6 +18,7 @@ class TRKRListTileTheme {
 
   static ListTileThemeData darkTheme = ListTileThemeData(
     tileColor: sapphireDark80,
+    selectedColor: sapphireDark80,
     textColor: Colors.white,
     iconColor: Colors.white,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
