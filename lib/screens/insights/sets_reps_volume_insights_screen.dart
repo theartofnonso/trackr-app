@@ -153,8 +153,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                 icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
                 onPressed: context.pop,
               ),
-              title: Text("Muscle Trend".toUpperCase(),
-                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+              title: Text("Muscle Trend".toUpperCase()),
             )
           : null,
       body: Container(
