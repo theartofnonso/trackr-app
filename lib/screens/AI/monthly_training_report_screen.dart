@@ -336,7 +336,7 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
   }
 
   Color _getSubTitleColour({required bool isDarkMode}) {
-    return isDarkMode ? Colors.white70 : Colors.grey.shade800;
+    return isDarkMode ? Colors.white70 : Colors.grey.shade600;
   }
 }
 
@@ -442,7 +442,7 @@ class _RowItem extends StatelessWidget {
             subTitle.toUpperCase(),
             textAlign: TextAlign.center,
             style: GoogleFonts.ubuntu(
-              color: subTitleColor.withOpacity(0.6),
+              color: subTitleColor,
               fontSize: 12,
               fontWeight: FontWeight.bold,
             ),
