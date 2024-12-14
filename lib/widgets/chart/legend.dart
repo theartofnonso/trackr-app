@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class Legend extends StatelessWidget {
   final Color color;
@@ -36,19 +35,18 @@ class Legend extends StatelessWidget {
               child: RichText(
                 text: TextSpan(
                   text: title,
-                  style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
+                  style: Theme.of(context).textTheme.bodySmall,
                   children: <TextSpan>[
                     TextSpan(
                       text: suffix,
-                      style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white),
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
                 ),
               ),
             ),
             const SizedBox(width: 6),
-            Text(subTitle.toUpperCase(),
-                style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white60)),
+            Text(subTitle.toUpperCase(), style: Theme.of(context).textTheme.bodySmall),
           ],
         ),
       ],

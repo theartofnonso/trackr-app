@@ -28,7 +28,7 @@ class OpacityButtonWidget extends StatelessWidget {
   }
 
   Color _defaultBackgroundColor({required bool isDarkMode}) {
-    return isDarkMode ? Colors.white.withOpacity(0.15) : Colors.grey.shade400;
+    return isDarkMode ? Colors.white.withOpacity(0.15) : Colors.grey.shade200;
   }
 
   @override

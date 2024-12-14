@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
@@ -31,30 +32,21 @@ class ExerciseHistoryLogWidget extends StatelessWidget {
     }
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 10,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Theme(
-          data: ThemeData(splashColor: sapphireLight),
-          child: ListTile(
-            contentPadding: EdgeInsets.zero,
-            
-            title: Text(routineLog.name,
-                style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white),
-                textAlign: TextAlign.center),
-            subtitle: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              const Icon(
-                Icons.date_range_rounded,
-                color: Colors.white,
-                size: 12,
-              ),
-              const SizedBox(width: 1),
-              Text(exerciseLog.createdAt.formattedDayAndMonthAndYear(),
-                  style: GoogleFonts.ubuntu(
-                      color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12),
-                  textAlign: TextAlign.center),
-            ]),
+        Text(routineLog.name,
+            style: Theme.of(context).textTheme.titleMedium),
+        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          const FaIcon(
+            FontAwesomeIcons.calendarDay,
+            size: 12,
           ),
-        ),
+          const SizedBox(width: 8),
+          Text(exerciseLog.createdAt.formattedDayAndMonthAndYear(),
+              style: Theme.of(context).textTheme.bodySmall,
+              textAlign: TextAlign.center),
+        ]),
         _ExerciseLogWidget(exerciseLog: exerciseLog)
       ],
     );

@@ -27,8 +27,7 @@ class RoutineLogReportScreen extends StatelessWidget {
             icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
             onPressed: Navigator.of(context).pop,
           ),
-          title: Text(report.title.toUpperCase(),
-              textAlign: TextAlign.center),
+          title: Text(report.title.toUpperCase(), textAlign: TextAlign.center),
           centerTitle: true,
         ),
         body: Container(
@@ -46,12 +45,15 @@ class RoutineLogReportScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ListTile(
-                          tileColor: Colors.transparent,
-                          leading: TRKRCoachWidget(),
-                          titleAlignment: ListTileTitleAlignment.top,
-                          title: Text(report.introduction,
-                              style: Theme.of(context).textTheme.bodyMedium),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            TRKRCoachWidget(),
+                            const SizedBox(width: 10),
+                            Expanded(
+                                child: Text(report.introduction,
+                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 16)))
+                          ],
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16),
@@ -70,7 +72,7 @@ class RoutineLogReportScreen extends StatelessWidget {
                               final exerciseReport = report.exerciseReports[index];
                               final sets = exerciseReport.currentPerformance.sets
                                   .map((set) =>
-                                  WeightAndRepsSetDto(weight: set.weight, reps: set.repetitions, checked: true))
+                                      WeightAndRepsSetDto(weight: set.weight, reps: set.repetitions, checked: true))
                                   .toList();
                               final exerciseLog = ExerciseLogDto(
                                   id: '',
@@ -94,27 +96,30 @@ class RoutineLogReportScreen extends StatelessWidget {
                             labelAlignment: LabelAlignment.left,
                             label: "Recommendations".toUpperCase(),
                             description:
-                            "Here are some tailored recommendations to help you optimize your future training sessions.",
+                                "Here are some tailored recommendations to help you optimize your future training sessions.",
                             labelStyle: Theme.of(context).textTheme.bodyLarge!,
                             descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
                             dividerColor: sapphireLighter),
-                        ListTile(
-                          tileColor: Colors.transparent,
-                          leading: TRKRCoachWidget(),
-                          titleAlignment: ListTileTitleAlignment.top,
-                          title: MarkdownBody(
-                            data: report.suggestions,
-                            styleSheet: MarkdownStyleSheet(
-                              h1: Theme.of(context).textTheme.bodyLarge,
-                              h2: Theme.of(context).textTheme.bodyLarge,
-                              h3: Theme.of(context).textTheme.bodyLarge,
-                              h4: Theme.of(context).textTheme.bodyLarge,
-                              h5: Theme.of(context).textTheme.bodyLarge,
-                              h6: Theme.of(context).textTheme.bodyLarge,
-                              p: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                          ),
-                        )
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            TRKRCoachWidget(),
+                            const SizedBox(width: 10),
+                            Expanded(
+                                child: MarkdownBody(
+                              data: report.suggestions,
+                              styleSheet: MarkdownStyleSheet(
+                                h1: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
+                                h2: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
+                                h3: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
+                                h4: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
+                                h5: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
+                                h6: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
+                                p: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
+                              ),
+                            ))
+                          ],
+                        ),
                       ],
                     ),
                   ),

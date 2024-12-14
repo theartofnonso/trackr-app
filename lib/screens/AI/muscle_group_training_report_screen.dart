@@ -26,187 +26,168 @@ class MuscleGroupTrainingReportScreen extends StatelessWidget {
     final exerciseLogsByDay = groupBy(exerciseLogs, (exerciseLog) => exerciseLog.createdAt.withoutTime());
 
     return Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
+            onPressed: Navigator.of(context).pop,
+          ),
+          title: Text("${muscleGroup.name} Report".toUpperCase(), textAlign: TextAlign.center),
+        ),
         body: Container(
-      width: double.infinity,
-      height: double.infinity,
           decoration: BoxDecoration(
             gradient: themeGradient(context: context),
           ),
-      child: SafeArea(
-        bottom: false,
-        minimum: const EdgeInsets.only(bottom: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+          child: SafeArea(
+            bottom: false,
+            minimum: const EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                IconButton(
-                  icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
-                  onPressed: Navigator.of(context).pop,
-                ),
                 Expanded(
-                  child: Text("${muscleGroup.name} Report".toUpperCase(),
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.ubuntu(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 16)),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      spacing: 16,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            TRKRCoachWidget(),
+                            const SizedBox(width: 10),
+                            Expanded(
+                                child: Text(report.introduction,
+                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 16)))
+                          ],
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            TRKRCoachWidget(),
+                            const SizedBox(width: 10),
+                            Expanded(
+                                child: Text(
+                                    "You trained ${muscleGroup.name} for a total of ${exerciseLogsByDay.length} sessions.",
+                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 16)))
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: LabelContainerDivider(
+                              labelAlignment: LabelAlignment.left,
+                              label: "training and performance".toUpperCase(),
+                              description: "See training and personal best achievements across all logged sessions.",
+                              labelStyle: Theme.of(context).textTheme.bodyLarge!,
+                              descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
+                              dividerColor: sapphireLighter),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: ListView.separated(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                final exerciseReport = report.exerciseReports[index];
+                                return Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.transparent, // Makes the background transparent
+                                    borderRadius: BorderRadius.circular(5.0),
+                                    border: Border.all(
+                                      color: sapphireLighter, // Border color
+                                      width: 1.0, // Border width
+                                    ), // Adjust the radius as needed
+                                  ),
+                                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                    Text(exerciseReport.exerciseName.toUpperCase(),
+                                        style: Theme.of(context).textTheme.bodyMedium),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        FaIcon(
+                                          FontAwesomeIcons.arrowRightLong,
+                                          size: 16,
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Expanded(
+                                          child: Text("Heaviest lift is ${exerciseReport.heaviestWeight}",
+                                              style: GoogleFonts.ubuntu(
+                                                  color: vibrantGreen, fontWeight: FontWeight.w400, fontSize: 16)),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        FaIcon(
+                                          FontAwesomeIcons.arrowRightLong,
+                                          size: 16,
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Expanded(
+                                          child: Text("Heaviest volume is ${exerciseReport.heaviestVolume}",
+                                              style: GoogleFonts.ubuntu(
+                                                  color: vibrantGreen, fontWeight: FontWeight.w400, fontSize: 16)),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text(exerciseReport.comments,
+                                        style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 16)),
+                                  ]),
+                                );
+                              },
+                              separatorBuilder: (context, index) => Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                                    child: Divider(height: 1, color: Colors.transparent),
+                                  ),
+                              itemCount: report.exerciseReports.length),
+                        ),
+                        LabelContainerDivider(
+                            labelAlignment: LabelAlignment.left,
+                            label: "Recommendations".toUpperCase(),
+                            description:
+                                "Here are some tailored recommendations to help you optimize your future training sessions.",
+                            labelStyle: Theme.of(context).textTheme.bodyLarge!,
+                            descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
+                            dividerColor: sapphireLighter),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            TRKRCoachWidget(),
+                            const SizedBox(width: 10),
+                            Expanded(
+                                child: MarkdownBody(
+                              data: report.suggestions,
+                              styleSheet: MarkdownStyleSheet(
+                                h1: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
+                                h2: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
+                                h3: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
+                                h4: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
+                                h5: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
+                                h6: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
+                                p: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
+                              ),
+                            ))
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                IconButton(
-                  icon: const SizedBox.shrink(),
-                  onPressed: () {},
-                )
+                const SizedBox(
+                  height: 10,
+                ),
               ],
             ),
-            const SizedBox(
-              height: 8,
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ListTile(
-                      leading: TRKRCoachWidget(),
-                      titleAlignment: ListTileTitleAlignment.top,
-                      title: Text(report.introduction,
-                          style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 16)),
-                    ),
-                    ListTile(
-                      leading: TRKRCoachWidget(),
-                      titleAlignment: ListTileTitleAlignment.top,
-                      title: Text(
-                          "You trained ${muscleGroup.name} for a total of ${exerciseLogsByDay.length} sessions.",
-                          style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 16)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16),
-                      child: LabelContainerDivider(
-                          labelAlignment: LabelAlignment.left,
-                          label: "training and performance".toUpperCase(),
-                          description: "See training and personal best achievements across all logged sessions.",
-                          labelStyle:
-                              GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
-                          descriptionStyle: GoogleFonts.ubuntu(
-                            color: Colors.white70,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 16,
-                          ),
-                          dividerColor: sapphireLighter),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: ListView.separated(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            final exerciseReport = report.exerciseReports[index];
-                            return Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
-                              decoration: BoxDecoration(
-                                color: Colors.transparent, // Makes the background transparent
-                                borderRadius: BorderRadius.circular(5.0),
-                                border: Border.all(
-                                  color: sapphireLighter, // Border color
-                                  width: 1.0, // Border width
-                                ), // Adjust the radius as needed
-                              ),
-                              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                Text(exerciseReport.exerciseName.toUpperCase(),
-                                    style: GoogleFonts.ubuntu(
-                                        color: Colors.white70, fontWeight: FontWeight.w900, fontSize: 16)),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    FaIcon(
-                                      FontAwesomeIcons.arrowRightLong,
-                                      size: 16,
-                                      color: Colors.white70,
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Expanded(
-                                      child: Text("Heaviest lift is ${exerciseReport.heaviestWeight}",
-                                          style: GoogleFonts.ubuntu(
-                                              color: vibrantGreen, fontWeight: FontWeight.w400, fontSize: 16)),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    FaIcon(
-                                      FontAwesomeIcons.arrowRightLong,
-                                      size: 16,
-                                      color: Colors.white70,
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Expanded(
-                                      child: Text("Heaviest volume is ${exerciseReport.heaviestVolume}",
-                                          style: GoogleFonts.ubuntu(
-                                              color: vibrantGreen, fontWeight: FontWeight.w400, fontSize: 16)),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Text(exerciseReport.comments,
-                                    style: GoogleFonts.ubuntu(
-                                        color: Colors.white70, fontWeight: FontWeight.w400, fontSize: 16)),
-                              ]),
-                            );
-                          },
-                          separatorBuilder: (context, index) => Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                child: Divider(height: 1, color: Colors.transparent),
-                              ),
-                          itemCount: report.exerciseReports.length),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16),
-                      child: LabelContainerDivider(
-                          labelAlignment: LabelAlignment.left,
-                          label: "Recommendations".toUpperCase(),
-                          description:
-                              "Here are some tailored recommendations to help you optimize your future training sessions.",
-                          labelStyle:
-                              GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
-                          descriptionStyle: GoogleFonts.ubuntu(
-                            color: Colors.white70,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 16,
-                          ),
-                          dividerColor: sapphireLighter),
-                    ),
-                    ListTile(
-                      leading: TRKRCoachWidget(),
-                      titleAlignment: ListTileTitleAlignment.top,
-                      title: MarkdownBody(
-                        data: report.suggestions,
-                        styleSheet: MarkdownStyleSheet(
-                          h1: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
-                          h2: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
-                          h3: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700),
-                          h4: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
-                          h5: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
-                          h6: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
-                          p: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w400),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-          ],
-        ),
-      ),
-    ));
+          ),
+        ));
   }
 }

@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
@@ -191,8 +190,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
         const SizedBox(
           height: 6,
         ),
-        Text(muscleGroup.name.toUpperCase(),
-            style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 14, height: 1.5))
+        Text(muscleGroup.name.toUpperCase(), style: Theme.of(context).textTheme.bodyMedium)
       ]);
     }).toList();
 
@@ -252,10 +250,6 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                             onPressed: _heaviestWeightPerLog,
                             label: SummaryType.weight.label,
                             padding: const EdgeInsets.only(right: 5.0),
-                            textStyle: GoogleFonts.ubuntu(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 14,
-                                color: _buttonColor(type: SummaryType.weight)),
                             buttonColor: _buttonColor(type: SummaryType.weight)),
                       ),
                     if (withWeightsOnly(type: widget.exercise.type))
@@ -265,10 +259,6 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                             onPressed: _heaviestSetVolumePerLog,
                             label: SummaryType.setVolume.label,
                             padding: const EdgeInsets.only(right: 5.0),
-                            textStyle: GoogleFonts.ubuntu(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 14,
-                                color: _buttonColor(type: SummaryType.setVolume)),
                             buttonColor: _buttonColor(type: SummaryType.setVolume)),
                       ),
                     if (withReps(type: widget.exercise.type))
@@ -278,10 +268,6 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                             onPressed: _highestRepsForLog,
                             label: SummaryType.mostReps.label,
                             padding: const EdgeInsets.only(right: 5.0),
-                            textStyle: GoogleFonts.ubuntu(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 14,
-                                color: _buttonColor(type: SummaryType.mostReps)),
                             buttonColor: _buttonColor(type: SummaryType.mostReps)),
                       ),
                     if (withReps(type: widget.exercise.type))
@@ -291,10 +277,6 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                             onPressed: _totalRepsForLog,
                             label: SummaryType.sessionReps.label,
                             padding: const EdgeInsets.only(right: 5.0),
-                            textStyle: GoogleFonts.ubuntu(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 14,
-                                color: _buttonColor(type: SummaryType.sessionReps)),
                             buttonColor: _buttonColor(type: SummaryType.sessionReps)),
                       ),
                     if (withDurationOnly(type: widget.exercise.type))
@@ -304,10 +286,6 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                             onPressed: _longestDurationPerLog,
                             label: SummaryType.bestTime.label,
                             padding: const EdgeInsets.only(right: 5.0),
-                            textStyle: GoogleFonts.ubuntu(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 14,
-                                color: _buttonColor(type: SummaryType.bestTime)),
                             buttonColor: _buttonColor(type: SummaryType.bestTime)),
                       ),
                     if (withDurationOnly(type: widget.exercise.type))
@@ -317,10 +295,6 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                             onPressed: _totalTimePerLog,
                             label: SummaryType.sessionTimes.label,
                             padding: const EdgeInsets.only(right: 5.0),
-                            textStyle: GoogleFonts.ubuntu(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 14,
-                                color: _buttonColor(type: SummaryType.sessionTimes)),
                             buttonColor: _buttonColor(type: SummaryType.sessionTimes)),
                       ),
                   ],
@@ -401,20 +375,12 @@ class _MetricListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
-        color: sapphireDark80,
-      ),
-      child: ListTile(
-        onTap: enabled ? onTap : () {},
-        tileColor: Colors.pinkAccent,
-        title: Text(title, style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w500)),
-        subtitle: Text(subtitle, style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white.withOpacity(0.7))),
-        trailing:
-            Text(trailing, style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-      ),
+    return ListTile(
+      onTap: enabled ? onTap : () {},
+      title: Text(title),
+      subtitle: Text(subtitle),
+      trailing: Text(trailing),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
     );
   }
 }

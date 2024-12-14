@@ -19,43 +19,37 @@ class ActivitiesWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
     final thisMonthCount = thisMonthsActivities.length;
     final lastMonthCount = lastMonthsActivities.length;
 
     final improved = thisMonthCount > lastMonthCount;
 
-    return Theme(
-      data: Theme.of(context).copyWith(listTileTheme: isDarkMode ? TRKRListTileTheme.darkTheme : TRKRListTileTheme.lightTheme),
-      child: ListTile(
-          onTap: () => _showActivityLogs(context: context),
-          leading: const FaIcon(FontAwesomeIcons.personWalking),
-          title: Text("Activities".toUpperCase()),
-          subtitle: Text("All activities outside your training"),
-          trailing: Wrap(
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("$thisMonthCount",
-                      style: Theme.of(context).textTheme.titleMedium),
-                  Text("$lastMonthCount",
-                      style: Theme.of(context).textTheme.titleSmall)
-                ],
-              ),
-              const SizedBox(width: 4),
-              FaIcon(
-                improved ? FontAwesomeIcons.arrowUp : FontAwesomeIcons.arrowDown,
-                color: improved ? vibrantGreen : Colors.deepOrange,
-                size: 12,
-              )
-            ],
-          )),
-    );
+    return ListTile(
+        onTap: () => _showActivityLogs(context: context),
+        leading: const FaIcon(FontAwesomeIcons.personWalking),
+        title: Text("Activities".toUpperCase()),
+        subtitle: Text("All activities outside your training"),
+        trailing: Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("$thisMonthCount",
+                    style: Theme.of(context).textTheme.titleMedium),
+                Text("$lastMonthCount",
+                    style: Theme.of(context).textTheme.titleSmall)
+              ],
+            ),
+            const SizedBox(width: 4),
+            FaIcon(
+              improved ? FontAwesomeIcons.arrowUp : FontAwesomeIcons.arrowDown,
+              color: improved ? vibrantGreen : Colors.deepOrange,
+              size: 12,
+            )
+          ],
+        ));
   }
 
   void _showActivityLogs({required BuildContext context}) {

@@ -22,7 +22,7 @@ class ExerciseLogHistoryScreen extends StatelessWidget {
               ? Expanded(
             child: ListView.separated(
                 itemBuilder: (BuildContext context, int index) => ExerciseHistoryLogWidget(exerciseLog: reversed[index]),
-                separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
+                separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 12),
                 itemCount: exerciseLogs.length),
           )
               : Expanded(

@@ -96,7 +96,6 @@ class MuscleGroupSplitChart extends StatelessWidget {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Row(children: [
         Text(title.toUpperCase(), style: Theme.of(context).textTheme.titleMedium),

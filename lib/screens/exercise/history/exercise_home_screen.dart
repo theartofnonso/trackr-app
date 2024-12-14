@@ -14,6 +14,7 @@ import 'package:tracker_app/shared_prefs.dart';
 import '../../../dtos/appsync/exercise_dto.dart';
 import '../../../utils/dialog_utils.dart';
 import '../../../utils/exercise_logs_utils.dart';
+import '../../../utils/general_utils.dart';
 import '../../../utils/navigation_utils.dart';
 import '../../../widgets/empty_states/not_found.dart';
 
@@ -97,26 +98,17 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
         length: hasVideo ? 3 : 2,
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: sapphireDark80,
             leading: IconButton(
               icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
               onPressed: context.pop,
             ),
-            title: Text(exercise.name,
-                style: GoogleFonts.ubuntu(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
+            title: Text(exercise.name),
             bottom: TabBar(
               dividerColor: Colors.transparent,
               tabs: [
-                Tab(
-                    child: Text("Summary",
-                        style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
-                Tab(
-                    child: Text("History",
-                        style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
-                if (hasVideo)
-                  Tab(
-                      child: Text("Video",
-                          style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
+                Tab(child: Text("Summary", style: Theme.of(context).textTheme.titleSmall)),
+                Tab(child: Text("History", style: Theme.of(context).textTheme.titleSmall)),
+                if (hasVideo) Tab(child: Text("Video", style: Theme.of(context).textTheme.titleSmall)),
               ],
             ),
             actions: exercise.owner == SharedPrefs().userId
@@ -137,7 +129,6 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
                           },
                           icon: const Icon(
                             Icons.more_vert_rounded,
-                            color: Colors.white,
                             size: 24,
                           ),
                           tooltip: 'Show menu',
@@ -150,15 +141,8 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
           ),
           body: Container(
             width: double.infinity,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  sapphireDark80,
-                  sapphireDark,
-                ],
-              ),
+            decoration: BoxDecoration(
+              gradient: themeGradient(context: context),
             ),
             child: SafeArea(
               bottom: false,

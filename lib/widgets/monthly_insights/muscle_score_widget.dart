@@ -24,40 +24,36 @@ class MuscleScoreWidget extends StatelessWidget {
 
     final improved = thisMonthScore > lastMonthScore;
 
-    return Theme(
-      data: Theme.of(context)
-          .copyWith(listTileTheme: isDarkMode ? TRKRListTileTheme.darkTheme : TRKRListTileTheme.lightTheme),
-      child: ListTile(
-        onTap: () => _showSetsAndRepsVolumeInsightsScreen(context: context),
-        leading: Image.asset(
-          'icons/dumbbells.png',
-          fit: BoxFit.contain,
-          color: isDarkMode ? Colors.white : Colors.black,
-          height: 24, // Adjust the height as needed
-        ),
-        title: Text("Muscle Trend".toUpperCase()),
-        subtitle: Text("Frequency per muscle group"),
-        trailing: Wrap(
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("$thisMonthScore%",
-                    style: Theme.of(context).textTheme.titleMedium),
-                Text("$lastMonthScore%",
-                    style: Theme.of(context).textTheme.titleSmall)
-              ],
-            ),
-            const SizedBox(width: 4),
-            FaIcon(
-              improved ? FontAwesomeIcons.arrowUp : FontAwesomeIcons.arrowDown,
-              color: improved ? vibrantGreen : Colors.deepOrange,
-              size: 12,
-            )
-          ],
-        ),
+    return ListTile(
+      onTap: () => _showSetsAndRepsVolumeInsightsScreen(context: context),
+      leading: Image.asset(
+        'icons/dumbbells.png',
+        fit: BoxFit.contain,
+        color: isDarkMode ? Colors.white : Colors.black,
+        height: 24, // Adjust the height as needed
+      ),
+      title: Text("Muscle Trend".toUpperCase()),
+      subtitle: Text("Frequency per muscle group"),
+      trailing: Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("$thisMonthScore%",
+                  style: Theme.of(context).textTheme.titleMedium),
+              Text("$lastMonthScore%",
+                  style: Theme.of(context).textTheme.titleSmall)
+            ],
+          ),
+          const SizedBox(width: 4),
+          FaIcon(
+            improved ? FontAwesomeIcons.arrowUp : FontAwesomeIcons.arrowDown,
+            color: improved ? vibrantGreen : Colors.deepOrange,
+            size: 12,
+          )
+        ],
       ),
     );
   }

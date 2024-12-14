@@ -45,12 +45,19 @@ class MilestoneGridItem extends StatelessWidget {
               maxLines: 2,
             ),
             const Spacer(),
-            LinearProgressIndicator(
-              value: milestone.progress.$1,
-              backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade400,
-              color: setsMilestoneColor(progress: milestone.progress.$1),
-              minHeight: 20,
-              borderRadius: BorderRadius.circular(3.0), // Border r
+            Container(
+              padding: const EdgeInsets.only(top: 10, right: 6, left: 8, bottom: 10),
+              decoration: BoxDecoration(
+                color: isDarkMode ? sapphireDark60 : Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: LinearProgressIndicator(
+                value: milestone.progress.$1,
+                backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade400,
+                color: setsMilestoneColor(progress: milestone.progress.$1),
+                minHeight: 16,
+                borderRadius: BorderRadius.circular(3.0), // Border r
+              ),
             )
           ])),
     );

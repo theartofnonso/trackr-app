@@ -22,7 +22,6 @@ class RoutineTemplatesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Consumer<ExerciseAndRoutineController>(builder: (_, provider, __) {
       final routineTemplates = List<RoutineTemplateDto>.from(provider.templates);
 
@@ -134,76 +133,90 @@ class _RoutineWidget extends StatelessWidget {
       child: Container(
           padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
+            gradient: template.isScheduledToday() ? LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                isDarkMode ? sapphireDark80 : Colors.grey.shade100,
+                isDarkMode ? sapphireDark : Colors.white70,
+              ],
+            ) : null,
               color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, borderRadius: BorderRadius.circular(10)),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          child: Column(
+              spacing: 6,
+              crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(
               template.name,
-              style: Theme.of(context).textTheme.titleSmall,
+              style: Theme.of(context).textTheme.titleMedium,
               overflow: TextOverflow.ellipsis,
-              maxLines: 2,
+              maxLines: 1,
             ),
             const Spacer(),
-            Wrap(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: 20,
-                  height: 20,
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: vibrantGreen.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(3),
-                  ),
-                  child: Image.asset(
-                    'icons/dumbbells.png',
-                    fit: BoxFit.contain,
-                    height: 14,
-                    color: vibrantGreen, // Adjust the height as needed
-                  ),
-                ),
-                const SizedBox(
-                  width: 6,
-                ),
-                Text(
-                  "${exercises.length} ${pluralize(word: "Exercise", count: exercises.length)}",
-                  style: Theme.of(context).textTheme.bodySmall,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 6,
-            ),
-            Wrap(
-              children: [
-                Container(
-                  width: 20,
-                  height: 20,
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: vibrantBlue.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(3),
-                  ),
-                  child: Center(
-                    child: FaIcon(
-                      FontAwesomeIcons.hashtag,
-                      color: vibrantBlue,
-                      size: 11,
+                Wrap(
+                  children: [
+                    Container(
+                      width: 20,
+                      height: 20,
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: vibrantGreen.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(3),
+                      ),
+                      child: Image.asset(
+                        'icons/dumbbells.png',
+                        fit: BoxFit.contain,
+                        height: 14,
+                        color: vibrantGreen, // Adjust the height as needed
+                      ),
                     ),
-                  ),
+                    const SizedBox(
+                      width: 6,
+                    ),
+                    Text(
+                      "${exercises.length} ${pluralize(word: "Exercise", count: exercises.length)}",
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    ),
+                  ],
                 ),
                 const SizedBox(
-                  width: 6,
+                  height: 6,
                 ),
-                Text(
-                  "${sets.length} ${pluralize(word: "Set", count: sets.length)}",
-                  style: Theme.of(context).textTheme.bodySmall,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
+                Wrap(
+                  children: [
+                    Container(
+                      width: 20,
+                      height: 20,
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: vibrantBlue.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(3),
+                      ),
+                      child: Center(
+                        child: FaIcon(
+                          FontAwesomeIcons.hashtag,
+                          color: vibrantBlue,
+                          size: 11,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 6,
+                    ),
+                    Text(
+                      "${sets.length} ${pluralize(word: "Set", count: sets.length)}",
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    ),
+                  ],
                 ),
               ],
             ),
-            const SizedBox(height: 8),
             Divider(
                 color: template.isScheduledToday()
                     ? vibrantGreen.withOpacity(0.2)
@@ -211,11 +224,13 @@ class _RoutineWidget extends StatelessWidget {
                         ? Colors.white10
                         : Colors.black12,
                 endIndent: 10),
-            const SizedBox(height: 8),
-            Text(
-              scheduleSummary,
-              style: Theme.of(context).textTheme.bodySmall,
-              overflow: TextOverflow.ellipsis,
+            Expanded(
+              child: Text(
+                scheduleSummary,
+                style: Theme.of(context).textTheme.bodyMedium,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
             ),
           ])),
     );

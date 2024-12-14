@@ -17,7 +17,7 @@ class TRKRListTileTheme {
   );
 
   static ListTileThemeData darkTheme = ListTileThemeData(
-    tileColor: sapphireDark,
+    tileColor: sapphireDark80,
     textColor: Colors.white,
     iconColor: Colors.white,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),

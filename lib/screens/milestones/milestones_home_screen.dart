@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
@@ -26,12 +25,8 @@ class MilestonesHomeScreen extends StatelessWidget {
             bottom: TabBar(
               dividerColor: Colors.transparent,
               tabs: [
-                Tab(
-                    child: Text("Active",
-                        style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
-                Tab(
-                    child: Text("Completed",
-                        style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
+                Tab(child: Text("Active".toUpperCase(), style: Theme.of(context).textTheme.titleSmall)),
+                Tab(child: Text("Completed".toUpperCase(), style: Theme.of(context).textTheme.titleSmall)),
               ],
             ),
           ),

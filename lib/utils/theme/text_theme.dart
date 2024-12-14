@@ -44,7 +44,7 @@ class TRKRTextTheme {
     labelLarge: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white),
 
     bodySmall: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white),
-    bodyMedium: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.white),
-    bodyLarge: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.white),
+    bodyMedium: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white),
+    bodyLarge: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white),
   );
 }

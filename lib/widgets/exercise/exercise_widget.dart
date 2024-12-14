@@ -30,9 +30,7 @@ class ExerciseWidget extends StatelessWidget {
 
     return GestureDetector(
       onTap: () => selectExercise != null ? selectExercise(exerciseDto) : null,
-      child: Container(
-        color: Colors.transparent,
-        width: double.infinity,
+      child: SizedBox(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -53,8 +51,7 @@ class ExerciseWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(exercise.name,
-                      style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 18)),
+                  Text(exercise.name, style: Theme.of(context).textTheme.titleMedium),
                   if (description.isNotEmpty)
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,9 +59,7 @@ class ExerciseWidget extends StatelessWidget {
                         const SizedBox(
                           height: 10,
                         ),
-                        Text(description,
-                            style: GoogleFonts.ubuntu(
-                                color: Colors.white70, height: 1.8, fontWeight: FontWeight.w400, fontSize: 14)),
+                        Text(description, style: Theme.of(context).textTheme.bodySmall),
                       ],
                     ),
                   const SizedBox(
@@ -108,7 +103,6 @@ class ExerciseWidget extends StatelessWidget {
                 onTap: () => navigateToExercise != null ? navigateToExercise(exerciseDto) : null,
                 child: const FaIcon(
                   FontAwesomeIcons.circleInfo,
-                  color: Colors.white70,
                 ))
           ],
         ),

@@ -42,11 +42,11 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
                     Tab(
                         child: Text("Overview".toUpperCase(),
                             style:
-                            Theme.of(context).textTheme.labelMedium)),
+                            Theme.of(context).textTheme.titleSmall)),
                     Tab(
                         child: Text("Trends".toUpperCase(),
                             style:
-                            Theme.of(context).textTheme.labelMedium)),
+                            Theme.of(context).textTheme.titleSmall)),
                   ],
                 ),
                 Expanded(

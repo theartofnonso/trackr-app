@@ -64,9 +64,12 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
-    final textStyle = GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white70);
+    final textStyle = Theme.of(context).textTheme.bodySmall;
 
     final dateRange = theLastYearDateTimeRange();
 
@@ -122,9 +125,11 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     final weightColors = [vibrantGreen, vibrantBlue, Colors.deepOrangeAccent];
 
     final barColors = trends
-        .map((value) => _metric == SetRepsVolumeReps.sets
-            ? setsTrendColor(sets: value.toInt())
-            : repsTrendColor(reps: value.toInt()))
+        .map((value) => switch (_metric) {
+              SetRepsVolumeReps.sets => setsTrendColor(sets: value.toInt()),
+              SetRepsVolumeReps.reps => repsTrendColor(reps: value.toInt()),
+              SetRepsVolumeReps.volume => isDarkMode ? Colors.white : Colors.grey.shade400,
+            })
         .toList();
 
     final muscleGroups = MuscleGroup.values
@@ -196,47 +201,41 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                             RichText(
                               text: TextSpan(
                                 text:
-                                "${_metric == SetRepsVolumeReps.volume ? volumeInKOrM(avgValue.toDouble(), showLessThan1k: false) : avgValue}",
-                                style:
-                                GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 28),
+                                    "${_metric == SetRepsVolumeReps.volume ? volumeInKOrM(avgValue.toDouble(), showLessThan1k: false) : avgValue}",
+                                style: Theme.of(context).textTheme.headlineMedium,
                                 children: [
                                   TextSpan(
                                     text: " ",
-                                    style: GoogleFonts.ubuntu(
-                                        color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                                   ),
                                   TextSpan(
-                                    text: _metricLabel().toUpperCase(),
-                                    style: GoogleFonts.ubuntu(
-                                        color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
-                                  ),
+                                      text: _metricLabel().toUpperCase(),
+                                      style: Theme.of(context).textTheme.bodyMedium),
                                 ],
                               ),
                             ),
                             Text(
                               "WEEKLY AVERAGE",
-                              style:
-                              GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 10),
+                              style: Theme.of(context).textTheme.titleSmall,
                             ),
                           ],
                         ),
                         CupertinoSlidingSegmentedControl<SetRepsVolumeReps>(
-                          backgroundColor: sapphireDark,
-                          thumbColor: sapphireLight,
+                          backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade200,
+                          thumbColor: isDarkMode ? sapphireLight : Colors.white,
                           groupValue: _metric,
                           children: {
                             SetRepsVolumeReps.reps: SizedBox(
                                 width: 40,
                                 child:
-                                Text(SetRepsVolumeReps.reps.name, style: textStyle, textAlign: TextAlign.center)),
+                                    Text(SetRepsVolumeReps.reps.name, style: textStyle, textAlign: TextAlign.center)),
                             SetRepsVolumeReps.sets: SizedBox(
                                 width: 40,
                                 child:
-                                Text(SetRepsVolumeReps.sets.name, style: textStyle, textAlign: TextAlign.center)),
+                                    Text(SetRepsVolumeReps.sets.name, style: textStyle, textAlign: TextAlign.center)),
                             SetRepsVolumeReps.volume: SizedBox(
                                 width: 40,
                                 child:
-                                Text(SetRepsVolumeReps.volume.name, style: textStyle, textAlign: TextAlign.center)),
+                                    Text(SetRepsVolumeReps.volume.name, style: textStyle, textAlign: TextAlign.center)),
                           },
                           onValueChanged: (SetRepsVolumeReps? value) {
                             if (value != null) {
@@ -254,7 +253,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                         child: CustomBarChart(
                           chartPoints: chartPoints,
                           periods: months,
-                          barColors: _metric != SetRepsVolumeReps.volume ? barColors : null,
+                          barColors: barColors,
                           unit: _chartUnit(),
                           bottomTitlesInterval: 5,
                           showTopTitles: false,
@@ -266,7 +265,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                       Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                         Text(
                           "${_metric.name} Breakdown".toUpperCase(),
-                          style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 12),
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                         const SizedBox(height: 14),
                         hasWeights
@@ -284,7 +283,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                           title: "$totalSufficient",
                           suffix: "x",
                           subTitle:
-                          'Sufficient (${_sufficientSetsOrRepsValue()}-${_optimalSetsOrRepsValue()} ${_metric.name})',
+                              'Sufficient (${_sufficientSetsOrRepsValue()}-${_optimalSetsOrRepsValue()} ${_metric.name})',
                           color: vibrantBlue,
                         ),
                         const SizedBox(height: 6),
@@ -370,7 +369,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
             user: completeInstructions,
             responseFormat: routineLogsReportResponseFormat)
         .then((response) {
-      if(kReleaseMode) {
+      if (kReleaseMode) {
         Posthog().capture(eventName: PostHogAnalyticsEvent.generateMuscleGroupTrainingReport.displayName);
       }
       _hideLoadingScreen();
@@ -420,11 +419,11 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
           return 0;
         }).sum,
       SetRepsVolumeReps.volume => sets.map((set) {
-        if (set is WeightAndRepsSetDto) {
-          return set.volume();
-        }
-        return 0;
-      }).sum,
+          if (set is WeightAndRepsSetDto) {
+            return set.volume();
+          }
+          return 0;
+        }).sum,
     };
   }
 
