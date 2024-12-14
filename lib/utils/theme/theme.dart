@@ -19,6 +19,17 @@ class TRKRTheme {
       brightness: Brightness.light,
       scaffoldBackgroundColor: Colors.white,
       primaryColor: Color.fromRGBO(43, 242, 12, 1),
+      colorScheme: ColorScheme(
+        brightness: Brightness.light,
+        primary: Colors.white,
+        onPrimary: Colors.white,
+        secondary: Colors.white,
+        onSecondary: Colors.white,
+        error: Colors.white,
+        onError: Colors.black,
+        surface: Colors.grey.shade200,
+        onSurface: Colors.black,
+      ),
       textTheme: TRKRTextTheme.lightTheme,
       iconTheme: TRKRIconTheme.lightTheme,
       listTileTheme: TRKRListTileTheme.lightTheme,
@@ -32,6 +43,17 @@ class TRKRTheme {
       floatingActionButtonTheme: TRKRFloatingActionButtonTheme.lightTheme);
 
   static ThemeData darkTheme = ThemeData(
+      colorScheme: const ColorScheme(
+        brightness: Brightness.dark,
+        primary: Colors.white,
+        onPrimary: Colors.white,
+        secondary: Colors.white,
+        onSecondary: Colors.white,
+        error: Colors.white,
+        onError: Colors.black,
+        surface: sapphireDark,
+        onSurface: Colors.white,
+      ),
       useMaterial3: true,
       fontFamily: "Ubuntu",
       brightness: Brightness.dark,
