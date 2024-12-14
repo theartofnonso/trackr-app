@@ -343,8 +343,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.solidPenToSquare, size: 18),
               horizontalTitleGap: 6,
-              title: Text("Edit Log",
-                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              title: Text("Edit Log"),
               onTap: _editLog,
             ),
             ListTile(
@@ -352,8 +351,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.solidClock, size: 18),
               horizontalTitleGap: 6,
-              title: Text("Edit duration",
-                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              title: Text("Edit duration"),
               onTap: _editDuration,
             ),
             ListTile(
@@ -361,8 +359,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.solidFloppyDisk, size: 18),
               horizontalTitleGap: 6,
-              title: Text("Save as template",
-                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              title: Text("Save as template"),
               onTap: _createTemplate,
             ),
             ListTile(

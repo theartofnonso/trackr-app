@@ -51,8 +51,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   bool _loading = false;
 
-  bool _minimized = true;
-
   void _deleteRoutine({required RoutineTemplateDto template}) async {
     try {
       await Provider.of<ExerciseAndRoutineController>(context, listen: false).removeTemplate(template: template);
@@ -232,7 +230,9 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     child: Table(
-                      border: TableBorder.symmetric(inside: BorderSide(color: isDarkMode ? sapphireLighter.withOpacity(0.4) : Colors.white, width: 2)),
+                      border: TableBorder.symmetric(
+                          inside: BorderSide(
+                              color: isDarkMode ? sapphireLighter.withOpacity(0.4) : Colors.white, width: 2)),
                       columnWidths: const <int, TableColumnWidth>{
                         0: FlexColumnWidth(),
                         1: FlexColumnWidth(),
@@ -261,7 +261,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                       title: "Muscle Groups Split",
                       description: "Here's a breakdown of the muscle groups in your ${template.name} workout plan.",
                       muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
-                      minimized: _minimized),
+                      minimized: false),
                   ExerciseLogListView(
                     exerciseLogs: exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
                   ),
