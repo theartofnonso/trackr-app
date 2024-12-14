@@ -32,7 +32,7 @@ class OpacityButtonWidget extends StatelessWidget {
   }
 
   Color _defaultBackgroundColor({required bool isDarkMode}) {
-    return isDarkMode ? Colors.white.withOpacity(0.15) : Colors.grey.shade200;
+    return isDarkMode ? Colors.white.withOpacity(0.15) : Colors.grey.shade400;
   }
 
   @override
@@ -65,7 +65,7 @@ class OpacityButtonWidget extends StatelessWidget {
                   style: textStyle ??
                       Theme.of(context)
                           .textTheme
-                          .bodyLarge
+                          .bodySmall
                           ?.copyWith(color: _themeForegroundColor(isDarkMode: isDarkMode))),
               loading
                   ? const Padding(
