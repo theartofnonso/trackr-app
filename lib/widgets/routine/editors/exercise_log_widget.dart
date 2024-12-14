@@ -380,10 +380,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 ),
               )),
               MenuAnchor(
-                  style: MenuStyle(
-                    backgroundColor: WidgetStateProperty.all(sapphireDark80),
-                    surfaceTintColor: WidgetStateProperty.all(sapphireDark),
-                  ),
                   builder: (BuildContext context, MenuController controller, Widget? child) {
                     return IconButton(
                       onPressed: () {
@@ -643,36 +639,27 @@ class _OneRepMaxSliderState extends State<_OneRepMaxSlider> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(widget.exercise,
-            style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w800, fontSize: 18)),
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 20)),
         const SizedBox(height: 2),
         RichText(
           text: TextSpan(
-            text: "Based on your recent progress, consider",
-            style: GoogleFonts.ubuntu(height: 1.5, color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 14),
+            text: "Based on your recent progress, consider:",
+            style: Theme.of(context).textTheme.bodyMedium,
             children: [
-              TextSpan(
-                text: "\n",
-                style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14),
-              ),
+              TextSpan(text: "\n",),
               TextSpan(
                 text: "$_weight${weightLabel()}",
-                style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 18),
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
               ),
-              TextSpan(
-                text: " ",
-                style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14),
-              ),
+              TextSpan(text: " ", ),
               TextSpan(
                 text: "for",
-                style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 18),
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w500),
               ),
-              TextSpan(
-                text: " ",
-                style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14),
-              ),
+              TextSpan(text: " "),
               TextSpan(
                 text: "${_reps.toInt()} ${pluralize(word: "rep", count: _reps.toInt())}",
-                style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 16),
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
               )
             ],
           ),

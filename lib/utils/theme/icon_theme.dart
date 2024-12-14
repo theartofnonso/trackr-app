@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 class TRKRIconTheme {
   TRKRIconTheme._();
 
-  static IconThemeData lightIconTheme = IconThemeData(
+  static IconThemeData lightTheme = IconThemeData(
     color: Colors.black
   );
 
-  static IconThemeData darkIconTheme = IconThemeData(
+  static IconThemeData darkTheme = IconThemeData(
     color: Colors.white
   );
 }

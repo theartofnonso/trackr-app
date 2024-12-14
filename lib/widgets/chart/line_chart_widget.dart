@@ -31,8 +31,6 @@ class LineChartWidget extends StatelessWidget {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final List<Color> gradientColors = isDarkMode ? [sapphireLight, Colors.white38] : [Colors.black, Colors.black];
-
     return chartPoints.isNotEmpty
         ? Center(
             child: AspectRatio(

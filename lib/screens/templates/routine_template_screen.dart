@@ -174,10 +174,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           actions: [
             template.owner == SharedPrefs().userId
                 ? MenuAnchor(
-                    style: MenuStyle(
-                      backgroundColor: WidgetStateProperty.all(sapphireDark80),
-                      surfaceTintColor: WidgetStateProperty.all(sapphireDark),
-                    ),
                     builder: (BuildContext context, MenuController controller, Widget? child) {
                       return IconButton(
                         onPressed: () {

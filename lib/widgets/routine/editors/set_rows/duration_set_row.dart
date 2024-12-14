@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/set_dtos/duration_set_dto.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 
-import '../../../../colors.dart';
 import '../../../../enums/routine_editor_type_enums.dart';
 import '../../../../utils/dialog_utils.dart';
 import '../../../timers/routine_timer.dart';

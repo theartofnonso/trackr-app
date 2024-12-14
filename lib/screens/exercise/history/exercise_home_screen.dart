@@ -3,7 +3,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_chart_screen.dart';
@@ -114,10 +113,6 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
             actions: exercise.owner == SharedPrefs().userId
                 ? [
                     MenuAnchor(
-                      style: MenuStyle(
-                        backgroundColor: WidgetStateProperty.all(sapphireDark80),
-                        surfaceTintColor: WidgetStateProperty.all(sapphireDark),
-                      ),
                       builder: (BuildContext context, MenuController controller, Widget? child) {
                         return IconButton(
                           onPressed: () {

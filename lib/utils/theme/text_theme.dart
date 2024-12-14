@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 class TRKRTextTheme {
   TRKRTextTheme._();
 
-  static TextTheme lightTextTheme = TextTheme(
+  static TextTheme lightTheme = TextTheme(
     displaySmall: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.black),
     displayMedium: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.black),
     displayLarge: GoogleFonts.ubuntu(fontWeight: FontWeight.w900, color: Colors.black),
@@ -26,7 +26,7 @@ class TRKRTextTheme {
     bodyLarge: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.black),
   );
 
-  static TextTheme darkTextTheme = TextTheme(
+  static TextTheme darkTheme = TextTheme(
     displaySmall: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white),
     displayMedium: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white),
     displayLarge: GoogleFonts.ubuntu(fontWeight: FontWeight.w900, color: Colors.white),

@@ -75,19 +75,12 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: sapphireDark80,
         title: Text(
           "Logging ${widget.exerciseLog.exercise.name}".toUpperCase(),
-          style: GoogleFonts.ubuntu(
-            fontSize: 16,
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
-          ),
         ),
         leading: IconButton(
           icon: const FaIcon(
             FontAwesomeIcons.squareXmark,
-            color: Colors.white,
             size: 28,
           ),
           onPressed: () {
@@ -170,12 +163,8 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
                     LabelContainerDivider(
                         label: "New Sets".toUpperCase(),
                         description: "Currently logged sets for ${widget.exerciseLog.exercise.name}",
-                        labelStyle: GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w900, fontSize: 14),
-                        descriptionStyle: GoogleFonts.ubuntu(
-                          color: Colors.white70,
-                          fontWeight: FontWeight.w400,
-                          fontSize: 12,
-                        ),
+                        labelStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(color: vibrantGreen),
+                        descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
                         dividerColor: sapphireLighter),
                     const SizedBox(height: 12),
                     SetsListview(type: widget.exerciseLog.exercise.type, sets: updatedExerciseLog.sets)
@@ -213,87 +202,45 @@ class _HeroWidget extends StatelessWidget {
           child: RichText(
             text: TextSpan(
               text: "Hey there!",
-              style: GoogleFonts.ubuntu(
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-                color: Colors.white,
-                height: 1.5,
-              ),
+              style: Theme.of(context).textTheme.bodyMedium,
               children: <TextSpan>[
                 TextSpan(
                   text: " ",
-                  style: GoogleFonts.ubuntu(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.white,
-                  ),
                 ),
                 TextSpan(
                   text: "TRKR Coach",
-                  style: GoogleFonts.ubuntu(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 TextSpan(
                   text: " can help you log sets with your voice only.",
-                  style: GoogleFonts.ubuntu(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.white,
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 TextSpan(text: "\n"),
                 TextSpan(
                   text: "- Try saying ",
-                  style: GoogleFonts.ubuntu(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.white,
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 TextSpan(
                   text: 'Log 25kg for 10 reps',
-                  style: GoogleFonts.ubuntu(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 TextSpan(text: "\n"),
                 TextSpan(
                   text: "- Or even ",
-                  style: GoogleFonts.ubuntu(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.white,
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 TextSpan(
                   text: 'Remove last set',
-                  style: GoogleFonts.ubuntu(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 TextSpan(text: "\n"),
                 TextSpan(
                   text: "- You can say ",
-                  style: GoogleFonts.ubuntu(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.white,
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 TextSpan(
                   text: 'Update the second set with 25kg',
-                  style: GoogleFonts.ubuntu(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ],
             ),

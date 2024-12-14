@@ -8,6 +8,7 @@ import 'package:tracker_app/utils/theme/text_theme.dart';
 
 import 'icon_theme.dart';
 import 'list_title_theme.dart';
+import 'menu_theme.dart';
 
 class TRKRTheme {
   TRKRTheme._();
@@ -18,15 +19,16 @@ class TRKRTheme {
       brightness: Brightness.light,
       scaffoldBackgroundColor: Colors.white,
       primaryColor: Color.fromRGBO(43, 242, 12, 1),
-      textTheme: TRKRTextTheme.lightTextTheme,
-      iconTheme: TRKRIconTheme.lightIconTheme,
+      textTheme: TRKRTextTheme.lightTheme,
+      iconTheme: TRKRIconTheme.lightTheme,
       listTileTheme: TRKRListTileTheme.lightTheme,
-      navigationBarTheme: TRKRNavigationBarTheme.lightNavigationBarTheme,
+      navigationBarTheme: TRKRNavigationBarTheme.lightTheme,
       appBarTheme: TRKRAppBarTheme.lightTheme,
       inputDecorationTheme: TRKRInputTextFieldTheme.lightTheme,
       tabBarTheme: TabBarThemeData(
         indicatorColor: Colors.black,
       ),
+      menuBarTheme: TRKRMenuBarTheme.lightTheme,
       floatingActionButtonTheme: TRKRFloatingActionButtonTheme.lightTheme);
 
   static ThemeData darkTheme = ThemeData(
@@ -35,8 +37,8 @@ class TRKRTheme {
       brightness: Brightness.dark,
       scaffoldBackgroundColor: sapphireDark80,
       primaryColor: Colors.black,
-      textTheme: TRKRTextTheme.darkTextTheme,
-      iconTheme: TRKRIconTheme.darkIconTheme,
+      textTheme: TRKRTextTheme.darkTheme,
+      iconTheme: TRKRIconTheme.darkTheme,
       listTileTheme: TRKRListTileTheme.darkTheme,
       floatingActionButtonTheme: TRKRFloatingActionButtonTheme.darkTheme,
       appBarTheme: TRKRAppBarTheme.darkTheme,
@@ -44,5 +46,6 @@ class TRKRTheme {
       tabBarTheme: TabBarThemeData(
         indicatorColor: Colors.white,
       ),
-      navigationBarTheme: TRKRNavigationBarTheme.darkNavigationBarTheme);
+      menuBarTheme: TRKRMenuBarTheme.darkTheme,
+      navigationBarTheme: TRKRNavigationBarTheme.darkTheme);
 }
