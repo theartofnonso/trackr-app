@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
@@ -41,12 +42,19 @@ class ExerciseLogWidget extends StatelessWidget {
         children: [
           Text(exerciseLog.exercise.name, style: Theme.of(context).textTheme.titleMedium, textAlign: TextAlign.center),
           if (otherSuperSet != null)
-            Text("with ${otherSuperSet.exercise.name}",
-                style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center),
+            Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                FaIcon(
+                  FontAwesomeIcons.link,
+                  size: 10,
+                ),
+                const SizedBox(width: 4),
+                Text(otherSuperSet.exercise.name, style: Theme.of(context).textTheme.bodyMedium),
+              ],
+            ),
           if (exerciseLog.notes.isNotEmpty)
-            Text(exerciseLog.notes,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium),
+            Text(exerciseLog.notes, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
           switch (exerciseType) {
             ExerciseType.weights => DoubleSetHeader(firstLabel: weightLabel().toUpperCase(), secondLabel: 'REPS'),
             ExerciseType.bodyWeight => SingleSetHeader(label: 'REPS'),

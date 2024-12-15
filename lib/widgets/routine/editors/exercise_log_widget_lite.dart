@@ -21,7 +21,6 @@ class ExerciseLogLiteWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -44,13 +43,19 @@ class ExerciseLogLiteWidget extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(exerciseLogDto.exercise.name,
-                      style: Theme.of(context).textTheme.titleSmall),
+                  Text(exerciseLogDto.exercise.name, style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
                   if (superSetExerciseDto != null)
-                    Column(children: [
-                      Text("with ${superSetExerciseDto.exercise.name}",
-                          style: Theme.of(context).textTheme.bodyMedium),
-                    ]),
+                    Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        FaIcon(
+                          FontAwesomeIcons.link,
+                          size: 10,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(superSetExerciseDto.exercise.name, style: Theme.of(context).textTheme.bodyMedium),
+                      ],
+                    )
                 ],
               ),
               const Spacer(),

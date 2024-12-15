@@ -29,6 +29,7 @@ import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/one_rep_max_calculator.dart';
+import '../preview/sets_listview.dart';
 
 class ExerciseLogWidget extends StatefulWidget {
   final RoutineEditorMode editorType;
@@ -71,6 +72,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   List<(TextEditingController, TextEditingController)> _weightAndRepsControllers = [];
   List<TextEditingController> _repsControllers = [];
   List<DateTime> _durationControllers = [];
+  
+  bool _showPreviousSets = false;
 
   void _show1RMRecommendations() {
     final pastExerciseLogs = Provider.of<ExerciseAndRoutineController>(context, listen: false)
@@ -260,8 +263,15 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     widget.onTapRepsEditor(setDto);
   }
 
-  void _showPastSets({required BuildContext context}) {
+  List<SetDto> _getPreviousSets({required BuildContext context}) {
+    return Provider.of<ExerciseAndRoutineController>(context, listen: false)
+        .whereSetsForExercise(exercise: widget.exerciseLogDto.exercise);
+  }
 
+  void _togglePreviousSets() {
+   setState(() {
+     _showPreviousSets = !_showPreviousSets;
+   });
   }
 
   @override
@@ -317,6 +327,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         borderRadius: BorderRadius.circular(5), // Set the border radius to make it rounded
       ),
       child: Column(
+        spacing: 12,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
@@ -332,7 +343,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(widget.exerciseLogDto.exercise.name, style: Theme.of(context).textTheme.titleMedium),
+                    Text(widget.exerciseLogDto.exercise.name, style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
                     if (superSetExerciseDto != null)
                       Column(
                         children: [
@@ -405,8 +416,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             keyboardType: TextInputType.text,
             textCapitalization: TextCapitalization.sentences,
           ),
-          const SizedBox(height: 12),
-          switch (exerciseType) {
+          if(!_showPreviousSets)
+            switch (exerciseType) {
             ExerciseType.weights => WeightAndRepsSetHeader(
                 editorType: widget.editorType,
                 firstLabel: weightLabel().toUpperCase(),
@@ -415,8 +426,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             ExerciseType.bodyWeight => RepsSetHeader(editorType: widget.editorType),
             ExerciseType.duration => DurationSetHeader(editorType: widget.editorType)
           },
-          const SizedBox(height: 8),
-          if (sets.isNotEmpty)
+          if (sets.isNotEmpty && !_showPreviousSets)
             switch (exerciseType) {
               ExerciseType.weights => _WeightAndRepsSetListView(
                   sets: sets.map((set) => set as WeightAndRepsSetDto).toList(),
@@ -451,17 +461,17 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   updateDuration: _updateDuration,
                 ),
             },
-          const SizedBox(height: 8),
+          if(_showPreviousSets)
+            SetsListview(type: exerciseType, sets: _getPreviousSets(context: context)),
           if (withDurationOnly(type: exerciseType) && sets.isEmpty)
             Center(
               child: Text("Tap + to add a timer", style: Theme.of(context).textTheme.bodySmall),
             ),
-          const SizedBox(height: 8),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            if (withReps(type: exerciseType)) GestureDetector(onTap: () => _stt(), child: TRKRCoachWidget()),
+            if (withReps(type: exerciseType)) GestureDetector(onTap: _stt, child: TRKRCoachWidget()),
             const Spacer(),
             IconButton(
-              onPressed: () {},
+              onPressed: _togglePreviousSets,
               icon: const FaIcon(FontAwesomeIcons.clockRotateLeft, size: 16),
               tooltip: 'Exercise Log History',
             ),
