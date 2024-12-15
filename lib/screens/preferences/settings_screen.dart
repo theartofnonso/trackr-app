@@ -17,7 +17,6 @@ import 'package:tracker_app/screens/preferences/notifications_screen.dart';
 import 'package:tracker_app/screens/preferences/user_profile_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/urls.dart';
-import 'package:tracker_app/widgets/list_tiles/list_tile_outline.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../controllers/routine_user_controller.dart';
@@ -164,29 +163,30 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 8),
-                    OutlineListTile(onTap: _navigateToUserProfile, title: "Profile", trailing: "manage profile"),
+                    ListTile(onTap: _navigateToUserProfile, title: Text("Profile"), trailing: Text("manage profile")),
                   ],
                 ),
                 const SizedBox(height: 8),
-                OutlineListTile(onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "manage exercises"),
+                ListTile(
+                    onTap: _navigateToExerciseLibrary, title: Text("Exercises"), trailing: Text("manage exercises")),
                 if (Platform.isIOS)
                   Column(children: [
                     const SizedBox(height: 8),
-                    OutlineListTile(
+                    ListTile(
                         onTap: _navigateToNotificationSettings,
-                        title: "Notifications",
-                        trailing: _notificationEnabled ? "Enabled" : "Disabled"),
+                        title: Text("Notifications"),
+                        trailing: Text(_notificationEnabled ? "Enabled" : "Disabled")),
                   ]),
                 const SizedBox(height: 8),
-                OutlineListTile(onTap: _sendFeedback, title: "Feedback", trailing: "Help us improve"),
+                ListTile(onTap: _sendFeedback, title: Text("Feedback"), trailing: Text("Help us improve")),
                 const SizedBox(height: 8),
-                OutlineListTile(onTap: _visitTRKR, title: "Visit TRKR", trailing: "Follow us on socials"),
+                ListTile(onTap: _visitTRKR, title: Text("Visit TRKR"), trailing: Text("Follow us on socials")),
                 const SizedBox(height: 8),
-                OutlineListTile(onTap: _navigateTutorialScreen, title: "Tutorials", trailing: "Learn about TRKR"),
+                ListTile(onTap: _navigateTutorialScreen, title: Text("Tutorials"), trailing: Text("Learn about TRKR")),
                 const SizedBox(height: 8),
-                OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
+                ListTile(onTap: _logout, title: Text("Logout"), trailing: Text(SharedPrefs().userEmail)),
                 const SizedBox(height: 8),
-                OutlineListTile(onTap: _delete, title: "Delete Account", trailing: SharedPrefs().userEmail),
+                ListTile(onTap: _delete, title: Text("Delete Account"), trailing: Text(SharedPrefs().userEmail)),
                 const SizedBox(height: 10),
                 Center(
                   child: Text(_appVersion,
@@ -285,7 +285,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         child: SafeArea(
           child: Column(children: [
             ListTile(
-              
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.globe, size: 18),
               horizontalTitleGap: 6,
@@ -296,7 +295,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               },
             ),
             ListTile(
-              
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.instagram, size: 20),
               horizontalTitleGap: 6,

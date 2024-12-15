@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/widgets/search_bar.dart';
 
-import '../../widgets/muscle_group/muscle_group_widget.dart';
+import '../../colors.dart';
+import '../../utils/general_utils.dart';
 
 class MuscleGroupDto {
   final bool selected;
@@ -71,7 +71,6 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: sapphireDark80,
         leading: IconButton(
           icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
           onPressed: context.pop,
@@ -79,15 +78,8 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
       ),
       body: Container(
         width: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              sapphireDark80,
-              sapphireDark,
-            ],
-          ),
+        decoration: BoxDecoration(
+          gradient: themeGradient(context: context),
         ),
         child: SafeArea(
           minimum: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
@@ -101,7 +93,7 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
               const SizedBox(height: 12),
               Expanded(
                 child: ListView.separated(
-                    itemBuilder: (BuildContext context, int index) => MuscleGroupWidget(
+                    itemBuilder: (BuildContext context, int index) => _MuscleGroupWidget(
                         muscleGroupDto: _filteredMuscleGroups[index],
                         onTap: () => _selectMuscleGroup(muscleGroupDto: _filteredMuscleGroups[index])),
                     separatorBuilder: (BuildContext context, int index) =>
@@ -132,5 +124,23 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
   void dispose() {
     super.dispose();
     _searchController.dispose();
+  }
+}
+
+class _MuscleGroupWidget extends StatelessWidget {
+  final MuscleGroupDto muscleGroupDto;
+  final void Function() onTap;
+
+  const _MuscleGroupWidget({required this.muscleGroupDto, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      onTap: onTap,
+      title: Text(muscleGroupDto.muscleGroup.name),
+      trailing: muscleGroupDto.selected
+          ? const Icon(Icons.check_box_rounded, color: vibrantGreen)
+          : const Icon(Icons.check_box_rounded),
+    );
   }
 }
