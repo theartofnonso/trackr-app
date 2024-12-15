@@ -21,6 +21,10 @@ class LogStreakMonitor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     return Container(
       width: height,
       height: width,
@@ -28,7 +32,7 @@ class LogStreakMonitor extends StatelessWidget {
       child: CircularProgressIndicator(
         value: value,
         strokeWidth: strokeWidth,
-        backgroundColor: sapphireDark80,
+        backgroundColor: isDarkMode ? sapphireLighter : Colors.grey.shade200,
         strokeCap: strokeCap ?? StrokeCap.butt,
         valueColor: AlwaysStoppedAnimation<Color>(logStreakColor(value: value)),
       ),

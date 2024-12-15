@@ -33,7 +33,7 @@ class MuscleTrendMonitor extends StatelessWidget {
       child: CircularProgressIndicator(
         value: value,
         strokeWidth: strokeWidth,
-        backgroundColor: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
+        backgroundColor: isDarkMode ? sapphireLighter : Colors.grey.shade200,
         strokeCap: strokeCap ?? StrokeCap.butt,
         valueColor: AlwaysStoppedAnimation<Color>(muscleFamilyFrequencyColor(value: value, isDarkMode: isDarkMode)),
       ),
