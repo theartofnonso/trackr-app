@@ -345,20 +345,15 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   children: [
                     Text(widget.exerciseLogDto.exercise.name, style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
                     if (superSetExerciseDto != null)
-                      Column(
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
-                          Wrap(
-                            crossAxisAlignment: WrapCrossAlignment.center,
-                            children: [
-                              FaIcon(
-                                FontAwesomeIcons.link,
-                                size: 10,
-                              ),
-                              const SizedBox(width: 4),
-                              Text(superSetExerciseDto.exercise.name, style: Theme.of(context).textTheme.bodyMedium),
-                            ],
+                          FaIcon(
+                            FontAwesomeIcons.link,
+                            size: 10,
                           ),
-                          const SizedBox(height: 10)
+                          const SizedBox(width: 4),
+                          Text(superSetExerciseDto.exercise.name, style: Theme.of(context).textTheme.bodyMedium),
                         ],
                       ),
                   ],
