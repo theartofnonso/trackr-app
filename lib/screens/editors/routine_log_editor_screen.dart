@@ -278,6 +278,10 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final routineLogEditorController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
     if (routineLogEditorController.errorMessage.isNotEmpty) {
@@ -315,18 +319,16 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
               ],
             ),
             floatingActionButton: isKeyboardOpen && _selectedSetDto != null
-                ? FloatingActionButton.extended(
+                ? FloatingActionButton(
                     heroTag: UniqueKey(),
                     onPressed: _showWeightCalculator,
                     enableFeedback: true,
-                    icon: Image.asset(
-                      'icons/dumbbells.png',
-                      fit: BoxFit.contain,
-                      color: Colors.white,
-                      height: 24, // Adjust the height as needed
-                    ),
-                    label:
-                        Text("Calculator", style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600)),
+              child: Image.asset(
+                'icons/dumbbells.png',
+                fit: BoxFit.contain,
+                color: isDarkMode ? Colors.black : Colors.white,
+                height: 24, // Adjust the height as needed
+              ),
                   )
                 : null,
             body: Container(

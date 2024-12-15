@@ -66,7 +66,7 @@ class OpacityButtonWidget extends StatelessWidget {
                       Theme.of(context)
                           .textTheme
                           .bodySmall
-                          ?.copyWith(color: _themeForegroundColor(isDarkMode: isDarkMode))),
+                          ?.copyWith(color: _themeForegroundColor(isDarkMode: isDarkMode), fontWeight: FontWeight.bold)),
               loading
                   ? const Padding(
                       padding: EdgeInsets.only(left: 6.0),
