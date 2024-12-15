@@ -11,9 +11,12 @@ import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 import 'package:tracker_app/widgets/dividers/label_container_divider.dart';
 import 'package:tracker_app/widgets/routine/preview/sets_listview.dart';
 
+import '../../enums/exercise_type_enums.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
+import '../../widgets/routine/preview/set_headers/double_set_header.dart';
+import '../../widgets/routine/preview/set_headers/single_set_header.dart';
 
 class STTLoggingScreen extends StatefulWidget {
   final ExerciseLogDto exerciseLog;
@@ -149,6 +152,15 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
                           descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
                           dividerColor: sapphireLighter),
                       const SizedBox(height: 12),
+                      switch (widget.exerciseLog.exercise.type) {
+                        ExerciseType.weights => DoubleSetHeader(
+                          firstLabel: weightLabel().toUpperCase(),
+                          secondLabel: 'REPS'.toUpperCase(),
+                        ),
+                        ExerciseType.bodyWeight => SingleSetHeader(label: 'REPS'.toUpperCase()),
+                        ExerciseType.duration => SingleSetHeader(label: 'TIME'.toUpperCase())
+                      },
+                      const SizedBox(height: 12),
                       SetsListview(type: widget.exerciseLog.exercise.type, sets: previousSets),
                       const SizedBox(height: 16),
                     ],
@@ -161,6 +173,15 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
                         labelStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(color: vibrantGreen, fontWeight: FontWeight.w700),
                         descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
                         dividerColor: sapphireLighter),
+                    const SizedBox(height: 12),
+                    switch (widget.exerciseLog.exercise.type) {
+                      ExerciseType.weights => DoubleSetHeader(
+                        firstLabel: weightLabel().toUpperCase(),
+                        secondLabel: 'REPS'.toUpperCase(),
+                      ),
+                      ExerciseType.bodyWeight => SingleSetHeader(label: 'REPS'.toUpperCase()),
+                      ExerciseType.duration => SingleSetHeader(label: 'TIME'.toUpperCase())
+                    },
                     const SizedBox(height: 12),
                     SetsListview(type: widget.exerciseLog.exercise.type, sets: updatedExerciseLog.sets)
                   ],
