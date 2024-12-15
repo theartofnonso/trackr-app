@@ -63,8 +63,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
   bool _loading = false;
 
-  bool _minimized = true;
-
   @override
   Widget build(BuildContext context) {
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
@@ -211,7 +209,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                             title: "Muscle Groups Split",
                             description: "Here's a breakdown of the muscle groups in your ${log.name} workout log.",
                             muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
-                            minimized: _minimized),
+                            minimized: false),
                         if (updatedLog.owner == SharedPrefs().userId && widget.isEditable)
                           TRKRInformationContainer(
                               ctaLabel: "Ask for feedback",
