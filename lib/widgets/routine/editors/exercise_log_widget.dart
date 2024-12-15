@@ -72,35 +72,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   List<TextEditingController> _repsControllers = [];
   List<DateTime> _durationControllers = [];
 
-  /// [MenuItemButton]
-  List<Widget> _menuActionButtons() {
-    return [
-      MenuItemButton(
-        onPressed: widget.onReplaceLog,
-        child: Text(
-          "Replace",
-          style: GoogleFonts.ubuntu(),
-        ),
-      ),
-      widget.exerciseLogDto.superSetId.isNotEmpty
-          ? MenuItemButton(
-              onPressed: () => widget.onRemoveSuperSet(widget.exerciseLogDto.superSetId),
-              child: Text("Remove Super-set", style: GoogleFonts.ubuntu(color: Colors.red)),
-            )
-          : MenuItemButton(
-              onPressed: widget.onSuperSet,
-              child: Text("Super-set", style: GoogleFonts.ubuntu()),
-            ),
-      MenuItemButton(
-        onPressed: widget.onRemoveLog,
-        child: Text(
-          "Remove",
-          style: GoogleFonts.ubuntu(color: Colors.red),
-        ),
-      ),
-    ];
-  }
-
   void _show1RMRecommendations() {
     final pastExerciseLogs = Provider.of<ExerciseAndRoutineController>(context, listen: false)
             .exerciseLogsByExerciseId[widget.exerciseLogDto.id] ??
@@ -208,8 +179,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     _cacheLog();
   }
 
-  void _checkAndUpdateDuration(
-      {required int index, required Duration duration, required SetDto setDto, required bool checked}) {
+  void _checkAndUpdateDuration({required int index, required Duration duration, required SetDto setDto, required bool checked}) {
     if (setDto.checked) {
       final duration = (setDto as DurationSetDto).duration;
       final startTime = DateTime.now().subtract(duration);
@@ -288,6 +258,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _onTapRepsEditor({required SetDto setDto}) {
     widget.onTapRepsEditor(setDto);
+  }
+
+  void _showPastSets({required BuildContext context}) {
+
   }
 
   @override
@@ -394,7 +368,31 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                       tooltip: 'Show menu',
                     );
                   },
-                  menuChildren: _menuActionButtons())
+                  menuChildren: [
+                    MenuItemButton(
+                      onPressed: widget.onReplaceLog,
+                      child: Text(
+                        "Replace",
+                        style: GoogleFonts.ubuntu(),
+                      ),
+                    ),
+                    widget.exerciseLogDto.superSetId.isNotEmpty
+                        ? MenuItemButton(
+                      onPressed: () => widget.onRemoveSuperSet(widget.exerciseLogDto.superSetId),
+                      child: Text("Remove Super-set", style: GoogleFonts.ubuntu(color: Colors.red)),
+                    )
+                        : MenuItemButton(
+                      onPressed: widget.onSuperSet,
+                      child: Text("Super-set", style: GoogleFonts.ubuntu()),
+                    ),
+                    MenuItemButton(
+                      onPressed: widget.onRemoveLog,
+                      child: Text(
+                        "Remove",
+                        style: GoogleFonts.ubuntu(color: Colors.red),
+                      ),
+                    ),
+                  ])
             ],
           ),
           TextField(
