@@ -46,7 +46,7 @@ class OnboardingChecklistScreen extends StatelessWidget {
           child: hasPendingActions
               ? ListView(
                   children: [
-                    if (routineLogs.isNotEmpty)
+                    if (routineLogs.isEmpty)
                       ListTile(
                         title: Text("Create A Workout Template"),
                         leading: Image.asset(
@@ -61,7 +61,7 @@ class OnboardingChecklistScreen extends StatelessWidget {
                           size: 18,
                         ),
                       ),
-                    if (routineTemplates.isNotEmpty)
+                    if (routineTemplates.isEmpty)
                       ListTile(
                         title: Text("Log A Workout Session"),
                         leading: Image.asset(
@@ -76,7 +76,7 @@ class OnboardingChecklistScreen extends StatelessWidget {
                           size: 18,
                         ),
                       ),
-                    if (activityLogs.isNotEmpty)
+                    if (activityLogs.isEmpty)
                       ListTile(
                         title: Text("Log An Activity"),
                         leading: FaIcon(FontAwesomeIcons.personWalking),

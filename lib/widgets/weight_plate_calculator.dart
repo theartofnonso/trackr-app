@@ -183,30 +183,13 @@ class _Bar extends StatelessWidget {
         Container(
             width: 100,
             height: 20,
-            decoration: BoxDecoration(
-              color: isDarkMode ? null : Colors.grey.shade400,
-              gradient: isDarkMode
-                  ? LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      colors: [
-                        Colors.white24,
-                        Colors.white70,
-                      ],
-                    )
-                  : null,
-            ),
+            color: Colors.grey.shade400,
             child: Center(
               child: Text("${weightWithConversion(value: bar.weight)}",
                   textAlign: TextAlign.center,
                   style: GoogleFonts.ubuntu(fontSize: 12, color: Colors.black, fontWeight: FontWeight.bold)),
             )),
-        Container(
-            width: 15,
-            height: 40,
-            decoration: const BoxDecoration(
-              color: Colors.white70,
-            )),
+        Container(width: 15, height: 40, color: sapphireDark),
         ...plates.map((plate) => _Plate(plate: plate)),
         Container(
             width: 10,
@@ -216,17 +199,7 @@ class _Bar extends StatelessWidget {
                 topRight: Radius.circular(5),
                 bottomRight: Radius.circular(5),
               ),
-              color: isDarkMode ? null : Colors.grey.shade400,
-              gradient: isDarkMode
-                  ? LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      colors: [
-                        Colors.white24,
-                        Colors.white70,
-                      ],
-                    )
-                  : null,
+              color: Colors.grey.shade400,
             )),
         SizedBox(width: 16)
       ]),
@@ -247,14 +220,7 @@ class _Plate extends StatelessWidget {
       width: plate.width,
       height: plate.height,
       margin: EdgeInsets.only(right: 3),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(6),
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [sapphireDark80, sapphireDark],
-        ),
-      ),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(6), color: sapphireDark),
       child: Center(
         child: Text("${weightWithConversion(value: plate.weight)}",
             textAlign: TextAlign.center,

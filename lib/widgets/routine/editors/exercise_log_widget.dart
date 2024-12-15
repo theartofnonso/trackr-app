@@ -79,7 +79,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         onPressed: widget.onReplaceLog,
         child: Text(
           "Replace",
-          style: GoogleFonts.ubuntu(color: Colors.white),
+          style: GoogleFonts.ubuntu(),
         ),
       ),
       widget.exerciseLogDto.superSetId.isNotEmpty
