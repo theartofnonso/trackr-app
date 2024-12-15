@@ -20,6 +20,10 @@ class ExerciseLogWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final otherSuperSet = superSet;
 
     final exerciseType = exerciseLog.exercise.type;
@@ -60,7 +64,7 @@ class ExerciseLogWidget extends StatelessWidget {
             ExerciseType.bodyWeight => SingleSetHeader(label: 'REPS'),
             ExerciseType.duration => SingleSetHeader(label: 'TIME'),
           },
-          SetsListview(type: exerciseType, sets: exerciseLog.sets, pbs: pbs)
+          SetsListview(type: exerciseType, sets: exerciseLog.sets, pbs: pbs, borderColor: isDarkMode ? Colors.white10 : Colors.grey.shade400)
         ],
       ),
     );
