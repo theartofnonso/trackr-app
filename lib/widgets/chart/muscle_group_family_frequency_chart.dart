@@ -87,7 +87,7 @@ class _LinearBar extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           SizedBox(
-            width: 30,
+            width: 35,
             child: Text("${(frequency * 100).round()}%", style: Theme.of(context).textTheme.bodySmall),
           ),
         ],

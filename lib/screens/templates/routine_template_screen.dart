@@ -226,7 +226,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
-                      color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, // Set the background color
+                      color: isDarkMode ? sapphireDark : Colors.grey.shade200,
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     child: Table(
