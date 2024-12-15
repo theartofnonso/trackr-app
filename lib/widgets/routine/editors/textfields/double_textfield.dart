@@ -20,14 +20,14 @@ class DoubleTextField extends StatelessWidget {
       onTap: onTap,
       onChanged: (value) => onChanged(_parseDoubleOrDefault(value: value)),
       decoration: InputDecoration(
-          contentPadding: EdgeInsets.zero,
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: Colors.transparent)),
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: Colors.transparent)),
           hintText: "${value > 0 ? value : '-'}"),
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       maxLines: 1,
       textAlign: TextAlign.center,
-      // style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
     );
   }
 }
