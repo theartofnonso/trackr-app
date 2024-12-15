@@ -9,7 +9,6 @@ class MuscleTrendMonitor extends StatelessWidget {
   final double height;
   final double strokeWidth;
   final StrokeCap? strokeCap;
-  final Decoration? decoration;
 
   const MuscleTrendMonitor({
     super.key,
@@ -17,7 +16,7 @@ class MuscleTrendMonitor extends StatelessWidget {
     required this.width,
     required this.height,
     required this.strokeWidth,
-    this.strokeCap, this.decoration,
+    this.strokeCap
   });
 
   @override
@@ -26,10 +25,9 @@ class MuscleTrendMonitor extends StatelessWidget {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    return Container(
+    return SizedBox(
       width: width,
       height: height,
-      decoration: decoration,
       child: CircularProgressIndicator(
         value: value,
         strokeWidth: strokeWidth,

@@ -9,14 +9,13 @@ class LogStreakMonitor extends StatelessWidget {
   final double height;
   final double strokeWidth;
   final StrokeCap? strokeCap;
-  final Decoration? decoration;
 
   const LogStreakMonitor({
     super.key,
     required this.value,
     required this.width,
     required this.height,
-    required this.strokeWidth, this.strokeCap, this.decoration,
+    required this.strokeWidth, this.strokeCap
   });
 
   @override
@@ -25,10 +24,9 @@ class LogStreakMonitor extends StatelessWidget {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    return Container(
+    return SizedBox(
       width: height,
       height: width,
-      decoration: decoration,
       child: CircularProgressIndicator(
         value: value,
         strokeWidth: strokeWidth,

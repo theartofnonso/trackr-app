@@ -90,16 +90,13 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
                   value: monthlyProgress,
                   width: 100,
                   height: 100,
-                  strokeWidth: 6,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(100),
-                  )),
+                  strokeWidth: 6),
               MuscleTrendMonitor(
                   value: muscleScorePercentage / 100, width: 70, height: 70, strokeWidth: 6),
               Image.asset(
                 'images/trkr.png',
                 fit: BoxFit.contain,
-                color: isDarkMode ? Colors.white70 : Colors.black87,
+                color: isDarkMode ? Colors.white70 : Colors.black,
                 height: 8, // Adjust the height as needed
               )
             ]),
@@ -228,7 +225,7 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
               'images/trkr.png',
               fit: BoxFit.contain,
               height: 8,
-              color: isDarkMode ? Colors.white70 : Colors.black87,// Adjust the height as needed
+              color: isDarkMode ? Colors.white70 : Colors.black,// Adjust the height as needed
             ),
           ],
         ));
