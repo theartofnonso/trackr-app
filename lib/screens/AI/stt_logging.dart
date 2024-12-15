@@ -145,13 +145,8 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
                       LabelContainerDivider(
                           label: "Previous Sets".toUpperCase(),
                           description: "Previously logged sets for ${widget.exerciseLog.exercise.name}",
-                          labelStyle:
-                              GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14),
-                          descriptionStyle: GoogleFonts.ubuntu(
-                            color: Colors.white70,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 12,
-                          ),
+                          labelStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w700),
+                          descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
                           dividerColor: sapphireLighter),
                       const SizedBox(height: 12),
                       SetsListview(type: widget.exerciseLog.exercise.type, sets: previousSets),
@@ -163,7 +158,7 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
                     LabelContainerDivider(
                         label: "New Sets".toUpperCase(),
                         description: "Currently logged sets for ${widget.exerciseLog.exercise.name}",
-                        labelStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(color: vibrantGreen),
+                        labelStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(color: vibrantGreen, fontWeight: FontWeight.w700),
                         descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
                         dividerColor: sapphireLighter),
                     const SizedBox(height: 12),
