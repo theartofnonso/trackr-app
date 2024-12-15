@@ -62,9 +62,7 @@ class SetsListview extends StatelessWidget {
               return SingleSetRow(label: label, pbs: pbsForSet);
           }
         },
-        separatorBuilder: (context, index) {
-          return SizedBox(height: 8);
-        },
+        separatorBuilder: (context, index) => SizedBox(height: 8),
         itemCount: sets.length);
   }
 }

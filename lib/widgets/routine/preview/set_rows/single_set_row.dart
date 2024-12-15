@@ -12,9 +12,13 @@ class SingleSetRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     return SetRow(
         pbs: pbs,
         child: Table(
+          border: TableBorder.all(color: isDarkMode ? Colors.white10 : Colors.white, borderRadius: BorderRadius.circular(5)),
             columnWidths: const <int, TableColumnWidth>{
               0: FlexColumnWidth(),
             },
@@ -22,10 +26,13 @@ class SingleSetRow extends StatelessWidget {
               TableRow(children: [
                 TableCell(
                   verticalAlignment: TableCellVerticalAlignment.middle,
-                  child: Text(
-                    label,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    textAlign: TextAlign.center,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: Text(
+                      label,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
               ]),

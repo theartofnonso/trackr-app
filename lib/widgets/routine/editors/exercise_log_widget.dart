@@ -29,6 +29,8 @@ import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/one_rep_max_calculator.dart';
+import '../preview/set_headers/double_set_header.dart';
+import '../preview/set_headers/single_set_header.dart';
 import '../preview/sets_listview.dart';
 
 class ExerciseLogWidget extends StatefulWidget {
@@ -72,7 +74,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   List<(TextEditingController, TextEditingController)> _weightAndRepsControllers = [];
   List<TextEditingController> _repsControllers = [];
   List<DateTime> _durationControllers = [];
-  
+
   bool _showPreviousSets = false;
 
   void _show1RMRecommendations() {
@@ -182,7 +184,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     _cacheLog();
   }
 
-  void _checkAndUpdateDuration({required int index, required Duration duration, required SetDto setDto, required bool checked}) {
+  void _checkAndUpdateDuration(
+      {required int index, required Duration duration, required SetDto setDto, required bool checked}) {
     if (setDto.checked) {
       final duration = (setDto as DurationSetDto).duration;
       final startTime = DateTime.now().subtract(duration);
@@ -269,9 +272,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _togglePreviousSets() {
-   setState(() {
-     _showPreviousSets = !_showPreviousSets;
-   });
+    setState(() {
+      _showPreviousSets = !_showPreviousSets;
+    });
   }
 
   @override
@@ -343,7 +346,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(widget.exerciseLogDto.exercise.name, style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
+                    Text(widget.exerciseLogDto.exercise.name,
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
                     if (superSetExerciseDto != null)
                       Wrap(
                         crossAxisAlignment: WrapCrossAlignment.center,
@@ -384,13 +388,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                     ),
                     widget.exerciseLogDto.superSetId.isNotEmpty
                         ? MenuItemButton(
-                      onPressed: () => widget.onRemoveSuperSet(widget.exerciseLogDto.superSetId),
-                      child: Text("Remove Super-set", style: GoogleFonts.ubuntu(color: Colors.red)),
-                    )
+                            onPressed: () => widget.onRemoveSuperSet(widget.exerciseLogDto.superSetId),
+                            child: Text("Remove Super-set", style: GoogleFonts.ubuntu(color: Colors.red)),
+                          )
                         : MenuItemButton(
-                      onPressed: widget.onSuperSet,
-                      child: Text("Super-set", style: GoogleFonts.ubuntu()),
-                    ),
+                            onPressed: widget.onSuperSet,
+                            child: Text("Super-set", style: GoogleFonts.ubuntu()),
+                          ),
                     MenuItemButton(
                       onPressed: widget.onRemoveLog,
                       child: Text(
@@ -411,16 +415,24 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             keyboardType: TextInputType.text,
             textCapitalization: TextCapitalization.sentences,
           ),
-          if(!_showPreviousSets)
-            switch (exerciseType) {
-            ExerciseType.weights => WeightAndRepsSetHeader(
-                editorType: widget.editorType,
-                firstLabel: weightLabel().toUpperCase(),
-                secondLabel: 'REPS',
-              ),
-            ExerciseType.bodyWeight => RepsSetHeader(editorType: widget.editorType),
-            ExerciseType.duration => DurationSetHeader(editorType: widget.editorType)
-          },
+          _showPreviousSets
+              ? switch (exerciseType) {
+                  ExerciseType.weights => DoubleSetHeader(
+                      firstLabel: "PREVIOUS ${weightLabel().toUpperCase()}".toUpperCase(),
+                      secondLabel: 'PREVIOUS REPS'.toUpperCase(),
+                    ),
+                  ExerciseType.bodyWeight => SingleSetHeader(label: 'PREVIOUS REPS'.toUpperCase()),
+                  ExerciseType.duration => SingleSetHeader(label: 'PREVIOUS TIME'.toUpperCase())
+                }
+              : switch (exerciseType) {
+                  ExerciseType.weights => WeightAndRepsSetHeader(
+                      editorType: widget.editorType,
+                      firstLabel: weightLabel().toUpperCase(),
+                      secondLabel: 'REPS',
+                    ),
+                  ExerciseType.bodyWeight => RepsSetHeader(editorType: widget.editorType),
+                  ExerciseType.duration => DurationSetHeader(editorType: widget.editorType)
+                },
           if (sets.isNotEmpty && !_showPreviousSets)
             switch (exerciseType) {
               ExerciseType.weights => _WeightAndRepsSetListView(
@@ -456,8 +468,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   updateDuration: _updateDuration,
                 ),
             },
-          if(_showPreviousSets)
-            SetsListview(type: exerciseType, sets: _getPreviousSets(context: context)),
+          if (_showPreviousSets) SetsListview(type: exerciseType, sets: _getPreviousSets(context: context)),
           if (withDurationOnly(type: exerciseType) && sets.isEmpty)
             Center(
               child: Text("Tap + to add a timer", style: Theme.of(context).textTheme.bodySmall),
@@ -521,22 +532,23 @@ class _WeightAndRepsSetListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final children = sets.mapIndexed((index, setDto) {
-      return Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: WeightsAndRepsSetRow(
-            setDto: setDto,
-            editorType: editorType,
-            onCheck: () => updateSetCheck(index: index, setDto: setDto),
-            onRemoved: () => removeSet(index: index),
-            onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
-            onChangedWeight: (double value) => updateWeight(index: index, weight: value, setDto: setDto),
-            onTapWeightEditor: () => onTapWeightEditor(setDto: setDto),
-            onTapRepsEditor: () => onTapRepsEditor(setDto: setDto),
-            controllers: controllers[index],
-          ));
+      return WeightsAndRepsSetRow(
+        setDto: setDto,
+        editorType: editorType,
+        onCheck: () => updateSetCheck(index: index, setDto: setDto),
+        onRemoved: () => removeSet(index: index),
+        onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
+        onChangedWeight: (double value) => updateWeight(index: index, weight: value, setDto: setDto),
+        onTapWeightEditor: () => onTapWeightEditor(setDto: setDto),
+        onTapRepsEditor: () => onTapRepsEditor(setDto: setDto),
+        controllers: controllers[index],
+      );
     }).toList();
 
-    return Column(children: children);
+    return ListView.separated(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemBuilder: (context, index) => children[index], separatorBuilder: (context, index) => const SizedBox(height: 8), itemCount: children.length);
   }
 }
 
@@ -563,20 +575,21 @@ class _RepsSetListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final children = sets.mapIndexed((index, setDto) {
-      return Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: RepsSetRow(
-            setDto: setDto,
-            editorType: editorType,
-            onCheck: () => updateSetCheck(index: index, setDto: setDto),
-            onRemoved: () => removeSet(index: index),
-            onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
-            onTapRepsEditor: () => onTapRepsEditor(setDto: setDto),
-            controller: controllers[index],
-          ));
+      return RepsSetRow(
+        setDto: setDto,
+        editorType: editorType,
+        onCheck: () => updateSetCheck(index: index, setDto: setDto),
+        onRemoved: () => removeSet(index: index),
+        onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
+        onTapRepsEditor: () => onTapRepsEditor(setDto: setDto),
+        controller: controllers[index],
+      );
     }).toList();
 
-    return Column(children: children);
+    return ListView.separated(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemBuilder: (context, index) => children[index], separatorBuilder: (context, index) => const SizedBox(height: 8), itemCount: children.length);
   }
 }
 
@@ -606,21 +619,22 @@ class _DurationSetListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final children = sets.mapIndexed((index, setDto) {
-      return Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: DurationSetRow(
-            setDto: setDto,
-            editorType: editorType,
-            onCheck: () => updateSetCheck(index: index, setDto: setDto),
-            onRemoved: () => removeSet(index: index),
-            onCheckAndUpdateDuration: (Duration duration, {bool? checked}) =>
-                checkAndUpdateDuration(index: index, duration: duration, setDto: setDto, checked: checked ?? false),
-            startTime: controllers.isNotEmpty ? controllers[index] : DateTime.now(),
-            onupdateDuration: (Duration duration) => updateDuration(index: index, duration: duration, setDto: setDto),
-          ));
+      return DurationSetRow(
+        setDto: setDto,
+        editorType: editorType,
+        onCheck: () => updateSetCheck(index: index, setDto: setDto),
+        onRemoved: () => removeSet(index: index),
+        onCheckAndUpdateDuration: (Duration duration, {bool? checked}) =>
+            checkAndUpdateDuration(index: index, duration: duration, setDto: setDto, checked: checked ?? false),
+        startTime: controllers.isNotEmpty ? controllers[index] : DateTime.now(),
+        onupdateDuration: (Duration duration) => updateDuration(index: index, duration: duration, setDto: setDto),
+      );
     }).toList();
 
-    return Column(children: children);
+    return ListView.separated(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemBuilder: (context, index) => children[index], separatorBuilder: (context, index) => const SizedBox(height: 8), itemCount: children.length);
   }
 }
 

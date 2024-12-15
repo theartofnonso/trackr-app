@@ -29,7 +29,7 @@ class SetRecordWidget extends StatelessWidget {
         ...personaBestSets.map((set) {
           final firstLabel = (set as WeightAndRepsSetDto).reps;
           final secondLabel = set.weight;
-          return DoubleSetRow(first: "$firstLabel", second: "$secondLabel", margin: const EdgeInsets.only(bottom: 6.0));
+          return DoubleSetRow(first: "$firstLabel", second: "$secondLabel");
         }),
       ],
     );

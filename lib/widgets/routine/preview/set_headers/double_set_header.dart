@@ -18,13 +18,13 @@ class DoubleSetHeader extends StatelessWidget {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: Text(firstLabel,
-                style: Theme.of(context).textTheme.bodyMedium,
+                style: Theme.of(context).textTheme.bodySmall,
                 textAlign: TextAlign.center),
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: Text(secondLabel,
-                style: Theme.of(context).textTheme.bodyMedium,
+                style: Theme.of(context).textTheme.bodySmall,
                 textAlign: TextAlign.center),
           ),
         ]),

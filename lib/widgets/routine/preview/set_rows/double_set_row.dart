@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:tracker_app/widgets/routine/preview/set_rows/set_row.dart';
 
-import '../../../../colors.dart';
 import '../../../../dtos/pb_dto.dart';
 
 class DoubleSetRow extends StatelessWidget {
   final String first;
   final String second;
-  final EdgeInsets? margin;
   final List<PBDto> pbs;
 
-  const DoubleSetRow({super.key, required this.first, required this.second, this.margin, this.pbs = const []});
+  const DoubleSetRow({super.key, required this.first, required this.second, this.pbs = const []});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +19,7 @@ class DoubleSetRow extends StatelessWidget {
     return SetRow(
         pbs: pbs,
         child: Table(
-            border: TableBorder.symmetric(inside: BorderSide(color: isDarkMode ? sapphireLighter.withOpacity(0.4) : Colors.white, width: 1.5)),
+            border: TableBorder.all(color: isDarkMode ? Colors.white10 : Colors.white, borderRadius: BorderRadius.circular(5)),
             columnWidths: const <int, TableColumnWidth>{
               0: FlexColumnWidth(1),
               1: FlexColumnWidth(1),
@@ -30,12 +28,18 @@ class DoubleSetRow extends StatelessWidget {
               TableRow(children: [
                 TableCell(
                   verticalAlignment: TableCellVerticalAlignment.middle,
-                  child: Text(first, style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: Text(first, style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
+                  ),
                 ),
                 TableCell(
                     verticalAlignment: TableCellVerticalAlignment.middle,
                     child:
-                        Text(second, style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center))
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          child: Text(second, style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
+                        ))
               ]),
             ]));
   }

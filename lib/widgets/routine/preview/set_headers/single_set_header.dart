@@ -17,7 +17,7 @@ class SingleSetHeader extends StatelessWidget {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: Text(label,
-                style: Theme.of(context).textTheme.bodyMedium,
+                style: Theme.of(context).textTheme.bodySmall,
                 textAlign: textAlign),
           ),
         ]),
