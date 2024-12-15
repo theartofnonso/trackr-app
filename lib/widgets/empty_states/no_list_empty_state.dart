@@ -9,15 +9,19 @@ class NoListEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          icon ?? FaIcon(FontAwesomeIcons.solidLightbulb, size: 38),
+          icon ?? FaIcon(FontAwesomeIcons.solidLightbulb, size: 38, color: isDarkMode ? Colors.white70 : Colors.grey.shade400),
           const SizedBox(height: 16),
           Text(message,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyLarge)
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: isDarkMode ? Colors.white70 : Colors.grey.shade400))
         ]);
   }
 }

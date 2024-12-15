@@ -7,17 +7,17 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
-import '../colors.dart';
-import '../dtos/milestones/reps_milestone.dart';
-import '../enums/muscle_group_enums.dart';
-import '../utils/theme/theme.dart';
-import '../widgets/buttons/opacity_button_widget.dart';
-import '../widgets/calendar/calendar.dart';
-import '../widgets/chart/muscle_group_family_frequency_chart.dart';
-import '../widgets/label_divider.dart';
-import '../widgets/milestones/milestone_grid_item.dart';
-import '../widgets/monitors/log_streak_monitor.dart';
-import '../widgets/monitors/muscle_trend_monitor.dart';
+import '../../colors.dart';
+import '../../dtos/milestones/reps_milestone.dart';
+import '../../enums/muscle_group_enums.dart';
+import '../../utils/theme/theme.dart';
+import '../../widgets/buttons/opacity_button_widget.dart';
+import '../../widgets/calendar/calendar.dart';
+import '../../widgets/chart/muscle_group_family_frequency_chart.dart';
+import '../../widgets/label_divider.dart';
+import '../../widgets/milestones/milestone_grid_item.dart';
+import '../../widgets/monitors/log_streak_monitor.dart';
+import '../../widgets/monitors/muscle_trend_monitor.dart';
 
 class IntroScreen extends StatefulWidget {
   static const routeName = "/intro_screen";
@@ -415,10 +415,7 @@ class EndOnboardingScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 buttonColor: vibrantGreen,
                 label: "Tap and hold to start training",
-                onLongPress: () {
-                  HapticFeedback.vibrate();
-                  onLongPress();
-                },
+                onLongPress: onLongPress,
               ))
         ],
       ),
