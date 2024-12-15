@@ -462,13 +462,17 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             if (withReps(type: exerciseType)) GestureDetector(onTap: () => _stt(), child: TRKRCoachWidget()),
             const Spacer(),
+            IconButton(
+              onPressed: () {},
+              icon: const FaIcon(FontAwesomeIcons.clockRotateLeft, size: 16),
+              tooltip: 'Exercise Log History',
+            ),
             if (withWeightsOnly(type: exerciseType))
               IconButton(
-                  onPressed: _show1RMRecommendations,
-                  icon: const FaIcon(FontAwesomeIcons.solidLightbulb, size: 16),
-                  style: ButtonStyle(
-                      visualDensity: VisualDensity.compact,
-                      shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
+                onPressed: _show1RMRecommendations,
+                icon: const FaIcon(FontAwesomeIcons.solidLightbulb, size: 16),
+                tooltip: 'Weights and Reps Recommendations',
+              ),
             IconButton(
               onPressed: widget.onResize,
               icon: const Icon(Icons.close_fullscreen_rounded),
@@ -478,12 +482,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               width: 6,
             ),
             IconButton(
-                onPressed: _addSet,
-                icon: const FaIcon(FontAwesomeIcons.plus, size: 16),
-                style: ButtonStyle(
-                    visualDensity: VisualDensity.compact,
-                    backgroundColor: WidgetStateProperty.all(sapphireDark.withOpacity(0.2)),
-                    shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
+              onPressed: _addSet,
+              icon: const FaIcon(FontAwesomeIcons.plus, size: 16),
+              tooltip: 'Add new set',
+            ),
           ])
         ],
       ),
@@ -638,20 +640,23 @@ class _OneRepMaxSliderState extends State<_OneRepMaxSlider> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(widget.exercise,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 20)),
+        Text(widget.exercise, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 20)),
         const SizedBox(height: 2),
         RichText(
           text: TextSpan(
             text: "Based on your recent progress, consider:",
             style: Theme.of(context).textTheme.bodyMedium,
             children: [
-              TextSpan(text: "\n",),
+              TextSpan(
+                text: "\n",
+              ),
               TextSpan(
                 text: "$_weight${weightLabel()}",
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
               ),
-              TextSpan(text: " ", ),
+              TextSpan(
+                text: " ",
+              ),
               TextSpan(
                 text: "for",
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w500),
