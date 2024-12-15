@@ -17,11 +17,14 @@ class NoListEmptyState extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          icon ?? FaIcon(FontAwesomeIcons.solidLightbulb, size: 38, color: isDarkMode ? Colors.white70 : Colors.grey.shade400),
+          icon ?? FaIcon(FontAwesomeIcons.solidLightbulb, size: 30, color: isDarkMode ? Colors.white70 : Colors.grey.shade400),
           const SizedBox(height: 16),
-          Text(message,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: isDarkMode ? Colors.white70 : Colors.grey.shade400))
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Text(message,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: isDarkMode ? Colors.white70 : Colors.grey.shade400)),
+          )
         ]);
   }
 }

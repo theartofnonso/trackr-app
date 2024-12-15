@@ -27,7 +27,7 @@ class OnboardingChecklistScreen extends StatelessWidget {
 
     final activityLogs = activityLogController.logs;
 
-    final hasPendingActions = routineTemplates.isNotEmpty && routineLogs.isNotEmpty && activityLogs.isNotEmpty;
+    final hasPendingActions = routineTemplates.isEmpty && routineLogs.isEmpty && activityLogs.isEmpty;
 
     return Scaffold(
       appBar: AppBar(

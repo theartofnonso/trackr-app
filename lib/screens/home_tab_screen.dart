@@ -77,7 +77,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
                             onPressed: _navigateToNotificationHome,
                             icon: Badge(
                               smallSize: 8,
-                                backgroundColor: !hasPendingActions ? vibrantGreen : Colors.transparent,
+                                backgroundColor: hasPendingActions ? vibrantGreen : Colors.transparent,
                                 child: FaIcon(FontAwesomeIcons.solidBell, size: 20)),
                           ),
                         ),
