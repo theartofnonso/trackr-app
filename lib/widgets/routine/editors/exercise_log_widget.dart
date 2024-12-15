@@ -314,195 +314,185 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   @override
   Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
     final sets = widget.exerciseLogDto.sets;
 
     final superSetExerciseDto = widget.superSet;
 
     final exerciseType = widget.exerciseLogDto.exercise.type;
 
-    return Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, // Set the background color
-        borderRadius: BorderRadius.circular(5), // Set the border radius to make it rounded
-      ),
-      child: Column(
-        spacing: 12,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                  child: GestureDetector(
-                onTap: () {
-                  FocusScope.of(context).unfocus();
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => ExerciseHomeScreen(exercise: widget.exerciseLogDto.exercise)));
-                },
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(widget.exerciseLogDto.exercise.name,
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
-                    if (superSetExerciseDto != null)
-                      Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          FaIcon(
-                            FontAwesomeIcons.link,
-                            size: 10,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(superSetExerciseDto.exercise.name, style: Theme.of(context).textTheme.bodyMedium),
-                        ],
-                      ),
-                  ],
-                ),
-              )),
-              MenuAnchor(
-                  builder: (BuildContext context, MenuController controller, Widget? child) {
-                    return IconButton(
-                      onPressed: () {
-                        if (controller.isOpen) {
-                          controller.close();
-                        } else {
-                          FocusScope.of(context).unfocus();
-                          controller.open();
-                        }
-                      },
-                      icon: const Icon(Icons.more_horiz_rounded),
-                      tooltip: 'Show menu',
-                    );
-                  },
-                  menuChildren: [
-                    MenuItemButton(
-                      onPressed: widget.onReplaceLog,
-                      child: Text(
-                        "Replace",
-                        style: GoogleFonts.ubuntu(),
-                      ),
+    return Column(
+      spacing: 12,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+                child: GestureDetector(
+              onTap: () {
+                FocusScope.of(context).unfocus();
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ExerciseHomeScreen(exercise: widget.exerciseLogDto.exercise)));
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(widget.exerciseLogDto.exercise.name,
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
+                  if (superSetExerciseDto != null)
+                    Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        FaIcon(
+                          FontAwesomeIcons.link,
+                          size: 10,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(superSetExerciseDto.exercise.name, style: Theme.of(context).textTheme.bodyMedium),
+                      ],
                     ),
-                    widget.exerciseLogDto.superSetId.isNotEmpty
-                        ? MenuItemButton(
-                            onPressed: () => widget.onRemoveSuperSet(widget.exerciseLogDto.superSetId),
-                            child: Text("Remove Super-set", style: GoogleFonts.ubuntu(color: Colors.red)),
-                          )
-                        : MenuItemButton(
-                            onPressed: widget.onSuperSet,
-                            child: Text("Super-set", style: GoogleFonts.ubuntu()),
-                          ),
-                    MenuItemButton(
-                      onPressed: widget.onRemoveLog,
-                      child: Text(
-                        "Remove",
-                        style: GoogleFonts.ubuntu(color: Colors.red),
-                      ),
-                    ),
-                  ])
-            ],
-          ),
-          TextField(
-            controller: TextEditingController(text: widget.exerciseLogDto.notes),
-            onChanged: (value) => _updateExerciseLogNotes(value: value),
-            decoration: InputDecoration(
-              hintText: "Enter notes",
-            ),
-            maxLines: null,
-            keyboardType: TextInputType.text,
-            textCapitalization: TextCapitalization.sentences,
-          ),
-          _showPreviousSets
-              ? switch (exerciseType) {
-                  ExerciseType.weights => DoubleSetHeader(
-                      firstLabel: "PREVIOUS ${weightLabel().toUpperCase()}".toUpperCase(),
-                      secondLabel: 'PREVIOUS REPS'.toUpperCase(),
-                    ),
-                  ExerciseType.bodyWeight => SingleSetHeader(label: 'PREVIOUS REPS'.toUpperCase()),
-                  ExerciseType.duration => SingleSetHeader(label: 'PREVIOUS TIME'.toUpperCase())
-                }
-              : switch (exerciseType) {
-                  ExerciseType.weights => WeightAndRepsSetHeader(
-                      editorType: widget.editorType,
-                      firstLabel: weightLabel().toUpperCase(),
-                      secondLabel: 'REPS',
-                    ),
-                  ExerciseType.bodyWeight => RepsSetHeader(editorType: widget.editorType),
-                  ExerciseType.duration => DurationSetHeader(editorType: widget.editorType)
-                },
-          if (sets.isNotEmpty && !_showPreviousSets)
-            switch (exerciseType) {
-              ExerciseType.weights => _WeightAndRepsSetListView(
-                  sets: sets.map((set) => set as WeightAndRepsSetDto).toList(),
-                  editorType: widget.editorType,
-                  updateSetCheck: _updateSetCheck,
-                  removeSet: _removeSet,
-                  updateReps: _updateReps,
-                  updateWeight: _updateWeight,
-                  controllers: _weightAndRepsControllers,
-                  onTapWeightEditor: _onTapWeightEditor,
-                  onTapRepsEditor: _onTapRepsEditor,
-                ),
-              ExerciseType.bodyWeight => _RepsSetListView(
-                  sets: sets.map((set) => set as RepsSetDto).toList(),
-                  editorType: widget.editorType,
-                  updateSetCheck: _updateSetCheck,
-                  removeSet: _removeSet,
-                  updateReps: _updateReps,
-                  controllers: _repsControllers,
-                  onTapWeightEditor: _onTapWeightEditor,
-                  onTapRepsEditor: _onTapRepsEditor,
-                ),
-              ExerciseType.duration => _DurationSetListView(
-                  sets: sets.map((set) => set as DurationSetDto).toList(),
-                  editorType: widget.editorType,
-                  updateSetCheck: _updateSetCheck,
-                  removeSet: _removeSet,
-                  controllers: _durationControllers,
-                  onTapWeightEditor: _onTapWeightEditor,
-                  onTapRepsEditor: _onTapRepsEditor,
-                  checkAndUpdateDuration: _checkAndUpdateDuration,
-                  updateDuration: _updateDuration,
-                ),
-            },
-          if (_showPreviousSets) SetsListview(type: exerciseType, sets: _getPreviousSets(context: context)),
-          if (withDurationOnly(type: exerciseType) && sets.isEmpty)
-            Center(
-              child: Text("Tap + to add a timer", style: Theme.of(context).textTheme.bodySmall),
-            ),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            if (withReps(type: exerciseType)) GestureDetector(onTap: _stt, child: TRKRCoachWidget()),
-            const Spacer(),
-            IconButton(
-              onPressed: _togglePreviousSets,
-              icon: const FaIcon(FontAwesomeIcons.clockRotateLeft, size: 16),
-              tooltip: 'Exercise Log History',
-            ),
-            if (withWeightsOnly(type: exerciseType))
-              IconButton(
-                onPressed: _show1RMRecommendations,
-                icon: const FaIcon(FontAwesomeIcons.solidLightbulb, size: 16),
-                tooltip: 'Weights and Reps Recommendations',
+                ],
               ),
+            )),
+            MenuAnchor(
+                builder: (BuildContext context, MenuController controller, Widget? child) {
+                  return IconButton(
+                    onPressed: () {
+                      if (controller.isOpen) {
+                        controller.close();
+                      } else {
+                        FocusScope.of(context).unfocus();
+                        controller.open();
+                      }
+                    },
+                    icon: const Icon(Icons.more_horiz_rounded),
+                    tooltip: 'Show menu',
+                  );
+                },
+                menuChildren: [
+                  MenuItemButton(
+                    onPressed: widget.onReplaceLog,
+                    child: Text(
+                      "Replace",
+                      style: GoogleFonts.ubuntu(),
+                    ),
+                  ),
+                  widget.exerciseLogDto.superSetId.isNotEmpty
+                      ? MenuItemButton(
+                          onPressed: () => widget.onRemoveSuperSet(widget.exerciseLogDto.superSetId),
+                          child: Text("Remove Super-set", style: GoogleFonts.ubuntu(color: Colors.red)),
+                        )
+                      : MenuItemButton(
+                          onPressed: widget.onSuperSet,
+                          child: Text("Super-set", style: GoogleFonts.ubuntu()),
+                        ),
+                  MenuItemButton(
+                    onPressed: widget.onRemoveLog,
+                    child: Text(
+                      "Remove",
+                      style: GoogleFonts.ubuntu(color: Colors.red),
+                    ),
+                  ),
+                ])
+          ],
+        ),
+        TextField(
+          controller: TextEditingController(text: widget.exerciseLogDto.notes),
+          onChanged: (value) => _updateExerciseLogNotes(value: value),
+          decoration: InputDecoration(
+            hintText: "Enter notes",
+          ),
+          maxLines: null,
+          keyboardType: TextInputType.text,
+          textCapitalization: TextCapitalization.sentences,
+        ),
+        _showPreviousSets
+            ? switch (exerciseType) {
+                ExerciseType.weights => DoubleSetHeader(
+                    firstLabel: "PREVIOUS ${weightLabel().toUpperCase()}".toUpperCase(),
+                    secondLabel: 'PREVIOUS REPS'.toUpperCase(),
+                  ),
+                ExerciseType.bodyWeight => SingleSetHeader(label: 'PREVIOUS REPS'.toUpperCase()),
+                ExerciseType.duration => SingleSetHeader(label: 'PREVIOUS TIME'.toUpperCase())
+              }
+            : switch (exerciseType) {
+                ExerciseType.weights => WeightAndRepsSetHeader(
+                    editorType: widget.editorType,
+                    firstLabel: weightLabel().toUpperCase(),
+                    secondLabel: 'REPS',
+                  ),
+                ExerciseType.bodyWeight => RepsSetHeader(editorType: widget.editorType),
+                ExerciseType.duration => DurationSetHeader(editorType: widget.editorType)
+              },
+        if (sets.isNotEmpty && !_showPreviousSets)
+          switch (exerciseType) {
+            ExerciseType.weights => _WeightAndRepsSetListView(
+                sets: sets.map((set) => set as WeightAndRepsSetDto).toList(),
+                editorType: widget.editorType,
+                updateSetCheck: _updateSetCheck,
+                removeSet: _removeSet,
+                updateReps: _updateReps,
+                updateWeight: _updateWeight,
+                controllers: _weightAndRepsControllers,
+                onTapWeightEditor: _onTapWeightEditor,
+                onTapRepsEditor: _onTapRepsEditor,
+              ),
+            ExerciseType.bodyWeight => _RepsSetListView(
+                sets: sets.map((set) => set as RepsSetDto).toList(),
+                editorType: widget.editorType,
+                updateSetCheck: _updateSetCheck,
+                removeSet: _removeSet,
+                updateReps: _updateReps,
+                controllers: _repsControllers,
+                onTapWeightEditor: _onTapWeightEditor,
+                onTapRepsEditor: _onTapRepsEditor,
+              ),
+            ExerciseType.duration => _DurationSetListView(
+                sets: sets.map((set) => set as DurationSetDto).toList(),
+                editorType: widget.editorType,
+                updateSetCheck: _updateSetCheck,
+                removeSet: _removeSet,
+                controllers: _durationControllers,
+                onTapWeightEditor: _onTapWeightEditor,
+                onTapRepsEditor: _onTapRepsEditor,
+                checkAndUpdateDuration: _checkAndUpdateDuration,
+                updateDuration: _updateDuration,
+              ),
+          },
+        if (_showPreviousSets) SetsListview(type: exerciseType, sets: _getPreviousSets(context: context)),
+        if (withDurationOnly(type: exerciseType) && sets.isEmpty)
+          Center(
+            child: Text("Tap + to add a timer", style: Theme.of(context).textTheme.bodySmall),
+          ),
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          if (withReps(type: exerciseType)) GestureDetector(onTap: _stt, child: TRKRCoachWidget()),
+          const Spacer(),
+          IconButton(
+            onPressed: _togglePreviousSets,
+            icon: const FaIcon(FontAwesomeIcons.clockRotateLeft, size: 16),
+            tooltip: 'Exercise Log History',
+          ),
+          if (withWeightsOnly(type: exerciseType))
             IconButton(
-              onPressed: widget.onResize,
-              icon: const Icon(Icons.close_fullscreen_rounded),
-              tooltip: 'Maximise card',
+              onPressed: _show1RMRecommendations,
+              icon: const FaIcon(FontAwesomeIcons.solidLightbulb, size: 16),
+              tooltip: 'Weights and Reps Recommendations',
             ),
-            const SizedBox(
-              width: 6,
-            ),
-            IconButton(
-              onPressed: _addSet,
-              icon: const FaIcon(FontAwesomeIcons.plus, size: 16),
-              tooltip: 'Add new set',
-            ),
-          ])
-        ],
-      ),
+          IconButton(
+            onPressed: widget.onResize,
+            icon: const Icon(Icons.close_fullscreen_rounded),
+            tooltip: 'Maximise card',
+          ),
+          const SizedBox(
+            width: 6,
+          ),
+          IconButton(
+            onPressed: _addSet,
+            icon: const FaIcon(FontAwesomeIcons.plus, size: 16),
+            tooltip: 'Add new set',
+          ),
+        ])
+      ],
     );
   }
 }
@@ -548,7 +538,9 @@ class _WeightAndRepsSetListView extends StatelessWidget {
     return ListView.separated(
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) => children[index], separatorBuilder: (context, index) => const SizedBox(height: 8), itemCount: children.length);
+        itemBuilder: (context, index) => children[index],
+        separatorBuilder: (context, index) => const SizedBox(height: 8),
+        itemCount: children.length);
   }
 }
 
@@ -589,7 +581,9 @@ class _RepsSetListView extends StatelessWidget {
     return ListView.separated(
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) => children[index], separatorBuilder: (context, index) => const SizedBox(height: 8), itemCount: children.length);
+        itemBuilder: (context, index) => children[index],
+        separatorBuilder: (context, index) => const SizedBox(height: 8),
+        itemCount: children.length);
   }
 }
 
@@ -634,7 +628,9 @@ class _DurationSetListView extends StatelessWidget {
     return ListView.separated(
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) => children[index], separatorBuilder: (context, index) => const SizedBox(height: 8), itemCount: children.length);
+        itemBuilder: (context, index) => children[index],
+        separatorBuilder: (context, index) => const SizedBox(height: 8),
+        itemCount: children.length);
   }
 }
 

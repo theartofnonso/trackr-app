@@ -59,6 +59,10 @@ class _ExerciseLogWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final exerciseType = exerciseLog.exercise.type;
 
     return Column(
@@ -78,7 +82,7 @@ class _ExerciseLogWidget extends StatelessWidget {
           ExerciseType.duration => const SingleSetHeader(label: 'TIME')
         },
         const SizedBox(height: 8),
-        SetsListview(type: exerciseType, sets: exerciseLog.sets, pbs: [])
+        SetsListview(type: exerciseType, sets: exerciseLog.sets, pbs: [], borderColor: isDarkMode ? Colors.white10 : Colors.grey.shade400)
       ],
     );
   }
