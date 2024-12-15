@@ -140,7 +140,7 @@ class MilestoneScreen extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                             decoration: BoxDecoration(
-                              color: isDarkMode ? sapphireDark80 : Colors.grey.shade100,
+                              color: isDarkMode ? Colors.black12 : Colors.grey.shade100,
                               borderRadius: BorderRadius.circular(5),
                             ),
                             child: LinearProgressIndicator(

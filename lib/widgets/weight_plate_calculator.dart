@@ -205,7 +205,7 @@ class _Bar extends StatelessWidget {
             width: 15,
             height: 40,
             decoration: const BoxDecoration(
-              color: sapphireDark60,
+              color: Colors.white70,
             )),
         ...plates.map((plate) => _Plate(plate: plate)),
         Container(
@@ -252,7 +252,7 @@ class _Plate extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [sapphireDark60, sapphireDark80, sapphireDark],
+          colors: [sapphireDark80, sapphireDark],
         ),
       ),
       child: Center(

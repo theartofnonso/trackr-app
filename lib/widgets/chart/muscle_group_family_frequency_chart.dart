@@ -59,7 +59,7 @@ class _LinearBar extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(top: 10, right: 6, left: 8, bottom: 10),
       decoration: BoxDecoration(
-        color: isDarkMode ? sapphireDark80 : Colors.grey.shade100,
+        color: isDarkMode ? Colors.black12 : Colors.grey.shade100,
         borderRadius: BorderRadius.circular(5),
       ),
       child: Row(

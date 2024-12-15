@@ -35,7 +35,7 @@ class MilestoneGridItem extends StatelessWidget {
               milestone.name,
               style: Theme.of(context).textTheme.titleMedium,
               overflow: TextOverflow.ellipsis,
-              maxLines: 2,
+              maxLines: 1,
             ),
             const SizedBox(height: 8),
             Text(
@@ -48,7 +48,7 @@ class MilestoneGridItem extends StatelessWidget {
             Container(
               padding: const EdgeInsets.only(top: 10, right: 6, left: 8, bottom: 10),
               decoration: BoxDecoration(
-                color: isDarkMode ? sapphireDark60 : Colors.grey.shade100,
+                color: isDarkMode ? Colors.black12 : Colors.grey.shade100,
                 borderRadius: BorderRadius.circular(5),
               ),
               child: LinearProgressIndicator(
