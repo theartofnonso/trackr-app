@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tracker_app/colors.dart';
 
 class TRKRFloatingActionButtonTheme {
   TRKRFloatingActionButtonTheme._();
@@ -10,7 +11,7 @@ class TRKRFloatingActionButtonTheme {
       );
 
   static FloatingActionButtonThemeData darkTheme = FloatingActionButtonThemeData(
-    backgroundColor: Colors.white,
+    backgroundColor: sapphireDark80,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
     foregroundColor: Colors.black,
   );

@@ -194,9 +194,12 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                   if (routineUserController.user == null)
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: InformationContainerLite(
-                        content: "Set up your user profile in the settings to view the number of calories burned.",
-                        color: Colors.deepOrange,
+                      child: GestureDetector(
+                        onTap: _navigateToSettings,
+                        child: InformationContainerLite(
+                          content: "Set up your user profile in the settings to view the number of calories burned.",
+                          color: Colors.deepOrange,
+                        ),
                       ),
                     ),
                   Padding(
@@ -231,6 +234,10 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             ),
           ),
         ));
+  }
+
+  void _navigateToSettings() {
+    navigateToSettings(context: context);
   }
 
   void _shouldAskForAppRating() async {
