@@ -70,13 +70,13 @@ class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
           const SizedBox(width: 12)
         ],
       ),
-      body: SafeArea(
-        minimum: const EdgeInsets.all(10.0),
-        child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            gradient: themeGradient(context: context),
-          ),
+      body: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          gradient: themeGradient(context: context),
+        ),
+        child: SafeArea(
+          minimum: const EdgeInsets.all(10.0),
           child: ReorderableListView(
               physics: const NeverScrollableScrollPhysics(),
               buildDefaultDragHandles: true,
