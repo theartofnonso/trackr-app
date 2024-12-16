@@ -78,7 +78,6 @@ class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
         child: SafeArea(
           minimum: const EdgeInsets.all(10.0),
           child: ReorderableListView(
-              physics: const NeverScrollableScrollPhysics(),
               buildDefaultDragHandles: true,
               children: widgets,
               onReorder: (int oldIndex, int newIndex) => _reOrderProcedures(oldIndex: oldIndex, newIndex: newIndex)),
