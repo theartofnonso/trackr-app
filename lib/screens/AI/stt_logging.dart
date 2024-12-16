@@ -45,6 +45,10 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+    
     final sttController = context.watch<STTController>();
 
     if (sttController.state == STTState.analysing) return TRKRLoadingScreen();
@@ -183,7 +187,7 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
                       ExerciseType.duration => SingleSetHeader(label: 'TIME'.toUpperCase())
                     },
                     const SizedBox(height: 12),
-                    SetsListview(type: widget.exerciseLog.exercise.type, sets: updatedExerciseLog.sets)
+                    SetsListview(type: widget.exerciseLog.exercise.type, sets: updatedExerciseLog.sets, borderColor: isDarkMode ? Colors.white10 : Colors.grey.shade400)
                   ],
                 ),
               ],
