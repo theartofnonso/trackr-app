@@ -9,6 +9,8 @@ class ExerciseLogDto {
   final String? routineLogId;
   final String superSetId;
   final ExerciseDto exercise;
+  final int maxReps;
+  final int minReps;
   final String notes;
   final List<SetDto> sets;
   final DateTime createdAt;
@@ -18,6 +20,8 @@ class ExerciseLogDto {
       required this.routineLogId,
       required this.superSetId,
       required this.exercise,
+      this.maxReps = 0,
+      this.minReps = 0,
       required this.notes,
       required this.sets,
       required this.createdAt});
@@ -28,6 +32,8 @@ class ExerciseLogDto {
     return {
       "superSetId": superSetId,
       "exercise": exercise.toJson(),
+      "minReps": minReps,
+      "maxReps": maxReps,
       "notes": notes,
       "sets": setJsons,
     };
@@ -39,6 +45,8 @@ class ExerciseLogDto {
       String? superSetId,
       String? exerciseId,
       ExerciseDto? exercise,
+      int? minReps,
+      int? maxReps,
       String? notes,
       List<SetDto>? sets,
       DateTime? createdAt}) {
@@ -48,6 +56,8 @@ class ExerciseLogDto {
         superSetId: superSetId ?? this.superSetId,
         exercise: exercise ?? this.exercise,
         notes: notes ?? this.notes,
+        minReps: minReps ?? this.minReps,
+        maxReps: maxReps ?? this.maxReps,
         sets: sets ?? this.sets,
         createdAt: createdAt ?? this.createdAt);
   }
@@ -57,6 +67,8 @@ class ExerciseLogDto {
     final exerciseJson = json["exercise"];
     final exercise = ExerciseDto.fromJson(exerciseJson);
     final notes = json["notes"] ?? "";
+    final minReps = json["minReps"] ?? 0;
+    final maxReps = json["maxReps"] ?? 0;
     final setsInJsons = json["sets"] as List<dynamic>;
     List<SetDto> sets = [];
     if (setsInJsons.isNotEmpty && setsInJsons.first is String) {
@@ -71,11 +83,13 @@ class ExerciseLogDto {
         exercise: exercise,
         notes: notes,
         sets: sets,
+        minReps: minReps,
+        maxReps: maxReps,
         createdAt: createdAt ?? DateTime.now());
   }
 
   @override
   String toString() {
-    return 'ExerciseLogDto{id: $id, routineLogId: $routineLogId, superSetId: $superSetId, exercise: $exercise, notes: $notes, sets: $sets, createdAt: $createdAt}';
+    return 'ExerciseLogDto{id: $id, routineLogId: $routineLogId, superSetId: $superSetId, exercise: $exercise, notes: $notes, minReps: $minReps, maxReps: $maxReps, sets: $sets, createdAt: $createdAt}';
   }
 }
