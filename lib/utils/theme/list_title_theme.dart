@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/colors.dart';
 
 class TRKRListTileTheme {
   TRKRListTileTheme._();
@@ -15,7 +16,7 @@ class TRKRListTileTheme {
   );
 
   static ListTileThemeData darkTheme = ListTileThemeData(
-    tileColor: Colors.white,
+    tileColor: sapphireDark80,
     textColor: Colors.white,
     iconColor: Colors.white,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
