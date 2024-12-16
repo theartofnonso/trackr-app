@@ -534,7 +534,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             ),
             IconButton(
               onPressed: _addSet,
-              icon: const FaIcon(FontAwesomeIcons.plus, size: 16),
+              icon: const FaIcon(FontAwesomeIcons.plus, size: 18),
               tooltip: 'Add new set',
             ),
           ])
