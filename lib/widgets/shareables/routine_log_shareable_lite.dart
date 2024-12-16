@@ -37,7 +37,6 @@ class RoutineLogShareableLite extends StatelessWidget {
                       alignment: Alignment.topCenter,
                     )
                   : null,
-              color: sapphireDark,
               gradient: imageFile == null
                   ? const LinearGradient(
                       begin: Alignment.topCenter,

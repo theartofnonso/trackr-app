@@ -14,7 +14,6 @@ class TwelveSessionMilestoneShareable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -28,7 +27,6 @@ class TwelveSessionMilestoneShareable extends StatelessWidget {
           key: twelveSessionMilestoneGlobalKey,
           child: Container(
             decoration: BoxDecoration(
-              color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
               image: imageFile != null
                   ? DecorationImage(
                       image: imageFile.image,
@@ -36,14 +34,16 @@ class TwelveSessionMilestoneShareable extends StatelessWidget {
                       alignment: Alignment.topCenter,
                     )
                   : null,
-              boxShadow: [
-                BoxShadow(
-                  color: isDarkMode ? sapphireDark.withOpacity(0.5) : Colors.grey.shade400,
-                  spreadRadius: 5,
-                  blurRadius: 7,
-                  offset: const Offset(0, 3), // changes position of shadow
-                ),
-              ],
+              gradient: imageFile == null
+                  ? const LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        sapphireDark80,
+                        sapphireDark,
+                      ],
+                    )
+                  : null,
             ),
             child: Stack(alignment: Alignment.center, fit: StackFit.expand, children: [
               if (imageFile != null)
@@ -67,7 +67,7 @@ class TwelveSessionMilestoneShareable extends StatelessWidget {
                     const SizedBox(height: 20),
                     Text("12 Sessions",
                         style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900)),
-                    Text("You've closed the ring for ${DateTime.now().formattedFullMonth}",
+                    Text("You closed the ring for ${DateTime.now().formattedFullMonth()}",
                         style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 30),
                     Image.asset(

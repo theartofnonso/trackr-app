@@ -37,8 +37,8 @@ class MilestoneShareable extends StatelessWidget {
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        Colors.grey.shade200,
-                Colors.grey.shade400,
+                        sapphireDark80,
+                        sapphireDark,
                       ],
                     )
                   : null,

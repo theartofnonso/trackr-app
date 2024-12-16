@@ -104,7 +104,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
 
     final pages = [
       if(routineLogsForTheMonth.length == 12)
-        TwelveSessionMilestoneShareable(),
+        TwelveSessionMilestoneShareable(image: _image),
       ...milestoneShareAssets,
       if (isMultipleOfFive(routineLogsForTheYear.length))
         SessionMilestoneShareable(label: "${routineLogsForTheYear.length}th", image: _image),
