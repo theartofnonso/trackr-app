@@ -17,6 +17,7 @@ import 'package:tracker_app/widgets/shareables/milestone_shareable.dart';
 import 'package:tracker_app/widgets/shareables/pbs_shareable.dart';
 import 'package:tracker_app/widgets/shareables/routine_log_shareable_lite.dart';
 import 'package:tracker_app/widgets/shareables/session_milestone_shareable.dart';
+import 'package:tracker_app/widgets/shareables/twelve_session_milestone_shareable.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
@@ -62,12 +63,15 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
 
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
     List<RoutineLogDto> routineLogsForTheYear =
-        exerciseAndRoutineController.whereLogsIsSameYear(dateTime: DateTime.now().withoutTime());
+    exerciseAndRoutineController.whereLogsIsSameYear(dateTime: DateTime.now().withoutTime());
+
+    List<RoutineLogDto> routineLogsForTheMonth =
+    exerciseAndRoutineController.whereLogsIsSameMonth(dateTime: DateTime.now().withoutTime());
 
     final newMilestones = exerciseAndRoutineController.newMilestones;
 
     final muscleGroupFamilyFrequencyData =
-        muscleGroupFamilyFrequency(exerciseLogs: updatedLog.exerciseLogs, includeSecondaryMuscleGroups: false);
+    muscleGroupFamilyFrequency(exerciseLogs: updatedLog.exerciseLogs, includeSecondaryMuscleGroups: false);
 
     List<Widget> milestoneShareAssets = [];
     final milestoneShareAssetsKeys = [];
@@ -99,6 +103,8 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
     }
 
     final pages = [
+      if(routineLogsForTheMonth.length == 12)
+        TwelveSessionMilestoneShareable(),
       ...milestoneShareAssets,
       if (isMultipleOfFive(routineLogsForTheYear.length))
         SessionMilestoneShareable(label: "${routineLogsForTheYear.length}th", image: _image),
@@ -108,6 +114,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
     ];
 
     final pagesKeys = [
+      if(routineLogsForTheMonth.length == 12) twelveSessionMilestoneGlobalKey,
       ...milestoneShareAssetsKeys,
       if (isMultipleOfFive(routineLogsForTheYear.length)) sessionMilestoneGlobalKey,
       ...pbShareAssetsKeys,
@@ -161,7 +168,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
                     captureImage(key: pagesKeys[index], pixelRatio: 3.5).then((result) {
                       if (context.mounted) {
                         if (result.status == ShareResultStatus.success) {
-                          if(kReleaseMode) {
+                          if (kReleaseMode) {
                             Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineLogSummary.displayName);
                           }
                           showSnackbar(
@@ -221,7 +228,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
                 const SizedBox(width: 6),
                 OpacityButtonWidget(
                   onPressed: () {
-                    if(kReleaseMode) {
+                    if (kReleaseMode) {
                       Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineLogAsLink.displayName);
                     }
                     HapticFeedback.heavyImpact();
@@ -254,17 +261,17 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
                 borderRadius: BorderRadius.circular(5), // Optional: Rounded corners
               ),
               child:
-                  Text("${workoutLogText.substring(0, workoutLogText.length >= 150 ? 150 : workoutLogText.length)}...",
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.ubuntu(
-                        color: Colors.white70,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
-                      )),
+              Text("${workoutLogText.substring(0, workoutLogText.length >= 150 ? 150 : workoutLogText.length)}...",
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.ubuntu(
+                    color: Colors.white70,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                  )),
             ),
             OpacityButtonWidget(
               onPressed: () {
-                if(kReleaseMode) {
+                if (kReleaseMode) {
                   Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineLogAsText.displayName);
                 }
                 HapticFeedback.heavyImpact();
@@ -292,7 +299,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
         child: SafeArea(
           child: Column(children: [
             ListTile(
-              
+
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.camera, size: 18),
               horizontalTitleGap: 6,
@@ -300,7 +307,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
               onTap: () => _pickFromLibrary(camera: true),
             ),
             ListTile(
-              
+
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.images, size: 18),
               horizontalTitleGap: 6,
@@ -318,7 +325,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
                   dividerColor: sapphireLighter,
                 ),
                 ListTile(
-                  
+
                   contentPadding: EdgeInsets.zero,
                   title: Text("Remove Image",
                       style: GoogleFonts.ubuntu(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),

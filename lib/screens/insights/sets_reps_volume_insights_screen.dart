@@ -219,7 +219,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                         ),
                         CupertinoSlidingSegmentedControl<SetRepsVolumeReps>(
                           backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade200,
-                          thumbColor: isDarkMode ? sapphireLighter : Colors.white,
+                          thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
                           groupValue: _metric,
                           children: {
                             SetRepsVolumeReps.reps: SizedBox(
