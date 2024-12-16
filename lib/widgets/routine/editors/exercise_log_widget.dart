@@ -114,10 +114,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _updateExerciseLogRepRange(RangeValues values) {
-    print(values);
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateExerciseLogRepRange(exerciseLogId: widget.exerciseLogDto.id, values: values);
-    _cacheLog();
   }
 
   void _loadControllers({required List<SetDto> sets}) {
@@ -787,7 +785,7 @@ class _RepRangeSlider extends StatefulWidget {
   final String exercise;
   final int min;
   final int max;
-  final Function(RangeValues values) onSelectRange;
+  final void Function(RangeValues values) onSelectRange;
 
   const _RepRangeSlider({required this.exercise, required this.min, required this.max, required this.onSelectRange});
 

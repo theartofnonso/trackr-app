@@ -366,6 +366,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                             padding: const EdgeInsets.only(bottom: 250),
                             child: Column(spacing: 20, children: [
                               ...exerciseLogs.map((exerciseLog) {
+
                                 final isExerciseMinimised = _minimisedExerciseLogCards.contains(exerciseLog.id);
 
                                 return isExerciseMinimised

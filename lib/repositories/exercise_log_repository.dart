@@ -113,7 +113,12 @@ class ExerciseLogRepository {
     }
 
     final exerciseLog = _exerciseLogs[exerciseLogIndex];
-    _exerciseLogs[exerciseLogIndex] = exerciseLog.copyWith(minReps: values.start.toInt(), maxReps: values.end.toInt());
+
+    final exerciseLogs =  List<ExerciseLogDto>.from(_exerciseLogs);
+
+    exerciseLogs[exerciseLogIndex] = exerciseLog.copyWith(minReps: values.start.toInt(), maxReps: values.end.toInt());
+
+    _exerciseLogs = [...exerciseLogs];
   }
 
   void addSuperSets(
