@@ -279,7 +279,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                   icon: Image.asset(
                     'icons/dumbbells.png',
                     fit: BoxFit.contain,
-                    color: isDarkMode ? Colors.black : Colors.white,
+                    color: isDarkMode ? Colors.white : Colors.white,
                     height: 24, // Adjust the height as needed
                   ),
                   label:

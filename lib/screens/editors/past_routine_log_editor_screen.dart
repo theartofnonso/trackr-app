@@ -260,7 +260,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
                   icon: Image.asset(
                     'icons/dumbbells.png',
                     fit: BoxFit.contain,
-                    color: Colors.white,
+                    color: isDarkMode ? Colors.white : Colors.white,
                     height: 24, // Adjust the height as needed
                   ),
                   label: Text("Calculator", style: Theme.of(context).textTheme.bodyLarge),

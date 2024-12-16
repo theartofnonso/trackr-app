@@ -325,7 +325,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
               child: Image.asset(
                 'icons/dumbbells.png',
                 fit: BoxFit.contain,
-                color: isDarkMode ? Colors.black : Colors.white,
+                color: isDarkMode ? Colors.white : Colors.white,
                 height: 24, // Adjust the height as needed
               ),
                   )
