@@ -52,7 +52,6 @@ class RoutineLogsScreen extends StatelessWidget {
                             final log = logs[index];
                             return RoutineLogWidget(
                                 log: log,
-                                color: Colors.transparent,
                                 trailing: log.createdAt.durationSinceOrDate());
                           },
                           separatorBuilder: (BuildContext context, int index) =>

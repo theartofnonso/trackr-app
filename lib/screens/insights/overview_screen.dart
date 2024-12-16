@@ -676,7 +676,7 @@ class _LogsListView extends StatelessWidget {
 
       if (log.logType == LogType.routine) {
         final routineLog = log as RoutineLogDto;
-        widget = RoutineLogWidget(log: routineLog, trailing: routineLog.duration().hmsAnalog(), color: sapphireDark80);
+        widget = RoutineLogWidget(log: routineLog, trailing: routineLog.duration().hmsAnalog());
       } else {
         final activityLog = log as ActivityLogDto;
         widget = ActivityLogWidget(
