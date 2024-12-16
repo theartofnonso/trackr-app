@@ -51,14 +51,14 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
         appBar: AppBar(
           leading: IconButton(
             icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
-            onPressed: _navigateBack,
+            onPressed: Navigator.of(context).pop,
           ),
           title: Text("TRKR Coach".toUpperCase()),
           actions: [
             routineTemplate != null
                 ? IconButton(
                     icon: const FaIcon(FontAwesomeIcons.solidSquareCheck, size: 28),
-                    onPressed: _hideLoadingScreen,
+                    onPressed: _navigateBack,
                   )
                 : const IconButton(
                     icon: SizedBox.shrink(),
