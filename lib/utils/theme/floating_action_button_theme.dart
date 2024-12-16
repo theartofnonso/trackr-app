@@ -13,6 +13,6 @@ class TRKRFloatingActionButtonTheme {
   static FloatingActionButtonThemeData darkTheme = FloatingActionButtonThemeData(
     backgroundColor: sapphireDark80,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-    foregroundColor: Colors.black,
+    foregroundColor: Colors.white,
   );
 }
