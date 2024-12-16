@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
 import '../../colors.dart';
+import '../monitors/log_streak_monitor.dart';
 
 GlobalKey twelveSessionMilestoneGlobalKey = GlobalKey();
 
@@ -14,7 +14,6 @@ class TwelveSessionMilestoneShareable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final imageFile = image;
 
     return Padding(
@@ -63,10 +62,15 @@ class TwelveSessionMilestoneShareable extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const FaIcon(FontAwesomeIcons.award, color: vibrantGreen, size: 40),
+                    Opacity(
+                      opacity: 0.5,
+                      child: Stack(alignment: Alignment.center, children: [
+                        LogStreakMonitor(value: 12, width: 120, height: 120, strokeWidth: 6),
+                        Text("12",
+                            style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900)),
+                      ]),
+                    ),
                     const SizedBox(height: 20),
-                    Text("12 Sessions",
-                        style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900)),
                     Text("You closed the ring for ${DateTime.now().formattedFullMonth()}",
                         style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 30),
