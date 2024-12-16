@@ -26,10 +26,11 @@ class LineChartWidget extends StatelessWidget {
       this.maxY,
       this.interval = 10});
 
-  static const List<Color> gradientColors = [sapphireLight, Colors.white38];
-
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     return chartPoints.isNotEmpty
         ? Center(
             child: AspectRatio(
@@ -70,15 +71,7 @@ class LineChartWidget extends StatelessWidget {
                         spots: chartPoints.map((point) {
                           return FlSpot(point.x.toDouble(), point.y.toDouble());
                         }).toList(),
-                        gradient: const LinearGradient(
-                          colors: gradientColors,
-                        ),
-                        belowBarData: BarAreaData(
-                          show: true,
-                          gradient: LinearGradient(
-                            colors: [gradientColors[0].withOpacity(0.1), gradientColors[1].withOpacity(0.2)],
-                          ),
-                        ),
+                        color: isDarkMode ? Colors.white70 : Colors.grey.shade600,
                         isCurved: true)
                   ])),
             ),

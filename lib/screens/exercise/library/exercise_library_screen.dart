@@ -2,7 +2,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/widgets/search_bar.dart';
@@ -11,6 +10,7 @@ import '../../../colors.dart';
 import '../../../controllers/exercise_and_routine_controller.dart';
 import '../../../dtos/appsync/exercise_dto.dart';
 import '../../../enums/muscle_group_enums.dart';
+import '../../../utils/general_utils.dart';
 import '../../../utils/navigation_utils.dart';
 import '../../../widgets/buttons/opacity_button_widget.dart';
 import '../../../widgets/empty_states/no_list_empty_state.dart';
@@ -107,6 +107,9 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final muscleGroups = MuscleGroup.values
         .sorted((a, b) => a.name.compareTo(b.name))
         .map((muscleGroup) => Padding(
@@ -114,10 +117,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
               child: OpacityButtonWidget(
                   onPressed: () => _onSelectMuscleGroup(newMuscleGroup: muscleGroup),
                   padding: EdgeInsets.symmetric(horizontal: 0),
-                  textStyle: GoogleFonts.ubuntu(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 10,
-                      color: _getMuscleGroup(muscleGroup: muscleGroup) != null ? vibrantGreen : Colors.white70),
                   buttonColor: _getMuscleGroup(muscleGroup: muscleGroup) != null ? vibrantGreen : null,
                   label: muscleGroup.name.toUpperCase()),
             ))
@@ -127,107 +126,82 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: sapphireDark80,
         leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+          icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
           onPressed: () => context.pop(),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         heroTag: "fab_exercise_library_screen",
         onPressed: _navigateToExerciseEditor,
-        backgroundColor: sapphireDark,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        child: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 28),
+        child: const FaIcon(FontAwesomeIcons.plus, size: 28),
       ),
-      body: NotificationListener(
-        onNotification: (scrollNotification) {
-          if (scrollNotification is UserScrollNotification) {
-            _dismissKeyboard(context);
-          }
-          return false;
-        },
-        child: Container(
-          width: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                sapphireDark80,
-                sapphireDark,
-              ],
-            ),
-          ),
-          child: SafeArea(
-            bottom: false,
-            minimum: const EdgeInsets.only(bottom: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  child: CSearchBar(
-                      hintText: "Search exercises",
-                      onChanged: (_) => _runSearch(),
-                      onClear: _clearSearch,
-                      controller: _searchController),
-                ),
-                const SizedBox(height: 10),
-                SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(children: [
-                      const SizedBox(width: 10),
-                      OpacityButtonWidget(
-                          onPressed: _toggleOwnerExercises,
-                          padding: EdgeInsets.symmetric(horizontal: 0),
-                          textStyle: GoogleFonts.ubuntu(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 10,
-                              color: _shouldShowOwnerExercises ? vibrantBlue : Colors.white70),
-                          buttonColor: _shouldShowOwnerExercises ? vibrantBlue : Colors.black,
-                          label: "Your Exercises".toUpperCase()),
-                      const SizedBox(width: 6),
-                      ...muscleGroups.sublist(0, muscleGroupScrollViewHalf),
-                      const SizedBox(width: 10)
-                    ])),
-                SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(children: [
-                      const SizedBox(width: 10),
-                      ...muscleGroups.sublist(muscleGroupScrollViewHalf),
-                      const SizedBox(width: 10)
-                    ])),
-                const SizedBox(height: 18),
-                _filteredExercises.isNotEmpty
-                    ? Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: ListView.separated(
-                              padding: const EdgeInsets.only(bottom: 250),
-                              itemBuilder: (BuildContext context, int index) => ExerciseWidget(
-                                  exerciseDto: _filteredExercises[index],
-                                  onNavigateToExercise: _navigateToExerciseHistory,
-                                  onSelect: widget.readOnly ? null : _navigateBackWithSelectedExercise),
-                              separatorBuilder: (BuildContext context, int index) => const Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 20.0),
-                                    child: Divider(
-                                      height: 0.5,
-                                      color: sapphireLighter,
-                                    ),
-                                  ),
-                              itemCount: _filteredExercises.length),
-                        ),
-                      )
-                    : Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: const NoListEmptyState(
-                              message: "It might feel quiet now, but exercises including yours will soon appear here."),
-                        ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: themeGradient(context: context),
+        ),
+        child: SafeArea(
+          bottom: false,
+          minimum: const EdgeInsets.only(bottom: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: CSearchBar(
+                    hintText: "Search exercises",
+                    onChanged: (_) => _runSearch(),
+                    onClear: _clearSearch,
+                    controller: _searchController),
+              ),
+              const SizedBox(height: 10),
+              SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(children: [
+                    const SizedBox(width: 10),
+                    OpacityButtonWidget(
+                        onPressed: _toggleOwnerExercises,
+                        padding: EdgeInsets.symmetric(horizontal: 0),
+                        buttonColor: _shouldShowOwnerExercises ? vibrantGreen : vibrantBlue,
+                        label: "Your Exercises".toUpperCase()),
+                    const SizedBox(width: 6),
+                    ...muscleGroups.sublist(0, muscleGroupScrollViewHalf),
+                    const SizedBox(width: 10)
+                  ])),
+              SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(children: [
+                    const SizedBox(width: 10),
+                    ...muscleGroups.sublist(muscleGroupScrollViewHalf),
+                    const SizedBox(width: 10)
+                  ])),
+              const SizedBox(height: 18),
+              _filteredExercises.isNotEmpty
+                  ? Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10.0),
+                        child: ListView.separated(
+                            padding: const EdgeInsets.only(bottom: 250),
+                            itemBuilder: (BuildContext context, int index) => ExerciseWidget(
+                                exerciseDto: _filteredExercises[index],
+                                onNavigateToExercise: _navigateToExerciseHistory,
+                                onSelect: widget.readOnly ? null : _navigateBackWithSelectedExercise),
+                            separatorBuilder: (BuildContext context, int index) => Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 20.0),
+                                  child:
+                                      Divider(height: 0.5, color: isDarkMode ? sapphireLighter : Colors.grey.shade200),
+                                ),
+                            itemCount: _filteredExercises.length),
                       ),
-              ],
-            ),
+                    )
+                  : Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: const NoListEmptyState(
+                            message: "It might feel quiet now, but exercises including yours will soon appear here."),
+                      ),
+                    ),
+            ],
           ),
         ),
       ),

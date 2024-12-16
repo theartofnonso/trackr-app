@@ -24,13 +24,14 @@ import '../../models/RoutineTemplate.dart';
 import '../../urls.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
+import '../../utils/general_utils.dart';
 import '../../utils/https_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../utils/string_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
-import '../../widgets/chart/muscle_group_family_chart.dart';
 import '../../widgets/empty_states/not_found.dart';
+import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
 import 'routine_day_planner.dart';
 
@@ -49,8 +50,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   RoutineTemplateDto? _template;
 
   bool _loading = false;
-
-  bool _minimized = true;
 
   void _deleteRoutine({required RoutineTemplateDto template}) async {
     try {
@@ -88,6 +87,9 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
@@ -122,7 +124,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       MenuItemButton(
         onPressed: () => _updateTemplateSchedule(template: template),
         leadingIcon: FaIcon(FontAwesomeIcons.solidClock, size: 16),
-        child: Text("Schedule", style: GoogleFonts.ubuntu(color: Colors.white)),
+        child: Text("Schedule", style: GoogleFonts.ubuntu()),
       ),
       MenuItemButton(
           leadingIcon: FaIcon(FontAwesomeIcons.arrowUpFromBracket, size: 16),
@@ -157,28 +159,19 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
         floatingActionButton: FloatingActionButton(
             heroTag: UniqueKey,
             onPressed: template.owner == SharedPrefs().userId ? _launchRoutineLogEditor : _createTemplate,
-            backgroundColor: sapphireDark,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: template.owner == SharedPrefs().userId
-                ? const FaIcon(FontAwesomeIcons.play, color: Colors.white, size: 24)
+                ? const FaIcon(FontAwesomeIcons.play, size: 24)
                 : const FaIcon(FontAwesomeIcons.download)),
-        backgroundColor: sapphireDark,
         appBar: AppBar(
-          backgroundColor: sapphireDark80,
           leading: IconButton(
-            icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+            icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
             onPressed: context.pop,
           ),
           centerTitle: true,
-          title: Text(template.name,
-              style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+          title: Text(template.name),
           actions: [
             template.owner == SharedPrefs().userId
                 ? MenuAnchor(
-                    style: MenuStyle(
-                      backgroundColor: WidgetStateProperty.all(sapphireDark80),
-                      surfaceTintColor: WidgetStateProperty.all(sapphireDark),
-                    ),
                     builder: (BuildContext context, MenuController controller, Widget? child) {
                       return IconButton(
                         onPressed: () {
@@ -190,7 +183,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                         },
                         icon: const Icon(
                           Icons.more_vert_rounded,
-                          color: Colors.white,
                           size: 24,
                         ),
                         tooltip: 'Show menu',
@@ -202,16 +194,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           ],
         ),
         body: Container(
-          width: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                sapphireDark80,
-                sapphireDark,
-              ],
-            ),
+          decoration: BoxDecoration(
+            gradient: themeGradient(context: context),
           ),
           child: SafeArea(
             bottom: false,
@@ -219,49 +203,36 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
+                spacing: 20,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const FaIcon(
                         FontAwesomeIcons.solidClock,
-                        color: Colors.white,
                         size: 12,
                       ),
                       const SizedBox(width: 6),
                       Text(scheduledDaysSummary(template: template, showFullName: true),
-                          style: GoogleFonts.ubuntu(
-                              color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                          style: Theme.of(context).textTheme.bodyMedium),
                     ],
                   ),
                   if (template.notes.isNotEmpty)
                     Center(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 20, bottom: 20),
-                        child: Text('"${template.notes}"',
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.ubuntu(
-                                color: Colors.white70,
-                                fontSize: 14,
-                                fontStyle: FontStyle.italic,
-                                fontWeight: FontWeight.w600)),
-                      ),
-                    ),
-
-                  /// Keep this spacing for when notes isn't available
-                  if (template.notes.isEmpty)
-                    const SizedBox(
-                      height: 20,
+                      child: Text('"${template.notes}"',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic)),
                     ),
                   Container(
-                    margin: const EdgeInsets.only(bottom: 12),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
-                      color: sapphireDark.withOpacity(0.4), // Set the background color
+                      color: isDarkMode ? sapphireDark : Colors.grey.shade200,
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     child: Table(
-                      border: const TableBorder.symmetric(inside: BorderSide(color: sapphireLighter, width: 2)),
+                      border: TableBorder.symmetric(
+                          inside: BorderSide(
+                              color: isDarkMode ? sapphireLighter.withOpacity(0.4) : Colors.white, width: 2)),
                       columnWidths: const <int, TableColumnWidth>{
                         0: FlexColumnWidth(),
                         1: FlexColumnWidth(),
@@ -273,49 +244,24 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                             child: Center(
                               child: Text(
                                   "${template.exerciseTemplates.length} ${pluralize(word: "Exercise", count: template.exerciseTemplates.length)}",
-                                  style: GoogleFonts.ubuntu(
-                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                                  style: Theme.of(context).textTheme.bodyMedium),
                             ),
                           ),
                           TableCell(
                             verticalAlignment: TableCellVerticalAlignment.middle,
                             child: Center(
-                              child: Text(setsSummary,
-                                  style: GoogleFonts.ubuntu(
-                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                              child: Text(setsSummary, style: Theme.of(context).textTheme.bodyMedium),
                             ),
                           ),
                         ]),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  GestureDetector(
-                    onTap: _onMinimiseMuscleGroupSplit,
-                    child: Container(
-                      color: Colors.transparent,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(children: [
-                            Text("Muscle Groups Split".toUpperCase(),
-                                style: GoogleFonts.ubuntu(
-                                    color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
-                            const Spacer(),
-                            if (muscleGroupFamilyFrequencies.length > 3)
-                              FaIcon(_minimized ? FontAwesomeIcons.angleDown : FontAwesomeIcons.angleUp,
-                                  color: Colors.white70, size: 16),
-                          ]),
-                          const SizedBox(height: 10),
-                          Text("Here's a breakdown of the muscle groups in your ${template.name} workout plan.",
-                              style:
-                                  GoogleFonts.ubuntu(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w400)),
-                          const SizedBox(height: 10),
-                          MuscleGroupFamilyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
-                        ],
-                      ),
-                    ),
-                  ),
+                  MuscleGroupSplitChart(
+                      title: "Muscle Groups Split",
+                      description: "Here's a breakdown of the muscle groups in your ${template.name} workout plan.",
+                      muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
+                      minimized: false),
                   ExerciseLogListView(
                     exerciseLogs: exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
                   ),
@@ -338,12 +284,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   void _hideLoadingScreen() {
     setState(() {
       _loading = false;
-    });
-  }
-
-  void _onMinimiseMuscleGroupSplit() {
-    setState(() {
-      _minimized = !_minimized;
     });
   }
 
@@ -454,7 +394,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const FaIcon(FontAwesomeIcons.link, size: 14, color: Colors.white70),
+                  const FaIcon(FontAwesomeIcons.link, size: 14),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(workoutLink,

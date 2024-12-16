@@ -9,26 +9,28 @@ class LogStreakMonitor extends StatelessWidget {
   final double height;
   final double strokeWidth;
   final StrokeCap? strokeCap;
-  final Decoration? decoration;
 
   const LogStreakMonitor({
     super.key,
     required this.value,
     required this.width,
     required this.height,
-    required this.strokeWidth, this.strokeCap, this.decoration,
+    required this.strokeWidth, this.strokeCap
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
+    return SizedBox(
       width: height,
       height: width,
-      decoration: decoration,
       child: CircularProgressIndicator(
         value: value,
         strokeWidth: strokeWidth,
-        backgroundColor: sapphireDark80,
+        backgroundColor: isDarkMode ? sapphireLighter : Colors.grey.shade200,
         strokeCap: strokeCap ?? StrokeCap.butt,
         valueColor: AlwaysStoppedAnimation<Color>(logStreakColor(value: value)),
       ),

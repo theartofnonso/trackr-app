@@ -1,13 +1,11 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../colors.dart';
 import '../../strings/loading_screen_messages.dart';
 
 class TRKRLoadingScreen extends StatelessWidget {
-
   final double opacity;
   final VoidCallback? action;
 
@@ -15,23 +13,22 @@ class TRKRLoadingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final children = defaultLoadingMessages
         .map((message) => TypewriterAnimatedText(
-      message.toUpperCase(),
-      speed: Duration(milliseconds: 90),
-      textStyle: GoogleFonts.ubuntu(
-        fontSize: 16.0,
-        fontWeight: FontWeight.w900,
-        color: Colors.white,
-      ),
-    ))
+              message.toUpperCase(),
+              speed: Duration(milliseconds: 90),
+              textStyle: Theme.of(context).textTheme.titleMedium,
+            ))
         .toList();
 
     return Scaffold(
       body: Container(
           width: double.infinity,
           height: double.infinity,
-          color: sapphireDark.withOpacity(opacity),
+          color: isDarkMode ? sapphireDark.withOpacity(opacity) : Colors.white,
           child: Stack(
             children: [
               if (action != null)

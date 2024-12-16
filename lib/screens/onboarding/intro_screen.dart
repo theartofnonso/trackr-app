@@ -5,17 +5,19 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tracker_app/shared_prefs.dart';
+import 'package:tracker_app/utils/general_utils.dart';
 
-import '../colors.dart';
-import '../dtos/milestones/reps_milestone.dart';
-import '../enums/muscle_group_enums.dart';
-import '../widgets/buttons/opacity_button_widget.dart';
-import '../widgets/calendar/calendar.dart';
-import '../widgets/chart/muscle_group_family_frequency_chart.dart';
-import '../widgets/label_divider.dart';
-import '../widgets/milestones/milestone_grid_item.dart';
-import '../widgets/monitors/log_streak_monitor.dart';
-import '../widgets/monitors/muscle_trend_monitor.dart';
+import '../../colors.dart';
+import '../../dtos/milestones/reps_milestone.dart';
+import '../../enums/muscle_group_enums.dart';
+import '../../utils/theme/theme.dart';
+import '../../widgets/buttons/opacity_button_widget.dart';
+import '../../widgets/calendar/calendar.dart';
+import '../../widgets/chart/muscle_group_family_frequency_chart.dart';
+import '../../widgets/label_divider.dart';
+import '../../widgets/milestones/milestone_grid_item.dart';
+import '../../widgets/monitors/log_streak_monitor.dart';
+import '../../widgets/monitors/muscle_trend_monitor.dart';
 
 class IntroScreen extends StatefulWidget {
   static const routeName = "/intro_screen";
@@ -34,38 +36,34 @@ class _IntroScreenState extends State<IntroScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final pages = [
-      CalenderOnboardingScreen(),
-      LogStreakMonitorOnboardingScreen(),
-      MuscleTrendMonitorOnboardingScreen(),
-      TRKRCoachOnboardingScreen(),
-      MilestonesOnboardingScreen(),
+      CalenderOnboardingScreen(isDarkMode: isDarkMode),
+      LogStreakMonitorOnboardingScreen(isDarkMode: isDarkMode),
+      MuscleTrendMonitorOnboardingScreen(isDarkMode: isDarkMode),
+      TRKRCoachOnboardingScreen(isDarkMode: isDarkMode),
+      MilestonesOnboardingScreen(isDarkMode: isDarkMode),
       if (SharedPrefs().firstLaunch) EndOnboardingScreen(onLongPress: widget.onComplete ?? () {})
     ];
 
     return MaterialApp(
-      theme: widget.themeData,
+      themeMode: ThemeMode.system,
+      theme: TRKRTheme.lightTheme,
+      darkTheme: TRKRTheme.darkTheme,
       home: Scaffold(
           appBar: AppBar(
-              backgroundColor: sapphireDark80,
               leading: !SharedPrefs().firstLaunch
                   ? IconButton(
-                      icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+                      icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
                       onPressed: () => context.pop(),
                     )
                   : null,
-              title: Text("Welcome to TRKR",
-                  style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w900))),
+              title: Text("Welcome to TRKR")),
           body: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    sapphireDark80,
-                    sapphireDark,
-                  ],
-                ),
+              decoration: BoxDecoration(
+                gradient: themeGradient(context: context),
               ),
               child: Column(
                 children: [
@@ -93,7 +91,9 @@ class _IntroScreenState extends State<IntroScreen> {
 }
 
 class CalenderOnboardingScreen extends StatelessWidget {
-  const CalenderOnboardingScreen({super.key});
+  final bool isDarkMode;
+
+  const CalenderOnboardingScreen({super.key, required this.isDarkMode});
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +103,7 @@ class CalenderOnboardingScreen extends StatelessWidget {
         children: [
           LabelDivider(
             label: "LOG Calender".toUpperCase(),
-            labelColor: Colors.white,
+            labelColor: isDarkMode ? Colors.white70 : Colors.black,
             dividerColor: sapphireLighter,
             fontSize: 14,
           ),
@@ -112,7 +112,7 @@ class CalenderOnboardingScreen extends StatelessWidget {
           ),
           Text(
               "Today marks the beginning of your lifelong commitment to self-improvement. The app might look empty now, but as you log each workout, you’ll start seeing vibrant green squares filling up your calendar—visual proof of your dedication and progress.",
-              style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w400, height: 2)),
+              style: Theme.of(context).textTheme.bodyLarge),
           SizedBox(
             height: 20,
           ),
@@ -124,7 +124,9 @@ class CalenderOnboardingScreen extends StatelessWidget {
 }
 
 class LogStreakMonitorOnboardingScreen extends StatelessWidget {
-  const LogStreakMonitorOnboardingScreen({super.key});
+  final bool isDarkMode;
+
+  const LogStreakMonitorOnboardingScreen({super.key, required this.isDarkMode});
 
   @override
   Widget build(BuildContext context) {
@@ -146,15 +148,11 @@ class LogStreakMonitorOnboardingScreen extends StatelessWidget {
                         value: 0.2,
                         width: 120,
                         height: 120,
-                        strokeWidth: 8,
-                        decoration: BoxDecoration(
-                          color: sapphireDark.withOpacity(0.35),
-                          borderRadius: BorderRadius.circular(100),
-                        )),
+                        strokeWidth: 8),
                     Image.asset(
                       'images/trkr.png',
                       fit: BoxFit.contain,
-                      color: Colors.white54,
+                      color: isDarkMode ? Colors.white70 : Colors.black,
                       height: 8, // Adjust the height as needed
                     )
                   ],
@@ -166,15 +164,11 @@ class LogStreakMonitorOnboardingScreen extends StatelessWidget {
                         value: 0.4,
                         width: 120,
                         height: 120,
-                        strokeWidth: 8,
-                        decoration: BoxDecoration(
-                          color: sapphireDark.withOpacity(0.35),
-                          borderRadius: BorderRadius.circular(100),
-                        )),
+                        strokeWidth: 8),
                     Image.asset(
                       'images/trkr.png',
                       fit: BoxFit.contain,
-                      color: Colors.white54,
+                      color: isDarkMode ? Colors.white70 : Colors.black,
                       height: 8, // Adjust the height as needed
                     )
                   ],
@@ -186,15 +180,11 @@ class LogStreakMonitorOnboardingScreen extends StatelessWidget {
                         value: 0.6,
                         width: 120,
                         height: 120,
-                        strokeWidth: 8,
-                        decoration: BoxDecoration(
-                          color: sapphireDark.withOpacity(0.35),
-                          borderRadius: BorderRadius.circular(100),
-                        )),
+                        strokeWidth: 8),
                     Image.asset(
                       'images/trkr.png',
                       fit: BoxFit.contain,
-                      color: Colors.white54,
+                      color: isDarkMode ? Colors.white70 : Colors.black,
                       height: 8, // Adjust the height as needed
                     )
                   ],
@@ -206,15 +196,11 @@ class LogStreakMonitorOnboardingScreen extends StatelessWidget {
                         value: 0.8,
                         width: 120,
                         height: 120,
-                        strokeWidth: 8,
-                        decoration: BoxDecoration(
-                          color: sapphireDark.withOpacity(0.35),
-                          borderRadius: BorderRadius.circular(100),
-                        )),
+                        strokeWidth: 8),
                     Image.asset(
                       'images/trkr.png',
                       fit: BoxFit.contain,
-                      color: Colors.white54,
+                      color: isDarkMode ? Colors.white70 : Colors.black,
                       height: 8, // Adjust the height as needed
                     )
                   ],
@@ -225,7 +211,7 @@ class LogStreakMonitorOnboardingScreen extends StatelessWidget {
           const Spacer(),
           LabelDivider(
             label: "LOG Streak".toUpperCase(),
-            labelColor: Colors.white,
+            labelColor: isDarkMode ? Colors.white70 : Colors.black,
             dividerColor: sapphireLighter,
             fontSize: 14,
           ),
@@ -234,7 +220,7 @@ class LogStreakMonitorOnboardingScreen extends StatelessWidget {
           ),
           Text(
               "Your goal is to keep those months consistently green. Just 12 sessions per month are all you need to close the ring and maintain your momentum. Make it a habit, keep pushing, and enjoy watching your streaks grow!",
-              style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w400, height: 2)),
+              style: Theme.of(context).textTheme.bodyLarge),
         ],
       ),
     );
@@ -242,7 +228,9 @@ class LogStreakMonitorOnboardingScreen extends StatelessWidget {
 }
 
 class MuscleTrendMonitorOnboardingScreen extends StatelessWidget {
-  const MuscleTrendMonitorOnboardingScreen({super.key});
+  final bool isDarkMode;
+
+  const MuscleTrendMonitorOnboardingScreen({super.key, required this.isDarkMode});
 
   @override
   Widget build(BuildContext context) {
@@ -266,7 +254,7 @@ class MuscleTrendMonitorOnboardingScreen extends StatelessWidget {
                   Image.asset(
                     'images/trkr.png',
                     fit: BoxFit.contain,
-                    color: Colors.white54,
+                    color: isDarkMode ? Colors.white70 : Colors.black,
                     height: 8, // Adjust the height as needed
                   )
                 ],
@@ -278,7 +266,7 @@ class MuscleTrendMonitorOnboardingScreen extends StatelessWidget {
           const Spacer(),
           LabelDivider(
             label: "Muscle Trend".toUpperCase(),
-            labelColor: Colors.white,
+            labelColor: isDarkMode ? Colors.white70 : Colors.black,
             dividerColor: sapphireLighter,
             fontSize: 14,
           ),
@@ -287,7 +275,7 @@ class MuscleTrendMonitorOnboardingScreen extends StatelessWidget {
           ),
           Text(
               "To get the most out of your training, aim for balance across all muscle groups. By keeping an eye on your muscle trends, you can prevent imbalances, reduce the risk of injury, and ensure well-rounded strength development.",
-              style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w400, height: 2)),
+              style: Theme.of(context).textTheme.bodyLarge),
         ],
       ),
     );
@@ -295,7 +283,9 @@ class MuscleTrendMonitorOnboardingScreen extends StatelessWidget {
 }
 
 class MilestonesOnboardingScreen extends StatelessWidget {
-  const MilestonesOnboardingScreen({super.key});
+  final bool isDarkMode;
+
+  const MilestonesOnboardingScreen({super.key, required this.isDarkMode});
 
   @override
   Widget build(BuildContext context) {
@@ -308,7 +298,7 @@ class MilestonesOnboardingScreen extends StatelessWidget {
         children: [
           LabelDivider(
             label: "Milestones".toUpperCase(),
-            labelColor: Colors.white,
+            labelColor: isDarkMode ? Colors.white70 : Colors.black,
             dividerColor: sapphireLighter,
             fontSize: 14,
           ),
@@ -317,7 +307,7 @@ class MilestonesOnboardingScreen extends StatelessWidget {
           ),
           Text(
               "Finally, to keep you motivated, we’ve added challenges and milestones to mark your achievements. Push yourself, set new goals, and try to unlock as many challenges as possible throughout the year!",
-              style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w400, height: 2)),
+              style: Theme.of(context).textTheme.bodyLarge),
           const SizedBox(
             height: 14,
           ),
@@ -336,7 +326,9 @@ class MilestonesOnboardingScreen extends StatelessWidget {
 }
 
 class TRKRCoachOnboardingScreen extends StatelessWidget {
-  const TRKRCoachOnboardingScreen({super.key});
+  final bool isDarkMode;
+
+  const TRKRCoachOnboardingScreen({super.key, required this.isDarkMode});
 
   @override
   Widget build(BuildContext context) {
@@ -371,7 +363,7 @@ class TRKRCoachOnboardingScreen extends StatelessWidget {
           Spacer(),
           LabelDivider(
             label: "TRKR COACH".toUpperCase(),
-            labelColor: Colors.white,
+            labelColor: isDarkMode ? Colors.white70 : Colors.black,
             dividerColor: sapphireLighter,
             fontSize: 14,
           ),
@@ -380,7 +372,7 @@ class TRKRCoachOnboardingScreen extends StatelessWidget {
           ),
           Text(
               "We know starting (or revamping) a training routine can feel overwhelming, so we’ve introduced TRKR Coach—your personal AI assistant. Need guidance on form, a new workout idea, or feedback on your progress? Just ask TRKR Coach, and you’ll have instant, expert insight at your fingertips.",
-              style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w400, height: 2)),
+              style: Theme.of(context).textTheme.bodyLarge),
         ],
       ),
     );
@@ -423,10 +415,7 @@ class EndOnboardingScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 buttonColor: vibrantGreen,
                 label: "Tap and hold to start training",
-                onLongPress: () {
-                  HapticFeedback.vibrate();
-                  onLongPress();
-                },
+                onLongPress: onLongPress,
               ))
         ],
       ),

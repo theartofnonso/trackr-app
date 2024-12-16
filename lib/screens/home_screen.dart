@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/models/ActivityLog.dart';
 import 'package:tracker_app/models/Exercise.dart';
@@ -48,6 +47,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final screens = [
       HomeTabScreen(
         scrollController: _scrollController,
@@ -62,14 +65,10 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: NavigationBar(
         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
         height: 60,
-        indicatorColor: Colors.transparent,
-        backgroundColor: sapphireDark80,
-        surfaceTintColor: Colors.black,
-        overlayColor: WidgetStateColor.resolveWith((states) => Colors.transparent),
         destinations: [
-          const NavigationDestination(
+           NavigationDestination(
             icon: FaIcon(FontAwesomeIcons.house, color: Colors.grey),
-            selectedIcon: FaIcon(FontAwesomeIcons.house, color: Colors.white),
+            selectedIcon: FaIcon(FontAwesomeIcons.house, color: isDarkMode ? Colors.white : Colors.black),
             label: 'Home',
           ),
           NavigationDestination(
@@ -83,17 +82,18 @@ class _HomeScreenState extends State<HomeScreen> {
               'icons/dumbbells.png',
               fit: BoxFit.contain,
               height: 34, // Adjust the height as needed
+              color: isDarkMode ? Colors.white : Colors.black,
             ),
             label: 'Workouts',
           ),
-          const NavigationDestination(
+           NavigationDestination(
             icon: FaIcon(FontAwesomeIcons.trophy, color: Colors.grey),
-            selectedIcon: FaIcon(FontAwesomeIcons.trophy, color: Colors.white),
+            selectedIcon: FaIcon(FontAwesomeIcons.trophy, color: isDarkMode ? Colors.white : Colors.black),
             label: 'Challenges',
           ),
-          const NavigationDestination(
+           NavigationDestination(
             icon: FaIcon(FontAwesomeIcons.gear, color: Colors.grey),
-            selectedIcon: FaIcon(FontAwesomeIcons.gear, color: Colors.white),
+            selectedIcon: FaIcon(FontAwesomeIcons.gear, color: isDarkMode ? Colors.white : Colors.black),
             label: 'Challenges',
           ),
         ],

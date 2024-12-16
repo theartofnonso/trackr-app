@@ -13,7 +13,6 @@ import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
-import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/weight_and_reps_set_header.dart';
@@ -29,6 +28,9 @@ import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/one_rep_max_calculator.dart';
+import '../preview/set_headers/double_set_header.dart';
+import '../preview/set_headers/single_set_header.dart';
+import '../preview/sets_listview.dart';
 
 class ExerciseLogWidget extends StatefulWidget {
   final RoutineEditorMode editorType;
@@ -72,34 +74,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   List<TextEditingController> _repsControllers = [];
   List<DateTime> _durationControllers = [];
 
-  /// [MenuItemButton]
-  List<Widget> _menuActionButtons() {
-    return [
-      MenuItemButton(
-        onPressed: widget.onReplaceLog,
-        child: Text(
-          "Replace",
-          style: GoogleFonts.ubuntu(color: Colors.white),
-        ),
-      ),
-      widget.exerciseLogDto.superSetId.isNotEmpty
-          ? MenuItemButton(
-              onPressed: () => widget.onRemoveSuperSet(widget.exerciseLogDto.superSetId),
-              child: Text("Remove Super-set", style: GoogleFonts.ubuntu(color: Colors.red)),
-            )
-          : MenuItemButton(
-              onPressed: widget.onSuperSet,
-              child: Text("Super-set", style: GoogleFonts.ubuntu()),
-            ),
-      MenuItemButton(
-        onPressed: widget.onRemoveLog,
-        child: Text(
-          "Remove",
-          style: GoogleFonts.ubuntu(color: Colors.red),
-        ),
-      ),
-    ];
-  }
+  bool _showPreviousSets = false;
 
   void _show1RMRecommendations() {
     final pastExerciseLogs = Provider.of<ExerciseAndRoutineController>(context, listen: false)
@@ -290,6 +265,17 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     widget.onTapRepsEditor(setDto);
   }
 
+  List<SetDto> _getPreviousSets({required BuildContext context}) {
+    return Provider.of<ExerciseAndRoutineController>(context, listen: false)
+        .whereSetsForExercise(exercise: widget.exerciseLogDto.exercise);
+  }
+
+  void _togglePreviousSets() {
+    setState(() {
+      _showPreviousSets = !_showPreviousSets;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -327,6 +313,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final sets = widget.exerciseLogDto.sets;
 
     final superSetExerciseDto = widget.superSet;
@@ -336,10 +326,11 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: sapphireDark80, // Set the background color
+        color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, // Set the background color
         borderRadius: BorderRadius.circular(5), // Set the border radius to make it rounded
       ),
       child: Column(
+        spacing: 12,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
@@ -356,24 +347,23 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(widget.exerciseLogDto.exercise.name,
-                        style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
                     if (superSetExerciseDto != null)
-                      Column(
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
-                          Text("with ${superSetExerciseDto.exercise.name}",
-                              style:
-                                  GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 12)),
-                          const SizedBox(height: 10)
+                          FaIcon(
+                            FontAwesomeIcons.link,
+                            size: 10,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(superSetExerciseDto.exercise.name, style: Theme.of(context).textTheme.bodyMedium),
                         ],
                       ),
                   ],
                 ),
               )),
               MenuAnchor(
-                  style: MenuStyle(
-                    backgroundColor: WidgetStateProperty.all(sapphireDark80),
-                    surfaceTintColor: WidgetStateProperty.all(sapphireDark),
-                  ),
                   builder: (BuildContext context, MenuController controller, Widget? child) {
                     return IconButton(
                       onPressed: () {
@@ -384,43 +374,66 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                           controller.open();
                         }
                       },
-                      icon: const Icon(Icons.more_horiz_rounded, color: Colors.white),
+                      icon: const Icon(Icons.more_horiz_rounded),
                       tooltip: 'Show menu',
                     );
                   },
-                  menuChildren: _menuActionButtons())
+                  menuChildren: [
+                    MenuItemButton(
+                      onPressed: widget.onReplaceLog,
+                      child: Text(
+                        "Replace",
+                        style: GoogleFonts.ubuntu(),
+                      ),
+                    ),
+                    widget.exerciseLogDto.superSetId.isNotEmpty
+                        ? MenuItemButton(
+                            onPressed: () => widget.onRemoveSuperSet(widget.exerciseLogDto.superSetId),
+                            child: Text("Remove Super-set", style: GoogleFonts.ubuntu(color: Colors.red)),
+                          )
+                        : MenuItemButton(
+                            onPressed: widget.onSuperSet,
+                            child: Text("Super-set", style: GoogleFonts.ubuntu()),
+                          ),
+                    MenuItemButton(
+                      onPressed: widget.onRemoveLog,
+                      child: Text(
+                        "Remove",
+                        style: GoogleFonts.ubuntu(color: Colors.red),
+                      ),
+                    ),
+                  ])
             ],
           ),
           TextField(
             controller: TextEditingController(text: widget.exerciseLogDto.notes),
             onChanged: (value) => _updateExerciseLogNotes(value: value),
             decoration: InputDecoration(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: sapphireLighter)),
-              filled: true,
-              fillColor: sapphireDark.withOpacity(0.4),
               hintText: "Enter notes",
-              hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14),
             ),
             maxLines: null,
-            cursorColor: Colors.white,
             keyboardType: TextInputType.text,
             textCapitalization: TextCapitalization.sentences,
-            style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white.withOpacity(0.8), fontSize: 14),
           ),
-          const SizedBox(height: 12),
-          switch (exerciseType) {
-            ExerciseType.weights => WeightAndRepsSetHeader(
-                editorType: widget.editorType,
-                firstLabel: weightLabel().toUpperCase(),
-                secondLabel: 'REPS',
-              ),
-            ExerciseType.bodyWeight => RepsSetHeader(editorType: widget.editorType),
-            ExerciseType.duration => DurationSetHeader(editorType: widget.editorType)
-          },
-          const SizedBox(height: 8),
-          if (sets.isNotEmpty)
+          _showPreviousSets
+              ? switch (exerciseType) {
+                  ExerciseType.weights => DoubleSetHeader(
+                      firstLabel: "PREVIOUS ${weightLabel().toUpperCase()}".toUpperCase(),
+                      secondLabel: 'PREVIOUS REPS'.toUpperCase(),
+                    ),
+                  ExerciseType.bodyWeight => SingleSetHeader(label: 'PREVIOUS REPS'.toUpperCase()),
+                  ExerciseType.duration => SingleSetHeader(label: 'PREVIOUS TIME'.toUpperCase())
+                }
+              : switch (exerciseType) {
+                  ExerciseType.weights => WeightAndRepsSetHeader(
+                      editorType: widget.editorType,
+                      firstLabel: weightLabel().toUpperCase(),
+                      secondLabel: 'REPS',
+                    ),
+                  ExerciseType.bodyWeight => RepsSetHeader(editorType: widget.editorType),
+                  ExerciseType.duration => DurationSetHeader(editorType: widget.editorType)
+                },
+          if (sets.isNotEmpty && !_showPreviousSets)
             switch (exerciseType) {
               ExerciseType.weights => _WeightAndRepsSetListView(
                   sets: sets.map((set) => set as WeightAndRepsSetDto).toList(),
@@ -455,38 +468,37 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   updateDuration: _updateDuration,
                 ),
             },
-          const SizedBox(height: 8),
+          if (_showPreviousSets) SetsListview(type: exerciseType, sets: _getPreviousSets(context: context)),
           if (withDurationOnly(type: exerciseType) && sets.isEmpty)
             Center(
-              child: Text("Tap + to add a timer",
-                  style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white70)),
+              child: Text("Tap + to add a timer", style: Theme.of(context).textTheme.bodySmall),
             ),
-          const SizedBox(height: 8),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            if (withReps(type: exerciseType)) GestureDetector(onTap: () => _stt(), child: TRKRCoachWidget()),
             const Spacer(),
+            IconButton(
+              onPressed: _togglePreviousSets,
+              icon: const FaIcon(FontAwesomeIcons.clockRotateLeft, size: 16),
+              tooltip: 'Exercise Log History',
+            ),
             if (withWeightsOnly(type: exerciseType))
               IconButton(
-                  onPressed: _show1RMRecommendations,
-                  icon: const FaIcon(FontAwesomeIcons.solidLightbulb, color: Colors.white, size: 16),
-                  style: ButtonStyle(
-                      visualDensity: VisualDensity.compact,
-                      shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
+                onPressed: _show1RMRecommendations,
+                icon: const FaIcon(FontAwesomeIcons.solidLightbulb, size: 16),
+                tooltip: 'Weights and Reps Recommendations',
+              ),
             IconButton(
               onPressed: widget.onResize,
-              icon: const Icon(Icons.close_fullscreen_rounded, color: Colors.white),
+              icon: const Icon(Icons.close_fullscreen_rounded),
               tooltip: 'Maximise card',
             ),
             const SizedBox(
               width: 6,
             ),
             IconButton(
-                onPressed: _addSet,
-                icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 16),
-                style: ButtonStyle(
-                    visualDensity: VisualDensity.compact,
-                    backgroundColor: WidgetStateProperty.all(sapphireDark.withOpacity(0.2)),
-                    shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
+              onPressed: _addSet,
+              icon: const FaIcon(FontAwesomeIcons.plus, size: 16),
+              tooltip: 'Add new set',
+            ),
           ])
         ],
       ),
@@ -519,22 +531,25 @@ class _WeightAndRepsSetListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final children = sets.mapIndexed((index, setDto) {
-      return Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: WeightsAndRepsSetRow(
-            setDto: setDto,
-            editorType: editorType,
-            onCheck: () => updateSetCheck(index: index, setDto: setDto),
-            onRemoved: () => removeSet(index: index),
-            onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
-            onChangedWeight: (double value) => updateWeight(index: index, weight: value, setDto: setDto),
-            onTapWeightEditor: () => onTapWeightEditor(setDto: setDto),
-            onTapRepsEditor: () => onTapRepsEditor(setDto: setDto),
-            controllers: controllers[index],
-          ));
+      return WeightsAndRepsSetRow(
+        setDto: setDto,
+        editorType: editorType,
+        onCheck: () => updateSetCheck(index: index, setDto: setDto),
+        onRemoved: () => removeSet(index: index),
+        onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
+        onChangedWeight: (double value) => updateWeight(index: index, weight: value, setDto: setDto),
+        onTapWeightEditor: () => onTapWeightEditor(setDto: setDto),
+        onTapRepsEditor: () => onTapRepsEditor(setDto: setDto),
+        controllers: controllers[index],
+      );
     }).toList();
 
-    return Column(children: children);
+    return ListView.separated(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemBuilder: (context, index) => children[index],
+        separatorBuilder: (context, index) => const SizedBox(height: 8),
+        itemCount: children.length);
   }
 }
 
@@ -561,20 +576,23 @@ class _RepsSetListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final children = sets.mapIndexed((index, setDto) {
-      return Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: RepsSetRow(
-            setDto: setDto,
-            editorType: editorType,
-            onCheck: () => updateSetCheck(index: index, setDto: setDto),
-            onRemoved: () => removeSet(index: index),
-            onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
-            onTapRepsEditor: () => onTapRepsEditor(setDto: setDto),
-            controller: controllers[index],
-          ));
+      return RepsSetRow(
+        setDto: setDto,
+        editorType: editorType,
+        onCheck: () => updateSetCheck(index: index, setDto: setDto),
+        onRemoved: () => removeSet(index: index),
+        onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
+        onTapRepsEditor: () => onTapRepsEditor(setDto: setDto),
+        controller: controllers[index],
+      );
     }).toList();
 
-    return Column(children: children);
+    return ListView.separated(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemBuilder: (context, index) => children[index],
+        separatorBuilder: (context, index) => const SizedBox(height: 8),
+        itemCount: children.length);
   }
 }
 
@@ -604,21 +622,24 @@ class _DurationSetListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final children = sets.mapIndexed((index, setDto) {
-      return Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: DurationSetRow(
-            setDto: setDto,
-            editorType: editorType,
-            onCheck: () => updateSetCheck(index: index, setDto: setDto),
-            onRemoved: () => removeSet(index: index),
-            onCheckAndUpdateDuration: (Duration duration, {bool? checked}) =>
-                checkAndUpdateDuration(index: index, duration: duration, setDto: setDto, checked: checked ?? false),
-            startTime: controllers.isNotEmpty ? controllers[index] : DateTime.now(),
-            onupdateDuration: (Duration duration) => updateDuration(index: index, duration: duration, setDto: setDto),
-          ));
+      return DurationSetRow(
+        setDto: setDto,
+        editorType: editorType,
+        onCheck: () => updateSetCheck(index: index, setDto: setDto),
+        onRemoved: () => removeSet(index: index),
+        onCheckAndUpdateDuration: (Duration duration, {bool? checked}) =>
+            checkAndUpdateDuration(index: index, duration: duration, setDto: setDto, checked: checked ?? false),
+        startTime: controllers.isNotEmpty ? controllers[index] : DateTime.now(),
+        onupdateDuration: (Duration duration) => updateDuration(index: index, duration: duration, setDto: setDto),
+      );
     }).toList();
 
-    return Column(children: children);
+    return ListView.separated(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemBuilder: (context, index) => children[index],
+        separatorBuilder: (context, index) => const SizedBox(height: 8),
+        itemCount: children.length);
   }
 }
 
@@ -641,37 +662,31 @@ class _OneRepMaxSliderState extends State<_OneRepMaxSlider> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(widget.exercise,
-            style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w800, fontSize: 18)),
+        Text(widget.exercise, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 20)),
         const SizedBox(height: 2),
         RichText(
           text: TextSpan(
-            text: "Based on your recent progress, consider",
-            style: GoogleFonts.ubuntu(height: 1.5, color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 14),
+            text: "Based on your recent progress, consider:",
+            style: Theme.of(context).textTheme.bodyMedium,
             children: [
               TextSpan(
                 text: "\n",
-                style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14),
               ),
               TextSpan(
                 text: "$_weight${weightLabel()}",
-                style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 18),
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
               ),
               TextSpan(
                 text: " ",
-                style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14),
               ),
               TextSpan(
                 text: "for",
-                style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 18),
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w500),
               ),
-              TextSpan(
-                text: " ",
-                style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14),
-              ),
+              TextSpan(text: " "),
               TextSpan(
                 text: "${_reps.toInt()} ${pluralize(word: "rep", count: _reps.toInt())}",
-                style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 16),
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
               )
             ],
           ),

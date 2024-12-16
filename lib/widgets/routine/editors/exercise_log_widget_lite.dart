@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 
 import '../../../colors.dart';
@@ -22,6 +21,9 @@ class ExerciseLogLiteWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final superSetExerciseDto = superSet;
 
     return GestureDetector(
@@ -31,7 +33,7 @@ class ExerciseLogLiteWidget extends StatelessWidget {
             ? const EdgeInsets.symmetric(vertical: 20, horizontal: 10)
             : const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
         decoration: BoxDecoration(
-          color: sapphireDark80, // Set the background color
+          color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, // Set the background color
           borderRadius: BorderRadius.circular(5), // Set the border radius to make it rounded
         ),
         child: Column(
@@ -41,19 +43,25 @@ class ExerciseLogLiteWidget extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(exerciseLogDto.exercise.name,
-                      style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+                  Text(exerciseLogDto.exercise.name, style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
                   if (superSetExerciseDto != null)
-                    Column(children: [
-                      Text("with ${superSetExerciseDto.exercise.name}",
-                          style: GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 12)),
-                    ]),
+                    Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        FaIcon(
+                          FontAwesomeIcons.link,
+                          size: 10,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(superSetExerciseDto.exercise.name, style: Theme.of(context).textTheme.bodyMedium),
+                      ],
+                    )
                 ],
               ),
               const Spacer(),
               Padding(
                 padding: const EdgeInsets.only(right: 8.0),
-                child: const FaIcon(FontAwesomeIcons.caretDown, color: Colors.white, size: 20),
+                child: const FaIcon(FontAwesomeIcons.caretDown, size: 20),
               )
             ]),
           ],

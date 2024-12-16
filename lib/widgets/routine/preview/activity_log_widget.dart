@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/appsync/activity_log_dto.dart';
 import 'package:tracker_app/enums/activity_type_enums.dart';
 
@@ -20,44 +19,36 @@ class ActivityLogWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     final activityType = ActivityType.fromJson(activity.name);
 
     final image = activityType.image;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: ListTile(
-        onTap: onTap,
-        tileColor: color,
-        contentPadding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        leading: Container(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-          decoration: BoxDecoration(
-            color: Colors.greenAccent.withOpacity(0.1), // Background color
-            borderRadius: BorderRadius.circular(5), // Rounded corners
-          ),
-          child: image != null
-              ? Image.asset(
-                  'icons/$image.png',
-                  fit: BoxFit.contain,
-                  height: 24,
-                  color: Colors.greenAccent, // Adjust the height as needed
-                )
-              : FaIcon(
-                  activityType.icon,
-                  color: Colors.greenAccent,
-                  size: 20,
-                ),
+    return ListTile(
+      onTap: onTap,
+      contentPadding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+      leading: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        decoration: BoxDecoration(
+          color: Colors.greenAccent.withOpacity(0.1), // Background color
+          borderRadius: BorderRadius.circular(5), // Rounded corners
         ),
-        title: Text(activity.name.toUpperCase(),
-            style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
-        trailing: Text(trailing,
-            style: GoogleFonts.ubuntu(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14)),
+        child: image != null
+            ? Image.asset(
+                'icons/$image.png',
+                fit: BoxFit.contain,
+                height: 24,
+                color: Colors.greenAccent, // Adjust the height as needed
+              )
+            : FaIcon(
+                activityType.icon,
+                color: Colors.greenAccent,
+                size: 20,
+              ),
       ),
+      title: Text(activity.name.toUpperCase(), style: Theme.of(context).textTheme.bodyMedium),
+      trailing: Text(trailing, style: Theme.of(context).textTheme.bodySmall),
     );
   }
 }

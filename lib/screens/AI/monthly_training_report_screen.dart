@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -17,10 +18,11 @@ import '../../controllers/routine_user_controller.dart';
 import '../../dtos/open_ai_response_schema_dtos/monthly_training_report.dart';
 import '../../enums/activity_type_enums.dart';
 import '../../utils/exercise_logs_utils.dart';
+import '../../utils/general_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../widgets/calendar/calendar.dart';
 import '../../widgets/chart/line_chart_widget.dart';
-import '../../widgets/chart/muscle_group_family_chart.dart';
+import '../../widgets/chart/muscle_group_family_frequency_chart.dart';
 import '../../widgets/dividers/label_container_divider.dart';
 import '../../widgets/shareables/pbs_shareable.dart';
 
@@ -39,6 +41,9 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final activitiesChildren = activityLogs.map((activityLog) => activityLog.name).toSet().map((activity) {
       final activityType = ActivityType.fromJson(activity);
 
@@ -62,7 +67,8 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
         .expand((exerciseLogs) => exerciseLogs)
         .toList();
 
-    final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: exerciseLogsWithCompletedSets, includeSecondaryMuscleGroups: false);
+    final muscleGroupFamilyFrequencies =
+        muscleGroupFamilyFrequency(exerciseLogs: exerciseLogsWithCompletedSets, includeSecondaryMuscleGroups: false);
 
     final exerciseAndRoutineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
@@ -99,28 +105,18 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: sapphireDark80,
           leading: IconButton(
-            icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
+            icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
             onPressed: Navigator.of(context).pop,
           ),
-          title: Text("${dateTime.formattedFullMonth()} Review".toUpperCase(),
-              textAlign: TextAlign.center,
-              style: GoogleFonts.ubuntu(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 16)),
+          title: Text("${dateTime.formattedFullMonth()} Review".toUpperCase(), textAlign: TextAlign.center),
           centerTitle: true,
         ),
         body: Container(
           width: double.infinity,
           height: double.infinity,
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                sapphireDark80,
-                sapphireDark,
-              ],
-            ),
+            gradient: themeGradient(context: context),
           ),
           child: SafeArea(
               bottom: false,
@@ -137,11 +133,18 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: Calendar(dateTime: dateTime),
                       ),
-                      ListTile(
-                        leading: TRKRCoachWidget(),
-                        titleAlignment: ListTileTitleAlignment.top,
-                        title: Text(monthlyTrainingReport.introduction,
-                            style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 16)),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            TRKRCoachWidget(),
+                            const SizedBox(width: 10),
+                            Expanded(
+                                child: Text(monthlyTrainingReport.introduction,
+                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 16)))
+                          ],
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16),
@@ -149,13 +152,8 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
                           labelAlignment: LabelAlignment.left,
                           label: "Exercises".toUpperCase(),
                           description: monthlyTrainingReport.exercisesSummary,
-                          labelStyle:
-                              GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
-                          descriptionStyle: GoogleFonts.ubuntu(
-                            color: Colors.white70,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 16,
-                          ),
+                          labelStyle: Theme.of(context).textTheme.bodyLarge!,
+                          descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
                           dividerColor: sapphireLighter,
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -191,18 +189,13 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
                             labelAlignment: LabelAlignment.left,
                             label: "Muscle Groups Trained".toUpperCase(),
                             description: monthlyTrainingReport.musclesTrainedSummary,
-                            labelStyle:
-                                GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
-                            descriptionStyle: GoogleFonts.ubuntu(
-                              color: Colors.white70,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 16,
-                            ),
+                            labelStyle: Theme.of(context).textTheme.bodyLarge!,
+                            descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
                             dividerColor: sapphireLighter,
                             child: Padding(
                               padding: const EdgeInsets.only(top: 8.0),
-                              child:
-                                  MuscleGroupFamilyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: false),
+                              child: MuscleGroupFamilyFrequencyChart(
+                                  frequencyData: muscleGroupFamilyFrequencies, minimized: false),
                             )),
                       ),
                       Padding(
@@ -211,13 +204,8 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
                           labelAlignment: LabelAlignment.left,
                           label: "Personal Bests".toUpperCase(),
                           description: monthlyTrainingReport.personalBestsSummary,
-                          labelStyle:
-                              GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
-                          descriptionStyle: GoogleFonts.ubuntu(
-                            color: Colors.white70,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 16,
-                          ),
+                          labelStyle: Theme.of(context).textTheme.bodyLarge!,
+                          descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
                           dividerColor: sapphireLighter,
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 16),
@@ -231,13 +219,8 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
                           labelAlignment: LabelAlignment.left,
                           label: "Calories Burned".toUpperCase(),
                           description: monthlyTrainingReport.caloriesBurnedSummary,
-                          labelStyle:
-                              GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
-                          descriptionStyle: GoogleFonts.ubuntu(
-                            color: Colors.white70,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 16,
-                          ),
+                          labelStyle: Theme.of(context).textTheme.bodyLarge!,
+                          descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
                           dividerColor: sapphireLighter,
                           child: Padding(
                             padding: const EdgeInsets.only(top: 16, right: 16, bottom: 16),
@@ -255,13 +238,8 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
                           labelAlignment: LabelAlignment.left,
                           label: "Training Duration".toUpperCase(),
                           description: monthlyTrainingReport.workoutDurationSummary,
-                          labelStyle:
-                              GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
-                          descriptionStyle: GoogleFonts.ubuntu(
-                            color: Colors.white70,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 16,
-                          ),
+                          labelStyle: Theme.of(context).textTheme.bodyLarge!,
+                          descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
                           dividerColor: sapphireLighter,
                           child: SizedBox(
                             child: Row(
@@ -270,30 +248,30 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
                                 _RowItem(
                                   subTitle: "Min",
                                   title: minDuration.hmDigital(),
-                                  titleColor: Colors.white,
-                                  subTitleColor: Colors.white70,
+                                  titleColor: _getTitleColour(isDarkMode: isDarkMode),
+                                  subTitleColor: _getSubTitleColour(isDarkMode: isDarkMode),
                                 ),
                                 Expanded(
-                                    child: const Divider(
-                                  color: Colors.white70,
+                                    child: Divider(
+                                  color: _getSubTitleColour(isDarkMode: isDarkMode),
                                   height: 0.5,
                                 )),
                                 _RowItem(
                                   subTitle: "Avg",
                                   title: avgDuration.hmDigital(),
-                                  titleColor: Colors.white,
-                                  subTitleColor: Colors.white70,
+                                  titleColor: _getTitleColour(isDarkMode: isDarkMode),
+                                  subTitleColor: _getSubTitleColour(isDarkMode: isDarkMode),
                                 ),
                                 Expanded(
-                                    child: const Divider(
-                                  color: Colors.white70,
+                                    child: Divider(
+                                  color: _getSubTitleColour(isDarkMode: isDarkMode),
                                   height: 0.5,
                                 )),
                                 _RowItem(
                                   subTitle: "Max",
                                   title: maxDuration.hmDigital(),
-                                  titleColor: Colors.white,
-                                  subTitleColor: Colors.white70,
+                                  titleColor: _getTitleColour(isDarkMode: isDarkMode),
+                                  subTitleColor: _getSubTitleColour(isDarkMode: isDarkMode),
                                 )
                               ],
                             ),
@@ -306,13 +284,8 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
                           labelAlignment: LabelAlignment.left,
                           label: "Other Activities".toUpperCase(),
                           description: monthlyTrainingReport.activitiesSummary,
-                          labelStyle:
-                              GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
-                          descriptionStyle: GoogleFonts.ubuntu(
-                            color: Colors.white70,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 16,
-                          ),
+                          labelStyle: Theme.of(context).textTheme.bodyLarge!,
+                          descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
                           dividerColor: sapphireLighter,
                           child: activitiesChildren.isNotEmpty
                               ? Padding(
@@ -325,11 +298,28 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
                               : null,
                         ),
                       ),
-                      ListTile(
-                        leading: TRKRCoachWidget(),
-                        titleAlignment: ListTileTitleAlignment.top,
-                        title: Text(monthlyTrainingReport.recommendations,
-                            style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 16)),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            TRKRCoachWidget(),
+                            const SizedBox(width: 10),
+                            Expanded(
+                                child: MarkdownBody(
+                              data: monthlyTrainingReport.recommendations,
+                              styleSheet: MarkdownStyleSheet(
+                                h1: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
+                                h2: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
+                                h3: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
+                                h4: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
+                                h5: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
+                                h6: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
+                                p: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
+                              ),
+                            ))
+                          ],
+                        ),
                       ),
                     ],
                   ))),
@@ -339,6 +329,14 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
                 ],
               )),
         ));
+  }
+
+  Color _getTitleColour({required bool isDarkMode}) {
+    return isDarkMode ? Colors.white : Colors.black;
+  }
+
+  Color _getSubTitleColour({required bool isDarkMode}) {
+    return isDarkMode ? Colors.white70 : Colors.grey.shade600;
   }
 }
 
@@ -444,7 +442,7 @@ class _RowItem extends StatelessWidget {
             subTitle.toUpperCase(),
             textAlign: TextAlign.center,
             style: GoogleFonts.ubuntu(
-              color: subTitleColor.withOpacity(0.6),
+              color: subTitleColor,
               fontSize: 12,
               fontWeight: FontWeight.bold,
             ),

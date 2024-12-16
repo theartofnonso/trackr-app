@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../colors.dart';
 import '../../dtos/milestones/milestone_dto.dart';
@@ -14,13 +13,17 @@ class MilestoneGridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     return GestureDetector(
       onTap: () {
         navigateWithSlideTransition(context: context, child: MilestoneScreen(milestone: milestone));
       },
       child: Container(
           padding: const EdgeInsets.all(18),
-          decoration: BoxDecoration(color: sapphireDark80, borderRadius: BorderRadius.circular(5)),
+          decoration: BoxDecoration(color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, borderRadius: BorderRadius.circular(5)),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Image.asset(
               "challenges_icons/green_blob.png",
@@ -30,27 +33,27 @@ class MilestoneGridItem extends StatelessWidget {
             const SizedBox(height: 14),
             Text(
               milestone.name,
-              style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w700),
+              style: Theme.of(context).textTheme.titleMedium,
               overflow: TextOverflow.ellipsis,
-              maxLines: 2,
+              maxLines: 1,
             ),
             const SizedBox(height: 8),
             Text(
               milestone.caption,
-              style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.white70),
+              style: Theme.of(context).textTheme.bodySmall,
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
             ),
             const Spacer(),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              padding: const EdgeInsets.only(top: 10, right: 6, left: 8, bottom: 10),
               decoration: BoxDecoration(
-                color: sapphireDark.withOpacity(0.3),
+                color: isDarkMode ? Colors.black12 : Colors.grey.shade100,
                 borderRadius: BorderRadius.circular(5),
               ),
               child: LinearProgressIndicator(
                 value: milestone.progress.$1,
-                backgroundColor: sapphireDark,
+                backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade400,
                 color: setsMilestoneColor(progress: milestone.progress.$1),
                 minHeight: 16,
                 borderRadius: BorderRadius.circular(3.0), // Border r

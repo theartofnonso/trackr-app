@@ -96,33 +96,6 @@ Future<bool> _requestAndroidNotificationPermission() async {
       false;
 }
 
-List<DateTime> datesInRange(DateTimeRange range) {
-  List<DateTime> dates = [];
-
-  for (DateTime date = range.start;
-      date.isBefore(range.end) || date.isAtSameMomentAs(range.end);
-      date = date.add(const Duration(days: 1))) {
-    dates.add(date);
-  }
-
-  return dates;
-}
-
-List<DateTimeRange> monthRangesForYear(int year) {
-  List<DateTimeRange> monthRanges = [];
-
-  for (int month = 1; month <= 12; month++) {
-    DateTime start = DateTime(year, month, 1);
-    DateTime end = (month < 12)
-        ? DateTime(year, month + 1, 1).subtract(const Duration(days: 1))
-        : DateTime(year + 1, 1, 1).subtract(const Duration(days: 1));
-
-    monthRanges.add(DateTimeRange(start: start, end: end));
-  }
-
-  return monthRanges;
-}
-
 Color logStreakColor({required double value}) {
   if (value < 0.3) {
     return Colors.red;
@@ -167,6 +140,16 @@ Color repsTrendColor({required int reps}) {
   }
 }
 
-Color muscleFamilyFrequencyColor({required double value}) {
-  return Colors.white.withOpacity(value);
+LinearGradient themeGradient({required BuildContext context}) {
+  Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+  final isDarkMode = systemBrightness == Brightness.dark;
+
+  return LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      isDarkMode ? sapphireDark80 : Colors.white,
+      isDarkMode ? sapphireDark : Colors.white12,
+    ],
+  );
 }

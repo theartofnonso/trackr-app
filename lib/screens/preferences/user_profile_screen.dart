@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:tracker_app/widgets/label_divider.dart';
@@ -11,6 +10,7 @@ import 'package:tracker_app/widgets/user_icon_widget.dart';
 import '../../colors.dart';
 import '../../controllers/routine_user_controller.dart';
 import '../../dtos/appsync/routine_user_dto.dart';
+import '../../utils/general_utils.dart';
 import '../../widgets/empty_states/not_found.dart';
 
 class UserProfileScreen extends StatefulWidget {
@@ -31,29 +31,24 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final user = _user;
 
     if (user == null) return const NotFound();
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: sapphireDark80,
         leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+          icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
           onPressed: context.pop,
         ),
       ),
       body: Container(
-        width: double.infinity,
-        decoration: const BoxDecoration(
-            gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            sapphireDark80,
-            sapphireDark,
-          ],
-        )),
+        decoration: BoxDecoration(
+          gradient: themeGradient(context: context),
+        ),
         child: SafeArea(
           minimum: const EdgeInsets.all(10),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -65,15 +60,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             ),
             Center(
               child: Text(user.name.toUpperCase(),
-                  style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white),
-                  textAlign: TextAlign.center),
+                  style: Theme.of(context).textTheme.titleSmall, textAlign: TextAlign.center),
             ),
             const SizedBox(
               height: 40,
             ),
-            const LabelDivider(
+            LabelDivider(
               label: "Metrics",
-              labelColor: Colors.white70,
+              labelColor: isDarkMode ? Colors.white70 : Colors.black,
               dividerColor: sapphireLighter,
               shouldCapitalise: true,
             ),
@@ -81,16 +75,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               height: 20,
             ),
             ListTile(
-              contentPadding: EdgeInsets.zero,
               titleAlignment: ListTileTitleAlignment.top,
-              title: Text("Weight",
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
-                  textAlign: TextAlign.start),
-              subtitle: Text("We use your weight to calculate your calories burned.",
-                  style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.white70),
-                  textAlign: TextAlign.start),
+              title: Text("Weight", maxLines: 2, overflow: TextOverflow.ellipsis, textAlign: TextAlign.start),
+              subtitle: Text("We use your weight to calculate your calories burned.", textAlign: TextAlign.start),
               trailing: Container(
                   decoration: BoxDecoration(
                     border: Border.all(

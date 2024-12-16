@@ -17,7 +17,6 @@ import 'package:tracker_app/screens/preferences/notifications_screen.dart';
 import 'package:tracker_app/screens/preferences/user_profile_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/urls.dart';
-import 'package:tracker_app/widgets/list_tiles/list_tile_outline.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../controllers/routine_user_controller.dart';
@@ -28,7 +27,7 @@ import '../../utils/uri_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/information_containers/information_container_with_background_image.dart';
 import '../exercise/library/exercise_library_screen.dart';
-import '../intro_screen.dart';
+import '../onboarding/intro_screen.dart';
 
 enum WeightUnit {
   kg,
@@ -59,27 +58,19 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     return Scaffold(
       body: Container(
-        padding: const EdgeInsets.all(10.0),
-        width: double.infinity,
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              sapphireDark80,
-              sapphireDark,
-            ],
-          ),
+        decoration: BoxDecoration(
+          gradient: themeGradient(context: context),
         ),
         child: SafeArea(
+          bottom: false,
+          minimum: EdgeInsets.all(10),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,9 +88,9 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       )),
                 ),
                 ListTile(
-                  title: Text("Weight",
-                      style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
-                  subtitle: Text("Choose kg or lbs", style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 14)),
+                  tileColor: Colors.transparent,
+                  title: Text("Weight"),
+                  subtitle: Text("Choose kg or lbs"),
                   trailing: SegmentedButton(
                     showSelectedIcon: false,
                     style: ButtonStyle(
@@ -111,17 +102,17 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       backgroundColor: WidgetStateProperty.resolveWith<Color>(
                         (Set<WidgetState> states) {
                           if (states.contains(WidgetState.selected)) {
-                            return Colors.white;
+                            return isDarkMode ? Colors.white : Colors.black;
                           }
-                          return Colors.transparent;
+                          return isDarkMode ? Colors.black : Colors.white;
                         },
                       ),
                       foregroundColor: WidgetStateProperty.resolveWith<Color>(
                         (Set<WidgetState> states) {
                           if (states.contains(WidgetState.selected)) {
-                            return Colors.black;
+                            return isDarkMode ? Colors.black : Colors.white;
                           }
-                          return Colors.white;
+                          return isDarkMode ? Colors.white : Colors.black;
                         },
                       ),
                     ),
@@ -140,9 +131,9 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 ),
                 const SizedBox(height: 8),
                 SwitchListTile(
+                  tileColor: Colors.transparent,
                   activeColor: vibrantGreen,
-                  title: Text('Show calendar',
-                      style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+                  title: Text('Show calendar'),
                   value: SharedPrefs().showCalendar,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                   onChanged: (bool value) {
@@ -154,9 +145,11 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 ),
                 const SizedBox(height: 8),
                 SwitchListTile(
+                  tileColor: Colors.transparent,
                   activeColor: vibrantGreen,
-                  title: Text('Show calendar dates',
-                      style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+                  title: Text(
+                    'Show calendar dates',
+                  ),
                   value: SharedPrefs().showCalendarDates,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                   onChanged: (bool value) {
@@ -170,29 +163,30 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 8),
-                    OutlineListTile(onTap: _navigateToUserProfile, title: "Profile", trailing: "manage profile"),
+                    ListTile(onTap: _navigateToUserProfile, title: Text("Profile"), trailing: Text("manage profile")),
                   ],
                 ),
                 const SizedBox(height: 8),
-                OutlineListTile(onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "manage exercises"),
+                ListTile(
+                    onTap: _navigateToExerciseLibrary, title: Text("Exercises"), trailing: Text("manage exercises")),
                 if (Platform.isIOS)
                   Column(children: [
                     const SizedBox(height: 8),
-                    OutlineListTile(
+                    ListTile(
                         onTap: _navigateToNotificationSettings,
-                        title: "Notifications",
-                        trailing: _notificationEnabled ? "Enabled" : "Disabled"),
+                        title: Text("Notifications"),
+                        trailing: Text(_notificationEnabled ? "Enabled" : "Disabled")),
                   ]),
                 const SizedBox(height: 8),
-                OutlineListTile(onTap: _sendFeedback, title: "Feedback", trailing: "Help us improve"),
+                ListTile(onTap: _sendFeedback, title: Text("Feedback"), trailing: Text("Help us improve")),
                 const SizedBox(height: 8),
-                OutlineListTile(onTap: _visitTRKR, title: "Visit TRKR"),
+                ListTile(onTap: _visitTRKR, title: Text("Visit TRKR"), trailing: Text("Follow us on socials")),
                 const SizedBox(height: 8),
-                OutlineListTile(onTap: _navigateTutorialScreen, title: "Tutorial", trailing: "Learn about TRKR"),
+                ListTile(onTap: _navigateTutorialScreen, title: Text("Tutorials"), trailing: Text("Learn about TRKR")),
                 const SizedBox(height: 8),
-                OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
+                ListTile(onTap: _logout, title: Text("Logout"), trailing: Text(SharedPrefs().userEmail)),
                 const SizedBox(height: 8),
-                OutlineListTile(onTap: _delete, title: "Delete Account", trailing: SharedPrefs().userEmail),
+                ListTile(onTap: _delete, title: Text("Delete Account"), trailing: Text(SharedPrefs().userEmail)),
                 const SizedBox(height: 10),
                 Center(
                   child: Text(_appVersion,
@@ -291,24 +285,20 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         child: SafeArea(
           child: Column(children: [
             ListTile(
-              dense: true,
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.globe, size: 18),
               horizontalTitleGap: 6,
-              title: Text("On the web",
-                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              title: Text("On the web", style: Theme.of(context).textTheme.bodyLarge),
               onTap: () {
                 Navigator.of(context).pop();
                 openUrl(url: trackrWebUrl, context: context);
               },
             ),
             ListTile(
-              dense: true,
               contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(FontAwesomeIcons.instagram, size: 18),
+              leading: const FaIcon(FontAwesomeIcons.instagram, size: 20),
               horizontalTitleGap: 6,
-              title: Text("On Instagram",
-                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              title: Text("On Instagram", style: Theme.of(context).textTheme.bodyLarge),
               onTap: () {
                 Navigator.of(context).pop();
                 openUrl(url: instagramUrl, context: context);

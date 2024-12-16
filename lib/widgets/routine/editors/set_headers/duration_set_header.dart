@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../enums/routine_editor_type_enums.dart';
 
@@ -30,7 +29,7 @@ class DurationSetHeader extends StatelessWidget {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: editorType == RoutineEditorMode.log ? Text("TIME",
-                style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
+                style: Theme.of(context).textTheme.bodySmall,
                 textAlign: TextAlign.center) : const SizedBox.shrink(),
           ),
           if (editorType == RoutineEditorMode.log)

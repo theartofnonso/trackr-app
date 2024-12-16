@@ -5,6 +5,7 @@ import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_home_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
+import 'package:tracker_app/screens/preferences/settings_screen.dart';
 
 import '../controllers/analytics_controller.dart';
 import '../dtos/appsync/exercise_dto.dart';
@@ -87,6 +88,10 @@ void navigateToRoutineLogs({required BuildContext context, required DateTime dat
 void navigateToActivityLogs({required BuildContext context, required DateTime dateTime}) {
   AnalyticsController.logPageNavigation(page: ActivityLogsScreen.routeName);
   context.push(ActivityLogsScreen.routeName, extra: dateTime);
+}
+
+Future<void> navigateToSettings({required BuildContext context}) async {
+  await context.push(SettingsScreen.routeName);
 }
 
 /// Create a screen on demand

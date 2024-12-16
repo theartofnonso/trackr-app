@@ -14,6 +14,7 @@ class SessionMilestoneShareable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     final imageFile = image;
 
     return Padding(
@@ -24,6 +25,8 @@ class SessionMilestoneShareable extends StatelessWidget {
           key: sessionMilestoneGlobalKey,
           child: Container(
             decoration: BoxDecoration(
+              border: Border.all(width: 2, color: sapphireLighter),
+              borderRadius: BorderRadius.circular(20),
               image: imageFile != null
                   ? DecorationImage(
                       image: imageFile.image,

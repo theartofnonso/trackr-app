@@ -25,6 +25,8 @@ class MilestoneShareable extends StatelessWidget {
           key: globalKey,
           child: Container(
             decoration: BoxDecoration(
+              border: Border.all(width: 2, color: sapphireLighter),
+              borderRadius: BorderRadius.circular(20),
               image: imageFile != null
                   ? DecorationImage(
                       image: imageFile.image,
@@ -33,7 +35,7 @@ class MilestoneShareable extends StatelessWidget {
                     )
                   : null,
               gradient: imageFile == null
-                  ? const LinearGradient(
+                  ?  LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [

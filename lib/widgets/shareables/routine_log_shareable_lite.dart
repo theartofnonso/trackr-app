@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
+import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
+import 'package:tracker_app/extensions/duration_extension.dart';
 
 import '../../colors.dart';
 import '../../enums/muscle_group_enums.dart';
 import '../../utils/string_utils.dart';
-import '../chart/muscle_group_family_chart.dart';
-import '../routine/preview/date_duration_pb.dart';
+import '../chart/muscle_group_family_frequency_chart.dart';
 
 GlobalKey routineLogGlobalKey = GlobalKey();
 
@@ -30,6 +32,8 @@ class RoutineLogShareableLite extends StatelessWidget {
           key: routineLogGlobalKey,
           child: Container(
             decoration: BoxDecoration(
+              border: Border.all(width: 2, color: sapphireLighter),
+              borderRadius: BorderRadius.circular(20),
               image: imageFile != null
                   ? DecorationImage(
                       image: imageFile.image,
@@ -37,7 +41,6 @@ class RoutineLogShareableLite extends StatelessWidget {
                       alignment: Alignment.topCenter,
                     )
                   : null,
-              color: sapphireDark,
               gradient: imageFile == null
                   ? const LinearGradient(
                       begin: Alignment.topCenter,
@@ -73,7 +76,7 @@ class RoutineLogShareableLite extends StatelessWidget {
                         contentPadding: EdgeInsets.zero,
                         title: Text(log.name,
                             style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
-                        subtitle: DateDurationPBWidget(dateTime: log.createdAt, duration: log.duration(), pbs: pbs),
+                        subtitle: _DateDurationPBWidget(dateTime: log.createdAt, duration: log.duration(), pbs: pbs),
                       ),
                       RichText(
                           text: TextSpan(
@@ -89,7 +92,10 @@ class RoutineLogShareableLite extends StatelessWidget {
                                     fontWeight: FontWeight.w500, color: Colors.white70, fontSize: 12)),
                           ])),
                       const SizedBox(height: 8),
-                      MuscleGroupFamilyChart(frequencyData: frequencyData),
+                      MuscleGroupFamilyFrequencyChart(
+                        frequencyData: frequencyData,
+                        forceDarkMode: true,
+                      ),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -110,6 +116,67 @@ class RoutineLogShareableLite extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _DateDurationPBWidget extends StatelessWidget {
+  final DateTime dateTime;
+  final Duration duration;
+  final int pbs;
+
+  const _DateDurationPBWidget({
+    required this.dateTime,
+    required this.duration,
+    required this.pbs,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final datetimeSummary = dateTime.formattedDayAndMonth();
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const FaIcon(
+              FontAwesomeIcons.calendarDay,
+              color: Colors.white,
+              size: 14,
+            ),
+            const SizedBox(width: 6),
+            Text(datetimeSummary,
+                style: GoogleFonts.ubuntu(
+                    color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+          ],
+        ),
+        const SizedBox(width: 10),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const FaIcon(
+              FontAwesomeIcons.solidClock,
+              color: Colors.white,
+              size: 14,
+            ),
+            const SizedBox(width: 6),
+            Text(duration.hmsAnalog(),
+                style: GoogleFonts.ubuntu(
+                    color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+          ],
+        ),
+        const SizedBox(width: 10),
+        pbs > 0
+            ? Row(children: [
+                const FaIcon(FontAwesomeIcons.solidStar, color: vibrantGreen, size: 14),
+                const SizedBox(width: 6),
+                Text("$pbs", style: GoogleFonts.ubuntu(fontSize: 12, color: Colors.white))
+              ])
+            : const SizedBox.shrink(),
+      ],
     );
   }
 }

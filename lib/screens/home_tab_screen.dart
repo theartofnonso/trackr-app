@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/analytics_controller.dart';
 import 'package:tracker_app/screens/insights/overview_screen.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
+import 'package:tracker_app/screens/onboarding/onboarding_checklist_screen.dart';
+import 'package:tracker_app/utils/navigation_utils.dart';
 
-import '../colors.dart';
+import '../controllers/activity_log_controller.dart';
+import '../controllers/exercise_and_routine_controller.dart';
 import '../utils/date_utils.dart';
 import '../widgets/calendar/calendar_navigator.dart';
 
@@ -26,53 +31,90 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
+
+    final activityLogController = Provider.of<ActivityLogController>(context, listen: true);
+
+    final routineLogs = exerciseAndRoutineController.logs;
+
+    final routineTemplates = exerciseAndRoutineController.templates;
+
+    final activityLogs = activityLogController.logs;
+
+    final hasPendingActions = routineTemplates.isEmpty && routineLogs.isEmpty && activityLogs.isEmpty;
+
     return DefaultTabController(
         length: 2,
         child: Scaffold(
-          body: Container(
-            width: double.infinity,
-            color: sapphireDark80,
-            child: SafeArea(
-              child: Column(
-                children: [
-                  Center(
-                      child: CalendarNavigator(
-                    onMonthChange: _onMonthChange,
-                    enabled: _tabIndex == 0,
-                  )),
-                  TabBar(
+          body: SafeArea(
+            child: Column(
+              children: [
+                Table(
+                  columnWidths: const <int, TableColumnWidth>{
+                    0: FixedColumnWidth(50),
+                    1: FlexColumnWidth(),
+                    2: FixedColumnWidth(50),
+                  },
+                  children: [
+                    TableRow(children: [
+                      TableCell(
+                        verticalAlignment: TableCellVerticalAlignment.middle,
+                        child: SizedBox(),
+                      ),
+                      TableCell(
+                        verticalAlignment: TableCellVerticalAlignment.middle,
+                        child: Center(
+                          child: CalendarNavigator(
+                            onMonthChange: _onMonthChange,
+                            enabled: _tabIndex == 0,
+                          ),
+                        ),
+                      ),
+                      TableCell(
+                        verticalAlignment: TableCellVerticalAlignment.middle,
+                        child: Center(
+                          child: IconButton(
+                            onPressed: _navigateToNotificationHome,
+                            icon: Badge(
+                              smallSize: 8,
+                                backgroundColor: hasPendingActions ? vibrantGreen : Colors.transparent,
+                                child: FaIcon(FontAwesomeIcons.solidBell, size: 20)),
+                          ),
+                        ),
+                      ),
+                    ]),
+                  ],
+                ),
+                TabBar(
+                  controller: _tabController,
+                  dividerColor: Colors.transparent,
+                  tabs: [
+                    Tab(child: Text("Overview".toUpperCase(), style: Theme.of(context).textTheme.titleSmall)),
+                    Tab(child: Text("Trends".toUpperCase(), style: Theme.of(context).textTheme.titleSmall)),
+                  ],
+                ),
+                Expanded(
+                  child: TabBarView(
                     controller: _tabController,
-                    dividerColor: Colors.transparent,
-                    tabs: [
-                      Tab(
-                          child: Text("Overview".toUpperCase(),
-                              style:
-                                  GoogleFonts.ubuntu(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w700))),
-                      Tab(
-                          child: Text("Trends".toUpperCase(),
-                              style:
-                                  GoogleFonts.ubuntu(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w700))),
+                    children: [
+                      OverviewScreen(
+                        dateTimeRange: _monthDateTimeRange,
+                        scrollController: widget.scrollController,
+                      ),
+                      SetsAndRepsVolumeInsightsScreen(
+                        canPop: false,
+                      )
                     ],
                   ),
-                  Expanded(
-                    child: TabBarView(
-                      controller: _tabController,
-                      children: [
-                        OverviewScreen(
-                          dateTimeRange: _monthDateTimeRange,
-                          scrollController: widget.scrollController,
-                        ),
-                        SetsAndRepsVolumeInsightsScreen(
-                          canPop: false,
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ));
+  }
+
+  void _navigateToNotificationHome() {
+    navigateWithSlideTransition(context: context, child: OnboardingChecklistScreen());
   }
 
   void _onMonthChange(DateTimeRange range) {

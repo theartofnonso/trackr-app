@@ -2,7 +2,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
@@ -12,6 +11,7 @@ import '../../controllers/routine_user_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../enums/chart_unit_enum.dart';
 import '../../utils/date_utils.dart';
+import '../../utils/general_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/chart/bar_chart.dart';
 
@@ -27,6 +27,7 @@ class CaloriesTrendScreen extends StatefulWidget {
 class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
   @override
   Widget build(BuildContext context) {
+
     final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
     final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
@@ -44,7 +45,8 @@ class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
       final endOfMonth = month.end;
       final logsForTheMonth = logs.where((log) => log.createdAt.isBetweenInclusive(from: startOfMonth, to: endOfMonth));
       final values = logsForTheMonth
-          .map((log) => calculateCalories(duration: log.duration(), bodyWeight: routineUserController.weight(), activity: log.activityType))
+          .map((log) => calculateCalories(
+              duration: log.duration(), bodyWeight: routineUserController.weight(), activity: log.activityType))
           .sum;
       calories.add(values);
       months.add(startOfMonth.abbreviatedMonth());
@@ -57,26 +59,17 @@ class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: sapphireDark80,
         leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
+          icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
           onPressed: context.pop,
         ),
-        title: Text("Calories Trend".toUpperCase(),
-            style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+        title: Text("Calories Trend".toUpperCase()),
       ),
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              sapphireDark80,
-              sapphireDark,
-            ],
-          ),
+        decoration: BoxDecoration(
+          gradient: themeGradient(context: context),
         ),
         child: SafeArea(
           minimum: const EdgeInsets.all(10),
@@ -95,41 +88,40 @@ class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
                         RichText(
                           text: TextSpan(
                             text: "$avgCalories",
-                            style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 28),
+                            style: Theme.of(context).textTheme.headlineMedium,
                             children: [
                               TextSpan(
                                 text: " ",
-                                style:
-                                    GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                               ),
                               TextSpan(
                                 text: "kcal".toUpperCase(),
-                                style:
-                                    GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ),
                             ],
                           ),
                         ),
                         Text(
                           "MONTHLY AVERAGE",
-                          style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 10),
+                          style: Theme.of(context).textTheme.titleSmall,
                         ),
                       ],
                     ),
                   ],
                 ),
                 const SizedBox(height: 60),
-                calories.sum > 0 ? SizedBox(
-                    height: 250,
-                    child: CustomBarChart(
-                      chartPoints: chartPoints,
-                      periods: months,
-                      unit: ChartUnit.number,
-                      bottomTitlesInterval: 1,
-                      showLeftTitles: true,
-                      maxY: calories.max.toDouble(),
-                      reservedSize: 35,
-                    )) : const Center(child: FaIcon(FontAwesomeIcons.chartSimple, color: sapphireDark, size: 120)),
+                calories.sum > 0
+                    ? SizedBox(
+                        height: 250,
+                        child: CustomBarChart(
+                          chartPoints: chartPoints,
+                          periods: months,
+                          unit: ChartUnit.number,
+                          bottomTitlesInterval: 1,
+                          showLeftTitles: true,
+                          maxY: calories.max.toDouble(),
+                          reservedSize: 35,
+                        ))
+                    : const Center(child: FaIcon(FontAwesomeIcons.chartSimple, color: sapphireDark, size: 120)),
               ],
             ),
           ),

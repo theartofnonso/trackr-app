@@ -76,6 +76,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     /// Be notified of changes
@@ -108,21 +109,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
           : FloatingActionButton(
               heroTag: "fab_overview_screen",
               onPressed: _showBottomSheet,
-              backgroundColor: sapphireDark,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-              child: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 24),
+              child: const FaIcon(FontAwesomeIcons.plus, size: 24),
             ),
       body: Container(
-        width: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              sapphireDark80,
-              sapphireDark,
-            ],
-          ),
+        decoration: BoxDecoration(
+          gradient: themeGradient(context: context),
         ),
         child: SafeArea(
             minimum: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
@@ -363,29 +354,29 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 
   void _showBottomSheet() {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     displayBottomSheet(
         context: context,
         child: SafeArea(
           child: Column(children: [
             ListTile(
-              dense: true,
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.play, size: 18),
               horizontalTitleGap: 6,
-              title: Text("Log new session",
-                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              title: Text("Log new session", style: Theme.of(context).textTheme.bodyLarge),
               onTap: () {
                 Navigator.of(context).pop();
                 _showLogNewSessionBottomSheet();
               },
             ),
             ListTile(
-              dense: true,
+              
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.clockRotateLeft, size: 18),
               horizontalTitleGap: 6,
-              title: Text("Log past session",
-                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              title: Text("Log past session", style: Theme.of(context).textTheme.bodyLarge),
               onTap: () {
                 Navigator.of(context).pop();
                 showDatetimeRangePicker(
@@ -411,16 +402,16 @@ class _OverviewScreenState extends State<OverviewScreen> {
             const SizedBox(
               height: 10,
             ),
-            const LabelDivider(
+            LabelDivider(
               label: "Log non-resistance training",
-              labelColor: Colors.white70,
+              labelColor: isDarkMode ? Colors.white70 : Colors.black,
               dividerColor: sapphireLighter,
             ),
             const SizedBox(
               height: 6,
             ),
             ListTile(
-              dense: true,
+              
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(
                 FontAwesomeIcons.circlePlus,
@@ -454,17 +445,20 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 
   void _showLogNewSessionBottomSheet() {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     displayBottomSheet(
         context: context,
         child: SafeArea(
           child: Column(children: [
             ListTile(
-              dense: true,
+              
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.play, size: 18),
               horizontalTitleGap: 6,
               title: Text("Log new session",
-                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+                  style: Theme.of(context).textTheme.bodyLarge),
               onTap: () {
                 Navigator.of(context).pop();
                 _logEmptyRoutine();
@@ -473,16 +467,16 @@ class _OverviewScreenState extends State<OverviewScreen> {
             const SizedBox(
               height: 10,
             ),
-            const LabelDivider(
+             LabelDivider(
               label: "Don't know what to train?",
-              labelColor: Colors.white70,
+              labelColor: isDarkMode ? Colors.white70 : Colors.black,
               dividerColor: sapphireLighter,
             ),
             const SizedBox(
               height: 6,
             ),
             ListTile(
-              dense: true,
+              
               contentPadding: EdgeInsets.zero,
               leading: const TRKRCoachWidget(),
               horizontalTitleGap: 10,
@@ -532,13 +526,16 @@ class _ScheduledRoutineCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final sets = scheduledToday.exerciseTemplates.expand((exercises) => exercises.sets);
 
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: sapphireDark60,
+        color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
         borderRadius: BorderRadius.circular(5),
       ),
       child: Row(
@@ -548,8 +545,8 @@ class _ScheduledRoutineCard extends StatelessWidget {
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(
                 scheduledToday.name,
-                style: GoogleFonts.ubuntu(fontSize: 18, fontWeight: FontWeight.w900),
                 overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.titleMedium,
                 maxLines: 2,
               ),
               if (scheduledToday.notes.isNotEmpty)
@@ -559,7 +556,7 @@ class _ScheduledRoutineCard extends StatelessWidget {
                     const SizedBox(height: 10),
                     Text(
                       scheduledToday.notes,
-                      style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white70),
+                      style: Theme.of(context).textTheme.bodySmall,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                     ),
@@ -589,7 +586,7 @@ class _ScheduledRoutineCard extends StatelessWidget {
                       ),
                       Text(
                         "${scheduledToday.exerciseTemplates.length} ${pluralize(word: "Exercise", count: scheduledToday.exerciseTemplates.length).toUpperCase()}",
-                        style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w900, color: Colors.white),
+                        style: Theme.of(context).textTheme.labelSmall,
                       )
                     ],
                   ),
@@ -618,7 +615,7 @@ class _ScheduledRoutineCard extends StatelessWidget {
                       ),
                       Text(
                         "${sets.length} ${pluralize(word: "Set", count: sets.length).toUpperCase()}",
-                        style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w900, color: Colors.white),
+                        style: Theme.of(context).textTheme.labelSmall,
                       )
                     ],
                   ),
@@ -679,7 +676,7 @@ class _LogsListView extends StatelessWidget {
 
       if (log.logType == LogType.routine) {
         final routineLog = log as RoutineLogDto;
-        widget = RoutineLogWidget(log: routineLog, trailing: routineLog.duration().hmsAnalog(), color: sapphireDark80);
+        widget = RoutineLogWidget(log: routineLog, trailing: routineLog.duration().hmsAnalog());
       } else {
         final activityLog = log as ActivityLogDto;
         widget = ActivityLogWidget(

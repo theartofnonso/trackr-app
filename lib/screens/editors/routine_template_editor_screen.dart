@@ -15,6 +15,7 @@ import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/set_dtos/weight_and_reps_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
+import '../../utils/general_utils.dart';
 import '../../utils/routine_editors_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
@@ -236,6 +237,10 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final template = widget.template;
 
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
@@ -255,50 +260,35 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     return PopScope(
       canPop: false,
       child: Scaffold(
-          backgroundColor: sapphireDark,
           appBar: AppBar(
-            backgroundColor: sapphireDark80,
             leading: IconButton(
-                icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-                onPressed: _checkForUnsavedChanges),
+                icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28), onPressed: _checkForUnsavedChanges),
             actions: [
-              IconButton(
-                  onPressed: _selectExercisesInLibrary,
-                  icon: const FaIcon(FontAwesomeIcons.solidSquarePlus, color: Colors.white)),
+              IconButton(onPressed: _selectExercisesInLibrary, icon: const FaIcon(FontAwesomeIcons.solidSquarePlus)),
               if (exerciseLogs.length > 1)
                 IconButton(
                     onPressed: () => _reOrderExerciseLogs(exerciseLogs: exerciseLogs),
-                    icon: const FaIcon(FontAwesomeIcons.barsStaggered, color: Colors.white)),
+                    icon: const FaIcon(FontAwesomeIcons.barsStaggered)),
             ],
           ),
           floatingActionButton: isKeyboardOpen && _selectedSetDto != null
               ? FloatingActionButton.extended(
                   heroTag: UniqueKey(),
                   onPressed: _showWeightCalculator,
-                  backgroundColor: Colors.white.withOpacity(0.1),
                   enableFeedback: true,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                   icon: Image.asset(
                     'icons/dumbbells.png',
                     fit: BoxFit.contain,
-                    color: Colors.white,
+                    color: isDarkMode ? Colors.white : Colors.white,
                     height: 24, // Adjust the height as needed
                   ),
                   label:
-                      Text("Calculator", style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600)),
+                      Text("Calculator"),
                 )
               : null,
           body: Container(
-            width: double.infinity,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  sapphireDark80,
-                  sapphireDark,
-                ],
-              ),
+            decoration: BoxDecoration(
+              gradient: themeGradient(context: context),
             ),
             child: SafeArea(
               bottom: false,
@@ -306,93 +296,74 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
               child: GestureDetector(
                 onTap: _dismissKeyboard,
                 child: Column(
+                  spacing: 20,
                   children: [
                     Column(
+                      spacing: 10,
                       children: [
                         TextField(
                           controller: _templateNameController,
                           decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                              enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                  borderSide: const BorderSide(color: sapphireLighter)),
-                              filled: true,
-                              fillColor: sapphireDark,
-                              hintText: "New workout",
-                              hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14)),
-                          cursorColor: Colors.white,
+                            hintText: "New workout",
+                          ),
                           keyboardType: TextInputType.text,
                           textCapitalization: TextCapitalization.words,
                           style: GoogleFonts.ubuntu(
-                              fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+                              fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white : Colors.black, fontSize: 14),
                         ),
-                        const SizedBox(height: 10),
                         TextField(
                           controller: _templateNotesController,
                           decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                              enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                  borderSide: const BorderSide(color: sapphireLighter)),
-                              filled: true,
-                              fillColor: sapphireDark,
-                              hintText: "Notes",
-                              hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14)),
+                            hintText: "Notes",
+                          ),
                           maxLines: null,
-                          cursorColor: Colors.white,
                           keyboardType: TextInputType.text,
                           textCapitalization: TextCapitalization.sentences,
                           style: GoogleFonts.ubuntu(
-                              fontWeight: FontWeight.w400, color: Colors.white.withOpacity(0.8), fontSize: 14),
+                              fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white : Colors.black, fontSize: 14),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
                     if (exerciseLogs.isNotEmpty)
                       Expanded(
                         child: SingleChildScrollView(
                             padding: const EdgeInsets.only(bottom: 250),
-                            child: Column(children: [
+                            child: Column(spacing: 20, children: [
                               ...exerciseLogs.map((exerciseLog) {
                                 final isExerciseMinimised = _minimisedExerciseLogCards.contains(exerciseLog.id);
-                                return Padding(
-                                    padding: const EdgeInsets.only(bottom: 20),
-                                    child: isExerciseMinimised
-                                        ? ExerciseLogLiteWidget(
-                                            key: ValueKey(exerciseLog.id),
-                                            exerciseLogDto: exerciseLog,
-                                            superSet: whereOtherExerciseInSuperSet(
-                                                firstExercise: exerciseLog, exercises: exerciseLogs),
-                                            onMaximise: () =>
-                                                _handleResizedExerciseLogCard(exerciseIdToResize: exerciseLog.id),
-                                          )
-                                        : ExerciseLogWidget(
-                                            key: ValueKey(exerciseLog.id),
-                                            exerciseLogDto: exerciseLog,
-                                            editorType: RoutineEditorMode.edit,
-                                            superSet: whereOtherExerciseInSuperSet(
-                                                firstExercise: exerciseLog, exercises: exerciseLogs),
-                                            onRemoveSuperSet: (String superSetId) => exerciseLogController
-                                                .removeSuperSet(superSetId: exerciseLog.superSetId),
-                                            onRemoveLog: () =>
-                                                exerciseLogController.removeExerciseLog(logId: exerciseLog.id),
-                                            onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
-                                            onSuperSet: () =>
-                                                _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
-                                            onResize: () =>
-                                                _handleResizedExerciseLogCard(exerciseIdToResize: exerciseLog.id),
-                                            isMinimised: _isMinimised(exerciseLog.id),
-                                            onTapWeightEditor: (SetDto setDto) {
-                                              setState(() {
-                                                _selectedSetDto = setDto;
-                                              });
-                                            },
-                                            onTapRepsEditor: (SetDto setDto) {
-                                              setState(() {
-                                                _selectedSetDto = null;
-                                              });
-                                            },
-                                          ));
+                                return isExerciseMinimised
+                                    ? ExerciseLogLiteWidget(
+                                        key: ValueKey(exerciseLog.id),
+                                        exerciseLogDto: exerciseLog,
+                                        superSet: whereOtherExerciseInSuperSet(
+                                            firstExercise: exerciseLog, exercises: exerciseLogs),
+                                        onMaximise: () =>
+                                            _handleResizedExerciseLogCard(exerciseIdToResize: exerciseLog.id),
+                                      )
+                                    : ExerciseLogWidget(
+                                        key: ValueKey(exerciseLog.id),
+                                        exerciseLogDto: exerciseLog,
+                                        editorType: RoutineEditorMode.edit,
+                                        superSet: whereOtherExerciseInSuperSet(
+                                            firstExercise: exerciseLog, exercises: exerciseLogs),
+                                        onRemoveSuperSet: (String superSetId) =>
+                                            exerciseLogController.removeSuperSet(superSetId: exerciseLog.superSetId),
+                                        onRemoveLog: () => exerciseLogController.removeExerciseLog(logId: exerciseLog.id),
+                                        onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
+                                        onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
+                                        onResize: () => _handleResizedExerciseLogCard(exerciseIdToResize: exerciseLog.id),
+                                        isMinimised: _isMinimised(exerciseLog.id),
+                                        onTapWeightEditor: (SetDto setDto) {
+                                          setState(() {
+                                            _selectedSetDto = setDto;
+                                          });
+                                        },
+                                        onTapRepsEditor: (SetDto setDto) {
+                                          setState(() {
+                                            _selectedSetDto = null;
+                                          });
+                                        },
+                                      );
                               }),
                               SizedBox(
                                   width: double.infinity,

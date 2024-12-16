@@ -37,6 +37,9 @@ class CustomBarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     return chartPoints.isNotEmpty
         ? BarChart(
             BarChartData(
@@ -51,7 +54,7 @@ class CustomBarChart extends StatelessWidget {
                 drawVerticalLine: false,
                 checkToShowHorizontalLine: (value) => true,
                 getDrawingHorizontalLine: (value) => FlLine(
-                  color: Colors.white.withOpacity(0.1),
+                  color: isDarkMode ? Colors.white.withOpacity(0.1) : Colors.grey.shade200,
                   strokeWidth: 0.5,
                 ),
               ),
@@ -60,7 +63,9 @@ class CustomBarChart extends StatelessWidget {
             ),
             duration: Duration.zero,
           )
-        : const Center(child: FaIcon(FontAwesomeIcons.chartSimple, color: sapphireDark, size: 120));
+        : Center(
+            child: FaIcon(FontAwesomeIcons.chartSimple,
+                color: isDarkMode ? sapphireDark : Colors.grey.shade400, size: 120));
   }
 
   BarTouchData get barTouchData => BarTouchData(
@@ -123,7 +128,7 @@ class CustomBarChart extends StatelessWidget {
                 borderRadius: BorderRadius.circular(2),
                 width: barWidth(length: chartPoints.length),
                 toY: point.y.toDouble(),
-                color: barColors?[index] ?? Colors.white)
+                color: barColors?[index] ?? Colors.grey.shade400)
           ],
           showingTooltipIndicators: showTopTitles ? [0] : null,
         );
@@ -131,7 +136,7 @@ class CustomBarChart extends StatelessWidget {
 
   Widget _leftTitleWidgets(double value, TitleMeta meta) {
     final style = GoogleFonts.ubuntu(
-      fontWeight: FontWeight.w600,
+      fontWeight: FontWeight.w500,
       fontSize: 9,
     );
 
@@ -152,9 +157,8 @@ class CustomBarChart extends StatelessWidget {
   Widget _bottomTitleWidgets(double value, TitleMeta meta) {
     final modifiedDateTimes = periods.length == 1 ? [...periods, ...periods] : periods;
     final style = GoogleFonts.ubuntu(
-      fontWeight: FontWeight.w600,
-      fontSize: 10,
-      color: Colors.white70,
+      fontWeight: FontWeight.w500,
+      fontSize: 9,
     );
     return SideTitleWidget(
       fitInside: SideTitleFitInsideData.disable(),

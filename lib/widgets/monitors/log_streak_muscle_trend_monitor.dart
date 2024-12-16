@@ -11,7 +11,6 @@ import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 
-import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../enums/posthog_analytics_event.dart';
 import '../../screens/insights/sets_reps_volume_insights_screen.dart';
@@ -33,6 +32,10 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
     final routineLogs = exerciseAndRoutineController.whereLogsIsSameMonth(dateTime: dateTime);
@@ -52,7 +55,7 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
             onTap: () => _showMonitorInfo(context: context),
             child: const Align(
                 alignment: Alignment.bottomLeft,
-                child: FaIcon(FontAwesomeIcons.circleInfo, color: Colors.white38, size: 18)),
+                child: FaIcon(FontAwesomeIcons.circleInfo, size: 18)),
           ),
         ),
       if (showInfo)
@@ -62,7 +65,7 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
             onTap: () => _showShareBottomSheet(context: context),
             child: const Align(
                 alignment: Alignment.bottomRight,
-                child: FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 19)),
+                child: FaIcon(FontAwesomeIcons.arrowUpFromBracket, size: 19)),
           ),
         ),
       Row(
@@ -87,17 +90,13 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
                   value: monthlyProgress,
                   width: 100,
                   height: 100,
-                  strokeWidth: 6,
-                  decoration: BoxDecoration(
-                    color: sapphireDark.withOpacity(0.35),
-                    borderRadius: BorderRadius.circular(100),
-                  )),
+                  strokeWidth: 6),
               MuscleTrendMonitor(
                   value: muscleScorePercentage / 100, width: 70, height: 70, strokeWidth: 6),
               Image.asset(
                 'images/trkr.png',
                 fit: BoxFit.contain,
-                color: Colors.white54,
+                color: isDarkMode ? Colors.white70 : Colors.black,
                 height: 8, // Adjust the height as needed
               )
             ]),
@@ -105,8 +104,7 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
           const SizedBox(width: 20),
           GestureDetector(
             onTap: () => _showSetsAndRepsVolumeInsightsScreen(context: context),
-            child: Container(
-              color: Colors.transparent,
+            child: SizedBox(
               width: 80,
               child: _MonitorScore(
                 value: "$muscleScorePercentage%",
@@ -139,24 +137,20 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
         child: SafeArea(
           child: Column(children: [
             ListTile(
-              dense: true,
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(Icons.monitor_heart_rounded, size: 18),
               horizontalTitleGap: 6,
-              title: Text("Share Streak and Muscle Monitor",
-                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              title: Text("Share Streak and Muscle Monitor"),
               onTap: () {
                 Navigator.of(context).pop();
                 _onShareMonitor(context: context);
               },
             ),
             ListTile(
-              dense: true,
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.calendar, size: 18),
               horizontalTitleGap: 6,
-              title: Text("Share Log Calendar",
-                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              title: Text("Share Log Calendar"),
               onTap: () {
                 Navigator.of(context).pop();
                 _onShareCalendar(context: context);
@@ -206,6 +200,10 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
   }
 
   void _onShareCalendar({required BuildContext context}) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     if(kReleaseMode) {
       Posthog().capture(eventName: PostHogAnalyticsEvent.shareCalendar.displayName);
     }
@@ -226,7 +224,8 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
             Image.asset(
               'images/trkr.png',
               fit: BoxFit.contain,
-              height: 8, // Adjust the height as needed
+              height: 8,
+              color: isDarkMode ? Colors.white70 : Colors.black,// Adjust the height as needed
             ),
           ],
         ));
@@ -249,21 +248,12 @@ class _MonitorScore extends StatelessWidget {
       children: [
         Text(
           value,
-          style: GoogleFonts.ubuntu(
-            color: color,
-            fontSize: 18,
-            fontWeight: FontWeight.w800,
-          ),
+          style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: 4),
         Text(
           title.toUpperCase(),
-          textAlign: TextAlign.center,
-          style: GoogleFonts.ubuntu(
-            color: color.withOpacity(0.7),
-            fontSize: 10,
-            fontWeight: FontWeight.w800,
-          ),
+          textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall,
         )
       ],
     );

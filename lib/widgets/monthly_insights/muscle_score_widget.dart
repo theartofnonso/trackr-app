@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../colors.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
@@ -16,53 +15,44 @@ class MuscleScoreWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final thisMonthScore = calculateMuscleScoreForLogs(routineLogs: thisMonthLogs);
     final lastMonthScore = calculateMuscleScoreForLogs(routineLogs: lastMonthLogs);
 
     final improved = thisMonthScore > lastMonthScore;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: sapphireDark80,
-        borderRadius: BorderRadius.circular(5),
+    return ListTile(
+      onTap: () => _showSetsAndRepsVolumeInsightsScreen(context: context),
+      leading: Image.asset(
+        'icons/dumbbells.png',
+        fit: BoxFit.contain,
+        color: isDarkMode ? Colors.white : Colors.black,
+        height: 24, // Adjust the height as needed
       ),
-      child: ListTile(
-        onTap: () => _showSetsAndRepsVolumeInsightsScreen(context: context),
-        tileColor: sapphireDark80,
-        contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 20),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        leading: Image.asset(
-          'icons/dumbbells.png',
-          fit: BoxFit.contain,
-          color: Colors.white70,
-          height: 24, // Adjust the height as needed
-        ),
-        title: Text("Muscle Trend".toUpperCase(),
-            style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
-        subtitle: Text("Training frequency per muscle group",
-            style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w400)),
-        trailing: Wrap(
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("$thisMonthScore%",
-                    style: GoogleFonts.ubuntu(
-                        color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w900, fontSize: 20)),
-                Text("$lastMonthScore%",
-                    style: GoogleFonts.ubuntu(color: Colors.white54, fontWeight: FontWeight.w900, fontSize: 12))
-              ],
-            ),
-            const SizedBox(width: 4),
-            FaIcon(
-              improved ? FontAwesomeIcons.arrowUp : FontAwesomeIcons.arrowDown,
-              color: improved ? vibrantGreen : Colors.deepOrange,
-              size: 12,
-            )
-          ],
-        ),
+      title: Text("Muscle Trend".toUpperCase()),
+      subtitle: Text("Frequency per muscle group"),
+      trailing: Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("$thisMonthScore%",
+                  style: Theme.of(context).textTheme.titleMedium),
+              Text("$lastMonthScore%",
+                  style: Theme.of(context).textTheme.titleSmall)
+            ],
+          ),
+          const SizedBox(width: 4),
+          FaIcon(
+            improved ? FontAwesomeIcons.arrowUp : FontAwesomeIcons.arrowDown,
+            color: improved ? vibrantGreen : Colors.deepOrange,
+            size: 12,
+          )
+        ],
       ),
     );
   }

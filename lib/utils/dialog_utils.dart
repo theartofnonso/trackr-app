@@ -18,7 +18,6 @@ import '../controllers/activity_log_controller.dart';
 import '../controllers/routine_user_controller.dart';
 import '../dtos/appsync/activity_log_dto.dart';
 import '../widgets/buttons/opacity_button_widget.dart';
-import '../widgets/buttons/solid_button_widget.dart';
 import '../widgets/other_activity_selector/activity_picker.dart';
 import '../widgets/timers/hour_timer_picker.dart';
 import '../widgets/timers/time_picker.dart';
@@ -54,8 +53,11 @@ Future<void> displayBottomSheet(
     double? height,
     enabledDrag = true,
     bool isDismissible = true,
-      EdgeInsetsGeometry? padding,
+    EdgeInsetsGeometry? padding,
     bool isScrollControlled = false}) {
+  Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+  final isDarkMode = systemBrightness == Brightness.dark;
+
   return showModalBottomSheet(
       isScrollControlled: isScrollControlled,
       isDismissible: isDismissible,
@@ -70,15 +72,7 @@ Future<void> displayBottomSheet(
                 width: double.infinity,
                 padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 decoration: BoxDecoration(
-                  gradient: gradient ??
-                      const LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          sapphireDark80,
-                          sapphireDark,
-                        ],
-                      ),
+                  color: isDarkMode ? sapphireDark80 : Colors.grey.shade100,
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20),
@@ -153,13 +147,17 @@ void showActivityPicker(
 }
 
 void showActivityBottomSheet({required BuildContext context, required ActivityLogDto activity}) {
+  Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+  final isDarkMode = systemBrightness == Brightness.dark;
+
   final activityType = ActivityType.fromJson(activity.name);
 
   final image = activityType.image;
 
   final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
 
-  final calories = calculateCalories(duration: activity.duration(), bodyWeight: routineUserController.weight(), activity: activity.activityType);
+  final calories = calculateCalories(
+      duration: activity.duration(), bodyWeight: routineUserController.weight(), activity: activity.activityType);
 
   displayBottomSheet(
       context: context,
@@ -170,26 +168,23 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
                 ? Image.asset(
                     'icons/$image.png',
                     fit: BoxFit.contain,
-                    height: 24, // Adjust the height as needed
+                    height: 24,
+                    color: isDarkMode ? Colors.white : Colors.black, // Adjust the height as needed
                   )
                 : FaIcon(
                     activityType.icon,
-                    color: Colors.white,
                   ),
             const SizedBox(
               width: 8,
             ),
-            Text("${activity.name} Activity".toUpperCase(),
-                style: GoogleFonts.ubuntu(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
-                textAlign: TextAlign.start),
+            Text("${activity.name} Activity".toUpperCase(), style: Theme.of(context).textTheme.titleMedium),
           ],
         ),
         const SizedBox(
           height: 12,
         ),
         Text("You completed ${activity.duration().hmsAnalog()} of ${activity.name}",
-            style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white),
-            textAlign: TextAlign.start),
+            style: Theme.of(context).textTheme.bodyMedium),
         const SizedBox(
           height: 6,
         ),
@@ -198,40 +193,35 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
           children: [
             const FaIcon(
               FontAwesomeIcons.calendarDay,
-              color: Colors.white70,
               size: 12,
             ),
             const SizedBox(width: 4),
             Text(activity.createdAt.formattedDayAndMonthAndYear(),
-                style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white70),
-                textAlign: TextAlign.start),
+                style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.start),
             const SizedBox(width: 12),
             const FaIcon(
               FontAwesomeIcons.fire,
-              color: Colors.white70,
               size: 12,
             ),
             const SizedBox(width: 4),
-            Text("$calories calories",
-                style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white70),
-                textAlign: TextAlign.start),
+            Text("$calories calories", style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.start),
           ],
         ),
         const SizedBox(
           height: 16,
         ),
         LabelDivider(
-            label: "Want to change activity?".toUpperCase(), labelColor: Colors.white70, dividerColor: sapphireLighter),
+            label: "Want to change activity?".toUpperCase(),
+            labelColor: isDarkMode ? Colors.white70 : Colors.black,
+            dividerColor: sapphireLighter),
         const SizedBox(
           height: 4,
         ),
         ListTile(
-          dense: true,
           contentPadding: EdgeInsets.zero,
           leading: const FaIcon(FontAwesomeIcons.penToSquare, size: 18),
           horizontalTitleGap: 6,
-          title:
-              Text("Edit", style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+          title: Text("Edit"),
           onTap: () {
             Navigator.of(context).pop();
             showActivityPicker(
@@ -251,7 +241,6 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
           },
         ),
         ListTile(
-          dense: true,
           contentPadding: EdgeInsets.zero,
           leading: const FaIcon(
             FontAwesomeIcons.trash,
@@ -300,15 +289,11 @@ void showBottomSheetWithNoAction({required BuildContext context, required String
   displayBottomSheet(
       context: context,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(title,
-            style: GoogleFonts.ubuntu(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
-            textAlign: TextAlign.start),
+        Text(title, style: Theme.of(context).textTheme.titleMedium, textAlign: TextAlign.start),
         const SizedBox(
           height: 4,
         ),
-        Text(description,
-            style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white),
-            textAlign: TextAlign.start)
+        Text(description, style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.start)
       ]));
 }
 
@@ -329,15 +314,11 @@ void showBottomSheetWithMultiActions(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(title,
-              style: GoogleFonts.ubuntu(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
-              textAlign: TextAlign.start),
-          Text(description,
-              style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white70),
-              textAlign: TextAlign.start),
+          Text(title, style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.start),
+          Text(description, style: Theme.of(context).textTheme.titleSmall, textAlign: TextAlign.start),
           const SizedBox(height: 16),
           Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-            SolidButtonWidget(
+            OpacityButtonWidget(
                 onPressed: leftAction,
                 label: leftActionLabel,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10)),

@@ -145,7 +145,7 @@ class _CalendarHeader extends StatelessWidget {
           itemCount: daysOfWeek.length, // Just an example to vary the number of squares
           itemBuilder: (context, index) {
             return Text(daysOfWeek[index],
-                style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white),
+                style: Theme.of(context).textTheme.bodyMedium,
                 textAlign: TextAlign.center);
           },
         ));
@@ -211,25 +211,25 @@ class _Day extends StatelessWidget {
       this.hasRoutineLog = false,
       this.hasActivityLog = false});
 
-  Color _getBackgroundColor() {
+  Color _getBackgroundColor({required bool isDarkMode}) {
     if (hasRoutineLog) {
-      return vibrantGreen.withOpacity(0.1);
+      return isDarkMode ? vibrantGreen.withOpacity(0.1) : vibrantGreen;
     }
     if (hasActivityLog) {
-      return Colors.greenAccent.withOpacity(0.1);
+      return isDarkMode ? Colors.greenAccent.withOpacity(0.1) : Colors.greenAccent;
     } else {
-      return sapphireDark80.withOpacity(0.5);
+      return isDarkMode ? sapphireDark80.withOpacity(0.5) : Colors.grey.shade200;
     }
   }
 
-  Color _getTextColor() {
+  Color _getTextColor({required bool isDarkMode}) {
     if (hasRoutineLog) {
-      return vibrantGreen;
+      return isDarkMode ? vibrantGreen : Colors.black;
     }
     if (hasActivityLog) {
-      return Colors.greenAccent;
+      return isDarkMode ? Colors.greenAccent : Colors.black;
     } else {
-      return Colors.white;
+      return isDarkMode ? Colors.white : Colors.black;
     }
   }
 
@@ -244,6 +244,10 @@ class _Day extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     return GestureDetector(
       onTap: () => onTap(dateTime),
       child: Container(
@@ -255,12 +259,12 @@ class _Day extends StatelessWidget {
         child: Container(
           margin: const EdgeInsets.all(2),
           decoration: BoxDecoration(
-            color: _getBackgroundColor(),
+            color: _getBackgroundColor(isDarkMode: isDarkMode),
             borderRadius: BorderRadius.circular(2),
           ),
           child: Center(
             child: Text("${dateTime.day}",
-                style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.bold, color: _getTextColor())),
+                style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.bold, color: _getTextColor(isDarkMode: isDarkMode))),
           ),
         ),
       ),

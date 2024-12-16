@@ -6,7 +6,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
@@ -64,9 +63,12 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
-    final textStyle = GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white70);
+    final textStyle = Theme.of(context).textTheme.bodySmall;
 
     final dateRange = theLastYearDateTimeRange();
 
@@ -122,9 +124,11 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     final weightColors = [vibrantGreen, vibrantBlue, Colors.deepOrangeAccent];
 
     final barColors = trends
-        .map((value) => _metric == SetRepsVolumeReps.sets
-            ? setsTrendColor(sets: value.toInt())
-            : repsTrendColor(reps: value.toInt()))
+        .map((value) => switch (_metric) {
+              SetRepsVolumeReps.sets => setsTrendColor(sets: value.toInt()),
+              SetRepsVolumeReps.reps => repsTrendColor(reps: value.toInt()),
+              SetRepsVolumeReps.volume => isDarkMode ? Colors.white : Colors.grey.shade400,
+            })
         .toList();
 
     final muscleGroups = MuscleGroup.values
@@ -134,10 +138,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
               child: OpacityButtonWidget(
                   onPressed: () => _onSelectMuscleGroup(newMuscleGroup: muscleGroup),
                   padding: EdgeInsets.symmetric(horizontal: 0),
-                  textStyle: GoogleFonts.ubuntu(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 10,
-                      color: muscleGroup == _selectedMuscleGroup ? vibrantGreen : Colors.white70),
                   buttonColor: muscleGroup == _selectedMuscleGroup ? vibrantGreen : null,
                   label: muscleGroup.name.toUpperCase()),
             ))
@@ -148,26 +148,16 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     return Scaffold(
       appBar: widget.canPop
           ? AppBar(
-              backgroundColor: sapphireDark80,
               leading: IconButton(
-                icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
+                icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
                 onPressed: context.pop,
               ),
-              title: Text("Muscle Trend".toUpperCase(),
-                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+              title: Text("Muscle Trend".toUpperCase()),
             )
           : null,
       body: Container(
-        width: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              sapphireDark80,
-              sapphireDark,
-            ],
-          ),
+        decoration: BoxDecoration(
+          gradient: themeGradient(context: context),
         ),
         child: SafeArea(
           minimum: const EdgeInsets.only(top: 10, bottom: 20),
@@ -210,32 +200,26 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                               text: TextSpan(
                                 text:
                                     "${_metric == SetRepsVolumeReps.volume ? volumeInKOrM(avgValue.toDouble(), showLessThan1k: false) : avgValue}",
-                                style:
-                                    GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 28),
+                                style: Theme.of(context).textTheme.headlineMedium,
                                 children: [
                                   TextSpan(
                                     text: " ",
-                                    style: GoogleFonts.ubuntu(
-                                        color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                                   ),
                                   TextSpan(
-                                    text: _metricLabel().toUpperCase(),
-                                    style: GoogleFonts.ubuntu(
-                                        color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
-                                  ),
+                                      text: _metricLabel().toUpperCase(),
+                                      style: Theme.of(context).textTheme.bodyMedium),
                                 ],
                               ),
                             ),
                             Text(
                               "WEEKLY AVERAGE",
-                              style:
-                                  GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 10),
+                              style: Theme.of(context).textTheme.titleSmall,
                             ),
                           ],
                         ),
                         CupertinoSlidingSegmentedControl<SetRepsVolumeReps>(
-                          backgroundColor: sapphireDark,
-                          thumbColor: sapphireLight,
+                          backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade200,
+                          thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
                           groupValue: _metric,
                           children: {
                             SetRepsVolumeReps.reps: SizedBox(
@@ -267,7 +251,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                         child: CustomBarChart(
                           chartPoints: chartPoints,
                           periods: months,
-                          barColors: _metric != SetRepsVolumeReps.volume ? barColors : null,
+                          barColors: barColors,
                           unit: _chartUnit(),
                           bottomTitlesInterval: 5,
                           showTopTitles: false,
@@ -279,7 +263,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                       Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                         Text(
                           "${_metric.name} Breakdown".toUpperCase(),
-                          style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 12),
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                         const SizedBox(height: 14),
                         hasWeights
@@ -383,7 +367,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
             user: completeInstructions,
             responseFormat: routineLogsReportResponseFormat)
         .then((response) {
-      if(kReleaseMode) {
+      if (kReleaseMode) {
         Posthog().capture(eventName: PostHogAnalyticsEvent.generateMuscleGroupTrainingReport.displayName);
       }
       _hideLoadingScreen();
@@ -433,11 +417,11 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
           return 0;
         }).sum,
       SetRepsVolumeReps.volume => sets.map((set) {
-        if (set is WeightAndRepsSetDto) {
-          return set.volume();
-        }
-        return 0;
-      }).sum,
+          if (set is WeightAndRepsSetDto) {
+            return set.volume();
+          }
+          return 0;
+        }).sum,
     };
   }
 
