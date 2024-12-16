@@ -75,7 +75,7 @@ class MonthlyTrainingSummaryWidget extends StatelessWidget {
     }).expand((pbs) => pbs);
 
     return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
         decoration: BoxDecoration(
           color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
           borderRadius: BorderRadius.circular(10),

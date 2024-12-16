@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../colors.dart';
 import '../../../../dtos/pb_dto.dart';
 import '../../../pbs/pb_icon.dart';
 
@@ -15,7 +14,7 @@ class SetRow extends StatelessWidget {
     final pbsForSet = pbs
         .map((pb) => Padding(
               padding: const EdgeInsets.symmetric(horizontal: 6.0),
-              child: PBIcon(color: sapphireLight, label: pb.pb.name),
+              child: PBIcon(label: pb.pb.name),
             ))
         .toList();
 

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tracker_app/colors.dart';
 
-import '../../utils/general_utils.dart';
-
 class MuscleTrendMonitor extends StatelessWidget {
   final double value;
   final double width;
@@ -33,7 +31,7 @@ class MuscleTrendMonitor extends StatelessWidget {
         strokeWidth: strokeWidth,
         backgroundColor: isDarkMode ? sapphireLighter : Colors.grey.shade200,
         strokeCap: strokeCap ?? StrokeCap.butt,
-        valueColor: AlwaysStoppedAnimation<Color>(muscleFamilyFrequencyColor(value: value, isDarkMode: isDarkMode)),
+        valueColor: AlwaysStoppedAnimation<Color>(isDarkMode ? Colors.white: Colors.black),
       ),
     );
   }

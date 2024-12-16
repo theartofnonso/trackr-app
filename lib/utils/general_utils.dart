@@ -140,10 +140,6 @@ Color repsTrendColor({required int reps}) {
   }
 }
 
-Color muscleFamilyFrequencyColor({required bool isDarkMode, required double value}) {
-  return isDarkMode ? Colors.white.withOpacity(value) : Colors.black.withOpacity(value);
-}
-
 LinearGradient themeGradient({required BuildContext context}) {
   Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
   final isDarkMode = systemBrightness == Brightness.dark;

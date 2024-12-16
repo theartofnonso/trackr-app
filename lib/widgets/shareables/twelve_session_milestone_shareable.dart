@@ -63,7 +63,7 @@ class TwelveSessionMilestoneShareable extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Opacity(
-                      opacity: 0.5,
+                      opacity: imageFile != null ? 0.5 : 1,
                       child: Stack(alignment: Alignment.center, children: [
                         LogStreakMonitor(value: 12, width: 120, height: 120, strokeWidth: 6),
                         Text("12",

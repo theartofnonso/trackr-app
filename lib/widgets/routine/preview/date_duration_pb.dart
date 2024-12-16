@@ -3,7 +3,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 
-import '../../../colors.dart';
 import '../../pbs/pb_icon.dart';
 
 class DateDurationPBWidget extends StatelessWidget {
@@ -55,7 +54,7 @@ class DateDurationPBWidget extends StatelessWidget {
           ],
         ),
         const SizedBox(width: 10),
-        pbs > 0 ? PBIcon(color: sapphireLight, label: "$pbs") : const SizedBox.shrink(),
+        pbs > 0 ? PBIcon(label: "$pbs") : const SizedBox.shrink(),
       ],
     );
   }
