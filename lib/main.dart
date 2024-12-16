@@ -413,7 +413,7 @@ class _MyAppState extends State<MyApp> {
               debugShowCheckedModeBanner: false,
               builder: Authenticator.builder(),
               themeMode: ThemeMode.system,
-              theme: TRKRTheme.lightTheme,
+              theme: TRKRTheme.darkTheme,
               darkTheme: TRKRTheme.darkTheme,
               routerConfig: _router,
             ),

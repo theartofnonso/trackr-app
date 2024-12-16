@@ -48,7 +48,7 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
 
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
-    
+
     final sttController = context.watch<STTController>();
 
     if (sttController.state == STTState.analysing) return TRKRLoadingScreen();

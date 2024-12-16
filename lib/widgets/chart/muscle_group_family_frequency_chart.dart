@@ -79,7 +79,7 @@ class _LinearBar extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 8.0),
                   child: Text(muscleGroupFamily.name.toUpperCase(),
                       style: isDarkMode
-                          ? Theme.of(context).textTheme.bodySmall
+                          ? Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.black)
                           : Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white)),
                 )
               ],
