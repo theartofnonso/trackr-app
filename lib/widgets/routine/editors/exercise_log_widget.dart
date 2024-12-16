@@ -475,7 +475,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               child: Text("Tap + to add a timer", style: Theme.of(context).textTheme.bodySmall),
             ),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            if (withReps(type: exerciseType)) GestureDetector(onTap: _stt, child: TRKRCoachWidget()),
             const Spacer(),
             IconButton(
               onPressed: _togglePreviousSets,
