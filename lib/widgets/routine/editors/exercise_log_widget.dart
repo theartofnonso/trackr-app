@@ -338,23 +338,11 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final previousSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
         .whereSetsForExercise(exercise: widget.exerciseLogDto.exercise);
 
-    final maxReps = exerciseLog.maxReps <= 0
-        ? sets.isNotEmpty
-            ? sets.map((set) {
-                return switch (exerciseType) {
-                  ExerciseType.weights => (set as WeightAndRepsSetDto).reps,
-                  ExerciseType.bodyWeight => (set as RepsSetDto).reps,
-                  ExerciseType.duration => 0,
-                };
-              }).max
-            : 10
-        : exerciseLog.maxReps;
+    final repRange = getRepRange(exerciseLog: exerciseLog);
 
-    final minReps = exerciseLog.minReps <= 0
-        ? maxReps > 5
-            ? maxReps - 2
-            : 3
-        : exerciseLog.minReps;
+    final minReps = repRange.$1;
+
+    final maxReps = repRange.$2;
 
     return Container(
       padding: const EdgeInsets.all(10),
@@ -833,8 +821,8 @@ class _RepRangeSliderState extends State<_RepRangeSlider> {
         RangeSlider(
           values: RangeValues(_min.toDouble(), _max.toDouble()),
           onChanged: onChanged,
-          min: 3,
-          max: 100,
+          min: 1,
+          max: 20,
           activeColor: vibrantGreen,
         ),
         const SizedBox(height: 10),

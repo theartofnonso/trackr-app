@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:tracker_app/dtos/set_dtos/set_dto.dart';
 
+import '../utils/exercise_logs_utils.dart';
 import 'appsync/exercise_dto.dart';
 
 class ExerciseLogDto {
@@ -67,8 +68,6 @@ class ExerciseLogDto {
     final exerciseJson = json["exercise"];
     final exercise = ExerciseDto.fromJson(exerciseJson);
     final notes = json["notes"] ?? "";
-    final minReps = json["minReps"] ?? 0;
-    final maxReps = json["maxReps"] ?? 0;
     final setsInJsons = json["sets"] as List<dynamic>;
     List<SetDto> sets = [];
     if (setsInJsons.isNotEmpty && setsInJsons.first is String) {
@@ -76,7 +75,11 @@ class ExerciseLogDto {
     } else {
       sets = setsInJsons.map((json) => SetDto.fromJson(json, exerciseType: exercise.type)).toList();
     }
-    return ExerciseLogDto(
+
+    final minReps = json["minReps"] ?? 0;
+    final maxReps = json["maxReps"] ?? 0;
+
+    final exerciseLog = ExerciseLogDto(
         id: exercise.id,
         routineLogId: routineLogId,
         superSetId: superSetId,
@@ -86,6 +89,10 @@ class ExerciseLogDto {
         minReps: minReps,
         maxReps: maxReps,
         createdAt: createdAt ?? DateTime.now());
+
+    final repRange = getRepRange(exerciseLog: exerciseLog);
+
+    return exerciseLog.copyWith(minReps: repRange.$1, maxReps: repRange.$2);
   }
 
   @override

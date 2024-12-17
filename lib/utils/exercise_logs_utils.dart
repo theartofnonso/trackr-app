@@ -466,3 +466,30 @@ int calculateMuscleScoreForLog({required RoutineLogDto routineLog}) {
 
   return percentageScore;
 }
+
+(int, int) getRepRange({required ExerciseLogDto exerciseLog}) {
+
+  final sets = exerciseLog.sets;
+
+  final exerciseType = exerciseLog.exercise.type;
+
+  final maxReps = exerciseLog.maxReps <= 0
+      ? sets.isNotEmpty
+      ? sets.map((set) {
+    return switch (exerciseType) {
+      ExerciseType.weights => (set as WeightAndRepsSetDto).reps,
+      ExerciseType.bodyWeight => (set as RepsSetDto).reps,
+      ExerciseType.duration => 0,
+    };
+  }).max
+      : 10
+      : exerciseLog.maxReps;
+
+  final minReps = exerciseLog.minReps <= 0
+      ? maxReps > 5
+      ? maxReps - 2
+      : 1
+      : exerciseLog.minReps;
+
+  return (minReps, maxReps);
+}
