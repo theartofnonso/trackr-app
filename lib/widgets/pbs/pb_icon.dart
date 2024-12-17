@@ -6,8 +6,9 @@ import '../../colors.dart';
 class PBIcon extends StatelessWidget {
   final String label;
   final int? size;
+  final TextStyle? textStyle;
 
-  const PBIcon({super.key, required this.label, this.size = 14});
+  const PBIcon({super.key, required this.label, this.size = 14, this.textStyle});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,7 @@ class PBIcon extends StatelessWidget {
       FaIcon(
           FontAwesomeIcons.solidStar, color: vibrantGreen, size: (size ?? 14).toDouble()),
       const SizedBox(width: 6),
-      Text(label, style: Theme.of(context).textTheme.bodySmall!)
+      Text(label, style: textStyle ?? Theme.of(context).textTheme.bodySmall!)
     ]);
   }
 }

@@ -22,7 +22,8 @@ class DoubleSetRow extends StatelessWidget {
     final pbsForSet = pbs
         .map((pb) => PBIcon(
               label: pb.pb.name,
-              size: 12,
+              size: 8,
+      textStyle: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 10),
             ))
         .toList();
 
@@ -30,7 +31,7 @@ class DoubleSetRow extends StatelessWidget {
       alignment: Alignment.topLeft,
       backgroundColor: Colors.transparent,
       label: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 4),
         decoration: BoxDecoration(
           color: pbs.isNotEmpty ? (isDarkMode ? sapphireDark80 : Colors.grey.shade200) : null,
           borderRadius: BorderRadius.circular(5), // Rounded corners
