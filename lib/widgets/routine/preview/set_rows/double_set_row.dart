@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tracker_app/colors.dart';
 
 import '../../../../dtos/pb_dto.dart';
 import '../../../pbs/pb_icon.dart';
@@ -19,15 +20,23 @@ class DoubleSetRow extends StatelessWidget {
     final color = borderColor ?? (isDarkMode ? Colors.white10 : Colors.white);
 
     final pbsForSet = pbs
-        .map((pb) => PBIcon(label: pb.pb.name))
+        .map((pb) => PBIcon(
+              label: pb.pb.name,
+              size: 12,
+            ))
         .toList();
 
     return Badge(
       alignment: Alignment.topLeft,
       backgroundColor: Colors.transparent,
-      label: Row(
-          spacing: 6,
-          children: pbsForSet),
+      label: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6),
+        decoration: BoxDecoration(
+          color: pbs.isNotEmpty ? (isDarkMode ? sapphireLight : Colors.grey.shade200) : null,
+          borderRadius: BorderRadius.circular(5), // Rounded corners
+        ),
+        child: Row(spacing: 6, children: pbsForSet),
+      ),
       child: Table(
           border: TableBorder.all(color: color, borderRadius: BorderRadius.circular(5), width: 1),
           columnWidths: const <int, TableColumnWidth>{
