@@ -147,6 +147,16 @@ class _OverviewScreenState extends State<OverviewScreen> {
                                   scheduledToday: scheduledToday, isLogged: hasTodayScheduleBeenLogged),
                             ),
                           ),
+                        if (canNavigateNext)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 12),
+                              TRKRCoachButton(
+                                  label: "Review ${widget.dateTimeRange.start.formattedFullMonth()} insights.",
+                                  onTap: () => _generateMonthlyInsightsReport(datetime: widget.dateTimeRange.start)),
+                            ],
+                          ),
                         if (SharedPrefs().showCalendar)
                           Padding(
                             padding: const EdgeInsets.only(top: 16.0),
@@ -160,16 +170,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
                                 _LogsListView(dateTime: _selectedDateTime),
                               ],
                             ),
-                          ),
-                        if (canNavigateNext)
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 12),
-                              TRKRCoachButton(
-                                  label: "Review ${widget.dateTimeRange.start.formattedFullMonth()} insights.",
-                                  onTap: () => _generateMonthlyInsightsReport(datetime: widget.dateTimeRange.start)),
-                            ],
                           ),
                         const SizedBox(height: 12),
                         MonthlyInsightsScreen(dateTimeRange: widget.dateTimeRange),
