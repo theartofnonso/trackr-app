@@ -468,28 +468,48 @@ int calculateMuscleScoreForLog({required RoutineLogDto routineLog}) {
 }
 
 (int, int) getRepRange({required ExerciseLogDto exerciseLog}) {
-
   final sets = exerciseLog.sets;
-
   final exerciseType = exerciseLog.exercise.type;
 
-  final maxReps = exerciseLog.maxReps <= 0
-      ? sets.isNotEmpty
-      ? sets.map((set) {
-    return switch (exerciseType) {
-      ExerciseType.weights => (set as WeightAndRepsSetDto).reps,
-      ExerciseType.bodyWeight => (set as RepsSetDto).reps,
-      ExerciseType.duration => 0,
-    };
-  }).max
-      : 10
-      : exerciseLog.maxReps;
+  // Helper to get the reps from a set depending on exercise type.
+  int extractReps(dynamic set, ExerciseType type) {
+    switch (type) {
+      case ExerciseType.weights:
+        return (set as WeightAndRepsSetDto).reps;
+      case ExerciseType.bodyWeight:
+        return (set as RepsSetDto).reps;
+      case ExerciseType.duration:
+      // Duration-based exercises don't have a rep count
+        return 0;
+    }
+  }
 
-  final minReps = exerciseLog.minReps <= 0
-      ? maxReps > 5
-      ? maxReps - 2
-      : 1
-      : exerciseLog.minReps;
+  int computedMaxReps;
+  // Determine maxReps:
+  if (exerciseLog.maxReps > 0) {
+    // If maxReps is already defined, just use it
+    computedMaxReps = exerciseLog.maxReps;
+  } else {
+    // If no explicit maxReps is given, derive from the sets
+    if (sets.isNotEmpty) {
+      // Extract reps for each set and find the max
+      final repsList = sets.map((set) => extractReps(set, exerciseType)).toList();
+      computedMaxReps = repsList.isNotEmpty ? repsList.reduce((a, b) => a > b ? a : b) : 10;
+    } else {
+      // If no sets are recorded, default to 10
+      computedMaxReps = 10;
+    }
+  }
 
-  return (minReps, maxReps);
+  int computedMinReps;
+  // Determine minReps:
+  if (exerciseLog.minReps > 0) {
+    // If minReps is already defined, use it
+    computedMinReps = exerciseLog.minReps;
+  } else {
+    // If no explicit minReps is given, base it on computedMaxReps
+    computedMinReps = (computedMaxReps > 5) ? (computedMaxReps - 2) : 1;
+  }
+
+  return (computedMinReps, computedMaxReps);
 }
