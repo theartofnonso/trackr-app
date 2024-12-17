@@ -13,6 +13,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
+import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/widgets/shareables/milestone_shareable.dart';
 import 'package:tracker_app/widgets/shareables/pbs_shareable.dart';
 import 'package:tracker_app/widgets/shareables/routine_log_shareable_lite.dart';
@@ -139,50 +140,55 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
             )
           ],
         ),
-        body: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 30),
-              AspectRatio(
-                aspectRatio: 1,
-                child: PageView.builder(
-                  scrollDirection: Axis.horizontal,
-                  controller: _pageController,
-                  itemCount: pages.length,
-                  itemBuilder: (_, index) {
-                    return pages[index % pages.length];
-                  },
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: themeGradient(context: context)
+          ),
+          child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 30),
+                AspectRatio(
+                  aspectRatio: 1,
+                  child: PageView.builder(
+                    scrollDirection: Axis.horizontal,
+                    controller: _pageController,
+                    itemCount: pages.length,
+                    itemBuilder: (_, index) {
+                      return pages[index % pages.length];
+                    },
+                  ),
                 ),
-              ),
-              const Spacer(),
-              SmoothPageIndicator(
-                controller: _pageController,
-                count: pages.length,
-                effect: const ExpandingDotsEffect(activeDotColor: vibrantGreen),
-              ),
-              const SizedBox(height: 30),
-              OpacityButtonWidget(
-                  onPressed: () {
-                    final index = _pageController.page!.toInt();
-                    captureImage(key: pagesKeys[index], pixelRatio: 3.5).then((result) {
-                      if (context.mounted) {
-                        if (result.status == ShareResultStatus.success) {
-                          if (kReleaseMode) {
-                            Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineLogSummary.displayName);
+                const Spacer(),
+                SmoothPageIndicator(
+                  controller: _pageController,
+                  count: pages.length,
+                  effect: const ExpandingDotsEffect(activeDotColor: vibrantGreen),
+                ),
+                const SizedBox(height: 30),
+                OpacityButtonWidget(
+                    onPressed: () {
+                      final index = _pageController.page!.toInt();
+                      captureImage(key: pagesKeys[index], pixelRatio: 3.5).then((result) {
+                        if (context.mounted) {
+                          if (result.status == ShareResultStatus.success) {
+                            if (kReleaseMode) {
+                              Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineLogSummary.displayName);
+                            }
+                            showSnackbar(
+                                context: context,
+                                icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
+                                message: "Content Shared");
                           }
-                          showSnackbar(
-                              context: context,
-                              icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
-                              message: "Content Shared");
                         }
-                      }
-                    });
-                  },
-                  label: "Share",
-                  buttonColor: vibrantGreen,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14))
-            ],
+                      });
+                    },
+                    label: "Share",
+                    buttonColor: vibrantGreen,
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14))
+              ],
+            ),
           ),
         ),
       ),

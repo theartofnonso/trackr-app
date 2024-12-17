@@ -17,15 +17,13 @@ class TwelveSessionMilestoneShareable extends StatelessWidget {
     final imageFile = image;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
         child: RepaintBoundary(
           key: twelveSessionMilestoneGlobalKey,
           child: Container(
             decoration: BoxDecoration(
-              border: Border.all(width: 2, color: sapphireLighter),
-              borderRadius: BorderRadius.circular(20),
               image: imageFile != null
                   ? DecorationImage(
                       image: imageFile.image,
@@ -53,7 +51,7 @@ class TwelveSessionMilestoneShareable extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      sapphireDark.withValues(alpha:0.4),
+                      sapphireDark.withValues(alpha: 0.4),
                       sapphireDark,
                     ],
                   )),

@@ -16,7 +16,7 @@ class TRKRListTileTheme {
       leadingAndTrailingTextStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white70));
 
   static ListTileThemeData darkTheme = ListTileThemeData(
-    tileColor: sapphireDark80,
+    tileColor: Colors.white,
     textColor: Colors.white,
     iconColor: Colors.white,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
