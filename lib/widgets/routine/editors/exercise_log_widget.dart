@@ -790,6 +790,9 @@ class _RepRangeSliderState extends State<_RepRangeSlider> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Text(
+            "Setting rep ranges for each exercise helps you target specific fitness goals: low reps build strength, moderate reps grow muscle, and high reps improve endurance.", style: Theme.of(context).textTheme.bodyMedium),
+        const SizedBox(height: 10),
         RichText(
           text: TextSpan(
             text: "Select a rep range for ${widget.exercise}",

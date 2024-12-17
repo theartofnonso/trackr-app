@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/activity_type_enums.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
+import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/utils/routine_utils.dart';
 import 'package:tracker_app/widgets/forms/create_routine_user_profile_widget.dart';
 import 'package:tracker_app/widgets/label_divider.dart';
@@ -77,6 +78,7 @@ Future<void> displayBottomSheet(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20),
                   ),
+                  gradient: isDarkMode ? themeGradient(context: context) : null
                 ),
                 child: SafeArea(child: child),
               ),
