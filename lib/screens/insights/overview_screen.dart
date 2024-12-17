@@ -52,7 +52,7 @@ import '../AI/monthly_training_report_screen.dart';
 import '../AI/trkr_coach_chat_screen.dart';
 import '../editors/routine_log_editor_screen.dart';
 import '../logs/routine_log_screen.dart';
-import 'monthly_insights_screen.dart';
+import '../../widgets/monthly_insights/monthly_insights.dart';
 
 class OverviewScreen extends StatefulWidget {
   final ScrollController scrollController;
@@ -172,7 +172,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                             ),
                           ),
                         const SizedBox(height: 12),
-                        MonthlyInsightsScreen(dateTimeRange: widget.dateTimeRange),
+                        MonthlyInsights(dateTimeRange: widget.dateTimeRange),
                         const SizedBox(height: 18),
                         LogStreakChartWidget(),
                       ])),

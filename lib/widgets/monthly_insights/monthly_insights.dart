@@ -6,18 +6,17 @@ import 'package:tracker_app/widgets/monthly_insights/monthly_training_summary_wi
 
 import '../../controllers/activity_log_controller.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
-import '../../widgets/monthly_insights/calories_widget.dart';
-import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
-import '../../widgets/monthly_insights/muscle_score_widget.dart';
+import 'calories_widget.dart';
+import 'muscle_groups_family_frequency_widget.dart';
+import 'muscle_score_widget.dart';
 
-class MonthlyInsightsScreen extends StatelessWidget {
+class MonthlyInsights extends StatelessWidget {
   final DateTimeRange dateTimeRange;
 
-  const MonthlyInsightsScreen({super.key, required this.dateTimeRange});
+  const MonthlyInsights({super.key, required this.dateTimeRange});
 
   @override
   Widget build(BuildContext context) {
-
     final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
     final activitiesController = Provider.of<ActivityLogController>(context, listen: true);
@@ -46,25 +45,16 @@ class MonthlyInsightsScreen extends StatelessWidget {
     final lastMonthLogs = [...lastMonthActivityLogs, ...lastMonthActivityLogs];
 
     return Column(
+      spacing: 12,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         MonthlyTrainingSummaryWidget(
           routineLogs: thisMonthRoutineLogs,
           dateTime: dateTimeRange.start,
         ),
-        const SizedBox(height: 12),
         ActivitiesWidget(thisMonthsActivities: thisMonthsActivityLogs, lastMonthsActivities: lastMonthActivityLogs),
-        if (thisMonthRoutineLogs.isNotEmpty)
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 24),
-              MuscleGroupFamilyFrequencyWidget(logs: thisMonthRoutineLogs),
-            ],
-          ),
-        const SizedBox(height: 12),
+        if (thisMonthRoutineLogs.isNotEmpty) MuscleGroupFamilyFrequencyWidget(logs: thisMonthRoutineLogs),
         CaloriesWidget(thisMonthLogs: thisMonthLogs, lastMonthLogs: lastMonthLogs),
-        const SizedBox(height: 12),
         MuscleScoreWidget(thisMonthLogs: thisMonthRoutineLogs, lastMonthLogs: lastMonthRoutineLogs),
       ],
     );
