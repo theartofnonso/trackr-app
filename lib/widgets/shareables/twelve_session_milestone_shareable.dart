@@ -53,7 +53,7 @@ class TwelveSessionMilestoneShareable extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      sapphireDark.withOpacity(0.4),
+                      sapphireDark.withValues(alpha:0.4),
                       sapphireDark,
                     ],
                   )),

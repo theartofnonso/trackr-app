@@ -70,7 +70,7 @@ class RoutineTemplatesScreen extends StatelessWidget {
                       textStyle: GoogleFonts.ubuntu(
                         fontSize: 16,
                         fontWeight: FontWeight.w400,
-                        color: Colors.white.withOpacity(0.9),
+                        color: Colors.white.withValues(alpha:0.9),
                       )),
                   const SizedBox(height: 16),
                   TRKRCoachButton(
@@ -162,7 +162,7 @@ class _RoutineWidget extends StatelessWidget {
                       height: 20,
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
-                        color: vibrantGreen.withOpacity(0.1),
+                        color: vibrantGreen.withValues(alpha:0.1),
                         borderRadius: BorderRadius.circular(3),
                       ),
                       child: Image.asset(
@@ -193,7 +193,7 @@ class _RoutineWidget extends StatelessWidget {
                       height: 20,
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
-                        color: vibrantBlue.withOpacity(0.1),
+                        color: vibrantBlue.withValues(alpha:0.1),
                         borderRadius: BorderRadius.circular(3),
                       ),
                       child: Center(
@@ -219,7 +219,7 @@ class _RoutineWidget extends StatelessWidget {
             ),
             Divider(
                 color: template.isScheduledToday()
-                    ? vibrantGreen.withOpacity(0.2)
+                    ? vibrantGreen.withValues(alpha:0.2)
                     : isDarkMode
                         ? Colors.white10
                         : Colors.black12,

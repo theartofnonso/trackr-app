@@ -25,7 +25,7 @@ class UserIconWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(5), // Optional border
           boxShadow: [
             BoxShadow(
-              color: isDarkMode ? sapphireDark.withOpacity(0.5) : Colors.grey.shade400,
+              color: isDarkMode ? sapphireDark.withValues(alpha:0.5) : Colors.grey.shade400,
               spreadRadius: 5,
               blurRadius: 7,
               offset: const Offset(0, 3), // changes position of shadow

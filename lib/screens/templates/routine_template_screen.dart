@@ -232,7 +232,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                     child: Table(
                       border: TableBorder.symmetric(
                           inside: BorderSide(
-                              color: isDarkMode ? sapphireLighter.withOpacity(0.4) : Colors.white, width: 2)),
+                              color: isDarkMode ? sapphireLighter.withValues(alpha:0.4) : Colors.white, width: 2)),
                       columnWidths: const <int, TableColumnWidth>{
                         0: FlexColumnWidth(),
                         1: FlexColumnWidth(),

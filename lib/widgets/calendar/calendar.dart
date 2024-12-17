@@ -213,12 +213,12 @@ class _Day extends StatelessWidget {
 
   Color _getBackgroundColor({required bool isDarkMode}) {
     if (hasRoutineLog) {
-      return isDarkMode ? vibrantGreen.withOpacity(0.1) : vibrantGreen;
+      return isDarkMode ? vibrantGreen.withValues(alpha:0.1) : vibrantGreen;
     }
     if (hasActivityLog) {
-      return isDarkMode ? Colors.greenAccent.withOpacity(0.1) : Colors.greenAccent;
+      return isDarkMode ? Colors.greenAccent.withValues(alpha:0.1) : Colors.greenAccent;
     } else {
-      return isDarkMode ? sapphireDark80.withOpacity(0.5) : Colors.grey.shade200;
+      return isDarkMode ? sapphireDark80.withValues(alpha:0.5) : Colors.grey.shade200;
     }
   }
 

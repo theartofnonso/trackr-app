@@ -13,7 +13,7 @@ class InformationContainerLite extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          color: color != null ? color?.withOpacity(0.2) : Colors.black.withOpacity(0.2),
+          color: color != null ? color?.withValues(alpha:0.2) : Colors.black.withValues(alpha:0.2),
           borderRadius: BorderRadius.circular(5)),
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
       child: Row(

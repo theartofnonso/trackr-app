@@ -209,7 +209,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                   keyboardType: TextInputType.text,
                   textCapitalization: TextCapitalization.words,
                   style: GoogleFonts.ubuntu(
-                      fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+                      fontWeight: FontWeight.w500, color: Colors.white.withValues(alpha:0.8), fontSize: 14),
                 )),
           );
         });

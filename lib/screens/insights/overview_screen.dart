@@ -574,7 +574,7 @@ class _ScheduledRoutineCard extends StatelessWidget {
                         height: 30,
                         padding: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
-                          color: vibrantGreen.withOpacity(0.1),
+                          color: vibrantGreen.withValues(alpha:0.1),
                           borderRadius: BorderRadius.circular(3),
                         ),
                         child: Image.asset(
@@ -602,7 +602,7 @@ class _ScheduledRoutineCard extends StatelessWidget {
                         height: 30,
                         padding: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
-                          color: vibrantBlue.withOpacity(0.1),
+                          color: vibrantBlue.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(3),
                         ),
                         child: Center(
@@ -630,7 +630,7 @@ class _ScheduledRoutineCard extends StatelessWidget {
                   height: 30,
                   padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
-                    color: vibrantGreen.withOpacity(0.1),
+                    color: vibrantGreen.withValues(alpha:0.1),
                     borderRadius: BorderRadius.circular(3),
                   ),
                   child: Center(

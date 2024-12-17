@@ -25,7 +25,7 @@ class RoutineLogWidget extends StatelessWidget {
       leading: Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         decoration: BoxDecoration(
-          color: vibrantGreen.withOpacity(0.1), // Background color
+          color: vibrantGreen.withValues(alpha:0.1), // Background color
           borderRadius: BorderRadius.circular(5), // Rounded corners
         ),
         child: Image.asset(

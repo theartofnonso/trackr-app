@@ -135,7 +135,7 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
                   width: 60, // Set the width of the container
                   height: 24, // Set the height of the container
                   decoration: BoxDecoration(
-                    color: vibrantBlue.withOpacity(0.1), // Background color
+                    color: vibrantBlue.withValues(alpha:0.1), // Background color
                     borderRadius: BorderRadius.circular(3), // Rounded corners
                   ),
                   child: Center(

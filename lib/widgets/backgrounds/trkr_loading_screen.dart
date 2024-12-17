@@ -28,7 +28,7 @@ class TRKRLoadingScreen extends StatelessWidget {
       body: Container(
           width: double.infinity,
           height: double.infinity,
-          color: isDarkMode ? sapphireDark.withOpacity(opacity) : Colors.white,
+          color: isDarkMode ? sapphireDark.withValues(alpha:opacity) : Colors.white,
           child: Stack(
             children: [
               if (action != null)

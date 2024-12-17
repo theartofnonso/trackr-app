@@ -31,7 +31,7 @@ class SolidButtonWidget extends StatelessWidget {
           shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
           overlayColor: WidgetStateProperty.resolveWith<Color?>(
             (Set<WidgetState> states) {
-              return Colors.black.withOpacity(0.3); // Defer to the widget's default.
+              return Colors.black.withValues(alpha:0.3); // Defer to the widget's default.
             },
           ),
         ),

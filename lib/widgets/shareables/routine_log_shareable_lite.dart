@@ -61,7 +61,7 @@ class RoutineLogShareableLite extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      sapphireDark.withOpacity(0.4),
+                      sapphireDark.withValues(alpha:0.4),
                       sapphireDark,
                     ],
                   )),
@@ -150,7 +150,7 @@ class _DateDurationPBWidget extends StatelessWidget {
             const SizedBox(width: 6),
             Text(datetimeSummary,
                 style: GoogleFonts.ubuntu(
-                    color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                    color: Colors.white.withValues(alpha:0.95), fontWeight: FontWeight.w500, fontSize: 12)),
           ],
         ),
         const SizedBox(width: 10),
@@ -165,7 +165,7 @@ class _DateDurationPBWidget extends StatelessWidget {
             const SizedBox(width: 6),
             Text(duration.hmsAnalog(),
                 style: GoogleFonts.ubuntu(
-                    color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                    color: Colors.white.withValues(alpha:0.95), fontWeight: FontWeight.w500, fontSize: 12)),
           ],
         ),
         const SizedBox(width: 10),

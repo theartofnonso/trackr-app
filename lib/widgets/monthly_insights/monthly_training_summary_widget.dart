@@ -86,7 +86,7 @@ class MonthlyTrainingSummaryWidget extends StatelessWidget {
               style: Theme.of(context).textTheme.bodyMedium),
             const SizedBox(height: 30),
             Table(
-              border: TableBorder.symmetric(inside: BorderSide(color: isDarkMode ? sapphireLighter.withOpacity(0.4) : Colors.grey.shade100, width: 2)),
+              border: TableBorder.symmetric(inside: BorderSide(color: isDarkMode ? sapphireLighter.withValues(alpha:0.4) : Colors.grey.shade100, width: 2)),
               columnWidths: const <int, TableColumnWidth>{
                 0: FlexColumnWidth(),
                 1: FlexColumnWidth(),

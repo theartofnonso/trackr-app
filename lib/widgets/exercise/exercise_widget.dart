@@ -85,7 +85,7 @@ class ExerciseWidget extends StatelessWidget {
                               TextSpan(
                                   text: listWithAnd(strings: secondaryMuscleGroupNames),
                                   style: GoogleFonts.ubuntu(
-                                      color: Colors.orange.withOpacity(0.6),
+                                      color: Colors.orange.withValues(alpha:0.6),
                                       fontWeight: FontWeight.w500,
                                       fontSize: 11)),
                             ])),

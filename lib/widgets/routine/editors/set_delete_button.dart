@@ -10,7 +10,7 @@ class SetDeleteButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onDelete,
-      child: FaIcon(FontAwesomeIcons.solidRectangleXmark, color: Colors.red.withOpacity(0.9), size: 28),
+      child: FaIcon(FontAwesomeIcons.solidRectangleXmark, color: Colors.red.withValues(alpha:0.9), size: 28),
     );
   }
 }

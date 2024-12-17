@@ -532,7 +532,7 @@ class _RoutineLogOverview extends StatelessWidget {
         child: Table(
           border: TableBorder(
               verticalInside:
-                  BorderSide(color: isDarkMode ? sapphireLighter.withOpacity(0.4) : Colors.white, width: 1)),
+                  BorderSide(color: isDarkMode ? sapphireLighter.withValues(alpha:0.4) : Colors.white, width: 1)),
           columnWidths: const <int, TableColumnWidth>{
             0: FlexColumnWidth(1),
             1: FlexColumnWidth(1),

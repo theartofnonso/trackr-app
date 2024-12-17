@@ -97,7 +97,7 @@ class _LogsScreen extends StatelessWidget {
                                 });
                           },
                           separatorBuilder: (BuildContext context, int index) =>
-                              Divider(color: Colors.white70.withOpacity(0.1)),
+                              Divider(color: Colors.white70.withValues(alpha:0.1)),
                           itemCount: activities.length),
                     )
                   : Expanded(

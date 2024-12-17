@@ -31,7 +31,7 @@ class ActivityLogWidget extends StatelessWidget {
       leading: Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         decoration: BoxDecoration(
-          color: Colors.greenAccent.withOpacity(0.1), // Background color
+          color: Colors.greenAccent.withValues(alpha:0.1), // Background color
           borderRadius: BorderRadius.circular(5), // Rounded corners
         ),
         child: image != null
