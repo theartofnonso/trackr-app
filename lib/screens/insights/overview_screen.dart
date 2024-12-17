@@ -127,7 +127,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       child: Column(children: [
                         const SizedBox(height: 12),
                         LogStreakMuscleTrendMonitor(dateTime: widget.dateTimeRange.start),
-                        if (isStartOfNewMonth)
+                        if (isStartOfNewMonth && exerciseAndRoutineController.logs.isNotEmpty)
                           Padding(
                             padding: const EdgeInsets.only(top: 24.0),
                             child: TRKRInformationContainer(
