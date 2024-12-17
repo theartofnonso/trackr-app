@@ -32,7 +32,7 @@ class DoubleSetRow extends StatelessWidget {
       label: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6),
         decoration: BoxDecoration(
-          color: pbs.isNotEmpty ? (isDarkMode ? sapphireLight : Colors.grey.shade200) : null,
+          color: pbs.isNotEmpty ? (isDarkMode ? sapphireLighter : Colors.grey.shade200) : null,
           borderRadius: BorderRadius.circular(5), // Rounded corners
         ),
         child: Row(spacing: 6, children: pbsForSet),
