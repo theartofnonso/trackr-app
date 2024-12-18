@@ -91,8 +91,8 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
       )
     ];
 
-    final hasVideo = exercise.video != null;
-
+    final hasVideo = (exercise.video?.data) != null;
+    
     return DefaultTabController(
         length: hasVideo ? 3 : 2,
         child: Scaffold(
