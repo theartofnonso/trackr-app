@@ -187,10 +187,10 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                                 onNavigateToExercise: _navigateToExerciseHistory,
                                 onSelect: widget.readOnly ? null : _navigateBackWithSelectedExercise),
                             separatorBuilder: (BuildContext context, int index) => Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 20.0),
-                                  child:
-                                      Divider(height: 0.5, color: isDarkMode ? sapphireLighter : Colors.grey.shade200),
-                                ),
+                              padding: EdgeInsets.symmetric(vertical: 20.0),
+                              child: Divider(
+                                  height: 0.5, color: isDarkMode ? sapphireLighter : Colors.grey.shade200),
+                            ),
                             itemCount: _filteredExercises.length),
                       ),
                     )

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../colors.dart';
@@ -14,31 +15,23 @@ class CSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
     return SearchBar(
       controller: controller,
       onChanged: onChanged,
-      leading: const Icon(
-        Icons.search_rounded,
-      ),
       trailing: [
         IconButton(
           onPressed: onClear,
-          icon: const Icon(Icons.cancel, color: Colors.white70),
-          visualDensity: VisualDensity.compact,
+          icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white,),
         )
       ],
       hintText: hintText,
-      hintStyle: WidgetStatePropertyAll<TextStyle>(GoogleFonts.ubuntu(color: Colors.white70)),
+      hintStyle: WidgetStatePropertyAll<TextStyle>(GoogleFonts.ubuntu(color: Colors.white)),
       textStyle: WidgetStatePropertyAll<TextStyle>(GoogleFonts.ubuntu(color: Colors.white)),
-      surfaceTintColor: WidgetStatePropertyAll<Color>(isDarkMode ? sapphireLight : Colors.grey.shade900),
-      backgroundColor: WidgetStatePropertyAll<Color>(isDarkMode ? sapphireDark.withValues(alpha:0.8) : Colors.grey.shade400),
+      surfaceTintColor: WidgetStatePropertyAll<Color>(sapphireLight),
+      backgroundColor: WidgetStatePropertyAll<Color>(sapphireDark),
       shape: WidgetStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5.0),
-      )),
-      constraints: const BoxConstraints(minHeight: 50),
+      ))
     );
   }
 }
