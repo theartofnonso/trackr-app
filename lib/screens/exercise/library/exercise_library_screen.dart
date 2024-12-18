@@ -116,7 +116,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
               padding: const EdgeInsets.only(right: 6.0),
               child: OpacityButtonWidget(
                   onPressed: () => _onSelectMuscleGroup(newMuscleGroup: muscleGroup),
-                  padding: EdgeInsets.symmetric(horizontal: 0),
                   buttonColor: _getMuscleGroup(muscleGroup: muscleGroup) != null ? vibrantGreen : null,
                   label: muscleGroup.name.toUpperCase()),
             ))
@@ -163,7 +162,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                     const SizedBox(width: 10),
                     OpacityButtonWidget(
                         onPressed: _toggleOwnerExercises,
-                        padding: EdgeInsets.symmetric(horizontal: 0),
                         buttonColor: _shouldShowOwnerExercises ? vibrantGreen : vibrantBlue,
                         label: "Your Exercises".toUpperCase()),
                     const SizedBox(width: 6),
