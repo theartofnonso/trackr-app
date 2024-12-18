@@ -151,7 +151,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: CSearchBar(
-                    hintText: "Search exercises",
+                    hintText: "Search library",
                     onChanged: (_) => _runSearch(),
                     onClear: _clearSearch,
                     controller: _searchController),
