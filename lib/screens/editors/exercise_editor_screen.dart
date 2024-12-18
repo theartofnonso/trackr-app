@@ -30,12 +30,9 @@ class ExerciseEditorScreen extends StatefulWidget {
 }
 
 class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
-  String? _exerciseName;
 
   late MuscleGroup _primaryMuscleGroup;
   late ExerciseType _exerciseType;
-
-  bool _isInputFieldVisible = false;
 
   final logger = getLogger(className: "_ExerciseEditorScreenState");
 
@@ -115,7 +112,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                   ],
                 ),
                 const Spacer(),
-                if (!_isInputFieldVisible && _exerciseName != null && exercise == null)
+                if (_exerciseNameController.text.isNotEmpty && exercise == null)
                   SizedBox(
                     width: double.infinity,
                     child: OpacityButtonWidget(
@@ -160,9 +157,9 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   }
 
   void _createExercise() async {
-    final exerciseName = _exerciseName;
+    final exerciseName = _exerciseNameController.text.trim();
 
-    if (exerciseName == null) return;
+    if (exerciseName.isEmpty) return;
 
     if (exerciseName.isEmpty) {
       _showSnackbar("Please provide a name for this exercise");
@@ -185,9 +182,9 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   }
 
   void _updateExercise() async {
-    final exerciseName = _exerciseName;
+    final exerciseName = _exerciseNameController.text.trim();
 
-    if (exerciseName == null) return;
+    if (exerciseName.isEmpty) return;
 
     if (exerciseName.isEmpty) {
       _showSnackbar("Please provide a name for this exercise");
@@ -216,7 +213,6 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     _primaryMuscleGroup = previousExercise != null ? previousExercise.primaryMuscleGroup : MuscleGroup.values.first;
 
     _exerciseType = previousExercise != null ? previousExercise.type : ExerciseType.weights;
-
-    _exerciseName = previousExercise?.name;
+    
   }
 }
