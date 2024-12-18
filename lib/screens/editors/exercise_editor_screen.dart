@@ -104,7 +104,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                   ],
                 ),
                 const SizedBox(height: 16),
-                if(exercise != null)
+                if(exercise == null)
                   Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
