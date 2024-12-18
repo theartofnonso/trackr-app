@@ -16,7 +16,6 @@ import '../../enums/exercise_type_enums.dart';
 import '../../logger.dart';
 import '../../utils/general_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
-import '../../widgets/information_containers/information_container.dart';
 import '../exercise/exercise_type_screen.dart';
 
 class ExerciseEditorScreen extends StatefulWidget {
@@ -44,7 +43,6 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -99,7 +97,8 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text("Select muscle group to train", style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w400)),
+                    Text("Select muscle group to train",
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w400)),
                     const Spacer(),
                     OpacityButtonWidget(label: _primaryMuscleGroup.name, onPressed: _navigateToMuscleGroupsScreen)
                   ],
@@ -108,7 +107,8 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text("Choose how to log this exercise", style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w400)),
+                    Text("Choose how to log this exercise",
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w400)),
                     const Spacer(),
                     OpacityButtonWidget(label: _exerciseType.name, onPressed: _navigateToExerciseTypeScreen)
                   ],
