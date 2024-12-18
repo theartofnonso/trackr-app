@@ -76,7 +76,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
                           child: IconButton(
                             onPressed: _navigateToNotificationHome,
                             icon: Badge(
-                              smallSize: 8,
+                                smallSize: 8,
                                 backgroundColor: hasPendingActions ? vibrantGreen : Colors.transparent,
                                 child: FaIcon(FontAwesomeIcons.solidBell, size: 20)),
                           ),
@@ -89,8 +89,12 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
                   controller: _tabController,
                   dividerColor: Colors.transparent,
                   tabs: [
-                    Tab(child: Text("Overview".toUpperCase(), style: Theme.of(context).textTheme.titleSmall)),
-                    Tab(child: Text("Trends".toUpperCase(), style: Theme.of(context).textTheme.titleSmall)),
+                    Tab(
+                        child: Text("Overview".toUpperCase(),
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600))),
+                    Tab(
+                        child: Text("Trends".toUpperCase(),
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600))),
                   ],
                 ),
                 Expanded(

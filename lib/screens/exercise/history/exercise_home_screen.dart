@@ -105,9 +105,16 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
             bottom: TabBar(
               dividerColor: Colors.transparent,
               tabs: [
-                Tab(child: Text("Summary", style: Theme.of(context).textTheme.titleSmall)),
-                Tab(child: Text("History", style: Theme.of(context).textTheme.titleSmall)),
-                if (hasVideo) Tab(child: Text("Video", style: Theme.of(context).textTheme.titleSmall)),
+                Tab(
+                    child: Text("Summary",
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600))),
+                Tab(
+                    child: Text("History",
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600))),
+                if (hasVideo)
+                  Tab(
+                      child: Text("Video",
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600))),
               ],
             ),
             actions: exercise.owner == SharedPrefs().userId

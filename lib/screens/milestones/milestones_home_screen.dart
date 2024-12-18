@@ -25,8 +25,8 @@ class MilestonesHomeScreen extends StatelessWidget {
             bottom: TabBar(
               dividerColor: Colors.transparent,
               tabs: [
-                Tab(child: Text("Active".toUpperCase(), style: Theme.of(context).textTheme.titleSmall)),
-                Tab(child: Text("Completed".toUpperCase(), style: Theme.of(context).textTheme.titleSmall)),
+                Tab(child: Text("Active".toUpperCase(), style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600))),
+                Tab(child: Text("Completed".toUpperCase(), style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600))),
               ],
             ),
           ),
