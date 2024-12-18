@@ -47,7 +47,7 @@ class _ExerciseTypeScreenState extends State<ExerciseTypeScreen> {
                         subtitle: Text("${exerciseTypes[index].description} . . ."),
                         dense: true),
                     separatorBuilder: (BuildContext context, int index) =>
-                        Divider(color: Colors.white70.withOpacity(0.1)),
+                        Divider(color: Colors.white70.withValues(alpha:0.1)),
                     itemCount: exerciseTypes.length),
               ),
             ],

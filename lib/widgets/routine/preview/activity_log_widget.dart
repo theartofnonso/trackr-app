@@ -26,12 +26,10 @@ class ActivityLogWidget extends StatelessWidget {
 
     return ListTile(
       onTap: onTap,
-      contentPadding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       leading: Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         decoration: BoxDecoration(
-          color: Colors.greenAccent.withOpacity(0.1), // Background color
+          color: Colors.greenAccent.withValues(alpha:0.1), // Background color
           borderRadius: BorderRadius.circular(5), // Rounded corners
         ),
         child: image != null
@@ -47,8 +45,8 @@ class ActivityLogWidget extends StatelessWidget {
                 size: 20,
               ),
       ),
-      title: Text(activity.name.toUpperCase(), style: Theme.of(context).textTheme.bodyMedium),
-      trailing: Text(trailing, style: Theme.of(context).textTheme.bodySmall),
+      title: Text(activity.name.toUpperCase()),
+      trailing: Text(trailing),
     );
   }
 }

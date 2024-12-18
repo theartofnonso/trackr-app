@@ -52,7 +52,7 @@ import '../AI/monthly_training_report_screen.dart';
 import '../AI/trkr_coach_chat_screen.dart';
 import '../editors/routine_log_editor_screen.dart';
 import '../logs/routine_log_screen.dart';
-import 'monthly_insights_screen.dart';
+import '../../widgets/monthly_insights/monthly_insights.dart';
 
 class OverviewScreen extends StatefulWidget {
   final ScrollController scrollController;
@@ -127,7 +127,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       child: Column(children: [
                         const SizedBox(height: 12),
                         LogStreakMuscleTrendMonitor(dateTime: widget.dateTimeRange.start),
-                        if (isStartOfNewMonth)
+                        if (isStartOfNewMonth && exerciseAndRoutineController.logs.isNotEmpty)
                           Padding(
                             padding: const EdgeInsets.only(top: 24.0),
                             child: TRKRInformationContainer(
@@ -147,6 +147,16 @@ class _OverviewScreenState extends State<OverviewScreen> {
                                   scheduledToday: scheduledToday, isLogged: hasTodayScheduleBeenLogged),
                             ),
                           ),
+                        if (canNavigateNext)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 12),
+                              TRKRCoachButton(
+                                  label: "Review ${widget.dateTimeRange.start.formattedFullMonth()} insights.",
+                                  onTap: () => _generateMonthlyInsightsReport(datetime: widget.dateTimeRange.start)),
+                            ],
+                          ),
                         if (SharedPrefs().showCalendar)
                           Padding(
                             padding: const EdgeInsets.only(top: 16.0),
@@ -161,18 +171,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
                               ],
                             ),
                           ),
-                        if (canNavigateNext)
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 12),
-                              TRKRCoachButton(
-                                  label: "Review ${widget.dateTimeRange.start.formattedFullMonth()} insights.",
-                                  onTap: () => _generateMonthlyInsightsReport(datetime: widget.dateTimeRange.start)),
-                            ],
-                          ),
                         const SizedBox(height: 12),
-                        MonthlyInsightsScreen(dateTimeRange: widget.dateTimeRange),
+                        MonthlyInsights(dateTimeRange: widget.dateTimeRange),
                         const SizedBox(height: 18),
                         LogStreakChartWidget(),
                       ])),
@@ -574,7 +574,7 @@ class _ScheduledRoutineCard extends StatelessWidget {
                         height: 30,
                         padding: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
-                          color: vibrantGreen.withOpacity(0.1),
+                          color: vibrantGreen.withValues(alpha:0.1),
                           borderRadius: BorderRadius.circular(3),
                         ),
                         child: Image.asset(
@@ -602,7 +602,7 @@ class _ScheduledRoutineCard extends StatelessWidget {
                         height: 30,
                         padding: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
-                          color: vibrantBlue.withOpacity(0.1),
+                          color: vibrantBlue.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(3),
                         ),
                         child: Center(
@@ -630,7 +630,7 @@ class _ScheduledRoutineCard extends StatelessWidget {
                   height: 30,
                   padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
-                    color: vibrantGreen.withOpacity(0.1),
+                    color: vibrantGreen.withValues(alpha:0.1),
                     borderRadius: BorderRadius.circular(3),
                   ),
                   child: Center(

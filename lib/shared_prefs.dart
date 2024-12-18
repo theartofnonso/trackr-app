@@ -85,13 +85,4 @@ class SharedPrefs {
   set userEmail(String value) {
     _sharedPrefs?.setString(_userEmailKey, value);
   }
-
-  /// Show insights for the month
-  final String _showMonthlyInsightsKey = "show_monthly_insights_key";
-
-  bool get showMonthlyInsights => _sharedPrefs?.getBool(_showMonthlyInsightsKey) ?? true;
-
-  set showMonthlyInsights(bool value) {
-    _sharedPrefs?.setBool(_showMonthlyInsightsKey, value);
-  }
 }

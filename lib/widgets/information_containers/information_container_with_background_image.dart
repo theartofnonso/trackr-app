@@ -36,8 +36,8 @@ class BackgroundInformationContainer extends StatelessWidget {
                 colors: [
                   color,
                   color,
-                  color.withOpacity(0.4),
-                  sapphireLighter.withOpacity(0.5),
+                  color.withValues(alpha:0.4),
+                  sapphireLighter.withValues(alpha:0.5),
                 ],
               ),
             ),

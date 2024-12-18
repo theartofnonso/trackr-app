@@ -25,15 +25,13 @@ class RoutineLogShareableLite extends StatelessWidget {
     final imageFile = image;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
         child: RepaintBoundary(
           key: routineLogGlobalKey,
           child: Container(
             decoration: BoxDecoration(
-              border: Border.all(width: 2, color: sapphireLighter),
-              borderRadius: BorderRadius.circular(20),
               image: imageFile != null
                   ? DecorationImage(
                       image: imageFile.image,
@@ -61,7 +59,7 @@ class RoutineLogShareableLite extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      sapphireDark.withOpacity(0.4),
+                      sapphireDark.withValues(alpha: 0.4),
                       sapphireDark,
                     ],
                   )),
@@ -150,7 +148,7 @@ class _DateDurationPBWidget extends StatelessWidget {
             const SizedBox(width: 6),
             Text(datetimeSummary,
                 style: GoogleFonts.ubuntu(
-                    color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                    color: Colors.white.withValues(alpha: 0.95), fontWeight: FontWeight.w500, fontSize: 12)),
           ],
         ),
         const SizedBox(width: 10),
@@ -165,7 +163,7 @@ class _DateDurationPBWidget extends StatelessWidget {
             const SizedBox(width: 6),
             Text(duration.hmsAnalog(),
                 style: GoogleFonts.ubuntu(
-                    color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                    color: Colors.white.withValues(alpha: 0.95), fontWeight: FontWeight.w500, fontSize: 12)),
           ],
         ),
         const SizedBox(width: 10),

@@ -97,7 +97,7 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
                         muscleGroupDto: _filteredMuscleGroups[index],
                         onTap: () => _selectMuscleGroup(muscleGroupDto: _filteredMuscleGroups[index])),
                     separatorBuilder: (BuildContext context, int index) =>
-                        Divider(color: Colors.white70.withOpacity(0.1)),
+                        Divider(color: Colors.white70.withValues(alpha:0.1)),
                     itemCount: _filteredMuscleGroups.length),
               )
             ],

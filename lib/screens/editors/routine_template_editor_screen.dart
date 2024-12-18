@@ -253,7 +253,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
       });
     }
 
-    final exerciseLogs = context.select((ExerciseLogController provider) => provider.exerciseLogs);
+    final exerciseTemplates = context.select((ExerciseLogController provider) => provider.exerciseLogs);
 
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
 
@@ -265,9 +265,9 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                 icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28), onPressed: _checkForUnsavedChanges),
             actions: [
               IconButton(onPressed: _selectExercisesInLibrary, icon: const FaIcon(FontAwesomeIcons.solidSquarePlus)),
-              if (exerciseLogs.length > 1)
+              if (exerciseTemplates.length > 1)
                 IconButton(
-                    onPressed: () => _reOrderExerciseLogs(exerciseLogs: exerciseLogs),
+                    onPressed: () => _reOrderExerciseLogs(exerciseLogs: exerciseTemplates),
                     icon: const FaIcon(FontAwesomeIcons.barsStaggered)),
             ],
           ),
@@ -324,35 +324,35 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                         ),
                       ],
                     ),
-                    if (exerciseLogs.isNotEmpty)
+                    if (exerciseTemplates.isNotEmpty)
                       Expanded(
                         child: SingleChildScrollView(
                             padding: const EdgeInsets.only(bottom: 250),
                             child: Column(spacing: 20, children: [
-                              ...exerciseLogs.map((exerciseLog) {
-                                final isExerciseMinimised = _minimisedExerciseLogCards.contains(exerciseLog.id);
+                              ...exerciseTemplates.map((exerciseTemplate) {
+                                final isExerciseMinimised = _minimisedExerciseLogCards.contains(exerciseTemplate.id);
                                 return isExerciseMinimised
                                     ? ExerciseLogLiteWidget(
-                                        key: ValueKey(exerciseLog.id),
-                                        exerciseLogDto: exerciseLog,
+                                        key: ValueKey(exerciseTemplate.id),
+                                        exerciseLogDto: exerciseTemplate,
                                         superSet: whereOtherExerciseInSuperSet(
-                                            firstExercise: exerciseLog, exercises: exerciseLogs),
+                                            firstExercise: exerciseTemplate, exercises: exerciseTemplates),
                                         onMaximise: () =>
-                                            _handleResizedExerciseLogCard(exerciseIdToResize: exerciseLog.id),
+                                            _handleResizedExerciseLogCard(exerciseIdToResize: exerciseTemplate.id),
                                       )
                                     : ExerciseLogWidget(
-                                        key: ValueKey(exerciseLog.id),
-                                        exerciseLogDto: exerciseLog,
+                                        key: ValueKey(exerciseTemplate.id),
+                                        exerciseLogDto: exerciseTemplate,
                                         editorType: RoutineEditorMode.edit,
                                         superSet: whereOtherExerciseInSuperSet(
-                                            firstExercise: exerciseLog, exercises: exerciseLogs),
+                                            firstExercise: exerciseTemplate, exercises: exerciseTemplates),
                                         onRemoveSuperSet: (String superSetId) =>
-                                            exerciseLogController.removeSuperSet(superSetId: exerciseLog.superSetId),
-                                        onRemoveLog: () => exerciseLogController.removeExerciseLog(logId: exerciseLog.id),
-                                        onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
-                                        onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
-                                        onResize: () => _handleResizedExerciseLogCard(exerciseIdToResize: exerciseLog.id),
-                                        isMinimised: _isMinimised(exerciseLog.id),
+                                            exerciseLogController.removeSuperSet(superSetId: exerciseTemplate.superSetId),
+                                        onRemoveLog: () => exerciseLogController.removeExerciseLog(logId: exerciseTemplate.id),
+                                        onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseTemplate),
+                                        onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseTemplate),
+                                        onResize: () => _handleResizedExerciseLogCard(exerciseIdToResize: exerciseTemplate.id),
+                                        isMinimised: _isMinimised(exerciseTemplate.id),
                                         onTapWeightEditor: (SetDto setDto) {
                                           setState(() {
                                             _selectedSetDto = setDto;
@@ -374,7 +374,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                                       onPressed: template != null ? _updateRoutineTemplate : _createRoutineTemplate))
                             ])),
                       ),
-                    if (exerciseLogs.isEmpty)
+                    if (exerciseTemplates.isEmpty)
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10.0),

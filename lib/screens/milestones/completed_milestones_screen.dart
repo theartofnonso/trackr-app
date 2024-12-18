@@ -32,7 +32,7 @@ class CompletedMilestonesScreen extends StatelessWidget {
                     textStyle: GoogleFonts.ubuntu(
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
-                      color: Colors.white.withOpacity(0.9),
+                      color: Colors.white.withValues(alpha:0.9),
                     )),
                 const SizedBox(height: 20),
                 children.isNotEmpty

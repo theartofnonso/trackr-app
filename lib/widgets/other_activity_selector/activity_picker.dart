@@ -48,6 +48,9 @@ class _ActivityPickerState extends State<ActivityPicker> {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final errorMessage = _validateDate();
 
     final selectedActivity = _selectedActivity;
@@ -58,9 +61,10 @@ class _ActivityPickerState extends State<ActivityPicker> {
         ? Image.asset(
             'icons/$image.png',
             fit: BoxFit.contain,
-            height: 24, // Adjust the height as needed
+            height: 24,
+            color: isDarkMode ? Colors.white : Colors.black, // Adjust the height as needed
           )
-        : FaIcon(selectedActivity?.icon, color: Colors.white);
+        : FaIcon(selectedActivity?.icon);
 
     return SingleChildScrollView(
       child: Column(
@@ -69,8 +73,7 @@ class _ActivityPickerState extends State<ActivityPicker> {
           ListTile(
             onTap: _navigateToActivitySelector,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-            leading:
-                selectedActivity != null ? leadingWidget : const FaIcon(FontAwesomeIcons.personWalking),
+            leading: selectedActivity != null ? leadingWidget : const FaIcon(FontAwesomeIcons.personWalking),
             title: Text(
               selectedActivity != null ? selectedActivity.name : "Select Activity".toUpperCase(),
               style: Theme.of(context).textTheme.bodyMedium,
@@ -93,10 +96,7 @@ class _ActivityPickerState extends State<ActivityPicker> {
             ),
           ]),
           ListTile(
-              title: Text(
-                "Start Time",
-                style: Theme.of(context).textTheme.bodyLarge
-              ),
+              title: Text("Start Time", style: Theme.of(context).textTheme.bodyLarge),
               trailing: SizedBox(
                 width: 150,
                 child: SolidButtonWidget(

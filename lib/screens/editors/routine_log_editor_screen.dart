@@ -366,6 +366,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                             padding: const EdgeInsets.only(bottom: 250),
                             child: Column(spacing: 20, children: [
                               ...exerciseLogs.map((exerciseLog) {
+
                                 final isExerciseMinimised = _minimisedExerciseLogCards.contains(exerciseLog.id);
 
                                 return isExerciseMinimised
@@ -531,7 +532,7 @@ class _RoutineLogOverview extends StatelessWidget {
         child: Table(
           border: TableBorder(
               verticalInside:
-                  BorderSide(color: isDarkMode ? sapphireLighter.withOpacity(0.4) : Colors.white, width: 1)),
+                  BorderSide(color: isDarkMode ? sapphireLighter.withValues(alpha:0.4) : Colors.white, width: 1)),
           columnWidths: const <int, TableColumnWidth>{
             0: FlexColumnWidth(1),
             1: FlexColumnWidth(1),

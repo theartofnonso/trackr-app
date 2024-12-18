@@ -28,11 +28,11 @@ class OpacityButtonWidget extends StatelessWidget {
   }
 
   Color? _themeBackgroundColor({required bool isDarkMode}) {
-    return isDarkMode ? buttonColor?.withOpacity(0.15) : buttonColor;
+    return isDarkMode ? buttonColor?.withValues(alpha:0.15) : buttonColor;
   }
 
   Color _defaultBackgroundColor({required bool isDarkMode}) {
-    return isDarkMode ? Colors.white.withOpacity(0.15) : Colors.grey.shade200;
+    return isDarkMode ? Colors.white.withValues(alpha:0.15) : Colors.grey.shade200;
   }
 
   @override
@@ -48,7 +48,7 @@ class OpacityButtonWidget extends StatelessWidget {
           shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
           overlayColor: WidgetStateProperty.resolveWith<Color?>(
             (Set<WidgetState> states) {
-              return Colors.black.withOpacity(0.3); // Defer to the widget's default.
+              return Colors.black.withValues(alpha:0.3); // Defer to the widget's default.
             },
           ),
         ),

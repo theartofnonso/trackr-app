@@ -31,7 +31,7 @@ class SetsListview extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5), // Circular border radius
           border: Border.all(
-            color: Colors.deepOrange.withOpacity(0.2), // Border color
+            color: Colors.deepOrange.withValues(alpha:0.2), // Border color
             width: 2, // Border width
           ),
         ),

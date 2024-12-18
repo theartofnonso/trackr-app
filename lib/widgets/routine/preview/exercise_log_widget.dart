@@ -35,6 +35,12 @@ class ExerciseLogWidget extends StatelessWidget {
 
     final pbs = calculatePBs(pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseType, exerciseLog: exerciseLog);
 
+    final repRange = getRepRange(exerciseLog: exerciseLog);
+
+    final minReps = repRange.$1;
+
+    final maxReps = repRange.$2;
+
     return GestureDetector(
       onTap: () {
         Navigator.of(context)
@@ -44,7 +50,7 @@ class ExerciseLogWidget extends StatelessWidget {
         spacing: 12,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(exerciseLog.exercise.name, style: Theme.of(context).textTheme.titleMedium, textAlign: TextAlign.center),
+          Text(exerciseLog.exercise.name, style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600), textAlign: TextAlign.center),
           if (otherSuperSet != null)
             Wrap(
               crossAxisAlignment: WrapCrossAlignment.center,
@@ -59,6 +65,15 @@ class ExerciseLogWidget extends StatelessWidget {
             ),
           if (exerciseLog.notes.isNotEmpty)
             Text(exerciseLog.notes, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
+          Row(
+            spacing: 4,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("$minReps"),
+              FaIcon(FontAwesomeIcons.arrowRight,size: 12,),
+              Text("$maxReps REPS"),
+            ],
+          ),
           switch (exerciseType) {
             ExerciseType.weights => DoubleSetHeader(firstLabel: weightLabel().toUpperCase(), secondLabel: 'REPS'),
             ExerciseType.bodyWeight => SingleSetHeader(label: 'REPS'),

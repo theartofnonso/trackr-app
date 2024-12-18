@@ -73,7 +73,7 @@ class _ExerciseLogWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: Text(exerciseLog.notes,
                     style: GoogleFonts.ubuntu(
-                        fontWeight: FontWeight.w600, color: Colors.white.withOpacity(0.8), fontSize: 15)),
+                        fontWeight: FontWeight.w600, color: Colors.white.withValues(alpha:0.8), fontSize: 15)),
               )
             : const SizedBox.shrink(),
         switch (exerciseType) {

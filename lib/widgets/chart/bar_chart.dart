@@ -54,7 +54,7 @@ class CustomBarChart extends StatelessWidget {
                 drawVerticalLine: false,
                 checkToShowHorizontalLine: (value) => true,
                 getDrawingHorizontalLine: (value) => FlLine(
-                  color: isDarkMode ? Colors.white.withOpacity(0.1) : Colors.grey.shade200,
+                  color: isDarkMode ? Colors.white.withValues(alpha:0.1) : Colors.grey.shade200,
                   strokeWidth: 0.5,
                 ),
               ),

@@ -13,6 +13,7 @@ import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
+import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/weight_and_reps_set_header.dart';
@@ -96,10 +97,25 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     }
   }
 
+  void _showRepRangeSelector({required int min, required int max}) {
+    displayBottomSheet(
+        context: context,
+        child: _RepRangeSlider(
+            exercise: widget.exerciseLogDto.exercise.name,
+            min: min,
+            max: max,
+            onSelectRange: _updateExerciseLogRepRange));
+  }
+
   void _updateExerciseLogNotes({required String value}) {
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateExerciseLogNotes(exerciseLogId: widget.exerciseLogDto.id, value: value);
     _cacheLog();
+  }
+
+  void _updateExerciseLogRepRange(RangeValues values) {
+    Provider.of<ExerciseLogController>(context, listen: false)
+        .updateExerciseLogRepRange(exerciseLogId: widget.exerciseLogDto.id, values: values);
   }
 
   void _loadControllers({required List<SetDto> sets}) {
@@ -265,11 +281,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     widget.onTapRepsEditor(setDto);
   }
 
-  List<SetDto> _getPreviousSets({required BuildContext context}) {
-    return Provider.of<ExerciseAndRoutineController>(context, listen: false)
-        .whereSetsForExercise(exercise: widget.exerciseLogDto.exercise);
-  }
-
   void _togglePreviousSets() {
     setState(() {
       _showPreviousSets = !_showPreviousSets;
@@ -313,15 +324,25 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final sets = widget.exerciseLogDto.sets;
+    final exerciseLog = widget.exerciseLogDto;
+
+    final sets = exerciseLog.sets;
 
     final superSetExerciseDto = widget.superSet;
 
-    final exerciseType = widget.exerciseLogDto.exercise.type;
+    final exerciseType = exerciseLog.exercise.type;
+
+    final previousSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
+        .whereSetsForExercise(exercise: widget.exerciseLogDto.exercise);
+
+    final repRange = getRepRange(exerciseLog: exerciseLog);
+
+    final minReps = repRange.$1;
+
+    final maxReps = repRange.$2;
 
     return Container(
       padding: const EdgeInsets.all(10),
@@ -468,12 +489,17 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   updateDuration: _updateDuration,
                 ),
             },
-          if (_showPreviousSets) SetsListview(type: exerciseType, sets: _getPreviousSets(context: context)),
+          if (_showPreviousSets) SetsListview(type: exerciseType, sets: previousSets),
           if (withDurationOnly(type: exerciseType) && sets.isEmpty)
             Center(
               child: Text("Tap + to add a timer", style: Theme.of(context).textTheme.bodySmall),
             ),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            if (exerciseType != ExerciseType.duration)
+              OpacityButtonWidget(
+                  onPressed: () => _showRepRangeSelector(min: minReps, max: maxReps),
+                  label: "Target Reps: $minReps - $maxReps".toUpperCase(),
+                  buttonColor: vibrantGreen),
             const Spacer(),
             IconButton(
               onPressed: _togglePreviousSets,
@@ -496,7 +522,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             ),
             IconButton(
               onPressed: _addSet,
-              icon: const FaIcon(FontAwesomeIcons.plus, size: 16),
+              icon: const FaIcon(FontAwesomeIcons.plus, size: 18),
               tooltip: 'Add new set',
             ),
           ])
@@ -740,5 +766,93 @@ class _OneRepMaxSliderState extends State<_OneRepMaxSlider> {
   void initState() {
     super.initState();
     _weight = _weightForPercentage(reps: 10);
+  }
+}
+
+class _RepRangeSlider extends StatefulWidget {
+  final String exercise;
+  final int min;
+  final int max;
+  final void Function(RangeValues values) onSelectRange;
+
+  const _RepRangeSlider({required this.exercise, required this.min, required this.max, required this.onSelectRange});
+
+  @override
+  State<_RepRangeSlider> createState() => _RepRangeSliderState();
+}
+
+class _RepRangeSliderState extends State<_RepRangeSlider> {
+  int _min = 0;
+  int _max = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+            "Setting rep ranges for each exercise helps you target specific fitness goals: low reps build strength, moderate reps grow muscle, and high reps improve endurance.", style: Theme.of(context).textTheme.bodyMedium),
+        const SizedBox(height: 10),
+        RichText(
+          text: TextSpan(
+            text: "Select a rep range for ${widget.exercise}",
+            style: Theme.of(context).textTheme.bodyLarge,
+            children: [
+              TextSpan(
+                text: "\n",
+              ),
+              TextSpan(
+                text: "$_min ${pluralize(word: "rep", count: widget.min)}",
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+              ),
+              TextSpan(
+                text: " ",
+              ),
+              TextSpan(
+                text: "to",
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w500),
+              ),
+              TextSpan(text: " "),
+              TextSpan(
+                text: "$_max ${pluralize(word: "rep", count: widget.max)}",
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+              )
+            ],
+          ),
+        ),
+        const SizedBox(height: 10),
+        RangeSlider(
+          values: RangeValues(_min.toDouble(), _max.toDouble()),
+          onChanged: onChanged,
+          min: 1,
+          max: 20,
+          activeColor: vibrantGreen,
+        ),
+        const SizedBox(height: 10),
+        SizedBox(
+            width: double.infinity,
+            height: 40,
+            child: OpacityButtonWidget(label: "Select range", buttonColor: vibrantGreen, onPressed: onSelectRepRange))
+      ],
+    );
+  }
+
+  void onChanged(RangeValues values) {
+    setState(() {
+      _min = values.start.toInt();
+      _max = values.end.toInt();
+    });
+  }
+
+  void onSelectRepRange() {
+    Navigator.of(context).pop();
+    widget.onSelectRange(RangeValues(_min.toDouble(), _max.toDouble()));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _min = widget.min;
+    _max = widget.max;
   }
 }

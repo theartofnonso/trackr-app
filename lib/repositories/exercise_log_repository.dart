@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
 
 import '../dtos/appsync/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
@@ -95,8 +96,29 @@ class ExerciseLogRepository {
 
   void updateExerciseLogNotes({required String exerciseLogId, required String value}) {
     final exerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: exerciseLogId);
+
+    if (exerciseLogIndex == -1) {
+      return;
+    }
+
     final exerciseLog = _exerciseLogs[exerciseLogIndex];
     _exerciseLogs[exerciseLogIndex] = exerciseLog.copyWith(notes: value);
+  }
+
+  void updateExerciseLogRepRange({required String exerciseLogId, required RangeValues values}) {
+    final exerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: exerciseLogId);
+
+    if (exerciseLogIndex == -1) {
+      return;
+    }
+
+    final exerciseLog = _exerciseLogs[exerciseLogIndex];
+
+    final exerciseLogs =  List<ExerciseLogDto>.from(_exerciseLogs);
+
+    exerciseLogs[exerciseLogIndex] = exerciseLog.copyWith(minReps: values.start.toInt(), maxReps: values.end.toInt());
+
+    _exerciseLogs = [...exerciseLogs];
   }
 
   void addSuperSets(

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../../colors.dart';
 import '../../../../dtos/pb_dto.dart';
-import '../../preview/set_rows/set_row.dart';
+import '../../../pbs/pb_icon.dart';
 
 class SingleSetRow extends StatelessWidget {
   final String label;
@@ -12,16 +13,31 @@ class SingleSetRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
     final color = borderColor ?? (isDarkMode ? Colors.white10 : Colors.white);
 
-    return SetRow(
-        pbs: pbs,
+    final pbsForSet = pbs
+        .map((pb) => PBIcon(
+              label: pb.pb.name,
+              size: 12,
+            ))
+        .toList();
+
+    return Badge(
+        alignment: Alignment.topLeft,
+        backgroundColor: Colors.transparent,
+        label: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6),
+          decoration: BoxDecoration(
+            color: pbs.isNotEmpty ? (isDarkMode ? sapphireDark80 : Colors.grey.shade200) : null,
+            borderRadius: BorderRadius.circular(5), // Rounded corners
+          ),
+          child: Row(spacing: 6, children: pbsForSet),
+        ),
         child: Table(
-          border: TableBorder.all(color: color, borderRadius: BorderRadius.circular(5)),
+            border: TableBorder.all(color: color, borderRadius: BorderRadius.circular(5)),
             columnWidths: const <int, TableColumnWidth>{
               0: FlexColumnWidth(),
             },
