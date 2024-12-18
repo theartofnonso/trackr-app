@@ -250,7 +250,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                 presentAlert: true,
                 presentBadge: false,
                 presentSound: false,
-                presentBanner: false,
+                presentBanner: true,
+                interruptionLevel: InterruptionLevel.active
               ),
             ),
             payload: response);

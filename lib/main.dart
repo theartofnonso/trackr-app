@@ -133,7 +133,7 @@ void main() async {
 
   const DarwinInitializationSettings iOSInitializationSettingsDarwin = DarwinInitializationSettings(
     requestAlertPermission: true,
-    requestBadgePermission: false,
+    requestBadgePermission: true,
     requestSoundPermission: false,
   );
 
