@@ -70,6 +70,7 @@ class _LogsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("${DateTime.now().formattedFullMonth()} Activities".toUpperCase()),
+        centerTitle: true,
         leading: IconButton(
             icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28), onPressed: Navigator.of(context).pop),
       ),

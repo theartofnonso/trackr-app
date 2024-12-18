@@ -89,7 +89,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 ),
                 ListTile(
                   tileColor: Colors.transparent,
-                  title: Text("Weight"),
+                  title: Text("Weight", style: Theme.of(context).textTheme.titleMedium),
                   subtitle: Text("Choose kg or lbs"),
                   trailing: SegmentedButton(
                     showSelectedIcon: false,
@@ -133,7 +133,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 SwitchListTile(
                   tileColor: Colors.transparent,
                   activeColor: vibrantGreen,
-                  title: Text('Show calendar'),
+                  title: Text('Show calendar', style: Theme.of(context).textTheme.titleMedium),
                   value: SharedPrefs().showCalendar,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                   onChanged: (bool value) {
@@ -148,7 +148,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   tileColor: Colors.transparent,
                   activeColor: vibrantGreen,
                   title: Text(
-                    'Show calendar dates',
+                    'Show calendar dates', style: Theme.of(context).textTheme.titleMedium
                   ),
                   value: SharedPrefs().showCalendarDates,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -163,30 +163,30 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 8),
-                    ListTile(onTap: _navigateToUserProfile, title: Text("Profile"), trailing: Text("manage profile")),
+                    ListTile(onTap: _navigateToUserProfile, title: Text("Profile", style: Theme.of(context).textTheme.titleMedium), trailing: Text("manage profile")),
                   ],
                 ),
                 const SizedBox(height: 8),
                 ListTile(
-                    onTap: _navigateToExerciseLibrary, title: Text("Exercises"), trailing: Text("manage exercises")),
+                    onTap: _navigateToExerciseLibrary, title: Text("Exercises", style: Theme.of(context).textTheme.titleMedium), trailing: Text("manage exercises")),
                 if (Platform.isIOS)
                   Column(children: [
                     const SizedBox(height: 8),
                     ListTile(
                         onTap: _navigateToNotificationSettings,
-                        title: Text("Notifications"),
+                        title: Text("Notifications", style: Theme.of(context).textTheme.titleMedium),
                         trailing: Text(_notificationEnabled ? "Enabled" : "Disabled")),
                   ]),
                 const SizedBox(height: 8),
-                ListTile(onTap: _sendFeedback, title: Text("Feedback"), trailing: Text("Help us improve")),
+                ListTile(onTap: _sendFeedback, title: Text("Feedback", style: Theme.of(context).textTheme.titleMedium), trailing: Text("Help us improve")),
                 const SizedBox(height: 8),
-                ListTile(onTap: _visitTRKR, title: Text("Visit TRKR"), trailing: Text("Follow us on socials")),
+                ListTile(onTap: _visitTRKR, title: Text("Visit TRKR", style: Theme.of(context).textTheme.titleMedium), trailing: Text("Follow us on socials")),
                 const SizedBox(height: 8),
-                ListTile(onTap: _navigateTutorialScreen, title: Text("Tutorials"), trailing: Text("Learn about TRKR")),
+                ListTile(onTap: _navigateTutorialScreen, title: Text("Tutorials", style: Theme.of(context).textTheme.titleMedium), trailing: Text("Learn about TRKR")),
                 const SizedBox(height: 8),
-                ListTile(onTap: _logout, title: Text("Logout"), trailing: Text(SharedPrefs().userEmail)),
+                ListTile(onTap: _logout, title: Text("Logout", style: Theme.of(context).textTheme.titleMedium), trailing: Text(SharedPrefs().userEmail)),
                 const SizedBox(height: 8),
-                ListTile(onTap: _delete, title: Text("Delete Account"), trailing: Text(SharedPrefs().userEmail)),
+                ListTile(onTap: _delete, title: Text("Delete Account", style: Theme.of(context).textTheme.titleMedium), trailing: Text(SharedPrefs().userEmail)),
                 const SizedBox(height: 10),
                 Center(
                   child: Text(_appVersion,

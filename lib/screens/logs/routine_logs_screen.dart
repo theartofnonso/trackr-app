@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
@@ -28,11 +27,10 @@ class RoutineLogsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("$month Strength Training".toUpperCase(),
-            style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w600)),
+        title: Text("$month Strength Training".toUpperCase()),
         leading: IconButton(
-            icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
-            onPressed: Navigator.of(context).pop),
+            icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28), onPressed: Navigator.of(context).pop),
+        centerTitle: true,
       ),
       body: Container(
         width: double.infinity,
@@ -50,20 +48,19 @@ class RoutineLogsScreen extends StatelessWidget {
                           padding: const EdgeInsets.only(bottom: 150),
                           itemBuilder: (BuildContext context, int index) {
                             final log = logs[index];
-                            return RoutineLogWidget(
-                                log: log,
-                                trailing: log.createdAt.durationSinceOrDate());
+                            return RoutineLogWidget(log: log, trailing: log.createdAt.durationSinceOrDate());
                           },
                           separatorBuilder: (BuildContext context, int index) =>
-                              Divider(color: Colors.white70.withValues(alpha:0.1)),
+                              Divider(color: Colors.white70.withValues(alpha: 0.1)),
                           itemCount: logs.length),
                     )
                   : Expanded(
-                    child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: const NoListEmptyState(message: "It might feel quiet now, but your logged workouts will soon appear here."),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: const NoListEmptyState(
+                            message: "It might feel quiet now, but your logged workouts will soon appear here."),
+                      ),
                     ),
-                  ),
             ],
           ),
         ),

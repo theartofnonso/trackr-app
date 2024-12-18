@@ -29,6 +29,7 @@ class ActivityLogsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("$month Activities".toUpperCase()),
+        centerTitle: true,
         leading: IconButton(
             icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28), onPressed: Navigator.of(context).pop),
       ),

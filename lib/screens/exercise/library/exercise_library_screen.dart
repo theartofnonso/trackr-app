@@ -130,6 +130,8 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
           icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
           onPressed: () => context.pop(),
         ),
+        title: Text("Exercise Library".toUpperCase()),
+        centerTitle: true,
       ),
       floatingActionButton: FloatingActionButton(
         heroTag: "fab_exercise_library_screen",
