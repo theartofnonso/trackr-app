@@ -104,7 +104,8 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                   ],
                 ),
                 const SizedBox(height: 16),
-                Row(
+                if(exercise != null)
+                  Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text("Choose how to log this exercise",
