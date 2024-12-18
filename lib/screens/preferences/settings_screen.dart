@@ -303,6 +303,16 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 Navigator.of(context).pop();
                 openUrl(url: instagramUrl, context: context);
               },
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(FontAwesomeIcons.whatsapp, size: 20),
+              horizontalTitleGap: 6,
+              title: Text("Join our Whatsapp community", style: Theme.of(context).textTheme.bodyLarge),
+              onTap: () {
+                Navigator.of(context).pop();
+                openUrl(url: whatsappUrl, context: context);
+              },
             )
           ]),
         ));
