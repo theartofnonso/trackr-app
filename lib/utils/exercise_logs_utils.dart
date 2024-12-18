@@ -495,6 +495,7 @@ int calculateMuscleScoreForLog({required RoutineLogDto routineLog}) {
       // Extract reps for each set and find the max
       final repsList = sets.map((set) => extractReps(set, exerciseType)).toList();
       computedMaxReps = repsList.isNotEmpty ? repsList.reduce((a, b) => a > b ? a : b) : 10;
+      computedMaxReps = computedMaxReps > 0 ? computedMaxReps : 12;
     } else {
       // If no sets are recorded, default to 10
       computedMaxReps = 10;
@@ -508,7 +509,7 @@ int calculateMuscleScoreForLog({required RoutineLogDto routineLog}) {
     computedMinReps = exerciseLog.minReps;
   } else {
     // If no explicit minReps is given, base it on computedMaxReps
-    computedMinReps = (computedMaxReps > 5) ? (computedMaxReps - 2) : 1;
+    computedMinReps = (computedMaxReps > 5) ? (computedMaxReps - 2) : 10;
   }
 
   return (computedMinReps, computedMaxReps);
