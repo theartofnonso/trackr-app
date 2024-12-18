@@ -16,22 +16,23 @@ class CSearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SearchBar(
-      controller: controller,
-      onChanged: onChanged,
-      trailing: [
-        IconButton(
-          onPressed: onClear,
-          icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white,),
-        )
-      ],
-      hintText: hintText,
-      hintStyle: WidgetStatePropertyAll<TextStyle>(GoogleFonts.ubuntu(color: Colors.white)),
-      textStyle: WidgetStatePropertyAll<TextStyle>(GoogleFonts.ubuntu(color: Colors.white)),
-      surfaceTintColor: WidgetStatePropertyAll<Color>(sapphireLight),
-      backgroundColor: WidgetStatePropertyAll<Color>(sapphireDark),
-      shape: WidgetStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(5.0),
-      ))
-    );
+        controller: controller,
+        onChanged: onChanged,
+        trailing: [
+          IconButton(
+            onPressed: onClear,
+            icon: const FaIcon(
+              FontAwesomeIcons.squareXmark,
+              color: Colors.white,
+            ),
+          )
+        ],
+        hintText: hintText,
+        hintStyle: WidgetStatePropertyAll<TextStyle>(GoogleFonts.ubuntu(color: Colors.white70)),
+        textStyle: WidgetStatePropertyAll<TextStyle>(GoogleFonts.ubuntu(color: Colors.white)),
+        backgroundColor: WidgetStatePropertyAll<Color>(sapphireDark),
+        shape: WidgetStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5.0),
+        )));
   }
 }
