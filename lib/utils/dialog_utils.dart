@@ -24,8 +24,11 @@ import '../widgets/timers/hour_timer_picker.dart';
 import '../widgets/timers/time_picker.dart';
 
 void showSnackbar({required BuildContext context, required Widget icon, required String message}) {
+  Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+  final isDarkMode = systemBrightness == Brightness.dark;
+
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      backgroundColor: sapphireDark,
+      backgroundColor: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
       behavior: SnackBarBehavior.fixed,
       content: Row(
         children: [
@@ -36,11 +39,7 @@ void showSnackbar({required BuildContext context, required Widget icon, required
           Expanded(
             child: Text(
               message,
-              style: GoogleFonts.ubuntu(
-                fontSize: 14.0,
-                fontWeight: FontWeight.w400,
-                color: Colors.white,
-              ),
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
           ),
         ],

@@ -41,7 +41,7 @@ void onShare(
               borderRadius: BorderRadius.circular(20),
               child: Container(
                   decoration: BoxDecoration(
-                      color: isDarkMode ? sapphireDark80 : Colors.grey.shade100,
+                      color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
                       gradient: isDarkMode ? themeGradient(context: context) : null),
                   padding: padding ?? const EdgeInsets.all(12),
                   child: child),
