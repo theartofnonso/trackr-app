@@ -361,7 +361,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             ),
             ListTile(
               contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(FontAwesomeIcons.solidFloppyDisk, size: 18),
+              leading: const FaIcon(FontAwesomeIcons.download, size: 18),
               horizontalTitleGap: 6,
               title: Text("Save as template"),
               onTap: _createTemplate,
