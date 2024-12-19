@@ -81,6 +81,7 @@ class NotificationsScreen extends StatelessWidget {
             gradient: themeGradient(context: context),
           ),
           child: SafeArea(
+            bottom: false,
             minimum: const EdgeInsets.all(10.0),
             child: const _NotificationListView(),
           ),
