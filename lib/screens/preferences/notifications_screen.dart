@@ -258,10 +258,6 @@ class _NotificationListViewState extends State<_NotificationListView> {
     final dailyNotification = _DailyNotificationListTile(
         enabled: isDailyNotificationEnabled, schedule: _schedules.firstOrNull, onScheduleChanged: _loadSchedules);
 
-    if (isDailyNotificationEnabled) {
-      return dailyNotification;
-    }
-
     final listItems = [dailyNotification, ...children];
 
     return ListView.separated(
