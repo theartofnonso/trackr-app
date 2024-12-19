@@ -112,24 +112,28 @@ class _NotificationSwitch extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(5),
       ),
-      margin: const EdgeInsets.only(bottom: 10),
       child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(title, style: Theme.of(context).textTheme.titleSmall),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Text(title, style: Theme.of(context).textTheme.bodyLarge),
+              ),
               if (enabled)
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                const SizedBox(height: 8),
-                OpacityButtonWidget(onPressed: onPressed, label: subtitle)
-              ]),
+                  OpacityButtonWidget(
+                    onPressed: onPressed,
+                    label: subtitle,
+                    buttonColor: vibrantGreen,
+                  )
+                ]),
             ]),
             Switch(
               activeColor: vibrantGreen,
-              inactiveThumbColor: Colors.white70,
               value: enabled,
               onChanged: onChanged,
             )
@@ -258,7 +262,18 @@ class _NotificationListViewState extends State<_NotificationListView> {
       return dailyNotification;
     }
 
-    return Column(children: [dailyNotification, const SizedBox(height: 16), ...children]);
+    final listItems = [dailyNotification, ...children];
+
+    return ListView.separated(
+        itemBuilder: (context, index) {
+          return listItems[index];
+        },
+        separatorBuilder: (context, index) {
+          return const SizedBox(
+            height: 10,
+          );
+        },
+        itemCount: listItems.length);
   }
 
   void _loadSchedules() async {
