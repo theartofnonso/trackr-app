@@ -73,7 +73,7 @@ class NotificationsScreen extends StatelessWidget {
             onPressed: context.pop,
           ),
           title: Text(
-            "Notifications",
+            "Notifications".toUpperCase(),
           ),
         ),
         body: Container(

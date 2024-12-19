@@ -39,6 +39,7 @@ class TRKRTheme {
       tabBarTheme: TabBarThemeData(
         indicatorColor: Colors.black,
       ),
+      switchTheme: SwitchThemeData(thumbColor: WidgetStateColor.resolveWith((states) => Colors.grey.shade600),),
       menuBarTheme: TRKRMenuBarTheme.lightTheme,
       textSelectionTheme: TextSelectionThemeData(cursorColor: Colors.white),
       floatingActionButtonTheme: TRKRFloatingActionButtonTheme.lightTheme);
@@ -69,6 +70,7 @@ class TRKRTheme {
       tabBarTheme: TabBarThemeData(
         indicatorColor: Colors.white,
       ),
+      switchTheme: SwitchThemeData(thumbColor: WidgetStateColor.resolveWith((states) => Colors.white70),),
       menuBarTheme: TRKRMenuBarTheme.darkTheme,
       textSelectionTheme: TextSelectionThemeData(cursorColor: Colors.white),
       navigationBarTheme: TRKRNavigationBarTheme.darkTheme);
