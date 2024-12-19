@@ -40,7 +40,7 @@ class TRKRTheme {
         indicatorColor: Colors.black,
       ),
       menuBarTheme: TRKRMenuBarTheme.lightTheme,
-      textSelectionTheme: TextSelectionThemeData(cursorColor: Colors.black),
+      textSelectionTheme: TextSelectionThemeData(cursorColor: Colors.white),
       floatingActionButtonTheme: TRKRFloatingActionButtonTheme.lightTheme);
 
   static ThemeData darkTheme = ThemeData(
