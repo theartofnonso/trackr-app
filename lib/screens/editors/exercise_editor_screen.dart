@@ -108,7 +108,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                     Expanded(
                       child: Text("Choose from a list of muscle groups to train for this custom exercise.",
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.grey.shade200)),
+                              fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
                     ),
                     const SizedBox(width: 10),
                     OpacityButtonWidget(label: _primaryMuscleGroup.name, onPressed: _navigateToMuscleGroupsScreen)
@@ -129,7 +129,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                     Expanded(
                       child: Text("You can log this exercise using reps only, reps and weights or duration.",
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.grey.shade200)),
+                              fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
                     ),
                     const SizedBox(width: 10),
                     OpacityButtonWidget(label: _exerciseType.name, onPressed: _navigateToExerciseTypeScreen)
