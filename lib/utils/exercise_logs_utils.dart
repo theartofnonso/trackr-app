@@ -484,31 +484,41 @@ int calculateMuscleScoreForLog({required RoutineLogDto routineLog}) {
     }
   }
 
+  int computedMinReps;
+
+  if (exerciseLog.minReps > 0) {
+    // If minReps is already defined, just use it
+    computedMinReps = exerciseLog.minReps;
+  } else {
+    // If no explicit minReps is given, derive from the sets
+    if (sets.isNotEmpty) {
+      final repsList = sets.map((set) => extractReps(set, exerciseType)).toList();
+      computedMinReps = repsList.isNotEmpty ? repsList.min : 10;
+    } else {
+      // If no sets are recorded, default to 10
+      computedMinReps = 10;
+    }
+  }
+
   int computedMaxReps;
-  // Determine maxReps:
+
   if (exerciseLog.maxReps > 0) {
     // If maxReps is already defined, just use it
     computedMaxReps = exerciseLog.maxReps;
   } else {
-    // If no explicit maxReps is given, derive from the sets
+    // If no explicit minReps is given, derive from the sets
     if (sets.isNotEmpty) {
       final repsList = sets.map((set) => extractReps(set, exerciseType)).toList();
-      computedMaxReps = repsList.isNotEmpty ? repsList.reduce((a, b) => a > b ? a : b) : 10;
-      // If computed max is 0 or negative, default to 12
-      computedMaxReps = (computedMaxReps > 0) ? computedMaxReps : 12;
+      computedMaxReps = repsList.isNotEmpty ? repsList.max : computedMinReps + 3;
     } else {
       // If no sets are recorded, default to 10
-      computedMaxReps = 10;
+      computedMaxReps = computedMinReps + 3;
     }
   }
 
-  int computedMinReps;
-  // Determine minReps:
-  if (exerciseLog.minReps > 0) {
-    computedMinReps = exerciseLog.minReps;
-  } else {
-    // If no explicit minReps, base it on computedMaxReps
-    computedMinReps = (computedMaxReps > 5) ? (computedMaxReps - 2) : 10;
+  // Ensure minReps is always greater than 1
+  if (computedMinReps <= 0) {
+    computedMinReps = computedMinReps + 1;
   }
 
   // Ensure maxReps is always greater than minReps
