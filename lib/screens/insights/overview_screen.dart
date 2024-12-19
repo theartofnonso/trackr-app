@@ -425,12 +425,13 @@ class _OverviewScreenState extends State<OverviewScreen> {
                 Navigator.of(context).pop();
                 showActivityPicker(
                     context: context,
-                    onChangedActivity: (ActivityType activity, DateTimeRange datetimeRange) {
+                    onChangedActivity: (ActivityType activity, DateTimeRange datetimeRange, String activitySummary) {
                       Navigator.of(context).pop();
                       final activityLog = ActivityLogDto(
                           id: "id",
                           name: activity.name,
                           notes: "",
+                          summary: activitySummary,
                           startTime: datetimeRange.start,
                           endTime: datetimeRange.end,
                           createdAt: datetimeRange.end,

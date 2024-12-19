@@ -135,14 +135,17 @@ void showActivityPicker(
     {required BuildContext context,
     ActivityType? initialActivityType,
     DateTimeRange? initialDateTimeRange,
-    required void Function(ActivityType activity, DateTimeRange datetimeRange) onChangedActivity}) {
+      String? activitySummary,
+    required void Function(ActivityType activity, DateTimeRange datetimeRange, String activitySummary) onChangedActivity}) {
   FocusScope.of(context).unfocus();
   displayBottomSheet(
       context: context,
+      padding: EdgeInsets.zero,
       child: ActivityPicker(
         initialActivityType: initialActivityType,
         initialDateTimeRange: initialDateTimeRange,
         onSelectActivity: onChangedActivity,
+        activitySummary: activitySummary,
       ),
       isScrollControlled: true);
 }
@@ -178,13 +181,13 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
             const SizedBox(
               width: 8,
             ),
-            Text(activity.name.toUpperCase(), style: Theme.of(context).textTheme.titleMedium),
+            Text(activity.nameOrSummary.toUpperCase(), style: Theme.of(context).textTheme.titleMedium),
           ],
         ),
         const SizedBox(
           height: 12,
         ),
-        Text("You completed ${activity.duration().hmsAnalog()} of ${activity.name}",
+        Text("You completed ${activity.duration().hmsAnalog()} of ${activity.nameOrSummary}",
             style: Theme.of(context).textTheme.bodyMedium),
         const SizedBox(
           height: 6,
@@ -229,10 +232,11 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
                 initialActivityType: activityType,
                 initialDateTimeRange: DateTimeRange(start: activity.startTime, end: activity.endTime),
                 context: context,
-                onChangedActivity: (ActivityType activityType, DateTimeRange datetimeRange) {
+                onChangedActivity: (ActivityType activityType, DateTimeRange datetimeRange, String activitySummary) {
                   Navigator.of(context).pop();
                   final updatedActivity = activity.copyWith(
                       name: activityType.name,
+                      summary: activitySummary,
                       startTime: datetimeRange.start,
                       endTime: datetimeRange.end,
                       createdAt: datetimeRange.start,

@@ -45,7 +45,7 @@ class ActivityLogWidget extends StatelessWidget {
                 size: 20,
               ),
       ),
-      title: Text(activity.name.toUpperCase()),
+      title: Text(activity.nameOrSummary.toUpperCase()),
       trailing: Text(trailing),
     );
   }

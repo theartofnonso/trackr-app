@@ -21,6 +21,8 @@ class ActivityLogDto extends Log {
   final DateTime createdAt;
   @override
   final DateTime updatedAt;
+  final String color;
+  final String summary;
 
   ActivityLogDto({
     required this.id,
@@ -29,6 +31,8 @@ class ActivityLogDto extends Log {
     required this.startTime,
     required this.endTime,
     required this.owner,
+    this.color = "",
+    this.summary = "",
     required this.createdAt,
     required this.updatedAt,
   });
@@ -46,6 +50,8 @@ class ActivityLogDto extends Log {
     final dataJson = jsonDecode(log.data);
     final name = dataJson["name"] ?? "";
     final notes = dataJson["notes"] ?? "";
+    final color = dataJson["color"] ?? "";
+    final summary = dataJson["summary"] ?? "";
     final startTime = DateTime.parse(dataJson["startTime"]);
     final endTime = DateTime.parse(dataJson["endTime"]);
 
@@ -55,8 +61,11 @@ class ActivityLogDto extends Log {
       notes: notes,
       startTime: startTime,
       endTime: endTime,
+      color: color,
+      summary: summary,
       createdAt: log.createdAt.getDateTimeInUtc(),
-      updatedAt: log.updatedAt.getDateTimeInUtc(), owner: log.owner ?? "",
+      updatedAt: log.updatedAt.getDateTimeInUtc(),
+      owner: log.owner ?? "",
     );
   }
 
@@ -65,6 +74,8 @@ class ActivityLogDto extends Log {
       'id': id,
       'name': name,
       'notes': notes,
+      'color': color,
+      'summary': summary,
       'startTime': startTime.toIso8601String(),
       'endTime': endTime.toIso8601String(),
     };
@@ -75,6 +86,8 @@ class ActivityLogDto extends Log {
     String? id,
     String? name,
     String? notes,
+    String? color,
+    String? summary,
     DateTime? startTime,
     DateTime? endTime,
     String? owner,
@@ -88,6 +101,8 @@ class ActivityLogDto extends Log {
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
       owner: owner ?? this.owner,
+      color: color ?? this.color,
+      summary: summary ?? this.summary,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -95,7 +110,7 @@ class ActivityLogDto extends Log {
 
   @override
   String toString() {
-    return 'ActivityLogDto{id: $id, name: $name, notes: $notes, startTime: $startTime, endTime: $endTime, createdAt: $createdAt, updatedAt: $updatedAt}';
+    return 'ActivityLogDto{id: $id, name: $name, notes: $notes, color: $color, summary: $summary, startTime: $startTime, endTime: $endTime, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
 
   @override
@@ -103,4 +118,6 @@ class ActivityLogDto extends Log {
 
   @override
   ActivityType get activityType => ActivityType.fromJson(name);
+
+  String get nameOrSummary => summary.isNotEmpty ? summary : name;
 }
