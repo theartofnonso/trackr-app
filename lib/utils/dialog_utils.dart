@@ -201,7 +201,7 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
               size: 12,
             ),
             const SizedBox(width: 4),
-            Text(activity.createdAt.formattedDayAndMonthAndYear(),
+            Text(activity.createdAt.formattedDayMonthTime(),
                 style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.start),
             const SizedBox(width: 12),
             const FaIcon(

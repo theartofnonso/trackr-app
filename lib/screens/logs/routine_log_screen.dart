@@ -10,6 +10,7 @@ import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/open_ai_response_schema_dtos/exercise_performance_report.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
+import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/openAI/open_ai_response_format.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -41,7 +42,6 @@ import '../../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../widgets/ai_widgets/trkr_information_container.dart';
 import '../../widgets/empty_states/not_found.dart';
 import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
-import '../../widgets/routine/preview/date_duration_pb.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
 import '../AI/routine_log_report_screen.dart';
 
@@ -138,8 +138,16 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Center(
-                      child: DateDurationPBWidget(
-                          dateTime: updatedLog.createdAt, duration: updatedLog.duration(), pbs: 0)),
+                      child: Wrap(
+                    children: [
+                      const FaIcon(
+                        FontAwesomeIcons.calendarDay,
+                        size: 14,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(log.createdAt.formattedDayMonthTime(), style: Theme.of(context).textTheme.bodySmall),
+                    ],
+                  )),
                   if (updatedLog.notes.isNotEmpty)
                     Center(
                       child: Padding(
@@ -168,6 +176,14 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                           title: "${numberOfCompletedSets.length}",
                           subtitle: "Sets",
                           icon: FontAwesomeIcons.hashtag,
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        _StatisticWidget(
+                          title: log.duration().hmsDigital(),
+                          subtitle: "Duration",
+                          icon: FontAwesomeIcons.solidClock,
                         ),
                         const SizedBox(
                           width: 10,
