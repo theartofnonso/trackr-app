@@ -29,6 +29,7 @@ import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/one_rep_max_calculator.dart';
+import '../../label_divider.dart';
 import '../preview/set_headers/double_set_header.dart';
 import '../preview/set_headers/single_set_header.dart';
 import '../preview/sets_listview.dart';
@@ -787,38 +788,42 @@ class _RepRangeSliderState extends State<_RepRangeSlider> {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        LabelDivider(
+          label: "Select a rep range".toUpperCase(),
+          labelColor: isDarkMode ? Colors.white : Colors.black,
+          dividerColor: Colors.transparent,
+          fontSize: 14,
+        ),
+        const SizedBox(height: 8),
         Text(
-            "Setting rep ranges for each exercise helps you target specific fitness goals: low reps build strength, moderate reps grow muscle, and high reps improve endurance.", style: Theme.of(context).textTheme.bodyMedium),
+            "Setting rep ranges for each exercise helps you target specific fitness goals: low reps build strength, moderate reps grow muscle, and high reps improve endurance.",
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium
+                ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
         const SizedBox(height: 10),
-        RichText(
-          text: TextSpan(
-            text: "Select a rep range for ${widget.exercise}",
-            style: Theme.of(context).textTheme.bodyLarge,
-            children: [
-              TextSpan(
-                text: "\n",
-              ),
-              TextSpan(
-                text: "$_min ${pluralize(word: "rep", count: widget.min)}",
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
-              ),
-              TextSpan(
-                text: " ",
-              ),
-              TextSpan(
-                text: "to",
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w500),
-              ),
-              TextSpan(text: " "),
-              TextSpan(
-                text: "$_max ${pluralize(word: "rep", count: widget.max)}",
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
-              )
-            ],
-          ),
+        Row(
+          spacing: 8,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              "$_min ${pluralize(word: "rep", count: widget.min)}",
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+            ),
+            FaIcon(
+              FontAwesomeIcons.arrowRight,
+              size: 20,
+            ),
+            Text("$_max ${pluralize(word: "rep", count: widget.max)}",
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700))
+          ],
         ),
         const SizedBox(height: 10),
         RangeSlider(

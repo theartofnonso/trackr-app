@@ -66,39 +66,40 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               height: 40,
             ),
             LabelDivider(
-              label: "Metrics",
-              labelColor: isDarkMode ? Colors.white70 : Colors.black,
+              label: "Enter your weight".toUpperCase(),
+              labelColor: isDarkMode ? Colors.white : Colors.black,
               dividerColor: sapphireLighter,
-              shouldCapitalise: true,
+              fontSize: 14,
             ),
-            const SizedBox(
-              height: 20,
-            ),
-            ListTile(
-              titleAlignment: ListTileTitleAlignment.top,
-              title: Text("Weight", maxLines: 2, overflow: TextOverflow.ellipsis, textAlign: TextAlign.start),
-              subtitle: Text("We use your weight to calculate your calories burned.", textAlign: TextAlign.start),
-              trailing: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: sapphireLighter, // Border color
-                      width: 1.0, // Border width
-                    ),
-                    borderRadius: BorderRadius.circular(5), // Rounded corners
-                  ),
-                  width: 70,
-                  child: DoubleTextField(
-                      value: _user?.weight ?? 0,
-                      controller: _doubleTextFieldController,
-                      onChanged: (value) {
-                        setState(() {
-                          _weight = value;
-                        });
-                      })),
+            const SizedBox(height: 8),
+            Text("We estimate the amount of calories burned using your weight.",
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+            const SizedBox(height: 8),
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: sapphireLighter, // Border color
+                  width: 1.0, // Border width
+                ),
+                borderRadius: BorderRadius.circular(5), // Rounded corners
+              ),
+              child: DoubleTextField(
+                  value: _user?.weight ?? 0,
+                  controller: _doubleTextFieldController,
+                  onChanged: (value) {
+                    setState(() {
+                      _weight = value;
+                    });
+                  }),
             ),
             const Spacer(),
             SizedBox(
                 width: double.infinity,
+                height: 45,
                 child: OpacityButtonWidget(
                   onPressed: _updateWeight,
                   label: "Save",
