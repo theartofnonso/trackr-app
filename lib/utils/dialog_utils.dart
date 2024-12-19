@@ -178,7 +178,7 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
             const SizedBox(
               width: 8,
             ),
-            Text("${activity.name} Activity".toUpperCase(), style: Theme.of(context).textTheme.titleMedium),
+            Text(activity.name.toUpperCase(), style: Theme.of(context).textTheme.titleMedium),
           ],
         ),
         const SizedBox(
