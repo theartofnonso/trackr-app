@@ -1,10 +1,10 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/set_dtos/duration_set_dto.dart';
 import 'package:tracker_app/dtos/set_dtos/reps_dto.dart';
 import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
+import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:tracker_app/widgets/routine/preview/set_rows/double_set_row.dart';
 import 'package:tracker_app/widgets/routine/preview/set_rows/single_set_row.dart';
 
@@ -24,22 +24,13 @@ class SetsListview extends StatelessWidget {
   Widget build(BuildContext context) {
     if (sets.isEmpty) {
       return Center(
-          child: Container(
-        width: double.infinity,
-        margin: const EdgeInsets.symmetric(vertical: 12),
-        padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5), // Circular border radius
-          border: Border.all(
-            color: Colors.deepOrange.withValues(alpha:0.2), // Border color
-            width: 2, // Border width
-          ),
-        ),
-        child: Text("No Sets have been logged for this exercise",
-            textAlign: TextAlign.center,
-            style:
-                GoogleFonts.ubuntu(fontSize: 12, height: 1.4, color: Colors.deepOrange, fontWeight: FontWeight.w600)),
-      ));
+          child: SizedBox(
+            width: double.infinity,
+            child: OpacityButtonWidget(
+                label: "No Sets have been logged for this exercise",
+                buttonColor: Colors.deepOrange,
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16)),
+          ));
     }
 
     final pbsBySet = groupBy(pbs, (pb) => pb.set);
@@ -54,7 +45,8 @@ class SetsListview extends StatelessWidget {
             case ExerciseType.weights:
               final firstLabel = (set as WeightAndRepsSetDto).weight;
               final secondLabel = set.reps;
-              return DoubleSetRow(first: "$firstLabel", second: "$secondLabel", pbs: pbsForSet, borderColor: borderColor);
+              return DoubleSetRow(
+                  first: "$firstLabel", second: "$secondLabel", pbs: pbsForSet, borderColor: borderColor);
             case ExerciseType.bodyWeight:
               final label = (set as RepsSetDto).reps;
               return SingleSetRow(label: "$label", borderColor: borderColor);
