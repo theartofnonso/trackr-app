@@ -46,13 +46,13 @@ import '../../widgets/calendar/calendar.dart';
 import '../../widgets/label_divider.dart';
 import '../../widgets/monitors/log_streak_muscle_trend_monitor.dart';
 import '../../widgets/monthly_insights/log_streak_chart_widget.dart';
+import '../../widgets/monthly_insights/monthly_insights.dart';
 import '../../widgets/routine/preview/activity_log_widget.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
 import '../AI/monthly_training_report_screen.dart';
 import '../AI/trkr_coach_chat_screen.dart';
 import '../editors/routine_log_editor_screen.dart';
 import '../logs/routine_log_screen.dart';
-import '../../widgets/monthly_insights/monthly_insights.dart';
 
 class OverviewScreen extends StatefulWidget {
   final ScrollController scrollController;
@@ -76,7 +76,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     /// Be notified of changes
@@ -98,6 +97,13 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     final logsForCurrentDay =
         exerciseAndRoutineController.whereLogsIsSameDay(dateTime: DateTime.now().withoutTime()).toList();
+
+    final logsForCurrentMonth =
+        exerciseAndRoutineController.whereLogsIsSameMonth(dateTime: widget.dateTimeRange.start.withoutTime()).toList();
+
+    final last30DaysDatetime = today.subtract(const Duration(days: 29));
+
+    final logsForPastMonth = exerciseAndRoutineController.whereLogsIsSameMonth(dateTime: last30DaysDatetime).toList();
 
     final hasTodayScheduleBeenLogged =
         logsForCurrentDay.firstWhereOrNull((log) => log.templateId == scheduledToday?.id) != null;
@@ -127,16 +133,14 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       child: Column(children: [
                         const SizedBox(height: 12),
                         LogStreakMuscleTrendMonitor(dateTime: widget.dateTimeRange.start),
-                        if (isStartOfNewMonth && exerciseAndRoutineController.logs.isNotEmpty)
+                        if (isStartOfNewMonth && logsForPastMonth.isNotEmpty)
                           Padding(
                             padding: const EdgeInsets.only(top: 24.0),
                             child: TRKRInformationContainer(
-                                ctaLabel:
-                                    "View ${today.subtract(const Duration(days: 29)).formattedFullMonth()} insights",
+                                ctaLabel: "View ${last30DaysDatetime.formattedFullMonth()} insights",
                                 description:
                                     "It’s a new month of training, but before we dive in, let’s reflect on your past performance and plan for this month.",
-                                onTap: () =>
-                                    _generateMonthlyInsightsReport(datetime: today.subtract(const Duration(days: 29)))),
+                                onTap: () => _generateMonthlyInsightsReport(datetime: last30DaysDatetime)),
                           ),
                         if (scheduledToday != null)
                           GestureDetector(
@@ -147,7 +151,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                                   scheduledToday: scheduledToday, isLogged: hasTodayScheduleBeenLogged),
                             ),
                           ),
-                        if (canNavigateNext)
+                        if (canNavigateNext && logsForCurrentMonth.isNotEmpty)
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -238,11 +242,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     // Helper function to get muscles trained from exercise logs
     List<String> getMusclesTrained(List<ExerciseLogDto> exerciseLogs) {
       return exerciseLogs
-          .expand((exerciseLog) => [
-                exerciseLog.exercise.primaryMuscleGroup.name,
-                ...exerciseLog.exercise.secondaryMuscleGroups.map((mg) => mg.name),
-              ])
-          .toSet()
+          .map((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup.name)
           .toList();
     }
 
@@ -310,7 +310,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     buffer.writeln();
 
     for (final log in activityLogs) {
-      buffer.writeln("Logged ${log.name} activity in ${log.createdAt.formattedFullMonth}");
+      buffer.writeln("Logged ${log.nameOrSummary} activity in ${log.createdAt.formattedFullMonth}");
     }
 
     final completeInstructions = buffer.toString();
@@ -372,7 +372,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
               },
             ),
             ListTile(
-              
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.clockRotateLeft, size: 18),
               horizontalTitleGap: 6,
@@ -411,7 +410,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
               height: 6,
             ),
             ListTile(
-              
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(
                 FontAwesomeIcons.circlePlus,
@@ -454,12 +452,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
         child: SafeArea(
           child: Column(children: [
             ListTile(
-              
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.play, size: 18),
               horizontalTitleGap: 6,
-              title: Text("Log new session",
-                  style: Theme.of(context).textTheme.bodyLarge),
+              title: Text("Log new session", style: Theme.of(context).textTheme.bodyLarge),
               onTap: () {
                 Navigator.of(context).pop();
                 _logEmptyRoutine();
@@ -468,7 +464,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
             const SizedBox(
               height: 10,
             ),
-             LabelDivider(
+            LabelDivider(
               label: "Don't know what to train?",
               labelColor: isDarkMode ? Colors.white70 : Colors.black,
               dividerColor: sapphireLighter,
@@ -477,7 +473,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
               height: 6,
             ),
             ListTile(
-              
               contentPadding: EdgeInsets.zero,
               leading: const TRKRCoachWidget(),
               horizontalTitleGap: 10,
@@ -575,7 +570,7 @@ class _ScheduledRoutineCard extends StatelessWidget {
                         height: 30,
                         padding: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
-                          color: vibrantGreen.withValues(alpha:0.1),
+                          color: vibrantGreen.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(3),
                         ),
                         child: Image.asset(
@@ -631,7 +626,7 @@ class _ScheduledRoutineCard extends StatelessWidget {
                   height: 30,
                   padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
-                    color: vibrantGreen.withValues(alpha:0.1),
+                    color: vibrantGreen.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(3),
                   ),
                   child: Center(

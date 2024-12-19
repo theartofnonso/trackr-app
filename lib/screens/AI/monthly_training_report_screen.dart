@@ -44,12 +44,12 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final activitiesChildren = activityLogs.map((activityLog) => activityLog.name).toSet().map((activity) {
+    final activitiesChildren = activityLogs.map((activityLog) => activityLog.name).toSet().mapIndexed((index, activity) {
       final activityType = ActivityType.fromJson(activity);
 
       final image = activityType.image;
 
-      return _ActivityChip(image: image, activityType: activityType);
+      return _ActivityChip(image: image, activityType: activityType, nameOrSummary: activityLogs[index].nameOrSummary,);
     }).toList();
 
     final exercises = routineLogs
@@ -142,7 +142,7 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
                             const SizedBox(width: 10),
                             Expanded(
                                 child: Text(monthlyTrainingReport.introduction,
-                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 16)))
+                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 16, height: 1.8)))
                           ],
                         ),
                       ),
@@ -152,22 +152,22 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
                           labelAlignment: LabelAlignment.left,
                           label: "Exercises".toUpperCase(),
                           description: monthlyTrainingReport.exercisesSummary,
-                          labelStyle: Theme.of(context).textTheme.bodyLarge!,
-                          descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
+                          labelStyle: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700),
+                         descriptionStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(height: 2),
                           dividerColor: sapphireLighter,
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 8.0),
                             child: exercisesScrollViewHalf == exercisesChildren.length
                                 ? SingleChildScrollView(
                                     scrollDirection: Axis.horizontal,
-                                    child: Wrap(spacing: 6, children: [
+                                    child: Wrap(spacing: 6, runSpacing: 6, children: [
                                       ...exercisesChildren.sublist(0, exercisesScrollViewHalf),
                                     ]))
                                 : Column(
                                     children: [
                                       SingleChildScrollView(
                                           scrollDirection: Axis.horizontal,
-                                          child: Wrap(spacing: 6, children: [
+                                          child: Wrap(spacing: 6, runSpacing: 6, children: [
                                             ...exercisesChildren.sublist(0, exercisesScrollViewHalf),
                                           ])),
                                       const SizedBox(
@@ -189,8 +189,8 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
                             labelAlignment: LabelAlignment.left,
                             label: "Muscle Groups Trained".toUpperCase(),
                             description: monthlyTrainingReport.musclesTrainedSummary,
-                            labelStyle: Theme.of(context).textTheme.bodyLarge!,
-                            descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
+                            labelStyle: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700),
+                           descriptionStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(height: 2),
                             dividerColor: sapphireLighter,
                             child: Padding(
                               padding: const EdgeInsets.only(top: 8.0),
@@ -204,8 +204,8 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
                           labelAlignment: LabelAlignment.left,
                           label: "Personal Bests".toUpperCase(),
                           description: monthlyTrainingReport.personalBestsSummary,
-                          labelStyle: Theme.of(context).textTheme.bodyLarge!,
-                          descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
+                          labelStyle: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700),
+                         descriptionStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(height: 2),
                           dividerColor: sapphireLighter,
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 16),
@@ -219,8 +219,8 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
                           labelAlignment: LabelAlignment.left,
                           label: "Calories Burned".toUpperCase(),
                           description: monthlyTrainingReport.caloriesBurnedSummary,
-                          labelStyle: Theme.of(context).textTheme.bodyLarge!,
-                          descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
+                          labelStyle: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700),
+                         descriptionStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(height: 2),
                           dividerColor: sapphireLighter,
                           child: Padding(
                             padding: const EdgeInsets.only(top: 16, right: 16, bottom: 16),
@@ -238,8 +238,8 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
                           labelAlignment: LabelAlignment.left,
                           label: "Training Duration".toUpperCase(),
                           description: monthlyTrainingReport.workoutDurationSummary,
-                          labelStyle: Theme.of(context).textTheme.bodyLarge!,
-                          descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
+                          labelStyle: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700),
+                          descriptionStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(height: 2),
                           dividerColor: sapphireLighter,
                           child: SizedBox(
                             child: Row(
@@ -284,14 +284,15 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
                           labelAlignment: LabelAlignment.left,
                           label: "Other Activities".toUpperCase(),
                           description: monthlyTrainingReport.activitiesSummary,
-                          labelStyle: Theme.of(context).textTheme.bodyLarge!,
-                          descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
+                          labelStyle: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700),
+                         descriptionStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(height: 2),
                           dividerColor: sapphireLighter,
                           child: activitiesChildren.isNotEmpty
                               ? Padding(
                                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                                   child: Wrap(
                                     spacing: 6,
+                                    runSpacing: 6,
                                     children: activitiesChildren,
                                   ),
                                 )
@@ -309,13 +310,13 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
                                 child: MarkdownBody(
                               data: monthlyTrainingReport.recommendations,
                               styleSheet: MarkdownStyleSheet(
-                                h1: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
-                                h2: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
-                                h3: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
-                                h4: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
-                                h5: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
-                                h6: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
-                                p: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
+                                h1: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16, height: 1.8),
+                                h2: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16, height: 1.8),
+                                h3: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16, height: 1.8),
+                                h4: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16, height: 1.8),
+                                h5: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16, height: 1.8),
+                                h6: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16, height: 1.8),
+                                p: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16, height: 1.8),
                               ),
                             ))
                           ],
@@ -343,11 +344,12 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
 class _ActivityChip extends StatelessWidget {
   const _ActivityChip({
     required this.image,
-    required this.activityType,
+    required this.activityType, required this.nameOrSummary,
   });
 
   final String? image;
   final ActivityType activityType;
+  final String nameOrSummary;
 
   @override
   Widget build(BuildContext context) {
@@ -377,7 +379,7 @@ class _ActivityChip extends StatelessWidget {
               width: 4,
             ),
             Text(
-              activityType.name.toUpperCase(),
+              nameOrSummary.toUpperCase(),
               style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.black, fontSize: 12),
             )
           ],
