@@ -91,7 +91,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   }
 
   void _navigateToExerciseEditor() async {
-    await context.push(ExerciseEditorScreen.routeName);
+    await navigateWithSlideTransition(context: context, child: ExerciseEditorScreen());
     setState(() {
       _loadOrSyncExercises();
     });

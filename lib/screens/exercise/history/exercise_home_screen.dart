@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
-import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
+import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_chart_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_video_screen.dart';
 import 'package:tracker_app/screens/exercise/history/history_screen.dart';
@@ -171,8 +171,9 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
   void _navigateToExerciseEditor() async {
     final exercise = _exercise;
     if (exercise != null) {
-      final arguments = ExerciseEditorArguments(exercise: exercise);
-      final updatedExercise = await navigateToExerciseEditor(context: context, arguments: arguments);
+      final updatedExercise =
+          await navigateWithSlideTransition(context: context, child: ExerciseEditorScreen(exercise: exercise))
+              as ExerciseDto?;
       if (updatedExercise != null) {
         setState(() {
           _exercise = updatedExercise;

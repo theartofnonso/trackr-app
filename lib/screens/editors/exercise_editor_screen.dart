@@ -16,6 +16,7 @@ import '../../enums/exercise_type_enums.dart';
 import '../../logger.dart';
 import '../../utils/general_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
+import '../../widgets/label_divider.dart';
 import '../exercise/exercise_type_screen.dart';
 
 class ExerciseEditorScreen extends StatefulWidget {
@@ -30,7 +31,6 @@ class ExerciseEditorScreen extends StatefulWidget {
 }
 
 class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
-
   late MuscleGroup _primaryMuscleGroup;
   late ExerciseType _exerciseType;
 
@@ -58,10 +58,14 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
         child: Scaffold(
           appBar: AppBar(
             leading: IconButton(
-              icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
+              icon: const FaIcon(
+                FontAwesomeIcons.squareXmark,
+                size: 28,
+              ),
               onPressed: context.pop,
             ),
-            title: Text("Create New Exercise".toUpperCase()),
+            title: Text(exercise?.name ?? "Create New Exercise".toUpperCase()),
+            centerTitle: true,
             actions: [
               exercise != null
                   ? IconButton(
@@ -90,29 +94,49 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                   style: GoogleFonts.ubuntu(
                       fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white : Colors.black, fontSize: 14),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 20),
+                LabelDivider(
+                  label: "Select muscle group to train".toUpperCase(),
+                  labelColor: isDarkMode ? Colors.white : Colors.black,
+                  dividerColor: sapphireLighter,
+                  fontSize: 14,
+                ),
+                const SizedBox(height: 8),
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Select muscle group to train",
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w400)),
-                    const Spacer(),
+                    Expanded(
+                      child: Text("Choose from a list of muscle groups to train for this custom exercise.",
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.grey.shade200)),
+                    ),
+                    const SizedBox(width: 10),
                     OpacityButtonWidget(label: _primaryMuscleGroup.name, onPressed: _navigateToMuscleGroupsScreen)
                   ],
                 ),
                 const SizedBox(height: 16),
-                if(exercise == null)
-                  Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                if (exercise == null) const SizedBox(height: 20),
+                LabelDivider(
+                  label: "Choose how to log this exercise".toUpperCase(),
+                  labelColor: isDarkMode ? Colors.white : Colors.black,
+                  dividerColor: sapphireLighter,
+                  fontSize: 14,
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Choose how to log this exercise",
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w400)),
-                    const Spacer(),
+                    Expanded(
+                      child: Text("You can log this exercise using reps only, reps and weights or duration.",
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.grey.shade200)),
+                    ),
+                    const SizedBox(width: 10),
                     OpacityButtonWidget(label: _exerciseType.name, onPressed: _navigateToExerciseTypeScreen)
                   ],
                 ),
                 const Spacer(),
-                if (_exerciseNameController.text.isNotEmpty && exercise == null)
+                if (exercise == null)
                   SizedBox(
                     width: double.infinity,
                     child: OpacityButtonWidget(
@@ -213,6 +237,5 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     _primaryMuscleGroup = previousExercise != null ? previousExercise.primaryMuscleGroup : MuscleGroup.values.first;
 
     _exerciseType = previousExercise != null ? previousExercise.type : ExerciseType.weights;
-
   }
 }

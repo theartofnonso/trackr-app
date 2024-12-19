@@ -15,6 +15,7 @@ import 'package:tracker_app/dtos/open_ai_response_schema_dtos/monthly_training_r
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/dtos/routine_template_dto_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
+import 'package:tracker_app/screens/editors/activity_editor_screen.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
@@ -28,7 +29,6 @@ import '../../dtos/abstract_class/log_class.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
-import '../../enums/activity_type_enums.dart';
 import '../../enums/posthog_analytics_event.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../openAI/open_ai.dart';
@@ -421,22 +421,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                   style: GoogleFonts.ubuntu(color: Colors.greenAccent, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
                 Navigator.of(context).pop();
-                showActivityPicker(
-                    context: context,
-                    onChangedActivity: (ActivityType activity, DateTimeRange datetimeRange, String activitySummary) {
-                      Navigator.of(context).pop();
-                      final activityLog = ActivityLogDto(
-                          id: "id",
-                          name: activity.name,
-                          notes: "",
-                          summary: activitySummary,
-                          startTime: datetimeRange.start,
-                          endTime: datetimeRange.end,
-                          createdAt: datetimeRange.end,
-                          updatedAt: datetimeRange.end,
-                          owner: '');
-                      Provider.of<ActivityLogController>(context, listen: false).saveLog(logDto: activityLog);
-                    });
+                navigateWithSlideTransition(context: context, child: ActivityEditorScreen());
               },
             ),
           ]),

@@ -8,6 +8,7 @@ import 'package:tracker_app/enums/activity_type_enums.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
+import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/routine_utils.dart';
 import 'package:tracker_app/widgets/forms/create_routine_user_profile_widget.dart';
 import 'package:tracker_app/widgets/label_divider.dart';
@@ -18,8 +19,8 @@ import '../colors.dart';
 import '../controllers/activity_log_controller.dart';
 import '../controllers/routine_user_controller.dart';
 import '../dtos/appsync/activity_log_dto.dart';
+import '../screens/editors/activity_editor_screen.dart';
 import '../widgets/buttons/opacity_button_widget.dart';
-import '../widgets/other_activity_selector/activity_picker.dart';
 import '../widgets/timers/hour_timer_picker.dart';
 import '../widgets/timers/time_picker.dart';
 
@@ -130,27 +131,6 @@ void showDatetimeRangePicker(
       isScrollControlled: true);
 }
 
-void showActivityPicker(
-    {required BuildContext context,
-    ActivityType? initialActivityType,
-    DateTimeRange? initialDateTimeRange,
-    String? activitySummary,
-    Color? activityColor,
-    required void Function(ActivityType activity, DateTimeRange datetimeRange, String activitySummary)
-        onChangedActivity}) {
-  FocusScope.of(context).unfocus();
-  displayBottomSheet(
-      context: context,
-      padding: EdgeInsets.zero,
-      child: ActivityPicker(
-        initialActivityType: initialActivityType,
-        initialDateTimeRange: initialDateTimeRange,
-        onSelectActivity: onChangedActivity,
-        activitySummary: activitySummary,
-      ),
-      isScrollControlled: true);
-}
-
 void showActivityBottomSheet({required BuildContext context, required ActivityLogDto activity}) {
   Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
   final isDarkMode = systemBrightness == Brightness.dark;
@@ -229,22 +209,7 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
           title: Text("Edit"),
           onTap: () {
             Navigator.of(context).pop();
-            showActivityPicker(
-                initialActivityType: activityType,
-                initialDateTimeRange: DateTimeRange(start: activity.startTime, end: activity.endTime),
-                context: context,
-                activitySummary: activity.summary,
-                onChangedActivity: (ActivityType activityType, DateTimeRange datetimeRange, String activitySummary) {
-                  Navigator.of(context).pop();
-                  final updatedActivity = activity.copyWith(
-                      name: activityType.name,
-                      summary: activitySummary,
-                      startTime: datetimeRange.start,
-                      endTime: datetimeRange.end,
-                      createdAt: datetimeRange.start,
-                      updatedAt: DateTime.now());
-                  Provider.of<ActivityLogController>(context, listen: false).updateLog(log: updatedActivity);
-                });
+            navigateWithSlideTransition(context: context, child: ActivityEditorScreen(activityLogDto: activity));
           },
         ),
         ListTile(
