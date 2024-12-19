@@ -20,7 +20,6 @@ class ExerciseLogWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -50,7 +49,9 @@ class ExerciseLogWidget extends StatelessWidget {
         spacing: 12,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(exerciseLog.exercise.name, style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600), textAlign: TextAlign.center),
+          Text(exerciseLog.exercise.name,
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+              textAlign: TextAlign.center),
           if (otherSuperSet != null)
             Wrap(
               crossAxisAlignment: WrapCrossAlignment.center,
@@ -70,7 +71,10 @@ class ExerciseLogWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text("$minReps"),
-              FaIcon(FontAwesomeIcons.arrowRight,size: 12,),
+              FaIcon(
+                FontAwesomeIcons.arrowRight,
+                size: 12,
+              ),
               Text("$maxReps REPS"),
             ],
           ),
@@ -79,7 +83,11 @@ class ExerciseLogWidget extends StatelessWidget {
             ExerciseType.bodyWeight => SingleSetHeader(label: 'REPS'),
             ExerciseType.duration => SingleSetHeader(label: 'TIME'),
           },
-          SetsListview(type: exerciseType, sets: exerciseLog.sets, pbs: pbs, borderColor: isDarkMode ? Colors.white10 : Colors.grey.shade400)
+          SetsListview(
+              type: exerciseType,
+              sets: exerciseLog.sets,
+              pbs: pbs,
+              borderColor: isDarkMode ? Colors.white10 : Colors.grey.shade400)
         ],
       ),
     );

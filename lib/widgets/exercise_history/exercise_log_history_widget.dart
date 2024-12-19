@@ -66,12 +66,13 @@ class _ExerciseLogWidget extends StatelessWidget {
     final exerciseType = exerciseLog.exercise.type;
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         exerciseLog.notes.isNotEmpty
             ? Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: Text(exerciseLog.notes,
+                    textAlign: TextAlign.center,
                     style: GoogleFonts.ubuntu(
                         fontWeight: FontWeight.w600, color: Colors.white.withValues(alpha:0.8), fontSize: 15)),
               )
