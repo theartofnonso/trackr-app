@@ -213,10 +213,10 @@ class _Day extends StatelessWidget {
 
   Color _getBackgroundColor({required bool isDarkMode}) {
     if (hasRoutineLog) {
-      return isDarkMode ? vibrantGreen.withValues(alpha:0.1) : vibrantGreen;
+      return isDarkMode && SharedPrefs().showCalendarDates ? vibrantGreen.withValues(alpha:0.1) : vibrantGreen;
     }
     if (hasActivityLog) {
-      return isDarkMode ? Colors.greenAccent.withValues(alpha:0.1) : Colors.greenAccent;
+      return isDarkMode && SharedPrefs().showCalendarDates ? Colors.greenAccent.withValues(alpha:0.1) : Colors.greenAccent;
     } else {
       return isDarkMode ? sapphireDark80.withValues(alpha:0.5) : Colors.grey.shade200;
     }
@@ -262,10 +262,10 @@ class _Day extends StatelessWidget {
             color: _getBackgroundColor(isDarkMode: isDarkMode),
             borderRadius: BorderRadius.circular(2),
           ),
-          child: Center(
+          child: SharedPrefs().showCalendarDates ? Center(
             child: Text("${dateTime.day}",
                 style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.bold, color: _getTextColor(isDarkMode: isDarkMode))),
-          ),
+          ) : SizedBox.shrink(),
         ),
       ),
     );

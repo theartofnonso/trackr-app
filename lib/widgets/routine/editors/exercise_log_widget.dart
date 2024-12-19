@@ -836,7 +836,7 @@ class _RepRangeSliderState extends State<_RepRangeSlider> {
         const SizedBox(height: 10),
         SizedBox(
             width: double.infinity,
-            height: 40,
+            height: 45,
             child: OpacityButtonWidget(label: "Select range", buttonColor: vibrantGreen, onPressed: onSelectRepRange))
       ],
     );
