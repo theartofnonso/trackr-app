@@ -64,15 +64,15 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
 
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
     List<RoutineLogDto> routineLogsForTheYear =
-    exerciseAndRoutineController.whereLogsIsSameYear(dateTime: DateTime.now().withoutTime());
+        exerciseAndRoutineController.whereLogsIsSameYear(dateTime: DateTime.now().withoutTime());
 
     List<RoutineLogDto> routineLogsForTheMonth =
-    exerciseAndRoutineController.whereLogsIsSameMonth(dateTime: DateTime.now().withoutTime());
+        exerciseAndRoutineController.whereLogsIsSameMonth(dateTime: DateTime.now().withoutTime());
 
     final newMilestones = exerciseAndRoutineController.newMilestones;
 
     final muscleGroupFamilyFrequencyData =
-    muscleGroupFamilyFrequency(exerciseLogs: updatedLog.exerciseLogs, includeSecondaryMuscleGroups: false);
+        muscleGroupFamilyFrequency(exerciseLogs: updatedLog.exerciseLogs, includeSecondaryMuscleGroups: false);
 
     List<Widget> milestoneShareAssets = [];
     final milestoneShareAssetsKeys = [];
@@ -104,8 +104,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
     }
 
     final pages = [
-      if(routineLogsForTheMonth.length == 12)
-        TwelveSessionMilestoneShareable(image: _image),
+      if (routineLogsForTheMonth.length == 12) TwelveSessionMilestoneShareable(image: _image),
       ...milestoneShareAssets,
       if (isMultipleOfFive(routineLogsForTheYear.length))
         SessionMilestoneShareable(label: "${routineLogsForTheYear.length}th", image: _image),
@@ -115,7 +114,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
     ];
 
     final pagesKeys = [
-      if(routineLogsForTheMonth.length == 12) twelveSessionMilestoneGlobalKey,
+      if (routineLogsForTheMonth.length == 12) twelveSessionMilestoneGlobalKey,
       ...milestoneShareAssetsKeys,
       if (isMultipleOfFive(routineLogsForTheYear.length)) sessionMilestoneGlobalKey,
       ...pbShareAssetsKeys,
@@ -125,9 +124,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
     return Stack(alignment: Alignment.topCenter, children: [
       Scaffold(
         floatingActionButton: FloatingActionButton(
-            heroTag: "routine_log_screen",
-            onPressed: _showCopyBottomSheet,
-            child: const FaIcon(Icons.copy)),
+            heroTag: "routine_log_screen", onPressed: _showCopyBottomSheet, child: const FaIcon(Icons.copy)),
         appBar: AppBar(
           leading: IconButton(
             icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
@@ -141,9 +138,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
           ],
         ),
         body: Container(
-          decoration: BoxDecoration(
-            gradient: themeGradient(context: context)
-          ),
+          decoration: BoxDecoration(gradient: themeGradient(context: context)),
           child: SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -267,13 +262,13 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
                 borderRadius: BorderRadius.circular(5), // Optional: Rounded corners
               ),
               child:
-              Text("${workoutLogText.substring(0, workoutLogText.length >= 150 ? 150 : workoutLogText.length)}...",
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.ubuntu(
-                    color: Colors.white70,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14,
-                  )),
+                  Text("${workoutLogText.substring(0, workoutLogText.length >= 150 ? 150 : workoutLogText.length)}...",
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.ubuntu(
+                        color: Colors.white70,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                      )),
             ),
             OpacityButtonWidget(
               onPressed: () {
@@ -300,12 +295,14 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
   }
 
   void _showBottomSheet() {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     displayBottomSheet(
         context: context,
         child: SafeArea(
           child: Column(children: [
             ListTile(
-
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.camera, size: 18),
               horizontalTitleGap: 6,
@@ -313,7 +310,6 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
               onTap: () => _pickFromLibrary(camera: true),
             ),
             ListTile(
-
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.images, size: 18),
               horizontalTitleGap: 6,
@@ -325,13 +321,12 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
                 const SizedBox(
                   height: 10,
                 ),
-                const LabelDivider(
+                LabelDivider(
                   label: "Don't like the vibe?",
-                  labelColor: Colors.white70,
+                  labelColor: isDarkMode ? Colors.white70 : Colors.black,
                   dividerColor: sapphireLighter,
                 ),
                 ListTile(
-
                   contentPadding: EdgeInsets.zero,
                   title: Text("Remove Image",
                       style: GoogleFonts.ubuntu(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
