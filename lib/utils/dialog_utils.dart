@@ -72,13 +72,12 @@ Future<void> displayBottomSheet(
                 width: double.infinity,
                 padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 decoration: BoxDecoration(
-                  color: isDarkMode ? sapphireDark80 : Colors.grey.shade100,
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                  ),
-                  gradient: isDarkMode ? themeGradient(context: context) : null
-                ),
+                    color: isDarkMode ? sapphireDark80 : Colors.grey.shade100,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                    ),
+                    gradient: isDarkMode ? themeGradient(context: context) : null),
                 child: SafeArea(child: child),
               ),
             ],
@@ -135,8 +134,10 @@ void showActivityPicker(
     {required BuildContext context,
     ActivityType? initialActivityType,
     DateTimeRange? initialDateTimeRange,
-      String? activitySummary,
-    required void Function(ActivityType activity, DateTimeRange datetimeRange, String activitySummary) onChangedActivity}) {
+    String? activitySummary,
+    Color? activityColor,
+    required void Function(ActivityType activity, DateTimeRange datetimeRange, String activitySummary)
+        onChangedActivity}) {
   FocusScope.of(context).unfocus();
   displayBottomSheet(
       context: context,
@@ -232,6 +233,7 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
                 initialActivityType: activityType,
                 initialDateTimeRange: DateTimeRange(start: activity.startTime, end: activity.endTime),
                 context: context,
+                activitySummary: activity.summary,
                 onChangedActivity: (ActivityType activityType, DateTimeRange datetimeRange, String activitySummary) {
                   Navigator.of(context).pop();
                   final updatedActivity = activity.copyWith(

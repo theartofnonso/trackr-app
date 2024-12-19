@@ -21,6 +21,8 @@ class RoutineLogWidget extends StatelessWidget {
       onTap: () => navigateToRoutineLogPreview(context: context, log: log, isEditable: isEditable),
       leading: Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        width: 55,
+        height: 40,
         decoration: BoxDecoration(
           color: vibrantGreen.withValues(alpha: 0.1), // Background color
           borderRadius: BorderRadius.circular(5), // Rounded corners
@@ -28,7 +30,7 @@ class RoutineLogWidget extends StatelessWidget {
         child: Image.asset(
           'icons/dumbbells.png',
           fit: BoxFit.contain,
-          height: 24,
+          height: 30,
           color: vibrantGreen, // Adjust the height as needed
         ),
       ),

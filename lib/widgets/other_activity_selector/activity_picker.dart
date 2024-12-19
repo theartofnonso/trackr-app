@@ -18,15 +18,14 @@ class ActivityPicker extends StatefulWidget {
   final ActivityType? initialActivityType;
   final DateTimeRange? initialDateTimeRange;
   final String? activitySummary;
-  final String? activityColor;
-  final void Function(ActivityType activity, DateTimeRange range, String summary, String color) onSelectActivity;
+  final void Function(ActivityType activity, DateTimeRange range, String summary) onSelectActivity;
 
   const ActivityPicker(
       {super.key,
       this.initialActivityType,
       this.initialDateTimeRange,
       required this.onSelectActivity,
-      this.activitySummary, this.activityColor});
+      this.activitySummary});
 
   @override
   State<ActivityPicker> createState() => _ActivityPickerState();
@@ -40,8 +39,6 @@ class _ActivityPickerState extends State<ActivityPicker> {
   bool _showEndDateTimeRange = false;
 
   ActivityType? _selectedActivity;
-
-  Color _selectedColor = Colors.greenAccent;
 
   late TextEditingController _activitySummaryController;
 
@@ -76,21 +73,6 @@ class _ActivityPickerState extends State<ActivityPicker> {
             color: isDarkMode ? Colors.white : Colors.black, // Adjust the height as needed
           )
         : FaIcon(selectedActivity?.icon);
-
-    final colorCodes =
-        [Colors.red, Colors.orange, Colors.yellow, Colors.blue, Colors.pink, Colors.purple, Colors.greenAccent]
-            .map((color) => GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _selectedColor = color;
-                    });
-                  },
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(5),
-                    child: SizedBox(width: 45, height: 45, child: ColoredBox(color: color)),
-                  ),
-                ))
-            .toList();
 
     return SingleChildScrollView(
       child: Column(
@@ -216,10 +198,6 @@ class _ActivityPickerState extends State<ActivityPicker> {
               ]),
             ]),
           ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(spacing: 10, children: [SizedBox(width: 10,), ...colorCodes, SizedBox(width: 10,)]),
-          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: SizedBox(
@@ -239,13 +217,13 @@ class _ActivityPickerState extends State<ActivityPicker> {
                                   ? () {
                                       final range = DateTimeRange(start: _startDateTime, end: _endDateTime);
                                       widget.onSelectActivity(
-                                          selectedActivity, range, _activitySummaryController.text.trim(), _selectedColor.);
+                                          selectedActivity, range, _activitySummaryController.text.trim());
                                     }
                                   : null,
                               label: selectedActivity != null
                                   ? "Log ${_calculateDuration().hmsAnalog()} of ${selectedActivity.name}"
                                   : "Log ${_calculateDuration().hmsAnalog()} of activity",
-                              buttonColor: _selectedColor,
+                              buttonColor: Colors.greenAccent,
                               padding: const EdgeInsets.all(10.0)),
                         )),
             ),

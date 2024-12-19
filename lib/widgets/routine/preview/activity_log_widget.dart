@@ -28,6 +28,8 @@ class ActivityLogWidget extends StatelessWidget {
       onTap: onTap,
       leading: Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        width: 55,
+        height: 40,
         decoration: BoxDecoration(
           color: Colors.greenAccent.withValues(alpha:0.1), // Background color
           borderRadius: BorderRadius.circular(5), // Rounded corners
@@ -36,14 +38,16 @@ class ActivityLogWidget extends StatelessWidget {
             ? Image.asset(
                 'icons/$image.png',
                 fit: BoxFit.contain,
-                height: 24,
+                height: 30,
                 color: Colors.greenAccent, // Adjust the height as needed
               )
-            : FaIcon(
-                activityType.icon,
-                color: Colors.greenAccent,
-                size: 20,
-              ),
+            : Center(
+              child: FaIcon(
+                  activityType.icon,
+                  color: Colors.greenAccent,
+                  size: 20,
+                ),
+            ),
       ),
       title: Text(activity.nameOrSummary.toUpperCase()),
       trailing: Text(trailing),
