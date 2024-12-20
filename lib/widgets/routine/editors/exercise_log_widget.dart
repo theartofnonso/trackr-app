@@ -257,7 +257,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _loadRepsControllers({required List<SetDto> sets}) {
     List<TextEditingController> controllers = [];
-    for (var set in sets) {
+    for (final set in sets) {
       final repsController = TextEditingController(text: (set as RepsSetDto).reps.toString());
       _repsControllers.add((repsController));
     }
@@ -266,7 +266,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _loadDurationControllers({required List<SetDto> sets}) {
     List<DateTime> controllers = [];
-    for (var set in sets) {
+    for (final set in sets) {
       final duration = (set as DurationSetDto).duration;
       final startTime = DateTime.now().subtract(duration);
       controllers.add(startTime);

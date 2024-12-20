@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:tracker_app/enums/exercise_type_enums.dart';
 
 import '../dtos/appsync/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
@@ -114,7 +115,7 @@ class ExerciseLogRepository {
 
     final exerciseLog = _exerciseLogs[exerciseLogIndex];
 
-    final exerciseLogs =  List<ExerciseLogDto>.from(_exerciseLogs);
+    final exerciseLogs = List<ExerciseLogDto>.from(_exerciseLogs);
 
     exerciseLogs[exerciseLogIndex] = exerciseLog.copyWith(minReps: values.start.toInt(), maxReps: values.end.toInt());
 
@@ -162,13 +163,18 @@ class ExerciseLogRepository {
 
     final exerciseLog = _whereExerciseLog(exerciseLogId: exerciseLogId);
 
-    SetDto newSet =
-        sets.lastOrNull != null ? sets.last.copyWith(checked: false) : SetDto.newType(type: exerciseLog.exercise.type);
+    SetDto newSet = SetDto.newType(type: exerciseLog.exercise.type);
 
-    SetDto? pastSet = _wherePastSetOrNull(index: newIndex, pastSets: pastSets);
+    if (exerciseLog.exercise.type != ExerciseType.duration) {
+      newSet = sets.lastOrNull != null
+          ? sets.last.copyWith(checked: false)
+          : SetDto.newType(type: exerciseLog.exercise.type);
 
-    if (pastSet != null) {
-      newSet = pastSet.copyWith(checked: false);
+      SetDto? pastSet = _wherePastSetOrNull(index: newIndex, pastSets: pastSets);
+
+      if (pastSet != null) {
+        newSet = pastSet.copyWith(checked: false);
+      }
     }
 
     sets.add(newSet);
