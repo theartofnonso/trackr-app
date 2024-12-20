@@ -29,6 +29,7 @@ class ExerciseWidget extends StatelessWidget {
         exercise.secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name.toUpperCase()).toList();
 
     return GestureDetector(
+      behavior: HitTestBehavior.translucent,
       onTap: () => selectExercise != null ? selectExercise(exerciseDto) : null,
       child: SizedBox(
         child: Row(
