@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
@@ -36,10 +35,7 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           ListTile(
-              title: Text(
-                "Start Time",
-                style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
-              ),
+              title: Text("Start Time"),
               trailing: SizedBox(
                 width: 150,
                 child: SolidButtonWidget(
@@ -67,10 +63,7 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
                   }),
             ),
           ListTile(
-              title: Text(
-                "End Time",
-                style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
-              ),
+              title: Text("End Time"),
               trailing: SizedBox(
                 width: 150,
                 child: SolidButtonWidget(
@@ -108,6 +101,7 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
                       )
                     : SizedBox(
                         width: double.infinity,
+                        height: 45,
                         child: OpacityButtonWidget(
                             onPressed: () {
                               final range = DateTimeRange(start: _startDateTime, end: _endDateTime);

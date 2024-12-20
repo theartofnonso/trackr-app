@@ -16,7 +16,7 @@ class SingleSetRow extends StatelessWidget {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final color = borderColor ?? (isDarkMode ? Colors.white10 : Colors.white);
+    final color = borderColor ?? (isDarkMode ? Colors.white10 : Colors.black38);
 
     final pbsForSet = pbs
         .map((pb) => PBIcon(

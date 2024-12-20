@@ -120,6 +120,7 @@ class _ActivityEditorScreenState extends State<ActivityEditorScreen> {
                       children: [
                         TextField(
                           controller: _activitySummaryController,
+                          cursorColor: isDarkMode ? Colors.white : Colors.black,
                           decoration: InputDecoration(
                             hintText: "Describe Activity",
                           ),
@@ -175,6 +176,7 @@ class _ActivityEditorScreenState extends State<ActivityEditorScreen> {
                             });
                           }),
                     ),
+                  const SizedBox(height: 10),
                   ListTile(
                       title: Text(
                         "End Time",

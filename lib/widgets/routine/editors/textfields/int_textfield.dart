@@ -15,8 +15,13 @@ class IntTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     return TextField(
       controller: controller,
+      cursorColor: isDarkMode ? Colors.white : Colors.black,
       onChanged: (value) => onChanged(_parseIntOrDefault(value: value)),
       onTap: onTap,
       decoration: InputDecoration(

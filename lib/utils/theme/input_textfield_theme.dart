@@ -6,9 +6,9 @@ class TRKRInputTextFieldTheme {
 
   static InputDecorationTheme lightTheme = InputDecorationTheme(
     enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: Colors.white)),
+        borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: Colors.black38)),
     focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: Colors.white)),
+        borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: Colors.black38)),
     filled: true,
     fillColor: Colors.grey.shade200,
     hintStyle: GoogleFonts.ubuntu(color: Colors.grey.shade600, fontSize: 14),

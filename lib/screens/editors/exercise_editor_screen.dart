@@ -89,6 +89,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                   decoration: InputDecoration(
                     hintText: "Exercise Name",
                   ),
+                  cursorColor: isDarkMode ? Colors.white : Colors.black,
                   keyboardType: TextInputType.text,
                   textCapitalization: TextCapitalization.words,
                   style: GoogleFonts.ubuntu(

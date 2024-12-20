@@ -15,9 +15,14 @@ class DoubleTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     return TextField(
       controller: controller,
       onTap: onTap,
+      cursorColor: isDarkMode ? Colors.white : Colors.black,
       onChanged: (value) => onChanged(_parseDoubleOrDefault(value: value)),
       decoration: InputDecoration(
           focusedBorder: OutlineInputBorder(

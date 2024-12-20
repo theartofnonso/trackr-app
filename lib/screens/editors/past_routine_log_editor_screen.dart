@@ -284,6 +284,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
                         const SizedBox(height: 10),
                         TextField(
                           controller: _templateNameController,
+                          cursorColor: isDarkMode ? Colors.white : Colors.black,
                           decoration: InputDecoration(
                             hintText: "New workout",
                           ),
@@ -296,6 +297,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
                         ),
                         TextField(
                           controller: _templateNotesController,
+                          cursorColor: isDarkMode ? Colors.white : Colors.black,
                           decoration: InputDecoration(
                             hintText: "Notes",
                           ),

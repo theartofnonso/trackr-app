@@ -303,6 +303,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                       children: [
                         TextField(
                           controller: _templateNameController,
+                          cursorColor: isDarkMode ? Colors.white : Colors.black,
                           decoration: InputDecoration(
                             hintText: "New workout",
                           ),
@@ -313,6 +314,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                         ),
                         TextField(
                           controller: _templateNotesController,
+                          cursorColor: isDarkMode ? Colors.white : Colors.black,
                           decoration: InputDecoration(
                             hintText: "Notes",
                           ),
