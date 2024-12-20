@@ -42,7 +42,7 @@ class MonthlyInsights extends StatelessWidget {
         .sorted((a, b) => b.createdAt.compareTo(a.createdAt));
 
     final thisMonthLogs = [...thisMonthRoutineLogs, ...thisMonthsActivityLogs];
-    final lastMonthLogs = [...lastMonthActivityLogs, ...lastMonthActivityLogs];
+    final lastMonthLogs = [...lastMonthRoutineLogs, ...lastMonthActivityLogs];
 
     return Column(
       spacing: 12,
