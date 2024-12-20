@@ -85,7 +85,7 @@ class _ActivityEditorScreenState extends State<ActivityEditorScreen> {
         title: Text(activity?.nameOrSummary ?? "Log Activity".toUpperCase()),
         centerTitle: true,
         actions: [
-          activity != null
+          activity != null && errorMessage == null
               ? IconButton(icon: const FaIcon(FontAwesomeIcons.solidSquareCheck, size: 28), onPressed: _updateActivity)
               : const SizedBox.shrink(),
           const SizedBox(width: 12)
@@ -97,145 +97,147 @@ class _ActivityEditorScreenState extends State<ActivityEditorScreen> {
             gradient: themeGradient(context: context),
           ),
           child: SafeArea(
+              minimum: const EdgeInsets.all(10.0),
               child: Column(
-            spacing: 10,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  ListTile(
-                    onTap: _navigateToActivitySelector,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                    leading: leadingWidget,
-                    title: Text(
-                      selectedActivity.name.toUpperCase(),
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    trailing: const FaIcon(FontAwesomeIcons.arrowRightLong),
-                  ),
-                  if (_selectedActivity == ActivityType.other)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TextField(
-                          controller: _activitySummaryController,
-                          cursorColor: isDarkMode ? Colors.white : Colors.black,
-                          decoration: InputDecoration(
-                            hintText: "Describe Activity",
-                          ),
-                          keyboardType: TextInputType.text,
-                          textCapitalization: TextCapitalization.words,
-                          style: GoogleFonts.ubuntu(
-                              fontWeight: FontWeight.w400,
-                              color: isDarkMode ? Colors.white : Colors.black,
-                              fontSize: 14),
-                        ),
-                        const SizedBox(height: 16),
-                      ],
-                    ),
-                  Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                    Text(
-                      "Duration".toUpperCase(),
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    Expanded(
-                      child: Container(
-                        height: 0.8, // height of the divider
-                        width: double.infinity, // width of the divider (line thickness)
-                        color: sapphireLighter, // color of the divider
-                        margin: const EdgeInsets.symmetric(horizontal: 10), // add space around the divider
-                      ),
-                    ),
-                  ]),
-                  ListTile(
-                      title: Text("Start Time", style: Theme.of(context).textTheme.bodyLarge),
-                      trailing: SizedBox(
-                        width: 150,
-                        child: SolidButtonWidget(
-                            padding: const EdgeInsets.symmetric(vertical: 2),
-                            onPressed: () {
-                              setState(() {
-                                _showStartDateTimeRange = !_showStartDateTimeRange;
-                                _showEndDateTimeRange = false;
-                              });
-                            },
-                            buttonColor: _showStartDateTimeRange ? vibrantGreen : sapphireDark80,
-                            textColor: _showStartDateTimeRange ? sapphireDark : Colors.white,
-                            label: _startDateTime.formattedDayMonthTime()),
-                      )),
-                  if (_showStartDateTimeRange)
-                    SizedBox(
-                      height: 240,
-                      child: CupertinoDatePicker(
-                          use24hFormat: true,
-                          initialDateTime: _startDateTime,
-                          onDateTimeChanged: (DateTime value) {
-                            setState(() {
-                              _startDateTime = value;
-                            });
-                          }),
-                    ),
-                  const SizedBox(height: 10),
-                  ListTile(
+                spacing: 10,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    ListTile(
+                      onTap: _navigateToActivitySelector,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                      leading: leadingWidget,
                       title: Text(
-                        "End Time",
-                        style: Theme.of(context).textTheme.bodyLarge,
+                        selectedActivity.name.toUpperCase(),
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
-                      trailing: SizedBox(
-                        width: 150,
-                        child: SolidButtonWidget(
-                            padding: const EdgeInsets.symmetric(vertical: 2),
-                            onPressed: () {
-                              setState(() {
-                                _showStartDateTimeRange = false;
-                                _showEndDateTimeRange = !_showEndDateTimeRange;
-                              });
-                            },
-                            buttonColor: _showEndDateTimeRange ? vibrantGreen : sapphireDark80,
-                            textColor: _showEndDateTimeRange ? sapphireDark : Colors.white,
-                            label: _endDateTime.formattedDayMonthTime()),
-                      )),
-                  if (_showEndDateTimeRange)
-                    SizedBox(
-                      height: 240,
-                      child: CupertinoDatePicker(
-                          use24hFormat: true,
-                          initialDateTime: _endDateTime,
-                          onDateTimeChanged: (DateTime value) {
-                            setState(() {
-                              _endDateTime = value;
-                            });
-                          }),
+                      trailing: const FaIcon(FontAwesomeIcons.arrowRightLong),
                     ),
-                ]),
-              ),
-              const Spacer(),
-              if (activity == null)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: SizedBox(
-                    height: 90,
-                    child: AnimatedSwitcher(
-                        duration: const Duration(seconds: 1),
-                        child: errorMessage != null
-                            ? Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: InformationContainerLite(content: errorMessage, color: Colors.orange),
-                              )
-                            : SizedBox(
-                                width: double.infinity,
-                                height: 45,
-                                child: OpacityButtonWidget(
-                                    onPressed: _createActivity,
-                                    label: "Log ${_calculateDuration().hmsAnalog()} of ${selectedActivity.name}",
-                                    buttonColor: Colors.greenAccent,
-                                    padding: const EdgeInsets.all(10.0)),
-                              )),
-                  ),
-                ),
-            ],
-          ))),
+                    if (_selectedActivity == ActivityType.other)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TextField(
+                            controller: _activitySummaryController,
+                            cursorColor: isDarkMode ? Colors.white : Colors.black,
+                            decoration: InputDecoration(
+                              hintText: "Describe Activity",
+                            ),
+                            keyboardType: TextInputType.text,
+                            textCapitalization: TextCapitalization.words,
+                            style: GoogleFonts.ubuntu(
+                                fontWeight: FontWeight.w400,
+                                color: isDarkMode ? Colors.white : Colors.black,
+                                fontSize: 14),
+                          ),
+                          const SizedBox(height: 16),
+                        ],
+                      ),
+                    Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                      Text(
+                        "Duration".toUpperCase(),
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      Expanded(
+                        child: Container(
+                          height: 0.8, // height of the divider
+                          width: double.infinity, // width of the divider (line thickness)
+                          color: sapphireLighter, // color of the divider
+                          margin: const EdgeInsets.symmetric(horizontal: 10), // add space around the divider
+                        ),
+                      ),
+                    ]),
+                    ListTile(
+                        onTap: () {
+                          _dismissKeyboard();
+                          setState(() {
+                            _showStartDateTimeRange = !_showStartDateTimeRange;
+                            _showEndDateTimeRange = false;
+                          });
+                        },
+                        title: Text("Start Time", style: Theme.of(context).textTheme.bodyLarge),
+                        trailing: SizedBox(
+                          width: 150,
+                          child: SolidButtonWidget(
+                              padding: const EdgeInsets.symmetric(vertical: 2),
+                              buttonColor: _showStartDateTimeRange ? vibrantGreen : sapphireDark80,
+                              textColor: _showStartDateTimeRange ? sapphireDark : Colors.white,
+                              label: _startDateTime.formattedDayMonthTime()),
+                        )),
+                    if (_showStartDateTimeRange)
+                      SizedBox(
+                        height: 240,
+                        child: CupertinoDatePicker(
+                            use24hFormat: true,
+                            initialDateTime: _startDateTime,
+                            onDateTimeChanged: (DateTime value) {
+                              setState(() {
+                                _startDateTime = value;
+                              });
+                            }),
+                      ),
+                    const SizedBox(height: 10),
+                    ListTile(
+                        onTap: () {
+                          _dismissKeyboard();
+                          setState(() {
+                            _showStartDateTimeRange = false;
+                            _showEndDateTimeRange = !_showEndDateTimeRange;
+                          });
+                        },
+                        title: Text(
+                          "End Time",
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                        trailing: SizedBox(
+                          width: 150,
+                          child: SolidButtonWidget(
+                              padding: const EdgeInsets.symmetric(vertical: 2),
+                              buttonColor: _showEndDateTimeRange ? vibrantGreen : sapphireDark80,
+                              textColor: _showEndDateTimeRange ? sapphireDark : Colors.white,
+                              label: _endDateTime.formattedDayMonthTime()),
+                        )),
+                    if (_showEndDateTimeRange)
+                      SizedBox(
+                        height: 240,
+                        child: CupertinoDatePicker(
+                            use24hFormat: true,
+                            initialDateTime: _endDateTime,
+                            onDateTimeChanged: (DateTime value) {
+                              setState(() {
+                                _endDateTime = value;
+                              });
+                            }),
+                      ),
+                  ]),
+                  const Spacer(),
+                  if (errorMessage != null)
+                    SizedBox(
+                      height: 60,
+                      child: InformationContainerLite(content: errorMessage, color: Colors.orange),
+                    ),
+                  if (activity == null)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: SizedBox(
+                        height: 60,
+                        child: AnimatedSwitcher(
+                            duration: const Duration(seconds: 1),
+                            child: errorMessage != null
+                                ? InformationContainerLite(content: errorMessage, color: Colors.orange)
+                                : SizedBox(
+                                    width: double.infinity,
+                                    height: 45,
+                                    child: OpacityButtonWidget(
+                                        onPressed: _createActivity,
+                                        label: "Log ${_calculateDuration().hmsAnalog()} of ${selectedActivity.name}",
+                                        buttonColor: Colors.greenAccent,
+                                        padding: const EdgeInsets.all(10.0)),
+                                  )),
+                      ),
+                    ),
+                ],
+              ))),
     );
   }
 
@@ -287,7 +289,7 @@ class _ActivityEditorScreenState extends State<ActivityEditorScreen> {
     if (activity == null) return;
     final activityToBeUpdated = activity.copyWith(
       name: _selectedActivity.name,
-      summary: _activitySummaryController.text.trim(),
+      summary: _selectedActivity == ActivityType.other ? _activitySummaryController.text.trim() : "",
       startTime: _startDateTime,
       endTime: _endDateTime,
       createdAt: _startDateTime,
@@ -297,6 +299,10 @@ class _ActivityEditorScreenState extends State<ActivityEditorScreen> {
     if (mounted) {
       context.pop();
     }
+  }
+
+  void _dismissKeyboard() {
+    FocusScope.of(context).unfocus();
   }
 
   @override

@@ -12,8 +12,7 @@ class SolidButtonWidget extends StatelessWidget {
   final VisualDensity? visualDensity;
 
   const SolidButtonWidget(
-      {super.key,
-      required this.onPressed,
+      {super.key, this.onPressed,
       required this.label,
       this.loadingLabel = "loading",
       this.loading = false,
