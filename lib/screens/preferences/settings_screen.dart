@@ -190,7 +190,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 const SizedBox(height: 10),
                 Center(
                   child: Text(_appVersion,
-                      style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+                      style: Theme.of(context).textTheme.bodySmall),
                 ),
               ],
             ),
