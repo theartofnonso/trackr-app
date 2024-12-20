@@ -114,19 +114,6 @@ print(exercises);
     showSnackbar(context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: message);
   }
 
-  bool _isRoutinePartiallyComplete() {
-    final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
-    final exerciseLogs = exerciseLogController.exerciseLogs;
-
-    final hasAnyCompletedSet = exerciseLogs.any((log) => log.sets.any((set) => set.isNotEmpty() && set.checked));
-
-    if (!hasAnyCompletedSet) {
-      _showSnackbar("Workout must have completed set(s)");
-    }
-
-    return hasAnyCompletedSet;
-  }
-
   void _createLog() async {
     if (!_validateRoutineTemplateInputs()) return;
 
