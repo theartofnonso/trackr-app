@@ -41,7 +41,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
 
     final activityLogs = activityLogController.logs;
 
-    final hasPendingActions = routineTemplates.isEmpty && routineLogs.isEmpty && activityLogs.isEmpty;
+    final hasPendingActions = routineTemplates.isEmpty || routineLogs.isEmpty || activityLogs.isEmpty;
 
     return DefaultTabController(
         length: 2,

@@ -27,7 +27,7 @@ class OnboardingChecklistScreen extends StatelessWidget {
 
     final activityLogs = activityLogController.logs;
 
-    final hasPendingActions = routineTemplates.isEmpty && routineLogs.isEmpty && activityLogs.isEmpty;
+    final hasPendingActions = routineTemplates.isEmpty || routineLogs.isEmpty || activityLogs.isEmpty;
 
     return Scaffold(
       appBar: AppBar(
@@ -44,9 +44,10 @@ class OnboardingChecklistScreen extends StatelessWidget {
           bottom: false,
           minimum: const EdgeInsets.all(10.0),
           child: hasPendingActions
-              ? ListView(
+              ? Column(
+                  spacing: 10,
                   children: [
-                    if (routineLogs.isEmpty)
+                    if (routineTemplates.isEmpty)
                       ListTile(
                         title: Text("Create A Workout Template"),
                         leading: Image.asset(
@@ -61,7 +62,7 @@ class OnboardingChecklistScreen extends StatelessWidget {
                           size: 18,
                         ),
                       ),
-                    if (routineTemplates.isEmpty)
+                    if (routineLogs.isEmpty)
                       ListTile(
                         title: Text("Log A Workout Session"),
                         leading: Image.asset(
