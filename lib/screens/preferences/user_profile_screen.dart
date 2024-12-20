@@ -78,15 +78,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     .bodyMedium
                     ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
             const SizedBox(height: 8),
-            Container(
+            SizedBox(
               width: double.infinity,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: sapphireLighter, // Border color
-                  width: 1.0, // Border width
-                ),
-                borderRadius: BorderRadius.circular(5), // Rounded corners
-              ),
               child: DoubleTextField(
                   value: _user?.weight ?? 0,
                   controller: _doubleTextFieldController,
