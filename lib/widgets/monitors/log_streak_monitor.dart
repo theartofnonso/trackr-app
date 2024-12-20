@@ -9,20 +9,21 @@ class LogStreakMonitor extends StatelessWidget {
   final double height;
   final double strokeWidth;
   final StrokeCap? strokeCap;
+  final bool forceDarkMode;
 
   const LogStreakMonitor({
     super.key,
     required this.value,
     required this.width,
     required this.height,
-    required this.strokeWidth, this.strokeCap
+    required this.strokeWidth, this.strokeCap, this.forceDarkMode = false
   });
 
   @override
   Widget build(BuildContext context) {
 
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
+    final isDarkMode = systemBrightness == Brightness.dark || forceDarkMode;
 
     return SizedBox(
       width: height,

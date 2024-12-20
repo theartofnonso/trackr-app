@@ -27,14 +27,15 @@ GlobalKey monitorKey = GlobalKey();
 class LogStreakMuscleTrendMonitor extends StatelessWidget {
   final DateTime dateTime;
   final bool showInfo;
+  final bool forceDarkMode;
 
-  const LogStreakMuscleTrendMonitor({super.key, required this.dateTime, this.showInfo = true});
+  const LogStreakMuscleTrendMonitor(
+      {super.key, required this.dateTime, this.showInfo = true, this.forceDarkMode = false});
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
+    final isDarkMode = systemBrightness == Brightness.dark || forceDarkMode;
 
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
@@ -44,8 +45,7 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
 
     final monthlyProgress = routineLogsByDay.length / 12;
 
-    final muscleScorePercentage =
-        calculateMuscleScoreForLogs(routineLogs: routineLogs);
+    final muscleScorePercentage = calculateMuscleScoreForLogs(routineLogs: routineLogs);
 
     return Stack(children: [
       if (showInfo)
@@ -53,9 +53,7 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
           left: 12,
           child: GestureDetector(
             onTap: () => _showMonitorInfo(context: context),
-            child: const Align(
-                alignment: Alignment.bottomLeft,
-                child: FaIcon(FontAwesomeIcons.circleInfo, size: 18)),
+            child: const Align(alignment: Alignment.bottomLeft, child: FaIcon(FontAwesomeIcons.circleInfo, size: 18)),
           ),
         ),
       if (showInfo)
@@ -64,8 +62,7 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
           child: GestureDetector(
             onTap: () => _showShareBottomSheet(context: context),
             child: const Align(
-                alignment: Alignment.bottomRight,
-                child: FaIcon(FontAwesomeIcons.arrowUpFromBracket, size: 19)),
+                alignment: Alignment.bottomRight, child: FaIcon(FontAwesomeIcons.arrowUpFromBracket, size: 19)),
           ),
         ),
       Row(
@@ -77,22 +74,24 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
                 color: Colors.transparent,
                 width: 80,
                 child: _MonitorScore(
-                  value: "${routineLogsByDay.length} ${pluralize(word: "day", count: routineLogsByDay.length)}",
-                  title: "Log Streak",
-                  color: logStreakColor(value: monthlyProgress),
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                ),
+                    value: "${routineLogsByDay.length} ${pluralize(word: "day", count: routineLogsByDay.length)}",
+                    title: "Log Streak",
+                    color: logStreakColor(value: monthlyProgress),
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    forceDarkMode: isDarkMode),
               )),
           const SizedBox(width: 20),
           GestureDetector(
             child: Stack(alignment: Alignment.center, children: [
               LogStreakMonitor(
-                  value: monthlyProgress,
-                  width: 100,
-                  height: 100,
-                  strokeWidth: 6),
+                  value: monthlyProgress, width: 100, height: 100, strokeWidth: 6, forceDarkMode: isDarkMode),
               MuscleTrendMonitor(
-                  value: muscleScorePercentage / 100, width: 70, height: 70, strokeWidth: 6),
+                value: muscleScorePercentage / 100,
+                width: 70,
+                height: 70,
+                strokeWidth: 6,
+                forceDarkMode: forceDarkMode,
+              ),
               Image.asset(
                 'images/trkr.png',
                 fit: BoxFit.contain,
@@ -107,11 +106,11 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
             child: SizedBox(
               width: 80,
               child: _MonitorScore(
-                value: "$muscleScorePercentage%",
-                color: Colors.white,
-                title: "Muscle",
-                crossAxisAlignment: CrossAxisAlignment.start,
-              ),
+                  value: "$muscleScorePercentage%",
+                  color: Colors.white,
+                  title: "Muscle",
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  forceDarkMode: isDarkMode),
             ),
           ),
         ],
@@ -161,7 +160,7 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
   }
 
   void _onShareMonitor({required BuildContext context}) {
-    if(kReleaseMode) {
+    if (kReleaseMode) {
       Posthog().capture(eventName: PostHogAnalyticsEvent.shareMonitor.displayName);
     }
     onShare(
@@ -172,7 +171,7 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              color: Colors.white70,
+              color: Colors.white,
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
               child: Column(
@@ -192,6 +191,7 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
               child: LogStreakMuscleTrendMonitor(
                 dateTime: dateTime,
                 showInfo: false,
+                forceDarkMode: true,
               ),
             ),
             const SizedBox(height: 14),
@@ -200,11 +200,7 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
   }
 
   void _onShareCalendar({required BuildContext context}) {
-
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
-    if(kReleaseMode) {
+    if (kReleaseMode) {
       Posthog().capture(eventName: PostHogAnalyticsEvent.shareCalendar.displayName);
     }
     onShare(
@@ -219,13 +215,13 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
                   textAlign: TextAlign.left,
                   style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 20)),
             ),
-            Calendar(dateTime: dateTime),
+            Calendar(dateTime: dateTime, forceDarkMode: true),
             const SizedBox(height: 12),
             Image.asset(
               'images/trkr.png',
               fit: BoxFit.contain,
               height: 8,
-              color: isDarkMode ? Colors.white70 : Colors.black,// Adjust the height as needed
+              color: Colors.white70, // Adjust the height as needed
             ),
           ],
         ));
@@ -237,9 +233,14 @@ class _MonitorScore extends StatelessWidget {
   final String title;
   final Color color;
   final CrossAxisAlignment crossAxisAlignment;
+  final bool forceDarkMode;
 
   const _MonitorScore(
-      {required this.value, required this.title, required this.color, required this.crossAxisAlignment});
+      {required this.value,
+      required this.title,
+      required this.color,
+      required this.crossAxisAlignment,
+      this.forceDarkMode = false});
 
   @override
   Widget build(BuildContext context) {
@@ -248,12 +249,13 @@ class _MonitorScore extends StatelessWidget {
       children: [
         Text(
           value,
-          style: Theme.of(context).textTheme.titleMedium,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(color: forceDarkMode ? Colors.white : Colors.black),
         ),
         const SizedBox(height: 4),
         Text(
           title.toUpperCase(),
-          textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: forceDarkMode ? Colors.white70 : Colors.black),
         )
       ],
     );

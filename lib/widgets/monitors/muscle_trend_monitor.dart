@@ -7,6 +7,7 @@ class MuscleTrendMonitor extends StatelessWidget {
   final double height;
   final double strokeWidth;
   final StrokeCap? strokeCap;
+  final bool forceDarkMode;
 
   const MuscleTrendMonitor({
     super.key,
@@ -14,14 +15,14 @@ class MuscleTrendMonitor extends StatelessWidget {
     required this.width,
     required this.height,
     required this.strokeWidth,
-    this.strokeCap
+    this.strokeCap, this.forceDarkMode = false
   });
 
   @override
   Widget build(BuildContext context) {
 
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
+    final isDarkMode = systemBrightness == Brightness.dark || forceDarkMode;
 
     return SizedBox(
       width: width,

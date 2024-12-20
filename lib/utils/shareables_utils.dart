@@ -11,7 +11,6 @@ import 'package:share_plus/share_plus.dart';
 import '../colors.dart';
 import '../widgets/buttons/opacity_button_widget.dart';
 import 'dialog_utils.dart';
-import 'general_utils.dart';
 
 Future<ShareResult> captureImage({required GlobalKey key, required double pixelRatio}) async {
   final RenderRepaintBoundary boundary = key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
@@ -27,8 +26,6 @@ Future<ShareResult> captureImage({required GlobalKey key, required double pixelR
 
 void onShare(
     {required BuildContext context, required GlobalKey globalKey, EdgeInsetsGeometry? padding, required Widget child}) {
-  Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-  final isDarkMode = systemBrightness == Brightness.dark;
 
   displayBottomSheet(
       context: context,
@@ -41,8 +38,15 @@ void onShare(
               borderRadius: BorderRadius.circular(20),
               child: Container(
                   decoration: BoxDecoration(
-                      color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
-                      gradient: isDarkMode ? themeGradient(context: context) : null),
+                      color: sapphireDark80,
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          sapphireDark80,
+                          sapphireDark,
+                        ],
+                      )),
                   padding: padding ?? const EdgeInsets.all(12),
                   child: child),
             )),
