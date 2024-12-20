@@ -9,7 +9,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/shared_prefs.dart';
-import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
@@ -128,7 +127,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       ),
       MenuItemButton(
           leadingIcon: FaIcon(FontAwesomeIcons.arrowUpFromBracket, size: 16),
-          onPressed: _showBottomSheet,
+          onPressed: _showShareBottomSheet,
           child: Text("Share", style: GoogleFonts.ubuntu())),
       MenuItemButton(
         onPressed: () {
@@ -232,7 +231,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                     child: Table(
                       border: TableBorder.symmetric(
                           inside: BorderSide(
-                              color: isDarkMode ? sapphireLighter.withValues(alpha:0.4) : Colors.white, width: 2)),
+                              color: isDarkMode ? sapphireLighter.withValues(alpha: 0.4) : Colors.white, width: 2)),
                       columnWidths: const <int, TableColumnWidth>{
                         0: FlexColumnWidth(),
                         1: FlexColumnWidth(),
@@ -375,7 +374,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     }
   }
 
-  void _showBottomSheet() {
+  void _showShareBottomSheet() {
     final template = _template;
 
     if (template != null) {
@@ -391,66 +390,48 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           isScrollControlled: true,
           child: SafeArea(
             child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const FaIcon(FontAwesomeIcons.link, size: 14),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(workoutLink,
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: true,
-                        style: GoogleFonts.ubuntu(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                        )),
-                  ),
-                  const SizedBox(width: 6),
-                  OpacityButtonWidget(
-                    onPressed: () {
-                      HapticFeedback.heavyImpact();
-                      final data = ClipboardData(text: workoutLink);
-                      Clipboard.setData(data).then((_) {
-                        if (mounted) {
-                          if (kReleaseMode) {
-                            Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineTemplateAsLink.displayName);
-                          }
-                          Navigator.of(context).pop();
-                          showSnackbar(
-                              context: context,
-                              icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
-                              message: "Workout link copied");
-                        }
-                      });
-                    },
-                    label: "Copy",
-                    buttonColor: vibrantGreen,
-                  )
-                ],
-              ),
-              const SizedBox(height: 12),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: sapphireDark80,
-                  border: Border.all(
-                    color: sapphireDark80, // Border color
-                    width: 1.0, // Border width
-                  ),
-                  borderRadius: BorderRadius.circular(5), // Optional: Rounded corners
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const FaIcon(
+                  FontAwesomeIcons.link,
+                  size: 18,
                 ),
-                child: Text("${workoutText.substring(0, workoutText.length >= 150 ? 150 : workoutText.length)}...",
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.ubuntu(
-                      color: Colors.white70,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14,
-                    )),
+                horizontalTitleGap: 10,
+                title: Text(
+                  "Copy as Link",
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                  maxLines: 1,
+                ),
+                subtitle: Text(workoutLink),
+                onTap: () {
+                  if (kReleaseMode) {
+                    Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineLogAsLink.displayName);
+                  }
+                  HapticFeedback.heavyImpact();
+                  final data = ClipboardData(text: workoutLink);
+                  Clipboard.setData(data).then((_) {
+                    if (mounted) {
+                      Navigator.of(context).pop();
+                      showSnackbar(
+                          context: context,
+                          icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
+                          message: "Workout link copied");
+                    }
+                  });
+                },
               ),
-              OpacityButtonWidget(
-                onPressed: () {
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const FaIcon(
+                  FontAwesomeIcons.copy,
+                  size: 18,
+                ),
+                horizontalTitleGap: 6,
+                title: Text("Copy as Text", style: Theme.of(context).textTheme.titleMedium),
+                subtitle: Text("${template.name}..."),
+                onTap: () {
                   if (kReleaseMode) {
                     Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineTemplateAsText.displayName);
                   }
@@ -458,14 +439,15 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                   final data = ClipboardData(text: workoutText);
                   Clipboard.setData(data).then((_) {
                     if (mounted) {
-                      context.pop();
-                      showSnackbar(context: context, icon: const Icon(Icons.check), message: "Workout copied");
+                      Navigator.of(context).pop();
+                      showSnackbar(
+                          context: context,
+                          icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
+                          message: "Workout copied");
                     }
                   });
                 },
-                label: "Copy as text",
-                buttonColor: vibrantGreen,
-              )
+              ),
             ]),
           ));
     }
