@@ -98,7 +98,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
   bool _validateRoutineTemplateInputs() {
     final exerciseProviders = Provider.of<ExerciseLogController>(context, listen: false);
     final exercises = exerciseProviders.exerciseLogs;
-
+print(exercises);
     if (_templateNameController.text.isEmpty) {
       _showSnackbar('Please provide a name for this workout');
       return false;
@@ -130,8 +130,6 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
   void _createLog() async {
     if (!_validateRoutineTemplateInputs()) return;
 
-    if (!_isRoutinePartiallyComplete()) return;
-
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
 
     final exerciseLogs = exerciseLogController.exerciseLogs.map((exerciseLog) {
@@ -149,8 +147,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
     if (widget.log.id.isEmpty) {
       final datetime = TemporalDateTime.withOffset(updatedLog.startTime, Duration.zero);
 
-      final createdLog = await Provider.of<ExerciseAndRoutineController>(context, listen: false)
-          .saveLog(logDto: updatedLog, datetime: datetime);
+      final createdLog = await Provider.of<ExerciseAndRoutineController>(context, listen: false).saveLog(logDto: updatedLog, datetime: datetime);
       _navigateBack(log: createdLog);
     } else {
       await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateLog(log: updatedLog);
