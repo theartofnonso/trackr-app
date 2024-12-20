@@ -143,7 +143,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
               onPressed: _showBottomSheet,
             ),
             IconButton(
-              icon: const FaIcon(FontAwesomeIcons.solidCopy, size: 24),
+              icon: const FaIcon(Icons.copy_rounded, size: 24),
               onPressed: _showCopyBottomSheet,
             )
           ],
