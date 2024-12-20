@@ -29,7 +29,6 @@ import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../utils/shareables_utils.dart';
-import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/label_divider.dart';
 
 class RoutineLogSummaryScreen extends StatefulWidget {
@@ -124,16 +123,28 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
     return Stack(alignment: Alignment.topCenter, children: [
       Scaffold(
         floatingActionButton: FloatingActionButton(
-            heroTag: "routine_log_screen", onPressed: _showCopyBottomSheet, child: const FaIcon(Icons.copy)),
+            heroTag: "routine_log_screen",
+            onPressed: () {
+              final index = _pageController.page!.toInt();
+              final key = pagesKeys[index];
+              _showShareAction(key: key);
+            },
+            child: const FaIcon(FontAwesomeIcons.rocket)),
         appBar: AppBar(
           leading: IconButton(
             icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
             onPressed: context.pop,
           ),
+          title: Text("Share".toUpperCase()),
+          centerTitle: true,
           actions: [
             IconButton(
               icon: const FaIcon(FontAwesomeIcons.camera, size: 24),
               onPressed: _showBottomSheet,
+            ),
+            IconButton(
+              icon: const FaIcon(FontAwesomeIcons.solidCopy, size: 24),
+              onPressed: _showCopyBottomSheet,
             )
           ],
         ),
@@ -161,27 +172,6 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
                   count: pages.length,
                   effect: const ExpandingDotsEffect(activeDotColor: vibrantGreen),
                 ),
-                const SizedBox(height: 30),
-                OpacityButtonWidget(
-                    onPressed: () {
-                      final index = _pageController.page!.toInt();
-                      captureImage(key: pagesKeys[index], pixelRatio: 3.5).then((result) {
-                        if (context.mounted) {
-                          if (result.status == ShareResultStatus.success) {
-                            if (kReleaseMode) {
-                              Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineLogSummary.displayName);
-                            }
-                            showSnackbar(
-                                context: context,
-                                icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
-                                message: "Content Shared");
-                          }
-                        }
-                      });
-                    },
-                    label: "Share",
-                    buttonColor: vibrantGreen,
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14))
               ],
             ),
           ),
@@ -192,6 +182,22 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
           confettiController: _confettiController,
           blastDirectionality: BlastDirectionality.explosive)
     ]);
+  }
+
+  void _showShareAction({required GlobalKey key}) {
+    captureImage(key: key, pixelRatio: 3.5).then((result) {
+      if (context.mounted) {
+        if (result.status == ShareResultStatus.success) {
+          if (kReleaseMode) {
+            Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineLogSummary.displayName);
+          }
+          if (mounted) {
+            showSnackbar(
+                context: context, icon: const FaIcon(FontAwesomeIcons.solidSquareCheck), message: "Content Shared");
+          }
+        }
+      }
+    });
   }
 
   void _showCopyBottomSheet() {
@@ -211,67 +217,48 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
         isScrollControlled: true,
         child: SafeArea(
           child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const FaIcon(FontAwesomeIcons.link, size: 14),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(workoutLogLink,
-                      overflow: TextOverflow.ellipsis,
-                      softWrap: true,
-                      style: GoogleFonts.ubuntu(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14,
-                      )),
-                ),
-                const SizedBox(width: 6),
-                OpacityButtonWidget(
-                  onPressed: () {
-                    if (kReleaseMode) {
-                      Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineLogAsLink.displayName);
-                    }
-                    HapticFeedback.heavyImpact();
-                    final data = ClipboardData(text: workoutLogLink);
-                    Clipboard.setData(data).then((_) {
-                      if (mounted) {
-                        Navigator.of(context).pop();
-                        showSnackbar(
-                            context: context,
-                            icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
-                            message: "Workout log link copied");
-                      }
-                    });
-                  },
-                  label: "Copy",
-                  buttonColor: vibrantGreen,
-                )
-              ],
-            ),
-            const SizedBox(height: 12),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: sapphireDark80,
-                border: Border.all(
-                  color: sapphireDark80, // Border color
-                  width: 1.0, // Border width
-                ),
-                borderRadius: BorderRadius.circular(5), // Optional: Rounded corners
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(
+                FontAwesomeIcons.link,
+                size: 18,
               ),
-              child:
-                  Text("${workoutLogText.substring(0, workoutLogText.length >= 150 ? 150 : workoutLogText.length)}...",
+              horizontalTitleGap: 10,
+              title: Text(
+                "Copy as Link",
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.ubuntu(
-                        color: Colors.white70,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
-                      )),
+                    ),
+                maxLines: 1,
+              ),
+              subtitle: Text(workoutLogLink),
+              onTap: () {
+                if (kReleaseMode) {
+                  Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineLogAsLink.displayName);
+                }
+                HapticFeedback.heavyImpact();
+                final data = ClipboardData(text: workoutLogLink);
+                Clipboard.setData(data).then((_) {
+                  if (mounted) {
+                    Navigator.of(context).pop();
+                    showSnackbar(
+                        context: context,
+                        icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
+                        message: "Workout log link copied");
+                  }
+                });
+              },
             ),
-            OpacityButtonWidget(
-              onPressed: () {
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(
+                FontAwesomeIcons.copy,
+                size: 18,
+              ),
+              horizontalTitleGap: 6,
+              title: Text("Copy as Text", style: Theme.of(context).textTheme.titleMedium),
+              subtitle: Text("${updatedLog.name}..."),
+              onTap: () {
                 if (kReleaseMode) {
                   Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineLogAsText.displayName);
                 }
@@ -287,9 +274,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
                   }
                 });
               },
-              label: "Copy as text",
-              buttonColor: vibrantGreen,
-            )
+            ),
           ]),
         ));
   }
