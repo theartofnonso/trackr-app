@@ -43,6 +43,10 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     final routineTemplate = _routineTemplate;
@@ -104,6 +108,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
                         child: TextField(
                           controller: _textEditingController,
                           decoration: InputDecoration(hintText: "Describe your workout"),
+                          cursorColor: isDarkMode ? Colors.white : Colors.black,
                           maxLines: null,
                           showCursor: true,
                           keyboardType: TextInputType.text,
