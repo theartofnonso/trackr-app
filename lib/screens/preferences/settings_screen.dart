@@ -165,7 +165,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     const SizedBox(height: 8),
                     ListTile(
                         onTap: _navigateToUserProfile,
-                        leading: FaIcon(FontAwesomeIcons.person, color: isDarkMode ? Colors.white70 : Colors.black38),
+                        leading: FaIcon(FontAwesomeIcons.personWalking, color: isDarkMode ? Colors.white70 : Colors.black38),
                         title: Text("Profile", style: Theme.of(context).textTheme.titleMedium),
                         subtitle: Text("manage profile")),
                   ],

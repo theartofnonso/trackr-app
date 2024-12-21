@@ -32,6 +32,6 @@ class UserIconWidget extends StatelessWidget {
             ),
           ],
         ),
-        child: Center(child: FaIcon(FontAwesomeIcons.solidUser, color: isDarkMode ? Colors.white54 : Colors.black, size: iconSize)));
+        child: Center(child: FaIcon(FontAwesomeIcons.personWalking, color: isDarkMode ? Colors.white54 : Colors.black, size: iconSize)));
   }
 }
