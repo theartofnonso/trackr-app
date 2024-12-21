@@ -165,7 +165,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     const SizedBox(height: 8),
                     ListTile(
                         onTap: _navigateToUserProfile,
-                        leading: FaIcon(FontAwesomeIcons.personWalking, color: isDarkMode ? Colors.white70 : Colors.black38),
+                        leading:
+                            FaIcon(FontAwesomeIcons.personWalking, color: isDarkMode ? Colors.white70 : Colors.black38),
                         title: Text("Profile", style: Theme.of(context).textTheme.titleMedium),
                         subtitle: Text("manage profile")),
                   ],
@@ -189,7 +190,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       onTap: _navigateToNotificationSettings,
                       leading: FaIcon(FontAwesomeIcons.solidBell, color: isDarkMode ? Colors.white70 : Colors.black38),
                       title: Text("Notifications", style: Theme.of(context).textTheme.titleMedium),
-                      subtitle: Text(_notificationEnabled ? "Enabled" : "Disabled"),
+                      subtitle: Text(_notificationEnabled ? "enabled" : "disabled"),
                     ),
                   ]),
                 const SizedBox(height: 8),
@@ -198,19 +199,19 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     leading:
                         FaIcon(FontAwesomeIcons.solidPaperPlane, color: isDarkMode ? Colors.white70 : Colors.black38),
                     title: Text("Feedback", style: Theme.of(context).textTheme.titleMedium),
-                    subtitle: Text("Help us improve")),
+                    subtitle: Text("help us improve")),
                 const SizedBox(height: 8),
                 ListTile(
                     onTap: _visitTRKR,
                     leading: FaIcon(FontAwesomeIcons.instagram, color: isDarkMode ? Colors.white70 : Colors.black38),
                     title: Text("TRKR in the wild", style: Theme.of(context).textTheme.titleMedium),
-                    subtitle: Text("Follow us on socials")),
+                    subtitle: Text("follow us on socials")),
                 const SizedBox(height: 8),
                 ListTile(
                     onTap: _navigateTutorialScreen,
                     leading: FaIcon(FontAwesomeIcons.book, color: isDarkMode ? Colors.white70 : Colors.black38),
                     title: Text("Tutorials", style: Theme.of(context).textTheme.titleMedium),
-                    subtitle: Text("Learn about TRKR")),
+                    subtitle: Text("learn about TRKR")),
                 const SizedBox(height: 8),
                 ListTile(
                     onTap: _logout,
