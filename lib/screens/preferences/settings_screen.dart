@@ -87,48 +87,46 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         color: Colors.white.withValues(alpha: 0.9),
                       )),
                 ),
-                Container(
-                  child: ListTile(
-                    tileColor: Colors.transparent,
-                    title: Text("Weight", style: Theme.of(context).textTheme.titleMedium),
-                    subtitle: Text("Choose kg or lbs"),
-                    trailing: SegmentedButton(
-                      showSelectedIcon: false,
-                      style: ButtonStyle(
-                        visualDensity: const VisualDensity(
-                            horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity),
-                        shape: WidgetStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                        )),
-                        backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                          (Set<WidgetState> states) {
-                            if (states.contains(WidgetState.selected)) {
-                              return isDarkMode ? Colors.white : Colors.black;
-                            }
-                            return isDarkMode ? Colors.black : Colors.white;
-                          },
-                        ),
-                        foregroundColor: WidgetStateProperty.resolveWith<Color>(
-                          (Set<WidgetState> states) {
-                            if (states.contains(WidgetState.selected)) {
-                              return isDarkMode ? Colors.black : Colors.white;
-                            }
+                ListTile(
+                  tileColor: Colors.transparent,
+                  title: Text("Weight", style: Theme.of(context).textTheme.titleMedium),
+                  subtitle: Text("Choose kg or lbs"),
+                  trailing: SegmentedButton(
+                    showSelectedIcon: false,
+                    style: ButtonStyle(
+                      visualDensity: const VisualDensity(
+                          horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity),
+                      shape: WidgetStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      )),
+                      backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                        (Set<WidgetState> states) {
+                          if (states.contains(WidgetState.selected)) {
                             return isDarkMode ? Colors.white : Colors.black;
-                          },
-                        ),
+                          }
+                          return isDarkMode ? Colors.black : Colors.white;
+                        },
                       ),
-                      segments: [
-                        ButtonSegment<WeightUnit>(value: WeightUnit.kg, label: Text(WeightUnit.kg.name)),
-                        ButtonSegment<WeightUnit>(value: WeightUnit.lbs, label: Text(WeightUnit.lbs.name)),
-                      ],
-                      selected: <WeightUnit>{_weightUnitType},
-                      onSelectionChanged: (Set<WeightUnit> unitType) {
-                        setState(() {
-                          _weightUnitType = unitType.first;
-                        });
-                        toggleWeightUnit(unit: _weightUnitType);
-                      },
+                      foregroundColor: WidgetStateProperty.resolveWith<Color>(
+                        (Set<WidgetState> states) {
+                          if (states.contains(WidgetState.selected)) {
+                            return isDarkMode ? Colors.black : Colors.white;
+                          }
+                          return isDarkMode ? Colors.white : Colors.black;
+                        },
+                      ),
                     ),
+                    segments: [
+                      ButtonSegment<WeightUnit>(value: WeightUnit.kg, label: Text(WeightUnit.kg.name)),
+                      ButtonSegment<WeightUnit>(value: WeightUnit.lbs, label: Text(WeightUnit.lbs.name)),
+                    ],
+                    selected: <WeightUnit>{_weightUnitType},
+                    onSelectionChanged: (Set<WeightUnit> unitType) {
+                      setState(() {
+                        _weightUnitType = unitType.first;
+                      });
+                      toggleWeightUnit(unit: _weightUnitType);
+                    },
                   ),
                 ),
                 const SizedBox(height: 8),

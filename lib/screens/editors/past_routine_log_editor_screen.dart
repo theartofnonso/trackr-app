@@ -98,7 +98,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
   bool _validateRoutineTemplateInputs() {
     final exerciseProviders = Provider.of<ExerciseLogController>(context, listen: false);
     final exercises = exerciseProviders.exerciseLogs;
-print(exercises);
+
     if (_templateNameController.text.isEmpty) {
       _showSnackbar('Please provide a name for this workout');
       return false;
