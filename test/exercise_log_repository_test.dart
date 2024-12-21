@@ -258,19 +258,55 @@ void main() {
 
   test("completedExerciseLogs returns only logs with checked sets", () {
     final exerciseLogRepository = ExerciseLogRepository();
-    // Make benchPressExerciseLog have all unchecked sets
-    final benchPressAllUnchecked = benchPressExerciseLog.copyWith(
-      sets: [
-        const WeightAndRepsSetDto(weight: 80, reps: 15, checked: false),
-        const WeightAndRepsSetDto(weight: 100, reps: 8, checked: false),
-        const WeightAndRepsSetDto(weight: 100, reps: 6, checked: false),
-      ],
-    );
 
-    exerciseLogRepository
-        .loadExerciseLogs(exerciseLogs: [legCurlExerciseLog, plankExerciseLog, benchPressAllUnchecked]);
+    // We uncheck every set upon loading
+    exerciseLogRepository.loadExerciseLogs(exerciseLogs: [legCurlExerciseLog, plankExerciseLog, benchPressExerciseLog]);
+
+    exerciseLogRepository.updateSetCheck(
+        exerciseLogId: legCurlExerciseLog.id,
+        index: 0,
+        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: true));
+    exerciseLogRepository.updateSetCheck(
+        exerciseLogId: legCurlExerciseLog.id,
+        index: 1,
+        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: true));
+    exerciseLogRepository.updateSetCheck(
+        exerciseLogId: legCurlExerciseLog.id,
+        index: 2,
+        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: true));
+
+    /// Duration Exercises are loaded with without a set, so we need to add new ones everytime because they are logged in realtime
+    exerciseLogRepository.addSet(exerciseLogId: plankExerciseLog.id, pastSets: []);
+    exerciseLogRepository.addSet(exerciseLogId: plankExerciseLog.id, pastSets: []);
+    exerciseLogRepository.addSet(exerciseLogId: plankExerciseLog.id, pastSets: []);
+    exerciseLogRepository.updateSetCheck(
+        exerciseLogId: plankExerciseLog.id,
+        index: 0,
+        setDto: DurationSetDto(duration: Duration(milliseconds: 120000), checked: true));
+    exerciseLogRepository.updateSetCheck(
+        exerciseLogId: plankExerciseLog.id,
+        index: 1,
+        setDto: DurationSetDto(duration: Duration(milliseconds: 120000), checked: true));
+    exerciseLogRepository.updateSetCheck(
+        exerciseLogId: plankExerciseLog.id,
+        index: 2,
+        setDto: DurationSetDto(duration: Duration(milliseconds: 120000), checked: true));
+
+    exerciseLogRepository.updateSetCheck(
+        exerciseLogId: benchPressExerciseLog.id,
+        index: 0,
+        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: false));
+    exerciseLogRepository.updateSetCheck(
+        exerciseLogId: benchPressExerciseLog.id,
+        index: 1,
+        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: false));
+    exerciseLogRepository.updateSetCheck(
+        exerciseLogId: benchPressExerciseLog.id,
+        index: 2,
+        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: false));
 
     final completed = exerciseLogRepository.completedExerciseLogs();
+
     // legCurl and plank logs have checked sets, bench press does not
     expect(completed.length, 2);
     expect(completed.any((log) => log.id == benchPressExerciseLog.id), false);
@@ -308,14 +344,38 @@ void main() {
       createdAt: DateTime(2023, 12, 1),
     );
 
+    // We uncheck every set upon loading
     exerciseLogRepository.loadExerciseLogs(exerciseLogs: [benchPressExerciseLog, legCurlExerciseLog]);
+
+    exerciseLogRepository.updateSetCheck(
+        exerciseLogId: legCurlExerciseLog.id,
+        index: 0,
+        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: false));
+    exerciseLogRepository.updateSetCheck(
+        exerciseLogId: legCurlExerciseLog.id,
+        index: 1,
+        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: true));
+    exerciseLogRepository.updateSetCheck(
+        exerciseLogId: legCurlExerciseLog.id,
+        index: 2,
+        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: true));
+
+    exerciseLogRepository.updateSetCheck(
+        exerciseLogId: benchPressExerciseLog.id,
+        index: 0,
+        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: false));
+    exerciseLogRepository.updateSetCheck(
+        exerciseLogId: benchPressExerciseLog.id,
+        index: 1,
+        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: true));
+    exerciseLogRepository.updateSetCheck(
+        exerciseLogId: benchPressExerciseLog.id,
+        index: 2,
+        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: true));
 
     final completed = exerciseLogRepository.completedSets();
 
-    // All sets in these logs are checked (from initial data)
-    final totalSets = legCurlExerciseLog.sets.length + benchPressExerciseLog.sets.length;
-
-    expect(completed.length, totalSets);
+    expect(completed.length, 4);
   });
 
   test("Attempting to remove a non-existent log should not crash", () {

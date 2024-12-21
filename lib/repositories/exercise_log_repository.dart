@@ -252,6 +252,7 @@ class ExerciseLogRepository {
     final exerciseLog = newExerciseLogs[exerciseLogIndex];
     final sets = exerciseLog.sets;
     if (index >= 0 && index < sets.length) {
+
       sets[index] = set;
 
       newExerciseLogs[exerciseLogIndex] = exerciseLog.copyWith(sets: sets);
