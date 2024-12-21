@@ -815,14 +815,14 @@ class _RepRangeSliderState extends State<_RepRangeSlider> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              "$_min ${pluralize(word: "rep", count: widget.min)}",
+              "$_min ${pluralize(word: "rep", count: _min)}",
               style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
             ),
             FaIcon(
               FontAwesomeIcons.arrowRight,
               size: 20,
             ),
-            Text("$_max ${pluralize(word: "rep", count: widget.max)}",
+            Text("$_max ${pluralize(word: "rep", count: _max)}",
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700))
           ],
         ),
