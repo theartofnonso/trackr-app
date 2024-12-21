@@ -39,11 +39,11 @@ import 'package:tracker_app/screens/exercise/history/exercise_home_screen.dart';
 import 'package:tracker_app/screens/home_screen.dart';
 import 'package:tracker_app/screens/insights/calories_trend_screen.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
-import 'package:tracker_app/screens/onboarding/intro_screen.dart';
 import 'package:tracker_app/screens/logs/activity_logs_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
+import 'package:tracker_app/screens/onboarding/intro_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/templates/routine_template_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -406,8 +406,11 @@ class _MyAppState extends State<MyApp> {
       DeviceOrientation.portraitUp, // Lock orientation to portrait up
     ]);
 
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     return _isFirstLaunch
-        ? IntroScreen(themeData: _themeData, onComplete: _completeIntro)
+        ? IntroScreen(themeData: isDarkMode ? TRKRTheme.darkTheme : TRKRTheme.lightTheme, onComplete: _completeIntro)
         : Authenticator(
             child: MaterialApp.router(
               debugShowCheckedModeBanner: false,
