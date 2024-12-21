@@ -92,7 +92,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     tileColor: Colors.transparent,
                     title: Text("Weight", style: Theme.of(context).textTheme.titleMedium),
                     subtitle: Text("Choose kg or lbs"),
-                    leading: SegmentedButton(
+                    trailing: SegmentedButton(
                       showSelectedIcon: false,
                       style: ButtonStyle(
                         visualDensity: const VisualDensity(
