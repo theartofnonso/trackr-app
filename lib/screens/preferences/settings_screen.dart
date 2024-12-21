@@ -203,7 +203,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 ListTile(
                     onTap: _visitTRKR,
                     leading: FaIcon(FontAwesomeIcons.instagram, color: isDarkMode ? Colors.white70 : Colors.black38),
-                    title: Text("Visit TRKR", style: Theme.of(context).textTheme.titleMedium),
+                    title: Text("TRKR in the wild", style: Theme.of(context).textTheme.titleMedium),
                     subtitle: Text("Follow us on socials")),
                 const SizedBox(height: 8),
                 ListTile(
