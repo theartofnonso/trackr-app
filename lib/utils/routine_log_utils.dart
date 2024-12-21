@@ -43,13 +43,15 @@ String prepareLogInstruction({required BuildContext context, required RoutineLog
     }
 
     final completedPastExerciseLogs = loggedExercises(exerciseLogs: pastExerciseLogs);
-    final previousLog = completedPastExerciseLogs.last;
-    final heaviestSetWeight = heaviestWeightInSetForExerciseLog(exerciseLog: previousLog);
-    final oneRepMax = average1RM(weight: (heaviestSetWeight).weight, reps: (heaviestSetWeight).reps);
+    if (completedPastExerciseLogs.isNotEmpty) {
+      final previousLog = completedPastExerciseLogs.last;
+      final heaviestSetWeight = heaviestWeightInSetForExerciseLog(exerciseLog: previousLog);
+      final oneRepMax = average1RM(weight: (heaviestSetWeight).weight, reps: (heaviestSetWeight).reps);
 
-    buffer.writeln("One Rep Max for ${currentExerciseLog.exercise.name}: $oneRepMax");
+      buffer.writeln("One Rep Max for ${currentExerciseLog.exercise.name}: $oneRepMax");
 
-    buffer.writeln();
+      buffer.writeln();
+    }
   }
 
   buffer.writeln();
