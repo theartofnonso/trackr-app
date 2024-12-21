@@ -6,6 +6,7 @@ import 'package:tracker_app/widgets/empty_states/no_list_empty_state.dart';
 
 import '../../controllers/activity_log_controller.dart';
 import '../../utils/general_utils.dart';
+import '../../widgets/list_tile.dart';
 
 class OnboardingChecklistScreen extends StatelessWidget {
   static const routeName = '/onboarding_checklist_screen';
@@ -48,43 +49,49 @@ class OnboardingChecklistScreen extends StatelessWidget {
                   spacing: 10,
                   children: [
                     if (routineTemplates.isEmpty)
-                      ListTile(
-                        title: Text("Create A Workout Template"),
-                        leading: Image.asset(
-                          'icons/dumbbells.png',
-                          fit: BoxFit.contain,
-                          color: isDarkMode ? Colors.white : Colors.black,
-                          height: 24, // Adjust the height as needed
-                        ),
-                        subtitle: Text("Design your first routine"),
-                        trailing: FaIcon(
-                          FontAwesomeIcons.solidBell,
-                          size: 18,
+                      ThemeListTile(
+                        child: ListTile(
+                          title: Text("Create A Workout Template"),
+                          leading: Image.asset(
+                            'icons/dumbbells.png',
+                            fit: BoxFit.contain,
+                            color: isDarkMode ? Colors.white : Colors.black,
+                            height: 24, // Adjust the height as needed
+                          ),
+                          subtitle: Text("Design your first routine"),
+                          trailing: FaIcon(
+                            FontAwesomeIcons.solidBell,
+                            size: 18,
+                          ),
                         ),
                       ),
                     if (routineLogs.isEmpty)
-                      ListTile(
-                        title: Text("Log A Workout Session"),
-                        leading: Image.asset(
-                          'icons/dumbbells.png',
-                          fit: BoxFit.contain,
-                          color: isDarkMode ? Colors.white : Colors.black,
-                          height: 24, // Adjust the height as needed
-                        ),
-                        subtitle: Text("Start your fitness journey with a session"),
-                        trailing: FaIcon(
-                          FontAwesomeIcons.solidBell,
-                          size: 18,
+                      ThemeListTile(
+                        child: ListTile(
+                          title: Text("Log A Workout Session"),
+                          leading: Image.asset(
+                            'icons/dumbbells.png',
+                            fit: BoxFit.contain,
+                            color: isDarkMode ? Colors.white : Colors.black,
+                            height: 24, // Adjust the height as needed
+                          ),
+                          subtitle: Text("Start your fitness journey with a session"),
+                          trailing: FaIcon(
+                            FontAwesomeIcons.solidBell,
+                            size: 18,
+                          ),
                         ),
                       ),
                     if (activityLogs.isEmpty)
-                      ListTile(
-                        title: Text("Log An Activity"),
-                        leading: FaIcon(FontAwesomeIcons.personWalking),
-                        subtitle: Text("Diversify your fitness journey"),
-                        trailing: FaIcon(
-                          FontAwesomeIcons.solidBell,
-                          size: 18,
+                      ThemeListTile(
+                        child: ListTile(
+                          title: Text("Log An Activity"),
+                          leading: FaIcon(FontAwesomeIcons.personWalking),
+                          subtitle: Text("Diversify your fitness journey"),
+                          trailing: FaIcon(
+                            FontAwesomeIcons.solidBell,
+                            size: 18,
+                          ),
                         ),
                       )
                   ],

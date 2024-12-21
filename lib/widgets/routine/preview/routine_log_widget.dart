@@ -5,6 +5,7 @@ import '../../../dtos/appsync/routine_log_dto.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/navigation_utils.dart';
 import '../../../utils/string_utils.dart';
+import '../../list_tile.dart';
 
 class RoutineLogWidget extends StatelessWidget {
   final RoutineLogDto log;
@@ -17,27 +18,29 @@ class RoutineLogWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final completedExerciseLogsAndSets = loggedExercises(exerciseLogs: log.exerciseLogs);
 
-    return ListTile(
-      onTap: () => navigateToRoutineLogPreview(context: context, log: log, isEditable: isEditable),
-      leading: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-        width: 55,
-        height: 40,
-        decoration: BoxDecoration(
-          color: vibrantGreen.withValues(alpha: 0.1), // Background color
-          borderRadius: BorderRadius.circular(5), // Rounded corners
+    return ThemeListTile(
+      child: ListTile(
+        onTap: () => navigateToRoutineLogPreview(context: context, log: log, isEditable: isEditable),
+        leading: Container(
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          width: 55,
+          height: 40,
+          decoration: BoxDecoration(
+            color: vibrantGreen.withValues(alpha: 0.1), // Background color
+            borderRadius: BorderRadius.circular(5), // Rounded corners
+          ),
+          child: Image.asset(
+            'icons/dumbbells.png',
+            fit: BoxFit.contain,
+            height: 30,
+            color: vibrantGreen, // Adjust the height as needed
+          ),
         ),
-        child: Image.asset(
-          'icons/dumbbells.png',
-          fit: BoxFit.contain,
-          height: 30,
-          color: vibrantGreen, // Adjust the height as needed
-        ),
+        title: Text(log.name, overflow: TextOverflow.ellipsis),
+        subtitle: Text(
+            "${completedExerciseLogsAndSets.length} ${pluralize(word: "exercise", count: completedExerciseLogsAndSets.length)}"),
+        trailing: Text(trailing),
       ),
-      title: Text(log.name, overflow: TextOverflow.ellipsis),
-      subtitle: Text(
-          "${completedExerciseLogsAndSets.length} ${pluralize(word: "exercise", count: completedExerciseLogsAndSets.length)}"),
-      trailing: Text(trailing),
     );
   }
 }

@@ -11,6 +11,7 @@ import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
+import 'package:tracker_app/widgets/list_tile.dart';
 
 import '../../../colors.dart';
 import '../../../controllers/exercise_and_routine_controller.dart';
@@ -176,7 +177,6 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -220,7 +220,10 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                         controller: _controller,
                         count: muscleGroupsIllustrations.length,
                         effect: WormEffect(
-                            activeDotColor: vibrantGreen, dotWidth: 8.0, dotHeight: 8.0, dotColor: isDarkMode ? Colors.white12 : Colors.grey.shade200),
+                            activeDotColor: vibrantGreen,
+                            dotWidth: 8.0,
+                            dotHeight: 8.0,
+                            dotColor: isDarkMode ? Colors.white12 : Colors.grey.shade200),
                         axisDirection: Axis.vertical),
                   ),
                 ),
@@ -379,12 +382,13 @@ class _MetricListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      onTap: enabled ? onTap : () {},
-      title: Text(title),
-      subtitle: Text(subtitle),
-      trailing: Text(trailing),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+    return ThemeListTile(
+      child: ListTile(
+        onTap: enabled ? onTap : () {},
+        title: Text(title),
+        subtitle: Text(subtitle),
+        trailing: Text(trailing),
+      ),
     );
   }
 }

@@ -9,6 +9,7 @@ import '../../colors.dart';
 import '../../controllers/routine_user_controller.dart';
 import '../../dtos/abstract_class/log_class.dart';
 import '../../utils/navigation_utils.dart';
+import '../list_tile.dart';
 
 class CaloriesWidget extends StatelessWidget {
   final List<Log> thisMonthLogs;
@@ -26,31 +27,33 @@ class CaloriesWidget extends StatelessWidget {
 
     final improved = thisMonthCount > lastMonthCount;
 
-    return ListTile(
-      onTap: () => _showCaloriesScreen(context: context),
-      leading: const FaIcon(FontAwesomeIcons.fire),
-      title: Text("Calories".toUpperCase()),
-      subtitle: Text("Amount of energy expenditure"),
-      trailing: Wrap(
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("$thisMonthCount",
-                  style: Theme.of(context).textTheme.titleMedium),
-              Text("$lastMonthCount",
-                  style: Theme.of(context).textTheme.titleSmall)
-            ],
-          ),
-          const SizedBox(width: 4),
-          FaIcon(
-            improved ? FontAwesomeIcons.arrowUp : FontAwesomeIcons.arrowDown,
-            color: improved ? vibrantGreen : Colors.deepOrange,
-            size: 12,
-          )
-        ],
+    return ThemeListTile(
+      child: ListTile(
+        onTap: () => _showCaloriesScreen(context: context),
+        leading: const FaIcon(FontAwesomeIcons.fire),
+        title: Text("Calories".toUpperCase()),
+        subtitle: Text("Amount of energy expenditure"),
+        trailing: Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("$thisMonthCount",
+                    style: Theme.of(context).textTheme.titleMedium),
+                Text("$lastMonthCount",
+                    style: Theme.of(context).textTheme.titleSmall)
+              ],
+            ),
+            const SizedBox(width: 4),
+            FaIcon(
+              improved ? FontAwesomeIcons.arrowUp : FontAwesomeIcons.arrowDown,
+              color: improved ? vibrantGreen : Colors.deepOrange,
+              size: 12,
+            )
+          ],
+        ),
       ),
     );
   }

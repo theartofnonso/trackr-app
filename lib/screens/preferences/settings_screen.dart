@@ -84,49 +84,51 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       textStyle: GoogleFonts.ubuntu(
                         fontSize: 16,
                         fontWeight: FontWeight.w400,
-                        color: Colors.white.withValues(alpha:0.9),
+                        color: Colors.white.withValues(alpha: 0.9),
                       )),
                 ),
-                ListTile(
-                  tileColor: Colors.transparent,
-                  title: Text("Weight", style: Theme.of(context).textTheme.titleMedium),
-                  subtitle: Text("Choose kg or lbs"),
-                  trailing: SegmentedButton(
-                    showSelectedIcon: false,
-                    style: ButtonStyle(
-                      visualDensity: const VisualDensity(
-                          horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity),
-                      shape: WidgetStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                      )),
-                      backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                        (Set<WidgetState> states) {
-                          if (states.contains(WidgetState.selected)) {
-                            return isDarkMode ? Colors.white : Colors.black;
-                          }
-                          return isDarkMode ? Colors.black : Colors.white;
-                        },
-                      ),
-                      foregroundColor: WidgetStateProperty.resolveWith<Color>(
-                        (Set<WidgetState> states) {
-                          if (states.contains(WidgetState.selected)) {
+                Container(
+                  child: ListTile(
+                    tileColor: Colors.transparent,
+                    title: Text("Weight", style: Theme.of(context).textTheme.titleMedium),
+                    subtitle: Text("Choose kg or lbs"),
+                    leading: SegmentedButton(
+                      showSelectedIcon: false,
+                      style: ButtonStyle(
+                        visualDensity: const VisualDensity(
+                            horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity),
+                        shape: WidgetStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                        )),
+                        backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                          (Set<WidgetState> states) {
+                            if (states.contains(WidgetState.selected)) {
+                              return isDarkMode ? Colors.white : Colors.black;
+                            }
                             return isDarkMode ? Colors.black : Colors.white;
-                          }
-                          return isDarkMode ? Colors.white : Colors.black;
-                        },
+                          },
+                        ),
+                        foregroundColor: WidgetStateProperty.resolveWith<Color>(
+                          (Set<WidgetState> states) {
+                            if (states.contains(WidgetState.selected)) {
+                              return isDarkMode ? Colors.black : Colors.white;
+                            }
+                            return isDarkMode ? Colors.white : Colors.black;
+                          },
+                        ),
                       ),
+                      segments: [
+                        ButtonSegment<WeightUnit>(value: WeightUnit.kg, label: Text(WeightUnit.kg.name)),
+                        ButtonSegment<WeightUnit>(value: WeightUnit.lbs, label: Text(WeightUnit.lbs.name)),
+                      ],
+                      selected: <WeightUnit>{_weightUnitType},
+                      onSelectionChanged: (Set<WeightUnit> unitType) {
+                        setState(() {
+                          _weightUnitType = unitType.first;
+                        });
+                        toggleWeightUnit(unit: _weightUnitType);
+                      },
                     ),
-                    segments: [
-                      ButtonSegment<WeightUnit>(value: WeightUnit.kg, label: Text(WeightUnit.kg.name)),
-                      ButtonSegment<WeightUnit>(value: WeightUnit.lbs, label: Text(WeightUnit.lbs.name)),
-                    ],
-                    selected: <WeightUnit>{_weightUnitType},
-                    onSelectionChanged: (Set<WeightUnit> unitType) {
-                      setState(() {
-                        _weightUnitType = unitType.first;
-                      });
-                      toggleWeightUnit(unit: _weightUnitType);
-                    },
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -147,9 +149,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 SwitchListTile(
                   tileColor: Colors.transparent,
                   activeColor: vibrantGreen,
-                  title: Text(
-                    'Show calendar dates', style: Theme.of(context).textTheme.titleMedium
-                  ),
+                  title: Text('Show calendar dates', style: Theme.of(context).textTheme.titleMedium),
                   value: SharedPrefs().showCalendarDates,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                   onChanged: (bool value) {
@@ -163,34 +163,70 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 8),
-                    ListTile(onTap: _navigateToUserProfile, title: Text("Profile", style: Theme.of(context).textTheme.titleMedium), trailing: Text("manage profile")),
+                    ListTile(
+                        onTap: _navigateToUserProfile,
+                        leading: FaIcon(FontAwesomeIcons.person, color: isDarkMode ? Colors.white70 : Colors.black38),
+                        title: Text("Profile", style: Theme.of(context).textTheme.titleMedium),
+                        subtitle: Text("manage profile")),
                   ],
                 ),
                 const SizedBox(height: 8),
                 ListTile(
-                    onTap: _navigateToExerciseLibrary, title: Text("Exercises", style: Theme.of(context).textTheme.titleMedium), trailing: Text("manage exercises")),
+                  onTap: _navigateToExerciseLibrary,
+                  leading: Image.asset(
+                    'icons/dumbbells.png',
+                    fit: BoxFit.contain,
+                    height: 24, // Adjust the height as needed
+                    color: isDarkMode ? Colors.white70 : Colors.black38,
+                  ),
+                  title: Text("Exercises", style: Theme.of(context).textTheme.titleMedium),
+                  subtitle: Text("manage exercises"),
+                ),
                 if (Platform.isIOS)
                   Column(children: [
                     const SizedBox(height: 8),
                     ListTile(
-                        onTap: _navigateToNotificationSettings,
-                        title: Text("Notifications", style: Theme.of(context).textTheme.titleMedium),
-                        trailing: Text(_notificationEnabled ? "Enabled" : "Disabled")),
+                      onTap: _navigateToNotificationSettings,
+                      leading: FaIcon(FontAwesomeIcons.solidBell, color: isDarkMode ? Colors.white70 : Colors.black38),
+                      title: Text("Notifications", style: Theme.of(context).textTheme.titleMedium),
+                      subtitle: Text(_notificationEnabled ? "Enabled" : "Disabled"),
+                    ),
                   ]),
                 const SizedBox(height: 8),
-                ListTile(onTap: _sendFeedback, title: Text("Feedback", style: Theme.of(context).textTheme.titleMedium), trailing: Text("Help us improve")),
+                ListTile(
+                    onTap: _sendFeedback,
+                    leading:
+                        FaIcon(FontAwesomeIcons.solidPaperPlane, color: isDarkMode ? Colors.white70 : Colors.black38),
+                    title: Text("Feedback", style: Theme.of(context).textTheme.titleMedium),
+                    subtitle: Text("Help us improve")),
                 const SizedBox(height: 8),
-                ListTile(onTap: _visitTRKR, title: Text("Visit TRKR", style: Theme.of(context).textTheme.titleMedium), trailing: Text("Follow us on socials")),
+                ListTile(
+                    onTap: _visitTRKR,
+                    leading: FaIcon(FontAwesomeIcons.instagram, color: isDarkMode ? Colors.white70 : Colors.black38),
+                    title: Text("Visit TRKR", style: Theme.of(context).textTheme.titleMedium),
+                    subtitle: Text("Follow us on socials")),
                 const SizedBox(height: 8),
-                ListTile(onTap: _navigateTutorialScreen, title: Text("Tutorials", style: Theme.of(context).textTheme.titleMedium), trailing: Text("Learn about TRKR")),
+                ListTile(
+                    onTap: _navigateTutorialScreen,
+                    leading: FaIcon(FontAwesomeIcons.book, color: isDarkMode ? Colors.white70 : Colors.black38),
+                    title: Text("Tutorials", style: Theme.of(context).textTheme.titleMedium),
+                    subtitle: Text("Learn about TRKR")),
                 const SizedBox(height: 8),
-                ListTile(onTap: _logout, title: Text("Logout", style: Theme.of(context).textTheme.titleMedium), trailing: Text(SharedPrefs().userEmail)),
+                ListTile(
+                    onTap: _logout,
+                    leading: FaIcon(FontAwesomeIcons.arrowRightFromBracket,
+                        color: isDarkMode ? Colors.white70 : Colors.black38),
+                    title: Text("Logout", style: Theme.of(context).textTheme.titleMedium),
+                    subtitle: Text(SharedPrefs().userEmail)),
                 const SizedBox(height: 8),
-                ListTile(onTap: _delete, title: Text("Delete Account", style: Theme.of(context).textTheme.titleMedium), trailing: Text(SharedPrefs().userEmail)),
+                ListTile(
+                    onTap: _delete,
+                    leading: FaIcon(FontAwesomeIcons.xmark, color: isDarkMode ? Colors.white70 : Colors.black38),
+                    title: Text("Delete Account", style: Theme.of(context).textTheme.titleMedium),
+                    subtitle: Text(SharedPrefs().userEmail)),
                 const SizedBox(height: 10),
                 Center(
-                  child: Text(_appVersion,
-                      style: Theme.of(context).textTheme.bodySmall),
+                  child: Text(_appVersion, style: Theme.of(context).textTheme.bodySmall),
                 ),
               ],
             ),

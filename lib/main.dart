@@ -401,13 +401,20 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     //debugPaintSizeEnabled = true;
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp, // Lock orientation to portrait up
     ]);
 
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: isDarkMode ? Colors.white : Colors.black, // status bar color
+        systemNavigationBarIconBrightness: isDarkMode ? Brightness.dark : Brightness.light, // Icon Color
+      ),
+    );
 
     return _isFirstLaunch
         ? IntroScreen(themeData: isDarkMode ? TRKRTheme.darkTheme : TRKRTheme.lightTheme, onComplete: _completeIntro)

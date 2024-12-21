@@ -12,6 +12,7 @@ import 'package:tracker_app/widgets/label_divider.dart';
 import '../../../colors.dart';
 import '../../enums/milestone_type_enums.dart';
 import '../../utils/challenge_utils.dart';
+import '../../widgets/list_tile.dart';
 
 class MilestoneScreen extends StatelessWidget {
   final Milestone milestone;
@@ -106,31 +107,37 @@ class MilestoneScreen extends StatelessWidget {
                           Column(
                             spacing: 10,
                             children: [
-                              ListTile(
-                                titleAlignment: ListTileTitleAlignment.threeLine,
-                                leading: const FaIcon(
-                                  FontAwesomeIcons.book,
+                              ThemeListTile(
+                                child: ListTile(
+                                  titleAlignment: ListTileTitleAlignment.threeLine,
+                                  leading: const FaIcon(
+                                    FontAwesomeIcons.book,
+                                  ),
+                                  title: Text(milestone.rule),
                                 ),
-                                title: Text(milestone.rule),
                               ),
-                              ListTile(
-                                titleAlignment: ListTileTitleAlignment.threeLine,
-                                leading: const FaIcon(
-                                  FontAwesomeIcons.trophy,
+                              ThemeListTile(
+                                child: ListTile(
+                                  titleAlignment: ListTileTitleAlignment.threeLine,
+                                  leading: const FaIcon(
+                                    FontAwesomeIcons.trophy,
+                                  ),
+                                  title: Text(challengeTargetSummary(type: milestone.type, target: milestone.target)),
                                 ),
-                                title: Text(challengeTargetSummary(type: milestone.type, target: milestone.target)),
                               ),
                               if (milestone.type == MilestoneType.reps)
-                                ListTile(
-                                  titleAlignment: ListTileTitleAlignment.center,
-                                  leading: Image.asset(
-                                    'muscles_illustration/${(milestone as RepsMilestone).muscleGroup.illustration()}.png',
-                                    fit: BoxFit.cover,
-                                    filterQuality: FilterQuality.low,
-                                    height: 32,
+                                ThemeListTile(
+                                  child: ListTile(
+                                    titleAlignment: ListTileTitleAlignment.center,
+                                    leading: Image.asset(
+                                      'muscles_illustration/${(milestone as RepsMilestone).muscleGroup.illustration()}.png',
+                                      fit: BoxFit.cover,
+                                      filterQuality: FilterQuality.low,
+                                      height: 32,
+                                    ),
+                                    title: Text((milestone as RepsMilestone).muscleGroup.name,
+                                        maxLines: 2, overflow: TextOverflow.ellipsis, textAlign: TextAlign.start),
                                   ),
-                                  title: Text((milestone as RepsMilestone).muscleGroup.name,
-                                      maxLines: 2, overflow: TextOverflow.ellipsis, textAlign: TextAlign.start),
                                 ),
                             ],
                           ),
