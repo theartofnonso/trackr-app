@@ -402,7 +402,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               height: 10,
             ),
             LabelDivider(
-              label: "Log a non-strength training",
+              label: "Log an activity",
               labelColor: isDarkMode ? Colors.white70 : Colors.black,
               dividerColor: sapphireLighter,
             ),
