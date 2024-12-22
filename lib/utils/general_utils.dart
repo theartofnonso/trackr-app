@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:health/health.dart';
@@ -156,7 +157,6 @@ LinearGradient themeGradient({required BuildContext context}) {
 }
 
 Future<bool> requestAppleHealth() async {
-
   bool hasAccess = false;
 
   await Health().configure();
@@ -164,9 +164,10 @@ Future<bool> requestAppleHealth() async {
   // define the types to get
   final types = [HealthDataType.SLEEP_ASLEEP, HealthDataType.WORKOUT];
 
-  final hasPermissions = await Health().hasPermissions(types, permissions: [HealthDataAccess.READ, HealthDataAccess.WRITE]) ?? false;
+  final hasPermissions =
+      await Health().hasPermissions(types, permissions: [HealthDataAccess.READ, HealthDataAccess.WRITE]) ?? false;
 
-  if(!hasPermissions) {
+  if (!hasPermissions) {
     // requesting access to the data types before reading them
     hasAccess = await Health().requestAuthorization(types);
   } else {
@@ -174,4 +175,21 @@ Future<bool> requestAppleHealth() async {
   }
 
   return hasAccess;
+}
+
+Future<Duration> calculateSleepDuration() async {
+  await Health().configure();
+
+  // fetch health data from the last 24 hours
+  final now = DateTime.now();
+
+  final pastDay = now.subtract(const Duration(hours: 24));
+
+  final values =
+      await Health().getHealthDataFromTypes(types: [HealthDataType.SLEEP_ASLEEP], startTime: pastDay, endTime: now);
+  final uniqueValues = Health().removeDuplicates(values);
+
+  final milliseconds = uniqueValues.map((value) => value.dateTo.difference(value.dateFrom).inMilliseconds).sum;
+
+  return Duration(milliseconds: milliseconds);
 }

@@ -131,8 +131,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     _navigateBack(routineLog: createdRoutineLog);
   }
 
-  Future<void> _doUpdateRoutineLog() async {
-    final routineLogToBeUpdated = _routineLog();
+  Future<void> _doUpdateRoutineLog({int? rpeRating}) async {
+    final routineLogToBeUpdated = _routineLog().copyWith(endTime: DateTime.now(), rpeRating: rpeRating);
 
     await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateLog(log: routineLogToBeUpdated);
 
@@ -175,11 +175,14 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                 child: _RPERatingSlider(
                   title: 'Rate your session',
                   rpeRating: null,
-                  onSelectRating: (int rpeRating) {
+                  onSelectRating: (int rpeRating) async {
+                    final dff = await calculateSleepDuration();
+                    print(dff);
                     _closeDialog();
                     _doCreateRoutineLog(rpeRating: rpeRating);
                   },
-                  cancelRating: () {
+                  cancelRating: () async {
+                    final dff = await calculateSleepDuration();
                     _closeDialog();
                     _doCreateRoutineLog();
                   },
@@ -196,7 +199,20 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   void _updateLog() {
     final isRoutinePartiallyComplete = _isRoutinePartiallyComplete();
     if (isRoutinePartiallyComplete) {
-      _doUpdateRoutineLog();
+      displayBottomSheet(
+          context: context,
+          child: _RPERatingSlider(
+            title: 'Rate your session',
+            rpeRating: null,
+            onSelectRating: (int rpeRating) {
+              _closeDialog();
+              _doUpdateRoutineLog(rpeRating: rpeRating);
+            },
+            cancelRating: () {
+              _closeDialog();
+              _doUpdateRoutineLog();
+            },
+          ));
     } else {
       showBottomSheetWithNoAction(context: context, description: "Complete some sets!", title: 'Update Workout');
     }
