@@ -65,5 +65,9 @@
     <string>TRKR requires microphone access to enable voice-activated commands when training.</string>
     <key>NSSpeechRecognitionUsageDescription</key>
     <string>TRKR uses speech to text for hands-free logging of your sets, reps, and weights.</string>
+    <key>NSHealthShareUsageDescription</key>
+    <string>We will sync your data with the Apple Health app to give you better insights</string>
+    <key>NSHealthUpdateUsageDescription</key>
+    <string>We will sync your data with the Apple Health app to give you better insights</string>
 </dict>
 </plist>

@@ -6,6 +6,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:health/health.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
@@ -25,6 +26,7 @@ import '../../utils/dialog_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/uri_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
+import '../../widgets/icons/apple_health_icon.dart';
 import '../../widgets/information_containers/information_container_with_background_image.dart';
 import '../exercise/library/exercise_library_screen.dart';
 import '../onboarding/onboarding_intro_screen.dart';
@@ -54,6 +56,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
 
   bool _notificationEnabled = false;
 
+  bool _appleHealthEnabled = false;
+
   String _appVersion = "";
 
   @override
@@ -73,6 +77,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
           minimum: EdgeInsets.all(10),
           child: SingleChildScrollView(
             child: Column(
+              spacing: 8,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 GestureDetector(
@@ -129,7 +134,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     },
                   ),
                 ),
-                const SizedBox(height: 8),
                 SwitchListTile(
                   tileColor: Colors.transparent,
                   activeColor: vibrantGreen,
@@ -143,7 +147,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     });
                   },
                 ),
-                const SizedBox(height: 8),
                 SwitchListTile(
                   tileColor: Colors.transparent,
                   activeColor: vibrantGreen,
@@ -157,19 +160,12 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     });
                   },
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 8),
-                    ListTile(
-                        onTap: _navigateToUserProfile,
-                        leading:
-                            FaIcon(FontAwesomeIcons.personWalking, color: isDarkMode ? Colors.white70 : Colors.black38),
-                        title: Text("Profile", style: Theme.of(context).textTheme.titleMedium),
-                        subtitle: Text("manage profile")),
-                  ],
-                ),
-                const SizedBox(height: 8),
+                ListTile(
+                    onTap: _navigateToUserProfile,
+                    leading:
+                        FaIcon(FontAwesomeIcons.personWalking, color: isDarkMode ? Colors.white70 : Colors.black38),
+                    title: Text("Profile", style: Theme.of(context).textTheme.titleMedium),
+                    subtitle: Text("manage profile")),
                 ListTile(
                   onTap: _navigateToExerciseLibrary,
                   leading: Image.asset(
@@ -182,42 +178,41 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   subtitle: Text("manage exercises"),
                 ),
                 if (Platform.isIOS)
-                  Column(children: [
-                    const SizedBox(height: 8),
-                    ListTile(
-                      onTap: _navigateToNotificationSettings,
-                      leading: FaIcon(FontAwesomeIcons.solidBell, color: isDarkMode ? Colors.white70 : Colors.black38),
-                      title: Text("Notifications", style: Theme.of(context).textTheme.titleMedium),
-                      subtitle: Text(_notificationEnabled ? "enabled" : "disabled"),
-                    ),
-                  ]),
-                const SizedBox(height: 8),
+                  ListTile(
+                    onTap: _navigateToNotificationSettings,
+                    leading: FaIcon(FontAwesomeIcons.solidBell, color: isDarkMode ? Colors.white70 : Colors.black38),
+                    title: Text("Notifications", style: Theme.of(context).textTheme.titleMedium),
+                    subtitle: Text(_notificationEnabled ? "enabled" : "disabled"),
+                  ),
+                if (Platform.isIOS)
+                  ListTile(
+                    onTap: _connectAppleHealth,
+                    leading: AppleHealthIcon(isDarkMode: isDarkMode, height: 24),
+                    title: Text("Apple Health", style: Theme.of(context).textTheme.titleMedium),
+                    subtitle: Text(_appleHealthEnabled ? "connected" : "tap to connect"),
+                  ),
                 ListTile(
                     onTap: _sendFeedback,
                     leading:
                         FaIcon(FontAwesomeIcons.solidPaperPlane, color: isDarkMode ? Colors.white70 : Colors.black38),
                     title: Text("Feedback", style: Theme.of(context).textTheme.titleMedium),
                     subtitle: Text("help us improve")),
-                const SizedBox(height: 8),
                 ListTile(
                     onTap: _visitTRKR,
                     leading: FaIcon(FontAwesomeIcons.instagram, color: isDarkMode ? Colors.white70 : Colors.black38),
                     title: Text("TRKR in the wild", style: Theme.of(context).textTheme.titleMedium),
                     subtitle: Text("follow us on socials")),
-                const SizedBox(height: 8),
                 ListTile(
                     onTap: _navigateTutorialScreen,
                     leading: FaIcon(FontAwesomeIcons.book, color: isDarkMode ? Colors.white70 : Colors.black38),
                     title: Text("Tutorials", style: Theme.of(context).textTheme.titleMedium),
                     subtitle: Text("learn about TRKR")),
-                const SizedBox(height: 8),
                 ListTile(
                     onTap: _logout,
                     leading: FaIcon(FontAwesomeIcons.arrowRightFromBracket,
                         color: isDarkMode ? Colors.white70 : Colors.black38),
                     title: Text("Logout", style: Theme.of(context).textTheme.titleMedium),
                     subtitle: Text(SharedPrefs().userEmail)),
-                const SizedBox(height: 8),
                 ListTile(
                     onTap: _delete,
                     leading: FaIcon(FontAwesomeIcons.xmark, color: isDarkMode ? Colors.white70 : Colors.black38),
@@ -285,20 +280,27 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
       setState(() {
         _notificationEnabled = isEnabled;
       });
-      if (!isEnabled) {
-        if (mounted) {
-          showBottomSheetWithMultiActions(
-              context: context,
-              title: "Enable notifications?",
-              description: "You need to enable notifications to receive reminders.",
-              leftAction: Navigator.of(context).pop,
-              rightAction: () {},
-              leftActionLabel: "Cancel",
-              rightActionLabel: "Settings");
-        }
-      }
-    } else {
+    }
+    if (mounted) {
       Navigator.of(context).push(MaterialPageRoute(builder: (context) => const NotificationsScreen()));
+    }
+  }
+
+  void _connectAppleHealth() async {
+    Health().configure();
+    // define the types to get
+    final types = [HealthDataType.SLEEP_ASLEEP];
+
+    final hasPermissions = await Health().hasPermissions(types) ?? false;
+
+    if(!hasPermissions) {
+      // requesting access to the data types before reading them
+
+      final requested = await Health().requestAuthorization(types);
+
+      setState(() {
+        _appleHealthEnabled = requested;
+      });
     }
   }
 
@@ -424,6 +426,17 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     });
   }
 
+  void _checkAppleHealthPermission() async {
+
+    final types = [HealthDataType.SLEEP_ASLEEP];
+
+    final hasPermissions = await Health().hasPermissions(types) ?? true;
+
+    setState(() {
+      _appleHealthEnabled = hasPermissions;
+    });
+  }
+
   void _getAppVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     final version = packageInfo.version;
@@ -439,6 +452,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     WidgetsBinding.instance.addObserver(this);
     _weightUnitType = WeightUnit.fromString(SharedPrefs().weightUnit);
     _checkNotificationPermission();
+    _checkAppleHealthPermission();
     _getAppVersion();
   }
 
@@ -454,6 +468,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     if (state == AppLifecycleState.resumed) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _checkNotificationPermission();
+        _checkAppleHealthPermission();
       });
     }
   }

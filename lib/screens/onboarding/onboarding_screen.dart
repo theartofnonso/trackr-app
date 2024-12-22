@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:health/health.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../shared_prefs.dart';
+import '../../widgets/icons/apple_health_icon.dart';
 import '../home_screen.dart';
 import 'onboarding_step_screen.dart';
 
@@ -25,12 +27,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
-    } else {}
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -42,34 +43,44 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             FontAwesomeIcons.solidBell,
             size: 50,
           ),
-          positiveAction: () {
+          positiveAction: () async {
+            await requestNotificationPermission();
             _onNextPressed(steps: 2);
           },
-          positiveActionLabel: 'Turn on notifications'),
+          negativeAction: () {
+            _onNextPressed(steps: 2);
+          },
+          positiveActionLabel: 'Turn on notifications',
+          negativeActionLabel: 'Skip notifications'),
       OnboardingStepData(
           title: 'Apple Health',
           description: 'Seamlessly sync your health data and unlock personalized insights for optimal training.',
-          image: Container(
-              decoration: BoxDecoration(
-                boxShadow: isDarkMode ? null : [
-                  BoxShadow(
-                    color: Colors.grey.shade300,
-                    spreadRadius: 3,
-                    blurRadius: 10,
-                    offset: const Offset(0, 3), // changes position of shadow
-                  ),
-                ],
-              ),
-              child: Image.asset(
-            'images/apple_health.png',
-            fit: BoxFit.contain,
-            height: 50, // Adjust the height as needed
-          )),
-          positiveAction: () {
+          image: AppleHealthIcon(isDarkMode: isDarkMode, height: 50),
+          positiveAction: () async {
+            await Health().configure();
+
+            // define the types to get
+            final types = [HealthDataType.SLEEP_ASLEEP];
+
+            final hasPermissions = await Health().hasPermissions(types) ?? false;
+
+            if(!hasPermissions) {
+              // requesting access to the data types before reading them
+              await Health().requestAuthorization(types);
+            }
+
+            SharedPrefs().firstLaunch = false;
+
+            if (context.mounted) {
+              context.pushReplacement(HomeScreen.routeName);
+            }
+          },
+          negativeAction: () {
             SharedPrefs().firstLaunch = false;
             context.pushReplacement(HomeScreen.routeName);
           },
-          positiveActionLabel: "Connect to Apple Health"),
+          positiveActionLabel: "Connect to Apple Health",
+          negativeActionLabel: 'Skip connecting to Apple Health'),
     ];
 
     return Scaffold(
@@ -78,7 +89,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         child: SafeArea(
           minimum: EdgeInsets.all(10),
           child: PageView.builder(
-           // physics: NeverScrollableScrollPhysics(),
+            physics: NeverScrollableScrollPhysics(),
             controller: _pageController,
             itemCount: steps.length,
             onPageChanged: (index) {
@@ -91,7 +102,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 description: stepData.description,
                 image: stepData.image,
                 positiveAction: stepData.positiveAction,
+                negativeAction: stepData.negativeAction,
                 positiveActionLabel: stepData.positiveActionLabel,
+                negativeActionLabel: stepData.negativeActionLabel,
               );
             },
           ),

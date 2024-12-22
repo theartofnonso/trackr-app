@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:tracker_app/widgets/label_divider.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/double_textfield.dart';
-import 'package:tracker_app/widgets/user_icon_widget.dart';
+import 'package:tracker_app/widgets/icons/user_icon_widget.dart';
 
 import '../../colors.dart';
 import '../../controllers/routine_user_controller.dart';

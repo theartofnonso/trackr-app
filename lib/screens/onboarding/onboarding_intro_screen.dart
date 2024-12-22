@@ -57,7 +57,7 @@ class _OnboardingIntroScreenState extends State<OnboardingIntroScreen> {
                       onPressed: () => context.pop(),
                     )
                   : null,
-              title: Text("Welcome to TRKR")),
+              title: Text("Welcome to TRKR".toUpperCase())),
           body: Container(
               decoration: BoxDecoration(
                 gradient: themeGradient(context: context),

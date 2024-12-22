@@ -9,14 +9,17 @@ class OnboardingStepData {
   final String description;
   final Widget image;
   final void Function() positiveAction;
+  final void Function() negativeAction;
   final String positiveActionLabel;
+  final String negativeActionLabel;
 
   OnboardingStepData(
       {required this.title,
       required this.description,
       required this.image,
       required this.positiveAction,
-      required this.positiveActionLabel});
+        required this.negativeAction,
+      required this.positiveActionLabel, required this.negativeActionLabel});
 }
 
 class OnboardingStepScreen extends StatelessWidget {
@@ -24,7 +27,9 @@ class OnboardingStepScreen extends StatelessWidget {
   final String description;
   final Widget image;
   final void Function() positiveAction;
+  final void Function() negativeAction;
   final String positiveActionLabel;
+  final String negativeActionLabel;
 
   const OnboardingStepScreen({
     super.key,
@@ -32,7 +37,8 @@ class OnboardingStepScreen extends StatelessWidget {
     required this.description,
     required this.image,
     required this.positiveAction,
-    required this.positiveActionLabel,
+    required this.negativeAction,
+    required this.positiveActionLabel, required this.negativeActionLabel,
   });
 
   @override
@@ -71,9 +77,9 @@ class OnboardingStepScreen extends StatelessWidget {
               height: 45,
               width: double.infinity,
               child: SolidButtonWidget(
-                label: "Skip $positiveActionLabel",
+                label: negativeActionLabel,
                 buttonColor: Colors.transparent,
-                onPressed: positiveAction,
+                onPressed: negativeAction,
               ))
         ],
       ),
