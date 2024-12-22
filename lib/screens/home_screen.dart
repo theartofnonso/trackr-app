@@ -221,7 +221,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final now = DateTime.now();
 
-    final pastDay = now.subtract(const Duration(days: 2));
+    final pastDay = now.subtract(const Duration(days: 1));
 
     // fetch health data from the last 24 hours
     Health().getHealthDataFromTypes(types: [HealthDataType.SLEEP_ASLEEP], startTime: pastDay, endTime: now).then((values) {
