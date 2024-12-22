@@ -287,7 +287,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   }
 
   void _connectAppleHealth() async {
-    Health().configure();
+    await Health().configure();
     // define the types to get
     final types = [HealthDataType.SLEEP_ASLEEP];
 

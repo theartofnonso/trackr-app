@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:health/health.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
@@ -215,6 +216,19 @@ class _HomeScreenState extends State<HomeScreen> {
       _loadAppData();
       _loadCachedLog();
     }
+
+    await Health().configure();
+
+    final now = DateTime.now();
+
+    final pastDay = now.subtract(const Duration(days: 2));
+
+    // fetch health data from the last 24 hours
+    Health().getHealthDataFromTypes(types: [HealthDataType.SLEEP_ASLEEP], startTime: pastDay, endTime: now).then((values) {
+      final uniqueValues = Health().removeDuplicates(values);
+      print(uniqueValues);
+    });
+
   }
 
   @override
