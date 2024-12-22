@@ -8,16 +8,15 @@ class DoubleSetRow extends StatelessWidget {
   final String first;
   final String second;
   final List<PBDto> pbs;
-  final Color? borderColor;
 
-  const DoubleSetRow({super.key, required this.first, required this.second, this.pbs = const [], this.borderColor});
+  const DoubleSetRow({super.key, required this.first, required this.second, this.pbs = const []});
 
   @override
   Widget build(BuildContext context) {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final color = borderColor ?? (isDarkMode ? Colors.white10 : Colors.black38);
+    final color = isDarkMode ? Colors.white10 : Colors.black38;
 
     final pbsForSet = pbs
         .map((pb) => PBIcon(

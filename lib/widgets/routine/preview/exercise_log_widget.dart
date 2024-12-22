@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -6,9 +7,12 @@ import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/widgets/routine/preview/sets_listview.dart';
 
 import '../../../controllers/exercise_and_routine_controller.dart';
+import '../../../dtos/graph/chart_point_dto.dart';
+import '../../../enums/chart_unit_enum.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/general_utils.dart';
+import '../../chart/line_chart_widget.dart';
 import '../preview/set_headers/double_set_header.dart';
 import '../preview/set_headers/single_set_header.dart';
 
@@ -25,12 +29,16 @@ class ExerciseLogWidget extends StatelessWidget {
 
     final otherSuperSet = superSet;
 
-    final exerciseType = exerciseLog.exercise.type;
+    final exercise = exerciseLog.exercise;
+
+    final exerciseType = exercise.type;
 
     final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
     final pastExerciseLogs =
-        routineLogController.whereExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
+        routineLogController.whereExerciseLogsBefore(exercise: exercise, date: exerciseLog.createdAt);
+
+    final allExerciseLogs = routineLogController.exerciseLogsByExerciseId[exercise.id] ?? [];
 
     final pbs = calculatePBs(pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseType, exerciseLog: exerciseLog);
 
@@ -39,6 +47,14 @@ class ExerciseLogWidget extends StatelessWidget {
     final minReps = repRange.$1;
 
     final maxReps = repRange.$2;
+
+    List<ChartPointDto> chartPoints = [];
+
+    if (exerciseType == ExerciseType.weights) {
+      final sets = allExerciseLogs.map((log) => heaviestWeightInSetForExerciseLog(exerciseLog: log)).toList();
+
+      chartPoints = sets.mapIndexed((index, set) => ChartPointDto(index, (set).weight)).toList();
+    }
 
     return GestureDetector(
       onTap: () {
@@ -78,6 +94,38 @@ class ExerciseLogWidget extends StatelessWidget {
               Text("$maxReps REPS"),
             ],
           ),
+          if (chartPoints.isNotEmpty)
+            Container(
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: isDarkMode ? Colors.white10 : Colors.black38, // Border color
+                  width: 1.0, // Border width
+                ),
+                borderRadius: BorderRadius.circular(5), // Optional: Rounded corners
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child:
+                        LineChartWidget(chartPoints: chartPoints, periods: [], unit: ChartUnit.weight, aspectRation: 3),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text(
+                        "Track your progress with the total weight lifted for this exercise. An upward trend highlights your strength gains and consistent improvement over time.",
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.copyWith(fontWeight: FontWeight.w400, fontSize: 12, height: 1.8, color: isDarkMode ? Colors.white70 : Colors.black)),
+                  ),
+                  const SizedBox(height: 6),
+                ],
+              ),
+            ),
           switch (exerciseType) {
             ExerciseType.weights => DoubleSetHeader(firstLabel: weightLabel().toUpperCase(), secondLabel: 'REPS'),
             ExerciseType.bodyWeight => SingleSetHeader(label: 'REPS'),
@@ -86,8 +134,7 @@ class ExerciseLogWidget extends StatelessWidget {
           SetsListview(
               type: exerciseType,
               sets: exerciseLog.sets,
-              pbs: pbs,
-              borderColor: isDarkMode ? Colors.white10 : Colors.grey.shade400)
+              pbs: pbs)
         ],
       ),
     );

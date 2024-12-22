@@ -14,8 +14,8 @@ class LineChartWidget extends StatelessWidget {
   final ExtraLinesData? extraLinesData;
   final List<String> periods;
   final ChartUnit unit;
-  final double? maxY;
   final double interval;
+  final double? aspectRation;
 
   const LineChartWidget(
       {super.key,
@@ -23,8 +23,8 @@ class LineChartWidget extends StatelessWidget {
       required this.periods,
       required this.unit,
       this.extraLinesData,
-      this.maxY,
-      this.interval = 10});
+      this.interval = 10,
+      this.aspectRation});
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +34,9 @@ class LineChartWidget extends StatelessWidget {
     return chartPoints.isNotEmpty
         ? Center(
             child: AspectRatio(
-              aspectRatio: 1.5,
+              aspectRatio: aspectRation ?? 1.5,
               child: LineChart(LineChartData(
                   gridData: FlGridData(drawVerticalLine: false),
-                  maxY: maxY,
                   minY: 0,
                   titlesData: FlTitlesData(
                     show: true,
@@ -58,7 +57,7 @@ class LineChartWidget extends StatelessWidget {
                       sideTitles: SideTitles(
                         showTitles: true,
                         interval: interval,
-                        getTitlesWidget: _bottomTitleWidgets,
+                        getTitlesWidget: periods.isNotEmpty ? _bottomTitleWidgets : (_, __) => SizedBox.shrink(),
                       ),
                     ),
                   ),
