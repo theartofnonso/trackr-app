@@ -46,9 +46,6 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
   @override
   Widget build(BuildContext context) {
 
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
     final sttController = context.watch<STTController>();
 
     if (sttController.state == STTState.analysing) return TRKRLoadingScreen();
@@ -135,7 +132,7 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
                   width: 60, // Set the width of the container
                   height: 24, // Set the height of the container
                   decoration: BoxDecoration(
-                    color: vibrantBlue.withValues(alpha:0.1), // Background color
+                    color: vibrantBlue.withValues(alpha: 0.1), // Background color
                     borderRadius: BorderRadius.circular(3), // Rounded corners
                   ),
                   child: Center(
@@ -158,9 +155,9 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
                       const SizedBox(height: 12),
                       switch (widget.exerciseLog.exercise.type) {
                         ExerciseType.weights => DoubleSetHeader(
-                          firstLabel: weightLabel().toUpperCase(),
-                          secondLabel: 'REPS'.toUpperCase(),
-                        ),
+                            firstLabel: weightLabel().toUpperCase(),
+                            secondLabel: 'REPS'.toUpperCase(),
+                          ),
                         ExerciseType.bodyWeight => SingleSetHeader(label: 'REPS'.toUpperCase()),
                         ExerciseType.duration => SingleSetHeader(label: 'TIME'.toUpperCase())
                       },
@@ -174,20 +171,23 @@ class _STTLoggingScreenState extends State<STTLoggingScreen> {
                     LabelContainerDivider(
                         label: "New Sets".toUpperCase(),
                         description: "Currently logged sets for ${widget.exerciseLog.exercise.name}",
-                        labelStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(color: vibrantGreen, fontWeight: FontWeight.w700),
+                        labelStyle: Theme.of(context)
+                            .textTheme
+                            .bodyLarge!
+                            .copyWith(color: vibrantGreen, fontWeight: FontWeight.w700),
                         descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
                         dividerColor: sapphireLighter),
                     const SizedBox(height: 12),
                     switch (widget.exerciseLog.exercise.type) {
                       ExerciseType.weights => DoubleSetHeader(
-                        firstLabel: weightLabel().toUpperCase(),
-                        secondLabel: 'REPS'.toUpperCase(),
-                      ),
+                          firstLabel: weightLabel().toUpperCase(),
+                          secondLabel: 'REPS'.toUpperCase(),
+                        ),
                       ExerciseType.bodyWeight => SingleSetHeader(label: 'REPS'.toUpperCase()),
                       ExerciseType.duration => SingleSetHeader(label: 'TIME'.toUpperCase())
                     },
                     const SizedBox(height: 12),
-                    SetsListview(type: widget.exerciseLog.exercise.type, sets: updatedExerciseLog.sets, borderColor: isDarkMode ? Colors.white10 : Colors.grey.shade400)
+                    SetsListview(type: widget.exerciseLog.exercise.type, sets: updatedExerciseLog.sets)
                   ],
                 ),
               ],
