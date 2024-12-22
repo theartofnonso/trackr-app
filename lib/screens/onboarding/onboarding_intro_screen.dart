@@ -12,7 +12,7 @@ import '../../utils/theme/theme.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/calendar/calendar.dart';
 import '../../widgets/chart/muscle_group_family_frequency_chart.dart';
-import '../../widgets/label_divider.dart';
+import '../../widgets/dividers/label_divider.dart';
 import '../../widgets/milestones/milestone_grid_item.dart';
 import '../../widgets/monitors/log_streak_monitor.dart';
 import '../../widgets/monitors/muscle_trend_monitor.dart';

@@ -16,7 +16,7 @@ import '../../enums/exercise_type_enums.dart';
 import '../../logger.dart';
 import '../../utils/general_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
-import '../../widgets/label_divider.dart';
+import '../../widgets/dividers/label_divider.dart';
 import '../exercise/exercise_type_screen.dart';
 
 class ExerciseEditorScreen extends StatefulWidget {

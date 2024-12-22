@@ -14,7 +14,6 @@ import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
-import 'package:tracker_app/widgets/information_containers/information_container_lite.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/weight_and_reps_set_header.dart';
@@ -30,7 +29,7 @@ import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/one_rep_max_calculator.dart';
-import '../../label_divider.dart';
+import '../../dividers/label_divider.dart';
 import '../preview/set_headers/double_set_header.dart';
 import '../preview/set_headers/single_set_header.dart';
 import '../preview/sets_listview.dart';
@@ -720,7 +719,7 @@ class _OneRepMaxSliderState extends State<_OneRepMaxSlider> {
             ],
           ),
         ),
-        Slider(value: _reps, onChanged: onChanged, min: 1, max: 20, divisions: 20, thumbColor: vibrantGreen),
+        Slider(value: _reps, onChanged: onChanged, min: 1, max: 20, divisions: 19, thumbColor: vibrantGreen),
       ],
     );
   }
@@ -810,11 +809,12 @@ class _RepRangeSliderState extends State<_RepRangeSlider> {
                 .bodyMedium
                 ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
         const SizedBox(height: 8),
-        InformationContainerLite(
-          content:
-              "Work towards the top of your rep range. If you’re consistently hitting it, increase the weight. If you’re stuck at the bottom, lower the weight.",
-          color: vibrantBlue,
-        ),
+        Text(
+            "Work towards the top of your rep range. If you’re consistently hitting it, increase the weight. If you’re stuck at the bottom, lower the weight.",
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium
+                ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
         const SizedBox(height: 12),
         Row(
           spacing: 8,

@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
-import 'package:tracker_app/utils/exercise_logs_utils.dart';
 
 import '../dtos/appsync/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
@@ -13,11 +12,12 @@ class ExerciseLogRepository {
   UnmodifiableListView<ExerciseLogDto> get exerciseLogs => UnmodifiableListView(_exerciseLogs);
 
   void loadExerciseLogs({required List<ExerciseLogDto> exerciseLogs}) {
-    _exerciseLogs = exerciseLogs.map((exerciseLog) {
-      final exerciseType = exerciseLog.exercise.type;
-      final sets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
-      return exerciseLog.copyWith(sets: withReps(type: exerciseType) ? sets : []);
-    }).toList();
+    _exerciseLogs = exerciseLogs;
+    // _exerciseLogs = exerciseLogs.map((exerciseLog) {
+    //   final exerciseType = exerciseLog.exercise.type;
+    //   final sets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
+    //   return exerciseLog.copyWith(sets: withReps(type: exerciseType) ? sets : []);
+    // }).toList();
   }
 
   void addExerciseLog({required ExerciseDto exercise, required List<SetDto> pastSets}) {
@@ -252,7 +252,6 @@ class ExerciseLogRepository {
     final exerciseLog = newExerciseLogs[exerciseLogIndex];
     final sets = exerciseLog.sets;
     if (index >= 0 && index < sets.length) {
-
       sets[index] = set;
 
       newExerciseLogs[exerciseLogIndex] = exerciseLog.copyWith(sets: sets);

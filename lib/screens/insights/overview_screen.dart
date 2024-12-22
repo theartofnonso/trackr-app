@@ -43,7 +43,7 @@ import '../../widgets/ai_widgets/trkr_coach_button.dart';
 import '../../widgets/ai_widgets/trkr_coach_text_widget.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/calendar/calendar.dart';
-import '../../widgets/label_divider.dart';
+import '../../widgets/dividers/label_divider.dart';
 import '../../widgets/monitors/log_streak_muscle_trend_monitor.dart';
 import '../../widgets/monthly_insights/log_streak_chart_widget.dart';
 import '../../widgets/monthly_insights/monthly_insights.dart';

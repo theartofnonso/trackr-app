@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
-import 'package:tracker_app/widgets/label_divider.dart';
+import 'package:tracker_app/widgets/dividers/label_divider.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/double_textfield.dart';
 import 'package:tracker_app/widgets/icons/user_icon_widget.dart';
 

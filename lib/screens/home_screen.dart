@@ -1,10 +1,8 @@
 import 'dart:async';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:health/health.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
@@ -50,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if( SharedPrefs().firstLaunch ) {
+    if (SharedPrefs().firstLaunch) {
       return OnboardingScreen();
     }
 
@@ -72,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
         height: 60,
         destinations: [
-           NavigationDestination(
+          NavigationDestination(
             icon: FaIcon(FontAwesomeIcons.house, color: Colors.grey),
             selectedIcon: FaIcon(FontAwesomeIcons.house, color: isDarkMode ? Colors.white : Colors.black),
             label: 'Home',
@@ -92,12 +90,12 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             label: 'Workouts',
           ),
-           NavigationDestination(
+          NavigationDestination(
             icon: FaIcon(FontAwesomeIcons.trophy, color: Colors.grey),
             selectedIcon: FaIcon(FontAwesomeIcons.trophy, color: isDarkMode ? Colors.white : Colors.black),
             label: 'Challenges',
           ),
-           NavigationDestination(
+          NavigationDestination(
             icon: FaIcon(FontAwesomeIcons.gear, color: Colors.grey),
             selectedIcon: FaIcon(FontAwesomeIcons.gear, color: isDarkMode ? Colors.white : Colors.black),
             label: 'Challenges',
@@ -217,20 +215,6 @@ class _HomeScreenState extends State<HomeScreen> {
       _loadAppData();
       _loadCachedLog();
     }
-
-    await Health().configure();
-
-    final now = DateTime.now();
-
-    final pastDay = now.subtract(const Duration(hours: 24));
-
-    // fetch health data from the last 24 hours
-    Health().getHealthDataFromTypes(types: [HealthDataType.SLEEP_ASLEEP], startTime: pastDay, endTime: now).then((values) {
-      final uniqueValues = Health().removeDuplicates(values);
-      final milliseconds = uniqueValues.map((value) => value.dateTo.difference(value.dateFrom).inMilliseconds).sum;
-      print(Duration(milliseconds: milliseconds));
-    });
-
   }
 
   @override

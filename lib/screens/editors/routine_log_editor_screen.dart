@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -32,6 +33,7 @@ import '../../utils/general_utils.dart';
 import '../../utils/routine_log_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
+import '../../widgets/buttons/solid_button_widget.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
 import '../../widgets/timers/routine_timer.dart';
@@ -118,8 +120,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     return routineLog;
   }
 
-  Future<void> _doCreateRoutineLog() async {
-    final routineLogToBeCreated = _routineLog().copyWith(endTime: DateTime.now());
+  Future<void> _doCreateRoutineLog({int? rpeRating}) async {
+    final routineLogToBeCreated = _routineLog().copyWith(endTime: DateTime.now(), rpeRating: rpeRating);
 
     final createdRoutineLog =
         await Provider.of<ExerciseAndRoutineController>(context, listen: false).saveLog(logDto: routineLogToBeCreated);
@@ -168,7 +170,20 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
           leftAction: context.pop,
           rightAction: () {
             _closeDialog();
-            _doCreateRoutineLog();
+            displayBottomSheet(
+                context: context,
+                child: _RPERatingSlider(
+                  title: 'Rate your session',
+                  rpeRating: null,
+                  onSelectRating: (int rpeRating) {
+                    _closeDialog();
+                    _doCreateRoutineLog(rpeRating: rpeRating);
+                  },
+                  cancelRating: () {
+                    _closeDialog();
+                    _doCreateRoutineLog();
+                  },
+                ));
           },
           leftActionLabel: 'Cancel',
           rightActionLabel: 'End',
@@ -247,12 +262,11 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
             "Your report is now ready for review",
             const NotificationDetails(
               iOS: DarwinNotificationDetails(
-                presentAlert: true,
-                presentBadge: false,
-                presentSound: false,
-                presentBanner: true,
-                interruptionLevel: InterruptionLevel.active
-              ),
+                  presentAlert: true,
+                  presentBadge: false,
+                  presentSound: false,
+                  presentBanner: true,
+                  interruptionLevel: InterruptionLevel.active),
             ),
             payload: response);
       }
@@ -278,7 +292,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -323,12 +336,12 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                     heroTag: UniqueKey(),
                     onPressed: _showWeightCalculator,
                     enableFeedback: true,
-              child: Image.asset(
-                'icons/dumbbells.png',
-                fit: BoxFit.contain,
-                color: isDarkMode ? Colors.white : Colors.white,
-                height: 24, // Adjust the height as needed
-              ),
+                    child: Image.asset(
+                      'icons/dumbbells.png',
+                      fit: BoxFit.contain,
+                      color: isDarkMode ? Colors.white : Colors.white,
+                      height: 24, // Adjust the height as needed
+                    ),
                   )
                 : null,
             body: Container(
@@ -367,7 +380,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                             padding: const EdgeInsets.only(bottom: 250),
                             child: Column(spacing: 20, children: [
                               ...exerciseLogs.map((exerciseLog) {
-
                                 final isExerciseMinimised = _minimisedExerciseLogCards.contains(exerciseLog.id);
 
                                 return isExerciseMinimised
@@ -396,7 +408,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                         onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
                                         onCache: _cacheLog,
                                         onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
-                                        onResize: () => _handleResizedExerciseLogCard(exerciseIdToResize: exerciseLog.id),
+                                        onResize: () =>
+                                            _handleResizedExerciseLogCard(exerciseIdToResize: exerciseLog.id),
                                         isMinimised: _isMinimised(exerciseLog.id),
                                         onTapWeightEditor: (SetDto setDto) {
                                           setState(() {
@@ -533,7 +546,7 @@ class _RoutineLogOverview extends StatelessWidget {
         child: Table(
           border: TableBorder(
               verticalInside:
-                  BorderSide(color: isDarkMode ? sapphireLighter.withValues(alpha:0.4) : Colors.white, width: 1)),
+                  BorderSide(color: isDarkMode ? sapphireLighter.withValues(alpha: 0.4) : Colors.white, width: 1)),
           columnWidths: const <int, TableColumnWidth>{
             0: FlexColumnWidth(1),
             1: FlexColumnWidth(1),
@@ -553,5 +566,108 @@ class _RoutineLogOverview extends StatelessWidget {
             ])
           ],
         ));
+  }
+}
+
+class _RPERatingSlider extends StatefulWidget {
+  final String title;
+  final double? rpeRating;
+  final void Function(int rpeRating) onSelectRating;
+  final void Function() cancelRating;
+
+  const _RPERatingSlider(
+      {required this.title, this.rpeRating = 5, required this.onSelectRating, required this.cancelRating});
+
+  @override
+  State<_RPERatingSlider> createState() => _RPERatingSliderState();
+}
+
+class _RPERatingSliderState extends State<_RPERatingSlider> {
+  double _rpeRating = 1;
+
+  @override
+  Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+            "RPE (Rate of Perceived Exertion) is your guide to smarter training. It helps you measure effort, adjust intensity, and optimize progress while avoiding burnout.",
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium
+                ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+        const SizedBox(height: 10),
+        Text(
+            "Rate your ${widget.title} session, on a scale of 1 - 10, 1 being barely any effort and 10 being max effort",
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium
+                ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+        const SizedBox(height: 12),
+        Text(
+          _ratingDescription(_rpeRating),
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+        ),
+        const SizedBox(height: 12),
+        Slider(value: _rpeRating, onChanged: onChanged, min: 1, max: 10, divisions: 9, thumbColor: vibrantGreen),
+        const SizedBox(height: 10),
+        SizedBox(
+            width: double.infinity,
+            height: 45,
+            child: OpacityButtonWidget(label: "End Session", buttonColor: vibrantGreen, onPressed: onSelectRepRange)),
+        const SizedBox(height: 10),
+        SizedBox(
+            height: 45,
+            width: double.infinity,
+            child: SolidButtonWidget(
+              label: "End session without rating",
+              buttonColor: Colors.transparent,
+              onPressed: widget.cancelRating,
+            ))
+      ],
+    );
+  }
+
+  void onChanged(double value) {
+    HapticFeedback.vibrate();
+
+    setState(() {
+      _rpeRating = value;
+    });
+  }
+
+  void onSelectRepRange() {
+    Navigator.of(context).pop();
+    final absoluteRating = _rpeRating.floor();
+    widget.onSelectRating(absoluteRating);
+  }
+
+  String _ratingDescription(double rating) {
+    final absoluteRating = rating.floor();
+
+    // Define a map of reps to percentages
+    Map<int, String> repToPercentage = {
+      1: "Very Light - Barely any effort",
+      2: "Very Light - Barely any effort",
+      3: "Light - Easy effort",
+      4: "Light - Easy effort",
+      5: "Moderate - Felt challenging but sustainable",
+      6: "Moderate - Felt challenging but sustainable",
+      7: "Hard - Breathing heavily",
+      8: "Hard - Breathing heavily",
+      9: "Very Hard - Maximum effort",
+      10: "Max Effort - All-out",
+    };
+
+    return repToPercentage[absoluteRating] ?? "Very Light - Barely any effort";
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _rpeRating = widget.rpeRating ?? 5;
   }
 }

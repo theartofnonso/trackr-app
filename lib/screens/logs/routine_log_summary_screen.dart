@@ -29,7 +29,7 @@ import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../utils/shareables_utils.dart';
-import '../../widgets/label_divider.dart';
+import '../../widgets/dividers/label_divider.dart';
 
 class RoutineLogSummaryScreen extends StatefulWidget {
   static const routeName = '/routine_log_summary_screen';

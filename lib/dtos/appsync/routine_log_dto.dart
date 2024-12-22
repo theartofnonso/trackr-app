@@ -27,6 +27,8 @@ class RoutineLogDto extends Log {
 
   final List<ExerciseLogDto> exerciseLogs;
 
+  final int rpeRating;
+
   final String owner;
 
   @override
@@ -44,6 +46,7 @@ class RoutineLogDto extends Log {
     this.summary,
     required this.startTime,
     required this.endTime,
+    this.rpeRating = 5,
     required this.owner,
     required this.createdAt,
     required this.updatedAt,
@@ -60,6 +63,7 @@ class RoutineLogDto extends Log {
       'templateId': templateId,
       'name': name,
       'notes': notes,
+      'rpeRating': rpeRating,
       'startTime': startTime.toIso8601String(),
       'endTime': endTime.toIso8601String(),
       'exercises': exerciseLogs.map((exercise) => exercise.toJson()).toList(),
@@ -74,6 +78,7 @@ class RoutineLogDto extends Log {
     final templateId = json["templateId"] ?? "";
     final name = json["name"] ?? "";
     final notes = json["notes"] ?? "";
+    final rpeRating = json["rpeRating"] ?? 5;
     final summary = json["summary"];
     final startTime = DateTime.parse(json["startTime"]);
     final endTime = DateTime.parse(json["endTime"]);
@@ -100,6 +105,7 @@ class RoutineLogDto extends Log {
       startTime: startTime,
       endTime: endTime,
       owner: "",
+      rpeRating: rpeRating,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );
@@ -110,6 +116,7 @@ class RoutineLogDto extends Log {
     final templateId = json["templateId"] ?? "";
     final name = json["name"] ?? "";
     final notes = json["notes"] ?? "";
+    final rpeRating = json["rpeRating"] ?? 5;
     final summary = json["summary"];
     final startTime = DateTime.parse(json["startTime"]);
     final endTime = DateTime.parse(json["endTime"]);
@@ -117,7 +124,8 @@ class RoutineLogDto extends Log {
     List<ExerciseLogDto> exerciseLogs = [];
     if (exerciseLogsInJson.isNotEmpty && exerciseLogsInJson.first is String) {
       exerciseLogs = exerciseLogsInJson
-          .map((json) => ExerciseLogDto.fromJson(routineLogId: log.id, json: jsonDecode(json), createdAt: log.createdAt.getDateTimeInUtc()))
+          .map((json) => ExerciseLogDto.fromJson(
+              routineLogId: log.id, json: jsonDecode(json), createdAt: log.createdAt.getDateTimeInUtc()))
           .toList();
     } else {
       exerciseLogs = exerciseLogsInJson
@@ -132,6 +140,7 @@ class RoutineLogDto extends Log {
       name: name,
       exerciseLogs: exerciseLogs,
       notes: notes,
+      rpeRating: rpeRating,
       summary: summary,
       startTime: startTime,
       endTime: endTime,
@@ -148,6 +157,7 @@ class RoutineLogDto extends Log {
     String? name,
     String? notes,
     String? summary,
+    int? rpeRating,
     DateTime? startTime,
     DateTime? endTime,
     List<ExerciseLogDto>? exerciseLogs,
@@ -160,6 +170,7 @@ class RoutineLogDto extends Log {
       templateId: templateId ?? this.templateId,
       name: name ?? this.name,
       notes: notes ?? this.notes,
+      rpeRating: rpeRating ?? this.rpeRating,
       summary: summary ?? this.summary,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
@@ -172,7 +183,7 @@ class RoutineLogDto extends Log {
 
   @override
   String toString() {
-    return 'RoutineLogDto{id: $id, templateId: $templateId, name: $name, notes: $notes, summary: $summary, startTime: $startTime, endTime: $endTime, exerciseLogs: $exerciseLogs, owner: $owner, createdAt: $createdAt, updatedAt: $updatedAt}';
+    return 'RoutineLogDto{id: $id, templateId: $templateId, name: $name, notes: $notes, rpeRating: $rpeRating, summary: $summary, startTime: $startTime, endTime: $endTime, exerciseLogs: $exerciseLogs, owner: $owner, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
 
   @override
