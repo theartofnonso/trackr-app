@@ -46,6 +46,7 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
       child: Container(
         color: Colors.transparent,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             MuscleGroupSplitChart(
               title: "Muscle Groups Frequency",
