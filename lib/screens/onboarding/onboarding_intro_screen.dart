@@ -18,19 +18,18 @@ import '../../widgets/milestones/milestone_grid_item.dart';
 import '../../widgets/monitors/log_streak_monitor.dart';
 import '../../widgets/monitors/muscle_trend_monitor.dart';
 
-class IntroScreen extends StatefulWidget {
+class OnboardingIntroScreen extends StatefulWidget {
   static const routeName = "/intro_screen";
 
-  final ThemeData themeData;
   final VoidCallback? onComplete;
 
-  const IntroScreen({super.key, required this.themeData, this.onComplete});
+  const OnboardingIntroScreen({super.key, this.onComplete});
 
   @override
-  State<IntroScreen> createState() => _IntroScreenState();
+  State<OnboardingIntroScreen> createState() => _OnboardingIntroScreenState();
 }
 
-class _IntroScreenState extends State<IntroScreen> {
+class _OnboardingIntroScreenState extends State<OnboardingIntroScreen> {
   final _pageController = PageController(viewportFraction: 1);
 
   @override

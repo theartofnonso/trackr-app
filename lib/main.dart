@@ -43,7 +43,7 @@ import 'package:tracker_app/screens/logs/activity_logs_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
-import 'package:tracker_app/screens/onboarding/intro_screen.dart';
+import 'package:tracker_app/screens/onboarding/onboarding_intro_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/templates/routine_template_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -320,8 +320,8 @@ final _router = GoRouter(
       builder: (context, state) => const SetsAndRepsVolumeInsightsScreen(),
     ),
     GoRoute(
-      path: IntroScreen.routeName,
-      builder: (context, state) => IntroScreen(themeData: _themeData),
+      path: OnboardingIntroScreen.routeName,
+      builder: (context, state) => OnboardingIntroScreen(),
     ),
     GoRoute(
       path: CaloriesTrendScreen.routeName,
@@ -417,7 +417,7 @@ class _MyAppState extends State<MyApp> {
     );
 
     return _isFirstLaunch
-        ? IntroScreen(themeData: isDarkMode ? TRKRTheme.darkTheme : TRKRTheme.lightTheme, onComplete: _completeIntro)
+        ? OnboardingIntroScreen(onComplete: _completeIntro)
         : Authenticator(
             child: MaterialApp.router(
               debugShowCheckedModeBanner: false,

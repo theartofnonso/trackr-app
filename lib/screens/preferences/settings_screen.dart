@@ -27,7 +27,7 @@ import '../../utils/uri_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/information_containers/information_container_with_background_image.dart';
 import '../exercise/library/exercise_library_screen.dart';
-import '../onboarding/intro_screen.dart';
+import '../onboarding/onboarding_intro_screen.dart';
 
 enum WeightUnit {
   kg,
@@ -354,7 +354,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   }
 
   void _navigateTutorialScreen() {
-    context.push(IntroScreen.routeName);
+    context.push(OnboardingIntroScreen.routeName);
   }
 
   void _logout() async {
