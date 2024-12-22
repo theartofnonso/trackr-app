@@ -6,63 +6,62 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
 import '../../colors.dart';
-import '../../controllers/activity_log_controller.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
-import '../../controllers/routine_user_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
+import '../../dtos/set_dtos/weight_and_reps_dto.dart';
 import '../../enums/chart_unit_enum.dart';
+import '../../enums/exercise_type_enums.dart';
 import '../../utils/date_utils.dart';
 import '../../utils/general_utils.dart';
-import '../../utils/routine_utils.dart';
+import '../../utils/string_utils.dart';
 import '../../widgets/chart/bar_chart.dart';
 
-class CaloriesTrendScreen extends StatefulWidget {
-  static const routeName = '/calories_trend_screen';
+class VolumeTrendScreen extends StatefulWidget {
+  static const routeName = '/volume_trend_screen';
 
-  const CaloriesTrendScreen({super.key});
+  const VolumeTrendScreen({super.key});
 
   @override
-  State<CaloriesTrendScreen> createState() => _CaloriesTrendScreenState();
+  State<VolumeTrendScreen> createState() => _VolumeTrendScreenState();
 }
 
-class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
+class _VolumeTrendScreenState extends State<VolumeTrendScreen> {
   @override
   Widget build(BuildContext context) {
-
     final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-
-    final activityLogController = Provider.of<ActivityLogController>(context, listen: false);
-
-    final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
 
     final dateRange = theLastYearDateTimeRange();
 
-    final routineLogs = routineLogController.whereLogsIsWithinRange(range: dateRange);
-
-    final activityLogs = activityLogController.whereLogsIsWithinRange(range: dateRange);
-
-    final logs = [...routineLogs, ...activityLogs];
+    final logs = routineLogController.whereLogsIsWithinRange(range: dateRange);
 
     final monthsInYear = generateMonthsInRange(range: dateRange);
 
     List<String> months = [];
-    List<int> calories = [];
+    List<double> volumes = [];
     for (final month in monthsInYear) {
       final startOfMonth = month.start;
       final endOfMonth = month.end;
       final logsForTheMonth = logs.where((log) => log.createdAt.isBetweenInclusive(from: startOfMonth, to: endOfMonth));
       final values = logsForTheMonth
-          .map((log) => calculateCalories(
-              duration: log.duration(), bodyWeight: routineUserController.weight(), activity: log.activityType))
-          .sum;
-      calories.add(values);
+          .expand((log) => log.exerciseLogs)
+          .expand((exerciseLog) => exerciseLog.sets)
+          .map((set) {
+            return switch (set.type) {
+              ExerciseType.weights => (set as WeightAndRepsSetDto).volume(),
+              ExerciseType.bodyWeight => 0,
+              ExerciseType.duration => 0,
+            };
+          })
+          .sum
+          .toDouble();
+      volumes.add(values);
       months.add(startOfMonth.abbreviatedMonth());
     }
 
-    final avgCalories = calories.average.round();
+    final avgVolume = volumes.average;
 
     final chartPoints =
-        calories.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+        volumes.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -70,7 +69,7 @@ class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
           icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
           onPressed: context.pop,
         ),
-        title: Text("Calories Trend".toUpperCase()),
+        title: Text("Volume Trend".toUpperCase()),
       ),
       body: Container(
         width: double.infinity,
@@ -94,14 +93,14 @@ class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
                       children: [
                         RichText(
                           text: TextSpan(
-                            text: "$avgCalories",
+                            text: volumeInKOrM(avgVolume),
                             style: Theme.of(context).textTheme.headlineMedium,
                             children: [
                               TextSpan(
                                 text: " ",
                               ),
                               TextSpan(
-                                text: "kcal".toUpperCase(),
+                                text: weightLabel().toUpperCase(),
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                             ],
@@ -116,7 +115,7 @@ class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
                   ],
                 ),
                 const SizedBox(height: 60),
-                calories.sum > 0
+                volumes.sum > 0
                     ? SizedBox(
                         height: 250,
                         child: CustomBarChart(
@@ -125,7 +124,7 @@ class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
                           unit: ChartUnit.number,
                           bottomTitlesInterval: 1,
                           showLeftTitles: true,
-                          maxY: calories.max.toDouble(),
+                          maxY: volumes.max.toDouble(),
                           reservedSize: 35,
                         ))
                     : const Center(child: FaIcon(FontAwesomeIcons.chartSimple, color: sapphireDark, size: 120)),

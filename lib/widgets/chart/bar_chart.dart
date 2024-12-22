@@ -48,7 +48,7 @@ class CustomBarChart extends StatelessWidget {
               barTouchData: barTouchData,
               titlesData: titlesData,
               borderData: borderData,
-              barGroups: barGroups,
+              barGroups: barGroups(isDarkMode: isDarkMode),
               gridData: FlGridData(
                 show: true,
                 drawVerticalLine: false,
@@ -120,7 +120,7 @@ class CustomBarChart extends StatelessWidget {
         show: false,
       );
 
-  List<BarChartGroupData> get barGroups => chartPoints.mapIndexed((index, point) {
+  List<BarChartGroupData> barGroups({required bool isDarkMode}) => chartPoints.mapIndexed((index, point) {
         return BarChartGroupData(
           x: point.x.toInt(),
           barRods: [
@@ -128,7 +128,7 @@ class CustomBarChart extends StatelessWidget {
                 borderRadius: BorderRadius.circular(2),
                 width: barWidth(length: chartPoints.length),
                 toY: point.y.toDouble(),
-                color: barColors?[index] ?? Colors.grey.shade400)
+                color: barColors?[index] ?? (isDarkMode ? Colors.white : Colors.black))
           ],
           showingTooltipIndicators: showTopTitles ? [0] : null,
         );
