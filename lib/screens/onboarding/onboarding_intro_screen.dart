@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/general_utils.dart';
@@ -142,11 +141,7 @@ class LogStreakMonitorOnboardingScreen extends StatelessWidget {
                 Stack(
                   alignment: Alignment.center,
                   children: [
-                    LogStreakMonitor(
-                        value: 0.2,
-                        width: 120,
-                        height: 120,
-                        strokeWidth: 8),
+                    LogStreakMonitor(value: 0.2, width: 120, height: 120, strokeWidth: 8),
                     Image.asset(
                       'images/trkr.png',
                       fit: BoxFit.contain,
@@ -158,11 +153,7 @@ class LogStreakMonitorOnboardingScreen extends StatelessWidget {
                 Stack(
                   alignment: Alignment.center,
                   children: [
-                    LogStreakMonitor(
-                        value: 0.4,
-                        width: 120,
-                        height: 120,
-                        strokeWidth: 8),
+                    LogStreakMonitor(value: 0.4, width: 120, height: 120, strokeWidth: 8),
                     Image.asset(
                       'images/trkr.png',
                       fit: BoxFit.contain,
@@ -174,11 +165,7 @@ class LogStreakMonitorOnboardingScreen extends StatelessWidget {
                 Stack(
                   alignment: Alignment.center,
                   children: [
-                    LogStreakMonitor(
-                        value: 0.6,
-                        width: 120,
-                        height: 120,
-                        strokeWidth: 8),
+                    LogStreakMonitor(value: 0.6, width: 120, height: 120, strokeWidth: 8),
                     Image.asset(
                       'images/trkr.png',
                       fit: BoxFit.contain,
@@ -190,11 +177,7 @@ class LogStreakMonitorOnboardingScreen extends StatelessWidget {
                 Stack(
                   alignment: Alignment.center,
                   children: [
-                    LogStreakMonitor(
-                        value: 0.8,
-                        width: 120,
-                        height: 120,
-                        strokeWidth: 8),
+                    LogStreakMonitor(value: 0.8, width: 120, height: 120, strokeWidth: 8),
                     Image.asset(
                       'images/trkr.png',
                       fit: BoxFit.contain,
@@ -393,15 +376,17 @@ class EndOnboardingScreen extends StatelessWidget {
           RichText(
               text: TextSpan(
                   text: "Ready to get started? Here’s to",
-                  style:
-                      GoogleFonts.ubuntu(color: Colors.white70, fontSize: 22, fontWeight: FontWeight.w500, height: 1.5),
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleSmall
+                      ?.copyWith(fontSize: 22, fontWeight: FontWeight.w500, height: 1.5),
                   children: [
                 TextSpan(
                     text: " smarter training, ",
-                    style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w600)),
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(fontSize: 22, fontWeight: FontWeight.w600)),
                 TextSpan(
                     text: "meaningful insights",
-                    style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w600)),
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(fontSize: 22, fontWeight: FontWeight.w600)),
                 const TextSpan(
                   text: ", and your brightest fitness future.",
                 ),

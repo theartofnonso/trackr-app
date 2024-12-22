@@ -10,6 +10,7 @@ import 'package:tracker_app/models/ActivityLog.dart';
 import 'package:tracker_app/models/Exercise.dart';
 import 'package:tracker_app/models/RoutineUser.dart';
 import 'package:tracker_app/screens/home_tab_screen.dart';
+import 'package:tracker_app/screens/onboarding/onboarding_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/templates/routine_templates_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -47,6 +48,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if( SharedPrefs().firstLaunch ) {
+      return OnboardingScreen();
+    }
 
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
@@ -205,7 +209,6 @@ class _HomeScreenState extends State<HomeScreen> {
     if (SharedPrefs().firstLaunch) {
       _cacheUser();
       _loadAppData();
-      SharedPrefs().firstLaunch = false;
     } else {
       Posthog().identify(userId: SharedPrefs().userId);
       AnalyticsController.loginAnalytics(isFirstLaunch: SharedPrefs().firstLaunch);

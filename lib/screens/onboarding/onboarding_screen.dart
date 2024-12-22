@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
+import 'package:tracker_app/utils/general_utils.dart';
 
+import '../../shared_prefs.dart';
+import '../home_screen.dart';
 import 'onboarding_step_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -14,123 +18,84 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentIndex = 0;
 
-  final List<OnboardingStepData> _steps = [
-    OnboardingStepData(
-      title: 'Welcome',
-      description: 'Discover how our app can help track your workouts.',
-      image: FaIcon(FontAwesomeIcons.circle),
-        positiveAction: () {}
-    ),
-    OnboardingStepData(
-      title: 'Track Progress',
-      description: 'Log sets, reps, and weights to see your progress over time.',
-        image: FaIcon(FontAwesomeIcons.circle),
-        positiveAction: () {}
-    ),
-    OnboardingStepData(
-      title: 'Stay Motivated',
-      description:
-      'Get personalized insights, feedback, and stay on top of your goals.',
-        image: FaIcon(FontAwesomeIcons.circle),
-        positiveAction: () {}
-    ),
-  ];
-
   /// Move to the next page if not at the end; otherwise finish onboarding.
-  void _onNextPressed() {
-    if (_currentIndex < _steps.length - 1) {
+  void _onNextPressed({required int steps}) {
+    if (_currentIndex < steps - 1) {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
-    } else {
-      _finishOnboarding();
-    }
-  }
-
-  void _onSkipPressed() {
-    // Optionally, skip straight to the end or do any other logic
-    _finishOnboarding();
-  }
-
-  /// Logic to finish onboarding (navigate to main app screen, etc.)
-  void _finishOnboarding() {
-    // TODO: Replace with your actual navigation to home screen or wherever
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => const HomeScreen()),
-    );
+    } else {}
   }
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
+    final List<OnboardingStepData> steps = [
+      OnboardingStepData(
+          title: 'Stay Alert',
+          description: 'Stay on track with real-time updates, workout reminders, and progress alerts.',
+          image: FaIcon(
+            FontAwesomeIcons.solidBell,
+            size: 50,
+          ),
+          positiveAction: () {
+            _onNextPressed(steps: 2);
+          },
+          positiveActionLabel: 'Turn on notifications'),
+      OnboardingStepData(
+          title: 'Apple Health',
+          description: 'Seamlessly sync your health data and unlock personalized insights for optimal training.',
+          image: Container(
+              decoration: BoxDecoration(
+                boxShadow: isDarkMode ? null : [
+                  BoxShadow(
+                    color: Colors.grey.shade300,
+                    spreadRadius: 3,
+                    blurRadius: 10,
+                    offset: const Offset(0, 3), // changes position of shadow
+                  ),
+                ],
+              ),
+              child: Image.asset(
+            'images/apple_health.png',
+            fit: BoxFit.contain,
+            height: 50, // Adjust the height as needed
+          )),
+          positiveAction: () {
+            SharedPrefs().firstLaunch = false;
+            context.pushReplacement(HomeScreen.routeName);
+          },
+          positiveActionLabel: "Connect to Apple Health"),
+    ];
+
     return Scaffold(
-      body: Stack(
-        children: [
-          // Main PageView for onboarding steps
-          PageView.builder(
+      body: Container(
+        decoration: BoxDecoration(gradient: themeGradient(context: context)),
+        child: SafeArea(
+          minimum: EdgeInsets.all(10),
+          child: PageView.builder(
+           // physics: NeverScrollableScrollPhysics(),
             controller: _pageController,
-            itemCount: _steps.length,
+            itemCount: steps.length,
             onPageChanged: (index) {
               setState(() => _currentIndex = index);
             },
             itemBuilder: (context, index) {
-              final stepData = _steps[index];
+              final stepData = steps[index];
               return OnboardingStepScreen(
                 title: stepData.title,
                 description: stepData.description,
                 image: stepData.image,
+                positiveAction: stepData.positiveAction,
+                positiveActionLabel: stepData.positiveActionLabel,
               );
             },
           ),
-
-          // Bottom action buttons
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              color: Colors.white.withOpacity(0.9),
-              height: 80,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Skip button (optional)
-                  TextButton(
-                    onPressed: _onSkipPressed,
-                    child: const Text('Skip'),
-                  ),
-
-                  // Page indicator or dots (optional)
-                  Row(
-                    children: List.generate(
-                      _steps.length,
-                          (index) => Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 4),
-                        width: 8,
-                        height: 8,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: _currentIndex == index
-                              ? Colors.blue
-                              : Colors.grey,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  // Next / Finish Button
-                  ElevatedButton(
-                    onPressed: _onNextPressed,
-                    child: Text(
-                      _currentIndex == _steps.length - 1
-                          ? 'Finish'
-                          : 'Next',
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

@@ -16,7 +16,6 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:timezone/data/latest.dart' as tz;
-import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/controllers/settings_controller.dart';
@@ -63,23 +62,6 @@ import 'logger.dart';
 import 'models/ModelProvider.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
-final _themeData = ThemeData(
-  scaffoldBackgroundColor: sapphireDark,
-  colorScheme: const ColorScheme(
-    brightness: Brightness.dark,
-    primary: Colors.white,
-    onPrimary: Colors.white,
-    secondary: Colors.white,
-    onSecondary: Colors.white,
-    error: Colors.white,
-    onError: Colors.black,
-    surface: sapphireDark,
-    onSurface: Colors.white,
-  ),
-  tabBarTheme: const TabBarTheme(labelColor: Colors.blue, unselectedLabelColor: Colors.white70),
-  useMaterial3: true,
-);
 
 // Top-level callback function
 @pragma('vm:entry-point')

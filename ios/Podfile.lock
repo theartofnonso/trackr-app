@@ -144,6 +144,8 @@ PODS:
   - GoogleUtilities/UserDefaults (8.0.2):
     - GoogleUtilities/Logger
     - GoogleUtilities/Privacy
+  - health (1.0.4):
+    - Flutter
   - image_picker_ios (0.0.1):
     - Flutter
   - in_app_review (2.0.0):
@@ -196,6 +198,7 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_inappwebview_ios (from `.symlinks/plugins/flutter_inappwebview_ios/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
+  - health (from `.symlinks/plugins/health/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - in_app_review (from `.symlinks/plugins/in_app_review/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
@@ -250,6 +253,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_inappwebview_ios/ios"
   flutter_local_notifications:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
+  health:
+    :path: ".symlinks/plugins/health/ios"
   image_picker_ios:
     :path: ".symlinks/plugins/image_picker_ios/ios"
   in_app_review:
@@ -293,6 +298,7 @@ SPEC CHECKSUMS:
   flutter_local_notifications: df98d66e515e1ca797af436137b4459b160ad8c9
   GoogleAppMeasurement: 6e49ffac7d3f2c3ded9cc663f912a13b67bbd0de
   GoogleUtilities: 26a3abef001b6533cf678d3eb38fd3f614b7872d
+  health: 5d10c4296a95f6be50a8131d47d3cb3ad640bdf5
   image_picker_ios: c560581cceedb403a6ff17f2f816d7fea1421fc1
   in_app_review: a31b5257259646ea78e0e35fc914979b0031d011
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
