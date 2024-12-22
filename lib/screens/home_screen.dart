@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:health/health.dart';
@@ -226,7 +227,8 @@ class _HomeScreenState extends State<HomeScreen> {
     // fetch health data from the last 24 hours
     Health().getHealthDataFromTypes(types: [HealthDataType.SLEEP_ASLEEP], startTime: pastDay, endTime: now).then((values) {
       final uniqueValues = Health().removeDuplicates(values);
-      print(uniqueValues);
+      final milliseconds = uniqueValues.map((value) => value.dateTo.difference(value.dateFrom).inMilliseconds).sum;
+      print(Duration(milliseconds: milliseconds));
     });
 
   }

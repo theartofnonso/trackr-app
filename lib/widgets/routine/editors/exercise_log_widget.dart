@@ -14,6 +14,7 @@ import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
+import 'package:tracker_app/widgets/information_containers/information_container_lite.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/weight_and_reps_set_header.dart';
@@ -808,7 +809,13 @@ class _RepRangeSliderState extends State<_RepRangeSlider> {
                 .textTheme
                 .bodyMedium
                 ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
+        InformationContainerLite(
+          content:
+              "Work towards the top of your rep range. If you’re consistently hitting it, increase the weight. If you’re stuck at the bottom, lower the weight.",
+          color: vibrantBlue,
+        ),
+        const SizedBox(height: 12),
         Row(
           spacing: 8,
           mainAxisAlignment: MainAxisAlignment.center,

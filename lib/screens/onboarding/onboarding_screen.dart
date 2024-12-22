@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:health/health.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../shared_prefs.dart';
@@ -57,17 +56,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           description: 'Seamlessly sync your health data and unlock personalized insights for optimal training.',
           image: AppleHealthIcon(isDarkMode: isDarkMode, height: 50),
           positiveAction: () async {
-            await Health().configure();
-
-            // define the types to get
-            final types = [HealthDataType.SLEEP_ASLEEP];
-
-            final hasPermissions = await Health().hasPermissions(types) ?? false;
-
-            if(!hasPermissions) {
-              // requesting access to the data types before reading them
-              await Health().requestAuthorization(types);
-            }
+            await requestAppleHealth();
 
             SharedPrefs().firstLaunch = false;
 

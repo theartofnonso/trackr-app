@@ -62,7 +62,9 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
 
   @override
   Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    Brightness systemBrightness = MediaQuery
+        .of(context)
+        .platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
@@ -94,7 +96,10 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 ),
                 ListTile(
                   tileColor: Colors.transparent,
-                  title: Text("Weight", style: Theme.of(context).textTheme.titleMedium),
+                  title: Text("Weight", style: Theme
+                      .of(context)
+                      .textTheme
+                      .titleMedium),
                   subtitle: Text("Choose kg or lbs"),
                   trailing: SegmentedButton(
                     showSelectedIcon: false,
@@ -105,7 +110,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         borderRadius: BorderRadius.circular(5.0),
                       )),
                       backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                        (Set<WidgetState> states) {
+                            (Set<WidgetState> states) {
                           if (states.contains(WidgetState.selected)) {
                             return isDarkMode ? Colors.white : Colors.black;
                           }
@@ -113,7 +118,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         },
                       ),
                       foregroundColor: WidgetStateProperty.resolveWith<Color>(
-                        (Set<WidgetState> states) {
+                            (Set<WidgetState> states) {
                           if (states.contains(WidgetState.selected)) {
                             return isDarkMode ? Colors.black : Colors.white;
                           }
@@ -137,7 +142,10 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 SwitchListTile(
                   tileColor: Colors.transparent,
                   activeColor: vibrantGreen,
-                  title: Text('Show calendar', style: Theme.of(context).textTheme.titleMedium),
+                  title: Text('Show calendar', style: Theme
+                      .of(context)
+                      .textTheme
+                      .titleMedium),
                   value: SharedPrefs().showCalendar,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                   onChanged: (bool value) {
@@ -150,7 +158,10 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 SwitchListTile(
                   tileColor: Colors.transparent,
                   activeColor: vibrantGreen,
-                  title: Text('Show calendar dates', style: Theme.of(context).textTheme.titleMedium),
+                  title: Text('Show calendar dates', style: Theme
+                      .of(context)
+                      .textTheme
+                      .titleMedium),
                   value: SharedPrefs().showCalendarDates,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                   onChanged: (bool value) {
@@ -163,8 +174,11 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 ListTile(
                     onTap: _navigateToUserProfile,
                     leading:
-                        FaIcon(FontAwesomeIcons.personWalking, color: isDarkMode ? Colors.white70 : Colors.black38),
-                    title: Text("Profile", style: Theme.of(context).textTheme.titleMedium),
+                    FaIcon(FontAwesomeIcons.personWalking, color: isDarkMode ? Colors.white70 : Colors.black38),
+                    title: Text("Profile", style: Theme
+                        .of(context)
+                        .textTheme
+                        .titleMedium),
                     subtitle: Text("manage profile")),
                 ListTile(
                   onTap: _navigateToExerciseLibrary,
@@ -174,53 +188,80 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     height: 24, // Adjust the height as needed
                     color: isDarkMode ? Colors.white70 : Colors.black38,
                   ),
-                  title: Text("Exercises", style: Theme.of(context).textTheme.titleMedium),
+                  title: Text("Exercises", style: Theme
+                      .of(context)
+                      .textTheme
+                      .titleMedium),
                   subtitle: Text("manage exercises"),
                 ),
                 if (Platform.isIOS)
                   ListTile(
                     onTap: _navigateToNotificationSettings,
                     leading: FaIcon(FontAwesomeIcons.solidBell, color: isDarkMode ? Colors.white70 : Colors.black38),
-                    title: Text("Notifications", style: Theme.of(context).textTheme.titleMedium),
+                    title: Text("Notifications", style: Theme
+                        .of(context)
+                        .textTheme
+                        .titleMedium),
                     subtitle: Text(_notificationEnabled ? "enabled" : "disabled"),
                   ),
                 if (Platform.isIOS)
                   ListTile(
                     onTap: _connectAppleHealth,
                     leading: AppleHealthIcon(isDarkMode: isDarkMode, height: 24),
-                    title: Text("Apple Health", style: Theme.of(context).textTheme.titleMedium),
+                    title: Text("Apple Health", style: Theme
+                        .of(context)
+                        .textTheme
+                        .titleMedium),
                     subtitle: Text(_appleHealthEnabled ? "connected" : "tap to connect"),
                   ),
                 ListTile(
                     onTap: _sendFeedback,
                     leading:
-                        FaIcon(FontAwesomeIcons.solidPaperPlane, color: isDarkMode ? Colors.white70 : Colors.black38),
-                    title: Text("Feedback", style: Theme.of(context).textTheme.titleMedium),
+                    FaIcon(FontAwesomeIcons.solidPaperPlane, color: isDarkMode ? Colors.white70 : Colors.black38),
+                    title: Text("Feedback", style: Theme
+                        .of(context)
+                        .textTheme
+                        .titleMedium),
                     subtitle: Text("help us improve")),
                 ListTile(
                     onTap: _visitTRKR,
                     leading: FaIcon(FontAwesomeIcons.instagram, color: isDarkMode ? Colors.white70 : Colors.black38),
-                    title: Text("TRKR in the wild", style: Theme.of(context).textTheme.titleMedium),
+                    title: Text("TRKR in the wild", style: Theme
+                        .of(context)
+                        .textTheme
+                        .titleMedium),
                     subtitle: Text("follow us on socials")),
                 ListTile(
                     onTap: _navigateTutorialScreen,
                     leading: FaIcon(FontAwesomeIcons.book, color: isDarkMode ? Colors.white70 : Colors.black38),
-                    title: Text("Tutorials", style: Theme.of(context).textTheme.titleMedium),
+                    title: Text("Tutorials", style: Theme
+                        .of(context)
+                        .textTheme
+                        .titleMedium),
                     subtitle: Text("learn about TRKR")),
                 ListTile(
                     onTap: _logout,
                     leading: FaIcon(FontAwesomeIcons.arrowRightFromBracket,
                         color: isDarkMode ? Colors.white70 : Colors.black38),
-                    title: Text("Logout", style: Theme.of(context).textTheme.titleMedium),
+                    title: Text("Logout", style: Theme
+                        .of(context)
+                        .textTheme
+                        .titleMedium),
                     subtitle: Text(SharedPrefs().userEmail)),
                 ListTile(
                     onTap: _delete,
                     leading: FaIcon(FontAwesomeIcons.xmark, color: isDarkMode ? Colors.white70 : Colors.black38),
-                    title: Text("Delete Account", style: Theme.of(context).textTheme.titleMedium),
+                    title: Text("Delete Account", style: Theme
+                        .of(context)
+                        .textTheme
+                        .titleMedium),
                     subtitle: Text(SharedPrefs().userEmail)),
                 const SizedBox(height: 10),
                 Center(
-                  child: Text(_appVersion, style: Theme.of(context).textTheme.bodySmall),
+                  child: Text(_appVersion, style: Theme
+                      .of(context)
+                      .textTheme
+                      .bodySmall),
                 ),
               ],
             ),
@@ -287,21 +328,10 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   }
 
   void _connectAppleHealth() async {
-    await Health().configure();
-    // define the types to get
-    final types = [HealthDataType.SLEEP_ASLEEP];
-
-    final hasPermissions = await Health().hasPermissions(types) ?? false;
-
-    if(!hasPermissions) {
-      // requesting access to the data types before reading them
-
-      final requested = await Health().requestAuthorization(types);
-
-      setState(() {
-        _appleHealthEnabled = requested;
-      });
-    }
+    final hasPermission = await requestAppleHealth();
+    setState(() {
+      _appleHealthEnabled = hasPermission;
+    });
   }
 
   void _clearAppData() async {
@@ -325,7 +355,10 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.globe, size: 18),
               horizontalTitleGap: 6,
-              title: Text("On the web", style: Theme.of(context).textTheme.bodyLarge),
+              title: Text("On the web", style: Theme
+                  .of(context)
+                  .textTheme
+                  .bodyLarge),
               onTap: () {
                 Navigator.of(context).pop();
                 openUrl(url: trackrWebUrl, context: context);
@@ -335,7 +368,10 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.instagram, size: 20),
               horizontalTitleGap: 6,
-              title: Text("On Instagram", style: Theme.of(context).textTheme.bodyLarge),
+              title: Text("On Instagram", style: Theme
+                  .of(context)
+                  .textTheme
+                  .bodyLarge),
               onTap: () {
                 Navigator.of(context).pop();
                 openUrl(url: instagramUrl, context: context);
@@ -345,7 +381,10 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.whatsapp, size: 20),
               horizontalTitleGap: 6,
-              title: Text("Join our Whatsapp community", style: Theme.of(context).textTheme.bodyLarge),
+              title: Text("Join our Whatsapp community", style: Theme
+                  .of(context)
+                  .textTheme
+                  .bodyLarge),
               onTap: () {
                 Navigator.of(context).pop();
                 openUrl(url: whatsappUrl, context: context);
@@ -364,7 +403,9 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         context: context,
         title: "Log out?",
         description: "Are you sure you want to log out?",
-        leftAction: Navigator.of(context).pop,
+        leftAction: Navigator
+            .of(context)
+            .pop,
         rightAction: () async {
           Navigator.of(context).pop();
           _showLoadingScreen();
@@ -389,16 +430,18 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         context: context,
         title: "Delete account?",
         description: "Are you sure you want to delete your account? This action cannot be undone.",
-        leftAction: Navigator.of(context).pop,
+        leftAction: Navigator
+            .of(context)
+            .pop,
         rightAction: () async {
           Navigator.of(context).pop();
           _showLoadingScreen();
           final deletedExercises =
-              await batchDeleteUserData(document: deleteUserExerciseData, documentKey: "deleteUserExerciseData");
+          await batchDeleteUserData(document: deleteUserExerciseData, documentKey: "deleteUserExerciseData");
           final deletedRoutineTemplates = await batchDeleteUserData(
               document: deleteUserRoutineTemplateData, documentKey: "deleteUserRoutineTemplateData");
           final deletedRoutineLogs =
-              await batchDeleteUserData(document: deleteUserRoutineLogData, documentKey: "deleteUserRoutineLogData");
+          await batchDeleteUserData(document: deleteUserRoutineLogData, documentKey: "deleteUserRoutineLogData");
           if (deletedExercises && deletedRoutineTemplates && deletedRoutineLogs) {
             await _deleteRoutineUser();
             _hideLoadingScreen();
@@ -427,7 +470,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   }
 
   void _checkAppleHealthPermission() async {
-
     final types = [HealthDataType.SLEEP_ASLEEP];
 
     final hasPermissions = await Health().hasPermissions(types) ?? true;

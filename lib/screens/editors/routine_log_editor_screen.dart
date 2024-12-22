@@ -526,7 +526,7 @@ class _RoutineLogOverview extends StatelessWidget {
 
     return Container(
         decoration: BoxDecoration(
-          color: isDarkMode ? sapphireDark : Colors.grey.shade200,
+          color: isDarkMode ? Colors.black12 : Colors.grey.shade200,
           borderRadius: BorderRadius.circular(5), // rounded border
         ),
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
