@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -38,8 +39,10 @@ import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/routine_log_utils.dart';
 import '../../utils/routine_utils.dart';
+import '../../utils/string_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../widgets/ai_widgets/trkr_information_container.dart';
+import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/empty_states/not_found.dart';
 import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
@@ -67,14 +70,14 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
   Widget build(BuildContext context) {
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
-    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
-    if (routineLogController.errorMessage.isNotEmpty) {
+    if (exerciseAndRoutineController.errorMessage.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         showSnackbar(
             context: context,
             icon: const FaIcon(FontAwesomeIcons.circleInfo),
-            message: routineLogController.errorMessage);
+            message: exerciseAndRoutineController.errorMessage);
       });
     }
 
@@ -99,8 +102,8 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         duration: updatedLog.duration(), bodyWeight: routineUserController.weight(), activity: log.activityType);
 
     final pbs = updatedLog.exerciseLogs.map((exerciseLog) {
-      final pastExerciseLogs =
-          routineLogController.whereExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
+      final pastExerciseLogs = exerciseAndRoutineController.whereExerciseLogsBefore(
+          exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
 
       return calculatePBs(
           pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog);
@@ -112,6 +115,26 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     final sleepTo = log.sleepTo;
 
     Duration? sleepDuration = sleepFrom != null && sleepTo != null ? sleepTo.difference(sleepFrom) : null;
+
+    final logs = exerciseAndRoutineController.whereLogsWithTemplateId(templateId: log.templateId);
+
+    final allLoggedVolumesForTemplate = logs.map((log) => log.volume).toList();
+
+    final avgVolume = allLoggedVolumesForTemplate.average;
+
+    /// Get the last log
+    final pastLogs =
+        exerciseAndRoutineController.whereRoutineLogsBefore(templateId: log.templateId, datetime: log.createdAt);
+
+    final pastLastLogVolume = pastLogs.lastOrNull?.volume ?? 0.0;
+
+    final improved = log.volume > pastLastLogVolume;
+
+    final difference = improved ? log.volume - pastLastLogVolume : pastLastLogVolume - log.volume;
+
+    final differenceSummary = improved
+        ? "Improved by ${volumeInKOrM(difference)} ${weightLabel()}"
+        : "Reduced by ${volumeInKOrM(difference)} ${weightLabel()}";
 
     return Scaffold(
         appBar: AppBar(
@@ -236,6 +259,46 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                             description: "Here's a breakdown of the muscle groups in your ${log.name} workout log.",
                             muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
                             minimized: false),
+                        if (updatedLog.owner == SharedPrefs().userId && widget.isEditable)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                  text: volumeInKOrM(avgVolume),
+                                  style: Theme.of(context).textTheme.headlineMedium,
+                                  children: [
+                                    TextSpan(
+                                      text: " ",
+                                    ),
+                                    TextSpan(
+                                      text: weightLabel().toUpperCase(),
+                                      style: Theme.of(context).textTheme.bodyMedium,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Text(
+                                "SESSION AVERAGE".toUpperCase(),
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                              Wrap(
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                children: [
+                                  FaIcon(
+                                    improved ? FontAwesomeIcons.arrowUp : FontAwesomeIcons.arrowDown,
+                                    color: improved ? vibrantGreen : Colors.deepOrange,
+                                    size: 12,
+                                  ),
+                                  const SizedBox(width: 6),
+                                  OpacityButtonWidget(
+                                    label: differenceSummary,
+                                    buttonColor: improved ? vibrantGreen : Colors.deepOrange,
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
                         if (updatedLog.owner == SharedPrefs().userId && widget.isEditable)
                           TRKRInformationContainer(
                               ctaLabel: "Ask for feedback",

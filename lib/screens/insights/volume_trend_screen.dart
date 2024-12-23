@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
+import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
@@ -17,16 +18,14 @@ import '../../utils/string_utils.dart';
 import '../../widgets/chart/bar_chart.dart';
 import '../../widgets/information_containers/information_container.dart';
 
-class VolumeTrendScreen extends StatefulWidget {
+class VolumeTrendScreen extends StatelessWidget {
   static const routeName = '/volume_trend_screen';
 
-  const VolumeTrendScreen({super.key});
+  const VolumeTrendScreen({super.key, required this.differenceSummary, required this.improved});
 
-  @override
-  State<VolumeTrendScreen> createState() => _VolumeTrendScreenState();
-}
+  final String differenceSummary;
+  final bool improved;
 
-class _VolumeTrendScreenState extends State<VolumeTrendScreen> {
   @override
   Widget build(BuildContext context) {
 
@@ -111,9 +110,20 @@ class _VolumeTrendScreenState extends State<VolumeTrendScreen> {
                           ),
                         ),
                         Text(
-                          "MONTHLY AVERAGE",
-                          style: Theme.of(context).textTheme.titleSmall,
+                          "MONTHLY AVERAGE".toUpperCase(),
+                          style: Theme.of(context).textTheme.bodySmall,
                         ),
+                        Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            FaIcon(
+                              improved ? FontAwesomeIcons.arrowUp : FontAwesomeIcons.arrowDown,
+                              color: improved ? vibrantGreen : Colors.deepOrange,
+                              size: 12,
+                            ),
+                          const SizedBox(width: 6),
+                          OpacityButtonWidget(label: differenceSummary,buttonColor: improved ? vibrantGreen : Colors.deepOrange, )
+                        ],)
                       ],
                     ),
                   ],

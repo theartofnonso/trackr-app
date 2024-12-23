@@ -245,6 +245,10 @@ class AmplifyRoutineLogRepository {
     return _logs.where((log) => log.templateId == templateId).toList();
   }
 
+  List<RoutineLogDto> whereRoutineLogsBefore({required String templateId, required DateTime date}) {
+    return _logs.where((log) => log.templateId == templateId && log.createdAt.isBefore(date)).toList();
+  }
+
   /// Milestones
   UnmodifiableListView<Milestone> pendingMilestones() =>
       UnmodifiableListView(_milestones.where((milestone) => milestone.progress.$1 < 1));

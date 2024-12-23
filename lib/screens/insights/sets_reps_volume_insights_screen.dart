@@ -214,7 +214,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                             ),
                             Text(
                               "WEEKLY AVERAGE",
-                              style: Theme.of(context).textTheme.titleSmall,
+                              style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ],
                         ),

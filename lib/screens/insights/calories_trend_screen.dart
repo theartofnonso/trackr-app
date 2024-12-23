@@ -15,21 +15,19 @@ import '../../enums/chart_unit_enum.dart';
 import '../../utils/date_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/routine_utils.dart';
+import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/chart/bar_chart.dart';
 
-class CaloriesTrendScreen extends StatefulWidget {
+class CaloriesTrendScreen extends StatelessWidget {
   static const routeName = '/calories_trend_screen';
 
-  const CaloriesTrendScreen({super.key});
+  const CaloriesTrendScreen({super.key, required this.differenceSummary, required this.improved});
 
-  @override
-  State<CaloriesTrendScreen> createState() => _CaloriesTrendScreenState();
-}
+  final String differenceSummary;
+  final bool improved;
 
-class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -111,9 +109,24 @@ class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
                           ),
                         ),
                         Text(
-                          "MONTHLY AVERAGE",
-                          style: Theme.of(context).textTheme.titleSmall,
+                          "MONTHLY AVERAGE".toUpperCase(),
+                          style: Theme.of(context).textTheme.bodySmall,
                         ),
+                        Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            FaIcon(
+                              improved ? FontAwesomeIcons.arrowUp : FontAwesomeIcons.arrowDown,
+                              color: improved ? vibrantGreen : Colors.deepOrange,
+                              size: 12,
+                            ),
+                            const SizedBox(width: 6),
+                            OpacityButtonWidget(
+                              label: differenceSummary,
+                              buttonColor: improved ? vibrantGreen : Colors.deepOrange,
+                            )
+                          ],
+                        )
                       ],
                     ),
                   ],
@@ -136,7 +149,7 @@ class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
                 InformationContainer(
                   leadingIcon: FaIcon(FontAwesomeIcons.fire),
                   title: "What are calories",
-                  color:  isDarkMode ? sapphireDark80 : Colors.grey.shade200,
+                  color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
                   description:
                       "Calories burned refer to the amount of energy your body uses during an activity. This energy is measured in calories and comes from breaking down carbohydrates, fats, and proteins in your body.",
                 )

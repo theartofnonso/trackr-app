@@ -19,17 +19,26 @@ class CaloriesWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
 
-    final thisMonthCount = thisMonthLogs.map((log) => calculateCalories(duration: log.duration(), bodyWeight: routineUserController.weight(), activity: log.activityType)).sum;
-    final lastMonthCount = lastMonthLogs.map((log) => calculateCalories(duration: log.duration(), bodyWeight: routineUserController.weight(), activity: log.activityType)).sum;
+    final thisMonthCount = thisMonthLogs
+        .map((log) => calculateCalories(
+            duration: log.duration(), bodyWeight: routineUserController.weight(), activity: log.activityType))
+        .sum;
+    final lastMonthCount = lastMonthLogs
+        .map((log) => calculateCalories(
+            duration: log.duration(), bodyWeight: routineUserController.weight(), activity: log.activityType))
+        .sum;
 
     final improved = thisMonthCount > lastMonthCount;
 
+    final difference = improved ? thisMonthCount - lastMonthCount : lastMonthCount - lastMonthCount;
+
+    final differenceSummary = improved ? "Improved by $difference kcal" : "Reduced by $difference kcal";
+
     return ThemeListTile(
       child: ListTile(
-        onTap: () => _showCaloriesScreen(context: context),
+        onTap: () => _showCaloriesScreen(context: context, differenceSummary: differenceSummary, improved: improved),
         leading: const FaIcon(FontAwesomeIcons.fire),
         title: Text("Calories".toUpperCase()),
         subtitle: Text("Amount of energy expenditure"),
@@ -40,10 +49,8 @@ class CaloriesWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("$thisMonthCount",
-                    style: Theme.of(context).textTheme.titleMedium),
-                Text("$lastMonthCount",
-                    style: Theme.of(context).textTheme.titleSmall)
+                Text("$thisMonthCount", style: Theme.of(context).textTheme.titleMedium),
+                Text("$lastMonthCount", style: Theme.of(context).textTheme.titleSmall)
               ],
             ),
             const SizedBox(width: 4),
@@ -58,9 +65,8 @@ class CaloriesWidget extends StatelessWidget {
     );
   }
 
-  void _showCaloriesScreen({required BuildContext context}) {
+  void _showCaloriesScreen({required BuildContext context, required String differenceSummary, required bool improved}) {
     navigateWithSlideTransition(
-        context: context,
-        child: CaloriesTrendScreen());
+        context: context, child: CaloriesTrendScreen(differenceSummary: differenceSummary, improved: improved));
   }
 }

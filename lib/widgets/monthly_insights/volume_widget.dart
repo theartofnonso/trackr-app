@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
+import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../colors.dart';
@@ -47,9 +48,15 @@ class VolumeWidget extends StatelessWidget {
 
     final improved = thisMonthCount > lastMonthCount;
 
+    final difference = improved ? thisMonthCount - lastMonthCount : lastMonthCount - lastMonthCount;
+
+    final differenceSummary = improved
+        ? "Improved by ${volumeInKOrM(difference)} ${weightLabel()}"
+        : "Reduced by $volumeInKOrM{difference} ${weightLabel()}";
+
     return ThemeListTile(
       child: ListTile(
-        onTap: () => _showVolumeScreen(context: context),
+        onTap: () => _showVolumeScreen(context: context, differenceSummary: differenceSummary, improved: improved),
         leading: const FaIcon(FontAwesomeIcons.weightHanging),
         title: Text("Volume".toUpperCase()),
         subtitle: Text("Intensity of training"),
@@ -76,7 +83,8 @@ class VolumeWidget extends StatelessWidget {
     );
   }
 
-  void _showVolumeScreen({required BuildContext context}) {
-    navigateWithSlideTransition(context: context, child: VolumeTrendScreen());
+  void _showVolumeScreen({required BuildContext context, required String differenceSummary, required bool improved}) {
+    navigateWithSlideTransition(
+        context: context, child: VolumeTrendScreen(differenceSummary: differenceSummary, improved: improved));
   }
 }

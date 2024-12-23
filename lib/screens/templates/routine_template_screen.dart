@@ -32,6 +32,7 @@ import '../../utils/navigation_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../utils/string_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
+import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/chart/line_chart_widget.dart';
 import '../../widgets/empty_states/not_found.dart';
 import '../../widgets/information_containers/information_container.dart';
@@ -118,7 +119,30 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
     final logs = exerciseAndRoutineController.whereLogsWithTemplateId(templateId: template.id);
 
-    final volumeChartPoints = logs.mapIndexed((index, log) => ChartPointDto(index, log.volume)).toList();
+    final allLoggedVolumesForTemplate = logs.map((log) => log.volume).toList();
+
+    final avgVolume = allLoggedVolumesForTemplate.average;
+
+    final volumeChartPoints =
+        allLoggedVolumesForTemplate.mapIndexed((index, volume) => ChartPointDto(index, volume)).toList();
+
+    /// Get the last log
+    final lastLog = logs.lastOrNull;
+    final lastLogVolume = lastLog?.volume ?? 0.0;
+
+    /// Get the log before the last one
+    final pastLogs = exerciseAndRoutineController.whereRoutineLogsBefore(
+        templateId: template.id, datetime: lastLog?.createdAt ?? DateTime.now());
+
+    final pastLastLogVolume = pastLogs.lastOrNull?.volume ?? 0.0;
+
+    final improved = lastLogVolume > pastLastLogVolume;
+
+    final difference = improved ? lastLogVolume - pastLastLogVolume : pastLastLogVolume - lastLogVolume;
+
+    final differenceSummary = improved
+        ? "Improved by ${volumeInKOrM(difference)} ${weightLabel()}"
+        : "Reduced by ${volumeInKOrM(difference)} ${weightLabel()}";
 
     final menuActions = [
       MenuItemButton(
@@ -210,7 +234,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
             minimum: const EdgeInsets.all(10.0),
             child: SingleChildScrollView(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 20,
                 children: [
                   Row(
@@ -270,6 +294,52 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                       description: "Here's a breakdown of the muscle groups in your ${template.name} workout plan.",
                       muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
                       minimized: false),
+                  if (template.owner == SharedPrefs().userId )
+                    Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                          text: volumeInKOrM(avgVolume),
+                          style: Theme.of(context).textTheme.headlineMedium,
+                          children: [
+                            TextSpan(
+                              text: " ",
+                            ),
+                            TextSpan(
+                              text: weightLabel().toUpperCase(),
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Text(
+                        "SESSION AVERAGE".toUpperCase(),
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          FaIcon(
+                            improved ? FontAwesomeIcons.arrowUp : FontAwesomeIcons.arrowDown,
+                            color: improved ? vibrantGreen : Colors.deepOrange,
+                            size: 12,
+                          ),
+                          const SizedBox(width: 6),
+                          OpacityButtonWidget(
+                            label: differenceSummary,
+                            buttonColor: improved ? vibrantGreen : Colors.deepOrange,
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                  Text(
+                      "Here’s a summary of your ${template.name} training intensity over the last ${logs.length} sessions.",
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
                   Padding(
                     padding: const EdgeInsets.only(right: 20),
                     child: Column(
@@ -287,9 +357,9 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                   InformationContainer(
                     leadingIcon: FaIcon(FontAwesomeIcons.weightHanging),
                     title: "Training Volume",
-                    color:  isDarkMode ? sapphireDark80 : Colors.grey.shade200,
+                    color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
                     description:
-                    "Volume is the total amount of work done, often calculated as sets × reps × weight. Higher volume increases muscle size (hypertrophy).",
+                        "Volume is the total amount of work done, often calculated as sets × reps × weight. Higher volume increases muscle size (hypertrophy).",
                   ),
                   const SizedBox(height: 1),
                   ExerciseLogListView(
