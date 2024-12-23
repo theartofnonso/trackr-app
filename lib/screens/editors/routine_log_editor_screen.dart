@@ -174,7 +174,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
             displayBottomSheet(
                 context: context,
                 child: _RPERatingSlider(
-                  title: 'Rate your session',
+                  title: widget.log.name,
                   rpeRating: null,
                   onSelectRating: (int rpeRating) async {
                     final sleep = await calculateSleepDuration();
@@ -200,7 +200,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
       displayBottomSheet(
           context: context,
           child: _RPERatingSlider(
-            title: 'Rate your session',
+            title: widget.log.name,
             rpeRating: null,
             onSelectRating: (int rpeRating) {
               _closeDialog();
