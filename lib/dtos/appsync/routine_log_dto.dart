@@ -126,8 +126,8 @@ class RoutineLogDto extends Log {
     final notes = json["notes"] ?? "";
     final rpeRating = json["rpeRating"] ?? 5;
     final summary = json["summary"];
-    final sleepFrom = json["sleepFrom"] != null ? DateTime.parse(json["sleepFrom"]) : null;
-    final sleepTo = json["sleepTo"] != null ? DateTime.parse(json["sleepTo"]) : null;
+    final sleepFrom = DateTime.tryParse(json["sleepFrom"] ?? "");
+    final sleepTo = DateTime.tryParse(json["sleepTo"] ?? "");
     final startTime = DateTime.parse(json["startTime"]);
     final endTime = DateTime.parse(json["endTime"]);
     final exerciseLogsInJson = json["exercises"] as List<dynamic>;

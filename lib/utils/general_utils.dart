@@ -163,12 +163,14 @@ Future<bool> requestAppleHealth() async {
   // define the types to get
   final types = [HealthDataType.SLEEP_ASLEEP, HealthDataType.WORKOUT];
 
+  final permissions = [HealthDataAccess.READ, HealthDataAccess.WRITE];
+
   final hasPermissions =
-      await Health().hasPermissions(types, permissions: [HealthDataAccess.READ, HealthDataAccess.WRITE]) ?? false;
+      await Health().hasPermissions(types, permissions: permissions) ?? false;
 
   if (!hasPermissions) {
     // requesting access to the data types before reading them
-    hasAccess = await Health().requestAuthorization(types);
+    hasAccess = await Health().requestAuthorization(types, permissions: permissions);
   } else {
     hasAccess = true;
   }

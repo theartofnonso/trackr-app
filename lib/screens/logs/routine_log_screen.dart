@@ -204,7 +204,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                             icon: FontAwesomeIcons.solidMoon,
                           ),
                         _StatisticWidget(
-                          title: "${log.rpeRating}",
+                          title: "$rpeRating",
                           subtitle: "RPE",
                           icon: FontAwesomeIcons.solidFaceSadTear,
                         ),

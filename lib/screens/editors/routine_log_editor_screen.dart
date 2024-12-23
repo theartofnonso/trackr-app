@@ -121,7 +121,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   }
 
   Future<void> _doCreateRoutineLog({int? rpeRating, DateTimeRange? sleep}) async {
-    final routineLogToBeCreated = _routineLog().copyWith(endTime: DateTime.now(), rpeRating: rpeRating, sleepFrom: sleep?.start, sleepTo: sleep?.end);
+    final routineLogToBeCreated = _routineLog()
+        .copyWith(endTime: DateTime.now(), rpeRating: rpeRating, sleepFrom: sleep?.start, sleepTo: sleep?.end);
 
     final createdRoutineLog =
         await Provider.of<ExerciseAndRoutineController>(context, listen: false).saveLog(logDto: routineLogToBeCreated);
@@ -177,12 +178,10 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                   rpeRating: null,
                   onSelectRating: (int rpeRating) async {
                     final sleep = await calculateSleepDuration();
-                    _closeDialog();
                     _doCreateRoutineLog(rpeRating: rpeRating, sleep: sleep);
                   },
                   cancelRating: () async {
                     final sleep = await calculateSleepDuration();
-                    _closeDialog();
                     _doCreateRoutineLog(sleep: sleep);
                   },
                 ));
