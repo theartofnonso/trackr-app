@@ -106,6 +106,13 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
           pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog);
     }).expand((pbs) => pbs);
 
+    final rpeRating = log.rpeRating;
+
+    final sleepFrom = log.sleepFrom;
+    final sleepTo = log.sleepTo;
+
+    Duration? sleepDuration = sleepFrom != null && sleepTo != null ? sleepTo.difference(sleepFrom) : null;
+
     return Scaffold(
         appBar: AppBar(
             leading: IconButton(
@@ -160,6 +167,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
+                      spacing: 10,
                       children: [
                         const SizedBox(
                           width: 10,
@@ -169,37 +177,36 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                           subtitle: "Exercises",
                           image: "dumbbells",
                         ),
-                        const SizedBox(
-                          width: 10,
-                        ),
                         _StatisticWidget(
                           title: "${numberOfCompletedSets.length}",
                           subtitle: "Sets",
                           icon: FontAwesomeIcons.hashtag,
-                        ),
-                        const SizedBox(
-                          width: 10,
                         ),
                         _StatisticWidget(
                           title: log.duration().hmsDigital(),
                           subtitle: "Duration",
                           icon: FontAwesomeIcons.solidClock,
                         ),
-                        const SizedBox(
-                          width: 10,
-                        ),
                         _StatisticWidget(
                           title: "$calories",
                           subtitle: "Calories",
                           icon: FontAwesomeIcons.fire,
                         ),
-                        const SizedBox(
-                          width: 10,
-                        ),
                         _StatisticWidget(
                           title: "${pbs.length}",
                           subtitle: "PBs",
                           icon: FontAwesomeIcons.solidStar,
+                        ),
+                        if (sleepDuration != null)
+                          _StatisticWidget(
+                            title: sleepDuration.hmsDigital(),
+                            subtitle: "Sleep",
+                            icon: FontAwesomeIcons.solidMoon,
+                          ),
+                        _StatisticWidget(
+                          title: "${log.rpeRating}",
+                          subtitle: "RPE",
+                          icon: FontAwesomeIcons.solidFaceSadTear,
                         ),
                         const SizedBox(
                           width: 10,
@@ -568,7 +575,7 @@ class _StatisticWidget extends StatelessWidget {
         : FaIcon(icon, size: 14);
 
     return Container(
-      width: 140,
+      width: 120,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, // Background color of the container
