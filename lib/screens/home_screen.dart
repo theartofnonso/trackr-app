@@ -89,12 +89,12 @@ class _HomeScreenState extends State<HomeScreen> {
           NavigationDestination(
             icon: FaIcon(FontAwesomeIcons.trophy, color: Colors.grey),
             selectedIcon: FaIcon(FontAwesomeIcons.trophy, color: isDarkMode ? Colors.white : Colors.black),
-            label: 'Challenges',
+            label: 'Milestones',
           ),
           NavigationDestination(
             icon: FaIcon(FontAwesomeIcons.gear, color: Colors.grey),
             selectedIcon: FaIcon(FontAwesomeIcons.gear, color: isDarkMode ? Colors.white : Colors.black),
-            label: 'Challenges',
+            label: 'Milestones',
           ),
         ],
         onDestinationSelected: (int index) {
