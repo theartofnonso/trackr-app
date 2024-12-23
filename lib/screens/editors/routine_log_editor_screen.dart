@@ -651,16 +651,16 @@ class _RPERatingSliderState extends State<_RPERatingSlider> {
 
     // Define a map of reps to percentages
     Map<int, String> repToPercentage = {
-      1: "Very Light - Barely any effort",
-      2: "Very Light - Barely any effort",
-      3: "Light - Easy effort",
-      4: "Light - Easy effort",
-      5: "Moderate - Felt challenging but sustainable",
-      6: "Moderate - Felt challenging but sustainable",
-      7: "Hard - Breathing heavily",
-      8: "Hard - Breathing heavily",
-      9: "Very Hard - Maximum effort",
-      10: "Max Effort - All-out",
+      1:  "Extremely light — mostly warm-up weight",
+      2:  "Very light — can easily perform many more reps",
+      3:  "Light — still feels comfortable",
+      4:  "Moderate — some effort required but manageable",
+      5:  "Challenging — you're working, yet not near failure",
+      6:  "Hard — beginning to feel significant strain",
+      7:  "Very hard — only a few reps left in the tank",
+      8:  "Near max — pushing close to muscular failure",
+      9:  "Maximal — maybe 1 rep left, if at all",
+      10: "All-out — absolute limit, no reps left in reserve",
     };
 
     return repToPercentage[absoluteRating] ?? "Very Light - Barely any effort";
