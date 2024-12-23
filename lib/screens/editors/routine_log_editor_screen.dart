@@ -648,7 +648,7 @@ class _RPERatingSliderState extends State<_RPERatingSlider> {
   }
 
   void onChanged(double value) {
-    HapticFeedback.vibrate();
+    HapticFeedback.heavyImpact();
 
     setState(() {
       _rpeRating = value;

@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -725,6 +726,7 @@ class _OneRepMaxSliderState extends State<_OneRepMaxSlider> {
   }
 
   void onChanged(double value) {
+    HapticFeedback.heavyImpact();
     final weight = _weightForPercentage(reps: value.toInt());
     setState(() {
       _weight = weightWithConversion(value: weight).roundToDouble();
@@ -851,6 +853,7 @@ class _RepRangeSliderState extends State<_RepRangeSlider> {
   }
 
   void onChanged(RangeValues values) {
+    HapticFeedback.heavyImpact();
     setState(() {
       _min = values.start.toInt();
       _max = values.end.toInt();
