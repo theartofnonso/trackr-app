@@ -114,15 +114,14 @@ void main() async {
   }
 
   const DarwinInitializationSettings iOSInitializationSettingsDarwin = DarwinInitializationSettings(
-    requestAlertPermission: true,
-    requestBadgePermission: true,
+    requestAlertPermission: false,
+    requestBadgePermission: false,
     requestSoundPermission: false,
   );
 
   const AndroidInitializationSettings androidInitializationSettings = AndroidInitializationSettings("app_icon");
 
-  const initializationSettings =
-      InitializationSettings(iOS: iOSInitializationSettingsDarwin, android: androidInitializationSettings);
+  const initializationSettings = InitializationSettings(iOS: iOSInitializationSettingsDarwin, android: androidInitializationSettings);
 
   await FlutterLocalNotificationsPlugin()
       .initialize(initializationSettings, onDidReceiveNotificationResponse: onDidReceiveNotificationResponse);
