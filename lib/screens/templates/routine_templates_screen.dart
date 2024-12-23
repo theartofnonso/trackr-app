@@ -70,7 +70,7 @@ class RoutineTemplatesScreen extends StatelessWidget {
                       textStyle: GoogleFonts.ubuntu(
                         fontSize: 16,
                         fontWeight: FontWeight.w400,
-                        color: Colors.white.withValues(alpha:0.9),
+                        color: Colors.white.withValues(alpha: 0.9),
                       )),
                   const SizedBox(height: 16),
                   TRKRCoachButton(
@@ -131,19 +131,21 @@ class _RoutineWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () => navigateToRoutineTemplatePreview(context: context, template: template),
       child: Container(
-          padding: const EdgeInsets.all(18),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            gradient: template.isScheduledToday() && isDarkMode ? LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                sapphireDark80, sapphireDark,
-              ],
-            ) : null,
-              color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, borderRadius: BorderRadius.circular(5)),
-          child: Column(
-              spacing: 6,
-              crossAxisAlignment: CrossAxisAlignment.start, children: [
+              gradient: template.isScheduledToday() && isDarkMode
+                  ? LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        sapphireDark80,
+                        sapphireDark,
+                      ],
+                    )
+                  : null,
+              color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
+              borderRadius: BorderRadius.circular(5)),
+          child: Column(spacing: 6, crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(
               template.name,
               style: Theme.of(context).textTheme.titleMedium,
@@ -161,7 +163,7 @@ class _RoutineWidget extends StatelessWidget {
                       height: 20,
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
-                        color: vibrantGreen.withValues(alpha:0.1),
+                        color: vibrantGreen.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(3),
                       ),
                       child: Image.asset(
@@ -192,7 +194,7 @@ class _RoutineWidget extends StatelessWidget {
                       height: 20,
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
-                        color: vibrantBlue.withValues(alpha:0.1),
+                        color: vibrantBlue.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(3),
                       ),
                       child: Center(
@@ -218,7 +220,7 @@ class _RoutineWidget extends StatelessWidget {
             ),
             Divider(
                 color: template.isScheduledToday()
-                    ? vibrantGreen.withValues(alpha:0.2)
+                    ? vibrantGreen.withValues(alpha: 0.2)
                     : isDarkMode
                         ? Colors.white10
                         : Colors.black12,
