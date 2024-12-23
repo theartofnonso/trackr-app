@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:health/health.dart';
@@ -177,7 +176,7 @@ Future<bool> requestAppleHealth() async {
   return hasAccess;
 }
 
-Future<Duration> calculateSleepDuration() async {
+Future<DateTimeRange?> calculateSleepDuration() async {
   await Health().configure();
 
   // fetch health data from the last 24 hours
@@ -189,7 +188,17 @@ Future<Duration> calculateSleepDuration() async {
       await Health().getHealthDataFromTypes(types: [HealthDataType.SLEEP_ASLEEP], startTime: pastDay, endTime: now);
   final uniqueValues = Health().removeDuplicates(values);
 
-  final milliseconds = uniqueValues.map((value) => value.dateTo.difference(value.dateFrom).inMilliseconds).sum;
+  DateTimeRange? sleepTime;
 
-  return Duration(milliseconds: milliseconds);
+  if (values.isNotEmpty) {
+    Iterable<DateTime> dateFrom = uniqueValues.map((value) => value.dateFrom);
+    Iterable<DateTime> dateTo = uniqueValues.map((value) => value.dateTo);
+
+    DateTime minDateTime = dateFrom.reduce((a, b) => a.isBefore(b) ? a : b);
+    DateTime maxDateTime = dateTo.reduce((a, b) => a.isAfter(b) ? a : b);
+
+    sleepTime = DateTimeRange(start: minDateTime, end: maxDateTime);
+  }
+
+  return sleepTime;
 }

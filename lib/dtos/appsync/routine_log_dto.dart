@@ -31,6 +31,10 @@ class RoutineLogDto extends Log {
 
   final String owner;
 
+  final DateTime? sleepFrom;
+
+  final DateTime? sleepTo;
+
   @override
   final DateTime createdAt;
 
@@ -48,6 +52,8 @@ class RoutineLogDto extends Log {
     required this.endTime,
     this.rpeRating = 5,
     required this.owner,
+    this.sleepFrom,
+    this.sleepTo,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -64,6 +70,8 @@ class RoutineLogDto extends Log {
       'name': name,
       'notes': notes,
       'rpeRating': rpeRating,
+      'sleepFrom': sleepFrom?.toIso8601String() ?? "",
+      'sleepTo': sleepTo?.toIso8601String() ?? "",
       'startTime': startTime.toIso8601String(),
       'endTime': endTime.toIso8601String(),
       'exercises': exerciseLogs.map((exercise) => exercise.toJson()).toList(),
@@ -118,6 +126,8 @@ class RoutineLogDto extends Log {
     final notes = json["notes"] ?? "";
     final rpeRating = json["rpeRating"] ?? 5;
     final summary = json["summary"];
+    final sleepFrom = json["sleepFrom"] != null ? DateTime.parse(json["sleepFrom"]) : null;
+    final sleepTo = json["sleepTo"] != null ? DateTime.parse(json["sleepTo"]) : null;
     final startTime = DateTime.parse(json["startTime"]);
     final endTime = DateTime.parse(json["endTime"]);
     final exerciseLogsInJson = json["exercises"] as List<dynamic>;
@@ -145,6 +155,8 @@ class RoutineLogDto extends Log {
       startTime: startTime,
       endTime: endTime,
       owner: log.owner ?? "",
+      sleepFrom: sleepFrom,
+      sleepTo: sleepTo,
       createdAt: log.createdAt.getDateTimeInUtc(),
       updatedAt: log.updatedAt.getDateTimeInUtc(),
     );
@@ -162,6 +174,8 @@ class RoutineLogDto extends Log {
     DateTime? endTime,
     List<ExerciseLogDto>? exerciseLogs,
     String? owner,
+    DateTime? sleepFrom,
+    DateTime? sleepTo,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -176,6 +190,8 @@ class RoutineLogDto extends Log {
       endTime: endTime ?? this.endTime,
       exerciseLogs: exerciseLogs ?? this.exerciseLogs,
       owner: owner ?? this.owner,
+      sleepFrom: sleepFrom ?? this.sleepFrom,
+      sleepTo: sleepTo ?? this.sleepTo,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -183,7 +199,7 @@ class RoutineLogDto extends Log {
 
   @override
   String toString() {
-    return 'RoutineLogDto{id: $id, templateId: $templateId, name: $name, notes: $notes, rpeRating: $rpeRating, summary: $summary, startTime: $startTime, endTime: $endTime, exerciseLogs: $exerciseLogs, owner: $owner, createdAt: $createdAt, updatedAt: $updatedAt}';
+    return 'RoutineLogDto{id: $id, templateId: $templateId, name: $name, notes: $notes, rpeRating: $rpeRating, summary: $summary, startTime: $startTime, endTime: $endTime, exerciseLogs: $exerciseLogs, owner: $owner, sleepFrom: $sleepFrom, sleepTo: $sleepTo, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
 
   @override
