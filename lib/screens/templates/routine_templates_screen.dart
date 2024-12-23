@@ -133,15 +133,14 @@ class _RoutineWidget extends StatelessWidget {
       child: Container(
           padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
-            gradient: template.isScheduledToday() ? LinearGradient(
+            gradient: template.isScheduledToday() && isDarkMode ? LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                isDarkMode ? sapphireDark80 : Colors.grey.shade100,
-                isDarkMode ? sapphireDark : Colors.white70,
+                sapphireDark80, sapphireDark,
               ],
             ) : null,
-              color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, borderRadius: BorderRadius.circular(10)),
+              color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, borderRadius: BorderRadius.circular(5)),
           child: Column(
               spacing: 6,
               crossAxisAlignment: CrossAxisAlignment.start, children: [
