@@ -241,6 +241,10 @@ class AmplifyRoutineLogRepository {
     return _logs.where((log) => log.createdAt.isBetweenInclusive(from: range.start, to: range.end)).toList();
   }
 
+  List<RoutineLogDto> whereLogsWithTemplateId({required String templateId}) {
+    return _logs.where((log) => log.templateId == templateId).toList();
+  }
+
   /// Milestones
   UnmodifiableListView<Milestone> pendingMilestones() =>
       UnmodifiableListView(_milestones.where((milestone) => milestone.progress.$1 < 1));

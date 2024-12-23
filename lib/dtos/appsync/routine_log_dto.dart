@@ -1,5 +1,9 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
+import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
+import 'package:tracker_app/enums/exercise_type_enums.dart';
+
 import '../../enums/activity_type_enums.dart';
 import '../../models/RoutineLog.dart';
 import '../abstract_class/log_class.dart';
@@ -207,4 +211,12 @@ class RoutineLogDto extends Log {
 
   @override
   ActivityType get activityType => ActivityType.weightlifting;
+
+  double get volume => exerciseLogs.expand((exerciseLog) => exerciseLog.sets).map((set) {
+        return switch (set.type) {
+          ExerciseType.weights => (set as WeightAndRepsSetDto).volume(),
+          ExerciseType.bodyWeight => 0.0,
+          ExerciseType.duration => 0.0,
+        };
+      }).sum;
 }

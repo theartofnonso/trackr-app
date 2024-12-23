@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import '../../colors.dart';
@@ -16,6 +18,7 @@ import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../dtos/viewmodels/routine_template_arguments.dart';
+import '../../enums/chart_unit_enum.dart';
 import '../../enums/posthog_analytics_event.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../enums/routine_preview_type_enum.dart';
@@ -29,7 +32,9 @@ import '../../utils/navigation_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../utils/string_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
+import '../../widgets/chart/line_chart_widget.dart';
 import '../../widgets/empty_states/not_found.dart';
+import '../../widgets/information_containers/information_container.dart';
 import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
 import 'routine_day_planner.dart';
@@ -110,6 +115,10 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     final setsSummary = "${numberOfSets.length} ${pluralize(word: "Set", count: numberOfSets.length)}";
 
     final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: template.exerciseTemplates);
+
+    final logs = exerciseAndRoutineController.whereLogsWithTemplateId(templateId: template.id);
+
+    final volumeChartPoints = logs.mapIndexed((index, log) => ChartPointDto(index, log.volume)).toList();
 
     final menuActions = [
       MenuItemButton(
@@ -261,6 +270,28 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                       description: "Here's a breakdown of the muscle groups in your ${template.name} workout plan.",
                       muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
                       minimized: false),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        const SizedBox(height: 16),
+                        LineChartWidget(
+                          chartPoints: volumeChartPoints,
+                          periods: [],
+                          unit: ChartUnit.weight,
+                        ),
+                      ],
+                    ),
+                  ),
+                  InformationContainer(
+                    leadingIcon: FaIcon(FontAwesomeIcons.weightHanging),
+                    title: "Training Volume",
+                    color:  isDarkMode ? sapphireDark80 : Colors.grey.shade200,
+                    description:
+                    "Volume is the total amount of work done, often calculated as sets × reps × weight. Higher volume increases muscle size (hypertrophy).",
+                  ),
+                  const SizedBox(height: 1),
                   ExerciseLogListView(
                     exerciseLogs: exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
                   ),

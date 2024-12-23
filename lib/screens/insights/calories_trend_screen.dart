@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
+import 'package:tracker_app/widgets/information_containers/information_container.dart';
 
 import '../../colors.dart';
 import '../../controllers/activity_log_controller.dart';
@@ -28,6 +29,9 @@ class CaloriesTrendScreen extends StatefulWidget {
 class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
 
     final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
@@ -84,7 +88,6 @@ class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -129,6 +132,14 @@ class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
                           reservedSize: 35,
                         ))
                     : const Center(child: FaIcon(FontAwesomeIcons.chartSimple, color: sapphireDark, size: 120)),
+                const SizedBox(height: 14),
+                InformationContainer(
+                  leadingIcon: FaIcon(FontAwesomeIcons.fire),
+                  title: "What are calories",
+                  color:  isDarkMode ? sapphireDark80 : Colors.grey.shade200,
+                  description:
+                      "Calories burned refer to the amount of energy your body uses during an activity. This energy is measured in calories and comes from breaking down carbohydrates, fats, and proteins in your body.",
+                )
               ],
             ),
           ),

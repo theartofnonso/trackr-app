@@ -15,6 +15,7 @@ import '../../utils/date_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/string_utils.dart';
 import '../../widgets/chart/bar_chart.dart';
+import '../../widgets/information_containers/information_container.dart';
 
 class VolumeTrendScreen extends StatefulWidget {
   static const routeName = '/volume_trend_screen';
@@ -28,6 +29,10 @@ class VolumeTrendScreen extends StatefulWidget {
 class _VolumeTrendScreenState extends State<VolumeTrendScreen> {
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
     final dateRange = theLastYearDateTimeRange();
@@ -83,7 +88,6 @@ class _VolumeTrendScreenState extends State<VolumeTrendScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -128,6 +132,14 @@ class _VolumeTrendScreenState extends State<VolumeTrendScreen> {
                           reservedSize: 35,
                         ))
                     : const Center(child: FaIcon(FontAwesomeIcons.chartSimple, color: sapphireDark, size: 120)),
+            const SizedBox(height: 14),
+                InformationContainer(
+                  leadingIcon: FaIcon(FontAwesomeIcons.weightHanging),
+                  title: "Training Volume",
+                  color:  isDarkMode ? sapphireDark80 : Colors.grey.shade200,
+                  description:
+                  "Volume is the total amount of work done, often calculated as sets × reps × weight. Higher volume increases muscle size (hypertrophy).",
+                )
               ],
             ),
           ),
