@@ -842,6 +842,7 @@ class _RepRangeSliderState extends State<_RepRangeSlider> {
           min: 1,
           max: 20,
           activeColor: vibrantGreen,
+          divisions: 19,
         ),
         const SizedBox(height: 10),
         SizedBox(
