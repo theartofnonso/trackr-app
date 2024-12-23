@@ -48,7 +48,6 @@ class ExerciseLogWidget extends StatefulWidget {
   final VoidCallback onReplaceLog;
   final VoidCallback onSuperSet;
   final void Function(String superSetId) onRemoveSuperSet;
-  final VoidCallback? onCache;
   final VoidCallback onResize;
   final void Function(SetDto setDto) onTapWeightEditor;
   final void Function(SetDto setDto) onTapRepsEditor;
@@ -61,7 +60,6 @@ class ExerciseLogWidget extends StatefulWidget {
       required this.onSuperSet,
       required this.onRemoveSuperSet,
       required this.onRemoveLog,
-      this.onCache,
       required this.onReplaceLog,
       required this.onResize,
       required this.onTapWeightEditor,
@@ -112,7 +110,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   void _updateExerciseLogNotes({required String value}) {
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateExerciseLogNotes(exerciseLogId: widget.exerciseLogDto.id, value: value);
-    _cacheLog();
   }
 
   void _updateExerciseLogRepRange(RangeValues values) {
@@ -170,8 +167,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         .addSet(exerciseLogId: widget.exerciseLogDto.id, pastSets: pastSets);
 
     _loadControllers(sets: widget.exerciseLogDto.sets);
-
-    _cacheLog();
   }
 
   void _removeSet({required int index}) {
@@ -179,8 +174,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         .removeSetForExerciseLog(exerciseLogId: widget.exerciseLogDto.id, index: index);
 
     _loadControllers(sets: widget.exerciseLogDto.sets);
-
-    _cacheLog();
   }
 
   void _updateWeight({required int index, required double weight, required SetDto setDto}) {
@@ -188,8 +181,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     widget.onTapWeightEditor(updatedSet);
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateWeight(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
-
-    _cacheLog();
   }
 
   void _updateReps({required int index, required int reps, required SetDto setDto}) {
@@ -197,8 +188,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         setDto is WeightAndRepsSetDto ? setDto.copyWith(reps: reps) : (setDto as RepsSetDto).copyWith(reps: reps);
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateReps(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
-
-    _cacheLog();
   }
 
   void _checkAndUpdateDuration(
@@ -214,8 +203,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           .updateDuration(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet, notify: checked);
 
       _loadControllers(sets: widget.exerciseLogDto.sets);
-
-      _cacheLog();
     }
   }
 
@@ -231,8 +218,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         .updateDuration(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet, notify: true);
 
     _loadControllers(sets: widget.exerciseLogDto.sets);
-
-    _cacheLog();
   }
 
   void _updateSetCheck({required int index, required SetDto setDto}) {
@@ -242,8 +227,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         .updateSetCheck(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
 
     _loadControllers(sets: widget.exerciseLogDto.sets);
-
-    _cacheLog();
   }
 
   void _loadWeightAndRepsControllers({required List<SetDto> sets}) {
@@ -301,13 +284,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     super.dispose();
   }
 
-  void _cacheLog() {
-    final cacheLog = widget.onCache;
-    if (cacheLog != null) {
-      cacheLog();
-    }
-  }
-
   void _stt() async {
     final sets =
         await navigateWithSlideTransition(context: context, child: STTLoggingScreen(exerciseLog: widget.exerciseLogDto))
@@ -318,8 +294,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
         Provider.of<ExerciseLogController>(context, listen: false)
             .overwriteSets(exerciseLogId: widget.exerciseLogDto.id, sets: sets);
-
-        _cacheLog();
       }
     }
   }

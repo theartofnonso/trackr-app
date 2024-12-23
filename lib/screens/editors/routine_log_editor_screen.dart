@@ -70,7 +70,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
           final pastSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
               .whereSetsForExercise(exercise: onlyExercise);
           controller.addExerciseLog(exercise: onlyExercise, pastSets: pastSets);
-          _cacheLog();
         });
   }
 
@@ -86,7 +85,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
           final id = superSetId(firstExerciseLog: firstExerciseLog, secondExerciseLog: secondExerciseLog);
           controller.superSetExerciseLogs(
               firstExerciseLogId: firstExerciseLog.id, secondExerciseLogId: secondExerciseLog.id, superSetId: id);
-          _cacheLog();
         },
         selectExercisesInLibrary: () {
           _closeDialog();
@@ -106,7 +104,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
               .whereSetsForExercise(exercise: selectedExercises.first);
           controller.replaceExerciseLog(
               oldExerciseId: oldExerciseLog.id, newExercise: selectedExercises.first, pastSets: pastSets);
-          _cacheLog();
         });
   }
 
@@ -216,13 +213,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     }
   }
 
-  void _cacheLog() {
-    if (widget.mode == RoutineEditorMode.log) {
-      final routineLogToBeCached = _routineLog().copyWith(endTime: DateTime.now());
-      Provider.of<ExerciseAndRoutineController>(context, listen: false).cacheLog(logDto: routineLogToBeCached);
-    }
-  }
-
   void _dismissKeyboard() {
     FocusScope.of(context).unfocus();
   }
@@ -236,7 +226,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     if (mounted) {
       if (orderedList != null) {
         Provider.of<ExerciseLogController>(context, listen: false).reOrderExerciseLogs(reOrderedList: orderedList);
-        _cacheLog();
       }
     }
   }
@@ -413,14 +402,11 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                             firstExercise: exerciseLog, exercises: exerciseLogs),
                                         onRemoveSuperSet: (String superSetId) {
                                           exerciseLogController.removeSuperSet(superSetId: exerciseLog.superSetId);
-                                          _cacheLog();
                                         },
                                         onRemoveLog: () {
                                           exerciseLogController.removeExerciseLog(logId: exerciseLog.id);
-                                          _cacheLog();
                                         },
                                         onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
-                                        onCache: _cacheLog,
                                         onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
                                         onResize: () =>
                                             _handleResizedExerciseLogCard(exerciseIdToResize: exerciseLog.id),
@@ -480,13 +466,14 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     _onDisposeCallback = Provider.of<ExerciseLogController>(context, listen: false).onClear;
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _cacheLog();
-    });
   }
 
   void _loadExerciseLogs() {
-    final exerciseLogs = widget.log.exerciseLogs;
+    final exerciseLogs = widget.log.exerciseLogs.map((exerciseLog) {
+      final pastSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
+          .whereSetsForExercise(exercise: exerciseLog.exercise);
+      return exerciseLog.copyWith(sets: pastSets);
+    }).toList();
     Provider.of<ExerciseLogController>(context, listen: false).loadExerciseLogs(exerciseLogs: exerciseLogs);
     _minimiseOrMaximiseCards();
   }

@@ -51,11 +51,10 @@ class AmplifyRoutineLogRepository {
     _exerciseLogsByExerciseId = groupExerciseLogsByExerciseId(routineLogs: _logs);
   }
 
-  void loadLogStream({required List<RoutineLog> logs, required VoidCallback onLoaded}) {
+  void loadLogStream({required List<RoutineLog> logs}) {
     _logs = logs.map((log) => RoutineLogDto.toDto(log)).toList();
     _groupExerciseLogs();
     _calculateMilestones();
-    onLoaded();
   }
 
   Future<RoutineLogDto> saveLog({required RoutineLogDto logDto, RoutineUserDto? user, TemporalDateTime? datetime}) async {
@@ -133,22 +132,6 @@ class AmplifyRoutineLogRepository {
       await Amplify.DataStore.delete<RoutineLog>(oldTemplate);
       logger.i("remove log: ${log.name}");
     }
-  }
-
-  void cacheLog({required RoutineLogDto logDto}) {
-    SharedPrefs().cachedRoutineLog = jsonEncode(logDto,
-        toEncodable: (Object? value) =>
-            value is RoutineLogDto ? value.toJson() : throw UnsupportedError('Cannot convert to JSON: $value'));
-  }
-
-  RoutineLogDto? cachedRoutineLog() {
-    RoutineLogDto? routineLog;
-    final cache = SharedPrefs().cachedRoutineLog;
-    if (cache.isNotEmpty) {
-      final json = jsonDecode(cache);
-      routineLog = RoutineLogDto.fromCachedLog(json: json);
-    }
-    return routineLog;
   }
 
   void _calculateMilestones() {

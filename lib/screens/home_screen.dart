@@ -14,14 +14,10 @@ import 'package:tracker_app/screens/onboarding/onboarding_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/templates/routine_templates_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
-import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../controllers/activity_log_controller.dart';
 import '../controllers/analytics_controller.dart';
 import '../controllers/routine_user_controller.dart';
-import '../dtos/appsync/routine_log_dto.dart';
-import '../dtos/viewmodels/routine_log_arguments.dart';
-import '../enums/routine_editor_type_enums.dart';
 import '../models/RoutineLog.dart';
 import '../models/RoutineTemplate.dart';
 import 'milestones/milestones_home_screen.dart';
@@ -185,16 +181,6 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void _loadCachedLog() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      RoutineLogDto? log = Provider.of<ExerciseAndRoutineController>(context, listen: false).cachedLog();
-      if (log != null) {
-        final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log);
-        navigateToRoutineLogEditor(context: context, arguments: arguments);
-      }
-    });
-  }
-
   ///add user stuff here for analytics instead
   void _cacheUser() async {
     final authUser = await Amplify.Auth.getCurrentUser();
@@ -213,7 +199,6 @@ class _HomeScreenState extends State<HomeScreen> {
       Posthog().identify(userId: SharedPrefs().userId);
       AnalyticsController.loginAnalytics(isFirstLaunch: SharedPrefs().firstLaunch);
       _loadAppData();
-      _loadCachedLog();
     }
   }
 

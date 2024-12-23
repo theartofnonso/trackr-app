@@ -55,22 +55,12 @@ class ExerciseAndRoutineController extends ChangeNotifier {
 
   /// Exercises
 
-  Future<void> loadLocalExercises() {
-    return _amplifyExerciseRepository.loadLocalExercises(onLoad: () {
-      _amplifyLogRepository.syncLogsWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
-      _amplifyTemplateRepository.syncTemplatesWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
-      notifyListeners();
-    });
+  Future<void> loadLocalExercises() async {
+    await _amplifyExerciseRepository.loadLocalExercises();
   }
 
   void streamExercises({required List<Exercise> exercises}) {
-    _amplifyExerciseRepository.loadExerciseStream(
-        exercises: exercises,
-        onData: () {
-          _amplifyLogRepository.syncLogsWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
-          _amplifyTemplateRepository.syncTemplatesWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
-          notifyListeners();
-        });
+    _amplifyExerciseRepository.loadExerciseStream(exercises: exercises);
   }
 
   Future<void> saveExercise({required ExerciseDto exerciseDto}) async {
@@ -118,10 +108,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
   /// Templates
 
   void streamTemplates({required List<RoutineTemplate> templates}) {
-    _amplifyTemplateRepository.loadTemplatesStream(templates: templates, onLoaded: () {
-      _amplifyTemplateRepository.syncTemplatesWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
-      notifyListeners();
-    });
+    _amplifyTemplateRepository.loadTemplatesStream(templates: templates);
     notifyListeners();
   }
 
@@ -172,10 +159,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
   /// Logs
 
   void streamLogs({required List<RoutineLog> logs}) {
-    _amplifyLogRepository.loadLogStream(logs: logs, onLoaded: () {
-      _amplifyLogRepository.syncLogsWithExercisesFromLibrary(exercises: _amplifyExerciseRepository.exercises);
-      notifyListeners();
-    });
+    _amplifyLogRepository.loadLogStream(logs: logs);
   }
 
   Future<RoutineLogDto?> saveLog({required RoutineLogDto logDto, RoutineUserDto? user, TemporalDateTime? datetime}) async {
@@ -211,14 +195,6 @@ class ExerciseAndRoutineController extends ChangeNotifier {
     } finally {
       notifyListeners();
     }
-  }
-
-  void cacheLog({required RoutineLogDto logDto}) {
-    _amplifyLogRepository.cacheLog(logDto: logDto);
-  }
-
-  RoutineLogDto? cachedLog() {
-    return _amplifyLogRepository.cachedRoutineLog();
   }
 
   /// Logs Helper methods

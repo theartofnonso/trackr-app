@@ -189,28 +189,23 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 
   void _logEmptyRoutine() async {
-    final log = Provider.of<ExerciseAndRoutineController>(context, listen: false).cachedLog();
-    if (log == null) {
-      final log = RoutineLogDto(
-          id: "",
-          templateId: "",
-          name: "${timeOfDay()} Session",
-          exerciseLogs: [],
-          notes: "",
-          startTime: DateTime.now(),
-          endTime: DateTime.now(),
-          owner: "",
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now());
-      final recentLog = await navigateWithSlideTransition(
-          context: context, child: RoutineLogEditorScreen(log: log, mode: RoutineEditorMode.log));
-      if (recentLog != null) {
-        if (mounted) {
-          context.push(RoutineLogScreen.routeName, extra: {"log": recentLog, "showSummary": true, "isEditable": true});
-        }
+    final log = RoutineLogDto(
+        id: "",
+        templateId: "",
+        name: "${timeOfDay()} Session",
+        exerciseLogs: [],
+        notes: "",
+        startTime: DateTime.now(),
+        endTime: DateTime.now(),
+        owner: "",
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now());
+    final recentLog = await navigateWithSlideTransition(
+        context: context, child: RoutineLogEditorScreen(log: log, mode: RoutineEditorMode.log));
+    if (recentLog != null) {
+      if (mounted) {
+        context.push(RoutineLogScreen.routeName, extra: {"log": recentLog, "showSummary": true, "isEditable": true});
       }
-    } else {
-      showSnackbar(context: context, icon: const Icon(Icons.info_outline_rounded), message: "${log.name} is running");
     }
   }
 
@@ -241,9 +236,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     // Helper function to get muscles trained from exercise logs
     List<String> getMusclesTrained(List<ExerciseLogDto> exerciseLogs) {
-      return exerciseLogs
-          .map((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup.name)
-          .toList();
+      return exerciseLogs.map((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup.name).toList();
     }
 
     // Helper function to get personal bests from exercise logs
