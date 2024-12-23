@@ -128,112 +128,107 @@ class _RoutineWidget extends StatelessWidget {
 
     final exercises = template.exerciseTemplates;
     final sets = template.exerciseTemplates.expand((exercise) => exercise.sets);
-    return GestureDetector(
-      onTap: () => navigateToRoutineTemplatePreview(context: context, template: template),
-      child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-              gradient: template.isScheduledToday() && isDarkMode
-                  ? LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        sapphireDark80,
-                        sapphireDark,
-                      ],
-                    )
-                  : null,
-              color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
-              borderRadius: BorderRadius.circular(5)),
-          child: Column(spacing: 6, crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(
-              template.name,
-              style: Theme.of(context).textTheme.titleMedium,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-            ),
-            const Spacer(),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Wrap(
-                  children: [
-                    Container(
-                      width: 20,
-                      height: 20,
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: vibrantGreen.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(3),
-                      ),
-                      child: Image.asset(
-                        'icons/dumbbells.png',
-                        fit: BoxFit.contain,
-                        height: 14,
-                        color: vibrantGreen, // Adjust the height as needed
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 6,
-                    ),
-                    Text(
-                      "${exercises.length} ${pluralize(word: "Exercise", count: exercises.length)}",
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 6,
-                ),
-                Wrap(
-                  children: [
-                    Container(
-                      width: 20,
-                      height: 20,
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: vibrantBlue.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(3),
-                      ),
-                      child: Center(
-                        child: FaIcon(
-                          FontAwesomeIcons.hashtag,
-                          color: vibrantBlue,
-                          size: 11,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 6,
-                    ),
-                    Text(
-                      "${sets.length} ${pluralize(word: "Set", count: sets.length)}",
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            Divider(
-                color: template.isScheduledToday()
-                    ? vibrantGreen.withValues(alpha: 0.2)
-                    : isDarkMode
-                        ? Colors.white10
-                        : Colors.black12,
-                endIndent: 10),
-            Expanded(
-              child: Text(
-                scheduleSummary,
-                style: Theme.of(context).textTheme.bodyMedium,
+    return Badge(
+      backgroundColor:  vibrantGreen,
+      alignment: Alignment.topRight,
+      smallSize: 12,
+      isLabelVisible: template.isScheduledToday(),
+      child: GestureDetector(
+        onTap: () => navigateToRoutineTemplatePreview(context: context, template: template),
+        child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+                color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, borderRadius: BorderRadius.circular(5)),
+            child: Column(spacing: 6, crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(
+                template.name,
+                style: Theme.of(context).textTheme.titleMedium,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
               ),
-            ),
-          ])),
+              const Spacer(),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Wrap(
+                    children: [
+                      Container(
+                        width: 20,
+                        height: 20,
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: vibrantGreen.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                        child: Image.asset(
+                          'icons/dumbbells.png',
+                          fit: BoxFit.contain,
+                          height: 14,
+                          color: vibrantGreen, // Adjust the height as needed
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 6,
+                      ),
+                      Text(
+                        "${exercises.length} ${pluralize(word: "Exercise", count: exercises.length)}",
+                        style: Theme.of(context).textTheme.bodyMedium,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 6,
+                  ),
+                  Wrap(
+                    children: [
+                      Container(
+                        width: 20,
+                        height: 20,
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: vibrantBlue.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                        child: Center(
+                          child: FaIcon(
+                            FontAwesomeIcons.hashtag,
+                            color: vibrantBlue,
+                            size: 11,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 6,
+                      ),
+                      Text(
+                        "${sets.length} ${pluralize(word: "Set", count: sets.length)}",
+                        style: Theme.of(context).textTheme.bodyMedium,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Divider(
+                  color: template.isScheduledToday()
+                      ? vibrantGreen.withValues(alpha: 0.2)
+                      : isDarkMode
+                          ? Colors.white10
+                          : Colors.black12,
+                  endIndent: 10),
+              Expanded(
+                child: Text(
+                  scheduleSummary,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+              ),
+            ])),
+      ),
     );
   }
 }
