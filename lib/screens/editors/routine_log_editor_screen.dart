@@ -663,7 +663,7 @@ class _RPERatingSliderState extends State<_RPERatingSlider> {
       10: "All-out — absolute limit, no reps left in reserve",
     };
 
-    return repToPercentage[absoluteRating] ?? "Very Light - Barely any effort";
+    return repToPercentage[absoluteRating] ?? "Extremely light — mostly warm-up weight";
   }
 
   @override
