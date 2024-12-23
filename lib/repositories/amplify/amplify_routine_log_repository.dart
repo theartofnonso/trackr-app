@@ -68,7 +68,7 @@ class AmplifyRoutineLogRepository {
         RoutineLog(data: jsonEncode(logDto), createdAt: now, updatedAt: now, owner: SharedPrefs().userId);
 
     await Amplify.DataStore.save<RoutineLog>(logToCreate);
-    print("Log saved");
+
     logger.i("save log: ${logDto.name}");
 
     if (kReleaseMode) {
