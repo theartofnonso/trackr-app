@@ -8,6 +8,7 @@ import 'package:tracker_app/utils/string_utils.dart';
 import '../../colors.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
 import '../../screens/insights/volume_trend_screen.dart';
+import '../../utils/exercise_logs_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../list_tile.dart';
 
@@ -19,8 +20,9 @@ class VolumeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     final thisMonthCount = thisMonthLogs
-        .expand((log) => log.exerciseLogs)
+        .expand((log) => loggedExercises(exerciseLogs: log.exerciseLogs))
         .expand((exerciseLog) => exerciseLog.sets)
         .map((set) {
           return switch (set.type) {
@@ -33,7 +35,7 @@ class VolumeWidget extends StatelessWidget {
         .toDouble();
 
     final lastMonthCount = lastMonthLogs
-        .expand((log) => log.exerciseLogs)
+        .expand((log) => loggedExercises(exerciseLogs: log.exerciseLogs))
         .expand((exerciseLog) => exerciseLog.sets)
         .map((set) {
           return switch (set.type) {
@@ -77,6 +79,6 @@ class VolumeWidget extends StatelessWidget {
   }
 
   void _showVolumeScreen({required BuildContext context}) {
-    navigateWithSlideTransition(context: context, child: VolumeTrendScreen());
+    navigateWithSlideTransition(context: context, child: const VolumeTrendScreen());
   }
 }

@@ -453,6 +453,18 @@ List<ExerciseLogDto> loggedExercises({required List<ExerciseLogDto> exerciseLogs
   }).toList();
 }
 
+RoutineLogDto routineWithLoggedExercises({required RoutineLogDto log}) {
+  final loggedExerciseLogs = log.exerciseLogs.where((exerciseLog) {
+    final completedSets = exerciseLog.sets.where((set) => set.isNotEmpty() && set.checked);
+    return completedSets.isNotEmpty;
+  }).map((log) {
+    final sets = log.sets.where((set) => set.isNotEmpty() && set.checked).toList();
+    return log.copyWith(sets: sets);
+  }).toList();
+
+  return log.copyWith(exerciseLogs: loggedExerciseLogs);
+}
+
 int calculateMuscleScoreForLogs({required List<RoutineLogDto> routineLogs}) {
   final exerciseLogs = routineLogs.expand((log) => log.exerciseLogs).toList();
 

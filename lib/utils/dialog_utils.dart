@@ -11,7 +11,7 @@ import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/routine_utils.dart';
 import 'package:tracker_app/widgets/forms/create_routine_user_profile_widget.dart';
-import 'package:tracker_app/widgets/label_divider.dart';
+import 'package:tracker_app/widgets/dividers/label_divider.dart';
 import 'package:tracker_app/widgets/timers/datetime_picker.dart';
 import 'package:tracker_app/widgets/timers/datetime_range_picker.dart';
 

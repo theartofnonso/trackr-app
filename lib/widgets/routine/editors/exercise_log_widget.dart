@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -29,7 +30,7 @@ import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/one_rep_max_calculator.dart';
-import '../../label_divider.dart';
+import '../../dividers/label_divider.dart';
 import '../preview/set_headers/double_set_header.dart';
 import '../preview/set_headers/single_set_header.dart';
 import '../preview/sets_listview.dart';
@@ -47,7 +48,6 @@ class ExerciseLogWidget extends StatefulWidget {
   final VoidCallback onReplaceLog;
   final VoidCallback onSuperSet;
   final void Function(String superSetId) onRemoveSuperSet;
-  final VoidCallback? onCache;
   final VoidCallback onResize;
   final void Function(SetDto setDto) onTapWeightEditor;
   final void Function(SetDto setDto) onTapRepsEditor;
@@ -60,7 +60,6 @@ class ExerciseLogWidget extends StatefulWidget {
       required this.onSuperSet,
       required this.onRemoveSuperSet,
       required this.onRemoveLog,
-      this.onCache,
       required this.onReplaceLog,
       required this.onResize,
       required this.onTapWeightEditor,
@@ -111,7 +110,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   void _updateExerciseLogNotes({required String value}) {
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateExerciseLogNotes(exerciseLogId: widget.exerciseLogDto.id, value: value);
-    _cacheLog();
   }
 
   void _updateExerciseLogRepRange(RangeValues values) {
@@ -169,8 +167,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         .addSet(exerciseLogId: widget.exerciseLogDto.id, pastSets: pastSets);
 
     _loadControllers(sets: widget.exerciseLogDto.sets);
-
-    _cacheLog();
   }
 
   void _removeSet({required int index}) {
@@ -178,8 +174,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         .removeSetForExerciseLog(exerciseLogId: widget.exerciseLogDto.id, index: index);
 
     _loadControllers(sets: widget.exerciseLogDto.sets);
-
-    _cacheLog();
   }
 
   void _updateWeight({required int index, required double weight, required SetDto setDto}) {
@@ -187,8 +181,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     widget.onTapWeightEditor(updatedSet);
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateWeight(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
-
-    _cacheLog();
   }
 
   void _updateReps({required int index, required int reps, required SetDto setDto}) {
@@ -196,8 +188,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         setDto is WeightAndRepsSetDto ? setDto.copyWith(reps: reps) : (setDto as RepsSetDto).copyWith(reps: reps);
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateReps(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
-
-    _cacheLog();
   }
 
   void _checkAndUpdateDuration(
@@ -213,8 +203,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           .updateDuration(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet, notify: checked);
 
       _loadControllers(sets: widget.exerciseLogDto.sets);
-
-      _cacheLog();
     }
   }
 
@@ -230,8 +218,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         .updateDuration(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet, notify: true);
 
     _loadControllers(sets: widget.exerciseLogDto.sets);
-
-    _cacheLog();
   }
 
   void _updateSetCheck({required int index, required SetDto setDto}) {
@@ -241,8 +227,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         .updateSetCheck(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
 
     _loadControllers(sets: widget.exerciseLogDto.sets);
-
-    _cacheLog();
   }
 
   void _loadWeightAndRepsControllers({required List<SetDto> sets}) {
@@ -300,13 +284,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     super.dispose();
   }
 
-  void _cacheLog() {
-    final cacheLog = widget.onCache;
-    if (cacheLog != null) {
-      cacheLog();
-    }
-  }
-
   void _stt() async {
     final sets =
         await navigateWithSlideTransition(context: context, child: STTLoggingScreen(exerciseLog: widget.exerciseLogDto))
@@ -317,8 +294,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
         Provider.of<ExerciseLogController>(context, listen: false)
             .overwriteSets(exerciseLogId: widget.exerciseLogDto.id, sets: sets);
-
-        _cacheLog();
       }
     }
   }
@@ -719,12 +694,13 @@ class _OneRepMaxSliderState extends State<_OneRepMaxSlider> {
             ],
           ),
         ),
-        Slider(value: _reps, onChanged: onChanged, min: 1, max: 20, divisions: 20, thumbColor: vibrantGreen),
+        Slider(value: _reps, onChanged: onChanged, min: 1, max: 20, divisions: 19, thumbColor: vibrantGreen),
       ],
     );
   }
 
   void onChanged(double value) {
+    HapticFeedback.heavyImpact();
     final weight = _weightForPercentage(reps: value.toInt());
     setState(() {
       _weight = weightWithConversion(value: weight).roundToDouble();
@@ -808,7 +784,14 @@ class _RepRangeSliderState extends State<_RepRangeSlider> {
                 .textTheme
                 .bodyMedium
                 ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
+        Text(
+            "Work towards the top of your rep range. If you’re consistently hitting it, increase the weight. If you’re stuck at the bottom, lower the weight.",
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium
+                ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+        const SizedBox(height: 12),
         Row(
           spacing: 8,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -833,6 +816,7 @@ class _RepRangeSliderState extends State<_RepRangeSlider> {
           min: 1,
           max: 20,
           activeColor: vibrantGreen,
+          divisions: 19,
         ),
         const SizedBox(height: 10),
         SizedBox(
@@ -844,6 +828,7 @@ class _RepRangeSliderState extends State<_RepRangeSlider> {
   }
 
   void onChanged(RangeValues values) {
+    HapticFeedback.heavyImpact();
     setState(() {
       _min = values.start.toInt();
       _max = values.end.toInt();

@@ -1,11 +1,11 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
-import 'package:tracker_app/utils/exercise_logs_utils.dart';
 
 import '../dtos/appsync/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/set_dtos/set_dto.dart';
+import '../utils/exercise_logs_utils.dart';
 
 class ExerciseLogRepository {
   List<ExerciseLogDto> _exerciseLogs = [];
@@ -252,7 +252,6 @@ class ExerciseLogRepository {
     final exerciseLog = newExerciseLogs[exerciseLogIndex];
     final sets = exerciseLog.sets;
     if (index >= 0 && index < sets.length) {
-
       sets[index] = set;
 
       newExerciseLogs[exerciseLogIndex] = exerciseLog.copyWith(sets: sets);

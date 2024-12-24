@@ -97,9 +97,7 @@ class RepsMilestone extends Milestone {
             .where((exerciseLog) => exerciseLog.exercise.type != ExerciseType.duration)
             .where((exerciseLog) {
           final primaryMuscleGroup = exerciseLog.exercise.primaryMuscleGroup;
-          final secondaryMuscleGroups = exerciseLog.exercise.secondaryMuscleGroups;
-          final muscleGroups = [primaryMuscleGroup, ...secondaryMuscleGroups];
-          return muscleGroups.contains(muscleGroup);
+          return muscleGroup == primaryMuscleGroup;
         });
 
         if (exerciseLogs.isNotEmpty) {

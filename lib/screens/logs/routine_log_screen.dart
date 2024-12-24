@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -38,12 +39,21 @@ import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/routine_log_utils.dart';
 import '../../utils/routine_utils.dart';
+import '../../utils/string_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../widgets/ai_widgets/trkr_information_container.dart';
+import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/empty_states/not_found.dart';
 import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
 import '../AI/routine_log_report_screen.dart';
+
+class _StatisticsInformation {
+  final String title;
+  final String description;
+
+  _StatisticsInformation({required this.title, required this.description});
+}
 
 class RoutineLogScreen extends StatefulWidget {
   static const routeName = '/routine_log_screen';
@@ -67,14 +77,14 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
   Widget build(BuildContext context) {
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
-    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
-    if (routineLogController.errorMessage.isNotEmpty) {
+    if (exerciseAndRoutineController.errorMessage.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         showSnackbar(
             context: context,
             icon: const FaIcon(FontAwesomeIcons.circleInfo),
-            message: routineLogController.errorMessage);
+            message: exerciseAndRoutineController.errorMessage);
       });
     }
 
@@ -99,12 +109,41 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         duration: updatedLog.duration(), bodyWeight: routineUserController.weight(), activity: log.activityType);
 
     final pbs = updatedLog.exerciseLogs.map((exerciseLog) {
-      final pastExerciseLogs =
-          routineLogController.whereExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
+      final pastExerciseLogs = exerciseAndRoutineController.whereExerciseLogsBefore(
+          exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
 
       return calculatePBs(
-          pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog);
+          pastExerciseLogs: loggedExercises(exerciseLogs: pastExerciseLogs),
+          exerciseType: exerciseLog.exercise.type,
+          exerciseLog: exerciseLog);
     }).expand((pbs) => pbs);
+
+    final rpeRating = log.rpeRating;
+
+    final sleepFrom = log.sleepFrom;
+    final sleepTo = log.sleepTo;
+
+    Duration? sleepDuration = sleepFrom != null && sleepTo != null ? sleepTo.difference(sleepFrom) : null;
+
+    final logs = exerciseAndRoutineController
+        .whereLogsWithTemplateId(templateId: log.templateId)
+        .map((log) => routineWithLoggedExercises(log: log))
+        .toList();
+
+    final allLoggedVolumesForTemplate = logs.map((log) => log.volume).toList();
+
+    final avgVolume = allLoggedVolumesForTemplate.average;
+
+    final currentAndPreviousMonthVolume = _calculateCurrentAndPreviousLogVolume(logs: logs);
+
+    final previousMonthVolume = currentAndPreviousMonthVolume.$1;
+    final currentMonthVolume = currentAndPreviousMonthVolume.$2;
+
+    final improved = currentMonthVolume > previousMonthVolume;
+
+    final difference = improved ? currentMonthVolume - previousMonthVolume : previousMonthVolume - currentMonthVolume;
+
+    final differenceSummary = _generateDifferenceSummary(difference: difference, improved: improved);
 
     return Scaffold(
         appBar: AppBar(
@@ -160,6 +199,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
+                      spacing: 10,
                       children: [
                         const SizedBox(
                           width: 10,
@@ -168,38 +208,63 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                           title: "${completedExerciseLogs.length}",
                           subtitle: "Exercises",
                           image: "dumbbells",
-                        ),
-                        const SizedBox(
-                          width: 10,
+                          information: _StatisticsInformation(
+                              title: "Exercises",
+                              description:
+                                  "The total number of different exercises you completed in a workout session."),
                         ),
                         _StatisticWidget(
                           title: "${numberOfCompletedSets.length}",
                           subtitle: "Sets",
                           icon: FontAwesomeIcons.hashtag,
-                        ),
-                        const SizedBox(
-                          width: 10,
+                          information: _StatisticsInformation(
+                              title: "Sets",
+                              description:
+                                  "The number of rounds you performed for each exercise. A “set” consists of a group of repetitions (reps)."),
                         ),
                         _StatisticWidget(
                           title: log.duration().hmsDigital(),
                           subtitle: "Duration",
                           icon: FontAwesomeIcons.solidClock,
-                        ),
-                        const SizedBox(
-                          width: 10,
+                          information: _StatisticsInformation(
+                              title: "Duration",
+                              description: "The total time you spent on your workout session, from start to finish."),
                         ),
                         _StatisticWidget(
                           title: "$calories",
                           subtitle: "Calories",
                           icon: FontAwesomeIcons.fire,
-                        ),
-                        const SizedBox(
-                          width: 10,
+                          information: _StatisticsInformation(
+                              title: "Calories Burned",
+                              description: "An estimate of the energy your body used during the workout."),
                         ),
                         _StatisticWidget(
                           title: "${pbs.length}",
                           subtitle: "PBs",
                           icon: FontAwesomeIcons.solidStar,
+                          information: _StatisticsInformation(
+                              title: "Personal Bests",
+                              description:
+                                  "Your highest achievement in an exercise, like the heaviest weight lifted, most reps performed, or highest training volume."),
+                        ),
+                        if (sleepDuration != null)
+                          _StatisticWidget(
+                            title: sleepDuration.hmsDigital(),
+                            subtitle: "Sleep",
+                            icon: FontAwesomeIcons.solidMoon,
+                            information: _StatisticsInformation(
+                                title: "Sleep",
+                                description:
+                                    "The amount of sleep you got the night before the workout. Sleep impacts your recovery, energy, and overall performance during exercise."),
+                          ),
+                        _StatisticWidget(
+                          title: "$rpeRating",
+                          subtitle: "RPE",
+                          icon: FontAwesomeIcons.solidFaceSadTear,
+                          information: _StatisticsInformation(
+                              title: "Rate of Perceived Exertion",
+                              description:
+                                  "A self-reported score (1 to 10) indicating how hard your workout felt. Helps adjust workout intensity to match your goals and avoid overtraining."),
                         ),
                         const SizedBox(
                           width: 10,
@@ -229,6 +294,46 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                             description: "Here's a breakdown of the muscle groups in your ${log.name} workout log.",
                             muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
                             minimized: false),
+                        if (updatedLog.owner == SharedPrefs().userId && widget.isEditable)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                  text: volumeInKOrM(avgVolume),
+                                  style: Theme.of(context).textTheme.headlineMedium,
+                                  children: [
+                                    TextSpan(
+                                      text: " ",
+                                    ),
+                                    TextSpan(
+                                      text: weightLabel().toUpperCase(),
+                                      style: Theme.of(context).textTheme.bodyMedium,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Text(
+                                "SESSION AVERAGE".toUpperCase(),
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                              Wrap(
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                children: [
+                                  FaIcon(
+                                    improved ? FontAwesomeIcons.arrowUp : FontAwesomeIcons.arrowDown,
+                                    color: improved ? vibrantGreen : Colors.deepOrange,
+                                    size: 12,
+                                  ),
+                                  const SizedBox(width: 6),
+                                  OpacityButtonWidget(
+                                    label: differenceSummary,
+                                    buttonColor: improved ? vibrantGreen : Colors.deepOrange,
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
                         if (updatedLog.owner == SharedPrefs().userId && widget.isEditable)
                           TRKRInformationContainer(
                               ctaLabel: "Ask for feedback",
@@ -543,6 +648,41 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         rightActionLabel: 'Delete',
         isRightActionDestructive: true);
   }
+
+  (double, double) _calculateCurrentAndPreviousLogVolume({required List<RoutineLogDto> logs}) {
+    if (logs.isEmpty) {
+      // No logs => no comparison
+      return (0, 0);
+    }
+
+    // 2. Identify the most recent log
+    final lastLog = logs.last;
+    final lastLogVolume = lastLog.volume;
+    final lastLogDate = lastLog.createdAt;
+
+    final previousLogs = logs.where((log) => log.createdAt.isBefore(lastLogDate));
+
+    if (previousLogs.isEmpty) {
+      // No earlier logs => can't compare
+      return (0, 0);
+    }
+
+    final previousLogVolume = previousLogs.last.volume;
+
+    return (previousLogVolume, lastLogVolume);
+  }
+
+  String _generateDifferenceSummary({required bool improved, required double difference}) {
+    if (difference <= 0) {
+      return "0 change in past session";
+    } else {
+      if (improved) {
+        return "${volumeInKOrM(difference)} ${weightLabel()} up in this session";
+      } else {
+        return "${volumeInKOrM(difference)} ${weightLabel()} down in this session";
+      }
+    }
+  }
 }
 
 class _StatisticWidget extends StatelessWidget {
@@ -550,8 +690,10 @@ class _StatisticWidget extends StatelessWidget {
   final String? image;
   final String title;
   final String subtitle;
+  final _StatisticsInformation information;
 
-  const _StatisticWidget({this.icon, this.image, required this.title, required this.subtitle});
+  const _StatisticWidget(
+      {this.icon, this.image, required this.title, required this.subtitle, required this.information});
 
   @override
   Widget build(BuildContext context) {
@@ -567,31 +709,43 @@ class _StatisticWidget extends StatelessWidget {
           )
         : FaIcon(icon, size: 14);
 
-    return Container(
-      width: 140,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, // Background color of the container
-        borderRadius: BorderRadius.circular(5), // Border radius for rounded corners
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Wrap(
-            crossAxisAlignment: WrapCrossAlignment.center,
+    return GestureDetector(
+      onTap: () =>
+          showBottomSheetWithNoAction(context: context, title: information.title, description: information.description),
+      child: Container(
+        width: 120,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, // Background color of the container
+          borderRadius: BorderRadius.circular(5), // Border radius for rounded corners
+        ),
+        child: Stack(children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              leading,
-              const SizedBox(
-                width: 6,
+              Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  leading,
+                  const SizedBox(
+                    width: 6,
+                  ),
+                  Text(subtitle.toUpperCase(), style: Theme.of(context).textTheme.bodySmall)
+                ],
               ),
-              Text(subtitle.toUpperCase(), style: Theme.of(context).textTheme.bodySmall)
+              const SizedBox(
+                height: 6,
+              ),
+              Text(title, style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(
+                height: 16,
+              ),
             ],
           ),
-          const SizedBox(
-            height: 6,
+          Positioned.fill(
+            child: const Align(alignment: Alignment.bottomRight, child: FaIcon(FontAwesomeIcons.lightbulb, size: 10)),
           ),
-          Text(title, style: Theme.of(context).textTheme.titleLarge)
-        ],
+        ]),
       ),
     );
   }

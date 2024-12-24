@@ -16,7 +16,6 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:timezone/data/latest.dart' as tz;
-import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/controllers/settings_controller.dart';
@@ -37,13 +36,12 @@ import 'package:tracker_app/screens/editors/routine_log_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_template_editor_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_home_screen.dart';
 import 'package:tracker_app/screens/home_screen.dart';
-import 'package:tracker_app/screens/insights/calories_trend_screen.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
 import 'package:tracker_app/screens/logs/activity_logs_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
-import 'package:tracker_app/screens/onboarding/intro_screen.dart';
+import 'package:tracker_app/screens/onboarding/onboarding_intro_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/templates/routine_template_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -63,23 +61,6 @@ import 'logger.dart';
 import 'models/ModelProvider.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
-final _themeData = ThemeData(
-  scaffoldBackgroundColor: sapphireDark,
-  colorScheme: const ColorScheme(
-    brightness: Brightness.dark,
-    primary: Colors.white,
-    onPrimary: Colors.white,
-    secondary: Colors.white,
-    onSecondary: Colors.white,
-    error: Colors.white,
-    onError: Colors.black,
-    surface: sapphireDark,
-    onSurface: Colors.white,
-  ),
-  tabBarTheme: const TabBarTheme(labelColor: Colors.blue, unselectedLabelColor: Colors.white70),
-  useMaterial3: true,
-);
 
 // Top-level callback function
 @pragma('vm:entry-point')
@@ -132,8 +113,8 @@ void main() async {
   }
 
   const DarwinInitializationSettings iOSInitializationSettingsDarwin = DarwinInitializationSettings(
-    requestAlertPermission: true,
-    requestBadgePermission: true,
+    requestAlertPermission: false,
+    requestBadgePermission: false,
     requestSoundPermission: false,
   );
 
@@ -320,12 +301,8 @@ final _router = GoRouter(
       builder: (context, state) => const SetsAndRepsVolumeInsightsScreen(),
     ),
     GoRoute(
-      path: IntroScreen.routeName,
-      builder: (context, state) => IntroScreen(themeData: _themeData),
-    ),
-    GoRoute(
-      path: CaloriesTrendScreen.routeName,
-      builder: (context, state) => const CaloriesTrendScreen(),
+      path: OnboardingIntroScreen.routeName,
+      builder: (context, state) => OnboardingIntroScreen(),
     ),
     GoRoute(
       path: RoutineLogSummaryScreen.routeName,
@@ -417,7 +394,7 @@ class _MyAppState extends State<MyApp> {
     );
 
     return _isFirstLaunch
-        ? IntroScreen(themeData: isDarkMode ? TRKRTheme.darkTheme : TRKRTheme.lightTheme, onComplete: _completeIntro)
+        ? OnboardingIntroScreen(onComplete: _completeIntro)
         : Authenticator(
             child: MaterialApp.router(
               debugShowCheckedModeBanner: false,

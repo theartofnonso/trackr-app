@@ -6,7 +6,7 @@ import '../colors.dart';
 import '../utils/general_utils.dart';
 import 'buttons/opacity_button_widget.dart';
 import 'buttons/opacity_circle_button_widget.dart';
-import 'label_divider.dart';
+import 'dividers/label_divider.dart';
 
 class WeightPlateCalculator extends StatefulWidget {
   final double target;

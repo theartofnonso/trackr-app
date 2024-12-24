@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,14 +9,17 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
+import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../dtos/viewmodels/routine_template_arguments.dart';
+import '../../enums/chart_unit_enum.dart';
 import '../../enums/posthog_analytics_event.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../enums/routine_preview_type_enum.dart';
@@ -29,7 +33,10 @@ import '../../utils/navigation_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../utils/string_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
+import '../../widgets/buttons/opacity_button_widget.dart';
+import '../../widgets/chart/line_chart_widget.dart';
 import '../../widgets/empty_states/not_found.dart';
+import '../../widgets/information_containers/information_container.dart';
 import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
 import 'routine_day_planner.dart';
@@ -110,6 +117,26 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     final setsSummary = "${numberOfSets.length} ${pluralize(word: "Set", count: numberOfSets.length)}";
 
     final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: template.exerciseTemplates);
+
+    final allLogsForTemplate = exerciseAndRoutineController.whereLogsWithTemplateId(templateId: template.id);
+
+    final allLoggedVolumesForTemplate = allLogsForTemplate.map((log) => log.volume).toList();
+
+    final avgVolume = allLoggedVolumesForTemplate.average;
+
+    final volumeChartPoints =
+        allLoggedVolumesForTemplate.mapIndexed((index, volume) => ChartPointDto(index, volume)).toList();
+
+    final currentAndPreviousMonthVolume = _calculateCurrentAndPreviousLogVolume(logs: allLogsForTemplate);
+
+    final previousMonthVolume = currentAndPreviousMonthVolume.$1;
+    final currentMonthVolume = currentAndPreviousMonthVolume.$2;
+
+    final improved = currentMonthVolume > previousMonthVolume;
+
+    final difference = improved ? currentMonthVolume - previousMonthVolume : previousMonthVolume - currentMonthVolume;
+
+    final differenceSummary = _generateDifferenceSummary(difference: difference, improved: improved);
 
     final menuActions = [
       MenuItemButton(
@@ -201,7 +228,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
             minimum: const EdgeInsets.all(10.0),
             child: SingleChildScrollView(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 20,
                 children: [
                   Row(
@@ -225,7 +252,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
-                      color: isDarkMode ? sapphireDark : Colors.grey.shade200,
+                      color: isDarkMode ? Colors.black12 : Colors.grey.shade200,
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     child: Table(
@@ -261,6 +288,74 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                       description: "Here's a breakdown of the muscle groups in your ${template.name} workout plan.",
                       muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
                       minimized: false),
+                  if (template.owner == SharedPrefs().userId)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            text: volumeInKOrM(avgVolume),
+                            style: Theme.of(context).textTheme.headlineMedium,
+                            children: [
+                              TextSpan(
+                                text: " ",
+                              ),
+                              TextSpan(
+                                text: weightLabel().toUpperCase(),
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Text(
+                          "SESSION AVERAGE".toUpperCase(),
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                        Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            FaIcon(
+                              improved ? FontAwesomeIcons.arrowUp : FontAwesomeIcons.arrowDown,
+                              color: improved ? vibrantGreen : Colors.deepOrange,
+                              size: 12,
+                            ),
+                            const SizedBox(width: 6),
+                            OpacityButtonWidget(
+                              label: differenceSummary,
+                              buttonColor: improved ? vibrantGreen : Colors.deepOrange,
+                            )
+                          ],
+                        )
+                      ],
+                    ),
+                  Text(
+                      "Here’s a summary of your ${template.name} training intensity over the last ${allLogsForTemplate.length} sessions.",
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        const SizedBox(height: 16),
+                        LineChartWidget(
+                          chartPoints: volumeChartPoints,
+                          periods: [],
+                          unit: ChartUnit.weight,
+                        ),
+                      ],
+                    ),
+                  ),
+                  InformationContainer(
+                    leadingIcon: FaIcon(FontAwesomeIcons.weightHanging),
+                    title: "Training Volume",
+                    color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
+                    description:
+                        "Volume is the total amount of work done, often calculated as sets × reps × weight. Higher volume increases muscle size (hypertrophy).",
+                  ),
+                  const SizedBox(height: 1),
                   ExerciseLogListView(
                     exerciseLogs: exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
                   ),
@@ -450,6 +545,41 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
               ),
             ]),
           ));
+    }
+  }
+
+  (double, double) _calculateCurrentAndPreviousLogVolume({required List<RoutineLogDto> logs}) {
+    if (logs.isEmpty) {
+      // No logs => no comparison
+      return (0, 0);
+    }
+
+    // 2. Identify the most recent log
+    final lastLog = logs.last;
+    final lastLogVolume = lastLog.volume;
+    final lastLogDate = lastLog.createdAt;
+
+    final previousLogs = logs.where((log) => log.createdAt.isBefore(lastLogDate));
+
+    if (previousLogs.isEmpty) {
+      // No earlier logs => can't compare
+      return (0, 0);
+    }
+
+    final previousLogVolume = previousLogs.last.volume;
+
+    return (previousLogVolume, lastLogVolume);
+  }
+
+  String _generateDifferenceSummary({required bool improved, required double difference}) {
+    if (difference <= 0) {
+      return "0 change in past session";
+    } else {
+      if (improved) {
+        return "${volumeInKOrM(difference)} ${weightLabel()} up in last session";
+      } else {
+        return "${volumeInKOrM(difference)} ${weightLabel()} down in last session";
+      }
     }
   }
 

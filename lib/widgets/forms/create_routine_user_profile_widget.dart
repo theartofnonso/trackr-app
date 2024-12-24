@@ -10,7 +10,7 @@ import '../../shared_prefs.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/general_utils.dart';
 import '../buttons/opacity_button_widget.dart';
-import '../user_icon_widget.dart';
+import '../icons/user_icon_widget.dart';
 
 class CreateRoutineUserProfileWidget extends StatefulWidget {
   const CreateRoutineUserProfileWidget({

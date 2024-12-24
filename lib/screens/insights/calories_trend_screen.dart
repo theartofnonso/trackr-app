@@ -4,30 +4,30 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
+import 'package:tracker_app/widgets/information_containers/information_container.dart';
 
 import '../../colors.dart';
 import '../../controllers/activity_log_controller.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../controllers/routine_user_controller.dart';
+import '../../dtos/abstract_class/log_class.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../enums/chart_unit_enum.dart';
 import '../../utils/date_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/routine_utils.dart';
+import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/chart/bar_chart.dart';
 
-class CaloriesTrendScreen extends StatefulWidget {
+class CaloriesTrendScreen extends StatelessWidget {
   static const routeName = '/calories_trend_screen';
 
   const CaloriesTrendScreen({super.key});
 
   @override
-  State<CaloriesTrendScreen> createState() => _CaloriesTrendScreenState();
-}
-
-class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
-  @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
 
     final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
@@ -64,6 +64,19 @@ class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
     final chartPoints =
         calories.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
 
+    final currentAndPreviousMonthCalories = _calculateCurrentAndPreviousMonthCalories(
+        weight: routineUserController.weight(), logs: logs, monthsInYear: monthsInYear);
+
+    final previousMonthCalories = currentAndPreviousMonthCalories.$1;
+    final currentMonthCalories = currentAndPreviousMonthCalories.$2;
+
+    final improved = currentMonthCalories > previousMonthCalories;
+
+    final difference =
+        improved ? currentMonthCalories - previousMonthCalories : previousMonthCalories - currentMonthCalories;
+
+    final differenceSummary = _generateDifferenceSummary(improved: improved, difference: difference);
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -84,7 +97,6 @@ class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -108,9 +120,24 @@ class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
                           ),
                         ),
                         Text(
-                          "MONTHLY AVERAGE",
-                          style: Theme.of(context).textTheme.titleSmall,
+                          "MONTHLY AVERAGE".toUpperCase(),
+                          style: Theme.of(context).textTheme.bodySmall,
                         ),
+                        Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            FaIcon(
+                              improved ? FontAwesomeIcons.arrowUp : FontAwesomeIcons.arrowDown,
+                              color: improved ? vibrantGreen : Colors.deepOrange,
+                              size: 12,
+                            ),
+                            const SizedBox(width: 6),
+                            OpacityButtonWidget(
+                              label: differenceSummary,
+                              buttonColor: improved ? vibrantGreen : Colors.deepOrange,
+                            )
+                          ],
+                        )
                       ],
                     ),
                   ],
@@ -129,11 +156,70 @@ class _CaloriesTrendScreenState extends State<CaloriesTrendScreen> {
                           reservedSize: 35,
                         ))
                     : const Center(child: FaIcon(FontAwesomeIcons.chartSimple, color: sapphireDark, size: 120)),
+                const SizedBox(height: 14),
+                InformationContainer(
+                  leadingIcon: FaIcon(FontAwesomeIcons.fire),
+                  title: "What are calories",
+                  color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
+                  description:
+                      "Calories burned refer to the amount of energy your body uses during an activity. This energy is measured in calories and comes from breaking down carbohydrates, fats, and proteins in your body.",
+                )
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  (int, int) _calculateCurrentAndPreviousMonthCalories(
+      {required double weight, required List<Log> logs, required List<DateTimeRange> monthsInYear}) {
+    // 1. Ensure monthsInYear has at least two items (current & previous)
+    if (monthsInYear.length < 2) {
+      // Handle the edge case (e.g., not enough months to compare)
+      return (0, 0);
+    }
+
+    // 2. Identify the current month and the previous month
+    final currentMonthRange = monthsInYear.last;
+    final previousMonthRange = monthsInYear[monthsInYear.length - 2];
+
+    // 3. Fetch logs for each month
+    final currentMonthLogs = logs.where((log) {
+      return log.createdAt.isBetweenInclusive(
+        from: currentMonthRange.start,
+        to: currentMonthRange.end,
+      );
+    });
+
+    final previousMonthLogs = logs.where((log) {
+      return log.createdAt.isBetweenInclusive(
+        from: previousMonthRange.start,
+        to: previousMonthRange.end,
+      );
+    });
+
+    // 4. Calculate total calories for each month
+    final currentMonthCalories = currentMonthLogs
+        .map((log) => calculateCalories(duration: log.duration(), bodyWeight: weight, activity: log.activityType))
+        .sum; // .sum is from collection.dart or your own utility
+
+    final previousMonthCalories = previousMonthLogs
+        .map((log) => calculateCalories(duration: log.duration(), bodyWeight: weight, activity: log.activityType))
+        .sum;
+
+    return (previousMonthCalories, currentMonthCalories);
+  }
+
+  String _generateDifferenceSummary({required bool improved, required int difference}) {
+    if (difference <= 0) {
+      return "0 change in past month";
+    } else {
+      if (improved) {
+        return "$difference kcal up this month";
+      } else {
+        return "$difference kcal down this month";
+      }
+    }
   }
 }

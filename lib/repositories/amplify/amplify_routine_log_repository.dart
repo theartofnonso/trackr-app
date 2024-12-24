@@ -5,9 +5,12 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:health/health.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
+import 'package:tracker_app/dtos/appsync/routine_user_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
+import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/utils/routine_utils.dart';
 
@@ -21,8 +24,6 @@ import '../../dtos/milestones/weekly_milestone_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
 import '../../enums/posthog_analytics_event.dart';
 import '../../logger.dart';
-import '../../models/RoutineLog.dart';
-import '../../models/RoutineTemplate.dart';
 import '../../shared_prefs.dart';
 import '../../utils/date_utils.dart';
 
@@ -50,14 +51,14 @@ class AmplifyRoutineLogRepository {
     _exerciseLogsByExerciseId = groupExerciseLogsByExerciseId(routineLogs: _logs);
   }
 
-  void loadLogStream({required List<RoutineLog> logs, required VoidCallback onLoaded}) {
+  void loadLogStream({required List<RoutineLog> logs}) {
     _logs = logs.map((log) => RoutineLogDto.toDto(log)).toList();
     _groupExerciseLogs();
     _calculateMilestones();
-    onLoaded();
   }
 
-  Future<RoutineLogDto> saveLog({required RoutineLogDto logDto, TemporalDateTime? datetime}) async {
+  Future<RoutineLogDto> saveLog(
+      {required RoutineLogDto logDto, RoutineUserDto? user, TemporalDateTime? datetime}) async {
     // Capture current list of completed milestones
     final previousMilestones = completedMilestones().toSet();
 
@@ -67,6 +68,8 @@ class AmplifyRoutineLogRepository {
         RoutineLog(data: jsonEncode(logDto), createdAt: now, updatedAt: now, owner: SharedPrefs().userId);
 
     await Amplify.DataStore.save<RoutineLog>(logToCreate);
+
+    logger.i("save log: ${logDto.name}");
 
     if (kReleaseMode) {
       Posthog().capture(eventName: PostHogAnalyticsEvent.logRoutine.displayName, properties: logDto.toJson());
@@ -86,7 +89,20 @@ class AmplifyRoutineLogRepository {
     // Get newly achieved milestone
     _newMilestones = updatedMilestones.difference(previousMilestones).toList();
 
-    logger.i("save log: $logDto : $datetime");
+    // Write workout data to Apple Health
+
+    final caloriesBurned = 0;
+    if (user != null) {
+      calculateCalories(duration: logDto.duration(), bodyWeight: user.weight.toDouble(), activity: logDto.activityType);
+    }
+
+    await Health().configure();
+    await Health().writeWorkoutData(
+        title: logDto.name,
+        totalEnergyBurned: caloriesBurned,
+        activityType: HealthWorkoutActivityType.TRADITIONAL_STRENGTH_TRAINING,
+        start: logDto.startTime,
+        end: logDto.endTime);
 
     return updatedRoutineWithExerciseIds;
   }
@@ -103,7 +119,7 @@ class AmplifyRoutineLogRepository {
       final updatedAt = TemporalDateTime.withOffset(log.updatedAt, Duration.zero);
       final newLog = oldLog.copyWith(data: jsonEncode(log), createdAt: startTime, updatedAt: updatedAt);
       await Amplify.DataStore.save<RoutineLog>(newLog);
-      logger.i("update log: $log");
+      logger.i("update log: ${log.name}");
     }
   }
 
@@ -116,24 +132,8 @@ class AmplifyRoutineLogRepository {
     if (result.isNotEmpty) {
       final oldTemplate = result.first;
       await Amplify.DataStore.delete<RoutineLog>(oldTemplate);
-      logger.i("remove log: $log");
+      logger.i("remove log: ${log.name}");
     }
-  }
-
-  void cacheLog({required RoutineLogDto logDto}) {
-    SharedPrefs().cachedRoutineLog = jsonEncode(logDto,
-        toEncodable: (Object? value) =>
-            value is RoutineLogDto ? value.toJson() : throw UnsupportedError('Cannot convert to JSON: $value'));
-  }
-
-  RoutineLogDto? cachedRoutineLog() {
-    RoutineLogDto? routineLog;
-    final cache = SharedPrefs().cachedRoutineLog;
-    if (cache.isNotEmpty) {
-      final json = jsonDecode(cache);
-      routineLog = RoutineLogDto.fromCachedLog(json: json);
-    }
-    return routineLog;
   }
 
   void _calculateMilestones() {
@@ -148,7 +148,8 @@ class AmplifyRoutineLogRepository {
     final logsForTheYear = whereLogsIsSameYear(dateTime: now);
 
     /// Add Weekly Challenges
-    final weeklyMilestones = WeeklyMilestone.loadMilestones(logs: logsForTheYear, weeksInYear: weeksInYear, datetime: DateTime.now().withoutTime());
+    final weeklyMilestones = WeeklyMilestone.loadMilestones(
+        logs: logsForTheYear, weeksInYear: weeksInYear, datetime: DateTime.now().withoutTime());
     milestones.addAll(weeklyMilestones);
 
     /// Add Days Challenges
@@ -241,6 +242,14 @@ class AmplifyRoutineLogRepository {
 
   List<RoutineLogDto> whereLogsIsWithinRange({required DateTimeRange range}) {
     return _logs.where((log) => log.createdAt.isBetweenInclusive(from: range.start, to: range.end)).toList();
+  }
+
+  List<RoutineLogDto> whereLogsWithTemplateId({required String templateId}) {
+    return _logs.where((log) => log.templateId == templateId).toList();
+  }
+
+  List<RoutineLogDto> whereRoutineLogsBefore({required String templateId, required DateTime date}) {
+    return _logs.where((log) => log.templateId == templateId && log.createdAt.isBefore(date)).toList();
   }
 
   /// Milestones

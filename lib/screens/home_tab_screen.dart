@@ -5,7 +5,7 @@ import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/analytics_controller.dart';
 import 'package:tracker_app/screens/insights/overview_screen.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
-import 'package:tracker_app/screens/onboarding/onboarding_checklist_screen.dart';
+import 'package:tracker_app/screens/onboarding/onboarding_checklist_notifications_screen.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../controllers/activity_log_controller.dart';
@@ -93,8 +93,8 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
                         child: Text("Overview".toUpperCase(),
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600))),
                     Tab(
-                        child: Text("Trends".toUpperCase(),
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600))),
+                        child: Text("Muscle Trends".toUpperCase(),
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600)))
                   ],
                 ),
                 Expanded(
@@ -107,7 +107,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
                       ),
                       SetsAndRepsVolumeInsightsScreen(
                         canPop: false,
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -118,7 +118,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
   }
 
   void _navigateToNotificationHome() {
-    navigateWithSlideTransition(context: context, child: OnboardingChecklistScreen());
+    navigateWithSlideTransition(context: context, child: OnboardingChecklistNotificationsScreenScreen());
   }
 
   void _onMonthChange(DateTimeRange range) {

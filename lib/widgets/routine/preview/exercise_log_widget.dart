@@ -110,17 +110,18 @@ class ExerciseLogWidget extends StatelessWidget {
                   const SizedBox(height: 20),
                   Padding(
                     padding: const EdgeInsets.only(right: 8.0),
-                    child:
-                        LineChartWidget(chartPoints: chartPoints, periods: [], unit: ChartUnit.weight, aspectRation: 3),
+                    child: LineChartWidget(
+                        chartPoints: chartPoints, periods: [], unit: ChartUnit.weight, aspectRation: 2.5),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Text(
                         "Track your progress with the total weight lifted for this exercise. An upward trend highlights your strength gains and consistent improvement over time.",
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(fontWeight: FontWeight.w400, fontSize: 12, height: 1.8, color: isDarkMode ? Colors.white70 : Colors.black)),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 12,
+                            height: 1.8,
+                            color: isDarkMode ? Colors.white70 : Colors.black)),
                   ),
                   const SizedBox(height: 6),
                 ],
@@ -131,10 +132,7 @@ class ExerciseLogWidget extends StatelessWidget {
             ExerciseType.bodyWeight => SingleSetHeader(label: 'REPS'),
             ExerciseType.duration => SingleSetHeader(label: 'TIME'),
           },
-          SetsListview(
-              type: exerciseType,
-              sets: exerciseLog.sets,
-              pbs: pbs)
+          SetsListview(type: exerciseType, sets: exerciseLog.sets, pbs: pbs)
         ],
       ),
     );

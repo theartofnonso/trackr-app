@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/general_utils.dart';
@@ -13,24 +12,23 @@ import '../../utils/theme/theme.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/calendar/calendar.dart';
 import '../../widgets/chart/muscle_group_family_frequency_chart.dart';
-import '../../widgets/label_divider.dart';
+import '../../widgets/dividers/label_divider.dart';
 import '../../widgets/milestones/milestone_grid_item.dart';
 import '../../widgets/monitors/log_streak_monitor.dart';
 import '../../widgets/monitors/muscle_trend_monitor.dart';
 
-class IntroScreen extends StatefulWidget {
+class OnboardingIntroScreen extends StatefulWidget {
   static const routeName = "/intro_screen";
 
-  final ThemeData themeData;
   final VoidCallback? onComplete;
 
-  const IntroScreen({super.key, required this.themeData, this.onComplete});
+  const OnboardingIntroScreen({super.key, this.onComplete});
 
   @override
-  State<IntroScreen> createState() => _IntroScreenState();
+  State<OnboardingIntroScreen> createState() => _OnboardingIntroScreenState();
 }
 
-class _IntroScreenState extends State<IntroScreen> {
+class _OnboardingIntroScreenState extends State<OnboardingIntroScreen> {
   final _pageController = PageController(viewportFraction: 1);
 
   @override
@@ -59,7 +57,7 @@ class _IntroScreenState extends State<IntroScreen> {
                       onPressed: () => context.pop(),
                     )
                   : null,
-              title: Text("Welcome to TRKR")),
+              title: Text("Welcome to TRKR".toUpperCase())),
           body: Container(
               decoration: BoxDecoration(
                 gradient: themeGradient(context: context),
@@ -143,11 +141,7 @@ class LogStreakMonitorOnboardingScreen extends StatelessWidget {
                 Stack(
                   alignment: Alignment.center,
                   children: [
-                    LogStreakMonitor(
-                        value: 0.2,
-                        width: 120,
-                        height: 120,
-                        strokeWidth: 8),
+                    LogStreakMonitor(value: 0.2, width: 120, height: 120, strokeWidth: 8),
                     Image.asset(
                       'images/trkr.png',
                       fit: BoxFit.contain,
@@ -159,11 +153,7 @@ class LogStreakMonitorOnboardingScreen extends StatelessWidget {
                 Stack(
                   alignment: Alignment.center,
                   children: [
-                    LogStreakMonitor(
-                        value: 0.4,
-                        width: 120,
-                        height: 120,
-                        strokeWidth: 8),
+                    LogStreakMonitor(value: 0.4, width: 120, height: 120, strokeWidth: 8),
                     Image.asset(
                       'images/trkr.png',
                       fit: BoxFit.contain,
@@ -175,11 +165,7 @@ class LogStreakMonitorOnboardingScreen extends StatelessWidget {
                 Stack(
                   alignment: Alignment.center,
                   children: [
-                    LogStreakMonitor(
-                        value: 0.6,
-                        width: 120,
-                        height: 120,
-                        strokeWidth: 8),
+                    LogStreakMonitor(value: 0.6, width: 120, height: 120, strokeWidth: 8),
                     Image.asset(
                       'images/trkr.png',
                       fit: BoxFit.contain,
@@ -191,11 +177,7 @@ class LogStreakMonitorOnboardingScreen extends StatelessWidget {
                 Stack(
                   alignment: Alignment.center,
                   children: [
-                    LogStreakMonitor(
-                        value: 0.8,
-                        width: 120,
-                        height: 120,
-                        strokeWidth: 8),
+                    LogStreakMonitor(value: 0.8, width: 120, height: 120, strokeWidth: 8),
                     Image.asset(
                       'images/trkr.png',
                       fit: BoxFit.contain,
@@ -394,15 +376,17 @@ class EndOnboardingScreen extends StatelessWidget {
           RichText(
               text: TextSpan(
                   text: "Ready to get started? Here’s to",
-                  style:
-                      GoogleFonts.ubuntu(color: Colors.white70, fontSize: 22, fontWeight: FontWeight.w500, height: 1.5),
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleSmall
+                      ?.copyWith(fontSize: 22, fontWeight: FontWeight.w500, height: 1.5),
                   children: [
                 TextSpan(
                     text: " smarter training, ",
-                    style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w600)),
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(fontSize: 22, fontWeight: FontWeight.w600)),
                 TextSpan(
                     text: "meaningful insights",
-                    style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w600)),
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(fontSize: 22, fontWeight: FontWeight.w600)),
                 const TextSpan(
                   text: ", and your brightest fitness future.",
                 ),
