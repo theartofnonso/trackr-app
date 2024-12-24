@@ -122,19 +122,17 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     final avgVolume = allLoggedVolumesForTemplate.average;
 
-    /// Get the last log
-    final pastLogs =
-        exerciseAndRoutineController.whereRoutineLogsBefore(templateId: log.templateId, datetime: log.createdAt);
+    final currentAndPreviousMonthVolume = _calculateCurrentAndPreviousLogVolume(logs: logs);
 
-    final pastLastLogVolume = pastLogs.lastOrNull?.volume ?? 0.0;
+    final previousMonthVolume = currentAndPreviousMonthVolume.$1;
+    final currentMonthVolume = currentAndPreviousMonthVolume.$2;
 
-    final improved = log.volume > pastLastLogVolume;
+    final improved = currentMonthVolume > previousMonthVolume;
 
-    final difference = improved ? log.volume - pastLastLogVolume : pastLastLogVolume - log.volume;
+    final difference = improved ? currentMonthVolume - previousMonthVolume : previousMonthVolume - currentMonthVolume;
 
-    final differenceSummary = improved
-        ? "Improved by ${volumeInKOrM(difference)} ${weightLabel()}"
-        : "Reduced by ${volumeInKOrM(difference)} ${weightLabel()}";
+    final differenceSummary = _generateDifferenceSummary(difference: difference);
+
 
     return Scaffold(
         appBar: AppBar(
@@ -612,6 +610,41 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         leftActionLabel: 'Cancel',
         rightActionLabel: 'Delete',
         isRightActionDestructive: true);
+  }
+
+
+  (double, double) _calculateCurrentAndPreviousLogVolume({required List<RoutineLogDto> logs}) {
+
+    if (logs.isEmpty) {
+      // No logs => no comparison
+      return (0, 0);
+    }
+
+    // 2. Identify the most recent log
+    final lastLog = logs.last;
+    final lastLogVolume = lastLog.volume;
+    final lastLogDate = lastLog.createdAt;
+
+    final previousLogs = logs.where((log) => log.createdAt.isBefore(lastLogDate));
+
+    if (previousLogs.isEmpty) {
+      // No earlier logs => can't compare
+      return (0, 0);
+    }
+
+    final previousLogVolume = previousLogs.last.volume;
+
+    return (previousLogVolume, lastLogVolume);
+  }
+
+  String _generateDifferenceSummary({required double difference}) {
+    if (difference > 0) {
+      return "Improved by ${volumeInKOrM(difference)} ${weightLabel()}";
+    } else if (difference < 0) {
+      return "Reduced by ${volumeInKOrM(difference)} ${weightLabel()}";
+    } else {
+      return "0 change in past session";
+    }
   }
 }
 

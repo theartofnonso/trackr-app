@@ -75,7 +75,7 @@ class CaloriesTrendScreen extends StatelessWidget {
     final difference =
         improved ? currentMonthCalories - previousMonthCalories : previousMonthCalories - currentMonthCalories;
 
-    final differenceSummary = improved ? "Improved by $difference kcal" : "Reduced by $difference kcal";
+    final differenceSummary = _generateDifferenceSummary(difference: difference);
 
     return Scaffold(
       appBar: AppBar(
@@ -209,5 +209,15 @@ class CaloriesTrendScreen extends StatelessWidget {
         .sum;
 
     return (previousMonthCalories, currentMonthCalories);
+  }
+
+  String _generateDifferenceSummary({required int difference}) {
+    if (difference > 0) {
+      return "Improved by $difference kcal";
+    } else if (difference < 0) {
+      return "Reduced by $difference kcal";
+    } else {
+      return "0 change in past month";
+    }
   }
 }

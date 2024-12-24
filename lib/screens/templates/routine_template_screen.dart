@@ -136,9 +136,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
     final difference = improved ? currentMonthVolume - previousMonthVolume : previousMonthVolume - currentMonthVolume;
 
-    final differenceSummary = improved
-        ? "Improved by ${volumeInKOrM(difference)} ${weightLabel()}"
-        : "Reduced by ${volumeInKOrM(difference)} ${weightLabel()}";
+    final differenceSummary = _generateDifferenceSummary(difference: difference);
 
     final menuActions = [
       MenuItemButton(
@@ -572,6 +570,16 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     final previousLogVolume = previousLogs.last.volume;
 
     return (previousLogVolume, lastLogVolume);
+  }
+
+  String _generateDifferenceSummary({required double difference}) {
+    if (difference > 0) {
+      return "Improved by ${volumeInKOrM(difference)} ${weightLabel()}";
+    } else if (difference < 0) {
+      return "Reduced by ${volumeInKOrM(difference)} ${weightLabel()}";
+    } else {
+      return "0 change in past session";
+    }
   }
 
   @override

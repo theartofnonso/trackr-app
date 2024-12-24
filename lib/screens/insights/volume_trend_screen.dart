@@ -74,9 +74,7 @@ class VolumeTrendScreen extends StatelessWidget {
 
     final difference = improved ? currentMonthVolume - previousMonthVolume : previousMonthVolume - currentMonthVolume;
 
-    final differenceSummary = improved
-        ? "Improved by ${volumeInKOrM(difference)} ${weightLabel()}"
-        : "Reduced by ${volumeInKOrM(difference)} ${weightLabel()}";
+    final differenceSummary = _generateDifferenceSummary(difference: difference);
 
     return Scaffold(
       appBar: AppBar(
@@ -207,5 +205,15 @@ class VolumeTrendScreen extends StatelessWidget {
     final previousMonthCalories = previousMonthLogs.map((log) => log.volume).sum;
 
     return (previousMonthCalories, currentMonthVolume);
+  }
+
+  String _generateDifferenceSummary({required double difference}) {
+    if (difference > 0) {
+      return "Improved by ${volumeInKOrM(difference)} ${weightLabel()}";
+    } else if (difference < 0) {
+      return "Reduced by ${volumeInKOrM(difference)} ${weightLabel()}";
+    } else {
+      return "0 change in past month";
+    }
   }
 }
