@@ -14,6 +14,7 @@ import 'package:tracker_app/shared_prefs.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
+import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
@@ -117,28 +118,23 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
     final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: template.exerciseTemplates);
 
-    final logs = exerciseAndRoutineController.whereLogsWithTemplateId(templateId: template.id);
+    final allLogsForTemplate = exerciseAndRoutineController.whereLogsWithTemplateId(templateId: template.id);
 
-    final allLoggedVolumesForTemplate = logs.map((log) => log.volume).toList();
+    final allLoggedVolumesForTemplate = allLogsForTemplate.map((log) => log.volume).toList();
 
     final avgVolume = allLoggedVolumesForTemplate.average;
 
     final volumeChartPoints =
         allLoggedVolumesForTemplate.mapIndexed((index, volume) => ChartPointDto(index, volume)).toList();
 
-    /// Get the last log
-    final lastLog = logs.lastOrNull;
-    final lastLogVolume = lastLog?.volume ?? 0.0;
+    final currentAndPreviousMonthVolume = _calculateCurrentAndPreviousLogVolume(logs: allLogsForTemplate);
 
-    /// Get the log before the last one
-    final pastLogs = exerciseAndRoutineController.whereRoutineLogsBefore(
-        templateId: template.id, datetime: lastLog?.createdAt ?? DateTime.now());
+    final previousMonthVolume = currentAndPreviousMonthVolume.$1;
+    final currentMonthVolume = currentAndPreviousMonthVolume.$2;
 
-    final pastLastLogVolume = pastLogs.lastOrNull?.volume ?? 0.0;
+    final improved = currentMonthVolume > previousMonthVolume;
 
-    final improved = lastLogVolume > pastLastLogVolume;
-
-    final difference = improved ? lastLogVolume - pastLastLogVolume : pastLastLogVolume - lastLogVolume;
+    final difference = improved ? currentMonthVolume - previousMonthVolume : previousMonthVolume - currentMonthVolume;
 
     final differenceSummary = improved
         ? "Improved by ${volumeInKOrM(difference)} ${weightLabel()}"
@@ -335,7 +331,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                     ],
                   ),
                   Text(
-                      "Here’s a summary of your ${template.name} training intensity over the last ${logs.length} sessions.",
+                      "Here’s a summary of your ${template.name} training intensity over the last ${allLogsForTemplate.length} sessions.",
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium
@@ -552,6 +548,30 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
             ]),
           ));
     }
+  }
+
+  (double, double) _calculateCurrentAndPreviousLogVolume({required List<RoutineLogDto> logs}) {
+
+    if (logs.isEmpty) {
+      // No logs => no comparison
+      return (0, 0);
+    }
+
+    // 2. Identify the most recent log
+    final lastLog = logs.last;
+    final lastLogVolume = lastLog.volume;
+    final lastLogDate = lastLog.createdAt;
+
+    final previousLogs = logs.where((log) => log.createdAt.isBefore(lastLogDate));
+
+    if (previousLogs.isEmpty) {
+      // No earlier logs => can't compare
+      return (0, 0);
+    }
+
+    final previousLogVolume = previousLogs.last.volume;
+
+    return (previousLogVolume, lastLogVolume);
   }
 
   @override
