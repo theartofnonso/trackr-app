@@ -57,7 +57,8 @@ class AmplifyRoutineLogRepository {
     _calculateMilestones();
   }
 
-  Future<RoutineLogDto> saveLog({required RoutineLogDto logDto, RoutineUserDto? user, TemporalDateTime? datetime}) async {
+  Future<RoutineLogDto> saveLog(
+      {required RoutineLogDto logDto, RoutineUserDto? user, TemporalDateTime? datetime}) async {
     // Capture current list of completed milestones
     final previousMilestones = completedMilestones().toSet();
 
@@ -91,20 +92,17 @@ class AmplifyRoutineLogRepository {
     // Write workout data to Apple Health
 
     final caloriesBurned = 0;
-    if(user != null) {
-      calculateCalories(
-          duration: logDto.duration(), bodyWeight: user.weight.toDouble(), activity: logDto.activityType);
+    if (user != null) {
+      calculateCalories(duration: logDto.duration(), bodyWeight: user.weight.toDouble(), activity: logDto.activityType);
     }
 
     await Health().configure();
-    final types = [HealthDataType.WORKOUT];
-    final hasPermissions = await Health().hasPermissions(types) ?? false;
-    if(hasPermissions) {
-      await Health().writeWorkoutData(
-          title: logDto.name,
-          totalEnergyBurned: caloriesBurned,
-          activityType: HealthWorkoutActivityType.TRADITIONAL_STRENGTH_TRAINING, start: logDto.startTime, end: logDto.endTime);
-    }
+    await Health().writeWorkoutData(
+        title: logDto.name,
+        totalEnergyBurned: caloriesBurned,
+        activityType: HealthWorkoutActivityType.TRADITIONAL_STRENGTH_TRAINING,
+        start: logDto.startTime,
+        end: logDto.endTime);
 
     return updatedRoutineWithExerciseIds;
   }
@@ -150,7 +148,8 @@ class AmplifyRoutineLogRepository {
     final logsForTheYear = whereLogsIsSameYear(dateTime: now);
 
     /// Add Weekly Challenges
-    final weeklyMilestones = WeeklyMilestone.loadMilestones(logs: logsForTheYear, weeksInYear: weeksInYear, datetime: DateTime.now().withoutTime());
+    final weeklyMilestones = WeeklyMilestone.loadMilestones(
+        logs: logsForTheYear, weeksInYear: weeksInYear, datetime: DateTime.now().withoutTime());
     milestones.addAll(weeklyMilestones);
 
     /// Add Days Challenges
