@@ -111,7 +111,7 @@ class ExerciseLogWidget extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(right: 8.0),
                     child:
-                        LineChartWidget(chartPoints: chartPoints, periods: [], unit: ChartUnit.weight, aspectRation: 3),
+                        LineChartWidget(chartPoints: chartPoints, periods: [], unit: ChartUnit.weight, aspectRation:2.5),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),

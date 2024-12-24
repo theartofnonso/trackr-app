@@ -135,7 +135,7 @@ class VolumeTrendScreen extends StatelessWidget {
                         child: CustomBarChart(
                           chartPoints: chartPoints,
                           periods: months,
-                          unit: ChartUnit.number,
+                          unit: ChartUnit.weight,
                           bottomTitlesInterval: 1,
                           showLeftTitles: true,
                           maxY: volumes.max.toDouble(),
