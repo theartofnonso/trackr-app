@@ -52,7 +52,7 @@ class VolumeWidget extends StatelessWidget {
 
     final differenceSummary = improved
         ? "Improved by ${volumeInKOrM(difference)} ${weightLabel()}"
-        : "Reduced by $volumeInKOrM{difference} ${weightLabel()}";
+        : "Reduced by ${volumeInKOrM(difference)} ${weightLabel()}";
 
     return ThemeListTile(
       child: ListTile(
