@@ -148,7 +148,7 @@ class VolumeTrendScreen extends StatelessWidget {
                   title: "Training Volume",
                   color:  isDarkMode ? sapphireDark80 : Colors.grey.shade200,
                   description:
-                  "Volume is the total amount of work done, often calculated as sets × reps × weight. Higher volume increases muscle size (hypertrophy).",
+                  "Volume is the total amount of work done (It is a measure of intensity), often calculated as sets × reps × weight. Higher volume increases muscle size (hypertrophy).",
                 )
               ],
             ),
