@@ -738,7 +738,7 @@ class _StatisticWidget extends StatelessWidget {
               ),
               Text(title, style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(
-                height: 14,
+                height: 16,
               ),
             ],
           ),
