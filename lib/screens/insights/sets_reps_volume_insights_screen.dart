@@ -44,6 +44,13 @@ import '../../widgets/chart/bar_chart.dart';
 import '../../widgets/chart/horizontal_stacked_bars.dart';
 import '../../widgets/chart/legend.dart';
 
+class TrendAndDate {
+  final num value;
+  final DateTime dateTime;
+
+  TrendAndDate({required this.value, required this.dateTime});
+}
+
 class SetsAndRepsVolumeInsightsScreen extends StatefulWidget {
   static const routeName = '/sets_and_reps_volume_insights_screen';
 
@@ -89,6 +96,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     List<num> trends = [];
     List<String> weeks = [];
     List<String> months = [];
+    List<TrendAndDate> trendAndDates = [];
     int weekCounter = 0;
     for (final week in weeksInYear) {
       final startOfWeek = week.start;
@@ -102,6 +110,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       trends.add(values);
       weeks.add("WK ${weekCounter + 1}");
       months.add(startOfWeek.formattedMonth());
+      trendAndDates.add(TrendAndDate(value: values, dateTime: startOfWeek));
       weekCounter += 1;
     }
 
@@ -145,6 +154,17 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
         .toList();
 
     final muscleGroupScrollViewHalf = MuscleGroup.values.length ~/ 2;
+
+    final currentAndPreviousWeekTrend = _calculateCurrentAndPreviousValues(trends: trendAndDates);
+
+    final previousWeekTrend = currentAndPreviousWeekTrend.$1;
+    final currentMonthTrend = currentAndPreviousWeekTrend.$2;
+
+    final improved = currentMonthTrend > previousWeekTrend;
+
+    final difference = improved ? currentMonthTrend - previousWeekTrend : previousWeekTrend - currentMonthTrend;
+
+    final differenceSummary = _generateDifferenceSummary(difference: difference, improved: improved);
 
     return Scaffold(
       appBar: widget.canPop
@@ -216,6 +236,21 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                               "WEEKLY AVERAGE",
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
+                            Wrap(
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              children: [
+                                FaIcon(
+                                  improved ? FontAwesomeIcons.arrowUp : FontAwesomeIcons.arrowDown,
+                                  color: improved ? vibrantGreen : Colors.deepOrange,
+                                  size: 12,
+                                ),
+                                const SizedBox(width: 6),
+                                OpacityButtonWidget(
+                                  label: differenceSummary,
+                                  buttonColor: improved ? vibrantGreen : Colors.deepOrange,
+                                )
+                              ],
+                            )
                           ],
                         ),
                         CupertinoSlidingSegmentedControl<SetRepsVolumeReps>(
@@ -492,5 +527,49 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
         ?.exercise
         .primaryMuscleGroup;
     _selectedMuscleGroup = defaultMuscleGroup ?? MuscleGroup.values.first;
+  }
+
+  (num, num) _calculateCurrentAndPreviousValues({required List<TrendAndDate> trends}) {
+
+    if (trends.isEmpty) {
+      // No values => no comparison
+      return (0, 0);
+    }
+
+    // 2. Identify the most recent value
+    final lastValue = trends.last;
+    final lastValueDate = trends.last.dateTime;
+
+    final previousValues = trends.where((trend) => trend.dateTime.isBefore(lastValueDate));
+
+    if (previousValues.isEmpty) {
+      // No earlier values => can't compare
+      return (0, 0);
+    }
+
+    final previousValue = previousValues.last.value;
+
+    return (previousValue, lastValue.value);
+  }
+
+  String _generateDifferenceSummary({required bool improved, required num difference}) {
+
+    if (difference <= 0) {
+      return "0 change in past week";
+    } else {
+      if (improved) {
+        return switch(_metric) {
+          SetRepsVolumeReps.sets => "Improved by $difference sets",
+          SetRepsVolumeReps.reps => "Improved by $difference reps",
+          SetRepsVolumeReps.volume => "Improved by ${volumeInKOrM(difference.toDouble())} ${weightLabel()}"
+        };
+      } else {
+        return switch(_metric) {
+          SetRepsVolumeReps.sets => "Reduced by $difference sets",
+          SetRepsVolumeReps.reps => "Reduced by $difference reps",
+          SetRepsVolumeReps.volume => "Reduced by ${volumeInKOrM(difference.toDouble())} ${weightLabel()}"
+        };
+      }
+    }
   }
 }
