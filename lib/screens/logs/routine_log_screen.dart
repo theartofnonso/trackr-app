@@ -294,46 +294,45 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                             description: "Here's a breakdown of the muscle groups in your ${log.name} workout log.",
                             muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
                             minimized: false),
-                        if (updatedLog.owner == SharedPrefs().userId && widget.isEditable)
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              RichText(
-                                text: TextSpan(
-                                  text: volumeInKOrM(avgVolume),
-                                  style: Theme.of(context).textTheme.headlineMedium,
-                                  children: [
-                                    TextSpan(
-                                      text: " ",
-                                    ),
-                                    TextSpan(
-                                      text: weightLabel().toUpperCase(),
-                                      style: Theme.of(context).textTheme.bodyMedium,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Text(
-                                "SESSION AVERAGE".toUpperCase(),
-                                style: Theme.of(context).textTheme.bodySmall,
-                              ),
-                              Wrap(
-                                crossAxisAlignment: WrapCrossAlignment.center,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            RichText(
+                              text: TextSpan(
+                                text: volumeInKOrM(avgVolume),
+                                style: Theme.of(context).textTheme.headlineMedium,
                                 children: [
-                                  FaIcon(
-                                    improved ? FontAwesomeIcons.arrowUp : FontAwesomeIcons.arrowDown,
-                                    color: improved ? vibrantGreen : Colors.deepOrange,
-                                    size: 12,
+                                  TextSpan(
+                                    text: " ",
                                   ),
-                                  const SizedBox(width: 6),
-                                  OpacityButtonWidget(
-                                    label: differenceSummary,
-                                    buttonColor: improved ? vibrantGreen : Colors.deepOrange,
-                                  )
+                                  TextSpan(
+                                    text: weightLabel().toUpperCase(),
+                                    style: Theme.of(context).textTheme.bodyMedium,
+                                  ),
                                 ],
-                              )
-                            ],
-                          ),
+                              ),
+                            ),
+                            Text(
+                              "SESSION AVERAGE".toUpperCase(),
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                            Wrap(
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              children: [
+                                FaIcon(
+                                  improved ? FontAwesomeIcons.arrowUp : FontAwesomeIcons.arrowDown,
+                                  color: improved ? vibrantGreen : Colors.deepOrange,
+                                  size: 12,
+                                ),
+                                const SizedBox(width: 6),
+                                OpacityButtonWidget(
+                                  label: differenceSummary,
+                                  buttonColor: improved ? vibrantGreen : Colors.deepOrange,
+                                )
+                              ],
+                            )
+                          ],
+                        ),
                         if (updatedLog.owner == SharedPrefs().userId && widget.isEditable)
                           TRKRInformationContainer(
                               ctaLabel: "Ask for feedback",
