@@ -156,7 +156,6 @@ LinearGradient themeGradient({required BuildContext context}) {
 }
 
 Future<bool> requestAppleHealth() async {
-  bool hasAccess = false;
 
   await Health().configure();
 
@@ -165,17 +164,17 @@ Future<bool> requestAppleHealth() async {
 
   final permissions = [HealthDataAccess.READ, HealthDataAccess.WRITE];
 
-  final hasPermissions =
+  bool hasPermissions =
       await Health().hasPermissions(types, permissions: permissions) ?? false;
 
   if (!hasPermissions) {
     // requesting access to the data types before reading them
-    hasAccess = await Health().requestAuthorization(types, permissions: permissions);
+    hasPermissions = await Health().requestAuthorization(types, permissions: permissions);
   } else {
-    hasAccess = true;
+    hasPermissions = true;
   }
 
-  return hasAccess;
+  return hasPermissions;
 }
 
 Future<DateTimeRange?> calculateSleepDuration() async {
