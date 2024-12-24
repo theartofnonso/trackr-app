@@ -14,6 +14,7 @@ import '../../dtos/set_dtos/weight_and_reps_dto.dart';
 import '../../enums/chart_unit_enum.dart';
 import '../../enums/exercise_type_enums.dart';
 import '../../utils/date_utils.dart';
+import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/string_utils.dart';
 import '../../widgets/chart/bar_chart.dart';
@@ -33,7 +34,10 @@ class VolumeTrendScreen extends StatelessWidget {
 
     final dateRange = theLastYearDateTimeRange();
 
-    final logs = routineLogController.whereLogsIsWithinRange(range: dateRange);
+    final logs = routineLogController
+        .whereLogsIsWithinRange(range: dateRange)
+        .map((log) => routineWithLoggedExercises(log: log))
+        .toList();
 
     final monthsInYear = generateMonthsInRange(range: dateRange);
 
@@ -198,13 +202,13 @@ class VolumeTrendScreen extends StatelessWidget {
       );
     });
 
-    // 4. Calculate total calories for each month
+    // 4. Calculate total volume for each month
     final currentMonthVolume =
         currentMonthLogs.map((log) => log.volume).sum; // .sum is from collection.dart or your own utility
 
-    final previousMonthCalories = previousMonthLogs.map((log) => log.volume).sum;
+    final previousMonthVolume = previousMonthLogs.map((log) => log.volume).sum;
 
-    return (previousMonthCalories, currentMonthVolume);
+    return (previousMonthVolume, currentMonthVolume);
   }
 
   String _generateDifferenceSummary({required bool improved, required double difference}) {
