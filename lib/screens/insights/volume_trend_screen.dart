@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 
@@ -21,14 +22,10 @@ import '../../widgets/information_containers/information_container.dart';
 class VolumeTrendScreen extends StatelessWidget {
   static const routeName = '/volume_trend_screen';
 
-  const VolumeTrendScreen({super.key, required this.differenceSummary, required this.improved});
-
-  final String differenceSummary;
-  final bool improved;
+  const VolumeTrendScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -66,6 +63,20 @@ class VolumeTrendScreen extends StatelessWidget {
 
     final chartPoints =
         volumes.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+
+    final currentAndPreviousMonthVolume =
+        _calculateCurrentAndPreviousMonthVolume(logs: logs, monthsInYear: monthsInYear);
+
+    final previousMonthVolume = currentAndPreviousMonthVolume.$1;
+    final currentMonthVolume = currentAndPreviousMonthVolume.$2;
+
+    final improved = currentMonthVolume > previousMonthVolume;
+
+    final difference = improved ? currentMonthVolume - previousMonthVolume : previousMonthVolume - currentMonthVolume;
+
+    final differenceSummary = improved
+        ? "Improved by ${volumeInKOrM(difference)} ${weightLabel()}"
+        : "Reduced by ${volumeInKOrM(difference)} ${weightLabel()}";
 
     return Scaffold(
       appBar: AppBar(
@@ -121,9 +132,13 @@ class VolumeTrendScreen extends StatelessWidget {
                               color: improved ? vibrantGreen : Colors.deepOrange,
                               size: 12,
                             ),
-                          const SizedBox(width: 6),
-                          OpacityButtonWidget(label: differenceSummary,buttonColor: improved ? vibrantGreen : Colors.deepOrange, )
-                        ],)
+                            const SizedBox(width: 6),
+                            OpacityButtonWidget(
+                              label: differenceSummary,
+                              buttonColor: improved ? vibrantGreen : Colors.deepOrange,
+                            )
+                          ],
+                        )
                       ],
                     ),
                   ],
@@ -142,13 +157,13 @@ class VolumeTrendScreen extends StatelessWidget {
                           reservedSize: 35,
                         ))
                     : const Center(child: FaIcon(FontAwesomeIcons.chartSimple, color: sapphireDark, size: 120)),
-            const SizedBox(height: 14),
+                const SizedBox(height: 14),
                 InformationContainer(
                   leadingIcon: FaIcon(FontAwesomeIcons.weightHanging),
                   title: "Training Volume",
-                  color:  isDarkMode ? sapphireDark80 : Colors.grey.shade200,
+                  color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
                   description:
-                  "Volume is the total amount of work done (It is a measure of intensity), often calculated as sets × reps × weight. Higher volume increases muscle size (hypertrophy).",
+                      "Volume is the total amount of work done (It is a measure of intensity), often calculated as sets × reps × weight. Higher volume increases muscle size (hypertrophy).",
                 )
               ],
             ),
@@ -156,5 +171,41 @@ class VolumeTrendScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  (double, double) _calculateCurrentAndPreviousMonthVolume(
+      {required List<RoutineLogDto> logs, required List<DateTimeRange> monthsInYear}) {
+    // 1. Ensure monthsInYear has at least two items (current & previous)
+    if (monthsInYear.length < 2) {
+      // Handle the edge case (e.g., not enough months to compare)
+      return (0, 0);
+    }
+
+    // 2. Identify the current month and the previous month
+    final currentMonthRange = monthsInYear.last;
+    final previousMonthRange = monthsInYear[monthsInYear.length - 2];
+
+    // 3. Fetch logs for each month
+    final currentMonthLogs = logs.where((log) {
+      return log.createdAt.isBetweenInclusive(
+        from: currentMonthRange.start,
+        to: currentMonthRange.end,
+      );
+    });
+
+    final previousMonthLogs = logs.where((log) {
+      return log.createdAt.isBetweenInclusive(
+        from: previousMonthRange.start,
+        to: previousMonthRange.end,
+      );
+    });
+
+    // 4. Calculate total calories for each month
+    final currentMonthVolume =
+        currentMonthLogs.map((log) => log.volume).sum; // .sum is from collection.dart or your own utility
+
+    final previousMonthCalories = previousMonthLogs.map((log) => log.volume).sum;
+
+    return (previousMonthCalories, currentMonthVolume);
   }
 }

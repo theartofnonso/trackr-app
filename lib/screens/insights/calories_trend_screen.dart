@@ -10,6 +10,7 @@ import '../../colors.dart';
 import '../../controllers/activity_log_controller.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../controllers/routine_user_controller.dart';
+import '../../dtos/abstract_class/log_class.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../enums/chart_unit_enum.dart';
 import '../../utils/date_utils.dart';
@@ -21,10 +22,7 @@ import '../../widgets/chart/bar_chart.dart';
 class CaloriesTrendScreen extends StatelessWidget {
   static const routeName = '/calories_trend_screen';
 
-  const CaloriesTrendScreen({super.key, required this.differenceSummary, required this.improved});
-
-  final String differenceSummary;
-  final bool improved;
+  const CaloriesTrendScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +63,19 @@ class CaloriesTrendScreen extends StatelessWidget {
 
     final chartPoints =
         calories.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+
+    final currentAndPreviousMonthCalories = _calculateCurrentAndPreviousMonthCalories(
+        weight: routineUserController.weight(), logs: logs, monthsInYear: monthsInYear);
+
+    final previousMonthCalories = currentAndPreviousMonthCalories.$1;
+    final currentMonthCalories = currentAndPreviousMonthCalories.$2;
+
+    final improved = currentMonthCalories > previousMonthCalories;
+
+    final difference =
+        improved ? currentMonthCalories - previousMonthCalories : previousMonthCalories - currentMonthCalories;
+
+    final differenceSummary = improved ? "Improved by $difference kcal" : "Reduced by $difference kcal";
 
     return Scaffold(
       appBar: AppBar(
@@ -159,5 +170,44 @@ class CaloriesTrendScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  (int, int) _calculateCurrentAndPreviousMonthCalories(
+      {required double weight, required List<Log> logs, required List<DateTimeRange> monthsInYear}) {
+    // 1. Ensure monthsInYear has at least two items (current & previous)
+    if (monthsInYear.length < 2) {
+      // Handle the edge case (e.g., not enough months to compare)
+      return (0, 0);
+    }
+
+    // 2. Identify the current month and the previous month
+    final currentMonthRange = monthsInYear.last;
+    final previousMonthRange = monthsInYear[monthsInYear.length - 2];
+
+    // 3. Fetch logs for each month
+    final currentMonthLogs = logs.where((log) {
+      return log.createdAt.isBetweenInclusive(
+        from: currentMonthRange.start,
+        to: currentMonthRange.end,
+      );
+    });
+
+    final previousMonthLogs = logs.where((log) {
+      return log.createdAt.isBetweenInclusive(
+        from: previousMonthRange.start,
+        to: previousMonthRange.end,
+      );
+    });
+
+    // 4. Calculate total calories for each month
+    final currentMonthCalories = currentMonthLogs
+        .map((log) => calculateCalories(duration: log.duration(), bodyWeight: weight, activity: log.activityType))
+        .sum; // .sum is from collection.dart or your own utility
+
+    final previousMonthCalories = previousMonthLogs
+        .map((log) => calculateCalories(duration: log.duration(), bodyWeight: weight, activity: log.activityType))
+        .sum;
+
+    return (previousMonthCalories, currentMonthCalories);
   }
 }

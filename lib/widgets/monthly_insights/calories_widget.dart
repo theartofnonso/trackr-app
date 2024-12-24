@@ -32,13 +32,9 @@ class CaloriesWidget extends StatelessWidget {
 
     final improved = thisMonthCount > lastMonthCount;
 
-    final difference = improved ? thisMonthCount - lastMonthCount : lastMonthCount - lastMonthCount;
-
-    final differenceSummary = improved ? "Improved by $difference kcal" : "Reduced by $difference kcal";
-
     return ThemeListTile(
       child: ListTile(
-        onTap: () => _showCaloriesScreen(context: context, differenceSummary: differenceSummary, improved: improved),
+        onTap: () => _showCaloriesScreen(context: context),
         leading: const FaIcon(FontAwesomeIcons.fire),
         title: Text("Calories".toUpperCase()),
         subtitle: Text("Amount of energy expenditure"),
@@ -65,8 +61,7 @@ class CaloriesWidget extends StatelessWidget {
     );
   }
 
-  void _showCaloriesScreen({required BuildContext context, required String differenceSummary, required bool improved}) {
-    navigateWithSlideTransition(
-        context: context, child: CaloriesTrendScreen(differenceSummary: differenceSummary, improved: improved));
+  void _showCaloriesScreen({required BuildContext context}) {
+    navigateWithSlideTransition(context: context, child: const CaloriesTrendScreen());
   }
 }
