@@ -375,8 +375,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     buffer.writeln();
 
     for (final exerciseLog in exerciseLogsWithPrimaryMuscleGroups) {
-      buffer.writeln(
-          "Rep Range for ${exerciseLog.exercise.name}: ${exerciseLog.minReps} to ${exerciseLog.maxReps}");
+      buffer.writeln("Rep Range for ${exerciseLog.exercise.name}: ${exerciseLog.minReps} to ${exerciseLog.maxReps}");
 
       List<String> setSummaries = generateSetSummaries(exerciseLog);
       buffer.writeln(
@@ -530,7 +529,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   }
 
   (num, num) _calculateCurrentAndPreviousValues({required List<TrendAndDate> trends}) {
-
     if (trends.isEmpty) {
       // No values => no comparison
       return (0, 0);
@@ -553,18 +551,17 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   }
 
   String _generateDifferenceSummary({required bool improved, required num difference}) {
-
     if (difference <= 0) {
       return "0 change in past week";
     } else {
       if (improved) {
-        return switch(_metric) {
+        return switch (_metric) {
           SetRepsVolumeReps.sets => "$difference sets up this week",
           SetRepsVolumeReps.reps => "$difference reps up this week",
           SetRepsVolumeReps.volume => "${volumeInKOrM(difference.toDouble())} ${weightLabel()} up this week"
         };
       } else {
-        return switch(_metric) {
+        return switch (_metric) {
           SetRepsVolumeReps.sets => "$difference sets down this week",
           SetRepsVolumeReps.reps => "$difference reps down this week",
           SetRepsVolumeReps.volume => "${volumeInKOrM(difference.toDouble())} ${weightLabel()} down this week"

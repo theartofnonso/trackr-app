@@ -288,46 +288,46 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                       description: "Here's a breakdown of the muscle groups in your ${template.name} workout plan.",
                       muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
                       minimized: false),
-                  if (template.owner == SharedPrefs().userId )
+                  if (template.owner == SharedPrefs().userId)
                     Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      RichText(
-                        text: TextSpan(
-                          text: volumeInKOrM(avgVolume),
-                          style: Theme.of(context).textTheme.headlineMedium,
-                          children: [
-                            TextSpan(
-                              text: " ",
-                            ),
-                            TextSpan(
-                              text: weightLabel().toUpperCase(),
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                          ],
-                        ),
-                      ),
-                      Text(
-                        "SESSION AVERAGE".toUpperCase(),
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                      Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          FaIcon(
-                            improved ? FontAwesomeIcons.arrowUp : FontAwesomeIcons.arrowDown,
-                            color: improved ? vibrantGreen : Colors.deepOrange,
-                            size: 12,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            text: volumeInKOrM(avgVolume),
+                            style: Theme.of(context).textTheme.headlineMedium,
+                            children: [
+                              TextSpan(
+                                text: " ",
+                              ),
+                              TextSpan(
+                                text: weightLabel().toUpperCase(),
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: 6),
-                          OpacityButtonWidget(
-                            label: differenceSummary,
-                            buttonColor: improved ? vibrantGreen : Colors.deepOrange,
-                          )
-                        ],
-                      )
-                    ],
-                  ),
+                        ),
+                        Text(
+                          "SESSION AVERAGE".toUpperCase(),
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                        Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            FaIcon(
+                              improved ? FontAwesomeIcons.arrowUp : FontAwesomeIcons.arrowDown,
+                              color: improved ? vibrantGreen : Colors.deepOrange,
+                              size: 12,
+                            ),
+                            const SizedBox(width: 6),
+                            OpacityButtonWidget(
+                              label: differenceSummary,
+                              buttonColor: improved ? vibrantGreen : Colors.deepOrange,
+                            )
+                          ],
+                        )
+                      ],
+                    ),
                   Text(
                       "Here’s a summary of your ${template.name} training intensity over the last ${allLogsForTemplate.length} sessions.",
                       style: Theme.of(context)
@@ -549,7 +549,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   }
 
   (double, double) _calculateCurrentAndPreviousLogVolume({required List<RoutineLogDto> logs}) {
-
     if (logs.isEmpty) {
       // No logs => no comparison
       return (0, 0);

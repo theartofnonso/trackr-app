@@ -611,9 +611,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         isRightActionDestructive: true);
   }
 
-
   (double, double) _calculateCurrentAndPreviousLogVolume({required List<RoutineLogDto> logs}) {
-
     if (logs.isEmpty) {
       // No logs => no comparison
       return (0, 0);
@@ -637,7 +635,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
   }
 
   String _generateDifferenceSummary({required bool improved, required double difference}) {
-
     if (difference <= 0) {
       return "0 change in past session";
     } else {
