@@ -97,10 +97,14 @@ class AmplifyRoutineLogRepository {
     }
 
     await Health().configure();
-    await Health().writeWorkoutData(
-        title: logDto.name,
-        totalEnergyBurned: caloriesBurned,
-        activityType: HealthWorkoutActivityType.TRADITIONAL_STRENGTH_TRAINING, start: logDto.startTime, end: logDto.endTime);
+    final types = [HealthDataType.WORKOUT];
+    final hasPermissions = await Health().hasPermissions(types) ?? false;
+    if(hasPermissions) {
+      await Health().writeWorkoutData(
+          title: logDto.name,
+          totalEnergyBurned: caloriesBurned,
+          activityType: HealthWorkoutActivityType.TRADITIONAL_STRENGTH_TRAINING, start: logDto.startTime, end: logDto.endTime);
+    }
 
     return updatedRoutineWithExerciseIds;
   }
