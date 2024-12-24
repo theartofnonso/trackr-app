@@ -131,8 +131,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     final difference = improved ? currentMonthVolume - previousMonthVolume : previousMonthVolume - currentMonthVolume;
 
-    final differenceSummary = _generateDifferenceSummary(difference: difference);
-
+    final differenceSummary = _generateDifferenceSummary(difference: difference, improved: improved);
 
     return Scaffold(
         appBar: AppBar(
@@ -637,13 +636,16 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     return (previousLogVolume, lastLogVolume);
   }
 
-  String _generateDifferenceSummary({required double difference}) {
-    if (difference > 0) {
-      return "Improved by ${volumeInKOrM(difference)} ${weightLabel()}";
-    } else if (difference < 0) {
-      return "Reduced by ${volumeInKOrM(difference)} ${weightLabel()}";
-    } else {
+  String _generateDifferenceSummary({required bool improved, required double difference}) {
+
+    if (difference <= 0) {
       return "0 change in past session";
+    } else {
+      if (improved) {
+        return "Improved by ${volumeInKOrM(difference)} ${weightLabel()}";
+      } else {
+        return "Reduced by ${volumeInKOrM(difference)} ${weightLabel()}";
+      }
     }
   }
 }
