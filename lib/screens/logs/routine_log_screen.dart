@@ -639,9 +639,9 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
       return "0 change in past session";
     } else {
       if (improved) {
-        return "${volumeInKOrM(difference)} ${weightLabel()} up in last session";
+        return "${volumeInKOrM(difference)} ${weightLabel()} up in this session";
       } else {
-        return "${volumeInKOrM(difference)} ${weightLabel()} down in last session";
+        return "${volumeInKOrM(difference)} ${weightLabel()} down in this session";
       }
     }
   }
