@@ -170,7 +170,11 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
 
   void _navigateToExerciseTypeScreen() async {
     if (widget.exercise != null) {
-     showSnackbar(context: context, icon: FaIcon(FontAwesomeIcons.circleInfo), message: "Exercise type cannot be changed after creation.");
+      showSnackbar(
+          context: context,
+          icon: FaIcon(FontAwesomeIcons.circleInfo),
+          message: "Exercise type cannot be changed after creation.");
+      return;
     }
 
     /// We don't want to allow editing of exercise type once created.
