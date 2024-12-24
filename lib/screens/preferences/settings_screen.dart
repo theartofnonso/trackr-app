@@ -472,7 +472,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   void _checkAppleHealthPermission() async {
     final types = [HealthDataType.SLEEP_ASLEEP, HealthDataType.WORKOUT];
 
-    final hasPermissions = await Health().hasPermissions(types) ?? true;
+    final hasPermissions = await Health().hasPermissions(types) ?? false;
 
     setState(() {
       _appleHealthEnabled = hasPermissions;
