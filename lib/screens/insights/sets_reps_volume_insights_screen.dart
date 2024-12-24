@@ -559,15 +559,15 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     } else {
       if (improved) {
         return switch(_metric) {
-          SetRepsVolumeReps.sets => "Improved by $difference sets",
-          SetRepsVolumeReps.reps => "Improved by $difference reps",
-          SetRepsVolumeReps.volume => "Improved by ${volumeInKOrM(difference.toDouble())} ${weightLabel()}"
+          SetRepsVolumeReps.sets => "$difference sets up this week",
+          SetRepsVolumeReps.reps => "$difference reps up this week",
+          SetRepsVolumeReps.volume => "${volumeInKOrM(difference.toDouble())} ${weightLabel()} up this week"
         };
       } else {
         return switch(_metric) {
-          SetRepsVolumeReps.sets => "Reduced by $difference sets",
-          SetRepsVolumeReps.reps => "Reduced by $difference reps",
-          SetRepsVolumeReps.volume => "Reduced by ${volumeInKOrM(difference.toDouble())} ${weightLabel()}"
+          SetRepsVolumeReps.sets => "$difference sets down this week",
+          SetRepsVolumeReps.reps => "$difference reps down this week",
+          SetRepsVolumeReps.volume => "${volumeInKOrM(difference.toDouble())} ${weightLabel()} down this week"
         };
       }
     }

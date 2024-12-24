@@ -216,9 +216,9 @@ class CaloriesTrendScreen extends StatelessWidget {
       return "0 change in past month";
     } else {
       if (improved) {
-        return "Improved by $difference kcal";
+        return "$difference kcal up this month";
       } else {
-        return "Reduced by $difference kcal";
+        return "$difference kcal down this month";
       }
     }
   }

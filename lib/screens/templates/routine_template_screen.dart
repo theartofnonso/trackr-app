@@ -577,9 +577,9 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       return "0 change in past session";
     } else {
       if (improved) {
-        return "Improved by ${volumeInKOrM(difference)} ${weightLabel()}";
+        return "${volumeInKOrM(difference)} ${weightLabel()} up in last session";
       } else {
-        return "Reduced by ${volumeInKOrM(difference)} ${weightLabel()}";
+        return "${volumeInKOrM(difference)} ${weightLabel()} down in last session";
       }
     }
   }
