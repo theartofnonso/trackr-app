@@ -106,7 +106,9 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
           exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
 
       return calculatePBs(
-          pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog);
+          pastExerciseLogs: loggedExercises(exerciseLogs: pastExerciseLogs),
+          exerciseType: exerciseLog.exercise.type,
+          exerciseLog: exerciseLog);
     }).expand((pbs) => pbs);
 
     final rpeRating = log.rpeRating;
@@ -116,7 +118,10 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     Duration? sleepDuration = sleepFrom != null && sleepTo != null ? sleepTo.difference(sleepFrom) : null;
 
-    final logs = exerciseAndRoutineController.whereLogsWithTemplateId(templateId: log.templateId);
+    final logs = exerciseAndRoutineController
+        .whereLogsWithTemplateId(templateId: log.templateId)
+        .map((log) => routineWithLoggedExercises(log: log))
+        .toList();
 
     final allLoggedVolumesForTemplate = logs.map((log) => log.volume).toList();
 
