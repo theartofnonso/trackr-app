@@ -48,6 +48,13 @@ import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dar
 import '../../widgets/routine/preview/exercise_log_listview.dart';
 import '../AI/routine_log_report_screen.dart';
 
+class _StatisticsInformation {
+  final String title;
+  final String description;
+
+  _StatisticsInformation({required this.title, required this.description});
+}
+
 class RoutineLogScreen extends StatefulWidget {
   static const routeName = '/routine_log_screen';
 
@@ -201,37 +208,63 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                           title: "${completedExerciseLogs.length}",
                           subtitle: "Exercises",
                           image: "dumbbells",
+                          information: _StatisticsInformation(
+                              title: "Exercises",
+                              description:
+                                  "The total number of different exercises you completed in a workout session."),
                         ),
                         _StatisticWidget(
                           title: "${numberOfCompletedSets.length}",
                           subtitle: "Sets",
                           icon: FontAwesomeIcons.hashtag,
+                          information: _StatisticsInformation(
+                              title: "Sets",
+                              description:
+                                  "The number of rounds you performed for each exercise. A “set” consists of a group of repetitions (reps)."),
                         ),
                         _StatisticWidget(
                           title: log.duration().hmsDigital(),
                           subtitle: "Duration",
                           icon: FontAwesomeIcons.solidClock,
+                          information: _StatisticsInformation(
+                              title: "Duration",
+                              description: "The total time you spent on your workout session, from start to finish."),
                         ),
                         _StatisticWidget(
                           title: "$calories",
                           subtitle: "Calories",
                           icon: FontAwesomeIcons.fire,
+                          information: _StatisticsInformation(
+                              title: "Calories Burned",
+                              description: "An estimate of the energy your body used during the workout."),
                         ),
                         _StatisticWidget(
                           title: "${pbs.length}",
                           subtitle: "PBs",
                           icon: FontAwesomeIcons.solidStar,
+                          information: _StatisticsInformation(
+                              title: "Personal Bests",
+                              description:
+                                  "Your highest achievement in an exercise, like the heaviest weight lifted, most reps performed, or highest training volume."),
                         ),
                         if (sleepDuration != null)
                           _StatisticWidget(
                             title: sleepDuration.hmsDigital(),
                             subtitle: "Sleep",
                             icon: FontAwesomeIcons.solidMoon,
+                            information: _StatisticsInformation(
+                                title: "Sleep",
+                                description:
+                                    "The amount of sleep you got the night before the workout. Sleep impacts your recovery, energy, and overall performance during exercise."),
                           ),
                         _StatisticWidget(
                           title: "$rpeRating",
                           subtitle: "RPE",
                           icon: FontAwesomeIcons.solidFaceSadTear,
+                          information: _StatisticsInformation(
+                              title: "Rate of Perceived Exertion",
+                              description:
+                                  "A self-reported score (1 to 10) indicating how hard your workout felt. Helps adjust workout intensity to match your goals and avoid overtraining."),
                         ),
                         const SizedBox(
                           width: 10,
@@ -657,8 +690,10 @@ class _StatisticWidget extends StatelessWidget {
   final String? image;
   final String title;
   final String subtitle;
+  final _StatisticsInformation information;
 
-  const _StatisticWidget({this.icon, this.image, required this.title, required this.subtitle});
+  const _StatisticWidget(
+      {this.icon, this.image, required this.title, required this.subtitle, required this.information});
 
   @override
   Widget build(BuildContext context) {
@@ -674,31 +709,43 @@ class _StatisticWidget extends StatelessWidget {
           )
         : FaIcon(icon, size: 14);
 
-    return Container(
-      width: 120,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, // Background color of the container
-        borderRadius: BorderRadius.circular(5), // Border radius for rounded corners
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Wrap(
-            crossAxisAlignment: WrapCrossAlignment.center,
+    return GestureDetector(
+      onTap: () =>
+          showBottomSheetWithNoAction(context: context, title: information.title, description: information.description),
+      child: Container(
+        width: 120,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, // Background color of the container
+          borderRadius: BorderRadius.circular(5), // Border radius for rounded corners
+        ),
+        child: Stack(children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              leading,
-              const SizedBox(
-                width: 6,
+              Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  leading,
+                  const SizedBox(
+                    width: 6,
+                  ),
+                  Text(subtitle.toUpperCase(), style: Theme.of(context).textTheme.bodySmall)
+                ],
               ),
-              Text(subtitle.toUpperCase(), style: Theme.of(context).textTheme.bodySmall)
+              const SizedBox(
+                height: 6,
+              ),
+              Text(title, style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(
+                height: 14,
+              ),
             ],
           ),
-          const SizedBox(
-            height: 6,
+          Positioned.fill(
+            child: const Align(alignment: Alignment.bottomRight, child: FaIcon(FontAwesomeIcons.lightbulb, size: 10)),
           ),
-          Text(title, style: Theme.of(context).textTheme.titleLarge)
-        ],
+        ]),
       ),
     );
   }

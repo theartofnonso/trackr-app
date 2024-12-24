@@ -44,11 +44,11 @@ import '../../widgets/chart/bar_chart.dart';
 import '../../widgets/chart/horizontal_stacked_bars.dart';
 import '../../widgets/chart/legend.dart';
 
-class TrendAndDate {
+class _TrendAndDate {
   final num value;
   final DateTime dateTime;
 
-  TrendAndDate({required this.value, required this.dateTime});
+  _TrendAndDate({required this.value, required this.dateTime});
 }
 
 class SetsAndRepsVolumeInsightsScreen extends StatefulWidget {
@@ -96,7 +96,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     List<num> trends = [];
     List<String> weeks = [];
     List<String> months = [];
-    List<TrendAndDate> trendAndDates = [];
+    List<_TrendAndDate> trendAndDates = [];
     int weekCounter = 0;
     for (final week in weeksInYear) {
       final startOfWeek = week.start;
@@ -110,7 +110,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       trends.add(values);
       weeks.add("WK ${weekCounter + 1}");
       months.add(startOfWeek.formattedMonth());
-      trendAndDates.add(TrendAndDate(value: values, dateTime: startOfWeek));
+      trendAndDates.add(_TrendAndDate(value: values, dateTime: startOfWeek));
       weekCounter += 1;
     }
 
@@ -528,7 +528,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     _selectedMuscleGroup = defaultMuscleGroup ?? MuscleGroup.values.first;
   }
 
-  (num, num) _calculateCurrentAndPreviousValues({required List<TrendAndDate> trends}) {
+  (num, num) _calculateCurrentAndPreviousValues({required List<_TrendAndDate> trends}) {
     if (trends.isEmpty) {
       // No values => no comparison
       return (0, 0);
