@@ -129,7 +129,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   }
 
   Future<void> _doUpdateRoutineLog({int? rpeRating}) async {
-    final routineLogToBeUpdated = _routineLog().copyWith(endTime: DateTime.now(), rpeRating: rpeRating);
+    final routineLogToBeUpdated = _routineLog().copyWith(rpeRating: rpeRating);
 
     await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateLog(log: routineLogToBeUpdated);
 
