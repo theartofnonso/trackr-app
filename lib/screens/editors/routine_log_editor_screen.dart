@@ -165,14 +165,14 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
           context: context,
           title: 'Running Session',
           description: "Do you want to end session?",
-          leftAction: context.pop,
+          leftAction: Navigator.of(context).pop,
           rightAction: () {
             _closeDialog();
             displayBottomSheet(
                 context: context,
                 child: _RPERatingSlider(
                   title: widget.log.name,
-                  rpeRating: null,
+                  rpeRating: widget.log.rpeRating.toDouble(),
                   onSelectRating: (int rpeRating) async {
                     final sleep = await calculateSleepDuration();
                     _doCreateRoutineLog(rpeRating: rpeRating, sleep: sleep);
@@ -198,7 +198,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
           context: context,
           child: _RPERatingSlider(
             title: widget.log.name,
-            rpeRating: null,
+            rpeRating: widget.log.rpeRating.toDouble(),
             onSelectRating: (int rpeRating) {
               _closeDialog();
               _doUpdateRoutineLog(rpeRating: rpeRating);
