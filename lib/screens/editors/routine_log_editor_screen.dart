@@ -33,7 +33,6 @@ import '../../utils/general_utils.dart';
 import '../../utils/routine_log_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
-import '../../widgets/buttons/solid_button_widget.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
 import '../../widgets/timers/routine_timer.dart';
@@ -177,10 +176,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                     final sleep = await calculateSleepDuration();
                     _doCreateRoutineLog(rpeRating: rpeRating, sleep: sleep);
                   },
-                  cancelRating: () async {
-                    final sleep = await calculateSleepDuration();
-                    _doCreateRoutineLog(sleep: sleep);
-                  },
                 ));
           },
           leftActionLabel: 'Cancel',
@@ -202,10 +197,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
             onSelectRating: (int rpeRating) {
               _closeDialog();
               _doUpdateRoutineLog(rpeRating: rpeRating);
-            },
-            cancelRating: () {
-              _closeDialog();
-              _doUpdateRoutineLog();
             },
           ));
     } else {
@@ -465,7 +456,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     _loadExerciseLogs();
 
     _onDisposeCallback = Provider.of<ExerciseLogController>(context, listen: false).onClear;
-
   }
 
   void _loadExerciseLogs() {
@@ -574,10 +564,8 @@ class _RPERatingSlider extends StatefulWidget {
   final String title;
   final double? rpeRating;
   final void Function(int rpeRating) onSelectRating;
-  final void Function() cancelRating;
 
-  const _RPERatingSlider(
-      {required this.title, this.rpeRating = 5, required this.onSelectRating, required this.cancelRating});
+  const _RPERatingSlider({required this.title, this.rpeRating = 5, required this.onSelectRating});
 
   @override
   State<_RPERatingSlider> createState() => _RPERatingSliderState();
@@ -619,15 +607,6 @@ class _RPERatingSliderState extends State<_RPERatingSlider> {
             width: double.infinity,
             height: 45,
             child: OpacityButtonWidget(label: "End Session", buttonColor: vibrantGreen, onPressed: onSelectRepRange)),
-        const SizedBox(height: 10),
-        SizedBox(
-            height: 45,
-            width: double.infinity,
-            child: SolidButtonWidget(
-              label: "End session without rating",
-              buttonColor: Colors.transparent,
-              onPressed: widget.cancelRating,
-            ))
       ],
     );
   }
@@ -651,15 +630,15 @@ class _RPERatingSliderState extends State<_RPERatingSlider> {
 
     // Define a map of reps to percentages
     Map<int, String> repToPercentage = {
-      1:  "Extremely light — mostly warm-up weight",
-      2:  "Very light — can easily perform many more reps",
-      3:  "Light — still feels comfortable",
-      4:  "Moderate — some effort required but manageable",
-      5:  "Challenging — you're working, yet not near failure",
-      6:  "Hard — beginning to feel significant strain",
-      7:  "Very hard — only a few reps left in the tank",
-      8:  "Near max — pushing close to muscular failure",
-      9:  "Maximal — maybe 1 rep left, if at all",
+      1: "Extremely light — mostly warm-up weight",
+      2: "Very light — can easily perform many more reps",
+      3: "Light — still feels comfortable",
+      4: "Moderate — some effort required but manageable",
+      5: "Challenging — you're working, yet not near failure",
+      6: "Hard — beginning to feel significant strain",
+      7: "Very hard — only a few reps left in the tank",
+      8: "Near max — pushing close to muscular failure",
+      9: "Maximal — maybe 1 rep left, if at all",
       10: "All-out — absolute limit, no reps left in reserve",
     };
 
