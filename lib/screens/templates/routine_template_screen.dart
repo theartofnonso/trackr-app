@@ -16,7 +16,6 @@ import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
-import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../dtos/viewmodels/routine_template_arguments.dart';
 import '../../enums/chart_unit_enum.dart';
@@ -397,11 +396,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       try {
         final exercises = template.exerciseTemplates.map((exerciseLog) {
           final uncheckedSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
-
-          /// [Exercise.duration] exercises do not have sets in templates
-          /// This is because we only need to store the duration of the exercise in [RoutineEditorType.log] i.e data is logged in realtime
-          final sets = withDurationOnly(type: exerciseLog.exercise.type) ? <SetDto>[] : uncheckedSets;
-          return exerciseLog.copyWith(sets: sets);
+          return exerciseLog.copyWith(sets: uncheckedSets);
         }).toList();
         final templateToCreate = RoutineTemplateDto(
             id: "",
