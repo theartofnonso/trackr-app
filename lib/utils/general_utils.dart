@@ -211,7 +211,7 @@ Color getImprovementColor({required bool improved, required num difference}) {
 
   if(improved && difference > 0) {
     color = vibrantGreen;
-  } else if(!improved && difference < 0) {
+  } else if(!improved && difference > 0) {
     color = Colors.deepOrange;
   }
   return color;
@@ -223,7 +223,7 @@ IconData getImprovementIcon({required bool improved, required num difference}) {
 
   if(improved && difference > 0) {
     icon = FontAwesomeIcons.arrowTrendUp;
-  } else if(!improved && difference < 0) {
+  } else if(!improved && difference > 0) {
     icon = FontAwesomeIcons.arrowTrendDown;
   }
   return icon;
