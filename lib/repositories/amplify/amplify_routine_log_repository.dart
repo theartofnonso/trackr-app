@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:health/health.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
@@ -71,9 +70,7 @@ class AmplifyRoutineLogRepository {
 
     logger.i("save log: ${logDto.name}");
 
-    if (kReleaseMode) {
-      Posthog().capture(eventName: PostHogAnalyticsEvent.logRoutine.displayName, properties: logDto.toJson());
-    }
+    Posthog().capture(eventName: PostHogAnalyticsEvent.logRoutine.displayName, properties: logDto.toJson());
 
     final updatedRoutineLogWithId = logDto.copyWith(id: logToCreate.id);
     final updatedRoutineWithExerciseIds = updatedRoutineLogWithId.copyWith(

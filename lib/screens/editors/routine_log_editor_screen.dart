@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -247,9 +246,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     runMessage(system: routineLogSystemInstruction, user: instruction, responseFormat: routineLogReportResponseFormat)
         .then((response) {
       if (response != null) {
-        if (kReleaseMode) {
-          Posthog().capture(eventName: PostHogAnalyticsEvent.generateRoutineLogReport.displayName);
-        }
+        Posthog().capture(eventName: PostHogAnalyticsEvent.generateRoutineLogReport.displayName);
+
         FlutterLocalNotificationsPlugin().show(
             900,
             "${routineLog.name} report is ready",

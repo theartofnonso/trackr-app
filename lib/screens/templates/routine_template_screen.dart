@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -496,9 +495,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                 ),
                 subtitle: Text(workoutLink),
                 onTap: () {
-                  if (kReleaseMode) {
-                    Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineLogAsLink.displayName);
-                  }
+                  Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineTemplateAsLink.displayName);
                   HapticFeedback.heavyImpact();
                   final data = ClipboardData(text: workoutLink);
                   Clipboard.setData(data).then((_) {
@@ -522,9 +519,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                 title: Text("Copy as Text", style: Theme.of(context).textTheme.titleMedium),
                 subtitle: Text("${template.name}..."),
                 onTap: () {
-                  if (kReleaseMode) {
-                    Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineTemplateAsText.displayName);
-                  }
+                  Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineTemplateAsText.displayName);
                   HapticFeedback.heavyImpact();
                   final data = ClipboardData(text: workoutText);
                   Clipboard.setData(data).then((_) {

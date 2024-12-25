@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -14,7 +13,6 @@ import '../../enums/posthog_analytics_event.dart';
 import '../../logger.dart';
 
 class AmplifyRoutineTemplateRepository {
-
   final logger = getLogger(className: "AmplifyRoutineTemplateRepository");
 
   List<RoutineTemplateDto> _templates = [];
@@ -28,14 +26,13 @@ class AmplifyRoutineTemplateRepository {
   Future<RoutineTemplateDto> saveTemplate({required RoutineTemplateDto templateDto}) async {
     final now = TemporalDateTime.now();
 
-    final templateToCreate = RoutineTemplate(data: jsonEncode(templateDto), createdAt: now, updatedAt: now, owner: SharedPrefs().userId);
+    final templateToCreate =
+        RoutineTemplate(data: jsonEncode(templateDto), createdAt: now, updatedAt: now, owner: SharedPrefs().userId);
 
     await Amplify.DataStore.save<RoutineTemplate>(templateToCreate);
 
-    if(kReleaseMode) {
-      Posthog().capture(
-          eventName: PostHogAnalyticsEvent.createRoutineTemplate.displayName, properties: templateDto.toJson());
-    }
+    Posthog()
+        .capture(eventName: PostHogAnalyticsEvent.createRoutineTemplate.displayName, properties: templateDto.toJson());
 
     logger.i("save template: $templateDto");
 
@@ -73,8 +70,10 @@ class AmplifyRoutineTemplateRepository {
 
   void syncTemplatesWithExercisesFromLibrary({required List<ExerciseDto> exercises}) {
     final updatedTemplates = _templates.map((template) {
-      final updatedExerciseTemplates =  template.exerciseTemplates.map((exerciseTemplate) {
-        final foundExercise = exercises.firstWhere((exerciseInLibrary) => exerciseInLibrary.id == exerciseTemplate.exercise.id, orElse: () => exerciseTemplate.exercise);
+      final updatedExerciseTemplates = template.exerciseTemplates.map((exerciseTemplate) {
+        final foundExercise = exercises.firstWhere(
+            (exerciseInLibrary) => exerciseInLibrary.id == exerciseTemplate.exercise.id,
+            orElse: () => exerciseTemplate.exercise);
         return exerciseTemplate.copyWith(exercise: foundExercise);
       }).toList();
       return template.copyWith(exerciseTemplates: updatedExerciseTemplates);
