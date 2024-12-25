@@ -16,9 +16,8 @@ class SetsListview extends StatelessWidget {
   final ExerciseType type;
   final List<SetDto> sets;
   final List<PBDto> pbs;
-  final Color? borderColor;
 
-  const SetsListview({super.key, required this.type, required this.sets, this.pbs = const [], this.borderColor});
+  const SetsListview({super.key, required this.type, required this.sets, this.pbs = const []});
 
   @override
   Widget build(BuildContext context) {
@@ -46,13 +45,13 @@ class SetsListview extends StatelessWidget {
               final firstLabel = (set as WeightAndRepsSetDto).weight;
               final secondLabel = set.reps;
               return DoubleSetRow(
-                  first: "$firstLabel", second: "$secondLabel", pbs: pbsForSet, borderColor: borderColor);
+                  first: "$firstLabel", second: "$secondLabel", pbs: pbsForSet);
             case ExerciseType.bodyWeight:
               final label = (set as RepsSetDto).reps;
-              return SingleSetRow(label: "$label", borderColor: borderColor);
+              return SingleSetRow(label: "$label");
             case ExerciseType.duration:
               final label = (set as DurationSetDto).duration.hmsAnalog();
-              return SingleSetRow(label: label, pbs: pbsForSet, borderColor: borderColor);
+              return SingleSetRow(label: label, pbs: pbsForSet);
           }
         },
         separatorBuilder: (context, index) => SizedBox(height: 8),

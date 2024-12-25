@@ -23,8 +23,7 @@ enum PostHogAnalyticsEvent {
   shareRoutineTemplateAsText(displayName: "routine_template:routine_template_text_copy"),
 
   shareCalendar(displayName: "app:calender_share"),
-  shareMonitor(displayName: "app:monitor_share"),
-  shareMilesStone(displayName: "milestone_completed:milestone_share");
+  shareMonitor(displayName: "app:monitor_share");
 
   final String displayName;
 

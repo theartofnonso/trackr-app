@@ -182,6 +182,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                         padding: EdgeInsets.symmetric(horizontal: 10.0),
                         child: ListView.separated(
                             padding: const EdgeInsets.only(bottom: 250),
+                            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                             itemBuilder: (BuildContext context, int index) => ExerciseWidget(
                                 exerciseDto: _filteredExercises[index],
                                 onNavigateToExercise: _navigateToExerciseHistory,

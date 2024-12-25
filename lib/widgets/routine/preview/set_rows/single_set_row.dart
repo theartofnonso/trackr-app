@@ -7,16 +7,15 @@ import '../../../pbs/pb_icon.dart';
 class SingleSetRow extends StatelessWidget {
   final String label;
   final List<PBDto> pbs;
-  final Color? borderColor;
 
-  const SingleSetRow({super.key, required this.label, this.pbs = const [], this.borderColor});
+  const SingleSetRow({super.key, required this.label, this.pbs = const []});
 
   @override
   Widget build(BuildContext context) {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final color = borderColor ?? (isDarkMode ? Colors.white10 : Colors.black38);
+    final color = isDarkMode ? Colors.white10 : Colors.black38;
 
     final pbsForSet = pbs
         .map((pb) => PBIcon(

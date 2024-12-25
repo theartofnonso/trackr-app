@@ -34,8 +34,7 @@ class ExerciseHistoryLogWidget extends StatelessWidget {
       spacing: 10,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(routineLog.name,
-            style: Theme.of(context).textTheme.titleMedium),
+        Text(routineLog.name, style: Theme.of(context).textTheme.titleMedium),
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           const FaIcon(
             FontAwesomeIcons.calendarDay,
@@ -43,8 +42,7 @@ class ExerciseHistoryLogWidget extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           Text(exerciseLog.createdAt.formattedDayAndMonthAndYear(),
-              style: Theme.of(context).textTheme.bodySmall,
-              textAlign: TextAlign.center),
+              style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center),
         ]),
         _ExerciseLogWidget(exerciseLog: exerciseLog)
       ],
@@ -60,9 +58,6 @@ class _ExerciseLogWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
     final exerciseType = exerciseLog.exercise.type;
 
     return Column(
@@ -74,7 +69,7 @@ class _ExerciseLogWidget extends StatelessWidget {
                 child: Text(exerciseLog.notes,
                     textAlign: TextAlign.center,
                     style: GoogleFonts.ubuntu(
-                        fontWeight: FontWeight.w600, color: Colors.white.withValues(alpha:0.8), fontSize: 15)),
+                        fontWeight: FontWeight.w600, color: Colors.white.withValues(alpha: 0.8), fontSize: 15)),
               )
             : const SizedBox.shrink(),
         switch (exerciseType) {
@@ -83,7 +78,7 @@ class _ExerciseLogWidget extends StatelessWidget {
           ExerciseType.duration => const SingleSetHeader(label: 'TIME')
         },
         const SizedBox(height: 8),
-        SetsListview(type: exerciseType, sets: exerciseLog.sets, pbs: [], borderColor: isDarkMode ? Colors.white10 : Colors.grey.shade400)
+        SetsListview(type: exerciseType, sets: exerciseLog.sets, pbs: [])
       ],
     );
   }

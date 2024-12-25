@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
@@ -29,7 +28,7 @@ class AmplifyExerciseRepository {
     return exerciseJsons.map((json) => ExerciseExtension.dtoLocal(json)).toList();
   }
 
-  Future<void> loadLocalExercises({required VoidCallback onLoad}) async {
+  Future<void> loadLocalExercises() async {
     List<ExerciseDto> exerciseDtos = [];
     final chestExercises = await _loadFromAssets(file: 'chest_exercises.json');
     final shouldersExercises = await _loadFromAssets(file: 'shoulders_exercises.json');
@@ -79,12 +78,10 @@ class AmplifyExerciseRepository {
     // print(withNoVideos.length);
 
     _localExercises = exerciseDtos;
-    onLoad();
   }
 
-  void loadExerciseStream({required List<Exercise> exercises, required VoidCallback onData}) {
+  void loadExerciseStream({required List<Exercise> exercises}) {
     _userExercises = exercises.map((exercise) => ExerciseDto.toDto(exercise)).toList();
-    onData();
   }
 
   Future<void> saveExercise({required ExerciseDto exerciseDto}) async {
@@ -95,9 +92,7 @@ class AmplifyExerciseRepository {
 
     await Amplify.DataStore.save<Exercise>(exerciseToCreate);
 
-    if (kReleaseMode) {
-      Posthog().capture(eventName: PostHogAnalyticsEvent.createExercise.displayName, properties: exerciseDto.toJson());
-    }
+    Posthog().capture(eventName: PostHogAnalyticsEvent.createExercise.displayName, properties: exerciseDto.toJson());
 
     logger.i("saved exercise: $exerciseDto");
   }

@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -68,7 +68,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
           final pastSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
               .whereSetsForExercise(exercise: onlyExercise);
           controller.addExerciseLog(exercise: onlyExercise, pastSets: pastSets);
-          _cacheLog();
         });
   }
 
@@ -84,7 +83,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
           final id = superSetId(firstExerciseLog: firstExerciseLog, secondExerciseLog: secondExerciseLog);
           controller.superSetExerciseLogs(
               firstExerciseLogId: firstExerciseLog.id, secondExerciseLogId: secondExerciseLog.id, superSetId: id);
-          _cacheLog();
         },
         selectExercisesInLibrary: () {
           _closeDialog();
@@ -104,7 +102,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
               .whereSetsForExercise(exercise: selectedExercises.first);
           controller.replaceExerciseLog(
               oldExerciseId: oldExerciseLog.id, newExercise: selectedExercises.first, pastSets: pastSets);
-          _cacheLog();
         });
   }
 
@@ -118,8 +115,9 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     return routineLog;
   }
 
-  Future<void> _doCreateRoutineLog() async {
-    final routineLogToBeCreated = _routineLog().copyWith(endTime: DateTime.now());
+  Future<void> _doCreateRoutineLog({int? rpeRating, DateTimeRange? sleep}) async {
+    final routineLogToBeCreated = _routineLog()
+        .copyWith(endTime: DateTime.now(), rpeRating: rpeRating, sleepFrom: sleep?.start, sleepTo: sleep?.end);
 
     final createdRoutineLog =
         await Provider.of<ExerciseAndRoutineController>(context, listen: false).saveLog(logDto: routineLogToBeCreated);
@@ -129,8 +127,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     _navigateBack(routineLog: createdRoutineLog);
   }
 
-  Future<void> _doUpdateRoutineLog() async {
-    final routineLogToBeUpdated = _routineLog();
+  Future<void> _doUpdateRoutineLog({int? rpeRating}) async {
+    final routineLogToBeUpdated = _routineLog().copyWith(rpeRating: rpeRating);
 
     await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateLog(log: routineLogToBeUpdated);
 
@@ -165,10 +163,19 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
           context: context,
           title: 'Running Session',
           description: "Do you want to end session?",
-          leftAction: context.pop,
+          leftAction: Navigator.of(context).pop,
           rightAction: () {
             _closeDialog();
-            _doCreateRoutineLog();
+            displayBottomSheet(
+                context: context,
+                child: _RPERatingSlider(
+                  title: widget.log.name,
+                  rpeRating: widget.log.rpeRating.toDouble(),
+                  onSelectRating: (int rpeRating) async {
+                    final sleep = await calculateSleepDuration();
+                    _doCreateRoutineLog(rpeRating: rpeRating, sleep: sleep);
+                  },
+                ));
           },
           leftActionLabel: 'Cancel',
           rightActionLabel: 'End',
@@ -181,16 +188,18 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   void _updateLog() {
     final isRoutinePartiallyComplete = _isRoutinePartiallyComplete();
     if (isRoutinePartiallyComplete) {
-      _doUpdateRoutineLog();
+      displayBottomSheet(
+          context: context,
+          child: _RPERatingSlider(
+            title: widget.log.name,
+            rpeRating: widget.log.rpeRating.toDouble(),
+            onSelectRating: (int rpeRating) {
+              _closeDialog();
+              _doUpdateRoutineLog(rpeRating: rpeRating);
+            },
+          ));
     } else {
       showBottomSheetWithNoAction(context: context, description: "Complete some sets!", title: 'Update Workout');
-    }
-  }
-
-  void _cacheLog() {
-    if (widget.mode == RoutineEditorMode.log) {
-      final routineLogToBeCached = _routineLog().copyWith(endTime: DateTime.now());
-      Provider.of<ExerciseAndRoutineController>(context, listen: false).cacheLog(logDto: routineLogToBeCached);
     }
   }
 
@@ -207,7 +216,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     if (mounted) {
       if (orderedList != null) {
         Provider.of<ExerciseLogController>(context, listen: false).reOrderExerciseLogs(reOrderedList: orderedList);
-        _cacheLog();
       }
     }
   }
@@ -238,21 +246,19 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     runMessage(system: routineLogSystemInstruction, user: instruction, responseFormat: routineLogReportResponseFormat)
         .then((response) {
       if (response != null) {
-        if (kReleaseMode) {
-          Posthog().capture(eventName: PostHogAnalyticsEvent.generateRoutineLogReport.displayName);
-        }
+        Posthog().capture(eventName: PostHogAnalyticsEvent.generateRoutineLogReport.displayName);
+
         FlutterLocalNotificationsPlugin().show(
             900,
             "${routineLog.name} report is ready",
             "Your report is now ready for review",
             const NotificationDetails(
               iOS: DarwinNotificationDetails(
-                presentAlert: true,
-                presentBadge: false,
-                presentSound: false,
-                presentBanner: true,
-                interruptionLevel: InterruptionLevel.active
-              ),
+                  presentAlert: true,
+                  presentBadge: false,
+                  presentSound: false,
+                  presentBanner: true,
+                  interruptionLevel: InterruptionLevel.active),
             ),
             payload: response);
       }
@@ -278,7 +284,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -323,12 +328,12 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                     heroTag: UniqueKey(),
                     onPressed: _showWeightCalculator,
                     enableFeedback: true,
-              child: Image.asset(
-                'icons/dumbbells.png',
-                fit: BoxFit.contain,
-                color: isDarkMode ? Colors.white : Colors.white,
-                height: 24, // Adjust the height as needed
-              ),
+                    child: Image.asset(
+                      'icons/dumbbells.png',
+                      fit: BoxFit.contain,
+                      color: isDarkMode ? Colors.white : Colors.white,
+                      height: 24, // Adjust the height as needed
+                    ),
                   )
                 : null,
             body: Container(
@@ -367,7 +372,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                             padding: const EdgeInsets.only(bottom: 250),
                             child: Column(spacing: 20, children: [
                               ...exerciseLogs.map((exerciseLog) {
-
                                 final isExerciseMinimised = _minimisedExerciseLogCards.contains(exerciseLog.id);
 
                                 return isExerciseMinimised
@@ -387,16 +391,14 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                             firstExercise: exerciseLog, exercises: exerciseLogs),
                                         onRemoveSuperSet: (String superSetId) {
                                           exerciseLogController.removeSuperSet(superSetId: exerciseLog.superSetId);
-                                          _cacheLog();
                                         },
                                         onRemoveLog: () {
                                           exerciseLogController.removeExerciseLog(logId: exerciseLog.id);
-                                          _cacheLog();
                                         },
                                         onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
-                                        onCache: _cacheLog,
                                         onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
-                                        onResize: () => _handleResizedExerciseLogCard(exerciseIdToResize: exerciseLog.id),
+                                        onResize: () =>
+                                            _handleResizedExerciseLogCard(exerciseIdToResize: exerciseLog.id),
                                         isMinimised: _isMinimised(exerciseLog.id),
                                         onTapWeightEditor: (SetDto setDto) {
                                           setState(() {
@@ -452,14 +454,17 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     _loadExerciseLogs();
 
     _onDisposeCallback = Provider.of<ExerciseLogController>(context, listen: false).onClear;
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _cacheLog();
-    });
   }
 
   void _loadExerciseLogs() {
-    final exerciseLogs = widget.log.exerciseLogs;
+    final exerciseLogs = widget.mode == RoutineEditorMode.log
+        ? widget.log.exerciseLogs.map((exerciseLog) {
+            final pastSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
+                .whereSetsForExercise(exercise: exerciseLog.exercise);
+            final uncheckedSets = pastSets.map((set) => set.copyWith(checked: false)).toList();
+            return exerciseLog.copyWith(sets: uncheckedSets);
+          }).toList()
+        : widget.log.exerciseLogs;
     Provider.of<ExerciseLogController>(context, listen: false).loadExerciseLogs(exerciseLogs: exerciseLogs);
     _minimiseOrMaximiseCards();
   }
@@ -526,14 +531,14 @@ class _RoutineLogOverview extends StatelessWidget {
 
     return Container(
         decoration: BoxDecoration(
-          color: isDarkMode ? sapphireDark : Colors.grey.shade200,
+          color: isDarkMode ? Colors.black12 : Colors.grey.shade200,
           borderRadius: BorderRadius.circular(5), // rounded border
         ),
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
         child: Table(
           border: TableBorder(
               verticalInside:
-                  BorderSide(color: isDarkMode ? sapphireLighter.withValues(alpha:0.4) : Colors.white, width: 1)),
+                  BorderSide(color: isDarkMode ? sapphireLighter.withValues(alpha: 0.4) : Colors.white, width: 1)),
           columnWidths: const <int, TableColumnWidth>{
             0: FlexColumnWidth(1),
             1: FlexColumnWidth(1),
@@ -553,5 +558,97 @@ class _RoutineLogOverview extends StatelessWidget {
             ])
           ],
         ));
+  }
+}
+
+class _RPERatingSlider extends StatefulWidget {
+  final String title;
+  final double? rpeRating;
+  final void Function(int rpeRating) onSelectRating;
+
+  const _RPERatingSlider({required this.title, this.rpeRating = 5, required this.onSelectRating});
+
+  @override
+  State<_RPERatingSlider> createState() => _RPERatingSliderState();
+}
+
+class _RPERatingSliderState extends State<_RPERatingSlider> {
+  double _rpeRating = 1;
+
+  @override
+  Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+            "RPE (Rate of Perceived Exertion) is your guide to smarter training. It helps you measure effort, adjust intensity, and optimize progress while avoiding burnout.",
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium
+                ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+        const SizedBox(height: 10),
+        Text(
+            "Rate your ${widget.title} session, on a scale of 1 - 10, 1 being barely any effort and 10 being max effort",
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium
+                ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+        const SizedBox(height: 12),
+        Text(
+          _ratingDescription(_rpeRating),
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+        ),
+        const SizedBox(height: 12),
+        Slider(value: _rpeRating, onChanged: onChanged, min: 1, max: 10, divisions: 9, thumbColor: vibrantGreen),
+        const SizedBox(height: 10),
+        SizedBox(
+            width: double.infinity,
+            height: 45,
+            child: OpacityButtonWidget(label: "End Session", buttonColor: vibrantGreen, onPressed: onSelectRepRange)),
+      ],
+    );
+  }
+
+  void onChanged(double value) {
+    HapticFeedback.heavyImpact();
+
+    setState(() {
+      _rpeRating = value;
+    });
+  }
+
+  void onSelectRepRange() {
+    Navigator.of(context).pop();
+    final absoluteRating = _rpeRating.floor();
+    widget.onSelectRating(absoluteRating);
+  }
+
+  String _ratingDescription(double rating) {
+    final absoluteRating = rating.floor();
+
+    // Define a map of reps to percentages
+    Map<int, String> repToPercentage = {
+      1: "Extremely light — mostly warm-up weight",
+      2: "Very light — can easily perform many more reps",
+      3: "Light — still feels comfortable",
+      4: "Moderate — some effort required but manageable",
+      5: "Challenging — you're working, yet not near failure",
+      6: "Hard — beginning to feel significant strain",
+      7: "Very hard — only a few reps left in the tank",
+      8: "Near max — pushing close to muscular failure",
+      9: "Maximal — maybe 1 rep left, if at all",
+      10: "All-out — absolute limit, no reps left in reserve",
+    };
+
+    return repToPercentage[absoluteRating] ?? "Extremely light — mostly warm-up weight";
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _rpeRating = widget.rpeRating ?? 5;
   }
 }

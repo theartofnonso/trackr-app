@@ -91,7 +91,7 @@ class RoutineTemplateDto {
         id: "",
         templateId: id,
         name: name,
-        exerciseLogs: exerciseTemplates,
+        exerciseLogs: List.from(exerciseTemplates),
         notes: notes,
         owner: owner,
         startTime: DateTime.now(),

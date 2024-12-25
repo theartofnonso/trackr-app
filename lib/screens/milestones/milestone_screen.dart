@@ -7,7 +7,7 @@ import 'package:tracker_app/dtos/milestones/milestone_dto.dart';
 import 'package:tracker_app/dtos/milestones/reps_milestone.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
-import 'package:tracker_app/widgets/label_divider.dart';
+import 'package:tracker_app/widgets/dividers/label_divider.dart';
 
 import '../../../colors.dart';
 import '../../enums/milestone_type_enums.dart';

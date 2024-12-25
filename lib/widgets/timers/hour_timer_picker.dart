@@ -36,7 +36,7 @@ class _HourTimerPickerState extends State<HourTimerPicker> {
             squeeze: 1,
             selectionOverlay: Container(color: Colors.transparent),
             children: List<Widget>.generate(23, (int index) {
-              return Center(child: Text(index.toString().padLeft(2, "0"), style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 32, color: Colors.white)));
+              return Center(child: Text(index.toString().padLeft(2, "0"), style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 32)));
             }),
           ),
         ),

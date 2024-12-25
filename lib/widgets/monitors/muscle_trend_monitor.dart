@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tracker_app/colors.dart';
 
 class MuscleTrendMonitor extends StatelessWidget {
   final double value;
@@ -30,7 +29,7 @@ class MuscleTrendMonitor extends StatelessWidget {
       child: CircularProgressIndicator(
         value: value,
         strokeWidth: strokeWidth,
-        backgroundColor: isDarkMode ? sapphireLighter : Colors.grey.shade200,
+        backgroundColor: isDarkMode ? Colors.black12 : Colors.grey.shade200,
         strokeCap: strokeCap ?? StrokeCap.butt,
         valueColor: AlwaysStoppedAnimation<Color>(isDarkMode ? Colors.white: Colors.black),
       ),

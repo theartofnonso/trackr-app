@@ -32,18 +32,11 @@ class _HorizontalBarChart extends StatelessWidget {
   Widget build(BuildContext context) {
     final entries = (minimized ? frequencyData.entries.take(3) : frequencyData.entries).toList();
 
-    return ListView.separated(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) {
-          final entry = entries[index];
+    final children = entries
+        .map((entry) => _LinearBar(muscleGroupFamily: entry.key, frequency: entry.value, forceDarkMode: forceDarkMode))
+        .toList();
 
-          return _LinearBar(muscleGroupFamily: entry.key, frequency: entry.value, forceDarkMode: forceDarkMode);
-        },
-        separatorBuilder: (context, index) {
-          return SizedBox(height: 8);
-        },
-        itemCount: entries.length);
+    return Column(spacing: 8, children: children);
   }
 }
 

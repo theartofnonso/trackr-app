@@ -1,5 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -160,9 +159,7 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
   }
 
   void _onShareMonitor({required BuildContext context}) {
-    if (kReleaseMode) {
-      Posthog().capture(eventName: PostHogAnalyticsEvent.shareMonitor.displayName);
-    }
+    Posthog().capture(eventName: PostHogAnalyticsEvent.shareMonitor.displayName);
     onShare(
         context: context,
         globalKey: monitorKey,
@@ -200,9 +197,7 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
   }
 
   void _onShareCalendar({required BuildContext context}) {
-    if (kReleaseMode) {
-      Posthog().capture(eventName: PostHogAnalyticsEvent.shareCalendar.displayName);
-    }
+    Posthog().capture(eventName: PostHogAnalyticsEvent.shareCalendar.displayName);
     onShare(
         context: context,
         globalKey: calendarKey,

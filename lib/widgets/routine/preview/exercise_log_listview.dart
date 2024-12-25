@@ -22,7 +22,7 @@ class ExerciseLogListView extends StatelessWidget {
             superSet: exerciseLog.superSet,
           );
         }, separatorBuilder: (context, index) {
-          return SizedBox(height: 22);
+          return SizedBox(height: 30);
     }, itemCount: exerciseLogs.length);
   }
 }

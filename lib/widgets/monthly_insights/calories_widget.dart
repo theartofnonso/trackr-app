@@ -19,11 +19,16 @@ class CaloriesWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
 
-    final thisMonthCount = thisMonthLogs.map((log) => calculateCalories(duration: log.duration(), bodyWeight: routineUserController.weight(), activity: log.activityType)).sum;
-    final lastMonthCount = lastMonthLogs.map((log) => calculateCalories(duration: log.duration(), bodyWeight: routineUserController.weight(), activity: log.activityType)).sum;
+    final thisMonthCount = thisMonthLogs
+        .map((log) => calculateCalories(
+            duration: log.duration(), bodyWeight: routineUserController.weight(), activity: log.activityType))
+        .sum;
+    final lastMonthCount = lastMonthLogs
+        .map((log) => calculateCalories(
+            duration: log.duration(), bodyWeight: routineUserController.weight(), activity: log.activityType))
+        .sum;
 
     final improved = thisMonthCount > lastMonthCount;
 
@@ -40,10 +45,8 @@ class CaloriesWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("$thisMonthCount",
-                    style: Theme.of(context).textTheme.titleMedium),
-                Text("$lastMonthCount",
-                    style: Theme.of(context).textTheme.titleSmall)
+                Text("$thisMonthCount", style: Theme.of(context).textTheme.titleMedium),
+                Text("$lastMonthCount", style: Theme.of(context).textTheme.titleSmall)
               ],
             ),
             const SizedBox(width: 4),
@@ -59,8 +62,6 @@ class CaloriesWidget extends StatelessWidget {
   }
 
   void _showCaloriesScreen({required BuildContext context}) {
-    navigateWithSlideTransition(
-        context: context,
-        child: CaloriesTrendScreen());
+    navigateWithSlideTransition(context: context, child: const CaloriesTrendScreen());
   }
 }

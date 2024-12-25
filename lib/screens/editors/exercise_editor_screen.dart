@@ -16,7 +16,7 @@ import '../../enums/exercise_type_enums.dart';
 import '../../logger.dart';
 import '../../utils/general_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
-import '../../widgets/label_divider.dart';
+import '../../widgets/dividers/label_divider.dart';
 import '../exercise/exercise_type_screen.dart';
 
 class ExerciseEditorScreen extends StatefulWidget {
@@ -169,7 +169,13 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   }
 
   void _navigateToExerciseTypeScreen() async {
-    if (widget.exercise != null) return;
+    if (widget.exercise != null) {
+      showSnackbar(
+          context: context,
+          icon: FaIcon(FontAwesomeIcons.circleInfo),
+          message: "Exercise type cannot be changed after creation.");
+      return;
+    }
 
     /// We don't want to allow editing of exercise type once created.
     final type = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ExerciseTypeScreen()))

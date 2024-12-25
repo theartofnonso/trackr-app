@@ -248,62 +248,45 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
             SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  spacing: 8,
                   children: [
                     if (withWeightsOnly(type: widget.exercise.type))
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: OpacityButtonWidget(
-                            onPressed: _heaviestWeightPerLog,
-                            label: SummaryType.weight.label,
-                            padding: const EdgeInsets.only(right: 5.0),
-                            buttonColor: _buttonColor(type: SummaryType.weight)),
-                      ),
+                      OpacityButtonWidget(
+                          onPressed: _heaviestWeightPerLog,
+                          label: SummaryType.weight.label,
+                          padding: const EdgeInsets.only(right: 5.0),
+                          buttonColor: _buttonColor(type: SummaryType.weight)),
                     if (withWeightsOnly(type: widget.exercise.type))
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: OpacityButtonWidget(
-                            onPressed: _heaviestSetVolumePerLog,
-                            label: SummaryType.setVolume.label,
-                            padding: const EdgeInsets.only(right: 5.0),
-                            buttonColor: _buttonColor(type: SummaryType.setVolume)),
-                      ),
+                      OpacityButtonWidget(
+                          onPressed: _heaviestSetVolumePerLog,
+                          label: SummaryType.setVolume.label,
+                          padding: const EdgeInsets.only(right: 5.0),
+                          buttonColor: _buttonColor(type: SummaryType.setVolume)),
                     if (withReps(type: widget.exercise.type))
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: OpacityButtonWidget(
-                            onPressed: _highestRepsForLog,
-                            label: SummaryType.mostReps.label,
-                            padding: const EdgeInsets.only(right: 5.0),
-                            buttonColor: _buttonColor(type: SummaryType.mostReps)),
-                      ),
+                      OpacityButtonWidget(
+                          onPressed: _highestRepsForLog,
+                          label: SummaryType.mostReps.label,
+                          padding: const EdgeInsets.only(right: 5.0),
+                          buttonColor: _buttonColor(type: SummaryType.mostReps)),
                     if (withReps(type: widget.exercise.type))
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: OpacityButtonWidget(
-                            onPressed: _totalRepsForLog,
-                            label: SummaryType.sessionReps.label,
-                            padding: const EdgeInsets.only(right: 5.0),
-                            buttonColor: _buttonColor(type: SummaryType.sessionReps)),
-                      ),
+                      OpacityButtonWidget(
+                          onPressed: _totalRepsForLog,
+                          label: SummaryType.sessionReps.label,
+                          padding: const EdgeInsets.only(right: 5.0),
+                          buttonColor: _buttonColor(type: SummaryType.sessionReps)),
                     if (withDurationOnly(type: widget.exercise.type))
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: OpacityButtonWidget(
-                            onPressed: _longestDurationPerLog,
-                            label: SummaryType.bestTime.label,
-                            padding: const EdgeInsets.only(right: 5.0),
-                            buttonColor: _buttonColor(type: SummaryType.bestTime)),
-                      ),
+                      OpacityButtonWidget(
+                          onPressed: _longestDurationPerLog,
+                          label: SummaryType.bestTime.label,
+                          padding: const EdgeInsets.only(right: 5.0),
+                          buttonColor: _buttonColor(type: SummaryType.bestTime)),
                     if (withDurationOnly(type: widget.exercise.type))
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: OpacityButtonWidget(
-                            onPressed: _totalTimePerLog,
-                            label: SummaryType.sessionTimes.label,
-                            padding: const EdgeInsets.only(right: 5.0),
-                            buttonColor: _buttonColor(type: SummaryType.sessionTimes)),
-                      ),
+                      OpacityButtonWidget(
+                          onPressed: _totalTimePerLog,
+                          label: SummaryType.sessionTimes.label,
+                          padding: const EdgeInsets.only(right: 5.0),
+                          buttonColor: _buttonColor(type: SummaryType.sessionTimes)),
                   ],
                 )),
           const SizedBox(height: 10),

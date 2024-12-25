@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:health/health.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 
 import '../colors.dart';
@@ -152,4 +154,77 @@ LinearGradient themeGradient({required BuildContext context}) {
       isDarkMode ? sapphireDark : Colors.white12,
     ],
   );
+}
+
+Future<bool> requestAppleHealth() async {
+
+  await Health().configure();
+
+  // define the types to get
+  final types = [HealthDataType.SLEEP_ASLEEP, HealthDataType.WORKOUT];
+
+  final permissions = [HealthDataAccess.READ, HealthDataAccess.WRITE];
+
+  bool hasPermissions =
+      await Health().hasPermissions(types, permissions: permissions) ?? false;
+
+  if (!hasPermissions) {
+    // requesting access to the data types before reading them
+    hasPermissions = await Health().requestAuthorization(types, permissions: permissions);
+  } else {
+    hasPermissions = true;
+  }
+
+  return hasPermissions;
+}
+
+Future<DateTimeRange?> calculateSleepDuration() async {
+  await Health().configure();
+
+  // fetch health data from the last 24 hours
+  final now = DateTime.now();
+
+  final pastDay = now.subtract(const Duration(hours: 24));
+
+  final values =
+      await Health().getHealthDataFromTypes(types: [HealthDataType.SLEEP_ASLEEP], startTime: pastDay, endTime: now);
+  final uniqueValues = Health().removeDuplicates(values);
+
+  DateTimeRange? sleepTime;
+
+  if (values.isNotEmpty) {
+    Iterable<DateTime> dateFrom = uniqueValues.map((value) => value.dateFrom);
+    Iterable<DateTime> dateTo = uniqueValues.map((value) => value.dateTo);
+
+    DateTime minDateTime = dateFrom.reduce((a, b) => a.isBefore(b) ? a : b);
+    DateTime maxDateTime = dateTo.reduce((a, b) => a.isAfter(b) ? a : b);
+
+    sleepTime = DateTimeRange(start: minDateTime, end: maxDateTime);
+  }
+
+  return sleepTime;
+}
+
+Color getImprovementColor({required bool improved, required num difference}) {
+
+  Color color = vibrantBlue;
+
+  if(improved && difference > 0) {
+    color = vibrantGreen;
+  } else if(!improved && difference > 0) {
+    color = Colors.deepOrange;
+  }
+  return color;
+}
+
+IconData getImprovementIcon({required bool improved, required num difference}) {
+
+  IconData icon = FontAwesomeIcons.arrowsUpDown;
+
+  if(improved && difference > 0) {
+    icon = FontAwesomeIcons.arrowTrendUp;
+  } else if(!improved && difference > 0) {
+    icon = FontAwesomeIcons.arrowTrendDown;
+  }
+  return icon;
 }

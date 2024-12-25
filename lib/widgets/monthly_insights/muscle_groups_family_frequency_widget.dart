@@ -21,7 +21,6 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
 
   @override
   Widget build(BuildContext context) {
-
     final exerciseLogs = widget.logs
         .map((log) => loggedExercises(exerciseLogs: log.exerciseLogs))
         .expand((exerciseLogs) => exerciseLogs)
@@ -43,27 +42,26 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
 
     return GestureDetector(
       onTap: _onTap,
-      child: Container(
-        color: Colors.transparent,
-        child: Column(
-          children: [
-            MuscleGroupSplitChart(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          MuscleGroupSplitChart(
               title: "Muscle Groups Frequency",
-                description: "Train a variety of muscle groups to avoid muscle imbalances and prevent injury. On average each muscle group should be trained at least 2 times a week.",
-                muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
-                minimized: _minimized),
-            if (untrainedMuscleGroups.isNotEmpty)
-              RichText(
-                  text: TextSpan(text: "You have not trained", style: Theme.of(context).textTheme.bodySmall, children: [
-                const TextSpan(text: " "),
-                TextSpan(
-                    text: untrainedMuscleGroupsNames,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold)),
-                const TextSpan(text: " "),
-                TextSpan(text: "this month", style: Theme.of(context).textTheme.bodySmall),
-              ])),
-          ],
-        ),
+              description:
+                  "Train a variety of muscle groups to avoid muscle imbalances and prevent injury. On average each muscle group should be trained at least 2 times a week.",
+              muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
+              minimized: _minimized),
+          if (untrainedMuscleGroups.isNotEmpty)
+            RichText(
+                text: TextSpan(text: "You have not trained", style: Theme.of(context).textTheme.bodySmall, children: [
+              const TextSpan(text: " "),
+              TextSpan(
+                  text: untrainedMuscleGroupsNames,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold)),
+              const TextSpan(text: " "),
+              TextSpan(text: "this month", style: Theme.of(context).textTheme.bodySmall),
+            ])),
+        ],
       ),
     );
   }
@@ -76,14 +74,13 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
 }
 
 class MuscleGroupSplitChart extends StatelessWidget {
-  const MuscleGroupSplitChart({
-    super.key,
-    required this.muscleGroupFamilyFrequencies,
-    required bool minimized,
-    required this.title,
-    required this.description
-  }) : _minimized = minimized;
-
+  const MuscleGroupSplitChart(
+      {super.key,
+      required this.muscleGroupFamilyFrequencies,
+      required bool minimized,
+      required this.title,
+      required this.description})
+      : _minimized = minimized;
 
   final String title;
   final String description;
@@ -92,7 +89,6 @@ class MuscleGroupSplitChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -104,8 +100,7 @@ class MuscleGroupSplitChart extends StatelessWidget {
           FaIcon(_minimized ? FontAwesomeIcons.angleDown : FontAwesomeIcons.angleUp, size: 16),
       ]),
       const SizedBox(height: 10),
-      Text(
-          description,
+      Text(description,
           style: isDarkMode
               ? Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white70)
               : Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.black)),

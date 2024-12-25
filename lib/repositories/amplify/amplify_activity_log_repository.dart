@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:tracker_app/dtos/appsync/activity_log_dto.dart';
@@ -15,7 +14,6 @@ import '../../models/ActivityLog.dart';
 import '../../shared_prefs.dart';
 
 class AmplifyActivityLogRepository {
-
   final logger = getLogger(className: "AmplifyActivityLogRepository");
 
   List<ActivityLogDto> _logs = [];
@@ -29,13 +27,12 @@ class AmplifyActivityLogRepository {
   Future<void> saveLog({required ActivityLogDto logDto}) async {
     final datetime = TemporalDateTime.withOffset(logDto.endTime, Duration.zero);
 
-    final logToCreate = ActivityLog(data: jsonEncode(logDto), createdAt: datetime, updatedAt: datetime, owner: SharedPrefs().userId);
+    final logToCreate =
+        ActivityLog(data: jsonEncode(logDto), createdAt: datetime, updatedAt: datetime, owner: SharedPrefs().userId);
 
     await Amplify.DataStore.save<ActivityLog>(logToCreate);
 
-    if(kReleaseMode) {
-      Posthog().capture(eventName: PostHogAnalyticsEvent.logActivity.displayName, properties: logDto.toJson());
-    }
+    Posthog().capture(eventName: PostHogAnalyticsEvent.logActivity.displayName, properties: logDto.toJson());
 
     logger.i("Created activity log: $logDto");
   }
@@ -110,7 +107,6 @@ class AmplifyActivityLogRepository {
   List<ActivityLogDto> whereLogsIsWithinRange({required DateTimeRange range}) {
     return _logs.where((log) => log.createdAt.isBetweenInclusive(from: range.start, to: range.end)).toList();
   }
-
 
   void clear() {
     _logs.clear();

@@ -94,22 +94,25 @@ class RoutineLogShareableLite extends StatelessWidget {
                         frequencyData: frequencyData,
                         forceDarkMode: true,
                       ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Spacer(),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 6.0),
-                            child: Image.asset(
-                              'images/trkr.png',
-                              fit: BoxFit.contain,
-                              height: 8, // Adjust the height as needed
-                            ),
-                          )
-                        ],
-                      ),
                     ]),
-              )
+              ),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 20.0, bottom: 20),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Spacer(),
+                      Image.asset(
+                        'images/trkr.png',
+                        fit: BoxFit.contain,
+                        height: 8, // Adjust the height as needed
+                      )
+                    ],
+                  ),
+                ),
+              ),
             ]),
           ),
         ),

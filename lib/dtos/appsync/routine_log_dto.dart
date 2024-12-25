@@ -1,5 +1,9 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
+import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
+import 'package:tracker_app/enums/exercise_type_enums.dart';
+
 import '../../enums/activity_type_enums.dart';
 import '../../models/RoutineLog.dart';
 import '../abstract_class/log_class.dart';
@@ -27,7 +31,13 @@ class RoutineLogDto extends Log {
 
   final List<ExerciseLogDto> exerciseLogs;
 
+  final int rpeRating;
+
   final String owner;
+
+  final DateTime? sleepFrom;
+
+  final DateTime? sleepTo;
 
   @override
   final DateTime createdAt;
@@ -44,7 +54,10 @@ class RoutineLogDto extends Log {
     this.summary,
     required this.startTime,
     required this.endTime,
+    this.rpeRating = 5,
     required this.owner,
+    this.sleepFrom,
+    this.sleepTo,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -60,6 +73,9 @@ class RoutineLogDto extends Log {
       'templateId': templateId,
       'name': name,
       'notes': notes,
+      'rpeRating': rpeRating,
+      'sleepFrom': sleepFrom?.toIso8601String() ?? "",
+      'sleepTo': sleepTo?.toIso8601String() ?? "",
       'startTime': startTime.toIso8601String(),
       'endTime': endTime.toIso8601String(),
       'exercises': exerciseLogs.map((exercise) => exercise.toJson()).toList(),
@@ -74,6 +90,7 @@ class RoutineLogDto extends Log {
     final templateId = json["templateId"] ?? "";
     final name = json["name"] ?? "";
     final notes = json["notes"] ?? "";
+    final rpeRating = json["rpeRating"] ?? 5;
     final summary = json["summary"];
     final startTime = DateTime.parse(json["startTime"]);
     final endTime = DateTime.parse(json["endTime"]);
@@ -100,6 +117,7 @@ class RoutineLogDto extends Log {
       startTime: startTime,
       endTime: endTime,
       owner: "",
+      rpeRating: rpeRating,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );
@@ -110,14 +128,18 @@ class RoutineLogDto extends Log {
     final templateId = json["templateId"] ?? "";
     final name = json["name"] ?? "";
     final notes = json["notes"] ?? "";
+    final rpeRating = json["rpeRating"] ?? 5;
     final summary = json["summary"];
+    final sleepFrom = DateTime.tryParse(json["sleepFrom"] ?? "");
+    final sleepTo = DateTime.tryParse(json["sleepTo"] ?? "");
     final startTime = DateTime.parse(json["startTime"]);
     final endTime = DateTime.parse(json["endTime"]);
     final exerciseLogsInJson = json["exercises"] as List<dynamic>;
     List<ExerciseLogDto> exerciseLogs = [];
     if (exerciseLogsInJson.isNotEmpty && exerciseLogsInJson.first is String) {
       exerciseLogs = exerciseLogsInJson
-          .map((json) => ExerciseLogDto.fromJson(routineLogId: log.id, json: jsonDecode(json), createdAt: log.createdAt.getDateTimeInUtc()))
+          .map((json) => ExerciseLogDto.fromJson(
+              routineLogId: log.id, json: jsonDecode(json), createdAt: log.createdAt.getDateTimeInUtc()))
           .toList();
     } else {
       exerciseLogs = exerciseLogsInJson
@@ -132,10 +154,13 @@ class RoutineLogDto extends Log {
       name: name,
       exerciseLogs: exerciseLogs,
       notes: notes,
+      rpeRating: rpeRating,
       summary: summary,
       startTime: startTime,
       endTime: endTime,
       owner: log.owner ?? "",
+      sleepFrom: sleepFrom,
+      sleepTo: sleepTo,
       createdAt: log.createdAt.getDateTimeInUtc(),
       updatedAt: log.updatedAt.getDateTimeInUtc(),
     );
@@ -148,10 +173,13 @@ class RoutineLogDto extends Log {
     String? name,
     String? notes,
     String? summary,
+    int? rpeRating,
     DateTime? startTime,
     DateTime? endTime,
     List<ExerciseLogDto>? exerciseLogs,
     String? owner,
+    DateTime? sleepFrom,
+    DateTime? sleepTo,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -160,11 +188,14 @@ class RoutineLogDto extends Log {
       templateId: templateId ?? this.templateId,
       name: name ?? this.name,
       notes: notes ?? this.notes,
+      rpeRating: rpeRating ?? this.rpeRating,
       summary: summary ?? this.summary,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
       exerciseLogs: exerciseLogs ?? this.exerciseLogs,
       owner: owner ?? this.owner,
+      sleepFrom: sleepFrom ?? this.sleepFrom,
+      sleepTo: sleepTo ?? this.sleepTo,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -172,7 +203,7 @@ class RoutineLogDto extends Log {
 
   @override
   String toString() {
-    return 'RoutineLogDto{id: $id, templateId: $templateId, name: $name, notes: $notes, summary: $summary, startTime: $startTime, endTime: $endTime, exerciseLogs: $exerciseLogs, owner: $owner, createdAt: $createdAt, updatedAt: $updatedAt}';
+    return 'RoutineLogDto{id: $id, templateId: $templateId, name: $name, notes: $notes, rpeRating: $rpeRating, summary: $summary, startTime: $startTime, endTime: $endTime, exerciseLogs: $exerciseLogs, owner: $owner, sleepFrom: $sleepFrom, sleepTo: $sleepTo, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
 
   @override
@@ -180,4 +211,12 @@ class RoutineLogDto extends Log {
 
   @override
   ActivityType get activityType => ActivityType.weightlifting;
+
+  double get volume => exerciseLogs.expand((exerciseLog) => exerciseLog.sets).map((set) {
+        return switch (set.type) {
+          ExerciseType.weights => (set as WeightAndRepsSetDto).volume(),
+          ExerciseType.bodyWeight => 0.0,
+          ExerciseType.duration => 0.0,
+        };
+      }).sum;
 }

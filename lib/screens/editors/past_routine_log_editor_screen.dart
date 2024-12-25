@@ -12,6 +12,7 @@ import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 
 import '../../colors.dart';
+import '../../controllers/routine_user_controller.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/set_dtos/weight_and_reps_dto.dart';
@@ -131,14 +132,13 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
 
     final updatedLog = widget.log.copyWith(name: routineName, notes: routineNotes, exerciseLogs: exerciseLogs);
 
-    if (widget.log.id.isEmpty) {
-      final datetime = TemporalDateTime.withOffset(updatedLog.startTime, Duration.zero);
+    final datetime = TemporalDateTime.withOffset(updatedLog.startTime, Duration.zero);
 
-      final createdLog = await Provider.of<ExerciseAndRoutineController>(context, listen: false).saveLog(logDto: updatedLog, datetime: datetime);
-      _navigateBack(log: createdLog);
-    } else {
-      await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateLog(log: updatedLog);
-    }
+    final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
+
+    final createdLog = await Provider.of<ExerciseAndRoutineController>(context, listen: false)
+        .saveLog(logDto: updatedLog, datetime: datetime, user: routineUserController.user);
+    _navigateBack(log: createdLog);
   }
 
   void _checkForUnsavedChanges() {
