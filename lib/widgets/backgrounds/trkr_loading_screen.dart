@@ -47,10 +47,9 @@ class TRKRLoadingScreen extends StatelessWidget {
               Center(
                 child: AnimatedTextKit(
                   animatedTexts: children,
-                  totalRepeatCount: 4,
                   pause: const Duration(milliseconds: 1000),
-                  displayFullTextOnTap: true,
-                  stopPauseOnTap: true,
+                  repeatForever: true,
+                  isRepeatingAnimation: true,
                 ),
               ),
             ],
