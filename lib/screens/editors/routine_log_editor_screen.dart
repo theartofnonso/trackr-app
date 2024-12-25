@@ -459,11 +459,14 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   }
 
   void _loadExerciseLogs() {
-    final exerciseLogs = widget.log.exerciseLogs.map((exerciseLog) {
-      final pastSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
-          .whereSetsForExercise(exercise: exerciseLog.exercise);
-      return exerciseLog.copyWith(sets: pastSets);
-    }).toList();
+    final exerciseLogs = widget.mode == RoutineEditorMode.log
+        ? widget.log.exerciseLogs.map((exerciseLog) {
+            final pastSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
+                .whereSetsForExercise(exercise: exerciseLog.exercise);
+            final uncheckedSets = pastSets.map((set) => set.copyWith(checked: false)).toList();
+            return exerciseLog.copyWith(sets: uncheckedSets);
+          }).toList()
+        : widget.log.exerciseLogs;
     Provider.of<ExerciseLogController>(context, listen: false).loadExerciseLogs(exerciseLogs: exerciseLogs);
     _minimiseOrMaximiseCards();
   }

@@ -5,7 +5,6 @@ import 'package:tracker_app/enums/exercise_type_enums.dart';
 import '../dtos/appsync/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/set_dtos/set_dto.dart';
-import '../utils/exercise_logs_utils.dart';
 
 class ExerciseLogRepository {
   List<ExerciseLogDto> _exerciseLogs = [];
@@ -13,11 +12,7 @@ class ExerciseLogRepository {
   UnmodifiableListView<ExerciseLogDto> get exerciseLogs => UnmodifiableListView(_exerciseLogs);
 
   void loadExerciseLogs({required List<ExerciseLogDto> exerciseLogs}) {
-    _exerciseLogs = exerciseLogs.map((exerciseLog) {
-      final exerciseType = exerciseLog.exercise.type;
-      final sets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
-      return exerciseLog.copyWith(sets: withReps(type: exerciseType) ? sets : []);
-    }).toList();
+    _exerciseLogs = exerciseLogs;
   }
 
   void addExerciseLog({required ExerciseDto exercise, required List<SetDto> pastSets}) {
