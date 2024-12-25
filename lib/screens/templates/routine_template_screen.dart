@@ -122,7 +122,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
     final allLoggedVolumesForTemplate = allLogsForTemplate.map((log) => log.volume).toList();
 
-    final avgVolume = allLoggedVolumesForTemplate.average;
+    final avgVolume = allLoggedVolumesForTemplate.isNotEmpty ? allLoggedVolumesForTemplate.average : 0.0;
 
     final volumeChartPoints =
         allLoggedVolumesForTemplate.mapIndexed((index, volume) => ChartPointDto(index, volume)).toList();

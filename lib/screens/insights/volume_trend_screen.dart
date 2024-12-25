@@ -63,7 +63,7 @@ class VolumeTrendScreen extends StatelessWidget {
       months.add(startOfMonth.abbreviatedMonth());
     }
 
-    final avgVolume = volumes.average;
+    final avgVolume = volumes.isNotEmpty ? volumes.average : 0.0;
 
     final chartPoints =
         volumes.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();

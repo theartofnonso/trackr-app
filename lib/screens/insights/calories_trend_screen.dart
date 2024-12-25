@@ -59,7 +59,7 @@ class CaloriesTrendScreen extends StatelessWidget {
       months.add(startOfMonth.abbreviatedMonth());
     }
 
-    final avgCalories = calories.average.round();
+    final avgCalories = calories.isNotEmpty ? calories.average.round() : 0.0;
 
     final chartPoints =
         calories.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();

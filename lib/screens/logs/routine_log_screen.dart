@@ -132,7 +132,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     final allLoggedVolumesForTemplate = logs.map((log) => log.volume).toList();
 
-    final avgVolume = allLoggedVolumesForTemplate.average;
+    final avgVolume = allLoggedVolumesForTemplate.isNotEmpty ? allLoggedVolumesForTemplate.average : 0.0;
 
     final currentAndPreviousMonthVolume = _calculateCurrentAndPreviousLogVolume(logs: logs);
 
