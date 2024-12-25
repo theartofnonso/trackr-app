@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:health/health.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 
@@ -202,4 +203,28 @@ Future<DateTimeRange?> calculateSleepDuration() async {
   }
 
   return sleepTime;
+}
+
+Color getImprovementColor({required bool improved, required num difference}) {
+
+  Color color = vibrantBlue;
+
+  if(improved && difference > 0) {
+    color = vibrantGreen;
+  } else if(!improved && difference < 0) {
+    color = Colors.deepOrange;
+  }
+  return color;
+}
+
+IconData getImprovementIcon({required bool improved, required num difference}) {
+
+  IconData icon = FontAwesomeIcons.arrowsUpDown;
+
+  if(improved && difference > 0) {
+    icon = FontAwesomeIcons.arrowTrendUp;
+  } else if(!improved && difference < 0) {
+    icon = FontAwesomeIcons.arrowTrendDown;
+  }
+  return icon;
 }

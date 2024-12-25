@@ -127,14 +127,14 @@ class CaloriesTrendScreen extends StatelessWidget {
                           crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
                             FaIcon(
-                              improved ? FontAwesomeIcons.arrowUp : FontAwesomeIcons.arrowDown,
-                              color: improved ? vibrantGreen : Colors.deepOrange,
+                              getImprovementIcon(improved: improved, difference: difference),
+                              color: getImprovementColor(improved: improved, difference: difference),
                               size: 12,
                             ),
                             const SizedBox(width: 6),
                             OpacityButtonWidget(
                               label: differenceSummary,
-                              buttonColor: improved ? vibrantGreen : Colors.deepOrange,
+                              buttonColor: getImprovementColor(improved: improved, difference: difference),
                             )
                           ],
                         )
