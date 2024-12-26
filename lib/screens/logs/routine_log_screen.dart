@@ -197,13 +197,11 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                       ),
                     ),
                   SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       spacing: 10,
                       children: [
-                        const SizedBox(
-                          width: 10,
-                        ),
                         _StatisticWidget(
                           title: "${completedExerciseLogs.length}",
                           subtitle: "Exercises",
@@ -266,9 +264,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                               description:
                                   "A self-reported score (1 to 10) indicating how hard your workout felt. Helps adjust workout intensity to match your goals and avoid overtraining."),
                         ),
-                        const SizedBox(
-                          width: 10,
-                        )
                       ],
                     ),
                   ),
@@ -682,7 +677,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
       }
     }
   }
-
 }
 
 class _StatisticWidget extends StatelessWidget {
@@ -749,6 +743,4 @@ class _StatisticWidget extends StatelessWidget {
       ),
     );
   }
-  
- 
 }

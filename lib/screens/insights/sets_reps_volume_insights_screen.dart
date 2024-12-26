@@ -42,6 +42,8 @@ import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/chart/bar_chart.dart';
 import '../../widgets/chart/horizontal_stacked_bars.dart';
 import '../../widgets/chart/legend.dart';
+import '../../widgets/dividers/label_divider.dart';
+import '../../widgets/insights_grid_item_widget.dart';
 
 class _TrendAndDate {
   final num value;
@@ -165,6 +167,18 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     final differenceSummary = _generateDifferenceSummary(difference: difference, improved: improved);
 
+    final leanMoreChildren = [
+      InsightsGridItemWidget(
+        title: 'Reps: All about reps and ranges',
+      ),
+      InsightsGridItemWidget(
+        title: 'Sets: A quick dive into sets',
+      ),
+      InsightsGridItemWidget(
+        title: 'Volume: Understanding training intensity',
+      )
+    ];
+
     return Scaffold(
       appBar: widget.canPop
           ? AppBar(
@@ -186,18 +200,16 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     scrollDirection: Axis.horizontal,
                     child: Row(children: [
-                      const SizedBox(width: 10),
                       ...muscleGroups.sublist(0, muscleGroupScrollViewHalf),
-                      const SizedBox(width: 10)
                     ])),
                 SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     scrollDirection: Axis.horizontal,
                     child: Row(children: [
-                      const SizedBox(width: 10),
                       ...muscleGroups.sublist(muscleGroupScrollViewHalf),
-                      const SizedBox(width: 10)
                     ])),
                 const SizedBox(height: 18),
                 Padding(
@@ -328,6 +340,27 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                         ),
                       ]),
                   ]),
+                ),
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: LabelDivider(
+                    label: "Learn about training basics".toUpperCase(),
+                    labelColor: isDarkMode ? Colors.white70 : Colors.black,
+                    dividerColor: sapphireLighter,
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  height: 200,
+                  child: GridView.count(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      scrollDirection: Axis.horizontal,
+                      crossAxisCount: 1,
+                      childAspectRatio: 1.2,
+                      mainAxisSpacing: 10.0,
+                      children: leanMoreChildren),
                 )
               ],
             ),
