@@ -160,20 +160,20 @@ class _OverviewScreenState extends State<OverviewScreen> {
                                   onTap: () => _generateMonthlyInsightsReport(datetime: widget.dateTimeRange.start)),
                             ],
                           ),
-                        if (SharedPrefs().showCalendar)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 16.0),
-                            child: Column(
-                              children: [
-                                Calendar(
-                                  onSelectDate: _onChangedDateTime,
-                                  dateTime: widget.dateTimeRange.start,
-                                ),
-                                const SizedBox(height: 10),
-                                _LogsListView(dateTime: _selectedDateTime),
-                              ],
-                            ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 16.0),
+                          child: Column(
+                            children: [
+                              Calendar(
+                                onSelectDate: _onChangedDateTime,
+                                dateTime: widget.dateTimeRange.start,
+                                minimiseCalendar: SharedPrefs().minimiseCalendar,
+                              ),
+                              const SizedBox(height: 10),
+                              _LogsListView(dateTime: _selectedDateTime),
+                            ],
                           ),
+                        ),
                         const SizedBox(height: 12),
                         MonthlyInsights(dateTimeRange: widget.dateTimeRange),
                         const SizedBox(height: 18),

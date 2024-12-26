@@ -142,15 +142,15 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 SwitchListTile(
                   tileColor: Colors.transparent,
                   activeColor: vibrantGreen,
-                  title: Text('Show calendar', style: Theme
+                  title: Text('Minimise calendar', style: Theme
                       .of(context)
                       .textTheme
                       .titleMedium),
-                  value: SharedPrefs().showCalendar,
+                  value: SharedPrefs().minimiseCalendar,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                   onChanged: (bool value) {
                     setState(() {
-                      SharedPrefs().showCalendar = value;
+                      SharedPrefs().minimiseCalendar = value;
                       Provider.of<SettingsController>(context, listen: false).notify();
                     });
                   },
