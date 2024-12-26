@@ -121,7 +121,7 @@ class _CalendarState extends State<Calendar> {
 
     // 3. Calculate the end of this current week (6 days after start)
     final endOfWeek = startOfWeek.add(const Duration(days: 6));
-    
+
     // 4. Retrieve logs from your controllers for only this 7-day range
     final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
     final activityLogController = Provider.of<ActivityLogController>(context, listen: false);
