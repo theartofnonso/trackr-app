@@ -23,6 +23,7 @@ class _CalendarNavigatorState extends State<CalendarNavigator> {
   /// Navigates to the previous month.
   void _goToPreviousMonth() {
     final dateRange = theLastYearDateTimeRange();
+
     final startDate = dateRange.start;
     setState(() {
       if (startDate.isBefore(_currentDate)) {
