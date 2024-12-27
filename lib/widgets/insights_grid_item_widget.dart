@@ -32,7 +32,7 @@ class InsightsGridItemWidget extends StatelessWidget {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    sapphireDark.withValues(alpha: 0.6),
+                    sapphireDark.withValues(alpha: 0.3),
                     sapphireDark.withValues(alpha: 0.9),
                     sapphireDark,
                   ],
