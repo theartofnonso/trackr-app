@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/FireStateMachine.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/analytics_controller.dart';
 import 'package:tracker_app/screens/insights/overview_screen.dart';
@@ -11,11 +9,8 @@ import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.da
 import 'package:tracker_app/screens/onboarding/onboarding_checklist_notifications_screen.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 
-import '../colors.dart';
 import '../controllers/exercise_and_routine_controller.dart';
-import '../utils/general_utils.dart';
 import '../controllers/activity_log_controller.dart';
-import '../controllers/exercise_and_routine_controller.dart';
 import '../utils/date_utils.dart';
 import '../widgets/calendar/calendar_navigator.dart';
 
