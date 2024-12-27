@@ -286,7 +286,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                       children: [
                         MuscleGroupSplitChart(
                             title: "Muscle Groups Split",
-                            description: "Here's a breakdown of the muscle groups in your ${log.name} workout log.",
+                            description: "Here's a breakdown of the muscle groups in your ${log.name} workout session.",
                             muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
                             minimized: false),
                         Column(
