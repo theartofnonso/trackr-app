@@ -5,14 +5,15 @@ import '../colors.dart';
 
 class InsightsGridItemWidget extends StatelessWidget {
   final String title;
+  final void Function()? onTap;
 
-  const InsightsGridItemWidget({super.key, required this.title});
+  const InsightsGridItemWidget({super.key, required this.title, this.onTap});
 
   @override
   Widget build(BuildContext context) {
 
     return GestureDetector(
-      onTap: () {},
+      onTap: onTap,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(5),
         child: SizedBox(

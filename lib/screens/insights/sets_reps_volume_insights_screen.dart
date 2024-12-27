@@ -12,6 +12,7 @@ import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/health_and_fitness_stats.dart';
 import 'package:tracker_app/openAI/open_ai_response_format.dart';
 import 'package:tracker_app/screens/AI/muscle_group_training_report_screen.dart';
+import 'package:tracker_app/screens/insights/knowledge_articles/kb_reps_screen.dart';
 import 'package:tracker_app/utils/date_utils.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/general_utils.dart';
@@ -44,6 +45,7 @@ import '../../widgets/chart/horizontal_stacked_bars.dart';
 import '../../widgets/chart/legend.dart';
 import '../../widgets/dividers/label_divider.dart';
 import '../../widgets/insights_grid_item_widget.dart';
+import 'knowledge_articles/kb_sets_screen.dart';
 
 class _TrendAndDate {
   final num value;
@@ -169,10 +171,12 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     final leanMoreChildren = [
       InsightsGridItemWidget(
-        title: 'Reps: All about reps and ranges',
+        title: 'Reps and Ranges: Mastering the Basics for Optimal Training',
+        onTap: () => navigateWithSlideTransition(context: context, child: KbRepsScreen()),
       ),
       InsightsGridItemWidget(
-        title: 'Sets: A quick dive into sets',
+        title: 'Sets: A Deep Dive into Strength Training Fundamentals',
+      onTap: () => navigateWithSlideTransition(context: context, child: KbSetsScreen())
       ),
       InsightsGridItemWidget(
         title: 'Volume: Understanding training intensity',
