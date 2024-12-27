@@ -23,8 +23,9 @@ class _FireStateMachineState extends State<FireWidget> {
 
   @override
   Widget build(BuildContext context) {
-    logger.i("Triggering build2");
-    firstSpark();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      firstSpark();
+    });
 
     return Container(
       width: 50.0,  // Set the width of your icon

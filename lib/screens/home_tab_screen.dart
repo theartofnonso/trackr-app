@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/FireStateMachine.dart';
 import 'package:tracker_app/controllers/analytics_controller.dart';
 import 'package:tracker_app/screens/insights/overview_screen.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
 
 import '../colors.dart';
+import '../controllers/exercise_and_routine_controller.dart';
 import '../utils/general_utils.dart';
 import '../widgets/calendar/calendar_navigator.dart';
 
@@ -27,6 +29,8 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<ExerciseAndRoutineController>(context, listen: true);
+
     return DefaultTabController(
         length: 2,
         child: Scaffold(
