@@ -137,7 +137,7 @@ class _ListItem extends StatelessWidget {
       const SizedBox(height: 8),
       Text(
         description,
-        style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: isDarkMode ? Colors.white70 : Colors.grey.shade200),
+        style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: isDarkMode ? Colors.white70 : Colors.grey.shade800),
       )
     ]);
   }

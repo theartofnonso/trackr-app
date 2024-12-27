@@ -188,7 +188,7 @@ class _ListItem extends StatelessWidget {
       Text(
         description,
         style:
-            Theme.of(context).textTheme.bodyLarge?.copyWith(color: isDarkMode ? Colors.white70 : Colors.grey.shade200),
+            Theme.of(context).textTheme.bodyLarge?.copyWith(color: isDarkMode ? Colors.white70 : Colors.grey.shade800),
       )
     ]);
   }
