@@ -96,7 +96,7 @@ class KbSetsScreen extends StatelessWidget {
                               "Example: Bicep curls followed immediately by triceps dips or bicep curls followed by hammer curls."),
                       _ListItem(
                           title: "Drop Sets",
-                          subtitle: "These involve performing a set of an repetitions until failure, then quickly reducing the weight and continuing with more repetitions until failure is reached again.",
+                          subtitle: "These involve performing a set of repetitions until failure, then quickly reducing the weight and continuing with more repetitions until failure is reached again.",
                           description:
                               "Example: Bicep curls with a heavy dumbbell until failure, then switch to a lighter dumbbell and continue until failure.")
                     ],
