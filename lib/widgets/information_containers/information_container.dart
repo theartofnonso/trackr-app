@@ -22,26 +22,16 @@ class InformationContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(5)),
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
       width: double.infinity,
-      child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Row(children: [
-                  leadingIcon,
-                  const SizedBox(width: 6),
-                  Text(title, style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w600)),
-                ]),
-                richDescription ?? Padding(
-                  padding: const EdgeInsets.only(top: 6.0),
-                  child: Text(description, style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w500)),
-                ),
-              ]),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(title.toUpperCase(), style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w700)),
+        richDescription ??
+            Padding(
+              padding: const EdgeInsets.only(top: 6.0),
+              child: Text(description, style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400, height: 2)),
             ),
-            trailingIcon ?? const SizedBox(),
-          ]),
+      ]),
     );
   }
 }

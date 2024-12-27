@@ -11,13 +11,18 @@ class ExerciseLogListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final widgets = exerciseLogs.map((exerciseLog) {
-      return ExerciseLogWidget(
-        padding: const EdgeInsets.only(bottom: 8),
-        exerciseLog: exerciseLog.exerciseLog,
-        superSet: exerciseLog.superSet,
-      );
-    }).toList();
-    return Column(children: widgets);
+
+    return ListView.separated(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemBuilder: (context, index) {
+          final exerciseLog = exerciseLogs[index];
+          return ExerciseLogWidget(
+            exerciseLog: exerciseLog.exerciseLog,
+            superSet: exerciseLog.superSet,
+          );
+        }, separatorBuilder: (context, index) {
+          return SizedBox(height: 30);
+    }, itemCount: exerciseLogs.length);
   }
 }

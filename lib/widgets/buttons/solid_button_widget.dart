@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class SolidButtonWidget extends StatelessWidget {
   final void Function()? onPressed;
@@ -13,7 +12,7 @@ class SolidButtonWidget extends StatelessWidget {
 
   const SolidButtonWidget(
       {super.key,
-      required this.onPressed,
+      this.onPressed,
       required this.label,
       this.loadingLabel = "loading",
       this.loading = false,
@@ -24,6 +23,9 @@ class SolidButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     return TextButton(
         style: ButtonStyle(
           visualDensity: visualDensity,
@@ -31,7 +33,7 @@ class SolidButtonWidget extends StatelessWidget {
           shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
           overlayColor: WidgetStateProperty.resolveWith<Color?>(
             (Set<WidgetState> states) {
-              return Colors.black.withOpacity(0.3); // Defer to the widget's default.
+              return Colors.black.withValues(alpha: 0.3); // Defer to the widget's default.
             },
           ),
         ),
@@ -44,8 +46,10 @@ class SolidButtonWidget extends StatelessWidget {
             children: [
               Text(loading ? loadingLabel : label,
                   textAlign: TextAlign.start,
-                  style: GoogleFonts.ubuntu(
-                      fontWeight: FontWeight.w600, fontSize: 16, color: textColor ?? Colors.white)),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                      color: textColor ?? (isDarkMode ? Colors.white : Colors.black))),
               loading
                   ? const Padding(
                       padding: EdgeInsets.only(left: 6.0),

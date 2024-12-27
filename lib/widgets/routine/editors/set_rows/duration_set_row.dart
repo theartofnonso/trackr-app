@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/set_dtos/duration_set_dto.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 
@@ -47,8 +46,12 @@ class DurationSetRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     return Table(
-      border: TableBorder.all(color: Colors.white.withOpacity(0.1), borderRadius: BorderRadius.circular(5)),
+      border:
+          TableBorder.all(color: isDarkMode ? Colors.white10 : Colors.black38, borderRadius: BorderRadius.circular(5)),
       columnWidths: editorType == RoutineEditorMode.edit
           ? <int, TableColumnWidth>{
               0: const FixedColumnWidth(50),
@@ -72,8 +75,7 @@ class DurationSetRow extends StatelessWidget {
                 height: 50,
                 child: Center(
                   child: editorType == RoutineEditorMode.edit || setDto.checked
-                      ? Text(setDto.duration.hmsDigital(),
-                          style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600))
+                      ? Text(setDto.duration.hmsDigital(), style: Theme.of(context).textTheme.bodyMedium)
                       : RoutineTimer(
                           startTime: startTime,
                           digital: true,

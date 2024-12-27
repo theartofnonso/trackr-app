@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class OpacityButtonWidget extends StatelessWidget {
   final void Function()? onPressed;
@@ -14,29 +13,42 @@ class OpacityButtonWidget extends StatelessWidget {
 
   const OpacityButtonWidget(
       {super.key,
-       this.onPressed,
-        this.onLongPress,
+      this.onPressed,
+      this.onLongPress,
       required this.label,
       this.loadingLabel = "loading",
       this.loading = false,
       this.buttonColor,
-        this.textStyle,
+      this.textStyle,
       this.padding,
       this.visualDensity = VisualDensity.compact});
 
+  Color? _themeForegroundColor({required bool isDarkMode}) {
+    return isDarkMode ? buttonColor : Colors.black;
+  }
+
+  Color? _themeBackgroundColor({required bool isDarkMode}) {
+    return isDarkMode ? buttonColor?.withValues(alpha:0.15) : buttonColor;
+  }
+
+  Color _defaultBackgroundColor({required bool isDarkMode}) {
+    return isDarkMode ? Colors.white.withValues(alpha:0.15) : Colors.grey.shade200;
+  }
+
   @override
   Widget build(BuildContext context) {
-
-    final action = onPressed ?? onLongPress;
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
 
     return TextButton(
         style: ButtonStyle(
           visualDensity: visualDensity,
-          backgroundColor: WidgetStateProperty.all(buttonColor?.withOpacity(0.15) ?? Colors.white.withOpacity(0.15)),
+          backgroundColor: WidgetStateProperty.all(
+              _themeBackgroundColor(isDarkMode: isDarkMode) ?? _defaultBackgroundColor(isDarkMode: isDarkMode)),
           shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
           overlayColor: WidgetStateProperty.resolveWith<Color?>(
             (Set<WidgetState> states) {
-              return Colors.black.withOpacity(0.3); // Defer to the widget's default.
+              return Colors.black.withValues(alpha:0.3); // Defer to the widget's default.
             },
           ),
         ),
@@ -50,10 +62,11 @@ class OpacityButtonWidget extends StatelessWidget {
             children: [
               Text(loading ? loadingLabel : label,
                   textAlign: TextAlign.start,
-                  style: textStyle ?? GoogleFonts.ubuntu(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                      color: action != null ? buttonColor : buttonColor?.withOpacity(0.2))),
+                  style: textStyle ??
+                      Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(color: _themeForegroundColor(isDarkMode: isDarkMode), fontWeight: FontWeight.bold)),
               loading
                   ? const Padding(
                       padding: EdgeInsets.only(left: 6.0),

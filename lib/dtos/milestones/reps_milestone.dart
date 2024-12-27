@@ -12,6 +12,8 @@ import '../set_dtos/weight_and_reps_dto.dart';
 class RepsMilestone extends Milestone {
   final MuscleGroup muscleGroup;
 
+
+
   RepsMilestone(
       {required super.id,
       required super.name,
@@ -43,7 +45,7 @@ class RepsMilestone extends Milestone {
     };
   }
 
-  static List<Milestone> loadMilestones({required List<RoutineLogDto> logs}) {
+  static List<RepsMilestone> loadMilestones({required List<RoutineLogDto> logs}) {
     final muscleGroups = [
       MuscleGroup.abs,
       MuscleGroup.biceps,
@@ -89,15 +91,13 @@ class RepsMilestone extends Milestone {
 
     for (final log in logs) {
       if (sumOfReps < target) {
-        final completedExerciseLogs = completedExercises(exerciseLogs: log.exerciseLogs);
+        final completedExerciseLogs = loggedExercises(exerciseLogs: log.exerciseLogs);
 
         final exerciseLogs = completedExerciseLogs
             .where((exerciseLog) => exerciseLog.exercise.type != ExerciseType.duration)
             .where((exerciseLog) {
           final primaryMuscleGroup = exerciseLog.exercise.primaryMuscleGroup;
-          final secondaryMuscleGroups = exerciseLog.exercise.secondaryMuscleGroups;
-          final muscleGroups = [primaryMuscleGroup, ...secondaryMuscleGroups];
-          return muscleGroups.contains(muscleGroup);
+          return muscleGroup == primaryMuscleGroup;
         });
 
         if (exerciseLogs.isNotEmpty) {

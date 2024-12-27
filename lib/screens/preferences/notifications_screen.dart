@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/enums/daily_notifications_enums.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 
 import '../../utils/dialog_utils.dart';
+import '../../utils/general_utils.dart';
 import '../../utils/timezone_utils.dart';
 
 Duration _timeForSchedule({required PendingNotificationRequest? schedule}) {
@@ -67,35 +67,23 @@ class NotificationsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: sapphireDark,
         appBar: AppBar(
-            backgroundColor: sapphireDark80,
-            leading: IconButton(
-              icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-              onPressed: () => context.pop(),
-            )),
+          leading: IconButton(
+            icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
+            onPressed: context.pop,
+          ),
+          title: Text(
+            "Notifications".toUpperCase(),
+          ),
+        ),
         body: Container(
-          width: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                sapphireDark80,
-                sapphireDark,
-              ],
-            ),
+          decoration: BoxDecoration(
+            gradient: themeGradient(context: context),
           ),
           child: SafeArea(
+            bottom: false,
             minimum: const EdgeInsets.all(10.0),
-            child: SingleChildScrollView(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                Text("Notifications",
-                    style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w900)),
-                const SizedBox(height: 24),
-                const _NotificationListView()
-              ]),
-            ),
+            child: const _NotificationListView(),
           ),
         ));
   }
@@ -117,29 +105,39 @@ class _NotificationSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: sapphireDark.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(8),
-        //border: Border.all(color: sapphireLight)
+        color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
+        borderRadius: BorderRadius.circular(5),
       ),
-      margin: const EdgeInsets.only(bottom: 10),
-      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(title, style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16)),
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const SizedBox(height: 8),
-            if (enabled) OpacityButtonWidget(onPressed: onPressed, label: subtitle)
+      child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Text(title, style: Theme.of(context).textTheme.bodyLarge),
+              ),
+              if (enabled)
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  OpacityButtonWidget(
+                    onPressed: onPressed,
+                    label: subtitle,
+                    buttonColor: vibrantGreen,
+                  )
+                ]),
+            ]),
+            Switch(
+              activeColor: vibrantGreen,
+              value: enabled,
+              onChanged: onChanged,
+            )
           ]),
-        ]),
-        Switch(
-          activeColor: vibrantGreen,
-          inactiveThumbColor: Colors.white70,
-          value: enabled,
-          onChanged: onChanged,
-        )
-      ]),
     );
   }
 }
@@ -260,11 +258,18 @@ class _NotificationListViewState extends State<_NotificationListView> {
     final dailyNotification = _DailyNotificationListTile(
         enabled: isDailyNotificationEnabled, schedule: _schedules.firstOrNull, onScheduleChanged: _loadSchedules);
 
-    if (isDailyNotificationEnabled) {
-      return dailyNotification;
-    }
+    final listItems = [dailyNotification, ...children];
 
-    return Column(children: [dailyNotification, const SizedBox(height: 16), ...children]);
+    return ListView.separated(
+        itemBuilder: (context, index) {
+          return listItems[index];
+        },
+        separatorBuilder: (context, index) {
+          return const SizedBox(
+            height: 10,
+          );
+        },
+        itemCount: listItems.length);
   }
 
   void _loadSchedules() async {

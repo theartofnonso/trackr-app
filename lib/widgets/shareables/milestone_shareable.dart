@@ -18,7 +18,7 @@ class MilestoneShareable extends StatelessWidget {
   Widget build(BuildContext context) {
     final imageFile = image;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
         child: RepaintBoundary(
@@ -33,7 +33,7 @@ class MilestoneShareable extends StatelessWidget {
                     )
                   : null,
               gradient: imageFile == null
-                  ? const LinearGradient(
+                  ? LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
@@ -52,7 +52,7 @@ class MilestoneShareable extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      sapphireDark.withOpacity(0.4),
+                      sapphireDark.withValues(alpha: 0.4),
                       sapphireDark,
                     ],
                   )),
@@ -67,13 +67,24 @@ class MilestoneShareable extends StatelessWidget {
                         style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900)),
                     Text(milestone.caption,
                         style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w600)),
-                    const SizedBox(height: 50),
-                    Image.asset(
-                      'images/trkr.png',
-                      fit: BoxFit.contain,
-                      height: 8, // Adjust the height as needed
-                    ),
-                  ])
+                  ]),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 20.0, bottom: 20),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Spacer(),
+                      Image.asset(
+                        'images/trkr.png',
+                        fit: BoxFit.contain,
+                        height: 8, // Adjust the height as needed
+                      )
+                    ],
+                  ),
+                ),
+              ),
             ]),
           ),
         ),

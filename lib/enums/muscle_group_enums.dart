@@ -14,7 +14,6 @@ class MuscleGroupFamily {
   static const MuscleGroupFamily core = MuscleGroupFamily._("Core");
   static const MuscleGroupFamily neck = MuscleGroupFamily._("Neck");
   static const MuscleGroupFamily fullBody = MuscleGroupFamily._("Full Body");
-  static const MuscleGroupFamily none = MuscleGroupFamily._("None");
 
   // List of all families
   static List<MuscleGroupFamily> get values => [
@@ -24,9 +23,12 @@ class MuscleGroupFamily {
         chest,
         shoulders,
         core,
-        neck,
-        fullBody,
       ];
+
+  @override
+  String toString() {
+    return name;
+  }
 }
 
 class MuscleGroup {
@@ -73,20 +75,18 @@ class MuscleGroup {
       "Calves enable ankle flexion, essential for running, jumping, and stability in lower-body movements.");
   static const MuscleGroup neck =
       MuscleGroup._("Neck", MuscleGroupFamily.neck, "Neck muscles help stabilize the head and support posture.");
-  static const MuscleGroup fullBody = MuscleGroup._("Full Body", MuscleGroupFamily.fullBody,
-      "Full body exercises engage multiple muscle groups, improving overall strength and endurance.");
-  static const MuscleGroup none =
-      MuscleGroup._("None", MuscleGroupFamily.fullBody, "No specific muscle group targeted.");
+  static const MuscleGroup fullBody = MuscleGroup._("Full Body", MuscleGroupFamily.fullBody, "Engages multiple muscle groups to provide a comprehensive and balanced workout.");
 
   // List of all muscle groups
   static List<MuscleGroup> get values => [
+        neck,
+        abs,
         forearms,
         biceps,
         triceps,
         lats,
         traps,
         back,
-        abs,
         chest,
         shoulders,
         frontShoulder,
@@ -97,8 +97,7 @@ class MuscleGroup {
         hamstrings,
         quadriceps,
         calves,
-        neck,
-        fullBody,
+    fullBody
       ].sorted((a, b) => a.name.compareTo(b.name));
 
   // Get all muscle groups by a specific family
@@ -110,7 +109,12 @@ class MuscleGroup {
   static MuscleGroup fromString(String string) {
     return MuscleGroup.values.firstWhere(
       (group) => group.name.toLowerCase() == string.toLowerCase(),
-      orElse: () => MuscleGroup.none,
+      orElse: () => MuscleGroup.fullBody,
     );
+  }
+
+  @override
+  String toString() {
+    return name;
   }
 }

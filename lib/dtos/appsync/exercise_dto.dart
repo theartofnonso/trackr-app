@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 
+import 'package:tracker_app/models/ModelProvider.dart';
+
 import '../../enums/exercise_type_enums.dart';
 import '../../enums/muscle_group_enums.dart';
 
@@ -28,7 +30,7 @@ class ExerciseDto {
       this.credit,
       required this.owner});
 
-  Map<String, dynamic> toJson() {
+  Map<String, Object> toJson() {
     return {
       'id': id,
       'name': name,
@@ -36,15 +38,24 @@ class ExerciseDto {
       'secondaryMuscleGroups': secondaryMuscleGroups.map((muscleGroup) => jsonEncode(muscleGroup.name)).toList(),
       'type': type.id,
       'owner': owner,
-      'description': description,
-      'video': video?.toString(),
-      'creditSource': creditSource?.toString(),
-      'credit': credit
+      'description': description ?? "",
+      'video': video?.toString() ?? "",
+      'creditSource': creditSource?.toString() ?? "",
+      'credit': credit ?? ""
     };
   }
 
-  factory ExerciseDto.fromJson(Map<String, dynamic> json) {
-    final id = json['id'] ?? "";
+  factory ExerciseDto.toDto(Exercise exercise) {
+    return ExerciseDto.fromExercise(exercise: exercise);
+  }
+
+  factory ExerciseDto.fromExercise({required Exercise exercise}) {
+    final json = jsonDecode(exercise.data);
+    return ExerciseDto.fromJson(json, owner: exercise.owner, exerciseId: exercise.id);
+  }
+
+  factory ExerciseDto.fromJson(Map<String, dynamic> json, {String? exerciseId, String? owner}) {
+    final id = exerciseId ?? json["id"] ?? "";
     final name = json["name"] ?? "";
     final primaryMuscleGroupString = json["primaryMuscleGroup"] ?? "";
     final primaryMuscleGroup = MuscleGroup.fromString(primaryMuscleGroupString);
@@ -53,7 +64,6 @@ class ExerciseDto {
         secondaryMuscleGroupString.map((muscleGroup) => MuscleGroup.fromString(muscleGroup)).toList();
     final typeJson = json["type"] ?? "";
     final type = ExerciseType.fromString(typeJson);
-    final owner = json["owner"] ?? "";
     final video = json["video"];
     final description = json["description"] ?? "";
     final videoUri = video != null ? Uri.parse(video) : null;
@@ -68,7 +78,7 @@ class ExerciseDto {
         type: type,
         video: videoUri,
         description: description,
-        owner: owner.toString(),
+        owner: owner ?? "",
         creditSource: creditSourceUri,
         credit: credit);
   }

@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
@@ -21,13 +20,18 @@ class MonthlyTrainingSummaryWidget extends StatelessWidget {
 
   const MonthlyTrainingSummaryWidget({
     super.key,
-    required this.routineLogs, required this.dateTime,
+    required this.routineLogs,
+    required this.dateTime,
   });
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final exerciseLogs = routineLogs
-        .map((log) => completedExercises(exerciseLogs: log.exerciseLogs))
+        .map((log) => loggedExercises(exerciseLogs: log.exerciseLogs))
         .expand((exerciseLogs) => exerciseLogs);
 
     final sets = exerciseLogs.expand((exercise) => exercise.sets);
@@ -37,7 +41,7 @@ class MonthlyTrainingSummaryWidget extends StatelessWidget {
     final totalHours = Duration(milliseconds: routineLogHoursInMilliSeconds);
 
     final tonnage = exerciseLogs.map((log) {
-      if(log.exercise.type == ExerciseType.weights) {
+      if (log.exercise.type == ExerciseType.weights) {
         final volume = log.sets.map((set) => (set as WeightAndRepsSetDto).volume()).sum;
         return volume;
       }
@@ -71,19 +75,18 @@ class MonthlyTrainingSummaryWidget extends StatelessWidget {
     }).expand((pbs) => pbs);
 
     return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
         decoration: BoxDecoration(
-          color: sapphireDark80,
-          border: Border.all(color: sapphireDark80.withOpacity(0.8), width: 2),
+          color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
           children: [
             Text("Summary of ${dateTime.formattedFullMonth()} Training".toUpperCase(),
-                style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+              style: Theme.of(context).textTheme.bodyMedium),
             const SizedBox(height: 30),
             Table(
-              border: TableBorder.symmetric(inside: BorderSide(color: sapphireLighter.withOpacity(0.4), width: 2)),
+              border: TableBorder.symmetric(inside: BorderSide(color: isDarkMode ? sapphireLighter.withValues(alpha:0.4) : Colors.grey.shade100, width: 2)),
               columnWidths: const <int, TableColumnWidth>{
                 0: FlexColumnWidth(),
                 1: FlexColumnWidth(),
@@ -192,21 +195,13 @@ class _TableItem extends StatelessWidget {
         children: <Widget>[
           Text(
             subTitle,
-            style: GoogleFonts.ubuntu(
-              color: titleColor,
-              fontSize: 20,
-              fontWeight: FontWeight.w900,
-            ),
+            style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: 4),
           Text(
             title,
             textAlign: TextAlign.center,
-            style: GoogleFonts.ubuntu(
-              color: subTitleColor.withOpacity(0.6),
-              fontSize: 10,
-              fontWeight: FontWeight.bold,
-            ),
+            style: Theme.of(context).textTheme.labelSmall,
           )
         ],
       ),

@@ -1,23 +1,42 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../colors.dart';
 import '../../../../dtos/pb_dto.dart';
-import '../../preview/set_rows/set_row.dart';
+import '../../../pbs/pb_icon.dart';
 
 class SingleSetRow extends StatelessWidget {
   final String label;
-  final EdgeInsets? margin;
   final List<PBDto> pbs;
 
-  const SingleSetRow({super.key, required this.label, this.margin, this.pbs = const []});
+  const SingleSetRow({super.key, required this.label, this.pbs = const []});
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
 
-    return SetRow(
-        margin: margin,
-        pbs: pbs,
+    final color = isDarkMode ? Colors.white10 : Colors.black38;
+
+    final pbsForSet = pbs
+        .map((pb) => PBIcon(
+              label: pb.pb.name,
+              size: 12,
+            ))
+        .toList();
+
+    return Badge(
+        alignment: Alignment.topLeft,
+        backgroundColor: Colors.transparent,
+        label: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6),
+          decoration: BoxDecoration(
+            color: pbs.isNotEmpty ? (isDarkMode ? sapphireDark80 : Colors.grey.shade200) : null,
+            borderRadius: BorderRadius.circular(5), // Rounded corners
+          ),
+          child: Row(spacing: 6, children: pbsForSet),
+        ),
         child: Table(
+            border: TableBorder.all(color: color, borderRadius: BorderRadius.circular(5)),
             columnWidths: const <int, TableColumnWidth>{
               0: FlexColumnWidth(),
             },
@@ -25,10 +44,13 @@ class SingleSetRow extends StatelessWidget {
               TableRow(children: [
                 TableCell(
                   verticalAlignment: TableCellVerticalAlignment.middle,
-                  child: Text(
-                    label,
-                    style: GoogleFonts.ubuntu(color: Colors.white),
-                    textAlign: TextAlign.center,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: Text(
+                      label,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
               ]),

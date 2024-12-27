@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:tracker_app/enums/activity_type_enums.dart';
 
+import '../../models/ActivityLog.dart';
 import '../abstract_class/log_class.dart';
 
 class ActivityLogDto extends Log {
@@ -18,6 +21,7 @@ class ActivityLogDto extends Log {
   final DateTime createdAt;
   @override
   final DateTime updatedAt;
+  final String summary;
 
   ActivityLogDto({
     required this.id,
@@ -26,6 +30,7 @@ class ActivityLogDto extends Log {
     required this.startTime,
     required this.endTime,
     required this.owner,
+    this.summary = "",
     required this.createdAt,
     required this.updatedAt,
   });
@@ -35,11 +40,37 @@ class ActivityLogDto extends Log {
     return endTime.difference(startTime);
   }
 
-  Map<String, dynamic> toJson() {
+  factory ActivityLogDto.toDto(ActivityLog log) {
+    return ActivityLogDto.fromLog(log);
+  }
+
+  factory ActivityLogDto.fromLog(ActivityLog log) {
+    final dataJson = jsonDecode(log.data);
+    final name = dataJson["name"] ?? "";
+    final notes = dataJson["notes"] ?? "";
+    final summary = dataJson["summary"] ?? "";
+    final startTime = DateTime.parse(dataJson["startTime"]);
+    final endTime = DateTime.parse(dataJson["endTime"]);
+
+    return ActivityLogDto(
+      id: log.id,
+      name: name,
+      notes: notes,
+      startTime: startTime,
+      endTime: endTime,
+      summary: summary,
+      createdAt: log.createdAt.getDateTimeInUtc(),
+      updatedAt: log.updatedAt.getDateTimeInUtc(),
+      owner: log.owner ?? "",
+    );
+  }
+
+  Map<String, Object> toJson() {
     return {
       'id': id,
       'name': name,
       'notes': notes,
+      'summary': summary,
       'startTime': startTime.toIso8601String(),
       'endTime': endTime.toIso8601String(),
     };
@@ -50,6 +81,8 @@ class ActivityLogDto extends Log {
     String? id,
     String? name,
     String? notes,
+    String? color,
+    String? summary,
     DateTime? startTime,
     DateTime? endTime,
     String? owner,
@@ -63,6 +96,7 @@ class ActivityLogDto extends Log {
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
       owner: owner ?? this.owner,
+      summary: summary ?? this.summary,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -70,12 +104,14 @@ class ActivityLogDto extends Log {
 
   @override
   String toString() {
-    return 'ActivityLogDto{id: $id, name: $name, notes: $notes, startTime: $startTime, endTime: $endTime, createdAt: $createdAt, updatedAt: $updatedAt}';
+    return 'ActivityLogDto{id: $id, name: $name, notes: $notes, summary: $summary, startTime: $startTime, endTime: $endTime, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
 
   @override
   LogType get logType => LogType.activity;
 
   @override
-  ActivityType get activityType => ActivityType.fromString(name);
+  ActivityType get activityType => ActivityType.fromJson(name);
+
+  String get nameOrSummary => summary.isNotEmpty ? summary : name;
 }

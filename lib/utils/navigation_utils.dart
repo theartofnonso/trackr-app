@@ -5,6 +5,7 @@ import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_home_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
+import 'package:tracker_app/screens/preferences/settings_screen.dart';
 
 import '../controllers/analytics_controller.dart';
 import '../dtos/appsync/exercise_dto.dart';
@@ -20,8 +21,7 @@ import '../screens/logs/routine_logs_screen.dart';
 import '../screens/logs/routine_log_screen.dart';
 import '../screens/templates/routine_template_screen.dart';
 
-Future<ExerciseDto?> navigateToExerciseEditor(
-    {required BuildContext context, ExerciseEditorArguments? arguments}) async {
+Future<ExerciseDto?> navigateToExerciseEditor({required BuildContext context, ExerciseEditorArguments? arguments}) async {
   AnalyticsController.logPageNavigation(page: ExerciseEditorScreen.routeName);
   final exercise = await context.push(ExerciseEditorScreen.routeName, extra: arguments) as ExerciseDto?;
   return exercise;
@@ -33,9 +33,14 @@ Future<RoutineTemplateDto?> navigateToRoutineTemplateEditor({required BuildConte
   return template;
 }
 
-void navigateToPastRoutineLogEditor({required BuildContext context, required PastRoutineLogArguments arguments}) {
+void navigateToPastRoutineLogEditor({required BuildContext context, required PastRoutineLogArguments arguments}) async {
   AnalyticsController.logPageNavigation(page: PastRoutineLogEditorScreen.routeName);
-  context.push(PastRoutineLogEditorScreen.routeName, extra: arguments);
+  final log = await context.push(PastRoutineLogEditorScreen.routeName, extra: arguments);
+  if (log != null) {
+    if (context.mounted) {
+      context.push(RoutineLogScreen.routeName, extra: {"log": log, "showSummary": true, "isEditable": true});
+    }
+  }
 }
 
 Future<void> navigateToRoutineLogEditor({required BuildContext context, required RoutineLogArguments arguments}) async {
@@ -83,6 +88,10 @@ void navigateToRoutineLogs({required BuildContext context, required DateTime dat
 void navigateToActivityLogs({required BuildContext context, required DateTime dateTime}) {
   AnalyticsController.logPageNavigation(page: ActivityLogsScreen.routeName);
   context.push(ActivityLogsScreen.routeName, extra: dateTime);
+}
+
+Future<void> navigateToSettings({required BuildContext context}) async {
+  await context.push(SettingsScreen.routeName);
 }
 
 /// Create a screen on demand

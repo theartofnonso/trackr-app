@@ -85,13 +85,4 @@ class SharedPrefs {
   set userEmail(String value) {
     _sharedPrefs?.setString(_userEmailKey, value);
   }
-
-  /// Untrained muscle group families
-  final String cachedUntrainedMGFNotificationKey = "cached_untrained_MGF_notification_key";
-
-  String get cachedUntrainedMGFNotification => _sharedPrefs?.getString(cachedUntrainedMGFNotificationKey) ?? "{}";
-
-  set cachedUntrainedMGFNotification(String value) {
-    _sharedPrefs?.setString(cachedUntrainedMGFNotificationKey, value);
-  }
 }

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
+import '../../utils/general_utils.dart';
 import 'completed_milestones_screen.dart';
 import 'pending_milestones_screen.dart';
 
@@ -23,30 +22,17 @@ class MilestonesHomeScreen extends StatelessWidget {
         child: Scaffold(
           appBar: AppBar(
             toolbarHeight: 0,
-            backgroundColor: sapphireDark80,
             bottom: TabBar(
               dividerColor: Colors.transparent,
               tabs: [
-                Tab(
-                    child: Text("Active",
-                        style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
-                Tab(
-                    child: Text("Completed",
-                        style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
+                Tab(child: Text("Active".toUpperCase(), style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600))),
+                Tab(child: Text("Completed".toUpperCase(), style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600))),
               ],
             ),
           ),
           body: Container(
-            width: double.infinity,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  sapphireDark80,
-                  sapphireDark,
-                ],
-              ),
+            decoration: BoxDecoration(
+              gradient: themeGradient(context: context),
             ),
             child: SafeArea(
               child: Column(

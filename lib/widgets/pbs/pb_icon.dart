@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../colors.dart';
 
 class PBIcon extends StatelessWidget {
-  final Color color;
   final String label;
+  final int? size;
+  final TextStyle? textStyle;
 
-  const PBIcon({super.key, required this.color, required this.label});
+  const PBIcon({super.key, required this.label, this.size = 14, this.textStyle});
 
   @override
   Widget build(BuildContext context) {
     return Row(children: [
-      const FaIcon(
-          FontAwesomeIcons.solidStar, color: vibrantGreen, size: 14),
+      FaIcon(
+          FontAwesomeIcons.solidStar, color: vibrantGreen, size: (size ?? 14).toDouble()),
       const SizedBox(width: 6),
-      Text(label, style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600))
+      Text(label, style: textStyle ?? Theme.of(context).textTheme.bodySmall!)
     ]);
   }
 }

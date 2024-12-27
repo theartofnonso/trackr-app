@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../colors.dart';
 import '../../enums/muscle_group_enums.dart';
@@ -8,14 +6,17 @@ import '../../enums/muscle_group_enums.dart';
 class MuscleGroupFamilyFrequencyChart extends StatelessWidget {
   final Map<MuscleGroupFamily, double> frequencyData;
   final bool minimized;
+  final bool forceDarkMode;
 
-  const MuscleGroupFamilyFrequencyChart({super.key, required this.frequencyData, this.minimized = false});
+  const MuscleGroupFamilyFrequencyChart(
+      {super.key, required this.frequencyData, this.minimized = false, this.forceDarkMode = false});
 
   @override
   Widget build(BuildContext context) {
     return _HorizontalBarChart(
       frequencyData: frequencyData,
       minimized: minimized,
+      forceDarkMode: forceDarkMode,
     );
   }
 }
@@ -23,36 +24,38 @@ class MuscleGroupFamilyFrequencyChart extends StatelessWidget {
 class _HorizontalBarChart extends StatelessWidget {
   final bool minimized;
   final Map<MuscleGroupFamily, double> frequencyData;
+  final bool forceDarkMode;
 
-  const _HorizontalBarChart({required this.frequencyData, required this.minimized});
+  const _HorizontalBarChart({required this.frequencyData, required this.minimized, required this.forceDarkMode});
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> children =
-        frequencyData.entries.map((entry) => _LinearBar(muscleGroupFamily: entry.key, frequency: entry.value)).toList();
+    final entries = (minimized ? frequencyData.entries.take(3) : frequencyData.entries).toList();
 
-    final count = minimized ? children.take(3) : children;
+    final children = entries
+        .map((entry) => _LinearBar(muscleGroupFamily: entry.key, frequency: entry.value, forceDarkMode: forceDarkMode))
+        .toList();
 
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: count.toList());
+    return Column(spacing: 8, children: children);
   }
 }
 
 class _LinearBar extends StatelessWidget {
   final MuscleGroupFamily muscleGroupFamily;
   final double frequency;
+  final bool forceDarkMode;
 
-  const _LinearBar({required this.muscleGroupFamily, required this.frequency});
+  const _LinearBar({required this.muscleGroupFamily, required this.frequency, required this.forceDarkMode});
 
   @override
   Widget build(BuildContext context) {
-    final unscaledFrequency = frequency * 8;
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
 
-    final remainder = 8 - unscaledFrequency.toInt();
-
-    final bar = Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+    return Container(
+      padding: const EdgeInsets.only(top: 10, right: 6, left: 8, bottom: 10),
       decoration: BoxDecoration(
-        color: sapphireDark.withOpacity(0.3),
+        color: isDarkMode || forceDarkMode ? Colors.black12 : Colors.grey.shade100,
         borderRadius: BorderRadius.circular(5),
       ),
       child: Row(
@@ -63,39 +66,40 @@ class _LinearBar extends StatelessWidget {
               children: [
                 LinearProgressIndicator(
                   value: frequency,
-                  backgroundColor: sapphireDark,
-                  color: muscleFamilyFrequencyColor(value: frequency),
+                  backgroundColor: isDarkMode || forceDarkMode ? sapphireDark80 : Colors.grey.shade400,
+                  color: isDarkMode || forceDarkMode ? Colors.white : Colors.black,
                   minHeight: 25,
                   borderRadius: BorderRadius.circular(3.0), // Border r
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: Text(muscleGroupFamily.name.toUpperCase(),
-                      style: GoogleFonts.ubuntu(fontWeight: FontWeight.w700, color: sapphireDark, fontSize: 12)),
+                      style: isDarkMode || forceDarkMode
+                          ? Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(color: Colors.black, fontWeight: FontWeight.w700)
+                          : Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(color: Colors.white, fontWeight: FontWeight.w700)),
                 )
               ],
             ),
           ),
-          if (remainder > 0)
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(width: 10),
-                SizedBox(
-                    width: 32,
-                    child: Text("$remainder left", style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12))),
-              ],
-            ),
+          const SizedBox(width: 10),
+          SizedBox(
+            width: 35,
+            child: Text("${(frequency * 100).round()}%",
+                style: isDarkMode || forceDarkMode
+                    ? Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white, fontWeight: FontWeight.w700)
+                    : Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(color: Colors.black, fontWeight: FontWeight.w700)),
+          ),
         ],
       ),
-    );
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        bar,
-        const SizedBox(height: 8),
-      ],
     );
   }
 }

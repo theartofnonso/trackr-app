@@ -4,11 +4,11 @@ import 'dart:io';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:health/health.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 
 import '../colors.dart';
-import '../enums/muscle_group_enums.dart';
 import '../shared_prefs.dart';
 
 bool isDefaultWeightUnit() {
@@ -48,70 +48,6 @@ String timeOfDay({DateTime? datetime}) {
     return 'Afternoon';
   }
   return 'Evening';
-}
-
-DateTimeRange thisWeekDateRange() {
-  final now = DateTime.now();
-  final currentWeekDate = DateTime(now.year, now.month, now.day);
-  final startOfWeek = currentWeekDate.subtract(Duration(days: currentWeekDate.weekday - 1));
-  final endOfWeek = currentWeekDate.add(Duration(days: 7 - currentWeekDate.weekday));
-  return DateTimeRange(start: startOfWeek, end: endOfWeek);
-}
-
-DateTimeRange thisMonthDateRange({DateTime? endDate}) {
-  final now = DateTime.now();
-  final currentWeekDate = DateTime(now.year, now.month, now.day);
-  final startOfMonth = DateTime(currentWeekDate.year, currentWeekDate.month, 1);
-  final endOfMonth = endDate ?? DateTime(currentWeekDate.year, currentWeekDate.month + 1, 0);
-  return DateTimeRange(start: startOfMonth, end: endOfMonth);
-}
-
-DateTimeRange thisYearDateRange() {
-  final now = DateTime.now();
-  final startOfYear = DateTime(now.year, 1, 1);
-  final endOfYear = DateTime(now.year, 12, 31);
-  return DateTimeRange(start: startOfYear, end: endOfYear);
-}
-
-List<DateTimeRange> generateWeekRangesFrom({required DateTime startDate, required DateTime endDate}) {
-  DateTime lastDayOfCurrentWeek = endDate.lastWeekDay();
-
-  List<DateTimeRange> weekRanges = [];
-
-  // Find the first day of the week for the given start date
-  startDate = startDate.localDate().subtract(Duration(days: startDate.weekday - 1));
-
-  while (startDate.isBefore(lastDayOfCurrentWeek)) {
-    DateTime endDate = startDate.add(const Duration(days: 6));
-    endDate = endDate.isBefore(lastDayOfCurrentWeek) ? endDate : lastDayOfCurrentWeek;
-
-    weekRanges.add(DateTimeRange(start: startDate, end: endDate));
-
-    // Move to the next week
-    startDate = endDate.add(const Duration(days: 1));
-  }
-  return weekRanges;
-}
-
-List<DateTimeRange> generateMonthRangesFrom({required DateTime startDate, required DateTime endDate}) {
-  // Find the last day of the current month
-  DateTime lastDayOfCurrentMonth = endDate.lastDayOfMonth();
-  List<DateTimeRange> monthRanges = [];
-
-  // Adjust the start date to the first day of the month
-  startDate = DateTime(startDate.year, startDate.month, 1);
-
-  while (startDate.isBefore(lastDayOfCurrentMonth)) {
-    // Find the last day of the month for the current startDate
-    DateTime endDate = DateTime(startDate.year, startDate.month + 1, 0);
-
-    monthRanges.add(DateTimeRange(start: startDate, end: endDate));
-
-    // Move to the first day of the next month
-    startDate = DateTime(startDate.year, startDate.month + 1, 1);
-  }
-
-  return monthRanges;
 }
 
 Future<bool> batchDeleteUserData({required String document, required String documentKey}) async {
@@ -162,37 +98,6 @@ Future<bool> _requestAndroidNotificationPermission() async {
       false;
 }
 
-List<DateTime> datesInRange(DateTimeRange range) {
-  List<DateTime> dates = [];
-
-  for (DateTime date = range.start;
-      date.isBefore(range.end) || date.isAtSameMomentAs(range.end);
-      date = date.add(const Duration(days: 1))) {
-    dates.add(date);
-  }
-
-  return dates;
-}
-
-List<DateTimeRange> monthRangesForYear(int year) {
-  List<DateTimeRange> monthRanges = [];
-
-  for (int month = 1; month <= 12; month++) {
-    DateTime start = DateTime(year, month, 1);
-    DateTime end = (month < 12)
-        ? DateTime(year, month + 1, 1).subtract(const Duration(days: 1))
-        : DateTime(year + 1, 1, 1).subtract(const Duration(days: 1));
-
-    monthRanges.add(DateTimeRange(start: start, end: end));
-  }
-
-  return monthRanges;
-}
-
-int levelFromXp({required int daysLogged}) {
-  return daysLogged > 50 ? 50 : daysLogged;
-}
-
 Color logStreakColor({required double value}) {
   if (value < 0.3) {
     return Colors.red;
@@ -237,18 +142,89 @@ Color repsTrendColor({required int reps}) {
   }
 }
 
-Color muscleFamilyFrequencyColor({required double value}) {
-  return Colors.white.withOpacity(value);
+LinearGradient themeGradient({required BuildContext context}) {
+  Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+  final isDarkMode = systemBrightness == Brightness.dark;
+
+  return LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      isDarkMode ? sapphireDark80 : Colors.white,
+      isDarkMode ? sapphireDark : Colors.white12,
+    ],
+  );
 }
 
-List<MuscleGroupFamily> popularMuscleGroupFamilies() {
-  return [
-    MuscleGroupFamily.chest,
-    MuscleGroupFamily.back,
-    MuscleGroupFamily.legs,
-    MuscleGroupFamily.shoulders,
-    MuscleGroupFamily.arms,
-    MuscleGroupFamily.core,
-    MuscleGroupFamily.neck
-  ];
+Future<bool> requestAppleHealth() async {
+
+  await Health().configure();
+
+  // define the types to get
+  final types = [HealthDataType.SLEEP_ASLEEP, HealthDataType.WORKOUT];
+
+  final permissions = [HealthDataAccess.READ, HealthDataAccess.WRITE];
+
+  bool hasPermissions =
+      await Health().hasPermissions(types, permissions: permissions) ?? false;
+
+  if (!hasPermissions) {
+    // requesting access to the data types before reading them
+    hasPermissions = await Health().requestAuthorization(types, permissions: permissions);
+  } else {
+    hasPermissions = true;
+  }
+
+  return hasPermissions;
+}
+
+Future<DateTimeRange?> calculateSleepDuration() async {
+  await Health().configure();
+
+  // fetch health data from the last 24 hours
+  final now = DateTime.now();
+
+  final pastDay = now.subtract(const Duration(hours: 24));
+
+  final values =
+      await Health().getHealthDataFromTypes(types: [HealthDataType.SLEEP_ASLEEP], startTime: pastDay, endTime: now);
+  final uniqueValues = Health().removeDuplicates(values);
+
+  DateTimeRange? sleepTime;
+
+  if (values.isNotEmpty) {
+    Iterable<DateTime> dateFrom = uniqueValues.map((value) => value.dateFrom);
+    Iterable<DateTime> dateTo = uniqueValues.map((value) => value.dateTo);
+
+    DateTime minDateTime = dateFrom.reduce((a, b) => a.isBefore(b) ? a : b);
+    DateTime maxDateTime = dateTo.reduce((a, b) => a.isAfter(b) ? a : b);
+
+    sleepTime = DateTimeRange(start: minDateTime, end: maxDateTime);
+  }
+
+  return sleepTime;
+}
+
+Color getImprovementColor({required bool improved, required num difference}) {
+
+  Color color = vibrantBlue;
+
+  if(improved && difference > 0) {
+    color = vibrantGreen;
+  } else if(!improved && difference > 0) {
+    color = Colors.deepOrange;
+  }
+  return color;
+}
+
+IconData getImprovementIcon({required bool improved, required num difference}) {
+
+  IconData icon = FontAwesomeIcons.arrowsUpDown;
+
+  if(improved && difference > 0) {
+    icon = FontAwesomeIcons.arrowTrendUp;
+  } else if(!improved && difference > 0) {
+    icon = FontAwesomeIcons.arrowTrendDown;
+  }
+  return icon;
 }

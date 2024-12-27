@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
+import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../dtos/appsync/exercise_dto.dart';
 import '../../shared_prefs.dart';
@@ -23,11 +25,13 @@ class ExerciseWidget extends StatelessWidget {
     final description = exerciseDto.description ?? "";
     final owner = exercise.owner;
 
+    final secondaryMuscleGroupNames =
+        exercise.secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name.toUpperCase()).toList();
+
     return GestureDetector(
+      behavior: HitTestBehavior.translucent,
       onTap: () => selectExercise != null ? selectExercise(exerciseDto) : null,
-      child: Container(
-        color: Colors.transparent,
-        width: double.infinity,
+      child: SizedBox(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -48,8 +52,7 @@ class ExerciseWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(exercise.name,
-                      style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 18)),
+                  Text(exercise.name, style: Theme.of(context).textTheme.titleMedium),
                   if (description.isNotEmpty)
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,37 +60,39 @@ class ExerciseWidget extends StatelessWidget {
                         const SizedBox(
                           height: 10,
                         ),
-                        Text(description,
-                            style: GoogleFonts.ubuntu(
-                                color: Colors.white70, height: 1.8, fontWeight: FontWeight.w400, fontSize: 14)),
+                        Text(description, style: Theme.of(context).textTheme.bodySmall),
                       ],
                     ),
                   const SizedBox(
                     height: 6,
                   ),
-                  RichText(
-                      text: TextSpan(
-                          text: exercise.primaryMuscleGroup.name.toUpperCase(),
-                          style: GoogleFonts.ubuntu(
-                              color: Colors.deepOrangeAccent, fontWeight: FontWeight.w600, fontSize: 12, height: 1.5),
-                          children: [
-                        if (exercise.secondaryMuscleGroups.isNotEmpty)
-                          [exercise.primaryMuscleGroup, ...exercise.secondaryMuscleGroups].length == 2
-                              ? const TextSpan(text: " & ")
-                              : const TextSpan(text: " | "),
-                        TextSpan(
-                            text: exercise.secondaryMuscleGroups
-                                .map((muscleGroup) => muscleGroup.name.toUpperCase())
-                                .join(", "),
+                  if (owner != SharedPrefs().userId)
+                    exercise.primaryMuscleGroup == MuscleGroup.fullBody
+                        ? Text(listWithAnd(strings: secondaryMuscleGroupNames),
                             style: GoogleFonts.ubuntu(
-                                color: Colors.orange.withOpacity(0.6), fontWeight: FontWeight.w500, fontSize: 11)),
-                      ])),
+                                color: Colors.deepOrangeAccent, fontWeight: FontWeight.w500, fontSize: 11))
+                        : RichText(
+                            text: TextSpan(
+                                text: exercise.primaryMuscleGroup.name.toUpperCase(),
+                                style: GoogleFonts.ubuntu(
+                                    color: Colors.deepOrangeAccent,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 12,
+                                    height: 1.5),
+                                children: [
+                                if (exercise.secondaryMuscleGroups.isNotEmpty)
+                                  [exercise.primaryMuscleGroup, ...exercise.secondaryMuscleGroups].length == 2
+                                      ? const TextSpan(text: " & ")
+                                      : const TextSpan(text: " | "),
+                                TextSpan(
+                                    text: listWithAnd(strings: secondaryMuscleGroupNames),
+                                    style: GoogleFonts.ubuntu(
+                                        color: Colors.orange.withValues(alpha: 0.6),
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 11)),
+                              ])),
                   if (owner == SharedPrefs().userId)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 4.0),
-                      child: Text("Owner".toUpperCase(),
-                          style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 8)),
-                    ),
+                    Text("Owner".toUpperCase(), style: GoogleFonts.ubuntu(fontWeight: FontWeight.bold, fontSize: 8)),
                 ],
               ),
             ),
@@ -96,7 +101,6 @@ class ExerciseWidget extends StatelessWidget {
                 onTap: () => navigateToExercise != null ? navigateToExercise(exerciseDto) : null,
                 child: const FaIcon(
                   FontAwesomeIcons.circleInfo,
-                  color: Colors.white70,
                 ))
           ],
         ),

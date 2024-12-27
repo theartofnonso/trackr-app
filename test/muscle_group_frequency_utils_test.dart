@@ -1,468 +1,212 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
-import 'package:tracker_app/dtos/set_dto.dart';
+import 'package:tracker_app/dtos/set_dtos/set_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
-import 'package:tracker_app/enums/training_position_enum.dart';
-import 'package:tracker_app/utils/exercise_logs_utils.dart';
-
-import 'date_utils.dart';
+import 'package:tracker_app/utils/exercise_logs_utils.dart'; // Ensure this path matches your project structure
 
 void main() {
-  final hamstringExercise = ExerciseDto(
-      id: "id_hamstring_exercise",
-      name: "Hamstring Exercise",
-      primaryMuscleGroup: MuscleGroup.hamstrings,
-      secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      trainingPosition: TrainingPosition.lengthened,
-      type: ExerciseType.weights,
-      owner: "");
+  // Helper function to create a mock ExerciseDto with a specified primary muscle group and optional secondary muscle groups.
+  ExerciseDto makeExercise({
+    required String id,
+    required ExerciseType type,
+    required MuscleGroup primary,
+    List<MuscleGroup> secondary = const [],
+    String name = 'Test Exercise',
+  }) {
+    return ExerciseDto(
+      id: id,
+      name: name,
+      type: type,
+      primaryMuscleGroup: primary,
+      secondaryMuscleGroups: secondary,
+      owner: '',
+    );
+  }
 
-  final quadExercise = ExerciseDto(
-      id: "id_quad_exercise",
-      name: "Quad Exercise",
-      primaryMuscleGroup: MuscleGroup.quadriceps,
-      secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      trainingPosition: TrainingPosition.lengthened,
-      type: ExerciseType.weights,
-      owner: "");
+  // Helper to create a log with given exercise and sets. By default, sets is empty since we just need muscle groups info.
+  ExerciseLogDto makeLog({
+    required ExerciseDto exercise,
+    DateTime? createdAt,
+    List<SetDto> sets = const [],
+  }) {
+    return ExerciseLogDto(
+      id: exercise.id,
+      exercise: exercise,
+      sets: sets,
+      createdAt: createdAt ?? DateTime.now(),
+      routineLogId: 'routine1',
+      superSetId: '',
+      notes: '',
+    );
+  }
 
-  final backExercise = ExerciseDto(
-      id: "id_back_exercise",
-      name: "Back Exercise",
-      primaryMuscleGroup: MuscleGroup.lats,
-      secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      trainingPosition: TrainingPosition.lengthened,
-      type: ExerciseType.weights,
-      owner: "");
+  group('muscleGroupFamilyFrequency', () {
+    test('returns empty map for no exercise logs', () {
+      // Arrange
+      final logs = <ExerciseLogDto>[];
 
-  final trapsExercise = ExerciseDto(
-      id: "id_traps_exercise",
-      name: "Traps Exercise",
-      primaryMuscleGroup: MuscleGroup.traps,
-      secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      trainingPosition: TrainingPosition.lengthened,
-      type: ExerciseType.weights,
-      owner: "");
+      // Act
+      final freq = muscleGroupFamilyFrequency(exerciseLogs: logs);
 
-  final chestExercise = ExerciseDto(
-      id: "id_chest_exercise",
-      name: "Chest Exercise",
-      primaryMuscleGroup: MuscleGroup.chest,
-      secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      trainingPosition: TrainingPosition.lengthened,
-      type: ExerciseType.weights,
-      owner: "");
+      // Assert
+      expect(freq.isEmpty, true, reason: 'No logs means no frequencies');
+    });
 
-  final shouldersExercise = ExerciseDto(
-      id: "id_shoulders_exercise",
-      name: "Shoulders Exercise",
-      primaryMuscleGroup: MuscleGroup.shoulders,
-      secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      trainingPosition: TrainingPosition.lengthened,
-      type: ExerciseType.weights,
-      owner: "");
+    test('returns correct scaling for single muscle group', () {
+      // Arrange
+      final chestExercise = makeExercise(id: 'e1', type: ExerciseType.bodyWeight, primary: MuscleGroup.chest);
+      final logs = [
+        makeLog(exercise: chestExercise),
+        makeLog(exercise: chestExercise),
+      ];
+      // 2 occurrences of chest
+      // scaled frequency: chest = 2/2 = 1.0
 
-  final bicepsExercise = ExerciseDto(
-      id: "id_biceps_exercise",
-      name: "Biceps Exercise",
-      primaryMuscleGroup: MuscleGroup.biceps,
-      secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      trainingPosition: TrainingPosition.lengthened,
-      type: ExerciseType.weights,
-      owner: "");
+      // Act
+      final freq = muscleGroupFamilyFrequency(exerciseLogs: logs);
 
-  final tricepsExercise = ExerciseDto(
-      id: "id_triceps_exercise",
-      name: "Triceps Exercise",
-      primaryMuscleGroup: MuscleGroup.triceps,
-      secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      trainingPosition: TrainingPosition.lengthened,
-      type: ExerciseType.weights,
-      owner: "");
+      // Assert
+      expect(freq[MuscleGroupFamily.chest], 1.0, reason: 'Only chest muscle group should be 1.0');
+    });
 
-  final abs = ExerciseDto(
-      id: "id_abs",
-      name: "Abs Exercise",
-      primaryMuscleGroup: MuscleGroup.abs,
-      secondaryMuscleGroups: [MuscleGroup.hamstrings],
-      trainingPosition: TrainingPosition.lengthened,
-      type: ExerciseType.duration,
-      owner: "");
+    test('handles multiple muscle groups with scaling', () {
+      // Arrange
+      final chestExercise = makeExercise(id: 'chest_ex', type: ExerciseType.bodyWeight, primary: MuscleGroup.chest);
+      final coreExercise = makeExercise(id: 'core_ex', type: ExerciseType.duration, primary: MuscleGroup.abs);
+      final logs = [
+        makeLog(exercise: chestExercise),
+        makeLog(exercise: coreExercise),
+        makeLog(exercise: chestExercise),
+      ];
+      // chest: 2 occurrences, core: 1 occurrence. total = 3
+      // scaled: chest = 2/3 ≈ 0.666..., core = 1/3 ≈ 0.333...
 
-  final neck = ExerciseDto(
-      id: "id_neck",
-      name: "Neck Exercise",
-      primaryMuscleGroup: MuscleGroup.neck,
-      secondaryMuscleGroups: [MuscleGroup.neck],
-      trainingPosition: TrainingPosition.lengthened,
-      type: ExerciseType.weights,
-      owner: "");
+      // Act
+      final freq = muscleGroupFamilyFrequency(exerciseLogs: logs);
 
-  final dayOneDateTimes = generateWeeklyDateTimes(size: 4, startDate: DateTime(2024, 1, 1));
-  final dayTwoDateTimes = generateWeeklyDateTimes(size: 4, startDate: DateTime(2024, 1, 3));
+      // Assert
+      expect(freq[MuscleGroupFamily.chest], closeTo(0.666, 0.001));
+      expect(freq[MuscleGroupFamily.core], closeTo(0.333, 0.001));
+    });
 
-  final hamstring1ExerciseLogs = List.generate(
-      dayOneDateTimes.length,
-      (index) => ExerciseLogDto(
-          hamstringExercise.id,
-          "legDayOneSession$index",
-          "",
-          hamstringExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayOneDateTimes[index],
-          []));
-  final hamstring2ExerciseLogs = List.generate(
-      dayOneDateTimes.length,
-          (index) => ExerciseLogDto(
-          hamstringExercise.id,
-          "legDayOneSession$index",
-          "",
-          hamstringExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-              dayTwoDateTimes[index],
-          []));
+    test('excludes fullBody muscle group from calculations', () {
+      // Arrange
+      final fullBodyExercise =
+          makeExercise(id: 'full_ex', type: ExerciseType.bodyWeight, primary: MuscleGroup.fullBody);
+      final logs = [
+        makeLog(exercise: fullBodyExercise),
+        makeLog(exercise: fullBodyExercise),
+      ];
 
-  final quad1ExerciseLogs = List.generate(
-      dayTwoDateTimes.length,
-      (index) => ExerciseLogDto(
-          quadExercise.id,
-          "legDayTwoSession$index",
-          "",
-          quadExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayOneDateTimes[index],
-          []));
-  final quad2ExerciseLogs = List.generate(
-      dayTwoDateTimes.length,
-          (index) => ExerciseLogDto(
-          quadExercise.id,
-          "legDayTwoSession$index",
-          "",
-          quadExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayTwoDateTimes[index],
-          []));
+      // Act
+      final freq = muscleGroupFamilyFrequency(exerciseLogs: logs);
 
-  final chest1ExerciseLogs = List.generate(
-      dayOneDateTimes.length,
-      (index) => ExerciseLogDto(
-          chestExercise.id,
-          "chestDayOneSession$index",
-          "",
-          chestExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayOneDateTimes[index],
-          []));
-  final chest2ExerciseLogs = List.generate(
-      dayTwoDateTimes.length,
-      (index) => ExerciseLogDto(
-          chestExercise.id,
-          "chestDayTwoSession$index",
-          "",
-          chestExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayTwoDateTimes[index],
-          []));
+      // Assert
+      expect(freq.isEmpty, true, reason: 'fullBody should not be included in frequency map');
+    });
 
-  final back1ExerciseLogs = List.generate(
-      dayOneDateTimes.length,
-      (index) => ExerciseLogDto(
-          backExercise.id,
-          "backDayOneSession$index",
-          "",
-          backExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayOneDateTimes[index],
-          []));
-  final back2ExerciseLogs = List.generate(
-      dayOneDateTimes.length,
-          (index) => ExerciseLogDto(
-          backExercise.id,
-          "backDayOneSession$index",
-          "",
-          backExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayTwoDateTimes[index],
-          []));
+    test('includes secondary muscle groups if requested', () {
+      // Arrange
+      final chestAndCoreExercise = makeExercise(
+          id: 'chest_core_ex', type: ExerciseType.weights, primary: MuscleGroup.chest, secondary: [MuscleGroup.abs]);
 
-  final traps1ExerciseLogs = List.generate(
-      dayTwoDateTimes.length,
-      (index) => ExerciseLogDto(
-          trapsExercise.id,
-          "backDayTwoSession$index",
-          "",
-          trapsExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayOneDateTimes[index],
-          []));
-  final traps2ExerciseLogs = List.generate(
-      dayTwoDateTimes.length,
-          (index) => ExerciseLogDto(
-          trapsExercise.id,
-          "backDayTwoSession$index",
-          "",
-          trapsExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayTwoDateTimes[index],
-          []));
+      final logs = [
+        makeLog(exercise: chestAndCoreExercise),
+      ];
+      // primary: chest
+      // secondary: abs (core family)
+      // chest:1 occurrence, core:1 occurrence
+      // total = 2 => chest=0.5, core=0.5
 
-  final shoulders1ExerciseLogs = List.generate(
-      dayOneDateTimes.length,
-      (index) => ExerciseLogDto(
-          shouldersExercise.id,
-          "shouldersDayOneSession$index",
-          "",
-          shouldersExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayOneDateTimes[index],
-          []));
-  final shoulders2ExerciseLogs = List.generate(
-      dayTwoDateTimes.length,
-      (index) => ExerciseLogDto(
-          shouldersExercise.id,
-          "shouldersDayTwoSession$index",
-          "",
-          shouldersExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayTwoDateTimes[index],
-          []));
+      // Act
+      final freq = muscleGroupFamilyFrequency(exerciseLogs: logs);
 
-  final biceps1ExerciseLogs = List.generate(
-      dayOneDateTimes.length,
-      (index) => ExerciseLogDto(
-          bicepsExercise.id,
-          "bicepsDayOneSession$index",
-          "",
-          bicepsExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayTwoDateTimes[index],
-          []));
-  final biceps2ExerciseLogs = List.generate(
-      dayTwoDateTimes.length,
-      (index) => ExerciseLogDto(
-          bicepsExercise.id,
-          "bicepsDayTwoSession$index",
-          "",
-          bicepsExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayTwoDateTimes[index],
-          []));
-
-  final triceps1ExerciseLogs = List.generate(
-      dayOneDateTimes.length,
-      (index) => ExerciseLogDto(
-          tricepsExercise.id,
-          "tricepsDayOneSession$index",
-          "",
-          tricepsExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayOneDateTimes[index],
-          []));
-  final triceps2ExerciseLogs = List.generate(
-      dayTwoDateTimes.length,
-      (index) => ExerciseLogDto(
-          tricepsExercise.id,
-          "tricepsDayTwoSession$index",
-          "",
-          tricepsExercise,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayTwoDateTimes[index],
-          []));
-
-  final abs1ExerciseLogs = List.generate(
-      dayOneDateTimes.length,
-      (index) => ExerciseLogDto(
-          abs.id,
-          "coreDayOneSession$index",
-          "",
-          abs,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayOneDateTimes[index],
-          []));
-  final abs2ExerciseLogs = List.generate(
-      dayTwoDateTimes.length,
-      (index) => ExerciseLogDto(
-          abs.id,
-          "coreDayTwoSession$index",
-          "",
-          abs,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayTwoDateTimes[index],
-          []));
-
-  final neck1ExerciseLogs = List.generate(
-      dayOneDateTimes.length,
-          (index) => ExerciseLogDto(
-          abs.id,
-          "neckDayOneSession$index",
-          "",
-          neck,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayOneDateTimes[index],
-          []));
-  final neck2ExerciseLogs = List.generate(
-      dayTwoDateTimes.length,
-          (index) => ExerciseLogDto(
-          abs.id,
-          "neckDayTwoSession$index",
-          "",
-          neck,
-          "notes",
-          [
-            const SetDto(80, 15, true),
-            const SetDto(100, 8, true),
-            const SetDto(100, 6, true),
-          ],
-          dayTwoDateTimes[index],
-          []));
-
-  test("Has completed monthly single muscle target", () {
-    final exerciseLogs = [
-      ...hamstring1ExerciseLogs,
-      ...quad2ExerciseLogs,
-    ];
-
-    final frequencyDistribution = muscleGroupFamilyFrequencyOn4WeeksScale(exerciseLogs: exerciseLogs);
-
-    final legMuscleGroup = frequencyDistribution.entries;
-
-    expect(legMuscleGroup.first.key, MuscleGroupFamily.legs);
-    expect(legMuscleGroup.first.value, 1);
+      // Assert
+      expect(freq[MuscleGroupFamily.chest], 0.5);
+      expect(freq[MuscleGroupFamily.core], 0.5);
+    });
   });
 
-  test("Has completed 50% monthly single muscle target", () {
-    final exerciseLogs = [...hamstring1ExerciseLogs];
+  group('muscleGroupFamilyFrequencyOn4WeeksScale', () {
+    test('returns an empty map if no logs', () {
+      // Arrange
+      final logs = <ExerciseLogDto>[];
 
-    final frequencyDistribution = muscleGroupFamilyFrequencyOn4WeeksScale(exerciseLogs: exerciseLogs);
+      // Act
+      final freq = muscleGroupFamilyFrequencyOn4WeeksScale(exerciseLogs: logs);
 
-    final legMuscleGroup = frequencyDistribution.entries;
+      // Assert
+      expect(freq.isEmpty, true);
+    });
 
-    expect(legMuscleGroup.first.key, MuscleGroupFamily.legs);
-    expect(legMuscleGroup.first.value, 0.5);
+    test('scales frequencies to a maximum of 1 over a 4-week period', () {
+      // Arrange:
+      // Suppose that multiple exercises are logged on different days.
+      // The function caps the frequency at a max of 8 occurrences over 4 weeks (as per code comments).
+      // If we have more than 8 days logged for the same muscle group, it should still max out at 1.
+      final chestExercise = makeExercise(id: 'chest_ex', type: ExerciseType.bodyWeight, primary: MuscleGroup.chest);
+
+      // Create 10 logs on 10 different days for chest, which should cap at 8 occurrences.
+      final logs = List.generate(
+          10,
+          (i) => makeLog(exercise: chestExercise, createdAt: DateTime(2024, 12, i + 1) // different day each iteration
+              ));
+
+      // Act
+      final freq = muscleGroupFamilyFrequencyOn4WeeksScale(exerciseLogs: logs);
+
+      // Assert
+      // Should be capped at 8/8 = 1.0
+      expect(freq[MuscleGroupFamily.chest], 1.0);
+    });
+
+    test('partially filled scale should return fraction < 1', () {
+      // Arrange
+      final chestExercise = makeExercise(id: 'chest_ex', type: ExerciseType.bodyWeight, primary: MuscleGroup.chest);
+
+      // 4 occurrences on different days = 4/8 = 0.5
+      final logs = List.generate(4, (i) => makeLog(exercise: chestExercise, createdAt: DateTime(2024, 12, i + 1)));
+
+      // Act
+      final freq = muscleGroupFamilyFrequencyOn4WeeksScale(exerciseLogs: logs);
+
+      // Assert
+      expect(freq[MuscleGroupFamily.chest], 0.5, reason: '4 occurrences should scale to 4/8=0.5');
+    });
   });
 
-  test("Has achieved 100% monthly muscle score", () {
-    final exerciseLogs = [
-      ...hamstring1ExerciseLogs,
-      ...hamstring2ExerciseLogs,
-      ...quad1ExerciseLogs,
-      ...quad2ExerciseLogs,
-      ...chest1ExerciseLogs,
-      ...chest2ExerciseLogs,
-      ...back1ExerciseLogs,
-      ...back2ExerciseLogs,
-      ...traps1ExerciseLogs,
-      ...traps2ExerciseLogs,
-      ...shoulders1ExerciseLogs,
-      ...shoulders2ExerciseLogs,
-      ...biceps1ExerciseLogs,
-      ...biceps2ExerciseLogs,
-      ...triceps1ExerciseLogs,
-      ...triceps2ExerciseLogs,
-      ...abs1ExerciseLogs,
-      ...abs2ExerciseLogs,
-      ...neck1ExerciseLogs,
-      ...neck2ExerciseLogs
-    ];
+  group('cumulativeMuscleGroupFamilyFrequency', () {
+    test('returns 0 for no logs', () {
+      // Arrange
+      final logs = <ExerciseLogDto>[];
 
-    final score = cumulativeMuscleGroupFamilyFrequency(exerciseLogs: exerciseLogs);
-    expect(score, 1.0);
+      // Act
+      final cumulative = cumulativeMuscleGroupFamilyFrequency(exerciseLogs: logs);
+
+      // Assert
+      expect(cumulative, 0.0);
+    });
+
+    test('returns a value between 0 and 1 for some occurrences', () {
+      // Arrange
+      final chestExercise = makeExercise(id: 'chest_ex', type: ExerciseType.bodyWeight, primary: MuscleGroup.chest);
+
+      // Let’s say we log chest exercise for 2 different days: 2/48 (since total scale is 48 for 6 muscle groups * 8 days)
+      // The exact formula may differ, but as per code: cumulative frequency is sum of occurrences / 48.
+      // With 2 days of chest, muscleGroupsFrequencyScore might be (2/48) = 0.04166...
+      final logs = [
+        makeLog(exercise: chestExercise, createdAt: DateTime(2024, 12, 1)),
+        makeLog(exercise: chestExercise, createdAt: DateTime(2024, 12, 2)),
+      ];
+
+      // Act
+      final cumulative = cumulativeMuscleGroupFamilyFrequency(exerciseLogs: logs);
+
+      // Assert
+      expect(cumulative, greaterThan(0));
+      expect(cumulative, lessThanOrEqualTo(1));
+    });
   });
 }

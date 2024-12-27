@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -15,8 +14,9 @@ import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/exercise_dto.dart';
 import '../../enums/exercise_type_enums.dart';
 import '../../logger.dart';
+import '../../utils/general_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
-import '../../widgets/information_containers/information_container.dart';
+import '../../widgets/dividers/label_divider.dart';
 import '../exercise/exercise_type_screen.dart';
 
 class ExerciseEditorScreen extends StatefulWidget {
@@ -31,17 +31,18 @@ class ExerciseEditorScreen extends StatefulWidget {
 }
 
 class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
-  String? _exerciseName;
-
   late MuscleGroup _primaryMuscleGroup;
   late ExerciseType _exerciseType;
 
-  bool _isInputFieldVisible = false;
-
   final logger = getLogger(className: "_ExerciseEditorScreenState");
+
+  late TextEditingController _exerciseNameController;
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final exerciseEditorController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
     if (exerciseEditorController.errorMessage.isNotEmpty) {
@@ -52,75 +53,91 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
 
     final exercise = widget.exercise;
 
-    final inactiveStyle = GoogleFonts.ubuntu(color: Colors.white70, fontSize: 22, fontWeight: FontWeight.w600);
-    final activeStyle = GoogleFonts.ubuntu(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w600);
-
     return PopScope(
         canPop: false,
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: sapphireDark80,
             leading: IconButton(
-              icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+              icon: const FaIcon(
+                FontAwesomeIcons.squareXmark,
+                size: 28,
+              ),
               onPressed: context.pop,
             ),
+            title: Text(exercise?.name ?? "Create New Exercise".toUpperCase()),
+            centerTitle: true,
             actions: [
               exercise != null
-                  ? GestureDetector(
-                      onTap: _updateExercise,
-                      child: Text("Update",
-                          style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.white)))
+                  ? IconButton(
+                      icon: const FaIcon(FontAwesomeIcons.solidSquareCheck, size: 28),
+                      onPressed: _updateExercise,
+                    )
                   : const SizedBox.shrink(),
               const SizedBox(width: 12)
             ],
           ),
           body: Container(
             width: double.infinity,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  sapphireDark80,
-                  sapphireDark,
-                ],
-              ),
+            decoration: BoxDecoration(
+              gradient: themeGradient(context: context),
             ),
             child: SafeArea(
               minimum: const EdgeInsets.all(10),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: RichText(
-                      text: TextSpan(style: const TextStyle(height: 2.0), children: [
-                    TextSpan(text: "Train ", style: inactiveStyle),
-                    TextSpan(
-                        text: "${_primaryMuscleGroup.name} \n",
-                        recognizer: TapGestureRecognizer()..onTap = _navigateToMuscleGroupsScreen,
-                        style: activeStyle),
-                    TextSpan(text: "with ", style: inactiveStyle),
-                    TextSpan(
-                        text: "${_exerciseName ?? "exercise name"} \n",
-                        recognizer: TapGestureRecognizer()..onTap = _showInputTextField,
-                        style: activeStyle),
-                    TextSpan(text: "using ", style: inactiveStyle),
-                    TextSpan(
-                        text: _exerciseType.name,
-                        recognizer: TapGestureRecognizer()..onTap = _navigateToExerciseTypeScreen,
-                        style: exercise == null ? activeStyle : inactiveStyle),
-                  ])),
+                TextField(
+                  controller: _exerciseNameController,
+                  decoration: InputDecoration(
+                    hintText: "Exercise Name",
+                  ),
+                  cursorColor: isDarkMode ? Colors.white : Colors.black,
+                  keyboardType: TextInputType.text,
+                  textCapitalization: TextCapitalization.words,
+                  style: GoogleFonts.ubuntu(
+                      fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white : Colors.black, fontSize: 14),
+                ),
+                const SizedBox(height: 20),
+                LabelDivider(
+                  label: "Select muscle group to train".toUpperCase(),
+                  labelColor: isDarkMode ? Colors.white : Colors.black,
+                  dividerColor: sapphireLighter,
+                  fontSize: 14,
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text("Choose from a list of muscle groups to train for this custom exercise.",
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                    ),
+                    const SizedBox(width: 10),
+                    OpacityButtonWidget(label: _primaryMuscleGroup.name, onPressed: _navigateToMuscleGroupsScreen)
+                  ],
+                ),
+                const SizedBox(height: 16),
+                if (exercise == null) const SizedBox(height: 20),
+                LabelDivider(
+                  label: "Choose how to log this exercise".toUpperCase(),
+                  labelColor: isDarkMode ? Colors.white : Colors.black,
+                  dividerColor: sapphireLighter,
+                  fontSize: 14,
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text("You can log this exercise using reps only, reps and weights or duration.",
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                    ),
+                    const SizedBox(width: 10),
+                    OpacityButtonWidget(label: _exerciseType.name, onPressed: _navigateToExerciseTypeScreen)
+                  ],
                 ),
                 const Spacer(),
-                if (!_isInputFieldVisible)
-                  const Column(children: [
-                    InformationContainer(
-                        leadingIcon: FaIcon(FontAwesomeIcons.lightbulb, size: 16),
-                        title: 'Tip',
-                        description: "Tap text in white to edit.\nExercise type is not editable once created.",
-                        color: Colors.transparent),
-                    SizedBox(height: 20),
-                  ]),
-                if (!_isInputFieldVisible && _exerciseName != null && exercise == null)
+                if (exercise == null)
                   SizedBox(
                     width: double.infinity,
                     child: OpacityButtonWidget(
@@ -152,7 +169,13 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   }
 
   void _navigateToExerciseTypeScreen() async {
-    if (widget.exercise != null) return;
+    if (widget.exercise != null) {
+      showSnackbar(
+          context: context,
+          icon: FaIcon(FontAwesomeIcons.circleInfo),
+          message: "Exercise type cannot be changed after creation.");
+      return;
+    }
 
     /// We don't want to allow editing of exercise type once created.
     final type = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ExerciseTypeScreen()))
@@ -164,70 +187,10 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     }
   }
 
-  void _updateExerciseName(String? value) {
-    if (value == null) return;
-    setState(() {
-      _exerciseName = value.trim();
-    });
-  }
-
-  void _doneTyping() {
-    setState(() {
-      _isInputFieldVisible = false;
-    });
-  }
-
-  void _showInputTextField() async {
-    setState(() {
-      _isInputFieldVisible = true;
-    });
-
-    await showModalBottomSheet(
-        context: context,
-        builder: (context) {
-          return Padding(
-            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-            child: Container(
-                padding: const EdgeInsets.only(top: 16, right: 16, bottom: 28, left: 16),
-                decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                    ),
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        sapphireDark80,
-                        sapphireDark,
-                      ],
-                    )),
-                child: TextField(
-                  controller: TextEditingController(text: _exerciseName),
-                  decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: sapphireLighter)),
-                      filled: true,
-                      fillColor: sapphireDark,
-                      hintText: "Enter exercise name",
-                      hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14)),
-                  onChanged: (value) => _updateExerciseName(value),
-                  cursorColor: Colors.white,
-                  keyboardType: TextInputType.text,
-                  textCapitalization: TextCapitalization.words,
-                  style: GoogleFonts.ubuntu(
-                      fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
-                )),
-          );
-        });
-    _doneTyping();
-  }
-
   void _createExercise() async {
-    final exerciseName = _exerciseName;
+    final exerciseName = _exerciseNameController.text.trim();
 
-    if (exerciseName == null) return;
+    if (exerciseName.isEmpty) return;
 
     if (exerciseName.isEmpty) {
       _showSnackbar("Please provide a name for this exercise");
@@ -250,9 +213,9 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   }
 
   void _updateExercise() async {
-    final exerciseName = _exerciseName;
+    final exerciseName = _exerciseNameController.text.trim();
 
-    if (exerciseName == null) return;
+    if (exerciseName.isEmpty) return;
 
     if (exerciseName.isEmpty) {
       _showSnackbar("Please provide a name for this exercise");
@@ -260,12 +223,12 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
       final exercise = widget.exercise;
       if (exercise == null) return;
 
-      final updatedExercise = exercise.copyWith(name: exerciseName.trim(), primaryMuscleGroup: _primaryMuscleGroup);
-      await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateExercise(exercise: updatedExercise);
+      final exerciseToBeUpdated = exercise.copyWith(name: exerciseName.trim(), primaryMuscleGroup: _primaryMuscleGroup);
+      await Provider.of<ExerciseAndRoutineController>(context, listen: false)
+          .updateExercise(exercise: exerciseToBeUpdated);
       AnalyticsController.exerciseEvents(eventAction: "create_exercise", exercise: exercise);
-      logger.i("updated exercise ${exercise.toString()}");
       if (mounted) {
-        context.pop(updatedExercise);
+        context.pop(exerciseToBeUpdated);
       }
     }
   }
@@ -276,10 +239,10 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
 
     final previousExercise = widget.exercise;
 
+    _exerciseNameController = TextEditingController(text: previousExercise?.name);
+
     _primaryMuscleGroup = previousExercise != null ? previousExercise.primaryMuscleGroup : MuscleGroup.values.first;
 
     _exerciseType = previousExercise != null ? previousExercise.type : ExerciseType.weights;
-
-    _exerciseName = previousExercise?.name;
   }
 }

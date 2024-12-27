@@ -3,24 +3,21 @@ import 'dart:async';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/models/ActivityLog.dart';
 import 'package:tracker_app/models/Exercise.dart';
 import 'package:tracker_app/models/RoutineUser.dart';
 import 'package:tracker_app/screens/home_tab_screen.dart';
+import 'package:tracker_app/screens/onboarding/onboarding_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/templates/routine_templates_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
-import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../controllers/activity_log_controller.dart';
 import '../controllers/analytics_controller.dart';
 import '../controllers/routine_user_controller.dart';
-import '../dtos/appsync/routine_log_dto.dart';
-import '../dtos/viewmodels/routine_log_arguments.dart';
-import '../enums/routine_editor_type_enums.dart';
 import '../models/RoutineLog.dart';
 import '../models/RoutineTemplate.dart';
 import 'milestones/milestones_home_screen.dart';
@@ -47,6 +44,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (SharedPrefs().firstLaunch) {
+      return OnboardingScreen();
+    }
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final screens = [
       HomeTabScreen(
         scrollController: _scrollController,
@@ -61,14 +65,10 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: NavigationBar(
         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
         height: 60,
-        indicatorColor: Colors.transparent,
-        backgroundColor: sapphireDark80,
-        surfaceTintColor: Colors.black,
-        overlayColor: WidgetStateColor.resolveWith((states) => Colors.transparent),
         destinations: [
-          const NavigationDestination(
+          NavigationDestination(
             icon: FaIcon(FontAwesomeIcons.house, color: Colors.grey),
-            selectedIcon: FaIcon(FontAwesomeIcons.house, color: Colors.white),
+            selectedIcon: FaIcon(FontAwesomeIcons.house, color: isDarkMode ? Colors.white : Colors.black),
             label: 'Home',
           ),
           NavigationDestination(
@@ -82,18 +82,19 @@ class _HomeScreenState extends State<HomeScreen> {
               'icons/dumbbells.png',
               fit: BoxFit.contain,
               height: 34, // Adjust the height as needed
+              color: isDarkMode ? Colors.white : Colors.black,
             ),
             label: 'Workouts',
           ),
-          const NavigationDestination(
+          NavigationDestination(
             icon: FaIcon(FontAwesomeIcons.trophy, color: Colors.grey),
-            selectedIcon: FaIcon(FontAwesomeIcons.trophy, color: Colors.white),
-            label: 'Challenges',
+            selectedIcon: FaIcon(FontAwesomeIcons.trophy, color: isDarkMode ? Colors.white : Colors.black),
+            label: 'Milestones',
           ),
-          const NavigationDestination(
+          NavigationDestination(
             icon: FaIcon(FontAwesomeIcons.gear, color: Colors.grey),
-            selectedIcon: FaIcon(FontAwesomeIcons.gear, color: Colors.white),
-            label: 'Challenges',
+            selectedIcon: FaIcon(FontAwesomeIcons.gear, color: isDarkMode ? Colors.white : Colors.black),
+            label: 'Milestones',
           ),
         ],
         onDestinationSelected: (int index) {
@@ -180,22 +181,13 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void _loadCachedLog() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      RoutineLogDto? log = Provider.of<ExerciseAndRoutineController>(context, listen: false).cachedLog();
-      if (log != null) {
-        final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log);
-        navigateToRoutineLogEditor(context: context, arguments: arguments);
-      }
-    });
-  }
-
   ///add user stuff here for analytics instead
   void _cacheUser() async {
     final authUser = await Amplify.Auth.getCurrentUser();
     final signInDetails = authUser.signInDetails.toJson();
     SharedPrefs().userId = authUser.userId;
     SharedPrefs().userEmail = signInDetails["username"] as String;
+    Posthog().identify(userId: SharedPrefs().userId);
     AnalyticsController.loginAnalytics(isFirstLaunch: SharedPrefs().firstLaunch);
   }
 
@@ -203,11 +195,10 @@ class _HomeScreenState extends State<HomeScreen> {
     if (SharedPrefs().firstLaunch) {
       _cacheUser();
       _loadAppData();
-      SharedPrefs().firstLaunch = false;
     } else {
+      Posthog().identify(userId: SharedPrefs().userId);
       AnalyticsController.loginAnalytics(isFirstLaunch: SharedPrefs().firstLaunch);
       _loadAppData();
-      _loadCachedLog();
     }
   }
 

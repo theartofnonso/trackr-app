@@ -1,22 +1,23 @@
+import 'dart:convert';
+
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:timezone/data/latest.dart' as tz;
-import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
-import 'package:tracker_app/controllers/notification_controller.dart';
 import 'package:tracker_app/controllers/settings_controller.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/dtos/appsync/routine_template_dto.dart';
@@ -28,36 +29,67 @@ import 'package:tracker_app/repositories/amplify/amplify_routine_log_repository.
 import 'package:tracker_app/repositories/amplify/amplify_routine_template_repository.dart';
 import 'package:tracker_app/repositories/amplify/amplify_routine_user_repository.dart';
 import 'package:tracker_app/repositories/exercise_log_repository.dart';
+import 'package:tracker_app/screens/AI/routine_log_report_screen.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_log_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_template_editor_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_home_screen.dart';
 import 'package:tracker_app/screens/home_screen.dart';
-import 'package:tracker_app/screens/insights/calories_trend_screen.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
-import 'package:tracker_app/screens/intro_screen.dart';
 import 'package:tracker_app/screens/logs/activity_logs_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
+import 'package:tracker_app/screens/onboarding/onboarding_intro_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/templates/routine_template_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/date_utils.dart';
+import 'package:tracker_app/utils/theme/theme.dart';
 
 import 'amplifyconfiguration.dart';
 import 'controllers/activity_log_controller.dart';
 import 'controllers/routine_user_controller.dart';
+import 'controllers/stt_controller.dart';
 import 'dtos/appsync/exercise_dto.dart';
+import 'dtos/open_ai_response_schema_dtos/exercise_performance_report.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
 import 'dtos/viewmodels/routine_template_arguments.dart';
+import 'firebase_options.dart';
 import 'logger.dart';
 import 'models/ModelProvider.dart';
 
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+// Top-level callback function
+@pragma('vm:entry-point')
+void onDidReceiveNotificationResponse(NotificationResponse response) {
+  final String? payload = response.payload;
+  if (payload != null) {
+    Map<String, dynamic> json = jsonDecode(payload);
+
+    // Create an instance of ExerciseLogsResponse
+    ExercisePerformanceReport report = ExercisePerformanceReport.fromJson(json);
+
+    navigatorKey.currentState?.push(PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => RoutineLogReportScreen(
+        report: report,
+      ),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(0.0, 1.0);
+        const end = Offset.zero;
+        const curve = Curves.ease;
+        final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        final offsetAnimation = animation.drive(tween);
+        return SlideTransition(
+          position: offsetAnimation,
+          child: child,
+        );
+      },
+    ));
+  }
+}
 
 void main() async {
   final logger = getLogger(className: "main");
@@ -76,7 +108,7 @@ void main() async {
     );
     FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
     logger.i("Firebase initialized");
-  } catch(e) {
+  } catch (e) {
     logger.e("Failed to initialize Firebase", error: e);
   }
 
@@ -91,7 +123,8 @@ void main() async {
   const initializationSettings =
       InitializationSettings(iOS: iOSInitializationSettingsDarwin, android: androidInitializationSettings);
 
-  await FlutterLocalNotificationsPlugin().initialize(initializationSettings);
+  await FlutterLocalNotificationsPlugin()
+      .initialize(initializationSettings, onDidReceiveNotificationResponse: onDidReceiveNotificationResponse);
 
   tz.initializeTimeZones();
 
@@ -105,11 +138,11 @@ void main() async {
       options.tracesSampleRate = 1.0;
     },
     appRunner: () => runApp(MultiProvider(providers: [
+      ChangeNotifierProvider<STTController>(
+        create: (BuildContext context) => STTController(),
+      ),
       ChangeNotifierProvider<SettingsController>(
         create: (BuildContext context) => SettingsController(),
-      ),
-      ChangeNotifierProvider<NotificationController>(
-        create: (BuildContext context) => NotificationController(),
       ),
       ChangeNotifierProvider<RoutineUserController>(
         create: (BuildContext context) => RoutineUserController(AmplifyRoutineUserRepository()),
@@ -131,6 +164,7 @@ void main() async {
 
 final _router = GoRouter(
   initialLocation: "/",
+  navigatorKey: navigatorKey,
   routes: [
     GoRoute(
         path: "/", // Define the path for Home Screen
@@ -267,8 +301,8 @@ final _router = GoRouter(
       builder: (context, state) => const SetsAndRepsVolumeInsightsScreen(),
     ),
     GoRoute(
-      path: CaloriesTrendScreen.routeName,
-      builder: (context, state) => const CaloriesTrendScreen(),
+      path: OnboardingIntroScreen.routeName,
+      builder: (context, state) => OnboardingIntroScreen(),
     ),
     GoRoute(
       path: RoutineLogSummaryScreen.routeName,
@@ -322,8 +356,7 @@ class _MyAppState extends State<MyApp> {
       await Amplify.addPlugin(AmplifyAuthCognito());
       final apiPluginOptions = APIPluginOptions(modelProvider: ModelProvider.instance);
       await Amplify.addPlugin(AmplifyAPI(options: apiPluginOptions));
-      final datastorePluginOptions = DataStorePluginOptions(
-          syncExpressions: [
+      final datastorePluginOptions = DataStorePluginOptions(syncExpressions: [
         DataStoreSyncExpression(
             ActivityLog.classType, () => ActivityLog.CREATEDAT.between(startOfCurrentYear, endOfCurrentYear)),
         DataStoreSyncExpression(
@@ -342,65 +375,33 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  final _themeData = ThemeData(
-    scaffoldBackgroundColor: sapphireDark,
-    colorScheme: const ColorScheme(
-      brightness: Brightness.dark,
-      primary: Colors.white,
-      onPrimary: Colors.white,
-      secondary: Colors.white,
-      onSecondary: Colors.white,
-      error: Colors.white,
-      onError: Colors.black,
-      surface: sapphireDark,
-      onSurface: Colors.white,
-    ),
-    appBarTheme: const AppBarTheme(
-      backgroundColor: sapphireDark,
-      surfaceTintColor: sapphireDark,
-    ),
-    scrollbarTheme: ScrollbarThemeData(
-      thumbColor: WidgetStateProperty.all(Colors.green),
-      trackColor: WidgetStateProperty.all(Colors.white.withOpacity(0.2)),
-    ),
-    snackBarTheme: const SnackBarThemeData(
-        backgroundColor: sapphireDark,
-        actionBackgroundColor: sapphireLighter,
-        contentTextStyle: TextStyle(color: sapphireDark)),
-    tabBarTheme: const TabBarTheme(labelColor: Colors.white, unselectedLabelColor: Colors.white70),
-    inputDecorationTheme: InputDecorationTheme(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: sapphireLight)),
-      enabledBorder:
-          OutlineInputBorder(borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: Colors.black)),
-      filled: true,
-      fillColor: sapphireLighter,
-      hintStyle: GoogleFonts.ubuntu(color: Colors.grey, fontSize: 14),
-    ),
-    filledButtonTheme: FilledButtonThemeData(
-      style: ButtonStyle(
-          foregroundColor: WidgetStateProperty.all(Colors.white),
-          backgroundColor: WidgetStateProperty.all(sapphireLight),
-          shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
-    ),
-    useMaterial3: true,
-  );
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     //debugPaintSizeEnabled = true;
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp, // Lock orientation to portrait up
     ]);
 
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: isDarkMode ? Colors.white : Colors.black, // status bar color
+        systemNavigationBarIconBrightness: isDarkMode ? Brightness.dark : Brightness.light, // Icon Color
+      ),
+    );
+
     return _isFirstLaunch
-        ? IntroScreen(themeData: _themeData, onComplete: _completeIntro)
+        ? OnboardingIntroScreen(onComplete: _completeIntro)
         : Authenticator(
             child: MaterialApp.router(
               debugShowCheckedModeBanner: false,
               builder: Authenticator.builder(),
-              theme: _themeData,
+              themeMode: ThemeMode.system,
+              theme: TRKRTheme.lightTheme,
+              darkTheme: TRKRTheme.darkTheme,
               routerConfig: _router,
             ),
           );

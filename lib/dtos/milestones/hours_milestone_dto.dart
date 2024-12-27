@@ -41,7 +41,7 @@ class HoursMilestone extends Milestone {
           description: description,
           rule: rule,
           target: hours.duration,
-          progress: _calculateProgress(
+          progress: calculateProgress(
             logs: logs,
             hours: hours,
           ),
@@ -49,24 +49,26 @@ class HoursMilestone extends Milestone {
     }).toList();
   }
 
-  static (double, List<RoutineLogDto>) _calculateProgress({required List<RoutineLogDto> logs, required HoursMilestoneEnums hours}) {
-
+  static (double, List<RoutineLogDto>) calculateProgress(
+      {required List<RoutineLogDto> logs, required HoursMilestoneEnums hours}) {
     final targetDurationInMilliseconds = hours.duration * 3600000;
 
     int durationInMilliseconds = 0;
     List<RoutineLogDto> qualifyingLogs = [];
 
     for (final log in logs) {
-      if(durationInMilliseconds < targetDurationInMilliseconds) {
+      if (durationInMilliseconds < targetDurationInMilliseconds) {
         durationInMilliseconds += log.duration().inMilliseconds;
 
         qualifyingLogs.add(log);
       }
     }
 
-    final progress = (durationInMilliseconds >= targetDurationInMilliseconds ? 1 : durationInMilliseconds / targetDurationInMilliseconds).toDouble();
+    final progress = (durationInMilliseconds >= targetDurationInMilliseconds
+            ? 1
+            : durationInMilliseconds / targetDurationInMilliseconds)
+        .toDouble();
 
     return (progress, qualifyingLogs);
-
   }
 }

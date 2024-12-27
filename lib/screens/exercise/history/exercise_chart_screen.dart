@@ -1,17 +1,17 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
+import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
-import 'package:tracker_app/widgets/exercise_history/personal_best_widget.dart';
+import 'package:tracker_app/widgets/list_tile.dart';
 
 import '../../../colors.dart';
 import '../../../controllers/exercise_and_routine_controller.dart';
@@ -72,9 +72,9 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   final PageController _controller = PageController(initialPage: 0);
 
   void _heaviestWeightPerLog() {
-    final sets = widget.exerciseLogs.map((log) => heaviestSetWeightForExerciseLog(exerciseLog: log)).toList();
+    final sets = widget.exerciseLogs.map((log) => heaviestWeightInSetForExerciseLog(exerciseLog: log)).toList();
     setState(() {
-      _chartPoints = sets.mapIndexed((index, set) => ChartPointDto(index, (set as WeightAndRepsSetDto).weight)).toList();
+      _chartPoints = sets.mapIndexed((index, set) => ChartPointDto(index, (set).weight)).toList();
       _summaryType = SummaryType.weight;
       _chartUnit = ChartUnit.weight;
     });
@@ -170,17 +170,21 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     if (routineLogId != null) {
       final routineLog = Provider.of<ExerciseAndRoutineController>(context, listen: false).logWhereId(id: routineLogId);
       if (routineLog != null) {
-        context.push(RoutineLogScreen.routeName, extra: routineLog);
+        context.push(RoutineLogScreen.routeName, extra: {"log": routineLog, "showSummary": false, "isEditable": false});
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final weightUnitLabel = weightLabel();
 
-    final muscleGroupsIllustrations =
-        [widget.exercise.primaryMuscleGroup, ...widget.exercise.secondaryMuscleGroups].map((muscleGroup) {
+    final muscleGroupsIllustrations = [widget.exercise.primaryMuscleGroup, ...widget.exercise.secondaryMuscleGroups]
+        .where((muscleGroup) => muscleGroup != MuscleGroup.fullBody)
+        .map((muscleGroup) {
       return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
         Image.asset(
           'muscles_illustration/${muscleGroup.illustration()}.png',
@@ -190,8 +194,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
         const SizedBox(
           height: 6,
         ),
-        Text(muscleGroup.name.toUpperCase(),
-            style: GoogleFonts.ubuntu(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 14, height: 1.5))
+        Text(muscleGroup.name.toUpperCase(), style: Theme.of(context).textTheme.bodyMedium)
       ]);
     }).toList();
 
@@ -216,8 +219,11 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                     child: SmoothPageIndicator(
                         controller: _controller,
                         count: muscleGroupsIllustrations.length,
-                        effect: const WormEffect(
-                            activeDotColor: vibrantGreen, dotWidth: 8.0, dotHeight: 8.0, dotColor: Colors.white12),
+                        effect: WormEffect(
+                            activeDotColor: vibrantGreen,
+                            dotWidth: 8.0,
+                            dotHeight: 8.0,
+                            dotColor: isDarkMode ? Colors.white12 : Colors.grey.shade200),
                         axisDirection: Axis.vertical),
                   ),
                 ),
@@ -242,62 +248,45 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
             SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  spacing: 8,
                   children: [
                     if (withWeightsOnly(type: widget.exercise.type))
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: OpacityButtonWidget(
-                            onPressed: _heaviestWeightPerLog,
-                            label: SummaryType.weight.label,
-                            padding: const EdgeInsets.only(right: 5.0),
-                            buttonColor: _buttonColor(type: SummaryType.weight)),
-                      ),
+                      OpacityButtonWidget(
+                          onPressed: _heaviestWeightPerLog,
+                          label: SummaryType.weight.label,
+                          padding: const EdgeInsets.only(right: 5.0),
+                          buttonColor: _buttonColor(type: SummaryType.weight)),
                     if (withWeightsOnly(type: widget.exercise.type))
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: OpacityButtonWidget(
-                            onPressed: _heaviestSetVolumePerLog,
-                            label: SummaryType.setVolume.label,
-                            padding: const EdgeInsets.only(right: 5.0),
-                            buttonColor: _buttonColor(type: SummaryType.setVolume)),
-                      ),
+                      OpacityButtonWidget(
+                          onPressed: _heaviestSetVolumePerLog,
+                          label: SummaryType.setVolume.label,
+                          padding: const EdgeInsets.only(right: 5.0),
+                          buttonColor: _buttonColor(type: SummaryType.setVolume)),
                     if (withReps(type: widget.exercise.type))
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: OpacityButtonWidget(
-                            onPressed: _highestRepsForLog,
-                            label: SummaryType.mostReps.label,
-                            padding: const EdgeInsets.only(right: 5.0),
-                            buttonColor: _buttonColor(type: SummaryType.mostReps)),
-                      ),
+                      OpacityButtonWidget(
+                          onPressed: _highestRepsForLog,
+                          label: SummaryType.mostReps.label,
+                          padding: const EdgeInsets.only(right: 5.0),
+                          buttonColor: _buttonColor(type: SummaryType.mostReps)),
                     if (withReps(type: widget.exercise.type))
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: OpacityButtonWidget(
-                            onPressed: _totalRepsForLog,
-                            label: SummaryType.sessionReps.label,
-                            padding: const EdgeInsets.only(right: 5.0),
-                            buttonColor: _buttonColor(type: SummaryType.sessionReps)),
-                      ),
+                      OpacityButtonWidget(
+                          onPressed: _totalRepsForLog,
+                          label: SummaryType.sessionReps.label,
+                          padding: const EdgeInsets.only(right: 5.0),
+                          buttonColor: _buttonColor(type: SummaryType.sessionReps)),
                     if (withDurationOnly(type: widget.exercise.type))
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: OpacityButtonWidget(
-                            onPressed: _longestDurationPerLog,
-                            label: SummaryType.bestTime.label,
-                            padding: const EdgeInsets.only(right: 5.0),
-                            buttonColor: _buttonColor(type: SummaryType.bestTime)),
-                      ),
+                      OpacityButtonWidget(
+                          onPressed: _longestDurationPerLog,
+                          label: SummaryType.bestTime.label,
+                          padding: const EdgeInsets.only(right: 5.0),
+                          buttonColor: _buttonColor(type: SummaryType.bestTime)),
                     if (withDurationOnly(type: widget.exercise.type))
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: OpacityButtonWidget(
-                            onPressed: _totalTimePerLog,
-                            label: SummaryType.sessionTimes.label,
-                            padding: const EdgeInsets.only(right: 5.0),
-                            buttonColor: _buttonColor(type: SummaryType.sessionTimes)),
-                      ),
+                      OpacityButtonWidget(
+                          onPressed: _totalTimePerLog,
+                          label: SummaryType.sessionTimes.label,
+                          padding: const EdgeInsets.only(right: 5.0),
+                          buttonColor: _buttonColor(type: SummaryType.sessionTimes)),
                   ],
                 )),
           const SizedBox(height: 10),
@@ -317,7 +306,8 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
               padding: const EdgeInsets.only(bottom: 10.0),
               child: _MetricListTile(
                   title: 'Heaviest Set Volume',
-                  trailing: "${(widget.heaviestSet.$2 as WeightAndRepsSetDto).weight}$weightUnitLabel x ${(widget.heaviestSet.$2 as WeightAndRepsSetDto).reps}",
+                  trailing:
+                      "${(widget.heaviestSet.$2 as WeightAndRepsSetDto).weight}$weightUnitLabel x ${(widget.heaviestSet.$2 as WeightAndRepsSetDto).reps}",
                   subtitle: 'Heaviest volume in a set',
                   onTap: () => _navigateTo(routineLogId: widget.heaviestSet.$1),
                   enabled: widget.exerciseLogs.isNotEmpty),
@@ -352,7 +342,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                   onTap: () => _navigateTo(routineLogId: widget.mostRepsSession.$1),
                   enabled: widget.exerciseLogs.isNotEmpty),
             ),
-          if (withWeightsOnly(type: widget.exercise.type)) PersonalBestWidget(exercise: widget.exercise),
+          const SizedBox(height: 10)
         ],
       ),
     ));
@@ -375,19 +365,12 @@ class _MetricListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
-        color: sapphireDark80,
-      ),
+    return ThemeListTile(
       child: ListTile(
         onTap: enabled ? onTap : () {},
-        tileColor: Colors.pinkAccent,
-        title: Text(title, style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w500)),
-        subtitle: Text(subtitle, style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white.withOpacity(0.7))),
-        trailing:
-            Text(trailing, style: GoogleFonts.ubuntu(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        title: Text(title),
+        subtitle: Text(subtitle),
+        trailing: Text(trailing),
       ),
     );
   }

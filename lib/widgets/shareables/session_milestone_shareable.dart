@@ -17,7 +17,7 @@ class SessionMilestoneShareable extends StatelessWidget {
     final imageFile = image;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
         child: RepaintBoundary(
@@ -51,7 +51,7 @@ class SessionMilestoneShareable extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      sapphireDark.withOpacity(0.4),
+                      sapphireDark.withValues(alpha: 0.4),
                       sapphireDark,
                     ],
                   )),
@@ -66,13 +66,24 @@ class SessionMilestoneShareable extends StatelessWidget {
                         style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900)),
                     Text("Session",
                         style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 30),
-                    Image.asset(
-                      'images/trkr.png',
-                      fit: BoxFit.contain,
-                      height: 8, // Adjust the height as needed
-                    ),
-                  ])
+                  ]),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 20.0, bottom: 20),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Spacer(),
+                      Image.asset(
+                        'images/trkr.png',
+                        fit: BoxFit.contain,
+                        height: 8, // Adjust the height as needed
+                      )
+                    ],
+                  ),
+                ),
+              ),
             ]),
           ),
         ),

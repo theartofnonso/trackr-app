@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path_provider/path_provider.dart';
@@ -24,7 +24,9 @@ Future<ShareResult> captureImage({required GlobalKey key, required double pixelR
   return await Share.shareUri(newFile.uri);
 }
 
-void onShare({required BuildContext context, required GlobalKey globalKey, EdgeInsetsGeometry? padding, required Widget child}) {
+void onShare(
+    {required BuildContext context, required GlobalKey globalKey, EdgeInsetsGeometry? padding, required Widget child}) {
+
   displayBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -35,16 +37,16 @@ void onShare({required BuildContext context, required GlobalKey globalKey, EdgeI
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: Container(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        sapphireDark80,
-                        sapphireDark,
-                      ],
-                    ),
-                  ),
+                  decoration: BoxDecoration(
+                      color: sapphireDark80,
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          sapphireDark80,
+                          sapphireDark,
+                        ],
+                      )),
                   padding: padding ?? const EdgeInsets.all(12),
                   child: child),
             )),
@@ -56,8 +58,9 @@ void onShare({required BuildContext context, required GlobalKey globalKey, EdgeI
                 if (context.mounted) {
                   if (result.status == ShareResultStatus.success) {
                     showSnackbar(
-                        context: context, icon: const FaIcon(FontAwesomeIcons.circleCheck), message: "Content Shared");
-
+                        context: context,
+                        icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
+                        message: "Content Shared");
                   }
                 }
               });

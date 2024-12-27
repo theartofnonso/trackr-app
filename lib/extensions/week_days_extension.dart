@@ -1,26 +1,6 @@
 import '../enums/week_days_enum.dart';
 
 extension DayOfWeekExtension on DayOfWeek {
-  int get number {
-    switch (this) {
-      case DayOfWeek.monday:
-        return 1;
-      case DayOfWeek.tuesday:
-        return 2;
-      case DayOfWeek.wednesday:
-        return 3;
-      case DayOfWeek.thursday:
-        return 4;
-      case DayOfWeek.friday:
-        return 5;
-      case DayOfWeek.saturday:
-        return 6;
-      case DayOfWeek.sunday:
-        return 7;
-      default:
-        return 0;
-    }
-  }
 
   String get longName {
     switch (this) {
@@ -38,9 +18,7 @@ extension DayOfWeekExtension on DayOfWeek {
         return 'Saturday';
       case DayOfWeek.sunday:
         return 'Sunday';
-      default:
-        return '';
-    }
+      }
   }
 
   String get shortName {
@@ -59,8 +37,6 @@ extension DayOfWeekExtension on DayOfWeek {
         return 'Sat';
       case DayOfWeek.sunday:
         return 'Sun';
-      default:
-        return '';
-    }
+      }
   }
 }

@@ -32,8 +32,9 @@ class _DateViewModel {
 class Calendar extends StatefulWidget {
   final void Function(DateTime dateTime)? onSelectDate;
   final DateTime dateTime;
+  final bool forceDarkMode;
 
-  const Calendar({super.key, this.onSelectDate, required this.dateTime});
+  const Calendar({super.key, this.onSelectDate, required this.dateTime, this.forceDarkMode = false});
 
   @override
   State<Calendar> createState() => _CalendarState();
@@ -108,6 +109,10 @@ class _CalendarState extends State<Calendar> {
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark || widget.forceDarkMode;
+
     Provider.of<SettingsController>(context, listen: true);
 
     final dates = _generateDates();
@@ -118,16 +123,22 @@ class _CalendarState extends State<Calendar> {
         SharedPrefs().showCalendarDates
             ? Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: _CalendarHeader(),
+                child: _CalendarHeader(isDarkMode: isDarkMode,),
               )
             : const SizedBox(height: 8),
-        _Month(dates: dates, selectedDateTime: _currentDate.withoutTime(), onTap: _selectDate),
+        _Month(dates: dates, selectedDateTime: _currentDate.withoutTime(), onTap: _selectDate, isDarkMode: isDarkMode),
       ],
     );
   }
 }
 
 class _CalendarHeader extends StatelessWidget {
+  
+  final bool isDarkMode;
+
+
+  const _CalendarHeader({required this.isDarkMode});
+
   @override
   Widget build(BuildContext context) {
     final List<String> daysOfWeek = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
@@ -145,7 +156,7 @@ class _CalendarHeader extends StatelessWidget {
           itemCount: daysOfWeek.length, // Just an example to vary the number of squares
           itemBuilder: (context, index) {
             return Text(daysOfWeek[index],
-                style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: isDarkMode ? Colors.white : Colors.black),
                 textAlign: TextAlign.center);
           },
         ));
@@ -156,8 +167,9 @@ class _Month extends StatelessWidget {
   final List<_DateViewModel?> dates;
   final DateTime selectedDateTime;
   final void Function(DateTime dateTime) onTap;
+  final bool isDarkMode;
 
-  const _Month({required this.dates, required this.selectedDateTime, required this.onTap});
+  const _Month({required this.dates, required this.selectedDateTime, required this.onTap, required this.isDarkMode});
 
   @override
   Widget build(BuildContext context) {
@@ -172,6 +184,7 @@ class _Month extends StatelessWidget {
           currentDate: date.dateTime.isSameDayMonthAndYear(DateTime.now()),
           hasRoutineLog: date.hasRoutineLog,
           hasActivityLog: date.hasActivityLog,
+          isDarkMode: isDarkMode,
         );
       }
     }).toList();
@@ -202,6 +215,7 @@ class _Day extends StatelessWidget {
   final bool hasActivityLog;
   final bool currentDate;
   final void Function(DateTime dateTime) onTap;
+  final bool isDarkMode;
 
   const _Day(
       {required this.dateTime,
@@ -209,24 +223,28 @@ class _Day extends StatelessWidget {
       required this.currentDate,
       required this.onTap,
       this.hasRoutineLog = false,
-      this.hasActivityLog = false});
+      this.hasActivityLog = false, required this.isDarkMode});
 
-  Color _getBackgroundColor() {
+  Color _getBackgroundColor({required bool isDarkMode}) {
     if (hasRoutineLog) {
-      return vibrantGreen;
+      return isDarkMode && SharedPrefs().showCalendarDates ? vibrantGreen.withValues(alpha:0.1) : vibrantGreen;
     }
     if (hasActivityLog) {
-      return Colors.greenAccent;
+      return isDarkMode && SharedPrefs().showCalendarDates ? Colors.greenAccent.withValues(alpha:0.1) : Colors.greenAccent;
     } else {
-      return sapphireDark80.withOpacity(0.5);
+      return isDarkMode ? sapphireDark80.withValues(alpha:0.5) : Colors.grey.shade200;
     }
   }
 
-  Color _getTextColor() {
-    if (SharedPrefs().showCalendarDates) {
-      return hasRoutineLog || hasActivityLog ? Colors.black : Colors.white70;
+  Color _getTextColor({required bool isDarkMode}) {
+    if (hasRoutineLog) {
+      return isDarkMode ? vibrantGreen : Colors.black;
     }
-    return Colors.transparent;
+    if (hasActivityLog) {
+      return isDarkMode ? Colors.greenAccent : Colors.black;
+    } else {
+      return isDarkMode ? Colors.white : Colors.black;
+    }
   }
 
   Border? _dateBorder() {
@@ -240,6 +258,7 @@ class _Day extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return GestureDetector(
       onTap: () => onTap(dateTime),
       child: Container(
@@ -251,13 +270,13 @@ class _Day extends StatelessWidget {
         child: Container(
           margin: const EdgeInsets.all(2),
           decoration: BoxDecoration(
-            color: _getBackgroundColor(),
+            color: _getBackgroundColor(isDarkMode: isDarkMode),
             borderRadius: BorderRadius.circular(2),
           ),
-          child: Center(
+          child: SharedPrefs().showCalendarDates ? Center(
             child: Text("${dateTime.day}",
-                style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.bold, color: _getTextColor())),
-          ),
+                style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.bold, color: _getTextColor(isDarkMode: isDarkMode))),
+          ) : SizedBox.shrink(),
         ),
       ),
     );

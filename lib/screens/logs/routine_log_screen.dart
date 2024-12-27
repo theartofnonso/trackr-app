@@ -1,22 +1,24 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:in_app_review/in_app_review.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/dtos/open_ai_response_schema_dtos/routine_log_report_dto.dart';
-import 'package:tracker_app/extensions/amplify_models/routine_log_extension.dart';
+import 'package:tracker_app/dtos/open_ai_response_schema_dtos/exercise_performance_report.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
-import 'package:tracker_app/openAI/open_ai_functions.dart';
+import 'package:tracker_app/extensions/duration_extension.dart';
+import 'package:tracker_app/openAI/open_ai_response_format.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
-import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/utils/https_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/backgrounds/trkr_loading_screen.dart';
-import 'package:tracker_app/widgets/chart/muscle_group_family_chart.dart';
+import 'package:tracker_app/widgets/information_containers/information_container_lite.dart';
 
 import '../../../colors.dart';
 import '../../../dtos/exercise_log_dto.dart';
@@ -27,20 +29,31 @@ import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/viewmodels/exercise_log_view_model.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
-import '../../enums/exercise_type_enums.dart';
+import '../../enums/posthog_analytics_event.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../models/RoutineLog.dart';
 import '../../openAI/open_ai.dart';
 import '../../strings/ai_prompts.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
+import '../../utils/general_utils.dart';
+import '../../utils/routine_log_utils.dart';
 import '../../utils/routine_utils.dart';
+import '../../utils/string_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../widgets/ai_widgets/trkr_information_container.dart';
+import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/empty_states/not_found.dart';
-import '../../widgets/routine/preview/date_duration_pb.dart';
+import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
 import '../AI/routine_log_report_screen.dart';
+
+class _StatisticsInformation {
+  final String title;
+  final String description;
+
+  _StatisticsInformation({required this.title, required this.description});
+}
 
 class RoutineLogScreen extends StatefulWidget {
   static const routeName = '/routine_log_screen';
@@ -60,20 +73,18 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
   bool _loading = false;
 
-  bool _minimized = true;
-
   @override
   Widget build(BuildContext context) {
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
-    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
-    if (routineLogController.errorMessage.isNotEmpty) {
+    if (exerciseAndRoutineController.errorMessage.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         showSnackbar(
             context: context,
             icon: const FaIcon(FontAwesomeIcons.circleInfo),
-            message: routineLogController.errorMessage);
+            message: exerciseAndRoutineController.errorMessage);
       });
     }
 
@@ -83,256 +94,318 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     if (log == null) return const NotFound();
 
-    final updatedExerciseLogs = completedExercises(exerciseLogs: log.exerciseLogs);
+    _shouldAskForAppRating();
 
-    final updatedLog = log.copyWith(exerciseLogs: updatedExerciseLogs);
+    // We only want to see all logged exercises and sets
+    final completedExerciseLogs = loggedExercises(exerciseLogs: log.exerciseLogs);
 
-    final numberOfCompletedSets = updatedExerciseLogs.expand((exerciseLog) => exerciseLog.sets);
+    final updatedLog = log.copyWith(exerciseLogs: completedExerciseLogs);
 
-    final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: updatedExerciseLogs);
+    final numberOfCompletedSets = completedExerciseLogs.expand((exerciseLog) => exerciseLog.sets);
+
+    final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: completedExerciseLogs);
 
     final calories = calculateCalories(
         duration: updatedLog.duration(), bodyWeight: routineUserController.weight(), activity: log.activityType);
 
     final pbs = updatedLog.exerciseLogs.map((exerciseLog) {
-      final pastExerciseLogs =
-          routineLogController.whereExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
+      final pastExerciseLogs = exerciseAndRoutineController.whereExerciseLogsBefore(
+          exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
 
       return calculatePBs(
-          pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog);
+          pastExerciseLogs: loggedExercises(exerciseLogs: pastExerciseLogs),
+          exerciseType: exerciseLog.exercise.type,
+          exerciseLog: exerciseLog);
     }).expand((pbs) => pbs);
 
+    final rpeRating = log.rpeRating;
+
+    final sleepFrom = log.sleepFrom;
+    final sleepTo = log.sleepTo;
+
+    Duration? sleepDuration = sleepFrom != null && sleepTo != null ? sleepTo.difference(sleepFrom) : null;
+
+    final logs = exerciseAndRoutineController
+        .whereLogsWithTemplateId(templateId: log.templateId)
+        .map((log) => routineWithLoggedExercises(log: log))
+        .toList();
+
+    final allLoggedVolumesForTemplate = logs.map((log) => log.volume).toList();
+
+    final avgVolume = allLoggedVolumesForTemplate.isNotEmpty ? allLoggedVolumesForTemplate.average : 0.0;
+
+    final currentAndPreviousMonthVolume = _calculateCurrentAndPreviousLogVolume(logs: logs);
+
+    final previousMonthVolume = currentAndPreviousMonthVolume.$1;
+    final currentMonthVolume = currentAndPreviousMonthVolume.$2;
+
+    final improved = currentMonthVolume > previousMonthVolume;
+
+    final difference = improved ? currentMonthVolume - previousMonthVolume : previousMonthVolume - currentMonthVolume;
+
+    final differenceSummary = _generateDifferenceSummary(difference: difference, improved: improved);
+
     return Scaffold(
-        backgroundColor: sapphireDark,
         appBar: AppBar(
-            backgroundColor: sapphireDark80,
             leading: IconButton(
-              icon: const FaIcon(FontAwesomeIcons.squareXmark, color: Colors.white, size: 28),
+              icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
               onPressed: context.pop,
             ),
-            title: Text(updatedLog.name,
-                style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+            title: Text(updatedLog.name),
             actions: updatedLog.owner == SharedPrefs().userId && widget.isEditable
                 ? [
                     IconButton(
                         onPressed: () => _onShareLog(log: log),
-                        icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18)),
+                        icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, size: 18)),
                   ]
                 : []),
         floatingActionButton: updatedLog.owner == SharedPrefs().userId && widget.isEditable
             ? FloatingActionButton(
                 heroTag: "routine_log_screen",
                 onPressed: _showBottomSheet,
-                backgroundColor: sapphireDark,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                 child: const FaIcon(FontAwesomeIcons.penToSquare))
             : null,
         body: Container(
-          width: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                sapphireDark80,
-                sapphireDark,
-              ],
-            ),
+          decoration: BoxDecoration(
+            gradient: themeGradient(context: context),
           ),
-          child: Stack(children: [
-            SafeArea(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+          child: SafeArea(
+            bottom: false,
+            child: SingleChildScrollView(
+              child: Column(
+                spacing: 20,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                      child: Wrap(
+                    children: [
+                      const FaIcon(
+                        FontAwesomeIcons.calendarDay,
+                        size: 14,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(log.createdAt.formattedDayMonthTime(), style: Theme.of(context).textTheme.bodySmall),
+                    ],
+                  )),
+                  if (updatedLog.notes.isNotEmpty)
                     Center(
-                        child: DateDurationPBWidget(
-                            dateTime: updatedLog.createdAt, duration: updatedLog.duration(), pbs: 0)),
-                    if (updatedLog.notes.isNotEmpty)
-                      Center(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 20, right: 10, bottom: 10, left: 10),
-                          child: Text('"${updatedLog.notes}"',
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.ubuntu(
-                                  color: Colors.white70,
-                                  fontSize: 14,
-                                  fontStyle: FontStyle.italic,
-                                  fontWeight: FontWeight.w600)),
-                        ),
-                      ),
-
-                    /// Keep this spacing for when notes isn't available
-                    if (updatedLog.notes.isEmpty)
-                      const SizedBox(
-                        height: 20,
-                      ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          _StatisticWidget(
-                            title: "${updatedExerciseLogs.length}",
-                            subtitle: "Exercises",
-                            image: "dumbbells",
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          _StatisticWidget(
-                            title: "${numberOfCompletedSets.length}",
-                            subtitle: "Sets",
-                            icon: FontAwesomeIcons.listOl,
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          _StatisticWidget(
-                            title: "$calories",
-                            subtitle: "Calories",
-                            icon: FontAwesomeIcons.fire,
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          _StatisticWidget(
-                            title: "${pbs.length}",
-                            subtitle: "PBs",
-                            icon: FontAwesomeIcons.star,
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          )
-                        ],
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Text('"${updatedLog.notes}"',
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic)),
                       ),
                     ),
-                    const SizedBox(height: 22),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      spacing: 10,
+                      children: [
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        _StatisticWidget(
+                          title: "${completedExerciseLogs.length}",
+                          subtitle: "Exercises",
+                          image: "dumbbells",
+                          information: _StatisticsInformation(
+                              title: "Exercises",
+                              description:
+                                  "The total number of different exercises you completed in a workout session."),
+                        ),
+                        _StatisticWidget(
+                          title: "${numberOfCompletedSets.length}",
+                          subtitle: "Sets",
+                          icon: FontAwesomeIcons.hashtag,
+                          information: _StatisticsInformation(
+                              title: "Sets",
+                              description:
+                                  "The number of rounds you performed for each exercise. A “set” consists of a group of repetitions (reps)."),
+                        ),
+                        _StatisticWidget(
+                          title: log.duration().hmsDigital(),
+                          subtitle: "Duration",
+                          icon: FontAwesomeIcons.solidClock,
+                          information: _StatisticsInformation(
+                              title: "Duration",
+                              description: "The total time you spent on your workout session, from start to finish."),
+                        ),
+                        _StatisticWidget(
+                          title: "$calories",
+                          subtitle: "Calories",
+                          icon: FontAwesomeIcons.fire,
+                          information: _StatisticsInformation(
+                              title: "Calories Burned",
+                              description: "An estimate of the energy your body used during the workout."),
+                        ),
+                        _StatisticWidget(
+                          title: "${pbs.length}",
+                          subtitle: "PBs",
+                          icon: FontAwesomeIcons.solidStar,
+                          information: _StatisticsInformation(
+                              title: "Personal Bests",
+                              description:
+                                  "Your highest achievement in an exercise, like the heaviest weight lifted, most reps performed, or highest training volume."),
+                        ),
+                        if (sleepDuration != null)
+                          _StatisticWidget(
+                            title: sleepDuration.hmsDigital(),
+                            subtitle: "Sleep",
+                            icon: FontAwesomeIcons.solidMoon,
+                            information: _StatisticsInformation(
+                                title: "Sleep",
+                                description:
+                                    "The amount of sleep you got the night before the workout. Sleep impacts your recovery, energy, and overall performance during exercise."),
+                          ),
+                        _StatisticWidget(
+                          title: "$rpeRating",
+                          subtitle: "RPE",
+                          icon: FontAwesomeIcons.solidFaceSadTear,
+                          information: _StatisticsInformation(
+                              title: "Rate of Perceived Exertion",
+                              description:
+                                  "A self-reported score (1 to 10) indicating how hard your workout felt. Helps adjust workout intensity to match your goals and avoid overtraining."),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        )
+                      ],
+                    ),
+                  ),
+                  if (routineUserController.user == null)
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          GestureDetector(
-                            onTap: _onMinimiseMuscleGroupSplit,
-                            child: Container(
-                              color: Colors.transparent,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: GestureDetector(
+                        onTap: _navigateToSettings,
+                        child: InformationContainerLite(
+                          content: "Set up your user profile in the settings to view the number of calories burned.",
+                          color: Colors.deepOrange,
+                        ),
+                      ),
+                    ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Column(
+                      spacing: 20,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MuscleGroupSplitChart(
+                            title: "Muscle Groups Split",
+                            description: "Here's a breakdown of the muscle groups in your ${log.name} workout log.",
+                            muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
+                            minimized: false),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            RichText(
+                              text: TextSpan(
+                                text: volumeInKOrM(avgVolume),
+                                style: Theme.of(context).textTheme.headlineMedium,
                                 children: [
-                                  Row(children: [
-                                    Text("Muscle Groups Split".toUpperCase(),
-                                        style: GoogleFonts.ubuntu(
-                                            color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
-                                    const Spacer(),
-                                    if (muscleGroupFamilyFrequencies.length > 3)
-                                      FaIcon(_minimized ? FontAwesomeIcons.angleDown : FontAwesomeIcons.angleUp,
-                                          color: Colors.white70, size: 16),
-                                  ]),
-                                  const SizedBox(height: 10),
-                                  Text("Here's a breakdown of the muscle groups in your ${log.name} workout log.",
-                                      style: GoogleFonts.ubuntu(
-                                          color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
-                                  const SizedBox(height: 10),
-                                  MuscleGroupFamilyChart(
-                                      frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
+                                  TextSpan(
+                                    text: " ",
+                                  ),
+                                  TextSpan(
+                                    text: weightLabel().toUpperCase(),
+                                    style: Theme.of(context).textTheme.bodyMedium,
+                                  ),
                                 ],
                               ),
                             ),
-                          ),
-                          if (updatedLog.owner == SharedPrefs().userId && widget.isEditable)
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 12.0),
-                              child: TRKRInformationContainer(
-                                  ctaLabel: updatedLog.summary != null ? "Review your feedback" : "Ask for feedback",
-                                  description:
-                                      "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
-                                  onTap: () => _generateReport(exerciseLogs: updatedExerciseLogs)),
+                            Text(
+                              "SESSION AVERAGE".toUpperCase(),
+                              style: Theme.of(context).textTheme.bodySmall,
                             ),
-                          ExerciseLogListView(
-                              exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: updatedExerciseLogs)),
-                        ],
-                      ),
-                    )
-                    //
-                    // const EdgeInsets.only(right: 10, bottom: 10, left: 10)
-                  ],
-                ),
+                            Wrap(
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              children: [
+                                FaIcon(
+                                  getImprovementIcon(improved: improved, difference: difference),
+                                  color: getImprovementColor(improved: improved, difference: difference),
+                                  size: 12,
+                                ),
+                                const SizedBox(width: 6),
+                                OpacityButtonWidget(
+                                  label: differenceSummary,
+                                  buttonColor: getImprovementColor(improved: improved, difference: difference),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                        if (updatedLog.owner == SharedPrefs().userId && widget.isEditable)
+                          TRKRInformationContainer(
+                              ctaLabel: "Ask for feedback",
+                              description:
+                                  "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
+                              onTap: _generateReport),
+                        ExerciseLogListView(
+                            exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogs)),
+                        const SizedBox(
+                          height: 60,
+                        )
+                      ],
+                    ),
+                  )
+                  //
+                  // const EdgeInsets.only(right: 10, bottom: 10, left: 10)
+                ],
               ),
             ),
-          ]),
+          ),
         ));
   }
 
-  void _onMinimiseMuscleGroupSplit() {
-    setState(() {
-      _minimized = !_minimized;
-    });
+  void _navigateToSettings() {
+    navigateToSettings(context: context);
   }
 
-  void _generateReport({required List<ExerciseLogDto> exerciseLogs}) async {
+  void _shouldAskForAppRating() async {
+    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
+    List<RoutineLogDto> routineLogsForTheYear =
+        routineLogController.whereLogsIsSameYear(dateTime: DateTime.now().withoutTime());
+
+    bool isMultipleOf10(int number) {
+      return number % 10 == 0;
+    }
+
+    final hasLoggedTenSessions = isMultipleOf10(routineLogsForTheYear.length);
+
+    if (hasLoggedTenSessions) {
+      final InAppReview inAppReview = InAppReview.instance;
+      final isAvailable = await inAppReview.isAvailable();
+      if (isAvailable) {
+        inAppReview.requestReview();
+      }
+    }
+  }
+
+  void _generateReport() async {
     final log = _log;
 
     if (log == null) return;
 
-    final userInstructions =
-        "Review my ${log.name} current workout log, compare it to previous logs and generate a report. Please note, that my weights are in ${weightLabel()}";
-
-    final StringBuffer buffer = StringBuffer();
-
-    buffer.writeln(userInstructions);
-
-    buffer.writeln();
-
-    final exerciseAndRoutineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-
-    for (final exerciseLog in exerciseLogs) {
-      buffer.writeln("Current Exercise Log for: ${exerciseLog.exercise.name}");
-      List<String> setSummaries = _generateSetSummaries(exerciseLog);
-      buffer.writeln("Current Sets: $setSummaries");
-
-      buffer.writeln();
-
-      buffer.writeln("Past Exercise Logs for ${exerciseLog.exercise.name}");
-
-      final pastExerciseLogs = exerciseAndRoutineLogController.whereExerciseLogsBefore(
-          exercise: exerciseLog.exercise, date: exerciseLog.createdAt.withoutTime());
-
-      for (final pastExerciseLog in pastExerciseLogs) {
-        buffer.writeln("Date: ${pastExerciseLog.createdAt.withoutTime().formattedDayAndMonthAndYear()}");
-        List<String> pastSetSummaries = _generateSetSummaries(exerciseLog);
-        buffer.writeln("Past Sets: $pastSetSummaries");
-
-        buffer.writeln();
-      }
-    }
-
-    final completeInstructions = buffer.toString();
-
     _showLoadingScreen();
 
-    runMessage(
-            system: routineLogSystemInstruction,
-            user: completeInstructions,
-            responseFormat: routineLogReportResponseFormat)
+    String instruction = prepareLogInstruction(context: context, routineLog: log);
+
+    runMessage(system: routineLogSystemInstruction, user: instruction, responseFormat: routineLogReportResponseFormat)
         .then((response) {
       _hideLoadingScreen();
       if (response != null) {
-        final jsonString = jsonEncode(response);
-        _saveSummary(response: jsonString, log: log);
+        if (kReleaseMode) {
+          Posthog().capture(eventName: PostHogAnalyticsEvent.generateRoutineLogReport.displayName);
+        }
         if (mounted) {
           // Deserialize the JSON string
           Map<String, dynamic> json = jsonDecode(response);
 
           // Create an instance of ExerciseLogsResponse
-          RoutineLogReportDto report = RoutineLogReportDto.fromJson(json);
+          ExercisePerformanceReport report = ExercisePerformanceReport.fromJson(json);
           navigateWithSlideTransition(
               context: context,
               child: RoutineLogReportScreen(
                 report: report,
-                routineLog: log,
               ));
         }
       }
@@ -347,17 +420,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     });
   }
 
-  List<String> _generateSetSummaries(ExerciseLogDto exerciseLog) {
-    final setSummaries = exerciseLog.sets.mapIndexed((index, set) {
-      return switch (exerciseLog.exercise.type) {
-        ExerciseType.weights => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
-        ExerciseType.bodyWeight => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
-        ExerciseType.duration => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
-      };
-    }).toList();
-    return setSummaries;
-  }
-
   void _loadData() {
     final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
     _log = routineLogController.logWhereId(id: widget.id);
@@ -367,12 +429,12 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         if (data.isNotEmpty) {
           final json = jsonDecode(data);
           final body = json["data"];
-          final routineLog = body["getRoutineLog"];
-          if (routineLog != null) {
-            final routineLogDto = RoutineLog.fromJson(routineLog);
+          final routineLogJson = body["getRoutineLog"];
+          if (routineLogJson != null) {
+            final log = RoutineLog.fromJson(routineLogJson);
             setState(() {
               _loading = false;
-              _log = routineLogDto.dto();
+              _log = RoutineLogDto.toDto(log);
             });
           } else {
             setState(() {
@@ -404,34 +466,27 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         child: SafeArea(
           child: Column(children: [
             ListTile(
-              dense: true,
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.solidPenToSquare, size: 18),
               horizontalTitleGap: 6,
-              title: Text("Edit Log",
-                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              title: Text("Edit Log"),
               onTap: _editLog,
             ),
             ListTile(
-              dense: true,
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(FontAwesomeIcons.solidClock, size: 18),
               horizontalTitleGap: 6,
-              title: Text("Edit duration",
-                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              title: Text("Edit duration"),
               onTap: _editDuration,
             ),
             ListTile(
-              dense: true,
               contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(FontAwesomeIcons.solidFloppyDisk, size: 18),
+              leading: const FaIcon(FontAwesomeIcons.download, size: 18),
               horizontalTitleGap: 6,
-              title: Text("Save as template",
-                  style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              title: Text("Save as template"),
               onTap: _createTemplate,
             ),
             ListTile(
-              dense: true,
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(
                 FontAwesomeIcons.trash,
@@ -508,14 +563,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             });
           });
     }
-  }
-
-  void _saveSummary({required RoutineLogDto log, required String response}) async {
-    final updatedLog = log.copyWith(summary: response);
-    await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateLog(log: updatedLog);
-    setState(() {
-      _log = updatedLog;
-    });
   }
 
   void _createTemplate() async {
@@ -600,6 +647,42 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         rightActionLabel: 'Delete',
         isRightActionDestructive: true);
   }
+
+  (double, double) _calculateCurrentAndPreviousLogVolume({required List<RoutineLogDto> logs}) {
+    if (logs.isEmpty) {
+      // No logs => no comparison
+      return (0, 0);
+    }
+
+    // 2. Identify the most recent log
+    final lastLog = logs.last;
+    final lastLogVolume = lastLog.volume;
+    final lastLogDate = lastLog.createdAt;
+
+    final previousLogs = logs.where((log) => log.createdAt.isBefore(lastLogDate));
+
+    if (previousLogs.isEmpty) {
+      // No earlier logs => can't compare
+      return (0, 0);
+    }
+
+    final previousLogVolume = previousLogs.last.volume;
+
+    return (previousLogVolume, lastLogVolume);
+  }
+
+  String _generateDifferenceSummary({required bool improved, required double difference}) {
+    if (difference <= 0) {
+      return "0 change in past session";
+    } else {
+      if (improved) {
+        return "${volumeInKOrM(difference)} ${weightLabel()} up in this session";
+      } else {
+        return "${volumeInKOrM(difference)} ${weightLabel()} down in this session";
+      }
+    }
+  }
+
 }
 
 class _StatisticWidget extends StatelessWidget {
@@ -607,47 +690,65 @@ class _StatisticWidget extends StatelessWidget {
   final String? image;
   final String title;
   final String subtitle;
+  final _StatisticsInformation information;
 
-  const _StatisticWidget({this.icon, this.image, required this.title, required this.subtitle});
+  const _StatisticWidget(
+      {this.icon, this.image, required this.title, required this.subtitle, required this.information});
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final leading = image != null
         ? Image.asset(
             'icons/$image.png',
             fit: BoxFit.contain,
-            color: Colors.white70,
+            color: isDarkMode ? Colors.white : Colors.black,
             height: 14, // Adjust the height as needed
           )
-        : FaIcon(icon, size: 14, color: Colors.white70);
+        : FaIcon(icon, size: 14);
 
-    return Container(
-      width: 140,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: sapphireDark60, // Background color of the container
-        borderRadius: BorderRadius.circular(5), // Border radius for rounded corners
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Wrap(
-            crossAxisAlignment: WrapCrossAlignment.center,
+    return GestureDetector(
+      onTap: () =>
+          showBottomSheetWithNoAction(context: context, title: information.title, description: information.description),
+      child: Container(
+        width: 120,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, // Background color of the container
+          borderRadius: BorderRadius.circular(5), // Border radius for rounded corners
+        ),
+        child: Stack(children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              leading,
-              const SizedBox(
-                width: 6,
+              Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  leading,
+                  const SizedBox(
+                    width: 6,
+                  ),
+                  Text(subtitle.toUpperCase(), style: Theme.of(context).textTheme.bodySmall)
+                ],
               ),
-              Text(subtitle.toUpperCase(),
-                  style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.bold))
+              const SizedBox(
+                height: 6,
+              ),
+              Text(title, style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(
+                height: 16,
+              ),
             ],
           ),
-          const SizedBox(
-            height: 6,
+          Positioned.fill(
+            child: const Align(alignment: Alignment.bottomRight, child: FaIcon(FontAwesomeIcons.lightbulb, size: 10)),
           ),
-          Text(title, style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900))
-        ],
+        ]),
       ),
     );
   }
+  
+ 
 }

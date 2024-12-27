@@ -88,16 +88,12 @@ String scheduledDaysSummary({required RoutineTemplateDto template, bool showFull
     final scheduledDays = template.scheduledDays;
 
     if (scheduledDays.isNotEmpty) {
-      final scheduledDayNames =
-          scheduledDays.map((day) => showFullName ? day.longName : day.shortName).toList();
+      final scheduledDayNames = scheduledDays.map((day) => showFullName ? day.longName : day.shortName).toList();
 
       return scheduledDays.length == 7 ? "Everyday" : "Every ${joinWithAnd(items: scheduledDayNames)}";
     }
   }
 
-  if (template.scheduleIntervals >= 1) {
-    return template.scheduleIntervals == 1 ? "Everyday" : "${template.scheduledDate?.formattedDate()}";
-  }
   return "No schedule";
 }
 

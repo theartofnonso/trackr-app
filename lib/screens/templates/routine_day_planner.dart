@@ -23,12 +23,12 @@ class RoutineDayPlanner extends StatefulWidget {
 }
 
 class _RoutineDayPlannerState extends State<RoutineDayPlanner> {
-  final List<DayOfWeek> _selectedDays = [];
+  List<DayOfWeek> _selectedDays = [];
 
   void _toggleDay(DayOfWeek day) {
     setState(() {
       if (_selectedDays.contains(day)) {
-        _selectedDays.remove(day);
+        _selectedDays = _selectedDays.where((selectedDay) => selectedDay != day).toList();
       } else {
         _selectedDays.add(day);
       }
@@ -48,22 +48,20 @@ class _RoutineDayPlannerState extends State<RoutineDayPlanner> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-
         _selectedDays.isNotEmpty
             ? RichText(
                 text: TextSpan(
                   text: 'Train ${widget.template.name} ',
-                  style: GoogleFonts.ubuntu(fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white70),
+                  style: Theme.of(context).textTheme.titleMedium,
                   children: [
                     TextSpan(
                       text: days,
-                      style: GoogleFonts.ubuntu(fontSize: 20, fontWeight: FontWeight.w700, color: Colors.white),
+                      style: Theme.of(context).textTheme.titleMedium,
                     )
                   ],
                 ),
               )
-            : Text('Select days to train ${widget.template.name}',
-                style: GoogleFonts.ubuntu(fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white70)),
+            : Text('Select days to train ${widget.template.name}', style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 20),
         Wrap(
           spacing: 8.0,
@@ -99,16 +97,16 @@ class _RoutineDayPlannerState extends State<RoutineDayPlanner> {
     );
   }
 
-
   @override
   void initState() {
     super.initState();
-    _selectedDays.addAll(widget.template.scheduledDays);
+    _selectedDays = widget.template.scheduledDays;
   }
 
   void _updateRoutineTemplateDays() async {
     _selectedDays.sort((a, b) => a.index.compareTo(b.index));
-    final template = widget.template.copyWith(scheduledDays: _selectedDays, scheduleType: RoutineScheduleType.days, scheduleIntervals: 0, scheduledDate: null);
+    final template = widget.template
+        .copyWith(scheduledDays: _selectedDays, scheduleType: RoutineScheduleType.days, scheduledDate: null);
     await Provider.of<ExerciseAndRoutineController>(context, listen: false).updateTemplate(template: template);
     if (mounted) {
       Navigator.of(context).pop(template);

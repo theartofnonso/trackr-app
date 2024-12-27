@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class DoubleTextField extends StatelessWidget {
   final num value;
@@ -7,7 +6,8 @@ class DoubleTextField extends StatelessWidget {
   final void Function(double value) onChanged;
   final void Function()? onTap;
 
-  const DoubleTextField({super.key, required this.value, required this.controller, required this.onChanged, this.onTap});
+  const DoubleTextField(
+      {super.key, required this.value, required this.controller, required this.onChanged, this.onTap});
 
   double _parseDoubleOrDefault({required String value}) {
     return double.tryParse(value) ?? 0;
@@ -15,21 +15,24 @@ class DoubleTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     return TextField(
       controller: controller,
       onTap: onTap,
+      cursorColor: isDarkMode ? Colors.white : Colors.black,
       onChanged: (value) => onChanged(_parseDoubleOrDefault(value: value)),
       decoration: InputDecoration(
-          contentPadding: EdgeInsets.zero,
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: Colors.transparent)),
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: Colors.transparent)),
-          fillColor: Colors.transparent,
-          hintText: "${value > 0 ? value : '-'}",
-          hintStyle: GoogleFonts.ubuntu(color: Colors.white70)),
+          hintText: "${value > 0 ? value : '-'}"),
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       maxLines: 1,
       textAlign: TextAlign.center,
-      style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
     );
   }
 }

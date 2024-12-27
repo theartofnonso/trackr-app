@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tracker_app/colors.dart';
 
 import '../../utils/general_utils.dart';
 
@@ -9,26 +8,29 @@ class LogStreakMonitor extends StatelessWidget {
   final double height;
   final double strokeWidth;
   final StrokeCap? strokeCap;
-  final Decoration? decoration;
+  final bool forceDarkMode;
 
   const LogStreakMonitor({
     super.key,
     required this.value,
     required this.width,
     required this.height,
-    required this.strokeWidth, this.strokeCap, this.decoration,
+    required this.strokeWidth, this.strokeCap, this.forceDarkMode = false
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark || forceDarkMode;
+
+    return SizedBox(
       width: height,
       height: width,
-      decoration: decoration,
       child: CircularProgressIndicator(
         value: value,
         strokeWidth: strokeWidth,
-        backgroundColor: sapphireDark80,
+        backgroundColor: isDarkMode ? Colors.black12 : Colors.grey.shade200,
         strokeCap: strokeCap ?? StrokeCap.butt,
         valueColor: AlwaysStoppedAnimation<Color>(logStreakColor(value: value)),
       ),

@@ -58,3 +58,15 @@ String joinWithAnd({required List<String> items}) {
   // Return the string with the last item appended with 'and'
   return '$allButLast and ${items.last}';
 }
+
+String listWithAnd({required List<String> strings}) {
+  if (strings.isEmpty) {
+    return '';
+  } else if (strings.length == 1) {
+    return strings.first;
+  } else {
+    final allButLast = strings.sublist(0, strings.length - 1).join(', ');
+    final lastItem = strings.last;
+    return '$allButLast & $lastItem';
+  }
+}

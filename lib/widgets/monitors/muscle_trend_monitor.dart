@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tracker_app/colors.dart';
-
-import '../../utils/general_utils.dart';
 
 class MuscleTrendMonitor extends StatelessWidget {
   final double value;
@@ -9,7 +6,7 @@ class MuscleTrendMonitor extends StatelessWidget {
   final double height;
   final double strokeWidth;
   final StrokeCap? strokeCap;
-  final Decoration? decoration;
+  final bool forceDarkMode;
 
   const MuscleTrendMonitor({
     super.key,
@@ -17,21 +14,24 @@ class MuscleTrendMonitor extends StatelessWidget {
     required this.width,
     required this.height,
     required this.strokeWidth,
-    this.strokeCap, this.decoration,
+    this.strokeCap, this.forceDarkMode = false
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark || forceDarkMode;
+
+    return SizedBox(
       width: width,
       height: height,
-      decoration: decoration,
       child: CircularProgressIndicator(
         value: value,
         strokeWidth: strokeWidth,
-        backgroundColor: sapphireDark80,
+        backgroundColor: isDarkMode ? Colors.black12 : Colors.grey.shade200,
         strokeCap: strokeCap ?? StrokeCap.butt,
-        valueColor: AlwaysStoppedAnimation<Color>(muscleFamilyFrequencyColor(value: value)),
+        valueColor: AlwaysStoppedAnimation<Color>(isDarkMode ? Colors.white: Colors.black),
       ),
     );
   }

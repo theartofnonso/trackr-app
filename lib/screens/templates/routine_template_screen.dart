@@ -1,34 +1,41 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/extensions/amplify_models/routine_template_extension.dart';
+import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
 import 'package:tracker_app/shared_prefs.dart';
-import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
+import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
-import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../dtos/viewmodels/routine_template_arguments.dart';
+import '../../enums/chart_unit_enum.dart';
+import '../../enums/posthog_analytics_event.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../enums/routine_preview_type_enum.dart';
 import '../../models/RoutineTemplate.dart';
 import '../../urls.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
+import '../../utils/general_utils.dart';
 import '../../utils/https_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../utils/string_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
-import '../../widgets/chart/muscle_group_family_chart.dart';
+import '../../widgets/buttons/opacity_button_widget.dart';
+import '../../widgets/chart/line_chart_widget.dart';
 import '../../widgets/empty_states/not_found.dart';
+import '../../widgets/information_containers/information_container.dart';
+import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
 import 'routine_day_planner.dart';
 
@@ -47,8 +54,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   RoutineTemplateDto? _template;
 
   bool _loading = false;
-
-  bool _minimized = true;
 
   void _deleteRoutine({required RoutineTemplateDto template}) async {
     try {
@@ -86,6 +91,9 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
@@ -108,6 +116,26 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
     final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: template.exerciseTemplates);
 
+    final allLogsForTemplate = exerciseAndRoutineController.whereLogsWithTemplateId(templateId: template.id);
+
+    final allLoggedVolumesForTemplate = allLogsForTemplate.map((log) => log.volume).toList();
+
+    final avgVolume = allLoggedVolumesForTemplate.isNotEmpty ? allLoggedVolumesForTemplate.average : 0.0;
+
+    final volumeChartPoints =
+        allLoggedVolumesForTemplate.mapIndexed((index, volume) => ChartPointDto(index, volume)).toList();
+
+    final currentAndPreviousMonthVolume = _calculateCurrentAndPreviousLogVolume(logs: allLogsForTemplate);
+
+    final previousMonthVolume = currentAndPreviousMonthVolume.$1;
+    final currentMonthVolume = currentAndPreviousMonthVolume.$2;
+
+    final improved = currentMonthVolume > previousMonthVolume;
+
+    final difference = improved ? currentMonthVolume - previousMonthVolume : previousMonthVolume - currentMonthVolume;
+
+    final differenceSummary = _generateDifferenceSummary(difference: difference, improved: improved);
+
     final menuActions = [
       MenuItemButton(
           onPressed: _navigateToRoutineTemplateEditor,
@@ -120,11 +148,11 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       MenuItemButton(
         onPressed: () => _updateTemplateSchedule(template: template),
         leadingIcon: FaIcon(FontAwesomeIcons.solidClock, size: 16),
-        child: Text("Schedule", style: GoogleFonts.ubuntu(color: Colors.white)),
+        child: Text("Schedule", style: GoogleFonts.ubuntu()),
       ),
       MenuItemButton(
           leadingIcon: FaIcon(FontAwesomeIcons.arrowUpFromBracket, size: 16),
-          onPressed: _showBottomSheet,
+          onPressed: _showShareBottomSheet,
           child: Text("Share", style: GoogleFonts.ubuntu())),
       MenuItemButton(
         onPressed: () {
@@ -155,28 +183,19 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
         floatingActionButton: FloatingActionButton(
             heroTag: UniqueKey,
             onPressed: template.owner == SharedPrefs().userId ? _launchRoutineLogEditor : _createTemplate,
-            backgroundColor: sapphireDark,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: template.owner == SharedPrefs().userId
-                ? const FaIcon(FontAwesomeIcons.play, color: Colors.white, size: 24)
+                ? const FaIcon(FontAwesomeIcons.play, size: 24)
                 : const FaIcon(FontAwesomeIcons.download)),
-        backgroundColor: sapphireDark,
         appBar: AppBar(
-          backgroundColor: sapphireDark80,
           leading: IconButton(
-            icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+            icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
             onPressed: context.pop,
           ),
           centerTitle: true,
-          title: Text(template.name,
-              style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+          title: Text(template.name),
           actions: [
             template.owner == SharedPrefs().userId
                 ? MenuAnchor(
-                    style: MenuStyle(
-                      backgroundColor: WidgetStateProperty.all(sapphireDark80),
-                      surfaceTintColor: WidgetStateProperty.all(sapphireDark),
-                    ),
                     builder: (BuildContext context, MenuController controller, Widget? child) {
                       return IconButton(
                         onPressed: () {
@@ -188,7 +207,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                         },
                         icon: const Icon(
                           Icons.more_vert_rounded,
-                          color: Colors.white,
                           size: 24,
                         ),
                         tooltip: 'Show menu',
@@ -200,65 +218,45 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           ],
         ),
         body: Container(
-          width: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                sapphireDark80,
-                sapphireDark,
-              ],
-            ),
+          decoration: BoxDecoration(
+            gradient: themeGradient(context: context),
           ),
           child: SafeArea(
+            bottom: false,
             minimum: const EdgeInsets.all(10.0),
             child: SingleChildScrollView(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 20,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const FaIcon(
                         FontAwesomeIcons.solidClock,
-                        color: Colors.white,
                         size: 12,
                       ),
                       const SizedBox(width: 6),
                       Text(scheduledDaysSummary(template: template, showFullName: true),
-                          style: GoogleFonts.ubuntu(
-                              color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                          style: Theme.of(context).textTheme.bodyMedium),
                     ],
                   ),
                   if (template.notes.isNotEmpty)
                     Center(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 20, bottom: 10),
-                        child: Text('"${template.notes}"',
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.ubuntu(
-                                color: Colors.white70,
-                                fontSize: 14,
-                                fontStyle: FontStyle.italic,
-                                fontWeight: FontWeight.w600)),
-                      ),
-                    ),
-
-                  /// Keep this spacing for when notes isn't available
-                  if (template.notes.isEmpty)
-                    const SizedBox(
-                      height: 20,
+                      child: Text('"${template.notes}"',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic)),
                     ),
                   Container(
-                    margin: const EdgeInsets.only(bottom: 12),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
-                      color: sapphireDark.withOpacity(0.4), // Set the background color
+                      color: isDarkMode ? Colors.black12 : Colors.grey.shade200,
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     child: Table(
-                      border: const TableBorder.symmetric(inside: BorderSide(color: sapphireLighter, width: 2)),
+                      border: TableBorder.symmetric(
+                          inside: BorderSide(
+                              color: isDarkMode ? sapphireLighter.withValues(alpha: 0.4) : Colors.white, width: 2)),
                       columnWidths: const <int, TableColumnWidth>{
                         0: FlexColumnWidth(),
                         1: FlexColumnWidth(),
@@ -270,52 +268,98 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                             child: Center(
                               child: Text(
                                   "${template.exerciseTemplates.length} ${pluralize(word: "Exercise", count: template.exerciseTemplates.length)}",
-                                  style: GoogleFonts.ubuntu(
-                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                                  style: Theme.of(context).textTheme.bodyMedium),
                             ),
                           ),
                           TableCell(
                             verticalAlignment: TableCellVerticalAlignment.middle,
                             child: Center(
-                              child: Text(setsSummary,
-                                  style: GoogleFonts.ubuntu(
-                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                              child: Text(setsSummary, style: Theme.of(context).textTheme.bodyMedium),
                             ),
                           ),
                         ]),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  GestureDetector(
-                    onTap: _onMinimiseMuscleGroupSplit,
-                    child: Container(
-                      color: Colors.transparent,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(children: [
-                            Text("Muscle Groups Split".toUpperCase(),
-                                style: GoogleFonts.ubuntu(
-                                    color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
-                            const Spacer(),
-                            if (muscleGroupFamilyFrequencies.length > 3)
-                              FaIcon(_minimized ? FontAwesomeIcons.angleDown : FontAwesomeIcons.angleUp,
-                                  color: Colors.white70, size: 16),
-                          ]),
-                          const SizedBox(height: 10),
-                          Text("Here's a breakdown of the muscle groups in your ${template.name} workout plan.",
-                              style:
-                                  GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
-                          const SizedBox(height: 10),
-                          MuscleGroupFamilyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
-                        ],
-                      ),
+                  MuscleGroupSplitChart(
+                      title: "Muscle Groups Split",
+                      description: "Here's a breakdown of the muscle groups in your ${template.name} workout plan.",
+                      muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
+                      minimized: false),
+                  if (template.owner == SharedPrefs().userId)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            text: volumeInKOrM(avgVolume),
+                            style: Theme.of(context).textTheme.headlineMedium,
+                            children: [
+                              TextSpan(
+                                text: " ",
+                              ),
+                              TextSpan(
+                                text: weightLabel().toUpperCase(),
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Text(
+                          "SESSION AVERAGE".toUpperCase(),
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                        Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            FaIcon(
+                              getImprovementIcon(improved: improved, difference: difference),
+                              color: getImprovementColor(improved: improved, difference: difference),
+                              size: 12,
+                            ),
+                            const SizedBox(width: 6),
+                            OpacityButtonWidget(
+                              label: differenceSummary,
+                              buttonColor: getImprovementColor(improved: improved, difference: difference),
+                            )
+                          ],
+                        )
+                      ],
+                    ),
+                  Text(
+                      "Here’s a summary of your ${template.name} training intensity over the last ${allLogsForTemplate.length} sessions.",
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        const SizedBox(height: 16),
+                        LineChartWidget(
+                          chartPoints: volumeChartPoints,
+                          periods: [],
+                          unit: ChartUnit.weight,
+                        ),
+                      ],
                     ),
                   ),
+                  InformationContainer(
+                    leadingIcon: FaIcon(FontAwesomeIcons.weightHanging),
+                    title: "Training Volume",
+                    color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
+                    description:
+                        "Volume is the total amount of work done, often calculated as sets × reps × weight. Higher volume increases muscle size (hypertrophy).",
+                  ),
+                  const SizedBox(height: 1),
                   ExerciseLogListView(
                     exerciseLogs: exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
                   ),
+                  const SizedBox(
+                    height: 60,
+                  )
                 ],
               ),
             ),
@@ -335,16 +379,10 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     });
   }
 
-  void _onMinimiseMuscleGroupSplit() {
-    setState(() {
-      _minimized = !_minimized;
-    });
-  }
-
   void _launchRoutineLogEditor() {
     final template = _template;
     if (template != null) {
-      final arguments = RoutineLogArguments(log: template.log(), editorMode: RoutineEditorMode.log);
+      final arguments = RoutineLogArguments(log: template.toLog(), editorMode: RoutineEditorMode.log);
       navigateToRoutineLogEditor(context: context, arguments: arguments);
     }
   }
@@ -357,11 +395,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       try {
         final exercises = template.exerciseTemplates.map((exerciseLog) {
           final uncheckedSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
-
-          /// [Exercise.duration] exercises do not have sets in templates
-          /// This is because we only need to store the duration of the exercise in [RoutineEditorType.log] i.e data is logged in realtime
-          final sets = withDurationOnly(type: exerciseLog.exercise.type) ? <SetDto>[] : uncheckedSets;
-          return exerciseLog.copyWith(sets: sets);
+          return exerciseLog.copyWith(sets: uncheckedSets);
         }).toList();
         final templateToCreate = RoutineTemplateDto(
             id: "",
@@ -403,10 +437,10 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           final body = json["data"];
           final routineTemplate = body["getRoutineTemplate"];
           if (routineTemplate != null) {
-            final routineTemplateDto = RoutineTemplate.fromJson(routineTemplate);
+            final template = RoutineTemplate.fromJson(routineTemplate);
             setState(() {
               _loading = false;
-              _template = routineTemplateDto.dto();
+              _template = RoutineTemplateDto.toDto(template);
             });
           } else {
             setState(() {
@@ -429,7 +463,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     }
   }
 
-  void _showBottomSheet() {
+  void _showShareBottomSheet() {
     final template = _template;
 
     if (template != null) {
@@ -445,74 +479,97 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           isScrollControlled: true,
           child: SafeArea(
             child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const FaIcon(FontAwesomeIcons.link, size: 14, color: Colors.white70),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(workoutLink,
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: true,
-                        style: GoogleFonts.ubuntu(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                        )),
-                  ),
-                  const SizedBox(width: 6),
-                  OpacityButtonWidget(
-                    onPressed: () {
-                      HapticFeedback.heavyImpact();
-                      final data = ClipboardData(text: workoutLink);
-                      Clipboard.setData(data).then((_) {
-                        if (mounted) {
-                          context.pop();
-                          showSnackbar(context: context, icon: const Icon(Icons.check), message: "Workout link copied");
-                        }
-                      });
-                    },
-                    label: "Copy",
-                    buttonColor: vibrantGreen,
-                  )
-                ],
-              ),
-              const SizedBox(height: 12),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: sapphireDark80,
-                  border: Border.all(
-                    color: sapphireDark80, // Border color
-                    width: 1.0, // Border width
-                  ),
-                  borderRadius: BorderRadius.circular(5), // Optional: Rounded corners
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const FaIcon(
+                  FontAwesomeIcons.link,
+                  size: 18,
                 ),
-                child: Text("${workoutText.substring(0, workoutText.length >= 150 ? 150 : workoutText.length)}...",
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.ubuntu(
-                      color: Colors.white70,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14,
-                    )),
+                horizontalTitleGap: 10,
+                title: Text(
+                  "Copy as Link",
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                  maxLines: 1,
+                ),
+                subtitle: Text(workoutLink),
+                onTap: () {
+                  Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineTemplateAsLink.displayName);
+                  HapticFeedback.heavyImpact();
+                  final data = ClipboardData(text: workoutLink);
+                  Clipboard.setData(data).then((_) {
+                    if (mounted) {
+                      Navigator.of(context).pop();
+                      showSnackbar(
+                          context: context,
+                          icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
+                          message: "Workout link copied");
+                    }
+                  });
+                },
               ),
-              OpacityButtonWidget(
-                onPressed: () {
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const FaIcon(
+                  FontAwesomeIcons.copy,
+                  size: 18,
+                ),
+                horizontalTitleGap: 6,
+                title: Text("Copy as Text", style: Theme.of(context).textTheme.titleMedium),
+                subtitle: Text("${template.name}..."),
+                onTap: () {
+                  Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineTemplateAsText.displayName);
                   HapticFeedback.heavyImpact();
                   final data = ClipboardData(text: workoutText);
                   Clipboard.setData(data).then((_) {
                     if (mounted) {
-                      context.pop();
-                      showSnackbar(context: context, icon: const Icon(Icons.check), message: "Workout copied");
+                      Navigator.of(context).pop();
+                      showSnackbar(
+                          context: context,
+                          icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
+                          message: "Workout copied");
                     }
                   });
                 },
-                label: "Copy as text",
-                buttonColor: vibrantGreen,
-              )
+              ),
             ]),
           ));
+    }
+  }
+
+  (double, double) _calculateCurrentAndPreviousLogVolume({required List<RoutineLogDto> logs}) {
+    if (logs.isEmpty) {
+      // No logs => no comparison
+      return (0, 0);
+    }
+
+    // 2. Identify the most recent log
+    final lastLog = logs.last;
+    final lastLogVolume = lastLog.volume;
+    final lastLogDate = lastLog.createdAt;
+
+    final previousLogs = logs.where((log) => log.createdAt.isBefore(lastLogDate));
+
+    if (previousLogs.isEmpty) {
+      // No earlier logs => can't compare
+      return (0, 0);
+    }
+
+    final previousLogVolume = previousLogs.last.volume;
+
+    return (previousLogVolume, lastLogVolume);
+  }
+
+  String _generateDifferenceSummary({required bool improved, required double difference}) {
+    if (difference <= 0) {
+      return "0 change in past session";
+    } else {
+      if (improved) {
+        return "${volumeInKOrM(difference)} ${weightLabel()} up in last session";
+      } else {
+        return "${volumeInKOrM(difference)} ${weightLabel()} down in last session";
+      }
     }
   }
 

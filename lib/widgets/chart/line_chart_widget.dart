@@ -14,30 +14,29 @@ class LineChartWidget extends StatelessWidget {
   final ExtraLinesData? extraLinesData;
   final List<String> periods;
   final ChartUnit unit;
-  final double? maxY;
   final double interval;
+  final double? aspectRation;
 
   const LineChartWidget(
       {super.key,
       required this.chartPoints,
       required this.periods,
       required this.unit,
-      this.extraLinesData, this.maxY, this.interval = 10});
-
-  static const List<Color> gradientColors = [
-    sapphireLight,
-    Colors.white38
-  ];
+      this.extraLinesData,
+      this.interval = 10,
+      this.aspectRation});
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
 
     return chartPoints.isNotEmpty
         ? Center(
             child: AspectRatio(
-              aspectRatio: 1.5,
+              aspectRatio: aspectRation ?? 1.5,
               child: LineChart(LineChartData(
-                maxY: maxY,
+                  gridData: FlGridData(drawVerticalLine: false),
                   minY: 0,
                   titlesData: FlTitlesData(
                     show: true,
@@ -58,7 +57,7 @@ class LineChartWidget extends StatelessWidget {
                       sideTitles: SideTitles(
                         showTitles: true,
                         interval: interval,
-                        getTitlesWidget:  _bottomTitleWidgets,
+                        getTitlesWidget: periods.isNotEmpty ? _bottomTitleWidgets : (_, __) => SizedBox.shrink(),
                       ),
                     ),
                   ),
@@ -68,19 +67,10 @@ class LineChartWidget extends StatelessWidget {
                   extraLinesData: extraLinesData,
                   lineBarsData: [
                     LineChartBarData(
-                        //isStepLineChart: true,
                         spots: chartPoints.map((point) {
                           return FlSpot(point.x.toDouble(), point.y.toDouble());
                         }).toList(),
-                        gradient: const LinearGradient(
-                          colors: gradientColors,
-                        ),
-                        belowBarData: BarAreaData(
-                          show: true,
-                          gradient: LinearGradient(
-                            colors: [gradientColors[0].withOpacity(0.1), gradientColors[1].withOpacity(0.2)],
-                          ),
-                        ),
+                        color: isDarkMode ? Colors.white70 : Colors.grey.shade600,
                         isCurved: true)
                   ])),
             ),
@@ -102,11 +92,11 @@ class LineChartWidget extends StatelessWidget {
   }
 
   String _weightTitle({required double value}) {
-      if (unit == ChartUnit.weight) {
-        return volumeInKOrM(value, showLessThan1k: false);
-      } else if (unit == ChartUnit.duration) {
-        return Duration(milliseconds: value.toInt()).msDigital();
-      }
+    if (unit == ChartUnit.weight) {
+      return volumeInKOrM(value, showLessThan1k: false);
+    } else if (unit == ChartUnit.duration) {
+      return Duration(milliseconds: value.toInt()).msDigital();
+    }
 
     return "${value.toInt()}";
   }

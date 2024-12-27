@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import '../dtos/appsync/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/set_dtos/set_dto.dart';
-import '../enums/routine_editor_type_enums.dart';
 import '../logger.dart';
 import '../repositories/exercise_log_repository.dart';
 
@@ -19,22 +18,14 @@ class ExerciseLogController extends ChangeNotifier {
 
   UnmodifiableListView<ExerciseLogDto> get exerciseLogs => _exerciseLogRepository.exerciseLogs;
 
-  void loadExerciseLogs({required List<ExerciseLogDto> exerciseLogs, required RoutineEditorMode mode}) {
-    _exerciseLogRepository.loadExerciseLogs(exerciseLogs: exerciseLogs, mode: mode);
-    logger.i("load exercise log: $exerciseLogs: $mode");
+  void loadExerciseLogs({required List<ExerciseLogDto> exerciseLogs}) {
+    _exerciseLogRepository.loadExerciseLogs(exerciseLogs: exerciseLogs);
+    logger.i("load exercise logs");
   }
 
-  List<ExerciseLogDto> mergeExerciseLogsAndSets() {
-    return _exerciseLogRepository.mergeExerciseLogsAndSets();
-  }
-
-  List<ExerciseLogDto> mergeAndCheckExerciseLogsAndSets({required DateTime datetime}) {
-    return _exerciseLogRepository.mergeAndCheckPastExerciseLogsAndSets(datetime: datetime);
-  }
-
-  void addExerciseLogs({required List<ExerciseDto> exercises}) {
-    _exerciseLogRepository.addExerciseLogs(exercises: exercises);
-    logger.i("load exercise log: $exercises");
+  void addExerciseLog({required ExerciseDto exercise, required List<SetDto> pastSets}) {
+    _exerciseLogRepository.addExerciseLog(exercise: exercise, pastSets: pastSets);
+    logger.i("load exercise log: $exercise");
     notifyListeners();
   }
 
@@ -48,13 +39,18 @@ class ExerciseLogController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void replaceExerciseLog({required String oldExerciseId, required ExerciseDto newExercise}) {
-    _exerciseLogRepository.replaceExercise(oldExerciseId: oldExerciseId, newExercise: newExercise);
+  void replaceExerciseLog({required String oldExerciseId, required ExerciseDto newExercise, required List<SetDto> pastSets}) {
+    _exerciseLogRepository.replaceExercise(oldExerciseId: oldExerciseId, newExercise: newExercise, pastSets: pastSets);
     notifyListeners();
   }
 
   void updateExerciseLogNotes({required String exerciseLogId, required String value}) {
     _exerciseLogRepository.updateExerciseLogNotes(exerciseLogId: exerciseLogId, value: value);
+  }
+
+  void updateExerciseLogRepRange({required String exerciseLogId, required RangeValues values}) {
+    _exerciseLogRepository.updateExerciseLogRepRange(exerciseLogId: exerciseLogId, values: values);
+    notifyListeners();
   }
 
   void superSetExerciseLogs(
@@ -71,6 +67,11 @@ class ExerciseLogController extends ChangeNotifier {
 
   void addSet({required String exerciseLogId, required List<SetDto> pastSets}) {
     _exerciseLogRepository.addSet(exerciseLogId: exerciseLogId, pastSets: pastSets);
+    notifyListeners();
+  }
+
+  void overwriteSets({required String exerciseLogId, required List<SetDto> sets}) {
+    _exerciseLogRepository.overwriteSets(exerciseLogId: exerciseLogId, sets: sets);
     notifyListeners();
   }
 

@@ -43,44 +43,23 @@ class RoutineTemplatesScreen extends StatelessWidget {
         }
       }
 
-      final exerciseTemplates =
-          routineTemplates.map((template) => template.exerciseTemplates).expand((exercises) => exercises).toList();
-
-      final exercisesByMuscleGroupFamily =
-          groupBy(exerciseTemplates, (exercise) => exercise.exercise.primaryMuscleGroup.family);
-
-      final muscleGroupFamilies = exercisesByMuscleGroupFamily.keys.toSet();
-
-      final listOfPopularMuscleGroupFamilies = popularMuscleGroupFamilies().toSet();
-
-      final untrainedMuscleGroups = listOfPopularMuscleGroupFamilies.difference(muscleGroupFamilies);
-
       final children = templates
           .map((template) =>
               _RoutineWidget(template: template, scheduleSummary: scheduledDaysSummary(template: template)))
           .toList();
 
       return Scaffold(
-          backgroundColor: Colors.transparent,
           floatingActionButton: FloatingActionButton(
             heroTag: "fab_routines_screen",
             onPressed: () => navigateToRoutineTemplateEditor(context: context),
-            backgroundColor: sapphireDark.withOpacity(untrainedMuscleGroups.isNotEmpty ? 0.6 : 1),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-            child: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 28),
+            child: const FaIcon(FontAwesomeIcons.plus, size: 28),
           ),
           body: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  sapphireDark80,
-                  sapphireDark,
-                ],
-              ),
+            decoration: BoxDecoration(
+              gradient: themeGradient(context: context),
             ),
             child: SafeArea(
+                bottom: false,
                 minimum: const EdgeInsets.all(10.0),
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   const SizedBox(height: 16),
@@ -91,10 +70,11 @@ class RoutineTemplatesScreen extends StatelessWidget {
                       textStyle: GoogleFonts.ubuntu(
                         fontSize: 16,
                         fontWeight: FontWeight.w400,
-                        color: Colors.white.withOpacity(0.9),
+                        color: Colors.white.withValues(alpha: 0.9),
                       )),
                   const SizedBox(height: 16),
-                  TRKRCoachButton(label: "Describe a workout", onTap: () => _switchToAIContext(context: context)),
+                  TRKRCoachButton(
+                      label: "Tap to describe a workout", onTap: () => _switchToAIContext(context: context)),
                   const SizedBox(height: 16),
                   templates.isNotEmpty
                       ? Expanded(
@@ -105,7 +85,14 @@ class RoutineTemplatesScreen extends StatelessWidget {
                               crossAxisSpacing: 10.0,
                               children: children),
                         )
-                      : const NoListEmptyState(message: "It might feel quiet now, but tap the + button to create a workout or ask TRKR coach for help."),
+                      : Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: const NoListEmptyState(
+                                message:
+                                    "It might feel quiet now, but tap the + button to create a workout or ask TRKR coach for help."),
+                          ),
+                        ),
                 ])),
           ));
     });
@@ -136,62 +123,112 @@ class _RoutineWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final exercises = template.exerciseTemplates;
     final sets = template.exerciseTemplates.expand((exercise) => exercise.sets);
-    return GestureDetector(
-      onTap: () => navigateToRoutineTemplatePreview(context: context, template: template),
-      child: Container(
-          padding: const EdgeInsets.all(18),
-          decoration: BoxDecoration(
-              color: sapphireDark80,
-              borderRadius: BorderRadius.circular(10),
-              gradient: template.isScheduledToday()
-                  ? const LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        sapphireDark80,
-                        sapphireDark,
-                      ],
-                    )
-                  : null,
-              boxShadow: [
-                BoxShadow(
-                    color: sapphireDark.withOpacity(0.5), spreadRadius: 5, blurRadius: 7, offset: const Offset(0, 3))
-              ]),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(
-              template.name,
-              style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.w700),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
-            ),
-            const Spacer(),
-            Text(
-              "${exercises.length} ${pluralize(word: "Exercise", count: exercises.length)}",
-              style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w500),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
-            ),
-            const SizedBox(
-              height: 6,
-            ),
-            Text(
-              "${sets.length} ${pluralize(word: "Set", count: sets.length)}",
-              style: GoogleFonts.ubuntu(fontSize: 12, fontWeight: FontWeight.w500),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
-            ),
-            const SizedBox(height: 8),
-            Divider(
-                color: template.isScheduledToday() ? vibrantGreen.withOpacity(0.2) : sapphireLighter, endIndent: 10),
-            const SizedBox(height: 8),
-            Text(
-              scheduleSummary,
-              style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ])),
+    return Badge(
+      backgroundColor:  vibrantGreen,
+      alignment: Alignment.topRight,
+      smallSize: 12,
+      isLabelVisible: template.isScheduledToday(),
+      child: GestureDetector(
+        onTap: () => navigateToRoutineTemplatePreview(context: context, template: template),
+        child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+                color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, borderRadius: BorderRadius.circular(5)),
+            child: Column(spacing: 6, crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(
+                template.name,
+                style: Theme.of(context).textTheme.titleMedium,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+              const Spacer(),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Wrap(
+                    children: [
+                      Container(
+                        width: 20,
+                        height: 20,
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: vibrantGreen.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                        child: Image.asset(
+                          'icons/dumbbells.png',
+                          fit: BoxFit.contain,
+                          height: 14,
+                          color: vibrantGreen, // Adjust the height as needed
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 6,
+                      ),
+                      Text(
+                        "${exercises.length} ${pluralize(word: "Exercise", count: exercises.length)}",
+                        style: Theme.of(context).textTheme.bodyMedium,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 6,
+                  ),
+                  Wrap(
+                    children: [
+                      Container(
+                        width: 20,
+                        height: 20,
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: vibrantBlue.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                        child: Center(
+                          child: FaIcon(
+                            FontAwesomeIcons.hashtag,
+                            color: vibrantBlue,
+                            size: 11,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 6,
+                      ),
+                      Text(
+                        "${sets.length} ${pluralize(word: "Set", count: sets.length)}",
+                        style: Theme.of(context).textTheme.bodyMedium,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Divider(
+                  color: template.isScheduledToday()
+                      ? vibrantGreen.withValues(alpha: 0.2)
+                      : isDarkMode
+                          ? Colors.white10
+                          : Colors.black12,
+                  endIndent: 10),
+              Expanded(
+                child: Text(
+                  scheduleSummary,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+              ),
+            ])),
+      ),
     );
   }
 }

@@ -3,7 +3,7 @@ enum RoutineScheduleType {
   intervals,
   none;
 
-  static RoutineScheduleType fromString(String string) {
+  static RoutineScheduleType fromJson(String string) {
     return RoutineScheduleType.values.firstWhere((value) => value.name.toLowerCase() == string.toLowerCase());
   }
 }

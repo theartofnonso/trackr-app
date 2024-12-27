@@ -6,7 +6,6 @@ import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 
 import '../../enums/milestone_type_enums.dart';
-import '../../utils/date_utils.dart';
 import '../appsync/routine_log_dto.dart';
 
 class WeeklyMilestone extends Milestone {
@@ -19,14 +18,11 @@ class WeeklyMilestone extends Milestone {
       required super.description,
       required super.rule,
       required super.target,
-      this.muscleGroupFamily = MuscleGroupFamily.none,
+      this.muscleGroupFamily = MuscleGroupFamily.fullBody,
       required super.progress,
       required super.type});
 
-  static List<Milestone> loadMilestones({required List<RoutineLogDto> logs}) {
-    final dateRange = yearToDateTimeRange(datetime: DateTime.now());
-
-    final weeksInYear = generateWeeksInRange(range: dateRange);
+  static List<Milestone> loadMilestones({required List<RoutineLogDto> logs, required List<DateTimeRange> weeksInYear, required DateTime datetime}) {
 
     final mondayMilestone = WeeklyMilestone(
         id: 'NMAMC_002',
@@ -35,7 +31,7 @@ class WeeklyMilestone extends Milestone {
             'Kickstart your week with energy and dedication. Commit to a Monday workout to set a positive tone for the days ahead, ensuring consistent progress towards your fitness goals.',
         caption: "Train every Monday",
         target: 16,
-        progress: _calculateMondayProgress(logs: logs, target: 16, weeks: weeksInYear),
+        progress: calculateMondayProgress(logs: logs, target: 16, weeks: weeksInYear, datetime: datetime),
         rule: "Log at least one training session every Monday for 16 consecutive weeks.",
         type: MilestoneType.weekly);
 
@@ -46,7 +42,7 @@ class WeeklyMilestone extends Milestone {
             'Maximize your weekends by dedicating time to intense training sessions. Push your limits and achieve significant fitness milestones by committing to workouts every weekend.',
         caption: "Train every weekend",
         target: 16,
-        progress: _calculateWeekendProgress(logs: logs, target: 16, weeks: weeksInYear),
+        progress: calculateWeekendProgress(logs: logs, target: 16, weeks: weeksInYear, datetime: datetime),
         rule: "Log at least one training session every weekend (Saturday or Sunday) for 16 consecutive weeks.",
         type: MilestoneType.weekly);
 
@@ -57,7 +53,7 @@ class WeeklyMilestone extends Milestone {
             'Commit to your fitness goals by never skipping leg day. Strengthen your lower body through consistent training, enhancing your overall physique and performance.',
         caption: "Train legs weekly",
         target: 16,
-        progress: _calculateLegProgress(logs: logs, target: 16, weeks: weeksInYear),
+        progress: calculateLegProgress(logs: logs, target: 16, weeks: weeksInYear),
         muscleGroupFamily: MuscleGroupFamily.legs,
         rule: "Log at least one leg-focused training session every week for 16 consecutive weeks.",
         type: MilestoneType.weekly);
@@ -65,43 +61,78 @@ class WeeklyMilestone extends Milestone {
     return [mondayMilestone, weekendMilestone, legDayMilestone];
   }
 
-  static (double, List<RoutineLogDto>) _calculateMondayProgress(
-      {required List<RoutineLogDto> logs, required int target, required List<DateTimeRange> weeks}) {
+  static (double, List<RoutineLogDto>) calculateMondayProgress({
+    required List<RoutineLogDto> logs,
+    required int target,
+    required List<DateTimeRange> weeks,
+    required DateTime datetime
+  }) {
     if (logs.isEmpty) return (0, []);
 
     List<RoutineLogDto> mondayLogs = [];
-    for (final week in weeks) {
-      final logsForTheWeek = logs.where((log) => log.createdAt.isWithinRange(range: week));
-      final mondayLog = logsForTheWeek.firstWhereOrNull((log) => log.createdAt.weekday == DateTime.monday);
+    final now = datetime;
+
+    // Process weeks in reverse order (from most recent to oldest)
+    for (final week in weeks.reversed) {
+      final logsForTheWeek = logs.where(
+        (log) => log.createdAt.isWithinRange(range: week),
+      );
+
+      final mondayLog = logsForTheWeek.firstWhereOrNull(
+        (log) => log.createdAt.weekday == DateTime.monday,
+      );
+
       if (mondayLog != null) {
         mondayLogs.add(mondayLog);
       } else {
-        if (mondayLogs.length < target) {
-          mondayLogs = [];
+        // Only reset the streak if the week is over
+        if (week.end.isBefore(now)) {
+          break; // Streak is broken
         }
+      }
+
+      // Stop if we have reached the target number of logs
+      if (mondayLogs.length >= target) {
+        break;
       }
     }
 
     final qualifyingLogs = mondayLogs.take(target).toList();
-
     final progress = qualifyingLogs.length / target;
 
     return (progress, qualifyingLogs);
   }
 
-  static (double, List<RoutineLogDto>) _calculateWeekendProgress(
-      {required List<RoutineLogDto> logs, required int target, required List<DateTimeRange> weeks}) {
+  static (double, List<RoutineLogDto>) calculateWeekendProgress({required List<RoutineLogDto> logs, required int target, required List<DateTimeRange> weeks, required DateTime datetime}) {
     if (logs.isEmpty) return (0, []);
 
     List<RoutineLogDto> weekendLogs = [];
-    for (final week in weeks) {
+    DateTime now = datetime;
+
+    for (var week in weeks) {
+      // Skip weeks that haven't ended yet
+
+      if (week.end.isAfter(now) || week.end.isAtSameMomentAs(now)) {
+
+        // Check if the current week has passed the weekend
+        if (now.weekday != DateTime.saturday && now.weekday != DateTime.sunday && now.weekday != DateTime.monday) {
+          continue;
+        } else {
+          // Adjust the week to include only dates up to now
+          week = DateTimeRange(start: week.start, end: now);
+        }
+      }
+
       final logsForTheWeek = logs.where((log) => log.createdAt.isWithinRange(range: week));
+
       final saturdayOrSundayLogs = logsForTheWeek
           .where((log) => log.createdAt.weekday == DateTime.saturday || log.createdAt.weekday == DateTime.sunday);
+
       if (saturdayOrSundayLogs.isNotEmpty) {
-        weekendLogs.addAll(saturdayOrSundayLogs);
+        weekendLogs.add(saturdayOrSundayLogs.first);
       } else {
-        if (weekendLogs.length < target) {
+        // Only reset if we haven't met the target yet and we're not in the current week
+        if (weekendLogs.length < target && week.end.isBefore(now)) {
           weekendLogs = [];
         }
       }
@@ -114,7 +145,7 @@ class WeeklyMilestone extends Milestone {
     return (progress, qualifyingLogs);
   }
 
-  static (double, List<RoutineLogDto>) _calculateLegProgress(
+  static (double, List<RoutineLogDto>) calculateLegProgress(
       {required List<RoutineLogDto> logs, required int target, required List<DateTimeRange> weeks}) {
     if (logs.isEmpty) return (0, []);
 
@@ -122,7 +153,7 @@ class WeeklyMilestone extends Milestone {
     for (final week in weeks) {
       final logsForTheWeek = logs.where((log) => log.createdAt.isWithinRange(range: week));
       final legLog = logsForTheWeek.firstWhereOrNull((log) {
-        final completedExerciseLogs = completedExercises(exerciseLogs: log.exerciseLogs);
+        final completedExerciseLogs = loggedExercises(exerciseLogs: log.exerciseLogs);
         final hasLegLog = completedExerciseLogs.where((exerciseLog) {
           final primaryMuscleGroupFamily = exerciseLog.exercise.primaryMuscleGroup.family;
           final secondaryMuscleGroupFamilies =
