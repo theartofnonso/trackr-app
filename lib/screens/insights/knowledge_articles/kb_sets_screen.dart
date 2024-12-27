@@ -93,10 +93,10 @@ class KbSetsScreen extends StatelessWidget {
                           title: "Supersets",
                           subtitle: "These involve performing two exercises back-to-back with little to no rest between them. They can target the same muscle or different muscle groups.",
                           description:
-                              "Example: Bicep curls followed immediately by tricep dips or bicep curls followed by hammer curls."),
+                              "Example: Bicep curls followed immediately by triceps dips or bicep curls followed by hammer curls."),
                       _ListItem(
                           title: "Drop Sets",
-                          subtitle: "These involve performing a set of an exercise until failure, then quickly reducing the weight and continuing with more repetitions until failure is reached again.",
+                          subtitle: "These involve performing a set of an repetitions until failure, then quickly reducing the weight and continuing with more repetitions until failure is reached again.",
                           description:
                               "Example: Bicep curls with a heavy dumbbell until failure, then switch to a lighter dumbbell and continue until failure.")
                     ],
@@ -126,8 +126,8 @@ class _ListItem extends StatelessWidget {
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text(
-        title,
-        style: Theme.of(context).textTheme.titleSmall?.copyWith(fontSize: 20),
+        title.toUpperCase(),
+        style: Theme.of(context).textTheme.titleSmall?.copyWith(fontSize: 16),
       ),
       const SizedBox(height: 4),
       Text(
