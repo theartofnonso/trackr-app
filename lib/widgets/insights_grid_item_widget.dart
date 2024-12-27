@@ -6,8 +6,9 @@ import '../colors.dart';
 class InsightsGridItemWidget extends StatelessWidget {
   final String title;
   final void Function()? onTap;
+  final String image;
 
-  const InsightsGridItemWidget({super.key, required this.title, this.onTap});
+  const InsightsGridItemWidget({super.key, required this.title, this.onTap, required this.image});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class InsightsGridItemWidget extends StatelessWidget {
           child: Stack(children: [
             Positioned.fill(
                 child: Image.asset(
-              'images/man_woman.jpg',
+             image,
               fit: BoxFit.cover,
             )),
             Container(
@@ -41,7 +42,7 @@ class InsightsGridItemWidget extends StatelessWidget {
             Align(
               alignment: Alignment.bottomLeft,
               child: Padding(
-                padding: const EdgeInsets.only(right: 10, bottom: 20.0, left: 16),
+                padding: const EdgeInsets.only(right: 10, bottom: 20.0, left: 12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.end,

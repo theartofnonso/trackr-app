@@ -46,6 +46,7 @@ import '../../widgets/chart/legend.dart';
 import '../../widgets/dividers/label_divider.dart';
 import '../../widgets/insights_grid_item_widget.dart';
 import 'knowledge_articles/kb_sets_screen.dart';
+import 'knowledge_articles/kb_volume_screen.dart';
 
 class _TrendAndDate {
   final num value;
@@ -172,14 +173,15 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     final leanMoreChildren = [
       InsightsGridItemWidget(
         title: 'Reps and Ranges: Mastering the Basics for Optimal Training',
-        onTap: () => navigateWithSlideTransition(context: context, child: KbRepsScreen()),
+        onTap: () => navigateWithSlideTransition(context: context, child: KbRepsScreen()), image: 'images/man_dumbbell.jpg',
       ),
       InsightsGridItemWidget(
         title: 'Sets: A Deep Dive into Strength Training Fundamentals',
-      onTap: () => navigateWithSlideTransition(context: context, child: KbSetsScreen())
+      onTap: () => navigateWithSlideTransition(context: context, child: KbSetsScreen()), image: 'images/girl_standing_man_squatting.jpg',
       ),
       InsightsGridItemWidget(
-        title: 'Volume: Understanding training intensity',
+        title: 'Volume vs. Intensity: Unlocking the Key to Effective Training',
+          onTap: () => navigateWithSlideTransition(context: context, child: KbVolumeScreen()), image: 'images/orange_dumbbells.jpg',
       )
     ];
 

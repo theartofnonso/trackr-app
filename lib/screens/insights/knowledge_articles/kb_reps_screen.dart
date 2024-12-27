@@ -28,7 +28,7 @@ class KbRepsScreen extends StatelessWidget {
                   child: Stack(children: [
                     Positioned.fill(
                         child: Image.asset(
-                      'images/man_woman.jpg',
+                      'images/man_dumbbell.jpg',
                       fit: BoxFit.cover,
                     )),
                     Container(
