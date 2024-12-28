@@ -21,7 +21,7 @@ abstract class SetDto {
 
   bool isNotEmpty();
 
-  SetDto copyWith({bool? checked});
+  SetDto copyWith({bool? checked, int? rpeRating});
 
   String summary();
 
