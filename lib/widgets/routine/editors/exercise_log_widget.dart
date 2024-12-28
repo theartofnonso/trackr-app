@@ -314,6 +314,82 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     }
   }
 
+  final Map<int, Color> _intensityToColor = {
+    1: vibrantGreen, // Bright green - very light
+    2: Color(0xFF66FF66), // Light green
+    3: Color(0xFF99FF99), // Soft green
+    4: Color(0xFFFFFF66), // Yellow-green transition
+    5: Color(0xFFFFFF33), // Yellow - moderate intensity
+    6: Color(0xFFFFCC33), // Amber - challenging intensity
+    7: Color(0xFFFF9933), // Orange - very hard
+    8: Color(0xFFFF6633), // Deep orange - near maximal
+    9: Color(0xFFFF3333), // Bright red - maximal effort
+    10: Color(0xFFFF0000), // Red - absolute limit
+  };
+
+  Color _getIntensityColor({required int intensity}) {
+    if (_intensityToColor.containsKey(intensity)) {
+      return _intensityToColor[intensity]!;
+    } else {
+      throw ArgumentError("Invalid intensity level: $intensity");
+    }
+  }
+
+  /// Analyzes a list of RPE ratings and returns a descriptive summary.
+  String _getRpeTrendSummary({required List<int> ratings}) {
+    bool isHigh(int rpe) => rpe >= 6;
+    bool isLow(int rpe) => rpe <= 5;
+
+    if (ratings.isEmpty) {
+      return "No ratings provided.";
+    }
+    if (ratings.length == 1) {
+      // If there's only one data point, just describe that point.
+      return "Keep pushing to see insights";
+    }
+
+    // Determine if all ratings are high, all are low, or mixed.
+    final allHigh = ratings.every(isHigh);
+    final allLow = ratings.every(isLow);
+
+    // Identify the first and last RPE
+    final firstRpe = ratings.first;
+    final lastRpe = ratings.last;
+
+    // If all ratings are in the high range:
+    if (allHigh) {
+      return "High intensity - You're pushing hard";
+    }
+
+    // If all ratings are in the low range:
+    if (allLow) {
+      return "Low intensity - Your training feels manageable";
+    }
+
+    // If they’re not all high or all low, determine if it went high-to-low or low-to-high
+    final firstIsHigh = isHigh(firstRpe);
+    final lastIsHigh = isHigh(lastRpe);
+
+    if (firstIsHigh && !lastIsHigh) {
+      // High to low range
+      return "Your intensity is dropping - You're 'pacing through sets";
+    } else if (!firstIsHigh && lastIsHigh) {
+      // Low to high range
+      return "You are pushing harder or might be fatigued.";
+    }
+
+    // If it doesn’t fit neatly into the above categories, just return a generic message
+    // (e.g., in case of mixed RPEs but not strictly first-is-high-last-is-low).
+    return switch (widget.exerciseLogDto.exercise.type) {
+      ExerciseType.weights =>
+        "You might be experimenting with different weights or rep ranges. Try maintaining a gradual progression",
+      ExerciseType.bodyWeight =>
+        "You might be experimenting with different rep ranges. Try maintaining a gradual progression",
+      ExerciseType.duration =>
+        "You might be experimenting with different durations. Try maintaining a gradual progression",
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
@@ -336,17 +412,12 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final maxReps = repRange.$2;
 
-    List<ChartPointDto> chartPoints = [];
+    final rpeRatings = sets.mapIndexed((index, set) => set.rpeRating).toList();
+    List<ChartPointDto> chartPoints = rpeRatings.mapIndexed((index, rating) => ChartPointDto(index, rating)).toList();
+    List<String> setIndexes = sets.mapIndexed((index, set) => "Set ${index + 1}").toList();
+    List<Color> colors = rpeRatings.mapIndexed((index, rating) => _getIntensityColor(intensity: rating)).toList();
 
-    List<String> setIndexes = [];
-
-    List<Color> colors = [];
-
-    if (exerciseType == ExerciseType.weights) {
-      chartPoints = sets.mapIndexed((index, set) => ChartPointDto(index, (set).rpeRating)).toList();
-      setIndexes = sets.mapIndexed((index, set) => "Set ${index + 1}").toList();
-      colors = sets.mapIndexed((index, set) => _getIntensityColor(set.rpeRating)).toList();
-    }
+    final rpeTrendSummary = _getRpeTrendSummary(ratings: rpeRatings);
 
     return Container(
       padding: const EdgeInsets.all(10),
@@ -491,21 +562,43 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 ),
             },
           if (_showPreviousSets) SetsListview(type: exerciseType, sets: previousSets),
-          Padding(
-            padding: const EdgeInsets.only(right: 20.0),
-            child: LineChartWidget(
-                chartPoints: chartPoints, periods: setIndexes, unit: ChartUnit.number, aspectRation: 3, colors: colors),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            child: Text(
-                "RPE (Rate of Perceived Exertion). A self-reported score (1 to 10) indicating how hard a set felt.",
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 12,
-                    height: 1.8,
-                    color: isDarkMode ? Colors.white70 : Colors.black)),
-          ),
+          if (sets.isNotEmpty)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 20.0),
+                  child: LineChartWidget(
+                      chartPoints: chartPoints,
+                      periods: setIndexes,
+                      unit: ChartUnit.number,
+                      aspectRation: 3,
+                      interval: 1,
+                      colors: colors),
+                ),
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  child: Text(
+                      "RPE (Rate of Perceived Exertion). A self-reported score (1 to 10) indicating how hard a set felt.",
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 12,
+                          height: 1.8,
+                          color: isDarkMode ? Colors.white70 : Colors.black)),
+                ),
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  child: Text(rpeTrendSummary,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 12,
+                          height: 1.8,
+                          color: isDarkMode ? Colors.white70 : Colors.black)),
+                ),
+              ],
+            ),
           if (withDurationOnly(type: exerciseType) && sets.isEmpty)
             Center(
               child: Text("Tap + to add a timer", style: Theme.of(context).textTheme.bodySmall),
@@ -740,7 +833,7 @@ class _OneRepMaxSliderState extends State<_OneRepMaxSlider> {
 
   int _percentageForReps(int reps) {
     // Define a map of reps to percentages
-    Map<int, int> repToPercentage = {
+    Map<int, int> _repToPercentage = {
       1: 100,
       2: 97,
       3: 94,
@@ -763,7 +856,7 @@ class _OneRepMaxSliderState extends State<_OneRepMaxSlider> {
       20: 60,
     };
 
-    return repToPercentage[reps] ?? 1;
+    return _repToPercentage[reps] ?? 1;
   }
 
   double _weightForPercentage({required int reps}) {
@@ -960,24 +1053,3 @@ Map<int, String> _repToPercentage = {
   9: "Maximal — maybe 1 rep left, if at all",
   10: "All-out — absolute limit, no reps left in reserve",
 };
-
-Map<int, Color> _intensityToColor = {
-  1: vibrantGreen, // Bright green - very light
-  2: Color(0xFF66FF66), // Light green
-  3: Color(0xFF99FF99), // Soft green
-  4: Color(0xFFFFFF66), // Yellow-green transition
-  5: Color(0xFFFFFF33), // Yellow - moderate intensity
-  6: Color(0xFFFFCC33), // Amber - challenging intensity
-  7: Color(0xFFFF9933), // Orange - very hard
-  8: Color(0xFFFF6633), // Deep orange - near maximal
-  9: Color(0xFFFF3333), // Bright red - maximal effort
-  10: Color(0xFFFF0000), // Red - absolute limit
-};
-
-Color _getIntensityColor(int intensity) {
-  if (_intensityToColor.containsKey(intensity)) {
-    return _intensityToColor[intensity]!;
-  } else {
-    throw ArgumentError("Invalid intensity level: $intensity");
-  }
-}
