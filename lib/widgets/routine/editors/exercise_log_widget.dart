@@ -490,8 +490,18 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           if (_showPreviousSets) SetsListview(type: exerciseType, sets: previousSets),
           Padding(
             padding: const EdgeInsets.only(right: 20.0),
-            child: LineChartWidget(
-                chartPoints: chartPoints, periods: setIndexes, unit: ChartUnit.weight, aspectRation: 3),
+            child:
+                LineChartWidget(chartPoints: chartPoints, periods: setIndexes, unit: ChartUnit.weight, aspectRation: 3),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: Text(
+                "RPE (Rate of Perceived Exertion). A self-reported score (1 to 10) indicating how hard a set felt.",
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 12,
+                    height: 1.8,
+                    color: isDarkMode ? Colors.white70 : Colors.black)),
           ),
           if (withDurationOnly(type: exerciseType) && sets.isEmpty)
             Center(
@@ -886,13 +896,6 @@ class _RPERatingSliderState extends State<_RPERatingSlider> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-            "RPE (Rate of Perceived Exertion) is your guide to smarter training. It helps you measure effort, adjust intensity, and optimize progress while avoiding burnout.",
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
-        const SizedBox(height: 10),
         Text("Rate this set on a scale of 1 - 10, 1 being barely any effort and 10 being max effort",
             style: Theme.of(context)
                 .textTheme
