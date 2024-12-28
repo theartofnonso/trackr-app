@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
 import 'package:rive/src/rive_core/state_machine_controller.dart' as core;
@@ -18,76 +19,88 @@ class FireWidget extends StatefulWidget {
 
 class _FireStateMachineState extends State<FireWidget> {
   SMIBool? burningIntense, burning;
-
+  RiveFile? _riveFile;
+  var _monthlyProgress;
   final logger = getLogger(className: "FireStateMachineState");
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      firstSpark();
-    });
-
-    return Container(
-      width: 50.0,  // Set the width of your icon
-      height: 50.0,
-        child: RiveAnimation.asset(
-          'animations/flame.riv',
-          fit: BoxFit.contain,
-          alignment: Alignment.center,
-          onInit: (artboard) {
-            final controller = CustomStateMachineController.fromArtboard(
-              artboard,
-              'trkrstate',
-              onInputChanged: (id, value) {
-                print('callback id: $id');
-              },
-            );
-            artboard.addController(controller!);
-
-            controller.inputs.forEach((element) {
-              if (element.name == 'burningIntense') {
-                burningIntense = element as SMIBool;
-              }
-              if (element.name == 'burning') {
-                burning = element as SMIBool;
-              }
-            });
-            firstSpark();
-          },
-        ),
-      );
+    return FutureBuilder(
+      future: getData(),
+      builder: (context, snapshot) {
+        if(snapshot.connectionState == ConnectionState.done){
+          return SizedBox(
+            width: 50.0,  // Set the width of your icon
+            height: 50.0,
+            child:
+              RiveAnimation.direct(_riveFile!, onInit: _onRiveInit,),
+          );
+        }
+        else{
+          return CircularProgressIndicator();
+        }
+      },
+    );
   }
 
-  void firstSpark() {
+  void _onRiveInit(Artboard artboard) {
+    final controller = CustomStateMachineController.fromArtboard(
+        artboard, 'trkrstate',
+        onInputChanged: (int id, value) {});
+    if (controller != null) {
+      artboard.addController(controller);
+    }
+    controller?.inputs.forEach((element) {
+      if (element.name == 'burning') {
+        burning = element as SMIBool;
+      }
+      if (element.name == 'burningIntense') {
+        burningIntense = element as SMIBool;
+      }
+    });
+    sparkController();
+  }
+
+    @override
+  void initState() {
+    super.initState();
+      rootBundle.load('animations/flame.riv').then(
+            (data) async {
+          await RiveFile.initialize();
+          final file = RiveFile.import(data);
+          _riveFile = file;});
+  }
+
+  Future<double> getData(){
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
     final routineLogs = exerciseAndRoutineController.whereLogsIsSameMonth(dateTime: widget.dateTimeRange.start);
     final routineLogsByDay = groupBy(routineLogs, (log) => log.createdAt.withoutTime().day);
     final monthlyProgress = routineLogsByDay.length / 12;
+    _monthlyProgress = monthlyProgress;
+    return Future.value(monthlyProgress);
+  }
 
+  void sparkController() {
     if (burning != null && burningIntense != null) {
-      logger.i("Triggering initial spark and burn.");
-
-      if (monthlyProgress < 0.3) {
+      logger.i("Triggering spark controller");
+      if (_monthlyProgress < 0.3) {
         burning?.change(false);
         burningIntense?.change(false);
-      } else if (monthlyProgress < 0.5) {
+      } else if (_monthlyProgress < 0.5) {
         burning?.change(true);
         burningIntense?.change(false);
-      } else if (monthlyProgress < 0.8) {
+      } else if (_monthlyProgress < 0.8) {
         burning?.change(true);
         burningIntense?.change(true);
       } else {
         burning?.change(true);
         burningIntense?.change(true);
       }
-      logger.i("Changing burning state: ${burning?.value}"); // Burning
-      logger.i("Changing burning state: ${burningIntense?.value}"); // Burning
-    } else {
+      } else {
       logger.e("State machine inputs are not properly initialized.");
     }
   }
 }
-
 
 typedef InputChanged = void Function(int id, dynamic value);
 
@@ -102,14 +115,6 @@ class CustomStateMachineController extends StateMachineController {
 
   @override
   void setInputValue(int id, value) {
-    print('Changed id: $id,  value: $value');
-    for (final input in stateMachine.inputs) {
-      if (input.id == id) {
-        // Do something with the input
-        print('Found input: $input');
-      }
-    }
-    // Or just pass it back to the calling widget
     onInputChanged.call(id, value);
     super.setInputValue(id, value);
   }
