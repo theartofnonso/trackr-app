@@ -36,7 +36,9 @@ class LineChartWidget extends StatelessWidget {
         ? Center(
             child: AspectRatio(
               aspectRatio: aspectRation ?? 1.5,
-              child: LineChart(LineChartData(
+              child: LineChart(
+                  duration: Duration(milliseconds: 500),
+                  LineChartData(
                   gridData: FlGridData(drawVerticalLine: false),
                   minY: 0,
                   titlesData: FlTitlesData(
