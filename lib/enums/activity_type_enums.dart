@@ -43,7 +43,7 @@ enum ActivityType {
   swimming("Swimming", FontAwesomeIcons.circle, 7.0, image: "swimming"),
   boxFitness("Box Fitness", FontAwesomeIcons.circle, 3.5),
   snowboarding("Snow Boarding", FontAwesomeIcons.personSnowboarding, 7.5),
-  other("Other Activity", FontAwesomeIcons.circle, 3),
+  other("Other Activity", FontAwesomeIcons.circle, 1),
   hiking("Hiking", FontAwesomeIcons.personHiking, 5.3),
   skiing("Skiing", FontAwesomeIcons.personSkiing, 7.0),
   functionalFitness("Functional Fitness", FontAwesomeIcons.dumbbell, 3.5, image: 'dumbbells'),

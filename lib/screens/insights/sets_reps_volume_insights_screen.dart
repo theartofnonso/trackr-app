@@ -12,6 +12,7 @@ import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/health_and_fitness_stats.dart';
 import 'package:tracker_app/openAI/open_ai_response_format.dart';
 import 'package:tracker_app/screens/AI/muscle_group_training_report_screen.dart';
+import 'package:tracker_app/screens/insights/knowledge_articles/kb_reps_screen.dart';
 import 'package:tracker_app/utils/date_utils.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/general_utils.dart';
@@ -42,6 +43,10 @@ import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/chart/bar_chart.dart';
 import '../../widgets/chart/horizontal_stacked_bars.dart';
 import '../../widgets/chart/legend.dart';
+import '../../widgets/dividers/label_divider.dart';
+import '../../widgets/insights_grid_item_widget.dart';
+import 'knowledge_articles/kb_sets_screen.dart';
+import 'knowledge_articles/kb_volume_screen.dart';
 
 class _TrendAndDate {
   final num value;
@@ -165,6 +170,21 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     final differenceSummary = _generateDifferenceSummary(difference: difference, improved: improved);
 
+    final leanMoreChildren = [
+      InsightsGridItemWidget(
+        title: 'Reps and Ranges: Mastering the Basics for Optimal Training',
+        onTap: () => navigateWithSlideTransition(context: context, child: KbRepsScreen()), image: 'images/man_dumbbell.jpg',
+      ),
+      InsightsGridItemWidget(
+        title: 'Sets: A Deep Dive into Strength Training Fundamentals',
+      onTap: () => navigateWithSlideTransition(context: context, child: KbSetsScreen()), image: 'images/girl_standing_man_squatting.jpg',
+      ),
+      InsightsGridItemWidget(
+        title: 'Volume vs. Intensity: Unlocking the Key to Effective Training',
+          onTap: () => navigateWithSlideTransition(context: context, child: KbVolumeScreen()), image: 'images/orange_dumbbells.jpg',
+      )
+    ];
+
     return Scaffold(
       appBar: widget.canPop
           ? AppBar(
@@ -186,18 +206,16 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     scrollDirection: Axis.horizontal,
                     child: Row(children: [
-                      const SizedBox(width: 10),
                       ...muscleGroups.sublist(0, muscleGroupScrollViewHalf),
-                      const SizedBox(width: 10)
                     ])),
                 SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     scrollDirection: Axis.horizontal,
                     child: Row(children: [
-                      const SizedBox(width: 10),
                       ...muscleGroups.sublist(muscleGroupScrollViewHalf),
-                      const SizedBox(width: 10)
                     ])),
                 const SizedBox(height: 18),
                 Padding(
@@ -328,6 +346,27 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                         ),
                       ]),
                   ]),
+                ),
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: LabelDivider(
+                    label: "Learn about training basics".toUpperCase(),
+                    labelColor: isDarkMode ? Colors.white70 : Colors.black,
+                    dividerColor: sapphireLighter,
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  height: 200,
+                  child: GridView.count(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      scrollDirection: Axis.horizontal,
+                      crossAxisCount: 1,
+                      childAspectRatio: 1.2,
+                      mainAxisSpacing: 10.0,
+                      children: leanMoreChildren),
                 )
               ],
             ),

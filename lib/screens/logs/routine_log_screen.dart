@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -197,13 +196,11 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                       ),
                     ),
                   SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       spacing: 10,
                       children: [
-                        const SizedBox(
-                          width: 10,
-                        ),
                         _StatisticWidget(
                           title: "${completedExerciseLogs.length}",
                           subtitle: "Exercises",
@@ -266,9 +263,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                               description:
                                   "A self-reported score (1 to 10) indicating how hard your workout felt. Helps adjust workout intensity to match your goals and avoid overtraining."),
                         ),
-                        const SizedBox(
-                          width: 10,
-                        )
                       ],
                     ),
                   ),
@@ -291,7 +285,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                       children: [
                         MuscleGroupSplitChart(
                             title: "Muscle Groups Split",
-                            description: "Here's a breakdown of the muscle groups in your ${log.name} workout log.",
+                            description: "Here's a breakdown of the muscle groups in your ${log.name} workout session.",
                             muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
                             minimized: false),
                         Column(
@@ -393,9 +387,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         .then((response) {
       _hideLoadingScreen();
       if (response != null) {
-        if (kReleaseMode) {
-          Posthog().capture(eventName: PostHogAnalyticsEvent.generateRoutineLogReport.displayName);
-        }
+        Posthog().capture(eventName: PostHogAnalyticsEvent.generateRoutineLogReport.displayName);
         if (mounted) {
           // Deserialize the JSON string
           Map<String, dynamic> json = jsonDecode(response);
@@ -682,7 +674,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
       }
     }
   }
-
 }
 
 class _StatisticWidget extends StatelessWidget {
@@ -749,6 +740,4 @@ class _StatisticWidget extends StatelessWidget {
       ),
     );
   }
-  
- 
 }
