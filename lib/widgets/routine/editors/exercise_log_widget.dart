@@ -345,7 +345,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     }
     if (ratings.length == 1) {
       // If there's only one data point, just describe that point.
-      return "Keep pushing to see insights";
+      return "Keep pushing to see more insights";
     }
 
     // Determine if all ratings are high, all are low, or mixed.
