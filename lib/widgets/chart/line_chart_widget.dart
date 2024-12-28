@@ -16,6 +16,7 @@ class LineChartWidget extends StatelessWidget {
   final ChartUnit unit;
   final double interval;
   final double? aspectRation;
+  final List<Color> colors;
 
   const LineChartWidget(
       {super.key,
@@ -24,7 +25,7 @@ class LineChartWidget extends StatelessWidget {
       required this.unit,
       this.extraLinesData,
       this.interval = 10,
-      this.aspectRation});
+      this.aspectRation, this.colors = const []});
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +72,7 @@ class LineChartWidget extends StatelessWidget {
                           return FlSpot(point.x.toDouble(), point.y.toDouble());
                         }).toList(),
                         color: isDarkMode ? Colors.white70 : Colors.grey.shade600,
+                        gradient: colors.isNotEmpty ? LinearGradient(colors: colors) : null,
                         isCurved: true)
                   ])),
             ),

@@ -340,9 +340,12 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     List<String> setIndexes = [];
 
+    List<Color> colors = [];
+
     if (exerciseType == ExerciseType.weights) {
       chartPoints = sets.mapIndexed((index, set) => ChartPointDto(index, (set).rpeRating)).toList();
       setIndexes = sets.mapIndexed((index, set) => "Set ${index + 1}").toList();
+      colors = sets.mapIndexed((index, set) => _getIntensityColor(set.rpeRating)).toList();
     }
 
     return Container(
@@ -490,8 +493,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           if (_showPreviousSets) SetsListview(type: exerciseType, sets: previousSets),
           Padding(
             padding: const EdgeInsets.only(right: 20.0),
-            child:
-                LineChartWidget(chartPoints: chartPoints, periods: setIndexes, unit: ChartUnit.weight, aspectRation: 3),
+            child: LineChartWidget(
+                chartPoints: chartPoints, periods: setIndexes, unit: ChartUnit.number, aspectRation: 3, colors: colors),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -935,26 +938,46 @@ class _RPERatingSliderState extends State<_RPERatingSlider> {
   String _ratingDescription(double rating) {
     final absoluteRating = rating.floor();
 
-    // Define a map of reps to percentages
-    Map<int, String> repToPercentage = {
-      1: "Extremely light — mostly warm-up weight",
-      2: "Very light — can easily perform many more reps",
-      3: "Light — still feels comfortable",
-      4: "Moderate — some effort required but manageable",
-      5: "Challenging — you're working, yet not near failure",
-      6: "Hard — beginning to feel significant strain",
-      7: "Very hard — only a few reps left in the tank",
-      8: "Near max — pushing close to muscular failure",
-      9: "Maximal — maybe 1 rep left, if at all",
-      10: "All-out — absolute limit, no reps left in reserve",
-    };
-
-    return repToPercentage[absoluteRating] ?? "Extremely light — mostly warm-up weight";
+    return _repToPercentage[absoluteRating] ?? "Extremely light — mostly warm-up weight";
   }
 
   @override
   void initState() {
     super.initState();
     _rpeRating = widget.rpeRating ?? 5;
+  }
+}
+
+Map<int, String> _repToPercentage = {
+  1: "Extremely light — mostly warm-up weight",
+  2: "Very light — can easily perform many more reps",
+  3: "Light — still feels comfortable",
+  4: "Moderate — some effort required but manageable",
+  5: "Challenging — you're working, yet not near failure",
+  6: "Hard — beginning to feel significant strain",
+  7: "Very hard — only a few reps left in the tank",
+  8: "Near max — pushing close to muscular failure",
+  9: "Maximal — maybe 1 rep left, if at all",
+  10: "All-out — absolute limit, no reps left in reserve",
+};
+
+Map<int, Color> _intensityToColor = {
+  1: vibrantGreen, // Bright green - very light
+  2: Color(0xFF66FF66), // Light green
+  3: Color(0xFF99FF99), // Soft green
+  4: Color(0xFFFFFF66), // Yellow-green transition
+  5: Color(0xFFFFFF33), // Yellow - moderate intensity
+  6: Color(0xFFFFCC33), // Amber - challenging intensity
+  7: Color(0xFFFF9933), // Orange - very hard
+  8: Color(0xFFFF6633), // Deep orange - near maximal
+  9: Color(0xFFFF3333), // Bright red - maximal effort
+  10: Color(0xFFFF0000), // Red - absolute limit
+};
+
+Color _getIntensityColor(int intensity) {
+  if (_intensityToColor.containsKey(intensity)) {
+    return _intensityToColor[intensity]!;
+  } else {
+    throw ArgumentError("Invalid intensity level: $intensity");
   }
 }

@@ -25,9 +25,9 @@ List<SetDto> personalBestSets({required List<SetDto> sets}) {
 List<String> generateSetSummaries(ExerciseLogDto exerciseLog) {
   final setSummaries = exerciseLog.sets.mapIndexed((index, set) {
     return switch (exerciseLog.exercise.type) {
-      ExerciseType.weights => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
-      ExerciseType.bodyWeight => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
-      ExerciseType.duration => "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
+      ExerciseType.weights => "Set ${index + 1}: ${exerciseLog.sets[index].summary()} and Rate of Perceived Exertion is ${exerciseLog.sets[index].rpeRating}",
+      ExerciseType.bodyWeight => "Set ${index + 1}: ${exerciseLog.sets[index].summary()} and Rate of Perceived Exertion is ${exerciseLog.sets[index].rpeRating}",
+      ExerciseType.duration => "Set ${index + 1}: ${exerciseLog.sets[index].summary()} and Rate of Perceived Exertion is ${exerciseLog.sets[index].rpeRating}",
     };
   }).toList();
   return setSummaries;
