@@ -475,7 +475,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             if (exerciseType != ExerciseType.duration)
               OpacityButtonWidget(
                   onPressed: () => _showRepRangeSelector(min: minReps, max: maxReps),
-                  label: "Target Reps: $minReps - $maxReps".toUpperCase(),
+                  label: "target reps: $minReps - $maxReps",
                   buttonColor: vibrantGreen),
             const Spacer(),
             IconButton(
