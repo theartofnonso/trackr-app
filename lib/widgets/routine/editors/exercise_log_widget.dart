@@ -599,6 +599,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 ),
               ],
             ),
+          const SizedBox(height: 2),
           if (withDurationOnly(type: exerciseType) && sets.isEmpty)
             Center(
               child: Text("Tap + to add a timer", style: Theme.of(context).textTheme.bodySmall),
