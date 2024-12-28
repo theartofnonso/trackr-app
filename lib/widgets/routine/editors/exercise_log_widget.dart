@@ -574,7 +574,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                       unit: ChartUnit.number,
                       aspectRation: 3,
                       interval: 1,
-                      colors: colors),
+                      colors: colors.length >= 2 ? colors : []),
                 ),
                 const SizedBox(height: 20),
                 Padding(
@@ -591,9 +591,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12.0),
                   child: Text(rpeTrendSummary,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 12,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          fontWeight: FontWeight.w400,
                           height: 1.8,
                           color: isDarkMode ? Colors.white70 : Colors.black)),
                 ),
