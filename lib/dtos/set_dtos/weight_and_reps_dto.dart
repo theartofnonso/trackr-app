@@ -9,7 +9,7 @@ class WeightAndRepsSetDto extends SetDto {
   final double _weight;
   final int _reps;
 
-  const WeightAndRepsSetDto({required double weight, required int reps, required super.checked})
+  const WeightAndRepsSetDto({required double weight, required int reps, super.checked = false, super.rpeRating = 4})
       : _weight = weight,
         _reps = reps;
 
@@ -21,8 +21,8 @@ class WeightAndRepsSetDto extends SetDto {
   ExerciseType get type => ExerciseType.weights;
 
   @override
-  WeightAndRepsSetDto copyWith({double? weight, int? reps, bool? checked}) {
-    return WeightAndRepsSetDto(weight: weight ?? _weight, reps: reps ?? _reps, checked: checked ?? super.checked);
+  WeightAndRepsSetDto copyWith({double? weight, int? reps, bool? checked, int? rpeRating}) {
+    return WeightAndRepsSetDto(weight: weight ?? _weight, reps: reps ?? _reps, checked: checked ?? super.checked, rpeRating: rpeRating ?? super.rpeRating);
   }
 
   @override
@@ -47,6 +47,6 @@ class WeightAndRepsSetDto extends SetDto {
 
   @override
   String toString() {
-    return 'WeightAndRepsSetDTO{weight: $_weight, reps: $_reps, checked: ${super.checked}, type: $type}';
+    return 'WeightAndRepsSetDTO{weight: $_weight, reps: $_reps, checked: ${super.checked}, type: $type}, rpeRating: ${super.rpeRating}';
   }
 }

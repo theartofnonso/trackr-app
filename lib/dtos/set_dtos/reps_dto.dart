@@ -6,7 +6,7 @@ import '../../enums/exercise_type_enums.dart';
 class RepsSetDto extends SetDto {
   final int _reps;
 
-  const RepsSetDto({required reps, required super.checked})
+  const RepsSetDto({required reps, super.checked = false, super.rpeRating = 4})
       : _reps = reps;
 
   int get reps => _reps;
@@ -15,8 +15,8 @@ class RepsSetDto extends SetDto {
   ExerciseType get type => ExerciseType.bodyWeight;
 
   @override
-  RepsSetDto copyWith({int? reps, bool? checked}) {
-    return RepsSetDto(reps: reps ?? _reps, checked: checked ?? super.checked);
+  RepsSetDto copyWith({int? reps, bool? checked, int? rpeRating}) {
+    return RepsSetDto(reps: reps ?? _reps, checked: checked ?? super.checked, rpeRating: rpeRating ?? super.rpeRating);
   }
 
   @override
@@ -36,6 +36,6 @@ class RepsSetDto extends SetDto {
 
   @override
   String toString() {
-    return 'RepsSetDTO{reps: $_reps, checked: ${super.checked}, type: $type';
+    return 'RepsSetDTO{reps: $_reps, checked: ${super.checked}, type: $type, rpeRating: ${super.rpeRating}';
   }
 }
