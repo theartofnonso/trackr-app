@@ -546,9 +546,9 @@ class _RoutineLogOverview extends StatelessWidget {
           },
           children: [
             TableRow(children: [
-              Text("EXERCISES", textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall),
-              Text("SETS", textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall),
-              Text("DURATION", textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall),
+              Text("Exercises", textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall),
+              Text("Sets", textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall),
+              Text("Duration", textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall),
             ]),
             const TableRow(children: [SizedBox(height: 4), SizedBox(height: 4), SizedBox(height: 4)]),
             TableRow(children: [
