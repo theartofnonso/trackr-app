@@ -582,7 +582,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(right: 20.0),
+                  padding: const EdgeInsets.only(right: 20.0, top: 6),
                   child: LineChartWidget(
                       chartPoints: chartPoints,
                       periods: setIndexes,
