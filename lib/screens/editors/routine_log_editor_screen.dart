@@ -355,6 +355,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                       if (exerciseLogs.isNotEmpty)
                         Expanded(
                           child: SingleChildScrollView(
+                            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                             padding: const EdgeInsets.only(bottom: 250),
                             child: Column(spacing: 20, children: [
                               ...exerciseLogs.map((exerciseLog) {

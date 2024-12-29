@@ -206,6 +206,19 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           .updateDuration(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet, notify: checked);
 
       _loadControllers(sets: widget.exerciseLogDto.sets);
+
+      if (checked) {
+        displayBottomSheet(
+            context: context,
+            child: _RPERatingSlider(
+              rpeRating: setDto.rpeRating.toDouble(),
+              onSelectRating: (int rpeRating) {
+                final updatedSetWithRpeRating = updatedSet.copyWith(rpeRating: rpeRating);
+                Provider.of<ExerciseLogController>(context, listen: false).updateRpeRating(
+                    exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSetWithRpeRating);
+              },
+            ));
+      }
     }
   }
 
@@ -397,7 +410,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final exerciseLog = widget.exerciseLogDto;
 
-    final sets = exerciseLog.sets;
+    final currentSets = exerciseLog.sets;
 
     final superSetExerciseDto = widget.superSet;
 
@@ -405,6 +418,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final previousSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
         .whereSetsForExercise(exercise: widget.exerciseLogDto.exercise);
+
+    final sets = _showPreviousSets ? previousSets : currentSets;
 
     final repRange = getRepRange(exerciseLog: exerciseLog);
 
@@ -561,7 +576,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   updateDuration: _updateDuration,
                 ),
             },
-          if (_showPreviousSets) SetsListview(type: exerciseType, sets: previousSets),
+          if (_showPreviousSets) SetsListview(type: exerciseType, sets: sets),
           if (sets.isNotEmpty)
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
