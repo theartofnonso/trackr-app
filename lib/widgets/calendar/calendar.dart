@@ -8,6 +8,7 @@ import 'package:tracker_app/shared_prefs.dart';
 
 import '../../controllers/activity_log_controller.dart';
 import '../../controllers/settings_controller.dart';
+import '../../utils/exercise_logs_utils.dart';
 
 GlobalKey calendarKey = GlobalKey();
 
@@ -73,16 +74,9 @@ class _CalendarState extends State<Calendar> {
       datesInMonths.addAll(emptyDated);
     }
 
-    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-    final activityLogController = Provider.of<ActivityLogController>(context, listen: false);
+    final monthlyRoutineLogs = getMonthlyRoutineLogs(context: context, startDate: widget.dateTime);
 
-    final monthlyRoutineLogs = (routineLogController.logs
-            .where((log) => log.createdAt.isBetweenInclusive(from: firstDayOfMonth, to: lastDayOfMonth)))
-        .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day));
-
-    final monthlyActivityLogs = (activityLogController.logs
-            .where((log) => log.createdAt.isBetweenInclusive(from: firstDayOfMonth, to: lastDayOfMonth)))
-        .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day));
+    final monthlyActivityLogs = getMonthlyActivityLog(context: context, startDate: widget.dateTime);
 
     // Add remainder dates
     for (int day = 1; day <= daysInMonth; day++) {

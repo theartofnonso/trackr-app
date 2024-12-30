@@ -1,8 +1,12 @@
 import 'dart:collection';
 
 import 'package:collection/collection.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
+import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
+import '../controllers/activity_log_controller.dart';
+import '../controllers/exercise_and_routine_controller.dart';
 import '../dtos/appsync/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/pb_dto.dart';
@@ -26,6 +30,34 @@ WeightAndRepsSetDto heaviestWeightInSetForExerciseLog({required ExerciseLogDto e
 
   return weightSets
       .reduce((currentHeaviest, nextSet) => nextSet.weight > currentHeaviest.weight ? nextSet : currentHeaviest);
+}
+
+Iterable<DateTime> getMonthlyActivityLog({required context, required startDate}){
+  int year = startDate.year;
+  int month = startDate.month;
+
+  DateTime firstDayOfMonth = DateTime(year, month, 1);
+  DateTime lastDayOfMonth = DateTime(year, month + 1, 0);
+
+  final activityLogController = Provider.of<ActivityLogController>(context, listen: false);
+
+  return (activityLogController.logs
+      .where((log) => log.createdAt.isBetweenInclusive(from: firstDayOfMonth, to: lastDayOfMonth)))
+      .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day));
+}
+
+Iterable<DateTime> getMonthlyRoutineLogs({required context, required startDate}){
+  int year = startDate.year;
+  int month = startDate.month;
+
+  DateTime firstDayOfMonth = DateTime(year, month, 1);
+  DateTime lastDayOfMonth = DateTime(year, month + 1, 0);
+
+  final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+
+  return (routineLogController.logs
+      .where((log) => log.createdAt.isBetweenInclusive(from: firstDayOfMonth, to: lastDayOfMonth)))
+      .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day));
 }
 
 Duration longestDurationForExerciseLog({required ExerciseLogDto exerciseLog}) {
