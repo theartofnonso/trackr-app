@@ -385,7 +385,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     if (firstIsHigh && !lastIsHigh) {
       // High to low range
-      return "Your intensity is dropping - You're 'pacing through sets";
+      return "Your intensity is dropping - You're pacing through sets";
     } else if (!firstIsHigh && lastIsHigh) {
       // Low to high range
       return "You are pushing harder or might be fatigued.";
