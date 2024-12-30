@@ -33,7 +33,8 @@ class LogStreakChartWidget extends StatelessWidget {
       final startOfMonth = month.start;
       final endOfMonth = month.end;
       final values = logs.where((log) => log.createdAt.isBetweenInclusive(from: startOfMonth, to: endOfMonth));
-      streaks.add(values.length);
+      final routineLogsByDay = groupBy(values, (log) => log.createdAt.withoutTime().day);
+      streaks.add(routineLogsByDay.length);
       months.add(startOfMonth.abbreviatedMonth());
     }
 
