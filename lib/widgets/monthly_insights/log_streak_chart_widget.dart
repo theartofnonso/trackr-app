@@ -9,14 +9,13 @@ import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../enums/chart_unit_enum.dart';
 import '../../utils/date_utils.dart';
-import '../chart/bar_chart.dart';
+import '../chart/line_chart_widget.dart';
 
 class LogStreakChartWidget extends StatelessWidget {
   const LogStreakChartWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -46,27 +45,22 @@ class LogStreakChartWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-       color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
+        color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Log Streak".toUpperCase(),
-              style: Theme.of(context).textTheme.titleMedium),
+          Text("Log Streak".toUpperCase(), style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 30),
           SizedBox(
-              height: 200,
-              child: CustomBarChart(
-                chartPoints: chartPoints,
-                periods: months,
-                barColors: streakColor,
-                unit: ChartUnit.number,
-                bottomTitlesInterval: 1,
-                showLeftTitles: true,
-                maxY: streaks.isNotEmpty ? streaks.max.toDouble() : 31,
-                reservedSize: 25,
-              ))
+              child: LineChartWidget(
+                  chartPoints: chartPoints,
+                  periods: months,
+                  unit: ChartUnit.number,
+                  aspectRation: 2,
+                  interval: 1,
+                  colors: streakColor))
         ],
       ),
     );
