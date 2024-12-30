@@ -17,6 +17,7 @@ class LineChartWidget extends StatelessWidget {
   final double interval;
   final double? aspectRation;
   final List<Color> colors;
+  final double reservedSize;
 
   const LineChartWidget(
       {super.key,
@@ -25,7 +26,7 @@ class LineChartWidget extends StatelessWidget {
       required this.unit,
       this.extraLinesData,
       this.interval = 10,
-      this.aspectRation, this.colors = const []});
+      this.aspectRation, this.colors = const [], this.reservedSize = 40});
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +54,7 @@ class LineChartWidget extends StatelessWidget {
                       sideTitles: SideTitles(
                         showTitles: true,
                         getTitlesWidget: _leftTitleWidgets,
-                        reservedSize: 40,
+                        reservedSize: reservedSize,
                       ),
                     ),
                     bottomTitles: AxisTitles(
@@ -96,7 +97,7 @@ class LineChartWidget extends StatelessWidget {
   }
 
   String _weightTitle({required double value}) {
-    if (unit == ChartUnit.weight) {
+    if (unit == ChartUnit.weight || unit == ChartUnit.numberBig) {
       return volumeInKOrM(value, showLessThan1k: false);
     } else if (unit == ChartUnit.duration) {
       return Duration(milliseconds: value.toInt()).msDigital();

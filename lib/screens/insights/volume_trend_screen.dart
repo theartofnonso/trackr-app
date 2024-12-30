@@ -17,7 +17,7 @@ import '../../utils/date_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/string_utils.dart';
-import '../../widgets/chart/bar_chart.dart';
+import '../../widgets/chart/line_chart_widget.dart';
 import '../../widgets/information_containers/information_container.dart';
 
 class VolumeTrendScreen extends StatelessWidget {
@@ -145,21 +145,18 @@ class VolumeTrendScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 60),
+                const SizedBox(height: 35),
                 volumes.sum > 0
-                    ? SizedBox(
-                        height: 250,
-                        child: CustomBarChart(
-                          chartPoints: chartPoints,
-                          periods: months,
-                          unit: ChartUnit.weight,
-                          bottomTitlesInterval: 1,
-                          showLeftTitles: true,
-                          maxY: volumes.max.toDouble(),
-                          reservedSize: 35,
-                        ))
+                    ? LineChartWidget(
+                        chartPoints: chartPoints,
+                        periods: months,
+                        unit: ChartUnit.weight,
+                        aspectRation: 2,
+                        reservedSize: 30,
+                        interval: 1,
+                        colors: [])
                     : const Center(child: FaIcon(FontAwesomeIcons.chartSimple, color: sapphireDark, size: 120)),
-                const SizedBox(height: 14),
+                const SizedBox(height: 16),
                 InformationContainer(
                   leadingIcon: FaIcon(FontAwesomeIcons.weightHanging),
                   title: "Training Volume",

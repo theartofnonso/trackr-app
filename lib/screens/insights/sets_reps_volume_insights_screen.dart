@@ -549,6 +549,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       ChartUnit.number => _metric.name,
       ChartUnit.weight => weightLabel(),
       ChartUnit.duration => "",
+      ChartUnit.numberBig => _metric.name,
     };
   }
 

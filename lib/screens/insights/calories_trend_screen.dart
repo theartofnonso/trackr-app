@@ -17,7 +17,7 @@ import '../../utils/date_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
-import '../../widgets/chart/bar_chart.dart';
+import '../../widgets/chart/line_chart_widget.dart';
 
 class CaloriesTrendScreen extends StatelessWidget {
   static const routeName = '/calories_trend_screen';
@@ -142,21 +142,18 @@ class CaloriesTrendScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 60),
+                const SizedBox(height: 35),
                 calories.sum > 0
-                    ? SizedBox(
-                        height: 250,
-                        child: CustomBarChart(
-                          chartPoints: chartPoints,
-                          periods: months,
-                          unit: ChartUnit.number,
-                          bottomTitlesInterval: 1,
-                          showLeftTitles: true,
-                          maxY: calories.max.toDouble(),
-                          reservedSize: 35,
-                        ))
+                    ? LineChartWidget(
+                    chartPoints: chartPoints,
+                    periods: months,
+                    unit: ChartUnit.numberBig,
+                    aspectRation: 2,
+                    reservedSize: 30,
+                    interval: 1,
+                    colors: [])
                     : const Center(child: FaIcon(FontAwesomeIcons.chartSimple, color: sapphireDark, size: 120)),
-                const SizedBox(height: 14),
+                const SizedBox(height: 16),
                 InformationContainer(
                   leadingIcon: FaIcon(FontAwesomeIcons.fire),
                   title: "What are calories",

@@ -53,14 +53,14 @@ class LogStreakChartWidget extends StatelessWidget {
         children: [
           Text("Log Streak".toUpperCase(), style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 30),
-          SizedBox(
-              child: LineChartWidget(
-                  chartPoints: chartPoints,
-                  periods: months,
-                  unit: ChartUnit.number,
-                  aspectRation: 2,
-                  interval: 1,
-                  colors: streakColor))
+          LineChartWidget(
+              chartPoints: chartPoints,
+              periods: months,
+              unit: ChartUnit.number,
+              aspectRation: 2,
+              reservedSize: 20,
+              interval: 1,
+              colors: streakColor)
         ],
       ),
     );
