@@ -1,11 +1,8 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
 import 'package:rive/src/rive_core/state_machine_controller.dart' as core;
-import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
-import 'controllers/exercise_and_routine_controller.dart';
+import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'logger.dart';
 
 class FireWidget extends StatefulWidget {
@@ -20,7 +17,7 @@ class FireWidget extends StatefulWidget {
 class _FireStateMachineState extends State<FireWidget> {
   SMIBool? burningIntense, burning;
   RiveFile? _riveFile;
-  var _monthlyProgress;
+  late double _activityDays, _trainedDays;
   final logger = getLogger(className: "FireStateMachineState");
 
   @override
@@ -30,7 +27,7 @@ class _FireStateMachineState extends State<FireWidget> {
       builder: (context, snapshot) {
         if(snapshot.connectionState == ConnectionState.done){
           return SizedBox(
-            width: 50.0,  // Set the width of your icon
+            width: 50.0,
             height: 50.0,
             child:
               RiveAnimation.direct(_riveFile!, onInit: _onRiveInit,),
@@ -58,7 +55,7 @@ class _FireStateMachineState extends State<FireWidget> {
         burningIntense = element as SMIBool;
       }
     });
-    sparkController();
+    sparkController(this.context, false);
   }
 
     @override
@@ -72,32 +69,45 @@ class _FireStateMachineState extends State<FireWidget> {
   }
 
   Future<double> getData(){
-    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-    final routineLogs = exerciseAndRoutineController.whereLogsIsSameMonth(dateTime: widget.dateTimeRange.start);
-    final routineLogsByDay = groupBy(routineLogs, (log) => log.createdAt.withoutTime().day);
-    final monthlyProgress = routineLogsByDay.length / 12;
-    _monthlyProgress = monthlyProgress;
-    return Future.value(monthlyProgress);
+    final monthlyRoutineLogs = getMonthlyRoutineLogs(context: context, startDate: widget.dateTimeRange.start);
+    final monthlyActivityLogs = getMonthlyActivityLog(context: context, startDate: widget.dateTimeRange.start);
+
+    double trainedDays = monthlyRoutineLogs.length.toDouble();
+    double activityDays = monthlyActivityLogs.length.toDouble();
+
+    _trainedDays = trainedDays;
+    _activityDays = activityDays;
+    return Future.value(activityDays);
   }
 
-  void sparkController() {
-    if (burning != null && burningIntense != null) {
-      logger.i("Triggering spark controller");
-      if (_monthlyProgress < 0.3) {
-        burning?.change(false);
-        burningIntense?.change(false);
-      } else if (_monthlyProgress < 0.5) {
-        burning?.change(true);
-        burningIntense?.change(false);
-      } else if (_monthlyProgress < 0.8) {
-        burning?.change(true);
-        burningIntense?.change(true);
-      } else {
-        burning?.change(true);
-        burningIntense?.change(true);
-      }
-      } else {
-      logger.e("State machine inputs are not properly initialized.");
+  void sparkController(context, bool consolidatedActivities){
+    double totalMonthDays = widget.dateTimeRange.end.day + 0.0; //4 weeks
+    double dayOfMonth ;
+    if(DateTime.now().month == widget.dateTimeRange.end.month){
+      dayOfMonth = DateTime.now().day.toDouble(); //get the day of today
+    }else{
+      dayOfMonth = widget.dateTimeRange.end.day.toDouble(); //get end of month day
+    }
+     double goalPercentage = (12/totalMonthDays *100).round() / 100;
+     double halfPoint = (goalPercentage*0.5 * 100).round() / 100;
+     double eightyPercent = (goalPercentage*0.75 * 100).round() / 100;
+
+    double currentPercentage;
+    if(consolidatedActivities){
+      currentPercentage = (_trainedDays+_activityDays)/dayOfMonth;
+    }else{
+      currentPercentage = _trainedDays/dayOfMonth;
+    }
+
+    if(currentPercentage<halfPoint){
+      burning?.change(false);
+      burningIntense?.change(false);
+    }else if (currentPercentage > halfPoint && currentPercentage < eightyPercent){
+      burning?.change(true);
+      burningIntense?.change(false);
+    }else if (currentPercentage >= eightyPercent){
+      burning?.change(true);
+      burningIntense?.change(true);
     }
   }
 }
