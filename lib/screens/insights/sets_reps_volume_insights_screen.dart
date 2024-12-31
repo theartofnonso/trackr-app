@@ -227,9 +227,8 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                       onTap: () => _generateReport(exerciseLogs: exerciseLogs),
                     ),
                     const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -270,6 +269,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                             )
                           ],
                         ),
+                        const SizedBox(height: 10),
                         CupertinoSlidingSegmentedControl<SetRepsVolumeReps>(
                           backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade200,
                           thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
