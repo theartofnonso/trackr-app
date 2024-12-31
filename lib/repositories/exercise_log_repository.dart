@@ -272,6 +272,10 @@ class ExerciseLogRepository {
     _updateSet(exerciseLogId: exerciseLogId, index: index, set: setDto);
   }
 
+  void updateRpeRating({required String exerciseLogId, required int index, required SetDto setDto}) {
+    _updateSet(exerciseLogId: exerciseLogId, index: index, set: setDto);
+  }
+
   /// Helper functions
 
   ExerciseLogDto _createExerciseLog(ExerciseDto exercise, {String notes = "", List<SetDto> pastSets = const []}) {

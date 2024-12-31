@@ -7,7 +7,7 @@ import '../../enums/exercise_type_enums.dart';
 class DurationSetDto extends SetDto {
   final Duration _duration;
 
-  const DurationSetDto({required duration, required super.checked})
+  const DurationSetDto({required duration, super.checked = false, super.rpeRating = 4})
       : _duration = duration;
 
   Duration get duration => _duration;
@@ -16,8 +16,8 @@ class DurationSetDto extends SetDto {
   ExerciseType get type => ExerciseType.duration;
 
   @override
-  DurationSetDto copyWith({Duration? duration, bool? checked, ExerciseType? type}) {
-    return DurationSetDto(duration: duration ?? _duration, checked: checked ?? super.checked);
+  DurationSetDto copyWith({Duration? duration, bool? checked, ExerciseType? type, int? rpeRating}) {
+    return DurationSetDto(duration: duration ?? _duration, checked: checked ?? super.checked, rpeRating: super.rpeRating);
   }
 
   @override
@@ -37,6 +37,6 @@ class DurationSetDto extends SetDto {
 
   @override
   String toString() {
-    return 'DurationSetDTO{duration: $_duration, checked: ${super.checked}, type: $type';
+    return 'DurationSetDTO{duration: $_duration, checked: ${super.checked}, type: $type, rpeRating: ${super.rpeRating}';
   }
 }

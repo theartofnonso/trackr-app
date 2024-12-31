@@ -16,6 +16,8 @@ class LineChartWidget extends StatelessWidget {
   final ChartUnit unit;
   final double interval;
   final double? aspectRation;
+  final List<Color> colors;
+  final double reservedSize;
 
   const LineChartWidget(
       {super.key,
@@ -24,7 +26,7 @@ class LineChartWidget extends StatelessWidget {
       required this.unit,
       this.extraLinesData,
       this.interval = 10,
-      this.aspectRation});
+      this.aspectRation, this.colors = const [], this.reservedSize = 40});
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +37,9 @@ class LineChartWidget extends StatelessWidget {
         ? Center(
             child: AspectRatio(
               aspectRatio: aspectRation ?? 1.5,
-              child: LineChart(LineChartData(
+              child: LineChart(
+                  duration: Duration(milliseconds: 500),
+                  LineChartData(
                   gridData: FlGridData(drawVerticalLine: false),
                   minY: 0,
                   titlesData: FlTitlesData(
@@ -50,7 +54,7 @@ class LineChartWidget extends StatelessWidget {
                       sideTitles: SideTitles(
                         showTitles: true,
                         getTitlesWidget: _leftTitleWidgets,
-                        reservedSize: 40,
+                        reservedSize: reservedSize,
                       ),
                     ),
                     bottomTitles: AxisTitles(
@@ -71,6 +75,7 @@ class LineChartWidget extends StatelessWidget {
                           return FlSpot(point.x.toDouble(), point.y.toDouble());
                         }).toList(),
                         color: isDarkMode ? Colors.white70 : Colors.grey.shade600,
+                        gradient: colors.isNotEmpty ? LinearGradient(colors: colors) : null,
                         isCurved: true)
                   ])),
             ),
@@ -92,7 +97,7 @@ class LineChartWidget extends StatelessWidget {
   }
 
   String _weightTitle({required double value}) {
-    if (unit == ChartUnit.weight) {
+    if (unit == ChartUnit.weight || unit == ChartUnit.numberBig) {
       return volumeInKOrM(value, showLessThan1k: false);
     } else if (unit == ChartUnit.duration) {
       return Duration(milliseconds: value.toInt()).msDigital();

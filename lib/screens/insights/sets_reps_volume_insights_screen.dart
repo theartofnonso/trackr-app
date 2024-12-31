@@ -518,7 +518,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   double _reservedSize() {
     return switch (_metric) {
       SetRepsVolumeReps.sets => 20,
-      SetRepsVolumeReps.reps => 35,
+      SetRepsVolumeReps.reps => 25,
       SetRepsVolumeReps.volume => 40,
     };
   }
@@ -549,6 +549,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       ChartUnit.number => _metric.name,
       ChartUnit.weight => weightLabel(),
       ChartUnit.duration => "",
+      ChartUnit.numberBig => _metric.name,
     };
   }
 

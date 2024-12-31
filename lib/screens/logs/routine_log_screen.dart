@@ -117,8 +117,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
           exerciseLog: exerciseLog);
     }).expand((pbs) => pbs);
 
-    final rpeRating = log.rpeRating;
-
     final sleepFrom = log.sleepFrom;
     final sleepTo = log.sleepTo;
 
@@ -254,15 +252,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                                 description:
                                     "The amount of sleep you got the night before the workout. Sleep impacts your recovery, energy, and overall performance during exercise."),
                           ),
-                        _StatisticWidget(
-                          title: "$rpeRating",
-                          subtitle: "RPE",
-                          icon: FontAwesomeIcons.solidFaceSadTear,
-                          information: _StatisticsInformation(
-                              title: "Rate of Perceived Exertion",
-                              description:
-                                  "A self-reported score (1 to 10) indicating how hard your workout felt. Helps adjust workout intensity to match your goals and avoid overtraining."),
-                        ),
                       ],
                     ),
                   ),

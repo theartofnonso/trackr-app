@@ -48,7 +48,7 @@ dependencies:
   google_fonts: ^6.1.0
   shared_preferences: ^2.2.2
   collection: ^1.17.2
-  fl_chart: ^0.69.0
+  fl_chart: ^0.70.0
   sentry_flutter: ^8.10.1
   font_awesome_flutter: ^10.8.0
   flutter_local_notifications: ^18.0.0

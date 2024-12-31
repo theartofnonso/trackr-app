@@ -51,7 +51,7 @@ class RoutineLogsScreen extends StatelessWidget {
                             return RoutineLogWidget(log: log, trailing: log.createdAt.durationSinceOrDate());
                           },
                           separatorBuilder: (BuildContext context, int index) =>
-                              Divider(color: Colors.white70.withValues(alpha: 0.1)),
+                              Divider(color: Colors.transparent),
                           itemCount: logs.length),
                     )
                   : Expanded(

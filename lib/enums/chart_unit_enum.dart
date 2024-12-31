@@ -1,5 +1,5 @@
 enum ChartUnit {
   weight,
   duration,
-  number;
+  number, numberBig;
 }
