@@ -85,6 +85,7 @@ class RoutineLogReportScreen extends StatelessWidget {
                             labelStyle: Theme.of(context).textTheme.bodyLarge!,
                             descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
                             dividerColor: sapphireLighter),
+                        const SizedBox(height: 10),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
