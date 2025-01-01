@@ -277,45 +277,46 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                             description: "Here's a breakdown of the muscle groups in your ${log.name} workout session.",
                             muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
                             minimized: false),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            RichText(
-                              text: TextSpan(
-                                text: volumeInKOrM(avgVolume),
-                                style: Theme.of(context).textTheme.headlineMedium,
-                                children: [
-                                  TextSpan(
-                                    text: " ",
-                                  ),
-                                  TextSpan(
-                                    text: weightLabel().toUpperCase(),
-                                    style: Theme.of(context).textTheme.bodyMedium,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Text(
-                              "SESSION AVERAGE".toUpperCase(),
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
-                            Wrap(
-                              crossAxisAlignment: WrapCrossAlignment.center,
-                              children: [
-                                FaIcon(
-                                  getImprovementIcon(improved: improved, difference: difference),
-                                  color: getImprovementColor(improved: improved, difference: difference),
-                                  size: 12,
+                        if (log.templateId.isNotEmpty)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                  text: volumeInKOrM(avgVolume),
+                                  style: Theme.of(context).textTheme.headlineMedium,
+                                  children: [
+                                    TextSpan(
+                                      text: " ",
+                                    ),
+                                    TextSpan(
+                                      text: weightLabel().toUpperCase(),
+                                      style: Theme.of(context).textTheme.bodyMedium,
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(width: 6),
-                                OpacityButtonWidget(
-                                  label: differenceSummary,
-                                  buttonColor: getImprovementColor(improved: improved, difference: difference),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
+                              ),
+                              Text(
+                                "SESSION AVERAGE".toUpperCase(),
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                              Wrap(
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                children: [
+                                  FaIcon(
+                                    getImprovementIcon(improved: improved, difference: difference),
+                                    color: getImprovementColor(improved: improved, difference: difference),
+                                    size: 12,
+                                  ),
+                                  const SizedBox(width: 6),
+                                  OpacityButtonWidget(
+                                    label: differenceSummary,
+                                    buttonColor: getImprovementColor(improved: improved, difference: difference),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
                         if (updatedLog.owner == SharedPrefs().userId && widget.isEditable)
                           TRKRInformationContainer(
                               ctaLabel: "Ask for feedback",
