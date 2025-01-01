@@ -55,7 +55,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
           final exerciseParts = exercise.name.toLowerCase().split(RegExp(r'[\s-]+'));
           final queryParts = query.toLowerCase().split(RegExp(r'[\s-]+'));
 
-          return queryParts.every((queryPart) => exerciseParts.contains(queryPart));
+          return queryParts.any((queryPart) => exerciseParts.where((exercisePart) => exercisePart.startsWith(queryPart)).isNotEmpty);
         })
         .where((exercise) => exerciseType != null ? exercise.type == widget.type : true)
         .toList();

@@ -234,11 +234,9 @@ class CaloriesTrendScreen extends StatelessWidget {
       return "No noticeable change in your calorie trend this month. Stay consistent and keep tracking to reach your goals!";
     } else {
       if (improved) {
-        return "Good news! Your calories improved by $difference kcal this month. Keep up the great work! Just remember to monitor your energy levels and "
-            "overall nutrition to ensure you’re staying balanced.";
+        return "Good news! Your calories improved by $difference kcal this month. Keep up the great work! Remember to balance your increased activity with proper recovery, hydration, and nutrition to maintain peak performance and overall health.";
       } else {
-        return "Your calories dropped by $difference kcal this month. It might be time to adjust your strategy—consider reviewing your meal plan, "
-            "activity level, or any other factors that could help you get back on track.";
+        return "Your calories dropped by $difference kcal this month. This could be a sign to reassess your approach—consider increasing your activity level, incorporating more dynamic exercises, or reviewing your overall workout consistency to help you stay aligned with your goals.";
       }
     }
   }
