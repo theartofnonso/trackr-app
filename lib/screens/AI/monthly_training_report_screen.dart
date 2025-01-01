@@ -41,6 +41,7 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -67,8 +68,7 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
         .expand((exerciseLogs) => exerciseLogs)
         .toList();
 
-    final muscleGroupFamilyFrequencies =
-        muscleGroupFamilyFrequency(exerciseLogs: exerciseLogsWithCompletedSets, includeSecondaryMuscleGroups: false);
+    final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequencyOn4WeeksScale(exerciseLogs: exerciseLogsWithCompletedSets);
 
     final exerciseAndRoutineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
