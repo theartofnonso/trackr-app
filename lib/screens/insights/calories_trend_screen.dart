@@ -77,6 +77,8 @@ class CaloriesTrendScreen extends StatelessWidget {
 
     final differenceSummary = _generateDifferenceSummary(improved: improved, difference: difference);
 
+    final differenceFeedback = _generateDifferenceFeedback(improved: improved, difference: difference);
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -142,16 +144,23 @@ class CaloriesTrendScreen extends StatelessWidget {
                     ),
                   ],
                 ),
+                const SizedBox(height: 12),
+                Text(differenceFeedback,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                        height: 1.8,
+                        color: isDarkMode ? Colors.white70 : Colors.black)),
                 const SizedBox(height: 35),
                 calories.sum > 0
                     ? LineChartWidget(
-                    chartPoints: chartPoints,
-                    periods: months,
-                    unit: ChartUnit.numberBig,
-                    aspectRation: 2,
-                    reservedSize: 30,
-                    interval: 1,
-                    colors: [])
+                        chartPoints: chartPoints,
+                        periods: months,
+                        unit: ChartUnit.numberBig,
+                        aspectRation: 1.5,
+                        reservedSize: 30,
+                        interval: 1,
+                        colors: [])
                     : const Center(child: FaIcon(FontAwesomeIcons.chartSimple, color: sapphireDark, size: 120)),
                 const SizedBox(height: 16),
                 InformationContainer(
@@ -216,6 +225,20 @@ class CaloriesTrendScreen extends StatelessWidget {
         return "$difference kcal up this month";
       } else {
         return "$difference kcal down this month";
+      }
+    }
+  }
+
+  String _generateDifferenceFeedback({required bool improved, required int difference}) {
+    if (difference <= 0) {
+      return "No noticeable change in your calorie trend this month. Stay consistent and keep tracking to reach your goals!";
+    } else {
+      if (improved) {
+        return "Good news! Your calories improved by $difference kcal this month. Keep up the great work! Just remember to monitor your energy levels and "
+            "overall nutrition to ensure you’re staying balanced.";
+      } else {
+        return "Your calories dropped by $difference kcal this month. It might be time to adjust your strategy—consider reviewing your meal plan, "
+            "activity level, or any other factors that could help you get back on track.";
       }
     }
   }
