@@ -54,7 +54,7 @@ class CustomBarChart extends StatelessWidget {
                 drawVerticalLine: false,
                 checkToShowHorizontalLine: (value) => true,
                 getDrawingHorizontalLine: (value) => FlLine(
-                  color: isDarkMode ? Colors.white.withValues(alpha:0.1) : Colors.grey.shade200,
+                  color: isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.grey.shade200,
                   strokeWidth: 0.5,
                 ),
               ),
@@ -135,10 +135,7 @@ class CustomBarChart extends StatelessWidget {
       }).toList();
 
   Widget _leftTitleWidgets(double value, TitleMeta meta) {
-    final style = GoogleFonts.ubuntu(
-      fontWeight: FontWeight.w500,
-      fontSize: 9,
-    );
+    final style = GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 9, color: Colors.grey.shade600);
 
     return SideTitleWidget(
       fitInside: SideTitleFitInsideData.fromTitleMeta(meta, enabled: false),
@@ -156,10 +153,7 @@ class CustomBarChart extends StatelessWidget {
 
   Widget _bottomTitleWidgets(double value, TitleMeta meta) {
     final modifiedDateTimes = periods.length == 1 ? [...periods, ...periods] : periods;
-    final style = GoogleFonts.ubuntu(
-      fontWeight: FontWeight.w500,
-      fontSize: 9,
-    );
+    final style = GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 9, color: Colors.grey.shade600);
     return SideTitleWidget(
       fitInside: SideTitleFitInsideData.disable(),
       axisSide: meta.axisSide,

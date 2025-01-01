@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
@@ -246,7 +247,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                   presentBanner: true,
                   interruptionLevel: InterruptionLevel.active),
             ),
-            payload: response);
+            payload: jsonEncode({"report": response, "log": routineLog.id}));
       }
     });
   }

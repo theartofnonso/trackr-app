@@ -84,9 +84,9 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     final dateRange = theLastYearDateTimeRange();
 
-    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
-    final logs = routineLogController.whereLogsIsWithinRange(range: dateRange);
+    final logs = exerciseAndRoutineController.whereLogsIsWithinRange(range: dateRange);
 
     final exerciseLogs = logs
         .map((log) => loggedExercises(exerciseLogs: log.exerciseLogs))
@@ -227,9 +227,8 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                       onTap: () => _generateReport(exerciseLogs: exerciseLogs),
                     ),
                     const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -270,6 +269,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                             )
                           ],
                         ),
+                        const SizedBox(height: 10),
                         CupertinoSlidingSegmentedControl<SetRepsVolumeReps>(
                           backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade200,
                           thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
