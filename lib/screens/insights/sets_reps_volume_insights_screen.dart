@@ -84,9 +84,9 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     final dateRange = theLastYearDateTimeRange();
 
-    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
-    final logs = routineLogController.whereLogsIsWithinRange(range: dateRange);
+    final logs = exerciseAndRoutineController.whereLogsIsWithinRange(range: dateRange);
 
     final exerciseLogs = logs
         .map((log) => loggedExercises(exerciseLogs: log.exerciseLogs))

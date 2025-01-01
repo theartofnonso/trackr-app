@@ -87,79 +87,13 @@ const routineLogReportResponseFormat = {
           "items": {
             "type": "object",
             "properties": {
-              "exercise_name": {"type": "string", "description": "The name of the exercise."},
-              "current_performance": {
-                "type": "object",
-                "description": "Details of the current exercise performance.",
-                "properties": {
-                  "date": {"type": "string", "description": "The date of the current exercise session."},
-                  "sets": {
-                    "type": "array",
-                    "description": "List of sets performed in the current session.",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "weight": {"type": "number", "description": "The weight used in the set."},
-                        "repetitions": {
-                          "type": "integer",
-                          "description": "The number of repetitions performed in the set."
-                        }
-                      },
-                      "required": ["weight", "repetitions"],
-                      "additionalProperties": false
-                    }
-                  },
-                  "total_volume": {
-                    "type": "number",
-                    "description":
-                        "The total volume lifted in the current session (sum of weight × repetitions for all sets)."
-                  }
-                },
-                "required": ["date", "sets", "total_volume"],
-                "additionalProperties": false
-              },
-              "previous_performance": {
-                "type": "array",
-                "description": "Details of previous exercise performances for comparison.",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "date": {"type": "string", "description": "The date of the previous exercise session."},
-                    "sets": {
-                      "type": "array",
-                      "description": "List of sets performed in the previous session.",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "weight": {"type": "number", "description": "The weight used in the set."},
-                          "repetitions": {
-                            "type": "integer",
-                            "description": "The number of repetitions performed in the set."
-                          }
-                        },
-                        "required": ["weight", "repetitions"],
-                        "additionalProperties": false
-                      }
-                    },
-                    "total_volume": {
-                      "type": "number",
-                      "description": "The total volume lifted in the previous session."
-                    }
-                  },
-                  "required": ["date", "sets", "total_volume"],
-                  "additionalProperties": false
-                }
-              },
-              "achievements": {
-                "type": "string",
-                "description": "A description of achievements or improvements compared to previous sessions."
-              },
+              "exercise_id": {"type": "string", "description": "The id of the exercise."},
               "comments": {
                 "type": "string",
                 "description": "Overall analysis of performance trends, including notable observations."
               }
             },
-            "required": ["exercise_name", "current_performance", "previous_performance", "achievements", "comments"],
+            "required": ["exercise_id", "comments"],
             "additionalProperties": false
           }
         },

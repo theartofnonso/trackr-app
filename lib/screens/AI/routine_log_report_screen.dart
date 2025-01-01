@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
-import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
-import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
-import 'package:tracker_app/enums/exercise_type_enums.dart';
-import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 import 'package:tracker_app/widgets/dividers/label_container_divider.dart';
 import 'package:tracker_app/widgets/routine/preview/exercise_log_widget.dart';
 
+import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/open_ai_response_schema_dtos/exercise_performance_report.dart';
 import '../../utils/general_utils.dart';
 
@@ -69,26 +67,14 @@ class RoutineLogReportScreen extends StatelessWidget {
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
                             itemBuilder: (context, index) {
+                              final exerciseAndRoutineController =
+                                  Provider.of<ExerciseAndRoutineController>(context, listen: false);
                               final exerciseReport = report.exerciseReports[index];
-                              final sets = exerciseReport.currentPerformance.sets
-                                  .map((set) =>
-                                      WeightAndRepsSetDto(weight: set.weight, reps: set.repetitions, checked: true))
-                                  .toList();
-                              final exerciseLog = ExerciseLogDto(
-                                  id: '',
-                                  routineLogId: '',
-                                  superSetId: '',
-                                  exercise: ExerciseDto(
-                                      id: "",
-                                      name: exerciseReport.exerciseName,
-                                      primaryMuscleGroup: MuscleGroup.fullBody,
-                                      secondaryMuscleGroups: [],
-                                      type: ExerciseType.weights,
-                                      owner: ""),
-                                  notes: exerciseReport.comments,
-                                  sets: sets,
-                                  createdAt: DateTime.now());
-                              return _ExerciseReportWidget(exerciseLog: exerciseLog, exerciseReport: exerciseReport);
+                              final exerciseLog = exerciseAndRoutineController
+                                  .exerciseLogsByExerciseId[exerciseReport.exerciseId]?.lastOrNull;
+                              return exerciseLog != null
+                                  ? _ExerciseReportWidget(exerciseLog: exerciseLog, exerciseReport: exerciseReport)
+                                  : const SizedBox.shrink();
                             },
                             separatorBuilder: (context, index) => SizedBox(height: 20),
                             itemCount: report.exerciseReports.length),
@@ -162,9 +148,9 @@ class _ExerciseReportWidget extends StatelessWidget {
             const SizedBox(height: 16),
             LabelContainerDivider(
                 labelAlignment: LabelAlignment.left,
-                label: "Achievements".toUpperCase(),
-                description: exerciseReport.achievements,
-                labelStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(color: vibrantGreen),
+                label: "Feedback".toUpperCase(),
+                description: exerciseReport.comments,
+                labelStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 12),
                 descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
                 dividerColor: sapphireLighter)
           ],

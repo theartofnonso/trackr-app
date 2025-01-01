@@ -848,7 +848,7 @@ class _OneRepMaxSliderState extends State<_OneRepMaxSlider> {
 
   int _percentageForReps(int reps) {
     // Define a map of reps to percentages
-    Map<int, int> _repToPercentage = {
+    Map<int, int> repToPercentage = {
       1: 100,
       2: 97,
       3: 94,
@@ -871,7 +871,7 @@ class _OneRepMaxSliderState extends State<_OneRepMaxSlider> {
       20: 60,
     };
 
-    return _repToPercentage[reps] ?? 1;
+    return repToPercentage[reps] ?? 1;
   }
 
   double _weightForPercentage({required int reps}) {

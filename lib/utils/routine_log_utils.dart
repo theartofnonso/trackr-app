@@ -23,7 +23,8 @@ String prepareLogInstruction({required BuildContext context, required RoutineLog
   buffer.writeln();
 
   for (final currentExerciseLog in exerciseLogs) {
-
+    buffer.writeln(
+        "Exercise Id for ${currentExerciseLog.exercise.name}: ${currentExerciseLog.exercise.id}");
     buffer.writeln(
         "Rep Range for ${currentExerciseLog.exercise.name}: ${currentExerciseLog.minReps} to ${currentExerciseLog.maxReps}");
     List<String> currentSetSummaries = generateSetSummaries(currentExerciseLog);
