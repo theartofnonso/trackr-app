@@ -116,7 +116,7 @@ class ExerciseLogWidget extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Text(
-                        "Track your progress with the total weight lifted for this exercise. An upward trend highlights your strength gains and consistent improvement over time.",
+                        "Track your heaviest weight lifted for ${exercise.name}. An upward trend highlights your strength gains and consistent improvement over time.",
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             fontWeight: FontWeight.w400,
                             fontSize: 12,

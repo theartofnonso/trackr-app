@@ -298,6 +298,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
                     if (exerciseLogs.isNotEmpty)
                       Expanded(
                           child: SingleChildScrollView(
+                              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                               padding: const EdgeInsets.only(bottom: 250),
                               child: Column(spacing: 20, children: [
                                 ...exerciseLogs.map((exerciseLog) {

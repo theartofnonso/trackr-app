@@ -11,20 +11,22 @@ import '../../utils/string_utils.dart';
 
 class LineChartWidget extends StatelessWidget {
   final List<ChartPointDto> chartPoints;
-  final ExtraLinesData? extraLinesData;
   final List<String> periods;
   final ChartUnit unit;
   final double interval;
   final double? aspectRation;
+  final List<Color> colors;
+  final double reservedSize;
 
   const LineChartWidget(
       {super.key,
       required this.chartPoints,
       required this.periods,
       required this.unit,
-      this.extraLinesData,
       this.interval = 10,
-      this.aspectRation});
+      this.aspectRation,
+      this.colors = const [],
+      this.reservedSize = 40});
 
   @override
   Widget build(BuildContext context) {
@@ -35,54 +37,64 @@ class LineChartWidget extends StatelessWidget {
         ? Center(
             child: AspectRatio(
               aspectRatio: aspectRation ?? 1.5,
-              child: LineChart(LineChartData(
-                  gridData: FlGridData(drawVerticalLine: false),
-                  minY: 0,
-                  titlesData: FlTitlesData(
-                    show: true,
-                    rightTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
-                    ),
-                    topTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
-                    ),
-                    leftTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        getTitlesWidget: _leftTitleWidgets,
-                        reservedSize: 40,
+              child: LineChart(
+                  duration: Duration(milliseconds: 500),
+                  LineChartData(
+                      gridData: FlGridData(
+                          drawVerticalLine: false,
+                          getDrawingHorizontalLine: (_) =>
+                              FlLine(strokeWidth: 0.5, color: isDarkMode ? Colors.white30 : Colors.grey.shade600)),
+                      minY: 0,
+                      titlesData: FlTitlesData(
+                        rightTitles: const AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
+                        ),
+                        topTitles: const AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
+                        ),
+                        leftTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            getTitlesWidget: _leftTitleWidgets,
+                            reservedSize: reservedSize,
+                          ),
+                        ),
+                        bottomTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            interval: interval,
+                            getTitlesWidget: periods.isNotEmpty ? _bottomTitleWidgets : (_, __) => SizedBox.shrink(),
+                          ),
+                        ),
                       ),
-                    ),
-                    bottomTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        interval: interval,
-                        getTitlesWidget: periods.isNotEmpty ? _bottomTitleWidgets : (_, __) => SizedBox.shrink(),
+                      borderData: FlBorderData(
+                        show: false,
                       ),
-                    ),
-                  ),
-                  borderData: FlBorderData(
-                    show: false,
-                  ),
-                  extraLinesData: extraLinesData,
-                  lineBarsData: [
-                    LineChartBarData(
-                        spots: chartPoints.map((point) {
-                          return FlSpot(point.x.toDouble(), point.y.toDouble());
-                        }).toList(),
-                        color: isDarkMode ? Colors.white70 : Colors.grey.shade600,
-                        isCurved: true)
-                  ])),
+                      lineBarsData: [
+                        LineChartBarData(
+                            spots: chartPoints.map((point) {
+                              return FlSpot(point.x.toDouble(), point.y.toDouble());
+                            }).toList(),
+                            color: isDarkMode ? Colors.white70 : Colors.grey.shade600,
+                            gradient: colors.isNotEmpty ? LinearGradient(colors: colors) : null,
+                            belowBarData: BarAreaData(
+                              show: true,
+                              gradient: LinearGradient(
+                                colors: [
+                                  isDarkMode ? Colors.white : Colors.black,
+                                  isDarkMode ? Colors.white : Colors.black
+                                ].map((color) => color.withValues(alpha: 0.02)).toList(),
+                              ),
+                            ),
+                            isCurved: true)
+                      ])),
             ),
           )
         : const Center(child: FaIcon(FontAwesomeIcons.chartSimple, color: sapphireDark, size: 120));
   }
 
   Widget _leftTitleWidgets(double value, TitleMeta meta) {
-    final style = GoogleFonts.ubuntu(
-      fontWeight: FontWeight.w600,
-      fontSize: 9,
-    );
+    final style = GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 9, color: Colors.grey.shade600);
 
     return SideTitleWidget(
       fitInside: SideTitleFitInsideData.fromTitleMeta(meta, enabled: false),
@@ -92,7 +104,7 @@ class LineChartWidget extends StatelessWidget {
   }
 
   String _weightTitle({required double value}) {
-    if (unit == ChartUnit.weight) {
+    if (unit == ChartUnit.weight || unit == ChartUnit.numberBig) {
       return volumeInKOrM(value, showLessThan1k: false);
     } else if (unit == ChartUnit.duration) {
       return Duration(milliseconds: value.toInt()).msDigital();
@@ -103,14 +115,11 @@ class LineChartWidget extends StatelessWidget {
 
   Widget _bottomTitleWidgets(double value, TitleMeta meta) {
     final modifiedDateTimes = periods.length == 1 ? [...periods, ...periods] : periods;
-    final style = GoogleFonts.ubuntu(
-      fontWeight: FontWeight.w600,
-      fontSize: 10,
-    );
+    final style = GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 7, color: Colors.grey.shade600);
     return SideTitleWidget(
       fitInside: SideTitleFitInsideData.fromTitleMeta(meta),
       axisSide: meta.axisSide,
-      child: Text(modifiedDateTimes[value.toInt()], style: style),
+      child: Text(modifiedDateTimes[value.toInt()].toUpperCase(), style: style),
     );
   }
 }

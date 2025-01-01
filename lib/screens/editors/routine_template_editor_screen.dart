@@ -329,6 +329,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                     if (exerciseTemplates.isNotEmpty)
                       Expanded(
                         child: SingleChildScrollView(
+                            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                             padding: const EdgeInsets.only(bottom: 250),
                             child: Column(spacing: 20, children: [
                               ...exerciseTemplates.map((exerciseTemplate) {

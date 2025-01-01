@@ -51,7 +51,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
   final _confettiController = ConfettiController();
 
   bool isMultipleOfFive(int number) {
-    return number % 5 == 0;
+    return number == 0 ? false : number % 5 == 0;
   }
 
   @override

@@ -33,8 +33,9 @@ class Calendar extends StatefulWidget {
   final void Function(DateTime dateTime)? onSelectDate;
   final DateTime dateTime;
   final bool forceDarkMode;
+  final bool minimiseCalendar;
 
-  const Calendar({super.key, this.onSelectDate, required this.dateTime, this.forceDarkMode = false});
+  const Calendar({super.key, this.onSelectDate, required this.dateTime, this.forceDarkMode = false, this.minimiseCalendar = false});
 
   @override
   State<Calendar> createState() => _CalendarState();
@@ -107,6 +108,53 @@ class _CalendarState extends State<Calendar> {
     return datesInMonths;
   }
 
+  List<_DateViewModel?> _generateWeekDates() {
+    // 1. Identify the "base" date for the calendar
+    //    Here, we use widget.dateTime (the same reference your _generateDates uses).
+    final baseDate = DateTime.now().withoutTime();
+
+    // 2. Determine the first day of this week (assuming Monday as weekday=1)
+    //    If you're using Sunday as start, adjust accordingly.
+    final dayOfWeek = baseDate.weekday;      // Monday = 1, Sunday = 7 in Dart
+    final difference = dayOfWeek - 1;        // if Monday => 0, Tuesday => 1, etc.
+    final startOfWeek = baseDate.subtract(Duration(days: difference));
+
+    // 3. Calculate the end of this current week (6 days after start)
+    final endOfWeek = startOfWeek.add(const Duration(days: 6));
+
+    // 4. Retrieve logs from your controllers for only this 7-day range
+    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+    final activityLogController = Provider.of<ActivityLogController>(context, listen: false);
+
+    final weeklyRoutineLogs = routineLogController.logs
+        .where((log) => log.createdAt.isBetweenInclusive(from: startOfWeek, to: endOfWeek))
+        .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day));
+
+    final weeklyActivityLogs = activityLogController.logs
+        .where((log) => log.createdAt.isBetweenInclusive(from: startOfWeek, to: endOfWeek))
+        .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day));
+
+    // 5. Build the list of exactly 7 date entries for the current week
+    final datesInWeek = <_DateViewModel?>[];
+
+    for (int i = 0; i < 7; i++) {
+      final currentDate = startOfWeek.add(Duration(days: i));
+      final hasRoutineLog = weeklyRoutineLogs.contains(currentDate);
+      final hasActivityLog = weeklyActivityLogs.contains(currentDate);
+
+      datesInWeek.add(
+        _DateViewModel(
+          dateTime: currentDate,
+          selectedDateTime: _currentDate.withoutTime(), // or whatever your "selected" logic is
+          hasRoutineLog: hasRoutineLog,
+          hasActivityLog: hasActivityLog,
+        ),
+      );
+    }
+
+    return datesInWeek;
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -115,7 +163,7 @@ class _CalendarState extends State<Calendar> {
 
     Provider.of<SettingsController>(context, listen: true);
 
-    final dates = _generateDates();
+    final dates = widget.minimiseCalendar ? _generateWeekDates() : _generateDates() ;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

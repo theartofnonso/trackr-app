@@ -17,7 +17,7 @@ import '../../utils/date_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
-import '../../widgets/chart/bar_chart.dart';
+import '../../widgets/chart/line_chart_widget.dart';
 
 class CaloriesTrendScreen extends StatelessWidget {
   static const routeName = '/calories_trend_screen';
@@ -76,6 +76,8 @@ class CaloriesTrendScreen extends StatelessWidget {
         improved ? currentMonthCalories - previousMonthCalories : previousMonthCalories - currentMonthCalories;
 
     final differenceSummary = _generateDifferenceSummary(improved: improved, difference: difference);
+
+    final differenceFeedback = _generateDifferenceFeedback(improved: improved, difference: difference);
 
     return Scaffold(
       appBar: AppBar(
@@ -142,21 +144,25 @@ class CaloriesTrendScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 60),
+                const SizedBox(height: 12),
+                Text(differenceFeedback,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                        height: 1.8,
+                        color: isDarkMode ? Colors.white70 : Colors.black)),
+                const SizedBox(height: 35),
                 calories.sum > 0
-                    ? SizedBox(
-                        height: 250,
-                        child: CustomBarChart(
-                          chartPoints: chartPoints,
-                          periods: months,
-                          unit: ChartUnit.number,
-                          bottomTitlesInterval: 1,
-                          showLeftTitles: true,
-                          maxY: calories.max.toDouble(),
-                          reservedSize: 35,
-                        ))
+                    ? LineChartWidget(
+                        chartPoints: chartPoints,
+                        periods: months,
+                        unit: ChartUnit.numberBig,
+                        aspectRation: 1.5,
+                        reservedSize: 30,
+                        interval: 1,
+                        colors: [])
                     : const Center(child: FaIcon(FontAwesomeIcons.chartSimple, color: sapphireDark, size: 120)),
-                const SizedBox(height: 14),
+                const SizedBox(height: 16),
                 InformationContainer(
                   leadingIcon: FaIcon(FontAwesomeIcons.fire),
                   title: "What are calories",
@@ -219,6 +225,20 @@ class CaloriesTrendScreen extends StatelessWidget {
         return "$difference kcal up this month";
       } else {
         return "$difference kcal down this month";
+      }
+    }
+  }
+
+  String _generateDifferenceFeedback({required bool improved, required int difference}) {
+    if (difference <= 0) {
+      return "No noticeable change in your calorie trend this month. Stay consistent and keep tracking to reach your goals!";
+    } else {
+      if (improved) {
+        return "Good news! Your calories improved by $difference kcal this month. Keep up the great work! Just remember to monitor your energy levels and "
+            "overall nutrition to ensure you’re staying balanced.";
+      } else {
+        return "Your calories dropped by $difference kcal this month. It might be time to adjust your strategy—consider reviewing your meal plan, "
+            "activity level, or any other factors that could help you get back on track.";
       }
     }
   }

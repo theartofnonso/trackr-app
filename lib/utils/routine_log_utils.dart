@@ -24,6 +24,8 @@ String prepareLogInstruction({required BuildContext context, required RoutineLog
 
   for (final currentExerciseLog in exerciseLogs) {
     buffer.writeln(
+        "Exercise Id for ${currentExerciseLog.exercise.name}: ${currentExerciseLog.exercise.id}");
+    buffer.writeln(
         "Rep Range for ${currentExerciseLog.exercise.name}: ${currentExerciseLog.minReps} to ${currentExerciseLog.maxReps}");
     List<String> currentSetSummaries = generateSetSummaries(currentExerciseLog);
     buffer.writeln(
@@ -68,7 +70,8 @@ String prepareLogInstruction({required BuildContext context, required RoutineLog
     	          2.	Repetitions: Evaluate the number of repetitions performed per set and identify any trends or changes.
     	          3.	Volume Lifted: Calculate the total volume lifted (weight × repetitions) and provide insights into its progression over time.
     	          4.	Number of Sets: Assess the number of sets performed and how it aligns with my overall workout goals.
-                5.  Using the above guidelines on reps ranges, training goals, intensity levels and my one Rep Max, analyze my training intensity (weight and reps) and provide clear, actionable recommendations on whether the I should increase or decrease the weights.
+    	          5.  Rate of perceived exertion: Compare current RPE and previous ones and determine when to increase/decrease weight or adjust reps.
+                6.  Using the above guidelines on reps ranges, training goals, intensity levels and my one Rep Max, analyze my training intensity (weight and reps) and provide clear, actionable recommendations on whether the I should increase or decrease the weights.
 
           Note: All weights are measured in ${weightLabel()}.
           Note: Your report should sound personal.

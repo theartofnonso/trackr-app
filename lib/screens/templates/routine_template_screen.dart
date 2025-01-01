@@ -116,7 +116,10 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
     final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: template.exerciseTemplates);
 
-    final allLogsForTemplate = exerciseAndRoutineController.whereLogsWithTemplateId(templateId: template.id);
+    final allLogsForTemplate = exerciseAndRoutineController
+        .whereLogsWithTemplateId(templateId: template.id)
+        .map((log) => routineWithLoggedExercises(log: log))
+        .toList();
 
     final allLoggedVolumesForTemplate = allLogsForTemplate.map((log) => log.volume).toList();
 

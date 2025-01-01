@@ -157,23 +157,21 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
               ),
               const SizedBox(height: 10),
               SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   scrollDirection: Axis.horizontal,
                   child: Row(children: [
-                    const SizedBox(width: 10),
                     OpacityButtonWidget(
                         onPressed: _toggleOwnerExercises,
                         buttonColor: _shouldShowOwnerExercises ? vibrantGreen : vibrantBlue,
                         label: "Your Exercises".toUpperCase()),
                     const SizedBox(width: 6),
                     ...muscleGroups.sublist(0, muscleGroupScrollViewHalf),
-                    const SizedBox(width: 10)
                   ])),
               SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   scrollDirection: Axis.horizontal,
                   child: Row(children: [
-                    const SizedBox(width: 10),
                     ...muscleGroups.sublist(muscleGroupScrollViewHalf),
-                    const SizedBox(width: 10)
                   ])),
               const SizedBox(height: 18),
               _filteredExercises.isNotEmpty

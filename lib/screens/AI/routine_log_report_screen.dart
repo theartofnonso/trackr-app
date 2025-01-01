@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tracker_app/colors.dart';
-import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
+import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
-import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
-import 'package:tracker_app/enums/exercise_type_enums.dart';
-import 'package:tracker_app/enums/muscle_group_enums.dart';
+import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 import 'package:tracker_app/widgets/dividers/label_container_divider.dart';
 import 'package:tracker_app/widgets/routine/preview/exercise_log_widget.dart';
@@ -15,12 +13,15 @@ import '../../dtos/open_ai_response_schema_dtos/exercise_performance_report.dart
 import '../../utils/general_utils.dart';
 
 class RoutineLogReportScreen extends StatelessWidget {
+  final RoutineLogDto routineLog;
   final ExercisePerformanceReport report;
 
-  const RoutineLogReportScreen({super.key, required this.report});
+  const RoutineLogReportScreen({super.key, required this.routineLog, required this.report});
 
   @override
   Widget build(BuildContext context) {
+    final exerciseLogs = loggedExercises(exerciseLogs: routineLog.exerciseLogs);
+
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -70,24 +71,8 @@ class RoutineLogReportScreen extends StatelessWidget {
                             physics: NeverScrollableScrollPhysics(),
                             itemBuilder: (context, index) {
                               final exerciseReport = report.exerciseReports[index];
-                              final sets = exerciseReport.currentPerformance.sets
-                                  .map((set) =>
-                                      WeightAndRepsSetDto(weight: set.weight, reps: set.repetitions, checked: true))
-                                  .toList();
-                              final exerciseLog = ExerciseLogDto(
-                                  id: '',
-                                  routineLogId: '',
-                                  superSetId: '',
-                                  exercise: ExerciseDto(
-                                      id: "",
-                                      name: exerciseReport.exerciseName,
-                                      primaryMuscleGroup: MuscleGroup.fullBody,
-                                      secondaryMuscleGroups: [],
-                                      type: ExerciseType.weights,
-                                      owner: ""),
-                                  notes: exerciseReport.comments,
-                                  sets: sets,
-                                  createdAt: DateTime.now());
+                              final exerciseLog = exerciseLogs
+                                  .firstWhere((exerciseLog) => exerciseReport.exerciseId == exerciseLog.exercise.id);
                               return _ExerciseReportWidget(exerciseLog: exerciseLog, exerciseReport: exerciseReport);
                             },
                             separatorBuilder: (context, index) => SizedBox(height: 20),
@@ -100,6 +85,7 @@ class RoutineLogReportScreen extends StatelessWidget {
                             labelStyle: Theme.of(context).textTheme.bodyLarge!,
                             descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
                             dividerColor: sapphireLighter),
+                        const SizedBox(height: 10),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -162,9 +148,9 @@ class _ExerciseReportWidget extends StatelessWidget {
             const SizedBox(height: 16),
             LabelContainerDivider(
                 labelAlignment: LabelAlignment.left,
-                label: "Achievements".toUpperCase(),
-                description: exerciseReport.achievements,
-                labelStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(color: vibrantGreen),
+                label: "Feedback".toUpperCase(),
+                description: exerciseReport.comments,
+                labelStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 12),
                 descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
                 dividerColor: sapphireLighter)
           ],

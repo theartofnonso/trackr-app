@@ -103,6 +103,11 @@ class ExerciseLogController extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateRpeRating({required String exerciseLogId, required int index, required SetDto setDto}) {
+    _exerciseLogRepository.updateRpeRating(exerciseLogId: exerciseLogId, index: index, setDto: setDto);
+    notifyListeners();
+  }
+
   List<SetDto> completedSets() {
     return _exerciseLogRepository.completedSets();
   }

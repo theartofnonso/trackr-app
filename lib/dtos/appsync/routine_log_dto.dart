@@ -31,8 +31,6 @@ class RoutineLogDto extends Log {
 
   final List<ExerciseLogDto> exerciseLogs;
 
-  final int rpeRating;
-
   final String owner;
 
   final DateTime? sleepFrom;
@@ -54,7 +52,6 @@ class RoutineLogDto extends Log {
     this.summary,
     required this.startTime,
     required this.endTime,
-    this.rpeRating = 5,
     required this.owner,
     this.sleepFrom,
     this.sleepTo,
@@ -73,7 +70,6 @@ class RoutineLogDto extends Log {
       'templateId': templateId,
       'name': name,
       'notes': notes,
-      'rpeRating': rpeRating,
       'sleepFrom': sleepFrom?.toIso8601String() ?? "",
       'sleepTo': sleepTo?.toIso8601String() ?? "",
       'startTime': startTime.toIso8601String(),
@@ -86,49 +82,11 @@ class RoutineLogDto extends Log {
     return RoutineLogDto.fromLog(log: log);
   }
 
-  factory RoutineLogDto.fromCachedLog({required Map<String, dynamic> json}) {
-    final templateId = json["templateId"] ?? "";
-    final name = json["name"] ?? "";
-    final notes = json["notes"] ?? "";
-    final rpeRating = json["rpeRating"] ?? 5;
-    final summary = json["summary"];
-    final startTime = DateTime.parse(json["startTime"]);
-    final endTime = DateTime.parse(json["endTime"]);
-    final exerciseLogJsons = json["exercises"] as List<dynamic>;
-
-    final exerciseLogs = exerciseLogJsons.map((item) {
-      if (item is String) {
-        final decodedJson = jsonDecode(item) as Map<String, dynamic>;
-        return ExerciseLogDto.fromJson(routineLogId: "", json: decodedJson);
-      } else if (item is Map<String, dynamic>) {
-        return ExerciseLogDto.fromJson(routineLogId: "", json: item);
-      } else {
-        throw Exception('Invalid type in exerciseLogJsons: ${item.runtimeType}');
-      }
-    }).toList();
-
-    return RoutineLogDto(
-      id: "",
-      templateId: templateId,
-      name: name,
-      exerciseLogs: exerciseLogs,
-      notes: notes,
-      summary: summary,
-      startTime: startTime,
-      endTime: endTime,
-      owner: "",
-      rpeRating: rpeRating,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-    );
-  }
-
   factory RoutineLogDto.fromLog({required RoutineLog log}) {
     final json = jsonDecode(log.data);
     final templateId = json["templateId"] ?? "";
     final name = json["name"] ?? "";
     final notes = json["notes"] ?? "";
-    final rpeRating = json["rpeRating"] ?? 5;
     final summary = json["summary"];
     final sleepFrom = DateTime.tryParse(json["sleepFrom"] ?? "");
     final sleepTo = DateTime.tryParse(json["sleepTo"] ?? "");
@@ -154,7 +112,6 @@ class RoutineLogDto extends Log {
       name: name,
       exerciseLogs: exerciseLogs,
       notes: notes,
-      rpeRating: rpeRating,
       summary: summary,
       startTime: startTime,
       endTime: endTime,
@@ -173,7 +130,6 @@ class RoutineLogDto extends Log {
     String? name,
     String? notes,
     String? summary,
-    int? rpeRating,
     DateTime? startTime,
     DateTime? endTime,
     List<ExerciseLogDto>? exerciseLogs,
@@ -188,7 +144,6 @@ class RoutineLogDto extends Log {
       templateId: templateId ?? this.templateId,
       name: name ?? this.name,
       notes: notes ?? this.notes,
-      rpeRating: rpeRating ?? this.rpeRating,
       summary: summary ?? this.summary,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
@@ -203,7 +158,7 @@ class RoutineLogDto extends Log {
 
   @override
   String toString() {
-    return 'RoutineLogDto{id: $id, templateId: $templateId, name: $name, notes: $notes, rpeRating: $rpeRating, summary: $summary, startTime: $startTime, endTime: $endTime, exerciseLogs: $exerciseLogs, owner: $owner, sleepFrom: $sleepFrom, sleepTo: $sleepTo, createdAt: $createdAt, updatedAt: $updatedAt}';
+    return 'RoutineLogDto{id: $id, templateId: $templateId, name: $name, notes: $notes, summary: $summary, startTime: $startTime, endTime: $endTime, exerciseLogs: $exerciseLogs, owner: $owner, sleepFrom: $sleepFrom, sleepTo: $sleepTo, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
 
   @override

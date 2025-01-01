@@ -17,7 +17,7 @@ import '../../utils/date_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/string_utils.dart';
-import '../../widgets/chart/bar_chart.dart';
+import '../../widgets/chart/line_chart_widget.dart';
 import '../../widgets/information_containers/information_container.dart';
 
 class VolumeTrendScreen extends StatelessWidget {
@@ -79,6 +79,8 @@ class VolumeTrendScreen extends StatelessWidget {
     final difference = improved ? currentMonthVolume - previousMonthVolume : previousMonthVolume - currentMonthVolume;
 
     final differenceSummary = _generateDifferenceSummary(improved: improved, difference: difference);
+
+    final differenceFeedback = _generateDifferenceFeedback(improved: improved, difference: difference);
 
     return Scaffold(
       appBar: AppBar(
@@ -145,21 +147,25 @@ class VolumeTrendScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 60),
+                const SizedBox(height: 12),
+                Text(differenceFeedback,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                        height: 1.8,
+                        color: isDarkMode ? Colors.white70 : Colors.black)),
+                const SizedBox(height: 35),
                 volumes.sum > 0
-                    ? SizedBox(
-                        height: 250,
-                        child: CustomBarChart(
-                          chartPoints: chartPoints,
-                          periods: months,
-                          unit: ChartUnit.weight,
-                          bottomTitlesInterval: 1,
-                          showLeftTitles: true,
-                          maxY: volumes.max.toDouble(),
-                          reservedSize: 35,
-                        ))
+                    ? LineChartWidget(
+                        chartPoints: chartPoints,
+                        periods: months,
+                        unit: ChartUnit.weight,
+                        aspectRation: 1.5,
+                        reservedSize: 40,
+                        interval: 1,
+                        colors: [])
                     : const Center(child: FaIcon(FontAwesomeIcons.chartSimple, color: sapphireDark, size: 120)),
-                const SizedBox(height: 14),
+                const SizedBox(height: 16),
                 InformationContainer(
                   leadingIcon: FaIcon(FontAwesomeIcons.weightHanging),
                   title: "Training Volume",
@@ -219,6 +225,24 @@ class VolumeTrendScreen extends StatelessWidget {
         return "${volumeInKOrM(difference)} ${weightLabel()} up this month";
       } else {
         return "${volumeInKOrM(difference)} ${weightLabel()} down this month";
+      }
+    }
+  }
+
+  String _generateDifferenceFeedback({required bool improved, required double difference}) {
+    if (difference <= 0) {
+      return "No noticeable change in your total training volume this month. "
+          "Keep up the consistency and stay focused on your goals!";
+    } else {
+      if (improved) {
+        return "Great job! Your total training volume increased by "
+            "${volumeInKOrM(difference)} ${weightLabel()} this month. Keep challenging yourself, but remember to balance intensity with "
+            "enough recovery to avoid burnout.";
+      } else {
+        return "It seems your total training volume decreased by "
+            "${volumeInKOrM(difference)} ${weightLabel()} this month. If this was intentional (like a deload or a recovery phase), that can be "
+            "healthy! Otherwise, consider revisiting your routine or ensuring you’re "
+            "recovered and motivated for your next sessions.";
       }
     }
   }

@@ -41,15 +41,16 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final activitiesChildren = activityLogs.map((activityLog) => activityLog.name).toSet().mapIndexed((index, activity) {
+    final activitiesChildren = activityLogs.map((activityLog) => activityLog.nameOrSummary).toSet().mapIndexed((index, activity) {
       final activityType = ActivityType.fromJson(activity);
 
       final image = activityType.image;
 
-      return _ActivityChip(image: image, activityType: activityType, nameOrSummary: activityLogs[index].nameOrSummary,);
+      return _ActivityChip(image: image, activityType: activityType, nameOrSummary: activity);
     }).toList();
 
     final exercises = routineLogs
@@ -67,8 +68,7 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
         .expand((exerciseLogs) => exerciseLogs)
         .toList();
 
-    final muscleGroupFamilyFrequencies =
-        muscleGroupFamilyFrequency(exerciseLogs: exerciseLogsWithCompletedSets, includeSecondaryMuscleGroups: false);
+    final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequencyOn4WeeksScale(exerciseLogs: exerciseLogsWithCompletedSets);
 
     final exerciseAndRoutineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 

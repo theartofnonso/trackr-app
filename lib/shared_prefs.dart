@@ -52,12 +52,12 @@ class SharedPrefs {
   }
 
   /// Show calendar
-  final String _showCalendarKey = "show_calendar_key";
+  final String _minimiseCalendarKey = "minimise_calendar_key";
 
-  bool get showCalendar => _sharedPrefs?.getBool(_showCalendarKey) ?? true;
+  bool get minimiseCalendar => _sharedPrefs?.getBool(_minimiseCalendarKey) ?? false;
 
-  set showCalendar(bool value) {
-    _sharedPrefs?.setBool(_showCalendarKey, value);
+  set minimiseCalendar(bool value) {
+    _sharedPrefs?.setBool(_minimiseCalendarKey, value);
   }
 
   /// First launch flag
