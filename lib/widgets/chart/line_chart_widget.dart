@@ -42,7 +42,7 @@ class LineChartWidget extends StatelessWidget {
                   LineChartData(
                       gridData: FlGridData(
                           drawVerticalLine: false,
-                          getDrawingHorizontalLine: (double) =>
+                          getDrawingHorizontalLine: (_) =>
                               FlLine(strokeWidth: 0.5, color: isDarkMode ? Colors.white30 : Colors.grey.shade600)),
                       minY: 0,
                       titlesData: FlTitlesData(

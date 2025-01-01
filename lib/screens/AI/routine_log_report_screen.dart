@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
+import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
+import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 import 'package:tracker_app/widgets/dividers/label_container_divider.dart';
 import 'package:tracker_app/widgets/routine/preview/exercise_log_widget.dart';
 
-import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/open_ai_response_schema_dtos/exercise_performance_report.dart';
 import '../../utils/general_utils.dart';
 
 class RoutineLogReportScreen extends StatelessWidget {
+  final RoutineLogDto routineLog;
   final ExercisePerformanceReport report;
 
-  const RoutineLogReportScreen({super.key, required this.report});
+  const RoutineLogReportScreen({super.key, required this.routineLog, required this.report});
 
   @override
   Widget build(BuildContext context) {
+    final exerciseLogs = loggedExercises(exerciseLogs: routineLog.exerciseLogs);
+
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -67,14 +70,10 @@ class RoutineLogReportScreen extends StatelessWidget {
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
                             itemBuilder: (context, index) {
-                              final exerciseAndRoutineController =
-                                  Provider.of<ExerciseAndRoutineController>(context, listen: false);
                               final exerciseReport = report.exerciseReports[index];
-                              final exerciseLog = exerciseAndRoutineController
-                                  .exerciseLogsByExerciseId[exerciseReport.exerciseId]?.lastOrNull;
-                              return exerciseLog != null
-                                  ? _ExerciseReportWidget(exerciseLog: exerciseLog, exerciseReport: exerciseReport)
-                                  : const SizedBox.shrink();
+                              final exerciseLog = exerciseLogs
+                                  .firstWhere((exerciseLog) => exerciseReport.exerciseId == exerciseLog.exercise.id);
+                              return _ExerciseReportWidget(exerciseLog: exerciseLog, exerciseReport: exerciseReport);
                             },
                             separatorBuilder: (context, index) => SizedBox(height: 20),
                             itemCount: report.exerciseReports.length),

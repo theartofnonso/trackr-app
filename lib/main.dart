@@ -69,12 +69,16 @@ void onDidReceiveNotificationResponse(NotificationResponse response) {
   if (payload != null) {
     Map<String, dynamic> json = jsonDecode(payload);
 
+    final routineLog = json["log"] as String;
+    final report = jsonDecode(json["report"]);
+
     // Create an instance of ExerciseLogsResponse
-    ExercisePerformanceReport report = ExercisePerformanceReport.fromJson(json);
+    ExercisePerformanceReport performanceReport = ExercisePerformanceReport.fromJson(report);
 
     navigatorKey.currentState?.push(PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => RoutineLogReportScreen(
-        report: report,
+        report: performanceReport,
+        routineLog: Provider.of<ExerciseAndRoutineController>(context, listen: false).logWhereId(id: routineLog)!,
       ),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = Offset(0.0, 1.0);

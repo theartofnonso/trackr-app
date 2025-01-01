@@ -387,6 +387,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
               context: context,
               child: RoutineLogReportScreen(
                 report: report,
+                routineLog: log,
               ));
         }
       }
