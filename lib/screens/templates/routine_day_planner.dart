@@ -103,6 +103,12 @@ class _RoutineDayPlannerState extends State<RoutineDayPlanner> {
     _selectedDays = widget.template.scheduledDays;
   }
 
+  @override
+  void dispose() {
+    _selectedDays = [];
+    super.dispose();
+  }
+
   void _updateRoutineTemplateDays() async {
     _selectedDays.sort((a, b) => a.index.compareTo(b.index));
     final template = widget.template
