@@ -116,35 +116,40 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                   ],
                 ),
                 const SizedBox(height: 16),
-                if (exercise == null) const SizedBox(height: 20),
-                LabelDivider(
-                  label: "Choose how to log this exercise".toUpperCase(),
-                  labelColor: isDarkMode ? Colors.white : Colors.black,
-                  dividerColor: sapphireLighter,
-                  fontSize: 14,
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Text("You can log this exercise using reps only, reps and weights or duration.",
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
-                    ),
-                    const SizedBox(width: 10),
-                    OpacityButtonWidget(label: _exerciseType.name, onPressed: _navigateToExerciseTypeScreen)
-                  ],
-                ),
-                const Spacer(),
                 if (exercise == null)
-                  SizedBox(
-                    width: double.infinity,
-                    child: OpacityButtonWidget(
-                        onPressed: _createExercise,
-                        label: "Create Exercise",
-                        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-                        buttonColor: vibrantGreen),
+                  Column(
+                    children: [
+                      const SizedBox(height: 20),
+                      LabelDivider(
+                        label: "Choose how to log this exercise".toUpperCase(),
+                        labelColor: isDarkMode ? Colors.white : Colors.black,
+                        dividerColor: sapphireLighter,
+                        fontSize: 14,
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text("You can log this exercise using reps only, reps and weights or duration.",
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                          ),
+                          const SizedBox(width: 10),
+                          OpacityButtonWidget(label: _exerciseType.name, onPressed: _navigateToExerciseTypeScreen)
+                        ],
+                      ),
+                      const Spacer(),
+                      if (exercise == null)
+                        SizedBox(
+                          width: double.infinity,
+                          child: OpacityButtonWidget(
+                              onPressed: _createExercise,
+                              label: "Create Exercise",
+                              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                              buttonColor: vibrantGreen),
+                        ),
+                    ],
                   ),
               ]),
             ),
