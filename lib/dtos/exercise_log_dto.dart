@@ -40,27 +40,39 @@ class ExerciseLogDto {
     };
   }
 
-  ExerciseLogDto copyWith(
-      {String? id,
-      String? routineLogId,
-      String? superSetId,
-      String? exerciseId,
-      ExerciseDto? exercise,
-      int? minReps,
-      int? maxReps,
-      String? notes,
-      List<SetDto>? sets,
-      DateTime? createdAt}) {
+  ExerciseLogDto copyWith({
+    String? id,
+    String? routineLogId,
+    String? superSetId,
+    ExerciseDto? exercise,
+    int? minReps,
+    int? maxReps,
+    String? notes,
+    List<SetDto>? sets,
+    DateTime? createdAt,
+  }) {
     return ExerciseLogDto(
-        id: id ?? this.id,
-        routineLogId: routineLogId ?? this.routineLogId,
-        superSetId: superSetId ?? this.superSetId,
-        exercise: exercise ?? this.exercise,
-        notes: notes ?? this.notes,
-        minReps: minReps ?? this.minReps,
-        maxReps: maxReps ?? this.maxReps,
-        sets: sets ?? this.sets,
-        createdAt: createdAt ?? this.createdAt);
+      id: id ?? this.id,
+      routineLogId: routineLogId ?? this.routineLogId,
+      superSetId: superSetId ?? this.superSetId,
+
+      // If a new ExerciseDto is provided, copy it deeply.
+      // Otherwise, copy the existing ExerciseDto if it is not null.
+      exercise: exercise != null
+          ? exercise.copyWith()
+          : this.exercise.copyWith(),
+
+      minReps: minReps ?? this.minReps,
+      maxReps: maxReps ?? this.maxReps,
+      notes: notes ?? this.notes,
+
+      // Deep copy for the list of SetDto items.
+      sets: sets != null
+          ? sets.map((s) => s.copyWith()).toList()
+          : this.sets.map((s) => s.copyWith()).toList(),
+
+      createdAt: createdAt ?? this.createdAt,
+    );
   }
 
   factory ExerciseLogDto.fromJson({String? routineLogId, DateTime? createdAt, required Map<String, dynamic> json}) {

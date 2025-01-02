@@ -117,15 +117,15 @@ class RoutineTemplateDto {
       name: name ?? this.name,
       notes: notes ?? this.notes,
 
-      // Deep copy exerciseTemplates
+      // Deep copy each ExerciseLogDto.
       exerciseTemplates: exerciseTemplates != null
           ? exerciseTemplates.map((e) => e.copyWith()).toList()
           : this.exerciseTemplates.map((e) => e.copyWith()).toList(),
 
-      // Deep copy scheduledDays (DayOfWeek is typically an enum,
-      // so List.from(...) is sufficient to make a new list)
-      scheduledDays:
-          scheduledDays != null ? List<DayOfWeek>.from(scheduledDays) : List<DayOfWeek>.from(this.scheduledDays),
+      // Create a new List<DayOfWeek> to avoid referencing the original list.
+      scheduledDays: scheduledDays != null
+          ? List<DayOfWeek>.from(scheduledDays)
+          : List<DayOfWeek>.from(this.scheduledDays),
 
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,

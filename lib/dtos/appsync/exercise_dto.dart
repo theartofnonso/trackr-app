@@ -96,9 +96,12 @@ class ExerciseDto {
       id: id ?? this.id,
       name: name ?? this.name,
       primaryMuscleGroup: primaryMuscleGroup ?? this.primaryMuscleGroup,
+
+      // Create a new list for secondaryMuscleGroups to avoid referencing the original.
       secondaryMuscleGroups: secondaryMuscleGroups != null
           ? List<MuscleGroup>.from(secondaryMuscleGroups)
           : List<MuscleGroup>.from(this.secondaryMuscleGroups),
+
       type: type ?? this.type,
       owner: owner ?? this.owner,
       description: description ?? this.description,
