@@ -211,7 +211,7 @@ class _ActivityEditorScreenState extends State<ActivityEditorScreen> {
                       ),
                   ]),
                   const Spacer(),
-                  if (errorMessage != null)
+                  if (activity != null && errorMessage != null)
                     SizedBox(
                       height: 60,
                       child: InformationContainerLite(content: errorMessage, color: Colors.orange),
