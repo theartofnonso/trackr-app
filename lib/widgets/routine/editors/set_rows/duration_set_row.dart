@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/set_dtos/duration_set_dto.dart';
 
+import '../../../../enums/routine_editor_type_enums.dart';
 import '../../../../utils/dialog_utils.dart';
 import '../../../timers/routine_timer.dart';
 import '../set_check_button.dart';
@@ -11,6 +12,7 @@ class DurationSetRow extends StatelessWidget {
   final DurationSetDto setDto;
   final VoidCallback onRemoved;
   final VoidCallback onCheck;
+  final RoutineEditorMode editorType;
   final DateTime startTime;
   final void Function(Duration duration, {bool checked}) onCheckAndUpdateDuration;
   final void Function(Duration duration) onupdateDuration;
@@ -22,12 +24,8 @@ class DurationSetRow extends StatelessWidget {
     required this.onCheck,
     required this.onCheckAndUpdateDuration,
     required this.onupdateDuration,
-    required this.startTime,
+    required this.startTime, required this.editorType,
   });
-
-  void _toggleTimer() {
-    onCheckAndUpdateDuration(DateTime.now().difference(startTime), checked: true);
-  }
 
   void _selectTime({required BuildContext context}) {
     displayTimePicker(
@@ -73,9 +71,10 @@ class DurationSetRow extends StatelessWidget {
               ),
             ),
           ),
-          TableCell(
-              verticalAlignment: TableCellVerticalAlignment.middle,
-              child: SetCheckButton(setDto: setDto, onCheck: _toggleTimer))
+          if (editorType == RoutineEditorMode.log)
+            TableCell(
+                verticalAlignment: TableCellVerticalAlignment.middle,
+                child: SetCheckButton(setDto: setDto, onCheck: onCheck))
         ])
       ],
     );

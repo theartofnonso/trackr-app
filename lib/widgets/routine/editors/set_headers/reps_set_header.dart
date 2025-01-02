@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
 
-class RepsSetHeader extends StatelessWidget {
+import '../../../../enums/routine_editor_type_enums.dart';
 
-  const RepsSetHeader({super.key});
+class RepsSetHeader extends StatelessWidget {
+  final RoutineEditorMode editorType;
+
+  const RepsSetHeader({super.key, required this.editorType});
 
   @override
   Widget build(BuildContext context) {
     return Table(
-      columnWidths:  <int, TableColumnWidth>{
-        0: const FixedColumnWidth(50),
-        1: const FlexColumnWidth(1),
-        2: const FixedColumnWidth(60),
-      },
+      columnWidths: editorType == RoutineEditorMode.edit
+          ? <int, TableColumnWidth>{
+              0: const FixedColumnWidth(50),
+              1: const FlexColumnWidth(1),
+            }
+          : <int, TableColumnWidth>{
+              0: const FixedColumnWidth(50),
+              1: const FlexColumnWidth(1),
+              2: const FixedColumnWidth(60),
+            },
       children: <TableRow>[
         TableRow(children: [
           const TableCell(
@@ -20,10 +28,9 @@ class RepsSetHeader extends StatelessWidget {
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Text("REPS",
-                style: Theme.of(context).textTheme.bodySmall,
-                textAlign: TextAlign.center),
+            child: Text("REPS", style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center),
           ),
+          if (editorType == RoutineEditorMode.log)
             const TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
                 child: Icon(

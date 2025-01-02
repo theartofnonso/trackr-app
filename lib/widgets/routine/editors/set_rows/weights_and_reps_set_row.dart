@@ -3,6 +3,7 @@ import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/double_textfield.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/int_textfield.dart';
 
+import '../../../../enums/routine_editor_type_enums.dart';
 import '../set_check_button.dart';
 import '../set_delete_button.dart';
 
@@ -10,6 +11,7 @@ class WeightsAndRepsSetRow extends StatelessWidget {
   final WeightAndRepsSetDto setDto;
   final VoidCallback onRemoved;
   final VoidCallback onCheck;
+  final RoutineEditorMode editorType;
   final void Function(int value) onChangedReps;
   final void Function(double value) onChangedWeight;
   final void Function() onTapWeightEditor;
@@ -25,7 +27,7 @@ class WeightsAndRepsSetRow extends StatelessWidget {
     required this.onChangedWeight,
     required this.onTapWeightEditor,
     required this.onTapRepsEditor,
-    required this.controllers,
+    required this.controllers, required this.editorType,
   });
 
   @override
@@ -39,7 +41,13 @@ class WeightsAndRepsSetRow extends StatelessWidget {
     return Table(
       border:
           TableBorder.all(color: isDarkMode ? Colors.white10 : Colors.black38, borderRadius: BorderRadius.circular(5)),
-      columnWidths: <int, TableColumnWidth>{
+      columnWidths: editorType == RoutineEditorMode.edit
+          ? <int, TableColumnWidth>{
+        0: const FixedColumnWidth(50),
+        1: const FlexColumnWidth(1),
+        2: const FlexColumnWidth(1),
+      }
+          : <int, TableColumnWidth>{
         0: const FixedColumnWidth(50),
         1: const FlexColumnWidth(1),
         2: const FlexColumnWidth(1),
@@ -68,9 +76,10 @@ class WeightsAndRepsSetRow extends StatelessWidget {
               controller: controllers.$2,
             ),
           ),
-          TableCell(
-              verticalAlignment: TableCellVerticalAlignment.middle,
-              child: SetCheckButton(setDto: setDto, onCheck: onCheck))
+          if (editorType == RoutineEditorMode.log)
+            TableCell(
+                verticalAlignment: TableCellVerticalAlignment.middle,
+                child: SetCheckButton(setDto: setDto, onCheck: onCheck))
         ])
       ],
     );

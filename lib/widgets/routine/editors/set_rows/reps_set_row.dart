@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/set_dtos/reps_dto.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/int_textfield.dart';
 
+import '../../../../enums/routine_editor_type_enums.dart';
 import '../set_check_button.dart';
 import '../set_delete_button.dart';
 
@@ -9,6 +10,7 @@ class RepsSetRow extends StatelessWidget {
   final RepsSetDto setDto;
   final VoidCallback onRemoved;
   final VoidCallback onCheck;
+  final RoutineEditorMode editorType;
   final void Function() onTapRepsEditor;
   final TextEditingController controller;
   final void Function(int reps) onChangedReps;
@@ -20,7 +22,7 @@ class RepsSetRow extends StatelessWidget {
     required this.onCheck,
     required this.controller,
     required this.onChangedReps,
-    required this.onTapRepsEditor,
+    required this.onTapRepsEditor, required this.editorType,
   });
 
   @override
@@ -52,9 +54,10 @@ class RepsSetRow extends StatelessWidget {
               controller: controller,
             ),
           ),
-          TableCell(
-              verticalAlignment: TableCellVerticalAlignment.middle,
-              child: SetCheckButton(setDto: setDto, onCheck: onCheck))
+          if (editorType == RoutineEditorMode.log)
+            TableCell(
+                verticalAlignment: TableCellVerticalAlignment.middle,
+                child: SetCheckButton(setDto: setDto, onCheck: onCheck))
         ])
       ],
     );

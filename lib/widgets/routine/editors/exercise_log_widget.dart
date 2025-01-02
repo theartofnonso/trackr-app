@@ -538,11 +538,16 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 }
               : switch (exerciseType) {
                   ExerciseType.weights => WeightAndRepsSetHeader(
+                      editorType: widget.editorType,
                       firstLabel: weightLabel().toUpperCase(),
                       secondLabel: 'REPS',
                     ),
-                  ExerciseType.bodyWeight => const RepsSetHeader(),
-                  ExerciseType.duration => const DurationSetHeader()
+                  ExerciseType.bodyWeight => RepsSetHeader(
+                      editorType: widget.editorType,
+                    ),
+                  ExerciseType.duration => DurationSetHeader(
+                      editorType: widget.editorType,
+                    )
                 },
           if (sets.isNotEmpty && !_showPreviousSets)
             switch (exerciseType) {
@@ -555,6 +560,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   controllers: _weightAndRepsControllers,
                   onTapWeightEditor: _onTapWeightEditor,
                   onTapRepsEditor: _onTapRepsEditor,
+                  editorType: widget.editorType,
                 ),
               ExerciseType.bodyWeight => _RepsSetListView(
                   sets: sets.map((set) => set as RepsSetDto).toList(),
@@ -564,6 +570,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   controllers: _repsControllers,
                   onTapWeightEditor: _onTapWeightEditor,
                   onTapRepsEditor: _onTapRepsEditor,
+                  editorType: widget.editorType,
                 ),
               ExerciseType.duration => _DurationSetListView(
                   sets: sets.map((set) => set as DurationSetDto).toList(),
@@ -574,10 +581,11 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   onTapRepsEditor: _onTapRepsEditor,
                   checkAndUpdateDuration: _checkAndUpdateDuration,
                   updateDuration: _updateDuration,
+                  editorType: widget.editorType,
                 ),
             },
           if (_showPreviousSets) SetsListview(type: exerciseType, sets: sets),
-          if (sets.isNotEmpty)
+          if (sets.isNotEmpty && widget.editorType == RoutineEditorMode.log)
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -607,9 +615,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   padding: const EdgeInsets.symmetric(horizontal: 12.0),
                   child: Text(rpeTrendSummary,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.w400,
-                          height: 1.8,
-                          color: isDarkMode ? Colors.white70 : Colors.black)),
+                          fontWeight: FontWeight.w400, height: 1.8, color: isDarkMode ? Colors.white70 : Colors.black)),
                 ),
               ],
             ),
@@ -657,6 +663,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 }
 
 class _WeightAndRepsSetListView extends StatelessWidget {
+  final RoutineEditorMode editorType;
   final List<WeightAndRepsSetDto> sets;
   final List<(TextEditingController, TextEditingController)> controllers;
   final void Function({required int index}) removeSet;
@@ -674,12 +681,14 @@ class _WeightAndRepsSetListView extends StatelessWidget {
       required this.updateReps,
       required this.updateWeight,
       required this.onTapWeightEditor,
-      required this.onTapRepsEditor});
+      required this.onTapRepsEditor,
+      required this.editorType});
 
   @override
   Widget build(BuildContext context) {
     final children = sets.mapIndexed((index, setDto) {
       return WeightsAndRepsSetRow(
+        editorType: editorType,
         setDto: setDto,
         onCheck: () => updateSetCheck(index: index, setDto: setDto),
         onRemoved: () => removeSet(index: index),
@@ -701,6 +710,7 @@ class _WeightAndRepsSetListView extends StatelessWidget {
 }
 
 class _RepsSetListView extends StatelessWidget {
+  final RoutineEditorMode editorType;
   final List<RepsSetDto> sets;
   final List<TextEditingController> controllers;
   final void Function({required int index}) removeSet;
@@ -716,12 +726,14 @@ class _RepsSetListView extends StatelessWidget {
       required this.removeSet,
       required this.updateReps,
       required this.onTapWeightEditor,
-      required this.onTapRepsEditor});
+      required this.onTapRepsEditor,
+      required this.editorType});
 
   @override
   Widget build(BuildContext context) {
     final children = sets.mapIndexed((index, setDto) {
       return RepsSetRow(
+        editorType: editorType,
         setDto: setDto,
         onCheck: () => updateSetCheck(index: index, setDto: setDto),
         onRemoved: () => removeSet(index: index),
@@ -741,6 +753,7 @@ class _RepsSetListView extends StatelessWidget {
 }
 
 class _DurationSetListView extends StatelessWidget {
+  final RoutineEditorMode editorType;
   final List<DurationSetDto> sets;
   final List<DateTime> controllers;
   final void Function({required int index}) removeSet;
@@ -759,12 +772,14 @@ class _DurationSetListView extends StatelessWidget {
       required this.checkAndUpdateDuration,
       required this.updateDuration,
       required this.onTapWeightEditor,
-      required this.onTapRepsEditor});
+      required this.onTapRepsEditor,
+      required this.editorType});
 
   @override
   Widget build(BuildContext context) {
     final children = sets.mapIndexed((index, setDto) {
       return DurationSetRow(
+        editorType: editorType,
         setDto: setDto,
         onCheck: () => updateSetCheck(index: index, setDto: setDto),
         onRemoved: () => removeSet(index: index),
