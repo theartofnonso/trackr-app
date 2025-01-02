@@ -163,6 +163,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                 child: const FaIcon(FontAwesomeIcons.penToSquare))
             : null,
         body: Container(
+          height: double.infinity,
           decoration: BoxDecoration(
             gradient: themeGradient(context: context),
           ),
