@@ -513,7 +513,8 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     Navigator.of(context).pop();
     final log = _log;
     if (log != null) {
-      final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.edit);
+      final copyOfLog = log.copyWith();
+      final arguments = RoutineLogArguments(log: copyOfLog, editorMode: RoutineEditorMode.edit);
       final updatedLog = await navigateAndEditLog(context: context, arguments: arguments);
       if (updatedLog != null) {
         setState(() {

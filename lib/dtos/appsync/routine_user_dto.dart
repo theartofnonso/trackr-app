@@ -12,11 +12,11 @@ class RoutineUserDto {
 
   RoutineUserDto(
       {required this.id,
-        required this.name,
-        required this.cognitoUserId,
-        required this.email,
-        required this.weight,
-        required this.owner});
+      required this.name,
+      required this.cognitoUserId,
+      required this.email,
+      required this.weight,
+      required this.owner});
 
   factory RoutineUserDto.toDto(RoutineUser user) {
     return RoutineUserDto.fromJson(user);

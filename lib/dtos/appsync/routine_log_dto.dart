@@ -147,7 +147,11 @@ class RoutineLogDto extends Log {
       summary: summary ?? this.summary,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
-      exerciseLogs: exerciseLogs ?? this.exerciseLogs,
+      // Deep copy the list. For any new list passed in, we clone its items;
+      // otherwise, we clone the existing list if it's not null.
+      exerciseLogs: exerciseLogs != null
+          ? exerciseLogs.map((e) => e.copyWith()).toList()
+          : this.exerciseLogs.map((e) => e.copyWith()).toList(),
       owner: owner ?? this.owner,
       sleepFrom: sleepFrom ?? this.sleepFrom,
       sleepTo: sleepTo ?? this.sleepTo,

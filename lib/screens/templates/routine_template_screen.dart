@@ -79,7 +79,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   void _navigateToRoutineTemplateEditor() async {
     final template = _template;
     if (template != null) {
-      final arguments = RoutineTemplateArguments(template: template);
+      final copyOfTemplate = template.copyWith();
+      final arguments = RoutineTemplateArguments(template: copyOfTemplate);
       final updatedTemplate = await navigateToRoutineTemplateEditor(context: context, arguments: arguments);
       if (updatedTemplate != null) {
         setState(() {
@@ -456,8 +457,10 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   }
 
   void _updateTemplateSchedule({required RoutineTemplateDto template}) async {
+    final copyOfTemplate = template.copyWith();
     final updatedTemplate =
-        await displayBottomSheet(context: context, child: RoutineDayPlanner(template: template)) as RoutineTemplateDto?;
+        await displayBottomSheet(context: context, child: RoutineDayPlanner(template: copyOfTemplate))
+            as RoutineTemplateDto?;
 
     if (updatedTemplate != null) {
       setState(() {

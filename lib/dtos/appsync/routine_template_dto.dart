@@ -100,30 +100,39 @@ class RoutineTemplateDto {
         updatedAt: DateTime.now());
   }
 
-  RoutineTemplateDto copyWith(
-      {String? id,
-      String? name,
-      String? notes,
-      DateTime? startTime,
-      DateTime? endTime,
-      List<ExerciseLogDto>? exerciseTemplates,
-      List<DayOfWeek>? scheduledDays,
-      DateTime? createdAt,
-      DateTime? updatedAt,
-      DateTime? scheduledDate,
-      String? owner,
-      RoutineScheduleType? scheduleType}) {
+  RoutineTemplateDto copyWith({
+    String? id,
+    String? name,
+    String? notes,
+    List<ExerciseLogDto>? exerciseTemplates,
+    List<DayOfWeek>? scheduledDays,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    DateTime? scheduledDate,
+    String? owner,
+    RoutineScheduleType? scheduleType,
+  }) {
     return RoutineTemplateDto(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        notes: notes ?? this.notes,
-        exerciseTemplates: exerciseTemplates ?? this.exerciseTemplates,
-        scheduledDays: scheduledDays ?? this.scheduledDays,
-        createdAt: createdAt ?? this.createdAt,
-        updatedAt: updatedAt ?? this.updatedAt,
-        scheduledDate: scheduledDate ?? this.scheduledDate,
-        scheduleType: scheduleType ?? this.scheduleType,
-        owner: owner ?? this.owner);
+      id: id ?? this.id,
+      name: name ?? this.name,
+      notes: notes ?? this.notes,
+
+      // Deep copy exerciseTemplates
+      exerciseTemplates: exerciseTemplates != null
+          ? exerciseTemplates.map((e) => e.copyWith()).toList()
+          : this.exerciseTemplates.map((e) => e.copyWith()).toList(),
+
+      // Deep copy scheduledDays (DayOfWeek is typically an enum,
+      // so List.from(...) is sufficient to make a new list)
+      scheduledDays:
+          scheduledDays != null ? List<DayOfWeek>.from(scheduledDays) : List<DayOfWeek>.from(this.scheduledDays),
+
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      scheduledDate: scheduledDate ?? this.scheduledDate,
+      scheduleType: scheduleType ?? this.scheduleType,
+      owner: owner ?? this.owner,
+    );
   }
 
   @override
