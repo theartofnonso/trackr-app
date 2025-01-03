@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
@@ -194,11 +196,11 @@ class _HomeScreenState extends State<HomeScreen> {
   void _runSetup() async {
     if (SharedPrefs().firstLaunch) {
       _cacheUser();
-      _loadAppData();
-    } else {
-      Posthog().identify(userId: SharedPrefs().userId);
-      AnalyticsController.loginAnalytics(isFirstLaunch: SharedPrefs().firstLaunch);
-      _loadAppData();
+    }
+    _loadAppData();
+    Posthog().identify(userId: SharedPrefs().userId);
+    if (Platform.isIOS) {
+      FlutterLocalNotificationsPlugin().cancel(999); // Cancel any pending workout notification
     }
   }
 

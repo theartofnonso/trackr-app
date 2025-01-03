@@ -72,7 +72,7 @@ class DurationSetRow extends StatelessWidget {
                 child: Center(
                   child: editorType == RoutineEditorMode.edit || setDto.checked
                       ? Text(setDto.duration.hmsDigital(),
-                          style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600))
+                          style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600))
                       : RoutineTimer(
                           startTime: startTime,
                           digital: true,

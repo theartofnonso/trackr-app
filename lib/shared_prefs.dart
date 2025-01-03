@@ -24,15 +24,6 @@ class SharedPrefs {
     await _sharedPrefs?.reload();
   }
 
-  /// RoutineLog that is currently running
-  final String cachedRoutineLogKey = "cached_routine_log_key";
-
-  String get cachedRoutineLog => _sharedPrefs?.getString(cachedRoutineLogKey) ?? "";
-
-  set cachedRoutineLog(String value) {
-    _sharedPrefs?.setString(cachedRoutineLogKey, value);
-  }
-
   /// Weight Unit Type
   final String _weightUnitKey = "weight_unit_type_key";
 

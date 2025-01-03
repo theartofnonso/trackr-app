@@ -437,6 +437,17 @@ class _OverviewScreenState extends State<OverviewScreen> {
                 _logEmptyRoutine();
               },
             ),
+            // ListTile(
+            //   contentPadding: EdgeInsets.zero,
+            //   leading: const FaIcon(FontAwesomeIcons.link, size: 16),
+            //   horizontalTitleGap: 6,
+            //   title: Text("Log new guided session", style: Theme.of(context).textTheme.bodyLarge),
+            //   subtitle: Text("train with your workout video"),
+            //   onTap: () {
+            //     Navigator.of(context).pop();
+            //     _logEmptyRoutine();
+            //   },
+            // ),
             const SizedBox(
               height: 10,
             ),

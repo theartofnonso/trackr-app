@@ -12,7 +12,6 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
-import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/routine_editors_utils.dart';
 import 'package:tracker_app/widgets/routine/editors/exercise_log_widget_lite.dart';
@@ -207,16 +206,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     }
   }
 
-  void _cleanUpSession() {
-    SharedPrefs().remove(key: SharedPrefs().cachedRoutineLogKey);
-    if (Platform.isIOS) {
-      FlutterLocalNotificationsPlugin().cancel(999);
-    }
-  }
-
   void _navigateBack({RoutineLogDto? routineLog}) async {
     if (widget.mode == RoutineEditorMode.log) {
-      _cleanUpSession();
       final log = routineLog;
       if (log != null) {
         if (Platform.isIOS) {
@@ -473,6 +464,9 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _onDisposeCallback();
+    if (Platform.isIOS) {
+      FlutterLocalNotificationsPlugin().cancel(999);
+    }
     super.dispose();
   }
 
