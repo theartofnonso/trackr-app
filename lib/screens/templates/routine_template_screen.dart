@@ -327,37 +327,36 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                               buttonColor: getImprovementColor(improved: improved, difference: difference),
                             )
                           ],
-                        )
-                      ],
-                    ),
-                  Text(
-                      "Here’s a summary of your ${template.name} training intensity over the last ${allLogsForTemplate.length} sessions.",
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        const SizedBox(height: 16),
-                        LineChartWidget(
-                          chartPoints: volumeChartPoints,
-                          periods: [],
-                          unit: ChartUnit.weight,
+                        ),
+                        Text(
+                            "Here’s a summary of your ${template.name} training intensity over the last ${allLogsForTemplate.length} sessions.",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              const SizedBox(height: 16),
+                              LineChartWidget(
+                                chartPoints: volumeChartPoints,
+                                periods: [],
+                                unit: ChartUnit.weight,
+                              ),
+                            ],
+                          ),
+                        ),
+                        InformationContainer(
+                          leadingIcon: FaIcon(FontAwesomeIcons.weightHanging),
+                          title: "Training Volume",
+                          color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
+                          description:
+                          "Volume is the total amount of work done, often calculated as sets × reps × weight. Higher volume increases muscle size (hypertrophy).",
                         ),
                       ],
                     ),
-                  ),
-                  InformationContainer(
-                    leadingIcon: FaIcon(FontAwesomeIcons.weightHanging),
-                    title: "Training Volume",
-                    color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
-                    description:
-                        "Volume is the total amount of work done, often calculated as sets × reps × weight. Higher volume increases muscle size (hypertrophy).",
-                  ),
-                  const SizedBox(height: 1),
                   ExerciseLogListView(
                     exerciseLogs: exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
                   ),

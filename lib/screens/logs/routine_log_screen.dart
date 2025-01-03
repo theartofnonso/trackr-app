@@ -117,13 +117,13 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
           exerciseLog: exerciseLog);
     }).expand((pbs) => pbs);
 
-    final sleepFrom = log.sleepFrom;
-    final sleepTo = log.sleepTo;
+    final sleepFrom = updatedLog.sleepFrom;
+    final sleepTo = updatedLog.sleepTo;
 
     Duration? sleepDuration = sleepFrom != null && sleepTo != null ? sleepTo.difference(sleepFrom) : null;
 
     final logs = exerciseAndRoutineController
-        .whereLogsWithTemplateId(templateId: log.templateId)
+        .whereLogsWithTemplateId(templateId: updatedLog.templateId)
         .map((log) => routineWithLoggedExercises(log: log))
         .toList();
 
@@ -152,7 +152,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             actions: updatedLog.owner == SharedPrefs().userId && widget.isEditable
                 ? [
                     IconButton(
-                        onPressed: () => _onShareLog(log: log),
+                        onPressed: () => _onShareLog(log: updatedLog),
                         icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, size: 18)),
                   ]
                 : []),
@@ -182,7 +182,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                         size: 14,
                       ),
                       const SizedBox(width: 6),
-                      Text(log.createdAt.formattedDayMonthTime(), style: Theme.of(context).textTheme.bodySmall),
+                      Text(updatedLog.createdAt.formattedDayMonthTime(), style: Theme.of(context).textTheme.bodySmall),
                     ],
                   )),
                   if (updatedLog.notes.isNotEmpty)
@@ -219,7 +219,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                                   "The number of rounds you performed for each exercise. A “set” consists of a group of repetitions (reps)."),
                         ),
                         _StatisticWidget(
-                          title: log.duration().hmsDigital(),
+                          title: updatedLog.duration().hmsDigital(),
                           subtitle: "Duration",
                           icon: FontAwesomeIcons.solidClock,
                           information: _StatisticsInformation(
@@ -275,10 +275,10 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                       children: [
                         MuscleGroupSplitChart(
                             title: "Muscle Groups Split",
-                            description: "Here's a breakdown of the muscle groups in your ${log.name} workout session.",
+                            description: "Here's a breakdown of the muscle groups in your ${updatedLog.name} workout session.",
                             muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
                             minimized: false),
-                        if (log.templateId.isNotEmpty)
+                        if (updatedLog.templateId.isNotEmpty && updatedLog.owner == SharedPrefs().userId)
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
