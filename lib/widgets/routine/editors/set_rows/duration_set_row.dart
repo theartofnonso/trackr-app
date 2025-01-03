@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/set_dtos/duration_set_dto.dart';
+import 'package:tracker_app/extensions/duration_extension.dart';
 
 import '../../../../enums/routine_editor_type_enums.dart';
 import '../../../../utils/dialog_utils.dart';
@@ -24,7 +26,8 @@ class DurationSetRow extends StatelessWidget {
     required this.onCheck,
     required this.onCheckAndUpdateDuration,
     required this.onupdateDuration,
-    required this.startTime, required this.editorType,
+    required this.startTime,
+    required this.editorType,
   });
 
   void _selectTime({required BuildContext context}) {
@@ -36,6 +39,10 @@ class DurationSetRow extends StatelessWidget {
           Navigator.of(context).pop();
           onupdateDuration(duration);
         });
+  }
+
+  void _toggleTimer() {
+    onCheckAndUpdateDuration(DateTime.now().difference(startTime), checked: true);
   }
 
   @override
@@ -63,10 +70,13 @@ class DurationSetRow extends StatelessWidget {
               child: SizedBox(
                 height: 50,
                 child: Center(
-                  child: RoutineTimer(
-                      startTime: startTime,
-                      digital: true,
-                      onChangedDuration: (Duration duration) => onCheckAndUpdateDuration(duration)),
+                  child: editorType == RoutineEditorMode.edit || setDto.checked
+                      ? Text(setDto.duration.hmsDigital(),
+                          style: GoogleFonts.ubuntu(color: Colors.white, fontWeight: FontWeight.w600))
+                      : RoutineTimer(
+                          startTime: startTime,
+                          digital: true,
+                          onChangedDuration: (Duration duration) => onCheckAndUpdateDuration(duration)),
                 ),
               ),
             ),
@@ -74,7 +84,7 @@ class DurationSetRow extends StatelessWidget {
           if (editorType == RoutineEditorMode.log)
             TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
-                child: SetCheckButton(setDto: setDto, onCheck: onCheck))
+                child: SetCheckButton(setDto: setDto, onCheck: _toggleTimer))
         ])
       ],
     );
