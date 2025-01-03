@@ -51,6 +51,7 @@ import '../../widgets/routine/preview/routine_log_widget.dart';
 import '../AI/monthly_training_report_screen.dart';
 import '../AI/trkr_coach_chat_screen.dart';
 import '../editors/routine_log_editor_screen.dart';
+import '../editors/workout_video_generator_screen.dart';
 import '../logs/routine_log_screen.dart';
 
 class OverviewScreen extends StatefulWidget {
@@ -445,7 +446,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               subtitle: Text("train with your workout video"),
               onTap: () {
                 Navigator.of(context).pop();
-                _logEmptyRoutine();
+                navigateWithSlideTransition(context: context, child: WorkoutVideoGeneratorScreen());
               },
             ),
             const SizedBox(
