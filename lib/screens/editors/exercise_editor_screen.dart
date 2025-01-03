@@ -139,17 +139,17 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                           OpacityButtonWidget(label: _exerciseType.name, onPressed: _navigateToExerciseTypeScreen)
                         ],
                       ),
-                      const Spacer(),
-                      if (exercise == null)
-                        SizedBox(
-                          width: double.infinity,
-                          child: OpacityButtonWidget(
-                              onPressed: _createExercise,
-                              label: "Create Exercise",
-                              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-                              buttonColor: vibrantGreen),
-                        ),
                     ],
+                  ),
+                const Spacer(),
+                if (exercise == null)
+                  SizedBox(
+                    width: double.infinity,
+                    child: OpacityButtonWidget(
+                        onPressed: _createExercise,
+                        label: "Create Exercise",
+                        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                        buttonColor: vibrantGreen),
                   ),
               ]),
             ),
