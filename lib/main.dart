@@ -193,7 +193,7 @@ final _router = GoRouter(
       path: RoutineLogEditorScreen.routeName,
       builder: (context, state) {
         final args = state.extra as RoutineLogArguments;
-        return RoutineLogEditorScreen(log: args.log, mode: args.editorMode);
+        return RoutineLogEditorScreen(log: args.log, mode: args.editorMode, workoutVideoUrl: args.workoutVideo,);
       },
     ),
     GoRoute(

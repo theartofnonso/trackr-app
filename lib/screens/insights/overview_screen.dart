@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
@@ -50,8 +49,7 @@ import '../../widgets/routine/preview/activity_log_widget.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
 import '../AI/monthly_training_report_screen.dart';
 import '../AI/trkr_coach_chat_screen.dart';
-import '../editors/routine_log_editor_screen.dart';
-import '../logs/routine_log_screen.dart';
+import '../editors/workout_video_generator_screen.dart';
 
 class OverviewScreen extends StatefulWidget {
   final ScrollController scrollController;
@@ -154,7 +152,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const SizedBox(height: 12),
+                              const SizedBox(height: 20),
                               TRKRCoachButton(
                                   label: "Review ${widget.dateTimeRange.start.formattedFullMonth()} insights.",
                                   onTap: () => _generateMonthlyInsightsReport(datetime: widget.dateTimeRange.start)),
@@ -185,27 +183,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
             )),
       ),
     );
-  }
-
-  void _logEmptyRoutine() async {
-    final log = RoutineLogDto(
-        id: "",
-        templateId: "",
-        name: "${timeOfDay()} Session",
-        exerciseLogs: [],
-        notes: "",
-        startTime: DateTime.now(),
-        endTime: DateTime.now(),
-        owner: "",
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now());
-    final recentLog = await navigateWithSlideTransition(
-        context: context, child: RoutineLogEditorScreen(log: log, mode: RoutineEditorMode.log));
-    if (recentLog != null) {
-      if (mounted) {
-        context.push(RoutineLogScreen.routeName, extra: {"log": recentLog, "showSummary": true, "isEditable": true});
-      }
-    }
   }
 
   void _showLoadingScreen() {
@@ -434,20 +411,23 @@ class _OverviewScreenState extends State<OverviewScreen> {
               title: Text("Log new session", style: Theme.of(context).textTheme.bodyLarge),
               onTap: () {
                 Navigator.of(context).pop();
-                _logEmptyRoutine();
+                logEmptyRoutine(context: context);
               },
             ),
-            // ListTile(
-            //   contentPadding: EdgeInsets.zero,
-            //   leading: const FaIcon(FontAwesomeIcons.link, size: 16),
-            //   horizontalTitleGap: 6,
-            //   title: Text("Log new guided session", style: Theme.of(context).textTheme.bodyLarge),
-            //   subtitle: Text("train with your workout video"),
-            //   onTap: () {
-            //     Navigator.of(context).pop();
-            //     _logEmptyRoutine();
-            //   },
-            // ),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(FontAwesomeIcons.link, size: 16),
+              horizontalTitleGap: 6,
+              title: Text("Log new guided session", style: Theme.of(context).textTheme.bodyLarge),
+              subtitle: Text("train with your workout video"),
+              onTap: () async {
+                Navigator.of(context).pop();
+                final workoutVideoUrl = await navigateWithSlideTransition(context: context, child: WorkoutVideoGeneratorScreen());
+                if(mounted) {
+                  logEmptyRoutine(context: context, workoutVideoUrl: workoutVideoUrl);
+                }
+              },
+            ),
             const SizedBox(
               height: 10,
             ),
