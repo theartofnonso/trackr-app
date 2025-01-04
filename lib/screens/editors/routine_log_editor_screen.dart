@@ -332,16 +332,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                             child: YoutubePlayer(
                               bottomActions: [
                                 IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        _muted = !_muted;
-                                        if (_muted) {
-                                          _videoController.unMute();
-                                        } else {
-                                          _videoController.mute();
-                                        }
-                                      });
-                                    },
+                                    onPressed: _toggleVolume,
                                     icon: FaIcon(_muted ? FontAwesomeIcons.volumeHigh : FontAwesomeIcons.volumeXmark,
                                         size: 16)),
                               ],
@@ -454,6 +445,17 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                 ],
               ),
             )));
+  }
+
+  void _toggleVolume() {
+    setState(() {
+      _muted = !_muted;
+      if (_muted) {
+        _videoController.unMute();
+      } else {
+        _videoController.mute();
+      }
+    });
   }
 
   void _showWeightCalculator() {
