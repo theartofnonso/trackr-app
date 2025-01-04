@@ -152,7 +152,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const SizedBox(height: 12),
+                              const SizedBox(height: 20),
                               TRKRCoachButton(
                                   label: "Review ${widget.dateTimeRange.start.formattedFullMonth()} insights.",
                                   onTap: () => _generateMonthlyInsightsReport(datetime: widget.dateTimeRange.start)),
