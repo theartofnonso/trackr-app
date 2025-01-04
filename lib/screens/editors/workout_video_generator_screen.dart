@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
-import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 import '../../utils/general_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
@@ -19,8 +18,6 @@ class WorkoutVideoGeneratorScreen extends StatefulWidget {
 }
 
 class _WorkoutVideoGeneratorScreenState extends State<WorkoutVideoGeneratorScreen> {
-  final yt = YoutubeExplode();
-
   late TextEditingController _textEditingController;
 
   @override
@@ -135,7 +132,6 @@ class _WorkoutVideoGeneratorScreenState extends State<WorkoutVideoGeneratorScree
 
   @override
   void dispose() {
-    yt.close();
     super.dispose();
   }
 }
