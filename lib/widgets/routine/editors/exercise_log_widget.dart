@@ -265,7 +265,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       final repsController = TextEditingController(text: set.reps.toString());
       controllers.add((weightController, repsController));
     }
-    _weightAndRepsControllers.addAll(controllers);
+    _weightAndRepsControllers = controllers;
   }
 
   void _loadRepsControllers({required List<SetDto> sets}) {
@@ -274,7 +274,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       final repsController = TextEditingController(text: (set as RepsSetDto).reps.toString());
       controllers.add(repsController);
     }
-    _repsControllers.addAll(controllers);
+    _repsControllers = controllers;
   }
 
   void _loadDurationControllers({required List<SetDto> sets}) {
@@ -284,7 +284,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       final startTime = DateTime.now().subtract(duration);
       controllers.add(startTime);
     }
-    _durationControllers.addAll(controllers);
+    _durationControllers = controllers;
   }
 
   void _onTapWeightEditor({required SetDto setDto}) {
