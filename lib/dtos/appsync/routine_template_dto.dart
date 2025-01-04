@@ -55,7 +55,7 @@ class RoutineTemplateDto {
     final name = json["name"] ?? "";
     final notes = json["notes"] ?? "";
     final exerciseTemplatesInJson = json["exercises"] as List<dynamic>;
-    final workoutVideoUrl = json["workoutVideoUrl"];
+    final workoutVideoUrl = (json["workoutVideoUrl"] as String?) ?? "";
     List<ExerciseLogDto> exerciseTemplates = [];
     if (exerciseTemplatesInJson.isNotEmpty && exerciseTemplatesInJson.first is String) {
       exerciseTemplates = exerciseTemplatesInJson
