@@ -16,7 +16,7 @@ class RoutineTemplateDto {
   final List<DayOfWeek> scheduledDays;
   final DateTime? scheduledDate;
   final String owner;
-  final String? workoutVideoUrl;
+  final String workoutVideoUrl;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -30,7 +30,7 @@ class RoutineTemplateDto {
       required this.updatedAt,
       this.scheduledDate,
       required this.owner,
-      this.workoutVideoUrl,
+      this.workoutVideoUrl = "",
       this.scheduleType = RoutineScheduleType.none});
 
   Map<String, Object> toJson() {
@@ -40,7 +40,7 @@ class RoutineTemplateDto {
       'notes': notes,
       'exercises': exerciseTemplates.map((exercise) => exercise.toJson()).toList(),
       'days': scheduledDays.map((dayOfWeek) => dayOfWeek.day).toList(),
-      'workoutVideoUrl': workoutVideoUrl ?? "",
+      'workoutVideoUrl': workoutVideoUrl,
       "scheduledDate": scheduledDate?.toIso8601String() ?? "",
       "scheduleType": scheduleType.name,
     };

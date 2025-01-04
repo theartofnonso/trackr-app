@@ -235,7 +235,7 @@ IconData getImprovementIcon({required bool improved, required num difference}) {
   return icon;
 }
 
-void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) async {
+void logEmptyRoutine({required BuildContext context, String workoutVideoUrl = ""}) async {
   final log = RoutineLogDto(
       id: "",
       templateId: "",

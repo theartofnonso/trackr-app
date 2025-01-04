@@ -42,9 +42,9 @@ class RoutineLogEditorScreen extends StatefulWidget {
 
   final RoutineLogDto log;
   final RoutineEditorMode mode;
-  final String? workoutVideoUrl;
+  final String workoutVideoUrl;
 
-  const RoutineLogEditorScreen({super.key, required this.log, required this.mode, this.workoutVideoUrl});
+  const RoutineLogEditorScreen({super.key, required this.log, required this.mode, this.workoutVideoUrl = ""});
 
   @override
   State<RoutineLogEditorScreen> createState() => _RoutineLogEditorScreenState();
@@ -323,7 +323,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
               child: Column(
                 spacing: 8,
                 children: [
-                  if (workoutVideoUrl != null)
+                  if (workoutVideoUrl.isNotEmpty)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 10.0),
                       child: YoutubePlayer(
