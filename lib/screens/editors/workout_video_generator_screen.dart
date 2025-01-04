@@ -10,9 +10,9 @@ import '../../utils/general_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 
 class WorkoutVideoGeneratorScreen extends StatefulWidget {
-  final String? workoutVideoUrl;
+  final String workoutVideoUrl;
 
-  const WorkoutVideoGeneratorScreen({super.key, this.workoutVideoUrl});
+  const WorkoutVideoGeneratorScreen({super.key, this.workoutVideoUrl = ""});
 
   @override
   State<WorkoutVideoGeneratorScreen> createState() => _WorkoutVideoGeneratorScreenState();
@@ -75,11 +75,11 @@ class _WorkoutVideoGeneratorScreenState extends State<WorkoutVideoGeneratorScree
                     height: 45,
                     child: OpacityButtonWidget(
                         onPressed: _generate,
-                        label: widget.workoutVideoUrl != null ? "Update guided session" : "Create guided session",
+                        label: widget.workoutVideoUrl.isNotEmpty ? "Update guided session" : "Create guided session",
                         buttonColor: vibrantGreen,
                         padding: const EdgeInsets.all(10.0)),
                   ),
-                  if (widget.workoutVideoUrl != null)
+                  if (widget.workoutVideoUrl.isNotEmpty)
                     SizedBox(
                       width: double.infinity,
                       height: 45,
