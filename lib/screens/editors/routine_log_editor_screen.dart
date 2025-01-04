@@ -569,7 +569,7 @@ class _RoutineLogOverview extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
         child: Table(
           border: TableBorder(
-              verticalInside: BorderSide(color: isDarkMode ? Colors.white70 : Colors.grey.shade200, width: 1)),
+              verticalInside: BorderSide(color: isDarkMode ? Colors.white70 : Colors.grey.shade200, width: 0.5)),
           columnWidths: const <int, TableColumnWidth>{
             0: FlexColumnWidth(1),
             1: FlexColumnWidth(1),
