@@ -10,7 +10,6 @@ import '../../utils/general_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 
 class WorkoutVideoGeneratorScreen extends StatefulWidget {
-
   final String? workoutVideoUrl;
 
   const WorkoutVideoGeneratorScreen({super.key, this.workoutVideoUrl});
@@ -55,7 +54,7 @@ class _WorkoutVideoGeneratorScreenState extends State<WorkoutVideoGeneratorScree
                   Text("Take your strength training to the next level",
                       textAlign: TextAlign.start, style: Theme.of(context).textTheme.titleLarge?.copyWith(height: 1.5)),
                   Text(
-                      "Let TRKR do the work for you—upload a Youtube video, and we’ll analyze it to automatically identify the exercises, making tracking seamless.",
+                      "Paste a YouTube workout video, track your progress in real-time, and watch your training go to the next level—all with TRKR.",
                       textAlign: TextAlign.start,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 14, height: 1.8)),
                   const SizedBox(height: 2),
@@ -63,7 +62,7 @@ class _WorkoutVideoGeneratorScreenState extends State<WorkoutVideoGeneratorScree
                     controller: _textEditingController,
                     cursorColor: isDarkMode ? Colors.white : Colors.black,
                     decoration: InputDecoration(
-                      hintText: "Paste a link to a workout video",
+                      hintText: "Paste a link to a youtube workout video",
                     ),
                     keyboardType: TextInputType.text,
                     textCapitalization: TextCapitalization.words,
@@ -76,10 +75,20 @@ class _WorkoutVideoGeneratorScreenState extends State<WorkoutVideoGeneratorScree
                     height: 45,
                     child: OpacityButtonWidget(
                         onPressed: _generate,
-                        label: "Create guided session",
+                        label: widget.workoutVideoUrl != null ? "Update guided session" : "Create guided session",
                         buttonColor: vibrantGreen,
                         padding: const EdgeInsets.all(10.0)),
-                  )
+                  ),
+                  if (widget.workoutVideoUrl != null)
+                    SizedBox(
+                      width: double.infinity,
+                      height: 45,
+                      child: OpacityButtonWidget(
+                          onPressed: _removeUrl,
+                          label: "Remove guided session",
+                          buttonColor: Colors.redAccent,
+                          padding: const EdgeInsets.all(10.0)),
+                    )
                 ],
               ))),
     );
@@ -96,6 +105,10 @@ class _WorkoutVideoGeneratorScreenState extends State<WorkoutVideoGeneratorScree
       return;
     }
     Navigator.of(context).pop(url);
+  }
+
+  void _removeUrl() {
+    Navigator.of(context).pop("");
   }
 
   bool _isYouTubeUrl({required String url}) {

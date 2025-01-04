@@ -30,7 +30,7 @@ class RoutineTemplateDto {
       required this.updatedAt,
       this.scheduledDate,
       required this.owner,
-        this.workoutVideoUrl,
+      this.workoutVideoUrl,
       this.scheduleType = RoutineScheduleType.none});
 
   Map<String, Object> toJson() {
@@ -55,7 +55,7 @@ class RoutineTemplateDto {
     final name = json["name"] ?? "";
     final notes = json["notes"] ?? "";
     final exerciseTemplatesInJson = json["exercises"] as List<dynamic>;
-    final workoutVideoUrl = json["workoutVideoUrl"] ?? "";
+    final workoutVideoUrl = json["workoutVideoUrl"];
     List<ExerciseLogDto> exerciseTemplates = [];
     if (exerciseTemplatesInJson.isNotEmpty && exerciseTemplatesInJson.first is String) {
       exerciseTemplates = exerciseTemplatesInJson
@@ -85,7 +85,7 @@ class RoutineTemplateDto {
       scheduledDate: scheduledDate,
       scheduleType: scheduleType,
       owner: template.owner ?? "",
-        workoutVideoUrl: workoutVideoUrl,
+      workoutVideoUrl: workoutVideoUrl,
       createdAt: template.createdAt.getDateTimeInUtc(),
       updatedAt: template.updatedAt.getDateTimeInUtc(),
     );
@@ -122,16 +122,15 @@ class RoutineTemplateDto {
       id: id ?? this.id,
       name: name ?? this.name,
       notes: notes ?? this.notes,
-        workoutVideoUrl: workoutVideoUrl ?? this.workoutVideoUrl,
+      workoutVideoUrl: workoutVideoUrl ?? this.workoutVideoUrl,
       // Deep copy each ExerciseLogDto.
       exerciseTemplates: exerciseTemplates != null
           ? exerciseTemplates.map((e) => e.copyWith()).toList()
           : this.exerciseTemplates.map((e) => e.copyWith()).toList(),
 
       // Create a new List<DayOfWeek> to avoid referencing the original list.
-      scheduledDays: scheduledDays != null
-          ? List<DayOfWeek>.from(scheduledDays)
-          : List<DayOfWeek>.from(this.scheduledDays),
+      scheduledDays:
+          scheduledDays != null ? List<DayOfWeek>.from(scheduledDays) : List<DayOfWeek>.from(this.scheduledDays),
 
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,

@@ -389,7 +389,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   void _launchRoutineLogEditor() {
     final template = _template;
     if (template != null) {
-      final arguments = RoutineLogArguments(log: template.toLog(), editorMode: RoutineEditorMode.log);
+      final arguments = RoutineLogArguments(log: template.toLog(), editorMode: RoutineEditorMode.log, workoutVideo: template.workoutVideoUrl);
       navigateToRoutineLogEditor(context: context, arguments: arguments);
     }
   }
@@ -475,7 +475,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   void _navigateToWorkoutVideoGenerator() async {
     final template = _template;
     if (template != null) {
-      final workoutVideoUrl = await navigateWithSlideTransition(context: context, child: WorkoutVideoGeneratorScreen());
+      final workoutVideoUrl = await navigateWithSlideTransition(context: context, child: WorkoutVideoGeneratorScreen(workoutVideoUrl: template.workoutVideoUrl,));
       if (mounted) {
         final templateToUpdate = template.copyWith(workoutVideoUrl: workoutVideoUrl);
         await Provider.of<ExerciseAndRoutineController>(context, listen: false)
