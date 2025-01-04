@@ -568,6 +568,7 @@ class _RoutineLogOverview extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(color: forceLightMode ? Colors.white : null)),
             ]),
+            const TableRow(children: [SizedBox(height: 4), SizedBox(height: 4), SizedBox(height: 4)]),
             TableRow(children: [
               Text(exercisesSummary,
                   textAlign: TextAlign.center,
