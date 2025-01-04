@@ -503,6 +503,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     if (Platform.isIOS) {
       FlutterLocalNotificationsPlugin().cancel(999);
     }
+    _videoController.dispose();
     super.dispose();
   }
 
