@@ -272,7 +272,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     List<TextEditingController> controllers = [];
     for (final set in sets) {
       final repsController = TextEditingController(text: (set as RepsSetDto).reps.toString());
-      _repsControllers.add((repsController));
+      controllers.add((repsController));
     }
     _repsControllers.addAll(controllers);
   }
