@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
+import 'package:tracker_app/screens/editors/workout_video_generator_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import '../../colors.dart';
@@ -145,6 +146,11 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           onPressed: _navigateToRoutineTemplateEditor,
           leadingIcon: FaIcon(FontAwesomeIcons.solidPenToSquare, size: 16),
           child: Text("Edit", style: GoogleFonts.ubuntu())),
+      MenuItemButton(
+        onPressed: _navigateToWorkoutVideoGenerator,
+        leadingIcon: FaIcon(FontAwesomeIcons.link, size: 16),
+        child: Text("Video", style: GoogleFonts.ubuntu()),
+      ),
       MenuItemButton(
           onPressed: () => _createTemplate(copy: true),
           leadingIcon: FaIcon(Icons.copy, size: 16),
@@ -330,10 +336,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                         ),
                         Text(
                             "Here’s a summary of your ${template.name} training intensity over the last ${allLogsForTemplate.length} sessions.",
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
                         Padding(
                           padding: const EdgeInsets.only(right: 20),
                           child: Column(
@@ -353,7 +357,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                           title: "Training Volume",
                           color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
                           description:
-                          "Volume is the total amount of work done, often calculated as sets × reps × weight. Higher volume increases muscle size (hypertrophy).",
+                              "Volume is the total amount of work done, often calculated as sets × reps × weight. Higher volume increases muscle size (hypertrophy).",
                         ),
                       ],
                     ),
@@ -385,7 +389,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   void _launchRoutineLogEditor() {
     final template = _template;
     if (template != null) {
-      final arguments = RoutineLogArguments(log: template.toLog(), editorMode: RoutineEditorMode.log);
+      final arguments = RoutineLogArguments(log: template.toLog(), editorMode: RoutineEditorMode.log, workoutVideo: template.workoutVideoUrl);
       navigateToRoutineLogEditor(context: context, arguments: arguments);
     }
   }
@@ -465,6 +469,22 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       setState(() {
         _template = updatedTemplate;
       });
+    }
+  }
+
+  void _navigateToWorkoutVideoGenerator() async {
+    final template = _template;
+    if (template != null) {
+      final workoutVideoUrl = await navigateWithSlideTransition(context: context, child: WorkoutVideoGeneratorScreen(workoutVideoUrl: template.workoutVideoUrl,));
+      if (mounted) {
+        final templateToUpdate = template.copyWith(workoutVideoUrl: workoutVideoUrl);
+        await Provider.of<ExerciseAndRoutineController>(context, listen: false)
+            .updateTemplate(template: templateToUpdate);
+
+        setState(() {
+          _template = templateToUpdate;
+        });
+      }
     }
   }
 

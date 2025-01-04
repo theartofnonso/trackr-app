@@ -16,6 +16,7 @@ class RoutineTemplateDto {
   final List<DayOfWeek> scheduledDays;
   final DateTime? scheduledDate;
   final String owner;
+  final String workoutVideoUrl;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -29,6 +30,7 @@ class RoutineTemplateDto {
       required this.updatedAt,
       this.scheduledDate,
       required this.owner,
+      this.workoutVideoUrl = "",
       this.scheduleType = RoutineScheduleType.none});
 
   Map<String, Object> toJson() {
@@ -38,6 +40,7 @@ class RoutineTemplateDto {
       'notes': notes,
       'exercises': exerciseTemplates.map((exercise) => exercise.toJson()).toList(),
       'days': scheduledDays.map((dayOfWeek) => dayOfWeek.day).toList(),
+      'workoutVideoUrl': workoutVideoUrl,
       "scheduledDate": scheduledDate?.toIso8601String() ?? "",
       "scheduleType": scheduleType.name,
     };
@@ -52,6 +55,7 @@ class RoutineTemplateDto {
     final name = json["name"] ?? "";
     final notes = json["notes"] ?? "";
     final exerciseTemplatesInJson = json["exercises"] as List<dynamic>;
+    final workoutVideoUrl = (json["workoutVideoUrl"] as String?) ?? "";
     List<ExerciseLogDto> exerciseTemplates = [];
     if (exerciseTemplatesInJson.isNotEmpty && exerciseTemplatesInJson.first is String) {
       exerciseTemplates = exerciseTemplatesInJson
@@ -81,6 +85,7 @@ class RoutineTemplateDto {
       scheduledDate: scheduledDate,
       scheduleType: scheduleType,
       owner: template.owner ?? "",
+      workoutVideoUrl: workoutVideoUrl,
       createdAt: template.createdAt.getDateTimeInUtc(),
       updatedAt: template.updatedAt.getDateTimeInUtc(),
     );
@@ -110,22 +115,22 @@ class RoutineTemplateDto {
     DateTime? updatedAt,
     DateTime? scheduledDate,
     String? owner,
+    String? workoutVideoUrl,
     RoutineScheduleType? scheduleType,
   }) {
     return RoutineTemplateDto(
       id: id ?? this.id,
       name: name ?? this.name,
       notes: notes ?? this.notes,
-
+      workoutVideoUrl: workoutVideoUrl ?? this.workoutVideoUrl,
       // Deep copy each ExerciseLogDto.
       exerciseTemplates: exerciseTemplates != null
           ? exerciseTemplates.map((e) => e.copyWith()).toList()
           : this.exerciseTemplates.map((e) => e.copyWith()).toList(),
 
       // Create a new List<DayOfWeek> to avoid referencing the original list.
-      scheduledDays: scheduledDays != null
-          ? List<DayOfWeek>.from(scheduledDays)
-          : List<DayOfWeek>.from(this.scheduledDays),
+      scheduledDays:
+          scheduledDays != null ? List<DayOfWeek>.from(scheduledDays) : List<DayOfWeek>.from(this.scheduledDays),
 
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -137,6 +142,6 @@ class RoutineTemplateDto {
 
   @override
   String toString() {
-    return 'RoutineTemplateDto{id: $id, name: $name, notes: $notes, exerciseTemplates: $exerciseTemplates, days: $scheduledDays, schedule: $scheduledDate, scheduleType: $scheduleType, owner: $owner, createdAt: $createdAt, updatedAt: $updatedAt}';
+    return 'RoutineTemplateDto{id: $id, name: $name, notes: $notes, workoutVideoUrl: $workoutVideoUrl, exerciseTemplates: $exerciseTemplates, days: $scheduledDays, schedule: $scheduledDate, scheduleType: $scheduleType, owner: $owner, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
 }

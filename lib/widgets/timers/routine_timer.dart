@@ -7,8 +7,10 @@ class RoutineTimer extends StatefulWidget {
   final DateTime startTime;
   final bool digital;
   final void Function(Duration duration)? onChangedDuration;
+  final bool forceLightMode;
 
-  const RoutineTimer({super.key, required this.startTime, this.digital = false, this.onChangedDuration});
+  const RoutineTimer(
+      {super.key, required this.startTime, this.digital = false, this.onChangedDuration, this.forceLightMode = false});
 
   @override
   State<RoutineTimer> createState() => _RoutineTimerState();
@@ -21,7 +23,7 @@ class _RoutineTimerState extends State<RoutineTimer> {
   @override
   Widget build(BuildContext context) {
     return Text(widget.digital ? _elapsedDuration.hmsDigital() : _elapsedDuration.hmsAnalog(),
-        style: Theme.of(context).textTheme.bodyMedium);
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: widget.forceLightMode ? Colors.white : null));
   }
 
   @override
@@ -30,7 +32,7 @@ class _RoutineTimerState extends State<RoutineTimer> {
     _elapsedDuration = DateTime.now().difference(widget.startTime);
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       final onChangedDuration = widget.onChangedDuration;
-      if(onChangedDuration != null) {
+      if (onChangedDuration != null) {
         onChangedDuration(_elapsedDuration);
       }
       setState(() {
