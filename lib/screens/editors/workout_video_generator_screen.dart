@@ -10,7 +10,10 @@ import '../../utils/general_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 
 class WorkoutVideoGeneratorScreen extends StatefulWidget {
-  const WorkoutVideoGeneratorScreen({super.key});
+
+  final String? workoutVideoUrl;
+
+  const WorkoutVideoGeneratorScreen({super.key, this.workoutVideoUrl});
 
   @override
   State<WorkoutVideoGeneratorScreen> createState() => _WorkoutVideoGeneratorScreenState();
@@ -83,41 +86,16 @@ class _WorkoutVideoGeneratorScreenState extends State<WorkoutVideoGeneratorScree
   }
 
   void _generate() async {
-
     final url = _textEditingController.text.trim();
 
     final isValidUrl = _isYouTubeUrl(url: url);
 
-    if(!isValidUrl) {
-      showSnackbar(context: context, icon: FaIcon(FontAwesomeIcons.circleInfo), message: "Please provide a valid Youtube Url");
+    if (!isValidUrl) {
+      showSnackbar(
+          context: context, icon: FaIcon(FontAwesomeIcons.circleInfo), message: "Please provide a valid Youtube Url");
       return;
     }
-
-    final uri = Uri.parse(url);
-
-    // The video ID is in the 'v' query parameter
-    final videoId = uri.queryParameters['v'];
-    
-    final trackManifest = await yt.videos.closedCaptions.getManifest("XXVq8o7Bs5o");
-
-    final closedCaptionsTrackInfo = trackManifest.getByLanguage('en'); // Get english caption.
-print(closedCaptionsTrackInfo);
-    if (closedCaptionsTrackInfo.isNotEmpty) {
-      final trackInfo = closedCaptionsTrackInfo.first;
-
-      // Get the actual closed caption track.
-      final track = await yt.videos.closedCaptions.get(trackInfo);
-
-      final string = track.captions.map((caption) => caption.text).join(" ");
-
-      print(string);
-
-      // Get the caption displayed at 1:01
-      for (final caption in track.captions) {
-        final text = caption.text; // "And the game was afoot."
-        print(text);
-      }
-    }
+    Navigator.of(context).pop(url);
   }
 
   bool _isYouTubeUrl({required String url}) {
@@ -139,7 +117,7 @@ print(closedCaptionsTrackInfo);
   @override
   void initState() {
     super.initState();
-    _textEditingController = TextEditingController();
+    _textEditingController = TextEditingController(text: widget.workoutVideoUrl);
   }
 
   @override

@@ -5,11 +5,17 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:health/health.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 
 import '../colors.dart';
+import '../dtos/appsync/routine_log_dto.dart';
+import '../enums/routine_editor_type_enums.dart';
+import '../screens/editors/routine_log_editor_screen.dart';
+import '../screens/logs/routine_log_screen.dart';
 import '../shared_prefs.dart';
+import 'navigation_utils.dart';
 
 bool isDefaultWeightUnit() {
   final weightString = SharedPrefs().weightUnit;
@@ -227,4 +233,25 @@ IconData getImprovementIcon({required bool improved, required num difference}) {
     icon = FontAwesomeIcons.arrowTrendDown;
   }
   return icon;
+}
+
+void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) async {
+  final log = RoutineLogDto(
+      id: "",
+      templateId: "",
+      name: "${timeOfDay()} Session",
+      exerciseLogs: [],
+      notes: "",
+      startTime: DateTime.now(),
+      endTime: DateTime.now(),
+      owner: "",
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now());
+  final recentLog = await navigateWithSlideTransition(
+      context: context, child: RoutineLogEditorScreen(log: log, mode: RoutineEditorMode.log, workoutVideoUrl: workoutVideoUrl,));
+  if (recentLog != null) {
+    if (context.mounted) {
+      context.push(RoutineLogScreen.routeName, extra: {"log": recentLog, "showSummary": true, "isEditable": true});
+    }
+  }
 }
