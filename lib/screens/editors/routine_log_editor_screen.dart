@@ -323,47 +323,48 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
               child: Column(
                 spacing: 8,
                 children: [
-                  if (workoutVideoUrl.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 10.0),
-                      child: YoutubePlayer(
-                        topActions: [
-                          Consumer<ExerciseLogController>(
-                              builder: (BuildContext context, ExerciseLogController provider, Widget? child) {
-                            return Expanded(
-                              child: Wrap(
-                                children: [
-                                  _RoutineLogOverview(
-                                    exercisesSummary:
-                                        "${provider.completedExerciseLog().length}/${provider.exerciseLogs.length}",
-                                    setsSummary:
-                                        "${provider.completedSets().length}/${provider.exerciseLogs.expand((exerciseLog) => exerciseLog.sets).length}",
-                                    timer: RoutineTimer(
-                                      forceLightMode: true,
-                                      startTime: widget.log.startTime,
+                  if (widget.mode == RoutineEditorMode.log)
+                    workoutVideoUrl.isNotEmpty
+                        ? Padding(
+                            padding: const EdgeInsets.only(bottom: 10.0),
+                            child: YoutubePlayer(
+                              topActions: [
+                                Consumer<ExerciseLogController>(
+                                    builder: (BuildContext context, ExerciseLogController provider, Widget? child) {
+                                  return Expanded(
+                                    child: Wrap(
+                                      children: [
+                                        _RoutineLogOverview(
+                                          exercisesSummary:
+                                              "${provider.completedExerciseLog().length}/${provider.exerciseLogs.length}",
+                                          setsSummary:
+                                              "${provider.completedSets().length}/${provider.exerciseLogs.expand((exerciseLog) => exerciseLog.sets).length}",
+                                          timer: RoutineTimer(
+                                            forceLightMode: true,
+                                            startTime: widget.log.startTime,
+                                          ),
+                                          forceLightMode: true,
+                                        )
+                                      ],
                                     ),
-                                    forceLightMode: true,
-                                  )
-                                ],
+                                  );
+                                })
+                              ],
+                              controller: _videoController,
+                            ),
+                          )
+                        : Consumer<ExerciseLogController>(
+                            builder: (BuildContext context, ExerciseLogController provider, Widget? child) {
+                            return _RoutineLogOverview(
+                              exercisesSummary:
+                                  "${provider.completedExerciseLog().length}/${provider.exerciseLogs.length}",
+                              setsSummary:
+                                  "${provider.completedSets().length}/${provider.exerciseLogs.expand((exerciseLog) => exerciseLog.sets).length}",
+                              timer: RoutineTimer(
+                                startTime: widget.log.startTime,
                               ),
                             );
-                          })
-                        ],
-                        controller: _videoController,
-                      ),
-                    ),
-                  if (widget.mode == RoutineEditorMode.log && widget.workoutVideoUrl == null)
-                    Consumer<ExerciseLogController>(
-                        builder: (BuildContext context, ExerciseLogController provider, Widget? child) {
-                      return _RoutineLogOverview(
-                        exercisesSummary: "${provider.completedExerciseLog().length}/${provider.exerciseLogs.length}",
-                        setsSummary:
-                            "${provider.completedSets().length}/${provider.exerciseLogs.expand((exerciseLog) => exerciseLog.sets).length}",
-                        timer: RoutineTimer(
-                          startTime: widget.log.startTime,
-                        ),
-                      );
-                    }),
+                          }),
                   if (exerciseLogs.isNotEmpty)
                     Expanded(
                       child: SingleChildScrollView(
@@ -455,7 +456,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     _onDisposeCallback = Provider.of<ExerciseLogController>(context, listen: false).onClear;
 
-    final videoId = YoutubePlayer.convertUrlToId(widget.workoutVideoUrl ?? "") ?? "";
+    final videoId = YoutubePlayer.convertUrlToId(widget.workoutVideoUrl) ?? "";
 
     _videoController = YoutubePlayerController(
       initialVideoId: videoId,
