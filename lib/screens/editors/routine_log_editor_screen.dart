@@ -59,6 +59,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   SetDto? _selectedSetDto;
 
+  bool _muted = false;
+
   void _selectExercisesInLibrary() async {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
     final excludeExercises = controller.exerciseLogs.map((procedure) => procedure.exercise).toList();
@@ -328,6 +330,21 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                         ? Padding(
                             padding: const EdgeInsets.only(bottom: 10.0),
                             child: YoutubePlayer(
+                              bottomActions: [
+                                IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _muted = !_muted;
+                                        if (_muted) {
+                                          _videoController.unMute();
+                                        } else {
+                                          _videoController.mute();
+                                        }
+                                      });
+                                    },
+                                    icon: FaIcon(_muted ? FontAwesomeIcons.volumeHigh : FontAwesomeIcons.volumeXmark,
+                                        size: 16)),
+                              ],
                               topActions: [
                                 Consumer<ExerciseLogController>(
                                     builder: (BuildContext context, ExerciseLogController provider, Widget? child) {
