@@ -37,6 +37,6 @@ class DurationSetDto extends SetDto {
 
   @override
   String toString() {
-    return 'DurationSetDTO{duration: $_duration, checked: ${super.checked}, type: $type, rpeRating: ${super.rpeRating}';
+    return 'DurationSetDTO{duration: $_duration, checked: ${super.checked}, type: $type, rpeRating: ${super.rpeRating}}';
   }
 }
