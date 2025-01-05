@@ -391,6 +391,29 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     };
   }
 
+  void _showDurationBottomSheet() {
+    displayBottomSheet(
+        context: context,
+        child: SafeArea(
+          child: Column(children: [
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(FontAwesomeIcons.stopwatch, size: 18),
+              horizontalTitleGap: 6,
+              title: Text("Add Stopwatch"),
+              onTap: _addSet,
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(FontAwesomeIcons.clock, size: 18),
+              horizontalTitleGap: 6,
+              title: Text("Add countdown timer"),
+              onTap: _addSet,
+            ),
+          ]),
+        ));
+  }
+
   @override
   Widget build(BuildContext context) {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
@@ -639,7 +662,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               width: 6,
             ),
             IconButton(
-              onPressed: _addSet,
+              onPressed: () {
+                if(exerciseType == ExerciseType.duration) {
+                  _showDurationBottomSheet();
+                } else {
+                  _addSet();
+                }
+              },
               icon: const FaIcon(FontAwesomeIcons.plus, size: 18),
               tooltip: 'Add new set',
             ),
