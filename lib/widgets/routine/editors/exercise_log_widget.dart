@@ -9,10 +9,8 @@ import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/set_dtos/duration_set_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
-import 'package:tracker_app/screens/AI/stt_logging.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
-import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
@@ -120,8 +118,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         .updateExerciseLogRepRange(exerciseLogId: widget.exerciseLogDto.id, values: values);
   }
 
-  void _loadControllers({required List<SetDto> sets}) {
+  void _loadControllers() {
     _clearControllers();
+
+    final exerciseLog = Provider.of<ExerciseLogController>(context, listen: false)
+        .whereExerciseLog(exerciseId: widget.exerciseLogDto.exercise.id);
+
+    final sets = exerciseLog.sets;
 
     if (withDurationOnly(type: widget.exerciseLogDto.exercise.type)) {
       _loadDurationControllers(sets: sets);
@@ -168,15 +171,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         .whereSetsForExercise(exercise: widget.exerciseLogDto.exercise);
     Provider.of<ExerciseLogController>(context, listen: false)
         .addSet(exerciseLogId: widget.exerciseLogDto.id, pastSets: pastSets);
-
-    _loadControllers(sets: widget.exerciseLogDto.sets);
+    _loadControllers();
   }
 
   void _removeSet({required int index}) {
     Provider.of<ExerciseLogController>(context, listen: false)
         .removeSetForExerciseLog(exerciseLogId: widget.exerciseLogDto.id, index: index);
-
-    _loadControllers(sets: widget.exerciseLogDto.sets);
+    _loadControllers();
   }
 
   void _updateWeight({required int index, required double weight, required SetDto setDto}) {
@@ -195,6 +196,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _checkAndUpdateDuration(
       {required int index, required Duration duration, required SetDto setDto, required bool checked}) {
+
     if (setDto.checked) {
       final duration = (setDto as DurationSetDto).duration;
       final startTime = DateTime.now().subtract(duration);
@@ -205,7 +207,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       Provider.of<ExerciseLogController>(context, listen: false)
           .updateDuration(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet, notify: checked);
 
-      _loadControllers(sets: widget.exerciseLogDto.sets);
+      _loadControllers();
 
       if (checked) {
         displayBottomSheet(
@@ -233,7 +235,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateDuration(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet, notify: true);
 
-    _loadControllers(sets: widget.exerciseLogDto.sets);
+    _loadControllers();
   }
 
   void _updateSetCheck({required int index, required SetDto setDto}) {
@@ -242,7 +244,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateSetCheck(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
 
-    _loadControllers(sets: widget.exerciseLogDto.sets);
+    _loadControllers();
 
     if (checked) {
       displayBottomSheet(
@@ -304,27 +306,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   @override
   void initState() {
     super.initState();
-    _loadControllers(sets: widget.exerciseLogDto.sets);
+    _loadControllers();
   }
 
   @override
   void dispose() {
     _disposeControllers();
     super.dispose();
-  }
-
-  void _stt() async {
-    final sets =
-        await navigateWithSlideTransition(context: context, child: STTLoggingScreen(exerciseLog: widget.exerciseLogDto))
-            as List<SetDto>?;
-    if (sets != null) {
-      if (mounted) {
-        _loadControllers(sets: sets);
-
-        Provider.of<ExerciseLogController>(context, listen: false)
-            .overwriteSets(exerciseLogId: widget.exerciseLogDto.id, sets: sets);
-      }
-    }
   }
 
   final Map<int, Color> _intensityToColor = {

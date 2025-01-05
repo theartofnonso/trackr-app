@@ -33,6 +33,10 @@ class ExerciseLogRepository {
     _exerciseLogs = reOrderedList;
   }
 
+  ExerciseLogDto whereExerciseLog({required String exerciseId}) {
+    return _exerciseLogs.firstWhere((exerciseLog) => exerciseLog.id == exerciseId);
+  }
+
   void removeExerciseLog({required String logId}) {
     final exerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: logId);
     if (exerciseLogIndex == -1) {

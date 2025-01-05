@@ -23,6 +23,10 @@ class ExerciseLogController extends ChangeNotifier {
     logger.i("load exercise logs");
   }
 
+  ExerciseLogDto whereExerciseLog({required String exerciseId}) {
+    return _exerciseLogRepository.whereExerciseLog(exerciseId: exerciseId);
+  }
+
   void addExerciseLog({required ExerciseDto exercise, required List<SetDto> pastSets}) {
     _exerciseLogRepository.addExerciseLog(exercise: exercise, pastSets: pastSets);
     logger.i("load exercise log: $exercise");
