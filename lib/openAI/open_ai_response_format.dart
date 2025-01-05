@@ -74,10 +74,6 @@ const routineLogReportResponseFormat = {
       "type": "object",
       "properties": {
         "title": {"type": "string", "description": "The name of the current workout session."},
-        "introduction": {
-          "type": "string",
-          "description": "An overview summarizing the key highlights of the training report."
-        },
         "exercise_reports": {
           "type": "array",
           "description": "A list of detailed reports for each exercise performed.",
@@ -103,7 +99,7 @@ const routineLogReportResponseFormat = {
           }
         },
       },
-      "required": ["title", "introduction", "exercise_reports", "suggestions"],
+      "required": ["title", "exercise_reports", "suggestions"],
       "additionalProperties": false
     },
     "strict": true

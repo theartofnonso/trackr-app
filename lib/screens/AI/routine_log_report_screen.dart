@@ -28,8 +28,6 @@ class RoutineLogReportScreen extends StatelessWidget {
             icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
             onPressed: Navigator.of(context).pop,
           ),
-          title: Text(report.title.toUpperCase(), textAlign: TextAlign.center),
-          centerTitle: true,
         ),
         body: Container(
           decoration: BoxDecoration(
@@ -46,18 +44,8 @@ class RoutineLogReportScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            TRKRCoachWidget(),
-                            const SizedBox(width: 10),
-                            Expanded(
-                                child: Text(report.introduction,
-                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 16)))
-                          ],
-                        ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16),
+                          padding: const EdgeInsets.only(right: 10.0, bottom: 16, left: 10),
                           child: LabelContainerDivider(
                               labelAlignment: LabelAlignment.left,
                               label: "training and performance".toUpperCase(),

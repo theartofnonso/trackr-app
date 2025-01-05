@@ -70,8 +70,8 @@ String prepareLogInstruction({required BuildContext context, required RoutineLog
     	          2.	Repetitions: Evaluate the number of repetitions performed per set and identify any trends or changes.
     	          3.	Volume Lifted: Calculate the total volume lifted (weight × repetitions) and provide insights into its progression over time.
     	          4.	Number of Sets: Assess the number of sets performed and how it aligns with my overall workout goals.
-    	          5.  Rate of perceived exertion: Compare current RPE and previous ones and determine when to increase/decrease weight or adjust reps.
-                6.  Using the above guidelines on reps ranges, training goals, intensity levels and my one Rep Max, analyze my training intensity (weight and reps) and provide clear, actionable recommendations on whether the I should increase or decrease the weights.
+    	          5.  Rate of perceived exertion: Compare my current and previous RPE values, using the idea that RPE indicates how many reps I could still perform before failure. If RPE is consistently low (e.g., 1–5), it might be time to add weight or increase reps. If it’s often high (8–10), consider reducing the load or increasing rest. Use these insights to determine whether to push harder, maintain, or scale back to optimize training intensity.
+                6.  Based on the recommended rep ranges, training goals, intensity levels, and my current one-rep max, evaluate my training intensity (weight and reps) and provide specific, actionable recommendations on whether I should increase or decrease my working weights for optimal results.
 
           Note: All weights are measured in ${weightLabel()}.
           Note: Your report should sound personal.
