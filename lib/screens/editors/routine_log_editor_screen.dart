@@ -34,7 +34,7 @@ import '../../utils/routine_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
-import '../../widgets/timers/routine_timer.dart';
+import '../../widgets/timers/stopwatch_timer.dart';
 import '../../widgets/weight_plate_calculator.dart';
 
 class RoutineLogEditorScreen extends StatefulWidget {
@@ -347,7 +347,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                               "${provider.completedExerciseLog().length}/${provider.exerciseLogs.length}",
                                           setsSummary:
                                               "${provider.completedSets().length}/${provider.exerciseLogs.expand((exerciseLog) => exerciseLog.sets).length}",
-                                          timer: RoutineTimer(
+                                          timer: StopwatchTimer(
                                             forceLightMode: true,
                                             startTime: widget.log.startTime,
                                           ),
@@ -368,7 +368,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                   "${provider.completedExerciseLog().length}/${provider.exerciseLogs.length}",
                               setsSummary:
                                   "${provider.completedSets().length}/${provider.exerciseLogs.expand((exerciseLog) => exerciseLog.sets).length}",
-                              timer: RoutineTimer(
+                              timer: StopwatchTimer(
                                 startTime: widget.log.startTime,
                               ),
                             );

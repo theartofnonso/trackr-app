@@ -3,20 +3,20 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 
-class RoutineTimer extends StatefulWidget {
+class StopwatchTimer extends StatefulWidget {
   final DateTime startTime;
   final bool digital;
   final void Function(Duration duration)? onChangedDuration;
   final bool forceLightMode;
 
-  const RoutineTimer(
+  const StopwatchTimer(
       {super.key, required this.startTime, this.digital = false, this.onChangedDuration, this.forceLightMode = false});
 
   @override
-  State<RoutineTimer> createState() => _RoutineTimerState();
+  State<StopwatchTimer> createState() => _StopwatchTimerState();
 }
 
-class _RoutineTimerState extends State<RoutineTimer> {
+class _StopwatchTimerState extends State<StopwatchTimer> {
   late Timer _timer;
   Duration _elapsedDuration = Duration.zero;
 
@@ -43,7 +43,7 @@ class _RoutineTimerState extends State<RoutineTimer> {
 
   @override
   void dispose() {
-    super.dispose();
     _timer.cancel();
+    super.dispose();
   }
 }

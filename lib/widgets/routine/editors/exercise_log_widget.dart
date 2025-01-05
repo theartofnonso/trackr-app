@@ -196,7 +196,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _checkAndUpdateDuration(
       {required int index, required Duration duration, required SetDto setDto, required bool checked}) {
-
     if (setDto.checked) {
       final duration = (setDto as DurationSetDto).duration;
       final startTime = DateTime.now().subtract(duration);
@@ -389,29 +388,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       ExerciseType.duration =>
         "You might be experimenting with different durations. Try maintaining a gradual progression",
     };
-  }
-
-  void _showDurationBottomSheet() {
-    displayBottomSheet(
-        context: context,
-        child: SafeArea(
-          child: Column(children: [
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(FontAwesomeIcons.stopwatch, size: 18),
-              horizontalTitleGap: 6,
-              title: Text("Add Stopwatch"),
-              onTap: _addSet,
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(FontAwesomeIcons.clock, size: 18),
-              horizontalTitleGap: 6,
-              title: Text("Add countdown timer"),
-              onTap: _addSet,
-            ),
-          ]),
-        ));
   }
 
   @override
@@ -662,13 +638,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               width: 6,
             ),
             IconButton(
-              onPressed: () {
-                if(exerciseType == ExerciseType.duration) {
-                  _showDurationBottomSheet();
-                } else {
-                  _addSet();
-                }
-              },
+              onPressed: _addSet,
               icon: const FaIcon(FontAwesomeIcons.plus, size: 18),
               tooltip: 'Add new set',
             ),
