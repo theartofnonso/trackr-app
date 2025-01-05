@@ -51,7 +51,6 @@ import 'package:tracker_app/utils/theme/theme.dart';
 import 'amplifyconfiguration.dart';
 import 'controllers/activity_log_controller.dart';
 import 'controllers/routine_user_controller.dart';
-import 'controllers/stt_controller.dart';
 import 'dtos/appsync/exercise_dto.dart';
 import 'dtos/open_ai_response_schema_dtos/exercise_performance_report.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
@@ -142,9 +141,6 @@ void main() async {
       options.tracesSampleRate = 1.0;
     },
     appRunner: () => runApp(MultiProvider(providers: [
-      ChangeNotifierProvider<STTController>(
-        create: (BuildContext context) => STTController(),
-      ),
       ChangeNotifierProvider<SettingsController>(
         create: (BuildContext context) => SettingsController(),
       ),
@@ -193,7 +189,11 @@ final _router = GoRouter(
       path: RoutineLogEditorScreen.routeName,
       builder: (context, state) {
         final args = state.extra as RoutineLogArguments;
-        return RoutineLogEditorScreen(log: args.log, mode: args.editorMode, workoutVideoUrl: args.workoutVideo,);
+        return RoutineLogEditorScreen(
+          log: args.log,
+          mode: args.editorMode,
+          workoutVideoUrl: args.workoutVideo,
+        );
       },
     ),
     GoRoute(
