@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
@@ -86,32 +86,27 @@ class RoutineLogReportScreen extends StatelessWidget {
                             descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
                             dividerColor: sapphireLighter),
                         const SizedBox(height: 10),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            TRKRCoachWidget(),
-                            const SizedBox(width: 10),
-                            Expanded(
-                                child: MarkdownBody(
-                              data: report.suggestions,
-                              styleSheet: MarkdownStyleSheet(
-                                h1: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
-                                h2: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
-                                h3: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
-                                h4: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
-                                h5: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
-                                h6: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
-                                p: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
-                              ),
-                            ))
-                          ],
-                        ),
+                        ListView.separated(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              final suggestion = report.suggestions[index];
+                              return Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  TRKRCoachWidget(),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                      child: Text(suggestion,
+                                          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 16)))
+                                ],
+                              );
+                            },
+                            separatorBuilder: (context, index) => SizedBox(height: 20),
+                            itemCount: report.suggestions.length),
                       ],
                     ),
                   ),
-                ),
-                const SizedBox(
-                  height: 10,
                 ),
               ],
             ),
@@ -151,7 +146,7 @@ class _ExerciseReportWidget extends StatelessWidget {
                 label: "Feedback".toUpperCase(),
                 description: exerciseReport.comments,
                 labelStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 12),
-                descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
+                descriptionStyle: GoogleFonts.ubuntu(height: 1.5, fontSize: 16, fontWeight: FontWeight.w300),
                 dividerColor: sapphireLighter)
           ],
         ));

@@ -2,7 +2,7 @@ class ExercisePerformanceReport {
   final String title;
   final String introduction;
   final List<ExerciseReport> exerciseReports;
-  final String suggestions;
+  final List<String> suggestions;
 
   ExercisePerformanceReport({
     required this.title,
@@ -17,7 +17,7 @@ class ExercisePerformanceReport {
       introduction: json['introduction'] as String,
       exerciseReports:
           (json['exercise_reports'] as List).map((e) => ExerciseReport.fromJson(e as Map<String, dynamic>)).toList(),
-      suggestions: json['suggestions'] as String,
+      suggestions: (json['suggestions'] as List).map((e) => e as String).toList(),
     );
   }
 
