@@ -139,7 +139,7 @@ class CustomBarChart extends StatelessWidget {
 
     return SideTitleWidget(
       fitInside: SideTitleFitInsideData.fromTitleMeta(meta, enabled: false),
-      axisSide: meta.axisSide,
+      meta: meta,
       child: Text(_weightTitle(value: value), style: style),
     );
   }
@@ -156,7 +156,7 @@ class CustomBarChart extends StatelessWidget {
     final style = GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 9, color: Colors.grey.shade600);
     return SideTitleWidget(
       fitInside: SideTitleFitInsideData.disable(),
-      axisSide: meta.axisSide,
+      meta: meta,
       child: value % meta.appliedInterval == 0
           ? Text(modifiedDateTimes[value.toInt()], style: style)
           : const SizedBox.shrink(),
