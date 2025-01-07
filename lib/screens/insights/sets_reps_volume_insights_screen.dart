@@ -23,7 +23,7 @@ import 'package:tracker_app/widgets/empty_states/horizontal_stacked_bars_empty_s
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
-import '../../dtos/open_ai_response_schema_dtos/routine_logs_report_dto.dart';
+import '../../dtos/open_ai_response_schema_dtos/exercise_performance_report.dart';
 import '../../dtos/set_dtos/reps_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/set_dtos/weight_and_reps_dto.dart';
@@ -173,15 +173,18 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     final leanMoreChildren = [
       InsightsGridItemWidget(
         title: 'Reps and Ranges: Mastering the Basics for Optimal Training',
-        onTap: () => navigateWithSlideTransition(context: context, child: KbRepsScreen()), image: 'images/man_dumbbell.jpg',
+        onTap: () => navigateWithSlideTransition(context: context, child: KbRepsScreen()),
+        image: 'images/man_dumbbell.jpg',
       ),
       InsightsGridItemWidget(
         title: 'Sets: A Deep Dive into Strength Training Fundamentals',
-      onTap: () => navigateWithSlideTransition(context: context, child: KbSetsScreen()), image: 'images/girl_standing_man_squatting.jpg',
+        onTap: () => navigateWithSlideTransition(context: context, child: KbSetsScreen()),
+        image: 'images/girl_standing_man_squatting.jpg',
       ),
       InsightsGridItemWidget(
         title: 'Volume vs. Intensity: Unlocking the Key to Effective Training',
-          onTap: () => navigateWithSlideTransition(context: context, child: KbVolumeScreen()), image: 'images/orange_dumbbells.jpg',
+        onTap: () => navigateWithSlideTransition(context: context, child: KbVolumeScreen()),
+        image: 'images/orange_dumbbells.jpg',
       )
     ];
 
@@ -395,10 +398,10 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   }
 
   void _generateReport({required List<ExerciseLogDto> exerciseLogs}) {
-    final exerciseLogsWithPrimaryMuscleGroups =
-        exerciseLogs.where((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup == _selectedMuscleGroup).toList();
+    final exerciseLogsForMuscleGroups =
+        exerciseLogs.where((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup == _selectedMuscleGroup).sorted((a, b) => b.createdAt.compareTo(a.createdAt)).toList();
 
-    if (exerciseLogsWithPrimaryMuscleGroups.isEmpty) {
+    if (exerciseLogsForMuscleGroups.isEmpty) {
       showSnackbar(
           context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: "You don't have any logs");
 
@@ -412,16 +415,19 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     buffer.writeln();
 
-    for (final exerciseLog in exerciseLogsWithPrimaryMuscleGroups) {
-      buffer.writeln("Rep Range for ${exerciseLog.exercise.name}: ${exerciseLog.minReps} to ${exerciseLog.maxReps}");
+    for (final exerciseLog in exerciseLogsForMuscleGroups) {
+
+      buffer.writeln(
+          "Exercise Id for ${exerciseLog.exercise.name}: ${exerciseLog.exercise.id}");
+
+      buffer.writeln(
+          "Rep Range for ${exerciseLog.exercise.name}: ${exerciseLog.minReps} to ${exerciseLog.maxReps}");
 
       List<String> setSummaries = generateSetSummaries(exerciseLog);
       buffer.writeln(
           "Sets logged for ${exerciseLog.exercise.name} on ${exerciseLog.createdAt.withoutTime().formattedDayAndMonthAndYear()}: $setSummaries");
 
-      final completedPastExerciseLogs = loggedExercises(exerciseLogs: exerciseLogsWithPrimaryMuscleGroups);
-      final previousLog = completedPastExerciseLogs.last;
-      final heaviestSetWeight = heaviestWeightInSetForExerciseLog(exerciseLog: previousLog);
+      final heaviestSetWeight = heaviestWeightInSetForExerciseLog(exerciseLog: exerciseLogs.last);
       final oneRepMax = average1RM(weight: (heaviestSetWeight).weight, reps: (heaviestSetWeight).reps);
 
       buffer.writeln("One Rep Max for ${exerciseLog.exercise.name}: $oneRepMax");
@@ -438,13 +444,14 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 	            •	6–12 reps: Hypertrophy (Muscle Growth), Moderate-Heavy (65–80% of 1RM)
 	            •	12–20+ reps: Muscular Endurance, Light-Moderate (50–65% of 1RM)
 	              
-          Please provide feedback on the following aspects of my ${_selectedMuscleGroup.name} training performance:
-              1.	Weights Lifted: Analyze the progression or consistency in the weights I’ve used.
-      	      2.	Repetitions: Evaluate the number of repetitions performed per set and identify any trends or changes.
-      	      3.	Volume Lifted: Calculate the total volume lifted (weight × repetitions) and provide insights into its progression over time.
-      	      4.	Number of Sets: Assess the number of sets performed and how it aligns with my overall workout goals.
-              5.  Using the above guidelines on reps ranges, training goals, intensity levels and my one Rep Max, analyze my training intensity (weight and reps) and provide clear, actionable recommendations on whether the I should increase or decrease the weights.
-           
+           Please provide feedback on the following aspects of my workout performance:
+                1.	Weights Lifted: Analyze the progression or consistency in the weights I’ve used.
+    	          2.	Repetitions: Evaluate the number of repetitions performed per set and identify any trends or changes.
+    	          3.	Volume Lifted: Calculate the total volume lifted (weight × repetitions) and provide insights into its progression over time.
+    	          4.	Number of Sets: Assess the number of sets performed and how it aligns with my overall workout goals.
+    	          5.  Rate of perceived exertion: Compare my current and previous RPE values, using the idea that RPE indicates how many reps I could still perform before failure. If RPE is consistently low (e.g., 1–5), it might be time to add weight or increase reps. If it’s often high (8–10), consider reducing the load or increasing rest. Use these insights to determine whether to push harder, maintain, or scale back to optimize training intensity.
+                6.  Based on the recommended rep ranges, training goals, intensity levels, and my current one-rep max, evaluate my training intensity (weight and reps) and provide specific, actionable recommendations on whether I should increase or decrease my working weights for optimal results.
+
           Note: All weights are measured in ${weightLabel()}.
           Note: Your report should sound personal.
           """);
@@ -456,7 +463,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     runMessage(
             system: routineLogSystemInstruction,
             user: completeInstructions,
-            responseFormat: routineLogsReportResponseFormat)
+            responseFormat: muscleGroupTrainingReportResponseFormat)
         .then((response) {
       Posthog().capture(eventName: PostHogAnalyticsEvent.generateMuscleGroupTrainingReport.displayName);
 
@@ -467,13 +474,13 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
           Map<String, dynamic> json = jsonDecode(response);
 
           // Create an instance of ExerciseLogsResponse
-          RoutineLogsReportDto report = RoutineLogsReportDto.fromJson(json);
+          ExercisePerformanceReport report = ExercisePerformanceReport.fromJson(json);
           navigateWithSlideTransition(
               context: context,
               child: MuscleGroupTrainingReportScreen(
                   muscleGroup: _selectedMuscleGroup,
                   report: report,
-                  exerciseLogs: exerciseLogsWithPrimaryMuscleGroups));
+                  exerciseLogs: exerciseLogs));
         }
       }
     }).catchError((_) {

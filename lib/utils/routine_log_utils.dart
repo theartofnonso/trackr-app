@@ -23,8 +23,7 @@ String prepareLogInstruction({required BuildContext context, required RoutineLog
   buffer.writeln();
 
   for (final currentExerciseLog in exerciseLogs) {
-    buffer.writeln(
-        "Exercise Id for ${currentExerciseLog.exercise.name}: ${currentExerciseLog.exercise.id}");
+    buffer.writeln("Exercise Id for ${currentExerciseLog.exercise.name}: ${currentExerciseLog.exercise.id}");
     buffer.writeln(
         "Rep Range for ${currentExerciseLog.exercise.name}: ${currentExerciseLog.minReps} to ${currentExerciseLog.maxReps}");
     List<String> currentSetSummaries = generateSetSummaries(currentExerciseLog);
@@ -44,16 +43,10 @@ String prepareLogInstruction({required BuildContext context, required RoutineLog
           "Past sets for ${currentExerciseLog.exercise.name} logged on ${pastExerciseLog.createdAt.withoutTime().formattedDayAndMonthAndYear()}: $pastSetSummaries");
     }
 
-    final completedPastExerciseLogs = loggedExercises(exerciseLogs: pastExerciseLogs);
-    if (completedPastExerciseLogs.isNotEmpty) {
-      final previousLog = completedPastExerciseLogs.last;
-      final heaviestSetWeight = heaviestWeightInSetForExerciseLog(exerciseLog: previousLog);
-      final oneRepMax = average1RM(weight: (heaviestSetWeight).weight, reps: (heaviestSetWeight).reps);
+    final heaviestSetWeight = heaviestWeightInSetForExerciseLog(exerciseLog: exerciseLogs.last);
+    final oneRepMax = average1RM(weight: (heaviestSetWeight).weight, reps: (heaviestSetWeight).reps);
 
-      buffer.writeln("One Rep Max for ${currentExerciseLog.exercise.name}: $oneRepMax");
-
-      buffer.writeln();
-    }
+    buffer.writeln("One Rep Max for ${currentExerciseLog.exercise.name}: $oneRepMax");
   }
 
   buffer.writeln();

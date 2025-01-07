@@ -323,7 +323,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                               ctaLabel: "Ask for feedback",
                               description:
                                   "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
-                              onTap: _generateReport),
+                              onTap: () => _generateReport(log: updatedLog)),
                         ExerciseLogListView(
                             exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogs)),
                         const SizedBox(
@@ -365,10 +365,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     }
   }
 
-  void _generateReport() async {
-    final log = _log;
-
-    if (log == null) return;
+  void _generateReport({required RoutineLogDto log}) async {
 
     _showLoadingScreen();
 

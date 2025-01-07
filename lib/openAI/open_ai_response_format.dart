@@ -19,44 +19,42 @@ const newRoutineResponseFormat = {
   }
 };
 
-const routineLogsReportResponseFormat = {
+const muscleGroupTrainingReportResponseFormat = {
   "type": "json_schema",
   "json_schema": {
     "name": "historical_exercise_logs_response",
     "schema": {
+      "title": "Exercise Performance Report",
+      "description": "A structured report analyzing the user's performance on training a muscle group.",
       "type": "object",
       "properties": {
-        "introduction": {
-          "type": "string",
-          "description": "Brief introduction summarizing the overall training report."
-        },
+        "title": {"type": "string", "description": "The name of the current workout session."},
         "exercise_reports": {
           "type": "array",
+          "description": "A list of detailed reports for each exercise performed.",
           "items": {
             "type": "object",
             "properties": {
-              "exercise_name": {"type": "string", "description": "The name of the exercise."},
-              "heaviest_weight": {
-                "type": "string",
-                "description": "Summary of heaviest weight lifted for this exercise."
-              },
-              "heaviest_volume": {
-                "type": "string",
-                "description": "Summary of heaviest total volume (weight x reps) lifted for this exercise."
-              },
+              "exercise_id": {"type": "string", "description": "The id of the exercise."},
               "comments": {
                 "type": "string",
-                "description":
-                    "Overall summary of the exercise performance across all training sessions, including any notable trends or observations."
+                "description": "Overall analysis of performance trends, including notable observations."
               }
             },
-            "required": ["exercise_name", "heaviest_weight", "heaviest_volume", "comments"],
+            "required": ["exercise_id", "comments"],
             "additionalProperties": false
           }
         },
-        "suggestions": {"type": "string", "description": "Brief summary of suggestions for future improvements."}
+        "suggestions": {
+          "type": "array",
+          "description": "A list of personalized suggestions for future improvements.",
+          "items": {
+            "type": "string",
+            "description": "Personalized suggestions for future improvements and goal setting."
+          }
+        },
       },
-      "required": ["introduction", "exercise_reports", "suggestions"],
+      "required": ["title", "exercise_reports", "suggestions"],
       "additionalProperties": false
     },
     "strict": true
