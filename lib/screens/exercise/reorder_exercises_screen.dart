@@ -40,9 +40,9 @@ class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
   @override
   Widget build(BuildContext context) {
     final widgets = _exercises
-        .mapIndexed((index, exercise) => Padding(
+        .mapIndexed((index, exercise) => Container(
               key: Key("$index"),
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              margin: const EdgeInsets.symmetric(vertical: 4.0),
               child: ListTile(
                 title: Text(exercise.exercise.name, style: GoogleFonts.ubuntu()),
                 trailing: const Icon(
