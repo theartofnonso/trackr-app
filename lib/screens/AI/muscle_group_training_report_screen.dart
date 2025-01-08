@@ -61,7 +61,7 @@ class MuscleGroupTrainingReportScreen extends StatelessWidget {
                             itemBuilder: (context, index) {
                               final exerciseReport = report.exerciseReports[index];
                               final exerciseLog = exerciseLogs
-                                  .firstWhere((exerciseLog) => exerciseReport.exerciseId == exerciseLog.exercise.id);
+                                  .lastWhere((exerciseLog) => exerciseReport.exerciseId == exerciseLog.exercise.id);
                               return _ExerciseReportWidget(exerciseLog: exerciseLog, exerciseReport: exerciseReport);
                             },
                             separatorBuilder: (context, index) => SizedBox(height: 20),
