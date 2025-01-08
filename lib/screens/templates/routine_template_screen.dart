@@ -334,10 +334,12 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                             )
                           ],
                         ),
+                        const SizedBox(height: 16),
                         Text(
                             "Here’s a summary of your ${template.name} training intensity over the last ${allLogsForTemplate.length} sessions.",
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                 fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                        const SizedBox(height: 6),
                         Padding(
                           padding: const EdgeInsets.only(right: 20),
                           child: Column(

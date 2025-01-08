@@ -453,13 +453,14 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   void _toggleVolume() {
     setState(() {
-      _muted = !_muted;
+      if (_muted) {
+        _videoController.unMute();
+        _muted = false;
+      } else {
+        _videoController.mute();
+        _muted = true;
+      }
     });
-    if (_muted) {
-      _videoController.unMute();
-    } else {
-      _videoController.mute();
-    }
   }
 
   void _showWeightCalculator() {
