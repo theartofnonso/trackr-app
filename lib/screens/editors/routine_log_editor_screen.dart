@@ -362,7 +362,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                 alignment: Alignment.centerLeft,
                                 child: IconButton(
                                     onPressed: _toggleVolume,
-                                    icon: FaIcon(_muted ? FontAwesomeIcons.volumeHigh : FontAwesomeIcons.volumeXmark,
+                                    icon: FaIcon(_muted ? FontAwesomeIcons.volumeHigh : FontAwesomeIcons.volumeXmark, color: Colors.white,
                                         size: 16)))
                           ])
                         : Consumer<ExerciseLogController>(
