@@ -53,7 +53,7 @@ class MuscleGroupTrainingReportScreen extends StatelessWidget {
                               description: "Review your performance across your ${muscleGroup.name} training sessions.",
                               labelStyle: Theme.of(context).textTheme.bodyLarge!,
                               descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
-                              dividerColor: sapphireLighter),
+                              dividerColor: Colors.transparent),
                         ),
                         ListView.separated(
                             shrinkWrap: true,

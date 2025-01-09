@@ -341,9 +341,9 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                         children: [
                                           _RoutineLogOverview(
                                             exercisesSummary:
-                                                "${provider.completedExerciseLog().length}/${provider.exerciseLogs.length}",
+                                                "${provider.completedExerciseLog().length} of ${provider.exerciseLogs.length}",
                                             setsSummary:
-                                                "${provider.completedSets().length}/${provider.exerciseLogs.expand((exerciseLog) => exerciseLog.sets).length}",
+                                                "${provider.completedSets().length} of ${provider.exerciseLogs.expand((exerciseLog) => exerciseLog.sets).length}",
                                             timer: StopwatchTimer(
                                               forceLightMode: true,
                                               startTime: widget.log.startTime,
@@ -369,9 +369,9 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                             builder: (BuildContext context, ExerciseLogController provider, Widget? child) {
                             return _RoutineLogOverview(
                               exercisesSummary:
-                                  "${provider.completedExerciseLog().length}/${provider.exerciseLogs.length}",
+                                  "${provider.completedExerciseLog().length} of ${provider.exerciseLogs.length}",
                               setsSummary:
-                                  "${provider.completedSets().length}/${provider.exerciseLogs.expand((exerciseLog) => exerciseLog.sets).length}",
+                                  "${provider.completedSets().length} of ${provider.exerciseLogs.expand((exerciseLog) => exerciseLog.sets).length}",
                               timer: StopwatchTimer(
                                 startTime: widget.log.startTime,
                               ),
@@ -565,8 +565,6 @@ class _RoutineLogOverview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
 
     return Container(
         decoration: BoxDecoration(
@@ -574,8 +572,8 @@ class _RoutineLogOverview extends StatelessWidget {
         ),
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
         child: Table(
-          border: TableBorder(
-              verticalInside: BorderSide(color: isDarkMode ? Colors.white70 : Colors.grey.shade200, width: 0.5)),
+          // border: TableBorder(
+          //     verticalInside: BorderSide(color: isDarkMode ? Colors.white70 : Colors.grey.shade200, width: 0.5)),
           columnWidths: const <int, TableColumnWidth>{
             0: FlexColumnWidth(1),
             1: FlexColumnWidth(1),

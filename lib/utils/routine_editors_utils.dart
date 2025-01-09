@@ -16,7 +16,7 @@ void showSuperSetExercisePicker(
   displayBottomSheet(
     context: context,
     child: SuperSetExerciseLogPicker(
-      title: "Superset ${firstExerciseLog.exercise.name} with",
+      title: "Superset ${firstExerciseLog.exercise.name} with . . .",
       exercises: otherExerciseLogs,
       onSelect: onSelected,
       onSelectExercisesInLibrary: selectExercisesInLibrary,

@@ -51,7 +51,7 @@ class RoutineLogReportScreen extends StatelessWidget {
                               description: "Review your performance in comparison to previous sessions.",
                               labelStyle: Theme.of(context).textTheme.bodyLarge!,
                               descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
-                              dividerColor: sapphireLighter),
+                              dividerColor: Colors.transparent),
                         ),
                         ListView.separated(
                             shrinkWrap: true,
