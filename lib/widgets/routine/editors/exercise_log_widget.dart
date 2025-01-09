@@ -9,10 +9,8 @@ import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/set_dtos/duration_set_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
-import 'package:tracker_app/screens/AI/stt_logging.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
-import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
@@ -120,8 +118,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         .updateExerciseLogRepRange(exerciseLogId: widget.exerciseLogDto.id, values: values);
   }
 
-  void _loadControllers({required List<SetDto> sets}) {
+  void _loadControllers() {
     _clearControllers();
+
+    final exerciseLog = Provider.of<ExerciseLogController>(context, listen: false)
+        .whereExerciseLog(exerciseId: widget.exerciseLogDto.exercise.id);
+
+    final sets = exerciseLog.sets;
 
     if (withDurationOnly(type: widget.exerciseLogDto.exercise.type)) {
       _loadDurationControllers(sets: sets);
@@ -168,15 +171,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         .whereSetsForExercise(exercise: widget.exerciseLogDto.exercise);
     Provider.of<ExerciseLogController>(context, listen: false)
         .addSet(exerciseLogId: widget.exerciseLogDto.id, pastSets: pastSets);
-
-    _loadControllers(sets: widget.exerciseLogDto.sets);
+    _loadControllers();
   }
 
   void _removeSet({required int index}) {
     Provider.of<ExerciseLogController>(context, listen: false)
         .removeSetForExerciseLog(exerciseLogId: widget.exerciseLogDto.id, index: index);
-
-    _loadControllers(sets: widget.exerciseLogDto.sets);
+    _loadControllers();
   }
 
   void _updateWeight({required int index, required double weight, required SetDto setDto}) {
@@ -205,7 +206,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       Provider.of<ExerciseLogController>(context, listen: false)
           .updateDuration(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet, notify: checked);
 
-      _loadControllers(sets: widget.exerciseLogDto.sets);
+      _loadControllers();
 
       if (checked) {
         displayBottomSheet(
@@ -233,7 +234,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateDuration(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet, notify: true);
 
-    _loadControllers(sets: widget.exerciseLogDto.sets);
+    _loadControllers();
   }
 
   void _updateSetCheck({required int index, required SetDto setDto}) {
@@ -242,7 +243,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateSetCheck(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
 
-    _loadControllers(sets: widget.exerciseLogDto.sets);
+    _loadControllers();
 
     if (checked) {
       displayBottomSheet(
@@ -265,16 +266,16 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       final repsController = TextEditingController(text: set.reps.toString());
       controllers.add((weightController, repsController));
     }
-    _weightAndRepsControllers.addAll(controllers);
+    _weightAndRepsControllers = controllers;
   }
 
   void _loadRepsControllers({required List<SetDto> sets}) {
     List<TextEditingController> controllers = [];
     for (final set in sets) {
       final repsController = TextEditingController(text: (set as RepsSetDto).reps.toString());
-      _repsControllers.add((repsController));
+      controllers.add(repsController);
     }
-    _repsControllers.addAll(controllers);
+    _repsControllers = controllers;
   }
 
   void _loadDurationControllers({required List<SetDto> sets}) {
@@ -284,7 +285,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       final startTime = DateTime.now().subtract(duration);
       controllers.add(startTime);
     }
-    _durationControllers.addAll(controllers);
+    _durationControllers = controllers;
   }
 
   void _onTapWeightEditor({required SetDto setDto}) {
@@ -304,27 +305,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   @override
   void initState() {
     super.initState();
-    _loadControllers(sets: widget.exerciseLogDto.sets);
+    _loadControllers();
   }
 
   @override
   void dispose() {
     _disposeControllers();
     super.dispose();
-  }
-
-  void _stt() async {
-    final sets =
-        await navigateWithSlideTransition(context: context, child: STTLoggingScreen(exerciseLog: widget.exerciseLogDto))
-            as List<SetDto>?;
-    if (sets != null) {
-      if (mounted) {
-        _loadControllers(sets: sets);
-
-        Provider.of<ExerciseLogController>(context, listen: false)
-            .overwriteSets(exerciseLogId: widget.exerciseLogDto.id, sets: sets);
-      }
-    }
   }
 
   final Map<int, Color> _intensityToColor = {
@@ -1072,14 +1059,14 @@ class _RPERatingSliderState extends State<_RPERatingSlider> {
 }
 
 Map<int, String> _repToPercentage = {
-  1: "Extremely light — mostly warm-up weight",
-  2: "Very light — can easily perform many more reps",
-  3: "Light — still feels comfortable",
-  4: "Moderate — some effort required but manageable",
-  5: "Challenging — you're working, yet not near failure",
-  6: "Hard — beginning to feel significant strain",
-  7: "Very hard — only a few reps left in the tank",
-  8: "Near max — pushing close to muscular failure",
-  9: "Maximal — maybe 1 rep left, if at all",
-  10: "All-out — absolute limit, no reps left in reserve",
+  1: "Barely any effort (warm-up weight)",
+  2: "Very light (can do many more reps)",
+  3: "Light (feels comfortable)",
+  4: "Moderate (challenging but manageable)",
+  5: "Tough (working hard, not near failure)",
+  6: "Hard (around 3 reps left in the tank)",
+  7: "Very hard (about 2 reps left)",
+  8: "Near max (1–2 reps left)",
+  9: "Maximal (maybe 1 rep left)",
+  10: "Absolute limit (no reps left)",
 };

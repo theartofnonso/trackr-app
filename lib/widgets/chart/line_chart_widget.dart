@@ -98,7 +98,7 @@ class LineChartWidget extends StatelessWidget {
 
     return SideTitleWidget(
       fitInside: SideTitleFitInsideData.fromTitleMeta(meta, enabled: false),
-      axisSide: meta.axisSide,
+      meta: meta,
       child: Text(_weightTitle(value: value), style: style),
     );
   }
@@ -118,7 +118,7 @@ class LineChartWidget extends StatelessWidget {
     final style = GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 7, color: Colors.grey.shade600);
     return SideTitleWidget(
       fitInside: SideTitleFitInsideData.fromTitleMeta(meta),
-      axisSide: meta.axisSide,
+      meta: meta,
       child: Text(modifiedDateTimes[value.toInt()].toUpperCase(), style: style),
     );
   }

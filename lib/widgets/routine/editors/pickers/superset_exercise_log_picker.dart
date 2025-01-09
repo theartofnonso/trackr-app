@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../colors.dart';
 import '../../../../dtos/exercise_log_dto.dart';
@@ -25,9 +26,11 @@ class SuperSetExerciseLogPicker extends StatelessWidget {
               onTap: () {
                 onSelect(exercise);
               },
-              
-      contentPadding: EdgeInsets.zero,
-              title: Text(exercise.exercise.name),
+              contentPadding: EdgeInsets.zero,
+              title: Text(
+                exercise.exercise.name,
+                style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400),
+              ),
             ))
         .toList();
 
@@ -36,14 +39,7 @@ class SuperSetExerciseLogPicker extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 20.0, bottom: 10),
-                  child: Text(title,
-                      style: Theme.of(context).textTheme.titleMedium),
-                ),
-                ...listTiles
-              ],
+              children: [Text(title, style: Theme.of(context).textTheme.titleMedium), ...listTiles],
             ),
           )
         : _EmptyState(onPressed: onSelectExercisesInLibrary);

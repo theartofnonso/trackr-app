@@ -34,7 +34,7 @@ import '../../utils/routine_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
-import '../../widgets/timers/routine_timer.dart';
+import '../../widgets/timers/stopwatch_timer.dart';
 import '../../widgets/weight_plate_calculator.dart';
 
 class RoutineLogEditorScreen extends StatefulWidget {
@@ -58,6 +58,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   final _minimisedExerciseLogCards = <String>[];
 
   SetDto? _selectedSetDto;
+
+  bool _muted = false;
 
   void _selectExercisesInLibrary() async {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
@@ -325,42 +327,52 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                 children: [
                   if (widget.mode == RoutineEditorMode.log)
                     workoutVideoUrl.isNotEmpty
-                        ? Padding(
-                            padding: const EdgeInsets.only(bottom: 10.0),
-                            child: YoutubePlayer(
-                              topActions: [
-                                Consumer<ExerciseLogController>(
-                                    builder: (BuildContext context, ExerciseLogController provider, Widget? child) {
-                                  return Expanded(
-                                    child: Wrap(
-                                      children: [
-                                        _RoutineLogOverview(
-                                          exercisesSummary:
-                                              "${provider.completedExerciseLog().length}/${provider.exerciseLogs.length}",
-                                          setsSummary:
-                                              "${provider.completedSets().length}/${provider.exerciseLogs.expand((exerciseLog) => exerciseLog.sets).length}",
-                                          timer: RoutineTimer(
+                        ? Stack(children: [
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 10.0),
+                              child: YoutubePlayer(
+                                progressIndicatorColor: Colors.white,
+                                showVideoProgressIndicator: true,
+                                topActions: [
+                                  Consumer<ExerciseLogController>(
+                                      builder: (BuildContext context, ExerciseLogController provider, Widget? child) {
+                                    return Expanded(
+                                      child: Wrap(
+                                        children: [
+                                          _RoutineLogOverview(
+                                            exercisesSummary:
+                                                "${provider.completedExerciseLog().length} of ${provider.exerciseLogs.length}",
+                                            setsSummary:
+                                                "${provider.completedSets().length} of ${provider.exerciseLogs.expand((exerciseLog) => exerciseLog.sets).length}",
+                                            timer: StopwatchTimer(
+                                              forceLightMode: true,
+                                              startTime: widget.log.startTime,
+                                            ),
                                             forceLightMode: true,
-                                            startTime: widget.log.startTime,
-                                          ),
-                                          forceLightMode: true,
-                                        )
-                                      ],
-                                    ),
-                                  );
-                                })
-                              ],
-                              controller: _videoController,
+                                          )
+                                        ],
+                                      ),
+                                    );
+                                  })
+                                ],
+                                controller: _videoController,
+                              ),
                             ),
-                          )
+                            Align(
+                                alignment: Alignment.centerLeft,
+                                child: IconButton(
+                                    onPressed: _toggleVolume,
+                                    icon: FaIcon(_muted ? FontAwesomeIcons.volumeHigh : FontAwesomeIcons.volumeXmark, color: Colors.white,
+                                        size: 16)))
+                          ])
                         : Consumer<ExerciseLogController>(
                             builder: (BuildContext context, ExerciseLogController provider, Widget? child) {
                             return _RoutineLogOverview(
                               exercisesSummary:
-                                  "${provider.completedExerciseLog().length}/${provider.exerciseLogs.length}",
+                                  "${provider.completedExerciseLog().length} of ${provider.exerciseLogs.length}",
                               setsSummary:
-                                  "${provider.completedSets().length}/${provider.exerciseLogs.expand((exerciseLog) => exerciseLog.sets).length}",
-                              timer: RoutineTimer(
+                                  "${provider.completedSets().length} of ${provider.exerciseLogs.expand((exerciseLog) => exerciseLog.sets).length}",
+                              timer: StopwatchTimer(
                                 startTime: widget.log.startTime,
                               ),
                             );
@@ -439,6 +451,18 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
             )));
   }
 
+  void _toggleVolume() {
+    setState(() {
+      if (_muted) {
+        _videoController.unMute();
+        _muted = false;
+      } else {
+        _videoController.mute();
+        _muted = true;
+      }
+    });
+  }
+
   void _showWeightCalculator() {
     displayBottomSheet(
         context: context,
@@ -460,7 +484,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     _videoController = YoutubePlayerController(
       initialVideoId: videoId,
-      flags: const YoutubePlayerFlags(autoPlay: false, mute: false, forceHD: true, hideControls: false),
+      flags: const YoutubePlayerFlags(
+          autoPlay: false, mute: false, forceHD: true, hideControls: false, showLiveFullscreenButton: false),
     );
   }
 
@@ -540,8 +565,6 @@ class _RoutineLogOverview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
 
     return Container(
         decoration: BoxDecoration(
@@ -549,8 +572,8 @@ class _RoutineLogOverview extends StatelessWidget {
         ),
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
         child: Table(
-          border: TableBorder(
-              verticalInside: BorderSide(color: isDarkMode ? Colors.white70 : Colors.grey.shade200, width: 1)),
+          // border: TableBorder(
+          //     verticalInside: BorderSide(color: isDarkMode ? Colors.white70 : Colors.grey.shade200, width: 0.5)),
           columnWidths: const <int, TableColumnWidth>{
             0: FlexColumnWidth(1),
             1: FlexColumnWidth(1),
@@ -568,6 +591,7 @@ class _RoutineLogOverview extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(color: forceLightMode ? Colors.white : null)),
             ]),
+            const TableRow(children: [SizedBox(height: 4), SizedBox(height: 4), SizedBox(height: 4)]),
             TableRow(children: [
               Text(exercisesSummary,
                   textAlign: TextAlign.center,

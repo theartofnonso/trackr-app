@@ -6,7 +6,7 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 
 import '../../../../enums/routine_editor_type_enums.dart';
 import '../../../../utils/dialog_utils.dart';
-import '../../../timers/routine_timer.dart';
+import '../../../timers/stopwatch_timer.dart';
 import '../set_check_button.dart';
 import '../set_delete_button.dart';
 
@@ -73,7 +73,7 @@ class DurationSetRow extends StatelessWidget {
                   child: editorType == RoutineEditorMode.edit || setDto.checked
                       ? Text(setDto.duration.hmsDigital(),
                           style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600))
-                      : RoutineTimer(
+                      : StopwatchTimer(
                           startTime: startTime,
                           digital: true,
                           onChangedDuration: (Duration duration) => onCheckAndUpdateDuration(duration)),
