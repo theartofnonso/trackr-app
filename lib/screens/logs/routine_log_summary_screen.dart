@@ -150,6 +150,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
         body: Container(
           decoration: BoxDecoration(gradient: themeGradient(context: context)),
           child: SafeArea(
+            minimum: const EdgeInsets.symmetric(vertical: 10.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
