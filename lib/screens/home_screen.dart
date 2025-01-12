@@ -47,7 +47,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     if (SharedPrefs().firstLaunch) {
-      return OnboardingScreen();
+      if(Platform.isIOS) {
+        return OnboardingScreen();
+      }
     }
 
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
