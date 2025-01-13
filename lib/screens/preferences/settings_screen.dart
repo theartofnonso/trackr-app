@@ -151,7 +151,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   onChanged: (bool value) {
                     setState(() {
                       SharedPrefs().minimiseCalendar = value;
-                      Provider.of<SettingsController>(context, listen: false).notify();
                     });
                   },
                 ),
@@ -167,7 +166,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   onChanged: (bool value) {
                     setState(() {
                       SharedPrefs().showCalendarDates = value;
-                      Provider.of<SettingsController>(context, listen: false).notify();
                     });
                   },
                 ),

@@ -161,8 +161,6 @@ class _CalendarState extends State<Calendar> {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark || widget.forceDarkMode;
 
-    Provider.of<SettingsController>(context, listen: true);
-
     final dates = widget.minimiseCalendar ? _generateWeekDates() : _generateDates() ;
 
     return Column(

@@ -61,12 +61,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             SharedPrefs().firstLaunch = false;
 
             if (context.mounted) {
-              context.pushReplacement(HomeScreen.routeName);
+              context.replace(HomeScreen.routeName);
             }
           },
           negativeAction: () {
             SharedPrefs().firstLaunch = false;
-            context.pushReplacement(HomeScreen.routeName);
+            context.replace(HomeScreen.routeName);
           },
           positiveActionLabel: "Connect to Apple Health",
           negativeActionLabel: 'Skip connecting to Apple Health'),
