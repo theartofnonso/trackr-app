@@ -22,8 +22,8 @@ class WeeklyMilestone extends Milestone {
       required super.progress,
       required super.type});
 
-  static List<Milestone> loadMilestones({required List<RoutineLogDto> logs, required List<DateTimeRange> weeksInYear, required DateTime datetime}) {
-
+  static List<Milestone> loadMilestones(
+      {required List<RoutineLogDto> logs, required List<DateTimeRange> weeksInYear, required DateTime datetime}) {
     final mondayMilestone = WeeklyMilestone(
         id: 'NMAMC_002',
         name: 'Never Miss A Monday'.toUpperCase(),
@@ -53,7 +53,7 @@ class WeeklyMilestone extends Milestone {
             'Commit to your fitness goals by never skipping leg day. Strengthen your lower body through consistent training, enhancing your overall physique and performance.',
         caption: "Train legs weekly",
         target: 16,
-        progress: calculateLegProgress(logs: logs, target: 16, weeks: weeksInYear),
+        progress: calculateLegProgress(logs: logs, target: 16, weeks: weeksInYear, datetime: datetime),
         muscleGroupFamily: MuscleGroupFamily.legs,
         rule: "Log at least one leg-focused training session every week for 16 consecutive weeks.",
         type: MilestoneType.weekly);
@@ -61,12 +61,11 @@ class WeeklyMilestone extends Milestone {
     return [mondayMilestone, weekendMilestone, legDayMilestone];
   }
 
-  static (double, List<RoutineLogDto>) calculateMondayProgress({
-    required List<RoutineLogDto> logs,
-    required int target,
-    required List<DateTimeRange> weeks,
-    required DateTime datetime
-  }) {
+  static (double, List<RoutineLogDto>) calculateMondayProgress(
+      {required List<RoutineLogDto> logs,
+      required int target,
+      required List<DateTimeRange> weeks,
+      required DateTime datetime}) {
     if (logs.isEmpty) return (0, []);
 
     List<RoutineLogDto> mondayLogs = [];
@@ -103,7 +102,11 @@ class WeeklyMilestone extends Milestone {
     return (progress, qualifyingLogs);
   }
 
-  static (double, List<RoutineLogDto>) calculateWeekendProgress({required List<RoutineLogDto> logs, required int target, required List<DateTimeRange> weeks, required DateTime datetime}) {
+  static (double, List<RoutineLogDto>) calculateWeekendProgress(
+      {required List<RoutineLogDto> logs,
+      required int target,
+      required List<DateTimeRange> weeks,
+      required DateTime datetime}) {
     if (logs.isEmpty) return (0, []);
 
     List<RoutineLogDto> weekendLogs = [];
@@ -111,9 +114,7 @@ class WeeklyMilestone extends Milestone {
 
     for (var week in weeks) {
       // Skip weeks that haven't ended yet
-
       if (week.end.isAfter(now) || week.end.isAtSameMomentAs(now)) {
-
         // Check if the current week has passed the weekend
         if (now.weekday != DateTime.saturday && now.weekday != DateTime.sunday && now.weekday != DateTime.monday) {
           continue;
@@ -145,27 +146,39 @@ class WeeklyMilestone extends Milestone {
     return (progress, qualifyingLogs);
   }
 
-  static (double, List<RoutineLogDto>) calculateLegProgress(
-      {required List<RoutineLogDto> logs, required int target, required List<DateTimeRange> weeks}) {
+  static (double, List<RoutineLogDto>) calculateLegProgress({
+    required List<RoutineLogDto> logs,
+    required int target,
+    required List<DateTimeRange> weeks,
+    required DateTime datetime,
+  }) {
     if (logs.isEmpty) return (0, []);
 
     List<RoutineLogDto> legsLogs = [];
-    for (final week in weeks) {
+    DateTime now = datetime;
+
+    for (var week in weeks) {
+
+      // If the week hasn’t ended yet, skip it
+      if (week.end.isAfter(now) || week.end.isAtSameMomentAs(now)) {
+        continue;
+      }
+
+      // Filter logs that occurred within this ended week
       final logsForTheWeek = logs.where((log) => log.createdAt.isWithinRange(range: week));
+
+      // Find the first log that has at least one legs exercise
       final legLog = logsForTheWeek.firstWhereOrNull((log) {
         final completedExerciseLogs = loggedExercises(exerciseLogs: log.exerciseLogs);
-        final hasLegLog = completedExerciseLogs.where((exerciseLog) {
-          final primaryMuscleGroupFamily = exerciseLog.exercise.primaryMuscleGroup.family;
-          final secondaryMuscleGroupFamilies =
-              exerciseLog.exercise.secondaryMuscleGroups.map((muscleGroup) => muscleGroup.family);
-          final muscleGroupFamilies = [primaryMuscleGroupFamily, ...secondaryMuscleGroupFamilies];
-          return muscleGroupFamilies.contains(MuscleGroupFamily.legs);
-        }).isNotEmpty;
-        return hasLegLog;
+        return completedExerciseLogs.any((exerciseLog) {
+          return exerciseLog.exercise.primaryMuscleGroup.family == MuscleGroupFamily.legs;
+        });
       });
+
       if (legLog != null) {
         legsLogs.add(legLog);
       } else {
+        // If no leg-day log was found this week, reset if we haven’t met target yet
         if (legsLogs.length < target) {
           legsLogs = [];
         }
@@ -173,9 +186,7 @@ class WeeklyMilestone extends Milestone {
     }
 
     final qualifyingLogs = legsLogs.take(target).toList();
-
     final progress = qualifyingLogs.length / target;
-
     return (progress, qualifyingLogs);
   }
 }

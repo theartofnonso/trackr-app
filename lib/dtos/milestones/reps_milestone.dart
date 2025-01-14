@@ -12,8 +12,6 @@ import '../set_dtos/weight_and_reps_dto.dart';
 class RepsMilestone extends Milestone {
   final MuscleGroup muscleGroup;
 
-
-
   RepsMilestone(
       {required super.id,
       required super.name,
@@ -81,6 +79,12 @@ class RepsMilestone extends Milestone {
     }).toList();
   }
 
+  static bool _isShoulder({required MuscleGroup muscleGroup}) {
+    return (muscleGroup == MuscleGroup.frontShoulder) ||
+        (muscleGroup == MuscleGroup.backShoulder) ||
+        (muscleGroup == MuscleGroup.shoulders);
+  }
+
   static (double, List<RoutineLogDto>) _calculateProgress(
       {required List<RoutineLogDto> logs, required MuscleGroup muscleGroup, required int target}) {
     if (logs.isEmpty) return (0, []);
@@ -97,6 +101,9 @@ class RepsMilestone extends Milestone {
             .where((exerciseLog) => exerciseLog.exercise.type != ExerciseType.duration)
             .where((exerciseLog) {
           final primaryMuscleGroup = exerciseLog.exercise.primaryMuscleGroup;
+          if (muscleGroup == MuscleGroup.shoulders) {
+            return _isShoulder(muscleGroup: primaryMuscleGroup);
+          }
           return muscleGroup == primaryMuscleGroup;
         });
 

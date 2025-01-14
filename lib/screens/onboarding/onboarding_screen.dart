@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
-import '../../shared_prefs.dart';
 import '../../widgets/icons/apple_health_icon.dart';
-import '../home_screen.dart';
 import 'onboarding_step_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({super.key});
+  final void Function() onComplete;
+
+  const OnboardingScreen({super.key, required this.onComplete});
 
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
@@ -58,16 +57,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           positiveAction: () async {
             await requestAppleHealth();
 
-            SharedPrefs().firstLaunch = false;
-
-            if (context.mounted) {
-              context.pushReplacement(HomeScreen.routeName);
-            }
+            widget.onComplete();
           },
-          negativeAction: () {
-            SharedPrefs().firstLaunch = false;
-            context.pushReplacement(HomeScreen.routeName);
-          },
+          negativeAction: widget.onComplete,
           positiveActionLabel: "Connect to Apple Health",
           negativeActionLabel: 'Skip connecting to Apple Health'),
     ];
