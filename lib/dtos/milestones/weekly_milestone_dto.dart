@@ -114,7 +114,7 @@ class WeeklyMilestone extends Milestone {
 
     for (var week in weeks) {
       // Skip weeks that haven't ended yet
-
+      print(week);
       if (week.end.isAfter(now) || week.end.isAtSameMomentAs(now)) {
         // Check if the current week has passed the weekend
         if (now.weekday != DateTime.saturday && now.weekday != DateTime.sunday && now.weekday != DateTime.monday) {
@@ -159,6 +159,7 @@ class WeeklyMilestone extends Milestone {
     DateTime now = datetime;
 
     for (var week in weeks) {
+
       // If the week hasn’t ended yet, skip it
       if (week.end.isAfter(now) || week.end.isAtSameMomentAs(now)) {
         continue;
@@ -166,6 +167,8 @@ class WeeklyMilestone extends Milestone {
 
       // Filter logs that occurred within this ended week
       final logsForTheWeek = logs.where((log) => log.createdAt.isWithinRange(range: week));
+
+      print(logsForTheWeek);
 
       // Find the first log that has at least one legs exercise
       final legLog = logsForTheWeek.firstWhereOrNull((log) {
@@ -180,6 +183,7 @@ class WeeklyMilestone extends Milestone {
       } else {
         // If no leg-day log was found this week, reset if we haven’t met target yet
         if (legsLogs.length < target) {
+          print("hE");
           legsLogs = [];
         }
       }
