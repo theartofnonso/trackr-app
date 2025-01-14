@@ -48,7 +48,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     if (SharedPrefs().firstLaunch) {
       if (Platform.isIOS) {
-        return OnboardingScreen();
+        return OnboardingScreen(onComplete: () {
+          setState(() {
+            SharedPrefs().firstLaunch = false;
+          });
+        });
       }
     }
 
