@@ -8,6 +8,7 @@ import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/dtos/appsync/activity_log_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
+import 'package:tracker_app/widgets/dividers/label_divider.dart';
 import 'package:tracker_app/widgets/information_containers/information_container_lite.dart';
 import 'package:tracker_app/widgets/other_activity_selector/activity_selector.dart';
 
@@ -133,20 +134,8 @@ class _ActivityEditorScreenState extends State<ActivityEditorScreen> {
                           const SizedBox(height: 16),
                         ],
                       ),
-                    Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                      Text(
-                        "Duration".toUpperCase(),
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                      Expanded(
-                        child: Container(
-                          height: 0.8, // height of the divider
-                          width: double.infinity, // width of the divider (line thickness)
-                          color: sapphireLighter, // color of the divider
-                          margin: const EdgeInsets.symmetric(horizontal: 10), // add space around the divider
-                        ),
-                      ),
-                    ]),
+                    LabelDivider(label: "Duration".toUpperCase(), labelColor: isDarkMode ? Colors.white70 : Colors.black,
+                      dividerColor: sapphireLighter,),
                     ListTile(
                         onTap: () {
                           _dismissKeyboard();

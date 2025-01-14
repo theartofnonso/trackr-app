@@ -212,13 +212,7 @@ class _RoutineWidget extends StatelessWidget {
                   ),
                 ],
               ),
-              Divider(
-                  color: template.isScheduledToday()
-                      ? vibrantGreen.withValues(alpha: 0.2)
-                      : isDarkMode
-                          ? Colors.white10
-                          : Colors.black12,
-                  endIndent: 10),
+              const SizedBox(height: 10,),
               Expanded(
                 child: Text(
                   scheduleSummary,
