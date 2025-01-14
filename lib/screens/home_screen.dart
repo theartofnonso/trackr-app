@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     if (SharedPrefs().firstLaunch) {
-      if(Platform.isIOS) {
+      if (Platform.isIOS) {
         return OnboardingScreen();
       }
     }
@@ -191,11 +191,12 @@ class _HomeScreenState extends State<HomeScreen> {
     final signInDetails = authUser.signInDetails.toJson();
     SharedPrefs().userId = authUser.userId;
     SharedPrefs().userEmail = signInDetails["username"] as String;
-    Posthog().identify(userId: SharedPrefs().userId);
     AnalyticsController.loginAnalytics(isFirstLaunch: SharedPrefs().firstLaunch);
   }
 
-  void _runSetup() async {
+  @override
+  void initState() {
+    super.initState();
     if (SharedPrefs().firstLaunch) {
       _cacheUser();
     }
@@ -204,12 +205,6 @@ class _HomeScreenState extends State<HomeScreen> {
     if (Platform.isIOS) {
       FlutterLocalNotificationsPlugin().cancel(999); // Cancel any pending workout notification
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _runSetup();
   }
 
   @override
