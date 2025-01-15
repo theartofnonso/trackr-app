@@ -129,13 +129,14 @@ class _RoutineWidget extends StatelessWidget {
     final exercises = template.exerciseTemplates;
     final sets = template.exerciseTemplates.expand((exercise) => exercise.sets);
     return Badge(
-      backgroundColor:  vibrantGreen,
+      backgroundColor: vibrantGreen,
       alignment: Alignment.topRight,
       smallSize: 12,
       isLabelVisible: template.isScheduledToday(),
       child: GestureDetector(
         onTap: () => navigateToRoutineTemplatePreview(context: context, template: template),
         child: Container(
+            width: double.infinity,
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
                 color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, borderRadius: BorderRadius.circular(5)),
@@ -212,7 +213,9 @@ class _RoutineWidget extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
               Expanded(
                 child: Text(
                   scheduleSummary,
