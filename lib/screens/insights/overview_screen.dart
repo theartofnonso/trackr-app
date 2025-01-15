@@ -252,7 +252,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
         If the user has logged few or no such activities, focus on encouraging them to engage in and record more non-strength training exercises. 
         The report should highlight the benefits of incorporating a variety of activities into their fitness regimen and offer suggestions on how they can diversify their workouts.
         Note: All weights are measured in ${weightLabel()}.
-        Note: Your report should sound personal.
+        Note: Your report should sound personal and motivating.
 """);
 
     // Main processing

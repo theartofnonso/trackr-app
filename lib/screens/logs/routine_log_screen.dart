@@ -9,6 +9,7 @@ import 'package:in_app_review/in_app_review.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/open_ai_response_schema_dtos/exercise_performance_report.dart';
+import 'package:tracker_app/enums/training_goal_enums.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/openAI/open_ai_response_format.dart';
@@ -275,7 +276,8 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                       children: [
                         MuscleGroupSplitChart(
                             title: "Muscle Groups Split",
-                            description: "Here's a breakdown of the muscle groups in your ${updatedLog.name} workout session.",
+                            description:
+                                "Here's a breakdown of the muscle groups in your ${updatedLog.name} workout session.",
                             muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
                             minimized: false),
                         if (updatedLog.templateId.isNotEmpty && updatedLog.owner == SharedPrefs().userId)
@@ -366,10 +368,14 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
   }
 
   void _generateReport({required RoutineLogDto log}) async {
-
     _showLoadingScreen();
 
-    String instruction = prepareLogInstruction(context: context, routineLog: log);
+    final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
+
+    final user = routineUserController.user;
+
+    String instruction = prepareLogInstruction(
+        context: context, routineLog: log, trainingGoal: user?.trainingGoal ?? TrainingGoal.hypertrophy);
 
     runMessage(system: routineLogSystemInstruction, user: instruction, responseFormat: routineLogReportResponseFormat)
         .then((response) {

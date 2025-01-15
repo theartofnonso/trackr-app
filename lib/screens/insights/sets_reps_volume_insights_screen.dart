@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
+import 'package:tracker_app/enums/training_goal_enums.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/health_and_fitness_stats.dart';
 import 'package:tracker_app/openAI/open_ai_response_format.dart';
@@ -22,6 +23,7 @@ import 'package:tracker_app/widgets/empty_states/horizontal_stacked_bars_empty_s
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
+import '../../controllers/routine_user_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../dtos/open_ai_response_schema_dtos/exercise_performance_report.dart';
 import '../../dtos/set_dtos/reps_dto.dart';
@@ -36,6 +38,7 @@ import '../../strings/ai_prompts.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../utils/one_rep_max_calculator.dart';
+import '../../utils/routine_log_utils.dart';
 import '../../utils/sets_utils.dart';
 import '../../widgets/ai_widgets/trkr_information_container.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
@@ -398,8 +401,16 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   }
 
   void _generateReport({required List<ExerciseLogDto> exerciseLogs}) {
-    final exerciseLogsForMuscleGroups =
-        exerciseLogs.where((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup == _selectedMuscleGroup).sorted((a, b) => b.createdAt.compareTo(a.createdAt)).toList();
+    final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
+
+    final user = routineUserController.user;
+
+    final trainingGoal = user?.trainingGoal ?? TrainingGoal.hypertrophy;
+
+    final exerciseLogsForMuscleGroups = exerciseLogs
+        .where((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup == _selectedMuscleGroup)
+        .sorted((a, b) => b.createdAt.compareTo(a.createdAt))
+        .toList();
 
     if (exerciseLogsForMuscleGroups.isEmpty) {
       showSnackbar(
@@ -410,18 +421,10 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     final StringBuffer buffer = StringBuffer();
 
-    buffer.writeln(
-        "Please analyze my performance for ${_selectedMuscleGroup.name} training by comparing the sets in each exercise.");
-
-    buffer.writeln();
-
     for (final exerciseLog in exerciseLogsForMuscleGroups) {
+      buffer.writeln("Exercise Id for ${exerciseLog.exercise.name}: ${exerciseLog.exercise.id}");
 
-      buffer.writeln(
-          "Exercise Id for ${exerciseLog.exercise.name}: ${exerciseLog.exercise.id}");
-
-      buffer.writeln(
-          "Rep Range for ${exerciseLog.exercise.name}: ${exerciseLog.minReps} to ${exerciseLog.maxReps}");
+      buffer.writeln("Rep Range for ${exerciseLog.exercise.name}: ${exerciseLog.minReps} to ${exerciseLog.maxReps}");
 
       List<String> setSummaries = generateSetSummaries(exerciseLog);
       buffer.writeln(
@@ -437,24 +440,9 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     buffer.writeln();
 
-    buffer.writeln("""
-    
-           Below is information about different rep ranges and their corresponding training goals and recommended intensity levels:
-	            •	1–5 reps: Strength & Power, Heavy (80–90% of 1RM)
-	            •	6–12 reps: Hypertrophy (Muscle Growth), Moderate-Heavy (65–80% of 1RM)
-	            •	12–20+ reps: Muscular Endurance, Light-Moderate (50–65% of 1RM)
-	              
-           Please provide feedback on the following aspects of my workout performance:
-                1.	Weights Lifted: Analyze the progression or consistency in the weights I’ve used.
-    	          2.	Repetitions: Evaluate the number of repetitions performed per set and identify any trends or changes.
-    	          3.	Volume Lifted: Calculate the total volume lifted (weight × repetitions) and provide insights into its progression over time.
-    	          4.	Number of Sets: Assess the number of sets performed and how it aligns with my overall workout goals.
-    	          5.  Rate of perceived exertion: Compare my current and previous RPE values, using the idea that RPE indicates how many reps I could still perform before failure. If RPE is consistently low (e.g., 1–5), it might be time to add weight or increase reps. If it’s often high (8–10), consider reducing the load or increasing rest. Use these insights to determine whether to push harder, maintain, or scale back to optimize training intensity.
-                6.  Based on the recommended rep ranges, training goals, intensity levels, and my current one-rep max, evaluate my training intensity (weight and reps) and provide specific, actionable recommendations on whether I should increase or decrease my working weights for optimal results.
+    final trainingPrompt = generateTrainingPrompt(trainingGoal: trainingGoal, muscleGroups: [_selectedMuscleGroup]);
 
-          Note: All weights are measured in ${weightLabel()}.
-          Note: Your report should sound personal.
-          """);
+    buffer.writeln(trainingPrompt);
 
     final completeInstructions = buffer.toString();
 
@@ -478,9 +466,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
           navigateWithSlideTransition(
               context: context,
               child: MuscleGroupTrainingReportScreen(
-                  muscleGroup: _selectedMuscleGroup,
-                  report: report,
-                  exerciseLogs: exerciseLogs));
+                  muscleGroup: _selectedMuscleGroup, report: report, exerciseLogs: exerciseLogs));
         }
       }
     }).catchError((_) {
