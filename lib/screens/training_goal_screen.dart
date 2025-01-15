@@ -43,8 +43,8 @@ class _TrainingGoalScreenState extends State<TrainingGoalScreen> {
                 child: ListView.separated(
                     itemBuilder: (BuildContext context, int index) => ListTile(
                         onTap: () => _selectTrainingGoal(goal: trainingGoals[index]),
-                        title: Text(trainingGoals[index].displayName, style: GoogleFonts.ubuntu(fontSize: 16)),
-                        subtitle: Text(trainingGoals[index].description, style: GoogleFonts.ubuntu(fontSize: 14))),
+                        title: Text(trainingGoals[index].displayName, style: GoogleFonts.ubuntu(fontSize: 16),),
+                        subtitle: Text(trainingGoals[index].description, style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w300, height: 1.8))),
                     separatorBuilder: (BuildContext context, int index) =>
                         Divider(color: Colors.white70.withValues(alpha: 0.1)),
                     itemCount: trainingGoals.length),

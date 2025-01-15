@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
+import 'package:tracker_app/enums/training_goal_enums.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/routine_editors_utils.dart';
 import 'package:tracker_app/widgets/routine/editors/exercise_log_widget_lite.dart';
@@ -20,6 +21,7 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../../colors.dart';
 import '../../controllers/analytics_controller.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
+import '../../controllers/routine_user_controller.dart';
 import '../../dtos/appsync/exercise_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/set_dtos/weight_and_reps_dto.dart';
@@ -221,7 +223,12 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   }
 
   void _generateReport({required RoutineLogDto routineLog}) async {
-    String instruction = prepareLogInstruction(context: context, routineLog: routineLog);
+
+    final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
+
+    final user = routineUserController.user;
+
+    String instruction = prepareLogInstruction(context: context, routineLog: routineLog, trainingGoal: user?.trainingGoal ?? TrainingGoal.hypertrophy);
 
     runMessage(system: routineLogSystemInstruction, user: instruction, responseFormat: routineLogReportResponseFormat)
         .then((response) {

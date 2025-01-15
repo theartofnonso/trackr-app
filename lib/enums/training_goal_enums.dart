@@ -4,8 +4,8 @@ enum TrainingGoal {
     description: "Build muscle size through progressive overload and higher-volume training.",
   ),
   endurance(
-    displayName: "Endurance",
-    description: "Boost stamina, improve cardiovascular health, and push your limits so you can keep going for longer periods of time.",
+    displayName: "Muscular Endurance",
+    description: "Enhance muscle resistance to fatigue, allowing you to perform longer and more efficiently in physical activities.",
   ),
   strength(
     displayName: "Strength",
