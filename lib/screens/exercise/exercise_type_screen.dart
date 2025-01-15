@@ -3,18 +3,16 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
+import '../../colors.dart';
 import '../../enums/exercise_type_enums.dart';
 
-class ExerciseTypeScreen extends StatefulWidget {
-  const ExerciseTypeScreen({super.key});
+class ExerciseTypeScreen extends StatelessWidget {
+  final ExerciseType exerciseType;
 
-  @override
-  State<ExerciseTypeScreen> createState() => _ExerciseTypeScreenState();
-}
+  const ExerciseTypeScreen({super.key, required this.exerciseType});
 
-class _ExerciseTypeScreenState extends State<ExerciseTypeScreen> {
   /// Select an muscle group
-  void _selectExerciseType({required ExerciseType type}) {
+  void _selectExerciseType({required BuildContext context, required ExerciseType type}) {
     Navigator.of(context).pop(type);
   }
 
@@ -40,14 +38,20 @@ class _ExerciseTypeScreenState extends State<ExerciseTypeScreen> {
             children: [
               Expanded(
                 child: ListView.separated(
-                    itemBuilder: (BuildContext context, int index) => ListTile(
-                        onTap: () => _selectExerciseType(type: exerciseTypes[index]),
-                        trailing: _TrailingWidget(type: exerciseTypes[index]),
-                        title: Text(exerciseTypes[index].name),
-                        subtitle: Text("${exerciseTypes[index].description} . . ."),
-                        dense: true),
+                    itemBuilder: (BuildContext context, int index) {
+                      final type = exerciseTypes[index];
+                      return ListTile(
+                          onTap: () => _selectExerciseType(type: exerciseTypes[index], context: context),
+                          leading: type == exerciseType
+                              ? const FaIcon(FontAwesomeIcons.solidSquareCheck, color: vibrantGreen)
+                              : const FaIcon(FontAwesomeIcons.solidSquareCheck),
+                          trailing: _TrailingWidget(type: exerciseTypes[index]),
+                          title: Text(exerciseTypes[index].name),
+                          subtitle: Text("${exerciseTypes[index].description} . . ."),
+                          dense: true);
+                    },
                     separatorBuilder: (BuildContext context, int index) =>
-                        Divider(color: Colors.white70.withValues(alpha:0.1)),
+                        Divider(color: Colors.white70.withValues(alpha: 0.1)),
                     itemCount: exerciseTypes.length),
               ),
             ],

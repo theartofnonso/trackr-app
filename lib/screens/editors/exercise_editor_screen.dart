@@ -172,7 +172,8 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     }
 
     /// We don't want to allow editing of exercise type once created.
-    final type = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ExerciseTypeScreen()))
+    final type = await Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => ExerciseTypeScreen(exerciseType: _exerciseType)))
         as ExerciseType?;
     if (type != null) {
       setState(() {
