@@ -31,7 +31,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   double _weight = 0;
 
-  TrainingGoal? _trainingGoal;
+  TrainingGoal _trainingGoal = TrainingGoal.hypertrophy;
 
   @override
   Widget build(BuildContext context) {
@@ -119,8 +119,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         .bodyMedium
                         ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
                 const SizedBox(height: 2),
-                OpacityButtonWidget(
-                    label: _trainingGoal?.displayName ?? user.trainingGoal.displayName, onPressed: _updateTrainingGoal)
+                OpacityButtonWidget(label: _trainingGoal.displayName, onPressed: _updateTrainingGoal)
               ]),
               const SizedBox(height: 45),
               SizedBox(
@@ -151,7 +150,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   }
 
   void _updateTrainingGoal() async {
-    final trainingGoal = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => TrainingGoalScreen()))
+    final trainingGoal = await Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => TrainingGoalScreen(trainingGoal: _trainingGoal)))
         as TrainingGoal?;
 
     if (trainingGoal != null) {
@@ -165,5 +165,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   void initState() {
     super.initState();
     _user = Provider.of<RoutineUserController>(context, listen: false).user;
+
+    _trainingGoal = _user?.trainingGoal ?? TrainingGoal.hypertrophy;
   }
 }

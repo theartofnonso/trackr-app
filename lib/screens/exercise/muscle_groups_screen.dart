@@ -139,8 +139,8 @@ class _MuscleGroupWidget extends StatelessWidget {
       onTap: onTap,
       title: Text(muscleGroupDto.muscleGroup.name),
       trailing: muscleGroupDto.selected
-          ? const Icon(Icons.check_box_rounded, color: vibrantGreen)
-          : const Icon(Icons.check_box_rounded),
+          ? const FaIcon(FontAwesomeIcons.solidSquareCheck, color: vibrantGreen)
+          : const FaIcon(FontAwesomeIcons.solidSquareCheck),
     );
   }
 }

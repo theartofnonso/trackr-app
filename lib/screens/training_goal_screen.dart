@@ -5,16 +5,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/enums/training_goal_enums.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
-class TrainingGoalScreen extends StatefulWidget {
-  const TrainingGoalScreen({super.key});
+import '../colors.dart';
 
-  @override
-  State<TrainingGoalScreen> createState() => _TrainingGoalScreenState();
-}
+class TrainingGoalScreen extends StatelessWidget {
+  final TrainingGoal trainingGoal;
 
-class _TrainingGoalScreenState extends State<TrainingGoalScreen> {
+  const TrainingGoalScreen({super.key, required this.trainingGoal});
+
   /// Select an muscle group
-  void _selectTrainingGoal({required TrainingGoal goal}) {
+  void _selectTrainingGoal({required BuildContext context, required TrainingGoal goal}) {
     Navigator.of(context).pop(goal);
   }
 
@@ -41,10 +40,20 @@ class _TrainingGoalScreenState extends State<TrainingGoalScreen> {
             children: [
               Expanded(
                 child: ListView.separated(
-                    itemBuilder: (BuildContext context, int index) => ListTile(
-                        onTap: () => _selectTrainingGoal(goal: trainingGoals[index]),
-                        title: Text(trainingGoals[index].displayName, style: GoogleFonts.ubuntu(fontSize: 16),),
-                        subtitle: Text(trainingGoals[index].description, style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w300, height: 1.8))),
+                    itemBuilder: (BuildContext context, int index) {
+                      final goal = trainingGoals[index];
+                      return ListTile(
+                          onTap: () => _selectTrainingGoal(context: context, goal: goal),
+                          title: Text(
+                            trainingGoals[index].displayName,
+                            style: GoogleFonts.ubuntu(fontSize: 16),
+                          ),
+                          trailing: goal == trainingGoal
+                              ? const FaIcon(FontAwesomeIcons.solidSquareCheck, color: vibrantGreen)
+                              : const FaIcon(FontAwesomeIcons.solidSquareCheck),
+                          subtitle: Text(trainingGoals[index].description,
+                              style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w300, height: 1.8)));
+                    },
                     separatorBuilder: (BuildContext context, int index) =>
                         Divider(color: Colors.white70.withValues(alpha: 0.1)),
                     itemCount: trainingGoals.length),
