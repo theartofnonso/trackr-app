@@ -50,7 +50,7 @@ class RoutineUserDto {
       'cognitoUserId': cognitoUserId,
       'name': name,
       'email': email,
-      'trainingGoal': trainingGoal,
+      'trainingGoal': trainingGoal.name,
       'weight': weight,
     };
   }
