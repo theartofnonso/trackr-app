@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:tracker_app/enums/training_goal_enums.dart';
+
 import '../../models/RoutineUser.dart';
 
 class RoutineUserDto {
@@ -8,6 +10,7 @@ class RoutineUserDto {
   final String name;
   final String email;
   final num weight;
+  final TrainingGoal trainingGoal;
   final String owner;
 
   RoutineUserDto(
@@ -16,6 +19,7 @@ class RoutineUserDto {
       required this.cognitoUserId,
       required this.email,
       required this.weight,
+      this.trainingGoal = TrainingGoal.strength,
       required this.owner});
 
   factory RoutineUserDto.toDto(RoutineUser user) {
@@ -27,10 +31,17 @@ class RoutineUserDto {
     final cognitoUserId = json["cognitoUserId"] ?? "";
     final name = json["name"] ?? "";
     final email = json["email"] ?? "";
+    final trainingGoal = TrainingGoal.fromString(json["trainingGoal"] ?? "");
     final weight = (json["weight"]) ?? 0.0;
 
     return RoutineUserDto(
-        id: user.id, name: name, cognitoUserId: cognitoUserId, email: email, weight: weight, owner: user.owner ?? "");
+        id: user.id,
+        name: name,
+        cognitoUserId: cognitoUserId,
+        email: email,
+        weight: weight,
+        trainingGoal: trainingGoal,
+        owner: user.owner ?? "");
   }
 
   Map<String, Object> toJson() {
@@ -39,6 +50,7 @@ class RoutineUserDto {
       'cognitoUserId': cognitoUserId,
       'name': name,
       'email': email,
+      'trainingGoal': trainingGoal,
       'weight': weight,
     };
   }
@@ -49,6 +61,7 @@ class RoutineUserDto {
     String? cognitoUserId,
     String? email,
     double? weight,
+    TrainingGoal? trainingGoal,
     String? owner,
   }) {
     return RoutineUserDto(
@@ -57,11 +70,12 @@ class RoutineUserDto {
         cognitoUserId: cognitoUserId ?? this.cognitoUserId,
         email: email ?? this.email,
         weight: weight ?? this.weight,
+        trainingGoal: trainingGoal ?? this.trainingGoal,
         owner: owner ?? this.owner);
   }
 
   @override
   String toString() {
-    return 'RoutineUserDto{id: $id, cognitoUserId: $cognitoUserId, name: $name, email: $email, weight: $weight, owner: $owner}';
+    return 'RoutineUserDto{id: $id, cognitoUserId: $cognitoUserId, name: $name, email: $email, weight: $weight, training: $trainingGoal owner: $owner}';
   }
 }

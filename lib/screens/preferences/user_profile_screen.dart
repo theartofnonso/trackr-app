@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/screens/training_goal_screen.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:tracker_app/widgets/dividers/label_divider.dart';
-import 'package:tracker_app/widgets/routine/editors/textfields/double_textfield.dart';
 import 'package:tracker_app/widgets/icons/user_icon_widget.dart';
+import 'package:tracker_app/widgets/routine/editors/textfields/double_textfield.dart';
 
 import '../../colors.dart';
 import '../../controllers/routine_user_controller.dart';
 import '../../dtos/appsync/routine_user_dto.dart';
+import '../../enums/training_goal_enums.dart';
 import '../../utils/general_utils.dart';
 import '../../widgets/empty_states/not_found.dart';
 
@@ -28,6 +30,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   final _doubleTextFieldController = TextEditingController();
 
   double _weight = 0;
+
+  TrainingGoal? _trainingGoal;
 
   @override
   Widget build(BuildContext context) {
@@ -96,13 +100,32 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     });
                   }),
             ),
+            const SizedBox(height: 22),
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              LabelDivider(
+                label: "Select a training goal".toUpperCase(),
+                labelColor: isDarkMode ? Colors.white : Colors.black,
+                dividerColor: sapphireLighter,
+                fontSize: 14,
+              ),
+              const SizedBox(height: 8),
+              Text(user.trainingGoal.description,
+                  textAlign: TextAlign.start,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+              const SizedBox(height: 2),
+              OpacityButtonWidget(
+                  label: _trainingGoal?.displayName ?? user.trainingGoal.displayName, onPressed: _updateTrainingGoal)
+            ]),
             const Spacer(),
             SizedBox(
                 width: double.infinity,
                 height: 45,
                 child: OpacityButtonWidget(
-                  onPressed: _updateWeight,
-                  label: "Save",
+                  onPressed: _updateUser,
+                  label: "Save Profile",
                   buttonColor: vibrantGreen,
                   padding: EdgeInsets.symmetric(vertical: 10),
                 )),
@@ -112,14 +135,25 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
-  void _updateWeight() async {
+  void _updateUser() async {
     final user = _user;
     if (user != null) {
-      final userToUpdate = user.copyWith(weight: _weight);
+      final userToUpdate = user.copyWith(weight: _weight, trainingGoal: _trainingGoal);
       await Provider.of<RoutineUserController>(context, listen: false).updateUser(userDto: userToUpdate);
       if (mounted) {
         Navigator.of(context).pop();
       }
+    }
+  }
+
+  void _updateTrainingGoal() async {
+    final trainingGoal = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => TrainingGoalScreen()))
+        as TrainingGoal?;
+
+    if (trainingGoal != null) {
+      setState(() {
+        _trainingGoal = trainingGoal;
+      });
     }
   }
 
