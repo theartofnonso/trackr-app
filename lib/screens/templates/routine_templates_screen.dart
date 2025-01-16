@@ -209,7 +209,7 @@ class _RoutineWidget extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Wrap(
+                  Row(
                     children: [
                       Container(
                         width: 20,
@@ -230,11 +230,13 @@ class _RoutineWidget extends StatelessWidget {
                       const SizedBox(
                         width: 6,
                       ),
-                      Text(
-                        scheduleSummary,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
+                      Expanded(
+                        child: Text(
+                          scheduleSummary,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
                       ),
                     ],
                   ),
