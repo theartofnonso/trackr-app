@@ -234,7 +234,7 @@ class _RoutineWidget extends StatelessWidget {
                         scheduleSummary,
                         style: Theme.of(context).textTheme.bodyMedium,
                         overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
+                        maxLines: 1,
                       ),
                     ],
                   ),
