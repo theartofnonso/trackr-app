@@ -243,67 +243,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                     spacing: 6,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          Container(
-                            width: 30,
-                            height: 30,
-                            padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              color: vibrantGreen.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(3),
-                            ),
-                            child: Image.asset(
-                              'icons/dumbbells.png',
-                              fit: BoxFit.contain,
-                              height: 14,
-                              color: vibrantGreen, // Adjust the height as needed
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 6,
-                          ),
-                          Text(
-                            "${template.exerciseTemplates.length} ${pluralize(word: "Exercise", count: template.exerciseTemplates.length)}",
-                            style: Theme.of(context).textTheme.bodyLarge,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
-                          ),
-                        ],
-                      ),
-                      Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          Container(
-                            width: 30,
-                            height: 30,
-                            padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              color: vibrantBlue.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(3),
-                            ),
-                            child: Center(
-                              child: FaIcon(
-                                FontAwesomeIcons.hashtag,
-                                color: vibrantBlue,
-                                size: 14,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 6,
-                          ),
-                          Text(
-                            setsSummary,
-                            style: Theme.of(context).textTheme.bodyLarge,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
-                          ),
-                        ],
-                      ),
                       Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
                             width: 30,
@@ -327,9 +268,9 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                           Expanded(
                             child: Text(
                               scheduledDaysSummary(template: template, showFullName: true),
-                              style: Theme.of(context).textTheme.bodyLarge,
+                              style: Theme.of(context).textTheme.bodyMedium,
                               overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
+                              maxLines: 2,
                             ),
                           ),
                         ],
@@ -358,13 +299,47 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                           ),
                           Expanded(
                             child: Text(
-                              template.notes.isNotEmpty ? template.notes : "No notes",
-                              style: Theme.of(context).textTheme.bodyLarge,
+                              template.notes.isNotEmpty ? "${template.notes}." : "No notes",
+                              style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ),
                         ],
                       ),
                     ],
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
+                      color: isDarkMode ? Colors.black12 : Colors.grey.shade200,
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: Table(
+                      border: TableBorder.symmetric(
+                          inside: BorderSide(
+                              color: isDarkMode ? sapphireLighter.withValues(alpha: 0.4) : Colors.white, width: 2)),
+                      columnWidths: const <int, TableColumnWidth>{
+                        0: FlexColumnWidth(),
+                        1: FlexColumnWidth(),
+                      },
+                      children: [
+                        TableRow(children: [
+                          TableCell(
+                            verticalAlignment: TableCellVerticalAlignment.middle,
+                            child: Center(
+                              child: Text(
+                                  "${template.exerciseTemplates.length} ${pluralize(word: "Exercise", count: template.exerciseTemplates.length)}",
+                                  style: Theme.of(context).textTheme.bodyMedium),
+                            ),
+                          ),
+                          TableCell(
+                            verticalAlignment: TableCellVerticalAlignment.middle,
+                            child: Center(
+                              child: Text(setsSummary, style: Theme.of(context).textTheme.bodyMedium),
+                            ),
+                          ),
+                        ]),
+                      ],
+                    ),
                   ),
                   MuscleGroupSplitChart(
                       title: "Muscle Groups Split",

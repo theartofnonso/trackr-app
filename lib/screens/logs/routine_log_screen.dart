@@ -230,7 +230,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                           ),
                           Expanded(
                             child: Text(
-                              updatedLog.notes.isNotEmpty ? updatedLog.notes : "No notes",
+                              updatedLog.notes.isNotEmpty ? "${updatedLog.notes}." : "No notes",
                               style: Theme.of(context).textTheme.bodyLarge,
                             ),
                           ),
