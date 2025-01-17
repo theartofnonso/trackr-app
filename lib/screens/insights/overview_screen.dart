@@ -422,8 +422,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
               subtitle: Text("train with your workout video"),
               onTap: () async {
                 Navigator.of(context).pop();
-                final workoutVideoUrl = await navigateWithSlideTransition(context: context, child: WorkoutVideoGeneratorScreen());
-                if(mounted) {
+                final workoutVideoUrl =
+                    await navigateWithSlideTransition(context: context, child: WorkoutVideoGeneratorScreen());
+                if (mounted) {
                   logEmptyRoutine(context: context, workoutVideoUrl: workoutVideoUrl);
                 }
               },
@@ -587,27 +588,22 @@ class _ScheduledRoutineCard extends StatelessWidget {
             ]),
           ),
           const SizedBox(width: 20),
-          isLogged
-              ? Container(
-                  width: 30,
-                  height: 30,
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: vibrantGreen.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(3),
-                  ),
-                  child: Center(
-                    child: FaIcon(
-                      FontAwesomeIcons.check,
-                      size: 12,
-                      color: vibrantGreen,
-                    ),
-                  ),
-                )
-              : FaIcon(
-                  FontAwesomeIcons.calendarDay,
-                  size: 20,
-                )
+          Container(
+            width: 30,
+            height: 30,
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: (isLogged ? vibrantGreen : Colors.deepOrange).withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(3),
+            ),
+            child: Center(
+              child: FaIcon(
+                isLogged ? FontAwesomeIcons.check : FontAwesomeIcons.calendarDay,
+                size: 14,
+                color: isLogged ? vibrantGreen : Colors.deepOrange,
+              ),
+            ),
+          )
         ],
       ),
     );
