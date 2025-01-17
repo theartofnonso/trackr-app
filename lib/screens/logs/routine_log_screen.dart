@@ -175,26 +175,69 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                 spacing: 20,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Center(
-                      child: Wrap(
-                    children: [
-                      const FaIcon(
-                        FontAwesomeIcons.calendarDay,
-                        size: 14,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Column(spacing: 6, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          Container(
+                            width: 30,
+                            height: 30,
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: Colors.deepOrange.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                            child: Center(
+                              child: FaIcon(
+                                FontAwesomeIcons.calendarDay,
+                                color: Colors.deepOrange,
+                                size: 14,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 6,
+                          ),
+                          Text(
+                            updatedLog.createdAt.formattedDayMonthTime(),
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 6),
-                      Text(updatedLog.createdAt.formattedDayMonthTime(), style: Theme.of(context).textTheme.bodySmall),
-                    ],
-                  )),
-                  if (updatedLog.notes.isNotEmpty)
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Text('"${updatedLog.notes}"',
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic)),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 30,
+                            height: 30,
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: Colors.yellow.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                            child: Center(
+                              child: FaIcon(
+                                FontAwesomeIcons.solidNoteSticky,
+                                color: Colors.yellow,
+                                size: 14,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 6,
+                          ),
+                          Expanded(
+                            child: Text(
+                              updatedLog.notes.isNotEmpty ? updatedLog.notes : "No notes",
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
+                    ]),
+                  ),
                   SingleChildScrollView(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     scrollDirection: Axis.horizontal,

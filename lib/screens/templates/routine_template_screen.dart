@@ -239,57 +239,132 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 20,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  Column(
+                    spacing: 6,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const FaIcon(
-                        FontAwesomeIcons.solidClock,
-                        size: 12,
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          Container(
+                            width: 30,
+                            height: 30,
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: vibrantGreen.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                            child: Image.asset(
+                              'icons/dumbbells.png',
+                              fit: BoxFit.contain,
+                              height: 14,
+                              color: vibrantGreen, // Adjust the height as needed
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 6,
+                          ),
+                          Text(
+                            "${template.exerciseTemplates.length} ${pluralize(word: "Exercise", count: template.exerciseTemplates.length)}",
+                            style: Theme.of(context).textTheme.bodyLarge,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 6),
-                      Text(scheduledDaysSummary(template: template, showFullName: true),
-                          style: Theme.of(context).textTheme.bodyMedium),
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          Container(
+                            width: 30,
+                            height: 30,
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: vibrantBlue.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                            child: Center(
+                              child: FaIcon(
+                                FontAwesomeIcons.hashtag,
+                                color: vibrantBlue,
+                                size: 14,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 6,
+                          ),
+                          Text(
+                            setsSummary,
+                            style: Theme.of(context).textTheme.bodyLarge,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                          ),
+                        ],
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 30,
+                            height: 30,
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: Colors.deepOrange.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                            child: Center(
+                              child: FaIcon(
+                                FontAwesomeIcons.calendarDay,
+                                color: Colors.deepOrange,
+                                size: 14,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 6,
+                          ),
+                          Expanded(
+                            child: Text(
+                              scheduledDaysSummary(template: template, showFullName: true),
+                              style: Theme.of(context).textTheme.bodyLarge,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 30,
+                            height: 30,
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: Colors.yellow.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                            child: Center(
+                              child: FaIcon(
+                                FontAwesomeIcons.solidNoteSticky,
+                                color: Colors.yellow,
+                                size: 14,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 6,
+                          ),
+                          Expanded(
+                            child: Text(
+                              template.notes.isNotEmpty ? template.notes : "No notes",
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
-                  ),
-                  if (template.notes.isNotEmpty)
-                    Center(
-                      child: Text('"${template.notes}"',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic)),
-                    ),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
-                      color: isDarkMode ? Colors.black12 : Colors.grey.shade200,
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: Table(
-                      border: TableBorder.symmetric(
-                          inside: BorderSide(
-                              color: isDarkMode ? sapphireLighter.withValues(alpha: 0.4) : Colors.white, width: 2)),
-                      columnWidths: const <int, TableColumnWidth>{
-                        0: FlexColumnWidth(),
-                        1: FlexColumnWidth(),
-                      },
-                      children: [
-                        TableRow(children: [
-                          TableCell(
-                            verticalAlignment: TableCellVerticalAlignment.middle,
-                            child: Center(
-                              child: Text(
-                                  "${template.exerciseTemplates.length} ${pluralize(word: "Exercise", count: template.exerciseTemplates.length)}",
-                                  style: Theme.of(context).textTheme.bodyMedium),
-                            ),
-                          ),
-                          TableCell(
-                            verticalAlignment: TableCellVerticalAlignment.middle,
-                            child: Center(
-                              child: Text(setsSummary, style: Theme.of(context).textTheme.bodyMedium),
-                            ),
-                          ),
-                        ]),
-                      ],
-                    ),
                   ),
                   MuscleGroupSplitChart(
                       title: "Muscle Groups Split",
