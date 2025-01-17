@@ -548,7 +548,5 @@ int calculateMuscleScoreForLog({required RoutineLogDto routineLog}) {
     computedMinReps = 1;
   }
 
-  print(computedMaxReps <= computedMinReps);
-
   return (computedMinReps, computedMaxReps);
 }
