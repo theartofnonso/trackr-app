@@ -23,8 +23,7 @@ String prepareLogInstruction(
 
   for (final currentExerciseLog in exerciseLogs) {
     buffer.writeln("Exercise Id for ${currentExerciseLog.exercise.name}: ${currentExerciseLog.exercise.id}");
-    buffer.writeln(
-        "Rep Range for ${currentExerciseLog.exercise.name}: ${currentExerciseLog.minReps} to ${currentExerciseLog.maxReps}");
+
     List<String> currentSetSummaries = generateSetSummaries(currentExerciseLog);
     buffer.writeln(
         "Current Sets for ${currentExerciseLog.exercise.name} logged on ${currentExerciseLog.createdAt.withoutTime().formattedDayAndMonthAndYear()}: $currentSetSummaries");
@@ -35,8 +34,7 @@ String prepareLogInstruction(
         .sorted((a, b) => b.createdAt.compareTo(a.createdAt));
 
     for (final pastExerciseLog in pastExerciseLogs) {
-      buffer.writeln(
-          "Rep Range for ${currentExerciseLog.exercise.name}: ${pastExerciseLog.minReps} to ${pastExerciseLog.maxReps}");
+
       List<String> pastSetSummaries = generateSetSummaries(pastExerciseLog);
       buffer.writeln(
           "Past sets for ${currentExerciseLog.exercise.name} logged on ${pastExerciseLog.createdAt.withoutTime().formattedDayAndMonthAndYear()}: $pastSetSummaries");
@@ -80,6 +78,6 @@ String generateTrainingPrompt({required TrainingGoal trainingGoal, required List
 
           Note: All weights are measured in ${weightLabel()}.
           Note: Ensure your feedback is ${trainingGoal.displayName}-specific and actionable. If my performance does not align with ${trainingGoal.displayName}, provide clear suggestions to correct course.
-	        Note: Make the feedback sound personal and motivating.
+	        Note: Make the feedback sound personal, explanatory and motivating.
         """;
 }

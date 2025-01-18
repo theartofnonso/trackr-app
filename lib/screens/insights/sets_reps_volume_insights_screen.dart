@@ -424,8 +424,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     for (final exerciseLog in exerciseLogsForMuscleGroups) {
       buffer.writeln("Exercise Id for ${exerciseLog.exercise.name}: ${exerciseLog.exercise.id}");
 
-      buffer.writeln("Rep Range for ${exerciseLog.exercise.name}: ${exerciseLog.minReps} to ${exerciseLog.maxReps}");
-
       List<String> setSummaries = generateSetSummaries(exerciseLog);
       buffer.writeln(
           "Sets logged for ${exerciseLog.exercise.name} on ${exerciseLog.createdAt.withoutTime().formattedDayAndMonthAndYear()}: $setSummaries");
