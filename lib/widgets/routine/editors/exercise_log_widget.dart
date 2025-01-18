@@ -600,9 +600,12 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 const SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Text(rpeTrendSummary,
+                  child: Text('"$rpeTrendSummary"',
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.w400, height: 1.8, color: isDarkMode ? Colors.white70 : Colors.black)),
+                          fontStyle: FontStyle.italic,
+                          fontWeight: FontWeight.w400,
+                          height: 1.8,
+                          color: isDarkMode ? Colors.white70 : Colors.black)),
                 ),
               ],
             ),
@@ -612,11 +615,11 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               child: Text("Tap + to add a timer", style: Theme.of(context).textTheme.bodySmall),
             ),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            if (exerciseType != ExerciseType.duration)
-              OpacityButtonWidget(
-                  onPressed: () => _showRepRangeSelector(min: minReps, max: maxReps),
-                  label: "target reps: $minReps - $maxReps",
-                  buttonColor: vibrantGreen),
+            // if (exerciseType != ExerciseType.duration)
+            //   OpacityButtonWidget(
+            //       onPressed: () => _showRepRangeSelector(min: minReps, max: maxReps),
+            //       label: "target reps: $minReps - $maxReps",
+            //       buttonColor: vibrantGreen),
             const Spacer(),
             IconButton(
               onPressed: _togglePreviousSets,
