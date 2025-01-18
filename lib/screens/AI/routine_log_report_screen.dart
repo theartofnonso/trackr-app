@@ -27,6 +27,8 @@ class RoutineLogReportScreen extends StatelessWidget {
             icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
             onPressed: Navigator.of(context).pop,
           ),
+          title: Text("training and performance".toUpperCase(), textAlign: TextAlign.center),
+          centerTitle: true,
         ),
         body: Container(
           decoration: BoxDecoration(
@@ -43,16 +45,6 @@ class RoutineLogReportScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10.0, bottom: 16, left: 10),
-                          child: LabelContainerDivider(
-                              labelAlignment: LabelAlignment.left,
-                              label: "training and performance".toUpperCase(),
-                              description: "Review your performance in comparison to previous sessions.",
-                              labelStyle: Theme.of(context).textTheme.bodyLarge!,
-                              descriptionStyle: Theme.of(context).textTheme.bodyMedium!,
-                              dividerColor: Colors.transparent),
-                        ),
                         ListView.separated(
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
@@ -133,8 +125,8 @@ class _ExerciseReportWidget extends StatelessWidget {
                 label: "Feedback".toUpperCase(),
                 description: exerciseReport.comments,
                 labelStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 12),
-                descriptionStyle: GoogleFonts.ubuntu(height: 1.5, fontSize: 16, fontWeight: FontWeight.w300),
-                dividerColor: sapphireLighter)
+                descriptionStyle: GoogleFonts.ubuntu(height: 1.8, fontSize: 14, fontWeight: FontWeight.w300),
+                dividerColor: Colors.transparent)
           ],
         ));
   }
