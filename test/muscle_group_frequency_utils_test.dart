@@ -1,47 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
-import 'package:tracker_app/dtos/set_dtos/set_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
-import 'package:tracker_app/utils/exercise_logs_utils.dart'; // Ensure this path matches your project structure
+import 'package:tracker_app/utils/exercise_logs_utils.dart';
+
+import 'exercise_utils.dart'; // Ensure this path matches your project structure
 
 void main() {
-  // Helper function to create a mock ExerciseDto with a specified primary muscle group and optional secondary muscle groups.
-  ExerciseDto makeExercise({
-    required String id,
-    required ExerciseType type,
-    required MuscleGroup primary,
-    List<MuscleGroup> secondary = const [],
-    String name = 'Test Exercise',
-  }) {
-    return ExerciseDto(
-      id: id,
-      name: name,
-      type: type,
-      primaryMuscleGroup: primary,
-      secondaryMuscleGroups: secondary,
-      owner: '',
-    );
-  }
-
-  // Helper to create a log with given exercise and sets. By default, sets is empty since we just need muscle groups info.
-  ExerciseLogDto makeLog({
-    required ExerciseDto exercise,
-    DateTime? createdAt,
-    List<SetDto> sets = const [],
-  }) {
-    return ExerciseLogDto(
-      id: exercise.id,
-      exercise: exercise,
-      sets: sets,
-      createdAt: createdAt ?? DateTime.now(),
-      routineLogId: 'routine1',
-      superSetId: '',
-      notes: '',
-    );
-  }
-
   group('muscleGroupFamilyFrequency', () {
     test('returns empty map for no exercise logs', () {
       // Arrange

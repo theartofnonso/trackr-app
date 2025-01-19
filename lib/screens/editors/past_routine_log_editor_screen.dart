@@ -236,18 +236,31 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
                     icon: const FaIcon(FontAwesomeIcons.barsStaggered)),
             ],
           ),
-          floatingActionButton: isKeyboardOpen && _selectedSetDto != null
-              ? FloatingActionButton.extended(
-                  heroTag: UniqueKey(),
-                  onPressed: _showWeightCalculator,
-                  enableFeedback: true,
-                  icon: Image.asset(
-                    'icons/dumbbells.png',
-                    fit: BoxFit.contain,
-                    color: isDarkMode ? Colors.white : Colors.white,
-                    height: 24, // Adjust the height as needed
-                  ),
-                  label: Text("Calculator", style: Theme.of(context).textTheme.bodyLarge),
+          floatingActionButton: isKeyboardOpen
+              ? SafeArea(
+                  minimum: EdgeInsets.only(left: 32),
+                  child: Row(children: [
+                    FloatingActionButton(
+                      heroTag: UniqueKey(),
+                      onPressed: _dismissKeyboard,
+                      enableFeedback: true,
+                      child: FaIcon(Icons.keyboard_hide_rounded),
+                    ),
+                    Spacer(),
+                    _selectedSetDto != null
+                        ? FloatingActionButton(
+                            heroTag: UniqueKey(),
+                            onPressed: _showWeightCalculator,
+                            enableFeedback: true,
+                            child: Image.asset(
+                              'icons/dumbbells.png',
+                              fit: BoxFit.contain,
+                              color: isDarkMode ? Colors.white : Colors.white,
+                              height: 24, // Adjust the height as needed
+                            ),
+                          )
+                        : SizedBox.shrink()
+                  ]),
                 )
               : null,
           body: Container(
@@ -298,7 +311,6 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
                     if (exerciseLogs.isNotEmpty)
                       Expanded(
                           child: SingleChildScrollView(
-                              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                               padding: const EdgeInsets.only(bottom: 250),
                               child: Column(spacing: 20, children: [
                                 ...exerciseLogs.map((exerciseLog) {

@@ -538,5 +538,15 @@ int calculateMuscleScoreForLog({required RoutineLogDto routineLog}) {
     computedMaxReps = computedMinReps + 3;
   }
 
+  // Ensure maxRep is never greater than 20
+  if (computedMaxReps > 20) {
+    computedMaxReps = 20;
+  }
+
+  // Ensure minRep is never greater than maxReps
+  if (computedMinReps > 20) {
+    computedMinReps = 1;
+  }
+
   return (computedMinReps, computedMaxReps);
 }

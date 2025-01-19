@@ -7,7 +7,6 @@ import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import '../../controllers/activity_log_controller.dart';
-import '../../controllers/settings_controller.dart';
 
 GlobalKey calendarKey = GlobalKey();
 
@@ -35,7 +34,12 @@ class Calendar extends StatefulWidget {
   final bool forceDarkMode;
   final bool minimiseCalendar;
 
-  const Calendar({super.key, this.onSelectDate, required this.dateTime, this.forceDarkMode = false, this.minimiseCalendar = false});
+  const Calendar(
+      {super.key,
+      this.onSelectDate,
+      required this.dateTime,
+      this.forceDarkMode = false,
+      this.minimiseCalendar = false});
 
   @override
   State<Calendar> createState() => _CalendarState();
@@ -115,8 +119,8 @@ class _CalendarState extends State<Calendar> {
 
     // 2. Determine the first day of this week (assuming Monday as weekday=1)
     //    If you're using Sunday as start, adjust accordingly.
-    final dayOfWeek = baseDate.weekday;      // Monday = 1, Sunday = 7 in Dart
-    final difference = dayOfWeek - 1;        // if Monday => 0, Tuesday => 1, etc.
+    final dayOfWeek = baseDate.weekday; // Monday = 1, Sunday = 7 in Dart
+    final difference = dayOfWeek - 1; // if Monday => 0, Tuesday => 1, etc.
     final startOfWeek = baseDate.subtract(Duration(days: difference));
 
     // 3. Calculate the end of this current week (6 days after start)
@@ -157,13 +161,10 @@ class _CalendarState extends State<Calendar> {
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark || widget.forceDarkMode;
 
-    Provider.of<SettingsController>(context, listen: true);
-
-    final dates = widget.minimiseCalendar ? _generateWeekDates() : _generateDates() ;
+    final dates = widget.minimiseCalendar ? _generateWeekDates() : _generateDates();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -171,7 +172,9 @@ class _CalendarState extends State<Calendar> {
         SharedPrefs().showCalendarDates
             ? Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: _CalendarHeader(isDarkMode: isDarkMode,),
+                child: _CalendarHeader(
+                  isDarkMode: isDarkMode,
+                ),
               )
             : const SizedBox(height: 8),
         _Month(dates: dates, selectedDateTime: _currentDate.withoutTime(), onTap: _selectDate, isDarkMode: isDarkMode),
@@ -181,9 +184,7 @@ class _CalendarState extends State<Calendar> {
 }
 
 class _CalendarHeader extends StatelessWidget {
-  
   final bool isDarkMode;
-
 
   const _CalendarHeader({required this.isDarkMode});
 
@@ -204,7 +205,8 @@ class _CalendarHeader extends StatelessWidget {
           itemCount: daysOfWeek.length, // Just an example to vary the number of squares
           itemBuilder: (context, index) {
             return Text(daysOfWeek[index],
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: isDarkMode ? Colors.white : Colors.black),
+                style:
+                    Theme.of(context).textTheme.bodyMedium?.copyWith(color: isDarkMode ? Colors.white : Colors.black),
                 textAlign: TextAlign.center);
           },
         ));
@@ -271,16 +273,19 @@ class _Day extends StatelessWidget {
       required this.currentDate,
       required this.onTap,
       this.hasRoutineLog = false,
-      this.hasActivityLog = false, required this.isDarkMode});
+      this.hasActivityLog = false,
+      required this.isDarkMode});
 
   Color _getBackgroundColor({required bool isDarkMode}) {
     if (hasRoutineLog) {
-      return isDarkMode && SharedPrefs().showCalendarDates ? vibrantGreen.withValues(alpha:0.1) : vibrantGreen;
+      return isDarkMode && SharedPrefs().showCalendarDates ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen;
     }
     if (hasActivityLog) {
-      return isDarkMode && SharedPrefs().showCalendarDates ? Colors.greenAccent.withValues(alpha:0.1) : Colors.greenAccent;
+      return isDarkMode && SharedPrefs().showCalendarDates
+          ? Colors.greenAccent.withValues(alpha: 0.1)
+          : Colors.greenAccent;
     } else {
-      return isDarkMode ? sapphireDark80.withValues(alpha:0.5) : Colors.grey.shade200;
+      return isDarkMode ? sapphireDark80.withValues(alpha: 0.5) : Colors.grey.shade200;
     }
   }
 
@@ -306,7 +311,6 @@ class _Day extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return GestureDetector(
       onTap: () => onTap(dateTime),
       child: Container(
@@ -321,10 +325,13 @@ class _Day extends StatelessWidget {
             color: _getBackgroundColor(isDarkMode: isDarkMode),
             borderRadius: BorderRadius.circular(2),
           ),
-          child: SharedPrefs().showCalendarDates ? Center(
-            child: Text("${dateTime.day}",
-                style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.bold, color: _getTextColor(isDarkMode: isDarkMode))),
-          ) : SizedBox.shrink(),
+          child: SharedPrefs().showCalendarDates
+              ? Center(
+                  child: Text("${dateTime.day}",
+                      style: GoogleFonts.ubuntu(
+                          fontSize: 16, fontWeight: FontWeight.bold, color: _getTextColor(isDarkMode: isDarkMode))),
+                )
+              : SizedBox.shrink(),
         ),
       ),
     );

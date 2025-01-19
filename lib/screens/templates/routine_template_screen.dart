@@ -239,24 +239,74 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 20,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  Column(
+                    spacing: 6,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const FaIcon(
-                        FontAwesomeIcons.solidClock,
-                        size: 12,
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 30,
+                            height: 30,
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: Colors.deepOrange.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                            child: Center(
+                              child: FaIcon(
+                                FontAwesomeIcons.calendarDay,
+                                color: Colors.deepOrange,
+                                size: 14,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 6,
+                          ),
+                          Expanded(
+                            child: Text(
+                              scheduledDaysSummary(template: template, showFullName: true),
+                              style: Theme.of(context).textTheme.bodyMedium,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 6),
-                      Text(scheduledDaysSummary(template: template, showFullName: true),
-                          style: Theme.of(context).textTheme.bodyMedium),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 30,
+                            height: 30,
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: Colors.yellow.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                            child: Center(
+                              child: FaIcon(
+                                FontAwesomeIcons.solidNoteSticky,
+                                color: Colors.yellow,
+                                size: 14,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 6,
+                          ),
+                          Expanded(
+                            child: Text(
+                              template.notes.isNotEmpty ? "${template.notes}." : "No notes",
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
-                  if (template.notes.isNotEmpty)
-                    Center(
-                      child: Text('"${template.notes}"',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic)),
-                    ),
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container

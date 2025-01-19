@@ -252,7 +252,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
         If the user has logged few or no such activities, focus on encouraging them to engage in and record more non-strength training exercises. 
         The report should highlight the benefits of incorporating a variety of activities into their fitness regimen and offer suggestions on how they can diversify their workouts.
         Note: All weights are measured in ${weightLabel()}.
-        Note: Your report should sound personal.
+        Note: Your report should sound personal and motivating.
 """);
 
     // Main processing
@@ -416,14 +416,15 @@ class _OverviewScreenState extends State<OverviewScreen> {
             ),
             ListTile(
               contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(FontAwesomeIcons.link, size: 16),
+              leading: const FaIcon(FontAwesomeIcons.youtube, size: 16),
               horizontalTitleGap: 6,
               title: Text("Log new guided session", style: Theme.of(context).textTheme.bodyLarge),
               subtitle: Text("train with your workout video"),
               onTap: () async {
                 Navigator.of(context).pop();
-                final workoutVideoUrl = await navigateWithSlideTransition(context: context, child: WorkoutVideoGeneratorScreen());
-                if(mounted) {
+                final workoutVideoUrl =
+                    await navigateWithSlideTransition(context: context, child: WorkoutVideoGeneratorScreen());
+                if (mounted) {
                   logEmptyRoutine(context: context, workoutVideoUrl: workoutVideoUrl);
                 }
               },
@@ -587,27 +588,22 @@ class _ScheduledRoutineCard extends StatelessWidget {
             ]),
           ),
           const SizedBox(width: 20),
-          isLogged
-              ? Container(
-                  width: 30,
-                  height: 30,
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: vibrantGreen.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(3),
-                  ),
-                  child: Center(
-                    child: FaIcon(
-                      FontAwesomeIcons.check,
-                      size: 12,
-                      color: vibrantGreen,
-                    ),
-                  ),
-                )
-              : FaIcon(
-                  FontAwesomeIcons.calendarDay,
-                  size: 20,
-                )
+          Container(
+            width: 30,
+            height: 30,
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: (isLogged ? vibrantGreen : Colors.deepOrange).withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(3),
+            ),
+            child: Center(
+              child: FaIcon(
+                isLogged ? FontAwesomeIcons.check : FontAwesomeIcons.calendarDay,
+                size: 14,
+                color: isLogged ? vibrantGreen : Colors.deepOrange,
+              ),
+            ),
+          )
         ],
       ),
     );

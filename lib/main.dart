@@ -74,10 +74,25 @@ void onDidReceiveNotificationResponse(NotificationResponse response) {
     // Create an instance of ExerciseLogsResponse
     ExercisePerformanceReport performanceReport = ExercisePerformanceReport.fromJson(report);
 
+    final context = navigatorKey.currentContext;
+
+    if (context == null) {
+      return;
+    }
+
+    final routineLogFound = Provider.of<ExerciseAndRoutineController>(context, // Prefer this if 'context' is not valid
+            listen: false)
+        .logWhereId(id: routineLog);
+
+    if (routineLogFound == null) {
+      // Handle the case where the routine log isn’t found
+      return;
+    }
+
     navigatorKey.currentState?.push(PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => RoutineLogReportScreen(
         report: performanceReport,
-        routineLog: Provider.of<ExerciseAndRoutineController>(context, listen: false).logWhereId(id: routineLog)!,
+        routineLog: routineLogFound,
       ),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = Offset(0.0, 1.0);
@@ -265,20 +280,20 @@ final _router = GoRouter(
     GoRoute(
       path: RoutineTemplateScreen.routeName,
       builder: (context, state) {
-        final template = state.extra as RoutineTemplateDto;
-        return RoutineTemplateScreen(id: template.id);
+        final template = state.extra as RoutineTemplateDto?;
+        return RoutineTemplateScreen(id: template?.id ?? "");
       },
     ),
     GoRoute(
       path: RoutineLogScreen.routeName,
       pageBuilder: (context, state) {
         final extra = state.extra as Map<String, dynamic>;
-        final log = extra["log"] as RoutineLogDto;
+        final log = extra["log"] as RoutineLogDto?;
         final showSummary = extra["showSummary"] as bool;
         final isEditable = extra['isEditable'] as bool;
 
         return CustomTransitionPage(
-            child: RoutineLogScreen(id: log.id, showSummary: showSummary, isEditable: isEditable),
+            child: RoutineLogScreen(id: log?.id ?? "", showSummary: showSummary, isEditable: isEditable),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               const begin = Offset(0.0, 1.0);
               const end = Offset.zero;

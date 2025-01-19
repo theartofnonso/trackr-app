@@ -314,22 +314,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     super.dispose();
   }
 
-  final Map<int, Color> _intensityToColor = {
-    1: vibrantGreen, // Bright green - very light
-    2: Color(0xFF66FF66), // Light green
-    3: Color(0xFF99FF99), // Soft green
-    4: Color(0xFFFFFF66), // Yellow-green transition
-    5: Color(0xFFFFFF33), // Yellow - moderate intensity
-    6: Color(0xFFFFCC33), // Amber - challenging intensity
-    7: Color(0xFFFF9933), // Orange - very hard
-    8: Color(0xFFFF6633), // Deep orange - near maximal
-    9: Color(0xFFFF3333), // Bright red - maximal effort
-    10: Color(0xFFFF0000), // Red - absolute limit
-  };
-
   Color _getIntensityColor({required int intensity}) {
-    if (_intensityToColor.containsKey(intensity)) {
-      return _intensityToColor[intensity]!;
+    if (rpeIntensityToColor.containsKey(intensity)) {
+      return rpeIntensityToColor[intensity]!;
     } else {
       throw ArgumentError("Invalid intensity level: $intensity");
     }
@@ -600,9 +587,12 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 const SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Text(rpeTrendSummary,
+                  child: Text('"$rpeTrendSummary"',
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.w400, height: 1.8, color: isDarkMode ? Colors.white70 : Colors.black)),
+                          fontStyle: FontStyle.italic,
+                          fontWeight: FontWeight.w400,
+                          height: 1.8,
+                          color: isDarkMode ? Colors.white70 : Colors.black)),
                 ),
               ],
             ),
@@ -612,11 +602,11 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               child: Text("Tap + to add a timer", style: Theme.of(context).textTheme.bodySmall),
             ),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            if (exerciseType != ExerciseType.duration)
-              OpacityButtonWidget(
-                  onPressed: () => _showRepRangeSelector(min: minReps, max: maxReps),
-                  label: "target reps: $minReps - $maxReps",
-                  buttonColor: vibrantGreen),
+            // if (exerciseType != ExerciseType.duration)
+            //   OpacityButtonWidget(
+            //       onPressed: () => _showRepRangeSelector(min: minReps, max: maxReps),
+            //       label: "target reps: $minReps - $maxReps",
+            //       buttonColor: vibrantGreen),
             const Spacer(),
             IconButton(
               onPressed: _togglePreviousSets,

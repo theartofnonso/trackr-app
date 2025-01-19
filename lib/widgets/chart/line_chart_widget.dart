@@ -9,6 +9,8 @@ import '../../colors.dart';
 import '../../enums/chart_unit_enum.dart';
 import '../../utils/string_utils.dart';
 
+enum LineChartSide { left, right }
+
 class LineChartWidget extends StatelessWidget {
   final List<ChartPointDto> chartPoints;
   final List<String> periods;
@@ -17,6 +19,8 @@ class LineChartWidget extends StatelessWidget {
   final double? aspectRation;
   final List<Color> colors;
   final double reservedSize;
+  final LineChartSide lineChartSide;
+  final bool hasRightAxisTitles;
 
   const LineChartWidget(
       {super.key,
@@ -25,7 +29,9 @@ class LineChartWidget extends StatelessWidget {
       required this.unit,
       this.interval = 10,
       this.aspectRation,
+      this.lineChartSide = LineChartSide.left,
       this.colors = const [],
+        this.hasRightAxisTitles = false,
       this.reservedSize = 40});
 
   @override
@@ -46,8 +52,12 @@ class LineChartWidget extends StatelessWidget {
                               FlLine(strokeWidth: 0.5, color: isDarkMode ? Colors.white30 : Colors.grey.shade600)),
                       minY: 0,
                       titlesData: FlTitlesData(
-                        rightTitles: const AxisTitles(
-                          sideTitles: SideTitles(showTitles: false),
+                        rightTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: hasRightAxisTitles,
+                            getTitlesWidget: _rightTitleWidgets,
+                            reservedSize: 16,
+                          ),
                         ),
                         topTitles: const AxisTitles(
                           sideTitles: SideTitles(showTitles: false),
@@ -99,7 +109,17 @@ class LineChartWidget extends StatelessWidget {
     return SideTitleWidget(
       fitInside: SideTitleFitInsideData.fromTitleMeta(meta, enabled: false),
       meta: meta,
-      child: Text(_weightTitle(value: value), style: style),
+      child: Text(lineChartSide == LineChartSide.left ? _weightTitle(value: value) : "", style: style),
+    );
+  }
+
+  Widget _rightTitleWidgets(double value, TitleMeta meta) {
+    final style = GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 9, color: Colors.grey.shade600);
+
+    return SideTitleWidget(
+      fitInside: SideTitleFitInsideData.fromTitleMeta(meta, enabled: false),
+      meta: meta,
+      child: Text(lineChartSide == LineChartSide.right ? _weightTitle(value: value) : "", style: style),
     );
   }
 

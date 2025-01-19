@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:in_app_review/in_app_review.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/open_ai_response_schema_dtos/exercise_performance_report.dart';
+import 'package:tracker_app/enums/training_goal_enums.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/openAI/open_ai_response_format.dart';
@@ -93,8 +93,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     if (log == null) return const NotFound();
 
-    _shouldAskForAppRating();
-
     // We only want to see all logged exercises and sets
     final completedExerciseLogs = loggedExercises(exerciseLogs: log.exerciseLogs);
 
@@ -174,26 +172,69 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                 spacing: 20,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Center(
-                      child: Wrap(
-                    children: [
-                      const FaIcon(
-                        FontAwesomeIcons.calendarDay,
-                        size: 14,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Column(spacing: 6, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          Container(
+                            width: 30,
+                            height: 30,
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: Colors.deepOrange.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                            child: Center(
+                              child: FaIcon(
+                                FontAwesomeIcons.calendarDay,
+                                color: Colors.deepOrange,
+                                size: 14,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 6,
+                          ),
+                          Text(
+                            updatedLog.createdAt.formattedDayMonthTime(),
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 6),
-                      Text(updatedLog.createdAt.formattedDayMonthTime(), style: Theme.of(context).textTheme.bodySmall),
-                    ],
-                  )),
-                  if (updatedLog.notes.isNotEmpty)
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Text('"${updatedLog.notes}"',
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic)),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 30,
+                            height: 30,
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: Colors.yellow.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                            child: Center(
+                              child: FaIcon(
+                                FontAwesomeIcons.solidNoteSticky,
+                                color: Colors.yellow,
+                                size: 14,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 6,
+                          ),
+                          Expanded(
+                            child: Text(
+                              updatedLog.notes.isNotEmpty ? "${updatedLog.notes}." : "No notes",
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
+                    ]),
+                  ),
                   SingleChildScrollView(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     scrollDirection: Axis.horizontal,
@@ -275,7 +316,8 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                       children: [
                         MuscleGroupSplitChart(
                             title: "Muscle Groups Split",
-                            description: "Here's a breakdown of the muscle groups in your ${updatedLog.name} workout session.",
+                            description:
+                                "Here's a breakdown of the muscle groups in your ${updatedLog.name} workout session.",
                             muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
                             minimized: false),
                         if (updatedLog.templateId.isNotEmpty && updatedLog.owner == SharedPrefs().userId)
@@ -345,31 +387,15 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     navigateToSettings(context: context);
   }
 
-  void _shouldAskForAppRating() async {
-    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
-    List<RoutineLogDto> routineLogsForTheYear =
-        routineLogController.whereLogsIsSameYear(dateTime: DateTime.now().withoutTime());
-
-    bool isMultipleOf10(int number) {
-      return number % 10 == 0;
-    }
-
-    final hasLoggedTenSessions = isMultipleOf10(routineLogsForTheYear.length);
-
-    if (hasLoggedTenSessions) {
-      final InAppReview inAppReview = InAppReview.instance;
-      final isAvailable = await inAppReview.isAvailable();
-      if (isAvailable) {
-        inAppReview.requestReview();
-      }
-    }
-  }
-
   void _generateReport({required RoutineLogDto log}) async {
-
     _showLoadingScreen();
 
-    String instruction = prepareLogInstruction(context: context, routineLog: log);
+    final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
+
+    final user = routineUserController.user;
+
+    String instruction = prepareLogInstruction(
+        context: context, routineLog: log, trainingGoal: user?.trainingGoal ?? TrainingGoal.hypertrophy);
 
     runMessage(system: routineLogSystemInstruction, user: instruction, responseFormat: routineLogReportResponseFormat)
         .then((response) {

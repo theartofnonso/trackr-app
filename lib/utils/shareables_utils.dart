@@ -13,7 +13,7 @@ import '../widgets/buttons/opacity_button_widget.dart';
 import 'dialog_utils.dart';
 
 Future<ShareResult> captureImage(
-    {required GlobalKey key, required double pixelRatio, String message = "Check out this file!"}) async {
+    {required GlobalKey key, required double pixelRatio, String message = "Shared from TRKR"}) async {
   final RenderRepaintBoundary boundary = key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
   final ui.Image image = await boundary.toImage(pixelRatio: pixelRatio);
   final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
@@ -22,7 +22,7 @@ Future<ShareResult> captureImage(
   final File file = File('${tempDir.path}/${DateTime.now().microsecondsSinceEpoch}.png');
   final newFile = await file.writeAsBytes(pngBytes, flush: true);
   final List<XFile> files = [XFile(newFile.path)];
-  return await Share.shareXFiles(files, text: message);
+  return await Share.shareXFiles(files, text: message, subject: message);
 }
 
 void onShare(

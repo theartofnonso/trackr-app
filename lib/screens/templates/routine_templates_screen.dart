@@ -129,13 +129,14 @@ class _RoutineWidget extends StatelessWidget {
     final exercises = template.exerciseTemplates;
     final sets = template.exerciseTemplates.expand((exercise) => exercise.sets);
     return Badge(
-      backgroundColor:  vibrantGreen,
+      backgroundColor: vibrantGreen,
       alignment: Alignment.topRight,
       smallSize: 12,
       isLabelVisible: template.isScheduledToday(),
       child: GestureDetector(
         onTap: () => navigateToRoutineTemplatePreview(context: context, template: template),
         child: Container(
+            width: double.infinity,
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
                 color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, borderRadius: BorderRadius.circular(5)),
@@ -144,10 +145,11 @@ class _RoutineWidget extends StatelessWidget {
                 template.name,
                 style: Theme.of(context).textTheme.titleMedium,
                 overflow: TextOverflow.ellipsis,
-                maxLines: 1,
+                maxLines: 2,
               ),
               const Spacer(),
               Column(
+                spacing: 6,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Wrap(
@@ -178,9 +180,6 @@ class _RoutineWidget extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 6,
-                  ),
                   Wrap(
                     children: [
                       Container(
@@ -210,23 +209,39 @@ class _RoutineWidget extends StatelessWidget {
                       ),
                     ],
                   ),
+                  Row(
+                    children: [
+                      Container(
+                        width: 20,
+                        height: 20,
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: Colors.deepOrange.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                        child: Center(
+                          child: FaIcon(
+                            FontAwesomeIcons.calendarDay,
+                            color: Colors.deepOrange,
+                            size: 11,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 6,
+                      ),
+                      Expanded(
+                        child: Text(
+                          scheduleSummary,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
-              ),
-              Divider(
-                  color: template.isScheduledToday()
-                      ? vibrantGreen.withValues(alpha: 0.2)
-                      : isDarkMode
-                          ? Colors.white10
-                          : Colors.black12,
-                  endIndent: 10),
-              Expanded(
-                child: Text(
-                  scheduleSummary,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                ),
-              ),
+              )
             ])),
       ),
     );

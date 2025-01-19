@@ -60,17 +60,17 @@ class TwelveSessionMilestoneShareable extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Opacity(
-                      opacity: imageFile != null ? 0.5 : 1,
-                      child: Stack(alignment: Alignment.center, children: [
-                        LogStreakMonitor(value: 12, width: 120, height: 120, strokeWidth: 6),
-                        Text("12",
-                            style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900)),
-                      ]),
-                    ),
-                    const SizedBox(height: 20),
-                    Text("You closed the ring for ${DateTime.now().formattedFullMonth()}",
+                    Stack(alignment: Alignment.center, children: [
+                      LogStreakMonitor(value: 12, width: 120, height: 120, strokeWidth: 12),
+                      Text("12",
+                          style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900)),
+                    ]),
+                    const SizedBox(height: 26),
+                    Text(DateTime.now().formattedFullMonth().toUpperCase(),
                         style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 6),
+                    Text("You closed this month's ring".toUpperCase(),
+                        style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
                   ]),
               Align(
                 alignment: Alignment.bottomRight,

@@ -103,21 +103,17 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                   fontSize: 14,
                 ),
                 const SizedBox(height: 8),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Text("Choose from a list of muscle groups to train for this custom exercise.",
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
-                    ),
-                    const SizedBox(width: 10),
-                    OpacityButtonWidget(label: _primaryMuscleGroup.name, onPressed: _navigateToMuscleGroupsScreen)
-                  ],
-                ),
-                const SizedBox(height: 16),
+                Text("Choose from a list of muscle groups to train for this custom exercise.",
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                const SizedBox(height: 2),
+                OpacityButtonWidget(label: _primaryMuscleGroup.name, onPressed: _navigateToMuscleGroupsScreen),
+                const SizedBox(height: 4),
                 if (exercise == null)
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 20),
                       LabelDivider(
@@ -127,18 +123,11 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                         fontSize: 14,
                       ),
                       const SizedBox(height: 8),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Text("You can log this exercise using reps only, reps and weights or duration.",
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
-                          ),
-                          const SizedBox(width: 10),
-                          OpacityButtonWidget(label: _exerciseType.name, onPressed: _navigateToExerciseTypeScreen)
-                        ],
-                      ),
+                      Text("You can log this exercise using reps only, reps and weights or duration.",
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                      const SizedBox(height: 2),
+                      OpacityButtonWidget(label: _exerciseType.name, onPressed: _navigateToExerciseTypeScreen),
                     ],
                   ),
                 const Spacer(),
@@ -183,7 +172,8 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     }
 
     /// We don't want to allow editing of exercise type once created.
-    final type = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ExerciseTypeScreen()))
+    final type = await Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => ExerciseTypeScreen(exerciseType: _exerciseType)))
         as ExerciseType?;
     if (type != null) {
       setState(() {
