@@ -17,6 +17,7 @@ class LineChartWidget extends StatelessWidget {
   final double? aspectRation;
   final List<Color> colors;
   final double reservedSize;
+  final bool showSideTitles;
 
   const LineChartWidget(
       {super.key,
@@ -26,6 +27,7 @@ class LineChartWidget extends StatelessWidget {
       this.interval = 10,
       this.aspectRation,
       this.colors = const [],
+        this.showSideTitles = true,
       this.reservedSize = 40});
 
   @override
@@ -99,7 +101,7 @@ class LineChartWidget extends StatelessWidget {
     return SideTitleWidget(
       fitInside: SideTitleFitInsideData.fromTitleMeta(meta, enabled: false),
       meta: meta,
-      child: Text(_weightTitle(value: value), style: style),
+      child: Text(showSideTitles ? _weightTitle(value: value) : "", style: style),
     );
   }
 
