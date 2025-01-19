@@ -237,7 +237,6 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -271,19 +270,31 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                     icon: const FaIcon(FontAwesomeIcons.barsStaggered)),
             ],
           ),
-          floatingActionButton: isKeyboardOpen && _selectedSetDto != null
-              ? FloatingActionButton.extended(
-                  heroTag: UniqueKey(),
-                  onPressed: _showWeightCalculator,
-                  enableFeedback: true,
-                  icon: Image.asset(
-                    'icons/dumbbells.png',
-                    fit: BoxFit.contain,
-                    color: isDarkMode ? Colors.white : Colors.white,
-                    height: 24, // Adjust the height as needed
-                  ),
-                  label:
-                      Text("Calculator"),
+          floatingActionButton: isKeyboardOpen
+              ? SafeArea(
+                  minimum: EdgeInsets.only(left: 32),
+                  child: Row(children: [
+                    FloatingActionButton(
+                      heroTag: UniqueKey(),
+                      onPressed: _dismissKeyboard,
+                      enableFeedback: true,
+                      child: FaIcon(Icons.keyboard_hide_rounded),
+                    ),
+                    Spacer(),
+                    _selectedSetDto != null
+                        ? FloatingActionButton(
+                            heroTag: UniqueKey(),
+                            onPressed: _showWeightCalculator,
+                            enableFeedback: true,
+                            child: Image.asset(
+                              'icons/dumbbells.png',
+                              fit: BoxFit.contain,
+                              color: isDarkMode ? Colors.white : Colors.white,
+                              height: 24, // Adjust the height as needed
+                            ),
+                          )
+                        : SizedBox.shrink()
+                  ]),
                 )
               : null,
           body: Container(
@@ -310,7 +321,9 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                           keyboardType: TextInputType.text,
                           textCapitalization: TextCapitalization.words,
                           style: GoogleFonts.ubuntu(
-                              fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white : Colors.black, fontSize: 14),
+                              fontWeight: FontWeight.w400,
+                              color: isDarkMode ? Colors.white : Colors.black,
+                              fontSize: 14),
                         ),
                         TextField(
                           controller: _templateNotesController,
@@ -322,14 +335,15 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                           keyboardType: TextInputType.text,
                           textCapitalization: TextCapitalization.sentences,
                           style: GoogleFonts.ubuntu(
-                              fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white : Colors.black, fontSize: 14),
+                              fontWeight: FontWeight.w400,
+                              color: isDarkMode ? Colors.white : Colors.black,
+                              fontSize: 14),
                         ),
                       ],
                     ),
                     if (exerciseTemplates.isNotEmpty)
                       Expanded(
                         child: SingleChildScrollView(
-                            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                             padding: const EdgeInsets.only(bottom: 250),
                             child: Column(spacing: 20, children: [
                               ...exerciseTemplates.map((exerciseTemplate) {
@@ -349,12 +363,16 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                                         editorType: RoutineEditorMode.edit,
                                         superSet: whereOtherExerciseInSuperSet(
                                             firstExercise: exerciseTemplate, exercises: exerciseTemplates),
-                                        onRemoveSuperSet: (String superSetId) =>
-                                            exerciseLogController.removeSuperSet(superSetId: exerciseTemplate.superSetId),
-                                        onRemoveLog: () => exerciseLogController.removeExerciseLog(logId: exerciseTemplate.id),
-                                        onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseTemplate),
-                                        onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseTemplate),
-                                        onResize: () => _handleResizedExerciseLogCard(exerciseIdToResize: exerciseTemplate.id),
+                                        onRemoveSuperSet: (String superSetId) => exerciseLogController.removeSuperSet(
+                                            superSetId: exerciseTemplate.superSetId),
+                                        onRemoveLog: () =>
+                                            exerciseLogController.removeExerciseLog(logId: exerciseTemplate.id),
+                                        onReplaceLog: () =>
+                                            _showReplaceExercisePicker(oldExerciseLog: exerciseTemplate),
+                                        onSuperSet: () =>
+                                            _showSuperSetExercisePicker(firstExerciseLog: exerciseTemplate),
+                                        onResize: () =>
+                                            _handleResizedExerciseLogCard(exerciseIdToResize: exerciseTemplate.id),
                                         isMinimised: _isMinimised(exerciseTemplate.id),
                                         onTapWeightEditor: (SetDto setDto) {
                                           setState(() {

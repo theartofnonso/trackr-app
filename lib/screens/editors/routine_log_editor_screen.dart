@@ -223,12 +223,12 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   }
 
   void _generateReport({required RoutineLogDto routineLog}) async {
-
     final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
 
     final user = routineUserController.user;
 
-    String instruction = prepareLogInstruction(context: context, routineLog: routineLog, trainingGoal: user?.trainingGoal ?? TrainingGoal.hypertrophy);
+    String instruction = prepareLogInstruction(
+        context: context, routineLog: routineLog, trainingGoal: user?.trainingGoal ?? TrainingGoal.hypertrophy);
 
     runMessage(system: routineLogSystemInstruction, user: instruction, responseFormat: routineLogReportResponseFormat)
         .then((response) {
@@ -312,17 +312,31 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                       icon: const FaIcon(FontAwesomeIcons.barsStaggered))
               ],
             ),
-            floatingActionButton: isKeyboardOpen && _selectedSetDto != null
-                ? FloatingActionButton(
-                    heroTag: UniqueKey(),
-                    onPressed: _showWeightCalculator,
-                    enableFeedback: true,
-                    child: Image.asset(
-                      'icons/dumbbells.png',
-                      fit: BoxFit.contain,
-                      color: isDarkMode ? Colors.white : Colors.white,
-                      height: 24, // Adjust the height as needed
-                    ),
+            floatingActionButton: isKeyboardOpen
+                ? SafeArea(
+                    minimum: EdgeInsets.only(left: 32),
+                    child: Row(children: [
+                      FloatingActionButton(
+                        heroTag: UniqueKey(),
+                        onPressed: _dismissKeyboard,
+                        enableFeedback: true,
+                        child: FaIcon(Icons.keyboard_hide_rounded),
+                      ),
+                      Spacer(),
+                      _selectedSetDto != null
+                          ? FloatingActionButton(
+                              heroTag: UniqueKey(),
+                              onPressed: _showWeightCalculator,
+                              enableFeedback: true,
+                              child: Image.asset(
+                                'icons/dumbbells.png',
+                                fit: BoxFit.contain,
+                                color: isDarkMode ? Colors.white : Colors.white,
+                                height: 24, // Adjust the height as needed
+                              ),
+                            )
+                          : SizedBox.shrink()
+                    ]),
                   )
                 : null,
             body: Container(
@@ -369,8 +383,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                 alignment: Alignment.centerLeft,
                                 child: IconButton(
                                     onPressed: _toggleVolume,
-                                    icon: FaIcon(_muted ? FontAwesomeIcons.volumeHigh : FontAwesomeIcons.volumeXmark, color: Colors.white,
-                                        size: 16)))
+                                    icon: FaIcon(_muted ? FontAwesomeIcons.volumeHigh : FontAwesomeIcons.volumeXmark,
+                                        color: Colors.white, size: 16)))
                           ])
                         : Consumer<ExerciseLogController>(
                             builder: (BuildContext context, ExerciseLogController provider, Widget? child) {
@@ -387,7 +401,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                   if (exerciseLogs.isNotEmpty)
                     Expanded(
                       child: SingleChildScrollView(
-                        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                         padding: const EdgeInsets.only(bottom: 250),
                         child: SafeArea(
                           bottom: false,
@@ -468,6 +481,10 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         _muted = true;
       }
     });
+  }
+
+  void _dismissKeyboard() {
+    FocusScope.of(context).unfocus(); // Dismisses the keyboard
   }
 
   void _showWeightCalculator() {
@@ -572,7 +589,6 @@ class _RoutineLogOverview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5), // rounded border
