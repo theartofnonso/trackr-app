@@ -265,20 +265,20 @@ final _router = GoRouter(
     GoRoute(
       path: RoutineTemplateScreen.routeName,
       builder: (context, state) {
-        final template = state.extra as RoutineTemplateDto;
-        return RoutineTemplateScreen(id: template.id);
+        final template = state.extra as RoutineTemplateDto?;
+        return RoutineTemplateScreen(id: template?.id ?? "");
       },
     ),
     GoRoute(
       path: RoutineLogScreen.routeName,
       pageBuilder: (context, state) {
         final extra = state.extra as Map<String, dynamic>;
-        final log = extra["log"] as RoutineLogDto;
+        final log = extra["log"] as RoutineLogDto?;
         final showSummary = extra["showSummary"] as bool;
         final isEditable = extra['isEditable'] as bool;
 
         return CustomTransitionPage(
-            child: RoutineLogScreen(id: log.id, showSummary: showSummary, isEditable: isEditable),
+            child: RoutineLogScreen(id: log?.id ?? "", showSummary: showSummary, isEditable: isEditable),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               const begin = Offset(0.0, 1.0);
               const end = Offset.zero;
