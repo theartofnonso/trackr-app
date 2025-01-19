@@ -164,35 +164,30 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
         context: context,
         globalKey: monitorKey,
         padding: EdgeInsets.zero,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              color: Colors.white,
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
-              child: Column(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 18),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text("Monthly Overview".toUpperCase(),
-                      style: GoogleFonts.ubuntu(color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold)),
+                      style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 1),
                   Text(DateTime.now().formattedDayAndMonthAndYear(),
-                      style: GoogleFonts.ubuntu(color: Colors.black, fontSize: 12, fontWeight: FontWeight.w400)),
+                      style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w400)),
                 ],
               ),
-            ),
-            const SizedBox(height: 14),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 18),
-              child: LogStreakMuscleTrendMonitor(
+              const SizedBox(height: 14),
+              LogStreakMuscleTrendMonitor(
                 dateTime: dateTime,
                 showInfo: false,
                 forceDarkMode: true,
               ),
-            ),
-            const SizedBox(height: 14),
-          ],
+              const SizedBox(height: 14),
+            ],
+          ),
         ));
   }
 

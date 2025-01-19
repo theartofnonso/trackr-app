@@ -156,13 +156,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                         padding: const EdgeInsets.only(right: 8.0),
                         child: Stack(children: [
                           LineChartWidget(
-                              chartPoints: volumeChartPoints, periods: [], unit: ChartUnit.weight, aspectRation: 2.5, reservedSize: 40,),
+                              chartPoints: volumeChartPoints, periods: [], unit: ChartUnit.weight, aspectRation: 2.5, reservedSize: 40, hasRightAxisTitles: true),
                           LineChartWidget(
                               chartPoints: rpeChartPoints,
                               periods: [],
                               unit: ChartUnit.number,
                               aspectRation: 2.5,
-                              colors: rpeColors, lineChartSide: LineChartSide.right, reservedSize: 40,)
+                              colors: rpeColors, lineChartSide: LineChartSide.right, reservedSize: 40, hasRightAxisTitles: true)
                         ]),
                       ),
                 Padding(

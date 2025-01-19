@@ -20,6 +20,7 @@ class LineChartWidget extends StatelessWidget {
   final List<Color> colors;
   final double reservedSize;
   final LineChartSide lineChartSide;
+  final bool hasRightAxisTitles;
 
   const LineChartWidget(
       {super.key,
@@ -30,6 +31,7 @@ class LineChartWidget extends StatelessWidget {
       this.aspectRation,
       this.lineChartSide = LineChartSide.left,
       this.colors = const [],
+        this.hasRightAxisTitles = false,
       this.reservedSize = 40});
 
   @override
@@ -52,7 +54,7 @@ class LineChartWidget extends StatelessWidget {
                       titlesData: FlTitlesData(
                         rightTitles: AxisTitles(
                           sideTitles: SideTitles(
-                            showTitles: true,
+                            showTitles: hasRightAxisTitles,
                             getTitlesWidget: _rightTitleWidgets,
                             reservedSize: 16,
                           ),
