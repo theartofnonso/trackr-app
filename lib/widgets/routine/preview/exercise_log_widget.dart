@@ -27,7 +27,7 @@ enum WeightVolumeRPE {
   volumeRPE(
       name: "Volume and RPE",
       description:
-          "Volume shows how much work you do, while RPE reveals how hard it feels. An upward volume trend shows you’re progressively handling more work. While a downward RPE trend at the same workload suggests the exercises are feeling easier");
+          "Volume shows how much work you do, while RPE reveals how hard it feels. An upward volume trend shows you’re progressively handling more work. While a downward RPE trend at the same workload suggests the exercises are feeling easier.");
 
   const WeightVolumeRPE({required this.name, required this.description});
 
