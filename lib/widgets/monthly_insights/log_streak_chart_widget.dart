@@ -38,7 +38,7 @@ class LogStreakChartWidget extends StatelessWidget {
           logs.where((log) => log.createdAt.isBetweenInclusive(from: startOfMonth, to: endOfMonth)).toList();
       final routineLogsByDay = groupBy(routineLogs, (log) => log.createdAt.withoutTime().day);
       final muscleScore = calculateMuscleScoreForLogs(routineLogs: routineLogs);
-      streaks.add(routineLogsByDay.length);
+      streaks.add(routineLogsByDay.length > 12 ? 12 : routineLogsByDay.length);
       months.add(startOfMonth.abbreviatedMonth());
       muscleScores.add(muscleScore);
     }
@@ -58,7 +58,8 @@ class LogStreakChartWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Log Streak and Muscle Score".toUpperCase(), style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
+          Text("Log Streak and Muscle Score".toUpperCase(),
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
           const SizedBox(height: 30),
           Stack(children: [
             LineChartWidget(
@@ -69,6 +70,7 @@ class LogStreakChartWidget extends StatelessWidget {
                 leftReservedSize: 20,
                 rightReservedSize: 20,
                 interval: 1,
+                maxY: 12,
                 colors: streakColor,
                 lineChartSide: LineChartSide.left,
                 hasRightAxisTitles: true),

@@ -22,6 +22,7 @@ class LineChartWidget extends StatelessWidget {
   final double rightReservedSize;
   final LineChartSide lineChartSide;
   final bool hasRightAxisTitles;
+  final double? maxY;
 
   const LineChartWidget(
       {super.key,
@@ -29,6 +30,7 @@ class LineChartWidget extends StatelessWidget {
       required this.periods,
       required this.unit,
       this.interval = 10,
+        this.maxY,
       this.aspectRation,
       this.lineChartSide = LineChartSide.left,
       this.colors = const [],
@@ -52,6 +54,7 @@ class LineChartWidget extends StatelessWidget {
                           getDrawingHorizontalLine: (_) =>
                               FlLine(strokeWidth: 0.5, color: Colors.transparent)),
                       minY: 0,
+                      maxY: maxY,
                       titlesData: FlTitlesData(
                         rightTitles: AxisTitles(
                           sideTitles: SideTitles(
