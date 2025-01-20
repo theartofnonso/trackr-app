@@ -19,6 +19,8 @@ import '../../chart/line_chart_widget.dart';
 import '../preview/set_headers/double_set_header.dart';
 import '../preview/set_headers/single_set_header.dart';
 
+enum Trend { up, down, stable }
+
 enum WeightVolumeRPE {
   weight(
       name: "Weight",
@@ -90,6 +92,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       chartPoints = sets.mapIndexed((index, set) => ChartPointDto(index, (set).weight)).toList();
     }
 
+    String volumeRPETrendSummary = "";
+
     if (exerciseType == ExerciseType.weights && _metric == WeightVolumeRPE.volumeRPE) {
       final totalVolumes = allExerciseLogs.map((log) {
         final volumes = log.sets.map((set) => (set as WeightAndRepsSetDto).volume());
@@ -103,6 +107,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       }).toList();
       rpeChartPoints = averageRpeRatings.mapIndexed((index, rpeRating) => ChartPointDto(index, rpeRating)).toList();
       rpeColors = averageRpeRatings.map((rpeRating) => rpeIntensityToColor[rpeRating]!).toList();
+
+      volumeRPETrendSummary = _analyzeVolumeRpeRelationship(volumes: totalVolumes, rpes: averageRpeRatings);
     }
 
     return GestureDetector(
@@ -156,18 +162,26 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                         padding: const EdgeInsets.only(right: 8.0),
                         child: Stack(children: [
                           LineChartWidget(
-                              chartPoints: volumeChartPoints, periods: [], unit: ChartUnit.weight, aspectRation: 2.5, rightReservedSize: 16, hasRightAxisTitles: true),
+                              chartPoints: volumeChartPoints,
+                              periods: [],
+                              unit: ChartUnit.weight,
+                              aspectRation: 2.5,
+                              rightReservedSize: 16,
+                              hasRightAxisTitles: true),
                           LineChartWidget(
                               chartPoints: rpeChartPoints,
                               periods: [],
                               unit: ChartUnit.number,
                               aspectRation: 2.5,
-                              colors: rpeColors, lineChartSide: LineChartSide.right, rightReservedSize: 16, hasRightAxisTitles: true)
+                              colors: rpeColors,
+                              lineChartSide: LineChartSide.right,
+                              rightReservedSize: 16,
+                              hasRightAxisTitles: true)
                         ]),
                       ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 0.0),
-                  child: Text(_metric.description,
+                  child: Text(_metric == WeightVolumeRPE.weight ? _metric.description : volumeRPETrendSummary,
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           fontWeight: FontWeight.w400,
@@ -207,5 +221,54 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         ],
       ),
     );
+  }
+
+  String _analyzeVolumeRpeRelationship({required List<double> volumes, required List<int> rpes}) {
+    if (volumes.isEmpty || rpes.isEmpty || volumes.length != rpes.length) {
+      return "Insufficient or mismatched data to analyze.";
+    }
+
+    // Helper to detect basic trend: up, down, or stable
+    Trend detectTrend(double start, double end, double threshold) {
+      final difference = end - start;
+
+      // If the absolute difference is smaller than the threshold, consider it stable
+      if (difference.abs() < threshold) {
+        return Trend.stable;
+      } else if (difference > 0) {
+        return Trend.up;
+      } else {
+        return Trend.down;
+      }
+    }
+
+    final secondToLastVolumeOrFirst = volumes.length >= 2 ? volumes[volumes.length - 2] : volumes.first;
+
+    final secondToLastRPEorFirst = rpes.length >= 2 ? rpes[rpes.length - 2] : rpes.first;
+
+    // For a simple approach, we compare first and last data points
+    final volumeTrend = detectTrend(secondToLastVolumeOrFirst, volumes.last, 2.0);
+    final rpeTrend = detectTrend(secondToLastRPEorFirst.toDouble(), rpes.last.toDouble(), 0.5);
+
+    // Combine trends into a short explanation
+    if (volumeTrend == Trend.up && rpeTrend == Trend.down) {
+      return "Volumes are increasing while RPE is decreasing—you're handling more work with less perceived effort. Great progress!";
+    } else if (volumeTrend == Trend.up && rpeTrend == Trend.up) {
+      return "Volumes are increasing and RPE is also on the rise—you're pushing harder, so watch recovery.";
+    } else if (volumeTrend == Trend.up && rpeTrend == Trend.stable) {
+      return "Volumes are increasing while RPE remains stable—steady gains!";
+    } else if (volumeTrend == Trend.down && rpeTrend == Trend.up) {
+      return "Volumes are declining while RPE is rising—could be a sign of fatigue or insufficient rest.";
+    } else if (volumeTrend == Trend.down && rpeTrend == Trend.down) {
+      return "Volumes and RPE are decreasing—possibly a lighter training phase or deload.";
+    } else if (volumeTrend == Trend.down && rpeTrend == Trend.stable) {
+      return "Volumes are down while RPE is steady—indicates a reduced workload but consistent effort.";
+    } else if (volumeTrend == Trend.stable && rpeTrend == Trend.up) {
+      return "Volume is stable while RPE is rising—pay attention to recovery or technique.";
+    } else if (volumeTrend == Trend.stable && rpeTrend == Trend.down) {
+      return "Volume is stable while RPE is dropping—exercises are feeling easier.";
+    } else {
+      return "Both volume and RPE appear stable—you're maintaining a consistent routine.";
+    }
   }
 }
