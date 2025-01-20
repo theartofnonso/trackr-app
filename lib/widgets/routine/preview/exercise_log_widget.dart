@@ -73,8 +73,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     List<ExerciseLogDto> allExerciseLogs = routineLogController.exerciseLogsByExerciseId[exercise.id] ?? [];
 
-    if (allExerciseLogs.length >= 10) {
-      allExerciseLogs = allExerciseLogs.reversed.toList().sublist(0, 10).reversed.toList();
+    if (allExerciseLogs.length >= 5) {
+      allExerciseLogs = allExerciseLogs.reversed.toList().sublist(0, 5).reversed.toList();
     } else {
       allExerciseLogs = allExerciseLogs.reversed.toList().sublist(0).reversed.toList();
     }
@@ -223,48 +223,58 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     );
   }
 
-  String _analyzeVolumeRpeRelationship({required List<double> volumes, required List<int> rpes}) {
+  String _analyzeVolumeRpeRelationship({
+    required List<double> volumes,
+    required List<int> rpes,
+  }) {
     if (volumes.isEmpty || rpes.isEmpty || volumes.length != rpes.length) {
       return "Insufficient or mismatched data to analyze.";
     }
 
-    // Helper to detect basic trend: up, down, or stable
-    Trend detectTrend(double start, double end, double threshold) {
-      final difference = end - start;
+    // ----- 1. Calculate the average delta (slope) for each list -----
+    double averageDelta(List<double> data) {
+      if (data.length < 2) return 0.0; // Not enough data to form a trend
+      double sumDelta = 0.0;
+      for (int i = 1; i < data.length; i++) {
+        sumDelta += (data[i] - data[i - 1]);
+      }
+      return sumDelta / (data.length - 1);
+    }
 
-      // If the absolute difference is smaller than the threshold, consider it stable
-      if (difference.abs() < threshold) {
+    final avgVolumeDelta = averageDelta(volumes);
+    final avgRpeDelta = averageDelta(rpes.map((e) => e.toDouble()).toList());
+
+    // ----- 2. Generic function to convert a delta into a Trend -----
+    // Adjust thresholds to what you consider “significant” for your data
+    Trend detectTrend(double delta, double threshold) {
+      if (delta.abs() < threshold) {
         return Trend.stable;
-      } else if (difference > 0) {
+      } else if (delta > 0) {
         return Trend.up;
       } else {
         return Trend.down;
       }
     }
 
-    final secondToLastVolumeOrFirst = volumes.length >= 2 ? volumes[volumes.length - 2] : volumes.first;
+    // ----- 3. Determine overall trends -----
+    final volumeTrend = detectTrend(avgVolumeDelta, 2.0); // example threshold
+    final rpeTrend = detectTrend(avgRpeDelta, 0.5); // example threshold
 
-    final secondToLastRPEorFirst = rpes.length >= 2 ? rpes[rpes.length - 2] : rpes.first;
-
-    // For a simple approach, we compare first and last data points
-    final volumeTrend = detectTrend(secondToLastVolumeOrFirst, volumes.last, 2.0);
-    final rpeTrend = detectTrend(secondToLastRPEorFirst.toDouble(), rpes.last.toDouble(), 0.5);
-
-    // Combine trends into a short explanation
+    // ----- 4. Create a short explanation based on the combination -----
     if (volumeTrend == Trend.up && rpeTrend == Trend.down) {
       return "Volumes are increasing while RPE is decreasing—you're handling more work with less perceived effort. Great progress!";
     } else if (volumeTrend == Trend.up && rpeTrend == Trend.up) {
-      return "Volumes are increasing and RPE is also on the rise—you're pushing harder, so watch recovery.";
+      return "Volumes are increasing and RPE is also on the rise—you're pushing harder, so watch your recovery.";
     } else if (volumeTrend == Trend.up && rpeTrend == Trend.stable) {
       return "Volumes are increasing while RPE remains stable—steady gains!";
     } else if (volumeTrend == Trend.down && rpeTrend == Trend.up) {
       return "Volumes are declining while RPE is rising—could be a sign of fatigue or insufficient rest.";
     } else if (volumeTrend == Trend.down && rpeTrend == Trend.down) {
-      return "Volumes and RPE are decreasing—possibly a lighter training phase or deload.";
+      return "Volumes and RPE are decreasing—possibly a lighter training phase or a deload period.";
     } else if (volumeTrend == Trend.down && rpeTrend == Trend.stable) {
       return "Volumes are down while RPE is steady—indicates a reduced workload but consistent effort.";
     } else if (volumeTrend == Trend.stable && rpeTrend == Trend.up) {
-      return "Volume is stable while RPE is rising—pay attention to recovery or technique.";
+      return "Volume is stable while RPE is rising—pay attention to your recovery or technique.";
     } else if (volumeTrend == Trend.stable && rpeTrend == Trend.down) {
       return "Volume is stable while RPE is dropping—exercises are feeling easier.";
     } else {
