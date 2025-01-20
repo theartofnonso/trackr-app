@@ -18,7 +18,8 @@ class LineChartWidget extends StatelessWidget {
   final double interval;
   final double? aspectRation;
   final List<Color> colors;
-  final double reservedSize;
+  final double leftReservedSize;
+  final double rightReservedSize;
   final LineChartSide lineChartSide;
   final bool hasRightAxisTitles;
 
@@ -32,7 +33,7 @@ class LineChartWidget extends StatelessWidget {
       this.lineChartSide = LineChartSide.left,
       this.colors = const [],
         this.hasRightAxisTitles = false,
-      this.reservedSize = 40});
+      this.leftReservedSize = 40, this.rightReservedSize = 40});
 
   @override
   Widget build(BuildContext context) {
@@ -49,14 +50,14 @@ class LineChartWidget extends StatelessWidget {
                       gridData: FlGridData(
                           drawVerticalLine: false,
                           getDrawingHorizontalLine: (_) =>
-                              FlLine(strokeWidth: 0.5, color: isDarkMode ? Colors.white30 : Colors.grey.shade600)),
+                              FlLine(strokeWidth: 0.5, color: Colors.transparent)),
                       minY: 0,
                       titlesData: FlTitlesData(
                         rightTitles: AxisTitles(
                           sideTitles: SideTitles(
                             showTitles: hasRightAxisTitles,
                             getTitlesWidget: _rightTitleWidgets,
-                            reservedSize: 16,
+                            reservedSize: rightReservedSize,
                           ),
                         ),
                         topTitles: const AxisTitles(
@@ -66,7 +67,7 @@ class LineChartWidget extends StatelessWidget {
                           sideTitles: SideTitles(
                             showTitles: true,
                             getTitlesWidget: _leftTitleWidgets,
-                            reservedSize: reservedSize,
+                            reservedSize: leftReservedSize,
                           ),
                         ),
                         bottomTitles: AxisTitles(

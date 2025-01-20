@@ -158,7 +158,7 @@ class CaloriesTrendScreen extends StatelessWidget {
                         periods: months,
                         unit: ChartUnit.numberBig,
                         aspectRation: 1.5,
-                        reservedSize: 30,
+                        leftReservedSize: 30,
                         interval: 1,
                         colors: [])
                     : const Center(child: FaIcon(FontAwesomeIcons.chartSimple, color: sapphireDark, size: 120)),
