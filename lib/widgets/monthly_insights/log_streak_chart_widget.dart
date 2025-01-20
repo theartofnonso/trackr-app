@@ -58,7 +58,7 @@ class LogStreakChartWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Log Streak and Muscle Score".toUpperCase(), style: Theme.of(context).textTheme.titleMedium),
+          Text("Log Streak and Muscle Score".toUpperCase(), style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
           const SizedBox(height: 30),
           Stack(children: [
             LineChartWidget(
