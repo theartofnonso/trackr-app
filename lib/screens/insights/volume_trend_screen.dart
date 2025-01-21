@@ -162,8 +162,7 @@ class VolumeTrendScreen extends StatelessWidget {
                         unit: ChartUnit.weight,
                         aspectRation: 1.5,
                         leftReservedSize: 40,
-                        interval: 1,
-                        colors: [])
+                        interval: 1)
                     : const Center(child: FaIcon(FontAwesomeIcons.chartSimple, color: sapphireDark, size: 120)),
                 const SizedBox(height: 16),
                 InformationContainer(

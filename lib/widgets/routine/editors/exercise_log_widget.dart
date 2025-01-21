@@ -404,7 +404,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final rpeRatings = sets.mapIndexed((index, set) => set.rpeRating).toList();
     List<ChartPointDto> chartPoints = rpeRatings.mapIndexed((index, rating) => ChartPointDto(index, rating)).toList();
     List<String> setIndexes = sets.mapIndexed((index, set) => "Set ${index + 1}").toList();
-    List<Color> colors = rpeRatings.mapIndexed((index, rating) => _getIntensityColor(intensity: rating)).toList();
+    List<Color> rpeColors = rpeRatings.mapIndexed((index, rating) => _getIntensityColor(intensity: rating)).toList();
 
     final rpeTrendSummary = _getRpeTrendSummary(ratings: rpeRatings);
 
@@ -570,8 +570,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                       periods: setIndexes,
                       unit: ChartUnit.number,
                       aspectRation: 3,
+                      leftReservedSize: 20,
                       interval: 1,
-                      colors: colors.length >= 2 ? colors : []),
+                      colors: rpeColors),
                 ),
                 const SizedBox(height: 20),
                 Padding(

@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
+import 'package:tracker_app/dtos/set_dtos/duration_set_dto.dart';
+import 'package:tracker_app/dtos/set_dtos/reps_dto.dart';
 import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/widgets/routine/preview/sets_listview.dart';
@@ -94,21 +96,45 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     String volumeRPETrendSummary = "";
 
-    if (exerciseType == ExerciseType.weights && _metric == WeightVolumeRPE.volumeRPE) {
-      final totalVolumes = allExerciseLogs.map((log) {
-        final volumes = log.sets.map((set) => (set as WeightAndRepsSetDto).volume());
-        return volumes.sum;
-      }).toList();
-      volumeChartPoints = totalVolumes.mapIndexed((index, totalVolume) => ChartPointDto(index, totalVolume)).toList();
-
+    if (_metric == WeightVolumeRPE.volumeRPE) {
       final averageRpeRatings = allExerciseLogs.map((log) {
         final rpeRatings = log.sets.map((set) => set.rpeRating);
         return rpeRatings.average.ceil();
       }).toList();
+
       rpeChartPoints = averageRpeRatings.mapIndexed((index, rpeRating) => ChartPointDto(index, rpeRating)).toList();
       rpeColors = averageRpeRatings.map((rpeRating) => rpeIntensityToColor[rpeRating]!).toList();
 
-      volumeRPETrendSummary = _analyzeVolumeRpeRelationship(volumes: totalVolumes, rpes: averageRpeRatings);
+      if (exerciseType == ExerciseType.weights) {
+        final totalVolumes = allExerciseLogs.map((log) {
+          final volumes = log.sets.map((set) => (set as WeightAndRepsSetDto).volume());
+          return volumes.sum;
+        }).toList();
+        volumeChartPoints = totalVolumes.mapIndexed((index, totalVolume) => ChartPointDto(index, totalVolume)).toList();
+        volumeRPETrendSummary =
+            _analyzeVolumeRpeRelationship(volumes: totalVolumes, rpes: averageRpeRatings, volume: 'Volume');
+      }
+
+      if (exerciseType == ExerciseType.bodyWeight) {
+        final totalReps = allExerciseLogs.map((log) {
+          final reps = log.sets.map((set) => (set as RepsSetDto).reps);
+          return reps.sum;
+        }).toList();
+        volumeChartPoints = totalReps.mapIndexed((index, totalRep) => ChartPointDto(index, totalRep)).toList();
+        volumeRPETrendSummary =
+            _analyzeVolumeRpeRelationship(volumes: totalReps, rpes: averageRpeRatings, volume: 'Reps');
+      }
+
+      if (exerciseType == ExerciseType.duration) {
+        final totalDuration = allExerciseLogs.map((log) {
+          final durations = log.sets.map((set) => (set as DurationSetDto).duration);
+          return durations.fold(Duration.zero, (sum, item) => sum + item).inMilliseconds;
+        }).toList();
+        volumeChartPoints =
+            totalDuration.mapIndexed((index, totalDuration) => ChartPointDto(index, totalDuration)).toList();
+        volumeRPETrendSummary =
+            _analyzeVolumeRpeRelationship(volumes: totalDuration, rpes: averageRpeRatings, volume: 'Duration');
+      }
     }
 
     return GestureDetector(
@@ -164,7 +190,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                           LineChartWidget(
                               chartPoints: volumeChartPoints,
                               periods: [],
-                              unit: ChartUnit.weight,
+                              unit: _getChartUnit(),
                               aspectRation: 2.5,
                               rightReservedSize: 16,
                               hasRightAxisTitles: true),
@@ -223,16 +249,22 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     );
   }
 
-  String _analyzeVolumeRpeRelationship({
-    required List<double> volumes,
-    required List<int> rpes,
-  }) {
+  ChartUnit _getChartUnit() {
+    final exerciseType = widget.exerciseLog.exercise.type;
+    return switch (exerciseType) {
+      ExerciseType.weights => ChartUnit.weight,
+      ExerciseType.bodyWeight => ChartUnit.number,
+      ExerciseType.duration => ChartUnit.duration,
+    };
+  }
+
+  String _analyzeVolumeRpeRelationship({required List<num> volumes, required List<int> rpes, required String volume}) {
     if (volumes.isEmpty || rpes.isEmpty || volumes.length != rpes.length) {
       return "Insufficient or mismatched data to analyze.";
     }
 
     // ----- 1. Calculate the average delta (slope) for each list -----
-    double averageDelta(List<double> data) {
+    double averageDelta(List<num> data) {
       if (data.length < 2) return 0.0; // Not enough data to form a trend
       double sumDelta = 0.0;
       for (int i = 1; i < data.length; i++) {
@@ -262,23 +294,23 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     // ----- 4. Create a short explanation based on the combination -----
     if (volumeTrend == Trend.up && rpeTrend == Trend.down) {
-      return "Volumes are increasing while RPE is decreasing—you're handling more work with less perceived effort. Great progress!";
+      return "$volume is increasing while RPE is decreasing—you're handling more work with less perceived effort. Great progress!";
     } else if (volumeTrend == Trend.up && rpeTrend == Trend.up) {
-      return "Volumes are increasing and RPE is also on the rise—you're pushing harder, so watch your recovery.";
+      return "$volume is increasing and RPE is also on the rise—you're pushing harder, so watch your recovery.";
     } else if (volumeTrend == Trend.up && rpeTrend == Trend.stable) {
-      return "Volumes are increasing while RPE remains stable—steady gains!";
+      return "$volume is increasing while RPE remains stable—steady gains!";
     } else if (volumeTrend == Trend.down && rpeTrend == Trend.up) {
-      return "Volumes are declining while RPE is rising—could be a sign of fatigue or insufficient rest.";
+      return "$volume is declining while RPE is rising—could be a sign of fatigue or insufficient rest.";
     } else if (volumeTrend == Trend.down && rpeTrend == Trend.down) {
-      return "Volumes and RPE are decreasing—possibly a lighter training phase or a deload period.";
+      return "$volume and RPE are decreasing—possibly a lighter training phase or a deload period.";
     } else if (volumeTrend == Trend.down && rpeTrend == Trend.stable) {
-      return "Volumes are down while RPE is steady—indicates a reduced workload but consistent effort.";
+      return "$volume is down while RPE is steady—indicates a reduced workload but consistent effort.";
     } else if (volumeTrend == Trend.stable && rpeTrend == Trend.up) {
-      return "Volume is stable while RPE is rising—pay attention to your recovery or technique.";
+      return "$volume is stable while RPE is rising—pay attention to your recovery or technique.";
     } else if (volumeTrend == Trend.stable && rpeTrend == Trend.down) {
-      return "Volume is stable while RPE is dropping—exercises are feeling easier.";
+      return "$volume is stable while RPE is dropping—${widget.exerciseLog.exercise.name} is feeling easier.";
     } else {
-      return "Both volume and RPE appear stable—you're maintaining a consistent routine.";
+      return "Both $volume and RPE appear stable—you're maintaining a consistent routine.";
     }
   }
 }

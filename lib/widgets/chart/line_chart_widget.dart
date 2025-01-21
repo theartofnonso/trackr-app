@@ -90,7 +90,7 @@ class LineChartWidget extends StatelessWidget {
                               return FlSpot(point.x.toDouble(), point.y.toDouble());
                             }).toList(),
                             color: isDarkMode ? Colors.white70 : Colors.grey.shade600,
-                            gradient: colors.isNotEmpty ? LinearGradient(colors: colors) : null,
+                            gradient: colors.length >= 2 ? LinearGradient(colors: colors) : null,
                             belowBarData: BarAreaData(
                               show: true,
                               gradient: LinearGradient(
