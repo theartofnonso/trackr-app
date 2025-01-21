@@ -23,17 +23,17 @@ import '../preview/set_headers/single_set_header.dart';
 
 enum Trend { up, down, stable }
 
-enum WeightVolumeRPE {
+enum WeightAndRPE {
   weight(
       name: "Weight",
       description:
           "Track your heaviest weight lifted. An upward trend highlights your strength gains and consistent improvement over time."),
-  volumeRPE(
+  rpe(
       name: "Volume and RPE",
       description:
           "Volume shows how much work you do, while RPE reveals how hard it feels. An upward volume trend shows you’re progressively handling more work. While a downward RPE trend at the same workload suggests the exercises are feeling easier.");
 
-  const WeightVolumeRPE({required this.name, required this.description});
+  const WeightAndRPE({required this.name, required this.description});
 
   final String name;
   final String description;
@@ -50,7 +50,7 @@ class ExerciseLogWidget extends StatefulWidget {
 }
 
 class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
-  WeightVolumeRPE _metric = WeightVolumeRPE.weight;
+  WeightAndRPE _metric = WeightAndRPE.weight;
 
   @override
   Widget build(BuildContext context) {
@@ -89,14 +89,14 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     List<Color> rpeColors = [];
 
-    if (exerciseType == ExerciseType.weights && _metric == WeightVolumeRPE.weight) {
+    if (exerciseType == ExerciseType.weights && _metric == WeightAndRPE.weight) {
       final sets = allExerciseLogs.map((log) => heaviestWeightInSetForExerciseLog(exerciseLog: log)).toList();
       chartPoints = sets.mapIndexed((index, set) => ChartPointDto(index, (set).weight)).toList();
     }
 
     String volumeRPETrendSummary = "";
 
-    if (_metric == WeightVolumeRPE.volumeRPE) {
+    if (_metric == WeightAndRPE.rpe) {
       final averageRpeRatings = allExerciseLogs.map((log) {
         final rpeRatings = log.sets.map((set) => set.rpeRating);
         return rpeRatings.average.ceil();
@@ -178,7 +178,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               spacing: 12,
               children: [
                 const SizedBox(height: 2),
-                _metric == WeightVolumeRPE.weight
+                _metric == WeightAndRPE.weight
                     ? Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: LineChartWidget(
@@ -207,7 +207,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                       ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 0.0),
-                  child: Text(_metric == WeightVolumeRPE.weight ? _metric.description : volumeRPETrendSummary,
+                  child: Text(_metric == WeightAndRPE.weight ? _metric.description : volumeRPETrendSummary,
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           fontWeight: FontWeight.w400,
@@ -215,19 +215,18 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                           height: 1.8,
                           color: isDarkMode ? Colors.white70 : Colors.black)),
                 ),
-                CupertinoSlidingSegmentedControl<WeightVolumeRPE>(
+                CupertinoSlidingSegmentedControl<WeightAndRPE>(
                   backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade200,
                   thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
                   groupValue: _metric,
                   children: {
-                    WeightVolumeRPE.weight: SizedBox(
+                    WeightAndRPE.weight: SizedBox(
                         width: 50,
-                        child: Text(WeightVolumeRPE.weight.name, style: textStyle, textAlign: TextAlign.center)),
-                    WeightVolumeRPE.volumeRPE: SizedBox(
-                        width: 100,
-                        child: Text(WeightVolumeRPE.volumeRPE.name, style: textStyle, textAlign: TextAlign.center)),
+                        child: Text(WeightAndRPE.weight.name, style: textStyle, textAlign: TextAlign.center)),
+                    WeightAndRPE.rpe: SizedBox(
+                        width: 100, child: Text(_volumeRepsDuration(), style: textStyle, textAlign: TextAlign.center)),
                   },
-                  onValueChanged: (WeightVolumeRPE? value) {
+                  onValueChanged: (WeightAndRPE? value) {
                     if (value != null) {
                       setState(() {
                         _metric = value;
@@ -255,6 +254,15 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       ExerciseType.weights => ChartUnit.weight,
       ExerciseType.bodyWeight => ChartUnit.number,
       ExerciseType.duration => ChartUnit.duration,
+    };
+  }
+
+  String _volumeRepsDuration() {
+    final exerciseType = widget.exerciseLog.exercise.type;
+    return switch (exerciseType) {
+      ExerciseType.weights => "Volume and RPE",
+      ExerciseType.bodyWeight => "Reps and RPE",
+      ExerciseType.duration => "Time and RPE",
     };
   }
 
