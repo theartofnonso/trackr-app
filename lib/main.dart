@@ -18,7 +18,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
-import 'package:tracker_app/controllers/settings_controller.dart';
+import 'package:tracker_app/controllers/notifications_controller.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/dtos/appsync/routine_template_dto.dart';
 import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
@@ -156,8 +156,8 @@ void main() async {
       options.tracesSampleRate = 1.0;
     },
     appRunner: () => runApp(MultiProvider(providers: [
-      ChangeNotifierProvider<SettingsController>(
-        create: (BuildContext context) => SettingsController(),
+      ChangeNotifierProvider<NotificationsController>(
+        create: (BuildContext context) => NotificationsController(),
       ),
       ChangeNotifierProvider<RoutineUserController>(
         create: (BuildContext context) => RoutineUserController(AmplifyRoutineUserRepository()),

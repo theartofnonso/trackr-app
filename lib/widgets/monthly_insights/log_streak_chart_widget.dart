@@ -47,7 +47,7 @@ class LogStreakChartWidget extends StatelessWidget {
 
     final muscleChartPoints = muscleScores.mapIndexed((index, value) => ChartPointDto(index, value)).toList();
 
-    final streakColors = streaks.map((streak) => logStreakColor(value: streak / 12)).toList();
+    final streakColors = streaks.map((streak) => logStreakColor(streak)).toList();
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
@@ -72,6 +72,7 @@ class LogStreakChartWidget extends StatelessWidget {
                 interval: 1,
                 maxY: 12,
                 colors: streakColors,
+                leftAxisTitlesColor: logStreakColor,
                 lineChartSide: LineChartSide.left,
                 hasRightAxisTitles: true),
             LineChartWidget(

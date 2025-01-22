@@ -100,8 +100,8 @@ class MonthlyTrainingSummaryWidget extends StatelessWidget {
                       child: _TableItem(
                           title: 'Sessions'.toUpperCase(),
                           subTitle: "${routineLogs.length}",
-                          titleColor: logStreakColor(value: routineLogs.length / 12),
-                          subTitleColor: logStreakColor(value: routineLogs.length / 12),
+                          titleColor: logStreakColor(routineLogs.length),
+                          subTitleColor: logStreakColor(routineLogs.length),
                           padding: const EdgeInsets.only(bottom: 20)),
                     ),
                   ),

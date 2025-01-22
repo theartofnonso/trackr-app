@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../utils/general_utils.dart';
 
 class LogStreakMonitor extends StatelessWidget {
-  final double value;
+  final num value;
   final double width;
   final double height;
   final double strokeWidth;
@@ -12,7 +12,7 @@ class LogStreakMonitor extends StatelessWidget {
 
   const LogStreakMonitor({
     super.key,
-    required this.value,
+    this.value = 0,
     required this.width,
     required this.height,
     required this.strokeWidth, this.strokeCap, this.forceDarkMode = false
@@ -28,11 +28,11 @@ class LogStreakMonitor extends StatelessWidget {
       width: height,
       height: width,
       child: CircularProgressIndicator(
-        value: value,
+        value: value.toDouble(),
         strokeWidth: strokeWidth,
         backgroundColor: isDarkMode ? Colors.black12 : Colors.grey.shade200,
         strokeCap: strokeCap ?? StrokeCap.butt,
-        valueColor: AlwaysStoppedAnimation<Color>(logStreakColor(value: value)),
+        valueColor: AlwaysStoppedAnimation<Color>(logStreakColor(value)),
       ),
     );
   }

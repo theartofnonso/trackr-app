@@ -104,12 +104,13 @@ Future<bool> _requestAndroidNotificationPermission() async {
       false;
 }
 
-Color logStreakColor({required double value}) {
-  if (value < 0.3) {
+Color logStreakColor(num value) {
+  final result = value / 12;
+  if (result < 0.3) {
     return Colors.red;
-  } else if (value < 0.5) {
+  } else if (result < 0.5) {
     return Colors.deepOrangeAccent;
-  } else if (value < 0.8) {
+  } else if (result < 0.8) {
     return vibrantBlue;
   } else {
     return vibrantGreen;
