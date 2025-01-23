@@ -5,12 +5,10 @@ import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import '../../utils/date_utils.dart';
 
 class CalendarNavigator extends StatefulWidget {
-  final bool enabled;
-
   /// Callback when the month changes, providing the current month as DateTime.
   final void Function(DateTimeRange currentMonth) onMonthChange;
 
-  const CalendarNavigator({super.key, required this.onMonthChange, this.enabled = true});
+  const CalendarNavigator({super.key, required this.onMonthChange});
 
   @override
   State<CalendarNavigator> createState() => _CalendarNavigatorState();
@@ -77,21 +75,16 @@ class _CalendarNavigatorState extends State<CalendarNavigator> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         IconButton(
-            onPressed: canNavigatePrevious && widget.enabled ? _goToPreviousMonth : null,
+            onPressed: canNavigatePrevious ? _goToPreviousMonth : null,
             icon: FaIcon(FontAwesomeIcons.arrowLeftLong,
-                color: _getArrowIconColour(isDarkMode: isDarkMode, canNavigate: canNavigatePrevious && widget.enabled),
-                size: 16)),
-        Text(
-            widget.enabled
-                ? _currentDate.formattedMonthAndYear().toUpperCase()
-                : "Trends for the past year".toUpperCase(),
+                color: _getArrowIconColour(isDarkMode: isDarkMode, canNavigate: canNavigatePrevious), size: 16)),
+        Text(_currentDate.formattedMonthAndYear().toUpperCase(),
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.bold)),
         IconButton(
-            onPressed: canNavigateNext && widget.enabled ? _goToNextMonth : null,
+            onPressed: canNavigateNext ? _goToNextMonth : null,
             icon: FaIcon(FontAwesomeIcons.arrowRightLong,
-                color: _getArrowIconColour(isDarkMode: isDarkMode, canNavigate: canNavigateNext && widget.enabled),
-                size: 16)),
+                color: _getArrowIconColour(isDarkMode: isDarkMode, canNavigate: canNavigateNext), size: 16)),
       ],
     );
   }

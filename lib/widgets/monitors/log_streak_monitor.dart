@@ -28,7 +28,7 @@ class LogStreakMonitor extends StatelessWidget {
       width: height,
       height: width,
       child: CircularProgressIndicator(
-        value: value.toDouble(),
+        value: value / 12,
         strokeWidth: strokeWidth,
         backgroundColor: isDarkMode ? Colors.black12 : Colors.grey.shade200,
         strokeCap: strokeCap ?? StrokeCap.butt,

@@ -12,6 +12,7 @@ import '../controllers/activity_log_controller.dart';
 import '../controllers/exercise_and_routine_controller.dart';
 import '../utils/date_utils.dart';
 import '../widgets/calendar/calendar_navigator.dart';
+import 'insights/muscle_recovery_screen.dart';
 
 class HomeTabScreen extends StatefulWidget {
   final ScrollController scrollController;
@@ -64,10 +65,12 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
                       TableCell(
                         verticalAlignment: TableCellVerticalAlignment.middle,
                         child: Center(
-                          child: CalendarNavigator(
-                            onMonthChange: _onMonthChange,
-                            enabled: _tabIndex == 0,
-                          ),
+                          child: _tabIndex == 0
+                              ? CalendarNavigator(onMonthChange: _onMonthChange)
+                              : Text(
+                                  _getTabLabel().toUpperCase(),
+                                  style: Theme.of(context).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.bold),
+                                ),
                         ),
                       ),
                       TableCell(
@@ -94,6 +97,9 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600))),
                     Tab(
                         child: Text("Muscle Trends".toUpperCase(),
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600))),
+                    Tab(
+                        child: Text("Recovery".toUpperCase(),
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600)))
                   ],
                 ),
@@ -108,6 +114,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
                       SetsAndRepsVolumeInsightsScreen(
                         canPop: false,
                       ),
+                      MuscleRecoveryScreen()
                     ],
                   ),
                 ),
@@ -128,11 +135,18 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
     });
   }
 
+  String _getTabLabel() {
+    if (_tabIndex == 1) {
+      return "Trends for the past year";
+    }
+    return "Muscle Recovery";
+  }
+
   @override
   void initState() {
     super.initState();
     _monthDateTimeRange = thisMonthDateRange();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(() {
       setState(() {
         _tabIndex = _tabController.index;

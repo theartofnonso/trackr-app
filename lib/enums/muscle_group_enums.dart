@@ -25,6 +25,14 @@ class MuscleGroupFamily {
         core,
       ];
 
+  static List<MuscleGroupFamily> get recoveryMuscles => [
+    chest,
+    shoulders,
+    arms,
+    back,
+    legs,
+  ];
+
   @override
   String toString() {
     return name;
