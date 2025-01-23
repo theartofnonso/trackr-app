@@ -74,7 +74,7 @@ class _MuscleRecoveryScreenState extends State<MuscleRecoveryScreen> {
                                       text: "Your ${muscleGroupFamily.name} has",
                                       style: GoogleFonts.ubuntu(
                                           height: 1.5,
-                                          color: Colors.white70,
+                                          color: isDarkMode ? Colors.white70 : Colors.grey.shade600,
                                           fontSize: 16,
                                           fontWeight: FontWeight.w500),
                                       children: [
@@ -82,9 +82,11 @@ class _MuscleRecoveryScreenState extends State<MuscleRecoveryScreen> {
                                     TextSpan(
                                         text: "80%",
                                         style: GoogleFonts.ubuntu(
-                                            color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
+                                            color: isDarkMode ? Colors.white : Colors.black,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600)),
                                     const TextSpan(text: " "),
-                                    const TextSpan(text: "recovery. You can train it today"),
+                                    const TextSpan(text: "recovery. You can train it today."),
                                   ])),
                               const SizedBox(height: 10),
                               Container(
