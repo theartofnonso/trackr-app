@@ -81,6 +81,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       allExerciseLogs = allExerciseLogs.reversed.toList().sublist(0).reversed.toList();
     }
 
+    final validLogs = allExerciseLogs.where((log) => log.sets.isNotEmpty).toList();
+
     List<ChartPointDto> chartPoints = [];
 
     List<ChartPointDto> volumeChartPoints = [];
@@ -90,14 +92,14 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     List<Color> rpeColors = [];
 
     if (exerciseType == ExerciseType.weights && _metric == WeightAndRPE.weight) {
-      final sets = allExerciseLogs.map((log) => heaviestWeightInSetForExerciseLog(exerciseLog: log)).toList();
+      final sets = validLogs.map((log) => heaviestWeightInSetForExerciseLog(exerciseLog: log)).toList();
       chartPoints = sets.mapIndexed((index, set) => ChartPointDto(index, (set).weight)).toList();
     }
 
     String volumeRPETrendSummary = "";
 
     if (_metric == WeightAndRPE.rpe) {
-      final averageRpeRatings = allExerciseLogs.map((log) {
+      final averageRpeRatings = validLogs.map((log) {
         final rpeRatings = log.sets.map((set) => set.rpeRating);
         return rpeRatings.average.ceil();
       }).toList();
@@ -106,7 +108,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       rpeColors = averageRpeRatings.map((rpeRating) => rpeIntensityToColor[rpeRating]!).toList();
 
       if (exerciseType == ExerciseType.weights) {
-        final totalVolumes = allExerciseLogs.map((log) {
+        final totalVolumes = validLogs.map((log) {
           final volumes = log.sets.map((set) => (set as WeightAndRepsSetDto).volume());
           return volumes.sum;
         }).toList();
@@ -116,7 +118,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       }
 
       if (exerciseType == ExerciseType.bodyWeight) {
-        final totalReps = allExerciseLogs.map((log) {
+        final totalReps = validLogs.map((log) {
           final reps = log.sets.map((set) => (set as RepsSetDto).reps);
           return reps.sum;
         }).toList();
@@ -126,7 +128,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       }
 
       if (exerciseType == ExerciseType.duration) {
-        final totalDuration = allExerciseLogs.map((log) {
+        final totalDuration = validLogs.map((log) {
           final durations = log.sets.map((set) => (set as DurationSetDto).duration);
           return durations.fold(Duration.zero, (sum, item) => sum + item).inMilliseconds;
         }).toList();
