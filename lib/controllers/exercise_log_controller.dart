@@ -145,6 +145,7 @@ class ExerciseLogController extends ChangeNotifier {
   void onClear() {
     _exerciseLogRepository.clear();
     _initialRoutineLog = null;
+    SharedPrefs().remove(key: SharedPrefs().routineLogKey);
   }
 
   void _cache() {
