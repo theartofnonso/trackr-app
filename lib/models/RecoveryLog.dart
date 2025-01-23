@@ -23,9 +23,9 @@ import 'ModelProvider.dart';
 import 'package:amplify_core/amplify_core.dart' as amplify_core;
 
 
-/** This is an auto generated class representing the Exercise type in your schema. */
-class Exercise extends amplify_core.Model {
-  static const classType = const _ExerciseModelType();
+/** This is an auto generated class representing the RecoveryLog type in your schema. */
+class RecoveryLog extends amplify_core.Model {
+  static const classType = const _RecoveryLogModelType();
   final String id;
   final String? _owner;
   final String? _data;
@@ -39,8 +39,8 @@ class Exercise extends amplify_core.Model {
   @override
   String getId() => id;
   
-  ExerciseModelIdentifier get modelIdentifier {
-      return ExerciseModelIdentifier(
+  RecoveryLogModelIdentifier get modelIdentifier {
+      return RecoveryLogModelIdentifier(
         id: id
       );
   }
@@ -88,10 +88,10 @@ class Exercise extends amplify_core.Model {
     }
   }
   
-  const Exercise._internal({required this.id, owner, required data, required createdAt, required updatedAt}): _owner = owner, _data = data, _createdAt = createdAt, _updatedAt = updatedAt;
+  const RecoveryLog._internal({required this.id, owner, required data, required createdAt, required updatedAt}): _owner = owner, _data = data, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Exercise({String? id, String? owner, required String data, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
-    return Exercise._internal(
+  factory RecoveryLog({String? id, String? owner, required String data, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
+    return RecoveryLog._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       owner: owner,
       data: data,
@@ -106,7 +106,7 @@ class Exercise extends amplify_core.Model {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is Exercise &&
+    return other is RecoveryLog &&
       id == other.id &&
       _owner == other._owner &&
       _data == other._data &&
@@ -121,7 +121,7 @@ class Exercise extends amplify_core.Model {
   String toString() {
     var buffer = new StringBuffer();
     
-    buffer.write("Exercise {");
+    buffer.write("RecoveryLog {");
     buffer.write("id=" + "$id" + ", ");
     buffer.write("owner=" + "$_owner" + ", ");
     buffer.write("data=" + "$_data" + ", ");
@@ -132,8 +132,8 @@ class Exercise extends amplify_core.Model {
     return buffer.toString();
   }
   
-  Exercise copyWith({String? owner, String? data, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
-    return Exercise._internal(
+  RecoveryLog copyWith({String? owner, String? data, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+    return RecoveryLog._internal(
       id: id,
       owner: owner ?? this.owner,
       data: data ?? this.data,
@@ -141,13 +141,13 @@ class Exercise extends amplify_core.Model {
       updatedAt: updatedAt ?? this.updatedAt);
   }
   
-  Exercise copyWithModelFieldValues({
+  RecoveryLog copyWithModelFieldValues({
     ModelFieldValue<String?>? owner,
     ModelFieldValue<String>? data,
     ModelFieldValue<amplify_core.TemporalDateTime>? createdAt,
     ModelFieldValue<amplify_core.TemporalDateTime>? updatedAt
   }) {
-    return Exercise._internal(
+    return RecoveryLog._internal(
       id: id,
       owner: owner == null ? this.owner : owner.value,
       data: data == null ? this.data : data.value,
@@ -156,7 +156,7 @@ class Exercise extends amplify_core.Model {
     );
   }
   
-  Exercise.fromJson(Map<String, dynamic> json)  
+  RecoveryLog.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
       _owner = json['owner'],
       _data = json['data'],
@@ -175,15 +175,15 @@ class Exercise extends amplify_core.Model {
     'updatedAt': _updatedAt
   };
 
-  static final amplify_core.QueryModelIdentifier<ExerciseModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<ExerciseModelIdentifier>();
+  static final amplify_core.QueryModelIdentifier<RecoveryLogModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<RecoveryLogModelIdentifier>();
   static final ID = amplify_core.QueryField(fieldName: "id");
   static final OWNER = amplify_core.QueryField(fieldName: "owner");
   static final DATA = amplify_core.QueryField(fieldName: "data");
   static final CREATEDAT = amplify_core.QueryField(fieldName: "createdAt");
   static final UPDATEDAT = amplify_core.QueryField(fieldName: "updatedAt");
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
-    modelSchemaDefinition.name = "Exercise";
-    modelSchemaDefinition.pluralName = "Exercises";
+    modelSchemaDefinition.name = "RecoveryLog";
+    modelSchemaDefinition.pluralName = "RecoveryLogs";
     
     modelSchemaDefinition.authRules = [
       amplify_core.AuthRule(
@@ -202,54 +202,54 @@ class Exercise extends amplify_core.Model {
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.id());
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Exercise.OWNER,
+      key: RecoveryLog.OWNER,
       isRequired: false,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Exercise.DATA,
+      key: RecoveryLog.DATA,
       isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Exercise.CREATEDAT,
+      key: RecoveryLog.CREATEDAT,
       isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Exercise.UPDATEDAT,
+      key: RecoveryLog.UPDATEDAT,
       isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
     ));
   });
 }
 
-class _ExerciseModelType extends amplify_core.ModelType<Exercise> {
-  const _ExerciseModelType();
+class _RecoveryLogModelType extends amplify_core.ModelType<RecoveryLog> {
+  const _RecoveryLogModelType();
   
   @override
-  Exercise fromJson(Map<String, dynamic> jsonData) {
-    return Exercise.fromJson(jsonData);
+  RecoveryLog fromJson(Map<String, dynamic> jsonData) {
+    return RecoveryLog.fromJson(jsonData);
   }
   
   @override
   String modelName() {
-    return 'Exercise';
+    return 'RecoveryLog';
   }
 }
 
 /**
  * This is an auto generated class representing the model identifier
- * of [Exercise] in your schema.
+ * of [RecoveryLog] in your schema.
  */
-class ExerciseModelIdentifier implements amplify_core.ModelIdentifier<Exercise> {
+class RecoveryLogModelIdentifier implements amplify_core.ModelIdentifier<RecoveryLog> {
   final String id;
 
-  /** Create an instance of ExerciseModelIdentifier using [id] the primary key. */
-  const ExerciseModelIdentifier({
+  /** Create an instance of RecoveryLogModelIdentifier using [id] the primary key. */
+  const RecoveryLogModelIdentifier({
     required this.id});
   
   @override
@@ -267,7 +267,7 @@ class ExerciseModelIdentifier implements amplify_core.ModelIdentifier<Exercise> 
   String serializeAsString() => serializeAsMap().values.join('#');
   
   @override
-  String toString() => 'ExerciseModelIdentifier(id: $id)';
+  String toString() => 'RecoveryLogModelIdentifier(id: $id)';
   
   @override
   bool operator ==(Object other) {
@@ -275,7 +275,7 @@ class ExerciseModelIdentifier implements amplify_core.ModelIdentifier<Exercise> 
       return true;
     }
     
-    return other is ExerciseModelIdentifier &&
+    return other is RecoveryLogModelIdentifier &&
       id == other.id;
   }
   

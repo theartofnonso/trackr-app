@@ -33,6 +33,14 @@ class MuscleGroupFamily {
     legs,
   ];
 
+  // Find a MuscleGroup by its name (case insensitive)
+  static MuscleGroupFamily fromString(String string) {
+    return MuscleGroupFamily.values.firstWhere(
+          (group) => group.name.toLowerCase() == string.toLowerCase(),
+      orElse: () => MuscleGroupFamily.fullBody,
+    );
+  }
+
   @override
   String toString() {
     return name;
