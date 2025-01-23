@@ -6,6 +6,7 @@ class RoutineLogArguments {
   final RoutineLogDto log;
   final String workoutVideo;
   final RoutineEditorMode editorMode;
+  final bool cached;
 
-  RoutineLogArguments({required this.log, required this.editorMode, this.workoutVideo = ""});
+  RoutineLogArguments({required this.log, required this.editorMode, this.workoutVideo = "", this.cached = false});
 }

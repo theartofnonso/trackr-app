@@ -14,6 +14,7 @@ import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/training_goal_enums.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
+import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/utils/routine_editors_utils.dart';
 import 'package:tracker_app/widgets/routine/editors/exercise_log_widget_lite.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -44,9 +45,11 @@ class RoutineLogEditorScreen extends StatefulWidget {
 
   final RoutineLogDto log;
   final RoutineEditorMode mode;
+  final bool cached;
   final String workoutVideoUrl;
 
-  const RoutineLogEditorScreen({super.key, required this.log, required this.mode, this.workoutVideoUrl = ""});
+  const RoutineLogEditorScreen(
+      {super.key, required this.log, required this.mode, this.workoutVideoUrl = "", this.cached = false});
 
   @override
   State<RoutineLogEditorScreen> createState() => _RoutineLogEditorScreenState();
@@ -500,7 +503,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     WidgetsBinding.instance.addObserver(this);
 
-    _loadExerciseLogs();
+    _loadRoutineAndExerciseLogs();
 
     _onDisposeCallback = Provider.of<ExerciseLogController>(context, listen: false).onClear;
 
@@ -513,16 +516,27 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     );
   }
 
-  void _loadExerciseLogs() {
+  void _loadRoutineAndExerciseLogs() {
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+
+    final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
+
+    exerciseLogController.loadRoutineLog(routineLog: widget.log);
+
     final exerciseLogs = widget.mode == RoutineEditorMode.log
         ? widget.log.exerciseLogs.map((exerciseLog) {
-            final pastSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
-                .whereSetsForExercise(exercise: exerciseLog.exercise);
-            final uncheckedSets = pastSets.map((set) => set.copyWith(checked: false)).toList();
-            return exerciseLog.copyWith(sets: uncheckedSets);
+            if (!widget.cached) {
+              final pastSets = exerciseAndRoutineController.whereSetsForExercise(exercise: exerciseLog.exercise);
+              final uncheckedSets = pastSets.map((set) => set.copyWith(checked: false)).toList();
+
+              /// Don't add any previous set for [ExerciseType.Duration]
+              /// Duration is captured in realtime from a fresh instance
+              return exerciseLog.copyWith(sets: withReps(type: exerciseLog.exercise.type) ? uncheckedSets : []);
+            }
+            return exerciseLog;
           }).toList()
         : widget.log.exerciseLogs;
-    Provider.of<ExerciseLogController>(context, listen: false).loadExerciseLogs(exerciseLogs: exerciseLogs);
+    exerciseLogController.loadExerciseLogs(exerciseLogs: exerciseLogs);
     _minimiseOrMaximiseCards();
   }
 

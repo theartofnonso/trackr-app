@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
+import 'package:tracker_app/utils/exercise_logs_utils.dart';
 
 import '../dtos/appsync/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
@@ -24,7 +25,9 @@ class ExerciseLogRepository {
       newSet = pastSet.copyWith(checked: false);
     }
 
-    final logToAdd = _createExerciseLog(exercise, pastSets: [newSet]);
+    /// Don't add any previous set for [ExerciseType.Duration]
+    /// Duration is captured in realtime from a fresh instance
+    final logToAdd = _createExerciseLog(exercise, pastSets: withReps(type: exercise.type) ? [newSet] : []);
 
     _exerciseLogs = [..._exerciseLogs, logToAdd];
   }
@@ -75,8 +78,10 @@ class ExerciseLogRepository {
       newSet = pastSet.copyWith(checked: false);
     }
 
+    /// Don't add any previous set for [ExerciseType.Duration]
+    /// Duration is captured in realtime from a fresh instance
     exerciseLogs[oldExerciseLogIndex] =
-        oldExerciseLog.copyWith(id: newExercise.id, exercise: newExercise, sets: [newSet]);
+        oldExerciseLog.copyWith(id: newExercise.id, exercise: newExercise, sets: withReps(type: newExercise.type) ? [newSet] : []);
 
     _exerciseLogs = [...exerciseLogs];
   }

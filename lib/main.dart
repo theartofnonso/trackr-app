@@ -208,6 +208,7 @@ final _router = GoRouter(
           log: args.log,
           mode: args.editorMode,
           workoutVideoUrl: args.workoutVideo,
+          cached: args.cached,
         );
       },
     ),
