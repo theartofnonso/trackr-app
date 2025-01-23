@@ -99,17 +99,21 @@ class _YesNoRadioButtonState extends State<_YesNoRadioButton> {
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     return Wrap(
       spacing: 16,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         OpacityButtonWidget(
             label: 'No'.toUpperCase(),
-            buttonColor: _selectedOption == YesNoOption.no ? Colors.red : Colors.grey,
+            buttonColor: _selectedOption == YesNoOption.no ? Colors.red : isDarkMode ? Colors.grey : Colors.grey.shade200,
             onPressed: () => _onSelectOption(YesNoOption.no)),
         OpacityButtonWidget(
             label: 'Yes'.toUpperCase(),
-            buttonColor: _selectedOption == YesNoOption.yes ? vibrantGreen : Colors.grey,
+            buttonColor: _selectedOption == YesNoOption.yes ? vibrantGreen : isDarkMode ? Colors.grey : Colors.grey.shade200,
             onPressed: () => _onSelectOption(YesNoOption.yes)),
       ],
     );
