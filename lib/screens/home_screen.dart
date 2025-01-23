@@ -20,6 +20,7 @@ import 'package:tracker_app/shared_prefs.dart';
 import '../controllers/activity_log_controller.dart';
 import '../controllers/analytics_controller.dart';
 import '../controllers/routine_user_controller.dart';
+import '../models/RecoveryLog.dart';
 import '../models/RoutineLog.dart';
 import '../models/RoutineTemplate.dart';
 import 'milestones/milestones_home_screen.dart';
@@ -42,6 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
   StreamSubscription<QuerySnapshot<RoutineLog>>? _routineLogStream;
   StreamSubscription<QuerySnapshot<RoutineTemplate>>? _routineTemplateStream;
   StreamSubscription<QuerySnapshot<ActivityLog>>? _activityLogStream;
+  StreamSubscription<QuerySnapshot<RecoveryLog>>? _recoveryLogStream;
   StreamSubscription<QuerySnapshot<Exercise>>? _exerciseStream;
 
   @override

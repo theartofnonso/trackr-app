@@ -3,6 +3,7 @@ enum PostHogAnalyticsEvent {
   /// Logging
   logRoutine(displayName: "routine_log_editor:routine_log_create"),
   logActivity(displayName: "activity_picker:activity_log_create"),
+  logRecovery(displayName: "muscle_recovery:recovery_log_create"),
 
   /// Creating
   createRoutineTemplate(displayName: "routine_template_editor:routine_template_create"),

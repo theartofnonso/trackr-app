@@ -8,8 +8,6 @@ class RecoveryLogDto {
 
   final Map<MuscleGroupFamily, int> muscleGroupFamily;
 
-  final int recovery;
-
   final String owner;
 
   final DateTime createdAt;
@@ -19,7 +17,6 @@ class RecoveryLogDto {
   RecoveryLogDto({
     required this.id,
     required this.muscleGroupFamily,
-    required this.recovery,
     required this.owner,
     required this.createdAt,
     required this.updatedAt,
@@ -31,14 +28,14 @@ class RecoveryLogDto {
 
   factory RecoveryLogDto.fromLog(RecoveryLog log) {
     final dataJson = jsonDecode(log.data);
-    final muscleGroupFamilyString = dataJson["muscleGroupFamily"] ?? "";
-    final muscleGroupFamily = MuscleGroupFamily.fromString(muscleGroupFamilyString);
-    final recovery = dataJson["recovery"] ?? 0;
+    final mgfMap = (dataJson["muscleGroupFamily"] ?? {}) as Map<String, dynamic>;
+    final muscleGroupFamily = mgfMap.map((key, value) {
+      return MapEntry(MuscleGroupFamily.fromString(key), value as int);
+    });
 
     return RecoveryLogDto(
       id: log.id,
       muscleGroupFamily: muscleGroupFamily,
-      recovery: recovery,
       createdAt: log.createdAt.getDateTimeInUtc(),
       updatedAt: log.updatedAt.getDateTimeInUtc(),
       owner: log.owner ?? "",
@@ -48,15 +45,15 @@ class RecoveryLogDto {
   Map<String, Object> toJson() {
     return {
       'id': id,
-      'muscleGroupFamily': muscleGroupFamily.name,
-      'recovery': recovery,
+      'muscleGroupFamily': muscleGroupFamily.map((mgf, value) {
+        return MapEntry(mgf.name, value);
+      }),
     };
   }
 
   RecoveryLogDto copyWith({
     String? id,
-    MuscleGroupFamily? muscleGroupFamily,
-    int? recovery,
+    Map<MuscleGroupFamily, int>? muscleGroupFamily,
     String? owner,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -64,7 +61,6 @@ class RecoveryLogDto {
     return RecoveryLogDto(
       id: id ?? this.id,
       muscleGroupFamily: muscleGroupFamily ?? this.muscleGroupFamily,
-      recovery: recovery ?? this.recovery,
       owner: owner ?? this.owner,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -73,6 +69,6 @@ class RecoveryLogDto {
 
   @override
   String toString() {
-    return 'RecoveryLogDto{id: $id, muscleGroupFamily: $muscleGroupFamily, recovery: $recovery, createdAt: $createdAt, updatedAt: $updatedAt}';
+    return 'RecoveryLogDto{id: $id, muscleGroupFamily: $muscleGroupFamily, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
 }
