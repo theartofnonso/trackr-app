@@ -40,7 +40,7 @@ class _MuscleRecoveryScreenState extends State<MuscleRecoveryScreen> {
                 BackgroundInformationContainer(
                     image: 'images/woman_barbell.jpg',
                     containerColor: Colors.green.shade900,
-                    content: "Gently press and move your muscle, to feel for any tightness, tenderness, or pain.",
+                    content: "Gently press and move each muscle group, to feel for any tightness, tenderness, or pain.",
                     textStyle: GoogleFonts.ubuntu(
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
@@ -86,7 +86,7 @@ class _MuscleRecoveryScreenState extends State<MuscleRecoveryScreen> {
                                             fontSize: 16,
                                             fontWeight: FontWeight.w600)),
                                     const TextSpan(text: " "),
-                                    const TextSpan(text: "recovery. You can train it today."),
+                                    const TextSpan(text: "recovered. You can train it today."),
                                   ])),
                               const SizedBox(height: 10),
                               Container(
