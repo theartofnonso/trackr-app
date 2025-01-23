@@ -74,6 +74,9 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
@@ -139,6 +142,8 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     final difference = improved ? currentMonthVolume - previousMonthVolume : previousMonthVolume - currentMonthVolume;
 
     final differenceSummary = _generateDifferenceSummary(difference: difference, improved: improved);
+
+    final differenceFeedback = _generateDifferenceFeedback(difference: difference, improved: improved);
 
     return Scaffold(
         appBar: AppBar(
@@ -355,7 +360,11 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                                   OpacityButtonWidget(
                                     label: differenceSummary,
                                     buttonColor: getImprovementColor(improved: improved, difference: difference),
-                                  )
+                                  ),
+                                  Text(differenceFeedback,
+                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                          fontWeight: FontWeight.w400,
+                                          color: isDarkMode ? Colors.white70 : Colors.black))
                                 ],
                               )
                             ],
@@ -687,6 +696,22 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         return "${volumeInKOrM(difference)} ${weightLabel()} up in this session";
       } else {
         return "${volumeInKOrM(difference)} ${weightLabel()} down in this session";
+      }
+    }
+  }
+
+  String _generateDifferenceFeedback({
+    required bool improved,
+    required double difference,
+  }) {
+    // If there's effectively no difference, treat it as "no change."
+    if (difference == 0) {
+      return "No change in volume this session. Consistency is key to reaching your goals!";
+    } else {
+      if (improved) {
+        return "Keep pushing to achieve lasting progress!";
+      } else {
+        return "Reassess and aim for steady improvements!";
       }
     }
   }

@@ -141,6 +141,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
     final differenceSummary = _generateDifferenceSummary(difference: difference, improved: improved);
 
+    final differenceFeedback = _generateDifferenceFeedback(difference: difference, improved: improved);
+
     final menuActions = [
       MenuItemButton(
           onPressed: _navigateToRoutineTemplateEditor,
@@ -386,7 +388,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                         ),
                         const SizedBox(height: 16),
                         Text(
-                            "Here’s a summary of your ${template.name} training intensity over the last ${allLogsForTemplate.length} sessions.",
+                            "Here’s a summary of your ${template.name} training intensity over the last ${allLogsForTemplate.length} sessions. $differenceFeedback",
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                 fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
                         const SizedBox(height: 6),
@@ -441,7 +443,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   void _launchRoutineLogEditor() {
     final template = _template;
     if (template != null) {
-      final arguments = RoutineLogArguments(log: template.toLog(), editorMode: RoutineEditorMode.log, workoutVideo: template.workoutVideoUrl);
+      final arguments = RoutineLogArguments(
+          log: template.toLog(), editorMode: RoutineEditorMode.log, workoutVideo: template.workoutVideoUrl);
       navigateToRoutineLogEditor(context: context, arguments: arguments);
     }
   }
@@ -527,7 +530,11 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   void _navigateToWorkoutVideoGenerator() async {
     final template = _template;
     if (template != null) {
-      final workoutVideoUrl = await navigateWithSlideTransition(context: context, child: WorkoutVideoGeneratorScreen(workoutVideoUrl: template.workoutVideoUrl,));
+      final workoutVideoUrl = await navigateWithSlideTransition(
+          context: context,
+          child: WorkoutVideoGeneratorScreen(
+            workoutVideoUrl: template.workoutVideoUrl,
+          ));
       if (mounted) {
         final templateToUpdate = template.copyWith(workoutVideoUrl: workoutVideoUrl);
         await Provider.of<ExerciseAndRoutineController>(context, listen: false)
@@ -646,6 +653,21 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
         return "${volumeInKOrM(difference)} ${weightLabel()} up in last session";
       } else {
         return "${volumeInKOrM(difference)} ${weightLabel()} down in last session";
+      }
+    }
+  }
+
+  String _generateDifferenceFeedback({
+    required bool improved,
+    required double difference,
+  }) {
+    if (difference <= 0) {
+      return "No change in volume this session. Consistency is key to reaching your goals!";
+    } else {
+      if (improved) {
+        return "Keep pushing to achieve lasting progress!";
+      } else {
+        return "Reassess and aim for steady improvements!";
       }
     }
   }

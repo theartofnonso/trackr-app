@@ -101,7 +101,7 @@ class LineChartWidget extends StatelessWidget {
                                 colors: [
                                   isDarkMode ? Colors.white : Colors.black,
                                   isDarkMode ? Colors.white : Colors.black
-                                ].map((color) => color.withValues(alpha: 0.02)).toList(),
+                                ].map((color) => color.withValues(alpha: isDarkMode ? 0.02 : 0.05)).toList(),
                               ),
                             ),
                             isCurved: true)
