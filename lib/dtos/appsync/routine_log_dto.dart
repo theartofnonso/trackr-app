@@ -123,6 +123,32 @@ class RoutineLogDto extends Log {
     );
   }
 
+  factory RoutineLogDto.fromCachedLog({required Map<String, dynamic> json}) {
+    final templateId = json["templateId"] ?? "";
+    final name = json["name"] ?? "";
+    final notes = json["notes"] ?? "";
+    final summary = json["summary"];
+    final startTime = DateTime.parse(json["startTime"]);
+    final endTime = DateTime.parse(json["endTime"]);
+    final exerciseLogJsons = json["exercises"] as List<dynamic>;
+    final exerciseLogs = exerciseLogJsons.map((json) {
+      return ExerciseLogDto.fromJson(routineLogId: "", json: json);
+    }).toList();
+    return RoutineLogDto(
+      id: "",
+      templateId: templateId,
+      name: name,
+      exerciseLogs: exerciseLogs,
+      notes: notes,
+      summary: summary,
+      startTime: startTime,
+      endTime: endTime,
+      owner: "",
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+  }
+
   @override
   RoutineLogDto copyWith({
     String? id,
