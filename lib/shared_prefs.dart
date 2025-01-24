@@ -77,11 +77,11 @@ class SharedPrefs {
     _sharedPrefs?.setString(_userEmailKey, value);
   }
 
-  final String _routineLogKey = "routine_log_key";
+  final String routineLogKey = "routine_log_key";
 
-  String get routineLog => _sharedPrefs?.getString(_routineLogKey) ?? "";
+  String get routineLog => _sharedPrefs?.getString(routineLogKey) ?? "";
 
   set routineLog(String value) {
-    _sharedPrefs?.setString(_routineLogKey, value);
+    _sharedPrefs?.setString(routineLogKey, value);
   }
 }
