@@ -123,7 +123,7 @@ Color recoveryColor(double recoveryPercentage) {
     return Colors.red;
   } else if (recoveryPercentage < 0.5) {
     // High soreness (30–49%)
-    return Colors.deepOrangeAccent;
+    return Colors.yellow;
   } else if (recoveryPercentage < 0.8) {
     // Moderate soreness (50–79%)
     return vibrantBlue;
