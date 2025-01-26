@@ -129,6 +129,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       controller: widget.scrollController,
                       padding: const EdgeInsets.only(bottom: 150),
                       child: Column(spacing: 12, children: [
+                        const SizedBox.shrink(),
                         LogStreakMuscleTrendMonitor(dateTime: widget.dateTimeRange.start),
                         if (isStartOfNewMonth && logsForPastMonth.isNotEmpty)
                           Padding(
