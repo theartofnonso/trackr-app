@@ -10,7 +10,6 @@ import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
-import 'package:tracker_app/extensions/muscle_group_extension.dart';
 import 'package:tracker_app/screens/editors/workout_video_generator_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
@@ -194,7 +193,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
               ),
             ),
             Image.asset(
-              'muscles_illustration/${muscleGroup.illustration()}.png',
+              recoveryMuscleIllustration(recoveryPercentage: recovery, muscleGroup: muscleGroup),
               fit: BoxFit.contain,
               height: 50, // Adjust the height as needed
             )

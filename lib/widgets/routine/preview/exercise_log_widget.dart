@@ -274,35 +274,14 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     }
 
     // ----- 1. Calculate the average delta (slope) for each list -----
-    double averageDelta(List<num> data) {
-      if (data.length < 2) return 0.0; // Not enough data to form a trend
-      double sumDelta = 0.0;
-      for (int i = 1; i < data.length; i++) {
-        sumDelta += (data[i] - data[i - 1]);
-      }
-      return sumDelta / (data.length - 1);
-    }
-
     final avgVolumeDelta = averageDelta(volumes);
     final avgRpeDelta = averageDelta(rpes.map((e) => e.toDouble()).toList());
-
-    // ----- 2. Generic function to convert a delta into a Trend -----
-    // Adjust thresholds to what you consider “significant” for your data
-    Trend detectTrend(double delta, double threshold) {
-      if (delta.abs() < threshold) {
-        return Trend.stable;
-      } else if (delta > 0) {
-        return Trend.up;
-      } else {
-        return Trend.down;
-      }
-    }
-
-    // ----- 3. Determine overall trends -----
+    
+    // ----- 2. Determine overall trends -----
     final volumeTrend = detectTrend(avgVolumeDelta, 2.0); // example threshold
     final rpeTrend = detectTrend(avgRpeDelta, 0.5); // example threshold
 
-    // ----- 4. Create a short explanation based on the combination -----
+    // ----- 3. Create a short explanation based on the combination -----
     if (volumeTrend == Trend.up && rpeTrend == Trend.down) {
       return "$volume is increasing while RPE is decreasing—you're handling more work with less perceived effort. Great progress!";
     } else if (volumeTrend == Trend.up && rpeTrend == Trend.up) {

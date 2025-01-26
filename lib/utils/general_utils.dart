@@ -7,6 +7,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:health/health.dart';
+import 'package:tracker_app/enums/muscle_group_enums.dart';
+import 'package:tracker_app/extensions/muscle_group_extension.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 
 import '../colors.dart';
@@ -15,6 +17,7 @@ import '../enums/routine_editor_type_enums.dart';
 import '../screens/editors/routine_log_editor_screen.dart';
 import '../screens/logs/routine_log_screen.dart';
 import '../shared_prefs.dart';
+import '../widgets/routine/preview/exercise_log_widget.dart';
 import 'navigation_utils.dart';
 
 bool isDefaultWeightUnit() {
@@ -130,6 +133,22 @@ Color recoveryColor(double recoveryPercentage) {
   } else {
     // Mild or no soreness (80–100%)
     return vibrantGreen;
+  }
+}
+
+String recoveryMuscleIllustration({required double recoveryPercentage, required MuscleGroup muscleGroup}) {
+  if (recoveryPercentage < 0.3) {
+    // Severe DOMS (0–29%)
+    return 'red_muscles_illustration/${muscleGroup.illustration()}.png';
+  } else if (recoveryPercentage < 0.5) {
+    // High soreness (30–49%)
+    return 'yellow_muscles_illustration/${muscleGroup.illustration()}.png';
+  } else if (recoveryPercentage < 0.8) {
+    // Moderate soreness (50–79%)
+    return 'blue_muscles_illustration/${muscleGroup.illustration()}.png';
+  } else {
+    // Mild or no soreness (80–100%)
+    return 'muscles_illustration/${muscleGroup.illustration()}.png';
   }
 }
 
@@ -283,5 +302,24 @@ void logEmptyRoutine({required BuildContext context, String workoutVideoUrl = ""
     if (context.mounted) {
       context.push(RoutineLogScreen.routeName, extra: {"log": recentLog, "showSummary": true, "isEditable": true});
     }
+  }
+}
+
+double averageDelta(List<num> data) {
+  if (data.length < 2) return 0.0; // Not enough data to form a trend
+  double sumDelta = 0.0;
+  for (int i = 1; i < data.length; i++) {
+    sumDelta += (data[i] - data[i - 1]);
+  }
+  return sumDelta / (data.length - 1);
+}
+
+Trend detectTrend(double delta, double threshold) {
+  if (delta.abs() < threshold) {
+    return Trend.stable;
+  } else if (delta > 0) {
+    return Trend.up;
+  } else {
+    return Trend.down;
   }
 }
