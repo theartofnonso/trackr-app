@@ -1,10 +1,16 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
+import 'package:tracker_app/enums/chart_unit_enum.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 
+import '../../controllers/recovery_log_controller.dart';
+import '../../dtos/graph/chart_point_dto.dart';
 import '../../enums/muscle_group_enums.dart';
+import '../../widgets/chart/line_chart_widget.dart';
 import '../../widgets/information_containers/information_container_with_background_image.dart';
 
 class MuscleRecoveryScreen extends StatefulWidget {
@@ -21,10 +27,27 @@ class MuscleRecoveryScreen extends StatefulWidget {
 class _MuscleRecoveryScreenState extends State<MuscleRecoveryScreen> {
   @override
   Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    Brightness systemBrightness = MediaQuery
+        .of(context)
+        .platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final muscleGroupFamilies = MuscleGroupFamily.recoveryMuscles;
+    final recoveryLogController = Provider.of<RecoveryLogController>(context, listen: false);
+
+    final logs = recoveryLogController.logs;
+
+    final muscleGroupFamilies = logs.map((recovery) => recovery.muscleGroupFamily);
+
+    final recoveryByMuscleGroup = _groupMuscleGroupsToList(muscleGroupFamilies: muscleGroupFamilies);
+
+    final recoveryEntries = recoveryByMuscleGroup.entries;
+
+    final dummy = {
+         MuscleGroupFamily.arms: [2.3, 1.2, 0.5],
+         MuscleGroupFamily.chest: [4.0, 3.7],
+         MuscleGroupFamily.legs: [5.5],
+         MuscleGroupFamily.shoulders: [2.0]
+       }.entries;
 
     return Scaffold(
         body: Container(
@@ -49,7 +72,13 @@ class _MuscleRecoveryScreenState extends State<MuscleRecoveryScreen> {
                 Expanded(
                   child: ListView.separated(
                       itemBuilder: (context, index) {
-                        final muscleGroupFamily = muscleGroupFamilies[index];
+                        final recoveryEntry = dummy.elementAt(index);
+                        print(recoveryEntry);
+                        final muscleGroupFamily = recoveryEntry.key;
+                        final recoveryScores = recoveryEntry.value;
+                        final chartPoints = recoveryScores.mapIndexed((index, score) => ChartPointDto(index, score))
+                            .toList();
+                        print(chartPoints);
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 16.0),
                           child: Column(
@@ -60,7 +89,10 @@ class _MuscleRecoveryScreenState extends State<MuscleRecoveryScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text("Is your ${muscleGroupFamily.name} sore",
-                                        style: Theme.of(context).textTheme.bodyLarge),
+                                        style: Theme
+                                            .of(context)
+                                            .textTheme
+                                            .bodyLarge),
                                   ],
                                 ),
                                 const Spacer(),
@@ -68,7 +100,15 @@ class _MuscleRecoveryScreenState extends State<MuscleRecoveryScreen> {
                                   onChanged: (option) {},
                                 )
                               ]),
-                              const SizedBox(height: 10),
+                              const SizedBox(height: 12),
+                              LineChartWidget(
+                                  chartPoints: chartPoints,
+                                  periods: [],
+                                  unit: ChartUnit.number,
+                                  aspectRation: 3.0,
+                                  leftReservedSize: 8,
+                                  rightReservedSize: 8,
+                                  hasRightAxisTitles: true),
                               RichText(
                                   text: TextSpan(
                                       text: "Your ${muscleGroupFamily.name} has",
@@ -78,31 +118,16 @@ class _MuscleRecoveryScreenState extends State<MuscleRecoveryScreen> {
                                           fontSize: 16,
                                           fontWeight: FontWeight.w500),
                                       children: [
-                                    const TextSpan(text: " "),
-                                    TextSpan(
-                                        text: "80%",
-                                        style: GoogleFonts.ubuntu(
-                                            color: isDarkMode ? Colors.white : Colors.black,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600)),
-                                    const TextSpan(text: " "),
-                                    const TextSpan(text: "recovered. You can train it today."),
-                                  ])),
-                              const SizedBox(height: 10),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                                decoration: BoxDecoration(
-                                  color: isDarkMode ? Colors.black12 : Colors.grey.shade100,
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                                child: LinearProgressIndicator(
-                                  value: 50 / 100,
-                                  backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade400,
-                                  color: vibrantGreen,
-                                  minHeight: 25,
-                                  borderRadius: BorderRadius.circular(3.0), // Border r
-                                ),
-                              ),
+                                        const TextSpan(text: " "),
+                                        TextSpan(
+                                            text: "80%",
+                                            style: GoogleFonts.ubuntu(
+                                                color: isDarkMode ? Colors.white : Colors.black,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600)),
+                                        const TextSpan(text: " "),
+                                        const TextSpan(text: "recovered. You can train it today."),
+                                      ])),
                             ],
                           ),
                         );
@@ -110,7 +135,7 @@ class _MuscleRecoveryScreenState extends State<MuscleRecoveryScreen> {
                       separatorBuilder: (context, index) {
                         return Divider(height: 0.3, color: Colors.grey.withValues(alpha: 0.2));
                       },
-                      itemCount: muscleGroupFamilies.length),
+                      itemCount: dummy.length),
                 ),
                 const SizedBox(height: 20),
                 SizedBox(
@@ -124,6 +149,28 @@ class _MuscleRecoveryScreenState extends State<MuscleRecoveryScreen> {
               ]),
             )));
   }
+
+  Map<MuscleGroupFamily, List<double>> _groupMuscleGroupsToList({
+    required Iterable<Map<MuscleGroupFamily, double>> muscleGroupFamilies,
+  }) {
+    final grouped = <MuscleGroupFamily, List<double>>{};
+
+    for (final map in muscleGroupFamilies) {
+      for (final entry in map.entries) {
+        final muscleGroup = entry.key;
+        final value = entry.value;
+
+        // If muscleGroup not yet in `grouped`, add an empty list
+        grouped.putIfAbsent(muscleGroup, () => []);
+
+        // Append this value to the list
+        grouped[muscleGroup]!.add(value);
+      }
+    }
+
+    return grouped;
+  }
+
 }
 
 /// The two possible options for this Yes/No radio button widget.
@@ -165,7 +212,9 @@ class _YesNoRadioButtonState extends State<_YesNoRadioButton> {
 
   @override
   Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    Brightness systemBrightness = MediaQuery
+        .of(context)
+        .platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
     return Wrap(
@@ -177,16 +226,16 @@ class _YesNoRadioButtonState extends State<_YesNoRadioButton> {
             buttonColor: _selectedOption == YesNoOption.no
                 ? Colors.red
                 : isDarkMode
-                    ? Colors.grey
-                    : Colors.grey.shade200,
+                ? Colors.grey
+                : Colors.grey.shade200,
             onPressed: () => _onSelectOption(YesNoOption.no)),
         OpacityButtonWidget(
             label: 'Yes'.toUpperCase(),
             buttonColor: _selectedOption == YesNoOption.yes
                 ? vibrantGreen
                 : isDarkMode
-                    ? Colors.grey
-                    : Colors.grey.shade200,
+                ? Colors.grey
+                : Colors.grey.shade200,
             onPressed: () => _onSelectOption(YesNoOption.yes)),
       ],
     );
