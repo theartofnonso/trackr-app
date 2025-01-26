@@ -43,7 +43,6 @@ import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/calendar/calendar.dart';
 import '../../widgets/dividers/label_divider.dart';
 import '../../widgets/monitors/log_streak_muscle_trend_monitor.dart';
-import '../../widgets/monthly_insights/log_streak_chart_widget.dart';
 import '../../widgets/monthly_insights/monthly_insights.dart';
 import '../../widgets/routine/preview/activity_log_widget.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
@@ -174,8 +173,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
                         ),
                         const SizedBox(height: 12),
                         MonthlyInsights(dateTimeRange: widget.dateTimeRange),
-                        const SizedBox(height: 18),
-                        LogStreakChartWidget(),
                       ])),
                 )
                 // Add more widgets here for exercise insights

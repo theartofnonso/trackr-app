@@ -117,6 +117,22 @@ Color logStreakColor(num value) {
   }
 }
 
+Color recoveryColor(double recoveryPercentage) {
+  if (recoveryPercentage < 0.3) {
+    // Severe DOMS (0–29%)
+    return Colors.red;
+  } else if (recoveryPercentage < 0.5) {
+    // High soreness (30–49%)
+    return Colors.deepOrangeAccent;
+  } else if (recoveryPercentage < 0.8) {
+    // Moderate soreness (50–79%)
+    return vibrantBlue;
+  } else {
+    // Mild or no soreness (80–100%)
+    return vibrantGreen;
+  }
+}
+
 Color setsTrendColor({required int sets}) {
   if (sets >= 12) {
     return vibrantGreen;

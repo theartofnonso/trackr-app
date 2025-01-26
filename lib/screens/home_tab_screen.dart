@@ -12,7 +12,6 @@ import '../controllers/activity_log_controller.dart';
 import '../controllers/exercise_and_routine_controller.dart';
 import '../utils/date_utils.dart';
 import '../widgets/calendar/calendar_navigator.dart';
-import 'insights/muscle_recovery_screen.dart';
 
 class HomeTabScreen extends StatefulWidget {
   final ScrollController scrollController;
@@ -98,9 +97,6 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
                     Tab(
                         child: Text("Muscle Trends".toUpperCase(),
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600))),
-                    Tab(
-                        child: Text("Recovery".toUpperCase(),
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600)))
                   ],
                 ),
                 Expanded(
@@ -114,7 +110,6 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
                       SetsAndRepsVolumeInsightsScreen(
                         canPop: false,
                       ),
-                      MuscleRecoveryScreen()
                     ],
                   ),
                 ),
@@ -146,7 +141,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
   void initState() {
     super.initState();
     _monthDateTimeRange = thisMonthDateRange();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
       setState(() {
         _tabIndex = _tabController.index;

@@ -98,24 +98,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     }
   }
 
-  void _showRepRangeSelector({required int min, required int max}) {
-    displayBottomSheet(
-        context: context,
-        child: _RepRangeSlider(
-            exercise: widget.exerciseLogDto.exercise.name,
-            min: min,
-            max: max,
-            onSelectRange: _updateExerciseLogRepRange));
-  }
-
   void _updateExerciseLogNotes({required String value}) {
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateExerciseLogNotes(exerciseLogId: widget.exerciseLogDto.id, value: value);
-  }
-
-  void _updateExerciseLogRepRange(RangeValues values) {
-    Provider.of<ExerciseLogController>(context, listen: false)
-        .updateExerciseLogRepRange(exerciseLogId: widget.exerciseLogDto.id, values: values);
   }
 
   void _loadControllers() {
@@ -394,12 +379,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         .whereSetsForExercise(exercise: widget.exerciseLogDto.exercise);
 
     final sets = _showPreviousSets ? previousSets : currentSets;
-
-    final repRange = getRepRange(exerciseLog: exerciseLog);
-
-    final minReps = repRange.$1;
-
-    final maxReps = repRange.$2;
 
     final rpeRatings = sets.mapIndexed((index, set) => set.rpeRating).toList();
     List<ChartPointDto> chartPoints = rpeRatings.mapIndexed((index, rating) => ChartPointDto(index, rating)).toList();

@@ -69,12 +69,6 @@ class ExerciseLogController extends ChangeNotifier {
     _cache();
   }
 
-  void updateExerciseLogRepRange({required String exerciseLogId, required RangeValues values}) {
-    _exerciseLogRepository.updateExerciseLogRepRange(exerciseLogId: exerciseLogId, values: values);
-    _cache();
-    notifyListeners();
-  }
-
   void superSetExerciseLogs(
       {required String firstExerciseLogId, required String secondExerciseLogId, required String superSetId}) {
     _exerciseLogRepository.addSuperSets(
