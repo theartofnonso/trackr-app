@@ -58,7 +58,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   bool _loading = false;
 
-  RecoveryResult? _recoveryResult;
+  RecoveryResult? _selectedMuscleAndRecovery;
 
   void _deleteRoutine({required RoutineTemplateDto template}) async {
     try {
@@ -147,7 +147,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
     final differenceFeedback = _generateDifferenceFeedback(difference: difference, improved: improved);
 
-    final muscleAndRecovery = template.exerciseTemplates
+    final listOfMuscleAndRecovery = template.exerciseTemplates
         .map((exerciseTemplate) => exerciseTemplate.exercise.primaryMuscleGroup)
         .toSet()
         .map((muscleGroup) {
@@ -160,37 +160,46 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       return recovery;
     });
 
-    final muscleGroupsIllustrations = muscleAndRecovery.map((muscleAndRecovery) {
+    final selectedMuscleAndRecovery =
+        _selectedMuscleAndRecovery ?? (listOfMuscleAndRecovery.isNotEmpty ? listOfMuscleAndRecovery.first : null);
+
+    final muscleGroupsIllustrations = listOfMuscleAndRecovery.map((muscleAndRecovery) {
       final muscleGroup = muscleAndRecovery.muscleGroup;
       final recovery = muscleAndRecovery.recoveryPercentage;
 
-      return GestureDetector(
-        onTap: () {
-          setState(() {
-            _recoveryResult = muscleAndRecovery;
-          });
-        },
-        child: Stack(alignment: Alignment.center, children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: SizedBox(
-              width: 100,
-              height: 100,
-              child: CircularProgressIndicator(
-                value: recovery,
-                strokeWidth: 6,
-                backgroundColor: isDarkMode ? Colors.black12 : Colors.grey.shade200,
-                strokeCap: StrokeCap.butt,
-                valueColor: AlwaysStoppedAnimation<Color>(recoveryColor(recovery)),
+      return Badge(
+        backgroundColor: recoveryColor(recovery),
+        alignment: Alignment.topRight,
+        smallSize: 12,
+        isLabelVisible: muscleGroup == selectedMuscleAndRecovery?.muscleGroup,
+        child: GestureDetector(
+          onTap: () {
+            setState(() {
+              _selectedMuscleAndRecovery = muscleAndRecovery;
+            });
+          },
+          child: Stack(alignment: Alignment.center, children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: SizedBox(
+                width: 100,
+                height: 100,
+                child: CircularProgressIndicator(
+                  value: recovery,
+                  strokeWidth: 6,
+                  backgroundColor: isDarkMode ? Colors.black12 : Colors.grey.shade200,
+                  strokeCap: StrokeCap.butt,
+                  valueColor: AlwaysStoppedAnimation<Color>(recoveryColor(recovery)),
+                ),
               ),
             ),
-          ),
-          Image.asset(
-            'muscles_illustration/${muscleGroup.illustration()}.png',
-            fit: BoxFit.contain,
-            height: 50, // Adjust the height as needed
-          )
-        ]),
+            Image.asset(
+              'muscles_illustration/${muscleGroup.illustration()}.png',
+              fit: BoxFit.contain,
+              height: 50, // Adjust the height as needed
+            )
+          ]),
+        ),
       );
     }).toList();
 
@@ -424,14 +433,26 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                         ],
                       ),
                     ),
-                  if (template.owner == SharedPrefs().userId)
-                    SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(mainAxisAlignment: MainAxisAlignment.center, spacing: 20, children: [
-                          SizedBox(width: 2),
-                          ...muscleGroupsIllustrations,
-                          SizedBox(width: 2),
-                        ])),
+                  if (template.owner == SharedPrefs().userId && listOfMuscleAndRecovery.isNotEmpty)
+                    Column(
+                      spacing: 10,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(mainAxisAlignment: MainAxisAlignment.center, spacing: 20, children: [
+                              SizedBox(width: 2),
+                              ...muscleGroupsIllustrations,
+                              SizedBox(width: 2),
+                            ])),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: Text(selectedMuscleAndRecovery?.description ?? "",
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white : Colors.black)),
+                        ),
+                      ],
+                    ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: Column(
@@ -773,19 +794,19 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
 class RecoveryResult {
   final double recoveryPercentage;
-  final bool isOvertrained;
   final MuscleGroup muscleGroup;
   final DateTime lastTrainingTime;
+  final String description;
 
   RecoveryResult(
       {required this.recoveryPercentage,
-      required this.isOvertrained,
       required this.muscleGroup,
-      required this.lastTrainingTime});
+      required this.lastTrainingTime,
+      required this.description});
 
   @override
   String toString() {
-    return 'RecoveryResult{recoveryPercentage: $recoveryPercentage, isOvertrained: $isOvertrained, muscleGroup: $muscleGroup, lastTrainingTime: $lastTrainingTime}';
+    return 'RecoveryResult{recoveryPercentage: $recoveryPercentage, muscleGroup: $muscleGroup, lastTrainingTime: $lastTrainingTime, desciption: $description}';
   }
 }
 
@@ -799,12 +820,11 @@ RecoveryResult _calculateMuscleRecovery({required DateTime lastTrainingTime, req
   // Calculate hours since last training.
   final hoursSinceTraining = DateTime.now().difference(lastTrainingTime).inHours;
 
-  // Check overtraining: 7 days or more (~168 hours)
-  final bool isOvertrained = hoursSinceTraining >= 168;
-
   // A simple piecewise approach to approximate "percent recovered."
   // Tweak as needed for your app’s logic.
   double recoveryPercentage;
+
+  String description;
 
   if (hoursSinceTraining < 24) {
     // Within first 24 hours after training — DOMS just starting
@@ -840,10 +860,25 @@ RecoveryResult _calculateMuscleRecovery({required DateTime lastTrainingTime, req
   // Clamp between 0.0 and 1.0 in case of minor rounding
   recoveryPercentage = recoveryPercentage.clamp(0.0, 1.0);
 
+  if (recoveryPercentage <= 0) {
+    description = "No recovery data available for $muscleGroup. Please record a workout to see updated recovery.";
+  } else if (recoveryPercentage < 0.3) {
+    description = "Your $muscleGroup is only ${(recoveryPercentage * 100).floor()}% recovered. DOMS is likely high. "
+        "It's best to rest or do very light activity today.";
+  } else if (recoveryPercentage < 0.7) {
+    description =
+        "Your $muscleGroup is about ${(recoveryPercentage * 100).floor()}% recovered. Moderate soreness may still be present. "
+        "Light to moderate training can be considered, but monitor how you feel.";
+  } else if (recoveryPercentage < 1.0) {
+    description = "Your $muscleGroup is ${(recoveryPercentage * 100).floor()}% recovered. Soreness should be minimal. "
+        "Feel free to train, but keep an eye on any lingering tightness.";
+  } else {
+    description = "Your $muscleGroup is fully recovered at 100%. You're good to train!";
+  }
+
   return RecoveryResult(
-    recoveryPercentage: recoveryPercentage,
-    isOvertrained: isOvertrained,
-    muscleGroup: muscleGroup,
-    lastTrainingTime: lastTrainingTime,
-  );
+      recoveryPercentage: recoveryPercentage,
+      muscleGroup: muscleGroup,
+      lastTrainingTime: lastTrainingTime,
+      description: description);
 }

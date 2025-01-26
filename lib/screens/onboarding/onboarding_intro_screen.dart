@@ -264,7 +264,7 @@ class MilestonesOnboardingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final milestonesChildren =
-        RepsMilestone.loadMilestones(logs: []).map((milestone) => MilestoneGridItem(milestone: milestone)).toList();
+        RepsMilestone.loadMilestones(logs: []).map((milestone) => MilestoneGridItem(milestone: milestone, enabled: false,)).toList();
 
     return Column(
       children: [
