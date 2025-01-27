@@ -154,8 +154,15 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           (Provider.of<ExerciseAndRoutineController>(context, listen: false).exerciseLogsByMuscleGroup[muscleGroup] ??
               []);
       final lastExerciseLog = pastExerciseLogs.isNotEmpty ? pastExerciseLogs.last : null;
-      final lastTrainingTime = lastExerciseLog != null ? lastExerciseLog.createdAt : DateTime.now();
-      final recovery = _calculateMuscleRecovery(lastTrainingTime: lastTrainingTime, muscleGroup: muscleGroup);
+      final lastTrainingTime = lastExerciseLog?.createdAt;
+      final recovery = lastTrainingTime != null
+          ? _calculateMuscleRecovery(lastTrainingTime: lastTrainingTime, muscleGroup: muscleGroup)
+          : RecoveryResult(
+              recoveryPercentage: 0,
+              muscleGroup: muscleGroup,
+              lastTrainingTime: DateTime.now(),
+              description:
+                  "No recovery data available for $muscleGroup. Please record a workout to see updated recovery.");
       return recovery;
     });
 
@@ -827,53 +834,49 @@ RecoveryResult _calculateMuscleRecovery({required DateTime lastTrainingTime, req
 
   if (hoursSinceTraining < 24) {
     // Within first 24 hours after training — DOMS just starting
-    recoveryPercentage = 0.0;
+    recoveryPercentage = -0.01;
+    description =
+        "Your $muscleGroup was just trained. Be sure to allow enough recovery time—DOMS can appear within the next day or two";
   } else if (hoursSinceTraining < 48) {
     // 24–48 hours: muscle soreness typically peaks
     // We assume minimal recovery, e.g. up to ~30%
     final ratio = (hoursSinceTraining - 24) / 24;
     recoveryPercentage = 0.3 * ratio;
+    description = "Your $muscleGroup is only ${(recoveryPercentage * 100).floor()}% recovered. DOMS is likely high. "
+        "It's best to rest or do very light activity today.";
   } else if (hoursSinceTraining < 72) {
     // 48–72 hours: soreness usually starts to fade
     // Move recovery from ~30% to ~70%
     final ratio = (hoursSinceTraining - 48) / 24;
     recoveryPercentage = 0.3 + 0.4 * ratio; // ~30% -> 70%
+    description =
+        "Your $muscleGroup is about ${(recoveryPercentage * 100).floor()}% recovered. Moderate soreness may still be present. "
+        "Light to moderate training can be considered, but monitor how you feel.";
   } else if (hoursSinceTraining < 96) {
     // 72–96 hours: typically nearing full recovery
     // Move recovery from ~70% to ~90%
     final ratio = (hoursSinceTraining - 72) / 24;
     recoveryPercentage = 0.7 + 0.2 * ratio; // ~70% -> 90%
+    description = "Your $muscleGroup is ${(recoveryPercentage * 100).floor()}% recovered. Soreness should be minimal. "
+        "Feel free to train, but keep an eye on any lingering tightness.";
   } else if (hoursSinceTraining < 168) {
     // 4–7 days: often fully recovered or very close
     // We treat this range as ~90% -> 100% recovery
     final ratio = (hoursSinceTraining - 96) / 72;
     recoveryPercentage = 0.9 + 0.1 * ratio; // ~90% -> 100%
+    description = "Your $muscleGroup is ${(recoveryPercentage * 100).floor()}% recovered. Soreness should be minimal. "
+        "Feel free to train, but keep an eye on any lingering tightness.";
   } else {
     // 7+ days of soreness likely indicates overtraining or incomplete recovery
     // You could set this to 100% and rely on [isOvertrained] for the warning,
     // or set it to 0% to indicate "inconsistent with normal recovery."
     // Below, we assume 100% physically, but isOvertrained = true means possible problem.
     recoveryPercentage = 1.0;
+    description = "Your $muscleGroup is fully recovered at 100%. You're good to train!";
   }
 
   // Clamp between 0.0 and 1.0 in case of minor rounding
   recoveryPercentage = recoveryPercentage.clamp(0.0, 1.0);
-
-  if (recoveryPercentage <= 0) {
-    description = "No recovery data available for $muscleGroup. Please record a workout to see updated recovery.";
-  } else if (recoveryPercentage < 0.3) {
-    description = "Your $muscleGroup is only ${(recoveryPercentage * 100).floor()}% recovered. DOMS is likely high. "
-        "It's best to rest or do very light activity today.";
-  } else if (recoveryPercentage < 0.7) {
-    description =
-        "Your $muscleGroup is about ${(recoveryPercentage * 100).floor()}% recovered. Moderate soreness may still be present. "
-        "Light to moderate training can be considered, but monitor how you feel.";
-  } else if (recoveryPercentage < 1.0) {
-    description = "Your $muscleGroup is ${(recoveryPercentage * 100).floor()}% recovered. Soreness should be minimal. "
-        "Feel free to train, but keep an eye on any lingering tightness.";
-  } else {
-    description = "Your $muscleGroup is fully recovered at 100%. You're good to train!";
-  }
 
   return RecoveryResult(
       recoveryPercentage: recoveryPercentage,
