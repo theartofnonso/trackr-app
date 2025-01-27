@@ -26,10 +26,6 @@ class MonthlyInsights extends StatelessWidget {
         .whereLogsIsSameMonth(dateTime: dateTimeRange.start)
         .sorted((a, b) => b.createdAt.compareTo(a.createdAt));
 
-    final lastMonthRoutineLogs = routineLogController
-        .whereLogsIsSameMonth(dateTime: lastMonth)
-        .sorted((a, b) => b.createdAt.compareTo(a.createdAt));
-
     /// Activity Logs
     final thisMonthsActivityLogs = activitiesController
         .whereLogsIsSameMonth(dateTime: dateTimeRange.start)
@@ -38,9 +34,6 @@ class MonthlyInsights extends StatelessWidget {
     final lastMonthActivityLogs = activitiesController
         .whereLogsIsSameMonth(dateTime: lastMonth)
         .sorted((a, b) => b.createdAt.compareTo(a.createdAt));
-
-    final thisMonthLogs = [...thisMonthRoutineLogs, ...thisMonthsActivityLogs];
-    final lastMonthLogs = [...lastMonthRoutineLogs, ...lastMonthActivityLogs];
 
     return Column(
       spacing: 12,
