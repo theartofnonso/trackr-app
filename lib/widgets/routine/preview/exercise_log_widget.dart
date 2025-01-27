@@ -272,8 +272,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       return "Insufficient or mismatched data to analyze.";
     }
 
-    final volumeTrend = detectTrend(volumes, trendThreshold: 5.0);
-    final rpeTrend = detectTrend(rpes, trendThreshold: 5.0); // example threshold
+    final volumeTrend = detectTrend(volumes);
+    final rpeTrend = detectTrend(rpes); // example threshold
 
     // ----- 3. Create a short explanation based on the combination -----
     if (volumeTrend == Trend.up && rpeTrend == Trend.down) {
