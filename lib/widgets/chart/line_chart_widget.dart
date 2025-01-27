@@ -21,7 +21,8 @@ class LineChartWidget extends StatelessWidget {
   final double leftReservedSize;
   final double rightReservedSize;
   final LineChartSide lineChartSide;
-  final bool hasRightAxisTitles;
+  final bool hasLeftAxisTitles;
+    final bool hasRightAxisTitles;
   final double? maxY;
   final Color Function(double value)? leftAxisTitlesColor;
   final Color Function(double value)? rightAxisTitlesColor;
@@ -37,6 +38,7 @@ class LineChartWidget extends StatelessWidget {
       this.lineChartSide = LineChartSide.left,
       this.colors = const [],
         this.hasRightAxisTitles = false,
+        this.hasLeftAxisTitles = true,
         this.leftAxisTitlesColor,
         this.rightAxisTitlesColor,
       this.leftReservedSize = 40, this.rightReservedSize = 40});
@@ -72,7 +74,7 @@ class LineChartWidget extends StatelessWidget {
                         ),
                         leftTitles: AxisTitles(
                           sideTitles: SideTitles(
-                            showTitles: true,
+                            showTitles: hasLeftAxisTitles,
                             getTitlesWidget: _leftTitleWidgets,
                             reservedSize: leftReservedSize,
                           ),

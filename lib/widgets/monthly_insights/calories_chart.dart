@@ -4,20 +4,24 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
+import '../../controllers/routine_user_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../enums/chart_unit_enum.dart';
 import '../../utils/data_trend_utils.dart';
 import '../../utils/date_utils.dart';
 import '../../utils/general_utils.dart';
+import '../../utils/routine_utils.dart';
 import '../chart/line_chart_widget.dart';
 
-class LogStreakChart extends StatelessWidget {
-  const LogStreakChart({super.key});
+class CaloriesChart extends StatelessWidget {
+  const CaloriesChart({super.key});
 
   @override
   Widget build(BuildContext context) {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
+
+    final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
 
     final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
@@ -28,22 +32,26 @@ class LogStreakChart extends StatelessWidget {
     final weeksInLastYear = generateWeeksInRange(range: dateRange).reversed.take(13).toList().reversed;
 
     List<String> months = [];
-    List<int> days = [];
+    List<int> calories = [];
     for (final week in weeksInLastYear) {
       final startOfWeek = week.start;
       final endOfWeek = week.end;
       final logsForTheWeek = logs.where((log) => log.createdAt.isBetweenInclusive(from: startOfWeek, to: endOfWeek));
-      final routineLogsByDay = groupBy(logsForTheWeek, (log) => log.createdAt.withoutTime().day);
-      days.add(routineLogsByDay.length);
+      final values = logsForTheWeek
+          .map((log) => calculateCalories(
+              duration: log.duration(), bodyWeight: routineUserController.weight(), activity: log.activityType))
+          .sum;
+      calories.add(values);
       months.add(startOfWeek.abbreviatedMonth());
     }
 
-    final averageDays = days.isNotEmpty ? days.average.round() : 0;
+    final averageCalories = calories.isNotEmpty ? calories.average.round() : 0;
 
-    final chartPoints = days.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+    final chartPoints =
+        calories.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
 
-    Trend trend = detectTrend(days);
-    String daysFeedback = _analyzeWeeklyTrainingDays(daysTrained: days, trend: trend);
+    Trend trend = detectTrend(calories);
+    String caloriesFeedback = _analyzeWeeklyCalories(caloriesBurned: calories, trend: trend);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,20 +62,22 @@ class LogStreakChart extends StatelessWidget {
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 getTrendIcon(trend: trend),
-                const SizedBox(width: 10,),
+                const SizedBox(
+                  width: 10,
+                ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     RichText(
                       text: TextSpan(
-                        text: "$averageDays",
+                        text: "$averageCalories",
                         style: Theme.of(context).textTheme.headlineSmall,
                         children: [
                           TextSpan(
                             text: " ",
                           ),
                           TextSpan(
-                            text: "days".toUpperCase(),
+                            text: "KCAL".toUpperCase(),
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         ],
@@ -83,13 +93,13 @@ class LogStreakChart extends StatelessWidget {
             ),
             const Spacer(),
             Text(
-              "Training sessions".toLowerCase(),
+              "Energy Burned".toLowerCase(),
               style: Theme.of(context).textTheme.titleMedium,
             ),
           ],
         ),
         const SizedBox(height: 10),
-        Text(daysFeedback,
+        Text(caloriesFeedback,
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium
@@ -107,34 +117,31 @@ class LogStreakChart extends StatelessWidget {
     );
   }
 
-  String _analyzeWeeklyTrainingDays({required List<int> daysTrained, required Trend trend}) {
+  String _analyzeWeeklyCalories({required List<int> caloriesBurned, required Trend trend}) {
     // 1. Handle edge cases
-    if (daysTrained.isEmpty) {
-      return "No data available yet. Log how many days you train each week to see trends!";
+    if (caloriesBurned.isEmpty) {
+      return "No data on calories burned yet. Log some workouts or activities to start tracking!";
     }
 
-    if (daysTrained.length == 1) {
-      return "You’ve recorded your first week: ${daysTrained.first} day(s) of training."
-          " Great job! Log more weeks to identify trends over time.";
+    if (caloriesBurned.length == 1) {
+      return "You've recorded your first week's calorie burn (${caloriesBurned.first}). "
+          "Great job! Keep logging more data to see trends over time.";
     }
 
-    // 2. Compare the last two weekly entries to determine a trend
-    final secondToLast = daysTrained[daysTrained.length - 2];
-    final last = daysTrained.last;
-    final difference = (last - secondToLast).toDouble(); // Convert to double for % calculations
+    // 2. Compare the last two entries to determine a trend
+    final secondToLast = caloriesBurned[caloriesBurned.length - 2];
+    final last = caloriesBurned.last;
+    final difference = last - secondToLast;
 
-    // If secondToLast is zero, treat it as a special case (avoid division by zero)
+    // If secondToLast is zero, treat it as a special case
     final bool secondToLastIsZero = secondToLast == 0;
 
-    // 3. Compute a basic percentage change if possible
-    final percentageChange = secondToLastIsZero
-        ? 100.0
-        : (difference / secondToLast) * 100;
+    // 3. Compute percentage change (avoid divide-by-zero)
+    final percentageChange = secondToLastIsZero ? 100.0 : (difference / secondToLast) * 100;
 
-    // 4. Decide the trend (up, down, or stable)
-    // Adjust the threshold if you want finer or broader distinction
-    Trend trend;
-    const threshold = 25; // e.g., 25% difference for "stable" range
+    // 4. Decide the trend
+    const threshold = 5; // e.g., 5% is considered the “stable” range
+    late Trend trend;
     if (percentageChange > threshold) {
       trend = Trend.up;
     } else if (percentageChange < -threshold) {
@@ -143,19 +150,19 @@ class LogStreakChart extends StatelessWidget {
       trend = Trend.stable;
     }
 
-    // 5. Generate a concise, supportive message based on the trend
+    // 5. Construct a friendly message based on the trend
     final variation = "${percentageChange.abs().toStringAsFixed(1)}%";
 
     switch (trend) {
       case Trend.up:
-        return "📈 You're training $variation more days than last week!"
-            " Keep it going—you’re building solid habits!";
+        return "📈 This week's calorie burn is $variation higher than last week's. "
+            "Fantastic effort—you're on the rise!";
       case Trend.down:
-        return "📉 You're training ${difference.toInt().abs()} days lesser than last week."
-            " Consider your schedule, rest, or motivation to stay on track.";
+        return "📉 This week's calorie burn is $variation lower than last week's. "
+            "Consider adjusting your routine or intensity if this wasn't intentional.";
       case Trend.stable:
-        return "📉 Your training days only varied by about $variation from last week."
-            " Keep refining your routine for ongoing consistency!";
+        return "➡️ Your weekly calorie burn changed by about $variation from last week. "
+            "You're maintaining consistency—great job! Keep refining your plan for steady progress.";
     }
   }
 }

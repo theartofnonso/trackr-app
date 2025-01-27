@@ -1,18 +1,23 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/dtos/set_dtos/reps_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
+import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
+import '../../dtos/set_dtos/weight_and_reps_dto.dart';
 import '../../enums/chart_unit_enum.dart';
+import '../../enums/exercise_type_enums.dart';
 import '../../utils/data_trend_utils.dart';
 import '../../utils/date_utils.dart';
+import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
 import '../chart/line_chart_widget.dart';
 
-class LogStreakChart extends StatelessWidget {
-  const LogStreakChart({super.key});
+class VolumeChart extends StatelessWidget {
+  const VolumeChart({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,51 +28,69 @@ class LogStreakChart extends StatelessWidget {
 
     final dateRange = theLastYearDateTimeRange();
 
-    final logs = routineLogController.whereLogsIsWithinRange(range: dateRange).toList();
+    final logs = routineLogController
+        .whereLogsIsWithinRange(range: dateRange)
+        .map((log) => routineWithLoggedExercises(log: log))
+        .toList();
 
     final weeksInLastYear = generateWeeksInRange(range: dateRange).reversed.take(13).toList().reversed;
 
     List<String> months = [];
-    List<int> days = [];
+    List<double> volumes = [];
     for (final week in weeksInLastYear) {
       final startOfWeek = week.start;
       final endOfWeek = week.end;
       final logsForTheWeek = logs.where((log) => log.createdAt.isBetweenInclusive(from: startOfWeek, to: endOfWeek));
-      final routineLogsByDay = groupBy(logsForTheWeek, (log) => log.createdAt.withoutTime().day);
-      days.add(routineLogsByDay.length);
+      final values = logsForTheWeek
+          .expand((log) => log.exerciseLogs)
+          .expand((exerciseLog) => exerciseLog.sets)
+          .map((set) {
+            return switch (set.type) {
+              ExerciseType.weights => (set as WeightAndRepsSetDto).volume(),
+              ExerciseType.bodyWeight => (set as RepsSetDto).reps,
+              ExerciseType.duration => 0,
+            };
+          })
+          .sum
+          .toDouble();
+      volumes.add(values);
       months.add(startOfWeek.abbreviatedMonth());
     }
 
-    final averageDays = days.isNotEmpty ? days.average.round() : 0;
+    final avgVolume = volumes.isNotEmpty ? volumes.average : 0.0;
 
-    final chartPoints = days.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+    final chartPoints =
+        volumes.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
 
-    Trend trend = detectTrend(days);
-    String daysFeedback = _analyzeWeeklyTrainingDays(daysTrained: days, trend: trend);
+    Trend trend = detectTrend(volumes);
+    String volumeFeedback = _analyzeWeeklyVolumes(volumes: volumes, trend: trend);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Wrap(
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 getTrendIcon(trend: trend),
-                const SizedBox(width: 10,),
+                const SizedBox(
+                  width: 10,
+                ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     RichText(
                       text: TextSpan(
-                        text: "$averageDays",
+                        text: volumeInKOrM(avgVolume),
                         style: Theme.of(context).textTheme.headlineSmall,
                         children: [
                           TextSpan(
                             text: " ",
                           ),
                           TextSpan(
-                            text: "days".toUpperCase(),
+                            text: "Tonnage".toUpperCase(),
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         ],
@@ -83,58 +106,56 @@ class LogStreakChart extends StatelessWidget {
             ),
             const Spacer(),
             Text(
-              "Training sessions".toLowerCase(),
+              "Volume".toLowerCase(),
               style: Theme.of(context).textTheme.titleMedium,
             ),
           ],
         ),
         const SizedBox(height: 10),
-        Text(daysFeedback,
+        Text(volumeFeedback,
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium
                 ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
-        const SizedBox(height: 30),
+        const SizedBox(height: 20),
         LineChartWidget(
           chartPoints: chartPoints,
           periods: months,
-          unit: ChartUnit.number,
-          aspectRation: 4,
+          unit: ChartUnit.weight,
           hasLeftAxisTitles: false,
+          aspectRation: 4,
           interval: 6,
         )
       ],
     );
   }
 
-  String _analyzeWeeklyTrainingDays({required List<int> daysTrained, required Trend trend}) {
+  String _analyzeWeeklyVolumes({required List<double> volumes, required Trend trend}) {
     // 1. Handle edge cases
-    if (daysTrained.isEmpty) {
-      return "No data available yet. Log how many days you train each week to see trends!";
+    if (volumes.isEmpty) {
+      return "No training data available yet. Log some workouts to start tracking your progress!";
     }
 
-    if (daysTrained.length == 1) {
-      return "You’ve recorded your first week: ${daysTrained.first} day(s) of training."
-          " Great job! Log more weeks to identify trends over time.";
+    if (volumes.length == 1) {
+      return "You've recorded your first week's volume (${volumes.first})."
+          " Great job! Keep logging more data to see trends over time.";
     }
 
-    // 2. Compare the last two weekly entries to determine a trend
-    final secondToLast = daysTrained[daysTrained.length - 2];
-    final last = daysTrained.last;
-    final difference = (last - secondToLast).toDouble(); // Convert to double for % calculations
+    // 2. Compare the last two entries to determine a trend
+    final secondToLast = volumes[volumes.length - 2];
+    final last = volumes.last;
+    final difference = last - secondToLast;
 
-    // If secondToLast is zero, treat it as a special case (avoid division by zero)
+    // If secondToLast is zero, treat it as a special case
     final bool secondToLastIsZero = secondToLast == 0;
 
-    // 3. Compute a basic percentage change if possible
-    final percentageChange = secondToLastIsZero
-        ? 100.0
-        : (difference / secondToLast) * 100;
+    // 3. Derive a basic percentage change (if secondToLast != 0)
+    final percentageChange = secondToLastIsZero ? 100.0 : (difference / secondToLast) * 100;
 
-    // 4. Decide the trend (up, down, or stable)
-    // Adjust the threshold if you want finer or broader distinction
+    // 4. Decide the trend
+    // Adjust threshold for "stable" if you want finer or broader distinction
     Trend trend;
-    const threshold = 25; // e.g., 25% difference for "stable" range
+    const threshold = 5; // e.g., 5% is the “stable” range
     if (percentageChange > threshold) {
       trend = Trend.up;
     } else if (percentageChange < -threshold) {
@@ -143,19 +164,19 @@ class LogStreakChart extends StatelessWidget {
       trend = Trend.stable;
     }
 
-    // 5. Generate a concise, supportive message based on the trend
+    // 5. Generate a friendly, concise message based on the trend
     final variation = "${percentageChange.abs().toStringAsFixed(1)}%";
 
     switch (trend) {
       case Trend.up:
-        return "📈 You're training $variation more days than last week!"
-            " Keep it going—you’re building solid habits!";
+        return "📈 This week's volume is $variation higher than last week's. "
+            "Awesome job building momentum!";
       case Trend.down:
-        return "📉 You're training ${difference.toInt().abs()} days lesser than last week."
-            " Consider your schedule, rest, or motivation to stay on track.";
+        return "📉 This week's volume is $variation lower than last week's. "
+            "Consider extra rest, checking your technique, or planning a deload.";
       case Trend.stable:
-        return "📉 Your training days only varied by about $variation from last week."
-            " Keep refining your routine for ongoing consistency!";
+        return "📉 Your volume changed by about $variation from last week. "
+            "A great chance to refine your form and maintain consistency.";
     }
   }
 }

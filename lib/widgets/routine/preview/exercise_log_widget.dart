@@ -15,13 +15,12 @@ import '../../../controllers/exercise_and_routine_controller.dart';
 import '../../../dtos/graph/chart_point_dto.dart';
 import '../../../enums/chart_unit_enum.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
+import '../../../utils/data_trend_utils.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/general_utils.dart';
 import '../../chart/line_chart_widget.dart';
 import '../preview/set_headers/double_set_header.dart';
 import '../preview/set_headers/single_set_header.dart';
-
-enum Trend { up, down, stable }
 
 enum WeightAndRPE {
   weight(
@@ -273,13 +272,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       return "Insufficient or mismatched data to analyze.";
     }
 
-    // ----- 1. Calculate the average delta (slope) for each list -----
-    final avgVolumeDelta = averageDelta(volumes);
-    final avgRpeDelta = averageDelta(rpes.map((e) => e.toDouble()).toList());
-    
-    // ----- 2. Determine overall trends -----
-    final volumeTrend = detectTrend(avgVolumeDelta, 2.0); // example threshold
-    final rpeTrend = detectTrend(avgRpeDelta, 0.5); // example threshold
+    final volumeTrend = detectTrend(volumes, trendThreshold: 5.0);
+    final rpeTrend = detectTrend(rpes, trendThreshold: 5.0); // example threshold
 
     // ----- 3. Create a short explanation based on the combination -----
     if (volumeTrend == Trend.up && rpeTrend == Trend.down) {

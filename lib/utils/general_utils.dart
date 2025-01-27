@@ -17,7 +17,7 @@ import '../enums/routine_editor_type_enums.dart';
 import '../screens/editors/routine_log_editor_screen.dart';
 import '../screens/logs/routine_log_screen.dart';
 import '../shared_prefs.dart';
-import '../widgets/routine/preview/exercise_log_widget.dart';
+import 'data_trend_utils.dart';
 import 'navigation_utils.dart';
 
 bool isDefaultWeightUnit() {
@@ -199,7 +199,6 @@ LinearGradient themeGradient({required BuildContext context}) {
 }
 
 Future<bool> requestAppleHealth() async {
-
   await Health().configure();
 
   // define the types to get
@@ -207,8 +206,7 @@ Future<bool> requestAppleHealth() async {
 
   final permissions = [HealthDataAccess.READ, HealthDataAccess.WRITE];
 
-  bool hasPermissions =
-      await Health().hasPermissions(types, permissions: permissions) ?? false;
+  bool hasPermissions = await Health().hasPermissions(types, permissions: permissions) ?? false;
 
   if (!hasPermissions) {
     // requesting access to the data types before reading them
@@ -248,12 +246,11 @@ Future<DateTimeRange?> calculateSleepDuration() async {
 }
 
 Color getImprovementColor({required bool improved, required num difference}) {
-
   Color color = vibrantBlue;
 
-  if(improved && difference > 0) {
+  if (improved && difference > 0) {
     color = vibrantGreen;
-  } else if(!improved && difference > 0) {
+  } else if (!improved && difference > 0) {
     color = Colors.deepOrange;
   }
   return color;
@@ -273,15 +270,34 @@ final Map<int, Color> rpeIntensityToColor = {
 };
 
 IconData getImprovementIcon({required bool improved, required num difference}) {
-
   IconData icon = FontAwesomeIcons.arrowsUpDown;
 
-  if(improved && difference > 0) {
+  if (improved && difference > 0) {
     icon = FontAwesomeIcons.arrowTrendUp;
-  } else if(!improved && difference > 0) {
+  } else if (!improved && difference > 0) {
     icon = FontAwesomeIcons.arrowTrendDown;
   }
   return icon;
+}
+
+Widget getTrendIcon({required Trend trend}) {
+  return switch(trend) {
+    Trend.up => FaIcon(
+      FontAwesomeIcons.arrowTrendUp,
+      color: vibrantGreen,
+      size: 20,
+    ),
+    Trend.down => FaIcon(
+      FontAwesomeIcons.arrowTrendDown,
+      color: Colors.deepOrange,
+      size: 20,
+    ),
+    Trend.stable => FaIcon(
+      FontAwesomeIcons.arrowsUpDown,
+      color: vibrantBlue,
+      size: 20,
+    ),
+  };
 }
 
 void logEmptyRoutine({required BuildContext context, String workoutVideoUrl = ""}) async {
@@ -297,29 +313,15 @@ void logEmptyRoutine({required BuildContext context, String workoutVideoUrl = ""
       createdAt: DateTime.now(),
       updatedAt: DateTime.now());
   final recentLog = await navigateWithSlideTransition(
-      context: context, child: RoutineLogEditorScreen(log: log, mode: RoutineEditorMode.log, workoutVideoUrl: workoutVideoUrl,));
+      context: context,
+      child: RoutineLogEditorScreen(
+        log: log,
+        mode: RoutineEditorMode.log,
+        workoutVideoUrl: workoutVideoUrl,
+      ));
   if (recentLog != null) {
     if (context.mounted) {
       context.push(RoutineLogScreen.routeName, extra: {"log": recentLog, "showSummary": true, "isEditable": true});
     }
-  }
-}
-
-double averageDelta(List<num> data) {
-  if (data.length < 2) return 0.0; // Not enough data to form a trend
-  double sumDelta = 0.0;
-  for (int i = 1; i < data.length; i++) {
-    sumDelta += (data[i] - data[i - 1]);
-  }
-  return sumDelta / (data.length - 1);
-}
-
-Trend detectTrend(double delta, double threshold) {
-  if (delta.abs() < threshold) {
-    return Trend.stable;
-  } else if (delta > 0) {
-    return Trend.up;
-  } else {
-    return Trend.down;
   }
 }

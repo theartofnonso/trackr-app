@@ -19,7 +19,8 @@ import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_information_container.dart';
-import 'package:tracker_app/widgets/monthly_insights/muscle_score_chart.dart';
+import 'package:tracker_app/widgets/monthly_insights/calories_chart.dart';
+import 'package:tracker_app/widgets/monthly_insights/volume_chart.dart';
 
 import '../../controllers/activity_log_controller.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
@@ -128,7 +129,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                   child: SingleChildScrollView(
                       controller: widget.scrollController,
                       padding: const EdgeInsets.only(bottom: 150),
-                      child: Column(spacing: 12, children: [
+                      child: Column(spacing: 20, children: [
                         const SizedBox.shrink(),
                         LogStreakMuscleTrendMonitor(dateTime: widget.dateTimeRange.start),
                         if (isStartOfNewMonth && logsForPastMonth.isNotEmpty)
@@ -163,7 +164,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
                         ),
                         MonthlyInsights(dateTimeRange: widget.dateTimeRange),
                         LogStreakChart(),
-                        MuscleScoreChart()
+                        VolumeChart(),
+                        CaloriesChart()
                       ])),
                 )
                 // Add more widgets here for exercise insights
