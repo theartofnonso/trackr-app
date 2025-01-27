@@ -37,7 +37,7 @@ class MonthlyTrainingSummaryWidget extends StatelessWidget {
     final sets = exerciseLogs.expand((exercise) => exercise.sets);
 
     final numberOfSets = sets.length;
-    final routineLogHoursInMilliSeconds = routineLogs.map((log) => log.duration().inMilliseconds).average.toInt();
+    final routineLogHoursInMilliSeconds = routineLogs.isNotEmpty ? routineLogs.map((log) => log.duration().inMilliseconds).average.toInt() : 0;
     final averageDuration = Duration(milliseconds: routineLogHoursInMilliSeconds);
 
     final tonnage = exerciseLogs.map((log) {
