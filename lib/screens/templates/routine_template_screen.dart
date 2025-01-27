@@ -162,7 +162,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
               muscleGroup: muscleGroup,
               lastTrainingTime: DateTime.now(),
               description:
-                  "No recovery data available for $muscleGroup. Please record a workout to see updated recovery.");
+                  "No recovery data available for $muscleGroup. Please log a $muscleGroup session to see updated recovery.");
       return recovery;
     });
 
