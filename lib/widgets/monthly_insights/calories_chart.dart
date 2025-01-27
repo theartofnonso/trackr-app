@@ -93,8 +93,8 @@ class CaloriesChart extends StatelessWidget {
             ),
             const Spacer(),
             Text(
-              "Energy Burned".toLowerCase(),
-              style: Theme.of(context).textTheme.titleMedium,
+              "Energy Burned".toUpperCase(),
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
           ],
         ),

@@ -83,8 +83,8 @@ class LogStreakChart extends StatelessWidget {
             ),
             const Spacer(),
             Text(
-              "Training sessions".toLowerCase(),
-              style: Theme.of(context).textTheme.titleMedium,
+              "Training sessions".toUpperCase(),
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
           ],
         ),

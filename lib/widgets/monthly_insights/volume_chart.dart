@@ -106,8 +106,8 @@ class VolumeChart extends StatelessWidget {
             ),
             const Spacer(),
             Text(
-              "Volume".toLowerCase(),
-              style: Theme.of(context).textTheme.titleMedium,
+              "Volume".toUpperCase(),
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
           ],
         ),
