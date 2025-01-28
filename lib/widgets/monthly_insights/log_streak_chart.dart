@@ -110,7 +110,7 @@ class LogStreakChart extends StatelessWidget {
   String _analyzeWeeklyTrainingDays({required List<int> daysTrained, required Trend trend}) {
     // 1. Handle edge cases
     if (daysTrained.isEmpty) {
-      return "No data available yet. Log how many days you train each week to see trends!";
+      return "No training data available yet. Log some sessions to start tracking your progress!";
     }
 
     if (daysTrained.length == 1) {
@@ -121,6 +121,11 @@ class LogStreakChart extends StatelessWidget {
     // 2. Compare the last two weekly entries to determine a trend
     final secondToLast = daysTrained[daysTrained.length - 2];
     final last = daysTrained.last;
+
+    if(last == 0) {
+      return "No training data available for this week. Log some sessions to continue tracking your progress!";
+    }
+
     final difference = (last - secondToLast).toDouble(); // Convert to double for % calculations
 
     // If secondToLast is zero, treat it as a special case (avoid division by zero)

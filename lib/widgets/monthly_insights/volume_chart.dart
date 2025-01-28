@@ -90,7 +90,7 @@ class VolumeChart extends StatelessWidget {
                             text: " ",
                           ),
                           TextSpan(
-                            text: "Tonnage".toUpperCase(),
+                            text: weightLabel().toUpperCase(),
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         ],
@@ -133,7 +133,7 @@ class VolumeChart extends StatelessWidget {
   String _analyzeWeeklyVolumes({required List<double> volumes, required Trend trend}) {
     // 1. Handle edge cases
     if (volumes.isEmpty) {
-      return "No training data available yet. Log some workouts to start tracking your progress!";
+      return "No training data available yet. Log some sessions to start tracking your progress!";
     }
 
     if (volumes.length == 1) {
@@ -144,6 +144,11 @@ class VolumeChart extends StatelessWidget {
     // 2. Compare the last two entries to determine a trend
     final secondToLast = volumes[volumes.length - 2];
     final last = volumes.last;
+
+    if(last == 0) {
+      return "No training data available for this week. Log some workouts to continue tracking your progress!";
+    }
+
     final difference = last - secondToLast;
 
     // If secondToLast is zero, treat it as a special case

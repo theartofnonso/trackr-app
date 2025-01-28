@@ -120,7 +120,7 @@ class CaloriesChart extends StatelessWidget {
   String _analyzeWeeklyCalories({required List<int> caloriesBurned, required Trend trend}) {
     // 1. Handle edge cases
     if (caloriesBurned.isEmpty) {
-      return "No data on calories burned yet. Log some workouts or activities to start tracking!";
+      return "No data on calories burned yet. Log some sessions or activities to start tracking!";
     }
 
     if (caloriesBurned.length == 1) {
@@ -131,6 +131,11 @@ class CaloriesChart extends StatelessWidget {
     // 2. Compare the last two entries to determine a trend
     final secondToLast = caloriesBurned[caloriesBurned.length - 2];
     final last = caloriesBurned.last;
+
+    if(last == 0) {
+      return "No training data available for this week. Log some sessions to continue tracking your progress!";
+    }
+
     final difference = last - secondToLast;
 
     // If secondToLast is zero, treat it as a special case
