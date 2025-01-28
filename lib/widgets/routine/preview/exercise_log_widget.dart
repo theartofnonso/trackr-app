@@ -22,6 +22,29 @@ import '../../chart/line_chart_widget.dart';
 import '../preview/set_headers/double_set_header.dart';
 import '../preview/set_headers/single_set_header.dart';
 
+enum StrengthStatus {
+  improving(
+      description: "💪 STRENGTH GAINS! Your ability to handle more volume with less effort "
+          "shows great adaptation. Consider progressive overload next week."),
+  declining(
+      description: "⚠️ Recovery Check Needed: Reduced capacity at same RPE. "
+          "Evaluate sleep, nutrition, and stress levels."),
+  maintaining(
+      description: "🔄 Consistent Performance: Maintain current levels while "
+          "focusing on exercise technique and mind-muscle connection."),
+  potential_overtraining(
+      description: "🔥 Overtraining Alert! High volume with rising perceived exertion. "
+          "Immediate deload recommended followed by 10-20% volume reduction."),
+  deload_needed(
+      description: "⏸️ Smart Training Opportunity: Strategic recovery week suggested. "
+          "Maintain 40-60% of current volume with focus on mobility work."),
+  none(description: "Insufficient or mismatched data to analyze.");
+
+  const StrengthStatus({required this.description});
+
+  final String description;
+}
+
 enum WeightAndRPE {
   weight(
       name: "Weight",
@@ -95,7 +118,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       chartPoints = sets.mapIndexed((index, set) => ChartPointDto(index, (set).weight)).toList();
     }
 
-    String volumeRPETrendSummary = "";
+    StrengthStatus strengthStatus = StrengthStatus.none;
 
     if (_metric == WeightAndRPE.rpe) {
       final averageRpeRatings = validLogs.map((log) {
@@ -112,8 +135,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           return volumes.sum;
         }).toList();
         volumeChartPoints = totalVolumes.mapIndexed((index, totalVolume) => ChartPointDto(index, totalVolume)).toList();
-        volumeRPETrendSummary =
-            _analyzeVolumeRpeRelationship(volumes: totalVolumes, rpes: averageRpeRatings, volume: 'Volume');
+        strengthStatus =
+            _analyzeVolumeRPERelationship(volumes: totalVolumes, rpes: averageRpeRatings, volume: 'Volume');
       }
 
       if (exerciseType == ExerciseType.bodyWeight) {
@@ -122,8 +145,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           return reps.sum;
         }).toList();
         volumeChartPoints = totalReps.mapIndexed((index, totalRep) => ChartPointDto(index, totalRep)).toList();
-        volumeRPETrendSummary =
-            _analyzeVolumeRpeRelationship(volumes: totalReps, rpes: averageRpeRatings, volume: 'Reps');
+        strengthStatus =
+            _analyzeVolumeRPERelationship(volumes: totalReps, rpes: averageRpeRatings, volume: 'Reps');
       }
 
       if (exerciseType == ExerciseType.duration) {
@@ -133,8 +156,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         }).toList();
         volumeChartPoints =
             totalDuration.mapIndexed((index, totalDuration) => ChartPointDto(index, totalDuration)).toList();
-        volumeRPETrendSummary =
-            _analyzeVolumeRpeRelationship(volumes: totalDuration, rpes: averageRpeRatings, volume: 'Duration');
+        strengthStatus =
+            _analyzeVolumeRPERelationship(volumes: totalDuration, rpes: averageRpeRatings, volume: 'Duration');
       }
     }
 
@@ -208,7 +231,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                       ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 0.0),
-                  child: Text(_metric == WeightAndRPE.weight ? _metric.description : volumeRPETrendSummary,
+                  child: Text(_metric == WeightAndRPE.weight ? _metric.description : strengthStatus.description,
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           fontWeight: FontWeight.w400,
@@ -267,33 +290,43 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     };
   }
 
-  String _analyzeVolumeRpeRelationship({required List<num> volumes, required List<int> rpes, required String volume}) {
+  StrengthStatus _analyzeVolumeRPERelationship(
+      {required List<num> volumes, required List<int> rpes, required String volume}) {
     if (volumes.isEmpty || rpes.isEmpty || volumes.length != rpes.length) {
-      return "Insufficient or mismatched data to analyze.";
+      return StrengthStatus.none;
     }
 
     final volumeTrend = detectTrend(volumes);
     final rpeTrend = detectTrend(rpes); // example threshold
 
-    // ----- 3. Create a short explanation based on the combination -----
-    if (volumeTrend == Trend.up && rpeTrend == Trend.down) {
-      return "$volume is increasing while RPE is decreasing—you're handling more work with less perceived effort. Great progress!";
-    } else if (volumeTrend == Trend.up && rpeTrend == Trend.up) {
-      return "$volume is increasing and RPE is also on the rise—you're pushing harder, so watch your recovery.";
-    } else if (volumeTrend == Trend.up && rpeTrend == Trend.stable) {
-      return "$volume is increasing while RPE remains stable—steady gains!";
-    } else if (volumeTrend == Trend.down && rpeTrend == Trend.up) {
-      return "$volume is declining while RPE is rising—could be a sign of fatigue or insufficient rest.";
-    } else if (volumeTrend == Trend.down && rpeTrend == Trend.down) {
-      return "$volume and RPE are decreasing—possibly a lighter training phase or a deload period.";
-    } else if (volumeTrend == Trend.down && rpeTrend == Trend.stable) {
-      return "$volume is down while RPE is steady—indicates a reduced workload but consistent effort.";
-    } else if (volumeTrend == Trend.stable && rpeTrend == Trend.up) {
-      return "$volume is stable while RPE is rising—pay attention to your recovery or technique.";
-    } else if (volumeTrend == Trend.stable && rpeTrend == Trend.down) {
-      return "$volume is stable while RPE is dropping—${widget.exerciseLog.exercise.name} is feeling easier.";
-    } else {
-      return "Both $volume and RPE appear stable—you're maintaining a consistent routine.";
+    if (volumeTrend == Trend.up) {
+      if (rpeTrend == Trend.down || rpeTrend == Trend.stable) {
+        return StrengthStatus.improving;
+      } else if (rpeTrend == Trend.up) {
+        return StrengthStatus.potential_overtraining;
+      }
     }
+
+    if (volumeTrend == Trend.stable) {
+      if (rpeTrend == Trend.down) {
+        return StrengthStatus.improving;
+      } else if (rpeTrend == Trend.stable) {
+        return StrengthStatus.maintaining;
+      } else if (rpeTrend == Trend.up) {
+        return StrengthStatus.declining;
+      }
+    }
+
+    if (volumeTrend == Trend.down) {
+      if (rpeTrend == Trend.up) {
+        return StrengthStatus.deload_needed;
+      } else if (rpeTrend == Trend.stable) {
+        return StrengthStatus.maintaining;
+      } else if (rpeTrend == Trend.down) {
+        return StrengthStatus.declining;
+      }
+    }
+
+    return StrengthStatus.maintaining;
   }
 }
