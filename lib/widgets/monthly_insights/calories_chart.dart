@@ -124,7 +124,7 @@ class CaloriesChart extends StatelessWidget {
     }
 
     if (caloriesBurned.length == 1) {
-      return "You've recorded your first week's calorie burn (${caloriesBurned.first}). "
+      return "You've logged your first week's calorie burn (${caloriesBurned.first}). "
           "Great job! Keep logging more data to see trends over time.";
     }
 

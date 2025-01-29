@@ -137,7 +137,7 @@ class VolumeChart extends StatelessWidget {
     }
 
     if (volumes.length == 1) {
-      return "You've recorded your first week's volume (${volumes.first})."
+      return "You've logged your first week's volume (${volumes.first})."
           " Great job! Keep logging more data to see trends over time.";
     }
 

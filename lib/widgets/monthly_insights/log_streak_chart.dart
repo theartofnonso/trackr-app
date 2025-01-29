@@ -114,7 +114,7 @@ class LogStreakChart extends StatelessWidget {
     }
 
     if (daysTrained.length == 1) {
-      return "You’ve recorded your first week: ${daysTrained.first} day(s) of training."
+      return "You’ve logged your first week: ${daysTrained.first} day(s) of training."
           " Great job! Log more weeks to identify trends over time.";
     }
 
