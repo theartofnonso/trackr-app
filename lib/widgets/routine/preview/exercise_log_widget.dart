@@ -76,7 +76,7 @@ class ExerciseLogWidget extends StatefulWidget {
 }
 
 class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
-  WeightAndRPE _metric = WeightAndRPE.weight;
+  WeightAndRPE _metric = WeightAndRPE.rpe;
 
   @override
   Widget build(BuildContext context) {
@@ -248,11 +248,11 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
                   groupValue: _metric,
                   children: {
+                    WeightAndRPE.rpe: SizedBox(
+                        width: 100, child: Text(_volumeRepsDuration(), style: textStyle, textAlign: TextAlign.center)),
                     WeightAndRPE.weight: SizedBox(
                         width: 50,
                         child: Text(WeightAndRPE.weight.name, style: textStyle, textAlign: TextAlign.center)),
-                    WeightAndRPE.rpe: SizedBox(
-                        width: 100, child: Text(_volumeRepsDuration(), style: textStyle, textAlign: TextAlign.center)),
                   },
                   onValueChanged: (WeightAndRPE? value) {
                     if (value != null) {
