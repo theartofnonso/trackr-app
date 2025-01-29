@@ -41,7 +41,7 @@ enum StrengthStatus {
   ),
   none(
     description: "🤔 We don't have enough data yet to analyze your progress. "
-        "Keep logging workouts, and we'll give you tailored feedback as you go!",
+        "Keep logging sessions, and we'll give you tailored feedback as you go!",
   );
 
   const StrengthStatus({required this.description});
