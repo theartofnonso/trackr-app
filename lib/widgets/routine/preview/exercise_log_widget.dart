@@ -24,21 +24,25 @@ import '../preview/set_headers/single_set_header.dart';
 
 enum StrengthStatus {
   improving(
-      description: "💪 STRENGTH GAINS! Your ability to handle more volume with less effort "
-          "shows great adaptation. Consider progressive overload next week."),
+    description: "🌟 You're getting stronger! Handling more volume with less effort shows fantastic adaptation. "
+        "Keep that momentum going and consider increasing the challenge next week—just remember to watch your recovery.",
+  ),
   declining(
-      description: "⚠️ Recovery Check Needed: Reduced capacity at same RPE. "
-          "Evaluate sleep, nutrition, and stress levels."),
+    description: "📉 You're feeling a dip in strength. Double-check your sleep, nutrition, and stress levels—"
+        "a little extra rest or a small load reduction can help you bounce back stronger!",
+  ),
   maintaining(
-      description: "🔄 Consistent Performance: Maintain current levels while "
-          "focusing on exercise technique and mind-muscle connection."),
+    description: "🔄 Solid consistency! You've maintained performance levels well. "
+        "Focus on refining technique and mind-muscle connection to build a perfect foundation for future gains.",
+  ),
   potential_overtraining(
-      description: "🔥 Overtraining Alert! High volume with rising perceived exertion. "
-          "Immediate deload recommended followed by 10-20% volume reduction."),
-  deload_needed(
-      description: "⏸️ Smart Training Opportunity: Strategic recovery week suggested. "
-          "Maintain 40-60% of current volume with focus on mobility work."),
-  none(description: "Insufficient or mismatched data to analyze.");
+    description: "⚠️ Easy there—your body might be on the verge of overtraining. "
+        "Consider a short deload or reduce your training volume for a week to fully recover, then ramp back up gradually.",
+  ),
+  none(
+    description: "🤔 We don't have enough data yet to analyze your progress. "
+        "Keep logging workouts, and we'll give you tailored feedback as you go!",
+  );
 
   const StrengthStatus({required this.description});
 
@@ -319,7 +323,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     if (volumeTrend == Trend.down) {
       if (rpeTrend == Trend.up) {
-        return StrengthStatus.deload_needed;
+        return StrengthStatus.potential_overtraining;
       } else if (rpeTrend == Trend.stable) {
         return StrengthStatus.maintaining;
       } else if (rpeTrend == Trend.down) {
