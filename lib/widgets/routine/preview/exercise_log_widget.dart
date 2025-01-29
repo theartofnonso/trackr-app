@@ -35,7 +35,7 @@ enum StrengthStatus {
     description: "🔄 Solid consistency! You've maintained performance levels well. "
         "Focus on refining technique and mind-muscle connection to build a perfect foundation for future gains.",
   ),
-  potential_overtraining(
+  potentialOvertraining(
     description: "⚠️ Easy there—your body might be on the verge of overtraining. "
         "Consider a short deload or reduce your training volume for a week to fully recover, then ramp back up gradually.",
   ),
@@ -309,7 +309,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       if (rpeTrend == Trend.down || rpeTrend == Trend.stable) {
         return StrengthStatus.improving;
       } else if (rpeTrend == Trend.up) {
-        return StrengthStatus.potential_overtraining;
+        return StrengthStatus.potentialOvertraining;
       }
     }
 
@@ -325,7 +325,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     if (volumeTrend == Trend.down) {
       if (rpeTrend == Trend.up) {
-        return StrengthStatus.potential_overtraining;
+        return StrengthStatus.potentialOvertraining;
       } else if (rpeTrend == Trend.stable) {
         return StrengthStatus.maintaining;
       } else if (rpeTrend == Trend.down) {

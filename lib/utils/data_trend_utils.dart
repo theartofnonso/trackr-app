@@ -18,7 +18,7 @@ Trend detectTrend(List<num> values, {double trendThreshold = 5.0}) {
 
 double _percentageToAbsolute(double percentage, num base) => base * percentage / 100;
 
-RegressionResult _calculateRegression(List<num> values) {
+_RegressionResult _calculateRegression(List<num> values) {
   double sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
   final n = values.length.toDouble();
 
@@ -30,12 +30,12 @@ RegressionResult _calculateRegression(List<num> values) {
   }
 
   final slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
-  return RegressionResult(slope, sumY / n);
+  return _RegressionResult(slope, sumY / n);
 }
 
-class RegressionResult {
+class _RegressionResult {
   final double slope;
   final double average;
 
-  RegressionResult(this.slope, this.average);
+  _RegressionResult(this.slope, this.average);
 }
