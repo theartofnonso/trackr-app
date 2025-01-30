@@ -43,7 +43,7 @@ enum StrengthStatus {
     description: "🤔 We don't have enough data yet to analyze your progress. "
         "Keep logging sessions, and we'll give you tailored feedback as you go!",
   ),
-  insufficient(description: "You’ve logged only one training. Great job! Log more weeks to identify trends over time.");
+  insufficient(description: "You’ve logged only one training. Great job! Log more sessions to identify trends over time.");
 
   const StrengthStatus({required this.description});
 
