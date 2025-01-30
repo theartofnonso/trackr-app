@@ -50,7 +50,7 @@ class SetsListview extends StatelessWidget {
               final label = (set as RepsSetDto).reps;
               return SingleSetRow(label: "$label");
             case ExerciseType.duration:
-              final label = (set as DurationSetDto).duration.hmsAnalog();
+              final label = (set as DurationSetDto).duration.hmsDigital();
               return SingleSetRow(label: label, pbs: pbsForSet);
           }
         },
