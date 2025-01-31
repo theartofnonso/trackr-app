@@ -56,94 +56,93 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           gradient: themeGradient(context: context),
         ),
         child: SafeArea(
-          minimum: const EdgeInsets.all(10),
+          minimum: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SingleChildScrollView(
-                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Center(
-                    child: UserIconWidget(size: 60, iconSize: 22),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Center(
-                    child: Text(user.name.toUpperCase(),
-                        style: Theme.of(context).textTheme.titleSmall, textAlign: TextAlign.center),
-                  ),
-                  const SizedBox(
-                    height: 40,
-                  ),
-                  LabelDivider(
-                    label: "Enter your weight".toUpperCase(),
-                    labelColor: isDarkMode ? Colors.white : Colors.black,
-                    dividerColor: sapphireLighter,
-                    fontSize: 14,
-                  ),
-                  const SizedBox(height: 8),
-                  Text("We estimate the amount of calories burned using your weight.",
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
-                  const SizedBox(height: 8),
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: isDarkMode ? Colors.white10 : Colors.black38, // Border color
-                        width: 1, // Border width
-                      ),
-                      borderRadius: BorderRadius.circular(5), // Rounded corners
+              Expanded(
+                child: SingleChildScrollView(
+                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Center(
+                      child: UserIconWidget(size: 60, iconSize: 22),
                     ),
-                    width: double.infinity,
-                    child: DoubleTextField(
-                        value: _user?.weight ?? 0,
-                        controller: _doubleTextFieldController,
-                        onChanged: (value) {
-                          setState(() {
-                            _weight = value;
-                          });
-                        }),
-                  ),
-                  const SizedBox(height: 22),
-                  Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Center(
+                      child: Text(user.name.toUpperCase(),
+                          style: Theme.of(context).textTheme.titleSmall, textAlign: TextAlign.center),
+                    ),
+                    const SizedBox(
+                      height: 40,
+                    ),
                     LabelDivider(
-                      label: "Select a training goal".toUpperCase(),
+                      label: "Enter your weight".toUpperCase(),
                       labelColor: isDarkMode ? Colors.white : Colors.black,
                       dividerColor: sapphireLighter,
                       fontSize: 14,
                     ),
                     const SizedBox(height: 8),
-                    Text(user.trainingGoal.description,
-                        textAlign: TextAlign.start,
+                    Text("We estimate the amount of calories burned using your weight.",
                         style: Theme.of(context)
                             .textTheme
                             .bodyMedium
                             ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
                     const SizedBox(height: 8),
-                    ThemeListTile(
-                      child: ListTile(
-                        onTap: _updateTrainingGoal,
-                        dense: true,
-                        horizontalTitleGap: 0,
-                        leading: Text("I am training for ${_trainingGoal.displayName}",
-                            textAlign: TextAlign.start,
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14,
-                                color: isDarkMode ? Colors.white : Colors.black)),
-                        trailing: FaIcon(
-                          FontAwesomeIcons.arrowRightLong,
-                          size: 14,
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: isDarkMode ? Colors.white10 : Colors.black38, // Border color
+                          width: 1, // Border width
                         ),
+                        borderRadius: BorderRadius.circular(5), // Rounded corners
                       ),
-                    )
+                      width: double.infinity,
+                      child: DoubleTextField(
+                          value: _user?.weight ?? 0,
+                          controller: _doubleTextFieldController,
+                          onChanged: (value) {
+                            setState(() {
+                              _weight = value;
+                            });
+                          }),
+                    ),
+                    const SizedBox(height: 22),
+                    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      LabelDivider(
+                        label: "Select a training goal".toUpperCase(),
+                        labelColor: isDarkMode ? Colors.white : Colors.black,
+                        dividerColor: sapphireLighter,
+                        fontSize: 14,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(user.trainingGoal.description,
+                          textAlign: TextAlign.start,
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                      const SizedBox(height: 8),
+                      ThemeListTile(
+                        child: ListTile(
+                          onTap: _updateTrainingGoal,
+                          dense: true,
+                          horizontalTitleGap: 0,
+                          leading: Text(_trainingGoal.displayName,
+                              textAlign: TextAlign.start,
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                  color: isDarkMode ? Colors.white : Colors.black)),
+                          trailing: FaIcon(
+                            FontAwesomeIcons.arrowRightLong,
+                            size: 14,
+                          ),
+                        ),
+                      )
+                    ]),
                   ]),
-                ]),
+                ),
               ),
-              const Spacer(),
               SizedBox(
                   width: double.infinity,
                   height: 45,
