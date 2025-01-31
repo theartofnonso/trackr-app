@@ -44,17 +44,19 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
               topRight: Radius.circular(20),
             ),
             gradient: isDarkMode ? themeGradient(context: context) : null),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        child: Column(spacing: 20, crossAxisAlignment: CrossAxisAlignment.start, children: [
           Center(
             child: UserIconWidget(size: 60, iconSize: 22),
           ),
-          const SizedBox(
-            height: 20,
-          ),
-          Row(
+          Text(
+              "Create your user profile to personalize your training. Set your weight, choose your primary training goals, and we’ll tailor a plan just for you.",
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontSize: 15, fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
+              SizedBox(
+                width: double.infinity,
                 child: TextField(
                   controller: _usernameEditingController,
                   maxLength: 15,
@@ -70,10 +72,11 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
                 ),
               ),
               const SizedBox(
-                width: 6,
+                height: 6,
               ),
               SizedBox(
                 height: 45,
+                width: double.infinity,
                 child: OpacityButtonWidget(
                   onPressed: _createUser,
                   label: "Create",
