@@ -6,6 +6,7 @@ import 'package:tracker_app/screens/training_goal_screen.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:tracker_app/widgets/dividers/label_divider.dart';
 import 'package:tracker_app/widgets/icons/user_icon_widget.dart';
+import 'package:tracker_app/widgets/list_tile.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/double_textfield.dart';
 
 import '../../colors.dart';
@@ -56,74 +57,93 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         ),
         child: SafeArea(
           minimum: const EdgeInsets.all(10),
-          child: SingleChildScrollView(
-            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Center(
-                child: UserIconWidget(size: 60, iconSize: 22),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Center(
-                child: Text(user.name.toUpperCase(),
-                    style: Theme.of(context).textTheme.titleSmall, textAlign: TextAlign.center),
-              ),
-              const SizedBox(
-                height: 40,
-              ),
-              LabelDivider(
-                label: "Enter your weight".toUpperCase(),
-                labelColor: isDarkMode ? Colors.white : Colors.black,
-                dividerColor: sapphireLighter,
-                fontSize: 14,
-              ),
-              const SizedBox(height: 8),
-              Text("We estimate the amount of calories burned using your weight.",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
-              const SizedBox(height: 8),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: isDarkMode ? Colors.white10 : Colors.black38, // Border color
-                    width: 1, // Border width
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SingleChildScrollView(
+                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Center(
+                    child: UserIconWidget(size: 60, iconSize: 22),
                   ),
-                  borderRadius: BorderRadius.circular(5), // Rounded corners
-                ),
-                width: double.infinity,
-                child: DoubleTextField(
-                    value: _user?.weight ?? 0,
-                    controller: _doubleTextFieldController,
-                    onChanged: (value) {
-                      setState(() {
-                        _weight = value;
-                      });
-                    }),
-              ),
-              const SizedBox(height: 22),
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                LabelDivider(
-                  label: "Select a training goal".toUpperCase(),
-                  labelColor: isDarkMode ? Colors.white : Colors.black,
-                  dividerColor: sapphireLighter,
-                  fontSize: 14,
-                ),
-                const SizedBox(height: 8),
-                Text(user.trainingGoal.description,
-                    textAlign: TextAlign.start,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
-                const SizedBox(height: 2),
-                SizedBox(
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Center(
+                    child: Text(user.name.toUpperCase(),
+                        style: Theme.of(context).textTheme.titleSmall, textAlign: TextAlign.center),
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  LabelDivider(
+                    label: "Enter your weight".toUpperCase(),
+                    labelColor: isDarkMode ? Colors.white : Colors.black,
+                    dividerColor: sapphireLighter,
+                    fontSize: 14,
+                  ),
+                  const SizedBox(height: 8),
+                  Text("We estimate the amount of calories burned using your weight.",
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                  const SizedBox(height: 8),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: isDarkMode ? Colors.white10 : Colors.black38, // Border color
+                        width: 1, // Border width
+                      ),
+                      borderRadius: BorderRadius.circular(5), // Rounded corners
+                    ),
                     width: double.infinity,
-                    child: OpacityButtonWidget(label: _trainingGoal.displayName, onPressed: _updateTrainingGoal))
-              ]),
-              const SizedBox(height: 45),
+                    child: DoubleTextField(
+                        value: _user?.weight ?? 0,
+                        controller: _doubleTextFieldController,
+                        onChanged: (value) {
+                          setState(() {
+                            _weight = value;
+                          });
+                        }),
+                  ),
+                  const SizedBox(height: 22),
+                  Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    LabelDivider(
+                      label: "Select a training goal".toUpperCase(),
+                      labelColor: isDarkMode ? Colors.white : Colors.black,
+                      dividerColor: sapphireLighter,
+                      fontSize: 14,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(user.trainingGoal.description,
+                        textAlign: TextAlign.start,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                    const SizedBox(height: 8),
+                    ThemeListTile(
+                      child: ListTile(
+                        onTap: _updateTrainingGoal,
+                        dense: true,
+                        horizontalTitleGap: 0,
+                        leading: Text("I am training for ${_trainingGoal.displayName}",
+                            textAlign: TextAlign.start,
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
+                                color: isDarkMode ? Colors.white : Colors.black)),
+                        trailing: FaIcon(
+                          FontAwesomeIcons.arrowRightLong,
+                          size: 14,
+                        ),
+                      ),
+                    )
+                  ]),
+                ]),
+              ),
+              const Spacer(),
               SizedBox(
                   width: double.infinity,
                   height: 45,
@@ -133,7 +153,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     buttonColor: vibrantGreen,
                     padding: EdgeInsets.symmetric(vertical: 10),
                   )),
-            ]),
+            ],
           ),
         ),
       ),

@@ -3,7 +3,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/analytics_controller.dart';
-import 'package:tracker_app/controllers/notifications_controller.dart';
 import 'package:tracker_app/screens/insights/overview_screen.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
 import 'package:tracker_app/screens/onboarding/onboarding_checklist_notifications_screen.dart';
@@ -36,25 +35,13 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
 
     final activityLogController = Provider.of<ActivityLogController>(context, listen: true);
 
-    final notificationsController = Provider.of<NotificationsController>(context, listen: true);
-
     final routineLogs = exerciseAndRoutineController.logs;
 
     final routineTemplates = exerciseAndRoutineController.templates;
 
     final activityLogs = activityLogController.logs;
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      notificationsController.checkHasNoLoggedActivities(activities: activityLogs);
-
-      notificationsController.checkHasNoRoutineTemplates(templates: routineTemplates);
-
-      notificationsController.checkHasNoLoggedRoutines(logs: routineLogs);
-    });
-
-    final hasPendingActions = notificationsController.hasNoLoggedActivities ||
-        notificationsController.hasNoRoutineTemplates ||
-        notificationsController.hasNoLoggedRoutines;
+    final hasPendingActions = routineTemplates.isEmpty || routineLogs.isEmpty || activityLogs.isEmpty;
 
     return DefaultTabController(
         length: 2,

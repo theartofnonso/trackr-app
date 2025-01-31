@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
+import '../../controllers/activity_log_controller.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../controllers/routine_user_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
@@ -25,18 +26,24 @@ class CaloriesChart extends StatelessWidget {
 
     final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
+    final activityLogController = Provider.of<ActivityLogController>(context, listen: false);
+
     final dateRange = theLastYearDateTimeRange();
 
-    final logs = routineLogController.whereLogsIsWithinRange(range: dateRange).toList();
+    final routineLogs = routineLogController.whereLogsIsWithinRange(range: dateRange).toList();
+
+    final activityLogs = activityLogController.whereLogsIsWithinRange(range: dateRange).toList();
 
     final weeksInLastYear = generateWeeksInRange(range: dateRange).reversed.take(13).toList().reversed;
+
+    final allLogs = [...routineLogs, ...activityLogs];
 
     List<String> months = [];
     List<int> calories = [];
     for (final week in weeksInLastYear) {
       final startOfWeek = week.start;
       final endOfWeek = week.end;
-      final logsForTheWeek = logs.where((log) => log.createdAt.isBetweenInclusive(from: startOfWeek, to: endOfWeek));
+      final logsForTheWeek = allLogs.where((log) => log.createdAt.isBetweenInclusive(from: startOfWeek, to: endOfWeek));
       final values = logsForTheWeek
           .map((log) => calculateCalories(
               duration: log.duration(), bodyWeight: routineUserController.weight(), activity: log.activityType))
@@ -132,7 +139,7 @@ class CaloriesChart extends StatelessWidget {
     final secondToLast = caloriesBurned[caloriesBurned.length - 2];
     final last = caloriesBurned.last;
 
-    if(last == 0) {
+    if (last == 0) {
       return "No training data available for this week. Log some sessions to continue tracking your progress!";
     }
 

@@ -3,7 +3,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/widgets/empty_states/no_list_empty_state.dart';
 
-import '../../controllers/notifications_controller.dart';
+import '../../controllers/activity_log_controller.dart';
+import '../../controllers/exercise_and_routine_controller.dart';
 import '../../utils/general_utils.dart';
 import '../../widgets/list_tile.dart';
 
@@ -17,11 +18,17 @@ class OnboardingChecklistNotificationsScreenScreen extends StatelessWidget {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final notificationsController = Provider.of<NotificationsController>(context, listen: true);
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
-    final hasPendingActions = notificationsController.hasNoLoggedActivities ||
-        notificationsController.hasNoRoutineTemplates ||
-        notificationsController.hasNoLoggedRoutines;
+    final activityLogController = Provider.of<ActivityLogController>(context, listen: true);
+
+    final routineLogs = exerciseAndRoutineController.logs;
+
+    final routineTemplates = exerciseAndRoutineController.templates;
+
+    final activityLogs = activityLogController.logs;
+
+    final hasPendingActions = routineTemplates.isEmpty || routineLogs.isEmpty || activityLogs.isEmpty;
 
     return Scaffold(
       appBar: AppBar(
@@ -41,7 +48,7 @@ class OnboardingChecklistNotificationsScreenScreen extends StatelessWidget {
               ? Column(
                   spacing: 10,
                   children: [
-                    if (notificationsController.hasNoRoutineTemplates)
+                    if (routineTemplates.isEmpty)
                       ThemeListTile(
                         child: ListTile(
                           title: Text("Create A Workout Template"),
@@ -58,7 +65,7 @@ class OnboardingChecklistNotificationsScreenScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                    if (notificationsController.hasNoLoggedRoutines)
+                    if (routineLogs.isEmpty)
                       ThemeListTile(
                         child: ListTile(
                           title: Text("Log A Workout Session"),
@@ -75,7 +82,7 @@ class OnboardingChecklistNotificationsScreenScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                    if (notificationsController.hasNoLoggedActivities)
+                    if (activityLogs.isEmpty)
                       ThemeListTile(
                         child: ListTile(
                           title: Text("Log An Activity"),
