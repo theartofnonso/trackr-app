@@ -119,7 +119,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         .bodyMedium
                         ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
                 const SizedBox(height: 2),
-                OpacityButtonWidget(label: _trainingGoal.displayName, onPressed: _updateTrainingGoal)
+                SizedBox(
+                    width: double.infinity,
+                    child: OpacityButtonWidget(label: _trainingGoal.displayName, onPressed: _updateTrainingGoal))
               ]),
               const SizedBox(height: 45),
               SizedBox(
