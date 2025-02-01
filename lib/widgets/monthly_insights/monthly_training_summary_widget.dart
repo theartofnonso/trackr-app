@@ -37,8 +37,8 @@ class MonthlyTrainingSummaryWidget extends StatelessWidget {
     final sets = exerciseLogs.expand((exercise) => exercise.sets);
 
     final numberOfSets = sets.length;
-    final routineLogHoursInMilliSeconds = routineLogs.map((log) => log.duration().inMilliseconds).sum;
-    final totalHours = Duration(milliseconds: routineLogHoursInMilliSeconds);
+    final routineLogHoursInMilliSeconds = routineLogs.isNotEmpty ? routineLogs.map((log) => log.duration().inMilliseconds).average.toInt() : 0;
+    final averageDuration = Duration(milliseconds: routineLogHoursInMilliSeconds);
 
     final tonnage = exerciseLogs.map((log) {
       if (log.exercise.type == ExerciseType.weights) {
@@ -100,8 +100,8 @@ class MonthlyTrainingSummaryWidget extends StatelessWidget {
                       child: _TableItem(
                           title: 'Sessions'.toUpperCase(),
                           subTitle: "${routineLogs.length}",
-                          titleColor: logStreakColor(value: routineLogs.length / 12),
-                          subTitleColor: logStreakColor(value: routineLogs.length / 12),
+                          titleColor: logStreakColor(routineLogs.length),
+                          subTitleColor: logStreakColor(routineLogs.length),
                           padding: const EdgeInsets.only(bottom: 20)),
                     ),
                   ),
@@ -144,8 +144,8 @@ class MonthlyTrainingSummaryWidget extends StatelessWidget {
                     verticalAlignment: TableCellVerticalAlignment.middle,
                     child: Center(
                       child: _TableItem(
-                          title: 'HOURS',
-                          subTitle: totalHours.hmDigital(),
+                          title: 'AVG Hours'.toUpperCase(),
+                          subTitle: averageDuration.hmDigital(),
                           titleColor: Colors.white,
                           subTitleColor: Colors.white,
                           padding: const EdgeInsets.only(top: 20)),

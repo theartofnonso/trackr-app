@@ -7,6 +7,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:health/health.dart';
+import 'package:tracker_app/enums/muscle_group_enums.dart';
+import 'package:tracker_app/extensions/muscle_group_extension.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 
 import '../colors.dart';
@@ -15,6 +17,7 @@ import '../enums/routine_editor_type_enums.dart';
 import '../screens/editors/routine_log_editor_screen.dart';
 import '../screens/logs/routine_log_screen.dart';
 import '../shared_prefs.dart';
+import 'data_trend_utils.dart';
 import 'navigation_utils.dart';
 
 bool isDefaultWeightUnit() {
@@ -104,15 +107,48 @@ Future<bool> _requestAndroidNotificationPermission() async {
       false;
 }
 
-Color logStreakColor({required double value}) {
-  if (value < 0.3) {
+Color logStreakColor(num value) {
+  final result = value / 12;
+  if (result < 0.3) {
     return Colors.red;
-  } else if (value < 0.5) {
+  } else if (result < 0.5) {
     return Colors.deepOrangeAccent;
-  } else if (value < 0.8) {
+  } else if (result < 0.8) {
     return vibrantBlue;
   } else {
     return vibrantGreen;
+  }
+}
+
+Color recoveryColor(double recoveryPercentage) {
+  if (recoveryPercentage < 0.3) {
+    // Severe DOMS (0–29%)
+    return Colors.red;
+  } else if (recoveryPercentage < 0.5) {
+    // High soreness (30–49%)
+    return Colors.yellow;
+  } else if (recoveryPercentage < 0.8) {
+    // Moderate soreness (50–79%)
+    return vibrantBlue;
+  } else {
+    // Mild or no soreness (80–100%)
+    return vibrantGreen;
+  }
+}
+
+String recoveryMuscleIllustration({required double recoveryPercentage, required MuscleGroup muscleGroup}) {
+  if (recoveryPercentage < 0.3) {
+    // Severe DOMS (0–29%)
+    return 'red_muscles_illustration/${muscleGroup.illustration()}.png';
+  } else if (recoveryPercentage < 0.5) {
+    // High soreness (30–49%)
+    return 'yellow_muscles_illustration/${muscleGroup.illustration()}.png';
+  } else if (recoveryPercentage < 0.8) {
+    // Moderate soreness (50–79%)
+    return 'blue_muscles_illustration/${muscleGroup.illustration()}.png';
+  } else {
+    // Mild or no soreness (80–100%)
+    return 'muscles_illustration/${muscleGroup.illustration()}.png';
   }
 }
 
@@ -163,7 +199,6 @@ LinearGradient themeGradient({required BuildContext context}) {
 }
 
 Future<bool> requestAppleHealth() async {
-
   await Health().configure();
 
   // define the types to get
@@ -171,8 +206,7 @@ Future<bool> requestAppleHealth() async {
 
   final permissions = [HealthDataAccess.READ, HealthDataAccess.WRITE];
 
-  bool hasPermissions =
-      await Health().hasPermissions(types, permissions: permissions) ?? false;
+  bool hasPermissions = await Health().hasPermissions(types, permissions: permissions) ?? false;
 
   if (!hasPermissions) {
     // requesting access to the data types before reading them
@@ -212,12 +246,11 @@ Future<DateTimeRange?> calculateSleepDuration() async {
 }
 
 Color getImprovementColor({required bool improved, required num difference}) {
-
   Color color = vibrantBlue;
 
-  if(improved && difference > 0) {
+  if (improved && difference > 0) {
     color = vibrantGreen;
-  } else if(!improved && difference > 0) {
+  } else if (!improved && difference > 0) {
     color = Colors.deepOrange;
   }
   return color;
@@ -237,15 +270,34 @@ final Map<int, Color> rpeIntensityToColor = {
 };
 
 IconData getImprovementIcon({required bool improved, required num difference}) {
-
   IconData icon = FontAwesomeIcons.arrowsUpDown;
 
-  if(improved && difference > 0) {
+  if (improved && difference > 0) {
     icon = FontAwesomeIcons.arrowTrendUp;
-  } else if(!improved && difference > 0) {
+  } else if (!improved && difference > 0) {
     icon = FontAwesomeIcons.arrowTrendDown;
   }
   return icon;
+}
+
+Widget getTrendIcon({required Trend trend}) {
+  return switch(trend) {
+    Trend.up => FaIcon(
+      FontAwesomeIcons.arrowTrendUp,
+      color: vibrantGreen,
+      size: 20,
+    ),
+    Trend.down => FaIcon(
+      FontAwesomeIcons.arrowTrendDown,
+      color: Colors.deepOrange,
+      size: 20,
+    ),
+    Trend.stable => FaIcon(
+      FontAwesomeIcons.arrowsUpDown,
+      color: vibrantBlue,
+      size: 20,
+    ),
+  };
 }
 
 void logEmptyRoutine({required BuildContext context, String workoutVideoUrl = ""}) async {
@@ -261,7 +313,12 @@ void logEmptyRoutine({required BuildContext context, String workoutVideoUrl = ""
       createdAt: DateTime.now(),
       updatedAt: DateTime.now());
   final recentLog = await navigateWithSlideTransition(
-      context: context, child: RoutineLogEditorScreen(log: log, mode: RoutineEditorMode.log, workoutVideoUrl: workoutVideoUrl,));
+      context: context,
+      child: RoutineLogEditorScreen(
+        log: log,
+        mode: RoutineEditorMode.log,
+        workoutVideoUrl: workoutVideoUrl,
+      ));
   if (recentLog != null) {
     if (context.mounted) {
       context.push(RoutineLogScreen.routeName, extra: {"log": recentLog, "showSummary": true, "isEditable": true});

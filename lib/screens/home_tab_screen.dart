@@ -64,10 +64,12 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
                       TableCell(
                         verticalAlignment: TableCellVerticalAlignment.middle,
                         child: Center(
-                          child: CalendarNavigator(
-                            onMonthChange: _onMonthChange,
-                            enabled: _tabIndex == 0,
-                          ),
+                          child: _tabIndex == 0
+                              ? CalendarNavigator(onMonthChange: _onMonthChange)
+                              : Text(
+                                  _getTabLabel().toUpperCase(),
+                                  style: Theme.of(context).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.bold),
+                                ),
                         ),
                       ),
                       TableCell(
@@ -94,7 +96,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600))),
                     Tab(
                         child: Text("Muscle Trends".toUpperCase(),
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600)))
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600))),
                   ],
                 ),
                 Expanded(
@@ -126,6 +128,13 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
     setState(() {
       _monthDateTimeRange = range;
     });
+  }
+
+  String _getTabLabel() {
+    if (_tabIndex == 1) {
+      return "Trends for the past year";
+    }
+    return "Muscle Recovery";
   }
 
   @override

@@ -76,4 +76,12 @@ class SharedPrefs {
   set userEmail(String value) {
     _sharedPrefs?.setString(_userEmailKey, value);
   }
+
+  final String routineLogKey = "routine_log_key";
+
+  String get routineLog => _sharedPrefs?.getString(routineLogKey) ?? "";
+
+  set routineLog(String value) {
+    _sharedPrefs?.setString(routineLogKey, value);
+  }
 }

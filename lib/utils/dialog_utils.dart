@@ -244,7 +244,7 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
 void showCreateProfileBottomSheet({required BuildContext context}) {
   showModalBottomSheet(
       isScrollControlled: true,
-      isDismissible: false,
+      isDismissible: true,
       useSafeArea: true,
       context: context,
       builder: (context) {

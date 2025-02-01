@@ -8,6 +8,7 @@ import 'package:health/health.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/dtos/appsync/routine_user_dto.dart';
+import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
@@ -46,13 +47,23 @@ class AmplifyRoutineLogRepository {
   UnmodifiableMapView<String, List<ExerciseLogDto>> get exerciseLogsByExerciseId =>
       UnmodifiableMapView(_exerciseLogsByExerciseId);
 
-  void _groupExerciseLogs() {
+  Map<MuscleGroup, List<ExerciseLogDto>> _exerciseLogsByMuscleGroup = {};
+
+  UnmodifiableMapView<MuscleGroup, List<ExerciseLogDto>> get exerciseLogsByMuscleGroup =>
+      UnmodifiableMapView(_exerciseLogsByMuscleGroup);
+
+  void _groupExerciseLogsById() {
     _exerciseLogsByExerciseId = groupExerciseLogsByExerciseId(routineLogs: _logs);
+  }
+
+  void _groupExerciseLogsByMuscleGroup() {
+    _exerciseLogsByMuscleGroup = groupExerciseLogsByMuscleGroup(routineLogs: _logs);
   }
 
   void loadLogStream({required List<RoutineLog> logs}) {
     _logs = logs.map((log) => RoutineLogDto.toDto(log)).toList();
-    _groupExerciseLogs();
+    _groupExerciseLogsById();
+    _groupExerciseLogsByMuscleGroup();
     _calculateMilestones();
   }
 
@@ -164,20 +175,6 @@ class AmplifyRoutineLogRepository {
     milestones.sort((a, b) => a.name.compareTo(b.name));
 
     _milestones = milestones;
-  }
-
-  void syncLogsWithExercisesFromLibrary({required List<ExerciseDto> exercises}) {
-    final updatedLogs = _logs.map((log) {
-      final updatedExerciseLogs = log.exerciseLogs.map((exerciseLog) {
-        final foundExercise = exercises.firstWhere(
-            (exerciseInLibrary) => exerciseInLibrary.id == exerciseLog.exercise.id,
-            orElse: () => exerciseLog.exercise);
-        return exerciseLog.copyWith(exercise: foundExercise);
-      }).toList();
-      return log.copyWith(exerciseLogs: updatedExerciseLogs);
-    }).toList();
-    _logs = updatedLogs;
-    _calculateMilestones();
   }
 
   /// Helper methods

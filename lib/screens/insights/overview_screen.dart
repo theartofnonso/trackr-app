@@ -19,6 +19,8 @@ import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_information_container.dart';
+import 'package:tracker_app/widgets/monthly_insights/calories_chart.dart';
+import 'package:tracker_app/widgets/monthly_insights/volume_chart.dart';
 
 import '../../controllers/activity_log_controller.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
@@ -43,7 +45,7 @@ import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/calendar/calendar.dart';
 import '../../widgets/dividers/label_divider.dart';
 import '../../widgets/monitors/log_streak_muscle_trend_monitor.dart';
-import '../../widgets/monthly_insights/log_streak_chart_widget.dart';
+import '../../widgets/monthly_insights/log_streak_chart.dart';
 import '../../widgets/monthly_insights/monthly_insights.dart';
 import '../../widgets/routine/preview/activity_log_widget.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
@@ -127,8 +129,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
                   child: SingleChildScrollView(
                       controller: widget.scrollController,
                       padding: const EdgeInsets.only(bottom: 150),
-                      child: Column(children: [
-                        const SizedBox(height: 12),
+                      child: Column(spacing: 20, children: [
+                        const SizedBox.shrink(),
                         LogStreakMuscleTrendMonitor(dateTime: widget.dateTimeRange.start),
                         if (isStartOfNewMonth && logsForPastMonth.isNotEmpty)
                           Padding(
@@ -142,40 +144,28 @@ class _OverviewScreenState extends State<OverviewScreen> {
                         if (scheduledToday != null)
                           GestureDetector(
                             onTap: () => navigateToRoutineTemplatePreview(context: context, template: scheduledToday),
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 20.0),
-                              child: _ScheduledRoutineCard(
-                                  scheduledToday: scheduledToday, isLogged: hasTodayScheduleBeenLogged),
-                            ),
+                            child: _ScheduledRoutineCard(
+                                scheduledToday: scheduledToday, isLogged: hasTodayScheduleBeenLogged),
                           ),
                         if (canNavigateNext && logsForCurrentMonth.isNotEmpty)
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 20),
-                              TRKRCoachButton(
-                                  label: "Review ${widget.dateTimeRange.start.formattedFullMonth()} insights.",
-                                  onTap: () => _generateMonthlyInsightsReport(datetime: widget.dateTimeRange.start)),
-                            ],
-                          ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 16.0),
-                          child: Column(
-                            children: [
-                              Calendar(
-                                onSelectDate: _onChangedDateTime,
-                                dateTime: widget.dateTimeRange.start,
-                                minimiseCalendar: SharedPrefs().minimiseCalendar,
-                              ),
-                              const SizedBox(height: 10),
-                              _LogsListView(dateTime: _selectedDateTime),
-                            ],
-                          ),
+                          TRKRCoachButton(
+                              label: "Review ${widget.dateTimeRange.start.formattedFullMonth()} insights.",
+                              onTap: () => _generateMonthlyInsightsReport(datetime: widget.dateTimeRange.start)),
+                        Column(
+                          children: [
+                            Calendar(
+                              onSelectDate: _onChangedDateTime,
+                              dateTime: widget.dateTimeRange.start,
+                              minimiseCalendar: SharedPrefs().minimiseCalendar,
+                            ),
+                            const SizedBox(height: 10),
+                            _LogsListView(dateTime: _selectedDateTime),
+                          ],
                         ),
-                        const SizedBox(height: 12),
                         MonthlyInsights(dateTimeRange: widget.dateTimeRange),
-                        const SizedBox(height: 18),
-                        LogStreakChartWidget(),
+                        LogStreakChart(),
+                        VolumeChart(),
+                        CaloriesChart()
                       ])),
                 )
                 // Add more widgets here for exercise insights

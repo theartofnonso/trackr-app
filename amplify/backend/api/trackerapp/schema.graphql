@@ -68,7 +68,7 @@ type ActivityLog
   updatedAt: AWSDateTime!
 }
 
-type ChallengeLog
+type RecoveryLog
      @model
      @auth(
         rules: [

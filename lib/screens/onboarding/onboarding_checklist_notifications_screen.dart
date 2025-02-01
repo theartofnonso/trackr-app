@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/widgets/empty_states/no_list_empty_state.dart';
 
 import '../../controllers/activity_log_controller.dart';
+import '../../controllers/exercise_and_routine_controller.dart';
 import '../../utils/general_utils.dart';
 import '../../widgets/list_tile.dart';
 

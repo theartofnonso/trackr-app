@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
+import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/screens/editors/workout_video_generator_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
@@ -55,6 +56,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   RoutineTemplateDto? _template;
 
   bool _loading = false;
+
+  RecoveryResult? _selectedMuscleAndRecovery;
 
   void _deleteRoutine({required RoutineTemplateDto template}) async {
     try {
@@ -140,6 +143,71 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     final difference = improved ? currentMonthVolume - previousMonthVolume : previousMonthVolume - currentMonthVolume;
 
     final differenceSummary = _generateDifferenceSummary(difference: difference, improved: improved);
+
+    final differenceFeedback = _generateDifferenceFeedback(difference: difference, improved: improved);
+
+    final listOfMuscleAndRecovery = template.exerciseTemplates
+        .map((exerciseTemplate) => exerciseTemplate.exercise.primaryMuscleGroup)
+        .toSet()
+        .map((muscleGroup) {
+      final pastExerciseLogs =
+          (Provider.of<ExerciseAndRoutineController>(context, listen: false).exerciseLogsByMuscleGroup[muscleGroup] ??
+              []);
+      final lastExerciseLog = pastExerciseLogs.isNotEmpty ? pastExerciseLogs.last : null;
+      final lastTrainingTime = lastExerciseLog?.createdAt;
+      final recovery = lastTrainingTime != null
+          ? _calculateMuscleRecovery(lastTrainingTime: lastTrainingTime, muscleGroup: muscleGroup)
+          : RecoveryResult(
+              recoveryPercentage: 0,
+              muscleGroup: muscleGroup,
+              lastTrainingTime: DateTime.now(),
+              description:
+                  "No recovery data available for $muscleGroup. Please log a $muscleGroup session to see updated recovery.");
+      return recovery;
+    });
+
+    final selectedMuscleAndRecovery =
+        _selectedMuscleAndRecovery ?? (listOfMuscleAndRecovery.isNotEmpty ? listOfMuscleAndRecovery.first : null);
+
+    final muscleGroupsIllustrations = listOfMuscleAndRecovery.map((muscleAndRecovery) {
+      final muscleGroup = muscleAndRecovery.muscleGroup;
+      final recovery = muscleAndRecovery.recoveryPercentage;
+
+      return Badge(
+        backgroundColor: recoveryColor(recovery),
+        alignment: Alignment.topRight,
+        smallSize: 12,
+        isLabelVisible: muscleGroup == selectedMuscleAndRecovery?.muscleGroup,
+        child: GestureDetector(
+          onTap: () {
+            setState(() {
+              _selectedMuscleAndRecovery = muscleAndRecovery;
+            });
+          },
+          child: Stack(alignment: Alignment.center, children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: SizedBox(
+                width: 100,
+                height: 100,
+                child: CircularProgressIndicator(
+                  value: recovery,
+                  strokeWidth: 6,
+                  backgroundColor: isDarkMode ? Colors.black12 : Colors.grey.shade200,
+                  strokeCap: StrokeCap.butt,
+                  valueColor: AlwaysStoppedAnimation<Color>(recoveryColor(recovery)),
+                ),
+              ),
+            ),
+            Image.asset(
+              recoveryMuscleIllustration(recoveryPercentage: recovery, muscleGroup: muscleGroup),
+              fit: BoxFit.contain,
+              height: 50, // Adjust the height as needed
+            )
+          ]),
+        ),
+      );
+    }).toList();
 
     final menuActions = [
       MenuItemButton(
@@ -233,191 +301,244 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           ),
           child: SafeArea(
             bottom: false,
-            minimum: const EdgeInsets.all(10.0),
+            minimum: const EdgeInsets.only(top: 10.0),
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 20,
                 children: [
-                  Column(
-                    spacing: 6,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: 30,
-                            height: 30,
-                            padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              color: Colors.deepOrange.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(3),
-                            ),
-                            child: Center(
-                              child: FaIcon(
-                                FontAwesomeIcons.calendarDay,
-                                color: Colors.deepOrange,
-                                size: 14,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 6,
-                          ),
-                          Expanded(
-                            child: Text(
-                              scheduledDaysSummary(template: template, showFullName: true),
-                              style: Theme.of(context).textTheme.bodyMedium,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 2,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: 30,
-                            height: 30,
-                            padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              color: Colors.yellow.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(3),
-                            ),
-                            child: Center(
-                              child: FaIcon(
-                                FontAwesomeIcons.solidNoteSticky,
-                                color: Colors.yellow,
-                                size: 14,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 6,
-                          ),
-                          Expanded(
-                            child: Text(
-                              template.notes.isNotEmpty ? "${template.notes}." : "No notes",
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
-                      color: isDarkMode ? Colors.black12 : Colors.grey.shade200,
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: Table(
-                      border: TableBorder.symmetric(
-                          inside: BorderSide(
-                              color: isDarkMode ? sapphireLighter.withValues(alpha: 0.4) : Colors.white, width: 2)),
-                      columnWidths: const <int, TableColumnWidth>{
-                        0: FlexColumnWidth(),
-                        1: FlexColumnWidth(),
-                      },
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Column(
+                      spacing: 20,
                       children: [
-                        TableRow(children: [
-                          TableCell(
-                            verticalAlignment: TableCellVerticalAlignment.middle,
-                            child: Center(
-                              child: Text(
-                                  "${template.exerciseTemplates.length} ${pluralize(word: "Exercise", count: template.exerciseTemplates.length)}",
-                                  style: Theme.of(context).textTheme.bodyMedium),
-                            ),
-                          ),
-                          TableCell(
-                            verticalAlignment: TableCellVerticalAlignment.middle,
-                            child: Center(
-                              child: Text(setsSummary, style: Theme.of(context).textTheme.bodyMedium),
-                            ),
-                          ),
-                        ]),
-                      ],
-                    ),
-                  ),
-                  MuscleGroupSplitChart(
-                      title: "Muscle Groups Split",
-                      description: "Here's a breakdown of the muscle groups in your ${template.name} workout plan.",
-                      muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
-                      minimized: false),
-                  if (template.owner == SharedPrefs().userId)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        RichText(
-                          text: TextSpan(
-                            text: volumeInKOrM(avgVolume),
-                            style: Theme.of(context).textTheme.headlineMedium,
-                            children: [
-                              TextSpan(
-                                text: " ",
-                              ),
-                              TextSpan(
-                                text: weightLabel().toUpperCase(),
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                            ],
-                          ),
-                        ),
-                        Text(
-                          "SESSION AVERAGE".toUpperCase(),
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                        Wrap(
-                          crossAxisAlignment: WrapCrossAlignment.center,
+                        Column(
+                          spacing: 6,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            FaIcon(
-                              getImprovementIcon(improved: improved, difference: difference),
-                              color: getImprovementColor(improved: improved, difference: difference),
-                              size: 12,
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: 30,
+                                  height: 30,
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    color: Colors.deepOrange.withValues(alpha: 0.1),
+                                    borderRadius: BorderRadius.circular(3),
+                                  ),
+                                  child: Center(
+                                    child: FaIcon(
+                                      FontAwesomeIcons.calendarDay,
+                                      color: Colors.deepOrange,
+                                      size: 14,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 6,
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    scheduledDaysSummary(template: template, showFullName: true),
+                                    style: Theme.of(context).textTheme.bodyMedium,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 2,
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(width: 6),
-                            OpacityButtonWidget(
-                              label: differenceSummary,
-                              buttonColor: getImprovementColor(improved: improved, difference: difference),
-                            )
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: 30,
+                                  height: 30,
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    color: Colors.yellow.withValues(alpha: 0.1),
+                                    borderRadius: BorderRadius.circular(3),
+                                  ),
+                                  child: Center(
+                                    child: FaIcon(
+                                      FontAwesomeIcons.solidNoteSticky,
+                                      color: Colors.yellow,
+                                      size: 14,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 6,
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    template.notes.isNotEmpty ? "${template.notes}." : "No notes",
+                                    style: Theme.of(context).textTheme.bodyMedium,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ],
                         ),
-                        const SizedBox(height: 16),
-                        Text(
-                            "Here’s a summary of your ${template.name} training intensity over the last ${allLogsForTemplate.length} sessions.",
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
-                        const SizedBox(height: 6),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
+                            color: isDarkMode ? Colors.black12 : Colors.grey.shade200,
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          child: Table(
+                            border: TableBorder.symmetric(
+                                inside: BorderSide(
+                                    color: isDarkMode ? sapphireLighter.withValues(alpha: 0.4) : Colors.white,
+                                    width: 2)),
+                            columnWidths: const <int, TableColumnWidth>{
+                              0: FlexColumnWidth(),
+                              1: FlexColumnWidth(),
+                            },
                             children: [
-                              const SizedBox(height: 16),
-                              LineChartWidget(
-                                chartPoints: volumeChartPoints,
-                                periods: [],
-                                unit: ChartUnit.weight,
-                              ),
+                              TableRow(children: [
+                                TableCell(
+                                  verticalAlignment: TableCellVerticalAlignment.middle,
+                                  child: Center(
+                                    child: Text(
+                                        "${template.exerciseTemplates.length} ${pluralize(word: "Exercise", count: template.exerciseTemplates.length)}",
+                                        style: Theme.of(context).textTheme.bodyMedium),
+                                  ),
+                                ),
+                                TableCell(
+                                  verticalAlignment: TableCellVerticalAlignment.middle,
+                                  child: Center(
+                                    child: Text(setsSummary, style: Theme.of(context).textTheme.bodyMedium),
+                                  ),
+                                ),
+                              ]),
                             ],
                           ),
                         ),
-                        InformationContainer(
-                          leadingIcon: FaIcon(FontAwesomeIcons.weightHanging),
-                          title: "Training Volume",
-                          color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
-                          description:
-                              "Volume is the total amount of work done, often calculated as sets × reps × weight. Higher volume increases muscle size (hypertrophy).",
+                        MuscleGroupSplitChart(
+                            title: "Muscle Groups Split",
+                            description:
+                                "Here's a breakdown of the muscle groups in your ${template.name} workout plan.",
+                            muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
+                            minimized: false),
+                      ],
+                    ),
+                  ),
+                  if (template.owner == SharedPrefs().userId)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Muscle Recovery".toUpperCase(), style: Theme.of(context).textTheme.titleMedium),
+                          const SizedBox(height: 10),
+                          Text(
+                              "Delayed Onset Muscle Soreness (DOMS) refers to the muscle pain or stiffness experienced after intense physical activity. It typically develops 24 to 48 hours after exercise and can last for several days.",
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                        ],
+                      ),
+                    ),
+                  if (template.owner == SharedPrefs().userId && listOfMuscleAndRecovery.isNotEmpty)
+                    Column(
+                      spacing: 10,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(mainAxisAlignment: MainAxisAlignment.center, spacing: 20, children: [
+                              SizedBox(width: 2),
+                              ...muscleGroupsIllustrations,
+                              SizedBox(width: 2),
+                            ])),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: Text(selectedMuscleAndRecovery?.description ?? "",
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white : Colors.black)),
                         ),
                       ],
                     ),
-                  ExerciseLogListView(
-                    exerciseLogs: exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
-                  ),
-                  const SizedBox(
-                    height: 60,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Column(
+                      spacing: 20,
+                      children: [
+                        if (template.owner == SharedPrefs().userId)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                  text: volumeInKOrM(avgVolume),
+                                  style: Theme.of(context).textTheme.headlineMedium,
+                                  children: [
+                                    TextSpan(
+                                      text: " ",
+                                    ),
+                                    TextSpan(
+                                      text: weightLabel().toUpperCase(),
+                                      style: Theme.of(context).textTheme.bodyMedium,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Text(
+                                "SESSION AVERAGE".toUpperCase(),
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                              Wrap(
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                children: [
+                                  FaIcon(
+                                    getImprovementIcon(improved: improved, difference: difference),
+                                    color: getImprovementColor(improved: improved, difference: difference),
+                                    size: 12,
+                                  ),
+                                  const SizedBox(width: 6),
+                                  OpacityButtonWidget(
+                                    label: differenceSummary,
+                                    buttonColor: getImprovementColor(improved: improved, difference: difference),
+                                  )
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                  "Here’s a summary of your ${template.name} training intensity over the last ${allLogsForTemplate.length} ${pluralize(word: "session", count: allLogsForTemplate.length)}. $differenceFeedback",
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                      fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                              const SizedBox(height: 6),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 20),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    const SizedBox(height: 16),
+                                    LineChartWidget(
+                                      chartPoints: volumeChartPoints,
+                                      periods: [],
+                                      unit: ChartUnit.weight,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              InformationContainer(
+                                leadingIcon: FaIcon(FontAwesomeIcons.weightHanging),
+                                title: "Training Volume",
+                                color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
+                                description:
+                                    "Volume is the total amount of work done, often calculated as sets × reps × weight. Higher volume increases muscle size (hypertrophy).",
+                              ),
+                            ],
+                          ),
+                        ExerciseLogListView(
+                          exerciseLogs: exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
+                        ),
+                        const SizedBox(
+                          height: 60,
+                        ),
+                      ],
+                    ),
                   )
                 ],
               ),
@@ -441,7 +562,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   void _launchRoutineLogEditor() {
     final template = _template;
     if (template != null) {
-      final arguments = RoutineLogArguments(log: template.toLog(), editorMode: RoutineEditorMode.log, workoutVideo: template.workoutVideoUrl);
+      final arguments = RoutineLogArguments(
+          log: template.toLog(), editorMode: RoutineEditorMode.log, workoutVideo: template.workoutVideoUrl);
       navigateToRoutineLogEditor(context: context, arguments: arguments);
     }
   }
@@ -527,7 +649,11 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   void _navigateToWorkoutVideoGenerator() async {
     final template = _template;
     if (template != null) {
-      final workoutVideoUrl = await navigateWithSlideTransition(context: context, child: WorkoutVideoGeneratorScreen(workoutVideoUrl: template.workoutVideoUrl,));
+      final workoutVideoUrl = await navigateWithSlideTransition(
+          context: context,
+          child: WorkoutVideoGeneratorScreen(
+            workoutVideoUrl: template.workoutVideoUrl,
+          ));
       if (mounted) {
         final templateToUpdate = template.copyWith(workoutVideoUrl: workoutVideoUrl);
         await Provider.of<ExerciseAndRoutineController>(context, listen: false)
@@ -650,9 +776,111 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     }
   }
 
+  String _generateDifferenceFeedback({
+    required bool improved,
+    required double difference,
+  }) {
+    if (difference <= 0) {
+      return "No change in volume this session. Consistency is key to reaching your goals!";
+    } else {
+      if (improved) {
+        return "Keep pushing to achieve lasting progress!";
+      } else {
+        return "Reassess and aim for steady improvements!";
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _loadData();
   }
+}
+
+class RecoveryResult {
+  final double recoveryPercentage;
+  final MuscleGroup muscleGroup;
+  final DateTime lastTrainingTime;
+  final String description;
+
+  RecoveryResult(
+      {required this.recoveryPercentage,
+      required this.muscleGroup,
+      required this.lastTrainingTime,
+      required this.description});
+
+  @override
+  String toString() {
+    return 'RecoveryResult{recoveryPercentage: $recoveryPercentage, muscleGroup: $muscleGroup, lastTrainingTime: $lastTrainingTime, desciption: $description}';
+  }
+}
+
+/// Calculates muscle recovery percentage based on time since last training.
+/// - 0% means no recovery (extremely fresh DOMS).
+/// - 100% means fully recovered.
+/// - If more than 7 days have passed and soreness remains, we flag overtraining.
+///
+/// You can adjust these time thresholds or percentages as needed.
+RecoveryResult _calculateMuscleRecovery({required DateTime lastTrainingTime, required MuscleGroup muscleGroup}) {
+  // Calculate hours since last training.
+  final hoursSinceTraining = DateTime.now().difference(lastTrainingTime).inHours;
+
+  // A simple piecewise approach to approximate "percent recovered."
+  // Tweak as needed for your app’s logic.
+  double recoveryPercentage;
+
+  String description;
+
+  if (hoursSinceTraining < 24) {
+    // Within first 24 hours after training — DOMS just starting
+    recoveryPercentage = -0.01;
+    description =
+        "Your $muscleGroup was just trained. Be sure to allow enough recovery time—DOMS can appear within the next day or two";
+  } else if (hoursSinceTraining < 48) {
+    // 24–48 hours: muscle soreness typically peaks
+    // We assume minimal recovery, e.g. up to ~30%
+    final ratio = (hoursSinceTraining - 24) / 24;
+    recoveryPercentage = 0.3 * ratio;
+    description = "Your $muscleGroup is only ${(recoveryPercentage * 100).floor()}% recovered. DOMS is likely high. "
+        "It's best to rest or do very light activity today.";
+  } else if (hoursSinceTraining < 72) {
+    // 48–72 hours: soreness usually starts to fade
+    // Move recovery from ~30% to ~70%
+    final ratio = (hoursSinceTraining - 48) / 24;
+    recoveryPercentage = 0.3 + 0.4 * ratio; // ~30% -> 70%
+    description =
+        "Your $muscleGroup is about ${(recoveryPercentage * 100).floor()}% recovered. Moderate soreness may still be present. "
+        "Light to moderate training can be considered, but monitor how you feel.";
+  } else if (hoursSinceTraining < 96) {
+    // 72–96 hours: typically nearing full recovery
+    // Move recovery from ~70% to ~90%
+    final ratio = (hoursSinceTraining - 72) / 24;
+    recoveryPercentage = 0.7 + 0.2 * ratio; // ~70% -> 90%
+    description = "Your $muscleGroup is ${(recoveryPercentage * 100).floor()}% recovered. Soreness should be minimal. "
+        "Feel free to train, but keep an eye on any lingering tightness.";
+  } else if (hoursSinceTraining < 168) {
+    // 4–7 days: often fully recovered or very close
+    // We treat this range as ~90% -> 100% recovery
+    final ratio = (hoursSinceTraining - 96) / 72;
+    recoveryPercentage = 0.9 + 0.1 * ratio; // ~90% -> 100%
+    description = "Your $muscleGroup is ${(recoveryPercentage * 100).floor()}% recovered. Soreness should be minimal. "
+        "Feel free to train, but keep an eye on any lingering tightness.";
+  } else {
+    // 7+ days of soreness likely indicates overtraining or incomplete recovery
+    // You could set this to 100% and rely on [isOvertrained] for the warning,
+    // or set it to 0% to indicate "inconsistent with normal recovery."
+    // Below, we assume 100% physically, but isOvertrained = true means possible problem.
+    recoveryPercentage = 1.0;
+    description = "Your $muscleGroup is fully recovered at 100%. You're good to train!";
+  }
+
+  // Clamp between 0.0 and 1.0 in case of minor rounding
+  recoveryPercentage = recoveryPercentage.clamp(0.0, 1.0);
+
+  return RecoveryResult(
+      recoveryPercentage: recoveryPercentage,
+      muscleGroup: muscleGroup,
+      lastTrainingTime: lastTrainingTime,
+      description: description);
 }

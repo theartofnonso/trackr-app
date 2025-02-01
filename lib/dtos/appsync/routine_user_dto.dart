@@ -19,7 +19,7 @@ class RoutineUserDto {
       required this.cognitoUserId,
       required this.email,
       required this.weight,
-      this.trainingGoal = TrainingGoal.strength,
+      this.trainingGoal = TrainingGoal.hypertrophy,
       required this.owner});
 
   factory RoutineUserDto.toDto(RoutineUser user) {

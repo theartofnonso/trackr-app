@@ -1,13 +1,6 @@
 {
   "version": 1,
   "paths": {
-    "/users/{username}": {
-      "name": "/users/{username}",
-      "lambdaFunction": "getUser",
-      "permissions": {
-        "setting": "open"
-      }
-    },
     "/routine-logs/{id}": {
       "name": "/routine-logs/{id}",
       "lambdaFunction": "getRoutineLog",

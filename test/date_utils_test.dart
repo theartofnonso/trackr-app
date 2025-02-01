@@ -38,8 +38,9 @@ void main() {
 
       // The start should be now - 365 days
       final expectedStart = now.subtract(const Duration(days: 365));
+      final then = DateTime(expectedStart.year, expectedStart.month, 1);
 
-      expect(result.start, expectedStart);
+      expect(result.start, then);
       expect(result.end, now);
     });
   });

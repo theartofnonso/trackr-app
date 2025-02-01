@@ -42,7 +42,7 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
 
     final routineLogsByDay = groupBy(routineLogs, (log) => log.createdAt.withoutTime().day);
 
-    final monthlyProgress = routineLogsByDay.length / 12;
+    final monthlyProgress = routineLogsByDay.length;
 
     final muscleScorePercentage = calculateMuscleScoreForLogs(routineLogs: routineLogs);
 
@@ -75,7 +75,7 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
                 child: _MonitorScore(
                     value: "${routineLogsByDay.length} ${pluralize(word: "day", count: routineLogsByDay.length)}",
                     title: "Log Streak",
-                    color: logStreakColor(value: monthlyProgress),
+                    color: logStreakColor(monthlyProgress),
                     crossAxisAlignment: CrossAxisAlignment.end,
                     forceDarkMode: isDarkMode),
               )),

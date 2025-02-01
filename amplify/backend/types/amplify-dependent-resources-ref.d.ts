@@ -29,13 +29,6 @@ export type AmplifyDependentResourcesAttributes = {
     }
   },
   "function": {
-    "deleteUserData": {
-      "Arn": "string",
-      "LambdaExecutionRole": "string",
-      "LambdaExecutionRoleArn": "string",
-      "Name": "string",
-      "Region": "string"
-    },
     "deleteUserExerciseData": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
@@ -65,13 +58,6 @@ export type AmplifyDependentResourcesAttributes = {
       "Region": "string"
     },
     "getRoutineTemplate": {
-      "Arn": "string",
-      "LambdaExecutionRole": "string",
-      "LambdaExecutionRoleArn": "string",
-      "Name": "string",
-      "Region": "string"
-    },
-    "getUser": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
       "LambdaExecutionRoleArn": "string",

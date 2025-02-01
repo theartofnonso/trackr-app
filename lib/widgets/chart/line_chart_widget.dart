@@ -21,8 +21,11 @@ class LineChartWidget extends StatelessWidget {
   final double leftReservedSize;
   final double rightReservedSize;
   final LineChartSide lineChartSide;
-  final bool hasRightAxisTitles;
+  final bool hasLeftAxisTitles;
+    final bool hasRightAxisTitles;
   final double? maxY;
+  final Color Function(double value)? leftAxisTitlesColor;
+  final Color Function(double value)? rightAxisTitlesColor;
 
   const LineChartWidget(
       {super.key,
@@ -35,6 +38,9 @@ class LineChartWidget extends StatelessWidget {
       this.lineChartSide = LineChartSide.left,
       this.colors = const [],
         this.hasRightAxisTitles = false,
+        this.hasLeftAxisTitles = true,
+        this.leftAxisTitlesColor,
+        this.rightAxisTitlesColor,
       this.leftReservedSize = 40, this.rightReservedSize = 40});
 
   @override
@@ -68,7 +74,7 @@ class LineChartWidget extends StatelessWidget {
                         ),
                         leftTitles: AxisTitles(
                           sideTitles: SideTitles(
-                            showTitles: true,
+                            showTitles: hasLeftAxisTitles,
                             getTitlesWidget: _leftTitleWidgets,
                             reservedSize: leftReservedSize,
                           ),
@@ -97,7 +103,7 @@ class LineChartWidget extends StatelessWidget {
                                 colors: [
                                   isDarkMode ? Colors.white : Colors.black,
                                   isDarkMode ? Colors.white : Colors.black
-                                ].map((color) => color.withValues(alpha: 0.02)).toList(),
+                                ].map((color) => color.withValues(alpha: isDarkMode ? 0.02 : 0.05)).toList(),
                               ),
                             ),
                             isCurved: true)
@@ -108,7 +114,9 @@ class LineChartWidget extends StatelessWidget {
   }
 
   Widget _leftTitleWidgets(double value, TitleMeta meta) {
-    final style = GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 9, color: Colors.grey.shade600);
+    final colorFunction = leftAxisTitlesColor;
+    final color = colorFunction != null ? colorFunction(value) : null;
+    final style = GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 9, color: color ?? Colors.grey.shade600);
 
     return SideTitleWidget(
       fitInside: SideTitleFitInsideData.fromTitleMeta(meta, enabled: false),
@@ -118,7 +126,9 @@ class LineChartWidget extends StatelessWidget {
   }
 
   Widget _rightTitleWidgets(double value, TitleMeta meta) {
-    final style = GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 9, color: Colors.grey.shade600);
+    final colorFunction = rightAxisTitlesColor;
+    final color = colorFunction != null ? colorFunction(value) : null;
+    final style = GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 9, color: color ?? Colors.grey.shade600);
 
     return SideTitleWidget(
       fitInside: SideTitleFitInsideData.fromTitleMeta(meta, enabled: false),

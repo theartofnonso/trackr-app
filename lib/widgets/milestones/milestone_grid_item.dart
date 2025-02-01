@@ -8,8 +8,9 @@ import '../../utils/navigation_utils.dart';
 
 class MilestoneGridItem extends StatelessWidget {
   final Milestone milestone;
+  final bool enabled;
 
-  const MilestoneGridItem({super.key, required this.milestone});
+  const MilestoneGridItem({super.key, required this.milestone, this.enabled = true});
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +19,9 @@ class MilestoneGridItem extends StatelessWidget {
     final isDarkMode = systemBrightness == Brightness.dark;
 
     return GestureDetector(
-      onTap: () {
+      onTap: enabled ? () {
         navigateWithSlideTransition(context: context, child: MilestoneScreen(milestone: milestone));
-      },
+      } : null,
       child: Container(
           padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, borderRadius: BorderRadius.circular(5)),

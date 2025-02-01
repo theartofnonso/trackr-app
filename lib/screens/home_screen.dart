@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
@@ -20,8 +21,12 @@ import 'package:tracker_app/shared_prefs.dart';
 import '../controllers/activity_log_controller.dart';
 import '../controllers/analytics_controller.dart';
 import '../controllers/routine_user_controller.dart';
+import '../dtos/appsync/routine_log_dto.dart';
+import '../dtos/viewmodels/routine_log_arguments.dart';
+import '../enums/routine_editor_type_enums.dart';
 import '../models/RoutineLog.dart';
 import '../models/RoutineTemplate.dart';
+import '../utils/navigation_utils.dart';
 import 'milestones/milestones_home_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -198,6 +203,21 @@ class _HomeScreenState extends State<HomeScreen> {
     AnalyticsController.loginAnalytics(isFirstLaunch: SharedPrefs().firstLaunch);
   }
 
+  void _loadCachedLog() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      RoutineLogDto? routineLog;
+      final cache = SharedPrefs().routineLog;
+      if (cache.isNotEmpty) {
+        final json = jsonDecode(cache);
+        routineLog = RoutineLogDto.fromCachedLog(json: json);
+      }
+      if (routineLog != null) {
+        final arguments = RoutineLogArguments(log: routineLog, editorMode: RoutineEditorMode.log, cached: true);
+        navigateToRoutineLogEditor(context: context, arguments: arguments);
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -209,6 +229,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (Platform.isIOS) {
       FlutterLocalNotificationsPlugin().cancel(999); // Cancel any pending workout notification
     }
+    _loadCachedLog();
   }
 
   @override

@@ -11,9 +11,10 @@ DateTimeRange yearToDateTimeRange({required DateTime datetime}) {
 DateTimeRange theLastYearDateTimeRange() {
   DateTime now = DateTime.now().withoutTime();
   DateTime oneYearAgo = now.subtract(const Duration(days: 365));
+  DateTime then = DateTime(oneYearAgo.year, oneYearAgo.month, 1);
 
   // Create a DateTimeRange from one year ago to now
-  return DateTimeRange(start: oneYearAgo, end: now);
+  return DateTimeRange(start: then, end: now);
 }
 
 /// Returns a list of DateTimeRange representing each week in the given year.

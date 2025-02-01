@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
+import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/week_days_extension.dart';
@@ -77,6 +78,11 @@ ExerciseLogDto? whereOtherExerciseInSuperSet(
 Map<String, List<ExerciseLogDto>> groupExerciseLogsByExerciseId({required List<RoutineLogDto> routineLogs}) {
   final exerciseLogs = routineLogs.expand((log) => log.exerciseLogs);
   return groupBy(exerciseLogs, (exerciseLog) => exerciseLog.exercise.id);
+}
+
+Map<MuscleGroup, List<ExerciseLogDto>> groupExerciseLogsByMuscleGroup({required List<RoutineLogDto> routineLogs}) {
+  final exerciseLogs = routineLogs.expand((log) => log.exerciseLogs);
+  return groupBy(exerciseLogs, (exerciseLog) => exerciseLog.exercise.primaryMuscleGroup);
 }
 
 String superSetId({required ExerciseLogDto firstExerciseLog, required ExerciseLogDto secondExerciseLog}) {

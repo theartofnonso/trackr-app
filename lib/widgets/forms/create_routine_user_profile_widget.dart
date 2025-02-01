@@ -33,65 +33,65 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    return SingleChildScrollView(
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      child: GestureDetector(
-        onTap: _dismissKeyboard,
-        child: Container(
-          padding: const EdgeInsets.only(top: 16, right: 16, bottom: 16, left: 16),
-          decoration: BoxDecoration(
-              color: isDarkMode ? sapphireDark80 : Colors.grey.shade100,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
+    return GestureDetector(
+      onTap: _dismissKeyboard,
+      child: Container(
+        padding: const EdgeInsets.only(top: 16, right: 16, bottom: 16, left: 16),
+        decoration: BoxDecoration(
+            color: isDarkMode ? sapphireDark80 : Colors.grey.shade100,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+            gradient: isDarkMode ? themeGradient(context: context) : null),
+        child: Column(spacing: 20, crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Center(
+            child: UserIconWidget(size: 60, iconSize: 22),
+          ),
+          Text(
+              "Create your user profile to personalize your training. Set your weight, choose your primary training goals, and we’ll tailor a plan just for you.",
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontSize: 15, fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: double.infinity,
+                child: TextField(
+                  controller: _usernameEditingController,
+                  maxLength: 15,
+                  cursorColor: isDarkMode ? Colors.white : Colors.black,
+                  decoration: InputDecoration(
+                    hintText: "Enter username",
+                  ),
+                  maxLines: 1,
+                  keyboardType: TextInputType.text,
+                  textCapitalization: TextCapitalization.none,
+                  style: GoogleFonts.ubuntu(
+                      fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white : Colors.black, fontSize: 14),
+                ),
               ),
-              gradient: isDarkMode ? themeGradient(context: context) : null),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Center(
-              child: UserIconWidget(size: 60, iconSize: 22),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _usernameEditingController,
-                    maxLength: 15,
-                    cursorColor: isDarkMode ? Colors.white : Colors.black,
-                    decoration: InputDecoration(
-                      hintText: "Enter username",
-                    ),
-                    maxLines: 1,
-                    keyboardType: TextInputType.text,
-                    textCapitalization: TextCapitalization.none,
-                    style: GoogleFonts.ubuntu(
-                        fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white : Colors.black, fontSize: 14),
-                  ),
+              const SizedBox(
+                height: 6,
+              ),
+              SizedBox(
+                height: 45,
+                width: double.infinity,
+                child: OpacityButtonWidget(
+                  onPressed: _createUser,
+                  label: "Create",
+                  loading: _isLoading,
+                  buttonColor: vibrantGreen,
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 2),
                 ),
-                const SizedBox(
-                  width: 6,
-                ),
-                SizedBox(
-                  height: 45,
-                  child: OpacityButtonWidget(
-                    onPressed: _createUser,
-                    label: "Create",
-                    loading: _isLoading,
-                    buttonColor: vibrantGreen,
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 2),
-                  ),
-                ),
-              ],
-            ),
-            if (_hasRegexError)
-              Text("Username must not contain symbols or spaces.",
-                  style: GoogleFonts.ubuntu(fontSize: 10, fontWeight: FontWeight.w400, color: Colors.redAccent),
-                  textAlign: TextAlign.start),
-          ]),
-        ),
+              ),
+            ],
+          ),
+          if (_hasRegexError)
+            Text("Username must not contain symbols or spaces.",
+                style: GoogleFonts.ubuntu(fontSize: 10, fontWeight: FontWeight.w400, color: Colors.redAccent),
+                textAlign: TextAlign.start),
+        ]),
       ),
     );
   }
