@@ -414,8 +414,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
                 Navigator.of(context).pop();
                 final workoutVideoUrl =
                     await navigateWithSlideTransition(context: context, child: WorkoutVideoGeneratorScreen());
-                if (mounted) {
-                  logEmptyRoutine(context: context, workoutVideoUrl: workoutVideoUrl);
+                if (workoutVideoUrl != null) {
+                  if (mounted) {
+                    logEmptyRoutine(context: context, workoutVideoUrl: workoutVideoUrl);
+                  }
                 }
               },
             ),
