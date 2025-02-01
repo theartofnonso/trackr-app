@@ -9,11 +9,6 @@ extension DateTimeExtension on DateTime {
 
   /// Get datetime format
   String abbreviatedMonthAndYear() {
-    return DateFormat("LLL, yy", "en").format(this);
-  }
-
-  /// Get datetime format
-  String abbreviatedMonthWithYear() {
     return DateFormat("LLL yyyy", "en").format(this);
   }
 
