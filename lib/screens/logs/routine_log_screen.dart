@@ -523,12 +523,14 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
   }
 
   void _showLoadingScreen() {
+    if (!mounted) return;
     setState(() {
       _loading = true;
     });
   }
 
   void _hideLoadingScreen() {
+    if (!mounted) return;
     setState(() {
       _loading = false;
     });
