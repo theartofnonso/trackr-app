@@ -33,7 +33,6 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(dateTime);
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark || forceDarkMode;
 
