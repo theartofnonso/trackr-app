@@ -102,8 +102,8 @@ class MuscleGroupSplitChart extends StatelessWidget {
       const SizedBox(height: 10),
       Text(description,
           style: isDarkMode
-              ? Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white70)
-              : Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.black)),
+              ? Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white70)
+              : Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black)),
       const SizedBox(height: 10),
       MuscleGroupFamilyFrequencyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
     ]);
