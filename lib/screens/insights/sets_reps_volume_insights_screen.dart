@@ -99,7 +99,8 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       return muscleGroups.contains(_selectedMuscleGroup);
     }).toList();
 
-    final weeksInYear = generateWeeksInRange(range: dateRange);
+    final weeksInYear = generateWeeksInRange(range: dateRange).reversed.take(13).toList().reversed;
+
     List<num> trends = [];
     List<String> weeks = [];
     List<String> months = [];
