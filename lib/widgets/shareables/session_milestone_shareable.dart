@@ -64,7 +64,7 @@ class SessionMilestoneShareable extends StatelessWidget {
                     const SizedBox(height: 20),
                     Text(label,
                         style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900)),
-                    Text("Session",
+                    Text("Session".toUpperCase(),
                         style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
                   ]),
               Align(
