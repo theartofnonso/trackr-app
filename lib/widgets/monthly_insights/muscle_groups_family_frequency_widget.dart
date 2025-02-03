@@ -46,7 +46,7 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           MuscleGroupSplitChart(
-              title: "Muscle Groups Frequency",
+              title: "Muscle Groups Coverage",
               description:
                   "Train a variety of muscle groups to avoid muscle imbalances and prevent injury. On average each muscle group should be trained at least 2 times a week.",
               muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
