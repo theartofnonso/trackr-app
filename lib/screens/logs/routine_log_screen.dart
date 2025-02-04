@@ -143,7 +143,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     final differenceSummary = _generateDifferenceSummary(difference: difference, improved: improved);
 
-    final differenceFeedback = _generateDifferenceFeedback(difference: difference, improved: improved);
+    final differenceFeedback = allLoggedVolumesForTemplate.length > 1 ? _generateDifferenceFeedback(difference: difference, improved: improved) : "You've logged your first session. Great job! Keep logging more data to see trends over time.";
 
     return Scaffold(
         appBar: AppBar(

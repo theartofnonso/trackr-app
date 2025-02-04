@@ -144,7 +144,9 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
     final differenceSummary = _generateDifferenceSummary(difference: difference, improved: improved);
 
-    final differenceFeedback = _generateDifferenceFeedback(difference: difference, improved: improved);
+    final differenceFeedback = allLogsForTemplate.length > 1
+        ? _generateDifferenceFeedback(difference: difference, improved: improved)
+        : "You've logged your first session. Great job! Keep logging more data to see trends over time.";
 
     final listOfMuscleAndRecovery = template.exerciseTemplates
         .map((exerciseTemplate) => exerciseTemplate.exercise.primaryMuscleGroup)
