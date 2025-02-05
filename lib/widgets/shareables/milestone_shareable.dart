@@ -65,7 +65,7 @@ class MilestoneShareable extends StatelessWidget {
                     const SizedBox(height: 20),
                     Text(milestone.name,
                         style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900)),
-                    Text(milestone.caption,
+                    Text(milestone.caption.toUpperCase(),
                         style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w600)),
                   ]),
               Align(
