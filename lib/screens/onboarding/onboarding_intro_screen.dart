@@ -99,7 +99,7 @@ class CalenderOnboardingScreen extends StatelessWidget {
     return Column(
       children: [
         LabelDivider(
-          label: "LOG Calender".toUpperCase(),
+          label: "Log Calendar".toUpperCase(),
           labelColor: isDarkMode ? Colors.white70 : Colors.black,
           dividerColor: sapphireLighter,
           fontSize: 14,
