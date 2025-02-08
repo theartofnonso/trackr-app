@@ -165,10 +165,11 @@ class LogStreakChart extends StatelessWidget {
                 "You're training $variation more ${pluralize(word: "day", count: daysTrained.length)} than your average!"
                 " Keep it going—you’re building solid habits!");
       case Trend.down:
+        final diffAbs = difference.toInt().abs();
         return TrendSummary(
             trend: Trend.down,
             summary:
-                "You're training ${difference.toInt().abs()} ${pluralize(word: "day", count: daysTrained.length)} lesser than your average."
+                "You're training $diffAbs ${pluralize(word: "day", count: diffAbs)} lesser than your average."
                 " Consider your schedule, rest, or motivation to stay on track.");
       case Trend.stable:
         return TrendSummary(
