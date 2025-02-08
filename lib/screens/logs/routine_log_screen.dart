@@ -255,9 +255,9 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                                   "The number of rounds you performed for each exercise. A “set” consists of a group of repetitions (reps)."),
                         ),
                         _StatisticWidget(
-                          title: "${log.volume}",
+                          title: volumeInKOrM(log.volume),
                           subtitle: "Volume",
-                          icon: FontAwesomeIcons.hashtag,
+                          icon: FontAwesomeIcons.weightHanging,
                           information: _StatisticsInformation(
                               title: "Volume",
                               description:
@@ -330,12 +330,10 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                             spacing: 10,
                             children: [
                               Wrap(
-                                crossAxisAlignment: WrapCrossAlignment.start,
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                spacing: 10,
                                 children: [
-                                  getTrendIcon(trend: trendSummary.trend),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
+                                  trendSummary.trend == Trend.none ? const SizedBox.shrink() : getTrendIcon(trend: trendSummary.trend),
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
@@ -383,8 +381,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                       ],
                     ),
                   )
-                  //
-                  // const EdgeInsets.only(right: 10, bottom: 10, left: 10)
                 ],
               ),
             ),

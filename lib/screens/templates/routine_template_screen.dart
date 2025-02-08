@@ -462,11 +462,9 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                                 children: [
                                   Wrap(
                                     crossAxisAlignment: WrapCrossAlignment.center,
+                                    spacing: 10,
                                     children: [
-                                      getTrendIcon(trend: trendSummary.trend),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
+                                      trendSummary.trend == Trend.none ? const SizedBox.shrink() : getTrendIcon(trend: trendSummary.trend),
                                       Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         spacing: 10,
