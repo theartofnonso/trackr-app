@@ -153,16 +153,17 @@ class LogStreakChart extends StatelessWidget {
     // 5. Generate a friendly, concise message based on the trend
     final variation = "${percentageChange.abs().toStringAsFixed(1)}%";
 
+    final diffAbs = difference.toInt().abs();
+
     switch (trend) {
       case Trend.up:
         return TrendSummary(
             trend: Trend.up,
             average: averageOfPrevious,
             summary:
-                "You're training $variation more ${pluralize(word: "day", count: daysTrained.length)} than your average!"
+                "You're training $diffAbs more ${pluralize(word: "day", count: daysTrained.length)} than your average!"
                 " Keep it going—you’re building solid habits!");
       case Trend.down:
-        final diffAbs = difference.toInt().abs();
         return TrendSummary(
             trend: Trend.down,
             average: averageOfPrevious,
@@ -174,7 +175,7 @@ class LogStreakChart extends StatelessWidget {
             trend: Trend.stable,
             average: averageOfPrevious,
             summary:
-                "Your training ${pluralize(word: "day", count: daysTrained.length)} only varied by about $variation compared to your average."
+                "Your training days only varied by about $diffAbs compared to your average."
                 " Keep refining your routine for ongoing consistency!");
       case Trend.none:
         return TrendSummary(trend: Trend.none, summary: "Unable to identify trends");
