@@ -1,4 +1,11 @@
-enum Trend { up, down, stable }
+enum Trend { up, down, stable, none }
+
+class TrendSummary {
+  final Trend trend;
+  final String summary;
+
+  TrendSummary({required this.trend, required this.summary});
+}
 
 Trend detectTrend(List<num> values, {double trendThreshold = 5.0}) {
   if (values.length == 2) {

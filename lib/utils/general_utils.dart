@@ -297,6 +297,11 @@ Widget getTrendIcon({required Trend trend}) {
       color: vibrantBlue,
       size: 20,
     ),
+    Trend.none => FaIcon(
+      FontAwesomeIcons.xmark,
+      color: Colors.red,
+      size: 20,
+    ),
   };
 }
 
