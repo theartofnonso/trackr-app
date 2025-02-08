@@ -124,8 +124,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     final nonZeroValues = trends.where((value) => value > 0).toList();
 
-    final avgValue = nonZeroValues.isNotEmpty ? nonZeroValues.average.round() : 0;
-
     final chartPoints = trends.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
 
     final totalOptimal = _weightWhere(values: nonZeroValues, condition: (value) => value >= _optimalSetsOrRepsValue());
@@ -229,14 +227,16 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                       crossAxisAlignment: WrapCrossAlignment.center,
                       spacing: 10,
                       children: [
-                        trendSummary.trend == Trend.none ? const SizedBox.shrink() : getTrendIcon(trend: trendSummary.trend),
+                        trendSummary.trend == Trend.none
+                            ? const SizedBox.shrink()
+                            : getTrendIcon(trend: trendSummary.trend),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             RichText(
                               text: TextSpan(
                                 text:
-                                    "${_metric == TrainingMetric.volume ? volumeInKOrM(avgValue.toDouble(), showLessThan1k: false) : avgValue}",
+                                    "${_metric == TrainingMetric.volume ? volumeInKOrM(trendSummary.average, showLessThan1k: false) : trendSummary.average.round()}",
                                 style: Theme.of(context).textTheme.headlineSmall,
                                 children: [
                                   TextSpan(
@@ -526,11 +526,11 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     };
   }
 
-  String _trainingMetric() {
+  String _trainingMetric({required int length}) {
     return switch (_metric) {
-      TrainingMetric.sets => "sets",
-      TrainingMetric.reps => "reps",
-      TrainingMetric.volume => "volume",
+      TrainingMetric.sets => pluralize(word: "set", count: length),
+      TrainingMetric.reps => pluralize(word: "rep", count: length),
+      TrainingMetric.volume => weightLabel().toUpperCase()
     };
   }
 
@@ -558,7 +558,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     if (values.length == 1) {
       return TrendSummary(
           trend: Trend.none,
-          summary: "You've logged your first week's ${_trainingMetric()} (${values.first})."
+          summary: "You've logged your first week's training."
               " Great job! Keep logging more data to see trends over time.");
     }
 
@@ -575,7 +575,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     final averageOfPrevious = previousVolumes.reduce((a, b) => a + b) / previousVolumes.length;
 
     // 3. Compare last week's volume to the average of previous volumes
-    final difference = lastWeekVolume - averageOfPrevious;
+    final difference = lastWeekVolume - averageOfPrevious.round();
 
     // If the average is zero, treat it as a special case for percentage change
     final bool averageIsZero = averageOfPrevious == 0;
@@ -599,17 +599,23 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       case Trend.up:
         return TrendSummary(
             trend: Trend.up,
-            summary: "This weeks's ${_trainingMetric()} is $variation higher than your average. "
+            average: averageOfPrevious,
+            summary:
+                "This week's ${_selectedMuscleGroup.name.toUpperCase()} training is $difference ${_trainingMetric(length: difference.toInt())} higher than your average. "
                 "Awesome job building momentum!");
       case Trend.down:
         return TrendSummary(
             trend: Trend.down,
-            summary: "This week's ${_trainingMetric()} is $variation lower than your average. "
+            average: averageOfPrevious,
+            summary:
+                "This week's ${_selectedMuscleGroup.name.toUpperCase()} training is $difference ${_trainingMetric(length: difference.toInt())} lower than your average. "
                 "Consider extra rest, checking your technique, or planning a deload.");
       case Trend.stable:
         return TrendSummary(
             trend: Trend.stable,
-            summary: "Your ${_trainingMetric()} changed by about $variation compared to your average. "
+            average: averageOfPrevious,
+            summary:
+                "Your ${_selectedMuscleGroup.name.toUpperCase()} training has changed by about $difference ${_trainingMetric(length: difference.toInt())} compared to your average. "
                 "A great chance to refine your form and maintain consistency.");
       case Trend.none:
         return TrendSummary(trend: Trend.none, summary: "Unable to identify trends");

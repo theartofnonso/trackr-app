@@ -52,8 +52,6 @@ class CaloriesChart extends StatelessWidget {
       months.add(startOfWeek.abbreviatedMonth());
     }
 
-    final averageCalories = calories.isNotEmpty ? calories.average.round() : 0;
-
     final chartPoints =
         calories.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
 
@@ -74,7 +72,7 @@ class CaloriesChart extends StatelessWidget {
                   children: [
                     RichText(
                       text: TextSpan(
-                        text: "$averageCalories",
+                        text: "${trendSummary.average.toInt()}",
                         style: Theme.of(context).textTheme.headlineSmall,
                         children: [
                           TextSpan(
@@ -173,16 +171,19 @@ class CaloriesChart extends StatelessWidget {
       case Trend.up:
         return TrendSummary(
             trend: Trend.up,
+            average: averageOfPrevious,
             summary: "This week's calorie burn is $variation higher than your average. "
                 "Fantastic effort—you're on the rise!");
       case Trend.down:
         return TrendSummary(
             trend: Trend.down,
+            average: averageOfPrevious,
             summary: "This week's calorie burn is $variation lower than your average. "
                 "Consider adjusting your routine or intensity if this wasn't intentional.");
       case Trend.stable:
         return TrendSummary(
             trend: Trend.stable,
+            average: averageOfPrevious,
             summary: "Your calorie burn changed by about $variation compared to your average. "
                 "You're maintaining consistency—great job! Keep refining your plan for steady progress.");
       case Trend.none:

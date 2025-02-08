@@ -39,8 +39,6 @@ class LogStreakChart extends StatelessWidget {
       months.add(startOfWeek.abbreviatedMonth());
     }
 
-    final averageDays = days.isNotEmpty ? days.average.round() : 0;
-
     final chartPoints = days.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
 
     final trendSummary = _analyzeWeeklyTrends(daysTrained: days);
@@ -60,7 +58,7 @@ class LogStreakChart extends StatelessWidget {
                   children: [
                     RichText(
                       text: TextSpan(
-                        text: "$averageDays",
+                        text: "${trendSummary.average.toInt()}",
                         style: Theme.of(context).textTheme.headlineSmall,
                         children: [
                           TextSpan(
@@ -159,6 +157,7 @@ class LogStreakChart extends StatelessWidget {
       case Trend.up:
         return TrendSummary(
             trend: Trend.up,
+            average: averageOfPrevious,
             summary:
                 "You're training $variation more ${pluralize(word: "day", count: daysTrained.length)} than your average!"
                 " Keep it going—you’re building solid habits!");
@@ -166,12 +165,14 @@ class LogStreakChart extends StatelessWidget {
         final diffAbs = difference.toInt().abs();
         return TrendSummary(
             trend: Trend.down,
+            average: averageOfPrevious,
             summary:
                 "You're training $diffAbs ${pluralize(word: "day", count: diffAbs)} lesser than your average."
                 " Consider your schedule, rest, or motivation to stay on track.");
       case Trend.stable:
         return TrendSummary(
             trend: Trend.stable,
+            average: averageOfPrevious,
             summary:
                 "Your training ${pluralize(word: "day", count: daysTrained.length)} only varied by about $variation compared to your average."
                 " Keep refining your routine for ongoing consistency!");

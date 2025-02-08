@@ -57,8 +57,6 @@ class VolumeChart extends StatelessWidget {
       months.add(startOfWeek.abbreviatedMonth());
     }
 
-    final avgVolume = volumes.isNotEmpty ? volumes.average : 0.0;
-
     final chartPoints =
         volumes.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
 
@@ -80,7 +78,7 @@ class VolumeChart extends StatelessWidget {
                   children: [
                     RichText(
                       text: TextSpan(
-                        text: volumeInKOrM(avgVolume),
+                        text: volumeInKOrM(trendSummary.average),
                         style: Theme.of(context).textTheme.headlineSmall,
                         children: [
                           TextSpan(
@@ -171,13 +169,13 @@ class VolumeChart extends StatelessWidget {
 
     switch (trend) {
       case Trend.up:
-        return TrendSummary(trend: Trend.up, summary: "This week's volume is $variation higher than your average. "
+        return TrendSummary(trend: Trend.up, average: averageOfPrevious, summary: "This week's volume is $variation higher than your average. "
             "Awesome job building momentum!");
       case Trend.down:
-        return TrendSummary(trend: Trend.down, summary: "This week's volume is $variation lower than your average. "
+        return TrendSummary(trend: Trend.down, average: averageOfPrevious, summary: "This week's volume is $variation lower than your average. "
             "Consider extra rest, checking your technique, or planning a deload.");
       case Trend.stable:
-        return TrendSummary(trend: Trend.stable, summary: "Your volume changed by about $variation compared to your average. "
+        return TrendSummary(trend: Trend.stable, average: averageOfPrevious, summary: "Your volume changed by about $variation compared to your average. "
             "A great chance to refine your form and maintain consistency.");
       case Trend.none:
         return TrendSummary(trend: Trend.none, summary: "Unable to identify trends");
