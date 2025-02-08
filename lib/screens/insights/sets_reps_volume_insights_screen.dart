@@ -32,9 +32,10 @@ import '../../dtos/set_dtos/weight_and_reps_dto.dart';
 import '../../enums/chart_unit_enum.dart';
 import '../../enums/muscle_group_enums.dart';
 import '../../enums/posthog_analytics_event.dart';
-import '../../enums/sets_reps_volume_enum.dart';
+import '../../enums/training_metric_enum.dart';
 import '../../openAI/open_ai.dart';
 import '../../strings/ai_prompts.dart';
+import '../../utils/data_trend_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../utils/one_rep_max_calculator.dart';
@@ -70,7 +71,7 @@ class SetsAndRepsVolumeInsightsScreen extends StatefulWidget {
 }
 
 class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsightsScreen> {
-  SetRepsVolumeReps _metric = SetRepsVolumeReps.reps;
+  TrainingMetric _metric = TrainingMetric.reps;
 
   MuscleGroup _selectedMuscleGroup = MuscleGroup.abs;
 
@@ -95,8 +96,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
         .map((log) => loggedExercises(exerciseLogs: log.exerciseLogs))
         .expand((exerciseLogs) => exerciseLogs)
         .where((exerciseLog) {
-      final muscleGroups = [exerciseLog.exercise.primaryMuscleGroup, ...exerciseLog.exercise.secondaryMuscleGroups];
-      return muscleGroups.contains(_selectedMuscleGroup);
+      return _selectedMuscleGroup == exerciseLog.exercise.primaryMuscleGroup;
     }).toList();
 
     final weeksInYear = generateWeeksInRange(range: dateRange);
@@ -143,9 +143,9 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     final barColors = trends
         .map((value) => switch (_metric) {
-              SetRepsVolumeReps.sets => setsTrendColor(sets: value.toInt()),
-              SetRepsVolumeReps.reps => repsTrendColor(reps: value.toInt()),
-              SetRepsVolumeReps.volume => isDarkMode ? Colors.white : Colors.grey.shade400,
+              TrainingMetric.sets => setsTrendColor(sets: value.toInt()),
+              TrainingMetric.reps => repsTrendColor(reps: value.toInt()),
+              TrainingMetric.volume => isDarkMode ? Colors.white : Colors.grey.shade400,
             })
         .toList();
 
@@ -163,16 +163,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     final muscleGroupScrollViewHalf = MuscleGroup.values.length ~/ 2;
 
-    final currentAndPreviousWeekTrend = _calculateCurrentAndPreviousValues(trends: trendAndDates);
-
-    final previousWeekTrend = currentAndPreviousWeekTrend.$1;
-    final currentMonthTrend = currentAndPreviousWeekTrend.$2;
-
-    final improved = currentMonthTrend > previousWeekTrend;
-
-    final difference = improved ? currentMonthTrend - previousWeekTrend : previousWeekTrend - currentMonthTrend;
-
-    final differenceSummary = _generateDifferenceSummary(difference: difference, improved: improved);
+    final trendSummary = _analyzeWeeklyTrends(values: trends);
 
     final leanMoreChildren = [
       InsightsGridItemWidget(
@@ -234,76 +225,69 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                       onTap: () => _generateReport(exerciseLogs: exerciseLogs),
                     ),
                     const SizedBox(height: 20),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
+                        getTrendIcon(trend: trendSummary.trend),
+                        const SizedBox(
+                          width: 10,
+                        ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             RichText(
                               text: TextSpan(
                                 text:
-                                    "${_metric == SetRepsVolumeReps.volume ? volumeInKOrM(avgValue.toDouble(), showLessThan1k: false) : avgValue}",
-                                style: Theme.of(context).textTheme.headlineMedium,
+                                    "${_metric == TrainingMetric.volume ? volumeInKOrM(avgValue.toDouble(), showLessThan1k: false) : avgValue}",
+                                style: Theme.of(context).textTheme.headlineSmall,
                                 children: [
                                   TextSpan(
                                     text: " ",
                                   ),
                                   TextSpan(
-                                      text: _metricLabel().toUpperCase(),
-                                      style: Theme.of(context).textTheme.bodyMedium),
+                                    text: _metricLabel().toUpperCase(),
+                                    style: Theme.of(context).textTheme.bodyMedium,
+                                  ),
                                 ],
                               ),
                             ),
                             Text(
-                              "WEEKLY AVERAGE",
+                              "Weekly AVERAGE".toUpperCase(),
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
-                            Wrap(
-                              crossAxisAlignment: WrapCrossAlignment.center,
-                              children: [
-                                FaIcon(
-                                  getImprovementIcon(improved: improved, difference: difference),
-                                  color: getImprovementColor(improved: improved, difference: difference),
-                                  size: 12,
-                                ),
-                                const SizedBox(width: 6),
-                                OpacityButtonWidget(
-                                  label: differenceSummary,
-                                  buttonColor: getImprovementColor(improved: improved, difference: difference),
-                                )
-                              ],
-                            )
                           ],
-                        ),
-                        const SizedBox(height: 10),
-                        CupertinoSlidingSegmentedControl<SetRepsVolumeReps>(
-                          backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade200,
-                          thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
-                          groupValue: _metric,
-                          children: {
-                            SetRepsVolumeReps.reps: SizedBox(
-                                width: 40,
-                                child:
-                                    Text(SetRepsVolumeReps.reps.name, style: textStyle, textAlign: TextAlign.center)),
-                            SetRepsVolumeReps.sets: SizedBox(
-                                width: 40,
-                                child:
-                                    Text(SetRepsVolumeReps.sets.name, style: textStyle, textAlign: TextAlign.center)),
-                            SetRepsVolumeReps.volume: SizedBox(
-                                width: 40,
-                                child:
-                                    Text(SetRepsVolumeReps.volume.name, style: textStyle, textAlign: TextAlign.center)),
-                          },
-                          onValueChanged: (SetRepsVolumeReps? value) {
-                            if (value != null) {
-                              setState(() {
-                                _metric = value;
-                              });
-                            }
-                          },
-                        ),
+                        )
                       ],
+                    ),
+                    const SizedBox(height: 10),
+                    Text(trendSummary.summary,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                    const SizedBox(height: 10),
+                    CupertinoSlidingSegmentedControl<TrainingMetric>(
+                      backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade200,
+                      thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
+                      groupValue: _metric,
+                      children: {
+                        TrainingMetric.reps: SizedBox(
+                            width: 40,
+                            child: Text(TrainingMetric.reps.name, style: textStyle, textAlign: TextAlign.center)),
+                        TrainingMetric.sets: SizedBox(
+                            width: 40,
+                            child: Text(TrainingMetric.sets.name, style: textStyle, textAlign: TextAlign.center)),
+                        TrainingMetric.volume: SizedBox(
+                            width: 40,
+                            child: Text(TrainingMetric.volume.name, style: textStyle, textAlign: TextAlign.center)),
+                      },
+                      onValueChanged: (TrainingMetric? value) {
+                        if (value != null) {
+                          setState(() {
+                            _metric = value;
+                          });
+                        }
+                      },
                     ),
                     const SizedBox(height: 60),
                     SizedBox(
@@ -489,8 +473,8 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
   num _calculateMetric({required List<SetDto> sets}) {
     return switch (_metric) {
-      SetRepsVolumeReps.sets => sets.length,
-      SetRepsVolumeReps.reps => sets.map((set) {
+      TrainingMetric.sets => sets.length,
+      TrainingMetric.reps => sets.map((set) {
           if (set is RepsSetDto) {
             return set.reps;
           } else if (set is WeightAndRepsSetDto) {
@@ -498,7 +482,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
           }
           return 0;
         }).sum,
-      SetRepsVolumeReps.volume => sets.map((set) {
+      TrainingMetric.volume => sets.map((set) {
           if (set is WeightAndRepsSetDto) {
             return set.volume();
           }
@@ -509,39 +493,46 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
   double _reservedSize() {
     return switch (_metric) {
-      SetRepsVolumeReps.sets => 20,
-      SetRepsVolumeReps.reps => 25,
-      SetRepsVolumeReps.volume => 40,
+      TrainingMetric.sets => 20,
+      TrainingMetric.reps => 25,
+      TrainingMetric.volume => 40,
     };
   }
 
   bool _isRepsOrSetsMetric() {
-    return _metric == SetRepsVolumeReps.sets || _metric == SetRepsVolumeReps.reps;
+    return _metric == TrainingMetric.sets || _metric == TrainingMetric.reps;
   }
 
   int _sufficientSetsOrRepsValue() {
-    return _metric == SetRepsVolumeReps.sets ? averageMedianWeeklySets : averageMedianWeeklyReps;
+    return _metric == TrainingMetric.sets ? averageMedianWeeklySets : averageMedianWeeklyReps;
   }
 
   int _optimalSetsOrRepsValue() {
-    return _metric == SetRepsVolumeReps.sets ? averageMaximumWeeklySets : averageMaximumWeeklyReps;
+    return _metric == TrainingMetric.sets ? averageMaximumWeeklySets : averageMaximumWeeklyReps;
   }
 
   ChartUnit _chartUnit() {
     return switch (_metric) {
-      SetRepsVolumeReps.sets => ChartUnit.number,
-      SetRepsVolumeReps.reps => ChartUnit.number,
-      SetRepsVolumeReps.volume => ChartUnit.weight,
+      TrainingMetric.sets => ChartUnit.number,
+      TrainingMetric.reps => ChartUnit.number,
+      TrainingMetric.volume => ChartUnit.weight,
     };
   }
 
   String _metricLabel() {
     final unit = _chartUnit();
     return switch (unit) {
-      ChartUnit.number => _metric.name,
+      ChartUnit.number || ChartUnit.numberBig => _metric.name,
       ChartUnit.weight => weightLabel(),
       ChartUnit.duration => "",
-      ChartUnit.numberBig => _metric.name,
+    };
+  }
+
+  String _trainingMetric() {
+    return switch (_metric) {
+      TrainingMetric.sets => "sets",
+      TrainingMetric.reps => "reps",
+      TrainingMetric.volume => "volume",
     };
   }
 
@@ -558,45 +549,72 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     _selectedMuscleGroup = defaultMuscleGroup ?? MuscleGroup.values.first;
   }
 
-  (num, num) _calculateCurrentAndPreviousValues({required List<_TrendAndDate> trends}) {
-    if (trends.isEmpty) {
-      // No values => no comparison
-      return (0, 0);
+  TrendSummary _analyzeWeeklyTrends({required List<num> values}) {
+    // 1. Handle edge cases
+    if (values.isEmpty) {
+      return TrendSummary(
+          trend: Trend.none,
+          summary: "No training data available yet. Log some sessions to start tracking your progress!");
     }
 
-    // 2. Identify the most recent value
-    final lastValue = trends.last;
-    final lastValueDate = trends.last.dateTime;
-
-    final previousValues = trends.where((trend) => trend.dateTime.isBefore(lastValueDate));
-
-    if (previousValues.isEmpty) {
-      // No earlier values => can't compare
-      return (0, 0);
+    if (values.length == 1) {
+      return TrendSummary(
+          trend: Trend.none,
+          summary: "You've logged your first week's ${_trainingMetric()} (${values.first})."
+              " Great job! Keep logging more data to see trends over time.");
     }
 
-    final previousValue = previousValues.last.value;
+    // 2. Identify the last week's volume and the average of all previous weeks
+    final lastWeekVolume = values.last;
 
-    return (previousValue, lastValue.value);
-  }
+    if (lastWeekVolume == 0) {
+      return TrendSummary(
+          trend: Trend.none,
+          summary: "No training data available for this week. Log some workouts to continue tracking your progress!");
+    }
 
-  String _generateDifferenceSummary({required bool improved, required num difference}) {
-    if (difference <= 0) {
-      return "0 change in past week";
+    final previousVolumes = values.sublist(0, values.length - 1);
+    final averageOfPrevious = previousVolumes.reduce((a, b) => a + b) / previousVolumes.length;
+
+    // 3. Compare last week's volume to the average of previous volumes
+    final difference = lastWeekVolume - averageOfPrevious;
+
+    // If the average is zero, treat it as a special case for percentage change
+    final bool averageIsZero = averageOfPrevious == 0;
+    final double percentageChange = averageIsZero ? 100.0 : (difference / averageOfPrevious) * 100;
+
+    // 4. Decide the trend
+    const threshold = 5; // Adjust this threshold for "stable" as needed
+    late final Trend trend;
+    if (percentageChange > threshold) {
+      trend = Trend.up;
+    } else if (percentageChange < -threshold) {
+      trend = Trend.down;
     } else {
-      if (improved) {
-        return switch (_metric) {
-          SetRepsVolumeReps.sets => "$difference sets up this week",
-          SetRepsVolumeReps.reps => "$difference reps up this week",
-          SetRepsVolumeReps.volume => "${volumeInKOrM(difference.toDouble())} ${weightLabel()} up this week"
-        };
-      } else {
-        return switch (_metric) {
-          SetRepsVolumeReps.sets => "$difference sets down this week",
-          SetRepsVolumeReps.reps => "$difference reps down this week",
-          SetRepsVolumeReps.volume => "${volumeInKOrM(difference.toDouble())} ${weightLabel()} down this week"
-        };
-      }
+      trend = Trend.stable;
+    }
+
+    // 5. Generate a friendly, concise message based on the trend
+    final variation = "${percentageChange.abs().toStringAsFixed(1)}%";
+
+    switch (trend) {
+      case Trend.up:
+        return TrendSummary(
+            trend: Trend.up,
+            summary: "This weeks's ${_trainingMetric()} is $variation higher than your average. "
+                "Awesome job building momentum!");
+      case Trend.down:
+        return TrendSummary(
+            trend: Trend.down,
+            summary: "This week's ${_trainingMetric()} is $variation lower than your average. "
+                "Consider extra rest, checking your technique, or planning a deload.");
+      case Trend.stable:
+        return TrendSummary(
+            trend: Trend.stable,
+            summary: "Your ${_trainingMetric()} changed by about $variation compared to your average. "
+                "A great chance to refine your form and maintain consistency.");
+      case Trend.none:
+        return TrendSummary(trend: Trend.none, summary: "Unable to identify trends");
     }
   }
 }

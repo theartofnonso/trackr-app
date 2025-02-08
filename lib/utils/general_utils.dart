@@ -269,38 +269,27 @@ final Map<int, Color> rpeIntensityToColor = {
   10: Color(0xFFFF0000), // Red - absolute limit
 };
 
-IconData getImprovementIcon({required bool improved, required num difference}) {
-  IconData icon = FontAwesomeIcons.arrowsUpDown;
-
-  if (improved && difference > 0) {
-    icon = FontAwesomeIcons.arrowTrendUp;
-  } else if (!improved && difference > 0) {
-    icon = FontAwesomeIcons.arrowTrendDown;
-  }
-  return icon;
-}
-
-Widget getTrendIcon({required Trend trend}) {
+Widget getTrendIcon({required Trend trend, double? size}) {
   return switch(trend) {
     Trend.up => FaIcon(
       FontAwesomeIcons.arrowTrendUp,
       color: vibrantGreen,
-      size: 20,
+      size: size ?? 20,
     ),
     Trend.down => FaIcon(
       FontAwesomeIcons.arrowTrendDown,
       color: Colors.deepOrange,
-      size: 20,
+      size: size ?? 20,
     ),
     Trend.stable => FaIcon(
       FontAwesomeIcons.arrowsUpDown,
       color: vibrantBlue,
-      size: 20,
+      size: size ?? 20,
     ),
     Trend.none => FaIcon(
       FontAwesomeIcons.xmark,
       color: Colors.red,
-      size: 20,
+      size: size ?? 20,
     ),
   };
 }
