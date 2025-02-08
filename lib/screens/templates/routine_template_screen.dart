@@ -418,6 +418,81 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            spacing: 10,
+                            children: [
+                              Wrap(
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                spacing: 10,
+                                children: [
+                                  trendSummary.trend == Trend.none
+                                      ? const SizedBox.shrink()
+                                      : getTrendIcon(trend: trendSummary.trend),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      RichText(
+                                        text: TextSpan(
+                                          text: volumeInKOrM(avgVolume),
+                                          style: Theme.of(context).textTheme.headlineSmall,
+                                          children: [
+                                            TextSpan(
+                                              text: " ",
+                                            ),
+                                            TextSpan(
+                                              text: weightLabel().toUpperCase(),
+                                              style: Theme.of(context).textTheme.bodyMedium,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Text(
+                                        "Session AVERAGE".toUpperCase(),
+                                        style: Theme.of(context).textTheme.bodySmall,
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                              Text(trendSummary.summary,
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                      fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              const SizedBox(height: 16),
+                              LineChartWidget(
+                                chartPoints: volumeChartPoints,
+                                periods: [],
+                                unit: ChartUnit.weight,
+                              ),
+                            ],
+                          ),
+                          Text(
+                              "Here’s a summary of your ${template.name} training intensity over the last ${allLogsForTemplate.length} ${pluralize(word: "session", count: allLogsForTemplate.length)}.",
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                          const SizedBox(height: 12),
+                          InformationContainer(
+                            leadingIcon: FaIcon(FontAwesomeIcons.weightHanging),
+                            title: "Training Volume",
+                            color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
+                            description:
+                                "Volume is the total amount of work done, often calculated as sets × reps × weight. Higher volume increases muscle size (hypertrophy).",
+                          ),
+                        ],
+                      ),
+                    ),
+                  if (template.owner == SharedPrefs().userId)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                           Text("Muscle Recovery".toUpperCase(), style: Theme.of(context).textTheme.titleMedium),
                           const SizedBox(height: 10),
                           Text(
@@ -447,83 +522,14 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                         ),
                       ],
                     ),
+                  const SizedBox(
+                    height: 2,
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: Column(
                       spacing: 20,
                       children: [
-                        if (template.owner == SharedPrefs().userId)
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                spacing: 10,
-                                children: [
-                                  Wrap(
-                                    crossAxisAlignment: WrapCrossAlignment.center,
-                                    spacing: 10,
-                                    children: [
-                                      trendSummary.trend == Trend.none ? const SizedBox.shrink() : getTrendIcon(trend: trendSummary.trend),
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        spacing: 10,
-                                        children: [
-                                          RichText(
-                                            text: TextSpan(
-                                              text: volumeInKOrM(avgVolume),
-                                              style: Theme.of(context).textTheme.headlineSmall,
-                                              children: [
-                                                TextSpan(
-                                                  text: " ",
-                                                ),
-                                                TextSpan(
-                                                  text: weightLabel().toUpperCase(),
-                                                  style: Theme.of(context).textTheme.bodyMedium,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Text(
-                                            "Session AVERAGE".toUpperCase(),
-                                            style: Theme.of(context).textTheme.bodySmall,
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                  Text(trendSummary.summary,
-                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                          fontWeight: FontWeight.w400,
-                                          color: isDarkMode ? Colors.white70 : Colors.black)),
-                                ],
-                              ),
-                              const SizedBox(height: 16),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  const SizedBox(height: 16),
-                                  LineChartWidget(
-                                    chartPoints: volumeChartPoints,
-                                    periods: [],
-                                    unit: ChartUnit.weight,
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                  "Here’s a summary of your ${template.name} training intensity over the last ${allLogsForTemplate.length} ${pluralize(word: "session", count: allLogsForTemplate.length)}.",
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
-                              const SizedBox(height: 10),
-                              InformationContainer(
-                                leadingIcon: FaIcon(FontAwesomeIcons.weightHanging),
-                                title: "Training Volume",
-                                color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
-                                description:
-                                    "Volume is the total amount of work done, often calculated as sets × reps × weight. Higher volume increases muscle size (hypertrophy).",
-                              ),
-                            ],
-                          ),
                         ExerciseLogListView(
                           exerciseLogs: exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
                         ),
@@ -770,6 +776,9 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     // 3. Compare last week's volume to the average of previous volumes
     final difference = lastWeekVolume - averageOfPrevious;
 
+    // Special check for no difference
+    final differenceIsZero = difference == 0;
+
     // If the average is zero, treat it as a special case for percentage change
     final bool averageIsZero = averageOfPrevious == 0;
     final double percentageChange = averageIsZero ? 100.0 : (difference / averageOfPrevious) * 100;
@@ -800,10 +809,11 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
             summary: "This session's volume is $variation lower than your average. "
                 "Consider extra rest, checking your technique, or planning a deload.");
       case Trend.stable:
-        return TrendSummary(
-            trend: Trend.stable,
-            summary: "Your volume changed by about $variation compared to your average. "
-                "A great chance to refine your form and maintain consistency.");
+        final summary = differenceIsZero
+            ? "You've matched your average exactly! Stay consistent to see long-term progress."
+            : "Your volume changed by about $variation compared to your average. "
+                "A great chance to refine your form and maintain consistency.";
+        return TrendSummary(trend: Trend.stable, summary: summary);
       case Trend.none:
         return TrendSummary(trend: Trend.none, summary: "Unable to identify trends");
     }

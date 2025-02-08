@@ -135,6 +135,9 @@ class LogStreakChart extends StatelessWidget {
     // 3. Compare last week's volume to the average of previous volumes
     final difference = lastWeekVolume - averageOfPrevious;
 
+    // Special check for no difference
+    final differenceIsZero = difference == 0;
+
     // If the average is zero, treat it as a special case for percentage change
     final bool averageIsZero = averageOfPrevious == 0;
     final double percentageChange = averageIsZero ? 100.0 : (difference / averageOfPrevious) * 100;
@@ -171,12 +174,11 @@ class LogStreakChart extends StatelessWidget {
                 "You're training $diffAbs ${pluralize(word: "day", count: diffAbs)} lesser than your average."
                 " Consider your schedule, rest, or motivation to stay on track.");
       case Trend.stable:
-        return TrendSummary(
-            trend: Trend.stable,
-            average: averageOfPrevious,
-            summary:
-                "Your training days only varied by about $diffAbs compared to your average."
-                " Keep refining your routine for ongoing consistency!");
+        final summary = differenceIsZero
+            ? "You've matched your average exactly! Stay consistent to see long-term progress."
+            : "Your training days only varied by about $diffAbs compared to your average."
+            " Keep refining your routine for ongoing consistency!";
+        return TrendSummary(trend: Trend.stable, average: averageOfPrevious, summary: summary);
       case Trend.none:
         return TrendSummary(trend: Trend.none, summary: "Unable to identify trends");
     }

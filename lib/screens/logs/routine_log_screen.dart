@@ -693,6 +693,9 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     // 3. Compare last week's volume to the average of previous volumes
     final difference = lastWeekVolume - averageOfPrevious;
 
+    // Special check for no difference
+    final differenceIsZero = difference == 0;
+
     // If the average is zero, treat it as a special case for percentage change
     final bool averageIsZero = averageOfPrevious == 0;
     final double percentageChange = averageIsZero ? 100.0 : (difference / averageOfPrevious) * 100;
@@ -723,10 +726,13 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             summary: "This session's volume is $variation lower than your average. "
                 "Consider extra rest, checking your technique, or planning a deload.");
       case Trend.stable:
+        final summary = differenceIsZero
+            ? "You've matched your average exactly! Stay consistent to see long-term progress."
+            : "Your volume changed by about $variation compared to your average. "
+            "A great chance to refine your form and maintain consistency.";
         return TrendSummary(
             trend: Trend.stable,
-            summary: "Your volume changed by about $variation compared to your average. "
-                "A great chance to refine your form and maintain consistency.");
+            summary: summary);
       case Trend.none:
         return TrendSummary(trend: Trend.none, summary: "Unable to identify trends");
     }

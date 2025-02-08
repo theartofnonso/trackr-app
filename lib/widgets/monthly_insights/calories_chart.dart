@@ -149,6 +149,9 @@ class CaloriesChart extends StatelessWidget {
     // 3. Compare last week's volume to the average of previous volumes
     final difference = lastWeekVolume - averageOfPrevious;
 
+    // Special check for no difference
+    final differenceIsZero = difference == 0;
+
     // If the average is zero, treat it as a special case for percentage change
     final bool averageIsZero = averageOfPrevious == 0;
     final double percentageChange = averageIsZero ? 100.0 : (difference / averageOfPrevious) * 100;
@@ -181,11 +184,14 @@ class CaloriesChart extends StatelessWidget {
             summary: "This week's calorie burn is $variation lower than your average. "
                 "Consider adjusting your routine or intensity if this wasn't intentional.");
       case Trend.stable:
+        final summary = differenceIsZero
+            ? "You've matched your average exactly! Stay consistent to see long-term progress."
+            : "Your calorie burn changed by about $variation compared to your average. "
+            "You're maintaining consistency—great job! Keep refining your plan for steady progress.";
         return TrendSummary(
             trend: Trend.stable,
             average: averageOfPrevious,
-            summary: "Your calorie burn changed by about $variation compared to your average. "
-                "You're maintaining consistency—great job! Keep refining your plan for steady progress.");
+            summary: summary);
       case Trend.none:
         return TrendSummary(trend: Trend.none, summary: "Unable to identify trends");
     }
