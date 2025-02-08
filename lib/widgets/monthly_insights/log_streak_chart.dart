@@ -154,7 +154,7 @@ class LogStreakChart extends StatelessWidget {
     }
 
     // 5. Generate a friendly, concise message based on the trend
-    final variation = "${percentageChange.abs().toStringAsFixed(1)}%";
+    final _ = "${percentageChange.abs().toStringAsFixed(1)}%";
 
     final diffAbs = difference.toInt().abs();
 
