@@ -236,7 +236,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                             RichText(
                               text: TextSpan(
                                 text:
-                                    "${_metric == TrainingMetric.volume ? volumeInKOrM(trendSummary.average, showLessThan1k: false) : trendSummary.average.round()}",
+                                    "${_metric == TrainingMetric.volume ? volumeInKOrM(trendSummary.average, showLessThan1k: false) : trendSummary.average}",
                                 style: Theme.of(context).textTheme.headlineSmall,
                                 children: [
                                   TextSpan(
@@ -572,10 +572,10 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     }
 
     final previousVolumes = values.sublist(0, values.length - 1);
-    final averageOfPrevious = previousVolumes.reduce((a, b) => a + b) / previousVolumes.length;
+    final averageOfPrevious = (previousVolumes.reduce((a, b) => a + b) / previousVolumes.length).round();
 
     // 3. Compare last week's volume to the average of previous volumes
-    final difference = lastWeekVolume - averageOfPrevious.round();
+    final difference = (lastWeekVolume - averageOfPrevious).round();
 
     // Special check for no difference
     final differenceIsZero = difference == 0;
@@ -598,7 +598,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     // 5. Generate a friendly, concise message based on the trend
     final _ = "${percentageChange.abs().toStringAsFixed(1)}%";
 
-    final diffAbs = difference.toInt().abs();
+    final diff = _metric == TrainingMetric.volume ? volumeInKOrM(difference, showLessThan1k: false) : difference;
 
     switch (trend) {
       case Trend.up:
@@ -606,24 +606,21 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
             trend: Trend.up,
             average: averageOfPrevious,
             summary:
-                "This week's ${_selectedMuscleGroup.name.toUpperCase()} training is $diffAbs ${_trainingMetric(length: difference.toInt())} higher than your average. "
+                "This week's ${_selectedMuscleGroup.name.toUpperCase()} training is $diff ${_trainingMetric(length: difference.toInt())} higher than your average. "
                 "Awesome job building momentum!");
       case Trend.down:
         return TrendSummary(
             trend: Trend.down,
             average: averageOfPrevious,
             summary:
-                "This week's ${_selectedMuscleGroup.name.toUpperCase()} training is $diffAbs ${_trainingMetric(length: difference.toInt())} lower than your average. "
+                "This week's ${_selectedMuscleGroup.name.toUpperCase()} training is $diff ${_trainingMetric(length: difference.toInt())} lower than your average. "
                 "Consider extra rest, checking your technique, or planning a deload.");
       case Trend.stable:
         final summary = differenceIsZero
             ? "You've matched your average exactly! Stay consistent to see long-term progress."
-            :  "Your ${_selectedMuscleGroup.name.toUpperCase()} training has changed by about $diffAbs ${_trainingMetric(length: difference.toInt())} compared to your average. "
-            "A great chance to refine your form and maintain consistency.";
-        return TrendSummary(
-            trend: Trend.stable,
-            average: averageOfPrevious,
-            summary: summary);
+            : "Your ${_selectedMuscleGroup.name.toUpperCase()} training has changed by about $diff ${_trainingMetric(length: difference.toInt())} compared to your average. "
+                "A great chance to refine your form and maintain consistency.";
+        return TrendSummary(trend: Trend.stable, average: averageOfPrevious, summary: summary);
       case Trend.none:
         return TrendSummary(trend: Trend.none, summary: "Unable to identify trends");
     }
