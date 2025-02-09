@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -40,6 +41,17 @@ import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dar
 import '../../widgets/routine/preview/exercise_log_listview.dart';
 import 'routine_day_planner.dart';
 
+enum OriginalNewValues {
+  originalValues(
+      name: "Original Values", description: "Showing values from the last time this template was saved or updated."),
+  newValues(name: "New Values", description: "Showing values from your last logged session.");
+
+  const OriginalNewValues({required this.name, required this.description});
+
+  final String name;
+  final String description;
+}
+
 class RoutineTemplateScreen extends StatefulWidget {
   static const routeName = '/routine_template_screen';
 
@@ -57,6 +69,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   bool _loading = false;
 
   RecoveryResult? _selectedMuscleAndRecovery;
+
+  OriginalNewValues _originalNewValues = OriginalNewValues.newValues;
 
   void _deleteRoutine({required RoutineTemplateDto template}) async {
     try {
@@ -244,6 +258,17 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
         child: Text("Delete", style: GoogleFonts.ubuntu(color: Colors.redAccent)),
       )
     ];
+
+    final exerciseTemplates = _originalNewValues == OriginalNewValues.newValues
+        ? template.exerciseTemplates.map((exerciseTemplate) {
+            final pastSets = exerciseAndRoutineController.whereSetsForExercise(exercise: exerciseTemplate.exercise);
+            final uncheckedSets = pastSets.map((set) => set.copyWith(checked: false)).toList();
+
+            /// Don't add any previous set for [ExerciseType.Duration]
+            /// Duration is captured in realtime from a fresh instance
+            return exerciseTemplate.copyWith(sets: uncheckedSets);
+          }).toList()
+        : template.exerciseTemplates;
 
     return Scaffold(
         floatingActionButton: FloatingActionButton(
@@ -522,16 +547,45 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                         ),
                       ],
                     ),
-                  const SizedBox(
-                    height: 2,
-                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       spacing: 20,
                       children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          spacing: 6,
+                          children: [
+                            CupertinoSlidingSegmentedControl<OriginalNewValues>(
+                              backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade200,
+                              thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
+                              groupValue: _originalNewValues,
+                              children: {
+                                OriginalNewValues.originalValues: SizedBox(
+                                    width: 100,
+                                    child: Text(OriginalNewValues.originalValues.name,
+                                        style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center)),
+                                OriginalNewValues.newValues: SizedBox(
+                                    width: 100,
+                                    child: Text(OriginalNewValues.newValues.name,
+                                        style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center)),
+                              },
+                              onValueChanged: (OriginalNewValues? value) {
+                                if (value != null) {
+                                  setState(() {
+                                    _originalNewValues = value;
+                                  });
+                                }
+                              },
+                            ),
+                            Text(_originalNewValues.description,
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                          ],
+                        ),
                         ExerciseLogListView(
-                          exerciseLogs: exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
+                          exerciseLogs: exerciseLogsToViewModels(exerciseLogs: exerciseTemplates),
                         ),
                         const SizedBox(
                           height: 60,
