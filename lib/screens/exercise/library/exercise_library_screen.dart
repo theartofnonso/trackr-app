@@ -39,40 +39,93 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   bool _shouldShowOwnerExercises = false;
 
   /// Search through the list of exercises
+  ///
+  /// Calculates a 'relevance' score for an ExerciseDto based on the query parts.
+  double _calculateRelevanceScore(ExerciseDto exercise, List<String> queryParts) {
+    // Convert exercise name to lowercase for case-insensitive matching
+    final exerciseName = exercise.name.toLowerCase();
+
+    // You can split the exercise name on spaces/hyphens if you want more granularity
+    final exerciseNameParts = exerciseName.split(RegExp(r'[\s-]+'));
+
+    double score = 0.0;
+
+    for (final queryPart in queryParts) {
+      // Exact substring match => add 1 point
+      if (exerciseName.contains(queryPart)) {
+        score += 1.0;
+      }
+
+      //If you want to reward startsWith more strongly, you could do:
+      for (final part in exerciseNameParts) {
+        if (part.startsWith(queryPart)) {
+          score += 0.5;  // for instance, half a point for startsWith
+        }
+      }
+    }
+
+    return score;
+  }
+
   void _runSearch() {
-    final query = _searchController.text.toLowerCase().trim();
-
-    List<ExerciseDto> searchResults = [];
-
+    final query = _searchController.text.trim().toLowerCase();
     final exerciseType = widget.type;
 
-    searchResults = Provider.of<ExerciseAndRoutineController>(context, listen: false)
+    // Split on whitespace or hyphens to handle multiple words/phrases
+    final queryParts = query.split(RegExp(r'[\s-]+')).where((q) => q.isNotEmpty).toList();
+
+    // Get the list of all exercises (excluding any you want to filter out by default)
+    final allExercises = Provider.of<ExerciseAndRoutineController>(context, listen: false)
         .exercises
         .where((exercise) => !widget.excludeExercises.contains(exercise))
-        .where((exercise) {
-          if (query.isEmpty) return true;
-
-          final exerciseParts = exercise.name.toLowerCase().split(RegExp(r'[\s-]+'));
-          final queryParts = query.toLowerCase().split(RegExp(r'[\s-]+'));
-
-          return queryParts.any((queryPart) => exerciseParts.where((exercisePart) => exercisePart.startsWith(queryPart)).isNotEmpty);
-        })
-        .where((exercise) => exerciseType != null ? exercise.type == widget.type : true)
         .toList();
 
+    // Filter by exercise type if provided
+    List<ExerciseDto> filteredExercises;
+    if (exerciseType != null) {
+      filteredExercises = allExercises.where((ex) => ex.type == exerciseType).toList();
+    } else {
+      filteredExercises = allExercises;
+    }
+
+    // Filter by muscle groups if any are selected
     if (_selectedMuscleGroups.isNotEmpty) {
-      searchResults =
-          searchResults.where((exercise) => _selectedMuscleGroups.contains(exercise.primaryMuscleGroup)).toList();
+      filteredExercises = filteredExercises
+          .where((ex) => _selectedMuscleGroups.contains(ex.primaryMuscleGroup))
+          .toList();
     }
 
+    // Filter to owner exercises if needed
     if (_shouldShowOwnerExercises) {
-      searchResults = searchResults.where((exercise) => exercise.owner.isNotEmpty).toList();
+      filteredExercises = filteredExercises.where((ex) => ex.owner.isNotEmpty).toList();
     }
 
-    searchResults.sort((a, b) => a.name.compareTo(b.name));
+    // If the user typed nothing, you can simply show the entire filtered list
+    // Or skip ranking and set directly — depends on your UI needs
+    if (queryParts.isEmpty) {
+      filteredExercises.sort((a, b) => a.name.compareTo(b.name));
+      setState(() {
+        _filteredExercises = filteredExercises;
+      });
+      return;
+    }
+
+    // Compute a relevance score for each exercise, then sort descending by score
+    final rankedList = filteredExercises
+        .map((ex) {
+      final score = _calculateRelevanceScore(ex, queryParts);
+      return (exercise: ex, score: score);
+    })
+        .where((tuple) => tuple.score > 0) // optional: only keep those with some match
+        .toList();
+
+    rankedList.sort((a, b) => b.score.compareTo(a.score));
+
+    // Extract the exercises from the sorted list
+    final sortedExercises = rankedList.map((tuple) => tuple.exercise).toList();
 
     setState(() {
-      _filteredExercises = searchResults;
+      _filteredExercises = sortedExercises;
     });
   }
 
