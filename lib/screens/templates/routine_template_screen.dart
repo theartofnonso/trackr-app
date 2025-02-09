@@ -263,9 +263,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
         ? template.exerciseTemplates.map((exerciseTemplate) {
             final pastSets = exerciseAndRoutineController.whereSetsForExercise(exercise: exerciseTemplate.exercise);
             final uncheckedSets = pastSets.map((set) => set.copyWith(checked: false)).toList();
-
-            /// Don't add any previous set for [ExerciseType.Duration]
-            /// Duration is captured in realtime from a fresh instance
             return exerciseTemplate.copyWith(sets: uncheckedSets);
           }).toList()
         : template.exerciseTemplates;
