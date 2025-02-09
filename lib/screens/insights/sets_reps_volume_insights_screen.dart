@@ -598,25 +598,27 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     // 5. Generate a friendly, concise message based on the trend
     final _ = "${percentageChange.abs().toStringAsFixed(1)}%";
 
+    final diffAbs = difference.toInt().abs();
+
     switch (trend) {
       case Trend.up:
         return TrendSummary(
             trend: Trend.up,
             average: averageOfPrevious,
             summary:
-                "This week's ${_selectedMuscleGroup.name.toUpperCase()} training is $difference ${_trainingMetric(length: difference.toInt())} higher than your average. "
+                "This week's ${_selectedMuscleGroup.name.toUpperCase()} training is $diffAbs ${_trainingMetric(length: difference.toInt())} higher than your average. "
                 "Awesome job building momentum!");
       case Trend.down:
         return TrendSummary(
             trend: Trend.down,
             average: averageOfPrevious,
             summary:
-                "This week's ${_selectedMuscleGroup.name.toUpperCase()} training is $difference ${_trainingMetric(length: difference.toInt())} lower than your average. "
+                "This week's ${_selectedMuscleGroup.name.toUpperCase()} training is $diffAbs ${_trainingMetric(length: difference.toInt())} lower than your average. "
                 "Consider extra rest, checking your technique, or planning a deload.");
       case Trend.stable:
         final summary = differenceIsZero
             ? "You've matched your average exactly! Stay consistent to see long-term progress."
-            :  "Your ${_selectedMuscleGroup.name.toUpperCase()} training has changed by about $difference ${_trainingMetric(length: difference.toInt())} compared to your average. "
+            :  "Your ${_selectedMuscleGroup.name.toUpperCase()} training has changed by about $diffAbs ${_trainingMetric(length: difference.toInt())} compared to your average. "
             "A great chance to refine your form and maintain consistency.";
         return TrendSummary(
             trend: Trend.stable,
