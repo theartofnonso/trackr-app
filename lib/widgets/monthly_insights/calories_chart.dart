@@ -124,13 +124,13 @@ class CaloriesChart extends StatelessWidget {
     if (caloriesBurned.isEmpty) {
       return TrendSummary(
           trend: Trend.none,
-          summary: "No data on calories burned yet. Log some sessions or activities to start tracking!");
+          summary: "🤔 No data on calories burned yet. Log some sessions or activities to start tracking!");
     }
 
     if (caloriesBurned.length == 1) {
       return TrendSummary(
           trend: Trend.none,
-          summary: "You've logged your first week's calorie burn (${caloriesBurned.first}). "
+          summary: "🌟 You've logged your first week's calorie burn (${caloriesBurned.first}). "
               "Great job! Keep logging more data to see trends over time.");
     }
 
@@ -140,7 +140,7 @@ class CaloriesChart extends StatelessWidget {
     if (lastWeekVolume == 0) {
       return TrendSummary(
           trend: Trend.none,
-          summary: "No training data available for this week. Log some workouts to continue tracking your progress!");
+          summary: "🤔 No training data available for this week. Log some workouts to continue tracking your progress!");
     }
 
     final previousVolumes = caloriesBurned.sublist(0, caloriesBurned.length - 1);
@@ -175,25 +175,25 @@ class CaloriesChart extends StatelessWidget {
         return TrendSummary(
             trend: Trend.up,
             average: averageOfPrevious,
-            summary: "This week's calorie burn is $variation higher than your average. "
+            summary: "🌟🌟 This week's calorie burn is $variation higher than your average. "
                 "Fantastic effort—you're on the rise!");
       case Trend.down:
         return TrendSummary(
             trend: Trend.down,
             average: averageOfPrevious,
-            summary: "This week's calorie burn is $variation lower than your average. "
+            summary: "📉 This week's calorie burn is $variation lower than your average. "
                 "Consider adjusting your routine or intensity if this wasn't intentional.");
       case Trend.stable:
         final summary = differenceIsZero
-            ? "You've matched your average exactly! Stay consistent to see long-term progress."
-            : "Your calorie burn changed by about $variation compared to your average. "
+            ? "🌟 You've matched your average exactly! Stay consistent to see long-term progress."
+            : "🔄 Your calorie burn changed by about $variation compared to your average. "
             "You're maintaining consistency—great job! Keep refining your plan for steady progress.";
         return TrendSummary(
             trend: Trend.stable,
             average: averageOfPrevious,
             summary: summary);
       case Trend.none:
-        return TrendSummary(trend: Trend.none, summary: "Unable to identify trends");
+        return TrendSummary(trend: Trend.none, summary: "🤔 Unable to identify trends");
     }
   }
 }

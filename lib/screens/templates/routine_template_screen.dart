@@ -852,21 +852,21 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       case Trend.up:
         return TrendSummary(
             trend: Trend.up,
-            summary: "This session's volume is $variation higher than your average. "
+            summary: "🌟🌟 This session's volume is $variation higher than your average. "
                 "Awesome job building momentum!");
       case Trend.down:
         return TrendSummary(
             trend: Trend.down,
-            summary: "This session's volume is $variation lower than your average. "
+            summary: "📉 This session's volume is $variation lower than your average. "
                 "Consider extra rest, checking your technique, or planning a deload.");
       case Trend.stable:
         final summary = differenceIsZero
-            ? "You've matched your average exactly! Stay consistent to see long-term progress."
-            : "Your volume changed by about $variation compared to your average. "
+            ? "🌟 You've matched your average exactly! Stay consistent to see long-term progress."
+            : "🔄 Your volume changed by about $variation compared to your average. "
                 "A great chance to refine your form and maintain consistency.";
         return TrendSummary(trend: Trend.stable, summary: summary);
       case Trend.none:
-        return TrendSummary(trend: Trend.none, summary: "Unable to identify trends");
+        return TrendSummary(trend: Trend.none, summary: "🤔 Unable to identify trends");
     }
   }
 }

@@ -110,13 +110,13 @@ class LogStreakChart extends StatelessWidget {
     if (daysTrained.isEmpty) {
       return TrendSummary(
           trend: Trend.none,
-          summary: "No training data available yet. Log some sessions to start tracking your progress!");
+          summary: "🤔 No training data available yet. Log some sessions to start tracking your progress!");
     }
 
     if (daysTrained.length == 1) {
       return TrendSummary(
           trend: Trend.none,
-          summary: "You’ve logged your first week: ${daysTrained.first} day(s) of training."
+          summary: "🌟 You’ve logged your first week: ${daysTrained.first} day(s) of training."
               " Great job! Log more weeks to identify trends over time.");
     }
 
@@ -126,7 +126,7 @@ class LogStreakChart extends StatelessWidget {
     if (lastWeekVolume == 0) {
       return TrendSummary(
           trend: Trend.none,
-          summary: "No training data available for this week. Log some sessions to continue tracking your progress!");
+          summary: "🤔 No training data available for this week. Log some sessions to continue tracking your progress!");
     }
 
     final previousVolumes = daysTrained.sublist(0, daysTrained.length - 1);
@@ -164,23 +164,23 @@ class LogStreakChart extends StatelessWidget {
             trend: Trend.up,
             average: averageOfPrevious,
             summary:
-                "You're training $diffAbs more ${pluralize(word: "day", count: daysTrained.length)} than your average!"
+                "🌟🌟 You're training $diffAbs more ${pluralize(word: "day", count: daysTrained.length)} than your average!"
                 " Keep it going—you’re building solid habits!");
       case Trend.down:
         return TrendSummary(
             trend: Trend.down,
             average: averageOfPrevious,
             summary:
-                "You're training $diffAbs ${pluralize(word: "day", count: diffAbs)} lesser than your average."
+                "📉 You're training $diffAbs ${pluralize(word: "day", count: diffAbs)} lesser than your average."
                 " Consider your schedule, rest, or motivation to stay on track.");
       case Trend.stable:
         final summary = differenceIsZero
-            ? "You've matched your average exactly! Stay consistent to see long-term progress."
-            : "Your training days only varied by about $diffAbs compared to your average."
+            ? "🌟 You've matched your average exactly! Stay consistent to see long-term progress."
+            : "🔄 Your training days only varied by about $diffAbs compared to your average."
             " Keep refining your routine for ongoing consistency!";
         return TrendSummary(trend: Trend.stable, average: averageOfPrevious, summary: summary);
       case Trend.none:
-        return TrendSummary(trend: Trend.none, summary: "Unable to identify trends");
+        return TrendSummary(trend: Trend.none, summary: "🤔 Unable to identify trends");
     }
   }
 }
