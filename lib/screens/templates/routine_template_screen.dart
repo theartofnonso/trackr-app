@@ -548,7 +548,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      spacing: 20,
+                      spacing: 30,
                       children: [
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
