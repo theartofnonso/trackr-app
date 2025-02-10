@@ -74,7 +74,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -261,7 +260,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                           information: _StatisticsInformation(
                               title: "Volume",
                               description:
-                              "The total amount of work performed during a workout, typically calculated as: Volume = Sets × Reps × Weight."),
+                                  "The total amount of work performed during a workout, typically calculated as: Volume = Sets × Reps × Weight."),
                         ),
                         _StatisticWidget(
                           title: updatedLog.duration().hmsDigital(),
@@ -333,7 +332,9 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                                 crossAxisAlignment: WrapCrossAlignment.center,
                                 spacing: 10,
                                 children: [
-                                  trendSummary.trend == Trend.none ? const SizedBox.shrink() : getTrendIcon(trend: trendSummary.trend),
+                                  trendSummary.trend == Trend.none
+                                      ? const SizedBox.shrink()
+                                      : getTrendIcon(trend: trendSummary.trend),
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
@@ -361,10 +362,8 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                                 ],
                               ),
                               Text(trendSummary.summary,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                      fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
                             ],
                           ),
                         if (updatedLog.owner == SharedPrefs().userId && widget.isEditable)
@@ -668,12 +667,17 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     if (volumes.isEmpty) {
       return TrendSummary(
           trend: Trend.none,
+          average: 0,
           summary: "No training data available yet. Log some sessions to start tracking your progress!");
     }
+
+    final previousVolumes = volumes.sublist(0, volumes.length - 1);
+    final averageOfPrevious = previousVolumes.reduce((a, b) => a + b) / previousVolumes.length;
 
     if (volumes.length == 1) {
       return TrendSummary(
           trend: Trend.none,
+          average: averageOfPrevious,
           summary: "You've logged your first week's volume (${volumes.first})."
               " Great job! Keep logging more data to see trends over time.");
     }
@@ -684,11 +688,9 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     if (lastWeekVolume == 0) {
       return TrendSummary(
           trend: Trend.none,
+          average: averageOfPrevious,
           summary: "No training data available for this week. Log some workouts to continue tracking your progress!");
     }
-
-    final previousVolumes = volumes.sublist(0, volumes.length - 1);
-    final averageOfPrevious = previousVolumes.reduce((a, b) => a + b) / previousVolumes.length;
 
     // 3. Compare last week's volume to the average of previous volumes
     final difference = lastWeekVolume - averageOfPrevious;
@@ -718,23 +720,23 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
       case Trend.up:
         return TrendSummary(
             trend: Trend.up,
+            average: averageOfPrevious,
             summary: "🌟🌟 This session's volume is $variation higher than your average. "
                 "Awesome job building momentum!");
       case Trend.down:
         return TrendSummary(
             trend: Trend.down,
+            average: averageOfPrevious,
             summary: "📉 This session's volume is $variation lower than your average. "
                 "Consider extra rest, checking your technique, or planning a deload.");
       case Trend.stable:
         final summary = differenceIsZero
             ? "🌟 You've matched your average exactly! Stay consistent to see long-term progress."
             : "🔄 Your volume changed by about $variation compared to your average. "
-            "A great chance to refine your form and maintain consistency.";
-        return TrendSummary(
-            trend: Trend.stable,
-            summary: summary);
+                "A great chance to refine your form and maintain consistency.";
+        return TrendSummary(trend: Trend.stable, average: averageOfPrevious, summary: summary);
       case Trend.none:
-        return TrendSummary(trend: Trend.none, summary: "🤔 Unable to identify trends");
+        return TrendSummary(trend: Trend.none, average: averageOfPrevious, summary: "🤔 Unable to identify trends");
     }
   }
 }

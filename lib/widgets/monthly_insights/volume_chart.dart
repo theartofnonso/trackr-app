@@ -130,12 +130,18 @@ class VolumeChart extends StatelessWidget {
     if (volumes.isEmpty) {
       return TrendSummary(
           trend: Trend.none,
+          average: 0,
           summary: "🤔 No training data available yet. Log some sessions to start tracking your progress!");
     }
+
+    final previousVolumes = volumes.sublist(0, volumes.length - 1);
+    final averageOfPrevious = previousVolumes.reduce((a, b) => a + b) / previousVolumes.length;
+
 
     if (volumes.length == 1) {
       return TrendSummary(
           trend: Trend.none,
+          average: averageOfPrevious,
           summary: "🌟 You've logged your first week's volume (${volumes.first})."
               " Great job! Keep logging more data to see trends over time.");
     }
@@ -146,11 +152,9 @@ class VolumeChart extends StatelessWidget {
     if (lastWeekVolume == 0) {
       return TrendSummary(
           trend: Trend.none,
+          average: averageOfPrevious,
           summary: "🤔 No training data available for this week. Log some workouts to continue tracking your progress!");
     }
-
-    final previousVolumes = volumes.sublist(0, volumes.length - 1);
-    final averageOfPrevious = previousVolumes.reduce((a, b) => a + b) / previousVolumes.length;
 
     // 3. Compare last week's volume to the average of previous volumes
     final difference = lastWeekVolume - averageOfPrevious;
@@ -196,7 +200,7 @@ class VolumeChart extends StatelessWidget {
                 "A great chance to refine your form and maintain consistency.";
         return TrendSummary(trend: Trend.stable, average: averageOfPrevious, summary: summary);
       case Trend.none:
-        return TrendSummary(trend: Trend.none, summary: "🤔 Unable to identify trends");
+        return TrendSummary(trend: Trend.none, average: averageOfPrevious, summary: "🤔 Unable to identify trends");
     }
   }
 }

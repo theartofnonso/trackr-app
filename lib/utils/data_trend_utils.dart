@@ -5,7 +5,7 @@ class TrendSummary {
   final num average;
   final String summary;
 
-  TrendSummary({required this.trend, this.average = 0, required this.summary});
+  TrendSummary({required this.trend, required this.average, required this.summary});
 }
 
 Trend detectTrend(List<num> values, {double trendThreshold = 5.0}) {
