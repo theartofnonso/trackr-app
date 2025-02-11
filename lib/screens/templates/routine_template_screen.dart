@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -15,7 +16,6 @@ import 'package:tracker_app/shared_prefs.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
-import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../dtos/viewmodels/routine_template_arguments.dart';
@@ -25,6 +25,7 @@ import '../../enums/routine_editor_type_enums.dart';
 import '../../enums/routine_preview_type_enum.dart';
 import '../../models/RoutineTemplate.dart';
 import '../../urls.dart';
+import '../../utils/data_trend_utils.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
@@ -33,13 +34,23 @@ import '../../utils/navigation_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../utils/string_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
-import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/chart/line_chart_widget.dart';
 import '../../widgets/empty_states/not_found.dart';
 import '../../widgets/information_containers/information_container.dart';
 import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
 import 'routine_day_planner.dart';
+
+enum OriginalNewValues {
+  originalValues(
+      name: "Original Values", description: "Showing values from the last time this template was saved or updated."),
+  newValues(name: "New Values", description: "Showing values from your last logged session.");
+
+  const OriginalNewValues({required this.name, required this.description});
+
+  final String name;
+  final String description;
+}
 
 class RoutineTemplateScreen extends StatefulWidget {
   static const routeName = '/routine_template_screen';
@@ -58,6 +69,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   bool _loading = false;
 
   RecoveryResult? _selectedMuscleAndRecovery;
+
+  OriginalNewValues _originalNewValues = OriginalNewValues.newValues;
 
   void _deleteRoutine({required RoutineTemplateDto template}) async {
     try {
@@ -133,18 +146,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     final volumeChartPoints =
         allLoggedVolumesForTemplate.mapIndexed((index, volume) => ChartPointDto(index, volume)).toList();
 
-    final currentAndPreviousMonthVolume = _calculateCurrentAndPreviousLogVolume(logs: allLogsForTemplate);
-
-    final previousMonthVolume = currentAndPreviousMonthVolume.$1;
-    final currentMonthVolume = currentAndPreviousMonthVolume.$2;
-
-    final improved = currentMonthVolume > previousMonthVolume;
-
-    final difference = improved ? currentMonthVolume - previousMonthVolume : previousMonthVolume - currentMonthVolume;
-
-    final differenceSummary = _generateDifferenceSummary(difference: difference, improved: improved);
-
-    final differenceFeedback = _generateDifferenceFeedback(difference: difference, improved: improved);
+    final trendSummary = _analyzeWeeklyTrends(volumes: allLoggedVolumesForTemplate);
 
     final listOfMuscleAndRecovery = template.exerciseTemplates
         .map((exerciseTemplate) => exerciseTemplate.exercise.primaryMuscleGroup)
@@ -256,6 +258,14 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
         child: Text("Delete", style: GoogleFonts.ubuntu(color: Colors.redAccent)),
       )
     ];
+
+    final exerciseTemplates = _originalNewValues == OriginalNewValues.newValues
+        ? template.exerciseTemplates.map((exerciseTemplate) {
+            final pastSets = exerciseAndRoutineController.whereSetsForExercise(exercise: exerciseTemplate.exercise);
+            final uncheckedSets = pastSets.map((set) => set.copyWith(checked: false)).toList();
+            return exerciseTemplate.copyWith(sets: uncheckedSets);
+          }).toList()
+        : template.exerciseTemplates;
 
     return Scaffold(
         floatingActionButton: FloatingActionButton(
@@ -430,6 +440,81 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            spacing: 10,
+                            children: [
+                              Wrap(
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                spacing: 10,
+                                children: [
+                                  trendSummary.trend == Trend.none
+                                      ? const SizedBox.shrink()
+                                      : getTrendIcon(trend: trendSummary.trend),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      RichText(
+                                        text: TextSpan(
+                                          text: volumeInKOrM(avgVolume),
+                                          style: Theme.of(context).textTheme.headlineSmall,
+                                          children: [
+                                            TextSpan(
+                                              text: " ",
+                                            ),
+                                            TextSpan(
+                                              text: weightLabel().toUpperCase(),
+                                              style: Theme.of(context).textTheme.bodyMedium,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Text(
+                                        "Session AVERAGE".toUpperCase(),
+                                        style: Theme.of(context).textTheme.bodySmall,
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                              Text(trendSummary.summary,
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                      fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              const SizedBox(height: 16),
+                              LineChartWidget(
+                                chartPoints: volumeChartPoints,
+                                periods: [],
+                                unit: ChartUnit.weight,
+                              ),
+                            ],
+                          ),
+                          Text(
+                              "Here’s a summary of your ${template.name} training intensity over the last ${allLogsForTemplate.length} ${pluralize(word: "session", count: allLogsForTemplate.length)}.",
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                          const SizedBox(height: 12),
+                          InformationContainer(
+                            leadingIcon: FaIcon(FontAwesomeIcons.weightHanging),
+                            title: "Training Volume",
+                            color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
+                            description:
+                                "Volume is the total amount of work done, often calculated as sets × reps × weight. Higher volume increases muscle size (hypertrophy).",
+                          ),
+                        ],
+                      ),
+                    ),
+                  if (template.owner == SharedPrefs().userId)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                           Text("Muscle Recovery".toUpperCase(), style: Theme.of(context).textTheme.titleMedium),
                           const SizedBox(height: 10),
                           Text(
@@ -462,77 +547,42 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: Column(
-                      spacing: 20,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      spacing: 30,
                       children: [
-                        if (template.owner == SharedPrefs().userId)
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              RichText(
-                                text: TextSpan(
-                                  text: volumeInKOrM(avgVolume),
-                                  style: Theme.of(context).textTheme.headlineMedium,
-                                  children: [
-                                    TextSpan(
-                                      text: " ",
-                                    ),
-                                    TextSpan(
-                                      text: weightLabel().toUpperCase(),
-                                      style: Theme.of(context).textTheme.bodyMedium,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Text(
-                                "SESSION AVERAGE".toUpperCase(),
-                                style: Theme.of(context).textTheme.bodySmall,
-                              ),
-                              Wrap(
-                                crossAxisAlignment: WrapCrossAlignment.center,
-                                children: [
-                                  FaIcon(
-                                    getImprovementIcon(improved: improved, difference: difference),
-                                    color: getImprovementColor(improved: improved, difference: difference),
-                                    size: 12,
-                                  ),
-                                  const SizedBox(width: 6),
-                                  OpacityButtonWidget(
-                                    label: differenceSummary,
-                                    buttonColor: getImprovementColor(improved: improved, difference: difference),
-                                  )
-                                ],
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                  "Here’s a summary of your ${template.name} training intensity over the last ${allLogsForTemplate.length} ${pluralize(word: "session", count: allLogsForTemplate.length)}. $differenceFeedback",
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
-                              const SizedBox(height: 6),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 20),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    const SizedBox(height: 16),
-                                    LineChartWidget(
-                                      chartPoints: volumeChartPoints,
-                                      periods: [],
-                                      unit: ChartUnit.weight,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              InformationContainer(
-                                leadingIcon: FaIcon(FontAwesomeIcons.weightHanging),
-                                title: "Training Volume",
-                                color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
-                                description:
-                                    "Volume is the total amount of work done, often calculated as sets × reps × weight. Higher volume increases muscle size (hypertrophy).",
-                              ),
-                            ],
-                          ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          spacing: 6,
+                          children: [
+                            CupertinoSlidingSegmentedControl<OriginalNewValues>(
+                              backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade200,
+                              thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
+                              groupValue: _originalNewValues,
+                              children: {
+                                OriginalNewValues.originalValues: SizedBox(
+                                    width: 100,
+                                    child: Text(OriginalNewValues.originalValues.name,
+                                        style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center)),
+                                OriginalNewValues.newValues: SizedBox(
+                                    width: 100,
+                                    child: Text(OriginalNewValues.newValues.name,
+                                        style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center)),
+                              },
+                              onValueChanged: (OriginalNewValues? value) {
+                                if (value != null) {
+                                  setState(() {
+                                    _originalNewValues = value;
+                                  });
+                                }
+                              },
+                            ),
+                            Text(_originalNewValues.description,
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                          ],
+                        ),
                         ExerciseLogListView(
-                          exerciseLogs: exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
+                          exerciseLogs: exerciseLogsToViewModels(exerciseLogs: exerciseTemplates),
                         ),
                         const SizedBox(
                           height: 60,
@@ -741,60 +791,88 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     }
   }
 
-  (double, double) _calculateCurrentAndPreviousLogVolume({required List<RoutineLogDto> logs}) {
-    if (logs.isEmpty) {
-      // No logs => no comparison
-      return (0, 0);
-    }
-
-    // 2. Identify the most recent log
-    final lastLog = logs.last;
-    final lastLogVolume = lastLog.volume;
-    final lastLogDate = lastLog.createdAt;
-
-    final previousLogs = logs.where((log) => log.createdAt.isBefore(lastLogDate));
-
-    if (previousLogs.isEmpty) {
-      // No earlier logs => can't compare
-      return (0, 0);
-    }
-
-    final previousLogVolume = previousLogs.last.volume;
-
-    return (previousLogVolume, lastLogVolume);
-  }
-
-  String _generateDifferenceSummary({required bool improved, required double difference}) {
-    if (difference <= 0) {
-      return "0 change in past session";
-    } else {
-      if (improved) {
-        return "${volumeInKOrM(difference)} ${weightLabel()} up in last session";
-      } else {
-        return "${volumeInKOrM(difference)} ${weightLabel()} down in last session";
-      }
-    }
-  }
-
-  String _generateDifferenceFeedback({
-    required bool improved,
-    required double difference,
-  }) {
-    if (difference <= 0) {
-      return "No change in volume this session. Consistency is key to reaching your goals!";
-    } else {
-      if (improved) {
-        return "Keep pushing to achieve lasting progress!";
-      } else {
-        return "Reassess and aim for steady improvements!";
-      }
-    }
-  }
-
   @override
   void initState() {
     super.initState();
     _loadData();
+  }
+
+  TrendSummary _analyzeWeeklyTrends({required List<double> volumes}) {
+    // 1. Handle edge cases
+    if (volumes.isEmpty) {
+      return TrendSummary(
+          trend: Trend.none,
+          average: 0,
+          summary: "No training data available yet. Log some sessions to start tracking your progress!");
+    }
+
+    final previousVolumes = volumes.sublist(0, volumes.length - 1);
+    final averageOfPrevious = previousVolumes.reduce((a, b) => a + b) / previousVolumes.length;
+
+    if (volumes.length == 1) {
+      return TrendSummary(
+          trend: Trend.none,
+          average: averageOfPrevious,
+          summary: "You've logged your first week's volume (${volumes.first})."
+              " Great job! Keep logging more data to see trends over time.");
+    }
+
+    // 2. Identify the last week's volume and the average of all previous weeks
+    final lastWeekVolume = volumes.last;
+
+    if (lastWeekVolume == 0) {
+      return TrendSummary(
+          trend: Trend.none,
+          average: averageOfPrevious,
+          summary: "No training data available for this week. Log some workouts to continue tracking your progress!");
+    }
+
+    // 3. Compare last week's volume to the average of previous volumes
+    final difference = lastWeekVolume - averageOfPrevious;
+
+    // Special check for no difference
+    final differenceIsZero = difference == 0;
+
+    // If the average is zero, treat it as a special case for percentage change
+    final bool averageIsZero = averageOfPrevious == 0;
+    final double percentageChange = averageIsZero ? 100.0 : (difference / averageOfPrevious) * 100;
+
+    // 4. Decide the trend
+    const threshold = 5; // Adjust this threshold for "stable" as needed
+    late final Trend trend;
+    if (percentageChange > threshold) {
+      trend = Trend.up;
+    } else if (percentageChange < -threshold) {
+      trend = Trend.down;
+    } else {
+      trend = Trend.stable;
+    }
+
+    // 5. Generate a friendly, concise message based on the trend
+    final variation = "${percentageChange.abs().toStringAsFixed(1)}%";
+
+    switch (trend) {
+      case Trend.up:
+        return TrendSummary(
+            trend: Trend.up,
+            average: averageOfPrevious,
+            summary: "🌟🌟 This session's volume is $variation higher than your average. "
+                "Awesome job building momentum!");
+      case Trend.down:
+        return TrendSummary(
+            trend: Trend.down,
+            average: averageOfPrevious,
+            summary: "📉 This session's volume is $variation lower than your average. "
+                "Consider extra rest, checking your technique, or planning a deload.");
+      case Trend.stable:
+        final summary = differenceIsZero
+            ? "🌟 You've matched your average exactly! Stay consistent to see long-term progress."
+            : "🔄 Your volume changed by about $variation compared to your average. "
+                "A great chance to refine your form and maintain consistency.";
+        return TrendSummary(trend: Trend.stable, average: averageOfPrevious, summary: summary);
+      case Trend.none:
+        return TrendSummary(trend: Trend.none, summary: "🤔 Unable to identify trends", average: averageOfPrevious);
+    }
   }
 }
 

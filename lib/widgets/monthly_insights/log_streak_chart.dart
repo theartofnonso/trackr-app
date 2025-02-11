@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
+import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
@@ -38,12 +39,9 @@ class LogStreakChart extends StatelessWidget {
       months.add(startOfWeek.abbreviatedMonth());
     }
 
-    final averageDays = days.isNotEmpty ? days.average.round() : 0;
-
     final chartPoints = days.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
 
-    Trend trend = detectTrend(days);
-    String daysFeedback = _analyzeWeeklyTrainingDays(daysTrained: days, trend: trend);
+    final trendSummary = _analyzeWeeklyTrends(daysTrained: days);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,15 +50,15 @@ class LogStreakChart extends StatelessWidget {
           children: [
             Wrap(
               crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 10,
               children: [
-                getTrendIcon(trend: trend),
-                const SizedBox(width: 10,),
+                trendSummary.trend == Trend.none ? const SizedBox.shrink() : getTrendIcon(trend: trendSummary.trend),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     RichText(
                       text: TextSpan(
-                        text: "$averageDays",
+                        text: "${trendSummary.average.toInt()}",
                         style: Theme.of(context).textTheme.headlineSmall,
                         children: [
                           TextSpan(
@@ -89,7 +87,7 @@ class LogStreakChart extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 10),
-        Text(daysFeedback,
+        Text(trendSummary.summary,
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium
@@ -107,39 +105,50 @@ class LogStreakChart extends StatelessWidget {
     );
   }
 
-  String _analyzeWeeklyTrainingDays({required List<int> daysTrained, required Trend trend}) {
+  TrendSummary _analyzeWeeklyTrends({required List<int> daysTrained}) {
     // 1. Handle edge cases
     if (daysTrained.isEmpty) {
-      return "No training data available yet. Log some sessions to start tracking your progress!";
+      return TrendSummary(
+          trend: Trend.none,
+          average: 0,
+          summary: "🤔 No training data available yet. Log some sessions to start tracking your progress!");
     }
+
+    final previousVolumes = daysTrained.sublist(0, daysTrained.length - 1);
+    final averageOfPrevious = previousVolumes.reduce((a, b) => a + b) / previousVolumes.length;
 
     if (daysTrained.length == 1) {
-      return "You’ve logged your first week: ${daysTrained.first} day(s) of training."
-          " Great job! Log more weeks to identify trends over time.";
+      return TrendSummary(
+          trend: Trend.none,
+          average: averageOfPrevious,
+          summary: "🌟 You’ve logged your first week: ${daysTrained.first} day(s) of training."
+              " Great job! Log more weeks to identify trends over time.");
     }
 
-    // 2. Compare the last two weekly entries to determine a trend
-    final secondToLast = daysTrained[daysTrained.length - 2];
-    final last = daysTrained.last;
+    // 2. Identify the last week's volume and the average of all previous weeks
+    final lastWeekVolume = daysTrained.last;
 
-    if(last == 0) {
-      return "No training data available for this week. Log some sessions to continue tracking your progress!";
+    if (lastWeekVolume == 0) {
+      return TrendSummary(
+          trend: Trend.none,
+          average: averageOfPrevious,
+          summary:
+              "🤔 No training data available for this week. Log some sessions to continue tracking your progress!");
     }
 
-    final difference = (last - secondToLast).toDouble(); // Convert to double for % calculations
+    // 3. Compare last week's volume to the average of previous volumes
+    final difference = lastWeekVolume - averageOfPrevious;
 
-    // If secondToLast is zero, treat it as a special case (avoid division by zero)
-    final bool secondToLastIsZero = secondToLast == 0;
+    // Special check for no difference
+    final differenceIsZero = difference == 0;
 
-    // 3. Compute a basic percentage change if possible
-    final percentageChange = secondToLastIsZero
-        ? 100.0
-        : (difference / secondToLast) * 100;
+    // If the average is zero, treat it as a special case for percentage change
+    final bool averageIsZero = averageOfPrevious == 0;
+    final double percentageChange = averageIsZero ? 100.0 : (difference / averageOfPrevious) * 100;
 
-    // 4. Decide the trend (up, down, or stable)
-    // Adjust the threshold if you want finer or broader distinction
-    Trend trend;
-    const threshold = 25; // e.g., 25% difference for "stable" range
+    // 4. Decide the trend
+    const threshold = 5; // Adjust this threshold for "stable" as needed
+    late final Trend trend;
     if (percentageChange > threshold) {
       trend = Trend.up;
     } else if (percentageChange < -threshold) {
@@ -148,19 +157,37 @@ class LogStreakChart extends StatelessWidget {
       trend = Trend.stable;
     }
 
-    // 5. Generate a concise, supportive message based on the trend
-    final variation = "${percentageChange.abs().toStringAsFixed(1)}%";
+    // 5. Generate a friendly, concise message based on the trend
+    final _ = "${percentageChange.abs().toStringAsFixed(1)}%";
+
+    final diffAbs = difference.toInt().abs();
 
     switch (trend) {
       case Trend.up:
-        return "📈 You're training $variation more days than last week!"
-            " Keep it going—you’re building solid habits!";
+        return TrendSummary(
+            trend: Trend.up,
+            average: averageOfPrevious,
+            summary:
+                "🌟🌟 You're training $diffAbs more ${pluralize(word: "day", count: daysTrained.length)} than your average!"
+                " Keep it going—you’re building solid habits!");
       case Trend.down:
-        return "📉 You're training ${difference.toInt().abs()} days lesser than last week."
-            " Consider your schedule, rest, or motivation to stay on track.";
+        return TrendSummary(
+            trend: Trend.down,
+            average: averageOfPrevious,
+            summary: "📉 You're training $diffAbs ${pluralize(word: "day", count: diffAbs)} lesser than your average."
+                " Consider your schedule, rest, or motivation to stay on track.");
       case Trend.stable:
-        return "📉 Your training days only varied by about $variation from last week."
-            " Keep refining your routine for ongoing consistency!";
+        final summary = differenceIsZero
+            ? "🌟 You've matched your average exactly! Stay consistent to see long-term progress."
+            : "🔄 Your training days only varied by about $diffAbs compared to your average."
+                " Keep refining your routine for ongoing consistency!";
+        return TrendSummary(trend: Trend.stable, average: averageOfPrevious, summary: summary);
+      case Trend.none:
+        return TrendSummary(
+          trend: Trend.none,
+          summary: "🤔 Unable to identify trends",
+          average: averageOfPrevious,
+        );
     }
   }
 }

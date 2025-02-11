@@ -46,7 +46,7 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           MuscleGroupSplitChart(
-              title: "Muscle Groups Frequency",
+              title: "Muscle Groups Coverage",
               description:
                   "Train a variety of muscle groups to avoid muscle imbalances and prevent injury. On average each muscle group should be trained at least 2 times a week.",
               muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
@@ -102,8 +102,8 @@ class MuscleGroupSplitChart extends StatelessWidget {
       const SizedBox(height: 10),
       Text(description,
           style: isDarkMode
-              ? Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white70)
-              : Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.black)),
+              ? Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white70)
+              : Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black)),
       const SizedBox(height: 10),
       MuscleGroupFamilyFrequencyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
     ]);

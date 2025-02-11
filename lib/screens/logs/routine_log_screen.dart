@@ -33,6 +33,7 @@ import '../../enums/routine_editor_type_enums.dart';
 import '../../models/RoutineLog.dart';
 import '../../openAI/open_ai.dart';
 import '../../strings/ai_prompts.dart';
+import '../../utils/data_trend_utils.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
@@ -41,7 +42,6 @@ import '../../utils/routine_utils.dart';
 import '../../utils/string_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../widgets/ai_widgets/trkr_information_container.dart';
-import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/empty_states/not_found.dart';
 import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
@@ -132,18 +132,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     final avgVolume = allLoggedVolumesForTemplate.isNotEmpty ? allLoggedVolumesForTemplate.average : 0.0;
 
-    final currentAndPreviousMonthVolume = _calculateCurrentAndPreviousLogVolume(logs: logs);
-
-    final previousMonthVolume = currentAndPreviousMonthVolume.$1;
-    final currentMonthVolume = currentAndPreviousMonthVolume.$2;
-
-    final improved = currentMonthVolume > previousMonthVolume;
-
-    final difference = improved ? currentMonthVolume - previousMonthVolume : previousMonthVolume - currentMonthVolume;
-
-    final differenceSummary = _generateDifferenceSummary(difference: difference, improved: improved);
-
-    final differenceFeedback = _generateDifferenceFeedback(difference: difference, improved: improved);
+    final trendSummary = _analyzeWeeklyTrends(volumes: allLoggedVolumesForTemplate);
 
     return Scaffold(
         appBar: AppBar(
@@ -265,6 +254,15 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                                   "The number of rounds you performed for each exercise. A “set” consists of a group of repetitions (reps)."),
                         ),
                         _StatisticWidget(
+                          title: volumeInKOrM(log.volume),
+                          subtitle: "Volume",
+                          icon: FontAwesomeIcons.weightHanging,
+                          information: _StatisticsInformation(
+                              title: "Volume",
+                              description:
+                                  "The total amount of work performed during a workout, typically calculated as: Volume = Sets × Reps × Weight."),
+                        ),
+                        _StatisticWidget(
                           title: updatedLog.duration().hmsDigital(),
                           subtitle: "Duration",
                           icon: FontAwesomeIcons.solidClock,
@@ -328,45 +326,44 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                         if (updatedLog.templateId.isNotEmpty && updatedLog.owner == SharedPrefs().userId)
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
+                            spacing: 10,
                             children: [
-                              RichText(
-                                text: TextSpan(
-                                  text: volumeInKOrM(avgVolume),
-                                  style: Theme.of(context).textTheme.headlineMedium,
-                                  children: [
-                                    TextSpan(
-                                      text: " ",
-                                    ),
-                                    TextSpan(
-                                      text: weightLabel().toUpperCase(),
-                                      style: Theme.of(context).textTheme.bodyMedium,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Text(
-                                "SESSION AVERAGE".toUpperCase(),
-                                style: Theme.of(context).textTheme.bodySmall,
-                              ),
                               Wrap(
                                 crossAxisAlignment: WrapCrossAlignment.center,
+                                spacing: 10,
                                 children: [
-                                  FaIcon(
-                                    getImprovementIcon(improved: improved, difference: difference),
-                                    color: getImprovementColor(improved: improved, difference: difference),
-                                    size: 12,
-                                  ),
-                                  const SizedBox(width: 6),
-                                  OpacityButtonWidget(
-                                    label: differenceSummary,
-                                    buttonColor: getImprovementColor(improved: improved, difference: difference),
-                                  ),
-                                  Text(differenceFeedback,
-                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                          fontWeight: FontWeight.w400,
-                                          color: isDarkMode ? Colors.white70 : Colors.black))
+                                  trendSummary.trend == Trend.none
+                                      ? const SizedBox.shrink()
+                                      : getTrendIcon(trend: trendSummary.trend),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      RichText(
+                                        text: TextSpan(
+                                          text: volumeInKOrM(avgVolume),
+                                          style: Theme.of(context).textTheme.headlineSmall,
+                                          children: [
+                                            TextSpan(
+                                              text: " ",
+                                            ),
+                                            TextSpan(
+                                              text: weightLabel().toUpperCase(),
+                                              style: Theme.of(context).textTheme.bodyMedium,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Text(
+                                        "Session AVERAGE".toUpperCase(),
+                                        style: Theme.of(context).textTheme.bodySmall,
+                                      ),
+                                    ],
+                                  )
                                 ],
-                              )
+                              ),
+                              Text(trendSummary.summary,
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                      fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
                             ],
                           ),
                         if (updatedLog.owner == SharedPrefs().userId && widget.isEditable)
@@ -383,8 +380,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                       ],
                     ),
                   )
-                  //
-                  // const EdgeInsets.only(right: 10, bottom: 10, left: 10)
                 ],
               ),
             ),
@@ -523,12 +518,14 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
   }
 
   void _showLoadingScreen() {
+    if (!mounted) return;
     setState(() {
       _loading = true;
     });
   }
 
   void _hideLoadingScreen() {
+    if (!mounted) return;
     setState(() {
       _loading = false;
     });
@@ -665,54 +662,81 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         isRightActionDestructive: true);
   }
 
-  (double, double) _calculateCurrentAndPreviousLogVolume({required List<RoutineLogDto> logs}) {
-    if (logs.isEmpty) {
-      // No logs => no comparison
-      return (0, 0);
+  TrendSummary _analyzeWeeklyTrends({required List<double> volumes}) {
+    // 1. Handle edge cases
+    if (volumes.isEmpty) {
+      return TrendSummary(
+          trend: Trend.none,
+          average: 0,
+          summary: "No training data available yet. Log some sessions to start tracking your progress!");
     }
 
-    // 2. Identify the most recent log
-    final lastLog = logs.last;
-    final lastLogVolume = lastLog.volume;
-    final lastLogDate = lastLog.createdAt;
+    final previousVolumes = volumes.sublist(0, volumes.length - 1);
+    final averageOfPrevious = previousVolumes.reduce((a, b) => a + b) / previousVolumes.length;
 
-    final previousLogs = logs.where((log) => log.createdAt.isBefore(lastLogDate));
-
-    if (previousLogs.isEmpty) {
-      // No earlier logs => can't compare
-      return (0, 0);
+    if (volumes.length == 1) {
+      return TrendSummary(
+          trend: Trend.none,
+          average: averageOfPrevious,
+          summary: "You've logged your first week's volume (${volumes.first})."
+              " Great job! Keep logging more data to see trends over time.");
     }
 
-    final previousLogVolume = previousLogs.last.volume;
+    // 2. Identify the last week's volume and the average of all previous weeks
+    final lastWeekVolume = volumes.last;
 
-    return (previousLogVolume, lastLogVolume);
-  }
+    if (lastWeekVolume == 0) {
+      return TrendSummary(
+          trend: Trend.none,
+          average: averageOfPrevious,
+          summary: "No training data available for this week. Log some workouts to continue tracking your progress!");
+    }
 
-  String _generateDifferenceSummary({required bool improved, required double difference}) {
-    if (difference <= 0) {
-      return "0 change in past session";
+    // 3. Compare last week's volume to the average of previous volumes
+    final difference = lastWeekVolume - averageOfPrevious;
+
+    // Special check for no difference
+    final differenceIsZero = difference == 0;
+
+    // If the average is zero, treat it as a special case for percentage change
+    final bool averageIsZero = averageOfPrevious == 0;
+    final double percentageChange = averageIsZero ? 100.0 : (difference / averageOfPrevious) * 100;
+
+    // 4. Decide the trend
+    const threshold = 5; // Adjust this threshold for "stable" as needed
+    late final Trend trend;
+    if (percentageChange > threshold) {
+      trend = Trend.up;
+    } else if (percentageChange < -threshold) {
+      trend = Trend.down;
     } else {
-      if (improved) {
-        return "${volumeInKOrM(difference)} ${weightLabel()} up in this session";
-      } else {
-        return "${volumeInKOrM(difference)} ${weightLabel()} down in this session";
-      }
+      trend = Trend.stable;
     }
-  }
 
-  String _generateDifferenceFeedback({
-    required bool improved,
-    required double difference,
-  }) {
-    // If there's effectively no difference, treat it as "no change."
-    if (difference == 0) {
-      return "No change in volume this session. Consistency is key to reaching your goals!";
-    } else {
-      if (improved) {
-        return "Keep pushing to achieve lasting progress!";
-      } else {
-        return "Reassess and aim for steady improvements!";
-      }
+    // 5. Generate a friendly, concise message based on the trend
+    final variation = "${percentageChange.abs().toStringAsFixed(1)}%";
+
+    switch (trend) {
+      case Trend.up:
+        return TrendSummary(
+            trend: Trend.up,
+            average: averageOfPrevious,
+            summary: "🌟🌟 This session's volume is $variation higher than your average. "
+                "Awesome job building momentum!");
+      case Trend.down:
+        return TrendSummary(
+            trend: Trend.down,
+            average: averageOfPrevious,
+            summary: "📉 This session's volume is $variation lower than your average. "
+                "Consider extra rest, checking your technique, or planning a deload.");
+      case Trend.stable:
+        final summary = differenceIsZero
+            ? "🌟 You've matched your average exactly! Stay consistent to see long-term progress."
+            : "🔄 Your volume changed by about $variation compared to your average. "
+                "A great chance to refine your form and maintain consistency.";
+        return TrendSummary(trend: Trend.stable, average: averageOfPrevious, summary: summary);
+      case Trend.none:
+        return TrendSummary(trend: Trend.none, average: averageOfPrevious, summary: "🤔 Unable to identify trends");
     }
   }
 }

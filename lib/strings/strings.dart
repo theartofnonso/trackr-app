@@ -1,19 +1,2 @@
 const overviewMonitor =
-    "Streak is based on monthly strength training, "
-    "with an optimal target of 12 days per month. "
-    "Muscle is the frequency of muscle groups trained monthly.";
-
-const exploreWorkouts =
-    "Explore curated workouts, from daily splits to focusing on particular muscle groups and classic routines.";
-
-const lowAverageWorkoutDuration =
-    "The recommended minimum workout duration is 30 minutes. "
-    "Try to include more reps, sets or exercises.";
-
-const highAverageWorkoutDuration = "You are doing great!";
-
-const lowStreak =
-    "The recommended optimal number of training sessions is 3 per week. "
-    "Try to train on more days.";
-
-const highStreak = "You are doing great!";
+    "Streak is the number of days you engage in strength training each month, with an ideal target of 12 days. Muscle, on the other hand, is the variety of muscle groups you train in a month.";

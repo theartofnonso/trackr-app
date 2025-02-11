@@ -57,13 +57,10 @@ class VolumeChart extends StatelessWidget {
       months.add(startOfWeek.abbreviatedMonth());
     }
 
-    final avgVolume = volumes.isNotEmpty ? volumes.average : 0.0;
-
     final chartPoints =
         volumes.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
 
-    Trend trend = detectTrend(volumes);
-    String volumeFeedback = _analyzeWeeklyVolumes(volumes: volumes, trend: trend);
+    final trendSummary = _analyzeWeeklyTrends(volumes: volumes);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,17 +70,15 @@ class VolumeChart extends StatelessWidget {
           children: [
             Wrap(
               crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 10,
               children: [
-                getTrendIcon(trend: trend),
-                const SizedBox(
-                  width: 10,
-                ),
+                trendSummary.trend == Trend.none ? const SizedBox.shrink() : getTrendIcon(trend: trendSummary.trend),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     RichText(
                       text: TextSpan(
-                        text: volumeInKOrM(avgVolume),
+                        text: volumeInKOrM(trendSummary.average),
                         style: Theme.of(context).textTheme.headlineSmall,
                         children: [
                           TextSpan(
@@ -112,7 +107,7 @@ class VolumeChart extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 10),
-        Text(volumeFeedback,
+        Text(trendSummary.summary,
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium
@@ -130,37 +125,50 @@ class VolumeChart extends StatelessWidget {
     );
   }
 
-  String _analyzeWeeklyVolumes({required List<double> volumes, required Trend trend}) {
+  TrendSummary _analyzeWeeklyTrends({required List<double> volumes}) {
     // 1. Handle edge cases
     if (volumes.isEmpty) {
-      return "No training data available yet. Log some sessions to start tracking your progress!";
+      return TrendSummary(
+          trend: Trend.none,
+          average: 0,
+          summary: "🤔 No training data available yet. Log some sessions to start tracking your progress!");
     }
+
+    final previousVolumes = volumes.sublist(0, volumes.length - 1);
+    final averageOfPrevious = previousVolumes.reduce((a, b) => a + b) / previousVolumes.length;
+
 
     if (volumes.length == 1) {
-      return "You've logged your first week's volume (${volumes.first})."
-          " Great job! Keep logging more data to see trends over time.";
+      return TrendSummary(
+          trend: Trend.none,
+          average: averageOfPrevious,
+          summary: "🌟 You've logged your first week's volume (${volumes.first})."
+              " Great job! Keep logging more data to see trends over time.");
     }
 
-    // 2. Compare the last two entries to determine a trend
-    final secondToLast = volumes[volumes.length - 2];
-    final last = volumes.last;
+    // 2. Identify the last week's volume and the average of all previous weeks
+    final lastWeekVolume = volumes.last;
 
-    if(last == 0) {
-      return "No training data available for this week. Log some workouts to continue tracking your progress!";
+    if (lastWeekVolume == 0) {
+      return TrendSummary(
+          trend: Trend.none,
+          average: averageOfPrevious,
+          summary: "🤔 No training data available for this week. Log some workouts to continue tracking your progress!");
     }
 
-    final difference = last - secondToLast;
+    // 3. Compare last week's volume to the average of previous volumes
+    final difference = lastWeekVolume - averageOfPrevious;
 
-    // If secondToLast is zero, treat it as a special case
-    final bool secondToLastIsZero = secondToLast == 0;
+    // Special check for no difference
+    final differenceIsZero = difference == 0;
 
-    // 3. Derive a basic percentage change (if secondToLast != 0)
-    final percentageChange = secondToLastIsZero ? 100.0 : (difference / secondToLast) * 100;
+    // If the average is zero, treat it as a special case for percentage change
+    final bool averageIsZero = averageOfPrevious == 0;
+    final double percentageChange = averageIsZero ? 100.0 : (difference / averageOfPrevious) * 100;
 
     // 4. Decide the trend
-    // Adjust threshold for "stable" if you want finer or broader distinction
-    Trend trend;
-    const threshold = 5; // e.g., 5% is the “stable” range
+    const threshold = 5; // Adjust this threshold for "stable" as needed
+    late final Trend trend;
     if (percentageChange > threshold) {
       trend = Trend.up;
     } else if (percentageChange < -threshold) {
@@ -174,14 +182,25 @@ class VolumeChart extends StatelessWidget {
 
     switch (trend) {
       case Trend.up:
-        return "📈 This week's volume is $variation higher than last week's. "
-            "Awesome job building momentum!";
+        return TrendSummary(
+            trend: Trend.up,
+            average: averageOfPrevious,
+            summary: "🌟🌟 This week's volume is $variation higher than your average. "
+                "Awesome job building momentum!");
       case Trend.down:
-        return "📉 This week's volume is $variation lower than last week's. "
-            "Consider extra rest, checking your technique, or planning a deload.";
+        return TrendSummary(
+            trend: Trend.down,
+            average: averageOfPrevious,
+            summary: "📉 This week's volume is $variation lower than your average. "
+                "Consider extra rest, checking your technique, or planning a deload.");
       case Trend.stable:
-        return "📉 Your volume changed by about $variation from last week. "
-            "A great chance to refine your form and maintain consistency.";
+        final summary = differenceIsZero
+            ? "🌟 You've matched your average exactly! Stay consistent to see long-term progress."
+            : "🔄 Your volume changed by about $variation compared to your average. "
+                "A great chance to refine your form and maintain consistency.";
+        return TrendSummary(trend: Trend.stable, average: averageOfPrevious, summary: summary);
+      case Trend.none:
+        return TrendSummary(trend: Trend.none, average: averageOfPrevious, summary: "🤔 Unable to identify trends");
     }
   }
 }

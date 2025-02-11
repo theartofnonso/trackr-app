@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,6 +11,7 @@ import 'package:tracker_app/widgets/routine/preview/exercise_log_widget.dart';
 
 import '../../dtos/open_ai_response_schema_dtos/exercise_performance_report.dart';
 import '../../utils/general_utils.dart';
+import '../../widgets/buttons/opacity_button_widget.dart';
 
 class RoutineLogReportScreen extends StatelessWidget {
   final RoutineLogDto routineLog;
@@ -50,8 +52,21 @@ class RoutineLogReportScreen extends StatelessWidget {
                             physics: NeverScrollableScrollPhysics(),
                             itemBuilder: (context, index) {
                               final exerciseReport = report.exerciseReports[index];
-                              final exerciseLog = exerciseLogs
-                                  .firstWhere((exerciseLog) => exerciseReport.exerciseId == exerciseLog.exercise.id);
+                              final exerciseLog = exerciseLogs.firstWhereOrNull(
+                                  (exerciseLog) => exerciseReport.exerciseId == exerciseLog.exercise.id);
+
+                              // If no matching exercise log is found, handle it gracefully.
+                              if (exerciseLog == null) {
+                                return Center(
+                                    child: SizedBox(
+                                  width: double.infinity,
+                                  child: OpacityButtonWidget(
+                                      label: "No matching exercise log found.",
+                                      buttonColor: Colors.deepOrange,
+                                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16)),
+                                ));
+                              }
+
                               return _ExerciseReportWidget(exerciseLog: exerciseLog, exerciseReport: exerciseReport);
                             },
                             separatorBuilder: (context, index) => SizedBox(height: 20),

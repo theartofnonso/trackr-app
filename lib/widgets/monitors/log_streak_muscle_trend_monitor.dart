@@ -141,7 +141,7 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
               title: Text("Share Streak and Muscle Monitor"),
               onTap: () {
                 Navigator.of(context).pop();
-                _onShareMonitor(context: context);
+                _onShareMonitor(context: context, dateTime: dateTime);
               },
             ),
             ListTile(
@@ -158,7 +158,7 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
         ));
   }
 
-  void _onShareMonitor({required BuildContext context}) {
+  void _onShareMonitor({required DateTime dateTime, required BuildContext context}) {
     Posthog().capture(eventName: PostHogAnalyticsEvent.shareMonitor.displayName);
     onShare(
         context: context,
@@ -167,25 +167,16 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 18),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Monthly Overview".toUpperCase(),
-                      style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 1),
-                  Text(DateTime.now().formattedDayAndMonthAndYear(),
-                      style: GoogleFonts.ubuntu(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w400)),
-                ],
-              ),
-              const SizedBox(height: 14),
+              Text("${dateTime.abbreviatedMonthAndYear()} Overview".toUpperCase(),
+                  style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 20),
               LogStreakMuscleTrendMonitor(
                 dateTime: dateTime,
                 showInfo: false,
                 forceDarkMode: true,
               ),
-              const SizedBox(height: 14),
             ],
           ),
         ));

@@ -1,8 +1,8 @@
-enum SetRepsVolumeReps {
+enum TrainingMetric {
 
   sets("Sets"), reps("Reps"), volume("Vol");
 
-  const SetRepsVolumeReps(this.name);
+  const TrainingMetric(this.name);
 
   final String name;
 
