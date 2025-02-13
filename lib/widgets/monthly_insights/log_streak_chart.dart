@@ -106,48 +106,52 @@ class LogStreakChart extends StatelessWidget {
   }
 
   TrendSummary _analyzeWeeklyTrends({required List<int> daysTrained}) {
-    // 1. Handle edge cases
+    // 1. If there's no data, return immediately
     if (daysTrained.isEmpty) {
       return TrendSummary(
-          trend: Trend.none,
-          average: 0,
-          summary: "🤔 No training data available yet. Log some sessions to start tracking your progress!");
+        trend: Trend.none,
+        average: 0,
+        summary: "🤔 No training data available yet. Log some sessions to start tracking your progress!",
+      );
     }
 
+    // 2. If there's only one data point, avoid sublist/reduce on an empty list
+    if (daysTrained.length == 1) {
+      final singleWeek = daysTrained.first;
+      // With only one data point, there's no "previous" data to average
+      return TrendSummary(
+        trend: Trend.none,
+        average: 0,
+        summary: "🌟 You’ve logged your first week: $singleWeek day(s) of training."
+            " Great job! Log more weeks to identify trends over time.",
+      );
+    }
+
+    // 3. Now we can safely do sublist & reduce because we have at least 2 entries
     final previousVolumes = daysTrained.sublist(0, daysTrained.length - 1);
     final averageOfPrevious = previousVolumes.reduce((a, b) => a + b) / previousVolumes.length;
 
-    if (daysTrained.length == 1) {
-      return TrendSummary(
-          trend: Trend.none,
-          average: averageOfPrevious,
-          summary: "🌟 You’ve logged your first week: ${daysTrained.first} day(s) of training."
-              " Great job! Log more weeks to identify trends over time.");
-    }
-
-    // 2. Identify the last week's volume and the average of all previous weeks
+    // 4. Identify the last week's days trained
     final lastWeekVolume = daysTrained.last;
 
     if (lastWeekVolume == 0) {
       return TrendSummary(
-          trend: Trend.none,
-          average: averageOfPrevious,
-          summary:
-              "🤔 No training data available for this week. Log some sessions to continue tracking your progress!");
+        trend: Trend.none,
+        average: averageOfPrevious,
+        summary: "🤔 No training data available for this week. "
+            "Log some sessions to continue tracking your progress!",
+      );
     }
 
-    // 3. Compare last week's volume to the average of previous volumes
+    // 5. Compare the last week's volume to the average of previous weeks
     final difference = lastWeekVolume - averageOfPrevious;
+    final differenceIsZero = (difference == 0);
 
-    // Special check for no difference
-    final differenceIsZero = difference == 0;
-
-    // If the average is zero, treat it as a special case for percentage change
-    final bool averageIsZero = averageOfPrevious == 0;
+    final bool averageIsZero = (averageOfPrevious == 0);
     final double percentageChange = averageIsZero ? 100.0 : (difference / averageOfPrevious) * 100;
 
-    // 4. Decide the trend
-    const threshold = 5; // Adjust this threshold for "stable" as needed
+    // 6. Decide the trend
+    const threshold = 5; // ±5% threshold
     late final Trend trend;
     if (percentageChange > threshold) {
       trend = Trend.up;
@@ -157,36 +161,42 @@ class LogStreakChart extends StatelessWidget {
       trend = Trend.stable;
     }
 
-    // 5. Generate a friendly, concise message based on the trend
-    final _ = "${percentageChange.abs().toStringAsFixed(1)}%";
-
-    final diffAbs = difference.toInt().abs();
+    // 7. Generate a concise message
+    final diffAbs = difference.abs().toInt();
 
     switch (trend) {
       case Trend.up:
         return TrendSummary(
-            trend: Trend.up,
-            average: averageOfPrevious,
-            summary:
-                "🌟🌟 You're training $diffAbs more ${pluralize(word: "day", count: daysTrained.length)} than your average!"
-                " Keep it going—you’re building solid habits!");
+          trend: Trend.up,
+          average: averageOfPrevious,
+          summary: "🌟🌟 You're training $diffAbs more ${pluralize(word: 'day', count: diffAbs)} than your average!"
+              " Keep it going—you’re building solid habits!",
+        );
+
       case Trend.down:
         return TrendSummary(
-            trend: Trend.down,
-            average: averageOfPrevious,
-            summary: "📉 You're training $diffAbs ${pluralize(word: "day", count: diffAbs)} lesser than your average."
-                " Consider your schedule, rest, or motivation to stay on track.");
+          trend: Trend.down,
+          average: averageOfPrevious,
+          summary: "📉 You're training $diffAbs ${pluralize(word: 'day', count: diffAbs)} fewer than your average."
+              " Consider your schedule, rest, or motivation to stay on track.",
+        );
+
       case Trend.stable:
         final summary = differenceIsZero
             ? "🌟 You've matched your average exactly! Stay consistent to see long-term progress."
             : "🔄 Your training days only varied by about $diffAbs compared to your average."
                 " Keep refining your routine for ongoing consistency!";
-        return TrendSummary(trend: Trend.stable, average: averageOfPrevious, summary: summary);
+        return TrendSummary(
+          trend: Trend.stable,
+          average: averageOfPrevious,
+          summary: summary,
+        );
+
       case Trend.none:
         return TrendSummary(
           trend: Trend.none,
-          summary: "🤔 Unable to identify trends",
           average: averageOfPrevious,
+          summary: "🤔 Unable to identify trends",
         );
     }
   }

@@ -120,48 +120,53 @@ class CaloriesChart extends StatelessWidget {
   }
 
   TrendSummary _analyzeWeeklyTrends({required List<int> caloriesBurned}) {
-    // 1. Handle edge cases
+    // 1. If there's no data at all, return immediately.
     if (caloriesBurned.isEmpty) {
       return TrendSummary(
-          trend: Trend.none,
-          average: 0,
-          summary: "🤔 No data on calories burned yet. Log some sessions or activities to start tracking!");
+        trend: Trend.none,
+        average: 0,
+        summary: "🤔 No data on calories burned yet. Log some sessions or activities to start tracking!",
+      );
     }
 
+    // 2. If there's only one logged value, avoid sublist/reduce on an empty list.
+    if (caloriesBurned.length == 1) {
+      final singleCalories = caloriesBurned.first;
+      // No "previous" data, so the average of previous volumes is 0 by default.
+      return TrendSummary(
+        trend: Trend.up, // You labeled the first entry as an "up" trend.
+        average: 0,
+        summary: "🌟 You've logged your first week's calorie burn ($singleCalories). "
+            "Great job! Keep logging more data to see trends over time.",
+      );
+    }
+
+    // 3. Now we can safely do sublist & reduce because we know there's at least 2 entries.
     final previousVolumes = caloriesBurned.sublist(0, caloriesBurned.length - 1);
     final averageOfPrevious = previousVolumes.reduce((a, b) => a + b) / previousVolumes.length;
 
-    if (caloriesBurned.length == 1) {
-      return TrendSummary(
-          trend: Trend.up,
-          average: averageOfPrevious,
-          summary: "🌟 You've logged your first week's calorie burn (${caloriesBurned.first}). "
-              "Great job! Keep logging more data to see trends over time.");
-    }
-
-    // 2. Identify the last week's volume and the average of all previous weeks
+    // 4. Identify the latest week's calorie burn
     final lastWeekVolume = caloriesBurned.last;
 
     if (lastWeekVolume == 0) {
       return TrendSummary(
-          trend: Trend.none,
-          average: averageOfPrevious,
-          summary:
-              "🤔 No training data available for this week. Log some workouts to continue tracking your progress!");
+        trend: Trend.none,
+        average: averageOfPrevious,
+        summary: "🤔 No training data available for this week. "
+            "Log some workouts to continue tracking your progress!",
+      );
     }
 
-    // 3. Compare last week's volume to the average of previous volumes
+    // 5. Compare the most recent to the average of previous
     final difference = lastWeekVolume - averageOfPrevious;
-
-    // Special check for no difference
     final differenceIsZero = difference == 0;
 
-    // If the average is zero, treat it as a special case for percentage change
+    // Special handling if averageOfPrevious == 0
     final bool averageIsZero = averageOfPrevious == 0;
     final double percentageChange = averageIsZero ? 100.0 : (difference / averageOfPrevious) * 100;
 
-    // 4. Decide the trend
-    const threshold = 5; // Adjust this threshold for "stable" as needed
+    // 6. Decide the trend based on a threshold
+    const threshold = 5; // ±5%
     late final Trend trend;
     if (percentageChange > threshold) {
       trend = Trend.up;
@@ -171,30 +176,44 @@ class CaloriesChart extends StatelessWidget {
       trend = Trend.stable;
     }
 
-    // 5. Generate a friendly, concise message based on the trend
+    // 7. Create a concise message based on the trend
     final variation = "${percentageChange.abs().toStringAsFixed(1)}%";
 
     switch (trend) {
       case Trend.up:
         return TrendSummary(
-            trend: Trend.up,
-            average: averageOfPrevious,
-            summary: "🌟🌟 This week's calorie burn is $variation higher than your average. "
-                "Fantastic effort—you're on the rise!");
+          trend: Trend.up,
+          average: averageOfPrevious,
+          summary: "🌟🌟 This week's calorie burn is $variation higher than your average. "
+              "Fantastic effort—you're on the rise!",
+        );
+
       case Trend.down:
         return TrendSummary(
-            trend: Trend.down,
-            average: averageOfPrevious,
-            summary: "📉 This week's calorie burn is $variation lower than your average. "
-                "Consider adjusting your routine or intensity if this wasn't intentional.");
+          trend: Trend.down,
+          average: averageOfPrevious,
+          summary: "📉 This week's calorie burn is $variation lower than your average. "
+              "Consider adjusting your routine or intensity if this wasn't intentional.",
+        );
+
       case Trend.stable:
         final summary = differenceIsZero
             ? "🌟 You've matched your average exactly! Stay consistent to see long-term progress."
             : "🔄 Your calorie burn changed by about $variation compared to your average. "
                 "You're maintaining consistency—great job! Keep refining your plan for steady progress.";
-        return TrendSummary(trend: Trend.stable, average: averageOfPrevious, summary: summary);
+        return TrendSummary(
+          trend: Trend.stable,
+          average: averageOfPrevious,
+          summary: summary,
+        );
+
       case Trend.none:
-        return TrendSummary(trend: Trend.none, summary: "🤔 Unable to identify trends", average: averageOfPrevious);
+        // Fallback for completeness — you typically won't reach here
+        return TrendSummary(
+          trend: Trend.none,
+          average: averageOfPrevious,
+          summary: "🤔 Unable to identify trends",
+        );
     }
   }
 }

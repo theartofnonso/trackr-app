@@ -663,48 +663,45 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
   }
 
   TrendSummary _analyzeWeeklyTrends({required List<double> volumes}) {
-    // 1. Handle edge cases
+    // 1. Handle the case when there's no volume data at all
     if (volumes.isEmpty) {
       return TrendSummary(
-          trend: Trend.none,
-          average: 0,
-          summary: "No training data available yet. Log some sessions to start tracking your progress!");
+        trend: Trend.none,
+        average: 0,
+        summary: "No training data available yet. Log some sessions to start tracking your progress!",
+      );
     }
 
-    final previousVolumes = volumes.sublist(0, volumes.length - 1);
-    final averageOfPrevious = previousVolumes.reduce((a, b) => a + b) / previousVolumes.length;
-
+    // 2. Handle the case when there's only one logged volume
     if (volumes.length == 1) {
       return TrendSummary(
-          trend: Trend.none,
-          average: averageOfPrevious,
-          summary: "You've logged your first week's volume (${volumes.first})."
-              " Great job! Keep logging more data to see trends over time.");
+        trend: Trend.none,
+        average: volumes.first,
+        summary: "You've logged your first session's volume (${volumes.first.toStringAsFixed(1)}). "
+            "Great job! Keep logging more data to see trends over time.",
+      );
     }
 
-    // 2. Identify the last week's volume and the average of all previous weeks
+    // 3. Now we can safely assume volumes has 2 or more entries
+    final previousVolumes = volumes.sublist(0, volumes.length - 1);
+    final averageOfPrevious = previousVolumes.reduce((a, b) => a + b) / previousVolumes.length;
     final lastWeekVolume = volumes.last;
 
     if (lastWeekVolume == 0) {
       return TrendSummary(
-          trend: Trend.none,
-          average: averageOfPrevious,
-          summary: "No training data available for this week. Log some workouts to continue tracking your progress!");
+        trend: Trend.none,
+        average: averageOfPrevious,
+        summary: "No training data available for this session. Log some workouts to continue tracking your progress!",
+      );
     }
 
-    // 3. Compare last week's volume to the average of previous volumes
     final difference = lastWeekVolume - averageOfPrevious;
+    final double percentageChange = averageOfPrevious == 0 ? 100.0 : (difference / averageOfPrevious) * 100;
 
-    // Special check for no difference
-    final differenceIsZero = difference == 0;
-
-    // If the average is zero, treat it as a special case for percentage change
-    final bool averageIsZero = averageOfPrevious == 0;
-    final double percentageChange = averageIsZero ? 100.0 : (difference / averageOfPrevious) * 100;
-
-    // 4. Decide the trend
-    const threshold = 5; // Adjust this threshold for "stable" as needed
+    // Decide the trend
+    const threshold = 5; // threshold for stable vs up/down
     late final Trend trend;
+
     if (percentageChange > threshold) {
       trend = Trend.up;
     } else if (percentageChange < -threshold) {
@@ -713,30 +710,34 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
       trend = Trend.stable;
     }
 
-    // 5. Generate a friendly, concise message based on the trend
     final variation = "${percentageChange.abs().toStringAsFixed(1)}%";
-
     switch (trend) {
       case Trend.up:
         return TrendSummary(
-            trend: Trend.up,
-            average: averageOfPrevious,
-            summary: "🌟🌟 This session's volume is $variation higher than your average. "
-                "Awesome job building momentum!");
+          trend: Trend.up,
+          average: averageOfPrevious,
+          summary: "🌟 This session's volume is $variation higher than your average. Nice job building momentum!",
+        );
       case Trend.down:
         return TrendSummary(
-            trend: Trend.down,
-            average: averageOfPrevious,
-            summary: "📉 This session's volume is $variation lower than your average. "
-                "Consider extra rest, checking your technique, or planning a deload.");
+          trend: Trend.down,
+          average: averageOfPrevious,
+          summary:
+              "📉 This session's volume is $variation lower than your average. Consider extra rest or checking your form.",
+        );
       case Trend.stable:
-        final summary = differenceIsZero
-            ? "🌟 You've matched your average exactly! Stay consistent to see long-term progress."
-            : "🔄 Your volume changed by about $variation compared to your average. "
-                "A great chance to refine your form and maintain consistency.";
-        return TrendSummary(trend: Trend.stable, average: averageOfPrevious, summary: summary);
+        return TrendSummary(
+          trend: Trend.stable,
+          average: averageOfPrevious,
+          summary: "🔄 Your volume changed by about $variation compared to your average. "
+              "Stay consistent to see long-term progress.",
+        );
       case Trend.none:
-        return TrendSummary(trend: Trend.none, average: averageOfPrevious, summary: "🤔 Unable to identify trends");
+        return TrendSummary(
+          trend: Trend.none,
+          average: averageOfPrevious,
+          summary: "🤔 Unable to identify trends.",
+        );
     }
   }
 }
