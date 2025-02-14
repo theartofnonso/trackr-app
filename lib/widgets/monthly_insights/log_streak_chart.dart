@@ -177,7 +177,7 @@ class LogStreakChart extends StatelessWidget {
         return TrendSummary(
           trend: Trend.down,
           average: averageOfPrevious,
-          summary: "📉 You're training $diffAbs ${pluralize(word: 'day', count: diffAbs)} fewer than your average."
+          summary: "📉 You're training $diffAbs ${pluralize(word: 'day', count: diffAbs)} lesser than your average."
               " Consider your schedule, rest, or motivation to stay on track.",
         );
 
