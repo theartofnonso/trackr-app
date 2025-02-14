@@ -79,13 +79,11 @@ class ActivitiesWidget extends StatelessWidget {
                 ],
               ),
               const SizedBox(width: 4),
-              trend == Trend.stable
-                  ? const SizedBox.shrink()
-                  : FaIcon(
-                      trend == Trend.up ? FontAwesomeIcons.arrowUp : FontAwesomeIcons.arrowDown,
-                      color: trend == Trend.up ? vibrantGreen : Colors.deepOrange,
-                      size: 12,
-                    )
+              FaIcon(
+                trend == Trend.up ? FontAwesomeIcons.arrowUp : FontAwesomeIcons.arrowDown,
+                color: trend == Trend.up ? vibrantGreen : Colors.deepOrange,
+                size: 12,
+              )
             ],
           )),
     );
