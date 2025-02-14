@@ -554,6 +554,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           spacing: 6,
                           children: [
+                            const SizedBox(height: 6),
                             CupertinoSlidingSegmentedControl<OriginalNewValues>(
                               backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade200,
                               thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
