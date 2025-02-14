@@ -65,45 +65,35 @@ class VolumeChart extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+        Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 10,
           children: [
-            Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: 10,
+            trendSummary.trend == Trend.none ? const SizedBox.shrink() : getTrendIcon(trend: trendSummary.trend),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                trendSummary.trend == Trend.none ? const SizedBox.shrink() : getTrendIcon(trend: trendSummary.trend),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    RichText(
-                      text: TextSpan(
-                        text: volumeInKOrM(trendSummary.average),
-                        style: Theme.of(context).textTheme.headlineSmall,
-                        children: [
-                          TextSpan(
-                            text: " ",
-                          ),
-                          TextSpan(
-                            text: weightLabel().toUpperCase(),
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ],
+                RichText(
+                  text: TextSpan(
+                    text: volumeInKOrM(trendSummary.average),
+                    style: Theme.of(context).textTheme.headlineSmall,
+                    children: [
+                      TextSpan(
+                        text: " ",
                       ),
-                    ),
-                    Text(
-                      "Weekly AVERAGE".toUpperCase(),
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ],
-                )
+                      TextSpan(
+                        text: weightLabel().toUpperCase(),
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ],
+                  ),
+                ),
+                Text(
+                  "Weekly AVERAGE".toUpperCase(),
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
               ],
-            ),
-            const Spacer(),
-            Text(
-              "Volume".toUpperCase(),
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-            ),
+            )
           ],
         ),
         const SizedBox(height: 10),
@@ -151,7 +141,7 @@ class VolumeChart extends StatelessWidget {
 
     // 3. At this point, volumes.length >= 2, so we can safely do sublist and reduce
     final previousVolumes = volumes.sublist(0, volumes.length - 1);
-    final averageOfPrevious = previousVolumes.reduce((a, b) => a + b) / previousVolumes.length;
+    final averageOfPrevious = (previousVolumes.reduce((a, b) => a + b) / previousVolumes.length).round();
 
     // 4. Identify the most recent volume
     final lastWeekVolume = volumes.last;

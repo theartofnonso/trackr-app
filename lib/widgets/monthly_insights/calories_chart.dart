@@ -60,44 +60,35 @@ class CaloriesChart extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
+        Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 10,
           children: [
-            Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: 10,
+            trendSummary.trend == Trend.none ? const SizedBox.shrink() : getTrendIcon(trend: trendSummary.trend),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                trendSummary.trend == Trend.none ? const SizedBox.shrink() : getTrendIcon(trend: trendSummary.trend),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    RichText(
-                      text: TextSpan(
-                        text: "${trendSummary.average.toInt()}",
-                        style: Theme.of(context).textTheme.headlineSmall,
-                        children: [
-                          TextSpan(
-                            text: " ",
-                          ),
-                          TextSpan(
-                            text: "KCAL".toUpperCase(),
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ],
+                RichText(
+                  text: TextSpan(
+                    text: "${trendSummary.average.toInt()}",
+                    style: Theme.of(context).textTheme.headlineSmall,
+                    children: [
+                      TextSpan(
+                        text: " ",
                       ),
-                    ),
-                    Text(
-                      "Weekly AVERAGE".toUpperCase(),
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ],
-                )
+                      TextSpan(
+                        text: "KCAL".toUpperCase(),
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ],
+                  ),
+                ),
+                Text(
+                  "Weekly AVERAGE".toUpperCase(),
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
               ],
-            ),
-            const Spacer(),
-            Text(
-              "Energy Burned".toUpperCase(),
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-            ),
+            )
           ],
         ),
         const SizedBox(height: 10),
@@ -143,7 +134,7 @@ class CaloriesChart extends StatelessWidget {
 
     // 3. Now we can safely do sublist & reduce because we know there's at least 2 entries.
     final previousVolumes = caloriesBurned.sublist(0, caloriesBurned.length - 1);
-    final averageOfPrevious = previousVolumes.reduce((a, b) => a + b) / previousVolumes.length;
+    final averageOfPrevious = (previousVolumes.reduce((a, b) => a + b) / previousVolumes.length).round();
 
     // 4. Identify the latest week's calorie burn
     final lastWeekVolume = caloriesBurned.last;

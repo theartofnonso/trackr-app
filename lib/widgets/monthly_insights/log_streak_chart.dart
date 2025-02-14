@@ -46,44 +46,35 @@ class LogStreakChart extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
+        Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 10,
           children: [
-            Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: 10,
+            trendSummary.trend == Trend.none ? const SizedBox.shrink() : getTrendIcon(trend: trendSummary.trend),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                trendSummary.trend == Trend.none ? const SizedBox.shrink() : getTrendIcon(trend: trendSummary.trend),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    RichText(
-                      text: TextSpan(
-                        text: "${trendSummary.average.toInt()}",
-                        style: Theme.of(context).textTheme.headlineSmall,
-                        children: [
-                          TextSpan(
-                            text: " ",
-                          ),
-                          TextSpan(
-                            text: "days".toUpperCase(),
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ],
+                RichText(
+                  text: TextSpan(
+                    text: "${trendSummary.average}",
+                    style: Theme.of(context).textTheme.headlineSmall,
+                    children: [
+                      TextSpan(
+                        text: " ",
                       ),
-                    ),
-                    Text(
-                      "Weekly AVERAGE".toUpperCase(),
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ],
-                )
+                      TextSpan(
+                        text: "days".toUpperCase(),
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ],
+                  ),
+                ),
+                Text(
+                  "Weekly AVERAGE".toUpperCase(),
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
               ],
-            ),
-            const Spacer(),
-            Text(
-              "Training sessions".toUpperCase(),
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-            ),
+            )
           ],
         ),
         const SizedBox(height: 10),
@@ -129,7 +120,7 @@ class LogStreakChart extends StatelessWidget {
 
     // 3. Now we can safely do sublist & reduce because we have at least 2 entries
     final previousVolumes = daysTrained.sublist(0, daysTrained.length - 1);
-    final averageOfPrevious = previousVolumes.reduce((a, b) => a + b) / previousVolumes.length;
+    final averageOfPrevious = (previousVolumes.reduce((a, b) => a + b) / previousVolumes.length).round();
 
     // 4. Identify the last week's days trained
     final lastWeekVolume = daysTrained.last;
