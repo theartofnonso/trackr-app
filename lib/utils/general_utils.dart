@@ -269,28 +269,35 @@ final Map<int, Color> rpeIntensityToColor = {
   10: Color(0xFFFF0000), // Red - absolute limit
 };
 
-Widget getTrendIcon({required Trend trend, double? size}) {
-  return switch(trend) {
+Widget getTrendIcon({required Trend trend}) {
+  return switch (trend) {
     Trend.up => FaIcon(
-      FontAwesomeIcons.arrowTrendUp,
-      color: vibrantGreen,
-      size: size ?? 20,
-    ),
+        FontAwesomeIcons.arrowTrendUp,
+        color: vibrantGreen,
+        size: 20,
+      ),
     Trend.down => FaIcon(
-      FontAwesomeIcons.arrowTrendDown,
-      color: Colors.deepOrange,
-      size: size ?? 20,
-    ),
-    Trend.stable => FaIcon(
-      FontAwesomeIcons.arrowsUpDown,
-      color: vibrantBlue,
-      size: size ?? 20,
-    ),
-    Trend.none => FaIcon(
-      FontAwesomeIcons.xmark,
-      color: Colors.red,
-      size: size ?? 20,
-    ),
+        FontAwesomeIcons.arrowTrendDown,
+        color: Colors.deepOrange,
+        size: 20,
+      ),
+    Trend.stable => Container(
+        width: 30,
+        height: 30,
+        padding: const EdgeInsets.all(6),
+        decoration: BoxDecoration(
+          color: vibrantGreen.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(3),
+        ),
+        child: Center(
+          child: FaIcon(
+            FontAwesomeIcons.check,
+            size: 14,
+            color: vibrantGreen,
+          ),
+        ),
+      ),
+    Trend.none => const SizedBox.shrink(),
   };
 }
 
