@@ -1575,6 +1575,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.5"
+  wizard_stepper:
+    dependency: "direct main"
+    description:
+      name: wizard_stepper
+      sha256: "085dba57a0839181bf2b4d8563365bec7cee71ed298baada0781a3cc9db9aa0b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.8"
   worker_bee:
     dependency: transitive
     description:

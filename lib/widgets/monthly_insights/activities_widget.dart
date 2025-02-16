@@ -2,7 +2,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/dtos/appsync/activity_log_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
@@ -22,51 +21,46 @@ class ActivitiesWidget extends StatelessWidget {
   const ActivitiesWidget({super.key, required this.dateTimeRange});
 
   @override
+  @override
   Widget build(BuildContext context) {
     final dateRange = DateTimeRange(start: theLastYearDateTimeRange().start, end: dateTimeRange.end);
-
     final activitiesController = Provider.of<ActivityLogController>(context, listen: true);
 
     final logs = activitiesController.whereLogsIsWithinRange(range: dateRange).toList();
-
     final monthsInLastYear = generateMonthsInRange(range: dateRange);
 
+    // Build a list of how many activities were logged each month
     List<int> numberOfLoggedActivities = [];
     for (final month in monthsInLastYear) {
       final startOfMonth = month.start;
       final endOfMonth = month.end;
-      final logsForTheMonth = logs.where((log) => log.createdAt.isBetweenInclusive(from: startOfMonth, to: endOfMonth));
+      final logsForTheMonth = logs.where(
+        (log) => log.createdAt.isBetweenInclusive(from: startOfMonth, to: endOfMonth),
+      );
       numberOfLoggedActivities.add(logsForTheMonth.length);
     }
 
-    final previousActivities = numberOfLoggedActivities.sublist(0, numberOfLoggedActivities.length - 1);
-    final averageOfPrevious = (previousActivities.reduce((a, b) => a + b) / previousActivities.length).round();
-
-    // 4. Identify the most recent activities
-    final lastMonthActivities = numberOfLoggedActivities.last;
-
-    final difference = lastMonthActivities - averageOfPrevious;
-
-    final bool averageIsZero = (averageOfPrevious == 0);
-    final double percentageChange = averageIsZero ? 100.0 : (difference / averageOfPrevious) * 100;
-
-    // 6. Decide the trend
-    const threshold = 5; // ±5% threshold
-    late final Trend trend;
-    if (percentageChange > threshold) {
-      trend = Trend.up;
-    } else if (percentageChange < -threshold) {
-      trend = Trend.down;
-    } else {
-      trend = Trend.stable;
-    }
-
-    return ThemeListTile(
-      child: ListTile(
+    // Guard against short lists
+    if (numberOfLoggedActivities.isEmpty) {
+      // No months? Or no data?
+      return ThemeListTile(
+        child: ListTile(
           onTap: () => _showActivityLogs(context: context),
           leading: const FaIcon(FontAwesomeIcons.personWalking),
           title: Text("Activities".toUpperCase()),
-          subtitle: Text("All activities outside your training"),
+          subtitle: const Text("All activities outside your training"),
+          trailing: const Text("No data"),
+        ),
+      );
+    } else if (numberOfLoggedActivities.length == 1) {
+      // Only one data point — no “previous average” to compare to
+      final lastMonthActivities = numberOfLoggedActivities.first;
+      return ThemeListTile(
+        child: ListTile(
+          onTap: () => _showActivityLogs(context: context),
+          leading: const FaIcon(FontAwesomeIcons.personWalking),
+          title: Text("Activities".toUpperCase()),
+          subtitle: const Text("All activities outside your training"),
           trailing: Wrap(
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
@@ -75,18 +69,69 @@ class ActivitiesWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text("$lastMonthActivities", style: Theme.of(context).textTheme.titleMedium),
-                  Text("$averageOfPrevious", style: Theme.of(context).textTheme.titleSmall)
+                  const Text("N/A", style: TextStyle(fontSize: 12)), // No average
+                ],
+              ),
+              const SizedBox(width: 4),
+              const FaIcon(
+                FontAwesomeIcons.arrowRight, // or something neutral
+                color: Colors.grey,
+                size: 12,
+              ),
+            ],
+          ),
+        ),
+      );
+    } else {
+      // We have >= 2 data points, so sublist/reduce is safe
+      final previousActivities = numberOfLoggedActivities.sublist(0, numberOfLoggedActivities.length - 1);
+
+      final averageOfPrevious = (previousActivities.reduce((a, b) => a + b) / previousActivities.length).round();
+
+      final lastMonthActivities = numberOfLoggedActivities.last;
+      final difference = lastMonthActivities - averageOfPrevious;
+      final bool averageIsZero = (averageOfPrevious == 0);
+      final double percentageChange = averageIsZero ? 100.0 : (difference / averageOfPrevious) * 100;
+
+      // Decide the trend
+      const threshold = 5;
+      late final Trend trend;
+      if (percentageChange > threshold) {
+        trend = Trend.up;
+      } else if (percentageChange < -threshold) {
+        trend = Trend.down;
+      } else {
+        trend = Trend.stable;
+      }
+
+      return ThemeListTile(
+        child: ListTile(
+          onTap: () => _showActivityLogs(context: context),
+          leading: const FaIcon(FontAwesomeIcons.personWalking),
+          title: Text("Activities".toUpperCase()),
+          subtitle: const Text("All activities outside your training"),
+          trailing: Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("$lastMonthActivities", style: Theme.of(context).textTheme.titleMedium),
+                  Text("$averageOfPrevious", style: Theme.of(context).textTheme.titleSmall),
                 ],
               ),
               const SizedBox(width: 4),
               FaIcon(
                 trend == Trend.up ? FontAwesomeIcons.arrowUp : FontAwesomeIcons.arrowDown,
-                color: trend == Trend.up ? vibrantGreen : Colors.deepOrange,
+                color: trend == Trend.up ? Colors.green : Colors.deepOrange,
                 size: 12,
-              )
+              ),
             ],
-          )),
-    );
+          ),
+        ),
+      );
+    }
   }
 
   void _showActivityLogs({required BuildContext context}) {

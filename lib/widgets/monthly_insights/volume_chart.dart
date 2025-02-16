@@ -196,7 +196,7 @@ class VolumeChart extends StatelessWidget {
 
       case Trend.stable:
         final summary = differenceIsZero
-            ? "🌟 You've matched your average exactly! Stay consistent to see long-term progress."
+            ? "🌟 You've matched your weekly average! Stay consistent to see long-term progress."
             : "🔄 Your volume changed by about $variation compared to your average. "
                 "A great chance to refine your form and maintain consistency.";
         return TrendSummary(

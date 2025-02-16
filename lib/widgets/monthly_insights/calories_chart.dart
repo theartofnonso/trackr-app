@@ -189,7 +189,7 @@ class CaloriesChart extends StatelessWidget {
 
       case Trend.stable:
         final summary = differenceIsZero
-            ? "🌟 You've matched your average exactly! Stay consistent to see long-term progress."
+            ? "🌟 You've matched your weekly average! Stay consistent to see long-term progress."
             : "🔄 Your calorie burn changed by about $variation compared to your average. "
                 "You're maintaining consistency—great job! Keep refining your plan for steady progress.";
         return TrendSummary(
