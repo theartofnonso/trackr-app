@@ -174,7 +174,7 @@ class LogStreakChart extends StatelessWidget {
 
       case Trend.stable:
         final summary = differenceIsZero
-            ? "🌟 You've matched your average exactly! Stay consistent to see long-term progress."
+            ? "🌟 You've matched your weekly average! Stay consistent to see long-term progress."
             : "🔄 Your training days only varied by about $diffAbs compared to your average."
                 " Keep refining your routine for ongoing consistency!";
         return TrendSummary(
