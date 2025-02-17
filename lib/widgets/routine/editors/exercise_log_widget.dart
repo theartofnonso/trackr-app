@@ -398,8 +398,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
       progressionSummary = switch (progression) {
         WeightProgression.increase => ", It's time to increase the weight!",
-        WeightProgression.decrease => ", You should reduce the weight!",
-        WeightProgression.maintain => ", Keep maintaining this weight!"
+        WeightProgression.decrease => ", You should consider reducing the weight!",
+        WeightProgression.maintain => ", Keep maintaining the weight!"
       };
     }
 
@@ -590,7 +590,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 const SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Text('"$rpeTrendSummary"$progressionSummary',
+                  child: Text('$rpeTrendSummary$progressionSummary',
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.w400,
