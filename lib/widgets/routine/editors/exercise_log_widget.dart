@@ -11,6 +11,7 @@ import 'package:tracker_app/dtos/set_dtos/duration_set_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
+import 'package:tracker_app/utils/progressive_overload_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
@@ -21,12 +22,14 @@ import 'package:tracker_app/widgets/routine/editors/set_rows/reps_set_row.dart';
 import 'package:tracker_app/widgets/routine/editors/set_rows/weights_and_reps_set_row.dart';
 
 import '../../../colors.dart';
+import '../../../controllers/routine_user_controller.dart';
 import '../../../dtos/graph/chart_point_dto.dart';
 import '../../../dtos/set_dtos/reps_dto.dart';
 import '../../../dtos/set_dtos/set_dto.dart';
 import '../../../dtos/set_dtos/weight_and_reps_dto.dart';
 import '../../../enums/chart_unit_enum.dart';
 import '../../../enums/routine_editor_type_enums.dart';
+import '../../../enums/training_goal_enums.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/one_rep_max_calculator.dart';
@@ -380,6 +383,26 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final sets = _showPreviousSets ? previousSets : currentSets;
 
+    String progressionSummary = "";
+
+    if (exerciseType == ExerciseType.weights) {
+      final trainingEfforts = sets
+          .map((set) =>
+              TrainingEffort(weight: (set as WeightAndRepsSetDto).weight, reps: (set).reps, rpe: set.rpeRating))
+          .toList();
+
+      final trainingGoal =
+          Provider.of<RoutineUserController>(context, listen: false).user?.trainingGoal ?? TrainingGoal.hypertrophy;
+
+      final progression = getWeightProgression(trainingEfforts, trainingGoal.minReps, trainingGoal.maxReps);
+
+      progressionSummary = switch (progression) {
+        WeightProgression.increase => ", It's time to increase the weight!",
+        WeightProgression.decrease => ", You should reduce the weight!",
+        WeightProgression.maintain => ", Keep maintaining this weight!"
+      };
+    }
+
     final rpeRatings = sets.mapIndexed((index, set) => set.rpeRating).toList();
     List<ChartPointDto> chartPoints = rpeRatings.mapIndexed((index, rating) => ChartPointDto(index, rating)).toList();
     List<String> setIndexes = sets.mapIndexed((index, set) => "Set ${index + 1}").toList();
@@ -567,7 +590,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 const SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Text('"$rpeTrendSummary"',
+                  child: Text('"$rpeTrendSummary"$progressionSummary',
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.w400,
