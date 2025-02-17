@@ -316,7 +316,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     bool isLow(int rpe) => rpe <= 5;
 
     if (ratings.isEmpty) {
-      return "No ratings provided.";
+      return "No ratings provided";
     }
     if (ratings.length == 1) {
       // If there's only one data point, just describe that point.
@@ -350,7 +350,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       return "Your intensity is dropping - You're pacing through sets";
     } else if (!firstIsHigh && lastIsHigh) {
       // Low to high range
-      return "You are pushing harder or might be fatigued.";
+      return "You are pushing harder or might be fatigued";
     }
 
     // If it doesn’t fit neatly into the above categories, just return a generic message
