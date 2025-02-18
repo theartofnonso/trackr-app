@@ -25,7 +25,7 @@ import '../preview/set_headers/single_set_header.dart';
 enum StrengthStatus {
   improving(
     description: "🌟 You're getting stronger! Handling more volume with less effort shows fantastic adaptation. "
-        "Keep that momentum going and consider increasing the challenge next week—just remember to watch your recovery.",
+        "Keep that momentum going and consider increasing the challenge next session—just remember to watch your recovery.",
   ),
   declining(
     description: "📉 You're feeling a dip in strength. Double-check your sleep, nutrition, and stress levels—"
