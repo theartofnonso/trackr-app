@@ -15,6 +15,7 @@ import 'package:tracker_app/utils/progressive_overload_utils.dart';
 import 'package:tracker_app/utils/sets_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
+import 'package:tracker_app/widgets/information_containers/information_container_lite.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/weight_and_reps_set_header.dart';
@@ -386,6 +387,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final sets = _showPreviousSets ? previousSets : currentSets;
 
     String progressionSummary = "";
+    Color progressionColor = vibrantBlue;
 
     if (exerciseType == ExerciseType.weights) {
       final trainingEfforts = sets
@@ -402,6 +404,12 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         WeightProgression.increase => ", It's time to increase the weights for your working sets!",
         WeightProgression.decrease => ", You should consider reducing the weights for your working sets!",
         WeightProgression.maintain => ", Keep maintaining the weights for your working sets!"
+      };
+
+      progressionColor = switch (progression) {
+        WeightProgression.increase => vibrantGreen,
+        WeightProgression.decrease => Colors.deepOrange,
+        WeightProgression.maintain => vibrantBlue
       };
     }
 
@@ -590,51 +598,23 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                           color: isDarkMode ? Colors.white70 : Colors.black)),
                 ),
                 const SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Text('$rpeTrendSummary$progressionSummary',
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontStyle: FontStyle.italic,
-                          fontWeight: FontWeight.w400,
-                          height: 1.8,
-                          color: isDarkMode ? Colors.white70 : Colors.black)),
-                ),
+                InformationContainerLite(content: "$rpeTrendSummary$progressionSummary", color: progressionColor, icon: FaIcon(FontAwesomeIcons.boltLightning, size: 18,),),
                 const SizedBox(height: 12),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Row(
-                    spacing: 6,
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
-                    textBaseline: TextBaseline.alphabetic,
-                    children: [
-                      Container(
-                          width: 18,
-                          height: 18,
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
-                            borderRadius: BorderRadius.circular(3),
-                          ),
-                          child: Center(
-                            child: FaIcon(
-                              FontAwesomeIcons.w,
-                              color: isDarkMode ? vibrantGreen : Colors.black,
-                              size: 8,
-                            ),
-                          )),
-                      Expanded(
-                        child: Text(
-                            "Your most challenging sets are working sets, driving you toward your training goals. All others are warm-ups.",
-                            softWrap: true,
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 12,
-                                height: 1.8,
-                                color: isDarkMode ? Colors.white70 : vibrantGreen)),
-                      )
-                    ],
-                  ),
-                ),
+                InformationContainerLite(content: "Your most challenging sets are working sets, driving you toward your training goals. All others are warm-ups.", color: Colors.grey.shade400, icon: Container(
+                    width: 18,
+                    height: 18,
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                    child: Center(
+                      child: FaIcon(
+                        FontAwesomeIcons.w,
+                        color: isDarkMode ? vibrantGreen : Colors.black,
+                        size: 8,
+                      ),
+                    ))),
               ],
             ),
           const SizedBox(height: 2),

@@ -7,14 +7,16 @@ class InformationContainerLite extends StatelessWidget {
   final String content;
   final Color? color;
 
-  const InformationContainerLite({super.key, this.icon, required this.content, this.color});
+  const InformationContainerLite({super.key, this.icon, required this.content, required this.color});
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     return Container(
       decoration: BoxDecoration(
-          color: color != null ? color?.withValues(alpha:0.1) : Colors.black.withValues(alpha:0.1),
-          borderRadius: BorderRadius.circular(5)),
+          color: isDarkMode ? color?.withValues(alpha: 0.1) : color, borderRadius: BorderRadius.circular(5)),
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
       child: Row(
         children: [
@@ -28,7 +30,10 @@ class InformationContainerLite extends StatelessWidget {
           Expanded(
               child: Text(content,
                   style: GoogleFonts.ubuntu(
-                      fontSize: 12, height: 1.4, color: color ?? Colors.white, fontWeight: FontWeight.w600))),
+                      fontSize: 12,
+                      height: 1.4,
+                      color: isDarkMode ? color : Colors.black,
+                      fontWeight: FontWeight.w600))),
         ],
       ),
     );
