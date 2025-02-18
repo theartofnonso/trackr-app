@@ -12,6 +12,7 @@ import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/utils/progressive_overload_utils.dart';
+import 'package:tracker_app/utils/sets_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
@@ -38,6 +39,7 @@ import '../../dividers/label_divider.dart';
 import '../preview/set_headers/double_set_header.dart';
 import '../preview/set_headers/single_set_header.dart';
 import '../preview/sets_listview.dart';
+import '../set_mode_badge.dart';
 
 class ExerciseLogWidget extends StatefulWidget {
   final RoutineEditorMode editorType;
@@ -397,9 +399,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       final progression = getWeightProgression(trainingEfforts, trainingGoal.minReps, trainingGoal.maxReps);
 
       progressionSummary = switch (progression) {
-        WeightProgression.increase => ", It's time to increase the weight!",
-        WeightProgression.decrease => ", You should consider reducing the weight!",
-        WeightProgression.maintain => ", Keep maintaining the weight!"
+        WeightProgression.increase => ", It's time to increase the weights for your working sets!",
+        WeightProgression.decrease => ", You should consider reducing the weights for your working sets!",
+        WeightProgression.maintain => ", Keep maintaining the weights for your working sets!"
       };
     }
 
@@ -666,17 +668,22 @@ class _WeightAndRepsSetListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final children = sets.mapIndexed((index, setDto) {
-      return WeightsAndRepsSetRow(
-        editorType: editorType,
+    final markedSets = markHighestWeightSets(sets);
+
+    final children = markedSets.mapIndexed((index, setDto) {
+      return SetModeBadge(
         setDto: setDto,
-        onCheck: () => updateSetCheck(index: index, setDto: setDto),
-        onRemoved: () => removeSet(index: index),
-        onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
-        onChangedWeight: (double value) => updateWeight(index: index, weight: value, setDto: setDto),
-        onTapWeightEditor: () => onTapWeightEditor(setDto: setDto),
-        onTapRepsEditor: () => onTapRepsEditor(setDto: setDto),
-        controllers: controllers[index],
+        child: WeightsAndRepsSetRow(
+          editorType: editorType,
+          setDto: setDto,
+          onCheck: () => updateSetCheck(index: index, setDto: setDto),
+          onRemoved: () => removeSet(index: index),
+          onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
+          onChangedWeight: (double value) => updateWeight(index: index, weight: value, setDto: setDto),
+          onTapWeightEditor: () => onTapWeightEditor(setDto: setDto),
+          onTapRepsEditor: () => onTapRepsEditor(setDto: setDto),
+          controllers: controllers[index],
+        ),
       );
     }).toList();
 
@@ -711,15 +718,20 @@ class _RepsSetListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final children = sets.mapIndexed((index, setDto) {
-      return RepsSetRow(
-        editorType: editorType,
+    final markedSets = markHighestRepsSets(sets);
+
+    final children = markedSets.mapIndexed((index, setDto) {
+      return SetModeBadge(
         setDto: setDto,
-        onCheck: () => updateSetCheck(index: index, setDto: setDto),
-        onRemoved: () => removeSet(index: index),
-        onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
-        onTapRepsEditor: () => onTapRepsEditor(setDto: setDto),
-        controller: controllers[index],
+        child: RepsSetRow(
+          editorType: editorType,
+          setDto: setDto,
+          onCheck: () => updateSetCheck(index: index, setDto: setDto),
+          onRemoved: () => removeSet(index: index),
+          onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
+          onTapRepsEditor: () => onTapRepsEditor(setDto: setDto),
+          controller: controllers[index],
+        ),
       );
     }).toList();
 
@@ -757,17 +769,21 @@ class _DurationSetListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final children = sets.mapIndexed((index, setDto) {
-      return DurationSetRow(
-        editorType: editorType,
-        setDto: setDto,
-        onCheck: () => updateSetCheck(index: index, setDto: setDto),
-        onRemoved: () => removeSet(index: index),
-        onCheckAndUpdateDuration: (Duration duration, {bool? checked}) =>
-            checkAndUpdateDuration(index: index, duration: duration, setDto: setDto, checked: checked ?? false),
-        startTime: controllers.isNotEmpty ? controllers[index] : DateTime.now(),
-        onupdateDuration: (Duration duration) => updateDuration(index: index, duration: duration, setDto: setDto),
-      );
+    final markedSets = markHighestDurationSets(sets);
+
+    final children = markedSets.mapIndexed((index, setDto) {
+      return SetModeBadge(
+          setDto: setDto,
+          child: DurationSetRow(
+            editorType: editorType,
+            setDto: setDto,
+            onCheck: () => updateSetCheck(index: index, setDto: setDto),
+            onRemoved: () => removeSet(index: index),
+            onCheckAndUpdateDuration: (Duration duration, {bool? checked}) =>
+                checkAndUpdateDuration(index: index, duration: duration, setDto: setDto, checked: checked ?? false),
+            startTime: controllers.isNotEmpty ? controllers[index] : DateTime.now(),
+            onupdateDuration: (Duration duration) => updateDuration(index: index, duration: duration, setDto: setDto),
+          ));
     }).toList();
 
     return ListView.separated(

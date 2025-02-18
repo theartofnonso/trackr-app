@@ -6,7 +6,7 @@ import '../../enums/exercise_type_enums.dart';
 class RepsSetDto extends SetDto {
   final int _reps;
 
-  const RepsSetDto({required reps, super.checked = false, super.rpeRating = 4})
+  const RepsSetDto({required reps, super.checked = false, super.rpeRating = 4, super.isWorkingSet})
       : _reps = reps;
 
   int get reps => _reps;

@@ -7,7 +7,7 @@ import '../../enums/exercise_type_enums.dart';
 class DurationSetDto extends SetDto {
   final Duration _duration;
 
-  const DurationSetDto({required duration, super.checked = false, super.rpeRating = 4})
+  const DurationSetDto({required duration, super.checked = false, super.rpeRating = 4, super.isWorkingSet})
       : _duration = duration;
 
   Duration get duration => _duration;
