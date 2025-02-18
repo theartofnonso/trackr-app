@@ -623,11 +623,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               child: Text("Tap + to add a timer", style: Theme.of(context).textTheme.bodySmall),
             ),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            // if (exerciseType != ExerciseType.duration)
-            //   OpacityButtonWidget(
-            //       onPressed: () => _showRepRangeSelector(min: minReps, max: maxReps),
-            //       label: "target reps: $minReps - $maxReps",
-            //       buttonColor: vibrantGreen),
             const Spacer(),
             IconButton(
               onPressed: _togglePreviousSets,
