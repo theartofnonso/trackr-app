@@ -46,22 +46,23 @@ class SetsListview extends StatelessWidget {
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
-          final set = markedSets[index];
+          final set = sets[index];
+          final markedSet = markedSets[index];
           final pbsForSet = pbsBySet[set] ?? [];
-          switch (set.type) {
+          switch (markedSet.type) {
             case ExerciseType.weights:
-              final firstLabel = (set as WeightAndRepsSetDto).weight;
-              final secondLabel = set.reps;
+              final firstLabel = (markedSet as WeightAndRepsSetDto).weight;
+              final secondLabel = markedSet.reps;
               return SetModeBadge(
-                setDto: set,
+                setDto: markedSet,
                 child: DoubleSetRow(first: "$firstLabel", second: "$secondLabel", pbs: pbsForSet),
               );
             case ExerciseType.bodyWeight:
-              final label = (set as RepsSetDto).reps;
-              return SetModeBadge(setDto: set, child: SingleSetRow(label: "$label"));
+              final label = (markedSet as RepsSetDto).reps;
+              return SetModeBadge(setDto: markedSet, child: SingleSetRow(label: "$label"));
             case ExerciseType.duration:
-              final label = (set as DurationSetDto).duration.hmsDigital();
-              return SetModeBadge(setDto: set, child: SingleSetRow(label: label, pbs: pbsForSet));
+              final label = (markedSet as DurationSetDto).duration.hmsDigital();
+              return SetModeBadge(setDto: markedSet, child: SingleSetRow(label: label, pbs: pbsForSet));
           }
         },
         separatorBuilder: (context, index) => SizedBox(height: 8),

@@ -599,6 +599,42 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                           height: 1.8,
                           color: isDarkMode ? Colors.white70 : Colors.black)),
                 ),
+                const SizedBox(height: 12),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  child: Row(
+                    spacing: 6,
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    textBaseline: TextBaseline.alphabetic,
+                    children: [
+                      Container(
+                          width: 18,
+                          height: 18,
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
+                            borderRadius: BorderRadius.circular(3),
+                          ),
+                          child: Center(
+                            child: FaIcon(
+                              FontAwesomeIcons.w,
+                              color: isDarkMode ? vibrantGreen : Colors.black,
+                              size: 8,
+                            ),
+                          )),
+                      Expanded(
+                        child: Text(
+                            "Your most challenging sets are working sets, driving you toward your training goals. All others are warm-ups.",
+                            softWrap: true,
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 12,
+                                height: 1.8,
+                                color: isDarkMode ? Colors.white70 : vibrantGreen)),
+                      )
+                    ],
+                  ),
+                ),
               ],
             ),
           const SizedBox(height: 2),
