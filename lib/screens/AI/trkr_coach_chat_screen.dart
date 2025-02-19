@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/controllers/analytics_controller.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/dtos/open_ai_response_schema_dtos/new_routine_dto.dart';
@@ -151,7 +150,6 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
   }
 
   void _runMessage() async {
-    AnalyticsController.aiInteractions(aiModule: "TRKR_coach", eventAction: "user_prompt");
     final userPrompt = _textEditingController.text;
 
     if (userPrompt.isNotEmpty) {

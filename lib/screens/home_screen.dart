@@ -19,7 +19,6 @@ import 'package:tracker_app/screens/templates/routine_templates_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import '../controllers/activity_log_controller.dart';
-import '../controllers/analytics_controller.dart';
 import '../controllers/routine_user_controller.dart';
 import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
@@ -200,7 +199,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final signInDetails = authUser.signInDetails.toJson();
     SharedPrefs().userId = authUser.userId;
     SharedPrefs().userEmail = signInDetails["username"] as String;
-    AnalyticsController.loginAnalytics(isFirstLaunch: SharedPrefs().firstLaunch);
   }
 
   void _loadCachedLog() {

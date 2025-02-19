@@ -5,8 +5,6 @@ import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -56,7 +54,6 @@ import 'dtos/appsync/exercise_dto.dart';
 import 'dtos/open_ai_response_schema_dtos/exercise_performance_report.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
 import 'dtos/viewmodels/routine_template_arguments.dart';
-import 'firebase_options.dart';
 import 'logger.dart';
 import 'models/ModelProvider.dart';
 
@@ -120,16 +117,6 @@ void main() async {
   await SharedPrefs().init();
 
   await initializeDateFormatting();
-
-  try {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-    FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
-    logger.i("Firebase initialized");
-  } catch (e) {
-    logger.e("Failed to initialize Firebase", error: e);
-  }
 
   const DarwinInitializationSettings iOSInitializationSettingsDarwin = DarwinInitializationSettings(
     requestAlertPermission: false,

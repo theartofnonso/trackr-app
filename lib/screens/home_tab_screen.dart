@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
-import 'package:tracker_app/controllers/analytics_controller.dart';
 import 'package:tracker_app/screens/insights/overview_screen.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
 import 'package:tracker_app/screens/onboarding/onboarding_checklist_notifications_screen.dart';
@@ -124,7 +123,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
   }
 
   void _onMonthChange(DateTimeRange range) {
-    AnalyticsController.calendarInteractions(eventAction: "month_change: ${range.toString()}");
+
     setState(() {
       _monthDateTimeRange = range;
     });
