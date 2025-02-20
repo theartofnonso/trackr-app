@@ -610,19 +610,19 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
             trend: Trend.up,
             average: averageOfPrevious,
             summary:
-                "🌟🌟 This week's ${_selectedMuscleGroup.name.toUpperCase()} training is $diff ${_trainingMetric(length: difference.abs())} higher than your average. "
+                "🌟🌟 This week's ${_selectedMuscleGroup.name} training is $diff ${_trainingMetric(length: difference.abs())} higher than your average. "
                 "Awesome job building momentum!");
       case Trend.down:
         return TrendSummary(
             trend: Trend.down,
             average: averageOfPrevious,
             summary:
-                "📉 This week's ${_selectedMuscleGroup.name.toUpperCase()} training is $diff ${_trainingMetric(length: difference.abs())} lower than your average. "
+                "📉 This week's ${_selectedMuscleGroup.name} training is $diff ${_trainingMetric(length: difference.abs())} lower than your average. "
                 "Consider extra rest, checking your technique, or planning a deload.");
       case Trend.stable:
         final summary = differenceIsZero
             ? "🌟 You've matched your average exactly! Stay consistent to see long-term progress."
-            : "🔄 Your ${_selectedMuscleGroup.name.toUpperCase()} training has changed by about $diff ${_trainingMetric(length: difference.abs())} compared to your average. "
+            : "🔄 Your ${_selectedMuscleGroup.name} training has changed by about $diff ${_trainingMetric(length: difference.abs())} compared to your average. "
                 "A great chance to refine your form and maintain consistency.";
         return TrendSummary(trend: Trend.stable, average: averageOfPrevious, summary: summary);
       case Trend.none:

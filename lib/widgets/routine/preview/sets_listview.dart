@@ -4,9 +4,11 @@ import 'package:tracker_app/dtos/set_dtos/duration_set_dto.dart';
 import 'package:tracker_app/dtos/set_dtos/reps_dto.dart';
 import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
+import 'package:tracker_app/utils/sets_utils.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:tracker_app/widgets/routine/preview/set_rows/double_set_row.dart';
 import 'package:tracker_app/widgets/routine/preview/set_rows/single_set_row.dart';
+import 'package:tracker_app/widgets/routine/set_mode_badge.dart';
 
 import '../../../dtos/pb_dto.dart';
 import '../../../dtos/set_dtos/set_dto.dart';
@@ -24,13 +26,19 @@ class SetsListview extends StatelessWidget {
     if (sets.isEmpty) {
       return Center(
           child: SizedBox(
-            width: double.infinity,
-            child: OpacityButtonWidget(
-                label: "No Sets have been logged for this exercise",
-                buttonColor: Colors.deepOrange,
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16)),
-          ));
+        width: double.infinity,
+        child: OpacityButtonWidget(
+            label: "No Sets have been logged for this exercise",
+            buttonColor: Colors.deepOrange,
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16)),
+      ));
     }
+
+    final markedSets = switch (type) {
+      ExerciseType.weights => markHighestWeightSets(sets),
+      ExerciseType.bodyWeight => markHighestRepsSets(sets),
+      ExerciseType.duration => markHighestDurationSets(sets),
+    };
 
     final pbsBySet = groupBy(pbs, (pb) => pb.set);
 
@@ -39,22 +47,25 @@ class SetsListview extends StatelessWidget {
         physics: NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
           final set = sets[index];
+          final markedSet = markedSets[index];
           final pbsForSet = pbsBySet[set] ?? [];
-          switch (set.type) {
+          switch (markedSet.type) {
             case ExerciseType.weights:
-              final firstLabel = (set as WeightAndRepsSetDto).weight;
-              final secondLabel = set.reps;
-              return DoubleSetRow(
-                  first: "$firstLabel", second: "$secondLabel", pbs: pbsForSet);
+              final firstLabel = (markedSet as WeightAndRepsSetDto).weight;
+              final secondLabel = markedSet.reps;
+              return SetModeBadge(
+                setDto: markedSet,
+                child: DoubleSetRow(first: "$firstLabel", second: "$secondLabel", pbs: pbsForSet),
+              );
             case ExerciseType.bodyWeight:
-              final label = (set as RepsSetDto).reps;
-              return SingleSetRow(label: "$label");
+              final label = (markedSet as RepsSetDto).reps;
+              return SetModeBadge(setDto: markedSet, child: SingleSetRow(label: "$label"));
             case ExerciseType.duration:
-              final label = (set as DurationSetDto).duration.hmsDigital();
-              return SingleSetRow(label: label, pbs: pbsForSet);
+              final label = (markedSet as DurationSetDto).duration.hmsDigital();
+              return SetModeBadge(setDto: markedSet, child: SingleSetRow(label: label, pbs: pbsForSet));
           }
         },
         separatorBuilder: (context, index) => SizedBox(height: 8),
-        itemCount: sets.length);
+        itemCount: markedSets.length);
   }
 }

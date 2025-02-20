@@ -9,7 +9,7 @@ class WeightAndRepsSetDto extends SetDto {
   final double _weight;
   final int _reps;
 
-  const WeightAndRepsSetDto({required double weight, required int reps, super.checked = false, super.rpeRating = 4})
+  const WeightAndRepsSetDto({required double weight, required int reps, super.checked = false, super.rpeRating = 4, super.isWorkingSet})
       : _weight = weight,
         _reps = reps;
 

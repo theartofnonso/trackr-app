@@ -815,8 +815,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       return TrendSummary(
         trend: Trend.none,
         average: singleVolume,
-        summary: "You've logged your first session's volume ($singleVolume). "
-            "Great job! Keep logging more data to see trends over time.",
+        summary: "You've logged your first session. Great job! Keep logging more data to see trends over time.",
       );
     }
 
@@ -874,8 +873,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
       case Trend.stable:
         final summary = differenceIsZero
-            ? "🌟 You've matched your average exactly! Stay consistent to see long-term progress."
-            : "🔄 Your volume changed by about $variation compared to your average. "
+            ? "🌟 You've matched your session average! Stay consistent to see long-term progress."
+            : "🔄 Your volume changed by about $variation compared to your session average. "
                 "A great chance to refine your form and maintain consistency.";
         return TrendSummary(
           trend: Trend.stable,

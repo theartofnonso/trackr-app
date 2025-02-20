@@ -11,8 +11,11 @@ import 'package:tracker_app/dtos/set_dtos/duration_set_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
+import 'package:tracker_app/utils/progressive_overload_utils.dart';
+import 'package:tracker_app/utils/sets_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
+import 'package:tracker_app/widgets/information_containers/information_container_lite.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/weight_and_reps_set_header.dart';
@@ -21,12 +24,14 @@ import 'package:tracker_app/widgets/routine/editors/set_rows/reps_set_row.dart';
 import 'package:tracker_app/widgets/routine/editors/set_rows/weights_and_reps_set_row.dart';
 
 import '../../../colors.dart';
+import '../../../controllers/routine_user_controller.dart';
 import '../../../dtos/graph/chart_point_dto.dart';
 import '../../../dtos/set_dtos/reps_dto.dart';
 import '../../../dtos/set_dtos/set_dto.dart';
 import '../../../dtos/set_dtos/weight_and_reps_dto.dart';
 import '../../../enums/chart_unit_enum.dart';
 import '../../../enums/routine_editor_type_enums.dart';
+import '../../../enums/training_goal_enums.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/one_rep_max_calculator.dart';
@@ -35,6 +40,7 @@ import '../../dividers/label_divider.dart';
 import '../preview/set_headers/double_set_header.dart';
 import '../preview/set_headers/single_set_header.dart';
 import '../preview/sets_listview.dart';
+import '../set_mode_badge.dart';
 
 class ExerciseLogWidget extends StatefulWidget {
   final RoutineEditorMode editorType;
@@ -313,7 +319,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     bool isLow(int rpe) => rpe <= 5;
 
     if (ratings.isEmpty) {
-      return "No ratings provided.";
+      return "No ratings provided";
     }
     if (ratings.length == 1) {
       // If there's only one data point, just describe that point.
@@ -347,7 +353,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       return "Your intensity is dropping - You're pacing through sets";
     } else if (!firstIsHigh && lastIsHigh) {
       // Low to high range
-      return "You are pushing harder or might be fatigued.";
+      return "You are pushing harder or might be fatigued";
     }
 
     // If it doesn’t fit neatly into the above categories, just return a generic message
@@ -379,6 +385,33 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         .whereSetsForExercise(exercise: widget.exerciseLogDto.exercise);
 
     final sets = _showPreviousSets ? previousSets : currentSets;
+
+    String progressionSummary = "";
+    Color progressionColor = vibrantBlue;
+
+    if (exerciseType == ExerciseType.weights) {
+      final trainingEfforts = sets
+          .map((set) =>
+              TrainingEffort(weight: (set as WeightAndRepsSetDto).weight, reps: (set).reps, rpe: set.rpeRating))
+          .toList();
+
+      final trainingGoal =
+          Provider.of<RoutineUserController>(context, listen: false).user?.trainingGoal ?? TrainingGoal.hypertrophy;
+
+      final progression = getWeightProgression(trainingEfforts, trainingGoal.minReps, trainingGoal.maxReps);
+
+      progressionSummary = switch (progression) {
+        WeightProgression.increase => ", It's time to increase the weights for your working sets!",
+        WeightProgression.decrease => ", You should consider reducing the weights for your working sets!",
+        WeightProgression.maintain => ", Keep maintaining the weights for your working sets!"
+      };
+
+      progressionColor = switch (progression) {
+        WeightProgression.increase => vibrantGreen,
+        WeightProgression.decrease => Colors.deepOrange,
+        WeightProgression.maintain => vibrantBlue
+      };
+    }
 
     final rpeRatings = sets.mapIndexed((index, set) => set.rpeRating).toList();
     List<ChartPointDto> chartPoints = rpeRatings.mapIndexed((index, rating) => ChartPointDto(index, rating)).toList();
@@ -565,15 +598,23 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                           color: isDarkMode ? Colors.white70 : Colors.black)),
                 ),
                 const SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Text('"$rpeTrendSummary"',
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontStyle: FontStyle.italic,
-                          fontWeight: FontWeight.w400,
-                          height: 1.8,
-                          color: isDarkMode ? Colors.white70 : Colors.black)),
-                ),
+                InformationContainerLite(content: "$rpeTrendSummary$progressionSummary", color: progressionColor, icon: FaIcon(FontAwesomeIcons.boltLightning, size: 18,),),
+                const SizedBox(height: 12),
+                InformationContainerLite(content: "Your most challenging sets are working sets, driving you toward your training goals. All others are warm-ups.", color: Colors.grey.shade400, icon: Container(
+                    width: 18,
+                    height: 18,
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                    child: Center(
+                      child: FaIcon(
+                        FontAwesomeIcons.w,
+                        color: isDarkMode ? vibrantGreen : Colors.black,
+                        size: 8,
+                      ),
+                    ))),
               ],
             ),
           const SizedBox(height: 2),
@@ -582,11 +623,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               child: Text("Tap + to add a timer", style: Theme.of(context).textTheme.bodySmall),
             ),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            // if (exerciseType != ExerciseType.duration)
-            //   OpacityButtonWidget(
-            //       onPressed: () => _showRepRangeSelector(min: minReps, max: maxReps),
-            //       label: "target reps: $minReps - $maxReps",
-            //       buttonColor: vibrantGreen),
             const Spacer(),
             IconButton(
               onPressed: _togglePreviousSets,
@@ -643,17 +679,22 @@ class _WeightAndRepsSetListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final children = sets.mapIndexed((index, setDto) {
-      return WeightsAndRepsSetRow(
-        editorType: editorType,
+    final markedSets = markHighestWeightSets(sets);
+
+    final children = markedSets.mapIndexed((index, setDto) {
+      return SetModeBadge(
         setDto: setDto,
-        onCheck: () => updateSetCheck(index: index, setDto: setDto),
-        onRemoved: () => removeSet(index: index),
-        onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
-        onChangedWeight: (double value) => updateWeight(index: index, weight: value, setDto: setDto),
-        onTapWeightEditor: () => onTapWeightEditor(setDto: setDto),
-        onTapRepsEditor: () => onTapRepsEditor(setDto: setDto),
-        controllers: controllers[index],
+        child: WeightsAndRepsSetRow(
+          editorType: editorType,
+          setDto: setDto,
+          onCheck: () => updateSetCheck(index: index, setDto: setDto),
+          onRemoved: () => removeSet(index: index),
+          onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
+          onChangedWeight: (double value) => updateWeight(index: index, weight: value, setDto: setDto),
+          onTapWeightEditor: () => onTapWeightEditor(setDto: setDto),
+          onTapRepsEditor: () => onTapRepsEditor(setDto: setDto),
+          controllers: controllers[index],
+        ),
       );
     }).toList();
 
@@ -688,15 +729,20 @@ class _RepsSetListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final children = sets.mapIndexed((index, setDto) {
-      return RepsSetRow(
-        editorType: editorType,
+    final markedSets = markHighestRepsSets(sets);
+
+    final children = markedSets.mapIndexed((index, setDto) {
+      return SetModeBadge(
         setDto: setDto,
-        onCheck: () => updateSetCheck(index: index, setDto: setDto),
-        onRemoved: () => removeSet(index: index),
-        onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
-        onTapRepsEditor: () => onTapRepsEditor(setDto: setDto),
-        controller: controllers[index],
+        child: RepsSetRow(
+          editorType: editorType,
+          setDto: setDto,
+          onCheck: () => updateSetCheck(index: index, setDto: setDto),
+          onRemoved: () => removeSet(index: index),
+          onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
+          onTapRepsEditor: () => onTapRepsEditor(setDto: setDto),
+          controller: controllers[index],
+        ),
       );
     }).toList();
 
@@ -734,17 +780,21 @@ class _DurationSetListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final children = sets.mapIndexed((index, setDto) {
-      return DurationSetRow(
-        editorType: editorType,
-        setDto: setDto,
-        onCheck: () => updateSetCheck(index: index, setDto: setDto),
-        onRemoved: () => removeSet(index: index),
-        onCheckAndUpdateDuration: (Duration duration, {bool? checked}) =>
-            checkAndUpdateDuration(index: index, duration: duration, setDto: setDto, checked: checked ?? false),
-        startTime: controllers.isNotEmpty ? controllers[index] : DateTime.now(),
-        onupdateDuration: (Duration duration) => updateDuration(index: index, duration: duration, setDto: setDto),
-      );
+    final markedSets = markHighestDurationSets(sets);
+
+    final children = markedSets.mapIndexed((index, setDto) {
+      return SetModeBadge(
+          setDto: setDto,
+          child: DurationSetRow(
+            editorType: editorType,
+            setDto: setDto,
+            onCheck: () => updateSetCheck(index: index, setDto: setDto),
+            onRemoved: () => removeSet(index: index),
+            onCheckAndUpdateDuration: (Duration duration, {bool? checked}) =>
+                checkAndUpdateDuration(index: index, duration: duration, setDto: setDto, checked: checked ?? false),
+            startTime: controllers.isNotEmpty ? controllers[index] : DateTime.now(),
+            onupdateDuration: (Duration duration) => updateDuration(index: index, duration: duration, setDto: setDto),
+          ));
     }).toList();
 
     return ListView.separated(
@@ -1018,7 +1068,7 @@ class _RPERatingSliderState extends State<_RPERatingSlider> {
   String _ratingDescription(double rating) {
     final absoluteRating = rating.floor();
 
-    return _repToPercentage[absoluteRating] ?? "Extremely light — mostly warm-up weight";
+    return _repToPercentage[absoluteRating] ?? "😅 Moderate (challenging but manageable)";
   }
 
   @override
@@ -1029,14 +1079,14 @@ class _RPERatingSliderState extends State<_RPERatingSlider> {
 }
 
 Map<int, String> _repToPercentage = {
-  1: "Barely any effort (warm-up weight)",
-  2: "Very light (can do many more reps)",
-  3: "Light (feels comfortable)",
-  4: "Moderate (challenging but manageable)",
-  5: "Tough (working hard, not near failure)",
-  6: "Hard (around 3 reps left in the tank)",
-  7: "Very hard (about 2 reps left)",
-  8: "Near max (1–2 reps left)",
-  9: "Maximal (maybe 1 rep left)",
-  10: "Absolute limit (no reps left)",
+  1: "😌 Barely any effort (warm-up weight)",
+  2: "🙂 Very light (can do many more reps)",
+  3: "😊 Light (feels comfortable)",
+  4: "😅 Moderate (challenging but manageable)",
+  5: "😮‍💨 Tough (working hard, not near failure)",
+  6: "🔥 Hard (around 3 reps left in the tank)",
+  7: "😣 Very hard (about 2 reps left)",
+  8: "🥵 Near max (1–2 reps left)",
+  9: "🤯 Maximal (maybe 1 rep left)",
+  10: "💀 Absolute limit (no reps left)",
 };

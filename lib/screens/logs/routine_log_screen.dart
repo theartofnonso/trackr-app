@@ -729,7 +729,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         return TrendSummary(
           trend: Trend.stable,
           average: averageOfPrevious,
-          summary: "🔄 Your volume changed by about $variation compared to your average. "
+          summary: "🔄 Your volume changed by about $variation compared to your session average. "
               "Stay consistent to see long-term progress.",
         );
       case Trend.none:

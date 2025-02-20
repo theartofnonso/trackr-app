@@ -182,7 +182,7 @@ class VolumeChart extends StatelessWidget {
         return TrendSummary(
           trend: Trend.up,
           average: averageOfPrevious,
-          summary: "🌟🌟 This week's volume is $variation higher than your average. "
+          summary: "🌟🌟 This week's volume is $variation higher than your weekly average. "
               "Awesome job building momentum!",
         );
 
@@ -190,7 +190,7 @@ class VolumeChart extends StatelessWidget {
         return TrendSummary(
           trend: Trend.down,
           average: averageOfPrevious,
-          summary: "📉 This week's volume is $variation lower than your average. "
+          summary: "📉 This week's volume is $variation lower than your weekly average. "
               "Consider extra rest, checking your technique, or planning a deload.",
         );
 

@@ -20,7 +20,6 @@ import 'package:tracker_app/widgets/routine/editors/exercise_log_widget_lite.dar
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../../colors.dart';
-import '../../controllers/analytics_controller.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../controllers/routine_user_controller.dart';
 import '../../dtos/appsync/exercise_dto.dart';
@@ -134,8 +133,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     if (mounted) {
       final createdRoutineLog = await Provider.of<ExerciseAndRoutineController>(context, listen: false)
           .saveLog(logDto: routineLogToBeCreated);
-
-      AnalyticsController.workoutSessionEvent(eventAction: "workout_session_logged");
 
       _navigateBack(routineLog: createdRoutineLog);
     }
