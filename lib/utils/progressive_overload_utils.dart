@@ -41,9 +41,9 @@ WeightProgression getWeightProgression(List<TrainingEffort> effort, int targetMi
   return WeightProgression.maintain;
 }
 
-TrainingProgression _getTrainingProgression(TrainingEffort session, int targetMin, int targetMax) {
-  final reps = session.reps;
-  final rpe = session.rpe;
+TrainingProgression _getTrainingProgression(TrainingEffort effort, int targetMin, int targetMax) {
+  final reps = effort.reps;
+  final rpe = effort.rpe;
 
   if (reps >= targetMax) {
     return TrainingProgression.increase;
