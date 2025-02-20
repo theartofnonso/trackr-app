@@ -45,16 +45,16 @@ TrainingProgression _getTrainingProgression(TrainingEffort session, int targetMi
   final reps = session.reps;
   final rpe = session.rpe;
 
-  if (reps > targetMax) {
+  if (reps >= targetMax) {
     return TrainingProgression.increase;
   } else if (reps < targetMin) {
-    return rpe >= 8 ? TrainingProgression.decrease : TrainingProgression.maintain;
+    return TrainingProgression.decrease;
   } else {
     final midPoint = (targetMin + targetMax) / 2;
     if (reps >= midPoint) {
-      return rpe <= 6 ? TrainingProgression.increase : TrainingProgression.maintain;
+      return rpe <= 4 ? TrainingProgression.increase : TrainingProgression.maintain;
     } else {
-      return rpe >= 8 ? TrainingProgression.decrease : TrainingProgression.maintain;
+      return rpe >= 9 ? TrainingProgression.decrease : TrainingProgression.maintain;
     }
   }
 }
