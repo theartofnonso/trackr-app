@@ -53,13 +53,12 @@ class ExerciseLogLiteWidget extends StatelessWidget {
                 editorType: editorType));
       },
       child: Container(
-        padding: EdgeInsets.only(left: 12, top: 12, right: 2, bottom: 12),
+        padding: EdgeInsets.only(left: 12, bottom: 12),
         decoration: BoxDecoration(
           color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, // Set the background color
           borderRadius: BorderRadius.circular(5), // Set the border radius to make it rounded
         ),
         child: Column(
-          spacing: 12,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
@@ -84,7 +83,6 @@ class ExerciseLogLiteWidget extends StatelessWidget {
                             Text(superSetExerciseDto.exercise.name, style: Theme.of(context).textTheme.bodyMedium),
                           ],
                         ),
-                      Row(spacing: 8, children: checkChildren,)
                     ],
                   ),
                 ),
@@ -130,6 +128,7 @@ class ExerciseLogLiteWidget extends StatelessWidget {
                     ])
               ],
             ),
+            Wrap(spacing: 8, children: checkChildren,)
           ],
         ),
       ),
