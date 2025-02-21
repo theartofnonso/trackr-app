@@ -211,10 +211,10 @@ class MuscleTrendMonitorOnboardingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final muscleMap = <MuscleGroupFamily, double>{
-      MuscleGroupFamily.legs: 0.7,
-      MuscleGroupFamily.arms: 0.5,
-      MuscleGroupFamily.back: 0.3
+    final muscleMap = <MuscleGroup, double>{
+      MuscleGroup.quadriceps: 0.7,
+      MuscleGroup.back: 0.5,
+      MuscleGroup.chest: 0.3
     };
 
     return Column(

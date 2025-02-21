@@ -44,7 +44,6 @@ import '../../widgets/ai_widgets/trkr_coach_text_widget.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/calendar/calendar.dart';
 import '../../widgets/dividers/label_divider.dart';
-import '../../widgets/monitors/log_streak_muscle_trend_monitor.dart';
 import '../../widgets/monthly_insights/log_streak_chart.dart';
 import '../../widgets/monthly_insights/monthly_insights.dart';
 import '../../widgets/routine/preview/activity_log_widget.dart';
@@ -130,8 +129,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       controller: widget.scrollController,
                       padding: const EdgeInsets.only(bottom: 150),
                       child: Column(spacing: 20, children: [
-                        const SizedBox.shrink(),
-                        LogStreakMuscleTrendMonitor(dateTime: widget.dateTimeRange.start),
+                        const SizedBox(height: 10),
                         if (isStartOfNewMonth && logsForPastMonth.isNotEmpty)
                           Padding(
                             padding: const EdgeInsets.only(top: 24.0),

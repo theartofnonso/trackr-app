@@ -12,14 +12,11 @@ import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../enums/posthog_analytics_event.dart';
-import '../../screens/insights/sets_reps_volume_insights_screen.dart';
 import '../../strings/strings.dart';
-import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/shareables_utils.dart';
 import '../calendar/calendar.dart';
 import 'log_streak_monitor.dart';
-import 'muscle_trend_monitor.dart';
 
 GlobalKey monitorKey = GlobalKey();
 
@@ -43,8 +40,6 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
     final routineLogsByDay = groupBy(routineLogs, (log) => log.createdAt.withoutTime().day);
 
     final monthlyProgress = routineLogsByDay.length;
-
-    final muscleScorePercentage = calculateMuscleScoreForLogs(routineLogs: routineLogs);
 
     return Stack(children: [
       if (showInfo)
@@ -84,13 +79,6 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
             child: Stack(alignment: Alignment.center, children: [
               LogStreakMonitor(
                   value: monthlyProgress, width: 100, height: 100, strokeWidth: 6, forceDarkMode: isDarkMode),
-              MuscleTrendMonitor(
-                value: muscleScorePercentage / 100,
-                width: 70,
-                height: 70,
-                strokeWidth: 6,
-                forceDarkMode: forceDarkMode,
-              ),
               Image.asset(
                 'images/trkr.png',
                 fit: BoxFit.contain,
@@ -99,26 +87,9 @@ class LogStreakMuscleTrendMonitor extends StatelessWidget {
               )
             ]),
           ),
-          const SizedBox(width: 20),
-          GestureDetector(
-            onTap: () => _showSetsAndRepsVolumeInsightsScreen(context: context),
-            child: SizedBox(
-              width: 80,
-              child: _MonitorScore(
-                  value: "$muscleScorePercentage%",
-                  color: Colors.white,
-                  title: "Muscle",
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  forceDarkMode: isDarkMode),
-            ),
-          ),
         ],
       ),
     ]);
-  }
-
-  void _showSetsAndRepsVolumeInsightsScreen({required BuildContext context}) {
-    navigateWithSlideTransition(context: context, child: SetsAndRepsVolumeInsightsScreen());
   }
 
   void _showRoutineLogsScreen({required BuildContext context}) {

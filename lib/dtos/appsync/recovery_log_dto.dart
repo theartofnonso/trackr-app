@@ -6,7 +6,7 @@ import 'package:tracker_app/models/ModelProvider.dart';
 class RecoveryLogDto {
   final String id;
 
-  final Map<MuscleGroupFamily, double> muscleGroupFamily;
+  final Map<MuscleGroup, double> muscleGroupFamily;
 
   final String owner;
 
@@ -30,7 +30,7 @@ class RecoveryLogDto {
     final dataJson = jsonDecode(log.data);
     final mgfMap = (dataJson["muscleGroupFamily"] ?? {}) as Map<String, dynamic>;
     final muscleGroupFamily = mgfMap.map((key, value) {
-      return MapEntry(MuscleGroupFamily.fromString(key), value as double);
+      return MapEntry(MuscleGroup.fromString(key), value as double);
     });
 
     return RecoveryLogDto(
@@ -53,7 +53,7 @@ class RecoveryLogDto {
 
   RecoveryLogDto copyWith({
     String? id,
-    Map<MuscleGroupFamily, double>? muscleGroupFamily,
+    Map<MuscleGroup, double>? muscleGroupFamily,
     String? owner,
     DateTime? createdAt,
     DateTime? updatedAt,

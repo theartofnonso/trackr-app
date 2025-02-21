@@ -84,6 +84,8 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
+    final user = Provider.of<RoutineUserController>(context, listen: false).user;
+
     final textStyle = Theme.of(context).textTheme.bodySmall;
 
     final dateRange = theLastYearDateTimeRange();
@@ -147,7 +149,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
             })
         .toList();
 
-    final muscleGroups = MuscleGroup.values
+    final muscleGroups = (user?.muscleGroups ?? MuscleGroup.values)
         .sorted((a, b) => a.name.compareTo(b.name))
         .map((muscleGroup) => Padding(
               padding: const EdgeInsets.only(right: 6.0),
@@ -158,8 +160,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                   label: muscleGroup.name.toUpperCase()),
             ))
         .toList();
-
-    final muscleGroupScrollViewHalf = MuscleGroup.values.length ~/ 2;
 
     final trendSummary = _analyzeWeeklyTrends(values: trends);
 
@@ -204,15 +204,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                 SingleChildScrollView(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     scrollDirection: Axis.horizontal,
-                    child: Row(children: [
-                      ...muscleGroups.sublist(0, muscleGroupScrollViewHalf),
-                    ])),
-                SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    scrollDirection: Axis.horizontal,
-                    child: Row(children: [
-                      ...muscleGroups.sublist(muscleGroupScrollViewHalf),
-                    ])),
+                    child: Row(mainAxisAlignment: MainAxisAlignment.start, children: muscleGroups)),
                 const SizedBox(height: 18),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
