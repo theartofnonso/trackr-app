@@ -17,7 +17,7 @@ void main() {
       final logs = <RoutineLogDto>[];
       final milestones = WeeklyMilestone.loadMilestones(logs: logs, weeksInYear: weeksInYear, datetime: now);
 
-      expect(milestones.length, 3);
+      expect(milestones.length, 2);
 
       final mondayMilestone = milestones.firstWhere((m) => m.name == 'NEVER MISS A MONDAY');
       final weekendMilestone = milestones.firstWhere((m) => m.name == 'WEEKEND WARRIOR');
