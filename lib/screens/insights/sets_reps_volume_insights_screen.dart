@@ -204,7 +204,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    SingleChildScrollView(
+                    SingleChildScrollView(scrollDirection: Axis.horizontal,
                         child: Row(mainAxisAlignment: MainAxisAlignment.start, children: muscleGroups)),
                     const SizedBox(height: 12),
                     TRKRInformationContainer(
