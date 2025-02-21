@@ -38,6 +38,11 @@ class ExerciseLogLiteWidget extends StatelessWidget {
 
     final superSetExerciseDto = superSet;
 
+    final checkChildren = exerciseLogDto.sets.map((setDto) => FaIcon(
+      setDto.checked ? FontAwesomeIcons.solidSquareCheck : FontAwesomeIcons.solidSquareCheck,
+      color: setDto.checked ? vibrantGreen : sapphireDark,
+    )).toList();
+
     return GestureDetector(
       onTap: () {
         navigateWithSlideTransition(
@@ -62,6 +67,7 @@ class ExerciseLogLiteWidget extends StatelessWidget {
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 8,
                     children: [
                       Text(exerciseLogDto.exercise.name,
                           style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
@@ -77,6 +83,7 @@ class ExerciseLogLiteWidget extends StatelessWidget {
                             Text(superSetExerciseDto.exercise.name, style: Theme.of(context).textTheme.bodyMedium),
                           ],
                         ),
+                      Row(spacing: 8, children: checkChildren,)
                     ],
                   ),
                 ),
