@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -14,13 +13,11 @@ import '../../colors.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/set_dtos/weight_and_reps_dto.dart';
-import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/routine_editors_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
-import '../../widgets/routine/editors/exercise_log_widget.dart';
 import '../../widgets/routine/editors/exercise_log_widget_lite.dart';
 import '../../widgets/weight_plate_calculator.dart';
 
@@ -218,23 +215,6 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     context.pop(template);
   }
 
-  /// Handle collapsed ExerciseLogWidget
-  void _handleResizedExerciseLogCard({required String exerciseIdToResize}) {
-    setState(() {
-      final foundExercise =
-          _minimisedExerciseLogCards.firstWhereOrNull((exerciseId) => exerciseId == exerciseIdToResize);
-      if (foundExercise != null) {
-        _minimisedExerciseLogCards.remove(exerciseIdToResize);
-      } else {
-        _minimisedExerciseLogCards.add(exerciseIdToResize);
-      }
-    });
-  }
-
-  bool _isMinimised(String id) {
-    return _minimisedExerciseLogCards.firstWhereOrNull((exerciseId) => exerciseId == id) != null;
-  }
-
   @override
   Widget build(BuildContext context) {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
@@ -347,44 +327,39 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                             padding: const EdgeInsets.only(bottom: 250),
                             child: Column(spacing: 20, children: [
                               ...exerciseTemplates.map((exerciseTemplate) {
-                                final isExerciseMinimised = _minimisedExerciseLogCards.contains(exerciseTemplate.id);
-                                return isExerciseMinimised
-                                    ? ExerciseLogLiteWidget(
-                                        key: ValueKey(exerciseTemplate.id),
-                                        exerciseLogDto: exerciseTemplate,
-                                        superSet: whereOtherExerciseInSuperSet(
-                                            firstExercise: exerciseTemplate, exercises: exerciseTemplates),
-                                        onMaximise: () =>
-                                            _handleResizedExerciseLogCard(exerciseIdToResize: exerciseTemplate.id),
-                                      )
-                                    : ExerciseLogWidget(
-                                        key: ValueKey(exerciseTemplate.id),
-                                        exerciseLogDto: exerciseTemplate,
-                                        editorType: RoutineEditorMode.edit,
-                                        superSet: whereOtherExerciseInSuperSet(
-                                            firstExercise: exerciseTemplate, exercises: exerciseTemplates),
-                                        onRemoveSuperSet: (String superSetId) => exerciseLogController.removeSuperSet(
-                                            superSetId: exerciseTemplate.superSetId),
-                                        onRemoveLog: () =>
-                                            exerciseLogController.removeExerciseLog(logId: exerciseTemplate.id),
-                                        onReplaceLog: () =>
-                                            _showReplaceExercisePicker(oldExerciseLog: exerciseTemplate),
-                                        onSuperSet: () =>
-                                            _showSuperSetExercisePicker(firstExerciseLog: exerciseTemplate),
-                                        onResize: () =>
-                                            _handleResizedExerciseLogCard(exerciseIdToResize: exerciseTemplate.id),
-                                        isMinimised: _isMinimised(exerciseTemplate.id),
-                                        onTapWeightEditor: (SetDto setDto) {
-                                          setState(() {
-                                            _selectedSetDto = setDto;
-                                          });
-                                        },
-                                        onTapRepsEditor: (SetDto setDto) {
-                                          setState(() {
-                                            _selectedSetDto = null;
-                                          });
-                                        },
-                                      );
+                                return GestureDetector(
+                                  onTap: () {
+                                    showModalBottomSheet(
+                                        isScrollControlled: true,
+                                        isDismissible: true,
+                                        useSafeArea: true,
+                                        context: context,
+                                        builder: (context) {
+                                          return Padding(
+                                            padding: EdgeInsets.only(
+                                              bottom: MediaQuery.of(context).viewInsets.bottom,
+                                            ),
+                                            child: ExerciseLogLiteWidget(
+                                              //key: ValueKey(exerciseLog.id),
+                                              exerciseLogDto: exerciseTemplate,
+                                              superSet: whereOtherExerciseInSuperSet(
+                                                  firstExercise: exerciseTemplate, exercises: exerciseTemplates),
+                                              onRemoveSuperSet: (String superSetId) {
+                                                exerciseLogController.removeSuperSet(
+                                                    superSetId: exerciseTemplate.superSetId);
+                                              },
+                                              onRemoveLog: () {
+                                                exerciseLogController.removeExerciseLog(logId: exerciseTemplate.id);
+                                              },
+                                              onSuperSet: () =>
+                                                  _showSuperSetExercisePicker(firstExerciseLog: exerciseTemplate),
+                                              onReplaceLog: () =>
+                                                  _showReplaceExercisePicker(oldExerciseLog: exerciseTemplate),
+                                            ),
+                                          );
+                                        });
+                                  },
+                                );
                               }),
                               SizedBox(
                                   width: double.infinity,

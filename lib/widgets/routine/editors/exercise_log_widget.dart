@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
@@ -48,14 +48,7 @@ class ExerciseLogWidget extends StatefulWidget {
   final ExerciseLogDto exerciseLogDto;
   final ExerciseLogDto? superSet;
 
-  final bool isMinimised;
-
   /// ExerciseLogDto callbacks
-  final VoidCallback onRemoveLog;
-  final VoidCallback onReplaceLog;
-  final VoidCallback onSuperSet;
-  final void Function(String superSetId) onRemoveSuperSet;
-  final VoidCallback onResize;
   final void Function(SetDto setDto) onTapWeightEditor;
   final void Function(SetDto setDto) onTapRepsEditor;
 
@@ -64,14 +57,8 @@ class ExerciseLogWidget extends StatefulWidget {
       this.editorType = RoutineEditorMode.edit,
       required this.exerciseLogDto,
       this.superSet,
-      required this.onSuperSet,
-      required this.onRemoveSuperSet,
-      required this.onRemoveLog,
-      required this.onReplaceLog,
-      required this.onResize,
       required this.onTapWeightEditor,
-      required this.onTapRepsEditor,
-      required this.isMinimised});
+      required this.onTapRepsEditor});
 
   @override
   State<ExerciseLogWidget> createState() => _ExerciseLogWidgetState();
@@ -420,236 +407,213 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final rpeTrendSummary = _getRpeTrendSummary(ratings: rpeRatings);
 
-    return Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, // Set the background color
-        borderRadius: BorderRadius.circular(5), // Set the border radius to make it rounded
-      ),
-      child: Column(
-        spacing: 12,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                  child: GestureDetector(
-                onTap: () {
-                  FocusScope.of(context).unfocus();
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => ExerciseHomeScreen(exercise: widget.exerciseLogDto.exercise)));
-                },
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(widget.exerciseLogDto.exercise.name,
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
-                    if (superSetExerciseDto != null)
-                      Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          FaIcon(
-                            FontAwesomeIcons.link,
-                            size: 10,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(superSetExerciseDto.exercise.name, style: Theme.of(context).textTheme.bodyMedium),
-                        ],
-                      ),
-                  ],
-                ),
-              )),
-              MenuAnchor(
-                  builder: (BuildContext context, MenuController controller, Widget? child) {
-                    return IconButton(
-                      onPressed: () {
-                        if (controller.isOpen) {
-                          controller.close();
-                        } else {
-                          FocusScope.of(context).unfocus();
-                          controller.open();
-                        }
-                      },
-                      icon: const Icon(Icons.more_horiz_rounded),
-                      tooltip: 'Show menu',
-                    );
-                  },
-                  menuChildren: [
-                    MenuItemButton(
-                      onPressed: widget.onReplaceLog,
-                      child: Text(
-                        "Replace",
-                        style: GoogleFonts.ubuntu(),
-                      ),
-                    ),
-                    widget.exerciseLogDto.superSetId.isNotEmpty
-                        ? MenuItemButton(
-                            onPressed: () => widget.onRemoveSuperSet(widget.exerciseLogDto.superSetId),
-                            child: Text("Remove Super-set", style: GoogleFonts.ubuntu(color: Colors.red)),
-                          )
-                        : MenuItemButton(
-                            onPressed: widget.onSuperSet,
-                            child: Text("Super-set", style: GoogleFonts.ubuntu()),
-                          ),
-                    MenuItemButton(
-                      onPressed: widget.onRemoveLog,
-                      child: Text(
-                        "Remove",
-                        style: GoogleFonts.ubuntu(color: Colors.red),
-                      ),
-                    ),
-                  ])
-            ],
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
+          onPressed: context.pop,
+        ),
+        centerTitle: true,
+        title: Text(exerciseLog.exercise.name),
+        actions: [
+          const Spacer(),
+          IconButton(
+            onPressed: _togglePreviousSets,
+            icon: const FaIcon(FontAwesomeIcons.clockRotateLeft, size: 16),
+            tooltip: 'Exercise Log History',
           ),
-          TextField(
-            controller: TextEditingController(text: widget.exerciseLogDto.notes),
-            cursorColor: isDarkMode ? Colors.white : Colors.black,
-            onChanged: (value) => _updateExerciseLogNotes(value: value),
-            decoration: InputDecoration(
-              hintText: "Enter notes",
+          if (withWeightsOnly(type: exerciseType))
+            IconButton(
+              onPressed: _show1RMRecommendations,
+              icon: const FaIcon(FontAwesomeIcons.solidLightbulb, size: 16),
+              tooltip: 'Weights and Reps Recommendations',
             ),
-            maxLines: null,
-            keyboardType: TextInputType.text,
-            textCapitalization: TextCapitalization.sentences,
+          IconButton(
+            onPressed: _addSet,
+            icon: const FaIcon(FontAwesomeIcons.plus, size: 18),
+            tooltip: 'Add new set',
           ),
-          _showPreviousSets
-              ? switch (exerciseType) {
-                  ExerciseType.weights => DoubleSetHeader(
-                      firstLabel: "PREVIOUS ${weightLabel().toUpperCase()}".toUpperCase(),
-                      secondLabel: 'PREVIOUS REPS'.toUpperCase(),
-                    ),
-                  ExerciseType.bodyWeight => SingleSetHeader(label: 'PREVIOUS REPS'.toUpperCase()),
-                  ExerciseType.duration => SingleSetHeader(label: 'PREVIOUS TIME'.toUpperCase())
-                }
-              : switch (exerciseType) {
-                  ExerciseType.weights => WeightAndRepsSetHeader(
-                      editorType: widget.editorType,
-                      firstLabel: weightLabel().toUpperCase(),
-                      secondLabel: 'REPS',
-                    ),
-                  ExerciseType.bodyWeight => RepsSetHeader(
-                      editorType: widget.editorType,
-                    ),
-                  ExerciseType.duration => DurationSetHeader(
-                      editorType: widget.editorType,
-                    )
-                },
-          if (sets.isNotEmpty && !_showPreviousSets)
-            switch (exerciseType) {
-              ExerciseType.weights => _WeightAndRepsSetListView(
-                  sets: sets.map((set) => set as WeightAndRepsSetDto).toList(),
-                  updateSetCheck: _updateSetCheck,
-                  removeSet: _removeSet,
-                  updateReps: _updateReps,
-                  updateWeight: _updateWeight,
-                  controllers: _weightAndRepsControllers,
-                  onTapWeightEditor: _onTapWeightEditor,
-                  onTapRepsEditor: _onTapRepsEditor,
-                  editorType: widget.editorType,
-                ),
-              ExerciseType.bodyWeight => _RepsSetListView(
-                  sets: sets.map((set) => set as RepsSetDto).toList(),
-                  updateSetCheck: _updateSetCheck,
-                  removeSet: _removeSet,
-                  updateReps: _updateReps,
-                  controllers: _repsControllers,
-                  onTapWeightEditor: _onTapWeightEditor,
-                  onTapRepsEditor: _onTapRepsEditor,
-                  editorType: widget.editorType,
-                ),
-              ExerciseType.duration => _DurationSetListView(
-                  sets: sets.map((set) => set as DurationSetDto).toList(),
-                  updateSetCheck: _updateSetCheck,
-                  removeSet: _removeSet,
-                  controllers: _durationControllers,
-                  onTapWeightEditor: _onTapWeightEditor,
-                  onTapRepsEditor: _onTapRepsEditor,
-                  checkAndUpdateDuration: _checkAndUpdateDuration,
-                  updateDuration: _updateDuration,
-                  editorType: widget.editorType,
-                ),
-            },
-          if (_showPreviousSets) SetsListview(type: exerciseType, sets: sets),
-          if (sets.isNotEmpty && widget.editorType == RoutineEditorMode.log)
-            Column(
+        ],
+      ),
+      body: Container(
+        height: double.infinity,
+        decoration: BoxDecoration(
+          gradient: themeGradient(context: context),
+        ),
+        child: SafeArea(
+          bottom: false,
+          minimum: EdgeInsets.symmetric(horizontal: 10),
+          child: SingleChildScrollView(
+            child: Column(
+              spacing: 12,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 20.0, top: 6),
-                  child: LineChartWidget(
-                      chartPoints: chartPoints,
-                      periods: setIndexes,
-                      unit: ChartUnit.number,
-                      aspectRation: 3,
-                      leftReservedSize: 20,
-                      interval: 1,
-                      colors: rpeColors),
-                ),
-                const SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Text(
-                      "RPE (Rate of Perceived Exertion). A self-reported score (1 to 10) indicating how hard a set felt.",
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 12,
-                          height: 1.8,
-                          color: isDarkMode ? Colors.white70 : Colors.black)),
-                ),
-                const SizedBox(height: 10),
-                InformationContainerLite(content: "$rpeTrendSummary$progressionSummary", color: progressionColor, icon: FaIcon(FontAwesomeIcons.boltLightning, size: 18,),),
-                const SizedBox(height: 12),
-                InformationContainerLite(content: "Your most challenging sets are working sets, driving you toward your training goals. All others are warm-ups.", color: Colors.grey.shade400, icon: Container(
-                    width: 18,
-                    height: 18,
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
-                      borderRadius: BorderRadius.circular(3),
-                    ),
-                    child: Center(
-                      child: FaIcon(
-                        FontAwesomeIcons.w,
-                        color: isDarkMode ? vibrantGreen : Colors.black,
-                        size: 8,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                        child: GestureDetector(
+                      onTap: () {
+                        FocusScope.of(context).unfocus();
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ExerciseHomeScreen(exercise: widget.exerciseLogDto.exercise)));
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (superSetExerciseDto != null)
+                            Wrap(
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              children: [
+                                FaIcon(
+                                  FontAwesomeIcons.link,
+                                  size: 10,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(superSetExerciseDto.exercise.name, style: Theme.of(context).textTheme.bodyMedium),
+                              ],
+                            ),
+                        ],
                       ),
-                    ))),
+                    )),
+                  ],
+                ),
+                TextField(
+                  controller: TextEditingController(text: widget.exerciseLogDto.notes),
+                  cursorColor: isDarkMode ? Colors.white : Colors.black,
+                  onChanged: (value) => _updateExerciseLogNotes(value: value),
+                  decoration: InputDecoration(
+                    hintText: "Enter notes",
+                  ),
+                  maxLines: null,
+                  keyboardType: TextInputType.text,
+                  textCapitalization: TextCapitalization.sentences,
+                ),
+                const SizedBox(height: 2),
+                _showPreviousSets
+                    ? switch (exerciseType) {
+                        ExerciseType.weights => DoubleSetHeader(
+                            firstLabel: "PREVIOUS ${weightLabel().toUpperCase()}".toUpperCase(),
+                            secondLabel: 'PREVIOUS REPS'.toUpperCase(),
+                          ),
+                        ExerciseType.bodyWeight => SingleSetHeader(label: 'PREVIOUS REPS'.toUpperCase()),
+                        ExerciseType.duration => SingleSetHeader(label: 'PREVIOUS TIME'.toUpperCase())
+                      }
+                    : switch (exerciseType) {
+                        ExerciseType.weights => WeightAndRepsSetHeader(
+                            editorType: widget.editorType,
+                            firstLabel: weightLabel().toUpperCase(),
+                            secondLabel: 'REPS',
+                          ),
+                        ExerciseType.bodyWeight => RepsSetHeader(
+                            editorType: widget.editorType,
+                          ),
+                        ExerciseType.duration => DurationSetHeader(
+                            editorType: widget.editorType,
+                          )
+                      },
+                if (sets.isNotEmpty && !_showPreviousSets)
+                  switch (exerciseType) {
+                    ExerciseType.weights => _WeightAndRepsSetListView(
+                        sets: sets.map((set) => set as WeightAndRepsSetDto).toList(),
+                        updateSetCheck: _updateSetCheck,
+                        removeSet: _removeSet,
+                        updateReps: _updateReps,
+                        updateWeight: _updateWeight,
+                        controllers: _weightAndRepsControllers,
+                        onTapWeightEditor: _onTapWeightEditor,
+                        onTapRepsEditor: _onTapRepsEditor,
+                        editorType: widget.editorType,
+                      ),
+                    ExerciseType.bodyWeight => _RepsSetListView(
+                        sets: sets.map((set) => set as RepsSetDto).toList(),
+                        updateSetCheck: _updateSetCheck,
+                        removeSet: _removeSet,
+                        updateReps: _updateReps,
+                        controllers: _repsControllers,
+                        onTapWeightEditor: _onTapWeightEditor,
+                        onTapRepsEditor: _onTapRepsEditor,
+                        editorType: widget.editorType,
+                      ),
+                    ExerciseType.duration => _DurationSetListView(
+                        sets: sets.map((set) => set as DurationSetDto).toList(),
+                        updateSetCheck: _updateSetCheck,
+                        removeSet: _removeSet,
+                        controllers: _durationControllers,
+                        onTapWeightEditor: _onTapWeightEditor,
+                        onTapRepsEditor: _onTapRepsEditor,
+                        checkAndUpdateDuration: _checkAndUpdateDuration,
+                        updateDuration: _updateDuration,
+                        editorType: widget.editorType,
+                      ),
+                  },
+                if (_showPreviousSets) SetsListview(type: exerciseType, sets: sets),
+                if (sets.isNotEmpty && widget.editorType == RoutineEditorMode.log)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 20.0, top: 6),
+                        child: LineChartWidget(
+                            chartPoints: chartPoints,
+                            periods: setIndexes,
+                            unit: ChartUnit.number,
+                            aspectRation: 3,
+                            leftReservedSize: 20,
+                            interval: 1,
+                            colors: rpeColors),
+                      ),
+                      const SizedBox(height: 20),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                        child: Text(
+                            "RPE (Rate of Perceived Exertion). A self-reported score (1 to 10) indicating how hard a set felt.",
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 12,
+                                height: 1.8,
+                                color: isDarkMode ? Colors.white70 : Colors.black)),
+                      ),
+                      const SizedBox(height: 10),
+                      InformationContainerLite(
+                        content: "$rpeTrendSummary$progressionSummary",
+                        color: progressionColor,
+                        icon: FaIcon(
+                          FontAwesomeIcons.boltLightning,
+                          size: 18,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      InformationContainerLite(
+                          content:
+                              "Your most challenging sets are working sets, driving you toward your training goals. All others are warm-ups.",
+                          color: Colors.grey.shade400,
+                          icon: Container(
+                              width: 18,
+                              height: 18,
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
+                                borderRadius: BorderRadius.circular(3),
+                              ),
+                              child: Center(
+                                child: FaIcon(
+                                  FontAwesomeIcons.w,
+                                  color: isDarkMode ? vibrantGreen : Colors.black,
+                                  size: 8,
+                                ),
+                              ))),
+                    ],
+                  ),
+                const SizedBox(height: 2),
+                if (withDurationOnly(type: exerciseType) && sets.isEmpty)
+                  Center(
+                    child: Text("Tap + to add a timer", style: Theme.of(context).textTheme.bodySmall),
+                  ),
               ],
             ),
-          const SizedBox(height: 2),
-          if (withDurationOnly(type: exerciseType) && sets.isEmpty)
-            Center(
-              child: Text("Tap + to add a timer", style: Theme.of(context).textTheme.bodySmall),
-            ),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            const Spacer(),
-            IconButton(
-              onPressed: _togglePreviousSets,
-              icon: const FaIcon(FontAwesomeIcons.clockRotateLeft, size: 16),
-              tooltip: 'Exercise Log History',
-            ),
-            if (withWeightsOnly(type: exerciseType))
-              IconButton(
-                onPressed: _show1RMRecommendations,
-                icon: const FaIcon(FontAwesomeIcons.solidLightbulb, size: 16),
-                tooltip: 'Weights and Reps Recommendations',
-              ),
-            IconButton(
-              onPressed: widget.onResize,
-              icon: const Icon(Icons.close_fullscreen_rounded),
-              tooltip: 'Maximise card',
-            ),
-            const SizedBox(
-              width: 6,
-            ),
-            IconButton(
-              onPressed: _addSet,
-              icon: const FaIcon(FontAwesomeIcons.plus, size: 18),
-              tooltip: 'Add new set',
-            ),
-          ])
-        ],
+          ),
+        ),
       ),
     );
   }
