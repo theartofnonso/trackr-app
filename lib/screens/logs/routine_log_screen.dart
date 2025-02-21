@@ -525,10 +525,11 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
   }
 
   void _hideLoadingScreen() {
-    if (!mounted) return;
-    setState(() {
-      _loading = false;
-    });
+    if (mounted) {
+      setState(() {
+        _loading = false;
+      });
+    }
   }
 
   List<ExerciseLogViewModel> _exerciseLogsToViewModels({required List<ExerciseLogDto> exerciseLogs}) {

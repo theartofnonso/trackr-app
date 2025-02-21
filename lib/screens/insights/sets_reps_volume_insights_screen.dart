@@ -362,9 +362,11 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   }
 
   void _hideLoadingScreen() {
-    setState(() {
-      _loading = false;
-    });
+    if (mounted) {
+      setState(() {
+        _loading = false;
+      });
+    }
   }
 
   void _onSelectMuscleGroup({required MuscleGroup newMuscleGroup}) {

@@ -605,9 +605,11 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   }
 
   void _hideLoadingScreen() {
-    setState(() {
-      _loading = false;
-    });
+    if (mounted) {
+      setState(() {
+        _loading = false;
+      });
+    }
   }
 
   void _launchRoutineLogEditor() {

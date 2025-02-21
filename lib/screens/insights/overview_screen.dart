@@ -182,9 +182,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 
   void _hideLoadingScreen() {
-    setState(() {
-      _loading = false;
-    });
+    if (mounted) {
+      setState(() {
+        _loading = false;
+      });
+    }
   }
 
   void _generateMonthlyInsightsReport({required DateTime datetime}) {
