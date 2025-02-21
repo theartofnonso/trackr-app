@@ -6,7 +6,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/milestones/milestone_dto.dart';
 import 'package:tracker_app/dtos/milestones/reps_milestone.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
+import 'package:tracker_app/screens/milestones/milestone_share_screen.dart';
 import 'package:tracker_app/utils/general_utils.dart';
+import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/dividers/label_divider.dart';
 
 import '../../../colors.dart';
@@ -33,6 +35,12 @@ class MilestoneScreen extends StatelessWidget {
 
     return Stack(alignment: Alignment.topCenter, children: [
       Scaffold(
+        floatingActionButton: remainder == 0 ? FloatingActionButton(
+            heroTag: "milestone_share_screen",
+            onPressed: () {
+              _onShareLog(context: context, milestone: milestone);
+            },
+            child: const FaIcon(FontAwesomeIcons.rocket)) : null,
         body: Container(
           decoration: BoxDecoration(
             gradient: themeGradient(context: context),
@@ -192,6 +200,11 @@ class MilestoneScreen extends StatelessWidget {
       MilestoneType.days => "days",
       MilestoneType.hours => "hours",
     };
+  }
+
+
+  void _onShareLog({required BuildContext context, required Milestone milestone}) {
+    navigateWithSlideTransition(context: context, child: MilestoneShareScreen(milestone: milestone));
   }
 }
 

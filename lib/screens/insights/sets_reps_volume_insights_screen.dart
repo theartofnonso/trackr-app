@@ -204,7 +204,8 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Wrap(children: muscleGroups),
+                    SingleChildScrollView(
+                        child: Row(mainAxisAlignment: MainAxisAlignment.start, children: muscleGroups)),
                     const SizedBox(height: 12),
                     TRKRInformationContainer(
                       ctaLabel: "Review your ${_selectedMuscleGroup.name} training",
@@ -526,10 +527,8 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   @override
   void initState() {
     super.initState();
-    final defaultMuscleGroup = Provider.of<RoutineUserController>(context, listen: false)
-        .user
-        ?.muscleGroups
-        .firstOrNull;
+    final defaultMuscleGroup =
+        Provider.of<RoutineUserController>(context, listen: false).user?.muscleGroups.firstOrNull;
     _selectedMuscleGroup = defaultMuscleGroup ?? MuscleGroup.values.first;
   }
 
