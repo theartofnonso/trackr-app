@@ -293,9 +293,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
                         child: ListView.separated(
                           itemBuilder: (BuildContext context, int index) {
                             final exerciseLog = exerciseLogs[index];
-                            return GestureDetector(
-                              onTap: () {},
-                              child: ExerciseLogLiteWidget(
+                            return ExerciseLogLiteWidget(
                                 exerciseLogDto: exerciseLog,
                                 superSet:
                                     whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs),
@@ -307,8 +305,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
                                 },
                                 onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
                                 onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
-                              ),
-                            );
+                              );
                           },
                           separatorBuilder: (BuildContext context, int index) {
                             return SizedBox(height: 12);

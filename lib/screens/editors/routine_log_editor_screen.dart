@@ -22,8 +22,6 @@ import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../controllers/routine_user_controller.dart';
 import '../../dtos/appsync/exercise_dto.dart';
-import '../../dtos/set_dtos/set_dto.dart';
-import '../../dtos/set_dtos/weight_and_reps_dto.dart';
 import '../../enums/posthog_analytics_event.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../openAI/open_ai.dart';
@@ -35,7 +33,6 @@ import '../../utils/routine_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
 import '../../widgets/timers/stopwatch_timer.dart';
-import '../../widgets/weight_plate_calculator.dart';
 
 class RoutineLogEditorScreen extends StatefulWidget {
   static const routeName = '/routine-log-editor';
@@ -58,8 +55,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   late YoutubePlayerController _videoController;
 
   final _minimisedExerciseLogCards = <String>[];
-
-  SetDto? _selectedSetDto;
 
   bool _muted = false;
 
@@ -252,9 +247,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   @override
   Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
     final routineLogEditorController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
     if (routineLogEditorController.errorMessage.isNotEmpty) {
@@ -269,8 +261,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
 
     final exerciseLogs = context.select((ExerciseLogController controller) => controller.exerciseLogs);
-
-    bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
 
     final workoutVideoUrl = widget.workoutVideoUrl;
 
@@ -293,33 +283,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                       icon: const FaIcon(FontAwesomeIcons.barsStaggered))
               ],
             ),
-            floatingActionButton: isKeyboardOpen
-                ? SafeArea(
-                    minimum: EdgeInsets.only(left: 32),
-                    child: Row(children: [
-                      FloatingActionButton(
-                        heroTag: UniqueKey(),
-                        onPressed: _dismissKeyboard,
-                        enableFeedback: true,
-                        child: FaIcon(Icons.keyboard_hide_rounded),
-                      ),
-                      Spacer(),
-                      _selectedSetDto != null
-                          ? FloatingActionButton(
-                              heroTag: UniqueKey(),
-                              onPressed: _showWeightCalculator,
-                              enableFeedback: true,
-                              child: Image.asset(
-                                'icons/dumbbells.png',
-                                fit: BoxFit.contain,
-                                color: isDarkMode ? Colors.white : Colors.white,
-                                height: 24, // Adjust the height as needed
-                              ),
-                            )
-                          : SizedBox.shrink()
-                    ]),
-                  )
-                : null,
             body: Container(
               decoration: BoxDecoration(
                 gradient: themeGradient(context: context),
@@ -386,21 +349,18 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                         child: ListView.separated(
                           itemBuilder: (BuildContext context, int index) {
                             final exerciseLog = exerciseLogs[index];
-                            return GestureDetector(
-                              onTap: () {},
-                              child: ExerciseLogLiteWidget(
-                                exerciseLogDto: exerciseLog,
-                                superSet:
-                                    whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs),
-                                onRemoveSuperSet: (String superSetId) {
-                                  exerciseLogController.removeSuperSet(superSetId: exerciseLog.superSetId);
-                                },
-                                onRemoveLog: () {
-                                  exerciseLogController.removeExerciseLog(logId: exerciseLog.id);
-                                },
-                                onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
-                                onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
-                              ),
+                            return ExerciseLogLiteWidget(
+                              exerciseLogDto: exerciseLog,
+                              superSet:
+                                  whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs),
+                              onRemoveSuperSet: (String superSetId) {
+                                exerciseLogController.removeSuperSet(superSetId: exerciseLog.superSetId);
+                              },
+                              onRemoveLog: () {
+                                exerciseLogController.removeExerciseLog(logId: exerciseLog.id);
+                              },
+                              onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
+                              onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
                             );
                           },
                           separatorBuilder: (BuildContext context, int index) {
@@ -441,17 +401,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         _muted = true;
       }
     });
-  }
-
-  void _dismissKeyboard() {
-    FocusScope.of(context).unfocus(); // Dismisses the keyboard
-  }
-
-  void _showWeightCalculator() {
-    displayBottomSheet(
-        context: context,
-        child: WeightPlateCalculator(target: (_selectedSetDto as WeightAndRepsSetDto?)?.weight ?? 0),
-        padding: EdgeInsets.zero);
   }
 
   @override

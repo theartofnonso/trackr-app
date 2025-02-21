@@ -326,9 +326,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                         child: ListView.separated(
                           itemBuilder: (BuildContext context, int index) {
                             final exerciseTemplate = exerciseTemplates[index];
-                            return GestureDetector(
-                              onTap: () {},
-                              child: ExerciseLogLiteWidget(
+                            return ExerciseLogLiteWidget(
                                 exerciseLogDto: exerciseTemplate,
                                 superSet: whereOtherExerciseInSuperSet(
                                     firstExercise: exerciseTemplate, exercises: exerciseTemplates),
@@ -340,8 +338,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                                 },
                                 onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseTemplate),
                                 onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseTemplate),
-                              ),
-                            );
+                              );
                           },
                           separatorBuilder: (BuildContext context, int index) {
                             return SizedBox(height: 12);

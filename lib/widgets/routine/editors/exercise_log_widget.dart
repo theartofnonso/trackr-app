@@ -37,6 +37,8 @@ import '../../../utils/general_utils.dart';
 import '../../../utils/one_rep_max_calculator.dart';
 import '../../chart/line_chart_widget.dart';
 import '../../dividers/label_divider.dart';
+import '../../empty_states/no_list_empty_state.dart';
+import '../../weight_plate_calculator.dart';
 import '../preview/set_headers/double_set_header.dart';
 import '../preview/set_headers/single_set_header.dart';
 import '../preview/sets_listview.dart';
@@ -48,17 +50,8 @@ class ExerciseLogWidget extends StatefulWidget {
   final String exerciseLogId;
   final ExerciseLogDto? superSet;
 
-  /// ExerciseLogDto callbacks
-  final void Function(SetDto setDto) onTapWeightEditor;
-  final void Function(SetDto setDto) onTapRepsEditor;
-
   const ExerciseLogWidget(
-      {super.key,
-      this.editorType = RoutineEditorMode.edit,
-      required this.exerciseLogId,
-      this.superSet,
-      required this.onTapWeightEditor,
-      required this.onTapRepsEditor});
+      {super.key, this.editorType = RoutineEditorMode.edit, required this.exerciseLogId, this.superSet});
 
   @override
   State<ExerciseLogWidget> createState() => _ExerciseLogWidgetState();
@@ -72,6 +65,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   List<DateTime> _durationControllers = [];
 
   bool _showPreviousSets = false;
+
+  SetDto? _selectedSetDto;
 
   void _show1RMRecommendations() {
     final pastExerciseLogs =
@@ -159,7 +154,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _updateWeight({required int index, required double weight, required SetDto setDto}) {
     final updatedSet = (setDto as WeightAndRepsSetDto).copyWith(weight: weight);
-    widget.onTapWeightEditor(updatedSet);
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateWeight(exerciseLogId: _exerciseLog.id, index: index, setDto: updatedSet);
   }
@@ -271,14 +265,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     });
   }
 
-  void _onTapWeightEditor({required SetDto setDto}) {
-    widget.onTapWeightEditor(setDto);
-  }
-
-  void _onTapRepsEditor({required SetDto setDto}) {
-    widget.onTapRepsEditor(setDto);
-  }
-
   void _togglePreviousSets() {
     setState(() {
       _showPreviousSets = !_showPreviousSets;
@@ -362,12 +348,38 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     };
   }
 
+  void _dismissKeyboard() {
+    FocusScope.of(context).unfocus(); // Dismisses the keyboard
+  }
+
+  void _showWeightCalculator() {
+    displayBottomSheet(
+        context: context,
+        child: WeightPlateCalculator(target: (_selectedSetDto as WeightAndRepsSetDto?)?.weight ?? 0),
+        padding: EdgeInsets.zero);
+  }
+
+  void _onTapWeightEditor({required SetDto setDto}) {
+    setState(() {
+      _selectedSetDto = setDto;
+    });
+  }
+
+  void _onTapRepsEditor() {
+    setState(() {
+      _selectedSetDto = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final exerciseLog = Provider.of<ExerciseLogController>(context, listen: false).whereExerciseLog(exerciseId: widget.exerciseLogId);
+    bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
+
+    final exerciseLog =
+        Provider.of<ExerciseLogController>(context, listen: false).whereExerciseLog(exerciseId: widget.exerciseLogId);
 
     final currentSets = exerciseLog.sets;
 
@@ -440,6 +452,36 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           ),
         ],
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: isKeyboardOpen
+          ? Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  FloatingActionButton(
+                    heroTag: UniqueKey(),
+                    onPressed: _dismissKeyboard,
+                    enableFeedback: true,
+                    child: FaIcon(Icons.keyboard_hide_rounded),
+                  ),
+                  _selectedSetDto != null
+                      ? FloatingActionButton(
+                          heroTag: UniqueKey(),
+                          onPressed: _showWeightCalculator,
+                          enableFeedback: true,
+                          child: Image.asset(
+                            'icons/dumbbells.png',
+                            fit: BoxFit.contain,
+                            color: isDarkMode ? Colors.white : Colors.white,
+                            height: 24, // Adjust the height as needed
+                          ),
+                        )
+                      : SizedBox.shrink()
+                ],
+              ),
+            )
+          : null,
       body: Container(
         height: double.infinity,
         decoration: BoxDecoration(
@@ -517,6 +559,14 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                             editorType: widget.editorType,
                           )
                       },
+                if (sets.isEmpty)
+                  Column(
+                    children: [
+                      const SizedBox(height: 10),
+                      NoListEmptyState(
+                          showIcon: false, message: "Tap the + button to start adding sets to your exercise"),
+                    ],
+                  ),
                 if (sets.isNotEmpty && !_showPreviousSets)
                   switch (exerciseType) {
                     ExerciseType.weights => _WeightAndRepsSetListView(
@@ -545,8 +595,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                         updateSetCheck: _updateSetCheck,
                         removeSet: _removeSet,
                         controllers: _durationControllers,
-                        onTapWeightEditor: _onTapWeightEditor,
-                        onTapRepsEditor: _onTapRepsEditor,
                         checkAndUpdateDuration: _checkAndUpdateDuration,
                         updateDuration: _updateDuration,
                         editorType: widget.editorType,
@@ -634,7 +682,7 @@ class _WeightAndRepsSetListView extends StatelessWidget {
   final void Function({required int index, required int reps, required SetDto setDto}) updateReps;
   final void Function({required int index, required double weight, required SetDto setDto}) updateWeight;
   final void Function({required SetDto setDto}) onTapWeightEditor;
-  final void Function({required SetDto setDto}) onTapRepsEditor;
+  final void Function() onTapRepsEditor;
 
   const _WeightAndRepsSetListView(
       {required this.sets,
@@ -662,7 +710,7 @@ class _WeightAndRepsSetListView extends StatelessWidget {
           onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
           onChangedWeight: (double value) => updateWeight(index: index, weight: value, setDto: setDto),
           onTapWeightEditor: () => onTapWeightEditor(setDto: setDto),
-          onTapRepsEditor: () => onTapRepsEditor(setDto: setDto),
+          onTapRepsEditor: () => onTapRepsEditor(),
           controllers: controllers[index],
         ),
       );
@@ -685,7 +733,7 @@ class _RepsSetListView extends StatelessWidget {
   final void Function({required int index, required SetDto setDto}) updateSetCheck;
   final void Function({required int index, required int reps, required SetDto setDto}) updateReps;
   final void Function({required SetDto setDto}) onTapWeightEditor;
-  final void Function({required SetDto setDto}) onTapRepsEditor;
+  final void Function() onTapRepsEditor;
 
   const _RepsSetListView(
       {required this.sets,
@@ -710,7 +758,7 @@ class _RepsSetListView extends StatelessWidget {
           onCheck: () => updateSetCheck(index: index, setDto: setDto),
           onRemoved: () => removeSet(index: index),
           onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
-          onTapRepsEditor: () => onTapRepsEditor(setDto: setDto),
+          onTapRepsEditor: () => onTapRepsEditor(),
           controller: controllers[index],
         ),
       );
@@ -734,8 +782,6 @@ class _DurationSetListView extends StatelessWidget {
   final void Function({required int index, required Duration duration, required SetDto setDto, required bool checked})
       checkAndUpdateDuration;
   final void Function({required int index, required Duration duration, required SetDto setDto}) updateDuration;
-  final void Function({required SetDto setDto}) onTapWeightEditor;
-  final void Function({required SetDto setDto}) onTapRepsEditor;
 
   const _DurationSetListView(
       {required this.sets,
@@ -744,8 +790,6 @@ class _DurationSetListView extends StatelessWidget {
       required this.removeSet,
       required this.checkAndUpdateDuration,
       required this.updateDuration,
-      required this.onTapWeightEditor,
-      required this.onTapRepsEditor,
       required this.editorType});
 
   @override

@@ -6,10 +6,12 @@ import 'package:tracker_app/enums/routine_editor_type_enums.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../../../colors.dart';
-import '../../../dtos/set_dtos/set_dto.dart';
 import '../editors/exercise_log_widget.dart';
 
-class ExerciseLogLiteWidget extends StatefulWidget {
+class ExerciseLogLiteWidget extends StatelessWidget {
+
+  final RoutineEditorMode editorType;
+
   final ExerciseLogDto exerciseLogDto;
   final ExerciseLogDto? superSet;
 
@@ -21,6 +23,7 @@ class ExerciseLogLiteWidget extends StatefulWidget {
 
   const ExerciseLogLiteWidget(
       {super.key,
+        this.editorType = RoutineEditorMode.edit,
       required this.exerciseLogDto,
       this.superSet,
       required this.onSuperSet,
@@ -29,26 +32,19 @@ class ExerciseLogLiteWidget extends StatefulWidget {
       required this.onReplaceLog});
 
   @override
-  State<ExerciseLogLiteWidget> createState() => _ExerciseLogLiteWidgetState();
-}
-
-class _ExerciseLogLiteWidgetState extends State<ExerciseLogLiteWidget> {
-  @override
   Widget build(BuildContext context) {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final superSetExerciseDto = widget.superSet;
+    final superSetExerciseDto = superSet;
 
     return GestureDetector(
       onTap: () {
         navigateWithSlideTransition(
             context: context,
             child: ExerciseLogWidget(
-                exerciseLogId: widget.exerciseLogDto.exercise.id,
-                editorType: RoutineEditorMode.log,
-                onTapWeightEditor: (SetDto setDto) {},
-                onTapRepsEditor: (SetDto setDto) {}));
+                exerciseLogId: exerciseLogDto.exercise.id,
+                editorType: editorType));
       },
       child: Container(
         padding: EdgeInsets.only(left: 12, top: 12, right: 2, bottom: 12),
@@ -67,7 +63,7 @@ class _ExerciseLogLiteWidgetState extends State<ExerciseLogLiteWidget> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(widget.exerciseLogDto.exercise.name,
+                      Text(exerciseLogDto.exercise.name,
                           style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
                       if (superSetExerciseDto != null)
                         Wrap(
@@ -101,23 +97,23 @@ class _ExerciseLogLiteWidgetState extends State<ExerciseLogLiteWidget> {
                     },
                     menuChildren: [
                       MenuItemButton(
-                        onPressed: widget.onReplaceLog,
+                        onPressed: onReplaceLog,
                         child: Text(
                           "Replace",
                           style: GoogleFonts.ubuntu(),
                         ),
                       ),
-                      widget.exerciseLogDto.superSetId.isNotEmpty
+                      exerciseLogDto.superSetId.isNotEmpty
                           ? MenuItemButton(
-                              onPressed: () => widget.onRemoveSuperSet(widget.exerciseLogDto.superSetId),
+                              onPressed: () => onRemoveSuperSet(exerciseLogDto.superSetId),
                               child: Text("Remove Super-set", style: GoogleFonts.ubuntu(color: Colors.red)),
                             )
                           : MenuItemButton(
-                              onPressed: widget.onSuperSet,
+                              onPressed: onSuperSet,
                               child: Text("Super-set", style: GoogleFonts.ubuntu()),
                             ),
                       MenuItemButton(
-                        onPressed: widget.onRemoveLog,
+                        onPressed: onRemoveLog,
                         child: Text(
                           "Remove",
                           style: GoogleFonts.ubuntu(color: Colors.red),
