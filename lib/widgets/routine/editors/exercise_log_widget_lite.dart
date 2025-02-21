@@ -45,7 +45,7 @@ class _ExerciseLogLiteWidgetState extends State<ExerciseLogLiteWidget> {
         navigateWithSlideTransition(
             context: context,
             child: ExerciseLogWidget(
-                exerciseLogDto: widget.exerciseLogDto,
+                exerciseLogId: widget.exerciseLogDto.exercise.id,
                 editorType: RoutineEditorMode.log,
                 onTapWeightEditor: (SetDto setDto) {},
                 onTapRepsEditor: (SetDto setDto) {}));
