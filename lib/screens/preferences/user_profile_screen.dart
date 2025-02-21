@@ -74,6 +74,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        const SizedBox(
+                          height: 6,
+                        ),
                         Center(
                           child: UserIconWidget(size: 60, iconSize: 22),
                         ),
@@ -239,6 +242,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   void initState() {
     super.initState();
     _user = Provider.of<RoutineUserController>(context, listen: false).user;
+    _weight = _user?.weight.toDouble() ?? 0.0;
     _trainingGoal = _user?.trainingGoal ?? TrainingGoal.hypertrophy;
     _muscleGroups = _user?.muscleGroups ?? MuscleGroup.values;
   }

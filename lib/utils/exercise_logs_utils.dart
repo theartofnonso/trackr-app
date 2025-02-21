@@ -349,7 +349,7 @@ Map<MuscleGroup, double> muscleGroupFrequency({
     }
   }
 
-  if(frequencyMap.isEmpty) return <MuscleGroup, double>{};
+  if (frequencyMap.isEmpty) return <MuscleGroup, double>{};
 
   final totalCount = frequencyMap.values.reduce((a, b) => a + b);
   final scaledFrequencyMap = <MuscleGroup, double>{};
@@ -415,7 +415,7 @@ RoutineLogDto routineWithLoggedExercises({required RoutineLogDto log}) {
       case ExerciseType.bodyWeight:
         return (set as RepsSetDto).reps;
       case ExerciseType.duration:
-      // Duration-based exercises don't have a rep count
+        // Duration-based exercises don't have a rep count
         return 0;
     }
   }

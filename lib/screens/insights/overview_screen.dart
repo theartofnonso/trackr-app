@@ -129,7 +129,27 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       controller: widget.scrollController,
                       padding: const EdgeInsets.only(bottom: 150),
                       child: Column(spacing: 20, children: [
-                        const SizedBox(height: 10),
+                        if (scheduledToday != null)
+                          GestureDetector(
+                            onTap: () => navigateToRoutineTemplatePreview(context: context, template: scheduledToday),
+                            child: _ScheduledRoutineCard(
+                                scheduledToday: scheduledToday, isLogged: hasTodayScheduleBeenLogged),
+                          ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 10),
+                            Calendar(
+                              onSelectDate: _onChangedDateTime,
+                              dateTime: widget.dateTimeRange.start,
+                              minimiseCalendar: SharedPrefs().minimiseCalendar,
+                            ),
+                            const SizedBox(height: 10),
+                            _LogsListView(dateTime: _selectedDateTime),
+                            const SizedBox(height: 2),
+                            LogStreakChart(),
+                          ],
+                        ),
                         if (isStartOfNewMonth && logsForPastMonth.isNotEmpty)
                           Padding(
                             padding: const EdgeInsets.only(top: 24.0),
@@ -139,29 +159,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
                                     "It’s a new month of training, but before we dive in, let’s reflect on your past performance and plan for this month.",
                                 onTap: () => _generateMonthlyInsightsReport(datetime: last30DaysDatetime)),
                           ),
-                        if (scheduledToday != null)
-                          GestureDetector(
-                            onTap: () => navigateToRoutineTemplatePreview(context: context, template: scheduledToday),
-                            child: _ScheduledRoutineCard(
-                                scheduledToday: scheduledToday, isLogged: hasTodayScheduleBeenLogged),
-                          ),
                         if (canNavigateNext && logsForCurrentMonth.isNotEmpty)
                           TRKRCoachButton(
                               label: "Review ${widget.dateTimeRange.start.formattedFullMonth()} insights.",
                               onTap: () => _generateMonthlyInsightsReport(datetime: widget.dateTimeRange.start)),
-                        Column(
-                          children: [
-                            Calendar(
-                              onSelectDate: _onChangedDateTime,
-                              dateTime: widget.dateTimeRange.start,
-                              minimiseCalendar: SharedPrefs().minimiseCalendar,
-                            ),
-                            const SizedBox(height: 10),
-                            _LogsListView(dateTime: _selectedDateTime),
-                          ],
-                        ),
                         MonthlyInsights(dateTimeRange: widget.dateTimeRange),
-                        LogStreakChart(),
                         VolumeChart(),
                         CaloriesChart()
                       ])),
@@ -237,8 +239,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
         Highlight any trends or patterns that could help optimize my future training sessions.
         
         Lastly, please provide a summary of the number of activities the user has logged outside of strength training. 
-        If the user has logged few or no such activities, focus on encouraging them to engage in and record more non-strength training exercises. 
-        The report should highlight the benefits of incorporating a variety of activities into their fitness regimen and offer suggestions on how they can diversify their workouts.
         Note: All weights are measured in ${weightLabel()}.
         Note: Your report should sound personal and motivating.
 """);

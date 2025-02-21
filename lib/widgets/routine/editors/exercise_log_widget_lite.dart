@@ -6,11 +6,9 @@ import 'package:tracker_app/enums/routine_editor_type_enums.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../../../colors.dart';
-import '../../../utils/general_utils.dart';
 import '../editors/exercise_log_widget.dart';
 
 class ExerciseLogLiteWidget extends StatelessWidget {
-
   final RoutineEditorMode editorType;
 
   final ExerciseLogDto exerciseLogDto;
@@ -24,7 +22,7 @@ class ExerciseLogLiteWidget extends StatelessWidget {
 
   const ExerciseLogLiteWidget(
       {super.key,
-        this.editorType = RoutineEditorMode.edit,
+      this.editorType = RoutineEditorMode.edit,
       required this.exerciseLogDto,
       this.superSet,
       required this.onSuperSet,
@@ -39,18 +37,18 @@ class ExerciseLogLiteWidget extends StatelessWidget {
 
     final superSetExerciseDto = superSet;
 
-    final checkChildren = exerciseLogDto.sets.map((setDto) => FaIcon(
-      setDto.checked ? FontAwesomeIcons.solidSquareCheck : FontAwesomeIcons.solidSquareCheck,
-      color: setDto.checked ? vibrantGreen : Colors.grey.shade500,
-    )).toList();
+    final checkChildren = exerciseLogDto.sets
+        .map((setDto) => FaIcon(
+              setDto.checked ? FontAwesomeIcons.solidSquareCheck : FontAwesomeIcons.solidSquareCheck,
+              color: setDto.checked ? vibrantGreen : Colors.grey.shade500,
+            ))
+        .toList();
 
     return GestureDetector(
       onTap: () {
         navigateWithSlideTransition(
             context: context,
-            child: ExerciseLogWidget(
-                exerciseLogId: exerciseLogDto.exercise.id,
-                editorType: editorType));
+            child: ExerciseLogWidget(exerciseLogId: exerciseLogDto.exercise.id, editorType: editorType));
       },
       child: Container(
         padding: EdgeInsets.only(left: 12, bottom: 12),
@@ -128,7 +126,10 @@ class ExerciseLogLiteWidget extends StatelessWidget {
                     ])
               ],
             ),
-            Wrap(spacing: 8, children: checkChildren,)
+            Wrap(
+              spacing: 8,
+              children: checkChildren,
+            )
           ],
         ),
       ),
