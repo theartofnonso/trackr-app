@@ -51,7 +51,7 @@ class ExerciseLogLiteWidget extends StatelessWidget {
             child: ExerciseLogWidget(exerciseLogId: exerciseLogDto.exercise.id, editorType: editorType));
       },
       child: Container(
-        padding: EdgeInsets.only(left: 12, bottom: 12),
+        padding: EdgeInsets.only(left: 12, bottom: 12, top: superSetExerciseDto != null ? 5 : 0),
         decoration: BoxDecoration(
           color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, // Set the background color
           borderRadius: BorderRadius.circular(5), // Set the border radius to make it rounded
@@ -61,28 +61,26 @@ class ExerciseLogLiteWidget extends StatelessWidget {
           children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 8,
-                    children: [
-                      Text(exerciseLogDto.exercise.name,
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
-                      if (superSetExerciseDto != null)
-                        Wrap(
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          children: [
-                            FaIcon(
-                              FontAwesomeIcons.link,
-                              size: 10,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(superSetExerciseDto.exercise.name, style: Theme.of(context).textTheme.bodyMedium),
-                          ],
-                        ),
-                    ],
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(exerciseLogDto.exercise.name,
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
+                    if (superSetExerciseDto != null)
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          FaIcon(
+                            FontAwesomeIcons.link,
+                            size: 10,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(superSetExerciseDto.exercise.name, style: Theme.of(context).textTheme. bodySmall),
+                        ],
+                      ),
+                  ],
                 ),
                 MenuAnchor(
                     builder: (BuildContext context, MenuController controller, Widget? child) {
@@ -129,7 +127,7 @@ class ExerciseLogLiteWidget extends StatelessWidget {
             Wrap(
               spacing: 8,
               children: checkChildren,
-            )
+            ),
           ],
         ),
       ),
