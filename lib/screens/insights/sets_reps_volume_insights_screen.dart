@@ -199,16 +199,13 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
           minimum: const EdgeInsets.only(top: 10, bottom: 20),
           child: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    scrollDirection: Axis.horizontal,
-                    child: Row(mainAxisAlignment: MainAxisAlignment.start, children: muscleGroups)),
-                const SizedBox(height: 18),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Wrap(children: muscleGroups),
+                    const SizedBox(height: 12),
                     TRKRInformationContainer(
                       ctaLabel: "Review your ${_selectedMuscleGroup.name} training",
                       description: _selectedMuscleGroup.description,
@@ -529,13 +526,10 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   @override
   void initState() {
     super.initState();
-    final defaultMuscleGroup = Provider.of<ExerciseAndRoutineController>(context, listen: false)
-        .logs
-        .firstOrNull
-        ?.exerciseLogs
-        .firstOrNull
-        ?.exercise
-        .primaryMuscleGroup;
+    final defaultMuscleGroup = Provider.of<RoutineUserController>(context, listen: false)
+        .user
+        ?.muscleGroups
+        .firstOrNull;
     _selectedMuscleGroup = defaultMuscleGroup ?? MuscleGroup.values.first;
   }
 
