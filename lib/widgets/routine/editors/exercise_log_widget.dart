@@ -103,8 +103,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final sets = exerciseLog.sets;
 
-    print("sets Left: ${sets.length}");
-
     if (withDurationOnly(type: _exerciseLog.exercise.type)) {
       _loadDurationControllers(sets: sets);
     }
@@ -154,7 +152,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _removeSet({required int index}) {
-    print("Index to remove: $index");
     Provider.of<ExerciseLogController>(context, listen: false)
         .removeSetForExerciseLog(exerciseLogId: _exerciseLog.id, index: index);
     _loadControllers();
@@ -653,10 +650,6 @@ class _WeightAndRepsSetListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final markedSets = markHighestWeightSets(sets);
-
-    print("Controllers left: ${controllers.length}");
-
-    print("Marked Sets left: ${markedSets.length}");
 
     final children = markedSets.mapIndexed((index, setDto) {
       return SetModeBadge(
