@@ -4,8 +4,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class NoListEmptyState extends StatelessWidget {
   final Widget? icon;
   final String message;
+  final bool showIcon;
 
-  const NoListEmptyState({super.key, this.icon, required this.message});
+  const NoListEmptyState({super.key, this.icon, required this.message, this.showIcon = true});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,8 @@ class NoListEmptyState extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          icon ?? FaIcon(FontAwesomeIcons.solidLightbulb, size: 30, color: isDarkMode ? Colors.white70 : Colors.grey.shade400),
+          if(showIcon)
+            icon ?? FaIcon(FontAwesomeIcons.solidLightbulb, size: 30, color: isDarkMode ? Colors.white70 : Colors.grey.shade400),
           const SizedBox(height: 16),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),

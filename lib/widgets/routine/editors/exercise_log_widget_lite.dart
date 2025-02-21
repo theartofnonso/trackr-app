@@ -1,23 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
+import 'package:tracker_app/enums/routine_editor_type_enums.dart';
+import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../../../colors.dart';
-import '../../../enums/routine_editor_type_enums.dart';
+import '../editors/exercise_log_widget.dart';
 
 class ExerciseLogLiteWidget extends StatelessWidget {
+
   final RoutineEditorMode editorType;
 
   final ExerciseLogDto exerciseLogDto;
   final ExerciseLogDto? superSet;
-  final VoidCallback onMaximise;
+
+  /// ExerciseLogDto callbacks
+  final VoidCallback onRemoveLog;
+  final VoidCallback onReplaceLog;
+  final VoidCallback onSuperSet;
+  final void Function(String superSetId) onRemoveSuperSet;
 
   const ExerciseLogLiteWidget(
       {super.key,
-      this.editorType = RoutineEditorMode.edit,
+        this.editorType = RoutineEditorMode.edit,
       required this.exerciseLogDto,
       this.superSet,
-      required this.onMaximise});
+      required this.onSuperSet,
+      required this.onRemoveSuperSet,
+      required this.onRemoveLog,
+      required this.onReplaceLog});
 
   @override
   Widget build(BuildContext context) {
@@ -26,44 +38,97 @@ class ExerciseLogLiteWidget extends StatelessWidget {
 
     final superSetExerciseDto = superSet;
 
+    final checkChildren = exerciseLogDto.sets.map((setDto) => FaIcon(
+      setDto.checked ? FontAwesomeIcons.solidSquareCheck : FontAwesomeIcons.solidSquareCheck,
+      color: setDto.checked ? vibrantGreen : sapphireDark,
+    )).toList();
+
     return GestureDetector(
-      onTap: onMaximise,
+      onTap: () {
+        navigateWithSlideTransition(
+            context: context,
+            child: ExerciseLogWidget(
+                exerciseLogId: exerciseLogDto.exercise.id,
+                editorType: editorType));
+      },
       child: Container(
-        padding: superSet == null
-            ? const EdgeInsets.symmetric(vertical: 20, horizontal: 10)
-            : const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
+        padding: EdgeInsets.only(left: 12, top: 12, right: 2, bottom: 12),
         decoration: BoxDecoration(
           color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, // Set the background color
           borderRadius: BorderRadius.circular(5), // Set the border radius to make it rounded
         ),
         child: Column(
+          spacing: 12,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(exerciseLogDto.exercise.name, style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
-                  if (superSetExerciseDto != null)
-                    Wrap(
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        FaIcon(
-                          FontAwesomeIcons.link,
-                          size: 10,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 8,
+                    children: [
+                      Text(exerciseLogDto.exercise.name,
+                          style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
+                      if (superSetExerciseDto != null)
+                        Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            FaIcon(
+                              FontAwesomeIcons.link,
+                              size: 10,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(superSetExerciseDto.exercise.name, style: Theme.of(context).textTheme.bodyMedium),
+                          ],
                         ),
-                        const SizedBox(width: 4),
-                        Text(superSetExerciseDto.exercise.name, style: Theme.of(context).textTheme.bodyMedium),
-                      ],
-                    )
-                ],
-              ),
-              const Spacer(),
-              Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: const FaIcon(FontAwesomeIcons.caretDown, size: 20),
-              )
-            ]),
+                      Row(spacing: 8, children: checkChildren,)
+                    ],
+                  ),
+                ),
+                MenuAnchor(
+                    builder: (BuildContext context, MenuController controller, Widget? child) {
+                      return IconButton(
+                        onPressed: () {
+                          if (controller.isOpen) {
+                            controller.close();
+                          } else {
+                            FocusScope.of(context).unfocus();
+                            controller.open();
+                          }
+                        },
+                        icon: const Icon(Icons.more_horiz_rounded),
+                        tooltip: 'Show menu',
+                      );
+                    },
+                    menuChildren: [
+                      MenuItemButton(
+                        onPressed: onReplaceLog,
+                        child: Text(
+                          "Replace",
+                          style: GoogleFonts.ubuntu(),
+                        ),
+                      ),
+                      exerciseLogDto.superSetId.isNotEmpty
+                          ? MenuItemButton(
+                              onPressed: () => onRemoveSuperSet(exerciseLogDto.superSetId),
+                              child: Text("Remove Super-set", style: GoogleFonts.ubuntu(color: Colors.red)),
+                            )
+                          : MenuItemButton(
+                              onPressed: onSuperSet,
+                              child: Text("Super-set", style: GoogleFonts.ubuntu()),
+                            ),
+                      MenuItemButton(
+                        onPressed: onRemoveLog,
+                        child: Text(
+                          "Remove",
+                          style: GoogleFonts.ubuntu(color: Colors.red),
+                        ),
+                      ),
+                    ])
+              ],
+            ),
           ],
         ),
       ),
