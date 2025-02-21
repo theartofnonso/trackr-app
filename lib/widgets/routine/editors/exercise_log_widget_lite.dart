@@ -6,6 +6,7 @@ import 'package:tracker_app/enums/routine_editor_type_enums.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../../../colors.dart';
+import '../../../utils/general_utils.dart';
 import '../editors/exercise_log_widget.dart';
 
 class ExerciseLogLiteWidget extends StatelessWidget {
@@ -40,7 +41,7 @@ class ExerciseLogLiteWidget extends StatelessWidget {
 
     final checkChildren = exerciseLogDto.sets.map((setDto) => FaIcon(
       setDto.checked ? FontAwesomeIcons.solidSquareCheck : FontAwesomeIcons.solidSquareCheck,
-      color: setDto.checked ? vibrantGreen : sapphireDark,
+      color: setDto.checked ? rpeIntensityToColor[setDto.rpeRating] : sapphireDark,
     )).toList();
 
     return GestureDetector(
