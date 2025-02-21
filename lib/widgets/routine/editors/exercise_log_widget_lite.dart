@@ -41,7 +41,7 @@ class ExerciseLogLiteWidget extends StatelessWidget {
 
     final checkChildren = exerciseLogDto.sets.map((setDto) => FaIcon(
       setDto.checked ? FontAwesomeIcons.solidSquareCheck : FontAwesomeIcons.solidSquareCheck,
-      color: setDto.checked ? rpeIntensityToColor[setDto.rpeRating] : sapphireDark,
+      color: setDto.checked ? vibrantGreen : Colors.grey.shade500,
     )).toList();
 
     return GestureDetector(
