@@ -84,6 +84,8 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
+    final user = Provider.of<RoutineUserController>(context, listen: false).user;
+
     final textStyle = Theme.of(context).textTheme.bodySmall;
 
     final dateRange = theLastYearDateTimeRange();
@@ -147,7 +149,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
             })
         .toList();
 
-    final muscleGroups = MuscleGroup.values
+    final muscleGroups = (user?.muscleGroups ?? MuscleGroup.values)
         .sorted((a, b) => a.name.compareTo(b.name))
         .map((muscleGroup) => Padding(
               padding: const EdgeInsets.only(right: 6.0),
@@ -158,8 +160,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                   label: muscleGroup.name.toUpperCase()),
             ))
         .toList();
-
-    final muscleGroupScrollViewHalf = MuscleGroup.values.length ~/ 2;
 
     final trendSummary = _analyzeWeeklyTrends(values: trends);
 
@@ -199,24 +199,14 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
           minimum: const EdgeInsets.only(top: 10, bottom: 20),
           child: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    scrollDirection: Axis.horizontal,
-                    child: Row(children: [
-                      ...muscleGroups.sublist(0, muscleGroupScrollViewHalf),
-                    ])),
-                SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    scrollDirection: Axis.horizontal,
-                    child: Row(children: [
-                      ...muscleGroups.sublist(muscleGroupScrollViewHalf),
-                    ])),
-                const SizedBox(height: 18),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    SingleChildScrollView(
+                        child: Row(mainAxisAlignment: MainAxisAlignment.start, children: muscleGroups)),
+                    const SizedBox(height: 12),
                     TRKRInformationContainer(
                       ctaLabel: "Review your ${_selectedMuscleGroup.name} training",
                       description: _selectedMuscleGroup.description,
@@ -537,13 +527,8 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   @override
   void initState() {
     super.initState();
-    final defaultMuscleGroup = Provider.of<ExerciseAndRoutineController>(context, listen: false)
-        .logs
-        .firstOrNull
-        ?.exerciseLogs
-        .firstOrNull
-        ?.exercise
-        .primaryMuscleGroup;
+    final defaultMuscleGroup =
+        Provider.of<RoutineUserController>(context, listen: false).user?.muscleGroups.firstOrNull;
     _selectedMuscleGroup = defaultMuscleGroup ?? MuscleGroup.values.first;
   }
 

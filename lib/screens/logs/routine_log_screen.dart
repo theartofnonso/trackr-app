@@ -103,7 +103,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     final numberOfCompletedSets = completedExerciseLogs.expand((exerciseLog) => exerciseLog.sets);
 
-    final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: completedExerciseLogs);
+    final muscleGroupFamilyFrequencies = muscleGroupFrequency(exerciseLogs: completedExerciseLogs);
 
     final calories = calculateCalories(
         duration: updatedLog.duration(), bodyWeight: routineUserController.weight(), activity: log.activityType);
@@ -321,7 +321,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                             title: "Muscle Groups Split",
                             description:
                                 "Here's a breakdown of the muscle groups in your ${updatedLog.name} workout session.",
-                            muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
+                            muscleGroup: muscleGroupFamilyFrequencies,
                             minimized: false),
                         if (updatedLog.templateId.isNotEmpty && updatedLog.owner == SharedPrefs().userId)
                           Column(

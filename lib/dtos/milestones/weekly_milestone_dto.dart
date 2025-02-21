@@ -3,13 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/milestones/milestone_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
-import 'package:tracker_app/utils/exercise_logs_utils.dart';
-
 import '../../enums/milestone_type_enums.dart';
 import '../appsync/routine_log_dto.dart';
 
 class WeeklyMilestone extends Milestone {
-  final MuscleGroupFamily muscleGroupFamily;
+  final MuscleGroup muscleGroupFamily;
 
   WeeklyMilestone(
       {required super.id,
@@ -18,7 +16,7 @@ class WeeklyMilestone extends Milestone {
       required super.description,
       required super.rule,
       required super.target,
-      this.muscleGroupFamily = MuscleGroupFamily.fullBody,
+      this.muscleGroupFamily = MuscleGroup.fullBody,
       required super.progress,
       required super.type});
 
@@ -46,19 +44,7 @@ class WeeklyMilestone extends Milestone {
         rule: "Log at least one training session every weekend (Saturday or Sunday) for 16 consecutive weeks.",
         type: MilestoneType.weekly);
 
-    final legDayMilestone = WeeklyMilestone(
-        id: 'NMALDC_001',
-        name: 'Never Miss A Leg Day'.toUpperCase(),
-        description:
-            'Commit to your fitness goals by never skipping leg day. Strengthen your lower body through consistent training, enhancing your overall physique and performance.',
-        caption: "Train legs weekly",
-        target: 16,
-        progress: calculateLegProgress(logs: logs, target: 16, weeks: weeksInYear, datetime: datetime),
-        muscleGroupFamily: MuscleGroupFamily.legs,
-        rule: "Log at least one leg-focused training session every week for 16 consecutive weeks.",
-        type: MilestoneType.weekly);
-
-    return [mondayMilestone, weekendMilestone, legDayMilestone];
+    return [mondayMilestone, weekendMilestone];
   }
 
   static (double, List<RoutineLogDto>) calculateMondayProgress(
@@ -146,47 +132,47 @@ class WeeklyMilestone extends Milestone {
     return (progress, qualifyingLogs);
   }
 
-  static (double, List<RoutineLogDto>) calculateLegProgress({
-    required List<RoutineLogDto> logs,
-    required int target,
-    required List<DateTimeRange> weeks,
-    required DateTime datetime,
-  }) {
-    if (logs.isEmpty) return (0, []);
-
-    List<RoutineLogDto> legsLogs = [];
-    DateTime now = datetime;
-
-    for (var week in weeks) {
-
-      // If the week hasn’t ended yet, skip it
-      if (week.end.isAfter(now) || week.end.isAtSameMomentAs(now)) {
-        continue;
-      }
-
-      // Filter logs that occurred within this ended week
-      final logsForTheWeek = logs.where((log) => log.createdAt.isWithinRange(range: week));
-
-      // Find the first log that has at least one legs exercise
-      final legLog = logsForTheWeek.firstWhereOrNull((log) {
-        final completedExerciseLogs = loggedExercises(exerciseLogs: log.exerciseLogs);
-        return completedExerciseLogs.any((exerciseLog) {
-          return exerciseLog.exercise.primaryMuscleGroup.family == MuscleGroupFamily.legs;
-        });
-      });
-
-      if (legLog != null) {
-        legsLogs.add(legLog);
-      } else {
-        // If no leg-day log was found this week, reset if we haven’t met target yet
-        if (legsLogs.length < target) {
-          legsLogs = [];
-        }
-      }
-    }
-
-    final qualifyingLogs = legsLogs.take(target).toList();
-    final progress = qualifyingLogs.length / target;
-    return (progress, qualifyingLogs);
-  }
+  // static (double, List<RoutineLogDto>) calculateLegProgress({
+  //   required List<RoutineLogDto> logs,
+  //   required int target,
+  //   required List<DateTimeRange> weeks,
+  //   required DateTime datetime,
+  // }) {
+  //   if (logs.isEmpty) return (0, []);
+  //
+  //   List<RoutineLogDto> legsLogs = [];
+  //   DateTime now = datetime;
+  //
+  //   for (var week in weeks) {
+  //
+  //     // If the week hasn’t ended yet, skip it
+  //     if (week.end.isAfter(now) || week.end.isAtSameMomentAs(now)) {
+  //       continue;
+  //     }
+  //
+  //     // Filter logs that occurred within this ended week
+  //     final logsForTheWeek = logs.where((log) => log.createdAt.isWithinRange(range: week));
+  //
+  //     // Find the first log that has at least one legs exercise
+  //     final legLog = logsForTheWeek.firstWhereOrNull((log) {
+  //       final completedExerciseLogs = loggedExercises(exerciseLogs: log.exerciseLogs);
+  //       return completedExerciseLogs.any((exerciseLog) {
+  //         return exerciseLog.exercise.primaryMuscleGroup.family == MuscleGroup.legs;
+  //       });
+  //     });
+  //
+  //     if (legLog != null) {
+  //       legsLogs.add(legLog);
+  //     } else {
+  //       // If no leg-day log was found this week, reset if we haven’t met target yet
+  //       if (legsLogs.length < target) {
+  //         legsLogs = [];
+  //       }
+  //     }
+  //   }
+  //
+  //   final qualifyingLogs = legsLogs.take(target).toList();
+  //   final progress = qualifyingLogs.length / target;
+  //   return (progress, qualifyingLogs);
+  // }
 }

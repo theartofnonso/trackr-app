@@ -14,7 +14,7 @@ GlobalKey routineLogGlobalKey = GlobalKey();
 
 class RoutineLogShareableLite extends StatelessWidget {
   final RoutineLogDto log;
-  final Map<MuscleGroupFamily, double> frequencyData;
+  final Map<MuscleGroup, double> frequencyData;
   final int pbs;
   final Image? image;
 

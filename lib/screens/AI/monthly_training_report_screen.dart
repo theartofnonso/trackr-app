@@ -22,7 +22,6 @@ import '../../utils/general_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../widgets/calendar/calendar.dart';
 import '../../widgets/chart/line_chart_widget.dart';
-import '../../widgets/chart/muscle_group_family_frequency_chart.dart';
 import '../../widgets/dividers/label_container_divider.dart';
 import '../../widgets/shareables/pbs_shareable.dart';
 
@@ -41,11 +40,11 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final activitiesChildren = activityLogs.map((activityLog) => activityLog.nameOrSummary).toSet().mapIndexed((index, activity) {
+    final activitiesChildren =
+        activityLogs.map((activityLog) => activityLog.nameOrSummary).toSet().mapIndexed((index, activity) {
       final activityType = ActivityType.fromJson(activity);
 
       final image = activityType.image;
@@ -62,13 +61,6 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
     final exercisesScrollViewHalf = exercises.length > 10 ? exercises.length ~/ 2 : exercises.length;
 
     final exercisesChildren = exercises.map((exerciseName) => _Chip(label: exerciseName)).toList();
-
-    final exerciseLogsWithCompletedSets = routineLogs
-        .map((routineLog) => loggedExercises(exerciseLogs: routineLog.exerciseLogs))
-        .expand((exerciseLogs) => exerciseLogs)
-        .toList();
-
-    final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequencyOn4WeeksScale(exerciseLogs: exerciseLogsWithCompletedSets);
 
     final exerciseAndRoutineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
@@ -153,7 +145,7 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
                           label: "Exercises".toUpperCase(),
                           description: monthlyTrainingReport.exercisesSummary,
                           labelStyle: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700),
-                         descriptionStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(height: 2),
+                          descriptionStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(height: 2),
                           dividerColor: sapphireLighter,
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -186,26 +178,11 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16),
                         child: LabelContainerDivider(
-                            labelAlignment: LabelAlignment.left,
-                            label: "Muscle Groups Trained".toUpperCase(),
-                            description: monthlyTrainingReport.musclesTrainedSummary,
-                            labelStyle: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700),
-                           descriptionStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(height: 2),
-                            dividerColor: sapphireLighter,
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: MuscleGroupFamilyFrequencyChart(
-                                  frequencyData: muscleGroupFamilyFrequencies, minimized: false),
-                            )),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16),
-                        child: LabelContainerDivider(
                           labelAlignment: LabelAlignment.left,
                           label: "Personal Bests".toUpperCase(),
                           description: monthlyTrainingReport.personalBestsSummary,
                           labelStyle: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700),
-                         descriptionStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(height: 2),
+                          descriptionStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(height: 2),
                           dividerColor: sapphireLighter,
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 16),
@@ -220,7 +197,7 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
                           label: "Calories Burned".toUpperCase(),
                           description: monthlyTrainingReport.caloriesBurnedSummary,
                           labelStyle: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700),
-                         descriptionStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(height: 2),
+                          descriptionStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(height: 2),
                           dividerColor: sapphireLighter,
                           child: Padding(
                             padding: const EdgeInsets.only(top: 16, right: 16, bottom: 16),
@@ -285,7 +262,7 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
                           label: "Other Activities".toUpperCase(),
                           description: monthlyTrainingReport.activitiesSummary,
                           labelStyle: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700),
-                         descriptionStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(height: 2),
+                          descriptionStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(height: 2),
                           dividerColor: sapphireLighter,
                           child: activitiesChildren.isNotEmpty
                               ? Padding(
@@ -344,7 +321,8 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
 class _ActivityChip extends StatelessWidget {
   const _ActivityChip({
     required this.image,
-    required this.activityType, required this.nameOrSummary,
+    required this.activityType,
+    required this.nameOrSummary,
   });
 
   final String? image;

@@ -23,7 +23,6 @@ extension MuscleGroupExtension on MuscleGroup {
       MuscleGroup.triceps => "triceps",
       MuscleGroup.quadriceps => "quadriceps",
       MuscleGroup.fullBody => "fullbody",
-      _ => "",
     };
   }
 }

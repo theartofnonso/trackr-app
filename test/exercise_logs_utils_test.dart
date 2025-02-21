@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
-import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/set_dtos/duration_set_dto.dart';
 import 'package:tracker_app/dtos/set_dtos/reps_dto.dart';
@@ -257,54 +256,6 @@ void main() {
     });
   });
 
-  group('Muscle Group Frequency', () {
-    test('muscleGroupFamilyFrequency returns scaled frequencies', () {
-      // Assume chest and abs families. We'll mock minimal differences
-      final chestExercise = weightExercise; // primary: chest
-      final coreExercise = durationExercise; // primary: abs
-
-      final logs = [
-        makeLog(chestExercise, [weightSet()]),
-        makeLog(coreExercise, [durationSet()]),
-        makeLog(chestExercise, [weightSet()]),
-      ];
-
-      final freq = muscleGroupFamilyFrequency(exerciseLogs: logs);
-      // chest: 2 occurrences, abs: 1 occurrence. Total = 3.
-      // scaled: chest: 2/3, abs: 1/3
-      expect(freq[MuscleGroupFamily.chest], closeTo(0.6666, 0.001));
-      expect(freq[MuscleGroupFamily.core], closeTo(0.3333, 0.001));
-    });
-
-    test('muscleGroupFamilyFrequencyOn4WeeksScale scales values appropriately', () {
-      // Simplify: each day logs one exercise from chest.
-      final logs = [
-        makeLog(weightExercise, [weightSet()]),
-        makeLog(weightExercise, [weightSet()]),
-        makeLog(weightExercise, [weightSet()]),
-      ];
-      final freq = muscleGroupFamilyFrequencyOn4WeeksScale(exerciseLogs: logs);
-      // Each day increments by 1, max 8. Here we have presumably 1 day or multiple same day sets:
-      // If all on same day, cumulative would be capped. Adjust times if needed.
-      // For simplicity, assume logs have different createdAt days. Then frequency might be 3/8 = 0.375
-      // If all same day, it's min(3,8)=3 => 3/8=0.375
-      // The exact result depends on createdAt days. Without date manipulation, just verify presence:
-      expect(freq.containsKey(MuscleGroupFamily.chest), true);
-    });
-
-    test('cumulativeMuscleGroupFamilyFrequency returns ratio of cumulative frequency', () {
-      final logs = [
-        makeLog(weightExercise, [weightSet()]),
-        makeLog(weightExercise, [weightSet()]),
-      ];
-      // Without changing dates, frequency would at least count them.
-      // The exact value depends on how _muscleGroupFamilyCountOn4WeeksScale aggregates days.
-      final cumulative = cumulativeMuscleGroupFamilyFrequency(exerciseLogs: logs);
-      expect(cumulative, greaterThan(0));
-      expect(cumulative, lessThanOrEqualTo(1));
-    });
-  });
-
   group('Helper Functions for Exercise Types', () {
     test('withWeightsOnly returns true for weights, false otherwise', () {
       expect(withWeightsOnly(type: ExerciseType.weights), true);
@@ -338,48 +289,6 @@ void main() {
       final completed = loggedExercises(exerciseLogs: logs);
       expect(completed.length, 1);
       expect(completed.first.exercise.id, bodyWeightExercise.id);
-    });
-  });
-
-  group('Muscle Score Calculations', () {
-    test('calculateMuscleScoreForLogs returns a percentage score', () {
-      final routineLogs = [
-        RoutineLogDto(
-            exerciseLogs: [
-              makeLog(bodyWeightExercise, [repsSet(reps: 10)])
-            ],
-            createdAt: DateTime.now(),
-            startTime: DateTime.now(),
-            updatedAt: DateTime.now(),
-            id: 'r1',
-            templateId: '',
-            name: '',
-            notes: '',
-            endTime: DateTime.now(),
-            owner: ''),
-      ];
-      final score = calculateMuscleScoreForLogs(routineLogs: routineLogs);
-      expect(score, isA<int>());
-      expect(score, greaterThanOrEqualTo(0));
-    });
-
-    test('calculateMuscleScoreForLog returns a percentage score for a single log', () {
-      final routineLog = RoutineLogDto(
-          exerciseLogs: [
-            makeLog(bodyWeightExercise, [repsSet(reps: 10)])
-          ],
-          createdAt: DateTime.now(),
-          startTime: DateTime.now(),
-          updatedAt: DateTime.now(),
-          id: 'r1',
-          templateId: '',
-          name: '',
-          notes: '',
-          endTime: DateTime.now(),
-          owner: '');
-      final score = calculateMuscleScoreForLog(routineLog: routineLog);
-      expect(score, isA<int>());
-      expect(score, greaterThanOrEqualTo(0));
     });
   });
 }

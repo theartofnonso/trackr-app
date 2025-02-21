@@ -132,7 +132,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     final numberOfSets = template.exerciseTemplates.expand((exerciseTemplate) => exerciseTemplate.sets);
     final setsSummary = "${numberOfSets.length} ${pluralize(word: "Set", count: numberOfSets.length)}";
 
-    final muscleGroupFamilyFrequencies = muscleGroupFamilyFrequency(exerciseLogs: template.exerciseTemplates);
+    final muscleGroupFamilyFrequencies = muscleGroupFrequency(exerciseLogs: template.exerciseTemplates);
 
     final allLogsForTemplate = exerciseAndRoutineController
         .whereLogsWithTemplateId(templateId: template.id)
@@ -429,7 +429,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                             title: "Muscle Groups Split",
                             description:
                                 "Here's a breakdown of the muscle groups in your ${template.name} workout plan.",
-                            muscleGroupFamilyFrequencies: muscleGroupFamilyFrequencies,
+                            muscleGroup: muscleGroupFamilyFrequencies,
                             minimized: false),
                       ],
                     ),

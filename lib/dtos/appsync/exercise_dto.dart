@@ -35,7 +35,7 @@ class ExerciseDto {
       'id': id,
       'name': name,
       'primaryMuscleGroup': primaryMuscleGroup.name,
-      'secondaryMuscleGroups': secondaryMuscleGroups.map((muscleGroup) => jsonEncode(muscleGroup.name)).toList(),
+      'secondaryMuscleGroups': secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name).toList(),
       'type': type.id,
       'owner': owner,
       'description': description ?? "",
@@ -70,6 +70,7 @@ class ExerciseDto {
     final creditSource = json["creditSource"];
     final creditSourceUri = creditSource != null ? Uri.parse(creditSource) : null;
     final credit = json["credit"] ?? "";
+
     return ExerciseDto(
         id: id,
         name: name,

@@ -4,7 +4,7 @@ import '../../colors.dart';
 import '../../enums/muscle_group_enums.dart';
 
 class MuscleGroupFamilyFrequencyChart extends StatelessWidget {
-  final Map<MuscleGroupFamily, double> frequencyData;
+  final Map<MuscleGroup, double> frequencyData;
   final bool minimized;
   final bool forceDarkMode;
 
@@ -23,7 +23,7 @@ class MuscleGroupFamilyFrequencyChart extends StatelessWidget {
 
 class _HorizontalBarChart extends StatelessWidget {
   final bool minimized;
-  final Map<MuscleGroupFamily, double> frequencyData;
+  final Map<MuscleGroup, double> frequencyData;
   final bool forceDarkMode;
 
   const _HorizontalBarChart({required this.frequencyData, required this.minimized, required this.forceDarkMode});
@@ -41,7 +41,7 @@ class _HorizontalBarChart extends StatelessWidget {
 }
 
 class _LinearBar extends StatelessWidget {
-  final MuscleGroupFamily muscleGroupFamily;
+  final MuscleGroup muscleGroupFamily;
   final double frequency;
   final bool forceDarkMode;
 
