@@ -26,7 +26,7 @@ class MilestoneScreen extends StatelessWidget {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final remainder = (milestone.progress.$1 * milestone.target).toInt();
+    final progress = (milestone.progress.$1 * milestone.target).toInt();
 
     final confettiController = ConfettiController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -35,7 +35,7 @@ class MilestoneScreen extends StatelessWidget {
 
     return Stack(alignment: Alignment.topCenter, children: [
       Scaffold(
-        floatingActionButton: remainder == 0 ? FloatingActionButton(
+        floatingActionButton: milestone.target - progress == 0 ? FloatingActionButton(
             heroTag: "milestone_share_screen",
             onPressed: () {
               _onShareLog(context: context, milestone: milestone);
@@ -171,7 +171,7 @@ class MilestoneScreen extends StatelessWidget {
                               ? milestone.progress.$1 == 1
                                   ? _CompletedMessage(target: milestone.target, description: _targetDescription())
                                   : _ProgressMessage(
-                                      remainder: remainder, target: milestone.target, description: _targetDescription())
+                                      progress: progress, target: milestone.target, description: _targetDescription())
                               : Text("Keep up the training to see your progress grow for this challenge.",
                                   style: Theme.of(context).textTheme.bodyLarge),
                         ],
@@ -209,11 +209,11 @@ class MilestoneScreen extends StatelessWidget {
 }
 
 class _ProgressMessage extends StatelessWidget {
-  final int remainder;
+  final int progress;
   final int target;
   final String description;
 
-  const _ProgressMessage({required this.remainder, required this.target, required this.description});
+  const _ProgressMessage({required this.progress, required this.target, required this.description});
 
   @override
   Widget build(BuildContext context) {
@@ -224,7 +224,7 @@ class _ProgressMessage extends StatelessWidget {
             children: [
           const TextSpan(text: " "),
           TextSpan(
-              text: "$remainder", style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold)),
+              text: "$progress", style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold)),
           const TextSpan(text: " "),
           const TextSpan(text: "out of"),
           const TextSpan(text: " "),
