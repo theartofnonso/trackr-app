@@ -389,7 +389,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                             return GestureDetector(
                               onTap: () {},
                               child: ExerciseLogLiteWidget(
-                                //key: ValueKey(exerciseLog.id),
                                 exerciseLogDto: exerciseLog,
                                 superSet:
                                     whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs),

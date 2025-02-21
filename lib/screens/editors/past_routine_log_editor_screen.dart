@@ -290,53 +290,39 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
                     ),
                     if (exerciseLogs.isNotEmpty)
                       Expanded(
-                          child: SingleChildScrollView(
-                              padding: const EdgeInsets.only(bottom: 250),
-                              child: Column(spacing: 20, children: [
-                                ...exerciseLogs.map((exerciseLog) {
-                                  return GestureDetector(
-                                    onTap: () {
-                                      showModalBottomSheet(
-                                          isScrollControlled: true,
-                                          isDismissible: true,
-                                          useSafeArea: true,
-                                          context: context,
-                                          builder: (context) {
-                                            return Padding(
-                                              padding: EdgeInsets.only(
-                                                bottom: MediaQuery.of(context).viewInsets.bottom,
-                                              ),
-                                              child: ExerciseLogLiteWidget(
-                                                //key: ValueKey(exerciseLog.id),
-                                                exerciseLogDto: exerciseLog,
-                                                superSet: whereOtherExerciseInSuperSet(
-                                                    firstExercise: exerciseLog, exercises: exerciseLogs),
-                                                onRemoveSuperSet: (String superSetId) {
-                                                  exerciseLogController.removeSuperSet(
-                                                      superSetId: exerciseLog.superSetId);
-                                                },
-                                                onRemoveLog: () {
-                                                  exerciseLogController.removeExerciseLog(logId: exerciseLog.id);
-                                                },
-                                                onSuperSet: () =>
-                                                    _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
-                                                onReplaceLog: () =>
-                                                    _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
-                                              ),
-                                            );
-                                          });
-                                    },
-                                  );
-                                }),
-                                const SizedBox(height: 20),
-                                SizedBox(
-                                    width: double.infinity,
-                                    child: OpacityButtonWidget(
-                                        padding: const EdgeInsets.symmetric(vertical: 16),
-                                        buttonColor: vibrantGreen,
-                                        label: "Log Past Session",
-                                        onPressed: _createLog))
-                              ]))),
+                        child: ListView.separated(
+                          itemBuilder: (BuildContext context, int index) {
+                            final exerciseLog = exerciseLogs[index];
+                            return GestureDetector(
+                              onTap: () {},
+                              child: ExerciseLogLiteWidget(
+                                exerciseLogDto: exerciseLog,
+                                superSet:
+                                    whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs),
+                                onRemoveSuperSet: (String superSetId) {
+                                  exerciseLogController.removeSuperSet(superSetId: exerciseLog.superSetId);
+                                },
+                                onRemoveLog: () {
+                                  exerciseLogController.removeExerciseLog(logId: exerciseLog.id);
+                                },
+                                onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
+                                onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
+                              ),
+                            );
+                          },
+                          separatorBuilder: (BuildContext context, int index) {
+                            return SizedBox(height: 12);
+                          },
+                          itemCount: exerciseLogs.length,
+                        ),
+                      ),
+                    SizedBox(
+                        width: double.infinity,
+                        child: OpacityButtonWidget(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            buttonColor: vibrantGreen,
+                            label: "Log Past Session",
+                            onPressed: _createLog)),
                     if (exerciseLogs.isEmpty)
                       Expanded(
                         child: Padding(

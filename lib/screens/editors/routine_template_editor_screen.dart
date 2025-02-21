@@ -323,53 +323,39 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                     ),
                     if (exerciseTemplates.isNotEmpty)
                       Expanded(
-                        child: SingleChildScrollView(
-                            padding: const EdgeInsets.only(bottom: 250),
-                            child: Column(spacing: 20, children: [
-                              ...exerciseTemplates.map((exerciseTemplate) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    showModalBottomSheet(
-                                        isScrollControlled: true,
-                                        isDismissible: true,
-                                        useSafeArea: true,
-                                        context: context,
-                                        builder: (context) {
-                                          return Padding(
-                                            padding: EdgeInsets.only(
-                                              bottom: MediaQuery.of(context).viewInsets.bottom,
-                                            ),
-                                            child: ExerciseLogLiteWidget(
-                                              //key: ValueKey(exerciseLog.id),
-                                              exerciseLogDto: exerciseTemplate,
-                                              superSet: whereOtherExerciseInSuperSet(
-                                                  firstExercise: exerciseTemplate, exercises: exerciseTemplates),
-                                              onRemoveSuperSet: (String superSetId) {
-                                                exerciseLogController.removeSuperSet(
-                                                    superSetId: exerciseTemplate.superSetId);
-                                              },
-                                              onRemoveLog: () {
-                                                exerciseLogController.removeExerciseLog(logId: exerciseTemplate.id);
-                                              },
-                                              onSuperSet: () =>
-                                                  _showSuperSetExercisePicker(firstExerciseLog: exerciseTemplate),
-                                              onReplaceLog: () =>
-                                                  _showReplaceExercisePicker(oldExerciseLog: exerciseTemplate),
-                                            ),
-                                          );
-                                        });
-                                  },
-                                );
-                              }),
-                              SizedBox(
-                                  width: double.infinity,
-                                  child: OpacityButtonWidget(
-                                      padding: const EdgeInsets.symmetric(vertical: 16),
-                                      buttonColor: vibrantGreen,
-                                      label: template != null ? "Update Workout" : "Create Workout",
-                                      onPressed: template != null ? _updateRoutineTemplate : _createRoutineTemplate))
-                            ])),
+                        child: ListView.separated(
+                          itemBuilder: (BuildContext context, int index) {
+                            final exerciseTemplate = exerciseTemplates[index];
+                            return GestureDetector(
+                              onTap: () {},
+                              child: ExerciseLogLiteWidget(
+                                exerciseLogDto: exerciseTemplate,
+                                superSet: whereOtherExerciseInSuperSet(
+                                    firstExercise: exerciseTemplate, exercises: exerciseTemplates),
+                                onRemoveSuperSet: (String superSetId) {
+                                  exerciseLogController.removeSuperSet(superSetId: exerciseTemplate.superSetId);
+                                },
+                                onRemoveLog: () {
+                                  exerciseLogController.removeExerciseLog(logId: exerciseTemplate.id);
+                                },
+                                onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseTemplate),
+                                onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseTemplate),
+                              ),
+                            );
+                          },
+                          separatorBuilder: (BuildContext context, int index) {
+                            return SizedBox(height: 12);
+                          },
+                          itemCount: exerciseTemplates.length,
+                        ),
                       ),
+                    SizedBox(
+                        width: double.infinity,
+                        child: OpacityButtonWidget(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            buttonColor: vibrantGreen,
+                            label: template != null ? "Update Workout" : "Create Workout",
+                            onPressed: template != null ? _updateRoutineTemplate : _createRoutineTemplate)),
                     if (exerciseTemplates.isEmpty)
                       Expanded(
                         child: Padding(
