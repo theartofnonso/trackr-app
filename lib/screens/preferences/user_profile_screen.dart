@@ -77,36 +77,41 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     const SizedBox(
                       height: 40,
                     ),
-                    LabelDivider(
-                      label: "Enter your weight".toUpperCase(),
-                      labelColor: isDarkMode ? Colors.white : Colors.black,
-                      dividerColor: sapphireLighter,
-                      fontSize: 14,
-                    ),
-                    const SizedBox(height: 8),
-                    Text("We estimate the amount of calories burned using your weight.",
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
-                    const SizedBox(height: 8),
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: isDarkMode ? Colors.white10 : Colors.black38, // Border color
-                          width: 1, // Border width
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        LabelDivider(
+                          label: "Enter your weight".toUpperCase(),
+                          labelColor: isDarkMode ? Colors.white : Colors.black,
+                          dividerColor: sapphireLighter,
+                          fontSize: 14,
                         ),
-                        borderRadius: BorderRadius.circular(5), // Rounded corners
-                      ),
-                      width: double.infinity,
-                      child: DoubleTextField(
-                          value: _user?.weight ?? 0,
-                          controller: _doubleTextFieldController,
-                          onChanged: (value) {
-                            setState(() {
-                              _weight = value;
-                            });
-                          }),
+                        const SizedBox(height: 8),
+                        Text("We estimate the amount of calories burned using your weight.",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                        const SizedBox(height: 8),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: isDarkMode ? Colors.white10 : Colors.black38, // Border color
+                              width: 1, // Border width
+                            ),
+                            borderRadius: BorderRadius.circular(5), // Rounded corners
+                          ),
+                          width: double.infinity,
+                          child: DoubleTextField(
+                              value: _user?.weight ?? 0,
+                              controller: _doubleTextFieldController,
+                              onChanged: (value) {
+                                setState(() {
+                                  _weight = value;
+                                });
+                              },),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 22),
                     Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -140,6 +145,21 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         ),
                       )
                     ]),
+                    const SizedBox(height: 22),
+                    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      LabelDivider(
+                        label: "Select muscle groups to track".toUpperCase(),
+                        labelColor: isDarkMode ? Colors.white : Colors.black,
+                        dividerColor: sapphireLighter,
+                        fontSize: 14,
+                      ),
+                      const SizedBox(height: 8),
+                      Text("By selecting specific muscle groups to track, TRKR focuses its reports exclusively on those areas, providing a more targeted analysis.",
+                          textAlign: TextAlign.start,
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                      const SizedBox(height: 8),
+                    ])
                   ]),
                 ),
               ),
