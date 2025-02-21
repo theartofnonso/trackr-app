@@ -350,6 +350,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                           itemBuilder: (BuildContext context, int index) {
                             final exerciseLog = exerciseLogs[index];
                             return ExerciseLogLiteWidget(
+                              editorType: widget.mode,
                               exerciseLogDto: exerciseLog,
                               superSet:
                                   whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs),

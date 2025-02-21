@@ -7,6 +7,7 @@ import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
+import 'package:tracker_app/enums/routine_editor_type_enums.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 
 import '../../colors.dart';
@@ -327,18 +328,19 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                           itemBuilder: (BuildContext context, int index) {
                             final exerciseTemplate = exerciseTemplates[index];
                             return ExerciseLogLiteWidget(
-                                exerciseLogDto: exerciseTemplate,
-                                superSet: whereOtherExerciseInSuperSet(
-                                    firstExercise: exerciseTemplate, exercises: exerciseTemplates),
-                                onRemoveSuperSet: (String superSetId) {
-                                  exerciseLogController.removeSuperSet(superSetId: exerciseTemplate.superSetId);
-                                },
-                                onRemoveLog: () {
-                                  exerciseLogController.removeExerciseLog(logId: exerciseTemplate.id);
-                                },
-                                onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseTemplate),
-                                onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseTemplate),
-                              );
+                              editorType: RoutineEditorMode.log,
+                              exerciseLogDto: exerciseTemplate,
+                              superSet: whereOtherExerciseInSuperSet(
+                                  firstExercise: exerciseTemplate, exercises: exerciseTemplates),
+                              onRemoveSuperSet: (String superSetId) {
+                                exerciseLogController.removeSuperSet(superSetId: exerciseTemplate.superSetId);
+                              },
+                              onRemoveLog: () {
+                                exerciseLogController.removeExerciseLog(logId: exerciseTemplate.id);
+                              },
+                              onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseTemplate),
+                              onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseTemplate),
+                            );
                           },
                           separatorBuilder: (BuildContext context, int index) {
                             return SizedBox(height: 12);
