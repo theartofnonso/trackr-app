@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -28,7 +30,7 @@ class UserProfileScreen extends StatefulWidget {
   State<UserProfileScreen> createState() => _UserProfileScreenState();
 }
 
-class _UserProfileScreenState extends State<UserProfileScreen> {
+class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindingObserver {
   RoutineUserDto? _user;
 
   final _doubleTextFieldController = TextEditingController();
@@ -38,6 +40,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   TrainingGoal _trainingGoal = TrainingGoal.hypertrophy;
 
   List<MuscleGroup> _muscleGroups = MuscleGroup.values;
+
+  bool _notificationEnabled = false;
 
   @override
   Widget build(BuildContext context) {
@@ -61,16 +65,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           gradient: themeGradient(context: context),
         ),
         child: SafeArea(
-          minimum: const EdgeInsets.only(
-            right: 10,
-            left: 10,
-            bottom: 20
-          ),
+          minimum: const EdgeInsets.only(right: 10, left: 10, bottom: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 child: SingleChildScrollView(
+                  padding: EdgeInsets.only(bottom: 50),
                   keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                   child: Column(spacing: 36, crossAxisAlignment: CrossAxisAlignment.start, children: [
                     Column(
@@ -128,7 +129,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     ),
                     Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       LabelDivider(
-                        label: "Select a training goal".toUpperCase(),
+                        label: "training goal".toUpperCase(),
                         labelColor: isDarkMode ? Colors.white : Colors.black,
                         dividerColor: sapphireLighter,
                         fontSize: 14,
@@ -159,7 +160,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     ]),
                     Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       LabelDivider(
-                        label: "Select muscle groups to track".toUpperCase(),
+                        label: "muscle groups to track".toUpperCase(),
                         labelColor: isDarkMode ? Colors.white : Colors.black,
                         dividerColor: sapphireLighter,
                         fontSize: 14,
@@ -188,7 +189,40 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           ),
                         ),
                       )
-                    ])
+                    ]),
+                    if (Platform.isIOS)
+                      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        LabelDivider(
+                          label: "notifications".toUpperCase(),
+                          labelColor: isDarkMode ? Colors.white : Colors.black,
+                          dividerColor: sapphireLighter,
+                          fontSize: 14,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                            "All us to remind you about long-running workouts if you’ve become distracted. We also send gentle nudges to train when we notice you might be slacking.",
+                            textAlign: TextAlign.start,
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                        const SizedBox(height: 8),
+                        ThemeListTile(
+                          child: ListTile(
+                            onTap: _turnOnNotification,
+                            dense: true,
+                            horizontalTitleGap: 0,
+                            leading: Text(_notificationEnabled ? "Notification is on" : "Turn on notifications",
+                                textAlign: TextAlign.start,
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                    color: isDarkMode ? Colors.white : Colors.black)),
+                            trailing: FaIcon(
+                              FontAwesomeIcons.solidBell,
+                              size: 14,
+                            ),
+                          ),
+                        )
+                      ])
                   ]),
                 ),
               ),
@@ -240,6 +274,22 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     }
   }
 
+  void _turnOnNotification() async {
+    if (!_notificationEnabled) {
+      final isEnabled = await requestNotificationPermission();
+      setState(() {
+        _notificationEnabled = isEnabled;
+      });
+    }
+  }
+
+  void _checkNotificationPermission() async {
+    final result = await checkIosNotificationPermission();
+    setState(() {
+      _notificationEnabled = result.isEnabled;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -247,5 +297,22 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     _weight = _user?.weight.toDouble() ?? 0.0;
     _trainingGoal = _user?.trainingGoal ?? TrainingGoal.hypertrophy;
     _muscleGroups = _user?.muscleGroups ?? MuscleGroup.values;
+    _checkNotificationPermission();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    /// Uncomment this to enable notifications
+    if (state == AppLifecycleState.resumed) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _checkNotificationPermission();
+      });
+    }
   }
 }
