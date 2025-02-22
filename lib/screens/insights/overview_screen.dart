@@ -137,16 +137,14 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: 10,
                           children: [
-                            const SizedBox(height: 10),
                             Calendar(
                               onSelectDate: _onChangedDateTime,
                               dateTime: widget.dateTimeRange.start,
                               minimiseCalendar: SharedPrefs().minimiseCalendar,
                             ),
-                            const SizedBox(height: 10),
                             _LogsListView(dateTime: _selectedDateTime),
-                            const SizedBox(height: 2),
                             LogStreakChart(),
                           ],
                         ),

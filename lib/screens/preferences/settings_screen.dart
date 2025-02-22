@@ -14,7 +14,6 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/activity_log_controller.dart';
 import 'package:tracker_app/graphQL/queries.dart';
-import 'package:tracker_app/screens/preferences/notifications_screen.dart';
 import 'package:tracker_app/screens/preferences/user_profile_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/urls.dart';
@@ -52,8 +51,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   bool _loading = false;
 
   late WeightUnit _weightUnitType;
-
-  bool _notificationEnabled = false;
 
   bool _appleHealthEnabled = false;
 
@@ -176,13 +173,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 ),
                 if (Platform.isIOS)
                   ListTile(
-                    onTap: _navigateToNotificationSettings,
-                    leading: FaIcon(FontAwesomeIcons.solidBell, color: isDarkMode ? Colors.white70 : Colors.black38),
-                    title: Text("Notifications", style: Theme.of(context).textTheme.titleMedium),
-                    subtitle: Text(_notificationEnabled ? "enabled" : "disabled"),
-                  ),
-                if (Platform.isIOS)
-                  ListTile(
                     onTap: _connectAppleHealth,
                     leading: AppleHealthIcon(isDarkMode: isDarkMode, height: 24),
                     title: Text("Apple Health", style: Theme.of(context).textTheme.titleMedium),
@@ -271,18 +261,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
 
   void _navigateToExerciseLibrary() {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ExerciseLibraryScreen(readOnly: true)));
-  }
-
-  void _navigateToNotificationSettings() async {
-    if (!_notificationEnabled) {
-      final isEnabled = await requestNotificationPermission();
-      setState(() {
-        _notificationEnabled = isEnabled;
-      });
-    }
-    if (mounted) {
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const NotificationsScreen()));
-    }
   }
 
   void _connectAppleHealth() async {
@@ -407,13 +385,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         isRightActionDestructive: true);
   }
 
-  void _checkNotificationPermission() async {
-    final result = await checkIosNotificationPermission();
-    setState(() {
-      _notificationEnabled = result.isEnabled;
-    });
-  }
-
   void _checkAppleHealthPermission() async {
     await Health().configure();
 
@@ -440,7 +411,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _weightUnitType = WeightUnit.fromString(SharedPrefs().weightUnit);
-    _checkNotificationPermission();
     _checkAppleHealthPermission();
     _getAppVersion();
   }
@@ -456,7 +426,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     /// Uncomment this to enable notifications
     if (state == AppLifecycleState.resumed) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _checkNotificationPermission();
         _checkAppleHealthPermission();
       });
     }
