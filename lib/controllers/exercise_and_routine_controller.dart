@@ -181,7 +181,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
 
     if (Platform.isIOS) {
       final dateRange = theLastYearDateTimeRange();
-      final weeksInLastYear = generateWeeksInRange(range: dateRange).take(13).toList();
+      final weeksInLastYear = generateWeeksInRange(range: dateRange);
 
       // Sort logs once for efficient processing
       logs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
