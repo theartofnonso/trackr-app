@@ -61,8 +61,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           gradient: themeGradient(context: context),
         ),
         child: SafeArea(
-          minimum: const EdgeInsets.symmetric(
-            horizontal: 10,
+          minimum: const EdgeInsets.only(
+            right: 10,
+            left: 10,
+            bottom: 20
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
