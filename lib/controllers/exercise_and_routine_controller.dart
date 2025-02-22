@@ -176,6 +176,9 @@ class ExerciseAndRoutineController extends ChangeNotifier {
     /// then pending workout sessions and
     /// also, stale training reminders, because training frequency changes
     /// Finally, schedule notification reminders for those dates and time
+    ///
+    if(logs.isEmpty) return;
+
     if (Platform.isIOS) {
       final dateRange = theLastYearDateTimeRange();
       final weeksInLastYear = generateWeeksInRange(range: dateRange).take(13).toList();
