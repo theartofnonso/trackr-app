@@ -72,6 +72,51 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   TextEditingController? _textEditingController;
 
+  String _predictTemplate({required List<RoutineLogDto> logs}) {
+    if (logs.isEmpty) {
+      return "";
+    }
+
+    final currentWeekday = DateTime.now().weekday;
+    final sameWeekdayLogs = logs.where((log) => log.createdAt.weekday == currentWeekday).toList();
+
+    final logsToConsider = sameWeekdayLogs.isNotEmpty ? sameWeekdayLogs : logs;
+
+    final counts = <String, int>{};
+    final latestDates = <String, DateTime>{};
+
+    for (final log in logsToConsider) {
+      final id = log.templateId;
+      counts[id] = (counts[id] ?? 0) + 1;
+
+      final currentLatest = latestDates[id];
+      if (currentLatest == null || log.createdAt.isAfter(currentLatest)) {
+        latestDates[id] = log.createdAt;
+      }
+    }
+
+    final maxCount = counts.values.fold(0, (max, count) => count > max ? count : max);
+    final candidates = counts.entries.where((entry) => entry.value == maxCount).map((entry) => entry.key).toList();
+
+    if (candidates.length == 1) {
+      return candidates.first;
+    }
+
+    // Resolve tie by selecting the most recent date
+    String selectedId = candidates.first;
+    DateTime latestDate = latestDates[selectedId]!;
+
+    for (final id in candidates.skip(1)) {
+      final date = latestDates[id]!;
+      if (date.isAfter(latestDate)) {
+        selectedId = id;
+        latestDate = date;
+      }
+    }
+
+    return selectedId;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
@@ -106,6 +151,16 @@ class _OverviewScreenState extends State<OverviewScreen> {
     final hasTodayScheduleBeenLogged =
         logsForCurrentDay.firstWhereOrNull((log) => log.templateId == scheduledToday?.id) != null;
 
+    List<RoutineLogDto> routineLogs = [];
+    for (final template in templates) {
+      final logs = exerciseAndRoutineController.whereLogsWithTemplateId(templateId: template.id).toList();
+      routineLogs.addAll(logs);
+    }
+
+    final predictedTemplateId = _predictTemplate(logs: routineLogs);
+
+    final predictedTemplate = templates.firstWhereOrNull((template) => template.id == predictedTemplateId);
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       floatingActionButton: _loading
@@ -129,11 +184,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       controller: widget.scrollController,
                       padding: const EdgeInsets.only(bottom: 150),
                       child: Column(spacing: 20, children: [
-                        if (scheduledToday != null)
+                        if (predictedTemplate != null)
                           GestureDetector(
-                            onTap: () => navigateToRoutineTemplatePreview(context: context, template: scheduledToday),
+                            onTap: () =>
+                                navigateToRoutineTemplatePreview(context: context, template: predictedTemplate),
                             child: _ScheduledRoutineCard(
-                                scheduledToday: scheduledToday, isLogged: hasTodayScheduleBeenLogged),
+                                scheduledToday: predictedTemplate, isLogged: hasTodayScheduleBeenLogged),
                           ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
