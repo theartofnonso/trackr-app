@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:tracker_app/utils/timezone_utils.dart';
 
+const int notificationIDLongRunningSession = 999;
+const int notificationIDPreferredTraining = 900;
+
 List<DateTime> _getPreferredTrainingTimes({required List<DateTime> historicDateTimes}) {
   final Map<String, List<DateTime>> timeGroups = {};
   final Map<String, DateTime> latestTimes = {};
@@ -56,7 +59,7 @@ Future<void> _scheduleNotification({required Duration duration, required int wee
   const matchDateTimeComponents = DateTimeComponents.dayOfWeekAndTime;
 
   await FlutterLocalNotificationsPlugin().zonedSchedule(
-      weekday,
+      notificationIDPreferredTraining,
       "Time to Get Moving!",
       "You usually train around this time—let’s keep up the habit and crush today’s workout!",
       tzDateTime,

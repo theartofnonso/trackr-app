@@ -28,6 +28,7 @@ import '../../openAI/open_ai.dart';
 import '../../openAI/open_ai_response_format.dart';
 import '../../strings/ai_prompts.dart';
 import '../../utils/general_utils.dart';
+import '../../utils/notifications_utils.dart';
 import '../../utils/routine_log_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
@@ -464,7 +465,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     WidgetsBinding.instance.removeObserver(this);
     _onDisposeCallback();
     if (Platform.isIOS) {
-      FlutterLocalNotificationsPlugin().cancel(999);
+      FlutterLocalNotificationsPlugin().cancel(notificationIDLongRunningSession);
     }
     _videoController.dispose();
     super.dispose();
@@ -474,14 +475,14 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       if (Platform.isIOS) {
-        FlutterLocalNotificationsPlugin().cancel(999);
+        FlutterLocalNotificationsPlugin().cancel(notificationIDLongRunningSession);
       }
     }
 
     if (state == AppLifecycleState.paused) {
       if (Platform.isIOS) {
         FlutterLocalNotificationsPlugin().periodicallyShowWithDuration(
-            999,
+            notificationIDLongRunningSession,
             "${widget.log.name} is still running",
             "Tap to continue training",
             const Duration(minutes: 10),
