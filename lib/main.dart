@@ -16,14 +16,12 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
-import 'package:tracker_app/controllers/recovery_log_controller.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/dtos/appsync/routine_template_dto.dart';
 import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
 import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/repositories/amplify/amplify_activity_log_repository.dart';
 import 'package:tracker_app/repositories/amplify/amplify_exercise_repository.dart';
-import 'package:tracker_app/repositories/amplify/amplify_recovery_log_repository.dart';
 import 'package:tracker_app/repositories/amplify/amplify_routine_log_repository.dart';
 import 'package:tracker_app/repositories/amplify/amplify_routine_template_repository.dart';
 import 'package:tracker_app/repositories/amplify/amplify_routine_user_repository.dart';
@@ -144,9 +142,6 @@ void main() async {
       options.tracesSampleRate = 1.0;
     },
     appRunner: () => runApp(MultiProvider(providers: [
-      ChangeNotifierProvider<RecoveryLogController>(
-        create: (BuildContext context) => RecoveryLogController(AmplifyRecoveryLogRepository()),
-      ),
       ChangeNotifierProvider<RoutineUserController>(
         create: (BuildContext context) => RoutineUserController(AmplifyRoutineUserRepository()),
       ),

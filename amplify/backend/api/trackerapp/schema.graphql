@@ -68,20 +68,6 @@ type ActivityLog
   updatedAt: AWSDateTime!
 }
 
-type RecoveryLog
-     @model
-     @auth(
-        rules: [
-           { allow: owner },
-        ]
-     ) {
-  id: ID!
-  owner: String
-  data: AWSJSON!
-  createdAt: AWSDateTime!
-  updatedAt: AWSDateTime!
-}
-
 type Exercise
      @model
      @auth(
