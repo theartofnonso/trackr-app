@@ -86,12 +86,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
     final latestDates = <String, DateTime>{};
 
     for (final log in logsToConsider) {
-      final id = log.templateId;
-      counts[id] = (counts[id] ?? 0) + 1;
+      final name = log.name;
+      counts[name] = (counts[name] ?? 0) + 1;
 
-      final currentLatest = latestDates[id];
+      final currentLatest = latestDates[name];
       if (currentLatest == null || log.createdAt.isAfter(currentLatest)) {
-        latestDates[id] = log.createdAt;
+        latestDates[name] = log.createdAt;
       }
     }
 
@@ -149,17 +149,17 @@ class _OverviewScreenState extends State<OverviewScreen> {
     final logsForPastMonth = exerciseAndRoutineController.whereLogsIsSameMonth(dateTime: last30DaysDatetime).toList();
 
     final hasTodayScheduleBeenLogged =
-        logsForCurrentDay.firstWhereOrNull((log) => log.templateId == scheduledToday?.id) != null;
+        logsForCurrentDay.firstWhereOrNull((log) => log.name == scheduledToday?.name) != null;
 
     List<RoutineLogDto> routineLogs = [];
     for (final template in templates) {
-      final logs = exerciseAndRoutineController.whereLogsWithTemplateId(templateId: template.id).toList();
+      final logs = exerciseAndRoutineController.whereLogsWithTemplateName(templateName: template.name).toList();
       routineLogs.addAll(logs);
     }
 
     final predictedTemplateId = _predictTemplate(logs: routineLogs);
 
-    final predictedTemplate = templates.firstWhereOrNull((template) => template.id == predictedTemplateId);
+    final predictedTemplate = templates.firstWhereOrNull((template) => template.name == predictedTemplateId);
 
     return Scaffold(
       backgroundColor: Colors.transparent,

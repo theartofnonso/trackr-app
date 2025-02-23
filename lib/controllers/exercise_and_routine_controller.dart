@@ -275,6 +275,10 @@ class ExerciseAndRoutineController extends ChangeNotifier {
     return _amplifyLogRepository.whereLogsWithTemplateId(templateId: templateId);
   }
 
+  List<RoutineLogDto> whereLogsWithTemplateName({required String templateName}) {
+    return _amplifyLogRepository.whereLogsWithTemplateName(templateName: templateName);
+  }
+
   List<RoutineLogDto> whereRoutineLogsBefore({required String templateId, required DateTime datetime}) {
     return _amplifyLogRepository.whereRoutineLogsBefore(templateId: templateId, date: datetime);
   }
