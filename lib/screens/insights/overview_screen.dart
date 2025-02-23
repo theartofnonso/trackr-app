@@ -72,6 +72,51 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   TextEditingController? _textEditingController;
 
+  String _predictTemplate({required List<RoutineLogDto> logs}) {
+    if (logs.isEmpty) {
+      return "";
+    }
+
+    final currentWeekday = DateTime.now().weekday;
+    final sameWeekdayLogs = logs.where((log) => log.createdAt.weekday == currentWeekday).toList();
+
+    final logsToConsider = sameWeekdayLogs.isNotEmpty ? sameWeekdayLogs : logs;
+
+    final counts = <String, int>{};
+    final latestDates = <String, DateTime>{};
+
+    for (final log in logsToConsider) {
+      final id = log.templateId;
+      counts[id] = (counts[id] ?? 0) + 1;
+
+      final currentLatest = latestDates[id];
+      if (currentLatest == null || log.createdAt.isAfter(currentLatest)) {
+        latestDates[id] = log.createdAt;
+      }
+    }
+
+    final maxCount = counts.values.fold(0, (max, count) => count > max ? count : max);
+    final candidates = counts.entries.where((entry) => entry.value == maxCount).map((entry) => entry.key).toList();
+
+    if (candidates.length == 1) {
+      return candidates.first;
+    }
+
+    // Resolve tie by selecting the most recent date
+    String selectedId = candidates.first;
+    DateTime latestDate = latestDates[selectedId]!;
+
+    for (final id in candidates.skip(1)) {
+      final date = latestDates[id]!;
+      if (date.isAfter(latestDate)) {
+        selectedId = id;
+        latestDate = date;
+      }
+    }
+
+    return selectedId;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
@@ -106,6 +151,16 @@ class _OverviewScreenState extends State<OverviewScreen> {
     final hasTodayScheduleBeenLogged =
         logsForCurrentDay.firstWhereOrNull((log) => log.templateId == scheduledToday?.id) != null;
 
+    List<RoutineLogDto> routineLogs = [];
+    for (final template in templates) {
+      final logs = exerciseAndRoutineController.whereLogsWithTemplateId(templateId: template.id).toList();
+      routineLogs.addAll(logs);
+    }
+
+    final predictedTemplateId = _predictTemplate(logs: routineLogs);
+
+    final predictedTemplate = templates.firstWhereOrNull((template) => template.id == predictedTemplateId);
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       floatingActionButton: _loading
@@ -120,7 +175,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           gradient: themeGradient(context: context),
         ),
         child: SafeArea(
-            minimum: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
+            minimum: const EdgeInsets.only(top: 10, right: 10.0, bottom: 10, left: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -129,12 +184,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       controller: widget.scrollController,
                       padding: const EdgeInsets.only(bottom: 150),
                       child: Column(spacing: 20, children: [
-                        if (scheduledToday != null)
-                          GestureDetector(
-                            onTap: () => navigateToRoutineTemplatePreview(context: context, template: scheduledToday),
-                            child: _ScheduledRoutineCard(
-                                scheduledToday: scheduledToday, isLogged: hasTodayScheduleBeenLogged),
-                          ),
+                        if (predictedTemplate != null)
+                          _ScheduledRoutineCard(
+                              scheduledToday: predictedTemplate, isLogged: hasTodayScheduleBeenLogged),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           spacing: 10,
@@ -480,123 +532,122 @@ class _ScheduledRoutineCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
     final sets = scheduledToday.exerciseTemplates.expand((exercises) => exercises.sets);
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(
-                scheduledToday.name,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.titleMedium,
-                maxLines: 2,
-              ),
-              if (scheduledToday.notes.isNotEmpty)
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 10),
-                    Text(
-                      scheduledToday.notes,
-                      style: Theme.of(context).textTheme.bodySmall,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                    ),
-                  ],
-                ),
-              const SizedBox(height: 20),
-              Row(
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      isLogged
+          ? RichText(
+              text: TextSpan(
+                text: 'Great job crushing your ',
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium
+                    ?.copyWith(color: Colors.grey.shade400, fontWeight: FontWeight.w400),
                 children: [
-                  Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    spacing: 6,
-                    children: [
-                      Container(
-                        width: 30,
-                        height: 30,
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: vibrantGreen.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(3),
-                        ),
-                        child: Image.asset(
-                          'icons/dumbbells.png',
-                          fit: BoxFit.contain,
-                          height: 20,
-                          color: vibrantGreen, // Adjust the height as needed
-                        ),
-                      ),
-                      Text(
-                        "${scheduledToday.exerciseTemplates.length} ${pluralize(word: "Exercise", count: scheduledToday.exerciseTemplates.length).toUpperCase()}",
-                        style: Theme.of(context).textTheme.labelSmall,
-                      )
-                    ],
+                  TextSpan(
+                    text: scheduledToday.name,
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
-                  const SizedBox(
-                    width: 16,
+                  TextSpan(
+                    text: " ",
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
-                  Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    spacing: 6,
-                    children: [
-                      Container(
-                        width: 30,
-                        height: 30,
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: vibrantBlue.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(3),
-                        ),
-                        child: Center(
-                          child: FaIcon(
-                            FontAwesomeIcons.hashtag,
-                            color: vibrantBlue,
-                            size: 14,
-                          ),
-                        ),
-                      ),
-                      Text(
-                        "${sets.length} ${pluralize(word: "Set", count: sets.length).toUpperCase()}",
-                        style: Theme.of(context).textTheme.labelSmall,
-                      )
-                    ],
+                  TextSpan(
+                    text: "session. keep that momentum going!",
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium
+                        ?.copyWith(color: Colors.grey.shade400, fontWeight: FontWeight.w400),
                   ),
                 ],
               ),
-            ]),
-          ),
-          const SizedBox(width: 20),
-          Container(
-            width: 30,
-            height: 30,
-            padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              color: (isLogged ? vibrantGreen : Colors.deepOrange).withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(3),
-            ),
-            child: Center(
-              child: FaIcon(
-                isLogged ? FontAwesomeIcons.check : FontAwesomeIcons.calendarDay,
-                size: 14,
-                color: isLogged ? vibrantGreen : Colors.deepOrange,
+            )
+          : RichText(
+              text: TextSpan(
+                text: 'It looks like today’s your usual ',
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium
+                    ?.copyWith(color: Colors.grey.shade400, fontWeight: FontWeight.w400),
+                children: [
+                  TextSpan(
+                    text: scheduledToday.name,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  TextSpan(
+                    text: " ",
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  TextSpan(
+                    text: "session. Time to get moving!",
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium
+                        ?.copyWith(color: Colors.grey.shade400, fontWeight: FontWeight.w400),
+                  ),
+                ],
               ),
             ),
-          )
+      const SizedBox(height: 12),
+      Row(
+        children: [
+          Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 6,
+            children: [
+              Container(
+                width: 30,
+                height: 30,
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: vibrantGreen.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(3),
+                ),
+                child: Image.asset(
+                  'icons/dumbbells.png',
+                  fit: BoxFit.contain,
+                  height: 20,
+                  color: vibrantGreen, // Adjust the height as needed
+                ),
+              ),
+              Text(
+                "${scheduledToday.exerciseTemplates.length} ${pluralize(word: "Exercise", count: scheduledToday.exerciseTemplates.length).toUpperCase()}",
+                style: Theme.of(context).textTheme.labelSmall,
+              )
+            ],
+          ),
+          const SizedBox(
+            width: 16,
+          ),
+          Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 6,
+            children: [
+              Container(
+                width: 30,
+                height: 30,
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: vibrantBlue.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(3),
+                ),
+                child: Center(
+                  child: FaIcon(
+                    FontAwesomeIcons.hashtag,
+                    color: vibrantBlue,
+                    size: 14,
+                  ),
+                ),
+              ),
+              Text(
+                "${sets.length} ${pluralize(word: "Set", count: sets.length).toUpperCase()}",
+                style: Theme.of(context).textTheme.labelSmall,
+              )
+            ],
+          ),
         ],
       ),
-    );
+    ]);
   }
 }
 

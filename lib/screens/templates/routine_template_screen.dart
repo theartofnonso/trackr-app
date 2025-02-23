@@ -39,7 +39,6 @@ import '../../widgets/empty_states/not_found.dart';
 import '../../widgets/information_containers/information_container.dart';
 import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
-import 'routine_day_planner.dart';
 
 enum OriginalNewValues {
   originalValues(
@@ -226,11 +225,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           leadingIcon: FaIcon(Icons.copy, size: 16),
           child: Text("Copy", style: GoogleFonts.ubuntu())),
       MenuItemButton(
-        onPressed: () => _updateTemplateSchedule(template: template),
-        leadingIcon: FaIcon(FontAwesomeIcons.solidClock, size: 16),
-        child: Text("Schedule", style: GoogleFonts.ubuntu()),
-      ),
-      MenuItemButton(
           leadingIcon: FaIcon(FontAwesomeIcons.arrowUpFromBracket, size: 16),
           onPressed: _showShareBottomSheet,
           child: Text("Share", style: GoogleFonts.ubuntu())),
@@ -323,107 +317,79 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                       spacing: 20,
                       children: [
                         Column(
-                          spacing: 6,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: 12,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              spacing: 10,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Container(
-                                  width: 30,
-                                  height: 30,
-                                  padding: const EdgeInsets.all(4),
-                                  decoration: BoxDecoration(
-                                    color: Colors.deepOrange.withValues(alpha: 0.1),
-                                    borderRadius: BorderRadius.circular(3),
-                                  ),
-                                  child: Center(
-                                    child: FaIcon(
-                                      FontAwesomeIcons.calendarDay,
-                                      color: Colors.deepOrange,
-                                      size: 14,
+                                Wrap(
+                                  crossAxisAlignment: WrapCrossAlignment.center,
+                                  children: [
+                                    Container(
+                                      width: 30,
+                                      height: 30,
+                                      padding: const EdgeInsets.all(4),
+                                      decoration: BoxDecoration(
+                                        color: vibrantGreen.withValues(alpha: 0.1),
+                                        borderRadius: BorderRadius.circular(3),
+                                      ),
+                                      child: Image.asset(
+                                        'icons/dumbbells.png',
+                                        fit: BoxFit.contain,
+                                        color: vibrantGreen, // Adjust the height as needed
+                                      ),
                                     ),
-                                  ),
+                                    const SizedBox(
+                                      width: 6,
+                                    ),
+                                    Text(
+                                      "${template.exerciseTemplates.length} ${pluralize(word: "Exercise", count: template.exerciseTemplates.length)}",
+                                      style: Theme.of(context).textTheme.bodyMedium,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 2,
+                                    )
+                                  ],
                                 ),
-                                const SizedBox(
-                                  width: 6,
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    scheduledDaysSummary(template: template, showFullName: true),
-                                    style: Theme.of(context).textTheme.bodyMedium,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 2,
-                                  ),
+                                Wrap(
+                                  crossAxisAlignment: WrapCrossAlignment.center,
+                                  children: [
+                                    Container(
+                                      width: 30,
+                                      height: 30,
+                                      padding: const EdgeInsets.all(4),
+                                      decoration: BoxDecoration(
+                                        color: vibrantBlue.withValues(alpha: 0.1),
+                                        borderRadius: BorderRadius.circular(3),
+                                      ),
+                                      child: Center(
+                                        child: FaIcon(
+                                          FontAwesomeIcons.hashtag,
+                                          color: vibrantBlue,
+                                          size: 14,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 6,
+                                    ),
+                                    Text(
+                                      setsSummary,
+                                      style: Theme.of(context).textTheme.bodyMedium,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 2,
+                                    )
+                                  ],
                                 ),
                               ],
                             ),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: 30,
-                                  height: 30,
-                                  padding: const EdgeInsets.all(4),
-                                  decoration: BoxDecoration(
-                                    color: Colors.yellow.withValues(alpha: 0.1),
-                                    borderRadius: BorderRadius.circular(3),
-                                  ),
-                                  child: Center(
-                                    child: FaIcon(
-                                      FontAwesomeIcons.solidNoteSticky,
-                                      color: Colors.yellow,
-                                      size: 14,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 6,
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    template.notes.isNotEmpty ? "${template.notes}." : "No notes",
-                                    style: Theme.of(context).textTheme.bodyMedium,
-                                  ),
-                                ),
-                              ],
-                            ),
+                            Text(
+                              '"${template.notes.isNotEmpty ? "${template.notes}." : "No notes"}"',
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontStyle: FontStyle.italic, fontSize: 12,),
+                            )
                           ],
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
-                            color: isDarkMode ? Colors.black12 : Colors.grey.shade200,
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 16.0),
-                          child: Table(
-                            border: TableBorder.symmetric(
-                                inside: BorderSide(
-                                    color: isDarkMode ? sapphireLighter.withValues(alpha: 0.4) : Colors.white,
-                                    width: 2)),
-                            columnWidths: const <int, TableColumnWidth>{
-                              0: FlexColumnWidth(),
-                              1: FlexColumnWidth(),
-                            },
-                            children: [
-                              TableRow(children: [
-                                TableCell(
-                                  verticalAlignment: TableCellVerticalAlignment.middle,
-                                  child: Center(
-                                    child: Text(
-                                        "${template.exerciseTemplates.length} ${pluralize(word: "Exercise", count: template.exerciseTemplates.length)}",
-                                        style: Theme.of(context).textTheme.bodyMedium),
-                                  ),
-                                ),
-                                TableCell(
-                                  verticalAlignment: TableCellVerticalAlignment.middle,
-                                  child: Center(
-                                    child: Text(setsSummary, style: Theme.of(context).textTheme.bodyMedium),
-                                  ),
-                                ),
-                              ]),
-                            ],
-                          ),
                         ),
                         MuscleGroupSplitChart(
                             title: "Muscle Groups Split",
@@ -682,19 +648,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
             });
           }
         }
-      });
-    }
-  }
-
-  void _updateTemplateSchedule({required RoutineTemplateDto template}) async {
-    final copyOfTemplate = template.copyWith();
-    final updatedTemplate =
-        await displayBottomSheet(context: context, child: RoutineDayPlanner(template: copyOfTemplate))
-            as RoutineTemplateDto?;
-
-    if (updatedTemplate != null) {
-      setState(() {
-        _template = updatedTemplate;
       });
     }
   }

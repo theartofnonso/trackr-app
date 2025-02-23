@@ -6,7 +6,7 @@ import 'package:tracker_app/utils/timezone_utils.dart';
 const int notificationIDLongRunningSession = 999;
 const int notificationIDPreferredTraining = 900;
 
-List<DateTime> _getPreferredTrainingTimes({required List<DateTime> historicDateTimes}) {
+List<DateTime> getPreferredDateAndTimes({required List<DateTime> historicDateTimes}) {
   final Map<String, List<DateTime>> timeGroups = {};
   final Map<String, DateTime> latestTimes = {};
 
@@ -44,7 +44,7 @@ List<DateTime> _getPreferredTrainingTimes({required List<DateTime> historicDateT
 
 void schedulePreferredTrainingReminders({required List<DateTime> historicDateTimes}) {
   if (Platform.isIOS) {
-    final trainingTimes = _getPreferredTrainingTimes(historicDateTimes: historicDateTimes);
+    final trainingTimes = getPreferredDateAndTimes(historicDateTimes: historicDateTimes);
     for (final trainingTime in trainingTimes) {
       final hour = Duration(hours: trainingTime.hour);
       final weekDay = trainingTime.weekday;

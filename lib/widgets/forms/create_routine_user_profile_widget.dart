@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/enums/muscle_group_enums.dart';
 
 import '../../colors.dart';
 import '../../controllers/routine_user_controller.dart';
@@ -137,7 +136,7 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
       cognitoUserId: SharedPrefs().userId,
       email: SharedPrefs().userEmail,
       weight: 0,
-      owner: "", muscleGroups: MuscleGroup.values,
+      owner: "",
     );
 
     final createdUser = await routineUserController.saveUser(userDto: newUser);
