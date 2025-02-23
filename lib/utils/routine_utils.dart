@@ -4,15 +4,11 @@ import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
-import 'package:tracker_app/extensions/week_days_extension.dart';
-import 'package:tracker_app/utils/string_utils.dart';
 
 import '../dtos/appsync/routine_log_dto.dart';
-import '../dtos/appsync/routine_template_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/viewmodels/exercise_log_view_model.dart';
 import '../enums/activity_type_enums.dart';
-import '../enums/routine_schedule_type_enums.dart';
 import '../enums/template_changes_type_message_enums.dart';
 import '../screens/exercise/reorder_exercises_screen.dart';
 import 'exercise_logs_utils.dart';
@@ -87,20 +83,6 @@ Map<MuscleGroup, List<ExerciseLogDto>> groupExerciseLogsByMuscleGroup({required 
 
 String superSetId({required ExerciseLogDto firstExerciseLog, required ExerciseLogDto secondExerciseLog}) {
   return "superset_id_${firstExerciseLog.exercise.id}_${secondExerciseLog.exercise.id}";
-}
-
-String scheduledDaysSummary({required RoutineTemplateDto template, bool showFullName = false}) {
-  if (template.scheduleType == RoutineScheduleType.days) {
-    final scheduledDays = template.scheduledDays;
-
-    if (scheduledDays.isNotEmpty) {
-      final scheduledDayNames = scheduledDays.map((day) => showFullName ? day.longName : day.shortName).toList();
-
-      return scheduledDays.length == 7 ? "Everyday" : "Every ${joinWithAnd(items: scheduledDayNames)}";
-    }
-  }
-
-  return "No schedule";
 }
 
 List<ExerciseLogViewModel> exerciseLogsToViewModels({required List<ExerciseLogDto> exerciseLogs}) {

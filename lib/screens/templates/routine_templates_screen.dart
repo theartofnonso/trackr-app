@@ -1,10 +1,8 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
-import 'package:tracker_app/extensions/dtos/routine_template_dto_extension.dart';
 import 'package:tracker_app/screens/AI/trkr_coach_chat_screen.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_button.dart';
@@ -22,25 +20,7 @@ class RoutineTemplatesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<ExerciseAndRoutineController>(builder: (_, provider, __) {
-      final routineTemplates = List<RoutineTemplateDto>.from(provider.templates);
-
-      final sortedScheduledTemplates =
-          routineTemplates.where((template) => template.scheduledDays.isNotEmpty).sorted((a, b) {
-        final aDayOfWeek = a.scheduledDays.first;
-        final bDayOfWeek = b.scheduledDays.first;
-        return aDayOfWeek.day.compareTo(bDayOfWeek.day);
-      });
-
-      final unscheduledTemplates = routineTemplates.where((template) => template.scheduledDays.isEmpty).toList();
-
-      final templates = [...sortedScheduledTemplates, ...unscheduledTemplates];
-
-      for (final template in templates) {
-        if (template.isScheduledToday()) {
-          templates.remove(template);
-          templates.insert(0, template);
-        }
-      }
+      final templates = List<RoutineTemplateDto>.from(provider.templates);
 
       final children = templates.map((template) => _RoutineWidget(template: template)).toList();
 
