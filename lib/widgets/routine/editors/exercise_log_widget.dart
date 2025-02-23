@@ -465,19 +465,18 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                     enableFeedback: true,
                     child: FaIcon(Icons.keyboard_hide_rounded),
                   ),
-                  _selectedSetDto != null
-                      ? FloatingActionButton(
-                          heroTag: UniqueKey(),
-                          onPressed: _showWeightCalculator,
-                          enableFeedback: true,
-                          child: Image.asset(
-                            'icons/dumbbells.png',
-                            fit: BoxFit.contain,
-                            color: isDarkMode ? Colors.white : Colors.white,
-                            height: 24, // Adjust the height as needed
-                          ),
-                        )
-                      : SizedBox.shrink()
+                  if (_selectedSetDto != null)
+                    FloatingActionButton(
+                      heroTag: UniqueKey(),
+                      onPressed: _showWeightCalculator,
+                      enableFeedback: true,
+                      child: Image.asset(
+                        'icons/dumbbells.png',
+                        fit: BoxFit.contain,
+                        color: isDarkMode ? Colors.white : Colors.white,
+                        height: 24, // Adjust the height as needed
+                      ),
+                    )
                 ],
               ),
             )
