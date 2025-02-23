@@ -12,7 +12,6 @@ import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/calendar/calendar.dart';
 import '../../widgets/dividers/label_divider.dart';
 import '../../widgets/milestones/milestone_grid_item.dart';
-import '../../widgets/monitors/log_streak_monitor.dart';
 
 class OnboardingIntroScreen extends StatefulWidget {
   static const routeName = "/intro_screen";
@@ -35,7 +34,6 @@ class _OnboardingIntroScreenState extends State<OnboardingIntroScreen> {
 
     final pages = [
       CalenderOnboardingScreen(isDarkMode: isDarkMode),
-      LogStreakMonitorOnboardingScreen(isDarkMode: isDarkMode),
       TRKRCoachOnboardingScreen(isDarkMode: isDarkMode),
       MilestonesOnboardingScreen(isDarkMode: isDarkMode),
       if (SharedPrefs().firstLaunch) EndOnboardingScreen(onLongPress: widget.onComplete ?? () {})
@@ -110,91 +108,6 @@ class CalenderOnboardingScreen extends StatelessWidget {
           height: 20,
         ),
         Calendar(dateTime: DateTime.now()),
-      ],
-    );
-  }
-}
-
-class LogStreakMonitorOnboardingScreen extends StatelessWidget {
-  final bool isDarkMode;
-
-  const LogStreakMonitorOnboardingScreen({super.key, required this.isDarkMode});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const Spacer(),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          child: Wrap(
-            runSpacing: 40,
-            spacing: 40,
-            children: [
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  LogStreakMonitor(value: 2, width: 120, height: 120, strokeWidth: 8),
-                  Image.asset(
-                    'images/trkr.png',
-                    fit: BoxFit.contain,
-                    color: isDarkMode ? Colors.white70 : Colors.black,
-                    height: 8, // Adjust the height as needed
-                  )
-                ],
-              ),
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  LogStreakMonitor(value: 4, width: 120, height: 120, strokeWidth: 8),
-                  Image.asset(
-                    'images/trkr.png',
-                    fit: BoxFit.contain,
-                    color: isDarkMode ? Colors.white70 : Colors.black,
-                    height: 8, // Adjust the height as needed
-                  )
-                ],
-              ),
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  LogStreakMonitor(value: 7, width: 120, height: 120, strokeWidth: 8),
-                  Image.asset(
-                    'images/trkr.png',
-                    fit: BoxFit.contain,
-                    color: isDarkMode ? Colors.white70 : Colors.black,
-                    height: 8, // Adjust the height as needed
-                  )
-                ],
-              ),
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  LogStreakMonitor(value: 12, width: 120, height: 120, strokeWidth: 8),
-                  Image.asset(
-                    'images/trkr.png',
-                    fit: BoxFit.contain,
-                    color: isDarkMode ? Colors.white70 : Colors.black,
-                    height: 8, // Adjust the height as needed
-                  )
-                ],
-              )
-            ],
-          ),
-        ),
-        const Spacer(),
-        LabelDivider(
-          label: "LOG Streak".toUpperCase(),
-          labelColor: isDarkMode ? Colors.white70 : Colors.black,
-          dividerColor: sapphireLighter,
-          fontSize: 14,
-        ),
-        SizedBox(
-          height: 12,
-        ),
-        Text(
-            "Your goal is to keep those months consistently green. Just 12 sessions per month are all you need to close the ring and maintain your momentum. Make it a habit, keep pushing, and enjoy watching your streaks grow!",
-            style: Theme.of(context).textTheme.bodyLarge),
       ],
     );
   }
