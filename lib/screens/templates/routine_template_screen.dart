@@ -322,7 +322,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                           children: [
                             Row(
                               spacing: 10,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Wrap(
                                   crossAxisAlignment: WrapCrossAlignment.center,

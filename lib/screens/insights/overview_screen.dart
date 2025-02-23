@@ -553,25 +553,32 @@ class _ScheduledRoutineCard extends StatelessWidget {
         children: [
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(
-                scheduledToday.name,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.titleMedium,
-                maxLines: 2,
-              ),
-              if (scheduledToday.notes.isNotEmpty)
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              RichText(
+                text: TextSpan(
+                  text: 'It looks like today’s your usual ',
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium
+                      ?.copyWith(color: Colors.grey.shade400, fontWeight: FontWeight.w400),
                   children: [
-                    const SizedBox(height: 10),
-                    Text(
-                      scheduledToday.notes,
-                      style: Theme.of(context).textTheme.bodySmall,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
+                    TextSpan(
+                      text: scheduledToday.name,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    TextSpan(
+                      text: " ",
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    TextSpan(
+                      text: "session. Time to get moving!",
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium
+                          ?.copyWith(color: Colors.grey.shade400, fontWeight: FontWeight.w400),
                     ),
                   ],
                 ),
+              ),
               const SizedBox(height: 20),
               Row(
                 children: [
