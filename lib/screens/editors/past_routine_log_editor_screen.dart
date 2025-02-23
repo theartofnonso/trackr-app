@@ -315,7 +315,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
                           itemCount: exerciseLogs.length,
                         ),
                       ),
-                    if (exerciseLogs.isEmpty)
+                    if (exerciseLogs.isNotEmpty)
                       SizedBox(
                         width: double.infinity,
                         child: OpacityButtonWidget(

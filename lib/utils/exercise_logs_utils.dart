@@ -324,10 +324,7 @@ TemplateChange? hasSetValueChanged({
   return exerciseLog1Volume != exerciseLog2Volume ? TemplateChange.setValue : null;
 }
 
-Map<MuscleGroup, double> muscleGroupFrequency({
-  required List<ExerciseLogDto> exerciseLogs,
-  bool includeSecondaryMuscleGroups = true,
-}) {
+Map<MuscleGroup, double> muscleGroupFrequency({required List<ExerciseLogDto> exerciseLogs}) {
   if (exerciseLogs.isEmpty) return <MuscleGroup, double>{};
 
   final frequencyMap = <MuscleGroup, int>{};
@@ -337,15 +334,6 @@ Map<MuscleGroup, double> muscleGroupFrequency({
     final primary = log.exercise.primaryMuscleGroup;
     if (primary != MuscleGroup.fullBody) {
       frequencyMap.update(primary, (value) => value + 1, ifAbsent: () => 1);
-    }
-
-    if (includeSecondaryMuscleGroups) {
-      for (var muscleGroup in log.exercise.secondaryMuscleGroups) {
-        final secondary = muscleGroup;
-        if (secondary != MuscleGroup.fullBody) {
-          frequencyMap.update(secondary, (value) => value + 1, ifAbsent: () => 1);
-        }
-      }
     }
   }
 
