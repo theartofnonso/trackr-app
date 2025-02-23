@@ -432,7 +432,12 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
           onPressed: context.pop,
         ),
-        title: Text(exerciseLog.exercise.name),
+        title: GestureDetector(
+            onTap: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => ExerciseHomeScreen(exercise: exerciseLog.exercise)));
+            },
+            child: Text(exerciseLog.exercise.name)),
         actions: [
           IconButton(
             onPressed: _togglePreviousSets,
