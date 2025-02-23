@@ -175,7 +175,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           gradient: themeGradient(context: context),
         ),
         child: SafeArea(
-            minimum: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
+            minimum: const EdgeInsets.only(top: 10, right: 10.0, bottom: 10, left: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -536,129 +536,118 @@ class _ScheduledRoutineCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
     final sets = scheduledToday.exerciseTemplates.expand((exercises) => exercises.sets);
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              RichText(
-                text: TextSpan(
-                  text: 'It looks like today’s your usual ',
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium
-                      ?.copyWith(color: Colors.grey.shade400, fontWeight: FontWeight.w400),
-                  children: [
-                    TextSpan(
-                      text: scheduledToday.name,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    TextSpan(
-                      text: " ",
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    TextSpan(
-                      text: "session. Time to get moving!",
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium
-                          ?.copyWith(color: Colors.grey.shade400, fontWeight: FontWeight.w400),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-              Row(
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            RichText(
+              text: TextSpan(
+                text: 'It looks like today’s your usual ',
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium
+                    ?.copyWith(color: Colors.grey.shade400, fontWeight: FontWeight.w400),
                 children: [
-                  Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    spacing: 6,
-                    children: [
-                      Container(
-                        width: 30,
-                        height: 30,
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: vibrantGreen.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(3),
-                        ),
-                        child: Image.asset(
-                          'icons/dumbbells.png',
-                          fit: BoxFit.contain,
-                          height: 20,
-                          color: vibrantGreen, // Adjust the height as needed
-                        ),
-                      ),
-                      Text(
-                        "${scheduledToday.exerciseTemplates.length} ${pluralize(word: "Exercise", count: scheduledToday.exerciseTemplates.length).toUpperCase()}",
-                        style: Theme.of(context).textTheme.labelSmall,
-                      )
-                    ],
+                  TextSpan(
+                    text: scheduledToday.name,
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
-                  const SizedBox(
-                    width: 16,
+                  TextSpan(
+                    text: " ",
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
-                  Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    spacing: 6,
-                    children: [
-                      Container(
-                        width: 30,
-                        height: 30,
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: vibrantBlue.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(3),
-                        ),
-                        child: Center(
-                          child: FaIcon(
-                            FontAwesomeIcons.hashtag,
-                            color: vibrantBlue,
-                            size: 14,
-                          ),
-                        ),
-                      ),
-                      Text(
-                        "${sets.length} ${pluralize(word: "Set", count: sets.length).toUpperCase()}",
-                        style: Theme.of(context).textTheme.labelSmall,
-                      )
-                    ],
+                  TextSpan(
+                    text: "session. Time to get moving!",
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium
+                        ?.copyWith(color: Colors.grey.shade400, fontWeight: FontWeight.w400),
                   ),
                 ],
               ),
-            ]),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 6,
+                  children: [
+                    Container(
+                      width: 30,
+                      height: 30,
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: vibrantGreen.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(3),
+                      ),
+                      child: Image.asset(
+                        'icons/dumbbells.png',
+                        fit: BoxFit.contain,
+                        height: 20,
+                        color: vibrantGreen, // Adjust the height as needed
+                      ),
+                    ),
+                    Text(
+                      "${scheduledToday.exerciseTemplates.length} ${pluralize(word: "Exercise", count: scheduledToday.exerciseTemplates.length).toUpperCase()}",
+                      style: Theme.of(context).textTheme.labelSmall,
+                    )
+                  ],
+                ),
+                const SizedBox(
+                  width: 16,
+                ),
+                Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 6,
+                  children: [
+                    Container(
+                      width: 30,
+                      height: 30,
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: vibrantBlue.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(3),
+                      ),
+                      child: Center(
+                        child: FaIcon(
+                          FontAwesomeIcons.hashtag,
+                          color: vibrantBlue,
+                          size: 14,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      "${sets.length} ${pluralize(word: "Set", count: sets.length).toUpperCase()}",
+                      style: Theme.of(context).textTheme.labelSmall,
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ]),
+        ),
+        const SizedBox(width: 20),
+        Container(
+          width: 30,
+          height: 30,
+          padding: const EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            color: (isLogged ? vibrantGreen : Colors.deepOrange).withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(3),
           ),
-          const SizedBox(width: 20),
-          Container(
-            width: 30,
-            height: 30,
-            padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              color: (isLogged ? vibrantGreen : Colors.deepOrange).withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(3),
+          child: Center(
+            child: FaIcon(
+              isLogged ? FontAwesomeIcons.check : FontAwesomeIcons.calendarDay,
+              size: 14,
+              color: isLogged ? vibrantGreen : Colors.deepOrange,
             ),
-            child: Center(
-              child: FaIcon(
-                isLogged ? FontAwesomeIcons.check : FontAwesomeIcons.calendarDay,
-                size: 14,
-                color: isLogged ? vibrantGreen : Colors.deepOrange,
-              ),
-            ),
-          )
-        ],
-      ),
+          ),
+        )
+      ],
     );
   }
 }
