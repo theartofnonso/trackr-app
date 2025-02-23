@@ -220,12 +220,13 @@ class EndOnboardingScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         RichText(
+          textAlign: TextAlign.center,
             text: TextSpan(
                 text: "Ready to get started? Here’s to",
                 style: Theme.of(context)
                     .textTheme
                     .titleSmall
-                    ?.copyWith(fontSize: 22, fontWeight: FontWeight.w500, height: 1.5),
+                    ?.copyWith(fontSize: 22, fontWeight: FontWeight.w500, height: 1.5,),
                 children: [
               TextSpan(
                   text: " smarter training, ",
@@ -241,7 +242,7 @@ class EndOnboardingScreen extends StatelessWidget {
         SizedBox(
             width: double.infinity,
             child: OpacityButtonWidget(
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              padding: const EdgeInsets.all( 16),
               buttonColor: vibrantGreen,
               label: "Tap and hold to start training",
               onLongPress: onLongPress,
