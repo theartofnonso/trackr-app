@@ -11,7 +11,6 @@ import 'package:tracker_app/dtos/appsync/activity_log_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/open_ai_response_schema_dtos/monthly_training_report.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
-import 'package:tracker_app/extensions/dtos/routine_template_dto_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/screens/editors/activity_editor_screen.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
@@ -134,10 +133,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     final templates = exerciseAndRoutineController.templates;
 
-    final scheduledTemplates = templates.where((template) => template.isScheduledToday());
-
-    final scheduledToday = scheduledTemplates.firstOrNull;
-
     final logsForCurrentDay =
         exerciseAndRoutineController.whereLogsIsSameDay(dateTime: DateTime.now().withoutTime()).toList();
 
@@ -148,18 +143,18 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     final logsForPastMonth = exerciseAndRoutineController.whereLogsIsSameMonth(dateTime: last30DaysDatetime).toList();
 
-    final hasTodayScheduleBeenLogged =
-        logsForCurrentDay.firstWhereOrNull((log) => log.name == scheduledToday?.name) != null;
-
     List<RoutineLogDto> routineLogs = [];
     for (final template in templates) {
       final logs = exerciseAndRoutineController.whereLogsWithTemplateName(templateName: template.name).toList();
       routineLogs.addAll(logs);
     }
 
-    final predictedTemplateId = _predictTemplate(logs: routineLogs);
+    final predictedTemplateName = _predictTemplate(logs: routineLogs);
 
-    final predictedTemplate = templates.firstWhereOrNull((template) => template.name == predictedTemplateId);
+    final predictedTemplate = templates.firstWhereOrNull((template) => template.name == predictedTemplateName);
+
+    final hasTodayScheduleBeenLogged =
+        logsForCurrentDay.firstWhereOrNull((log) => log.name == predictedTemplate?.name) != null;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
