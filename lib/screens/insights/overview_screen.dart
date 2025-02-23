@@ -185,12 +185,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       padding: const EdgeInsets.only(bottom: 150),
                       child: Column(spacing: 20, children: [
                         if (predictedTemplate != null)
-                          GestureDetector(
-                            onTap: () =>
-                                navigateToRoutineTemplatePreview(context: context, template: predictedTemplate),
-                            child: _ScheduledRoutineCard(
-                                scheduledToday: predictedTemplate, isLogged: hasTodayScheduleBeenLogged),
-                          ),
+                          _ScheduledRoutineCard(
+                              scheduledToday: predictedTemplate, isLogged: hasTodayScheduleBeenLogged),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           spacing: 10,
@@ -538,12 +534,35 @@ class _ScheduledRoutineCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final sets = scheduledToday.exerciseTemplates.expand((exercises) => exercises.sets);
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            RichText(
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      isLogged
+          ? RichText(
+              text: TextSpan(
+                text: 'Great job crushing your ',
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium
+                    ?.copyWith(color: Colors.grey.shade400, fontWeight: FontWeight.w400),
+                children: [
+                  TextSpan(
+                    text: scheduledToday.name,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  TextSpan(
+                    text: " ",
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  TextSpan(
+                    text: "session. keep that momentum going!",
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium
+                        ?.copyWith(color: Colors.grey.shade400, fontWeight: FontWeight.w400),
+                  ),
+                ],
+              ),
+            )
+          : RichText(
               text: TextSpan(
                 text: 'It looks like today’s your usual ',
                 style: Theme.of(context)
@@ -569,86 +588,66 @@ class _ScheduledRoutineCard extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  spacing: 6,
-                  children: [
-                    Container(
-                      width: 30,
-                      height: 30,
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: vibrantGreen.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(3),
-                      ),
-                      child: Image.asset(
-                        'icons/dumbbells.png',
-                        fit: BoxFit.contain,
-                        height: 20,
-                        color: vibrantGreen, // Adjust the height as needed
-                      ),
-                    ),
-                    Text(
-                      "${scheduledToday.exerciseTemplates.length} ${pluralize(word: "Exercise", count: scheduledToday.exerciseTemplates.length).toUpperCase()}",
-                      style: Theme.of(context).textTheme.labelSmall,
-                    )
-                  ],
+      const SizedBox(height: 12),
+      Row(
+        children: [
+          Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 6,
+            children: [
+              Container(
+                width: 30,
+                height: 30,
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: vibrantGreen.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(3),
                 ),
-                const SizedBox(
-                  width: 16,
+                child: Image.asset(
+                  'icons/dumbbells.png',
+                  fit: BoxFit.contain,
+                  height: 20,
+                  color: vibrantGreen, // Adjust the height as needed
                 ),
-                Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  spacing: 6,
-                  children: [
-                    Container(
-                      width: 30,
-                      height: 30,
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: vibrantBlue.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(3),
-                      ),
-                      child: Center(
-                        child: FaIcon(
-                          FontAwesomeIcons.hashtag,
-                          color: vibrantBlue,
-                          size: 14,
-                        ),
-                      ),
-                    ),
-                    Text(
-                      "${sets.length} ${pluralize(word: "Set", count: sets.length).toUpperCase()}",
-                      style: Theme.of(context).textTheme.labelSmall,
-                    )
-                  ],
-                ),
-              ],
-            ),
-          ]),
-        ),
-        const SizedBox(width: 20),
-        Container(
-          width: 30,
-          height: 30,
-          padding: const EdgeInsets.all(6),
-          decoration: BoxDecoration(
-            color: (isLogged ? vibrantGreen : Colors.deepOrange).withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(3),
+              ),
+              Text(
+                "${scheduledToday.exerciseTemplates.length} ${pluralize(word: "Exercise", count: scheduledToday.exerciseTemplates.length).toUpperCase()}",
+                style: Theme.of(context).textTheme.labelSmall,
+              )
+            ],
           ),
-          child: Center(
-            child: FaIcon(
-              isLogged ? FontAwesomeIcons.check : FontAwesomeIcons.calendarDay,
-              size: 14,
-              color: isLogged ? vibrantGreen : Colors.deepOrange,
-            ),
+          const SizedBox(
+            width: 16,
           ),
-        )
-      ],
-    );
+          Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 6,
+            children: [
+              Container(
+                width: 30,
+                height: 30,
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: vibrantBlue.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(3),
+                ),
+                child: Center(
+                  child: FaIcon(
+                    FontAwesomeIcons.hashtag,
+                    color: vibrantBlue,
+                    size: 14,
+                  ),
+                ),
+              ),
+              Text(
+                "${sets.length} ${pluralize(word: "Set", count: sets.length).toUpperCase()}",
+                style: Theme.of(context).textTheme.labelSmall,
+              )
+            ],
+          ),
+        ],
+      ),
+    ]);
   }
 }
 
