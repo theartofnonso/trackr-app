@@ -4,7 +4,6 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:health/health.dart';
 import 'package:in_app_review/in_app_review.dart';
@@ -27,7 +26,6 @@ import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/icons/apple_health_icon.dart';
 import '../../widgets/information_containers/information_container_with_background_image.dart';
 import '../exercise/library/exercise_library_screen.dart';
-import '../onboarding/onboarding_intro_screen.dart';
 
 enum WeightUnit {
   kg,
@@ -178,11 +176,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     title: Text("TRKR in the wild", style: Theme.of(context).textTheme.titleMedium),
                     subtitle: Text("follow us on socials")),
                 ListTile(
-                    onTap: _navigateTutorialScreen,
-                    leading: FaIcon(FontAwesomeIcons.book, color: isDarkMode ? Colors.white70 : Colors.black38),
-                    title: Text("Tutorials", style: Theme.of(context).textTheme.titleMedium),
-                    subtitle: Text("learn about TRKR")),
-                ListTile(
                     onTap: _logout,
                     leading: FaIcon(FontAwesomeIcons.arrowRightFromBracket,
                         color: isDarkMode ? Colors.white70 : Colors.black38),
@@ -307,10 +300,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
             )
           ]),
         ));
-  }
-
-  void _navigateTutorialScreen() {
-    context.push(OnboardingIntroScreen.routeName);
   }
 
   void _logout() async {
