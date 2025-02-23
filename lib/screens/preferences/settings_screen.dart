@@ -133,18 +133,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 SwitchListTile(
                   tileColor: Colors.transparent,
                   activeColor: vibrantGreen,
-                  title: Text('Minimise calendar', style: Theme.of(context).textTheme.titleMedium),
-                  value: SharedPrefs().minimiseCalendar,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                  onChanged: (bool value) {
-                    setState(() {
-                      SharedPrefs().minimiseCalendar = value;
-                    });
-                  },
-                ),
-                SwitchListTile(
-                  tileColor: Colors.transparent,
-                  activeColor: vibrantGreen,
                   title: Text('Show calendar dates', style: Theme.of(context).textTheme.titleMedium),
                   value: SharedPrefs().showCalendarDates,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),

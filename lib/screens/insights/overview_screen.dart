@@ -14,7 +14,6 @@ import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/screens/editors/activity_editor_screen.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
-import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_information_container.dart';
@@ -170,7 +169,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           gradient: themeGradient(context: context),
         ),
         child: SafeArea(
-            minimum: const EdgeInsets.only(top: 10, right: 10.0, bottom: 10, left: 10),
+            minimum: const EdgeInsets.only(top: 16, right: 10.0, bottom: 10, left: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -189,7 +188,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
                             Calendar(
                               onSelectDate: _onChangedDateTime,
                               dateTime: widget.dateTimeRange.start,
-                              minimiseCalendar: SharedPrefs().minimiseCalendar,
                             ),
                             _LogsListView(dateTime: _selectedDateTime),
                             LogStreakChart(),
@@ -536,22 +534,22 @@ class _ScheduledRoutineCard extends StatelessWidget {
                 text: 'Great job crushing your ',
                 style: Theme.of(context)
                     .textTheme
-                    .titleMedium
+                    .titleLarge
                     ?.copyWith(color: Colors.grey.shade400, fontWeight: FontWeight.w400),
                 children: [
                   TextSpan(
                     text: scheduledToday.name,
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                   TextSpan(
                     text: " ",
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                   TextSpan(
                     text: "session. keep that momentum going!",
                     style: Theme.of(context)
                         .textTheme
-                        .titleMedium
+                        .titleLarge
                         ?.copyWith(color: Colors.grey.shade400, fontWeight: FontWeight.w400),
                   ),
                 ],
@@ -562,22 +560,22 @@ class _ScheduledRoutineCard extends StatelessWidget {
                 text: 'It looks like today’s your usual ',
                 style: Theme.of(context)
                     .textTheme
-                    .titleMedium
+                    .titleLarge
                     ?.copyWith(color: Colors.grey.shade400, fontWeight: FontWeight.w400),
                 children: [
                   TextSpan(
                     text: scheduledToday.name,
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                   TextSpan(
                     text: " ",
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                   TextSpan(
                     text: "session. Time to get moving!",
                     style: Theme.of(context)
                         .textTheme
-                        .titleMedium
+                        .titleLarge
                         ?.copyWith(color: Colors.grey.shade400, fontWeight: FontWeight.w400),
                   ),
                 ],
