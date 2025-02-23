@@ -163,7 +163,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
                         ),
                         const SizedBox(height: 8),
                         Text(
-                            "All us to remind you about long-running workouts if you’ve become distracted. We also send gentle nudges to train when we notice you might be slacking.",
+                            "Allow us to remind you about long-running workouts if you’ve become distracted. We’ll also send reminders on your training days.",
                             textAlign: TextAlign.start,
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                 fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),

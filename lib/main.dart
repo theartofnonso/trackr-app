@@ -341,9 +341,6 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool _isFirstLaunch = SharedPrefs().firstLaunch;
 
-  //static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
-  //static FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
-
   @override
   void initState() {
     super.initState();
