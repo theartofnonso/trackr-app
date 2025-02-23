@@ -371,7 +371,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                           itemCount: exerciseLogs.length,
                         ),
                       ),
-                    SizedBox(
+                    if (exerciseLogs.isNotEmpty)
+                      SizedBox(
                         width: double.infinity,
                         child: OpacityButtonWidget(
                           padding: const EdgeInsets.symmetric(vertical: 16),

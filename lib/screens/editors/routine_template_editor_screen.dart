@@ -348,7 +348,8 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                           itemCount: exerciseTemplates.length,
                         ),
                       ),
-                    SizedBox(
+                    if (exerciseTemplates.isNotEmpty)
+                      SizedBox(
                         width: double.infinity,
                         child: OpacityButtonWidget(
                             padding: const EdgeInsets.symmetric(vertical: 16),
