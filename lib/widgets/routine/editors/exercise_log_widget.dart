@@ -699,18 +699,21 @@ class _WeightAndRepsSetListView extends StatelessWidget {
     final markedSets = markHighestWeightSets(sets);
 
     final children = markedSets.mapIndexed((index, setDto) {
-      return SetModeBadge(
-        setDto: setDto,
-        child: WeightsAndRepsSetRow(
-          editorType: editorType,
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 6.0),
+        child: SetModeBadge(
           setDto: setDto,
-          onCheck: () => updateSetCheck(index: index, setDto: setDto),
-          onRemoved: () => removeSet(index: index),
-          onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
-          onChangedWeight: (double value) => updateWeight(index: index, weight: value, setDto: setDto),
-          onTapWeightEditor: () => onTapWeightEditor(setDto: setDto),
-          onTapRepsEditor: () => onTapRepsEditor(),
-          controllers: controllers[index],
+          child: WeightsAndRepsSetRow(
+            editorType: editorType,
+            setDto: setDto,
+            onCheck: () => updateSetCheck(index: index, setDto: setDto),
+            onRemoved: () => removeSet(index: index),
+            onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
+            onChangedWeight: (double value) => updateWeight(index: index, weight: value, setDto: setDto),
+            onTapWeightEditor: () => onTapWeightEditor(setDto: setDto),
+            onTapRepsEditor: () => onTapRepsEditor(),
+            controllers: controllers[index],
+          ),
         ),
       );
     }).toList();
