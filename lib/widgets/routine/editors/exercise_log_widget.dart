@@ -379,7 +379,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
 
     final exerciseLog =
-        Provider.of<ExerciseLogController>(context, listen: false).whereExerciseLog(exerciseId: widget.exerciseLogId);
+        Provider.of<ExerciseLogController>(context, listen: true).whereExerciseLog(exerciseId: widget.exerciseLogId);
 
     final currentSets = exerciseLog.sets;
 
