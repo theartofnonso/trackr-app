@@ -98,13 +98,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final sets = exerciseLog.sets;
 
-    if (withDurationOnly(type: _exerciseLog.exercise.type)) {
+    if (withDurationOnly(type: exerciseLog.exercise.type)) {
       _loadDurationControllers(sets: sets);
     }
-    if (withWeightsOnly(type: _exerciseLog.exercise.type)) {
+    if (withWeightsOnly(type: exerciseLog.exercise.type)) {
       _loadWeightAndRepsControllers(sets: sets);
     }
-    if (withRepsOnly(type: _exerciseLog.exercise.type)) {
+    if (withRepsOnly(type: exerciseLog.exercise.type)) {
       _loadRepsControllers(sets: sets);
     }
   }

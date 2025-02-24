@@ -194,7 +194,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
         final weeklyLogs =
             logs.where((log) => log.createdAt.getDateTimeInUtc().isBetweenInclusive(from: startOfWeek, to: endOfWeek));
 
-        historicTrainingTimes.addAll(weeklyLogs.map((log) => log.createdAt.getDateTimeInUtc().toLocal()));
+        historicTrainingTimes.addAll(weeklyLogs.map((log) => log.createdAt.getDateTimeInUtc()));
       }
       FlutterLocalNotificationsPlugin().cancelAll();
       schedulePreferredTrainingReminders(historicDateTimes: historicTrainingTimes);
