@@ -525,22 +525,25 @@ class _ScheduledRoutineCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     return isLogged
         ? InformationContainerLite(
             content: "Great job crushing your ${scheduledToday.name} session. keep that momentum going!",
             color: vibrantGreen,
             icon: FaIcon(
               FontAwesomeIcons.solidSquareCheck,
-              color: vibrantGreen,
+              color: isDarkMode ? vibrantGreen : Colors.black ,
               size: 20,
             ),
           )
         : InformationContainerLite(
             content: "It looks like today is your usual ${scheduledToday.name} session. Time to get moving!",
-            color: Colors.yellow,
+            color: Colors.grey.shade400,
             icon: FaIcon(
               FontAwesomeIcons.calendarDay,
-              color: Colors.yellow,
               size: 20,
             ),
           );
