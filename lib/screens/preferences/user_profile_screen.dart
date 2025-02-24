@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -25,7 +27,7 @@ class UserProfileScreen extends StatefulWidget {
   State<UserProfileScreen> createState() => _UserProfileScreenState();
 }
 
-class _UserProfileScreenState extends State<UserProfileScreen> {
+class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindingObserver {
   RoutineUserDto? _user;
 
   final _doubleTextFieldController = TextEditingController();
@@ -33,6 +35,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   double _weight = 0;
 
   TrainingGoal _trainingGoal = TrainingGoal.hypertrophy;
+
+  bool _notificationEnabled = false;
 
   @override
   Widget build(BuildContext context) {
@@ -56,62 +60,71 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           gradient: themeGradient(context: context),
         ),
         child: SafeArea(
-          minimum: const EdgeInsets.all(10),
+          minimum: const EdgeInsets.only(right: 10, left: 10, bottom: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 child: SingleChildScrollView(
+                  padding: EdgeInsets.only(bottom: 50),
                   keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Center(
-                      child: UserIconWidget(size: 60, iconSize: 22),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Center(
-                      child: Text(user.name.toUpperCase(),
-                          style: Theme.of(context).textTheme.titleSmall, textAlign: TextAlign.center),
-                    ),
-                    const SizedBox(
-                      height: 40,
-                    ),
-                    LabelDivider(
-                      label: "Enter your weight".toUpperCase(),
-                      labelColor: isDarkMode ? Colors.white : Colors.black,
-                      dividerColor: sapphireLighter,
-                      fontSize: 14,
-                    ),
-                    const SizedBox(height: 8),
-                    Text("We estimate the amount of calories burned using your weight.",
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
-                    const SizedBox(height: 8),
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: isDarkMode ? Colors.white10 : Colors.black38, // Border color
-                          width: 1, // Border width
+                  child: Column(spacing: 36, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          height: 6,
                         ),
-                        borderRadius: BorderRadius.circular(5), // Rounded corners
-                      ),
-                      width: double.infinity,
-                      child: DoubleTextField(
-                          value: _user?.weight ?? 0,
-                          controller: _doubleTextFieldController,
-                          onChanged: (value) {
-                            setState(() {
-                              _weight = value;
-                            });
-                          }),
+                        Center(
+                          child: UserIconWidget(size: 60, iconSize: 22),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Center(
+                          child: Text(user.name.toUpperCase(),
+                              style: Theme.of(context).textTheme.titleSmall, textAlign: TextAlign.center),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 22),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        LabelDivider(
+                          label: "Enter your weight".toUpperCase(),
+                          labelColor: isDarkMode ? Colors.white : Colors.black,
+                          dividerColor: sapphireLighter,
+                          fontSize: 14,
+                        ),
+                        const SizedBox(height: 8),
+                        Text("We estimate the amount of calories burned using your weight.",
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                        const SizedBox(height: 8),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: isDarkMode ? Colors.white10 : Colors.black38, // Border color
+                              width: 1, // Border width
+                            ),
+                            borderRadius: BorderRadius.circular(5), // Rounded corners
+                          ),
+                          width: double.infinity,
+                          child: DoubleTextField(
+                            value: _user?.weight ?? 0,
+                            controller: _doubleTextFieldController,
+                            onChanged: (value) {
+                              setState(() {
+                                _weight = value;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
                     Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       LabelDivider(
-                        label: "Select a training goal".toUpperCase(),
+                        label: "training goal".toUpperCase(),
                         labelColor: isDarkMode ? Colors.white : Colors.black,
                         dividerColor: sapphireLighter,
                         fontSize: 14,
@@ -140,6 +153,39 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         ),
                       )
                     ]),
+                    if (Platform.isIOS)
+                      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        LabelDivider(
+                          label: "notifications".toUpperCase(),
+                          labelColor: isDarkMode ? Colors.white : Colors.black,
+                          dividerColor: sapphireLighter,
+                          fontSize: 14,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                            "Allow us to remind you about long-running workouts if you’ve become distracted. We’ll also send reminders on your training days.",
+                            textAlign: TextAlign.start,
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                        const SizedBox(height: 8),
+                        ThemeListTile(
+                          child: ListTile(
+                            onTap: _turnOnNotification,
+                            dense: true,
+                            horizontalTitleGap: 0,
+                            leading: Text(_notificationEnabled ? "Notification is on" : "Turn on notifications",
+                                textAlign: TextAlign.start,
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                    color: isDarkMode ? Colors.white : Colors.black)),
+                            trailing: FaIcon(
+                              FontAwesomeIcons.solidBell,
+                              size: 14,
+                            ),
+                          ),
+                        )
+                      ])
                   ]),
                 ),
               ),
@@ -182,11 +228,44 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     }
   }
 
+  void _turnOnNotification() async {
+    if (!_notificationEnabled) {
+      final isEnabled = await requestNotificationPermission();
+      setState(() {
+        _notificationEnabled = isEnabled;
+      });
+    }
+  }
+
+  void _checkNotificationPermission() async {
+    final result = await checkIosNotificationPermission();
+    setState(() {
+      _notificationEnabled = result.isEnabled;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     _user = Provider.of<RoutineUserController>(context, listen: false).user;
-
+    _weight = _user?.weight.toDouble() ?? 0.0;
     _trainingGoal = _user?.trainingGoal ?? TrainingGoal.hypertrophy;
+    _checkNotificationPermission();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    /// Uncomment this to enable notifications
+    if (state == AppLifecycleState.resumed) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _checkNotificationPermission();
+      });
+    }
   }
 }

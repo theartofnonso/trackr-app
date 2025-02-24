@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
-import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/milestones/weekly_milestone_dto.dart';
-import 'package:tracker_app/enums/exercise_type_enums.dart';
-import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/utils/date_utils.dart';
-
-import 'exercise_utils.dart';
 
 void main() {
   group('WeeklyMilestone', () {
@@ -23,11 +17,10 @@ void main() {
       final logs = <RoutineLogDto>[];
       final milestones = WeeklyMilestone.loadMilestones(logs: logs, weeksInYear: weeksInYear, datetime: now);
 
-      expect(milestones.length, 3);
+      expect(milestones.length, 2);
 
       final mondayMilestone = milestones.firstWhere((m) => m.name == 'NEVER MISS A MONDAY');
       final weekendMilestone = milestones.firstWhere((m) => m.name == 'WEEKEND WARRIOR');
-      final legDayMilestone = milestones.firstWhere((m) => m.name == 'NEVER MISS A LEG DAY');
 
       // All should have zero progress initially
       expect(mondayMilestone.progress.$1, 0);
@@ -35,9 +28,6 @@ void main() {
 
       expect(weekendMilestone.progress.$1, 0);
       expect(weekendMilestone.progress.$2, isEmpty);
-
-      expect(legDayMilestone.progress.$1, 0);
-      expect(legDayMilestone.progress.$2, isEmpty);
     });
 
     test('Never streak break', () {
@@ -153,77 +143,6 @@ void main() {
       expect(weekendMilestone.progress.$2.length, 0);
     });
 
-    test('Never Miss a Leg Day milestone streak resets if a week misses legs', () {
-      final now = DateTime.now().withoutTime();
-
-      final dateRange = yearToDateTimeRange(datetime: now);
-
-      final weeksInYear = generateWeeksInRange(range: dateRange);
-
-      final legExercise = ExerciseDto(
-        id: 'squat',
-        name: 'Squat',
-        primaryMuscleGroup: MuscleGroup.quadriceps,
-        secondaryMuscleGroups: [MuscleGroup.hamstrings],
-        type: ExerciseType.weights,
-        owner: '',
-      );
-
-      List<RoutineLogDto> logs = [];
-      // 3 weeks with leg exercises
-      for (var i = 0; i < 3; i++) {
-        final date = DateTime(2023, 1, 2).add(Duration(days: i * 7));
-        logs.add(RoutineLogDto(
-          id: 'log$i',
-          templateId: 'temp',
-          name: 'Leg Workout $i',
-          notes: '',
-          summary: null,
-          startTime: date,
-          endTime: date.add(const Duration(hours: 1)),
-          exerciseLogs: [
-            ExerciseLogDto(
-              id: 'exLog$i',
-              routineLogId: 'log$i',
-              superSetId: '',
-              exercise: legExercise,
-              notes: '',
-              sets: [],
-              createdAt: date,
-            )
-          ],
-          owner: 'user',
-          createdAt: date,
-          updatedAt: date,
-        ));
-      }
-
-      // 4th week - no leg exercise
-      final fourthWeekDate = DateTime(2023, 1, 2).add(Duration(days: 3 * 7));
-      logs.add(RoutineLogDto(
-        id: 'log4',
-        templateId: 'temp',
-        name: 'No Leg Workout',
-        notes: '',
-        summary: null,
-        startTime: fourthWeekDate,
-        endTime: fourthWeekDate.add(const Duration(hours: 1)),
-        exerciseLogs: [],
-        // no leg exercises
-        owner: 'user',
-        createdAt: fourthWeekDate,
-        updatedAt: fourthWeekDate,
-      ));
-
-      final milestones = WeeklyMilestone.loadMilestones(logs: logs, weeksInYear: weeksInYear, datetime: now);
-      final legDayMilestone = milestones.firstWhere((m) => m.id == 'NMALDC_001');
-
-      // Streak breaks after the 4th week that lacks a leg log
-      // According to the code, if a week fails and we haven't hit the target, we reset the streak.
-      expect(legDayMilestone.progress.$1, 0);
-      expect(legDayMilestone.progress.$2.length, 0);
-    });
-
     test('Never Miss a Monday milestone does not reset before or on Monday if no log is yet recorded for that Monday',
         () {
       final weeksInYear = [
@@ -310,54 +229,6 @@ void main() {
       expect(weekendMilestone.progress.$1, greaterThan(0),
           reason: 'The weekend streak should hold until the weekend passes without a log.');
       expect(weekendMilestone.progress.$2.isNotEmpty, isTrue, reason: 'Previous weekend logs should still be counted.');
-    });
-
-    test(
-        'Never miss a Leg day milestone does not reset before or on the weekend if no log is yet recorded for that weekend',
-        () {
-      final glutesExercise = makeExercise(id: 'e1', type: ExerciseType.bodyWeight, primary: MuscleGroup.glutes);
-
-      final weeksInYear = [
-        DateTimeRange(start: DateTime(2023, 1, 2), end: DateTime(2023, 1, 8)),
-        DateTimeRange(start: DateTime(2023, 1, 9), end: DateTime(2023, 1, 15)),
-        DateTimeRange(start: DateTime(2023, 1, 16), end: DateTime(2023, 1, 22)),
-      ];
-
-      final logs = <RoutineLogDto>[];
-
-      // Assume that 'Never miss a leg day' milestone requires a log on Saturday or Sunday each week.
-      // We have logged a leg session in the past two weekends (Jan 07 and Jan 14).
-      for (var i = 0; i < 2; i++) {
-        final date = DateTime(2023, 1, 7).add(Duration(days: i * 7));
-        logs.add(RoutineLogDto(
-          id: 'log$i',
-          templateId: 'temp',
-          name: 'Leg Workout $i',
-          notes: '',
-          summary: null,
-          startTime: date,
-          endTime: date.add(const Duration(hours: 1)),
-          exerciseLogs: [
-            makeLog(exercise: glutesExercise),
-          ],
-          owner: 'user',
-          createdAt: date,
-          updatedAt: date,
-        ));
-      }
-
-      // Now it's the next weekend: Saturday 2023-01-21 at 10:00 AM.
-      // No weekend log yet, but the weekend hasn't passed.
-      final now = DateTime(2023, 1, 21, 10);
-
-      final milestones = WeeklyMilestone.loadMilestones(logs: logs, datetime: now, weeksInYear: weeksInYear);
-      final weeklyLegMilestone = milestones.firstWhere((m) => m.name == 'Never Miss A Leg Day'.toUpperCase());
-
-      // The streak should not reset yet since the weekend is not over.
-      // The user still has the rest of Saturday or Sunday to log a workout.
-      expect(weeklyLegMilestone.progress.$1, greaterThan(0),
-          reason: 'The weekly leg streak should hold until the week passes without a leg log.');
-      expect(weeklyLegMilestone.progress.$2.isNotEmpty, isTrue, reason: 'Previous leg logs should still be counted.');
     });
   });
 }

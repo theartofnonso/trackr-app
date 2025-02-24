@@ -35,8 +35,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
     final List<OnboardingStepData> steps = [
       OnboardingStepData(
-          title: 'Stay Alert',
-          description: 'Stay on track with real-time updates, workout reminders, and progress alerts.',
+          title: 'Stay on Track',
+          description: 'Allow us to remind you about long-running workouts if you’ve become distracted. We’ll also send reminders on your training days.',
           image: FaIcon(
             FontAwesomeIcons.solidBell,
             size: 50,

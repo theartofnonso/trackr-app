@@ -242,6 +242,10 @@ class AmplifyRoutineLogRepository {
     return _logs.where((log) => log.templateId == templateId).toList();
   }
 
+  List<RoutineLogDto> whereLogsWithTemplateName({required String templateName}) {
+    return _logs.where((log) => log.name == templateName).toList();
+  }
+
   List<RoutineLogDto> whereRoutineLogsBefore({required String templateId, required DateTime date}) {
     return _logs.where((log) => log.templateId == templateId && log.createdAt.isBefore(date)).toList();
   }

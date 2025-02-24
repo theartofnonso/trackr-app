@@ -5,7 +5,6 @@ import 'package:tracker_app/widgets/monthly_insights/activities_widget.dart';
 import 'package:tracker_app/widgets/monthly_insights/monthly_training_summary_widget.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
-import 'muscle_groups_family_frequency_widget.dart';
 
 class MonthlyInsights extends StatelessWidget {
   final DateTimeRange dateTimeRange;
@@ -30,7 +29,6 @@ class MonthlyInsights extends StatelessWidget {
           dateTime: dateTimeRange.start,
         ),
         ActivitiesWidget(dateTimeRange: dateTimeRange),
-        if (thisMonthRoutineLogs.isNotEmpty) MuscleGroupFamilyFrequencyWidget(logs: thisMonthRoutineLogs),
       ],
     );
   }

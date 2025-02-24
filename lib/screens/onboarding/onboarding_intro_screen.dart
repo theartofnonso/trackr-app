@@ -7,15 +7,11 @@ import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../colors.dart';
 import '../../dtos/milestones/reps_milestone.dart';
-import '../../enums/muscle_group_enums.dart';
 import '../../utils/theme/theme.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/calendar/calendar.dart';
-import '../../widgets/chart/muscle_group_family_frequency_chart.dart';
 import '../../widgets/dividers/label_divider.dart';
 import '../../widgets/milestones/milestone_grid_item.dart';
-import '../../widgets/monitors/log_streak_monitor.dart';
-import '../../widgets/monitors/muscle_trend_monitor.dart';
 
 class OnboardingIntroScreen extends StatefulWidget {
   static const routeName = "/intro_screen";
@@ -38,8 +34,6 @@ class _OnboardingIntroScreenState extends State<OnboardingIntroScreen> {
 
     final pages = [
       CalenderOnboardingScreen(isDarkMode: isDarkMode),
-      LogStreakMonitorOnboardingScreen(isDarkMode: isDarkMode),
-      MuscleTrendMonitorOnboardingScreen(isDarkMode: isDarkMode),
       TRKRCoachOnboardingScreen(isDarkMode: isDarkMode),
       MilestonesOnboardingScreen(isDarkMode: isDarkMode),
       if (SharedPrefs().firstLaunch) EndOnboardingScreen(onLongPress: widget.onComplete ?? () {})
@@ -119,143 +113,6 @@ class CalenderOnboardingScreen extends StatelessWidget {
   }
 }
 
-class LogStreakMonitorOnboardingScreen extends StatelessWidget {
-  final bool isDarkMode;
-
-  const LogStreakMonitorOnboardingScreen({super.key, required this.isDarkMode});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const Spacer(),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          child: Wrap(
-            runSpacing: 40,
-            spacing: 40,
-            children: [
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  LogStreakMonitor(value: 2, width: 120, height: 120, strokeWidth: 8),
-                  Image.asset(
-                    'images/trkr.png',
-                    fit: BoxFit.contain,
-                    color: isDarkMode ? Colors.white70 : Colors.black,
-                    height: 8, // Adjust the height as needed
-                  )
-                ],
-              ),
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  LogStreakMonitor(value: 4, width: 120, height: 120, strokeWidth: 8),
-                  Image.asset(
-                    'images/trkr.png',
-                    fit: BoxFit.contain,
-                    color: isDarkMode ? Colors.white70 : Colors.black,
-                    height: 8, // Adjust the height as needed
-                  )
-                ],
-              ),
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  LogStreakMonitor(value: 7, width: 120, height: 120, strokeWidth: 8),
-                  Image.asset(
-                    'images/trkr.png',
-                    fit: BoxFit.contain,
-                    color: isDarkMode ? Colors.white70 : Colors.black,
-                    height: 8, // Adjust the height as needed
-                  )
-                ],
-              ),
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  LogStreakMonitor(value: 12, width: 120, height: 120, strokeWidth: 8),
-                  Image.asset(
-                    'images/trkr.png',
-                    fit: BoxFit.contain,
-                    color: isDarkMode ? Colors.white70 : Colors.black,
-                    height: 8, // Adjust the height as needed
-                  )
-                ],
-              )
-            ],
-          ),
-        ),
-        const Spacer(),
-        LabelDivider(
-          label: "LOG Streak".toUpperCase(),
-          labelColor: isDarkMode ? Colors.white70 : Colors.black,
-          dividerColor: sapphireLighter,
-          fontSize: 14,
-        ),
-        SizedBox(
-          height: 12,
-        ),
-        Text(
-            "Your goal is to keep those months consistently green. Just 12 sessions per month are all you need to close the ring and maintain your momentum. Make it a habit, keep pushing, and enjoy watching your streaks grow!",
-            style: Theme.of(context).textTheme.bodyLarge),
-      ],
-    );
-  }
-}
-
-class MuscleTrendMonitorOnboardingScreen extends StatelessWidget {
-  final bool isDarkMode;
-
-  const MuscleTrendMonitorOnboardingScreen({super.key, required this.isDarkMode});
-
-  @override
-  Widget build(BuildContext context) {
-    final muscleMap = <MuscleGroupFamily, double>{
-      MuscleGroupFamily.legs: 0.7,
-      MuscleGroupFamily.arms: 0.5,
-      MuscleGroupFamily.back: 0.3
-    };
-
-    return Column(
-      children: [
-        Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 22.0),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                MuscleTrendMonitor(value: 60 / 100, width: 120, height: 120, strokeWidth: 8),
-                Image.asset(
-                  'images/trkr.png',
-                  fit: BoxFit.contain,
-                  color: isDarkMode ? Colors.white70 : Colors.black,
-                  height: 8, // Adjust the height as needed
-                )
-              ],
-            ),
-          ),
-        ),
-        const Spacer(),
-        MuscleGroupFamilyFrequencyChart(frequencyData: muscleMap, minimized: true),
-        const Spacer(),
-        LabelDivider(
-          label: "Muscle Trend".toUpperCase(),
-          labelColor: isDarkMode ? Colors.white70 : Colors.black,
-          dividerColor: sapphireLighter,
-          fontSize: 14,
-        ),
-        SizedBox(
-          height: 12,
-        ),
-        Text(
-            "To get the most out of your training, aim for balance across all muscle groups. By keeping an eye on your muscle trends, you can prevent imbalances, reduce the risk of injury, and ensure well-rounded strength development.",
-            style: Theme.of(context).textTheme.bodyLarge),
-      ],
-    );
-  }
-}
-
 class MilestonesOnboardingScreen extends StatelessWidget {
   final bool isDarkMode;
 
@@ -263,8 +120,12 @@ class MilestonesOnboardingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final milestonesChildren =
-        RepsMilestone.loadMilestones(logs: []).map((milestone) => MilestoneGridItem(milestone: milestone, enabled: false,)).toList();
+    final milestonesChildren = RepsMilestone.loadMilestones(logs: [])
+        .map((milestone) => MilestoneGridItem(
+              milestone: milestone,
+              enabled: false,
+            ))
+        .toList();
 
     return Column(
       children: [
@@ -359,12 +220,13 @@ class EndOnboardingScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         RichText(
+          textAlign: TextAlign.center,
             text: TextSpan(
                 text: "Ready to get started? Here’s to",
                 style: Theme.of(context)
                     .textTheme
                     .titleSmall
-                    ?.copyWith(fontSize: 22, fontWeight: FontWeight.w500, height: 1.5),
+                    ?.copyWith(fontSize: 22, fontWeight: FontWeight.w500, height: 1.5,),
                 children: [
               TextSpan(
                   text: " smarter training, ",
@@ -380,7 +242,7 @@ class EndOnboardingScreen extends StatelessWidget {
         SizedBox(
             width: double.infinity,
             child: OpacityButtonWidget(
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              padding: const EdgeInsets.all( 16),
               buttonColor: vibrantGreen,
               label: "Tap and hold to start training",
               onLongPress: onLongPress,

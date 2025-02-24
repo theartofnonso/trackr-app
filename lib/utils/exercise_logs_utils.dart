@@ -324,35 +324,23 @@ TemplateChange? hasSetValueChanged({
   return exerciseLog1Volume != exerciseLog2Volume ? TemplateChange.setValue : null;
 }
 
-Map<MuscleGroupFamily, double> muscleGroupFamilyFrequency({
-  required List<ExerciseLogDto> exerciseLogs,
-  bool includeSecondaryMuscleGroups = true,
-}) {
-  if (exerciseLogs.isEmpty) return <MuscleGroupFamily, double>{};
+Map<MuscleGroup, double> muscleGroupFrequency({required List<ExerciseLogDto> exerciseLogs}) {
+  if (exerciseLogs.isEmpty) return <MuscleGroup, double>{};
 
-  final frequencyMap = <MuscleGroupFamily, int>{};
+  final frequencyMap = <MuscleGroup, int>{};
 
-  // Counting the occurrences of each MuscleGroup, excluding MuscleGroupFamily.fullBody
+  // Counting the occurrences of each MuscleGroup, excluding MuscleGroup.fullBody
   for (final log in exerciseLogs) {
-    final primaryFamily = log.exercise.primaryMuscleGroup.family;
-    if (primaryFamily != MuscleGroupFamily.fullBody) {
-      frequencyMap.update(primaryFamily, (value) => value + 1, ifAbsent: () => 1);
-    }
-
-    if (includeSecondaryMuscleGroups) {
-      for (var muscleGroup in log.exercise.secondaryMuscleGroups) {
-        final secondaryFamily = muscleGroup.family;
-        if (secondaryFamily != MuscleGroupFamily.fullBody) {
-          frequencyMap.update(secondaryFamily, (value) => value + 1, ifAbsent: () => 1);
-        }
-      }
+    final primary = log.exercise.primaryMuscleGroup;
+    if (primary != MuscleGroup.fullBody) {
+      frequencyMap.update(primary, (value) => value + 1, ifAbsent: () => 1);
     }
   }
 
-  if(frequencyMap.isEmpty) return <MuscleGroupFamily, double>{};
+  if (frequencyMap.isEmpty) return <MuscleGroup, double>{};
 
   final totalCount = frequencyMap.values.reduce((a, b) => a + b);
-  final scaledFrequencyMap = <MuscleGroupFamily, double>{};
+  final scaledFrequencyMap = <MuscleGroup, double>{};
 
   // Scaling the frequencies from 0 to 1
   frequencyMap.forEach((key, value) {
@@ -361,62 +349,8 @@ Map<MuscleGroupFamily, double> muscleGroupFamilyFrequency({
 
   final sortedEntries = scaledFrequencyMap.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
 
-  final sortedFrequencyMap = LinkedHashMap<MuscleGroupFamily, double>.fromEntries(sortedEntries);
+  final sortedFrequencyMap = LinkedHashMap<MuscleGroup, double>.fromEntries(sortedEntries);
   return sortedFrequencyMap;
-}
-
-Map<MuscleGroupFamily, int> _muscleGroupFamilyCountOn4WeeksScale({
-  required List<ExerciseLogDto> exerciseLogs,
-}) {
-  final frequencyMap = <MuscleGroupFamily, int>{};
-
-  final exerciseLogsByDay = groupBy(exerciseLogs, (log) => log.createdAt.day);
-
-  // Counting the occurrences of each MuscleGroup
-  for (var logAndDate in exerciseLogsByDay.entries) {
-    final primaryMuscleGroupFamilies = logAndDate.value
-        .map((log) => log.exercise.primaryMuscleGroup.family)
-        .where((family) => family != MuscleGroupFamily.fullBody);
-
-    final muscleGroupFamilies = {...primaryMuscleGroupFamilies};
-
-    // We don't report these muscle groups
-    muscleGroupFamilies.remove(MuscleGroupFamily.neck);
-
-    for (var family in muscleGroupFamilies) {
-      frequencyMap.update(family, (value) => value >= 8 ? 8 : value + 1, ifAbsent: () => 1);
-    }
-  }
-
-  return frequencyMap;
-}
-
-Map<MuscleGroupFamily, double> muscleGroupFamilyFrequencyOn4WeeksScale({required List<ExerciseLogDto> exerciseLogs}) {
-  final frequencyMap = _muscleGroupFamilyCountOn4WeeksScale(exerciseLogs: exerciseLogs);
-
-  final scaledFrequencyMap = <MuscleGroupFamily, double>{};
-
-  // Scaling the frequencies from 0 to 1
-  frequencyMap.forEach((key, value) {
-    final scaledValue = value / 8;
-    scaledFrequencyMap[key] = scaledValue > 1 ? 1 : scaledValue;
-  });
-
-  final sortedEntries = scaledFrequencyMap.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
-
-  final sortedFrequencyMap = LinkedHashMap<MuscleGroupFamily, double>.fromEntries(sortedEntries);
-
-  return sortedFrequencyMap;
-}
-
-double cumulativeMuscleGroupFamilyFrequency({required List<ExerciseLogDto> exerciseLogs}) {
-  final frequencyEntries = _muscleGroupFamilyCountOn4WeeksScale(exerciseLogs: exerciseLogs).entries;
-
-  final frequencyMap = Map.fromEntries(frequencyEntries);
-
-  final cumulativeFrequency = frequencyMap.entries.map((entry) => entry.value).sum;
-
-  return cumulativeFrequency / 48;
 }
 
 bool withWeightsOnly({required ExerciseType type}) {
@@ -433,14 +367,6 @@ bool withRepsOnly({required ExerciseType type}) {
 
 bool withDurationOnly({required ExerciseType type}) {
   return type == ExerciseType.duration;
-}
-
-int _calculateMuscleScore({required List<ExerciseLogDto> exerciseLogs}) {
-  final muscleGroupsFrequencyScore = cumulativeMuscleGroupFamilyFrequency(exerciseLogs: exerciseLogs);
-
-  final percentageScore = (muscleGroupsFrequencyScore * 100).round();
-
-  return percentageScore;
 }
 
 List<ExerciseLogDto> loggedExercises({required List<ExerciseLogDto> exerciseLogs}) {
@@ -465,20 +391,6 @@ RoutineLogDto routineWithLoggedExercises({required RoutineLogDto log}) {
   return log.copyWith(exerciseLogs: loggedExerciseLogs);
 }
 
-int calculateMuscleScoreForLogs({required List<RoutineLogDto> routineLogs}) {
-  final exerciseLogs = routineLogs.expand((log) => log.exerciseLogs).toList();
-
-  final percentageScore = _calculateMuscleScore(exerciseLogs: exerciseLogs);
-
-  return percentageScore;
-}
-
-int calculateMuscleScoreForLog({required RoutineLogDto routineLog}) {
-  final percentageScore = _calculateMuscleScore(exerciseLogs: routineLog.exerciseLogs);
-
-  return percentageScore;
-}
-
 (int, int) getRepRange({required ExerciseLogDto exerciseLog}) {
   final sets = exerciseLog.sets;
   final exerciseType = exerciseLog.exercise.type;
@@ -491,7 +403,7 @@ int calculateMuscleScoreForLog({required RoutineLogDto routineLog}) {
       case ExerciseType.bodyWeight:
         return (set as RepsSetDto).reps;
       case ExerciseType.duration:
-      // Duration-based exercises don't have a rep count
+        // Duration-based exercises don't have a rep count
         return 0;
     }
   }

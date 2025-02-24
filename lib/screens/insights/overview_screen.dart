@@ -11,14 +11,13 @@ import 'package:tracker_app/dtos/appsync/activity_log_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/open_ai_response_schema_dtos/monthly_training_report.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
-import 'package:tracker_app/extensions/dtos/routine_template_dto_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/screens/editors/activity_editor_screen.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
-import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_information_container.dart';
+import 'package:tracker_app/widgets/information_containers/information_container_lite.dart';
 import 'package:tracker_app/widgets/monthly_insights/calories_chart.dart';
 import 'package:tracker_app/widgets/monthly_insights/volume_chart.dart';
 
@@ -38,13 +37,11 @@ import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../utils/routine_utils.dart';
-import '../../utils/string_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_button.dart';
 import '../../widgets/ai_widgets/trkr_coach_text_widget.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/calendar/calendar.dart';
 import '../../widgets/dividers/label_divider.dart';
-import '../../widgets/monitors/log_streak_muscle_trend_monitor.dart';
 import '../../widgets/monthly_insights/log_streak_chart.dart';
 import '../../widgets/monthly_insights/monthly_insights.dart';
 import '../../widgets/routine/preview/activity_log_widget.dart';
@@ -73,6 +70,51 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   TextEditingController? _textEditingController;
 
+  String _predictTemplate({required List<RoutineLogDto> logs}) {
+    if (logs.isEmpty) {
+      return "";
+    }
+
+    final currentWeekday = DateTime.now().weekday;
+    final sameWeekdayLogs = logs.where((log) => log.createdAt.weekday == currentWeekday).toList();
+
+    final logsToConsider = sameWeekdayLogs.isNotEmpty ? sameWeekdayLogs : logs;
+
+    final counts = <String, int>{};
+    final latestDates = <String, DateTime>{};
+
+    for (final log in logsToConsider) {
+      final name = log.name;
+      counts[name] = (counts[name] ?? 0) + 1;
+
+      final currentLatest = latestDates[name];
+      if (currentLatest == null || log.createdAt.isAfter(currentLatest)) {
+        latestDates[name] = log.createdAt;
+      }
+    }
+
+    final maxCount = counts.values.fold(0, (max, count) => count > max ? count : max);
+    final candidates = counts.entries.where((entry) => entry.value == maxCount).map((entry) => entry.key).toList();
+
+    if (candidates.length == 1) {
+      return candidates.first;
+    }
+
+    // Resolve tie by selecting the most recent date
+    String selectedId = candidates.first;
+    DateTime latestDate = latestDates[selectedId]!;
+
+    for (final id in candidates.skip(1)) {
+      final date = latestDates[id]!;
+      if (date.isAfter(latestDate)) {
+        selectedId = id;
+        latestDate = date;
+      }
+    }
+
+    return selectedId;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
@@ -90,10 +132,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     final templates = exerciseAndRoutineController.templates;
 
-    final scheduledTemplates = templates.where((template) => template.isScheduledToday());
-
-    final scheduledToday = scheduledTemplates.firstOrNull;
-
     final logsForCurrentDay =
         exerciseAndRoutineController.whereLogsIsSameDay(dateTime: DateTime.now().withoutTime()).toList();
 
@@ -104,8 +142,18 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     final logsForPastMonth = exerciseAndRoutineController.whereLogsIsSameMonth(dateTime: last30DaysDatetime).toList();
 
+    List<RoutineLogDto> routineLogs = [];
+    for (final template in templates) {
+      final logs = exerciseAndRoutineController.whereLogsWithTemplateName(templateName: template.name).toList();
+      routineLogs.addAll(logs);
+    }
+
+    final predictedTemplateName = _predictTemplate(logs: routineLogs);
+
+    final predictedTemplate = templates.firstWhereOrNull((template) => template.name == predictedTemplateName);
+
     final hasTodayScheduleBeenLogged =
-        logsForCurrentDay.firstWhereOrNull((log) => log.templateId == scheduledToday?.id) != null;
+        logsForCurrentDay.firstWhereOrNull((log) => log.name == predictedTemplate?.name) != null;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -121,7 +169,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           gradient: themeGradient(context: context),
         ),
         child: SafeArea(
-            minimum: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
+            minimum: const EdgeInsets.only(top: 16, right: 10.0, bottom: 10, left: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -130,8 +178,21 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       controller: widget.scrollController,
                       padding: const EdgeInsets.only(bottom: 150),
                       child: Column(spacing: 20, children: [
-                        const SizedBox.shrink(),
-                        LogStreakMuscleTrendMonitor(dateTime: widget.dateTimeRange.start),
+                        if (predictedTemplate != null)
+                          _ScheduledRoutineCard(
+                              scheduledToday: predictedTemplate, isLogged: hasTodayScheduleBeenLogged),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: 10,
+                          children: [
+                            Calendar(
+                              onSelectDate: _onChangedDateTime,
+                              dateTime: widget.dateTimeRange.start,
+                            ),
+                            _LogsListView(dateTime: _selectedDateTime),
+                            LogStreakChart(),
+                          ],
+                        ),
                         if (isStartOfNewMonth && logsForPastMonth.isNotEmpty)
                           Padding(
                             padding: const EdgeInsets.only(top: 24.0),
@@ -141,29 +202,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
                                     "It’s a new month of training, but before we dive in, let’s reflect on your past performance and plan for this month.",
                                 onTap: () => _generateMonthlyInsightsReport(datetime: last30DaysDatetime)),
                           ),
-                        if (scheduledToday != null)
-                          GestureDetector(
-                            onTap: () => navigateToRoutineTemplatePreview(context: context, template: scheduledToday),
-                            child: _ScheduledRoutineCard(
-                                scheduledToday: scheduledToday, isLogged: hasTodayScheduleBeenLogged),
-                          ),
                         if (canNavigateNext && logsForCurrentMonth.isNotEmpty)
                           TRKRCoachButton(
                               label: "Review ${widget.dateTimeRange.start.formattedFullMonth()} insights.",
                               onTap: () => _generateMonthlyInsightsReport(datetime: widget.dateTimeRange.start)),
-                        Column(
-                          children: [
-                            Calendar(
-                              onSelectDate: _onChangedDateTime,
-                              dateTime: widget.dateTimeRange.start,
-                              minimiseCalendar: SharedPrefs().minimiseCalendar,
-                            ),
-                            const SizedBox(height: 10),
-                            _LogsListView(dateTime: _selectedDateTime),
-                          ],
-                        ),
                         MonthlyInsights(dateTimeRange: widget.dateTimeRange),
-                        LogStreakChart(),
                         VolumeChart(),
                         CaloriesChart()
                       ])),
@@ -182,9 +225,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 
   void _hideLoadingScreen() {
-    setState(() {
-      _loading = false;
-    });
+    if (mounted) {
+      setState(() {
+        _loading = false;
+      });
+    }
   }
 
   void _generateMonthlyInsightsReport({required DateTime datetime}) {
@@ -239,8 +284,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
         Highlight any trends or patterns that could help optimize my future training sessions.
         
         Lastly, please provide a summary of the number of activities the user has logged outside of strength training. 
-        If the user has logged few or no such activities, focus on encouraging them to engage in and record more non-strength training exercises. 
-        The report should highlight the benefits of incorporating a variety of activities into their fitness regimen and offer suggestions on how they can diversify their workouts.
         Note: All weights are measured in ${weightLabel()}.
         Note: Your report should sound personal and motivating.
 """);
@@ -485,120 +528,24 @@ class _ScheduledRoutineCard extends StatelessWidget {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final sets = scheduledToday.exerciseTemplates.expand((exercises) => exercises.sets);
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(
-                scheduledToday.name,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.titleMedium,
-                maxLines: 2,
-              ),
-              if (scheduledToday.notes.isNotEmpty)
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 10),
-                    Text(
-                      scheduledToday.notes,
-                      style: Theme.of(context).textTheme.bodySmall,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                    ),
-                  ],
-                ),
-              const SizedBox(height: 20),
-              Row(
-                children: [
-                  Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    spacing: 6,
-                    children: [
-                      Container(
-                        width: 30,
-                        height: 30,
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: vibrantGreen.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(3),
-                        ),
-                        child: Image.asset(
-                          'icons/dumbbells.png',
-                          fit: BoxFit.contain,
-                          height: 20,
-                          color: vibrantGreen, // Adjust the height as needed
-                        ),
-                      ),
-                      Text(
-                        "${scheduledToday.exerciseTemplates.length} ${pluralize(word: "Exercise", count: scheduledToday.exerciseTemplates.length).toUpperCase()}",
-                        style: Theme.of(context).textTheme.labelSmall,
-                      )
-                    ],
-                  ),
-                  const SizedBox(
-                    width: 16,
-                  ),
-                  Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    spacing: 6,
-                    children: [
-                      Container(
-                        width: 30,
-                        height: 30,
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: vibrantBlue.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(3),
-                        ),
-                        child: Center(
-                          child: FaIcon(
-                            FontAwesomeIcons.hashtag,
-                            color: vibrantBlue,
-                            size: 14,
-                          ),
-                        ),
-                      ),
-                      Text(
-                        "${sets.length} ${pluralize(word: "Set", count: sets.length).toUpperCase()}",
-                        style: Theme.of(context).textTheme.labelSmall,
-                      )
-                    ],
-                  ),
-                ],
-              ),
-            ]),
-          ),
-          const SizedBox(width: 20),
-          Container(
-            width: 30,
-            height: 30,
-            padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              color: (isLogged ? vibrantGreen : Colors.deepOrange).withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(3),
-            ),
-            child: Center(
-              child: FaIcon(
-                isLogged ? FontAwesomeIcons.check : FontAwesomeIcons.calendarDay,
-                size: 14,
-                color: isLogged ? vibrantGreen : Colors.deepOrange,
-              ),
+    return isLogged
+        ? InformationContainerLite(
+            content: "Great job crushing your ${scheduledToday.name} session. keep that momentum going!",
+            color: Colors.grey.shade200,
+            icon: FaIcon(
+              FontAwesomeIcons.solidSquareCheck,
+              color: isDarkMode ? vibrantGreen : null,
+              size: 18,
             ),
           )
-        ],
-      ),
-    );
+        : InformationContainerLite(
+            content: "It looks like today is your usual ${scheduledToday.name} session. Time to get moving!",
+            color: Colors.grey.shade200,
+            icon: FaIcon(
+              FontAwesomeIcons.calendarDay,
+              size: 18,
+            ),
+          );
   }
 }
 

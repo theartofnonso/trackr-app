@@ -73,7 +73,7 @@ class SetsAndRepsVolumeInsightsScreen extends StatefulWidget {
 class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsightsScreen> {
   TrainingMetric _metric = TrainingMetric.reps;
 
-  MuscleGroup _selectedMuscleGroup = MuscleGroup.abs;
+  MuscleGroup? _selectedMuscleGroup;
 
   bool _loading = false;
 
@@ -92,10 +92,10 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     final logs = exerciseAndRoutineController.whereLogsIsWithinRange(range: dateRange);
 
-    final exerciseLogs = logs
-        .map((log) => loggedExercises(exerciseLogs: log.exerciseLogs))
-        .expand((exerciseLogs) => exerciseLogs)
-        .where((exerciseLog) {
+    final exerciseLogs =
+        logs.map((log) => loggedExercises(exerciseLogs: log.exerciseLogs)).expand((exerciseLogs) => exerciseLogs);
+
+    final exerciseLogsForSelectedMuscleGroup = exerciseLogs.where((exerciseLog) {
       return _selectedMuscleGroup == exerciseLog.exercise.primaryMuscleGroup;
     }).toList();
 
@@ -109,7 +109,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     for (final week in weeksInYear) {
       final startOfWeek = week.start;
       final endOfWeek = week.end;
-      final values = exerciseLogs
+      final values = exerciseLogsForSelectedMuscleGroup
           .where((exerciseLog) => exerciseLog.createdAt.isBetweenInclusive(from: startOfWeek, to: endOfWeek))
           .map((log) {
         final values = _calculateMetric(sets: log.sets);
@@ -147,7 +147,9 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
             })
         .toList();
 
-    final muscleGroups = MuscleGroup.values
+    final muscleGroups = exerciseLogs
+        .map((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup)
+        .toSet()
         .sorted((a, b) => a.name.compareTo(b.name))
         .map((muscleGroup) => Padding(
               padding: const EdgeInsets.only(right: 6.0),
@@ -158,8 +160,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                   label: muscleGroup.name.toUpperCase()),
             ))
         .toList();
-
-    final muscleGroupScrollViewHalf = MuscleGroup.values.length ~/ 2;
 
     final trendSummary = _analyzeWeeklyTrends(values: trends);
 
@@ -181,6 +181,8 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       )
     ];
 
+    final selectedMuscleGroup = _selectedMuscleGroup;
+
     return Scaffold(
       appBar: widget.canPop
           ? AppBar(
@@ -199,95 +201,87 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
           minimum: const EdgeInsets.only(top: 10, bottom: 20),
           child: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    scrollDirection: Axis.horizontal,
-                    child: Row(children: [
-                      ...muscleGroups.sublist(0, muscleGroupScrollViewHalf),
-                    ])),
-                SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    scrollDirection: Axis.horizontal,
-                    child: Row(children: [
-                      ...muscleGroups.sublist(muscleGroupScrollViewHalf),
-                    ])),
-                const SizedBox(height: 18),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    TRKRInformationContainer(
-                      ctaLabel: "Review your ${_selectedMuscleGroup.name} training",
-                      description: _selectedMuscleGroup.description,
-                      onTap: () => _generateReport(exerciseLogs: exerciseLogs),
-                    ),
-                    const SizedBox(height: 20),
-                    Wrap(
-                      crossAxisAlignment: WrapCrossAlignment.center,
+                  child: Column(spacing: 20, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(mainAxisAlignment: MainAxisAlignment.start, children: muscleGroups)),
+                    if (selectedMuscleGroup != null)
+                      TRKRInformationContainer(
+                        ctaLabel: "Review your ${selectedMuscleGroup.name} training",
+                        description: selectedMuscleGroup.description,
+                        onTap: () => _generateReport(exerciseLogs: exerciseLogsForSelectedMuscleGroup),
+                      ),
+                    Column(
                       spacing: 10,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        trendSummary.trend == Trend.none
-                            ? const SizedBox.shrink()
-                            : getTrendIcon(trend: trendSummary.trend),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          spacing: 10,
                           children: [
-                            RichText(
-                              text: TextSpan(
-                                text:
-                                    "${_metric == TrainingMetric.volume ? volumeInKOrM(trendSummary.average, showLessThan1k: false) : trendSummary.average}",
-                                style: Theme.of(context).textTheme.headlineSmall,
-                                children: [
-                                  TextSpan(
-                                    text: " ",
+                            trendSummary.trend == Trend.none
+                                ? const SizedBox.shrink()
+                                : getTrendIcon(trend: trendSummary.trend),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                RichText(
+                                  text: TextSpan(
+                                    text:
+                                        "${_metric == TrainingMetric.volume ? volumeInKOrM(trendSummary.average, showLessThan1k: false) : trendSummary.average}",
+                                    style: Theme.of(context).textTheme.headlineSmall,
+                                    children: [
+                                      TextSpan(
+                                        text: " ",
+                                      ),
+                                      TextSpan(
+                                        text: _metricLabel().toUpperCase(),
+                                        style: Theme.of(context).textTheme.bodyMedium,
+                                      ),
+                                    ],
                                   ),
-                                  TextSpan(
-                                    text: _metricLabel().toUpperCase(),
-                                    style: Theme.of(context).textTheme.bodyMedium,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Text(
-                              "Weekly AVERAGE".toUpperCase(),
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
+                                ),
+                                Text(
+                                  "Weekly AVERAGE".toUpperCase(),
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                ),
+                              ],
+                            )
                           ],
-                        )
+                        ),
+                        Text(trendSummary.summary,
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                        CupertinoSlidingSegmentedControl<TrainingMetric>(
+                          backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade200,
+                          thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
+                          groupValue: _metric,
+                          children: {
+                            TrainingMetric.reps: SizedBox(
+                                width: 40,
+                                child: Text(TrainingMetric.reps.name, style: textStyle, textAlign: TextAlign.center)),
+                            TrainingMetric.sets: SizedBox(
+                                width: 40,
+                                child: Text(TrainingMetric.sets.name, style: textStyle, textAlign: TextAlign.center)),
+                            TrainingMetric.volume: SizedBox(
+                                width: 40,
+                                child: Text(TrainingMetric.volume.name, style: textStyle, textAlign: TextAlign.center)),
+                          },
+                          onValueChanged: (TrainingMetric? value) {
+                            if (value != null) {
+                              setState(() {
+                                _metric = value;
+                              });
+                            }
+                          },
+                        ),
                       ],
                     ),
-                    const SizedBox(height: 10),
-                    Text(trendSummary.summary,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
-                    const SizedBox(height: 10),
-                    CupertinoSlidingSegmentedControl<TrainingMetric>(
-                      backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade200,
-                      thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
-                      groupValue: _metric,
-                      children: {
-                        TrainingMetric.reps: SizedBox(
-                            width: 40,
-                            child: Text(TrainingMetric.reps.name, style: textStyle, textAlign: TextAlign.center)),
-                        TrainingMetric.sets: SizedBox(
-                            width: 40,
-                            child: Text(TrainingMetric.sets.name, style: textStyle, textAlign: TextAlign.center)),
-                        TrainingMetric.volume: SizedBox(
-                            width: 40,
-                            child: Text(TrainingMetric.volume.name, style: textStyle, textAlign: TextAlign.center)),
-                      },
-                      onValueChanged: (TrainingMetric? value) {
-                        if (value != null) {
-                          setState(() {
-                            _metric = value;
-                          });
-                        }
-                      },
-                    ),
-                    const SizedBox(height: 60),
+                    const SizedBox(height: 2),
                     SizedBox(
                         height: 250,
                         child: CustomBarChart(
@@ -300,7 +294,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                           showLeftTitles: true,
                           reservedSize: _reservedSize(),
                         )),
-                    const SizedBox(height: 10),
                     if (_isRepsOrSetsMetric())
                       Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                         Text(
@@ -365,6 +358,22 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     );
   }
 
+  @override
+  void initState() {
+    super.initState();
+
+    final dateRange = theLastYearDateTimeRange();
+
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+
+    final logs = exerciseAndRoutineController.whereLogsIsWithinRange(range: dateRange);
+
+    final exerciseLogs =
+        logs.map((log) => loggedExercises(exerciseLogs: log.exerciseLogs)).expand((exerciseLogs) => exerciseLogs);
+
+    _selectedMuscleGroup = exerciseLogs.firstOrNull?.exercise.primaryMuscleGroup;
+  }
+
   void _showLoadingScreen() {
     setState(() {
       _loading = true;
@@ -372,9 +381,11 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   }
 
   void _hideLoadingScreen() {
-    setState(() {
-      _loading = false;
-    });
+    if (mounted) {
+      setState(() {
+        _loading = false;
+      });
+    }
   }
 
   void _onSelectMuscleGroup({required MuscleGroup newMuscleGroup}) {
@@ -384,6 +395,10 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   }
 
   void _generateReport({required List<ExerciseLogDto> exerciseLogs}) {
+    final selectedMuscleGroup = _selectedMuscleGroup;
+
+    if (selectedMuscleGroup == null) return;
+
     final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
 
     final user = routineUserController.user;
@@ -391,7 +406,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     final trainingGoal = user?.trainingGoal ?? TrainingGoal.hypertrophy;
 
     final exerciseLogsForMuscleGroups = exerciseLogs
-        .where((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup == _selectedMuscleGroup)
+        .where((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup == selectedMuscleGroup)
         .sorted((a, b) => b.createdAt.compareTo(a.createdAt))
         .toList();
 
@@ -421,7 +436,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     buffer.writeln();
 
-    final trainingPrompt = generateTrainingPrompt(trainingGoal: trainingGoal, muscleGroups: [_selectedMuscleGroup]);
+    final trainingPrompt = generateTrainingPrompt(trainingGoal: trainingGoal, muscleGroups: [selectedMuscleGroup]);
 
     buffer.writeln(trainingPrompt);
 
@@ -447,7 +462,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
           navigateWithSlideTransition(
               context: context,
               child: MuscleGroupTrainingReportScreen(
-                  muscleGroup: _selectedMuscleGroup, report: report, exerciseLogs: exerciseLogs));
+                  muscleGroup: selectedMuscleGroup, report: report, exerciseLogs: exerciseLogs));
         }
       }
     }).catchError((_) {
@@ -456,7 +471,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
         showSnackbar(
             context: context,
             icon: TRKRCoachWidget(),
-            message: "Oops! I am unable to generate your ${_selectedMuscleGroup.name} report");
+            message: "Oops! I am unable to generate your ${selectedMuscleGroup.name} report");
       }
     });
   }
@@ -534,20 +549,16 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     };
   }
 
-  @override
-  void initState() {
-    super.initState();
-    final defaultMuscleGroup = Provider.of<ExerciseAndRoutineController>(context, listen: false)
-        .logs
-        .firstOrNull
-        ?.exerciseLogs
-        .firstOrNull
-        ?.exercise
-        .primaryMuscleGroup;
-    _selectedMuscleGroup = defaultMuscleGroup ?? MuscleGroup.values.first;
-  }
-
   TrendSummary _analyzeWeeklyTrends({required List<num> values}) {
+    final selectedMuscleGroup = _selectedMuscleGroup;
+
+    if (selectedMuscleGroup == null) {
+      return TrendSummary(
+          trend: Trend.none,
+          average: 0,
+          summary: "🤔 No training data available yet. Log some sessions to start tracking your progress!");
+    }
+
     // 1. Handle edge cases
     if (values.isEmpty) {
       return TrendSummary(
@@ -610,19 +621,19 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
             trend: Trend.up,
             average: averageOfPrevious,
             summary:
-                "🌟🌟 This week's ${_selectedMuscleGroup.name} training is $diff ${_trainingMetric(length: difference.abs())} higher than your average. "
+                "🌟🌟 This week's ${selectedMuscleGroup.name} training is $diff ${_trainingMetric(length: difference.abs())} higher than your average. "
                 "Awesome job building momentum!");
       case Trend.down:
         return TrendSummary(
             trend: Trend.down,
             average: averageOfPrevious,
             summary:
-                "📉 This week's ${_selectedMuscleGroup.name} training is $diff ${_trainingMetric(length: difference.abs())} lower than your average. "
+                "📉 This week's ${selectedMuscleGroup.name} training is $diff ${_trainingMetric(length: difference.abs())} lower than your average. "
                 "Consider extra rest, checking your technique, or planning a deload.");
       case Trend.stable:
         final summary = differenceIsZero
             ? "🌟 You've matched your average exactly! Stay consistent to see long-term progress."
-            : "🔄 Your ${_selectedMuscleGroup.name} training has changed by about $diff ${_trainingMetric(length: difference.abs())} compared to your average. "
+            : "🔄 Your ${selectedMuscleGroup.name} training has changed by about $diff ${_trainingMetric(length: difference.abs())} compared to your average. "
                 "A great chance to refine your form and maintain consistency.";
         return TrendSummary(trend: Trend.stable, average: averageOfPrevious, summary: summary);
       case Trend.none:

@@ -134,9 +134,11 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
   }
 
   void _hideLoadingScreen() {
-    setState(() {
-      _loading = false;
-    });
+    if (mounted) {
+      setState(() {
+        _loading = false;
+      });
+    }
   }
 
   void _showSnackbar(String message, {Widget? icon}) {

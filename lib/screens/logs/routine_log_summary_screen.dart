@@ -70,7 +70,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
     final newMilestones = exerciseAndRoutineController.newMilestones;
 
     final muscleGroupFamilyFrequencyData =
-        muscleGroupFamilyFrequency(exerciseLogs: updatedLog.exerciseLogs, includeSecondaryMuscleGroups: false);
+        muscleGroupFrequency(exerciseLogs: updatedLog.exerciseLogs);
 
     List<Widget> milestoneShareAssets = [];
     final milestoneShareAssetsKeys = [];

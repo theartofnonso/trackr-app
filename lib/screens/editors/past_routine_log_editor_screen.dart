@@ -1,5 +1,4 @@
 import 'package:amplify_datastore/amplify_datastore.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -9,6 +8,7 @@ import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
+import 'package:tracker_app/enums/routine_editor_type_enums.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 
 import '../../colors.dart';
@@ -16,13 +16,11 @@ import '../../controllers/routine_user_controller.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/set_dtos/weight_and_reps_dto.dart';
-import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/routine_editors_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
-import '../../widgets/routine/editors/exercise_log_widget.dart';
 import '../../widgets/routine/editors/exercise_log_widget_lite.dart';
 import '../../widgets/weight_plate_calculator.dart';
 
@@ -186,23 +184,6 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
     Navigator.of(context).pop(log);
   }
 
-  /// Handle collapsed ExerciseLogWidget
-  void _handleResizedExerciseLogCard({required String exerciseIdToResize}) {
-    setState(() {
-      final foundExercise =
-          _minimisedExerciseLogCards.firstWhereOrNull((exerciseId) => exerciseId == exerciseIdToResize);
-      if (foundExercise != null) {
-        _minimisedExerciseLogCards.remove(exerciseIdToResize);
-      } else {
-        _minimisedExerciseLogCards.add(exerciseIdToResize);
-      }
-    });
-  }
-
-  bool _isMinimised(String id) {
-    return _minimisedExerciseLogCards.firstWhereOrNull((exerciseId) => exerciseId == id) != null;
-  }
-
   @override
   Widget build(BuildContext context) {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
@@ -310,56 +291,38 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
                     ),
                     if (exerciseLogs.isNotEmpty)
                       Expanded(
-                          child: SingleChildScrollView(
-                              padding: const EdgeInsets.only(bottom: 250),
-                              child: Column(spacing: 20, children: [
-                                ...exerciseLogs.map((exerciseLog) {
-                                  final isExerciseMinimised = _minimisedExerciseLogCards.contains(exerciseLog.id);
-                                  return isExerciseMinimised
-                                      ? ExerciseLogLiteWidget(
-                                          key: ValueKey(exerciseLog.id),
-                                          exerciseLogDto: exerciseLog,
-                                          superSet: whereOtherExerciseInSuperSet(
-                                              firstExercise: exerciseLog, exercises: exerciseLogs),
-                                          onMaximise: () =>
-                                              _handleResizedExerciseLogCard(exerciseIdToResize: exerciseLog.id),
-                                        )
-                                      : ExerciseLogWidget(
-                                          key: ValueKey(exerciseLog.id),
-                                          exerciseLogDto: exerciseLog,
-                                          editorType: RoutineEditorMode.edit,
-                                          superSet: whereOtherExerciseInSuperSet(
-                                              firstExercise: exerciseLog, exercises: exerciseLogs),
-                                          onRemoveSuperSet: (String superSetId) =>
-                                              exerciseLogController.removeSuperSet(superSetId: exerciseLog.superSetId),
-                                          onRemoveLog: () =>
-                                              exerciseLogController.removeExerciseLog(logId: exerciseLog.id),
-                                          onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
-                                          onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
-                                          onResize: () =>
-                                              _handleResizedExerciseLogCard(exerciseIdToResize: exerciseLog.id),
-                                          isMinimised: _isMinimised(exerciseLog.id),
-                                          onTapWeightEditor: (SetDto setDto) {
-                                            setState(() {
-                                              _selectedSetDto = setDto;
-                                            });
-                                          },
-                                          onTapRepsEditor: (SetDto setDto) {
-                                            setState(() {
-                                              _selectedSetDto = null;
-                                            });
-                                          },
-                                        );
-                                }),
-                                const SizedBox(height: 20),
-                                SizedBox(
-                                    width: double.infinity,
-                                    child: OpacityButtonWidget(
-                                        padding: const EdgeInsets.symmetric(vertical: 16),
-                                        buttonColor: vibrantGreen,
-                                        label: "Log Past Session",
-                                        onPressed: _createLog))
-                              ]))),
+                        child: ListView.separated(
+                          itemBuilder: (BuildContext context, int index) {
+                            final exerciseLog = exerciseLogs[index];
+                            return ExerciseLogLiteWidget(
+                              editorType: RoutineEditorMode.edit,
+                              exerciseLogDto: exerciseLog,
+                              superSet:
+                                  whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs),
+                              onRemoveSuperSet: (String superSetId) {
+                                exerciseLogController.removeSuperSet(superSetId: exerciseLog.superSetId);
+                              },
+                              onRemoveLog: () {
+                                exerciseLogController.removeExerciseLog(logId: exerciseLog.id);
+                              },
+                              onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
+                              onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
+                            );
+                          },
+                          separatorBuilder: (BuildContext context, int index) {
+                            return SizedBox(height: 12);
+                          },
+                          itemCount: exerciseLogs.length,
+                        ),
+                      ),
+                    if (exerciseLogs.isNotEmpty)
+                      SizedBox(
+                        width: double.infinity,
+                        child: OpacityButtonWidget(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            buttonColor: vibrantGreen,
+                            label: "Log Past Session",
+                            onPressed: _createLog)),
                     if (exerciseLogs.isEmpty)
                       Expanded(
                         child: Padding(

@@ -6,7 +6,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/milestones/milestone_dto.dart';
 import 'package:tracker_app/dtos/milestones/reps_milestone.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
+import 'package:tracker_app/screens/milestones/milestone_share_screen.dart';
 import 'package:tracker_app/utils/general_utils.dart';
+import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/dividers/label_divider.dart';
 
 import '../../../colors.dart';
@@ -24,7 +26,7 @@ class MilestoneScreen extends StatelessWidget {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final remainder = (milestone.progress.$1 * milestone.target).toInt();
+    final progress = (milestone.progress.$1 * milestone.target).toInt();
 
     final confettiController = ConfettiController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -33,6 +35,12 @@ class MilestoneScreen extends StatelessWidget {
 
     return Stack(alignment: Alignment.topCenter, children: [
       Scaffold(
+        floatingActionButton: milestone.target - progress == 0 ? FloatingActionButton(
+            heroTag: "milestone_share_screen",
+            onPressed: () {
+              _onShareLog(context: context, milestone: milestone);
+            },
+            child: const FaIcon(FontAwesomeIcons.rocket)) : null,
         body: Container(
           decoration: BoxDecoration(
             gradient: themeGradient(context: context),
@@ -163,7 +171,7 @@ class MilestoneScreen extends StatelessWidget {
                               ? milestone.progress.$1 == 1
                                   ? _CompletedMessage(target: milestone.target, description: _targetDescription())
                                   : _ProgressMessage(
-                                      remainder: remainder, target: milestone.target, description: _targetDescription())
+                                      progress: progress, target: milestone.target, description: _targetDescription())
                               : Text("Keep up the training to see your progress grow for this challenge.",
                                   style: Theme.of(context).textTheme.bodyLarge),
                         ],
@@ -193,14 +201,19 @@ class MilestoneScreen extends StatelessWidget {
       MilestoneType.hours => "hours",
     };
   }
+
+
+  void _onShareLog({required BuildContext context, required Milestone milestone}) {
+    navigateWithSlideTransition(context: context, child: MilestoneShareScreen(milestone: milestone));
+  }
 }
 
 class _ProgressMessage extends StatelessWidget {
-  final int remainder;
+  final int progress;
   final int target;
   final String description;
 
-  const _ProgressMessage({required this.remainder, required this.target, required this.description});
+  const _ProgressMessage({required this.progress, required this.target, required this.description});
 
   @override
   Widget build(BuildContext context) {
@@ -211,7 +224,7 @@ class _ProgressMessage extends StatelessWidget {
             children: [
           const TextSpan(text: " "),
           TextSpan(
-              text: "$remainder", style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold)),
+              text: "$progress", style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold)),
           const TextSpan(text: " "),
           const TextSpan(text: "out of"),
           const TextSpan(text: " "),

@@ -225,7 +225,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _loadAppData();
     Posthog().identify(userId: SharedPrefs().userId);
     if (Platform.isIOS) {
-      FlutterLocalNotificationsPlugin().cancel(999); // Cancel any pending workout notification
+      FlutterLocalNotificationsPlugin().cancelAll(); // Cancel all notifications including pending workout sessions and regular training reminders
     }
     _loadCachedLog();
   }

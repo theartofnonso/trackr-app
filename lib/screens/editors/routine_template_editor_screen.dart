@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -8,19 +7,18 @@ import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
+import 'package:tracker_app/enums/routine_editor_type_enums.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 
 import '../../colors.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/set_dtos/weight_and_reps_dto.dart';
-import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/routine_editors_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
-import '../../widgets/routine/editors/exercise_log_widget.dart';
 import '../../widgets/routine/editors/exercise_log_widget_lite.dart';
 import '../../widgets/weight_plate_calculator.dart';
 
@@ -218,23 +216,6 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     context.pop(template);
   }
 
-  /// Handle collapsed ExerciseLogWidget
-  void _handleResizedExerciseLogCard({required String exerciseIdToResize}) {
-    setState(() {
-      final foundExercise =
-          _minimisedExerciseLogCards.firstWhereOrNull((exerciseId) => exerciseId == exerciseIdToResize);
-      if (foundExercise != null) {
-        _minimisedExerciseLogCards.remove(exerciseIdToResize);
-      } else {
-        _minimisedExerciseLogCards.add(exerciseIdToResize);
-      }
-    });
-  }
-
-  bool _isMinimised(String id) {
-    return _minimisedExerciseLogCards.firstWhereOrNull((exerciseId) => exerciseId == id) != null;
-  }
-
   @override
   Widget build(BuildContext context) {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
@@ -343,58 +324,38 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                     ),
                     if (exerciseTemplates.isNotEmpty)
                       Expanded(
-                        child: SingleChildScrollView(
-                            padding: const EdgeInsets.only(bottom: 250),
-                            child: Column(spacing: 20, children: [
-                              ...exerciseTemplates.map((exerciseTemplate) {
-                                final isExerciseMinimised = _minimisedExerciseLogCards.contains(exerciseTemplate.id);
-                                return isExerciseMinimised
-                                    ? ExerciseLogLiteWidget(
-                                        key: ValueKey(exerciseTemplate.id),
-                                        exerciseLogDto: exerciseTemplate,
-                                        superSet: whereOtherExerciseInSuperSet(
-                                            firstExercise: exerciseTemplate, exercises: exerciseTemplates),
-                                        onMaximise: () =>
-                                            _handleResizedExerciseLogCard(exerciseIdToResize: exerciseTemplate.id),
-                                      )
-                                    : ExerciseLogWidget(
-                                        key: ValueKey(exerciseTemplate.id),
-                                        exerciseLogDto: exerciseTemplate,
-                                        editorType: RoutineEditorMode.edit,
-                                        superSet: whereOtherExerciseInSuperSet(
-                                            firstExercise: exerciseTemplate, exercises: exerciseTemplates),
-                                        onRemoveSuperSet: (String superSetId) => exerciseLogController.removeSuperSet(
-                                            superSetId: exerciseTemplate.superSetId),
-                                        onRemoveLog: () =>
-                                            exerciseLogController.removeExerciseLog(logId: exerciseTemplate.id),
-                                        onReplaceLog: () =>
-                                            _showReplaceExercisePicker(oldExerciseLog: exerciseTemplate),
-                                        onSuperSet: () =>
-                                            _showSuperSetExercisePicker(firstExerciseLog: exerciseTemplate),
-                                        onResize: () =>
-                                            _handleResizedExerciseLogCard(exerciseIdToResize: exerciseTemplate.id),
-                                        isMinimised: _isMinimised(exerciseTemplate.id),
-                                        onTapWeightEditor: (SetDto setDto) {
-                                          setState(() {
-                                            _selectedSetDto = setDto;
-                                          });
-                                        },
-                                        onTapRepsEditor: (SetDto setDto) {
-                                          setState(() {
-                                            _selectedSetDto = null;
-                                          });
-                                        },
-                                      );
-                              }),
-                              SizedBox(
-                                  width: double.infinity,
-                                  child: OpacityButtonWidget(
-                                      padding: const EdgeInsets.symmetric(vertical: 16),
-                                      buttonColor: vibrantGreen,
-                                      label: template != null ? "Update Workout" : "Create Workout",
-                                      onPressed: template != null ? _updateRoutineTemplate : _createRoutineTemplate))
-                            ])),
+                        child: ListView.separated(
+                          itemBuilder: (BuildContext context, int index) {
+                            final exerciseTemplate = exerciseTemplates[index];
+                            return ExerciseLogLiteWidget(
+                              editorType: RoutineEditorMode.log,
+                              exerciseLogDto: exerciseTemplate,
+                              superSet: whereOtherExerciseInSuperSet(
+                                  firstExercise: exerciseTemplate, exercises: exerciseTemplates),
+                              onRemoveSuperSet: (String superSetId) {
+                                exerciseLogController.removeSuperSet(superSetId: exerciseTemplate.superSetId);
+                              },
+                              onRemoveLog: () {
+                                exerciseLogController.removeExerciseLog(logId: exerciseTemplate.id);
+                              },
+                              onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseTemplate),
+                              onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseTemplate),
+                            );
+                          },
+                          separatorBuilder: (BuildContext context, int index) {
+                            return SizedBox(height: 12);
+                          },
+                          itemCount: exerciseTemplates.length,
+                        ),
                       ),
+                    if (exerciseTemplates.isNotEmpty)
+                      SizedBox(
+                        width: double.infinity,
+                        child: OpacityButtonWidget(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            buttonColor: vibrantGreen,
+                            label: template != null ? "Update Workout" : "Create Workout",
+                            onPressed: template != null ? _updateRoutineTemplate : _createRoutineTemplate)),
                     if (exerciseTemplates.isEmpty)
                       Expanded(
                         child: Padding(
