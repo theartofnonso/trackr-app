@@ -128,7 +128,7 @@ class LogStreakMonitor extends StatelessWidget {
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(Icons.monitor_heart_rounded, size: 18),
               horizontalTitleGap: 6,
-              title: Text("Share Streak and Muscle Monitor"),
+              title: Text("Share Streak Monitor"),
               onTap: () {
                 Navigator.of(context).pop();
                 _onShareMonitor(context: context, dateTime: dateTime);
