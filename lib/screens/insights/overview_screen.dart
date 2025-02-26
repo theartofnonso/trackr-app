@@ -174,6 +174,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                const SizedBox(height: 10),
                 Expanded(
                   child: SingleChildScrollView(
                       controller: widget.scrollController,

@@ -40,6 +40,9 @@ class LogStreakMonitor extends StatelessWidget {
 
     final monthlyProgress = routineLogsByDay.length;
 
+    final trainingDays = routineLogs.map((log) => log.createdAt).toList();
+    final averageRestDays = _calculateAverageRestDays(dates: trainingDays);
+
     return Stack(children: [
       if (showInfo)
         Positioned.fill(
@@ -92,7 +95,7 @@ class LogStreakMonitor extends StatelessWidget {
             child: SizedBox(
               width: 80,
               child: _MonitorScore(
-                  value: "23%",
+                  value: "$averageRestDays days",
                   color: Colors.white,
                   title: "AVG Rest",
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -260,4 +263,48 @@ class _LogStreakMonitor extends StatelessWidget {
       ),
     );
   }
+}
+
+int _calculateAverageRestDays({required List<DateTime> dates}) {
+  if (dates.isEmpty) {
+    return 0;
+  }
+
+  // Check if all dates are in the same month
+  final firstDate = dates.first;
+  for (final date in dates) {
+    if (date.year != firstDate.year || date.month != firstDate.month) {
+      throw ArgumentError('All training dates must be in the same month.');
+    }
+  }
+
+  // Calculate total days in the month
+  final year = firstDate.year;
+  final month = firstDate.month;
+  final firstDayNextMonth = DateTime(year, month + 1, 1);
+  final lastDayOfMonth = firstDayNextMonth.subtract(const Duration(days: 1));
+  final totalDays = lastDayOfMonth.day;
+
+  // Extract training days (day of month)
+  final trainingDays = dates.map((date) => date.day).toList();
+
+  // Calculate number of weeks (ceiling division)
+  final numberOfWeeks = (totalDays + 6) ~/ 7;
+  var totalRestDays = 0;
+
+  for (var week = 1; week <= numberOfWeeks; week++) {
+    final startDay = (week - 1) * 7 + 1;
+    var endDay = week * 7;
+    if (endDay > totalDays) {
+      endDay = totalDays;
+    }
+
+    final daysInWeek = endDay - startDay + 1;
+    final trainingInWeek = trainingDays.where((day) => day >= startDay && day <= endDay).length;
+    final restDays = daysInWeek - trainingInWeek;
+
+    totalRestDays += restDays;
+  }
+
+  return (totalRestDays / numberOfWeeks).round();
 }
