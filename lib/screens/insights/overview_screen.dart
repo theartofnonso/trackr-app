@@ -18,6 +18,7 @@ import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_information_container.dart';
 import 'package:tracker_app/widgets/information_containers/information_container_lite.dart';
+import 'package:tracker_app/widgets/monitors/log_streak_monitor.dart';
 import 'package:tracker_app/widgets/monthly_insights/calories_chart.dart';
 import 'package:tracker_app/widgets/monthly_insights/volume_chart.dart';
 
@@ -169,7 +170,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           gradient: themeGradient(context: context),
         ),
         child: SafeArea(
-            minimum: const EdgeInsets.only(top: 16, right: 10.0, bottom: 10, left: 10),
+            minimum: const EdgeInsets.all(10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -178,13 +179,14 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       controller: widget.scrollController,
                       padding: const EdgeInsets.only(bottom: 150),
                       child: Column(spacing: 20, children: [
-                        if (predictedTemplate != null)
-                          _ScheduledRoutineCard(
-                              scheduledToday: predictedTemplate, isLogged: hasTodayScheduleBeenLogged),
                         Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          spacing: 10,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          spacing: 20,
                           children: [
+                            LogStreakMonitor(dateTime: widget.dateTimeRange.start),
+                            if (predictedTemplate != null)
+                              _ScheduledRoutineCard(
+                                  scheduledToday: predictedTemplate, isLogged: hasTodayScheduleBeenLogged),
                             Calendar(
                               onSelectDate: _onChangedDateTime,
                               dateTime: widget.dateTimeRange.start,
