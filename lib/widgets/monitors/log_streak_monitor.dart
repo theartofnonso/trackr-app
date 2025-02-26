@@ -70,7 +70,7 @@ class LogStreakMonitor extends StatelessWidget {
                 color: Colors.transparent,
                 width: 80,
                 child: _MonitorScore(
-                    value: "${routineLogsByDay.length} ${pluralize(word: "day", count: routineLogsByDay.length)}",
+                    value: "${routineLogsByDay.length} ${pluralize(word: "DAY", count: routineLogsByDay.length).toUpperCase()}",
                     title: "Log Streak",
                     color: logStreakColor(monthlyProgress),
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -95,7 +95,7 @@ class LogStreakMonitor extends StatelessWidget {
             child: SizedBox(
               width: 80,
               child: _MonitorScore(
-                  value: "$averageRestDays days",
+                  value: "$averageRestDays ${pluralize(word: "day", count: averageRestDays).toUpperCase()}",
                   color: Colors.white,
                   title: "AVG Rest",
                   crossAxisAlignment: CrossAxisAlignment.start,
