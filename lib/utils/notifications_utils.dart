@@ -4,7 +4,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:tracker_app/utils/timezone_utils.dart';
 
 const int notificationIDLongRunningSession = 999;
-const int notificationIDPreferredTraining = 900;
 
 List<DateTime> getPreferredDateAndTimes({required List<DateTime> historicDateTimes}) {
   final Map<String, int> timeSlotCounts = {};
