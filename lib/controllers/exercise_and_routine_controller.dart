@@ -1,14 +1,11 @@
 import 'dart:collection';
-import 'dart:io';
 
 import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/milestones/milestone_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
-import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/models/RoutineLog.dart';
 import 'package:tracker_app/repositories/amplify/amplify_routine_log_repository.dart';
 
@@ -22,8 +19,6 @@ import '../models/Exercise.dart';
 import '../models/RoutineTemplate.dart';
 import '../repositories/amplify/amplify_exercise_repository.dart';
 import '../repositories/amplify/amplify_routine_template_repository.dart';
-import '../utils/date_utils.dart';
-import '../utils/notifications_utils.dart';
 
 class ExerciseAndRoutineController extends ChangeNotifier {
   bool isLoading = false;
@@ -170,35 +165,6 @@ class ExerciseAndRoutineController extends ChangeNotifier {
   /// Logs
   void streamLogs({required List<RoutineLog> logs}) {
     _amplifyLogRepository.loadLogStream(logs: logs);
-
-    /// Everytime we sync logs, we refresh the training reminders
-    /// First we cancel all notifications previously set when we supported daily notifications,
-    /// then pending workout sessions and
-    /// also, stale training reminders, because training frequency changes
-    /// Finally, schedule notification reminders for those dates and time
-    ///
-    if(logs.isEmpty) return;
-
-    if (Platform.isIOS) {
-      final dateRange = theLastYearDateTimeRange();
-      final weeksInLastYear = generateWeeksInRange(range: dateRange);
-
-      // Sort logs once for efficient processing
-      logs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
-
-      List<DateTime> historicTrainingTimes = [];
-      for (final week in weeksInLastYear) {
-        final startOfWeek = week.start;
-        final endOfWeek = week.end;
-
-        final weeklyLogs =
-            logs.where((log) => log.createdAt.getDateTimeInUtc().isBetweenInclusive(from: startOfWeek, to: endOfWeek));
-
-        historicTrainingTimes.addAll(weeklyLogs.map((log) => log.createdAt.getDateTimeInUtc().toLocal()));
-      }
-      FlutterLocalNotificationsPlugin().cancelAll();
-      schedulePreferredTrainingReminders(historicDateTimes: historicTrainingTimes);
-    }
   }
 
   Future<RoutineLogDto?> saveLog(

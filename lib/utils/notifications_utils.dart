@@ -4,47 +4,59 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:tracker_app/utils/timezone_utils.dart';
 
 const int notificationIDLongRunningSession = 999;
-const int notificationIDPreferredTraining = 900;
 
-List<DateTime> getPreferredDateAndTimes({required List<DateTime> historicDateTimes}) {
-  final Map<String, List<DateTime>> timeGroups = {};
-  final Map<String, DateTime> latestTimes = {};
+class _ReminderTime {
+  final int weekday;
+  final int hour;
 
-  for (final log in historicDateTimes) {
-    final key = '${log.weekday}-${log.hour}-${log.minute}';
-    timeGroups.putIfAbsent(key, () => []).add(log);
+  _ReminderTime({required this.weekday, required this.hour});
 
-    final currentLatest = latestTimes[key];
-    if (currentLatest == null || log.isAfter(currentLatest)) {
-      latestTimes[key] = log;
-    }
+  @override
+  String toString() => '$weekday at $hour:00';
+}
+
+List<_ReminderTime> _getExerciseReminders(List<DateTime> logDates) {
+  // Group exercise hours by weekday
+  final Map<int, List<int>> weekdayHours = {};
+  for (final logDate in logDates) {
+    final hour = logDate.hour;
+    weekdayHours.putIfAbsent(logDate.weekday, () => []).add(hour);
   }
 
-  if (timeGroups.isEmpty) return [];
+  final List<_ReminderTime> reminders = [];
 
-  final maxCount = timeGroups.values.map((logs) => logs.length).reduce((a, b) => a > b ? a : b);
+  // Process each weekday to find most frequent hour
+  weekdayHours.forEach((weekday, hours) {
+    if (hours.isEmpty) return;
 
-  final preferredTimes = timeGroups.entries
-      .where((entry) => entry.value.length == maxCount)
-      .map((entry) => latestTimes[entry.key]!)
-      .toList();
+    // Count frequency of each hour
+    final hourCounts = <int, int>{};
+    for (final hour in hours) {
+      hourCounts[hour] = (hourCounts[hour] ?? 0) + 1;
+    }
 
-  preferredTimes.sort((a, b) {
-    final weekdayCompare = a.weekday.compareTo(b.weekday);
-    if (weekdayCompare != 0) return weekdayCompare;
+    // Sort hours by frequency (desc) and time (asc)
+    final sortedEntries = hourCounts.entries.toList()
+      ..sort((a, b) {
+        final countCompare = b.value.compareTo(a.value);
+        return countCompare != 0 ? countCompare : a.key.compareTo(b.key);
+      });
 
-    final hourCompare = a.hour.compareTo(b.hour);
-    if (hourCompare != 0) return hourCompare;
-
-    return a.minute.compareTo(b.minute);
+    reminders.add(_ReminderTime(
+      weekday: weekday,
+      hour: sortedEntries.first.key,
+    ));
   });
 
-  return preferredTimes;
+  reminders.sort((a, b) => a.weekday.compareTo(b.weekday));
+
+  return reminders;
 }
 
 void schedulePreferredTrainingReminders({required List<DateTime> historicDateTimes}) {
   if (Platform.isIOS) {
-    final trainingTimes = getPreferredDateAndTimes(historicDateTimes: historicDateTimes);
+    final trainingTimes = _getExerciseReminders(historicDateTimes);
+
     for (final trainingTime in trainingTimes) {
       final hour = Duration(hours: trainingTime.hour);
       final weekDay = trainingTime.weekday;
@@ -59,7 +71,7 @@ Future<void> _scheduleNotification({required Duration duration, required int wee
   const matchDateTimeComponents = DateTimeComponents.dayOfWeekAndTime;
 
   await FlutterLocalNotificationsPlugin().zonedSchedule(
-      notificationIDPreferredTraining,
+      weekday,
       "Time to Get Moving!",
       "You usually train around this time—let’s keep up the habit and crush today’s workout!",
       tzDateTime,
