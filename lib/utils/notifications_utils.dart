@@ -5,55 +5,57 @@ import 'package:tracker_app/utils/timezone_utils.dart';
 
 const int notificationIDLongRunningSession = 999;
 
-List<DateTime> getPreferredDateAndTimes({required List<DateTime> historicDateTimes}) {
-  final Map<String, int> timeSlotCounts = {};
+class _ReminderTime {
+  final int weekday;
+  final int hour;
 
-  // Count occurrences of each (weekday, hour, minute)
-  for (final log in historicDateTimes) {
-    final key = '${log.weekday}-${log.hour}-${log.minute}';
-    timeSlotCounts[key] = (timeSlotCounts[key] ?? 0) + 1;
-  }
+  _ReminderTime({required this.weekday, required this.hour});
 
-  if (timeSlotCounts.isEmpty) return [];
-
-  final maxCount = timeSlotCounts.values.reduce((a, b) => a > b ? a : b);
-
-  final preferredSlots = timeSlotCounts.entries
-      .where((entry) => entry.value == maxCount)
-      .map((entry) {
-    final parts = entry.key.split('-');
-    final weekday = int.parse(parts[0]);
-    final hour = int.parse(parts[1]);
-    final minute = int.parse(parts[2]);
-    return _getDateInCurrentWeek(weekday, hour, minute);
-  }).toList();
-
-  preferredSlots.sort((a, b) {
-    final weekdayCompare = a.weekday.compareTo(b.weekday);
-    if (weekdayCompare != 0) return weekdayCompare;
-
-    final hourCompare = a.hour.compareTo(b.hour);
-    if (hourCompare != 0) return hourCompare;
-
-    return a.minute.compareTo(b.minute);
-  });
-
-  return preferredSlots;
+  @override
+  String toString() => '$weekday at $hour:00';
 }
 
-DateTime _getDateInCurrentWeek(int weekday, int hour, int minute) {
-  final now = DateTime.now();
-  // Find Monday of the current week
-  final monday = now.subtract(Duration(days: now.weekday - 1));
-  // Calculate the date for the target weekday in the current week
-  final date = monday.add(Duration(days: weekday - 1));
-  // Set the time and return
-  return DateTime(date.year, date.month, date.day, hour, minute);
+List<_ReminderTime> _getExerciseReminders(List<DateTime> logDates) {
+  // Group exercise hours by weekday
+  final Map<int, List<int>> weekdayHours = {};
+  for (final logDate in logDates) {
+    final hour = logDate.hour;
+    weekdayHours.putIfAbsent(logDate.weekday, () => []).add(hour);
+  }
+
+  final List<_ReminderTime> reminders = [];
+
+  // Process each weekday to find most frequent hour
+  weekdayHours.forEach((weekday, hours) {
+    if (hours.isEmpty) return;
+
+    // Count frequency of each hour
+    final hourCounts = <int, int>{};
+    for (final hour in hours) {
+      hourCounts[hour] = (hourCounts[hour] ?? 0) + 1;
+    }
+
+    // Sort hours by frequency (desc) and time (asc)
+    final sortedEntries = hourCounts.entries.toList()
+      ..sort((a, b) {
+        final countCompare = b.value.compareTo(a.value);
+        return countCompare != 0 ? countCompare : a.key.compareTo(b.key);
+      });
+
+    reminders.add(_ReminderTime(
+      weekday: weekday,
+      hour: sortedEntries.first.key,
+    ));
+  });
+
+  reminders.sort((a, b) => a.weekday.compareTo(b.weekday));
+
+  return reminders;
 }
 
 void schedulePreferredTrainingReminders({required List<DateTime> historicDateTimes}) {
   if (Platform.isIOS) {
-    final trainingTimes = getPreferredDateAndTimes(historicDateTimes: historicDateTimes);
+    final trainingTimes = _getExerciseReminders(historicDateTimes);
 
     for (final trainingTime in trainingTimes) {
       final hour = Duration(hours: trainingTime.hour);
