@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:health/health.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
@@ -26,6 +28,7 @@ import '../../enums/posthog_analytics_event.dart';
 import '../../logger.dart';
 import '../../shared_prefs.dart';
 import '../../utils/date_utils.dart';
+import '../../utils/notifications_utils.dart';
 
 class AmplifyRoutineLogRepository {
   final logger = getLogger(className: "AmplifyRoutineLogRepository");
@@ -62,9 +65,44 @@ class AmplifyRoutineLogRepository {
 
   void loadLogStream({required List<RoutineLog> logs}) {
     _logs = logs.map((log) => RoutineLogDto.toDto(log)).toList();
+    _syncTrainingReminders();
     _groupExerciseLogsById();
     _groupExerciseLogsByMuscleGroup();
     _calculateMilestones();
+  }
+
+  /// Everytime we sync logs, we refresh the training reminders
+  /// First we cancel all notifications previously set when we supported daily notifications,
+  /// then pending workout sessions and
+  /// also, stale training reminders, because training frequency changes
+  /// Finally, schedule notification reminders for those dates and time
+
+  void _syncTrainingReminders() {
+    if (logs.isEmpty) return;
+
+    if (Platform.isIOS) {
+      final dateRange = theLastYearDateTimeRange();
+      final weeksInLastYear = generateWeeksInRange(range: dateRange);
+
+      List<DateTime> historicTrainingTimes = [];
+      for (final week in weeksInLastYear) {
+        final startOfWeek = week.start;
+        final endOfWeek = week.end;
+
+        final weeklyLogs = _logs.where((log) => log.createdAt.isBetweenInclusive(from: startOfWeek, to: endOfWeek));
+
+        final weeklyLogsTimes = weeklyLogs.map((log) {
+          final createdAt = log.createdAt;
+          final logDuration = log.duration();
+          return createdAt.subtract(logDuration);
+        });
+
+        historicTrainingTimes.addAll(weeklyLogsTimes);
+      }
+      FlutterLocalNotificationsPlugin().cancelAll();
+
+      schedulePreferredTrainingReminders(historicDateTimes: historicTrainingTimes);
+    }
   }
 
   Future<RoutineLogDto> saveLog(

@@ -17,7 +17,6 @@ import 'package:tracker_app/widgets/shareables/milestone_shareable.dart';
 import 'package:tracker_app/widgets/shareables/pbs_shareable.dart';
 import 'package:tracker_app/widgets/shareables/routine_log_shareable_lite.dart';
 import 'package:tracker_app/widgets/shareables/session_milestone_shareable.dart';
-import 'package:tracker_app/widgets/shareables/twelve_session_milestone_shareable.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
@@ -64,9 +63,6 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
     List<RoutineLogDto> routineLogsForTheYear =
         exerciseAndRoutineController.whereLogsIsSameYear(dateTime: DateTime.now().withoutTime());
 
-    List<RoutineLogDto> routineLogsForTheMonth =
-        exerciseAndRoutineController.whereLogsIsSameMonth(dateTime: DateTime.now().withoutTime());
-
     final newMilestones = exerciseAndRoutineController.newMilestones;
 
     final muscleGroupFamilyFrequencyData =
@@ -102,8 +98,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
     }
 
     final pages = [
-      if (routineLogsForTheMonth.length == 12) TwelveSessionMilestoneShareable(image: _image),
-      ...milestoneShareAssets,
+     ...milestoneShareAssets,
       if (isMultipleOfFive(routineLogsForTheYear.length))
         SessionMilestoneShareable(label: "${routineLogsForTheYear.length}th", image: _image),
       ...pbShareAssets,
@@ -112,7 +107,6 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
     ];
 
     final pagesKeys = [
-      if (routineLogsForTheMonth.length == 12) twelveSessionMilestoneGlobalKey,
       ...milestoneShareAssetsKeys,
       if (isMultipleOfFive(routineLogsForTheYear.length)) sessionMilestoneGlobalKey,
       ...pbShareAssetsKeys,
