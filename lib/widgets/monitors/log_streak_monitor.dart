@@ -79,7 +79,7 @@ class LogStreakMonitor extends StatelessWidget {
           const SizedBox(width: 20),
           GestureDetector(
             child: Stack(alignment: Alignment.center, children: [
-              _LogStreakMonitor(
+              LogStreakWidget(
                   value: monthlyProgress, width: 100, height: 100, strokeWidth: 6, forceDarkMode: isDarkMode),
               Image.asset(
                 'images/trkr.png',
@@ -233,14 +233,14 @@ class _MonitorScore extends StatelessWidget {
   }
 }
 
-class _LogStreakMonitor extends StatelessWidget {
+class LogStreakWidget extends StatelessWidget {
   final num value;
   final double width;
   final double height;
   final double strokeWidth;
   final bool forceDarkMode;
 
-  const _LogStreakMonitor({this.value = 0,
+  const LogStreakWidget({super.key, this.value = 0,
       required this.width,
       required this.height,
       required this.strokeWidth,
