@@ -92,25 +92,27 @@ class _CalenderOnboardingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        LabelDivider(
-          label: "Log Calendar".toUpperCase(),
-          labelColor: isDarkMode ? Colors.white70 : Colors.black,
-          dividerColor: sapphireLighter,
-          fontSize: 14,
-        ),
-        SizedBox(
-          height: 12,
-        ),
-        Text(
-            "Today marks the beginning of your lifelong commitment to self-improvement. The app might look empty now, but as you log each workout, you’ll start seeing vibrant green squares filling up your calendar—visual proof of your dedication and progress.",
-            style: Theme.of(context).textTheme.bodyLarge),
-        SizedBox(
-          height: 20,
-        ),
-        Calendar(dateTime: DateTime.now()),
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          LabelDivider(
+            label: "Log Calendar".toUpperCase(),
+            labelColor: isDarkMode ? Colors.white70 : Colors.black,
+            dividerColor: sapphireLighter,
+            fontSize: 14,
+          ),
+          SizedBox(
+            height: 12,
+          ),
+          Text(
+              "Today marks the beginning of your lifelong commitment to self-improvement. The app might look empty now, but as you log each workout, you’ll start seeing vibrant green squares filling up your calendar—visual proof of your dedication and progress.",
+              style: Theme.of(context).textTheme.bodyLarge),
+          SizedBox(
+            height: 20,
+          ),
+          Calendar(dateTime: DateTime.now()),
+        ],
+      ),
     );
   }
 }
@@ -307,29 +309,32 @@ class _EndOnboardingScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         RichText(
-          textAlign: TextAlign.center,
+            textAlign: TextAlign.center,
             text: TextSpan(
                 text: "Ready to get started? Here’s to",
-                style: Theme.of(context)
-                    .textTheme
-                    .titleSmall
-                    ?.copyWith(fontSize: 22, fontWeight: FontWeight.w500, height: 1.5,),
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w500,
+                      height: 1.5,
+                    ),
                 children: [
-              TextSpan(
-                  text: " smarter training, ",
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(fontSize: 22, fontWeight: FontWeight.w600)),
-              TextSpan(
-                  text: "meaningful insights",
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(fontSize: 22, fontWeight: FontWeight.w600)),
-              const TextSpan(
-                text: ", and your brightest fitness future.",
-              ),
-            ])),
+                  TextSpan(
+                      text: " smarter training, ",
+                      style:
+                          Theme.of(context).textTheme.titleSmall?.copyWith(fontSize: 22, fontWeight: FontWeight.w600)),
+                  TextSpan(
+                      text: "meaningful insights",
+                      style:
+                          Theme.of(context).textTheme.titleSmall?.copyWith(fontSize: 22, fontWeight: FontWeight.w600)),
+                  const TextSpan(
+                    text: ", and your brightest fitness future.",
+                  ),
+                ])),
         const SizedBox(height: 12),
         SizedBox(
             width: double.infinity,
             child: OpacityButtonWidget(
-              padding: const EdgeInsets.all( 16),
+              padding: const EdgeInsets.all(16),
               buttonColor: vibrantGreen,
               label: "Tap and hold to start training",
               onLongPress: onLongPress,
