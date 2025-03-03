@@ -167,6 +167,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _checkAndUpdateDuration(
       {required int index, required Duration duration, required SetDto setDto, required bool checked}) {
+
+    if(setDto.isEmpty()) return;
+    
     if (setDto.checked) {
       final duration = (setDto as DurationSetDto).duration;
       final startTime = DateTime.now().subtract(duration);
