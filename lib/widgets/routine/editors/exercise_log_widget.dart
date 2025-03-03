@@ -209,6 +209,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _updateSetCheck({required int index, required SetDto setDto}) {
+
+    if(setDto.isEmpty()) return;
+
     final checked = !setDto.checked;
     final updatedSet = setDto.copyWith(checked: checked);
     Provider.of<ExerciseLogController>(context, listen: false)
@@ -417,6 +420,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         WeightProgression.decrease => Colors.deepOrange,
         WeightProgression.maintain => vibrantBlue
       };
+
+      final isEmptySets = hasEmptyValues(sets: sets, exerciseType: exerciseType);
+
+      if(isEmptySets) {
+        progressionSummary = ".";
+        progressionColor = vibrantBlue;
+      }
     }
 
     final rpeRatings = sets.mapIndexed((index, set) => set.rpeRating).toList();
