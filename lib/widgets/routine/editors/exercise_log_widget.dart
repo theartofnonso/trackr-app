@@ -417,6 +417,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         WeightProgression.decrease => Colors.deepOrange,
         WeightProgression.maintain => vibrantBlue
       };
+
+      final isEmptySets = hasEmptyValues(sets: sets, exerciseType: exerciseType);
+
+      if(isEmptySets) {
+        progressionSummary = ".";
+        progressionColor = vibrantBlue;
+      }
     }
 
     final rpeRatings = sets.mapIndexed((index, set) => set.rpeRating).toList();

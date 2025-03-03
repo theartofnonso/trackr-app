@@ -95,3 +95,30 @@ List<DurationSetDto> markHighestDurationSets(List<SetDto> sets) {
         isWorkingSet: set.duration == maxDuration);
   }).toList();
 }
+
+bool _allDurationSetsEmpty(List<SetDto> sets) {
+  // Returns true if every DurationSetDto isEmpty() = true
+  return sets.every((set) => set.isEmpty());
+}
+
+bool _allWeightsSetsEmpty(List<SetDto> sets) {
+  // Returns true if every DurationSetDto isEmpty() = true
+  return sets.every((set) => set.isEmpty());
+}
+
+bool _allRepsSetsEmpty(List<SetDto> sets) {
+  // Returns true if every DurationSetDto isEmpty() = true
+  return sets.every((set) => set.isEmpty());
+}
+
+bool hasEmptyValues({required List<SetDto> sets, required ExerciseType exerciseType}) {
+
+  return switch(exerciseType) {
+    ExerciseType.weights => _allWeightsSetsEmpty(sets),
+    ExerciseType.bodyWeight => _allRepsSetsEmpty(sets),
+    ExerciseType.duration => _allDurationSetsEmpty(sets),
+  };
+}
+
+
+
