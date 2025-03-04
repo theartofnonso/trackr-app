@@ -256,14 +256,6 @@ int _calculateAverageRestDays({required List<DateTime> dates}) {
     return 0;
   }
 
-  // Check if all dates are in the same month
-  final firstDate = dates.first;
-  for (final date in dates) {
-    if (date.year != firstDate.year || date.month != firstDate.month) {
-      throw ArgumentError('All training dates must be in the same month.');
-    }
-  }
-
   // Extract training days (day of month) and find last training day
   final trainingDays = dates.map((date) => date.day).toList();
   final lastTrainingDay = trainingDays.reduce((a, b) => a > b ? a : b);
