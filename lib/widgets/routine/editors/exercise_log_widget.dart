@@ -167,9 +167,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _checkAndUpdateDuration(
       {required int index, required Duration duration, required SetDto setDto, required bool checked}) {
+    if (setDto.isEmpty()) return;
 
-    if(setDto.isEmpty()) return;
-    
     if (setDto.checked) {
       final duration = (setDto as DurationSetDto).duration;
       final startTime = DateTime.now().subtract(duration);
@@ -212,8 +211,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _updateSetCheck({required int index, required SetDto setDto}) {
+    if (setDto.isEmpty()) return;
 
-    if(setDto.isEmpty()) return;
+    if (setDto.isEmpty()) return;
 
     final checked = !setDto.checked;
     final updatedSet = setDto.copyWith(checked: checked);
@@ -426,7 +426,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
       final isEmptySets = hasEmptyValues(sets: sets, exerciseType: exerciseType);
 
-      if(isEmptySets) {
+      if (isEmptySets) {
         progressionSummary = ".";
         progressionColor = vibrantBlue;
       }
