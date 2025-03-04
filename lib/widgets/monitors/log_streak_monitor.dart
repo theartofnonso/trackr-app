@@ -5,14 +5,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
-import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
-import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../enums/posthog_analytics_event.dart';
-import '../../screens/insights/sets_reps_volume_insights_screen.dart';
 import '../../strings/strings.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/shareables_utils.dart';
@@ -64,18 +61,16 @@ class LogStreakMonitor extends StatelessWidget {
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          GestureDetector(
-              onTap: () => _showRoutineLogsScreen(context: context),
-              child: Container(
-                color: Colors.transparent,
-                width: 80,
-                child: _MonitorScore(
-                    value: "${routineLogsByDay.length} ${pluralize(word: "DAY", count: routineLogsByDay.length).toUpperCase()}",
-                    title: "Log Streak",
-                    color: logStreakColor(monthlyProgress),
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    forceDarkMode: isDarkMode),
-              )),
+          SizedBox(
+            width: 80,
+            child: _MonitorScore(
+                value:
+                    "${routineLogsByDay.length} ${pluralize(word: "DAY", count: routineLogsByDay.length).toUpperCase()}",
+                title: "Log Streak",
+                color: logStreakColor(monthlyProgress),
+                crossAxisAlignment: CrossAxisAlignment.end,
+                forceDarkMode: isDarkMode),
+          ),
           const SizedBox(width: 20),
           GestureDetector(
             child: Stack(alignment: Alignment.center, children: [
@@ -90,29 +85,18 @@ class LogStreakMonitor extends StatelessWidget {
             ]),
           ),
           const SizedBox(width: 20),
-          GestureDetector(
-            onTap: () => _showSetsAndRepsVolumeInsightsScreen(context: context),
-            child: SizedBox(
-              width: 80,
-              child: _MonitorScore(
-                  value: "$averageRestDays ${pluralize(word: "day", count: averageRestDays).toUpperCase()}",
-                  color: Colors.white,
-                  title: "AVG Rest",
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  forceDarkMode: isDarkMode),
-            ),
+          SizedBox(
+            width: 80,
+            child: _MonitorScore(
+                value: "$averageRestDays ${pluralize(word: "day", count: averageRestDays).toUpperCase()}",
+                color: Colors.white,
+                title: "AVG Rest",
+                crossAxisAlignment: CrossAxisAlignment.start,
+                forceDarkMode: isDarkMode),
           ),
         ],
       ),
     ]);
-  }
-
-  void _showSetsAndRepsVolumeInsightsScreen({required BuildContext context}) {
-    navigateWithSlideTransition(context: context, child: SetsAndRepsVolumeInsightsScreen());
-  }
-
-  void _showRoutineLogsScreen({required BuildContext context}) {
-    navigateWithSlideTransition(context: context, child: RoutineLogsScreen(dateTime: dateTime));
   }
 
   void _showMonitorInfo({required BuildContext context}) {
@@ -240,7 +224,9 @@ class LogStreakWidget extends StatelessWidget {
   final double strokeWidth;
   final bool forceDarkMode;
 
-  const LogStreakWidget({super.key, this.value = 0,
+  const LogStreakWidget(
+      {super.key,
+      this.value = 0,
       required this.width,
       required this.height,
       required this.strokeWidth,
