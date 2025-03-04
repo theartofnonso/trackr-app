@@ -264,25 +264,19 @@ int _calculateAverageRestDays({required List<DateTime> dates}) {
     }
   }
 
-  // Calculate total days in the month
-  final year = firstDate.year;
-  final month = firstDate.month;
-  final firstDayNextMonth = DateTime(year, month + 1, 1);
-  final lastDayOfMonth = firstDayNextMonth.subtract(const Duration(days: 1));
-  final totalDays = lastDayOfMonth.day;
-
-  // Extract training days (day of month)
+  // Extract training days (day of month) and find last training day
   final trainingDays = dates.map((date) => date.day).toList();
+  final lastTrainingDay = trainingDays.reduce((a, b) => a > b ? a : b);
 
-  // Calculate number of weeks (ceiling division)
-  final numberOfWeeks = (totalDays + 6) ~/ 7;
+  // Calculate number of weeks (ceiling division) up to lastTrainingDay
+  final numberOfWeeks = (lastTrainingDay + 6) ~/ 7;
   var totalRestDays = 0;
 
   for (var week = 1; week <= numberOfWeeks; week++) {
     final startDay = (week - 1) * 7 + 1;
     var endDay = week * 7;
-    if (endDay > totalDays) {
-      endDay = totalDays;
+    if (endDay > lastTrainingDay) {
+      endDay = lastTrainingDay;
     }
 
     final daysInWeek = endDay - startDay + 1;
@@ -292,5 +286,6 @@ int _calculateAverageRestDays({required List<DateTime> dates}) {
     totalRestDays += restDays;
   }
 
-  return (totalRestDays / numberOfWeeks).round();
+  final average = numberOfWeeks == 0 ? 0 : (totalRestDays / numberOfWeeks).round();
+  return average < 0 ? 0 : average;
 }
