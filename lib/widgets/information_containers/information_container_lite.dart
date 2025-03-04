@@ -6,8 +6,9 @@ class InformationContainerLite extends StatelessWidget {
   final Widget? icon;
   final String content;
   final Color? color;
+  final RichText? richText;
 
-  const InformationContainerLite({super.key, this.icon, required this.content, required this.color});
+  const InformationContainerLite({super.key, this.icon, required this.content, required this.color, this.richText});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +29,7 @@ class InformationContainerLite extends StatelessWidget {
               ),
           const SizedBox(width: 14),
           Expanded(
-              child: Text(content,
+              child: richText ?? Text(content,
                   style: GoogleFonts.ubuntu(
                       fontSize: 12,
                       height: 1.4,

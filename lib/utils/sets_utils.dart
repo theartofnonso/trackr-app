@@ -38,17 +38,19 @@ List<String> generateSetSummaries(ExerciseLogDto exerciseLog) {
   return setSummaries;
 }
 
+/// Heaviest List
+
 List<WeightAndRepsSetDto> markHighestWeightSets(List<SetDto> sets) {
   // Extract all WeightAndRepsSetDto instances and find max weight
 
   if (sets.isEmpty) return [];
 
-  final weightsSets = sets.map((set) => set as WeightAndRepsSetDto);
+  final weightSets = sets.whereType<WeightAndRepsSetDto>().toList();
 
-  final maxWeight = weightsSets.map((s) => s.weight).reduce((a, b) => a > b ? a : b);
+  final maxWeight = weightSets.map((s) => s.weight).reduce((a, b) => a > b ? a : b);
 
   // Map original list and update working sets
-  return weightsSets.map((set) {
+  return weightSets.map((set) {
     return WeightAndRepsSetDto(
         weight: set.weight,
         reps: set.reps,
@@ -58,12 +60,32 @@ List<WeightAndRepsSetDto> markHighestWeightSets(List<SetDto> sets) {
   }).toList();
 }
 
+List<WeightAndRepsSetDto> markHeaviestVolumeSets(List<SetDto> sets) {
+  // Extract all WeightAndRepsSetDto instances and find heaviest volume
+
+  if (sets.isEmpty) return [];
+
+  final weightSets = sets.whereType<WeightAndRepsSetDto>().toList();
+
+  final maxVolume = weightSets.map((s) => s.volume()).reduce((a, b) => a > b ? a : b);
+
+  // Map original list and update working sets
+  return weightSets.map((set) {
+    return WeightAndRepsSetDto(
+        weight: set.weight,
+        reps: set.reps,
+        checked: set.checked,
+        rpeRating: set.rpeRating,
+        isWorkingSet: set.volume() == maxVolume);
+  }).toList();
+}
+
 List<RepsSetDto> markHighestRepsSets(List<SetDto> sets) {
   // Extract all RepsSetDto instances and find max weight
 
   if (sets.isEmpty) return [];
 
-  final repsSets = sets.map((set) => set as RepsSetDto);
+  final repsSets = sets.whereType<RepsSetDto>().toList();
 
   final maxReps = repsSets.map((s) => s.reps).reduce((a, b) => a > b ? a : b);
 
@@ -82,7 +104,7 @@ List<DurationSetDto> markHighestDurationSets(List<SetDto> sets) {
 
   if (sets.isEmpty) return [];
 
-  final durationSets = sets.map((set) => set as DurationSetDto);
+  final durationSets = sets.whereType<DurationSetDto>().toList();
 
   final maxDuration = durationSets.map((s) => s.duration).reduce((a, b) => a > b ? a : b);
 
@@ -94,6 +116,47 @@ List<DurationSetDto> markHighestDurationSets(List<SetDto> sets) {
         rpeRating: set.rpeRating,
         isWorkingSet: set.duration == maxDuration);
   }).toList();
+}
+
+/// Single
+// Returns the highest weight from WeightAndRepsSetDto instances
+WeightAndRepsSetDto? getHighestWeight(List<SetDto> sets) {
+
+  if (sets.isEmpty) return null;
+
+  final weightSets = sets.whereType<WeightAndRepsSetDto>().toList();
+  if (weightSets.isEmpty) return null;
+  return weightSets.reduce((a, b) => a.weight > b.weight ? a : b);
+}
+
+// Returns the heaviest volume (weight * reps) from WeightAndRepsSetDto instances
+WeightAndRepsSetDto? getHeaviestVolume(List<SetDto> sets) {
+
+  if (sets.isEmpty) return null;
+
+  final weightSets = sets.whereType<WeightAndRepsSetDto>().toList();
+  if (weightSets.isEmpty) return null;
+  return weightSets.reduce((a, b) => a.volume() > b.volume() ? a : b);
+}
+
+// Returns the highest reps count from RepsSetDto instances
+RepsSetDto? getHighestReps(List<SetDto> sets) {
+
+  if (sets.isEmpty) return null;
+
+  final repsSets = sets.whereType<RepsSetDto>().toList();
+  if (repsSets.isEmpty) return null;
+  return repsSets.reduce((a, b) => a.reps > b.reps ? a : b);
+}
+
+// Returns the longest duration from DurationSetDto instances
+DurationSetDto? getLongestDuration(List<SetDto> sets) {
+
+  if (sets.isEmpty) return null;
+  
+  final durationSets = sets.whereType<DurationSetDto>().toList();
+  if (durationSets.isEmpty) return null;
+  return durationSets.reduce((a, b) => a.duration > b.duration ? a : b);
 }
 
 bool _allDurationSetsEmpty(List<SetDto> sets) {
