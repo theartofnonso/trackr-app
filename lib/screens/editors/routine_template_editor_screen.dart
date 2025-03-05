@@ -349,13 +349,16 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                         ),
                       ),
                     if (exerciseTemplates.isNotEmpty)
-                      SizedBox(
-                        width: double.infinity,
-                        child: OpacityButtonWidget(
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            buttonColor: vibrantGreen,
-                            label: template != null ? "Update Workout" : "Create Workout",
-                            onPressed: template != null ? _updateRoutineTemplate : _createRoutineTemplate)),
+                      SafeArea(
+                        minimum: EdgeInsets.all(10),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: OpacityButtonWidget(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              buttonColor: vibrantGreen,
+                              label: template != null ? "Update Workout" : "Create Workout",
+                              onPressed: template != null ? _updateRoutineTemplate : _createRoutineTemplate)),
+                      ),
                     if (exerciseTemplates.isEmpty)
                       Expanded(
                         child: Padding(

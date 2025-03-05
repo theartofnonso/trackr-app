@@ -316,13 +316,16 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
                         ),
                       ),
                     if (exerciseLogs.isNotEmpty)
-                      SizedBox(
-                        width: double.infinity,
-                        child: OpacityButtonWidget(
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            buttonColor: vibrantGreen,
-                            label: "Log Past Session",
-                            onPressed: _createLog)),
+                      SafeArea(
+                        minimum: EdgeInsets.all(10),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: OpacityButtonWidget(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              buttonColor: vibrantGreen,
+                              label: "Log Past Session",
+                              onPressed: _createLog)),
+                      ),
                     if (exerciseLogs.isEmpty)
                       Expanded(
                         child: Padding(

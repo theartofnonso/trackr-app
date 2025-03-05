@@ -65,8 +65,6 @@ class OverviewScreen extends StatefulWidget {
 }
 
 class _OverviewScreenState extends State<OverviewScreen> {
-  DateTime _selectedDateTime = DateTime.now().withoutTime();
-
   bool _loading = false;
 
   TextEditingController? _textEditingController;
@@ -162,7 +160,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           ? null
           : FloatingActionButton(
               heroTag: "fab_overview_screen",
-              onPressed: _showBottomSheet,
+              onPressed: _showNewBottomSheet,
               child: const FaIcon(FontAwesomeIcons.plus, size: 24),
             ),
       body: Container(
@@ -189,10 +187,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
                               _ScheduledRoutineCard(
                                   scheduledToday: predictedTemplate, isLogged: hasTodayScheduleBeenLogged),
                             Calendar(
-                              onSelectDate: _onChangedDateTime,
+                              onSelectDate: _onSelectCalendarDateTime,
                               dateTime: widget.dateTimeRange.start,
                             ),
-                            _LogsListView(dateTime: _selectedDateTime),
                             LogStreakChart(),
                           ],
                         ),
@@ -357,7 +354,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     });
   }
 
-  void _showBottomSheet() {
+  void _showNewBottomSheet() {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -429,6 +426,15 @@ class _OverviewScreenState extends State<OverviewScreen> {
               },
             ),
           ]),
+        ));
+  }
+
+  void _showLogsBottomSheet({required DateTime dateTime}) {
+    displayBottomSheet(
+      isScrollControlled: true,
+        context: context,
+        child: SafeArea(
+          child: _LogsListView(dateTime: dateTime),
         ));
   }
 
@@ -506,10 +512,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
     }
   }
 
-  void _onChangedDateTime(DateTime date) {
-    setState(() {
-      _selectedDateTime = date;
-    });
+  void _onSelectCalendarDateTime(DateTime date) {
+    _showLogsBottomSheet(dateTime: date);
   }
 
   @override
