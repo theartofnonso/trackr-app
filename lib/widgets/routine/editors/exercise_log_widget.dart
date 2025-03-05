@@ -678,7 +678,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                                     ),
                                     TextSpan(
                                       text:
-                                          " is your working set, driving you toward your training goals. All others are warm-ups.",
+                                          "is your working set, driving you toward your training goals. All others are warm-ups.",
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodySmall
