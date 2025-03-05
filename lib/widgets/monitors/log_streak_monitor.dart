@@ -143,7 +143,7 @@ class LogStreakMonitor extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text("${dateTime.abbreviatedMonthAndYear()} Overview".toUpperCase(),
+              Text("${dateTime.formattedMonthAndYear()} Overview".toUpperCase(),
                   style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
               const SizedBox(height: 20),
               LogStreakMonitor(

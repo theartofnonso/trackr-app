@@ -372,14 +372,16 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                         ),
                       ),
                     if (exerciseLogs.isNotEmpty)
-                      SizedBox(
-                        width: double.infinity,
-                        child: OpacityButtonWidget(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          buttonColor: vibrantGreen,
-                          label: widget.mode == RoutineEditorMode.log ? "Finish Session" : "Update Session",
-                          onPressed: widget.mode == RoutineEditorMode.log ? _saveLog : _updateLog,
-                        )),
+                      SafeArea(
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: OpacityButtonWidget(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            buttonColor: vibrantGreen,
+                            label: widget.mode == RoutineEditorMode.log ? "Finish Session" : "Update Session",
+                            onPressed: widget.mode == RoutineEditorMode.log ? _saveLog : _updateLog,
+                          )),
+                      ),
                     if (exerciseLogs.isEmpty)
                       Expanded(
                         child: Padding(

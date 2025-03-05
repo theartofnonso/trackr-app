@@ -431,6 +431,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   void _showLogsBottomSheet({required DateTime dateTime}) {
     displayBottomSheet(
+      isScrollControlled: true,
         context: context,
         child: SafeArea(
           child: _LogsListView(dateTime: dateTime),
