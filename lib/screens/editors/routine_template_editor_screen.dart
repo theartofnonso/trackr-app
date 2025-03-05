@@ -350,6 +350,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                       ),
                     if (exerciseTemplates.isNotEmpty)
                       SafeArea(
+                        minimum: EdgeInsets.all(10),
                         child: SizedBox(
                           width: double.infinity,
                           child: OpacityButtonWidget(
