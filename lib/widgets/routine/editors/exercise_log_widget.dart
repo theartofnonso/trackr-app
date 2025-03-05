@@ -42,7 +42,6 @@ import '../../weight_plate_calculator.dart';
 import '../preview/set_headers/double_set_header.dart';
 import '../preview/set_headers/single_set_header.dart';
 import '../preview/sets_listview.dart';
-import '../set_mode_badge.dart';
 
 class ExerciseLogWidget extends StatefulWidget {
   final RoutineEditorMode editorType;
@@ -659,53 +658,53 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                           size: 18,
                         ),
                       ),
-                      if(workingSet != null)
+                      if (workingSet != null)
                         Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 12),
-                          InformationContainerLite(
-                              richText: RichText(
-                                text: TextSpan(
-                                  text: workingSet.summary(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall
-                                      ?.copyWith(fontWeight: FontWeight.w700, color: Colors.white),
-                                  children: [
-                                    TextSpan(
-                                      text: " ",
-                                    ),
-                                    TextSpan(
-                                      text:
-                                          "is your working set, driving you toward your training goals. All others are warm-ups.",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall
-                                          ?.copyWith(fontWeight: FontWeight.w700, color: Colors.white70),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              content: "",
-                              color: Colors.grey.shade400,
-                              icon: Container(
-                                  width: 18,
-                                  height: 18,
-                                  padding: const EdgeInsets.all(4),
-                                  decoration: BoxDecoration(
-                                    color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
-                                    borderRadius: BorderRadius.circular(3),
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 12),
+                            InformationContainerLite(
+                                richText: RichText(
+                                  text: TextSpan(
+                                    text: workingSet.summary(),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(fontWeight: FontWeight.w700, color: Colors.white),
+                                    children: [
+                                      TextSpan(
+                                        text: " ",
+                                      ),
+                                      TextSpan(
+                                        text:
+                                            "is your working set, driving you toward your training goals. All others are warm-ups.",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(fontWeight: FontWeight.w700, color: Colors.white70),
+                                      )
+                                    ],
                                   ),
-                                  child: Center(
-                                    child: FaIcon(
-                                      FontAwesomeIcons.w,
-                                      color: isDarkMode ? vibrantGreen : Colors.black,
-                                      size: 8,
+                                ),
+                                content: "",
+                                color: Colors.grey.shade400,
+                                icon: Container(
+                                    width: 18,
+                                    height: 18,
+                                    padding: const EdgeInsets.all(4),
+                                    decoration: BoxDecoration(
+                                      color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
+                                      borderRadius: BorderRadius.circular(3),
                                     ),
-                                  ))),
-                        ],
-                      ),
+                                    child: Center(
+                                      child: FaIcon(
+                                        FontAwesomeIcons.w,
+                                        color: isDarkMode ? vibrantGreen : Colors.black,
+                                        size: 8,
+                                      ),
+                                    ))),
+                          ],
+                        ),
                     ],
                   ),
                 const SizedBox(height: 2),
@@ -748,22 +747,16 @@ class _WeightAndRepsSetListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final children = sets.mapIndexed((index, setDto) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 6.0),
-        child: SetModeBadge(
-          setDto: setDto,
-          child: WeightsAndRepsSetRow(
-            editorType: editorType,
-            setDto: setDto,
-            onCheck: () => updateSetCheck(index: index, setDto: setDto),
-            onRemoved: () => removeSet(index: index),
-            onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
-            onChangedWeight: (double value) => updateWeight(index: index, weight: value, setDto: setDto),
-            onTapWeightEditor: () => onTapWeightEditor(setDto: setDto),
-            onTapRepsEditor: () => onTapRepsEditor(),
-            controllers: controllers[index],
-          ),
-        ),
+      return WeightsAndRepsSetRow(
+        editorType: editorType,
+        setDto: setDto,
+        onCheck: () => updateSetCheck(index: index, setDto: setDto),
+        onRemoved: () => removeSet(index: index),
+        onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
+        onChangedWeight: (double value) => updateWeight(index: index, weight: value, setDto: setDto),
+        onTapWeightEditor: () => onTapWeightEditor(setDto: setDto),
+        onTapRepsEditor: () => onTapRepsEditor(),
+        controllers: controllers[index],
       );
     }).toList();
 
@@ -799,17 +792,14 @@ class _RepsSetListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final children = sets.mapIndexed((index, setDto) {
-      return SetModeBadge(
+      return RepsSetRow(
+        editorType: editorType,
         setDto: setDto,
-        child: RepsSetRow(
-          editorType: editorType,
-          setDto: setDto,
-          onCheck: () => updateSetCheck(index: index, setDto: setDto),
-          onRemoved: () => removeSet(index: index),
-          onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
-          onTapRepsEditor: () => onTapRepsEditor(),
-          controller: controllers[index],
-        ),
+        onCheck: () => updateSetCheck(index: index, setDto: setDto),
+        onRemoved: () => removeSet(index: index),
+        onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
+        onTapRepsEditor: () => onTapRepsEditor(),
+        controller: controllers[index],
       );
     }).toList();
 
@@ -844,18 +834,16 @@ class _DurationSetListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final children = sets.mapIndexed((index, setDto) {
-      return SetModeBadge(
-          setDto: setDto,
-          child: DurationSetRow(
-            editorType: editorType,
-            setDto: setDto,
-            onCheck: () => updateSetCheck(index: index, setDto: setDto),
-            onRemoved: () => removeSet(index: index),
-            onCheckAndUpdateDuration: (Duration duration, {bool? checked}) =>
-                checkAndUpdateDuration(index: index, duration: duration, setDto: setDto, checked: checked ?? false),
-            startTime: controllers.isNotEmpty ? controllers[index] : DateTime.now(),
-            onupdateDuration: (Duration duration) => updateDuration(index: index, duration: duration, setDto: setDto),
-          ));
+      return DurationSetRow(
+        editorType: editorType,
+        setDto: setDto,
+        onCheck: () => updateSetCheck(index: index, setDto: setDto),
+        onRemoved: () => removeSet(index: index),
+        onCheckAndUpdateDuration: (Duration duration, {bool? checked}) =>
+            checkAndUpdateDuration(index: index, duration: duration, setDto: setDto, checked: checked ?? false),
+        startTime: controllers.isNotEmpty ? controllers[index] : DateTime.now(),
+        onupdateDuration: (Duration duration) => updateDuration(index: index, duration: duration, setDto: setDto),
+      );
     }).toList();
 
     return ListView.separated(
