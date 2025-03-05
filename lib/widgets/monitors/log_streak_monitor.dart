@@ -5,14 +5,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
-import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
-import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../enums/posthog_analytics_event.dart';
-import '../../screens/insights/sets_reps_volume_insights_screen.dart';
 import '../../strings/strings.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/shareables_utils.dart';
@@ -64,22 +61,20 @@ class LogStreakMonitor extends StatelessWidget {
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          GestureDetector(
-              onTap: () => _showRoutineLogsScreen(context: context),
-              child: Container(
-                color: Colors.transparent,
-                width: 80,
-                child: _MonitorScore(
-                    value: "${routineLogsByDay.length} ${pluralize(word: "DAY", count: routineLogsByDay.length).toUpperCase()}",
-                    title: "Log Streak",
-                    color: logStreakColor(monthlyProgress),
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    forceDarkMode: isDarkMode),
-              )),
+          SizedBox(
+            width: 80,
+            child: _MonitorScore(
+                value:
+                    "${routineLogsByDay.length} ${pluralize(word: "DAY", count: routineLogsByDay.length).toUpperCase()}",
+                title: "Log Streak",
+                color: logStreakColor(monthlyProgress),
+                crossAxisAlignment: CrossAxisAlignment.end,
+                forceDarkMode: isDarkMode),
+          ),
           const SizedBox(width: 20),
           GestureDetector(
             child: Stack(alignment: Alignment.center, children: [
-              _LogStreakMonitor(
+              LogStreakWidget(
                   value: monthlyProgress, width: 100, height: 100, strokeWidth: 6, forceDarkMode: isDarkMode),
               Image.asset(
                 'images/trkr.png',
@@ -90,29 +85,18 @@ class LogStreakMonitor extends StatelessWidget {
             ]),
           ),
           const SizedBox(width: 20),
-          GestureDetector(
-            onTap: () => _showSetsAndRepsVolumeInsightsScreen(context: context),
-            child: SizedBox(
-              width: 80,
-              child: _MonitorScore(
-                  value: "$averageRestDays ${pluralize(word: "day", count: averageRestDays).toUpperCase()}",
-                  color: Colors.white,
-                  title: "AVG Rest",
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  forceDarkMode: isDarkMode),
-            ),
+          SizedBox(
+            width: 80,
+            child: _MonitorScore(
+                value: "$averageRestDays ${pluralize(word: "day", count: averageRestDays).toUpperCase()}",
+                color: Colors.white,
+                title: "AVG Rest",
+                crossAxisAlignment: CrossAxisAlignment.start,
+                forceDarkMode: isDarkMode),
           ),
         ],
       ),
     ]);
-  }
-
-  void _showSetsAndRepsVolumeInsightsScreen({required BuildContext context}) {
-    navigateWithSlideTransition(context: context, child: SetsAndRepsVolumeInsightsScreen());
-  }
-
-  void _showRoutineLogsScreen({required BuildContext context}) {
-    navigateWithSlideTransition(context: context, child: RoutineLogsScreen(dateTime: dateTime));
   }
 
   void _showMonitorInfo({required BuildContext context}) {
@@ -233,14 +217,16 @@ class _MonitorScore extends StatelessWidget {
   }
 }
 
-class _LogStreakMonitor extends StatelessWidget {
+class LogStreakWidget extends StatelessWidget {
   final num value;
   final double width;
   final double height;
   final double strokeWidth;
   final bool forceDarkMode;
 
-  const _LogStreakMonitor({this.value = 0,
+  const LogStreakWidget(
+      {super.key,
+      this.value = 0,
       required this.width,
       required this.height,
       required this.strokeWidth,
@@ -270,33 +256,19 @@ int _calculateAverageRestDays({required List<DateTime> dates}) {
     return 0;
   }
 
-  // Check if all dates are in the same month
-  final firstDate = dates.first;
-  for (final date in dates) {
-    if (date.year != firstDate.year || date.month != firstDate.month) {
-      throw ArgumentError('All training dates must be in the same month.');
-    }
-  }
-
-  // Calculate total days in the month
-  final year = firstDate.year;
-  final month = firstDate.month;
-  final firstDayNextMonth = DateTime(year, month + 1, 1);
-  final lastDayOfMonth = firstDayNextMonth.subtract(const Duration(days: 1));
-  final totalDays = lastDayOfMonth.day;
-
-  // Extract training days (day of month)
+  // Extract training days (day of month) and find last training day
   final trainingDays = dates.map((date) => date.day).toList();
+  final lastTrainingDay = trainingDays.reduce((a, b) => a > b ? a : b);
 
-  // Calculate number of weeks (ceiling division)
-  final numberOfWeeks = (totalDays + 6) ~/ 7;
+  // Calculate number of weeks (ceiling division) up to lastTrainingDay
+  final numberOfWeeks = (lastTrainingDay + 6) ~/ 7;
   var totalRestDays = 0;
 
   for (var week = 1; week <= numberOfWeeks; week++) {
     final startDay = (week - 1) * 7 + 1;
     var endDay = week * 7;
-    if (endDay > totalDays) {
-      endDay = totalDays;
+    if (endDay > lastTrainingDay) {
+      endDay = lastTrainingDay;
     }
 
     final daysInWeek = endDay - startDay + 1;
@@ -306,5 +278,6 @@ int _calculateAverageRestDays({required List<DateTime> dates}) {
     totalRestDays += restDays;
   }
 
-  return (totalRestDays / numberOfWeeks).round();
+  final average = numberOfWeeks == 0 ? 0 : (totalRestDays / numberOfWeeks).round();
+  return average < 0 ? 0 : average;
 }

@@ -35,7 +35,7 @@ class SetsListview extends StatelessWidget {
     }
 
     final markedSets = switch (type) {
-      ExerciseType.weights => markHighestWeightSets(sets),
+      ExerciseType.weights => markHeaviestVolumeSets(sets),
       ExerciseType.bodyWeight => markHighestRepsSets(sets),
       ExerciseType.duration => markHighestDurationSets(sets),
     };

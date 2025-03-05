@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/general_utils.dart';
+import 'package:tracker_app/widgets/monitors/log_streak_monitor.dart';
 
 import '../../colors.dart';
 import '../../dtos/milestones/reps_milestone.dart';
@@ -33,10 +34,11 @@ class _OnboardingIntroScreenState extends State<OnboardingIntroScreen> {
     final isDarkMode = systemBrightness == Brightness.dark;
 
     final pages = [
-      CalenderOnboardingScreen(isDarkMode: isDarkMode),
-      TRKRCoachOnboardingScreen(isDarkMode: isDarkMode),
-      MilestonesOnboardingScreen(isDarkMode: isDarkMode),
-      if (SharedPrefs().firstLaunch) EndOnboardingScreen(onLongPress: widget.onComplete ?? () {})
+      _CalenderOnboardingScreen(isDarkMode: isDarkMode),
+      _LogStreakMonitorOnboardingScreen(isDarkMode: isDarkMode),
+      _TRKRCoachOnboardingScreen(isDarkMode: isDarkMode),
+      _MilestonesOnboardingScreen(isDarkMode: isDarkMode),
+      if (SharedPrefs().firstLaunch) _EndOnboardingScreen(onLongPress: widget.onComplete ?? () {})
     ];
 
     return MaterialApp(
@@ -83,17 +85,108 @@ class _OnboardingIntroScreenState extends State<OnboardingIntroScreen> {
   }
 }
 
-class CalenderOnboardingScreen extends StatelessWidget {
+class _CalenderOnboardingScreen extends StatelessWidget {
   final bool isDarkMode;
 
-  const CalenderOnboardingScreen({super.key, required this.isDarkMode});
+  const _CalenderOnboardingScreen({required this.isDarkMode});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          LabelDivider(
+            label: "Log Calendar".toUpperCase(),
+            labelColor: isDarkMode ? Colors.white70 : Colors.black,
+            dividerColor: sapphireLighter,
+            fontSize: 14,
+          ),
+          SizedBox(
+            height: 12,
+          ),
+          Text(
+              "Today marks the beginning of your lifelong commitment to self-improvement. The app might look empty now, but as you log each workout, you’ll start seeing vibrant green squares filling up your calendar—visual proof of your dedication and progress.",
+              style: Theme.of(context).textTheme.bodyLarge),
+          SizedBox(
+            height: 20,
+          ),
+          Calendar(dateTime: DateTime.now()),
+        ],
+      ),
+    );
+  }
+}
+
+class _LogStreakMonitorOnboardingScreen extends StatelessWidget {
+  final bool isDarkMode;
+
+  const _LogStreakMonitorOnboardingScreen({required this.isDarkMode});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
+        const Spacer(),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Wrap(
+            runSpacing: 40,
+            spacing: 40,
+            children: [
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  LogStreakWidget(value: 2, width: 120, height: 120, strokeWidth: 8),
+                  Image.asset(
+                    'images/trkr.png',
+                    fit: BoxFit.contain,
+                    color: isDarkMode ? Colors.white70 : Colors.black,
+                    height: 8, // Adjust the height as needed
+                  )
+                ],
+              ),
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  LogStreakWidget(value: 4, width: 120, height: 120, strokeWidth: 8),
+                  Image.asset(
+                    'images/trkr.png',
+                    fit: BoxFit.contain,
+                    color: isDarkMode ? Colors.white70 : Colors.black,
+                    height: 8, // Adjust the height as needed
+                  )
+                ],
+              ),
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  LogStreakWidget(value: 7, width: 120, height: 120, strokeWidth: 8),
+                  Image.asset(
+                    'images/trkr.png',
+                    fit: BoxFit.contain,
+                    color: isDarkMode ? Colors.white70 : Colors.black,
+                    height: 8, // Adjust the height as needed
+                  )
+                ],
+              ),
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  LogStreakWidget(value: 12, width: 120, height: 120, strokeWidth: 8),
+                  Image.asset(
+                    'images/trkr.png',
+                    fit: BoxFit.contain,
+                    color: isDarkMode ? Colors.white70 : Colors.black,
+                    height: 8, // Adjust the height as needed
+                  )
+                ],
+              )
+            ],
+          ),
+        ),
+        const Spacer(),
         LabelDivider(
-          label: "Log Calendar".toUpperCase(),
+          label: "LOG Streak".toUpperCase(),
           labelColor: isDarkMode ? Colors.white70 : Colors.black,
           dividerColor: sapphireLighter,
           fontSize: 14,
@@ -102,21 +195,17 @@ class CalenderOnboardingScreen extends StatelessWidget {
           height: 12,
         ),
         Text(
-            "Today marks the beginning of your lifelong commitment to self-improvement. The app might look empty now, but as you log each workout, you’ll start seeing vibrant green squares filling up your calendar—visual proof of your dedication and progress.",
+            "Your goal is to keep those months consistently green. Just 12 sessions per month are all you need to close the ring and maintain your momentum. Make it a habit, keep pushing, and enjoy watching your streaks grow!",
             style: Theme.of(context).textTheme.bodyLarge),
-        SizedBox(
-          height: 20,
-        ),
-        Calendar(dateTime: DateTime.now()),
       ],
     );
   }
 }
 
-class MilestonesOnboardingScreen extends StatelessWidget {
+class _MilestonesOnboardingScreen extends StatelessWidget {
   final bool isDarkMode;
 
-  const MilestonesOnboardingScreen({super.key, required this.isDarkMode});
+  const _MilestonesOnboardingScreen({required this.isDarkMode});
 
   @override
   Widget build(BuildContext context) {
@@ -157,10 +246,10 @@ class MilestonesOnboardingScreen extends StatelessWidget {
   }
 }
 
-class TRKRCoachOnboardingScreen extends StatelessWidget {
+class _TRKRCoachOnboardingScreen extends StatelessWidget {
   final bool isDarkMode;
 
-  const TRKRCoachOnboardingScreen({super.key, required this.isDarkMode});
+  const _TRKRCoachOnboardingScreen({required this.isDarkMode});
 
   @override
   Widget build(BuildContext context) {
@@ -208,10 +297,10 @@ class TRKRCoachOnboardingScreen extends StatelessWidget {
   }
 }
 
-class EndOnboardingScreen extends StatelessWidget {
+class _EndOnboardingScreen extends StatelessWidget {
   final VoidCallback onLongPress;
 
-  const EndOnboardingScreen({super.key, required this.onLongPress});
+  const _EndOnboardingScreen({required this.onLongPress});
 
   @override
   Widget build(BuildContext context) {
@@ -220,29 +309,32 @@ class EndOnboardingScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         RichText(
-          textAlign: TextAlign.center,
+            textAlign: TextAlign.center,
             text: TextSpan(
                 text: "Ready to get started? Here’s to",
-                style: Theme.of(context)
-                    .textTheme
-                    .titleSmall
-                    ?.copyWith(fontSize: 22, fontWeight: FontWeight.w500, height: 1.5,),
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w500,
+                      height: 1.5,
+                    ),
                 children: [
-              TextSpan(
-                  text: " smarter training, ",
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(fontSize: 22, fontWeight: FontWeight.w600)),
-              TextSpan(
-                  text: "meaningful insights",
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(fontSize: 22, fontWeight: FontWeight.w600)),
-              const TextSpan(
-                text: ", and your brightest fitness future.",
-              ),
-            ])),
+                  TextSpan(
+                      text: " smarter training, ",
+                      style:
+                          Theme.of(context).textTheme.titleSmall?.copyWith(fontSize: 22, fontWeight: FontWeight.w600)),
+                  TextSpan(
+                      text: "meaningful insights",
+                      style:
+                          Theme.of(context).textTheme.titleSmall?.copyWith(fontSize: 22, fontWeight: FontWeight.w600)),
+                  const TextSpan(
+                    text: ", and your brightest fitness future.",
+                  ),
+                ])),
         const SizedBox(height: 12),
         SizedBox(
             width: double.infinity,
             child: OpacityButtonWidget(
-              padding: const EdgeInsets.all( 16),
+              padding: const EdgeInsets.all(16),
               buttonColor: vibrantGreen,
               label: "Tap and hold to start training",
               onLongPress: onLongPress,

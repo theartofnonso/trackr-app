@@ -167,6 +167,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _checkAndUpdateDuration(
       {required int index, required Duration duration, required SetDto setDto, required bool checked}) {
+    if (setDto.isEmpty()) return;
+
     if (setDto.checked) {
       final duration = (setDto as DurationSetDto).duration;
       final startTime = DateTime.now().subtract(duration);
@@ -209,6 +211,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _updateSetCheck({required int index, required SetDto setDto}) {
+    if (setDto.isEmpty()) return;
+
+    if (setDto.isEmpty()) return;
+
     final checked = !setDto.checked;
     final updatedSet = setDto.copyWith(checked: checked);
     Provider.of<ExerciseLogController>(context, listen: false)
@@ -417,6 +423,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         WeightProgression.decrease => Colors.deepOrange,
         WeightProgression.maintain => vibrantBlue
       };
+
+      final isEmptySets = hasEmptyValues(sets: sets, exerciseType: exerciseType);
+
+      if (isEmptySets) {
+        progressionSummary = ".";
+        progressionColor = vibrantBlue;
+      }
     }
 
     final rpeRatings = sets.mapIndexed((index, set) => set.rpeRating).toList();
@@ -425,6 +438,12 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     List<Color> rpeColors = rpeRatings.mapIndexed((index, rating) => _getIntensityColor(intensity: rating)).toList();
 
     final rpeTrendSummary = _getRpeTrendSummary(ratings: rpeRatings);
+
+    final workingSet = switch (exerciseType) {
+      ExerciseType.weights => getHeaviestVolume(sets),
+      ExerciseType.bodyWeight => getHighestReps(sets),
+      ExerciseType.duration => getLongestDuration(sets),
+    };
 
     return Scaffold(
       appBar: AppBar(
@@ -640,26 +659,53 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                           size: 18,
                         ),
                       ),
-                      const SizedBox(height: 12),
-                      InformationContainerLite(
-                          content:
-                              "Your most challenging sets are working sets, driving you toward your training goals. All others are warm-ups.",
-                          color: Colors.grey.shade400,
-                          icon: Container(
-                              width: 18,
-                              height: 18,
-                              padding: const EdgeInsets.all(4),
-                              decoration: BoxDecoration(
-                                color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
-                                borderRadius: BorderRadius.circular(3),
-                              ),
-                              child: Center(
-                                child: FaIcon(
-                                  FontAwesomeIcons.w,
-                                  color: isDarkMode ? vibrantGreen : Colors.black,
-                                  size: 8,
+                      if(workingSet != null)
+                        Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 12),
+                          InformationContainerLite(
+                              richText: RichText(
+                                text: TextSpan(
+                                  text: workingSet.summary(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
+                                      ?.copyWith(fontWeight: FontWeight.w700, color: Colors.white),
+                                  children: [
+                                    TextSpan(
+                                      text: " ",
+                                    ),
+                                    TextSpan(
+                                      text:
+                                          " is your working set, driving you toward your training goals. All others are warm-ups.",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(fontWeight: FontWeight.w700, color: Colors.white70),
+                                    )
+                                  ],
                                 ),
-                              ))),
+                              ),
+                              content: "",
+                              color: Colors.grey.shade400,
+                              icon: Container(
+                                  width: 18,
+                                  height: 18,
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
+                                    borderRadius: BorderRadius.circular(3),
+                                  ),
+                                  child: Center(
+                                    child: FaIcon(
+                                      FontAwesomeIcons.w,
+                                      color: isDarkMode ? vibrantGreen : Colors.black,
+                                      size: 8,
+                                    ),
+                                  ))),
+                        ],
+                      ),
                     ],
                   ),
                 const SizedBox(height: 2),
@@ -701,9 +747,7 @@ class _WeightAndRepsSetListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final markedSets = markHighestWeightSets(sets);
-
-    final children = markedSets.mapIndexed((index, setDto) {
+    final children = sets.mapIndexed((index, setDto) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 6.0),
         child: SetModeBadge(
@@ -754,9 +798,7 @@ class _RepsSetListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final markedSets = markHighestRepsSets(sets);
-
-    final children = markedSets.mapIndexed((index, setDto) {
+    final children = sets.mapIndexed((index, setDto) {
       return SetModeBadge(
         setDto: setDto,
         child: RepsSetRow(
@@ -801,9 +843,7 @@ class _DurationSetListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final markedSets = markHighestDurationSets(sets);
-
-    final children = markedSets.mapIndexed((index, setDto) {
+    final children = sets.mapIndexed((index, setDto) {
       return SetModeBadge(
           setDto: setDto,
           child: DurationSetRow(

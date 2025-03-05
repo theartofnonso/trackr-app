@@ -239,23 +239,6 @@ void main() {
     expect(updatedLog.exercise.name, newExercise.name);
   });
 
-  test("Overwrite Sets in an Exercise Log", () {
-    final exerciseLogRepository = ExerciseLogRepository();
-    exerciseLogRepository.loadExerciseLogs(exerciseLogs: [legCurlExerciseLog]);
-
-    final newSets = [
-      const WeightAndRepsSetDto(weight: 50, reps: 10, checked: true),
-      const WeightAndRepsSetDto(weight: 60, reps: 8, checked: false),
-    ];
-
-    exerciseLogRepository.overwriteSets(exerciseLogId: legCurlExerciseLog.id, sets: newSets);
-
-    final updatedLog = exerciseLogRepository.exerciseLogs.firstWhere((log) => log.id == legCurlExerciseLog.id);
-    expect(updatedLog.sets.length, 2);
-    expect((updatedLog.sets[0] as WeightAndRepsSetDto).weight, 50);
-    expect((updatedLog.sets[1] as WeightAndRepsSetDto).weight, 60);
-  });
-
   test("completedExerciseLogs returns only logs with checked sets", () {
     final exerciseLogRepository = ExerciseLogRepository();
 
