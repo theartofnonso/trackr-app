@@ -153,7 +153,7 @@ RepsSetDto? getHighestReps(List<SetDto> sets) {
 DurationSetDto? getLongestDuration(List<SetDto> sets) {
 
   if (sets.isEmpty) return null;
-  
+
   final durationSets = sets.whereType<DurationSetDto>().toList();
   if (durationSets.isEmpty) return null;
   return durationSets.reduce((a, b) => a.duration > b.duration ? a : b);
