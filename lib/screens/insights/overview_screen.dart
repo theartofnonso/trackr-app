@@ -603,7 +603,7 @@ class _LogsListView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
         spacing: 16,
         children: [
-      Text("Training and Activities".toUpperCase(), style: Theme.of(context).textTheme.titleSmall),
+      Text("Training and Activities".toUpperCase(), style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
       ...children]);
   }
 }
