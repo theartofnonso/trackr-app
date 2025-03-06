@@ -601,9 +601,9 @@ class _LogsListView extends StatelessWidget {
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
-        spacing: 10,
+        spacing: 16,
         children: [
-      Text("Training and Activities".toUpperCase(), style: Theme.of(context).textTheme.titleMedium),
+      Text("Training and Activities".toUpperCase(), style: Theme.of(context).textTheme.titleSmall),
       ...children]);
   }
 }
