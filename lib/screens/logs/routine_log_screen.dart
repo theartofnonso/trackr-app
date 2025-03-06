@@ -717,7 +717,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         return TrendSummary(
           trend: Trend.up,
           average: averageOfPrevious,
-          summary: "🌟 This session's volume is $variation higher than your average. Nice job building momentum!",
+          summary: "🌟🌟 This session's volume is $variation higher than your average. Nice job building momentum!",
         );
       case Trend.down:
         return TrendSummary(
