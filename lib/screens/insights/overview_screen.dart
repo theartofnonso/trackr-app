@@ -599,6 +599,11 @@ class _LogsListView extends StatelessWidget {
       );
     }).toList();
 
-    return Column(children: children);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+        spacing: 10,
+        children: [
+      Text("Training and Activities".toUpperCase(), style: Theme.of(context).textTheme.titleMedium),
+      ...children]);
   }
 }

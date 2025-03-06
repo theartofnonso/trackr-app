@@ -189,15 +189,18 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
                   ]),
                 ),
               ),
-              SizedBox(
-                  width: double.infinity,
-                  height: 45,
-                  child: OpacityButtonWidget(
-                    onPressed: _updateUser,
-                    label: "Save Profile",
-                    buttonColor: vibrantGreen,
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                  )),
+              SafeArea(
+                minimum: EdgeInsets.all(10),
+                child: SizedBox(
+                    width: double.infinity,
+                    height: 45,
+                    child: OpacityButtonWidget(
+                      onPressed: _updateUser,
+                      label: "Save Profile",
+                      buttonColor: vibrantGreen,
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                    )),
+              ),
             ],
           ),
         ),

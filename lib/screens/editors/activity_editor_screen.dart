@@ -207,7 +207,7 @@ class _ActivityEditorScreenState extends State<ActivityEditorScreen> {
                     ),
                   if (activity == null)
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: SizedBox(
                         height: 60,
                         child: AnimatedSwitcher(
