@@ -256,23 +256,43 @@ int _calculateAverageRestDays({required List<DateTime> dates}) {
     return 0;
   }
 
-  // Extract training days (day of month) and find last training day
-  final trainingDays = dates.map((date) => date.day).toList();
-  final lastTrainingDay = trainingDays.reduce((a, b) => a > b ? a : b);
+  final firstDate = dates.first;
+  final now = DateTime.now();
+  final isCurrentMonth =
+      firstDate.year == now.year && firstDate.month == now.month;
 
-  // Calculate number of weeks (ceiling division) up to lastTrainingDay
-  final numberOfWeeks = (lastTrainingDay + 6) ~/ 7;
+  List<DateTime> filteredDates;
+  if (isCurrentMonth) {
+    final currentDay = now.day;
+    filteredDates = dates.where((date) => date.day <= currentDay).toList();
+  } else {
+    filteredDates = List<DateTime>.from(dates);
+  }
+
+  if (filteredDates.isEmpty) {
+    return 0;
+  }
+
+  final endDay = isCurrentMonth
+      ? now.day
+      : DateTime(firstDate.year, firstDate.month + 1, 0).day;
+
+  final trainingDays = filteredDates.map((date) => date.day).toList();
+
+  final numberOfWeeks = (endDay + 6) ~/ 7;
   var totalRestDays = 0;
 
   for (var week = 1; week <= numberOfWeeks; week++) {
     final startDay = (week - 1) * 7 + 1;
-    var endDay = week * 7;
-    if (endDay > lastTrainingDay) {
-      endDay = lastTrainingDay;
+    var weekEndDay = week * 7;
+    if (weekEndDay > endDay) {
+      weekEndDay = endDay;
     }
 
-    final daysInWeek = endDay - startDay + 1;
-    final trainingInWeek = trainingDays.where((day) => day >= startDay && day <= endDay).length;
+    final daysInWeek = weekEndDay - startDay + 1;
+    final trainingInWeek = trainingDays
+        .where((day) => day >= startDay && day <= weekEndDay)
+        .length;
     final restDays = daysInWeek - trainingInWeek;
 
     totalRestDays += restDays;
