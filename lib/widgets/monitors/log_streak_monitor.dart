@@ -100,7 +100,7 @@ class LogStreakMonitor extends StatelessWidget {
   }
 
   void _showMonitorInfo({required BuildContext context}) {
-    showBottomSheetWithNoAction(context: context, title: "Streak and Muscle", description: overviewMonitor);
+    showBottomSheetWithNoAction(context: context, title: "Streak and Rest", description: overviewMonitor);
   }
 
   void _showShareBottomSheet({required BuildContext context}) {
