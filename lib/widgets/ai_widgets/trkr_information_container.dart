@@ -8,8 +8,9 @@ class TRKRInformationContainer extends StatelessWidget {
   final String ctaLabel;
   final String description;
   final VoidCallback? onTap;
+  final Widget? icon;
 
-  const TRKRInformationContainer({super.key, required this.ctaLabel, required this.description, required this.onTap});
+  const TRKRInformationContainer({super.key, required this.ctaLabel, required this.description, required this.onTap, this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +40,7 @@ class TRKRInformationContainer extends StatelessWidget {
                         style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white, fontSize: 14)),
                   ),
                   const SizedBox(width: 22),
-                  FaIcon(FontAwesomeIcons.solidLightbulb, color: Colors.white,)
+                  icon ?? FaIcon(FontAwesomeIcons.solidLightbulb, color: Colors.white,)
                 ],),
               const SizedBox(height: 6),
               Text(

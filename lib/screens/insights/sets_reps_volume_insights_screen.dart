@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/training_goal_enums.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
+import 'package:tracker_app/extensions/muscle_group_extension.dart';
 import 'package:tracker_app/health_and_fitness_stats.dart';
 import 'package:tracker_app/openAI/open_ai_response_format.dart';
 import 'package:tracker_app/screens/AI/muscle_group_training_report_screen.dart';
@@ -203,17 +204,24 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                    scrollDirection: Axis.horizontal,
+                    child: Row(mainAxisAlignment: MainAxisAlignment.start, children: muscleGroups)),
+                const SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: Column(spacing: 20, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(mainAxisAlignment: MainAxisAlignment.start, children: muscleGroups)),
                     if (selectedMuscleGroup != null)
                       TRKRInformationContainer(
                         ctaLabel: "Review your ${selectedMuscleGroup.name} training",
                         description: selectedMuscleGroup.description,
                         onTap: () => _generateReport(exerciseLogs: exerciseLogsForSelectedMuscleGroup),
+                        icon: Image.asset(
+                          'muscles_illustration/${_selectedMuscleGroup?.illustration()}.png',
+                          fit: BoxFit.contain,
+                          height: 30, // Adjust the height as needed
+                        ),
                       ),
                     Column(
                       spacing: 10,
