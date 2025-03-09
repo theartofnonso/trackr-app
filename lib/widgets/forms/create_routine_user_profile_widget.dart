@@ -72,7 +72,7 @@ class _CreateRoutineUserProfileState extends State<CreateRoutineUserProfileWidge
                 ),
               ),
               const SizedBox(
-                height: 6,
+                height: 12,
               ),
               SizedBox(
                 height: 45,

@@ -73,7 +73,9 @@
         "signupAttributes": [
           "EMAIL"
         ],
-        "socialProviders": [],
+        "socialProviders": [
+          "APPLE"
+        ],
         "usernameAttributes": [
           "EMAIL"
         ],
@@ -166,6 +168,22 @@
     }
   },
   "parameters": {
+    "AMPLIFY_function_deleteUserData_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "deleteUserData"
+        }
+      ]
+    },
+    "AMPLIFY_function_deleteUserData_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "deleteUserData"
+        }
+      ]
+    },
     "AMPLIFY_function_deleteUserExerciseData_deploymentBucketName": {
       "usedBy": [
         {
@@ -243,6 +261,22 @@
         {
           "category": "function",
           "resourceName": "getRoutineTemplate"
+        }
+      ]
+    },
+    "AMPLIFY_function_getUser_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "getUser"
+        }
+      ]
+    },
+    "AMPLIFY_function_getUser_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "getUser"
         }
       ]
     },
