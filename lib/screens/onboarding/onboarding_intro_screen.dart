@@ -38,7 +38,7 @@ class _OnboardingIntroScreenState extends State<OnboardingIntroScreen> {
       _LogStreakMonitorOnboardingScreen(isDarkMode: isDarkMode),
       _TRKRCoachOnboardingScreen(isDarkMode: isDarkMode),
       _MilestonesOnboardingScreen(isDarkMode: isDarkMode),
-      if (SharedPrefs().firstLaunch) _EndOnboardingScreen(onLongPress: widget.onComplete ?? () {})
+      if (SharedPrefs().firstLaunch) _EndOnboardingScreen(onPress: widget.onComplete ?? () {})
     ];
 
     return MaterialApp(
@@ -298,9 +298,9 @@ class _TRKRCoachOnboardingScreen extends StatelessWidget {
 }
 
 class _EndOnboardingScreen extends StatelessWidget {
-  final VoidCallback onLongPress;
+  final VoidCallback onPress;
 
-  const _EndOnboardingScreen({required this.onLongPress});
+  const _EndOnboardingScreen({required this.onPress});
 
   @override
   Widget build(BuildContext context) {
@@ -313,7 +313,7 @@ class _EndOnboardingScreen extends StatelessWidget {
             text: TextSpan(
                 text: "Ready to get started? Here’s to",
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontSize: 22,
+                      fontSize: 20,
                       fontWeight: FontWeight.w500,
                       height: 1.5,
                     ),
@@ -321,24 +321,27 @@ class _EndOnboardingScreen extends StatelessWidget {
                   TextSpan(
                       text: " smarter training, ",
                       style:
-                          Theme.of(context).textTheme.titleSmall?.copyWith(fontSize: 22, fontWeight: FontWeight.w600)),
+                          Theme.of(context).textTheme.titleSmall?.copyWith(fontSize: 20, fontWeight: FontWeight.w600)),
                   TextSpan(
                       text: "meaningful insights",
                       style:
-                          Theme.of(context).textTheme.titleSmall?.copyWith(fontSize: 22, fontWeight: FontWeight.w600)),
+                          Theme.of(context).textTheme.titleSmall?.copyWith(fontSize: 20, fontWeight: FontWeight.w600)),
                   const TextSpan(
                     text: ", and your brightest fitness future.",
                   ),
                 ])),
-        const SizedBox(height: 12),
-        SizedBox(
-            width: double.infinity,
-            child: OpacityButtonWidget(
-              padding: const EdgeInsets.all(16),
-              buttonColor: vibrantGreen,
-              label: "Tap and hold to start training",
-              onLongPress: onLongPress,
-            ))
+        const SizedBox(height: 20),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 26.0),
+          child: SizedBox(
+              width: double.infinity,
+              child: OpacityButtonWidget(
+                padding: const EdgeInsets.all(16),
+                buttonColor: vibrantGreen,
+                label: "Tap to start training",
+                onPressed: onPress,
+              )),
+        )
       ],
     );
   }

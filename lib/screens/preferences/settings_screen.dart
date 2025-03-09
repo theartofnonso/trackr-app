@@ -61,6 +61,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
 
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
+    final userEmail = SharedPrefs().userEmail.isNotEmpty ? SharedPrefs().userEmail : "Apple Sign in";
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -180,12 +182,12 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     leading: FaIcon(FontAwesomeIcons.arrowRightFromBracket,
                         color: isDarkMode ? Colors.white70 : Colors.black38),
                     title: Text("Logout", style: Theme.of(context).textTheme.titleMedium),
-                    subtitle: Text(SharedPrefs().userEmail)),
+                    subtitle: Text(userEmail)),
                 ListTile(
                     onTap: _delete,
                     leading: FaIcon(FontAwesomeIcons.xmark, color: isDarkMode ? Colors.white70 : Colors.black38),
                     title: Text("Delete Account", style: Theme.of(context).textTheme.titleMedium),
-                    subtitle: Text(SharedPrefs().userEmail)),
+                    subtitle: Text(userEmail)),
                 const SizedBox(height: 10),
                 Center(
                   child: Text(_appVersion, style: Theme.of(context).textTheme.bodySmall),
