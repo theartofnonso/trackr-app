@@ -59,7 +59,7 @@
     "breakCircularDependency": true,
     "dependsOn": [],
     "hostedUI": true,
-    "hostedUIDomainName": "trackerapp6e6c8402-6e6c8402",
+    "hostedUIDomainName": "trackerappfb613148-fb613148",
     "authProvidersUserPool": [
       "SignInWithApple"
     ],
