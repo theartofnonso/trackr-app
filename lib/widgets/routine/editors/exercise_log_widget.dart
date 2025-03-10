@@ -398,6 +398,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     String progressionSummary = "";
     Color progressionColor = vibrantBlue;
     TrainingProgression trainingProgression = TrainingProgression.maintain;
+    RepRange? typicalRepRange;
 
     /// Get working sets
     final workingSets = switch (exerciseType) {
@@ -408,13 +409,17 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         .where((set) => set.isWorkingSet)
         .toList();
 
-    /// Determine progression for working sets where [ExerciseType] is [ExerciseType.bodyWeight] or [ExerciseType.weights]
-    if (withReps(type: exerciseType)) {
+    /// Determine working set for weight or reps progression
+    final workingSet = switch (exerciseType) {
+      ExerciseType.weights => getHeaviestVolume(workingSets),
+      ExerciseType.bodyWeight => getHighestReps(workingSets),
+      ExerciseType.duration => getLongestDuration(workingSets),
+    };
+
+    /// Determine progression for working sets where [ExerciseType] is [ExerciseType.bodyWeight]
+    if (withWeightsOnly(type: exerciseType)) {
       final trainingData = workingSets.map((set) {
-        if (exerciseType == ExerciseType.weights) {
-          return TrainingData(reps: (set as WeightAndRepsSetDto).reps, rpe: set.rpeRating);
-        }
-        return TrainingData(reps: (set as RepsSetDto).reps, rpe: set.rpeRating);
+        return TrainingData(reps: (set as WeightAndRepsSetDto).reps, weight: set.weight, rpe: set.rpeRating);
       }).toList();
 
       /// Determine rep range using historic training data
@@ -431,18 +436,11 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         };
       }).toList();
 
-      final typicalRepRange = determineTypicalRepRange(reps: reps);
+      typicalRepRange = determineTypicalRepRange(reps: reps);
 
       trainingProgression = getTrainingProgression(
           data: trainingData, targetMinReps: typicalRepRange.minReps, targetMaxReps: typicalRepRange.maxReps);
     }
-
-    /// Determine working set for weight or reps progression
-    final workingSet = switch (exerciseType) {
-      ExerciseType.weights => getHeaviestVolume(workingSets),
-      ExerciseType.bodyWeight => getHighestReps(workingSets),
-      ExerciseType.duration => getLongestDuration(workingSets),
-    };
 
     final weightsOrRepsLabel = withWeightsOnly(type: exerciseType) ? "weight" : "reps";
 
@@ -659,6 +657,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 if (sets.isNotEmpty && widget.editorType == RoutineEditorMode.log)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 10,
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(right: 20.0, top: 6),
@@ -682,7 +681,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                                 height: 1.8,
                                 color: isDarkMode ? Colors.white70 : Colors.black)),
                       ),
-                      const SizedBox(height: 10),
                       InformationContainerLite(
                         content: "$rpeTrendSummary$progressionSummary",
                         color: progressionColor,
@@ -692,51 +690,86 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                         ),
                       ),
                       if (workingSet != null)
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 12),
-                            InformationContainerLite(
-                                richText: RichText(
-                                  text: TextSpan(
-                                    text: workingSet.summary(),
+                        InformationContainerLite(
+                            richText: RichText(
+                              text: TextSpan(
+                                text: workingSet.summary(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(fontWeight: FontWeight.w700, color: Colors.white),
+                                children: [
+                                  TextSpan(
+                                    text: " ",
+                                  ),
+                                  TextSpan(
+                                    text: "is your most challenging set, driving you toward your training goals.",
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodySmall
-                                        ?.copyWith(fontWeight: FontWeight.w700, color: Colors.white),
-                                    children: [
-                                      TextSpan(
-                                        text: " ",
-                                      ),
-                                      TextSpan(
-                                        text: "is your most challenging set, driving you toward your training goals.",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall
-                                            ?.copyWith(fontWeight: FontWeight.w700, color: Colors.white70),
-                                      )
-                                    ],
-                                  ),
+                                        ?.copyWith(fontWeight: FontWeight.w700, color: Colors.white70),
+                                  )
+                                ],
+                              ),
+                            ),
+                            content: "",
+                            color: Colors.grey.shade400,
+                            icon: Container(
+                                width: 18,
+                                height: 18,
+                                padding: const EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                  color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
+                                  borderRadius: BorderRadius.circular(3),
                                 ),
-                                content: "",
-                                color: Colors.grey.shade400,
-                                icon: Container(
-                                    width: 18,
-                                    height: 18,
-                                    padding: const EdgeInsets.all(4),
-                                    decoration: BoxDecoration(
-                                      color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
-                                      borderRadius: BorderRadius.circular(3),
-                                    ),
-                                    child: Center(
-                                      child: FaIcon(
-                                        FontAwesomeIcons.w,
-                                        color: isDarkMode ? vibrantGreen : Colors.black,
-                                        size: 8,
-                                      ),
-                                    ))),
-                          ],
-                        ),
+                                child: Center(
+                                  child: FaIcon(
+                                    FontAwesomeIcons.w,
+                                    color: isDarkMode ? vibrantGreen : Colors.black,
+                                    size: 8,
+                                  ),
+                                ))),
+                      if (typicalRepRange != null && withReps(type: exerciseType))
+                        InformationContainerLite(
+                            richText: RichText(
+                              text: TextSpan(
+                                text: "${typicalRepRange.minReps} - ${typicalRepRange.maxReps}",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(fontWeight: FontWeight.w700, color: Colors.white),
+                                children: [
+                                  TextSpan(
+                                    text: " ",
+                                  ),
+                                  TextSpan(
+                                    text:
+                                        "is your typical rep range. if you comfortably hit ${typicalRepRange.maxReps}, increase the weight; if you struggle to reach ${typicalRepRange.minReps}, reduce it; otherwise, maintain.",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(fontWeight: FontWeight.w700, color: Colors.white70),
+                                  )
+                                ],
+                              ),
+                            ),
+                            content: "",
+                            color: Colors.grey.shade400,
+                            icon: Container(
+                                width: 18,
+                                height: 18,
+                                padding: const EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                  color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
+                                  borderRadius: BorderRadius.circular(3),
+                                ),
+                                child: Center(
+                                  child: FaIcon(
+                                    FontAwesomeIcons.r,
+                                    color: isDarkMode ? vibrantGreen : Colors.black,
+                                    size: 8,
+                                  ),
+                                ))),
                     ],
                   ),
                 const SizedBox(height: 2),

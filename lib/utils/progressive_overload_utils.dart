@@ -3,21 +3,46 @@ enum TrainingProgression { increase, decrease, maintain }
 class TrainingData {
   final int reps;
   final int rpe;
+  final double weight;
 
-  TrainingData({required this.reps, required this.rpe});
+  TrainingData({
+    required this.reps,
+    required this.rpe,
+    required this.weight,
+  });
+
+  @override
+  String toString() {
+    return 'TrainingData{reps: $reps, rpe: $rpe, weight: $weight}';
+  }
 }
 
-TrainingProgression getTrainingProgression({required List<TrainingData> data, required int targetMinReps, required int targetMaxReps}) {
-  if (data.isEmpty) return TrainingProgression.maintain; // Handle empty input
+TrainingProgression getTrainingProgression({
+  required List<TrainingData> data,
+  required int targetMinReps,
+  required int targetMaxReps,
+}) {
+  if (data.isEmpty) return TrainingProgression.maintain;
+
+  final currentWeight = data.last.weight;
+  final currentWeightSessions = data
+      .where((session) => session.weight == currentWeight)
+      .toList();
+
+  if (currentWeightSessions.isEmpty) return TrainingProgression.maintain;
 
   int increaseCount = 0;
   int decreaseCount = 0;
   int maintainCount = 0;
 
-  for (final session in data) {
-    final suggestion = _getTrainingProgression(session, targetMinReps, targetMaxReps);
-    switch(suggestion) {
+  for (final session in currentWeightSessions) {
+    final suggestion = _getSessionSuggestion(
+      session: session,
+      targetMin: targetMinReps,
+      targetMax: targetMaxReps,
+    );
 
+    switch (suggestion) {
       case TrainingProgression.increase:
         increaseCount++;
         break;
@@ -30,28 +55,43 @@ TrainingProgression getTrainingProgression({required List<TrainingData> data, re
     }
   }
 
-  if (increaseCount > decreaseCount && increaseCount > maintainCount) {
-    return TrainingProgression.increase;
-  } else if (decreaseCount > increaseCount && decreaseCount > maintainCount) {
+  return _determineOverallProgression(
+    increaseCount: increaseCount,
+    decreaseCount: decreaseCount,
+    maintainCount: maintainCount,
+  );
+}
+
+TrainingProgression _getSessionSuggestion({
+  required TrainingData session,
+  required int targetMin,
+  required int targetMax,
+}) {
+  const int rpeIncreaseThreshold = 7;
+
+  if (session.reps >= targetMax) {
+    return session.rpe <= rpeIncreaseThreshold
+        ? TrainingProgression.increase
+        : TrainingProgression.maintain;
+  }
+
+  if (session.reps < targetMin) {
     return TrainingProgression.decrease;
   }
+
   return TrainingProgression.maintain;
 }
 
-TrainingProgression _getTrainingProgression(TrainingData effort, int targetMin, int targetMax) {
-  final reps = effort.reps;
-  final rpe = effort.rpe;
-
-  if (reps >= targetMax) {
+TrainingProgression _determineOverallProgression({
+  required int increaseCount,
+  required int decreaseCount,
+  required int maintainCount,
+}) {
+  if (increaseCount > decreaseCount && increaseCount > maintainCount) {
     return TrainingProgression.increase;
-  } else if (reps < targetMin) {
-    return TrainingProgression.decrease;
-  } else {
-    final midPoint = (targetMin + targetMax) / 2;
-    if (reps >= midPoint) {
-      return rpe <= 4 ? TrainingProgression.increase : TrainingProgression.maintain;
-    } else {
-      return rpe >= 9 ? TrainingProgression.decrease : TrainingProgression.maintain;
-    }
   }
+  if (decreaseCount > increaseCount && decreaseCount > maintainCount) {
+    return TrainingProgression.decrease;
+  }
+  return TrainingProgression.maintain;
 }

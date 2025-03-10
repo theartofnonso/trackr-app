@@ -13,7 +13,6 @@ import '../dtos/set_dtos/weight_and_reps_dto.dart';
 import '../enums/exercise_type_enums.dart';
 import 'exercise_logs_utils.dart';
 import 'general_utils.dart';
-import 'one_rep_max_calculator.dart';
 
 String prepareLogInstruction({required BuildContext context, required RoutineLogDto routineLog, required}) {
   final exerciseLogs = loggedExercises(exerciseLogs: routineLog.exerciseLogs);
@@ -40,11 +39,6 @@ String prepareLogInstruction({required BuildContext context, required RoutineLog
           "Past sets for ${currentExerciseLog.exercise.name} logged on ${pastExerciseLog.createdAt.withoutTime().formattedDayAndMonthAndYear()}: $pastSetSummaries");
     }
 
-    final heaviestSetWeight = heaviestWeightInSetForExerciseLog(exerciseLog: exerciseLogs.last);
-    final oneRepMax = average1RM(weight: (heaviestSetWeight).weight, reps: (heaviestSetWeight).reps);
-
-    buffer.writeln("1RM for ${currentExerciseLog.exercise.name}: $oneRepMax");
-
     final exerciseType = currentExerciseLog.exercise.type;
 
     final previousSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
@@ -61,7 +55,7 @@ String prepareLogInstruction({required BuildContext context, required RoutineLog
 
     final typicalRepRange = determineTypicalRepRange(reps: reps);
 
-    buffer.writeln("Typical rep range for ${currentExerciseLog.exercise.name}: $typicalRepRange");
+    buffer.writeln("Rep range for ${currentExerciseLog.exercise.name}: $typicalRepRange");
   }
 
   buffer.writeln();
@@ -79,9 +73,9 @@ String prepareLogInstruction({required BuildContext context, required RoutineLog
 
 String generateTrainingPrompt({required List<MuscleGroup> muscleGroups}) {
   return """
-          Analyse my training log for ${joinWithAnd(items: muscleGroups.map((muscleGroup) => muscleGroup.name).toList())}.
+          Analyse my training ${pluralize(word: "log", count: muscleGroups.length)} for ${joinWithAnd(items: muscleGroups.map((muscleGroup) => muscleGroup.name).toList())}.
 
-          Considering my typical rep ranges, RPE, and current 1RM, do I need to increase or decrease my working weights or reps?
+          Considering my rep ranges and RPE, do I need to increase or decrease my working weights or reps?
 
           Please make your feedback personal, explanatory, and motivating.
 
