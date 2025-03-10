@@ -16,8 +16,8 @@ class DurationSetDto extends SetDto {
   ExerciseType get type => ExerciseType.duration;
 
   @override
-  DurationSetDto copyWith({Duration? duration, bool? checked, ExerciseType? type, int? rpeRating}) {
-    return DurationSetDto(duration: duration ?? _duration, checked: checked ?? super.checked, rpeRating: super.rpeRating);
+  DurationSetDto copyWith({Duration? duration, bool? checked, ExerciseType? type, int? rpeRating, bool? isWorkingSet}) {
+    return DurationSetDto(duration: duration ?? _duration, checked: checked ?? super.checked, rpeRating: super.rpeRating, isWorkingSet: isWorkingSet ?? super.isWorkingSet);
   }
 
   @override
@@ -37,6 +37,6 @@ class DurationSetDto extends SetDto {
 
   @override
   String toString() {
-    return 'DurationSetDTO{duration: $_duration, checked: ${super.checked}, type: $type, rpeRating: ${super.rpeRating}}';
+    return 'DurationSetDTO{duration: $_duration, checked: ${super.checked}, type: $type, rpeRating: ${super.rpeRating}, isWorkingSet: ${super.isWorkingSet}}';
   }
 }

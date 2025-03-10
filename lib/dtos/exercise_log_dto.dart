@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:tracker_app/dtos/set_dtos/set_dto.dart';
 
-import '../utils/exercise_logs_utils.dart';
 import 'appsync/exercise_dto.dart';
 
 class ExerciseLogDto {
@@ -10,8 +9,6 @@ class ExerciseLogDto {
   final String? routineLogId;
   final String superSetId;
   final ExerciseDto exercise;
-  final int maxReps;
-  final int minReps;
   final String notes;
   final List<SetDto> sets;
   final DateTime createdAt;
@@ -21,8 +18,6 @@ class ExerciseLogDto {
       required this.routineLogId,
       required this.superSetId,
       required this.exercise,
-      this.maxReps = 0,
-      this.minReps = 0,
       required this.notes,
       required this.sets,
       required this.createdAt});
@@ -33,8 +28,6 @@ class ExerciseLogDto {
     return {
       "superSetId": superSetId,
       "exercise": exercise.toJson(),
-      "minReps": minReps,
-      "maxReps": maxReps,
       "notes": notes,
       "sets": setJsons,
     };
@@ -45,8 +38,6 @@ class ExerciseLogDto {
     String? routineLogId,
     String? superSetId,
     ExerciseDto? exercise,
-    int? minReps,
-    int? maxReps,
     String? notes,
     List<SetDto>? sets,
     DateTime? createdAt,
@@ -58,18 +49,11 @@ class ExerciseLogDto {
 
       // If a new ExerciseDto is provided, copy it deeply.
       // Otherwise, copy the existing ExerciseDto if it is not null.
-      exercise: exercise != null
-          ? exercise.copyWith()
-          : this.exercise.copyWith(),
-
-      minReps: minReps ?? this.minReps,
-      maxReps: maxReps ?? this.maxReps,
+      exercise: exercise != null ? exercise.copyWith() : this.exercise.copyWith(),
       notes: notes ?? this.notes,
 
       // Deep copy for the list of SetDto items.
-      sets: sets != null
-          ? sets.map((s) => s.copyWith()).toList()
-          : this.sets.map((s) => s.copyWith()).toList(),
+      sets: sets != null ? sets.map((s) => s.copyWith()).toList() : this.sets.map((s) => s.copyWith()).toList(),
 
       createdAt: createdAt ?? this.createdAt,
     );
@@ -88,9 +72,6 @@ class ExerciseLogDto {
       sets = setsInJsons.map((json) => SetDto.fromJson(json, exerciseType: exercise.type)).toList();
     }
 
-    final minReps = json["minReps"] ?? 0;
-    final maxReps = json["maxReps"] ?? 0;
-
     final exerciseLog = ExerciseLogDto(
         id: exercise.id,
         routineLogId: routineLogId,
@@ -98,17 +79,13 @@ class ExerciseLogDto {
         exercise: exercise,
         notes: notes,
         sets: sets,
-        minReps: minReps,
-        maxReps: maxReps,
         createdAt: createdAt ?? DateTime.now());
 
-    final repRange = getRepRange(exerciseLog: exerciseLog);
-
-    return exerciseLog.copyWith(minReps: repRange.$1, maxReps: repRange.$2);
+    return exerciseLog;
   }
 
   @override
   String toString() {
-    return 'ExerciseLogDto{id: $id, routineLogId: $routineLogId, superSetId: $superSetId, exercise: $exercise, notes: $notes, minReps: $minReps, maxReps: $maxReps, sets: $sets, createdAt: $createdAt}';
+    return 'ExerciseLogDto{id: $id, routineLogId: $routineLogId, superSetId: $superSetId, exercise: $exercise, notes: $notes, sets: $sets, createdAt: $createdAt}';
   }
 }

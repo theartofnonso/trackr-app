@@ -15,8 +15,8 @@ class RepsSetDto extends SetDto {
   ExerciseType get type => ExerciseType.bodyWeight;
 
   @override
-  RepsSetDto copyWith({int? reps, bool? checked, int? rpeRating}) {
-    return RepsSetDto(reps: reps ?? _reps, checked: checked ?? super.checked, rpeRating: rpeRating ?? super.rpeRating);
+  RepsSetDto copyWith({int? reps, bool? checked, int? rpeRating, bool? isWorkingSet}) {
+    return RepsSetDto(reps: reps ?? _reps, checked: checked ?? super.checked, rpeRating: rpeRating ?? super.rpeRating, isWorkingSet: isWorkingSet ?? super.isWorkingSet);
   }
 
   @override
@@ -36,6 +36,6 @@ class RepsSetDto extends SetDto {
 
   @override
   String toString() {
-    return 'RepsSetDTO{reps: $_reps, checked: ${super.checked}, type: $type, rpeRating: ${super.rpeRating}';
+    return 'RepsSetDTO{reps: $_reps, checked: ${super.checked}, type: $type, rpeRating: ${super.rpeRating}, isWorkingSet: ${super.isWorkingSet}}';
   }
 }

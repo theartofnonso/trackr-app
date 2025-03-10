@@ -1,5 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 
@@ -80,8 +79,8 @@ class ExerciseLogRepository {
 
     /// Don't add any previous set for [ExerciseType.Duration]
     /// Duration is captured in realtime from a fresh instance
-    exerciseLogs[oldExerciseLogIndex] =
-        oldExerciseLog.copyWith(id: newExercise.id, exercise: newExercise, sets: withReps(type: newExercise.type) ? [newSet] : []);
+    exerciseLogs[oldExerciseLogIndex] = oldExerciseLog.copyWith(
+        id: newExercise.id, exercise: newExercise, sets: withReps(type: newExercise.type) ? [newSet] : []);
 
     _exerciseLogs = [...exerciseLogs];
   }
@@ -113,22 +112,6 @@ class ExerciseLogRepository {
 
     final exerciseLog = _exerciseLogs[exerciseLogIndex];
     _exerciseLogs[exerciseLogIndex] = exerciseLog.copyWith(notes: value);
-  }
-
-  void updateExerciseLogRepRange({required String exerciseLogId, required RangeValues values}) {
-    final exerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: exerciseLogId);
-
-    if (exerciseLogIndex == -1) {
-      return;
-    }
-
-    final exerciseLog = _exerciseLogs[exerciseLogIndex];
-
-    final exerciseLogs = List<ExerciseLogDto>.from(_exerciseLogs);
-
-    exerciseLogs[exerciseLogIndex] = exerciseLog.copyWith(minReps: values.start.toInt(), maxReps: values.end.toInt());
-
-    _exerciseLogs = [...exerciseLogs];
   }
 
   void addSuperSets(

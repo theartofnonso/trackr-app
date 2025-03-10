@@ -1,15 +1,14 @@
-
 import 'package:tracker_app/dtos/set_dtos/set_dto.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../enums/exercise_type_enums.dart';
 
-
 class WeightAndRepsSetDto extends SetDto {
   final double _weight;
   final int _reps;
 
-  const WeightAndRepsSetDto({required double weight, required int reps, super.checked = false, super.rpeRating = 4, super.isWorkingSet})
+  const WeightAndRepsSetDto(
+      {required double weight, required int reps, super.checked = false, super.rpeRating = 4, super.isWorkingSet})
       : _weight = weight,
         _reps = reps;
 
@@ -21,8 +20,13 @@ class WeightAndRepsSetDto extends SetDto {
   ExerciseType get type => ExerciseType.weights;
 
   @override
-  WeightAndRepsSetDto copyWith({double? weight, int? reps, bool? checked, int? rpeRating}) {
-    return WeightAndRepsSetDto(weight: weight ?? _weight, reps: reps ?? _reps, checked: checked ?? super.checked, rpeRating: rpeRating ?? super.rpeRating);
+  WeightAndRepsSetDto copyWith({double? weight, int? reps, bool? checked, int? rpeRating, bool? isWorkingSet}) {
+    return WeightAndRepsSetDto(
+        weight: weight ?? _weight,
+        reps: reps ?? _reps,
+        checked: checked ?? super.checked,
+        rpeRating: rpeRating ?? super.rpeRating,
+        isWorkingSet: isWorkingSet ?? super.isWorkingSet);
   }
 
   @override
@@ -47,6 +51,6 @@ class WeightAndRepsSetDto extends SetDto {
 
   @override
   String toString() {
-    return 'WeightAndRepsSetDTO{weight: $_weight, reps: $_reps, checked: ${super.checked}, type: $type}, rpeRating: ${super.rpeRating}';
+    return 'WeightAndRepsSetDTO{weight: $_weight, reps: $_reps, checked: ${super.checked}, type: $type}, rpeRating: ${super.rpeRating}, isWorkingSet: ${super.isWorkingSet}}';
   }
 }

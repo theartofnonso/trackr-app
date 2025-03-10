@@ -8,7 +8,6 @@ import 'package:go_router/go_router.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
-import 'package:tracker_app/enums/training_goal_enums.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
 import 'package:tracker_app/health_and_fitness_stats.dart';
@@ -24,7 +23,6 @@ import 'package:tracker_app/widgets/empty_states/horizontal_stacked_bars_empty_s
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
-import '../../controllers/routine_user_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../dtos/open_ai_response_schema_dtos/exercise_performance_report.dart';
 import '../../dtos/set_dtos/reps_dto.dart';
@@ -205,7 +203,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SingleChildScrollView(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
                     scrollDirection: Axis.horizontal,
                     child: Row(mainAxisAlignment: MainAxisAlignment.start, children: muscleGroups)),
                 const SizedBox(height: 10),
@@ -407,12 +405,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     if (selectedMuscleGroup == null) return;
 
-    final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
-
-    final user = routineUserController.user;
-
-    final trainingGoal = user?.trainingGoal ?? TrainingGoal.hypertrophy;
-
     final exerciseLogsForMuscleGroups = exerciseLogs
         .where((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup == selectedMuscleGroup)
         .sorted((a, b) => b.createdAt.compareTo(a.createdAt))
@@ -444,7 +436,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     buffer.writeln();
 
-    final trainingPrompt = generateTrainingPrompt(trainingGoal: trainingGoal, muscleGroups: [selectedMuscleGroup]);
+    final trainingPrompt = generateTrainingPrompt(muscleGroups: [selectedMuscleGroup]);
 
     buffer.writeln(trainingPrompt);
 

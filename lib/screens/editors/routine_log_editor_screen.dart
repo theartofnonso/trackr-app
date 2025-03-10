@@ -11,7 +11,6 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
-import 'package:tracker_app/enums/training_goal_enums.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/utils/routine_editors_utils.dart';
@@ -20,7 +19,6 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
-import '../../controllers/routine_user_controller.dart';
 import '../../dtos/appsync/exercise_dto.dart';
 import '../../enums/posthog_analytics_event.dart';
 import '../../enums/routine_editor_type_enums.dart';
@@ -217,12 +215,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   }
 
   void _generateReport({required RoutineLogDto routineLog}) async {
-    final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
-
-    final user = routineUserController.user;
-
-    String instruction = prepareLogInstruction(
-        context: context, routineLog: routineLog, trainingGoal: user?.trainingGoal ?? TrainingGoal.hypertrophy);
+    String instruction = prepareLogInstruction(context: context, routineLog: routineLog);
 
     runMessage(system: routineLogSystemInstruction, user: instruction, responseFormat: routineLogReportResponseFormat)
         .then((response) {
@@ -375,13 +368,13 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                       SafeArea(
                         minimum: EdgeInsets.all(10),
                         child: SizedBox(
-                          width: double.infinity,
-                          child: OpacityButtonWidget(
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            buttonColor: vibrantGreen,
-                            label: widget.mode == RoutineEditorMode.log ? "Finish Session" : "Update Session",
-                            onPressed: widget.mode == RoutineEditorMode.log ? _saveLog : _updateLog,
-                          )),
+                            width: double.infinity,
+                            child: OpacityButtonWidget(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              buttonColor: vibrantGreen,
+                              label: widget.mode == RoutineEditorMode.log ? "Finish Session" : "Update Session",
+                              onPressed: widget.mode == RoutineEditorMode.log ? _saveLog : _updateLog,
+                            )),
                       ),
                     if (exerciseLogs.isEmpty)
                       Expanded(

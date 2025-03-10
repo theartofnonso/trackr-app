@@ -24,14 +24,12 @@ import 'package:tracker_app/widgets/routine/editors/set_rows/reps_set_row.dart';
 import 'package:tracker_app/widgets/routine/editors/set_rows/weights_and_reps_set_row.dart';
 
 import '../../../colors.dart';
-import '../../../controllers/routine_user_controller.dart';
 import '../../../dtos/graph/chart_point_dto.dart';
 import '../../../dtos/set_dtos/reps_dto.dart';
 import '../../../dtos/set_dtos/set_dto.dart';
 import '../../../dtos/set_dtos/weight_and_reps_dto.dart';
 import '../../../enums/chart_unit_enum.dart';
 import '../../../enums/routine_editor_type_enums.dart';
-import '../../../enums/training_goal_enums.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/one_rep_max_calculator.dart';
@@ -401,9 +399,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     Color progressionColor = vibrantBlue;
     TrainingProgression trainingProgression = TrainingProgression.maintain;
 
-    final trainingGoal =
-        Provider.of<RoutineUserController>(context, listen: false).user?.trainingGoal ?? TrainingGoal.hypertrophy;
-
+    /// Get working sets
     final workingSets = switch (exerciseType) {
       ExerciseType.weights => markHighestWeightSets(sets),
       ExerciseType.bodyWeight => markHighestRepsSets(sets),
@@ -412,6 +408,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         .where((set) => set.isWorkingSet)
         .toList();
 
+    /// Determine progression for working sets where [ExerciseType] is [ExerciseType.bodyWeight] or [ExerciseType.weights]
     if (withReps(type: exerciseType)) {
       final trainingData = workingSets.map((set) {
         if (exerciseType == ExerciseType.weights) {
@@ -420,9 +417,27 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         return TrainingData(reps: (set as RepsSetDto).reps, rpe: set.rpeRating);
       }).toList();
 
-      trainingProgression = getTrainingProgression(trainingData, trainingGoal.minReps, trainingGoal.maxReps);
+      /// Determine rep range using historic training data
+      final reps = switch (exerciseType) {
+        ExerciseType.weights => markHighestWeightSets(previousSets),
+        ExerciseType.bodyWeight => markHighestRepsSets(previousSets),
+        ExerciseType.duration => markHighestDurationSets(previousSets),
+      }
+          .map((set) {
+        return switch (exerciseType) {
+          ExerciseType.weights => (set as WeightAndRepsSetDto).reps,
+          ExerciseType.bodyWeight => (set as RepsSetDto).reps,
+          ExerciseType.duration => 0,
+        };
+      }).toList();
+
+      final typicalRepRange = determineTypicalRepRange(reps: reps);
+
+      trainingProgression = getTrainingProgression(
+          data: trainingData, targetMinReps: typicalRepRange.minReps, targetMaxReps: typicalRepRange.maxReps);
     }
 
+    /// Determine working set for weight or reps progression
     final workingSet = switch (exerciseType) {
       ExerciseType.weights => getHeaviestVolume(workingSets),
       ExerciseType.bodyWeight => getHighestReps(workingSets),
@@ -431,6 +446,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final weightsOrRepsLabel = withWeightsOnly(type: exerciseType) ? "weight" : "reps";
 
+    /// Generate weight or reps progression summary
     progressionSummary = switch (trainingProgression) {
       TrainingProgression.increase =>
         ", time to take it up a notch, increase the $weightsOrRepsLabel for ${workingSet?.summary()}.",
@@ -440,6 +456,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         ", right on track, stick with your current $weightsOrRepsLabel for ${workingSet?.summary()}."
     };
 
+    /// Generate weight or reps progression color
     progressionColor = switch (trainingProgression) {
       TrainingProgression.increase => vibrantGreen,
       TrainingProgression.decrease => Colors.deepOrange,

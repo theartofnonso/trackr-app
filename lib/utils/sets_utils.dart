@@ -92,10 +92,7 @@ List<RepsSetDto> markHighestRepsSets(List<SetDto> sets) {
   // Map original list and update working sets
   return repsSets.map((set) {
     return RepsSetDto(
-        reps: set.reps,
-        checked: set.checked,
-        rpeRating: set.rpeRating,
-        isWorkingSet: set.reps == maxReps);
+        reps: set.reps, checked: set.checked, rpeRating: set.rpeRating, isWorkingSet: set.reps == maxReps);
   }).toList();
 }
 
@@ -121,7 +118,6 @@ List<DurationSetDto> markHighestDurationSets(List<SetDto> sets) {
 /// Single
 // Returns the highest weight from WeightAndRepsSetDto instances
 WeightAndRepsSetDto? getHighestWeight(List<SetDto> sets) {
-
   if (sets.isEmpty) return null;
 
   final weightSets = sets.whereType<WeightAndRepsSetDto>().toList();
@@ -131,7 +127,6 @@ WeightAndRepsSetDto? getHighestWeight(List<SetDto> sets) {
 
 // Returns the heaviest volume (weight * reps) from WeightAndRepsSetDto instances
 WeightAndRepsSetDto? getHeaviestVolume(List<SetDto> sets) {
-
   if (sets.isEmpty) return null;
 
   final weightSets = sets.whereType<WeightAndRepsSetDto>().toList();
@@ -141,7 +136,6 @@ WeightAndRepsSetDto? getHeaviestVolume(List<SetDto> sets) {
 
 // Returns the highest reps count from RepsSetDto instances
 RepsSetDto? getHighestReps(List<SetDto> sets) {
-
   if (sets.isEmpty) return null;
 
   final repsSets = sets.whereType<RepsSetDto>().toList();
@@ -151,7 +145,6 @@ RepsSetDto? getHighestReps(List<SetDto> sets) {
 
 // Returns the longest duration from DurationSetDto instances
 DurationSetDto? getLongestDuration(List<SetDto> sets) {
-
   if (sets.isEmpty) return null;
 
   final durationSets = sets.whereType<DurationSetDto>().toList();
@@ -175,13 +168,68 @@ bool _allRepsSetsEmpty(List<SetDto> sets) {
 }
 
 bool hasEmptyValues({required List<SetDto> sets, required ExerciseType exerciseType}) {
-
-  return switch(exerciseType) {
+  return switch (exerciseType) {
     ExerciseType.weights => _allWeightsSetsEmpty(sets),
     ExerciseType.bodyWeight => _allRepsSetsEmpty(sets),
     ExerciseType.duration => _allDurationSetsEmpty(sets),
   };
 }
 
+/// Rep Ranges
+class RepRange {
+  final int minReps;
+  final int maxReps;
 
+  RepRange(this.minReps, this.maxReps);
 
+  @override
+  String toString() => 'Min Reps: $minReps, Max Reps: $maxReps)';
+}
+
+RepRange determineTypicalRepRange({required List<int> reps}) {
+  if (reps.isEmpty) {
+    return RepRange(0, 0);
+  }
+
+  // Sort the reps in ascending order
+  reps.sort();
+
+  // Calculate 25th and 75th percentiles (lower and upper quartiles)
+  final double minVal = _calculatePercentile(reps, 25);
+  final double maxVal = _calculatePercentile(reps, 75);
+
+  // Round to nearest integers and ensure valid range
+  int minReps = minVal.round();
+  int maxReps = maxVal.round();
+
+  // Ensure max isn't smaller than min due to rounding
+  if (maxReps < minReps) {
+    maxReps = minReps;
+  }
+
+  return RepRange(minReps, maxReps);
+}
+
+double _calculatePercentile(List<int> sortedReps, double percentile) {
+  if (sortedReps.isEmpty) return 0.0;
+
+  final int n = sortedReps.length;
+  if (n == 1) return sortedReps[0].toDouble();
+
+  // Calculate the index position
+  final double index = (percentile / 100) * (n - 1);
+  final int lowerIndex = index.floor();
+  final int upperIndex = index.ceil();
+
+  // If the index is exact, return the value
+  if (lowerIndex == upperIndex) {
+    return sortedReps[lowerIndex].toDouble();
+  }
+
+  // Linear interpolation between surrounding values
+  final double lowerValue = sortedReps[lowerIndex].toDouble();
+  final double upperValue = sortedReps[upperIndex].toDouble();
+  final double fraction = index - lowerIndex;
+
+  return lowerValue + fraction * (upperValue - lowerValue);
+}

@@ -7,7 +7,7 @@ class TrainingData {
   TrainingData({required this.reps, required this.rpe});
 }
 
-TrainingProgression getTrainingProgression(List<TrainingData> data, int targetMinReps, int targetMaxReps) {
+TrainingProgression getTrainingProgression({required List<TrainingData> data, required int targetMinReps, required int targetMaxReps}) {
   if (data.isEmpty) return TrainingProgression.maintain; // Handle empty input
 
   int increaseCount = 0;

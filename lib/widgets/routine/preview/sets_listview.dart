@@ -34,7 +34,7 @@ class SetsListview extends StatelessWidget {
       ));
     }
 
-    final markedSets = switch (type) {
+    final workingSets = switch (type) {
       ExerciseType.weights => markHeaviestVolumeSets(sets),
       ExerciseType.bodyWeight => markHighestRepsSets(sets),
       ExerciseType.duration => markHighestDurationSets(sets),
@@ -47,25 +47,26 @@ class SetsListview extends StatelessWidget {
         physics: NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
           final set = sets[index];
-          final markedSet = markedSets[index];
+          final workingSet = workingSets[index];
           final pbsForSet = pbsBySet[set] ?? [];
-          switch (markedSet.type) {
+          switch (set.type) {
             case ExerciseType.weights:
-              final firstLabel = (markedSet as WeightAndRepsSetDto).weight;
-              final secondLabel = markedSet.reps;
+              final firstLabel = (set as WeightAndRepsSetDto).weight;
+              final secondLabel = set.reps;
               return SetModeBadge(
-                setDto: markedSet,
+                setDto: (workingSet as WeightAndRepsSetDto?) ?? set,
                 child: DoubleSetRow(first: "$firstLabel", second: "$secondLabel", pbs: pbsForSet),
               );
             case ExerciseType.bodyWeight:
-              final label = (markedSet as RepsSetDto).reps;
-              return SetModeBadge(setDto: markedSet, child: SingleSetRow(label: "$label"));
+              final label = (set as RepsSetDto).reps;
+              return SetModeBadge(setDto: (workingSet as RepsSetDto?) ?? set, child: SingleSetRow(label: "$label"));
             case ExerciseType.duration:
-              final label = (markedSet as DurationSetDto).duration.hmsDigital();
-              return SetModeBadge(setDto: markedSet, child: SingleSetRow(label: label, pbs: pbsForSet));
+              final label = (set as DurationSetDto).duration.hmsDigital();
+              return SetModeBadge(
+                  setDto: (workingSet as DurationSetDto?) ?? set, child: SingleSetRow(label: label, pbs: pbsForSet));
           }
         },
         separatorBuilder: (context, index) => SizedBox(height: 8),
-        itemCount: markedSets.length);
+        itemCount: sets.length);
   }
 }
