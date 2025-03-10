@@ -1,23 +1,20 @@
 enum TrainingProgression { increase, decrease, maintain }
 
-enum WeightProgression { increase, decrease, maintain }
-
-class TrainingEffort {
-  final double weight;
+class TrainingData {
   final int reps;
   final int rpe;
 
-  TrainingEffort({required this.weight, required this.reps, required this.rpe});
+  TrainingData({required this.reps, required this.rpe});
 }
 
-WeightProgression getWeightProgression(List<TrainingEffort> effort, int targetMinReps, int targetMaxReps) {
-  if (effort.isEmpty) return WeightProgression.maintain; // Handle empty input
+TrainingProgression getTrainingProgression(List<TrainingData> data, int targetMinReps, int targetMaxReps) {
+  if (data.isEmpty) return TrainingProgression.maintain; // Handle empty input
 
   int increaseCount = 0;
   int decreaseCount = 0;
   int maintainCount = 0;
 
-  for (final session in effort) {
+  for (final session in data) {
     final suggestion = _getTrainingProgression(session, targetMinReps, targetMaxReps);
     switch(suggestion) {
 
@@ -34,14 +31,14 @@ WeightProgression getWeightProgression(List<TrainingEffort> effort, int targetMi
   }
 
   if (increaseCount > decreaseCount && increaseCount > maintainCount) {
-    return WeightProgression.increase;
+    return TrainingProgression.increase;
   } else if (decreaseCount > increaseCount && decreaseCount > maintainCount) {
-    return WeightProgression.decrease;
+    return TrainingProgression.decrease;
   }
-  return WeightProgression.maintain;
+  return TrainingProgression.maintain;
 }
 
-TrainingProgression _getTrainingProgression(TrainingEffort effort, int targetMin, int targetMax) {
+TrainingProgression _getTrainingProgression(TrainingData effort, int targetMin, int targetMax) {
   final reps = effort.reps;
   final rpe = effort.rpe;
 

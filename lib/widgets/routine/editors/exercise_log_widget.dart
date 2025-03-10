@@ -399,36 +399,58 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     String progressionSummary = "";
     Color progressionColor = vibrantBlue;
+    TrainingProgression trainingProgression = TrainingProgression.maintain;
 
-    if (exerciseType == ExerciseType.weights) {
-      final trainingEfforts = sets
-          .map((set) =>
-              TrainingEffort(weight: (set as WeightAndRepsSetDto).weight, reps: (set).reps, rpe: set.rpeRating))
-          .toList();
+    final trainingGoal =
+        Provider.of<RoutineUserController>(context, listen: false).user?.trainingGoal ?? TrainingGoal.hypertrophy;
 
-      final trainingGoal =
-          Provider.of<RoutineUserController>(context, listen: false).user?.trainingGoal ?? TrainingGoal.hypertrophy;
+    final workingSets = switch (exerciseType) {
+      ExerciseType.weights => markHighestWeightSets(sets),
+      ExerciseType.bodyWeight => markHighestRepsSets(sets),
+      ExerciseType.duration => markHighestDurationSets(sets),
+    }
+        .where((set) => set.isWorkingSet)
+        .toList();
 
-      final progression = getWeightProgression(trainingEfforts, trainingGoal.minReps, trainingGoal.maxReps);
+    if (withReps(type: exerciseType)) {
+      final trainingData = workingSets.map((set) {
+        if (exerciseType == ExerciseType.weights) {
+          return TrainingData(reps: (set as WeightAndRepsSetDto).reps, rpe: set.rpeRating);
+        }
+        return TrainingData(reps: (set as RepsSetDto).reps, rpe: set.rpeRating);
+      }).toList();
 
-      progressionSummary = switch (progression) {
-        WeightProgression.increase => ", It's time to increase the weights for your working sets!",
-        WeightProgression.decrease => ", You should consider reducing the weights for your working sets!",
-        WeightProgression.maintain => ", Keep maintaining the weights for your working sets!"
-      };
+      trainingProgression = getTrainingProgression(trainingData, trainingGoal.minReps, trainingGoal.maxReps);
+    }
 
-      progressionColor = switch (progression) {
-        WeightProgression.increase => vibrantGreen,
-        WeightProgression.decrease => Colors.deepOrange,
-        WeightProgression.maintain => vibrantBlue
-      };
+    final workingSet = switch (exerciseType) {
+      ExerciseType.weights => getHeaviestVolume(workingSets),
+      ExerciseType.bodyWeight => getHighestReps(workingSets),
+      ExerciseType.duration => getLongestDuration(workingSets),
+    };
 
-      final isEmptySets = hasEmptyValues(sets: sets, exerciseType: exerciseType);
+    final weightsOrRepsLabel = withWeightsOnly(type: exerciseType) ? "weight" : "reps";
 
-      if (isEmptySets) {
-        progressionSummary = ".";
-        progressionColor = vibrantBlue;
-      }
+    progressionSummary = switch (trainingProgression) {
+      TrainingProgression.increase =>
+        ", time to take it up a notch, increase the $weightsOrRepsLabel for ${workingSet?.summary()}.",
+      TrainingProgression.decrease =>
+        ", dial it back a bit, reduce the $weightsOrRepsLabel for ${workingSet?.summary()} for now.",
+      TrainingProgression.maintain =>
+        ", right on track, stick with your current $weightsOrRepsLabel for ${workingSet?.summary()}."
+    };
+
+    progressionColor = switch (trainingProgression) {
+      TrainingProgression.increase => vibrantGreen,
+      TrainingProgression.decrease => Colors.deepOrange,
+      TrainingProgression.maintain => vibrantBlue
+    };
+
+    final isEmptySets = hasEmptyValues(sets: sets, exerciseType: exerciseType);
+
+    if (isEmptySets) {
+      progressionSummary = ".";
+      progressionColor = vibrantBlue;
     }
 
     final rpeRatings = sets.mapIndexed((index, set) => set.rpeRating).toList();
@@ -437,12 +459,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     List<Color> rpeColors = rpeRatings.mapIndexed((index, rating) => _getIntensityColor(intensity: rating)).toList();
 
     final rpeTrendSummary = _getRpeTrendSummary(ratings: rpeRatings);
-
-    final workingSet = switch (exerciseType) {
-      ExerciseType.weights => getHeaviestVolume(sets),
-      ExerciseType.bodyWeight => getHighestReps(sets),
-      ExerciseType.duration => getLongestDuration(sets),
-    };
 
     return Scaffold(
       appBar: AppBar(
@@ -676,8 +692,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                                         text: " ",
                                       ),
                                       TextSpan(
-                                        text:
-                                            "is your working set, driving you toward your training goals. All others are warm-ups.",
+                                        text: "is your most challenging set, driving you toward your training goals.",
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodySmall
