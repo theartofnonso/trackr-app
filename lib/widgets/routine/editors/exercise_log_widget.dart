@@ -1239,7 +1239,9 @@ class FacePainter extends CustomPainter {
       radius: 1.0,
       colors: [
         color,
-        vibrantGreen, // You mentioned vibrantGreen in your snippet
+        // For demonstration, using a constant vibrantGreen
+        // Adjust to your preference
+        vibrantGreen,
       ],
       stops: const [0.0, 1.0],
     );
@@ -1249,8 +1251,6 @@ class FacePainter extends CustomPainter {
   }
 
   void _drawFace(Canvas canvas, Size size) {
-    // Decide which expression we want
-    // (result is the same ratio you used for color)
     late Expression expression;
     if (result < 0.3) {
       expression = Expression.angry;
@@ -1278,127 +1278,127 @@ class FacePainter extends CustomPainter {
     }
   }
 
+  // -----------------------
+  // ANGRY FACE
+  // -----------------------
   void _drawAngryFace(Canvas canvas, Size size) {
     final paint = Paint()..color = Colors.black;
 
-    // Example: slanted “angry” eyebrows + a downturned mouth
-    final double eyeRadius = size.width * 0.03;
+    // Slightly smaller eyes to look more "angry/squinted"
+    final eyeRadius = size.width * 0.02;
     final leftEyeCenter = Offset(size.width * 0.35, size.height * 0.3);
     final rightEyeCenter = Offset(size.width * 0.65, size.height * 0.3);
 
-    // Angled eyebrows: draw small lines above each eye
+    // Draw eyes as small circles
+    canvas.drawCircle(leftEyeCenter, eyeRadius, paint);
+    canvas.drawCircle(rightEyeCenter, eyeRadius, paint);
+
+    // Angled eyebrows
     final eyebrowPaint = Paint()
       ..color = Colors.black
-      ..strokeWidth = 3.0
+      ..strokeWidth = 4.0
       ..strokeCap = StrokeCap.round;
 
-    // Left eyebrow (slant down from left to right)
+    // Left eyebrow (steep diagonal down from left to right)
     canvas.drawLine(
-      Offset(leftEyeCenter.dx - eyeRadius, leftEyeCenter.dy - eyeRadius),
-      Offset(leftEyeCenter.dx + eyeRadius, leftEyeCenter.dy - eyeRadius / 2),
+      Offset(leftEyeCenter.dx - eyeRadius * 1.5, leftEyeCenter.dy - eyeRadius * 1.8),
+      Offset(leftEyeCenter.dx + eyeRadius * 1.3, leftEyeCenter.dy - eyeRadius * 0.4),
       eyebrowPaint,
     );
-    // Right eyebrow (slant down from right to left)
+    // Right eyebrow (steep diagonal down from right to left)
     canvas.drawLine(
-      Offset(rightEyeCenter.dx + eyeRadius, rightEyeCenter.dy - eyeRadius),
-      Offset(rightEyeCenter.dx - eyeRadius, rightEyeCenter.dy - eyeRadius / 2),
+      Offset(rightEyeCenter.dx + eyeRadius * 1.5, rightEyeCenter.dy - eyeRadius * 1.8),
+      Offset(rightEyeCenter.dx - eyeRadius * 1.3, rightEyeCenter.dy - eyeRadius * 0.4),
       eyebrowPaint,
     );
 
-    // Eyes as small filled circles (like glaring eyes)
-    canvas.drawCircle(leftEyeCenter, eyeRadius * 0.8, paint);
-    canvas.drawCircle(rightEyeCenter, eyeRadius * 0.8, paint);
-
-    // Downturned mouth (arc)
-    final mouthWidth = size.width * 0.25;
+    // Big downward frown
+    final mouthWidth = size.width * 0.35;
     final mouthRect = Rect.fromCenter(
-      center: Offset(size.width * 0.50, size.height * 0.5),
+      center: Offset(size.width * 0.50, size.height * 0.52),
       width: mouthWidth,
-      height: size.height * 0.07,
+      height: size.height * 0.10,
     );
-    // Arc from π to 2π draws a “frown”
+    // Arc from π to 2π => large frown
     canvas.drawArc(mouthRect, math.pi, math.pi, false, paint);
   }
 
+  // -----------------------
+  // SAD FACE
+  // -----------------------
   void _drawSadFace(Canvas canvas, Size size) {
     final paint = Paint()..color = Colors.black;
 
-    // Closed eyes as arcs
-    final double eyeRadius = size.width * 0.03;
-    final leftEyeRect = Rect.fromCircle(
-      center: Offset(size.width * 0.35, size.height * 0.3),
-      radius: eyeRadius,
-    );
-    final rightEyeRect = Rect.fromCircle(
-      center: Offset(size.width * 0.65, size.height * 0.3),
-      radius: eyeRadius,
-    );
+    final eyeRadius = size.width * 0.03;
+    final leftEyeCenter = Offset(size.width * 0.35, size.height * 0.3);
+    final rightEyeCenter = Offset(size.width * 0.65, size.height * 0.3);
 
-    // Arc from π to 0 (a downward arc) => “closed” or “sleepy” eyes
-    canvas.drawArc(leftEyeRect, math.pi, -math.pi, false, paint);
-    canvas.drawArc(rightEyeRect, math.pi, -math.pi, false, paint);
+    // Drooping eyes using arcs that slope downward
+    // We'll draw arcs from 0.0 to π, but offset so they look droopy
+    final leftEyeRect = Rect.fromCircle(center: leftEyeCenter, radius: eyeRadius);
+    final rightEyeRect = Rect.fromCircle(center: rightEyeCenter, radius: eyeRadius);
 
-    // Sad mouth: a small downward arc
-    final mouthRect = Rect.fromCenter(
-      center: Offset(size.width * 0.50, size.height * 0.45),
-      width: size.width * 0.20,
-      height: size.height * 0.05,
-    );
-    // Arc from 0 to π draws a downward arc
-    canvas.drawArc(mouthRect, 0, math.pi, false, paint);
-  }
+    // Arc from 0.2π to 0.8π => partial downward arc
+    // Adjust the angles as needed
+    canvas.drawArc(leftEyeRect, 0.2 * math.pi, 0.6 * math.pi, false, paint);
+    canvas.drawArc(rightEyeRect, 0.2 * math.pi, 0.6 * math.pi, false, paint);
 
-  void _drawSmilingFace(Canvas canvas, Size size) {
-    final paint = Paint()..color = Colors.black;
-
-    // “Smiling” eyes: small arcs curved upwards
-    final double eyeRadius = size.width * 0.03;
-    final leftEyeRect = Rect.fromCircle(
-      center: Offset(size.width * 0.35, size.height * 0.3),
-      radius: eyeRadius,
-    );
-    final rightEyeRect = Rect.fromCircle(
-      center: Offset(size.width * 0.65, size.height * 0.3),
-      radius: eyeRadius,
-    );
-
-    // Arc from 0 to π (but flipped to look “smiling”—use negative sweep)
-    canvas.drawArc(leftEyeRect, 0, math.pi, false, paint);
-    canvas.drawArc(rightEyeRect, 0, math.pi, false, paint);
-
-    // Smiling mouth: upward arc
+    // Sad mouth: small downward arc
     final mouthRect = Rect.fromCenter(
       center: Offset(size.width * 0.50, size.height * 0.45),
       width: size.width * 0.25,
-      height: size.height * 0.05,
+      height: size.height * 0.07,
+    );
+    // Arc from 0 to π => simple downward arc
+    canvas.drawArc(mouthRect, 0, math.pi, false, paint);
+  }
+
+  // -----------------------
+  // SMILING FACE
+  // -----------------------
+  void _drawSmilingFace(Canvas canvas, Size size) {
+    final paint = Paint()..color = Colors.black;
+
+    final eyeRadius = size.width * 0.025;
+    final leftEyeCenter = Offset(size.width * 0.35, size.height * 0.3);
+    final rightEyeCenter = Offset(size.width * 0.65, size.height * 0.3);
+
+    // Smiling eyes: arcs that curve upwards
+    final leftEyeRect = Rect.fromCircle(center: leftEyeCenter, radius: eyeRadius);
+    final rightEyeRect = Rect.fromCircle(center: rightEyeCenter, radius: eyeRadius);
+
+    // Arc from math.pi to 2*math.pi => an upward arc
+    canvas.drawArc(leftEyeRect, math.pi, math.pi, false, paint);
+    canvas.drawArc(rightEyeRect, math.pi, math.pi, false, paint);
+
+    // Smiling mouth: moderate upward arc
+    final mouthRect = Rect.fromCenter(
+      center: Offset(size.width * 0.50, size.height * 0.48),
+      width: size.width * 0.30,
+      height: size.height * 0.08,
     );
     // Arc from math.pi to 0 => upward
     canvas.drawArc(mouthRect, math.pi, -math.pi, false, paint);
   }
 
+  // -----------------------
+  // HAPPY FACE
+  // -----------------------
   void _drawHappyFace(Canvas canvas, Size size) {
     final paint = Paint()..color = Colors.black;
 
-    // “Happy” eyes: maybe open circles or big arcs
-    final double eyeRadius = size.width * 0.03;
-    canvas.drawCircle(
-      Offset(size.width * 0.35, size.height * 0.3),
-      eyeRadius,
-      paint,
-    );
-    canvas.drawCircle(
-      Offset(size.width * 0.65, size.height * 0.3),
-      eyeRadius,
-      paint,
-    );
+    final eyeRadius = size.width * 0.03;
+    // Big open eyes
+    canvas.drawCircle(Offset(size.width * 0.35, size.height * 0.3), eyeRadius, paint);
+    canvas.drawCircle(Offset(size.width * 0.65, size.height * 0.3), eyeRadius, paint);
 
-    // Big smiling mouth
+    // Large, wide upward arc for a big smile
     final mouthRect = Rect.fromCenter(
-      center: Offset(size.width * 0.50, size.height * 0.45),
-      width: size.width * 0.30,
-      height: size.height * 0.10,
+      center: Offset(size.width * 0.50, size.height * 0.50),
+      width: size.width * 0.40,
+      height: size.height * 0.15,
     );
-    // Arc from math.pi to 0 => big upward smile
+    // Arc from math.pi to 0 => large upward smile
     canvas.drawArc(mouthRect, math.pi, -math.pi, false, paint);
   }
 
