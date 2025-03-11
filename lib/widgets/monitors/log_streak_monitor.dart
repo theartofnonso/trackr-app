@@ -81,7 +81,7 @@ class LogStreakMonitor extends StatelessWidget {
                   width: 75,
                   height: 75,
                   child: CustomPaint(
-                    painter: FacePainter(color: logStreakColor(monthlyProgress)),
+                    painter: FacePainter(color: logStreakColor(monthlyProgress), result: monthlyProgress / 12),
                   ),
                 ),
               )

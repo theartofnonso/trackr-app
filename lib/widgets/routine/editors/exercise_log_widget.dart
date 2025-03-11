@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -1216,10 +1218,13 @@ Map<int, String> _repToPercentage = {
 };
 
 class FacePainter extends CustomPainter {
-
+  // We pass in:
+  // 1) color for the background gradient
+  // 2) result to decide the face expression
   final Color color;
+  final double result;
 
-  FacePainter({super.repaint, required this.color});
+  FacePainter({required this.color, required this.result});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -1228,15 +1233,13 @@ class FacePainter extends CustomPainter {
   }
 
   void _drawGradientBackground(Canvas canvas, Size size) {
-    // Create a radial gradient, centered left-of-center to emulate
-    // an orange area blending into green.
     final rect = Offset.zero & size;
     final gradient = RadialGradient(
-      center: const Alignment(-0.7, 0.0), // shift the center to the left
+      center: const Alignment(-0.7, 0.0),
       radius: 1.0,
       colors: [
         color,
-        vibrantGreen
+        vibrantGreen, // You mentioned vibrantGreen in your snippet
       ],
       stops: const [0.0, 1.0],
     );
@@ -1246,41 +1249,169 @@ class FacePainter extends CustomPainter {
   }
 
   void _drawFace(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.black
-      ..style = PaintingStyle.fill;
+    // Decide which expression we want
+    // (result is the same ratio you used for color)
+    late Expression expression;
+    if (result < 0.3) {
+      expression = Expression.angry;
+    } else if (result < 0.5) {
+      expression = Expression.sad;
+    } else if (result < 0.8) {
+      expression = Expression.smiling;
+    } else {
+      expression = Expression.happy;
+    }
 
-    // Positions for eyes (two small arcs or half-circles).
-    // Adjust as needed for your desired look.
-    final eyeRadius = size.width * 0.03;
+    switch (expression) {
+      case Expression.angry:
+        _drawAngryFace(canvas, size);
+        break;
+      case Expression.sad:
+        _drawSadFace(canvas, size);
+        break;
+      case Expression.smiling:
+        _drawSmilingFace(canvas, size);
+        break;
+      case Expression.happy:
+        _drawHappyFace(canvas, size);
+        break;
+    }
+  }
+
+  void _drawAngryFace(Canvas canvas, Size size) {
+    final paint = Paint()..color = Colors.black;
+
+    // Example: slanted “angry” eyebrows + a downturned mouth
+    final double eyeRadius = size.width * 0.03;
     final leftEyeCenter = Offset(size.width * 0.35, size.height * 0.3);
     final rightEyeCenter = Offset(size.width * 0.65, size.height * 0.3);
 
-    // Draw closed eyes as small arcs or “U” shapes turned upside down.
-    canvas.drawArc(
-      Rect.fromCircle(center: leftEyeCenter, radius: eyeRadius),
-      0, // start angle (radians)
-      3.14, // sweep angle (π = half circle)
-      false,
+    // Angled eyebrows: draw small lines above each eye
+    final eyebrowPaint = Paint()
+      ..color = Colors.black
+      ..strokeWidth = 3.0
+      ..strokeCap = StrokeCap.round;
+
+    // Left eyebrow (slant down from left to right)
+    canvas.drawLine(
+      Offset(leftEyeCenter.dx - eyeRadius, leftEyeCenter.dy - eyeRadius),
+      Offset(leftEyeCenter.dx + eyeRadius, leftEyeCenter.dy - eyeRadius / 2),
+      eyebrowPaint,
+    );
+    // Right eyebrow (slant down from right to left)
+    canvas.drawLine(
+      Offset(rightEyeCenter.dx + eyeRadius, rightEyeCenter.dy - eyeRadius),
+      Offset(rightEyeCenter.dx - eyeRadius, rightEyeCenter.dy - eyeRadius / 2),
+      eyebrowPaint,
+    );
+
+    // Eyes as small filled circles (like glaring eyes)
+    canvas.drawCircle(leftEyeCenter, eyeRadius * 0.8, paint);
+    canvas.drawCircle(rightEyeCenter, eyeRadius * 0.8, paint);
+
+    // Downturned mouth (arc)
+    final mouthWidth = size.width * 0.25;
+    final mouthRect = Rect.fromCenter(
+      center: Offset(size.width * 0.50, size.height * 0.5),
+      width: mouthWidth,
+      height: size.height * 0.07,
+    );
+    // Arc from π to 2π draws a “frown”
+    canvas.drawArc(mouthRect, math.pi, math.pi, false, paint);
+  }
+
+  void _drawSadFace(Canvas canvas, Size size) {
+    final paint = Paint()..color = Colors.black;
+
+    // Closed eyes as arcs
+    final double eyeRadius = size.width * 0.03;
+    final leftEyeRect = Rect.fromCircle(
+      center: Offset(size.width * 0.35, size.height * 0.3),
+      radius: eyeRadius,
+    );
+    final rightEyeRect = Rect.fromCircle(
+      center: Offset(size.width * 0.65, size.height * 0.3),
+      radius: eyeRadius,
+    );
+
+    // Arc from π to 0 (a downward arc) => “closed” or “sleepy” eyes
+    canvas.drawArc(leftEyeRect, math.pi, -math.pi, false, paint);
+    canvas.drawArc(rightEyeRect, math.pi, -math.pi, false, paint);
+
+    // Sad mouth: a small downward arc
+    final mouthRect = Rect.fromCenter(
+      center: Offset(size.width * 0.50, size.height * 0.45),
+      width: size.width * 0.20,
+      height: size.height * 0.05,
+    );
+    // Arc from 0 to π draws a downward arc
+    canvas.drawArc(mouthRect, 0, math.pi, false, paint);
+  }
+
+  void _drawSmilingFace(Canvas canvas, Size size) {
+    final paint = Paint()..color = Colors.black;
+
+    // “Smiling” eyes: small arcs curved upwards
+    final double eyeRadius = size.width * 0.03;
+    final leftEyeRect = Rect.fromCircle(
+      center: Offset(size.width * 0.35, size.height * 0.3),
+      radius: eyeRadius,
+    );
+    final rightEyeRect = Rect.fromCircle(
+      center: Offset(size.width * 0.65, size.height * 0.3),
+      radius: eyeRadius,
+    );
+
+    // Arc from 0 to π (but flipped to look “smiling”—use negative sweep)
+    canvas.drawArc(leftEyeRect, 0, math.pi, false, paint);
+    canvas.drawArc(rightEyeRect, 0, math.pi, false, paint);
+
+    // Smiling mouth: upward arc
+    final mouthRect = Rect.fromCenter(
+      center: Offset(size.width * 0.50, size.height * 0.45),
+      width: size.width * 0.25,
+      height: size.height * 0.05,
+    );
+    // Arc from math.pi to 0 => upward
+    canvas.drawArc(mouthRect, math.pi, -math.pi, false, paint);
+  }
+
+  void _drawHappyFace(Canvas canvas, Size size) {
+    final paint = Paint()..color = Colors.black;
+
+    // “Happy” eyes: maybe open circles or big arcs
+    final double eyeRadius = size.width * 0.03;
+    canvas.drawCircle(
+      Offset(size.width * 0.35, size.height * 0.3),
+      eyeRadius,
       paint,
     );
-    canvas.drawArc(
-      Rect.fromCircle(center: rightEyeCenter, radius: eyeRadius),
-      0,
-      3.14,
-      false,
+    canvas.drawCircle(
+      Offset(size.width * 0.65, size.height * 0.3),
+      eyeRadius,
       paint,
     );
 
-    // Draw a mouth/nose shape—here, just a small oval or “blob” in the middle.
+    // Big smiling mouth
     final mouthRect = Rect.fromCenter(
       center: Offset(size.width * 0.50, size.height * 0.45),
-      width: size.width * 0.08,
-      height: size.height * 0.04,
+      width: size.width * 0.30,
+      height: size.height * 0.10,
     );
-    canvas.drawOval(mouthRect, paint);
+    // Arc from math.pi to 0 => big upward smile
+    canvas.drawArc(mouthRect, math.pi, -math.pi, false, paint);
   }
 
   @override
-  bool shouldRepaint(FacePainter oldDelegate) => false;
+  bool shouldRepaint(covariant FacePainter oldDelegate) {
+    // If the color or result changes, we should repaint.
+    return oldDelegate.color != color || oldDelegate.result != result;
+  }
+}
+
+enum Expression {
+  angry,
+  sad,
+  smiling,
+  happy,
 }

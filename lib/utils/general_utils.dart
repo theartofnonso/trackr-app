@@ -112,7 +112,7 @@ Color logStreakColor(num value) {
   if (result < 0.3) {
     return Colors.red;
   } else if (result < 0.5) {
-    return Colors.deepOrangeAccent;
+    return Colors.yellow;
   } else if (result < 0.8) {
     return vibrantBlue;
   } else {
