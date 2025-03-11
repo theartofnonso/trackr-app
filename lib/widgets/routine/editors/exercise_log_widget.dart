@@ -24,16 +24,13 @@ import 'package:tracker_app/widgets/routine/editors/set_rows/reps_set_row.dart';
 import 'package:tracker_app/widgets/routine/editors/set_rows/weights_and_reps_set_row.dart';
 
 import '../../../colors.dart';
-import '../../../dtos/graph/chart_point_dto.dart';
 import '../../../dtos/set_dtos/reps_dto.dart';
 import '../../../dtos/set_dtos/set_dto.dart';
 import '../../../dtos/set_dtos/weight_and_reps_dto.dart';
-import '../../../enums/chart_unit_enum.dart';
 import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/one_rep_max_calculator.dart';
-import '../../chart/line_chart_widget.dart';
 import '../../dividers/label_divider.dart';
 import '../../empty_states/no_list_empty_state.dart';
 import '../../weight_plate_calculator.dart';
@@ -288,14 +285,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     super.dispose();
   }
 
-  Color _getIntensityColor({required int intensity}) {
-    if (rpeIntensityToColor.containsKey(intensity)) {
-      return rpeIntensityToColor[intensity]!;
-    } else {
-      throw ArgumentError("Invalid intensity level: $intensity");
-    }
-  }
-
   /// Analyzes a list of RPE ratings and returns a descriptive summary.
   String _getRpeTrendSummary({required List<int> ratings}) {
     bool isHigh(int rpe) => rpe >= 6;
@@ -392,8 +381,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final previousSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
         .wherePrevSetsForExercise(exercise: exerciseLog.exercise);
 
-    final superSetExerciseDto = widget.superSet;
-
     final exerciseType = exerciseLog.exercise.type;
 
     final sets = _showPreviousSets ? recentSets : currentSets;
@@ -472,9 +459,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     }
 
     final rpeRatings = sets.mapIndexed((index, set) => set.rpeRating).toList();
-    List<ChartPointDto> chartPoints = rpeRatings.mapIndexed((index, rating) => ChartPointDto(index, rating)).toList();
-    List<String> setIndexes = sets.mapIndexed((index, set) => "Set ${index + 1}").toList();
-    List<Color> rpeColors = rpeRatings.mapIndexed((index, rating) => _getIntensityColor(intensity: rating)).toList();
 
     final rpeTrendSummary = _getRpeTrendSummary(ratings: rpeRatings);
 
@@ -539,6 +523,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             )
           : null,
       body: Container(
+        padding: const EdgeInsets.only(top: 20),
         height: double.infinity,
         decoration: BoxDecoration(
           gradient: themeGradient(context: context),
@@ -548,39 +533,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           minimum: EdgeInsets.symmetric(horizontal: 10),
           child: SingleChildScrollView(
             child: Column(
-              spacing: 12,
+              spacing: 20,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                        child: GestureDetector(
-                      onTap: () {
-                        FocusScope.of(context).unfocus();
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => ExerciseHomeScreen(exercise: exerciseLog.exercise)));
-                      },
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (superSetExerciseDto != null)
-                            Wrap(
-                              crossAxisAlignment: WrapCrossAlignment.center,
-                              children: [
-                                FaIcon(
-                                  FontAwesomeIcons.link,
-                                  size: 10,
-                                ),
-                                const SizedBox(width: 4),
-                                Text(superSetExerciseDto.exercise.name, style: Theme.of(context).textTheme.bodyMedium),
-                              ],
-                            ),
-                        ],
-                      ),
-                    )),
-                  ],
-                ),
                 TextField(
                   controller: TextEditingController(text: exerciseLog.notes),
                   cursorColor: isDarkMode ? Colors.white : Colors.black,
@@ -592,7 +547,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   keyboardType: TextInputType.text,
                   textCapitalization: TextCapitalization.sentences,
                 ),
-                const SizedBox(height: 2),
                 _showPreviousSets
                     ? switch (exerciseType) {
                         ExerciseType.weights => DoubleSetHeader(
@@ -662,28 +616,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     spacing: 10,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 20.0, top: 6),
-                        child: LineChartWidget(
-                            chartPoints: chartPoints,
-                            periods: setIndexes,
-                            unit: ChartUnit.number,
-                            aspectRation: 3,
-                            leftReservedSize: 20,
-                            interval: 1,
-                            colors: rpeColors),
-                      ),
-                      const SizedBox(height: 20),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                        child: Text(
-                            "RPE (Rate of Perceived Exertion). A self-reported score (1 to 10) indicating how hard a set felt.",
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 12,
-                                height: 1.8,
-                                color: isDarkMode ? Colors.white70 : Colors.black)),
-                      ),
                       InformationContainerLite(
                         content: "$rpeTrendSummary$progressionSummary",
                         color: progressionColor,
@@ -787,7 +719,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   Center(
                     child: Text("Tap + to add a timer", style: Theme.of(context).textTheme.bodySmall),
                   ),
-                const SizedBox(height: 20),
               ],
             ),
           ),
