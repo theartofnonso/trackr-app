@@ -255,7 +255,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
     final exerciseTemplates = _originalNewValues == OriginalNewValues.newValues
         ? template.exerciseTemplates.map((exerciseTemplate) {
-            final pastSets = exerciseAndRoutineController.whereSetsForExercise(exercise: exerciseTemplate.exercise);
+            final pastSets = exerciseAndRoutineController.whereRecentSetsForExercise(exercise: exerciseTemplate.exercise);
             final uncheckedSets = pastSets.map((set) => set.copyWith(checked: false)).toList();
             return exerciseTemplate.copyWith(sets: uncheckedSets);
           }).toList()

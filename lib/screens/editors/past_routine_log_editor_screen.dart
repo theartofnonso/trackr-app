@@ -55,7 +55,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
         onSelected: (List<ExerciseDto> selectedExercises) {
           final onlyExercise = selectedExercises.first;
           final pastSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
-              .whereSetsForExercise(exercise: onlyExercise);
+              .whereRecentSetsForExercise(exercise: onlyExercise);
           controller.addExerciseLog(exercise: onlyExercise, pastSets: pastSets);
         });
   }
@@ -88,7 +88,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
         excludeExercises: excludeExercises,
         onSelected: (List<ExerciseDto> selectedExercises) {
           final pastSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
-              .whereSetsForExercise(exercise: selectedExercises.first);
+              .whereRecentSetsForExercise(exercise: selectedExercises.first);
           controller.replaceExerciseLog(
               oldExerciseId: oldExerciseLog.id, newExercise: selectedExercises.first, pastSets: pastSets);
         });
@@ -364,7 +364,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
     if (exercises.isNotEmpty) {
       final updatedExerciseLogs = exercises.map((exerciseLog) {
         final previousSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
-            .whereSetsForExercise(exercise: exerciseLog.exercise);
+            .whereRecentSetsForExercise(exercise: exerciseLog.exercise);
         if (previousSets.isNotEmpty) {
           final unCheckedSets =
               previousSets.take(exerciseLog.sets.length).map((set) => set.copyWith(checked: false)).toList();

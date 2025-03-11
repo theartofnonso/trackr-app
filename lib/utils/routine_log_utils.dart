@@ -42,7 +42,7 @@ String prepareLogInstruction({required BuildContext context, required RoutineLog
     final exerciseType = currentExerciseLog.exercise.type;
 
     final previousSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
-        .whereSetsForExercise(exercise: currentExerciseLog.exercise);
+        .whereRecentSetsForExercise(exercise: currentExerciseLog.exercise);
 
     /// Determine rep range using historic training data
     final reps = previousSets.map((set) {

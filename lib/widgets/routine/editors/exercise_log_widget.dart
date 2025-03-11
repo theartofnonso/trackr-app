@@ -137,7 +137,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _addSet() {
     final pastSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
-        .whereSetsForExercise(exercise: _exerciseLog.exercise);
+        .whereRecentSetsForExercise(exercise: _exerciseLog.exercise);
     Provider.of<ExerciseLogController>(context, listen: false)
         .addSet(exerciseLogId: _exerciseLog.id, pastSets: pastSets);
     _loadControllers();
@@ -390,10 +390,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final exerciseType = exerciseLog.exercise.type;
 
-    final previousSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
-        .whereSetsForExercise(exercise: exerciseLog.exercise);
+    final recentSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
+        .whereRecentSetsForExercise(exercise: exerciseLog.exercise);
 
-    final sets = _showPreviousSets ? previousSets : currentSets;
+    final previousSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
+        .whereRecentSetsForExercise(exercise: exerciseLog.exercise);
+
+    final sets = _showPreviousSets ? recentSets : currentSets;
 
     String progressionSummary = "";
     Color progressionColor = vibrantBlue;
