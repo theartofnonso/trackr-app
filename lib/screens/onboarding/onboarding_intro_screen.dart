@@ -11,9 +11,9 @@ import '../../dtos/milestones/reps_milestone.dart';
 import '../../utils/theme/theme.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/calendar/calendar.dart';
+import '../../widgets/custom_drawings/streak_face.dart';
 import '../../widgets/dividers/label_divider.dart';
 import '../../widgets/milestones/milestone_grid_item.dart';
-import '../../widgets/routine/editors/exercise_log_widget.dart';
 
 class OnboardingIntroScreen extends StatefulWidget {
   static const routeName = "/intro_screen";
@@ -143,7 +143,7 @@ class _LogStreakMonitorOnboardingScreen extends StatelessWidget {
                       width: 90,
                       height: 90,
                       child: CustomPaint(
-                        painter: FacePainter(color: logStreakColor(2), result: 0.2),
+                        painter: StreakFace(color: logStreakColor(2), result: 0.2),
                       ),
                     ),
                   )
@@ -158,7 +158,7 @@ class _LogStreakMonitorOnboardingScreen extends StatelessWidget {
                       width: 90,
                       height: 90,
                       child: CustomPaint(
-                        painter: FacePainter(color: logStreakColor(4), result: 0.4),
+                        painter: StreakFace(color: logStreakColor(4), result: 0.4),
                       ),
                     ),
                   )
@@ -173,7 +173,7 @@ class _LogStreakMonitorOnboardingScreen extends StatelessWidget {
                       width: 90,
                       height: 90,
                       child: CustomPaint(
-                        painter: FacePainter(color: logStreakColor(7), result: 0.7),
+                        painter: StreakFace(color: logStreakColor(7), result: 0.7),
                       ),
                     ),
                   )
@@ -188,7 +188,7 @@ class _LogStreakMonitorOnboardingScreen extends StatelessWidget {
                       width: 90,
                       height: 90,
                       child: CustomPaint(
-                        painter: FacePainter(color: logStreakColor(12), result: 1),
+                        painter: StreakFace(color: logStreakColor(12), result: 1),
                       ),
                     ),
                   )

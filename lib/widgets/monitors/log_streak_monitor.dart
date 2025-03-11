@@ -14,7 +14,7 @@ import '../../strings/strings.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/shareables_utils.dart';
 import '../calendar/calendar.dart';
-import '../routine/editors/exercise_log_widget.dart';
+import '../custom_drawings/streak_face.dart';
 
 GlobalKey monitorKey = GlobalKey();
 
@@ -81,7 +81,7 @@ class LogStreakMonitor extends StatelessWidget {
                   width: 75,
                   height: 75,
                   child: CustomPaint(
-                    painter: FacePainter(color: logStreakColor(monthlyProgress), result: monthlyProgress / 12),
+                    painter: StreakFace(color: logStreakColor(monthlyProgress), result: monthlyProgress / 12),
                   ),
                 ),
               )
