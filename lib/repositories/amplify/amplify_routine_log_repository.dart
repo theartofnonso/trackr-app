@@ -223,8 +223,7 @@ class AmplifyRoutineLogRepository {
 
   List<SetDto> wherePrevSetsForExercise({required ExerciseDto exercise}) {
     final exerciseLogs = _exerciseLogsByExerciseId[exercise.id]?.reversed ?? [];
-    final completedExerciseLogs = loggedExercises(exerciseLogs: exerciseLogs.toList());
-    return completedExerciseLogs
+    return exerciseLogs
         .expand((exerciseLog) => exerciseLog.sets)
         .where((set) => set.isNotEmpty() && set.checked)
         .toList();

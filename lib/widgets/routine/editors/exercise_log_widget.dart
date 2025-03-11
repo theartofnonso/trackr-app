@@ -394,7 +394,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         .whereRecentSetsForExercise(exercise: exerciseLog.exercise);
 
     final previousSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
-        .whereRecentSetsForExercise(exercise: exerciseLog.exercise);
+        .wherePrevSetsForExercise(exercise: exerciseLog.exercise);
 
     final sets = _showPreviousSets ? recentSets : currentSets;
 
