@@ -386,15 +386,15 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final currentSets = exerciseLog.sets;
 
-    final superSetExerciseDto = widget.superSet;
-
-    final exerciseType = exerciseLog.exercise.type;
-
     final recentSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
         .whereRecentSetsForExercise(exercise: exerciseLog.exercise);
 
     final previousSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
         .wherePrevSetsForExercise(exercise: exerciseLog.exercise);
+
+    final superSetExerciseDto = widget.superSet;
+
+    final exerciseType = exerciseLog.exercise.type;
 
     final sets = _showPreviousSets ? recentSets : currentSets;
 
