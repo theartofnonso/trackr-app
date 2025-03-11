@@ -1218,9 +1218,6 @@ Map<int, String> _repToPercentage = {
 };
 
 class FacePainter extends CustomPainter {
-  // We pass in:
-  // 1) color for the background gradient
-  // 2) result to decide the face expression
   final Color color;
   final double result;
 
@@ -1239,8 +1236,6 @@ class FacePainter extends CustomPainter {
       radius: 1.0,
       colors: [
         color,
-        // For demonstration, using a constant vibrantGreen
-        // Adjust to your preference
         vibrantGreen,
       ],
       stops: const [0.0, 1.0],
@@ -1278,41 +1273,39 @@ class FacePainter extends CustomPainter {
     }
   }
 
-  // -----------------------
-  // ANGRY FACE
-  // -----------------------
+  // ----------------------------------------------------------------
+  // 1) ANGRY FACE
+  // ----------------------------------------------------------------
   void _drawAngryFace(Canvas canvas, Size size) {
-    final paint = Paint()..color = Colors.black;
+    // Paint for small filled eyes
+    final fillPaint = Paint()..color = Colors.black;
 
-    // Slightly smaller eyes to look more "angry/squinted"
+    // Paint for arcs (eyebrows & mouth) with round stroke
+    final strokePaint = Paint()
+      ..color = Colors.black
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 4.0
+      ..strokeCap = StrokeCap.round;
+
+    // Eyes: small filled circles
     final eyeRadius = size.width * 0.02;
     final leftEyeCenter = Offset(size.width * 0.35, size.height * 0.3);
     final rightEyeCenter = Offset(size.width * 0.65, size.height * 0.3);
 
-    // Draw eyes as small circles
-    canvas.drawCircle(leftEyeCenter, eyeRadius, paint);
-    canvas.drawCircle(rightEyeCenter, eyeRadius, paint);
+    canvas.drawCircle(leftEyeCenter, eyeRadius, fillPaint);
+    canvas.drawCircle(rightEyeCenter, eyeRadius, fillPaint);
 
-    // Angled eyebrows
-    final eyebrowPaint = Paint()
-      ..color = Colors.black
-      ..strokeWidth = 4.0
-      ..strokeCap = StrokeCap.round;
+    // Angled eyebrows: draw lines with strokeCap.round
+    // (You can keep these as lines or arcs—both can have round ends)
+    final eyebrowStartLeft = Offset(leftEyeCenter.dx - eyeRadius * 1.5, leftEyeCenter.dy - eyeRadius * 1.8);
+    final eyebrowEndLeft   = Offset(leftEyeCenter.dx + eyeRadius * 1.3, leftEyeCenter.dy - eyeRadius * 0.4);
+    canvas.drawLine(eyebrowStartLeft, eyebrowEndLeft, strokePaint);
 
-    // Left eyebrow (steep diagonal down from left to right)
-    canvas.drawLine(
-      Offset(leftEyeCenter.dx - eyeRadius * 1.5, leftEyeCenter.dy - eyeRadius * 1.8),
-      Offset(leftEyeCenter.dx + eyeRadius * 1.3, leftEyeCenter.dy - eyeRadius * 0.4),
-      eyebrowPaint,
-    );
-    // Right eyebrow (steep diagonal down from right to left)
-    canvas.drawLine(
-      Offset(rightEyeCenter.dx + eyeRadius * 1.5, rightEyeCenter.dy - eyeRadius * 1.8),
-      Offset(rightEyeCenter.dx - eyeRadius * 1.3, rightEyeCenter.dy - eyeRadius * 0.4),
-      eyebrowPaint,
-    );
+    final eyebrowStartRight = Offset(rightEyeCenter.dx + eyeRadius * 1.5, rightEyeCenter.dy - eyeRadius * 1.8);
+    final eyebrowEndRight   = Offset(rightEyeCenter.dx - eyeRadius * 1.3, rightEyeCenter.dy - eyeRadius * 0.4);
+    canvas.drawLine(eyebrowStartRight, eyebrowEndRight, strokePaint);
 
-    // Big downward frown
+    // Big downward frown (arc) with rounded edges
     final mouthWidth = size.width * 0.35;
     final mouthRect = Rect.fromCenter(
       center: Offset(size.width * 0.50, size.height * 0.52),
@@ -1320,91 +1313,99 @@ class FacePainter extends CustomPainter {
       height: size.height * 0.10,
     );
     // Arc from π to 2π => large frown
-    canvas.drawArc(mouthRect, math.pi, math.pi, false, paint);
+    canvas.drawArc(mouthRect, math.pi, math.pi, false, strokePaint);
   }
 
-  // -----------------------
-  // SAD FACE
-  // -----------------------
+  // ----------------------------------------------------------------
+  // 2) SAD FACE
+  // ----------------------------------------------------------------
   void _drawSadFace(Canvas canvas, Size size) {
-    final paint = Paint()..color = Colors.black;
+    // We’ll use stroked arcs for the eyes (with round endpoints).
+    final strokePaint = Paint()
+      ..color = Colors.black
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 4.0
+      ..strokeCap = StrokeCap.round;
 
     final eyeRadius = size.width * 0.03;
     final leftEyeCenter = Offset(size.width * 0.35, size.height * 0.3);
     final rightEyeCenter = Offset(size.width * 0.65, size.height * 0.3);
 
-    // Drooping eyes using arcs that slope downward
-    // We'll draw arcs from 0.0 to π, but offset so they look droopy
     final leftEyeRect = Rect.fromCircle(center: leftEyeCenter, radius: eyeRadius);
     final rightEyeRect = Rect.fromCircle(center: rightEyeCenter, radius: eyeRadius);
 
-    // Arc from 0.2π to 0.8π => partial downward arc
-    // Adjust the angles as needed
-    canvas.drawArc(leftEyeRect, 0.2 * math.pi, 0.6 * math.pi, false, paint);
-    canvas.drawArc(rightEyeRect, 0.2 * math.pi, 0.6 * math.pi, false, paint);
+    // Slight downward arcs for droopy eyes (rounded ends)
+    canvas.drawArc(leftEyeRect, 0.2 * math.pi, 0.6 * math.pi, false, strokePaint);
+    canvas.drawArc(rightEyeRect, 0.2 * math.pi, 0.6 * math.pi, false, strokePaint);
 
-    // Sad mouth: small downward arc
+    // Sad mouth: downward arc with rounded ends
     final mouthRect = Rect.fromCenter(
       center: Offset(size.width * 0.50, size.height * 0.45),
       width: size.width * 0.25,
       height: size.height * 0.07,
     );
-    // Arc from 0 to π => simple downward arc
-    canvas.drawArc(mouthRect, 0, math.pi, false, paint);
+    canvas.drawArc(mouthRect, 0, math.pi, false, strokePaint);
   }
 
-  // -----------------------
-  // SMILING FACE
-  // -----------------------
+  // ----------------------------------------------------------------
+  // 3) SMILING FACE
+  // ----------------------------------------------------------------
   void _drawSmilingFace(Canvas canvas, Size size) {
-    final paint = Paint()..color = Colors.black;
+    // Eyes as upward arcs with rounded edges
+    final strokePaint = Paint()
+      ..color = Colors.black
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 4.0
+      ..strokeCap = StrokeCap.round;
 
     final eyeRadius = size.width * 0.025;
     final leftEyeCenter = Offset(size.width * 0.35, size.height * 0.3);
     final rightEyeCenter = Offset(size.width * 0.65, size.height * 0.3);
 
-    // Smiling eyes: arcs that curve upwards
     final leftEyeRect = Rect.fromCircle(center: leftEyeCenter, radius: eyeRadius);
     final rightEyeRect = Rect.fromCircle(center: rightEyeCenter, radius: eyeRadius);
 
-    // Arc from math.pi to 2*math.pi => an upward arc
-    canvas.drawArc(leftEyeRect, math.pi, math.pi, false, paint);
-    canvas.drawArc(rightEyeRect, math.pi, math.pi, false, paint);
+    // Arc from π to 2π => upward arcs with round ends
+    canvas.drawArc(leftEyeRect, math.pi, math.pi, false, strokePaint);
+    canvas.drawArc(rightEyeRect, math.pi, math.pi, false, strokePaint);
 
-    // Smiling mouth: moderate upward arc
+    // Smiling mouth: upward arc with round edges
     final mouthRect = Rect.fromCenter(
       center: Offset(size.width * 0.50, size.height * 0.48),
       width: size.width * 0.30,
       height: size.height * 0.08,
     );
-    // Arc from math.pi to 0 => upward
-    canvas.drawArc(mouthRect, math.pi, -math.pi, false, paint);
+    canvas.drawArc(mouthRect, math.pi, -math.pi, false, strokePaint);
   }
 
-  // -----------------------
-  // HAPPY FACE
-  // -----------------------
+  // ----------------------------------------------------------------
+  // 4) HAPPY FACE
+  // ----------------------------------------------------------------
   void _drawHappyFace(Canvas canvas, Size size) {
-    final paint = Paint()..color = Colors.black;
+    // Big open eyes as circles (filled), plus a large round smile (stroked)
+    final fillPaint = Paint()..color = Colors.black;
+    final strokePaint = Paint()
+      ..color = Colors.black
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 4.0
+      ..strokeCap = StrokeCap.round;
 
     final eyeRadius = size.width * 0.03;
-    // Big open eyes
-    canvas.drawCircle(Offset(size.width * 0.35, size.height * 0.3), eyeRadius, paint);
-    canvas.drawCircle(Offset(size.width * 0.65, size.height * 0.3), eyeRadius, paint);
+    canvas.drawCircle(Offset(size.width * 0.35, size.height * 0.3), eyeRadius, fillPaint);
+    canvas.drawCircle(Offset(size.width * 0.65, size.height * 0.3), eyeRadius, fillPaint);
 
-    // Large, wide upward arc for a big smile
+    // Large smile: stroke arc with round edges
     final mouthRect = Rect.fromCenter(
       center: Offset(size.width * 0.50, size.height * 0.50),
       width: size.width * 0.40,
       height: size.height * 0.15,
     );
     // Arc from math.pi to 0 => large upward smile
-    canvas.drawArc(mouthRect, math.pi, -math.pi, false, paint);
+    canvas.drawArc(mouthRect, math.pi, -math.pi, false, strokePaint);
   }
 
   @override
   bool shouldRepaint(covariant FacePainter oldDelegate) {
-    // If the color or result changes, we should repaint.
     return oldDelegate.color != color || oldDelegate.result != result;
   }
 }

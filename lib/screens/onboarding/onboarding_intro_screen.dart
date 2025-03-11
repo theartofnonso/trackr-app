@@ -13,6 +13,7 @@ import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/calendar/calendar.dart';
 import '../../widgets/dividers/label_divider.dart';
 import '../../widgets/milestones/milestone_grid_item.dart';
+import '../../widgets/routine/editors/exercise_log_widget.dart';
 
 class OnboardingIntroScreen extends StatefulWidget {
   static const routeName = "/intro_screen";
@@ -137,11 +138,14 @@ class _LogStreakMonitorOnboardingScreen extends StatelessWidget {
                 alignment: Alignment.center,
                 children: [
                   LogStreakWidget(value: 2, width: 120, height: 120, strokeWidth: 8),
-                  Image.asset(
-                    'images/trkr.png',
-                    fit: BoxFit.contain,
-                    color: isDarkMode ? Colors.white70 : Colors.black,
-                    height: 8, // Adjust the height as needed
+                  ClipOval(
+                    child: SizedBox(
+                      width: 90,
+                      height: 90,
+                      child: CustomPaint(
+                        painter: FacePainter(color: logStreakColor(2), result: 0.2),
+                      ),
+                    ),
                   )
                 ],
               ),
@@ -149,11 +153,14 @@ class _LogStreakMonitorOnboardingScreen extends StatelessWidget {
                 alignment: Alignment.center,
                 children: [
                   LogStreakWidget(value: 4, width: 120, height: 120, strokeWidth: 8),
-                  Image.asset(
-                    'images/trkr.png',
-                    fit: BoxFit.contain,
-                    color: isDarkMode ? Colors.white70 : Colors.black,
-                    height: 8, // Adjust the height as needed
+                  ClipOval(
+                    child: SizedBox(
+                      width: 90,
+                      height: 90,
+                      child: CustomPaint(
+                        painter: FacePainter(color: logStreakColor(4), result: 0.4),
+                      ),
+                    ),
                   )
                 ],
               ),
@@ -161,11 +168,14 @@ class _LogStreakMonitorOnboardingScreen extends StatelessWidget {
                 alignment: Alignment.center,
                 children: [
                   LogStreakWidget(value: 7, width: 120, height: 120, strokeWidth: 8),
-                  Image.asset(
-                    'images/trkr.png',
-                    fit: BoxFit.contain,
-                    color: isDarkMode ? Colors.white70 : Colors.black,
-                    height: 8, // Adjust the height as needed
+                  ClipOval(
+                    child: SizedBox(
+                      width: 90,
+                      height: 90,
+                      child: CustomPaint(
+                        painter: FacePainter(color: logStreakColor(7), result: 0.7),
+                      ),
+                    ),
                   )
                 ],
               ),
@@ -173,11 +183,14 @@ class _LogStreakMonitorOnboardingScreen extends StatelessWidget {
                 alignment: Alignment.center,
                 children: [
                   LogStreakWidget(value: 12, width: 120, height: 120, strokeWidth: 8),
-                  Image.asset(
-                    'images/trkr.png',
-                    fit: BoxFit.contain,
-                    color: isDarkMode ? Colors.white70 : Colors.black,
-                    height: 8, // Adjust the height as needed
+                  ClipOval(
+                    child: SizedBox(
+                      width: 90,
+                      height: 90,
+                      child: CustomPaint(
+                        painter: FacePainter(color: logStreakColor(12), result: 1),
+                      ),
+                    ),
                   )
                 ],
               )
