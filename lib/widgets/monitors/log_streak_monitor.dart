@@ -14,6 +14,7 @@ import '../../strings/strings.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/shareables_utils.dart';
 import '../calendar/calendar.dart';
+import '../routine/editors/exercise_log_widget.dart';
 
 GlobalKey monitorKey = GlobalKey();
 
@@ -74,13 +75,15 @@ class LogStreakMonitor extends StatelessWidget {
           const SizedBox(width: 20),
           GestureDetector(
             child: Stack(alignment: Alignment.center, children: [
-              LogStreakWidget(
-                  value: monthlyProgress, width: 100, height: 100, strokeWidth: 6, forceDarkMode: isDarkMode),
-              Image.asset(
-                'images/trkr.png',
-                fit: BoxFit.contain,
-                color: isDarkMode ? Colors.white70 : Colors.black,
-                height: 8, // Adjust the height as needed
+              LogStreakWidget(value: monthlyProgress, width: 100, height: 100, strokeWidth: 6),
+              ClipOval(
+                child: SizedBox(
+                  width: 75,
+                  height: 75,
+                  child: CustomPaint(
+                    painter: FacePainter(color: logStreakColor(monthlyProgress)),
+                  ),
+                ),
               )
             ]),
           ),
@@ -222,29 +225,19 @@ class LogStreakWidget extends StatelessWidget {
   final double width;
   final double height;
   final double strokeWidth;
-  final bool forceDarkMode;
 
   const LogStreakWidget(
-      {super.key,
-      this.value = 0,
-      required this.width,
-      required this.height,
-      required this.strokeWidth,
-      this.forceDarkMode = false});
+      {super.key, this.value = 0, required this.width, required this.height, required this.strokeWidth});
 
   @override
   Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark || forceDarkMode;
-
     return SizedBox(
       width: height,
       height: width,
       child: CircularProgressIndicator(
         value: value / 12,
         strokeWidth: strokeWidth,
-        backgroundColor: isDarkMode ? Colors.black12 : Colors.grey.shade200,
-        strokeCap: StrokeCap.butt,
+        strokeCap: StrokeCap.round,
         valueColor: AlwaysStoppedAnimation<Color>(logStreakColor(value)),
       ),
     );
@@ -258,8 +251,7 @@ int _calculateAverageRestDays({required List<DateTime> dates}) {
 
   final firstDate = dates.first;
   final now = DateTime.now();
-  final isCurrentMonth =
-      firstDate.year == now.year && firstDate.month == now.month;
+  final isCurrentMonth = firstDate.year == now.year && firstDate.month == now.month;
 
   List<DateTime> filteredDates;
   if (isCurrentMonth) {
@@ -273,9 +265,7 @@ int _calculateAverageRestDays({required List<DateTime> dates}) {
     return 0;
   }
 
-  final endDay = isCurrentMonth
-      ? now.day
-      : DateTime(firstDate.year, firstDate.month + 1, 0).day;
+  final endDay = isCurrentMonth ? now.day : DateTime(firstDate.year, firstDate.month + 1, 0).day;
 
   final trainingDays = filteredDates.map((date) => date.day).toList();
 
@@ -290,9 +280,7 @@ int _calculateAverageRestDays({required List<DateTime> dates}) {
     }
 
     final daysInWeek = weekEndDay - startDay + 1;
-    final trainingInWeek = trainingDays
-        .where((day) => day >= startDay && day <= weekEndDay)
-        .length;
+    final trainingInWeek = trainingDays.where((day) => day >= startDay && day <= weekEndDay).length;
     final restDays = daysInWeek - trainingInWeek;
 
     totalRestDays += restDays;

@@ -1214,3 +1214,73 @@ Map<int, String> _repToPercentage = {
   9: "🤯 Maximal (maybe 1 rep left)",
   10: "💀 Absolute limit (no reps left)",
 };
+
+class FacePainter extends CustomPainter {
+
+  final Color color;
+
+  FacePainter({super.repaint, required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    _drawGradientBackground(canvas, size);
+    _drawFace(canvas, size);
+  }
+
+  void _drawGradientBackground(Canvas canvas, Size size) {
+    // Create a radial gradient, centered left-of-center to emulate
+    // an orange area blending into green.
+    final rect = Offset.zero & size;
+    final gradient = RadialGradient(
+      center: const Alignment(-0.7, 0.0), // shift the center to the left
+      radius: 1.0,
+      colors: [
+        color,
+        vibrantGreen
+      ],
+      stops: const [0.0, 1.0],
+    );
+
+    final paint = Paint()..shader = gradient.createShader(rect);
+    canvas.drawRect(rect, paint);
+  }
+
+  void _drawFace(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.black
+      ..style = PaintingStyle.fill;
+
+    // Positions for eyes (two small arcs or half-circles).
+    // Adjust as needed for your desired look.
+    final eyeRadius = size.width * 0.03;
+    final leftEyeCenter = Offset(size.width * 0.35, size.height * 0.3);
+    final rightEyeCenter = Offset(size.width * 0.65, size.height * 0.3);
+
+    // Draw closed eyes as small arcs or “U” shapes turned upside down.
+    canvas.drawArc(
+      Rect.fromCircle(center: leftEyeCenter, radius: eyeRadius),
+      0, // start angle (radians)
+      3.14, // sweep angle (π = half circle)
+      false,
+      paint,
+    );
+    canvas.drawArc(
+      Rect.fromCircle(center: rightEyeCenter, radius: eyeRadius),
+      0,
+      3.14,
+      false,
+      paint,
+    );
+
+    // Draw a mouth/nose shape—here, just a small oval or “blob” in the middle.
+    final mouthRect = Rect.fromCenter(
+      center: Offset(size.width * 0.50, size.height * 0.45),
+      width: size.width * 0.08,
+      height: size.height * 0.04,
+    );
+    canvas.drawOval(mouthRect, paint);
+  }
+
+  @override
+  bool shouldRepaint(FacePainter oldDelegate) => false;
+}
