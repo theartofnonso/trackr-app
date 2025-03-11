@@ -412,20 +412,15 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         .where((set) => set.isWorkingSet)
         .toList();
 
-    /// Determine working set for weight or reps progression
+    /// Determine working set for weight
     final workingSet = switch (exerciseType) {
-      ExerciseType.weights => getHeaviestVolume(workingSets),
+      ExerciseType.weights => getHighestWeight(workingSets),
       ExerciseType.bodyWeight => getHighestReps(workingSets),
       ExerciseType.duration => getLongestDuration(workingSets),
     };
 
-    /// Determine progression for working sets where [ExerciseType] is [ExerciseType.bodyWeight]
     if (withWeightsOnly(type: exerciseType)) {
-      final trainingData = workingSets.map((set) {
-        return TrainingData(reps: (set as WeightAndRepsSetDto).reps, weight: set.weight, rpe: set.rpeRating);
-      }).toList();
-
-      /// Determine rep range using historic training data
+      /// Determine typical rep range using historic training data
       final reps = switch (exerciseType) {
         ExerciseType.weights => markHighestWeightSets(previousSets),
         ExerciseType.bodyWeight => markHighestRepsSets(previousSets),
@@ -440,6 +435,11 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       }).toList();
 
       typicalRepRange = determineTypicalRepRange(reps: reps);
+
+      /// Determine progression for working sets where [ExerciseType] is [ExerciseType.weights]
+      final trainingData = workingSets.map((set) {
+        return TrainingData(reps: (set as WeightAndRepsSetDto).reps, weight: set.weight, rpe: set.rpeRating);
+      }).toList();
 
       trainingProgression = getTrainingProgression(
           data: trainingData, targetMinReps: typicalRepRange.minReps, targetMaxReps: typicalRepRange.maxReps);
@@ -693,86 +693,93 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                         ),
                       ),
                       if (workingSet != null)
-                        InformationContainerLite(
-                            richText: RichText(
-                              text: TextSpan(
-                                text: workingSet.summary(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall
-                                    ?.copyWith(fontWeight: FontWeight.w700, color: Colors.white),
-                                children: [
-                                  TextSpan(
-                                    text: " ",
-                                  ),
-                                  TextSpan(
-                                    text: "is your most challenging set, driving you toward your training goals.",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall
-                                        ?.copyWith(fontWeight: FontWeight.w700, color: Colors.white70),
-                                  )
-                                ],
-                              ),
-                            ),
-                            content: "",
-                            color: Colors.grey.shade400,
-                            icon: Container(
-                                width: 18,
-                                height: 18,
-                                padding: const EdgeInsets.all(4),
-                                decoration: BoxDecoration(
-                                  color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
-                                  borderRadius: BorderRadius.circular(3),
+                        GestureDetector(
+                          onTap: () => showBottomSheetWithNoAction(
+                              context: context,
+                              title: "Working Sets",
+                              description:
+                                  "Working sets are the primary, challenging sets performed after any warm-up sets. They provide the main training stimulus needed for muscle growth, strength gains, or endurance improvements."),
+                          child: InformationContainerLite(
+                              richText: RichText(
+                                text: TextSpan(
+                                  text: workingSet.summary(),
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w700),
+                                  children: [
+                                    TextSpan(
+                                      text: " ",
+                                    ),
+                                    TextSpan(
+                                      text:
+                                          "is your most challenging set, driving you toward your training goals. Tap for more info.",
+                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                          fontWeight: FontWeight.w700,
+                                          color: isDarkMode ? Colors.white70 : Colors.black54),
+                                    )
+                                  ],
                                 ),
-                                child: Center(
-                                  child: FaIcon(
-                                    FontAwesomeIcons.w,
-                                    color: isDarkMode ? vibrantGreen : Colors.black,
-                                    size: 8,
+                              ),
+                              content: "",
+                              color: Colors.grey.shade400,
+                              icon: Container(
+                                  width: 18,
+                                  height: 18,
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
+                                    borderRadius: BorderRadius.circular(3),
                                   ),
-                                ))),
+                                  child: Center(
+                                    child: FaIcon(
+                                      FontAwesomeIcons.w,
+                                      color: isDarkMode ? vibrantGreen : Colors.black,
+                                      size: 8,
+                                    ),
+                                  ))),
+                        ),
                       if (typicalRepRange != null && withReps(type: exerciseType))
-                        InformationContainerLite(
-                            richText: RichText(
-                              text: TextSpan(
-                                text: "${typicalRepRange.minReps} - ${typicalRepRange.maxReps}",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall
-                                    ?.copyWith(fontWeight: FontWeight.w700, color: Colors.white),
-                                children: [
-                                  TextSpan(
-                                    text: " ",
-                                  ),
-                                  TextSpan(
-                                    text:
-                                        "is your typical rep range. if you comfortably hit ${typicalRepRange.maxReps}, increase the weight; if you struggle to reach ${typicalRepRange.minReps}, reduce it; otherwise, maintain.",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall
-                                        ?.copyWith(fontWeight: FontWeight.w700, color: Colors.white70),
-                                  )
-                                ],
-                              ),
-                            ),
-                            content: "",
-                            color: Colors.grey.shade400,
-                            icon: Container(
-                                width: 18,
-                                height: 18,
-                                padding: const EdgeInsets.all(4),
-                                decoration: BoxDecoration(
-                                  color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
-                                  borderRadius: BorderRadius.circular(3),
+                        GestureDetector(
+                          onTap: () => showBottomSheetWithNoAction(
+                              context: context,
+                              title: "Rep Range",
+                              description:
+                                  "Rep ranges acts as a guideline for adjusting weights. If you consistently hit the high end of your range with good form, it’s a signal to increase the load. Conversely, if you struggle to reach the low end, reduce the weight slightly until you can complete the set effectively."),
+                          child: InformationContainerLite(
+                              richText: RichText(
+                                text: TextSpan(
+                                  text: "${typicalRepRange.minReps} - ${typicalRepRange.maxReps}",
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w700),
+                                  children: [
+                                    TextSpan(
+                                      text: " ",
+                                    ),
+                                    TextSpan(
+                                      text:
+                                          "is your typical rep range. if you comfortably hit ${typicalRepRange.maxReps}, increase the weight; if you struggle to reach ${typicalRepRange.minReps}, reduce it; otherwise, maintain. Tap for more info.",
+                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                          fontWeight: FontWeight.w700,
+                                          color: isDarkMode ? Colors.white70 : Colors.black54),
+                                    )
+                                  ],
                                 ),
-                                child: Center(
-                                  child: FaIcon(
-                                    FontAwesomeIcons.r,
-                                    color: isDarkMode ? vibrantGreen : Colors.black,
-                                    size: 8,
+                              ),
+                              content: "",
+                              color: Colors.grey.shade400,
+                              icon: Container(
+                                  width: 18,
+                                  height: 18,
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
+                                    borderRadius: BorderRadius.circular(3),
                                   ),
-                                ))),
+                                  child: Center(
+                                    child: FaIcon(
+                                      FontAwesomeIcons.r,
+                                      color: isDarkMode ? vibrantGreen : Colors.black,
+                                      size: 8,
+                                    ),
+                                  ))),
+                        ),
                     ],
                   ),
                 const SizedBox(height: 2),
