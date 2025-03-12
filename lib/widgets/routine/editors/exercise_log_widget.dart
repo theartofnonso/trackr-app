@@ -588,6 +588,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                             size: 18,
                           ),
                         ),
+                      /// Only show for exercises that measure Weights, Reps and Duration
                       if (workingSet != null)
                         GestureDetector(
                           onTap: () => showBottomSheetWithNoAction(
@@ -632,6 +633,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                                     ),
                                   ))),
                         ),
+                      /// Only show for exercises that measure Reps
                       if (typicalRepRange != null && withReps(type: exerciseType))
                         GestureDetector(
                           onTap: () => showBottomSheetWithNoAction(
