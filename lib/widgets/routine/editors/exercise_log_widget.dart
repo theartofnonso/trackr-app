@@ -159,8 +159,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         .updateReps(exerciseLogId: _exerciseLog.id, index: index, setDto: updatedSet);
   }
 
-  void _updateDuration({required int index, required Duration duration, required SetDto setDto}) {
-    SetDto updatedSet = (setDto as DurationSetDto).copyWith(duration: duration);
+  void _updateDuration(
+      {required int index, required Duration duration, required SetDto setDto, required bool shouldCheck}) {
+    SetDto updatedSet = (setDto as DurationSetDto).copyWith(duration: duration, checked: shouldCheck);
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateDuration(exerciseLogId: _exerciseLog.id, index: index, setDto: updatedSet, notify: true);
   }
@@ -590,6 +591,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                             size: 18,
                           ),
                         ),
+
                       /// Only show for exercises that measure Weights, Reps and Duration
                       if (workingSet != null)
                         GestureDetector(
@@ -635,6 +637,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                                     ),
                                   ))),
                         ),
+
                       /// Only show for exercises that measure Reps
                       if (typicalRepRange != null && withReps(type: exerciseType))
                         GestureDetector(
@@ -785,7 +788,11 @@ class _DurationSetListView extends StatelessWidget {
   final List<DateTime> controllers;
   final void Function({required int index}) removeSet;
   final void Function({required int index, required SetDto setDto}) updateSetCheck;
-  final void Function({required int index, required Duration duration, required SetDto setDto}) updateDuration;
+  final void Function(
+      {required int index,
+      required Duration duration,
+      required SetDto setDto,
+      required bool shouldCheck}) updateDuration;
 
   const _DurationSetListView(
       {required this.sets,
@@ -804,7 +811,8 @@ class _DurationSetListView extends StatelessWidget {
         onCheck: () => updateSetCheck(index: index, setDto: setDto),
         onRemoved: () => removeSet(index: index),
         startTime: controllers.isNotEmpty ? controllers[index] : DateTime.now(),
-        onUpdateDuration: (Duration duration) => updateDuration(index: index, duration: duration, setDto: setDto),
+        onUpdateDuration: (Duration duration, bool shouldCheck) =>
+            updateDuration(index: index, setDto: setDto, duration: duration, shouldCheck: shouldCheck),
       );
     }).toList();
 

@@ -16,7 +16,7 @@ class DurationSetRow extends StatelessWidget {
   final VoidCallback onCheck;
   final RoutineEditorMode editorType;
   final DateTime startTime;
-  final void Function(Duration duration) onUpdateDuration;
+  final void Function(Duration duration, bool shouldCheck) onUpdateDuration;
 
   const DurationSetRow({
     super.key,
@@ -35,7 +35,7 @@ class DurationSetRow extends StatelessWidget {
         mode: CupertinoTimerPickerMode.hms,
         onChangedDuration: (Duration duration) {
           Navigator.of(context).pop();
-          onUpdateDuration(duration);
+          onUpdateDuration(duration, true);
         });
   }
 
@@ -70,7 +70,7 @@ class DurationSetRow extends StatelessWidget {
                       : StopwatchTimer(
                           startTime: startTime,
                           digital: true,
-                          onChangedDuration: (Duration duration) => onUpdateDuration(duration)),
+                          onChangedDuration: (Duration duration) => onUpdateDuration(duration, false)),
                 ),
               ),
             ),
