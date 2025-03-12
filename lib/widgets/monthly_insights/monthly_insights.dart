@@ -24,11 +24,11 @@ class MonthlyInsights extends StatelessWidget {
       spacing: 12,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        ActivitiesWidget(dateTimeRange: dateTimeRange),
         MonthlyTrainingSummaryWidget(
           routineLogs: thisMonthRoutineLogs,
           dateTime: dateTimeRange.start,
         ),
-        ActivitiesWidget(dateTimeRange: dateTimeRange),
       ],
     );
   }

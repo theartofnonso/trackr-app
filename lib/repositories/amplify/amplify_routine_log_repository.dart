@@ -9,7 +9,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:health/health.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
-import 'package:tracker_app/dtos/appsync/routine_user_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
@@ -105,8 +104,7 @@ class AmplifyRoutineLogRepository {
     }
   }
 
-  Future<RoutineLogDto> saveLog(
-      {required RoutineLogDto logDto, RoutineUserDto? user, TemporalDateTime? datetime}) async {
+  Future<RoutineLogDto> saveLog({required RoutineLogDto logDto, TemporalDateTime? datetime}) async {
     // Capture current list of completed milestones
     final previousMilestones = completedMilestones().toSet();
 
@@ -137,15 +135,9 @@ class AmplifyRoutineLogRepository {
 
     // Write workout data to Apple Health
 
-    final caloriesBurned = 0;
-    if (user != null) {
-      calculateCalories(duration: logDto.duration(), bodyWeight: user.weight.toDouble(), activity: logDto.activityType);
-    }
-
     await Health().configure();
     await Health().writeWorkoutData(
         title: logDto.name,
-        totalEnergyBurned: caloriesBurned,
         activityType: HealthWorkoutActivityType.TRADITIONAL_STRENGTH_TRAINING,
         start: logDto.startTime,
         end: logDto.endTime);

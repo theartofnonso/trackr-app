@@ -9,15 +9,13 @@ import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
-import 'package:tracker_app/utils/routine_utils.dart';
-import 'package:tracker_app/widgets/forms/create_routine_user_profile_widget.dart';
 import 'package:tracker_app/widgets/dividers/label_divider.dart';
+import 'package:tracker_app/widgets/forms/create_routine_user_profile_widget.dart';
 import 'package:tracker_app/widgets/timers/datetime_picker.dart';
 import 'package:tracker_app/widgets/timers/datetime_range_picker.dart';
 
 import '../colors.dart';
 import '../controllers/activity_log_controller.dart';
-import '../controllers/routine_user_controller.dart';
 import '../dtos/appsync/activity_log_dto.dart';
 import '../screens/editors/activity_editor_screen.dart';
 import '../widgets/buttons/opacity_button_widget.dart';
@@ -139,11 +137,6 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
 
   final image = activityType.image;
 
-  final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
-
-  final calories = calculateCalories(
-      duration: activity.duration(), bodyWeight: routineUserController.weight(), activity: activity.activityType);
-
   displayBottomSheet(
       context: context,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -188,8 +181,6 @@ void showActivityBottomSheet({required BuildContext context, required ActivityLo
               FontAwesomeIcons.fire,
               size: 12,
             ),
-            const SizedBox(width: 4),
-            Text("$calories calories", style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.start),
           ],
         ),
         const SizedBox(

@@ -12,7 +12,6 @@ import 'package:tracker_app/repositories/amplify/amplify_routine_log_repository.
 import '../dtos/appsync/exercise_dto.dart';
 import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/appsync/routine_template_dto.dart';
-import '../dtos/appsync/routine_user_dto.dart';
 import '../dtos/set_dtos/set_dto.dart';
 import '../logger.dart';
 import '../models/Exercise.dart';
@@ -167,11 +166,10 @@ class ExerciseAndRoutineController extends ChangeNotifier {
     _amplifyLogRepository.loadLogStream(logs: logs);
   }
 
-  Future<RoutineLogDto?> saveLog(
-      {required RoutineLogDto logDto, RoutineUserDto? user, TemporalDateTime? datetime}) async {
+  Future<RoutineLogDto?> saveLog({required RoutineLogDto logDto, TemporalDateTime? datetime}) async {
     RoutineLogDto? savedLog;
     try {
-      savedLog = await _amplifyLogRepository.saveLog(logDto: logDto, user: user, datetime: datetime);
+      savedLog = await _amplifyLogRepository.saveLog(logDto: logDto, datetime: datetime);
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
       logger.e("Error saving log exercise", error: e);

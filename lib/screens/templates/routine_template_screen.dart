@@ -40,12 +40,12 @@ import '../../widgets/information_containers/information_container.dart';
 import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
 
-enum OriginalNewValues {
+enum _OriginalNewValues {
   originalValues(
       name: "Original Values", description: "Showing values from the last time this template was saved or updated."),
   newValues(name: "Recent Values", description: "Showing values from your last logged session.");
 
-  const OriginalNewValues({required this.name, required this.description});
+  const _OriginalNewValues({required this.name, required this.description});
 
   final String name;
   final String description;
@@ -69,7 +69,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   RecoveryResult? _selectedMuscleAndRecovery;
 
-  OriginalNewValues _originalNewValues = OriginalNewValues.newValues;
+  _OriginalNewValues _originalNewValues = _OriginalNewValues.newValues;
 
   void _deleteRoutine({required RoutineTemplateDto template}) async {
     try {
@@ -253,7 +253,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       )
     ];
 
-    final exerciseTemplates = _originalNewValues == OriginalNewValues.newValues
+    final exerciseTemplates = _originalNewValues == _OriginalNewValues.newValues
         ? template.exerciseTemplates.map((exerciseTemplate) {
             final pastSets = exerciseAndRoutineController.whereRecentSetsForExercise(exercise: exerciseTemplate.exercise);
             final uncheckedSets = pastSets.map((set) => set.copyWith(checked: false)).toList();
@@ -521,21 +521,21 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                           spacing: 6,
                           children: [
                             const SizedBox(height: 6),
-                            CupertinoSlidingSegmentedControl<OriginalNewValues>(
+                            CupertinoSlidingSegmentedControl<_OriginalNewValues>(
                               backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade200,
                               thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
                               groupValue: _originalNewValues,
                               children: {
-                                OriginalNewValues.originalValues: SizedBox(
+                                _OriginalNewValues.originalValues: SizedBox(
                                     width: 100,
-                                    child: Text(OriginalNewValues.originalValues.name,
+                                    child: Text(_OriginalNewValues.originalValues.name,
                                         style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center)),
-                                OriginalNewValues.newValues: SizedBox(
+                                _OriginalNewValues.newValues: SizedBox(
                                     width: 100,
-                                    child: Text(OriginalNewValues.newValues.name,
+                                    child: Text(_OriginalNewValues.newValues.name,
                                         style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center)),
                               },
-                              onValueChanged: (OriginalNewValues? value) {
+                              onValueChanged: (_OriginalNewValues? value) {
                                 if (value != null) {
                                   setState(() {
                                     _originalNewValues = value;

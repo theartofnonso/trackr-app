@@ -12,7 +12,6 @@ import 'package:tracker_app/enums/routine_editor_type_enums.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 
 import '../../colors.dart';
-import '../../controllers/routine_user_controller.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/set_dtos/weight_and_reps_dto.dart';
@@ -132,10 +131,8 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
 
     final datetime = TemporalDateTime.withOffset(updatedLog.startTime, Duration.zero);
 
-    final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
-
     final createdLog = await Provider.of<ExerciseAndRoutineController>(context, listen: false)
-        .saveLog(logDto: updatedLog, datetime: datetime, user: routineUserController.user);
+        .saveLog(logDto: updatedLog, datetime: datetime);
     _navigateBack(log: createdLog);
   }
 
@@ -319,12 +316,12 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
                       SafeArea(
                         minimum: EdgeInsets.all(10),
                         child: SizedBox(
-                          width: double.infinity,
-                          child: OpacityButtonWidget(
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              buttonColor: vibrantGreen,
-                              label: "Log Past Session",
-                              onPressed: _createLog)),
+                            width: double.infinity,
+                            child: OpacityButtonWidget(
+                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                buttonColor: vibrantGreen,
+                                label: "Log Past Session",
+                                onPressed: _createLog)),
                       ),
                     if (exerciseLogs.isEmpty)
                       Expanded(

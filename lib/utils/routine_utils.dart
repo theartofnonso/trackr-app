@@ -8,11 +8,9 @@ import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/viewmodels/exercise_log_view_model.dart';
-import '../enums/activity_type_enums.dart';
 import '../enums/template_changes_type_message_enums.dart';
 import '../screens/exercise/reorder_exercises_screen.dart';
 import 'exercise_logs_utils.dart';
-import 'general_utils.dart';
 
 Future<List<ExerciseLogDto>?> reOrderExerciseLogs(
     {required BuildContext context, required List<ExerciseLogDto> exerciseLogs}) async {
@@ -134,11 +132,4 @@ String copyRoutineAsText(
     }
   }
   return routineText.toString();
-}
-
-int calculateCalories({required Duration duration, required double bodyWeight, required ActivityType activity}) {
-  const oxygenInMils = 3.5;
-  final bodyWeightInKG = isDefaultWeightUnit() ? bodyWeight : toKg(bodyWeight.toDouble());
-  final caloriesPerMinute = (activity.met * bodyWeightInKG * oxygenInMils) / 200;
-  return (caloriesPerMinute * duration.inMinutes).floor();
 }

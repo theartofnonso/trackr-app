@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -19,12 +20,10 @@ import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_information_container.dart';
 import 'package:tracker_app/widgets/information_containers/information_container_lite.dart';
 import 'package:tracker_app/widgets/monitors/log_streak_monitor.dart';
-import 'package:tracker_app/widgets/monthly_insights/calories_chart.dart';
 import 'package:tracker_app/widgets/monthly_insights/volume_chart.dart';
 
 import '../../controllers/activity_log_controller.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
-import '../../controllers/routine_user_controller.dart';
 import '../../dtos/abstract_class/log_class.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
@@ -37,7 +36,6 @@ import '../../strings/ai_prompts.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
-import '../../utils/routine_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_button.dart';
 import '../../widgets/ai_widgets/trkr_coach_text_widget.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
@@ -50,6 +48,11 @@ import '../../widgets/routine/preview/routine_log_widget.dart';
 import '../AI/monthly_training_report_screen.dart';
 import '../AI/trkr_coach_chat_screen.dart';
 import '../editors/workout_video_generator_screen.dart';
+
+enum TrainingAndVolume {
+  training,
+  volume;
+}
 
 class OverviewScreen extends StatefulWidget {
   final ScrollController scrollController;
@@ -68,6 +71,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
   bool _loading = false;
 
   TextEditingController? _textEditingController;
+
+  TrainingAndVolume _trainingAndVolume = TrainingAndVolume.training;
 
   String _predictTemplate({required List<RoutineLogDto> logs}) {
     if (logs.isEmpty) {
@@ -116,6 +121,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     /// Be notified of changes
@@ -190,7 +198,38 @@ class _OverviewScreenState extends State<OverviewScreen> {
                               onSelectDate: _onSelectCalendarDateTime,
                               dateTime: widget.dateTimeRange.start,
                             ),
-                            LogStreakChart(),
+                            Column(
+                              spacing: 20,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                CupertinoSlidingSegmentedControl<TrainingAndVolume>(
+                                  backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade200,
+                                  thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
+                                  groupValue: _trainingAndVolume,
+                                  children: {
+                                    TrainingAndVolume.training: SizedBox(
+                                        width: 80,
+                                        child: Text("Training",
+                                            style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center)),
+                                    TrainingAndVolume.volume: SizedBox(
+                                        width: 80,
+                                        child: Text("Volume",
+                                            style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center)),
+                                  },
+                                  onValueChanged: (TrainingAndVolume? value) {
+                                    if (value != null) {
+                                      setState(() {
+                                        _trainingAndVolume = value;
+                                      });
+                                    }
+                                  },
+                                ),
+                                switch (_trainingAndVolume) {
+                                  TrainingAndVolume.training => LogStreakChart(),
+                                  TrainingAndVolume.volume => VolumeChart(),
+                                }
+                              ],
+                            ),
                           ],
                         ),
                         if (isStartOfNewMonth && logsForPastMonth.isNotEmpty)
@@ -207,8 +246,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
                               label: "Review ${widget.dateTimeRange.start.formattedFullMonth()} insights.",
                               onTap: () => _generateMonthlyInsightsReport(datetime: widget.dateTimeRange.start)),
                         MonthlyInsights(dateTimeRange: widget.dateTimeRange),
-                        VolumeChart(),
-                        CaloriesChart()
                       ])),
                 )
                 // Add more widgets here for exercise insights
@@ -234,8 +271,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   void _generateMonthlyInsightsReport({required DateTime datetime}) {
     _showLoadingScreen();
-
-    final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
 
     final exerciseAndRoutineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
@@ -276,7 +311,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
         The report should focus on:
             - Exercise selection
             - Muscles trained
-            - Calories burned
             - Personal bests achieved
             - Hours spent training
             - Consistency and frequency of workouts
@@ -293,17 +327,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
       final completedExerciseLogs = loggedExercises(exerciseLogs: log.exerciseLogs);
       final musclesTrained = getMusclesTrained(completedExerciseLogs);
       final exercises = log.exerciseLogs.map((exerciseLog) => exerciseLog.exercise.name).toSet().toList();
-      final caloriesBurned = calculateCalories(
-        duration: log.duration(),
-        bodyWeight: routineUserController.weight(),
-        activity: log.activityType,
-      );
       final personalBests = getPersonalBests(log.exerciseLogs);
 
       buffer.writeln("Log information for ${log.name} workout in ${log.createdAt.formattedFullMonth}");
       buffer.writeln("List of exercises performed: $exercises}");
       buffer.writeln("List of muscles trained: $musclesTrained}");
-      buffer.writeln("Amount of calories burned: $caloriesBurned}");
       buffer.writeln("Personal bests: $personalBests}");
       buffer.writeln("Duration of workout: ${log.duration().hmsAnalog()}}");
       buffer.writeln();
@@ -431,7 +459,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   void _showLogsBottomSheet({required DateTime dateTime}) {
     displayBottomSheet(
-      isScrollControlled: true,
+        isScrollControlled: true,
         context: context,
         child: SafeArea(
           child: _LogsListView(dateTime: dateTime),
@@ -599,11 +627,10 @@ class _LogsListView extends StatelessWidget {
       );
     }).toList();
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-        spacing: 16,
-        children: [
-      Text("Training and Activities".toUpperCase(), style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-      ...children]);
+    return Column(crossAxisAlignment: CrossAxisAlignment.center, spacing: 16, children: [
+      Text("Training and Activities".toUpperCase(),
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
+      ...children
+    ]);
   }
 }

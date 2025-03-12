@@ -104,9 +104,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     final muscleGroupFamilyFrequencies = muscleGroupFrequency(exerciseLogs: completedExerciseLogs);
 
-    final calories = calculateCalories(
-        duration: updatedLog.duration(), bodyWeight: routineUserController.weight(), activity: log.activityType);
-
     final pbs = updatedLog.exerciseLogs.map((exerciseLog) {
       final pastExerciseLogs = exerciseAndRoutineController.whereExerciseLogsBefore(
           exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
@@ -270,14 +267,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                               description: "The total time you spent on your workout session, from start to finish."),
                         ),
                         _StatisticWidget(
-                          title: "$calories",
-                          subtitle: "Calories",
-                          icon: FontAwesomeIcons.fire,
-                          information: _StatisticsInformation(
-                              title: "Calories Burned",
-                              description: "An estimate of the energy your body used during the workout."),
-                        ),
-                        _StatisticWidget(
                           title: "${pbs.length}",
                           subtitle: "PBs",
                           icon: FontAwesomeIcons.solidStar,
@@ -299,17 +288,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                       ],
                     ),
                   ),
-                  if (routineUserController.user == null)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: GestureDetector(
-                        onTap: _navigateToSettings,
-                        child: InformationContainerLite(
-                          content: "Set up your user profile in the settings to view the number of calories burned.",
-                          color: Colors.deepOrange,
-                        ),
-                      ),
-                    ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: Column(

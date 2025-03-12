@@ -8,7 +8,6 @@ import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:tracker_app/widgets/dividers/label_divider.dart';
 import 'package:tracker_app/widgets/icons/user_icon_widget.dart';
 import 'package:tracker_app/widgets/list_tile.dart';
-import 'package:tracker_app/widgets/routine/editors/textfields/double_textfield.dart';
 
 import '../../colors.dart';
 import '../../controllers/routine_user_controller.dart';
@@ -27,8 +26,6 @@ class UserProfileScreen extends StatefulWidget {
 
 class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindingObserver {
   RoutineUserDto? _user;
-
-  final _doubleTextFieldController = TextEditingController();
 
   double _weight = 0;
 
@@ -80,41 +77,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
                         Center(
                           child: Text(user.name.toUpperCase(),
                               style: Theme.of(context).textTheme.titleSmall, textAlign: TextAlign.center),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        LabelDivider(
-                          label: "Enter your weight".toUpperCase(),
-                          labelColor: isDarkMode ? Colors.white : Colors.black,
-                          dividerColor: sapphireLighter,
-                          fontSize: 14,
-                        ),
-                        const SizedBox(height: 8),
-                        Text("We estimate the amount of calories burned using your weight.",
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
-                        const SizedBox(height: 8),
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: isDarkMode ? Colors.white10 : Colors.black38, // Border color
-                              width: 1, // Border width
-                            ),
-                            borderRadius: BorderRadius.circular(5), // Rounded corners
-                          ),
-                          width: double.infinity,
-                          child: DoubleTextField(
-                            value: _user?.weight ?? 0,
-                            controller: _doubleTextFieldController,
-                            onChanged: (value) {
-                              setState(() {
-                                _weight = value;
-                              });
-                            },
-                          ),
                         ),
                       ],
                     ),
