@@ -43,7 +43,7 @@ import '../../widgets/routine/preview/exercise_log_listview.dart';
 enum OriginalNewValues {
   originalValues(
       name: "Original Values", description: "Showing values from the last time this template was saved or updated."),
-  newValues(name: "New Values", description: "Showing values from your last logged session.");
+  newValues(name: "Recent Values", description: "Showing values from your last logged session.");
 
   const OriginalNewValues({required this.name, required this.description});
 
