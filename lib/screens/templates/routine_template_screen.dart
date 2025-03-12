@@ -461,7 +461,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                             ],
                           ),
                           Text(
-                              "Here’s a summary of your ${template.name} training intensity over the last ${allLogsForTemplate.length} ${pluralize(word: "session", count: allLogsForTemplate.length)}.",
+                              "Here’s a volume trend of your ${template.name} training over the last ${allLogsForTemplate.length} ${pluralize(word: "session", count: allLogsForTemplate.length)}.",
                               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                   fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
                           const SizedBox(height: 12),
