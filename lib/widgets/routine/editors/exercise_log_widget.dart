@@ -423,6 +423,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       progressionColor = vibrantBlue;
     }
 
+    print(progressionSummary);
+
     final rpeRatings = sets.mapIndexed((index, set) => set.rpeRating).toList();
 
     final rpeTrendSummary = _getRpeTrendSummary(ratings: rpeRatings);
@@ -574,12 +576,12 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                           ),
                       }
                     : SetsListview(type: exerciseType, sets: sets),
-                if (sets.isNotEmpty && widget.editorType == RoutineEditorMode.log)
+                if (sets.isNotEmpty && widget.editorType == RoutineEditorMode.log && !isEmptySets)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     spacing: 10,
                     children: [
-                      if (progressionSummary.isNotEmpty)
+                      if (withReps(type: exerciseType))
                         InformationContainerLite(
                           content: "$rpeTrendSummary$progressionSummary",
                           color: progressionColor,
