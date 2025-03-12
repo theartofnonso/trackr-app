@@ -199,7 +199,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                               dateTime: widget.dateTimeRange.start,
                             ),
                             Column(
-                              spacing: 20,
+                              spacing: 8,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 CupertinoSlidingSegmentedControl<TrainingAndVolume>(
