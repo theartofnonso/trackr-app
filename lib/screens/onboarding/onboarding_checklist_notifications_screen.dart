@@ -5,6 +5,7 @@ import 'package:tracker_app/widgets/empty_states/no_list_empty_state.dart';
 
 import '../../controllers/activity_log_controller.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
+import '../../controllers/routine_user_controller.dart';
 import '../../utils/general_utils.dart';
 import '../../widgets/list_tile.dart';
 
@@ -22,13 +23,17 @@ class OnboardingChecklistNotificationsScreenScreen extends StatelessWidget {
 
     final activityLogController = Provider.of<ActivityLogController>(context, listen: true);
 
+    final routineUserController = Provider.of<RoutineUserController>(context, listen: true);
+
+    final user = routineUserController.user;
+
     final routineLogs = exerciseAndRoutineController.logs;
 
     final routineTemplates = exerciseAndRoutineController.templates;
 
     final activityLogs = activityLogController.logs;
 
-    final hasPendingActions = routineTemplates.isEmpty || routineLogs.isEmpty || activityLogs.isEmpty;
+    final hasPendingActions = routineTemplates.isEmpty || routineLogs.isEmpty || activityLogs.isEmpty || user == null;
 
     return Scaffold(
       appBar: AppBar(
@@ -88,6 +93,18 @@ class OnboardingChecklistNotificationsScreenScreen extends StatelessWidget {
                           title: Text("Log An Activity"),
                           leading: FaIcon(FontAwesomeIcons.personWalking),
                           subtitle: Text("Diversify your fitness journey"),
+                          trailing: FaIcon(
+                            FontAwesomeIcons.solidBell,
+                            size: 18,
+                          ),
+                        ),
+                      ),
+                    if (user == null)
+                      ThemeListTile(
+                        child: ListTile(
+                          title: Text("Set up your profile"),
+                          leading: FaIcon(FontAwesomeIcons.personWalking),
+                          subtitle: Text("Visit settings to create a profile"),
                           trailing: FaIcon(
                             FontAwesomeIcons.solidBell,
                             size: 18,

@@ -9,6 +9,7 @@ import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../controllers/activity_log_controller.dart';
 import '../controllers/exercise_and_routine_controller.dart';
+import '../controllers/routine_user_controller.dart';
 import '../utils/date_utils.dart';
 import '../widgets/calendar/calendar_navigator.dart';
 
@@ -34,13 +35,17 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
 
     final activityLogController = Provider.of<ActivityLogController>(context, listen: true);
 
+    final routineUserController = Provider.of<RoutineUserController>(context, listen: true);
+
+    final user = routineUserController.user;
+
     final routineLogs = exerciseAndRoutineController.logs;
 
     final routineTemplates = exerciseAndRoutineController.templates;
 
     final activityLogs = activityLogController.logs;
 
-    final hasPendingActions = routineTemplates.isEmpty || routineLogs.isEmpty || activityLogs.isEmpty;
+    final hasPendingActions = routineTemplates.isEmpty || routineLogs.isEmpty || activityLogs.isEmpty || user == null;
 
     return DefaultTabController(
         length: 2,

@@ -16,12 +16,10 @@ import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/https_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/backgrounds/trkr_loading_screen.dart';
-import 'package:tracker_app/widgets/information_containers/information_container_lite.dart';
 
 import '../../../colors.dart';
 import '../../../dtos/exercise_log_dto.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
-import '../../controllers/routine_user_controller.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
@@ -88,8 +86,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             message: exerciseAndRoutineController.errorMessage);
       });
     }
-
-    final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
 
     final log = _log;
 
@@ -362,10 +358,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             ),
           ),
         ));
-  }
-
-  void _navigateToSettings() {
-    navigateToSettings(context: context);
   }
 
   void _generateReport({required RoutineLogDto log}) async {
