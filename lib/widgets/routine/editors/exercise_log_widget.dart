@@ -159,54 +159,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         .updateReps(exerciseLogId: _exerciseLog.id, index: index, setDto: updatedSet);
   }
 
-  void _checkAndUpdateDuration(
-      {required int index, required Duration duration, required SetDto setDto, required bool checked}) {
-    if (setDto.isEmpty()) return;
-
-    if (setDto.checked) {
-      final duration = (setDto as DurationSetDto).duration;
-      final startTime = DateTime.now().subtract(duration);
-      _durationControllers[index] = startTime;
-      _updateSetCheck(index: index, setDto: setDto);
-    } else {
-      final updatedSet = (setDto as DurationSetDto).copyWith(duration: duration, checked: checked);
-      Provider.of<ExerciseLogController>(context, listen: false)
-          .updateDuration(exerciseLogId: _exerciseLog.id, index: index, setDto: updatedSet, notify: checked);
-
-      _loadControllers();
-
-      if (checked) {
-        displayBottomSheet(
-            context: context,
-            child: _RPERatingSlider(
-              rpeRating: setDto.rpeRating.toDouble(),
-              onSelectRating: (int rpeRating) {
-                final updatedSetWithRpeRating = updatedSet.copyWith(rpeRating: rpeRating);
-                Provider.of<ExerciseLogController>(context, listen: false)
-                    .updateRpeRating(exerciseLogId: _exerciseLog.id, index: index, setDto: updatedSetWithRpeRating);
-              },
-            ));
-      }
-    }
-  }
-
   void _updateDuration({required int index, required Duration duration, required SetDto setDto}) {
-    SetDto updatedSet = setDto;
-    if (setDto.checked) {
-      updatedSet = (setDto as DurationSetDto).copyWith(duration: duration);
-    } else {
-      updatedSet = (setDto as DurationSetDto).copyWith(duration: duration, checked: true);
-    }
-
+    SetDto updatedSet = (setDto as DurationSetDto).copyWith(duration: duration);
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateDuration(exerciseLogId: _exerciseLog.id, index: index, setDto: updatedSet, notify: true);
-
-    _loadControllers();
   }
 
   void _updateSetCheck({required int index, required SetDto setDto}) {
-    if (setDto.isEmpty()) return;
-
     if (setDto.isEmpty()) return;
 
     final checked = !setDto.checked;
@@ -385,9 +344,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final sets = _showPreviousSets ? recentSets : currentSets;
 
-    String progressionSummary = "";
+    String progressionSummary;
     Color progressionColor = vibrantBlue;
-    TrainingProgression trainingProgression = TrainingProgression.maintain;
+    TrainingProgression? trainingProgression;
     RepRange? typicalRepRange;
 
     /// Get working sets
@@ -432,23 +391,29 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           data: trainingData, targetMinReps: typicalRepRange.minReps, targetMaxReps: typicalRepRange.maxReps);
     }
 
-    final weightsOrRepsLabel = withWeightsOnly(type: exerciseType) ? "weight" : "reps";
+    final weightsRepsDurationLabel = switch (exerciseType) {
+      ExerciseType.weights => "weight",
+      ExerciseType.bodyWeight => "reps",
+      ExerciseType.duration => "duration",
+    };
 
     /// Generate weight or reps progression summary
     progressionSummary = switch (trainingProgression) {
       TrainingProgression.increase =>
-        ", time to take it up a notch, increase the $weightsOrRepsLabel for ${workingSet?.summary()}.",
+        ", time to take it up a notch, increase the $weightsRepsDurationLabel of ${workingSet?.summary()}.",
       TrainingProgression.decrease =>
-        ", dial it back a bit, reduce the $weightsOrRepsLabel for ${workingSet?.summary()} for now.",
+        ", dial it back a bit, reduce the $weightsRepsDurationLabel of ${workingSet?.summary()} for now.",
       TrainingProgression.maintain =>
-        ", right on track, stick with your current $weightsOrRepsLabel for ${workingSet?.summary()}."
+        ", right on track, stick with your current $weightsRepsDurationLabel of ${workingSet?.summary()}.",
+      null => "",
     };
 
     /// Generate weight or reps progression color
     progressionColor = switch (trainingProgression) {
       TrainingProgression.increase => vibrantGreen,
       TrainingProgression.decrease => Colors.deepOrange,
-      TrainingProgression.maintain => vibrantBlue
+      TrainingProgression.maintain => vibrantBlue,
+      null => Colors.transparent,
     };
 
     final isEmptySets = hasEmptyValues(sets: sets, exerciseType: exerciseType);
@@ -569,7 +534,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                             editorType: widget.editorType,
                           )
                       },
-                if (sets.isEmpty)
+                if (sets.isEmpty && !_showPreviousSets)
                   Column(
                     children: [
                       const SizedBox(height: 10),
@@ -577,53 +542,52 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                           showIcon: false, message: "Tap the + button to start adding sets to your exercise"),
                     ],
                   ),
-                if (sets.isNotEmpty && !_showPreviousSets)
-                  switch (exerciseType) {
-                    ExerciseType.weights => _WeightAndRepsSetListView(
-                        sets: sets.map((set) => set as WeightAndRepsSetDto).toList(),
-                        updateSetCheck: _updateSetCheck,
-                        removeSet: _removeSet,
-                        updateReps: _updateReps,
-                        updateWeight: _updateWeight,
-                        controllers: _weightAndRepsControllers,
-                        onTapWeightEditor: _onTapWeightEditor,
-                        onTapRepsEditor: _onTapRepsEditor,
-                        editorType: widget.editorType,
-                      ),
-                    ExerciseType.bodyWeight => _RepsSetListView(
-                        sets: sets.map((set) => set as RepsSetDto).toList(),
-                        updateSetCheck: _updateSetCheck,
-                        removeSet: _removeSet,
-                        updateReps: _updateReps,
-                        controllers: _repsControllers,
-                        onTapWeightEditor: _onTapWeightEditor,
-                        onTapRepsEditor: _onTapRepsEditor,
-                        editorType: widget.editorType,
-                      ),
-                    ExerciseType.duration => _DurationSetListView(
-                        sets: sets.map((set) => set as DurationSetDto).toList(),
-                        updateSetCheck: _updateSetCheck,
-                        removeSet: _removeSet,
-                        controllers: _durationControllers,
-                        checkAndUpdateDuration: _checkAndUpdateDuration,
-                        updateDuration: _updateDuration,
-                        editorType: widget.editorType,
-                      ),
-                  },
-                if (_showPreviousSets) SetsListview(type: exerciseType, sets: sets),
+                !_showPreviousSets
+                    ? switch (exerciseType) {
+                        ExerciseType.weights => _WeightAndRepsSetListView(
+                            sets: sets.map((set) => set as WeightAndRepsSetDto).toList(),
+                            updateSetCheck: _updateSetCheck,
+                            removeSet: _removeSet,
+                            updateReps: _updateReps,
+                            updateWeight: _updateWeight,
+                            controllers: _weightAndRepsControllers,
+                            onTapWeightEditor: _onTapWeightEditor,
+                            onTapRepsEditor: _onTapRepsEditor,
+                            editorType: widget.editorType,
+                          ),
+                        ExerciseType.bodyWeight => _RepsSetListView(
+                            sets: sets.map((set) => set as RepsSetDto).toList(),
+                            updateSetCheck: _updateSetCheck,
+                            removeSet: _removeSet,
+                            updateReps: _updateReps,
+                            controllers: _repsControllers,
+                            onTapRepsEditor: _onTapRepsEditor,
+                            editorType: widget.editorType,
+                          ),
+                        ExerciseType.duration => _DurationSetListView(
+                            sets: sets.map((set) => set as DurationSetDto).toList(),
+                            updateSetCheck: _updateSetCheck,
+                            removeSet: _removeSet,
+                            updateDuration: _updateDuration,
+                            controllers: _durationControllers,
+                            editorType: widget.editorType,
+                          ),
+                      }
+                    : SetsListview(type: exerciseType, sets: sets),
                 if (sets.isNotEmpty && widget.editorType == RoutineEditorMode.log)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     spacing: 10,
                     children: [
-                      InformationContainerLite(
-                        content: "$rpeTrendSummary$progressionSummary",
-                        color: progressionColor,
-                        icon: FaIcon(
-                          FontAwesomeIcons.boltLightning,
-                          size: 18,
+                      if (progressionSummary.isNotEmpty)
+                        InformationContainerLite(
+                          content: "$rpeTrendSummary$progressionSummary",
+                          color: progressionColor,
+                          icon: FaIcon(
+                            FontAwesomeIcons.boltLightning,
+                            size: 18,
+                          ),
                         ),
-                      ),
                       if (workingSet != null)
                         GestureDetector(
                           onTap: () => showBottomSheetWithNoAction(
@@ -714,11 +678,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                         ),
                     ],
                   ),
-                const SizedBox(height: 2),
-                if (withDurationOnly(type: exerciseType) && sets.isEmpty)
-                  Center(
-                    child: Text("Tap + to add a timer", style: Theme.of(context).textTheme.bodySmall),
-                  ),
               ],
             ),
           ),
@@ -782,7 +741,6 @@ class _RepsSetListView extends StatelessWidget {
   final void Function({required int index}) removeSet;
   final void Function({required int index, required SetDto setDto}) updateSetCheck;
   final void Function({required int index, required int reps, required SetDto setDto}) updateReps;
-  final void Function({required SetDto setDto}) onTapWeightEditor;
   final void Function() onTapRepsEditor;
 
   const _RepsSetListView(
@@ -791,7 +749,6 @@ class _RepsSetListView extends StatelessWidget {
       required this.updateSetCheck,
       required this.removeSet,
       required this.updateReps,
-      required this.onTapWeightEditor,
       required this.onTapRepsEditor,
       required this.editorType});
 
@@ -824,8 +781,6 @@ class _DurationSetListView extends StatelessWidget {
   final List<DateTime> controllers;
   final void Function({required int index}) removeSet;
   final void Function({required int index, required SetDto setDto}) updateSetCheck;
-  final void Function({required int index, required Duration duration, required SetDto setDto, required bool checked})
-      checkAndUpdateDuration;
   final void Function({required int index, required Duration duration, required SetDto setDto}) updateDuration;
 
   const _DurationSetListView(
@@ -833,7 +788,6 @@ class _DurationSetListView extends StatelessWidget {
       required this.controllers,
       required this.updateSetCheck,
       required this.removeSet,
-      required this.checkAndUpdateDuration,
       required this.updateDuration,
       required this.editorType});
 
@@ -845,10 +799,8 @@ class _DurationSetListView extends StatelessWidget {
         setDto: setDto,
         onCheck: () => updateSetCheck(index: index, setDto: setDto),
         onRemoved: () => removeSet(index: index),
-        onCheckAndUpdateDuration: (Duration duration, {bool? checked}) =>
-            checkAndUpdateDuration(index: index, duration: duration, setDto: setDto, checked: checked ?? false),
         startTime: controllers.isNotEmpty ? controllers[index] : DateTime.now(),
-        onupdateDuration: (Duration duration) => updateDuration(index: index, duration: duration, setDto: setDto),
+        onUpdateDuration: (Duration duration) => updateDuration(index: index, duration: duration, setDto: setDto),
       );
     }).toList();
 

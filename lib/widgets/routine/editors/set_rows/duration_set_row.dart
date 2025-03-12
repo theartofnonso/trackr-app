@@ -16,16 +16,14 @@ class DurationSetRow extends StatelessWidget {
   final VoidCallback onCheck;
   final RoutineEditorMode editorType;
   final DateTime startTime;
-  final void Function(Duration duration, {bool checked}) onCheckAndUpdateDuration;
-  final void Function(Duration duration) onupdateDuration;
+  final void Function(Duration duration) onUpdateDuration;
 
   const DurationSetRow({
     super.key,
     required this.setDto,
     required this.onRemoved,
     required this.onCheck,
-    required this.onCheckAndUpdateDuration,
-    required this.onupdateDuration,
+    required this.onUpdateDuration,
     required this.startTime,
     required this.editorType,
   });
@@ -37,12 +35,8 @@ class DurationSetRow extends StatelessWidget {
         mode: CupertinoTimerPickerMode.hms,
         onChangedDuration: (Duration duration) {
           Navigator.of(context).pop();
-          onupdateDuration(duration);
+          onUpdateDuration(duration);
         });
-  }
-
-  void _toggleTimer() {
-    onCheckAndUpdateDuration(DateTime.now().difference(startTime), checked: true);
   }
 
   @override
@@ -76,7 +70,7 @@ class DurationSetRow extends StatelessWidget {
                       : StopwatchTimer(
                           startTime: startTime,
                           digital: true,
-                          onChangedDuration: (Duration duration) => onCheckAndUpdateDuration(duration)),
+                          onChangedDuration: (Duration duration) => onUpdateDuration(duration)),
                 ),
               ),
             ),
@@ -84,7 +78,7 @@ class DurationSetRow extends StatelessWidget {
           if (editorType == RoutineEditorMode.log)
             TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
-                child: SetCheckButton(setDto: setDto, onCheck: _toggleTimer))
+                child: SetCheckButton(setDto: setDto, onCheck: onCheck))
         ])
       ],
     );
