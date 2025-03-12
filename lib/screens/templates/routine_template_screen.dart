@@ -814,7 +814,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
         return TrendSummary(
           trend: Trend.up,
           average: averageOfPrevious,
-          summary: "🌟🌟 Last session's volume was $variation higher than your average. "
+          summary: "🌟🌟 Last session's volume is $variation higher than your average. "
               "Awesome job building momentum!",
         );
 
@@ -822,7 +822,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
         return TrendSummary(
           trend: Trend.down,
           average: averageOfPrevious,
-          summary: "📉 Last session's volume was $variation lower than your average. "
+          summary: "📉 Last session's volume is $variation lower than your average. "
               "Consider extra rest, checking your technique, or planning a deload.",
         );
 
