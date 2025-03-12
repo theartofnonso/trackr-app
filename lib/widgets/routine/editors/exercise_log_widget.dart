@@ -424,8 +424,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       progressionColor = vibrantBlue;
     }
 
-    print(progressionSummary);
-
     final rpeRatings = sets.mapIndexed((index, set) => set.rpeRating).toList();
 
     final rpeTrendSummary = _getRpeTrendSummary(ratings: rpeRatings);
@@ -732,12 +730,7 @@ class _WeightAndRepsSetListView extends StatelessWidget {
       );
     }).toList();
 
-    return ListView.separated(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) => children[index],
-        separatorBuilder: (context, index) => const SizedBox(height: 8),
-        itemCount: children.length);
+    return Column(spacing: 8, children: children);
   }
 }
 
@@ -773,12 +766,7 @@ class _RepsSetListView extends StatelessWidget {
       );
     }).toList();
 
-    return ListView.separated(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) => children[index],
-        separatorBuilder: (context, index) => const SizedBox(height: 8),
-        itemCount: children.length);
+    return Column(spacing: 8, children: children);
   }
 }
 
@@ -816,12 +804,7 @@ class _DurationSetListView extends StatelessWidget {
       );
     }).toList();
 
-    return ListView.separated(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) => children[index],
-        separatorBuilder: (context, index) => const SizedBox(height: 8),
-        itemCount: children.length);
+    return Column(spacing: 8, children: children);
   }
 }
 
