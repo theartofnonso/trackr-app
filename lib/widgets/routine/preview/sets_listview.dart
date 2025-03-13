@@ -42,31 +42,28 @@ class SetsListview extends StatelessWidget {
 
     final pbsBySet = groupBy(pbs, (pb) => pb.set);
 
-    return ListView.separated(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) {
-          final set = sets[index];
-          final workingSet = workingSets[index];
-          final pbsForSet = pbsBySet[set] ?? [];
-          switch (set.type) {
-            case ExerciseType.weights:
-              final firstLabel = (set as WeightAndRepsSetDto).weight;
-              final secondLabel = set.reps;
-              return SetModeBadge(
-                setDto: (workingSet as WeightAndRepsSetDto?) ?? set,
-                child: DoubleSetRow(first: "$firstLabel", second: "$secondLabel", pbs: pbsForSet),
-              );
-            case ExerciseType.bodyWeight:
-              final label = (set as RepsSetDto).reps;
-              return SetModeBadge(setDto: (workingSet as RepsSetDto?) ?? set, child: SingleSetRow(label: "$label"));
-            case ExerciseType.duration:
-              final label = (set as DurationSetDto).duration.hmsDigital();
-              return SetModeBadge(
-                  setDto: (workingSet as DurationSetDto?) ?? set, child: SingleSetRow(label: label, pbs: pbsForSet));
-          }
-        },
-        separatorBuilder: (context, index) => SizedBox(height: 8),
-        itemCount: sets.length);
+    final children = sets.mapIndexed((index, set) {
+      final set = sets[index];
+      final workingSet = workingSets[index];
+      final pbsForSet = pbsBySet[set] ?? [];
+      switch (set.type) {
+        case ExerciseType.weights:
+          final firstLabel = (set as WeightAndRepsSetDto).weight;
+          final secondLabel = set.reps;
+          return SetModeBadge(
+            setDto: (workingSet as WeightAndRepsSetDto?) ?? set,
+            child: DoubleSetRow(first: "$firstLabel", second: "$secondLabel", pbs: pbsForSet),
+          );
+        case ExerciseType.bodyWeight:
+          final label = (set as RepsSetDto).reps;
+          return SetModeBadge(setDto: (workingSet as RepsSetDto?) ?? set, child: SingleSetRow(label: "$label"));
+        case ExerciseType.duration:
+          final label = (set as DurationSetDto).duration.hmsDigital();
+          return SetModeBadge(
+              setDto: (workingSet as DurationSetDto?) ?? set, child: SingleSetRow(label: label, pbs: pbsForSet));
+      }
+    }).toList();
+
+    return Column(spacing: 8, children: children);
   }
 }
