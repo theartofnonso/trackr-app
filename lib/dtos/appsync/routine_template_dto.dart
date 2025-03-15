@@ -79,6 +79,7 @@ class RoutineTemplateDto {
         exerciseLogs: List.from(exerciseTemplates),
         notes: notes,
         owner: owner,
+        workoutVideoUrl: workoutVideoUrl,
         startTime: DateTime.now(),
         endTime: DateTime.now(),
         createdAt: DateTime.now(),

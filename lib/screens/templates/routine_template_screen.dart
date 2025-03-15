@@ -255,7 +255,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
     final exerciseTemplates = _originalNewValues == _OriginalNewValues.newValues
         ? template.exerciseTemplates.map((exerciseTemplate) {
-            final pastSets = exerciseAndRoutineController.whereRecentSetsForExercise(exercise: exerciseTemplate.exercise);
+            final pastSets =
+                exerciseAndRoutineController.whereRecentSetsForExercise(exercise: exerciseTemplate.exercise);
             final uncheckedSets = pastSets.map((set) => set.copyWith(checked: false)).toList();
             return exerciseTemplate.copyWith(sets: uncheckedSets);
           }).toList()
@@ -387,7 +388,10 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                             Text(
                               '"${template.notes.isNotEmpty ? "${template.notes}." : "No notes"}"',
                               textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontStyle: FontStyle.italic, fontSize: 12,),
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                    fontStyle: FontStyle.italic,
+                                    fontSize: 12,
+                                  ),
                             )
                           ],
                         ),
@@ -581,8 +585,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   void _launchRoutineLogEditor() {
     final template = _template;
     if (template != null) {
-      final arguments = RoutineLogArguments(
-          log: template.toLog(), editorMode: RoutineEditorMode.log, workoutVideo: template.workoutVideoUrl);
+      final arguments = RoutineLogArguments(log: template.toLog(), editorMode: RoutineEditorMode.log);
       navigateToRoutineLogEditor(context: context, arguments: arguments);
     }
   }

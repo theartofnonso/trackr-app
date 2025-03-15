@@ -4,9 +4,8 @@ import '../../enums/routine_editor_type_enums.dart';
 
 class RoutineLogArguments {
   final RoutineLogDto log;
-  final String workoutVideo;
   final RoutineEditorMode editorMode;
   final bool cached;
 
-  RoutineLogArguments({required this.log, required this.editorMode, this.workoutVideo = "", this.cached = false});
+  RoutineLogArguments({required this.log, required this.editorMode, this.cached = false});
 }

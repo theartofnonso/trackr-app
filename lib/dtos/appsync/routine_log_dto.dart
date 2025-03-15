@@ -43,6 +43,8 @@ class RoutineLogDto extends Log {
   @override
   final DateTime updatedAt;
 
+  final String? workoutVideoUrl;
+
   RoutineLogDto({
     required this.id,
     required this.templateId,
@@ -55,6 +57,7 @@ class RoutineLogDto extends Log {
     required this.owner,
     this.sleepFrom,
     this.sleepTo,
+    this.workoutVideoUrl,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -75,6 +78,7 @@ class RoutineLogDto extends Log {
       'startTime': startTime.toIso8601String(),
       'endTime': endTime.toIso8601String(),
       'exercises': exerciseLogs.map((exercise) => exercise.toJson()).toList(),
+      'workoutVideoUrl': workoutVideoUrl ?? "",
     };
   }
 
@@ -93,6 +97,7 @@ class RoutineLogDto extends Log {
     final startTime = DateTime.parse(json["startTime"]);
     final endTime = DateTime.parse(json["endTime"]);
     final exerciseLogsInJson = json["exercises"] as List<dynamic>;
+    final workoutVideoUrl = json["workoutVideoUrl"];
     List<ExerciseLogDto> exerciseLogs = [];
     if (exerciseLogsInJson.isNotEmpty && exerciseLogsInJson.first is String) {
       exerciseLogs = exerciseLogsInJson
@@ -118,6 +123,7 @@ class RoutineLogDto extends Log {
       owner: log.owner ?? "",
       sleepFrom: sleepFrom,
       sleepTo: sleepTo,
+      workoutVideoUrl: workoutVideoUrl,
       createdAt: log.createdAt.getDateTimeInUtc(),
       updatedAt: log.updatedAt.getDateTimeInUtc(),
     );
@@ -130,6 +136,7 @@ class RoutineLogDto extends Log {
     final summary = json["summary"];
     final startTime = DateTime.parse(json["startTime"]);
     final endTime = DateTime.parse(json["endTime"]);
+    final workoutVideoUrl = json["workoutVideoUrl"];
     final exerciseLogJsons = json["exercises"] as List<dynamic>;
     final exerciseLogs = exerciseLogJsons.map((json) {
       return ExerciseLogDto.fromJson(routineLogId: "", json: json);
@@ -144,6 +151,7 @@ class RoutineLogDto extends Log {
       startTime: startTime,
       endTime: endTime,
       owner: "",
+      workoutVideoUrl: workoutVideoUrl,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );
@@ -160,6 +168,7 @@ class RoutineLogDto extends Log {
     DateTime? endTime,
     List<ExerciseLogDto>? exerciseLogs,
     String? owner,
+    String? workoutVideoUrl,
     DateTime? sleepFrom,
     DateTime? sleepTo,
     DateTime? createdAt,
@@ -173,6 +182,7 @@ class RoutineLogDto extends Log {
       summary: summary ?? this.summary,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
+      workoutVideoUrl: workoutVideoUrl ?? this.workoutVideoUrl,
       // Deep copy the list. For any new list passed in, we clone its items;
       // otherwise, we clone the existing list if it's not null.
       exerciseLogs: exerciseLogs != null
@@ -188,7 +198,7 @@ class RoutineLogDto extends Log {
 
   @override
   String toString() {
-    return 'RoutineLogDto{id: $id, templateId: $templateId, name: $name, notes: $notes, summary: $summary, startTime: $startTime, endTime: $endTime, exerciseLogs: $exerciseLogs, owner: $owner, sleepFrom: $sleepFrom, sleepTo: $sleepTo, createdAt: $createdAt, updatedAt: $updatedAt}';
+    return 'RoutineLogDto{id: $id, templateId: $templateId, name: $name, notes: $notes, summary: $summary, startTime: $startTime, endTime: $endTime, exerciseLogs: $exerciseLogs, workoutVideoUrl: $workoutVideoUrl, owner: $owner, sleepFrom: $sleepFrom, sleepTo: $sleepTo, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
 
   @override

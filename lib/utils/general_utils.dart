@@ -301,13 +301,14 @@ Widget getTrendIcon({required Trend trend}) {
   };
 }
 
-void logEmptyRoutine({required BuildContext context, String workoutVideoUrl = ""}) async {
+void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) async {
   final log = RoutineLogDto(
       id: "",
       templateId: "",
       name: "${timeOfDay()} Session",
       exerciseLogs: [],
       notes: "",
+      workoutVideoUrl: workoutVideoUrl,
       startTime: DateTime.now(),
       endTime: DateTime.now(),
       owner: "",
@@ -318,7 +319,6 @@ void logEmptyRoutine({required BuildContext context, String workoutVideoUrl = ""
       child: RoutineLogEditorScreen(
         log: log,
         mode: RoutineEditorMode.log,
-        workoutVideoUrl: workoutVideoUrl,
       ));
   if (recentLog != null) {
     if (context.mounted) {

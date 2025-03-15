@@ -39,10 +39,9 @@ class RoutineLogEditorScreen extends StatefulWidget {
   final RoutineLogDto log;
   final RoutineEditorMode mode;
   final bool cached;
-  final String workoutVideoUrl;
 
   const RoutineLogEditorScreen(
-      {super.key, required this.log, required this.mode, this.workoutVideoUrl = "", this.cached = false});
+      {super.key, required this.log, required this.mode, this.cached = false});
 
   @override
   State<RoutineLogEditorScreen> createState() => _RoutineLogEditorScreenState();
@@ -256,8 +255,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     final exerciseLogs = context.select((ExerciseLogController controller) => controller.exerciseLogs);
 
-    final workoutVideoUrl = widget.workoutVideoUrl;
-
     return PopScope(
         canPop: false,
         child: Scaffold(
@@ -287,7 +284,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                   spacing: 8,
                   children: [
                     if (widget.mode == RoutineEditorMode.log)
-                      workoutVideoUrl.isNotEmpty
+                      widget.log.workoutVideoUrl != null
                           ? Stack(children: [
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 10.0),
@@ -355,7 +352,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                 exerciseLogController.removeExerciseLog(logId: exerciseLog.id);
                               },
                               onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
-                              onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
+                              onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog), workoutVideoUrl: widget.log.workoutVideoUrl,
                             );
                           },
                           separatorBuilder: (BuildContext context, int index) {
@@ -412,13 +409,15 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     _onDisposeCallback = Provider.of<ExerciseLogController>(context, listen: false).onClear;
 
-    final videoId = YoutubePlayer.convertUrlToId(widget.workoutVideoUrl) ?? "";
+    final videoId = YoutubePlayer.convertUrlToId(widget.log.workoutVideoUrl ?? "");
 
-    _videoController = YoutubePlayerController(
-      initialVideoId: videoId,
-      flags: const YoutubePlayerFlags(
-          autoPlay: false, mute: false, forceHD: true, hideControls: false, showLiveFullscreenButton: false),
-    );
+    if(videoId != null) {
+      _videoController = YoutubePlayerController(
+        initialVideoId: videoId,
+        flags: const YoutubePlayerFlags(
+            autoPlay: false, mute: false, forceHD: true, hideControls: false, showLiveFullscreenButton: false),
+      );
+    }
   }
 
   void _loadRoutineAndExerciseLogs() {

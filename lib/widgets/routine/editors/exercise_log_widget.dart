@@ -22,6 +22,7 @@ import 'package:tracker_app/widgets/routine/editors/set_headers/weight_and_reps_
 import 'package:tracker_app/widgets/routine/editors/set_rows/duration_set_row.dart';
 import 'package:tracker_app/widgets/routine/editors/set_rows/reps_set_row.dart';
 import 'package:tracker_app/widgets/routine/editors/set_rows/weights_and_reps_set_row.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../../../colors.dart';
 import '../../../dtos/set_dtos/reps_dto.dart';
@@ -43,9 +44,14 @@ class ExerciseLogWidget extends StatefulWidget {
 
   final String exerciseLogId;
   final ExerciseLogDto? superSet;
+  final String? workoutVideoUrl;
 
   const ExerciseLogWidget(
-      {super.key, this.editorType = RoutineEditorMode.edit, required this.exerciseLogId, this.superSet});
+      {super.key,
+      this.editorType = RoutineEditorMode.edit,
+      required this.exerciseLogId,
+      this.superSet,
+      required this.workoutVideoUrl});
 
   @override
   State<ExerciseLogWidget> createState() => _ExerciseLogWidgetState();
@@ -61,6 +67,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   bool _showPreviousSets = false;
 
   SetDto? _selectedSetDto;
+
+  late YoutubePlayerController _videoController;
+
+  bool _muted = false;
 
   void _show1RMRecommendations() {
     final pastExerciseLogs =
@@ -237,10 +247,21 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     _exerciseLog =
         Provider.of<ExerciseLogController>(context, listen: false).whereExerciseLog(exerciseId: widget.exerciseLogId);
     _loadControllers();
+
+    final videoId = YoutubePlayer.convertUrlToId(widget.workoutVideoUrl ?? "");
+
+    if(videoId != null) {
+      _videoController = YoutubePlayerController(
+        initialVideoId: videoId,
+        flags: const YoutubePlayerFlags(
+            autoPlay: false, mute: false, forceHD: true, hideControls: false, showLiveFullscreenButton: false),
+      );
+    }
   }
 
   @override
   void dispose() {
+    _videoController.dispose();
     _disposeControllers();
     super.dispose();
   }
@@ -327,6 +348,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   Widget build(BuildContext context) {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
+
+    final workoutVideoUrl = widget.workoutVideoUrl;
 
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
 
@@ -502,6 +525,18 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               spacing: 20,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if(workoutVideoUrl != null)
+                  YoutubePlayer(
+                  progressIndicatorColor: Colors.white,
+                  showVideoProgressIndicator: true,
+                  controller: _videoController,
+                  topActions: [
+                    IconButton(
+                        onPressed: _toggleVolume,
+                        icon: FaIcon(_muted ? FontAwesomeIcons.volumeHigh : FontAwesomeIcons.volumeXmark,
+                            color: Colors.white, size: 16))
+                  ],
+                ),
                 TextField(
                   controller: TextEditingController(text: exerciseLog.notes),
                   cursorColor: isDarkMode ? Colors.white : Colors.black,
@@ -690,6 +725,18 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       ),
     );
   }
+
+  void _toggleVolume() {
+    setState(() {
+      if (_muted) {
+        _videoController.unMute();
+        _muted = false;
+      } else {
+        _videoController.mute();
+        _muted = true;
+      }
+    });
+  }
 }
 
 class _WeightAndRepsSetListView extends StatelessWidget {
@@ -730,7 +777,7 @@ class _WeightAndRepsSetListView extends StatelessWidget {
       );
     }).toList();
 
-    return Column(spacing: 8, children: children);
+    return Column(spacing: 8, children: [...children, const SizedBox(height: 100)]);
   }
 }
 
@@ -766,7 +813,7 @@ class _RepsSetListView extends StatelessWidget {
       );
     }).toList();
 
-    return Column(spacing: 8, children: children);
+    return Column(spacing: 8, children: [...children, const SizedBox(height: 100)]);
   }
 }
 
@@ -804,7 +851,7 @@ class _DurationSetListView extends StatelessWidget {
       );
     }).toList();
 
-    return Column(spacing: 8, children: children);
+    return Column(spacing: 8, children: [...children, const SizedBox(height: 100)]);
   }
 }
 
