@@ -47,7 +47,6 @@ import '../../widgets/routine/preview/activity_log_widget.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
 import '../AI/monthly_training_report_screen.dart';
 import '../AI/trkr_coach_chat_screen.dart';
-import '../editors/workout_video_generator_screen.dart';
 
 enum TrainingAndVolume {
   training,
@@ -482,23 +481,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
               onTap: () {
                 Navigator.of(context).pop();
                 logEmptyRoutine(context: context);
-              },
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(FontAwesomeIcons.youtube, size: 16),
-              horizontalTitleGap: 6,
-              title: Text("Log new guided session", style: Theme.of(context).textTheme.bodyLarge),
-              subtitle: Text("train with your workout video"),
-              onTap: () async {
-                Navigator.of(context).pop();
-                final workoutVideoUrl =
-                    await navigateWithSlideTransition(context: context, child: WorkoutVideoGeneratorScreen());
-                if (workoutVideoUrl != null) {
-                  if (mounted) {
-                    logEmptyRoutine(context: context, workoutVideoUrl: workoutVideoUrl);
-                  }
-                }
               },
             ),
             const SizedBox(

@@ -218,33 +218,6 @@ Future<bool> requestAppleHealth() async {
   return hasPermissions;
 }
 
-Future<DateTimeRange?> calculateSleepDuration() async {
-  await Health().configure();
-
-  // fetch health data from the last 24 hours
-  final now = DateTime.now();
-
-  final pastDay = now.subtract(const Duration(hours: 24));
-
-  final values =
-      await Health().getHealthDataFromTypes(types: [HealthDataType.SLEEP_ASLEEP], startTime: pastDay, endTime: now);
-  final uniqueValues = Health().removeDuplicates(values);
-
-  DateTimeRange? sleepTime;
-
-  if (values.isNotEmpty) {
-    Iterable<DateTime> dateFrom = uniqueValues.map((value) => value.dateFrom);
-    Iterable<DateTime> dateTo = uniqueValues.map((value) => value.dateTo);
-
-    DateTime minDateTime = dateFrom.reduce((a, b) => a.isBefore(b) ? a : b);
-    DateTime maxDateTime = dateTo.reduce((a, b) => a.isAfter(b) ? a : b);
-
-    sleepTime = DateTimeRange(start: minDateTime, end: maxDateTime);
-  }
-
-  return sleepTime;
-}
-
 Color getImprovementColor({required bool improved, required num difference}) {
   Color color = vibrantBlue;
 
@@ -308,7 +281,6 @@ void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) a
       name: "${timeOfDay()} Session",
       exerciseLogs: [],
       notes: "",
-      workoutVideoUrl: workoutVideoUrl,
       startTime: DateTime.now(),
       endTime: DateTime.now(),
       owner: "",

@@ -20,8 +20,6 @@ class ExerciseLogLiteWidget extends StatelessWidget {
   final VoidCallback onSuperSet;
   final void Function(String superSetId) onRemoveSuperSet;
 
-  final String? workoutVideoUrl;
-
   const ExerciseLogLiteWidget(
       {super.key,
       this.editorType = RoutineEditorMode.edit,
@@ -30,7 +28,7 @@ class ExerciseLogLiteWidget extends StatelessWidget {
       required this.onSuperSet,
       required this.onRemoveSuperSet,
       required this.onRemoveLog,
-      required this.onReplaceLog, this.workoutVideoUrl});
+      required this.onReplaceLog});
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +48,7 @@ class ExerciseLogLiteWidget extends StatelessWidget {
       onTap: () {
         navigateWithSlideTransition(
             context: context,
-            child: ExerciseLogWidget(exerciseLogId: exerciseLogDto.exercise.id, editorType: editorType, workoutVideoUrl: workoutVideoUrl));
+            child: ExerciseLogWidget(exerciseLogId: exerciseLogDto.exercise.id, editorType: editorType));
       },
       child: Container(
         padding: EdgeInsets.only(left: 12, bottom: 12, top: superSetExerciseDto != null ? 5 : 0),
@@ -79,7 +77,7 @@ class ExerciseLogLiteWidget extends StatelessWidget {
                             size: 10,
                           ),
                           const SizedBox(width: 4),
-                          Text(superSetExerciseDto.exercise.name, style: Theme.of(context).textTheme. bodySmall),
+                          Text(superSetExerciseDto.exercise.name, style: Theme.of(context).textTheme.bodySmall),
                         ],
                       ),
                   ],

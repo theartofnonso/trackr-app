@@ -11,7 +11,6 @@ import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
-import 'package:tracker_app/screens/editors/workout_video_generator_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import '../../colors.dart';
@@ -215,11 +214,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           onPressed: _navigateToRoutineTemplateEditor,
           leadingIcon: FaIcon(FontAwesomeIcons.solidPenToSquare, size: 16),
           child: Text("Edit", style: GoogleFonts.ubuntu())),
-      MenuItemButton(
-        onPressed: _navigateToWorkoutVideoGenerator,
-        leadingIcon: FaIcon(FontAwesomeIcons.link, size: 16),
-        child: Text("Video", style: GoogleFonts.ubuntu()),
-      ),
       MenuItemButton(
           onPressed: () => _createTemplate(copy: true),
           leadingIcon: FaIcon(Icons.copy, size: 16),
@@ -652,26 +646,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           }
         }
       });
-    }
-  }
-
-  void _navigateToWorkoutVideoGenerator() async {
-    final template = _template;
-    if (template != null) {
-      final workoutVideoUrl = await navigateWithSlideTransition(
-          context: context,
-          child: WorkoutVideoGeneratorScreen(
-            workoutVideoUrl: template.workoutVideoUrl,
-          ));
-      if (mounted) {
-        final templateToUpdate = template.copyWith(workoutVideoUrl: workoutVideoUrl);
-        await Provider.of<ExerciseAndRoutineController>(context, listen: false)
-            .updateTemplate(template: templateToUpdate);
-
-        setState(() {
-          _template = templateToUpdate;
-        });
-      }
     }
   }
 

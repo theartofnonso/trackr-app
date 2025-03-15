@@ -15,7 +15,6 @@ import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/utils/routine_editors_utils.dart';
 import 'package:tracker_app/widgets/routine/editors/exercise_log_widget_lite.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
@@ -40,8 +39,7 @@ class RoutineLogEditorScreen extends StatefulWidget {
   final RoutineEditorMode mode;
   final bool cached;
 
-  const RoutineLogEditorScreen(
-      {super.key, required this.log, required this.mode, this.cached = false});
+  const RoutineLogEditorScreen({super.key, required this.log, required this.mode, this.cached = false});
 
   @override
   State<RoutineLogEditorScreen> createState() => _RoutineLogEditorScreenState();
@@ -50,11 +48,7 @@ class RoutineLogEditorScreen extends StatefulWidget {
 class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with WidgetsBindingObserver {
   late Function _onDisposeCallback;
 
-  late YoutubePlayerController _videoController;
-
   final _minimisedExerciseLogCards = <String>[];
-
-  bool _muted = false;
 
   void _selectExercisesInLibrary() async {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
@@ -116,10 +110,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   }
 
   Future<void> _doCreateRoutineLog() async {
-    final sleep = await calculateSleepDuration();
-
-    final routineLogToBeCreated =
-        _routineLog().copyWith(endTime: DateTime.now(), sleepFrom: sleep?.start, sleepTo: sleep?.end);
+    final routineLogToBeCreated = _routineLog().copyWith(endTime: DateTime.now());
 
     if (mounted) {
       final createdRoutineLog = await Provider.of<ExerciseAndRoutineController>(context, listen: false)
@@ -284,57 +275,18 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                   spacing: 8,
                   children: [
                     if (widget.mode == RoutineEditorMode.log)
-                      widget.log.workoutVideoUrl != null
-                          ? Stack(children: [
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 10.0),
-                                child: YoutubePlayer(
-                                  progressIndicatorColor: Colors.white,
-                                  showVideoProgressIndicator: true,
-                                  topActions: [
-                                    Consumer<ExerciseLogController>(
-                                        builder: (BuildContext context, ExerciseLogController provider, Widget? child) {
-                                      return Expanded(
-                                        child: Wrap(
-                                          children: [
-                                            _RoutineLogOverview(
-                                              exercisesSummary:
-                                                  "${provider.completedExerciseLog().length} of ${provider.exerciseLogs.length}",
-                                              setsSummary:
-                                                  "${provider.completedSets().length} of ${provider.exerciseLogs.expand((exerciseLog) => exerciseLog.sets).length}",
-                                              timer: StopwatchTimer(
-                                                forceLightMode: true,
-                                                startTime: widget.log.startTime,
-                                              ),
-                                              forceLightMode: true,
-                                            )
-                                          ],
-                                        ),
-                                      );
-                                    })
-                                  ],
-                                  controller: _videoController,
-                                ),
-                              ),
-                              Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: IconButton(
-                                      onPressed: _toggleVolume,
-                                      icon: FaIcon(_muted ? FontAwesomeIcons.volumeHigh : FontAwesomeIcons.volumeXmark,
-                                          color: Colors.white, size: 16)))
-                            ])
-                          : Consumer<ExerciseLogController>(
-                              builder: (BuildContext context, ExerciseLogController provider, Widget? child) {
-                              return _RoutineLogOverview(
-                                exercisesSummary:
-                                    "${provider.completedExerciseLog().length} of ${provider.exerciseLogs.length}",
-                                setsSummary:
-                                    "${provider.completedSets().length} of ${provider.exerciseLogs.expand((exerciseLog) => exerciseLog.sets).length}",
-                                timer: StopwatchTimer(
-                                  startTime: widget.log.startTime,
-                                ),
-                              );
-                            }),
+                      Consumer<ExerciseLogController>(
+                          builder: (BuildContext context, ExerciseLogController provider, Widget? child) {
+                        return _RoutineLogOverview(
+                          exercisesSummary:
+                              "${provider.completedExerciseLog().length} of ${provider.exerciseLogs.length}",
+                          setsSummary:
+                              "${provider.completedSets().length} of ${provider.exerciseLogs.expand((exerciseLog) => exerciseLog.sets).length}",
+                          timer: StopwatchTimer(
+                            startTime: widget.log.startTime,
+                          ),
+                        );
+                      }),
                     if (exerciseLogs.isNotEmpty)
                       Expanded(
                         child: ListView.separated(
@@ -352,7 +304,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                 exerciseLogController.removeExerciseLog(logId: exerciseLog.id);
                               },
                               onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
-                              onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog), workoutVideoUrl: widget.log.workoutVideoUrl,
+                              onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
                             );
                           },
                           separatorBuilder: (BuildContext context, int index) {
@@ -387,18 +339,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
             )));
   }
 
-  void _toggleVolume() {
-    setState(() {
-      if (_muted) {
-        _videoController.unMute();
-        _muted = false;
-      } else {
-        _videoController.mute();
-        _muted = true;
-      }
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -408,16 +348,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     _loadRoutineAndExerciseLogs();
 
     _onDisposeCallback = Provider.of<ExerciseLogController>(context, listen: false).onClear;
-
-    final videoId = YoutubePlayer.convertUrlToId(widget.log.workoutVideoUrl ?? "");
-
-    if(videoId != null) {
-      _videoController = YoutubePlayerController(
-        initialVideoId: videoId,
-        flags: const YoutubePlayerFlags(
-            autoPlay: false, mute: false, forceHD: true, hideControls: false, showLiveFullscreenButton: false),
-      );
-    }
   }
 
   void _loadRoutineAndExerciseLogs() {
@@ -463,7 +393,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     if (Platform.isIOS) {
       FlutterLocalNotificationsPlugin().cancel(notificationIDLongRunningSession);
     }
-    _videoController.dispose();
     super.dispose();
   }
 
@@ -500,10 +429,8 @@ class _RoutineLogOverview extends StatelessWidget {
   final String exercisesSummary;
   final String setsSummary;
   final Widget timer;
-  final bool forceLightMode;
 
-  const _RoutineLogOverview(
-      {required this.exercisesSummary, required this.setsSummary, required this.timer, this.forceLightMode = false});
+  const _RoutineLogOverview({required this.exercisesSummary, required this.setsSummary, required this.timer});
 
   @override
   Widget build(BuildContext context) {
@@ -522,24 +449,14 @@ class _RoutineLogOverview extends StatelessWidget {
           },
           children: [
             TableRow(children: [
-              Text("Exercises",
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: forceLightMode ? Colors.white : null)),
-              Text("Sets",
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: forceLightMode ? Colors.white : null)),
-              Text("Duration",
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: forceLightMode ? Colors.white : null)),
+              Text("Exercises", textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall),
+              Text("Sets", textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall),
+              Text("Duration", textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall),
             ]),
             const TableRow(children: [SizedBox(height: 4), SizedBox(height: 4), SizedBox(height: 4)]),
             TableRow(children: [
-              Text(exercisesSummary,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: forceLightMode ? Colors.white : null)),
-              Text(setsSummary,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: forceLightMode ? Colors.white : null)),
+              Text(exercisesSummary, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
+              Text(setsSummary, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
               Center(child: timer)
             ])
           ],
