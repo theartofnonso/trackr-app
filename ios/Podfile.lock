@@ -29,13 +29,6 @@ PODS:
   - device_info_plus (0.0.1):
     - Flutter
   - Flutter (1.0.0)
-  - flutter_inappwebview_ios (0.0.1):
-    - Flutter
-    - flutter_inappwebview_ios/Core (= 0.0.1)
-    - OrderedSet (~> 6.0.3)
-  - flutter_inappwebview_ios/Core (0.0.1):
-    - Flutter
-    - OrderedSet (~> 6.0.3)
   - flutter_local_notifications (0.0.1):
     - Flutter
   - health (12.0.0):
@@ -44,7 +37,6 @@ PODS:
     - Flutter
   - in_app_review (2.0.0):
     - Flutter
-  - OrderedSet (6.0.3)
   - package_info_plus (0.4.5):
     - Flutter
   - path_provider_foundation (0.0.1):
@@ -79,7 +71,6 @@ DEPENDENCIES:
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/darwin`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - Flutter (from `Flutter`)
-  - flutter_inappwebview_ios (from `.symlinks/plugins/flutter_inappwebview_ios/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - health (from `.symlinks/plugins/health/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
@@ -94,7 +85,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - OrderedSet
     - PostHog
     - Sentry
     - SQLite.swift
@@ -113,8 +103,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/device_info_plus/ios"
   Flutter:
     :path: Flutter
-  flutter_inappwebview_ios:
-    :path: ".symlinks/plugins/flutter_inappwebview_ios/ios"
   flutter_local_notifications:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
   health:
@@ -145,12 +133,10 @@ SPEC CHECKSUMS:
   connectivity_plus: b21496ab28d1324eb59885d888a4d83b98531f01
   device_info_plus: 71ffc6ab7634ade6267c7a93088ed7e4f74e5896
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_inappwebview_ios: b89ba3482b96fb25e00c967aae065701b66e9b99
   flutter_local_notifications: 395056b3175ba4f08480a7c5de30cd36d69827e4
   health: 785a9a388095ea6414755ff081bf46a4a5fb01b2
   image_picker_ios: 7fe1ff8e34c1790d6fff70a32484959f563a928a
   in_app_review: 5596fe56fab799e8edb3561c03d053363ab13457
-  OrderedSet: e539b66b644ff081c73a262d24ad552a69be3a94
   package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
   PostHog: 6ce18b57e7de83868707dec4a0c35ebbc866e88b
