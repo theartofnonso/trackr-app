@@ -730,7 +730,7 @@ class _WeightAndRepsSetListView extends StatelessWidget {
       );
     }).toList();
 
-    return Column(spacing: 8, children: children);
+    return Column(spacing: 8, children: [...children, const SizedBox(height: 100)]);
   }
 }
 
@@ -766,7 +766,7 @@ class _RepsSetListView extends StatelessWidget {
       );
     }).toList();
 
-    return Column(spacing: 8, children: children);
+    return Column(spacing: 8, children: [...children, const SizedBox(height: 100)]);
   }
 }
 
@@ -804,7 +804,7 @@ class _DurationSetListView extends StatelessWidget {
       );
     }).toList();
 
-    return Column(spacing: 8, children: children);
+    return Column(spacing: 8, children: [...children, const SizedBox(height: 100)]);
   }
 }
 

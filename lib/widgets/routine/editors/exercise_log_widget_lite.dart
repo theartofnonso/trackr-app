@@ -77,7 +77,7 @@ class ExerciseLogLiteWidget extends StatelessWidget {
                             size: 10,
                           ),
                           const SizedBox(width: 4),
-                          Text(superSetExerciseDto.exercise.name, style: Theme.of(context).textTheme. bodySmall),
+                          Text(superSetExerciseDto.exercise.name, style: Theme.of(context).textTheme.bodySmall),
                         ],
                       ),
                   ],

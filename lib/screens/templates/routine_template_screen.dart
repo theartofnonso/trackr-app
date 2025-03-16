@@ -11,7 +11,6 @@ import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
-import 'package:tracker_app/screens/editors/workout_video_generator_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import '../../colors.dart';
@@ -216,11 +215,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           leadingIcon: FaIcon(FontAwesomeIcons.solidPenToSquare, size: 16),
           child: Text("Edit", style: GoogleFonts.ubuntu())),
       MenuItemButton(
-        onPressed: _navigateToWorkoutVideoGenerator,
-        leadingIcon: FaIcon(FontAwesomeIcons.link, size: 16),
-        child: Text("Video", style: GoogleFonts.ubuntu()),
-      ),
-      MenuItemButton(
           onPressed: () => _createTemplate(copy: true),
           leadingIcon: FaIcon(Icons.copy, size: 16),
           child: Text("Copy", style: GoogleFonts.ubuntu())),
@@ -255,7 +249,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
     final exerciseTemplates = _originalNewValues == _OriginalNewValues.newValues
         ? template.exerciseTemplates.map((exerciseTemplate) {
-            final pastSets = exerciseAndRoutineController.whereRecentSetsForExercise(exercise: exerciseTemplate.exercise);
+            final pastSets =
+                exerciseAndRoutineController.whereRecentSetsForExercise(exercise: exerciseTemplate.exercise);
             final uncheckedSets = pastSets.map((set) => set.copyWith(checked: false)).toList();
             return exerciseTemplate.copyWith(sets: uncheckedSets);
           }).toList()
@@ -387,7 +382,10 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                             Text(
                               '"${template.notes.isNotEmpty ? "${template.notes}." : "No notes"}"',
                               textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontStyle: FontStyle.italic, fontSize: 12,),
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                    fontStyle: FontStyle.italic,
+                                    fontSize: 12,
+                                  ),
                             )
                           ],
                         ),
@@ -581,8 +579,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   void _launchRoutineLogEditor() {
     final template = _template;
     if (template != null) {
-      final arguments = RoutineLogArguments(
-          log: template.toLog(), editorMode: RoutineEditorMode.log, workoutVideo: template.workoutVideoUrl);
+      final arguments = RoutineLogArguments(log: template.toLog(), editorMode: RoutineEditorMode.log);
       navigateToRoutineLogEditor(context: context, arguments: arguments);
     }
   }
@@ -649,26 +646,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           }
         }
       });
-    }
-  }
-
-  void _navigateToWorkoutVideoGenerator() async {
-    final template = _template;
-    if (template != null) {
-      final workoutVideoUrl = await navigateWithSlideTransition(
-          context: context,
-          child: WorkoutVideoGeneratorScreen(
-            workoutVideoUrl: template.workoutVideoUrl,
-          ));
-      if (mounted) {
-        final templateToUpdate = template.copyWith(workoutVideoUrl: workoutVideoUrl);
-        await Provider.of<ExerciseAndRoutineController>(context, listen: false)
-            .updateTemplate(template: templateToUpdate);
-
-        setState(() {
-          _template = templateToUpdate;
-        });
-      }
     }
   }
 

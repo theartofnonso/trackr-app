@@ -110,11 +110,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
           exerciseLog: exerciseLog);
     }).expand((pbs) => pbs);
 
-    final sleepFrom = updatedLog.sleepFrom;
-    final sleepTo = updatedLog.sleepTo;
-
-    Duration? sleepDuration = sleepFrom != null && sleepTo != null ? sleepTo.difference(sleepFrom) : null;
-
     final logs = exerciseAndRoutineController
         .whereLogsWithTemplateId(templateId: updatedLog.templateId)
         .map((log) => routineWithLoggedExercises(log: log))
@@ -271,16 +266,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                               description:
                                   "Your highest achievement in an exercise, like the heaviest weight lifted, most reps performed, or highest training volume."),
                         ),
-                        if (sleepDuration != null)
-                          _StatisticWidget(
-                            title: sleepDuration.hmsDigital(),
-                            subtitle: "Sleep",
-                            icon: FontAwesomeIcons.solidMoon,
-                            information: _StatisticsInformation(
-                                title: "Sleep",
-                                description:
-                                    "The amount of sleep you got the night before the workout. Sleep impacts your recovery, energy, and overall performance during exercise."),
-                          ),
                       ],
                     ),
                   ),

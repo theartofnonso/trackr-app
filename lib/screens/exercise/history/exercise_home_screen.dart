@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_chart_screen.dart';
-import 'package:tracker_app/screens/exercise/history/exercise_video_screen.dart';
 import 'package:tracker_app/screens/exercise/history/history_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
@@ -160,7 +159,6 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
                     exerciseLogs: completedExerciseLogs,
                   ),
                   ExerciseLogHistoryScreen(exerciseLogs: completedExerciseLogs),
-                  if (hasVideo) ExerciseVideoScreen(exercise: exercise)
                 ],
               ),
             ),
