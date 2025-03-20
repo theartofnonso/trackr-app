@@ -498,6 +498,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           bottom: false,
           minimum: EdgeInsets.symmetric(horizontal: 10),
           child: SingleChildScrollView(
+            padding: EdgeInsets.only(bottom: 100),
             child: Column(
               spacing: 20,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -730,7 +731,7 @@ class _WeightAndRepsSetListView extends StatelessWidget {
       );
     }).toList();
 
-    return Column(spacing: 8, children: [...children, const SizedBox(height: 100)]);
+    return Column(spacing: 8, children: children);
   }
 }
 
@@ -766,7 +767,7 @@ class _RepsSetListView extends StatelessWidget {
       );
     }).toList();
 
-    return Column(spacing: 8, children: [...children, const SizedBox(height: 100)]);
+    return Column(spacing: 8, children: children);
   }
 }
 
@@ -804,7 +805,7 @@ class _DurationSetListView extends StatelessWidget {
       );
     }).toList();
 
-    return Column(spacing: 8, children: [...children, const SizedBox(height: 100)]);
+    return Column(spacing: 8, children: children);
   }
 }
 
