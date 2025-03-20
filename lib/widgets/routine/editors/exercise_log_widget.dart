@@ -368,10 +368,11 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     if (withWeightsOnly(type: exerciseType)) {
       /// Determine typical rep range using historic training data
+      final sets = [...currentSets, ...previousSets];
       final reps = switch (exerciseType) {
-        ExerciseType.weights => markHighestWeightSets(previousSets),
-        ExerciseType.bodyWeight => markHighestRepsSets(previousSets),
-        ExerciseType.duration => markHighestDurationSets(previousSets),
+        ExerciseType.weights => markHighestWeightSets(sets),
+        ExerciseType.bodyWeight => markHighestRepsSets(sets),
+        ExerciseType.duration => markHighestDurationSets(sets),
       }
           .map((set) {
         return switch (exerciseType) {
