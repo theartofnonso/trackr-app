@@ -428,6 +428,17 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final rpeTrendSummary = _getRpeTrendSummary(ratings: rpeRatings);
 
+    String? noRepRangeMessage;
+
+    if (typicalRepRange?.maxReps == 0) {
+      noRepRangeMessage = "Log more sets to determine your rep range.";
+    } else {
+      if (typicalRepRange?.minReps == typicalRepRange?.maxReps) {
+        noRepRangeMessage =
+            "${typicalRepRange?.minReps} is your max reps. Consider increasing your ${withWeightsOnly(type: exerciseType) ? "weights" : "reps"} to challenge your strength and promote progression.";
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -645,42 +656,62 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                               title: "Rep Range",
                               description:
                                   "Rep ranges acts as a guideline for adjusting weights. If you consistently hit the high end of your range with good form, it’s a signal to increase the load. Conversely, if you struggle to reach the low end, reduce the weight slightly until you can complete the set effectively."),
-                          child: InformationContainerLite(
-                              richText: RichText(
-                                text: TextSpan(
-                                  text: "${typicalRepRange.minReps} - ${typicalRepRange.maxReps}",
-                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w700),
-                                  children: [
-                                    TextSpan(
-                                      text: " ",
+                          child: noRepRangeMessage != null
+                              ? InformationContainerLite(
+                                  content: noRepRangeMessage,
+                                  color: Colors.grey.shade400,
+                                  icon: Container(
+                                      width: 18,
+                                      height: 18,
+                                      padding: const EdgeInsets.all(4),
+                                      decoration: BoxDecoration(
+                                        color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
+                                        borderRadius: BorderRadius.circular(3),
+                                      ),
+                                      child: Center(
+                                        child: FaIcon(
+                                          FontAwesomeIcons.r,
+                                          color: isDarkMode ? vibrantGreen : Colors.black,
+                                          size: 8,
+                                        ),
+                                      )))
+                              : InformationContainerLite(
+                                  richText: RichText(
+                                    text: TextSpan(
+                                      text: "${typicalRepRange.minReps} - ${typicalRepRange.maxReps}",
+                                      style:
+                                          Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w700),
+                                      children: [
+                                        TextSpan(
+                                          text: " ",
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              "is your typical rep range. if you comfortably hit ${typicalRepRange.maxReps}, increase the weight; if you struggle to reach ${typicalRepRange.minReps}, reduce it; otherwise, maintain. Tap for more info.",
+                                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                              fontWeight: FontWeight.w700,
+                                              color: isDarkMode ? Colors.white70 : Colors.black54),
+                                        )
+                                      ],
                                     ),
-                                    TextSpan(
-                                      text:
-                                          "is your typical rep range. if you comfortably hit ${typicalRepRange.maxReps}, increase the weight; if you struggle to reach ${typicalRepRange.minReps}, reduce it; otherwise, maintain. Tap for more info.",
-                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                          fontWeight: FontWeight.w700,
-                                          color: isDarkMode ? Colors.white70 : Colors.black54),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              content: "",
-                              color: Colors.grey.shade400,
-                              icon: Container(
-                                  width: 18,
-                                  height: 18,
-                                  padding: const EdgeInsets.all(4),
-                                  decoration: BoxDecoration(
-                                    color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
-                                    borderRadius: BorderRadius.circular(3),
                                   ),
-                                  child: Center(
-                                    child: FaIcon(
-                                      FontAwesomeIcons.r,
-                                      color: isDarkMode ? vibrantGreen : Colors.black,
-                                      size: 8,
-                                    ),
-                                  ))),
+                                  content: "",
+                                  color: Colors.grey.shade400,
+                                  icon: Container(
+                                      width: 18,
+                                      height: 18,
+                                      padding: const EdgeInsets.all(4),
+                                      decoration: BoxDecoration(
+                                        color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
+                                        borderRadius: BorderRadius.circular(3),
+                                      ),
+                                      child: Center(
+                                        child: FaIcon(
+                                          FontAwesomeIcons.r,
+                                          color: isDarkMode ? vibrantGreen : Colors.black,
+                                          size: 8,
+                                        ),
+                                      ))),
                         ),
                     ],
                   ),
