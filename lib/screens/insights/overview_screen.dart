@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
@@ -17,10 +17,6 @@ import 'package:tracker_app/screens/editors/activity_editor_screen.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
-import 'package:tracker_app/widgets/ai_widgets/trkr_information_container.dart';
-import 'package:tracker_app/widgets/information_containers/information_container_lite.dart';
-import 'package:tracker_app/widgets/monitors/log_streak_monitor.dart';
-import 'package:tracker_app/widgets/monthly_insights/volume_chart.dart';
 
 import '../../controllers/activity_log_controller.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
@@ -36,13 +32,11 @@ import '../../strings/ai_prompts.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
-import '../../widgets/ai_widgets/trkr_coach_button.dart';
 import '../../widgets/ai_widgets/trkr_coach_text_widget.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/calendar/calendar.dart';
 import '../../widgets/dividers/label_divider.dart';
-import '../../widgets/monthly_insights/log_streak_chart.dart';
-import '../../widgets/monthly_insights/monthly_insights.dart';
+import '../../widgets/monitors/log_streak_monitor.dart';
 import '../../widgets/routine/preview/activity_log_widget.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
 import '../AI/monthly_training_report_screen.dart';
@@ -163,13 +157,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      floatingActionButton: _loading
-          ? null
-          : FloatingActionButton(
-              heroTag: "fab_overview_screen",
-              onPressed: _showNewBottomSheet,
-              child: const FaIcon(FontAwesomeIcons.plus, size: 24),
-            ),
       body: Container(
         decoration: BoxDecoration(
           gradient: themeGradient(context: context),
@@ -184,67 +171,51 @@ class _OverviewScreenState extends State<OverviewScreen> {
                   child: SingleChildScrollView(
                       controller: widget.scrollController,
                       padding: const EdgeInsets.only(top: 3, bottom: 150),
-                      child: Column(spacing: 20, children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          spacing: 20,
+                      child: Column(children: [
+                        LogStreakMonitor(dateTime: widget.dateTimeRange.start),
+                        const SizedBox(height: 24),
+                        StaggeredGrid.count(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 10,
+                          crossAxisSpacing: 10,
                           children: [
-                            LogStreakMonitor(dateTime: widget.dateTimeRange.start),
-                            if (predictedTemplate != null)
-                              _ScheduledRoutineCard(
+                            StaggeredGridTile.count(
+                              crossAxisCellCount: 1,
+                              mainAxisCellCount: 1,
+                              child: _ScheduledTitle(
                                   scheduledToday: predictedTemplate, isLogged: hasTodayScheduleBeenLogged),
-                            Calendar(
-                              onSelectDate: _onSelectCalendarDateTime,
-                              dateTime: widget.dateTimeRange.start,
                             ),
-                            Column(
-                              spacing: 8,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                CupertinoSlidingSegmentedControl<TrainingAndVolume>(
-                                  backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade200,
-                                  thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
-                                  groupValue: _trainingAndVolume,
-                                  children: {
-                                    TrainingAndVolume.training: SizedBox(
-                                        width: 80,
-                                        child: Text("Training",
-                                            style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center)),
-                                    TrainingAndVolume.volume: SizedBox(
-                                        width: 80,
-                                        child: Text("Volume",
-                                            style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center)),
-                                  },
-                                  onValueChanged: (TrainingAndVolume? value) {
-                                    if (value != null) {
-                                      setState(() {
-                                        _trainingAndVolume = value;
-                                      });
-                                    }
-                                  },
-                                ),
-                                switch (_trainingAndVolume) {
-                                  TrainingAndVolume.training => LogStreakChart(),
-                                  TrainingAndVolume.volume => VolumeChart(),
-                                }
-                              ],
+                            StaggeredGridTile.count(
+                              crossAxisCellCount: 1,
+                              mainAxisCellCount: 1,
+                              child: GestureDetector(
+                                onTap: () => navigateToRoutineTemplates(context: context),
+                                child: _TemplatesTile(),
+                              ),
+                            ),
+                            StaggeredGridTile.count(
+                              crossAxisCellCount: 4,
+                              mainAxisCellCount: 2,
+                              child: Calendar(
+                                onSelectDate: _onSelectCalendarDateTime,
+                                dateTime: widget.dateTimeRange.start,
+                              ),
+                            ),
+                            StaggeredGridTile.count(
+                              crossAxisCellCount: 1,
+                              mainAxisCellCount: 1,
+                              child: GestureDetector(
+                                onTap: _showNewBottomSheet,
+                                child: _AddTile(),
+                              ),
+                            ),
+                            StaggeredGridTile.count(
+                              crossAxisCellCount: 1,
+                              mainAxisCellCount: 1,
+                              child: _SettingsTile(),
                             ),
                           ],
                         ),
-                        if (isStartOfNewMonth && logsForPastMonth.isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 24.0),
-                            child: TRKRInformationContainer(
-                                ctaLabel: "View ${last30DaysDatetime.formattedFullMonth()} insights",
-                                description:
-                                    "It’s a new month of training, but before we dive in, let’s reflect on your past performance and plan for this month.",
-                                onTap: () => _generateMonthlyInsightsReport(datetime: last30DaysDatetime)),
-                          ),
-                        if (canNavigateNext && logsForCurrentMonth.isNotEmpty)
-                          TRKRCoachButton(
-                              label: "Review ${widget.dateTimeRange.start.formattedFullMonth()} insights.",
-                              onTap: () => _generateMonthlyInsightsReport(datetime: widget.dateTimeRange.start)),
-                        MonthlyInsights(dateTimeRange: widget.dateTimeRange),
                       ])),
                 )
                 // Add more widgets here for exercise insights
@@ -388,6 +359,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     displayBottomSheet(
         context: context,
         child: SafeArea(
+          bottom: false,
           child: Column(children: [
             ListTile(
               contentPadding: EdgeInsets.zero,
@@ -533,10 +505,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 }
 
-class _ScheduledRoutineCard extends StatelessWidget {
-  const _ScheduledRoutineCard({required this.scheduledToday, required this.isLogged});
+class _ScheduledTitle extends StatelessWidget {
+  const _ScheduledTitle({required this.scheduledToday, required this.isLogged});
 
-  final RoutineTemplateDto scheduledToday;
+  final RoutineTemplateDto? scheduledToday;
 
   final bool isLogged;
 
@@ -546,23 +518,197 @@ class _ScheduledRoutineCard extends StatelessWidget {
     final isDarkMode = systemBrightness == Brightness.dark;
 
     return isLogged
-        ? InformationContainerLite(
-            content: "Great job crushing your ${scheduledToday.name} session. keep that momentum going!",
-            color: Colors.grey.shade200,
-            icon: FaIcon(
-              FontAwesomeIcons.solidSquareCheck,
-              color: isDarkMode ? vibrantGreen : null,
-              size: 18,
-            ),
+        ? Container(
+            padding: EdgeInsets.all(12),
+            decoration: BoxDecoration(
+                color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
+                borderRadius: BorderRadius.circular(5)),
+            child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+              Text("${scheduledToday?.name} has been completed",
+                  style: GoogleFonts.ubuntu(fontSize: 18, height: 1.5, fontWeight: FontWeight.w600)),
+              const Spacer(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Container(
+                    width: 25,
+                    height: 25,
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: vibrantGreen.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                    child: Center(
+                      child: FaIcon(
+                        FontAwesomeIcons.check,
+                        color: vibrantGreen,
+                        size: 14,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ]),
           )
-        : InformationContainerLite(
-            content: "It looks like today is your usual ${scheduledToday.name} session. Time to get moving!",
-            color: Colors.grey.shade200,
-            icon: FaIcon(
-              FontAwesomeIcons.calendarDay,
-              size: 18,
-            ),
+        : Container(
+            padding: EdgeInsets.all(12),
+            decoration: BoxDecoration(
+                color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
+                borderRadius: BorderRadius.circular(5)),
+            child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+              Text("${scheduledToday?.name} is scheduled today. Time to get moving!",
+                  style: GoogleFonts.ubuntu(fontSize: 18, height: 1.5, fontWeight: FontWeight.w600)),
+              const Spacer(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Container(
+                    width: 25,
+                    height: 25,
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: vibrantGreen.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                    child: Center(
+                      child: FaIcon(
+                        FontAwesomeIcons.calendarDay,
+                        color: vibrantGreen,
+                        size: 14,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ]),
           );
+  }
+}
+
+class _TemplatesTile extends StatelessWidget {
+  const _TemplatesTile();
+
+  @override
+  Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
+    return Container(
+      padding: EdgeInsets.all(12),
+      decoration: BoxDecoration(
+          color: isDarkMode ? vibrantBlue.withValues(alpha: 0.1) : vibrantBlue, borderRadius: BorderRadius.circular(5)),
+      child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+        Text("Manage your workout templates.",
+            style: GoogleFonts.ubuntu(fontSize: 20, height: 1.5, fontWeight: FontWeight.w600, color: vibrantBlue)),
+        const Spacer(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Container(
+              width: 25,
+              height: 25,
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: isDarkMode ? vibrantBlue.withValues(alpha: 0.1) : vibrantBlue,
+                borderRadius: BorderRadius.circular(3),
+              ),
+              child: Image.asset(
+                'icons/dumbbells.png',
+                fit: BoxFit.contain,
+                height: 14,
+                color: vibrantBlue, // Adjust the height as needed
+              ),
+            ),
+          ],
+        ),
+      ]),
+    );
+  }
+}
+
+class _SettingsTile extends StatelessWidget {
+  const _SettingsTile();
+
+  @override
+  Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
+    return Container(
+      padding: EdgeInsets.all(12),
+      decoration: BoxDecoration(
+          color: isDarkMode ? vibrantBlue.withValues(alpha: 0.1) : vibrantGreen,
+          borderRadius: BorderRadius.circular(5)),
+      child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+        Text("Manage your preferences",
+            style: GoogleFonts.ubuntu(fontSize: 20, height: 1.5, fontWeight: FontWeight.w600, color: vibrantBlue)),
+        const Spacer(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: isDarkMode ? vibrantBlue.withValues(alpha: 0.1) : vibrantBlue,
+                borderRadius: BorderRadius.circular(3),
+              ),
+              child: Center(
+                child: FaIcon(
+                  FontAwesomeIcons.gear,
+                  color: vibrantBlue,
+                  size: 20,
+                ),
+              ),
+            )
+          ],
+        ),
+      ]),
+    );
+  }
+}
+
+class _AddTile extends StatelessWidget {
+  const _AddTile();
+
+  @override
+  Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
+    return Container(
+      padding: EdgeInsets.all(12),
+      decoration: BoxDecoration(
+          color: isDarkMode ? Colors.yellow.withValues(alpha: 0.1) : Colors.yellow,
+          borderRadius: BorderRadius.circular(5)),
+      child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+        Text("Start a fresh session",
+            style: GoogleFonts.ubuntu(fontSize: 20, height: 1.5, fontWeight: FontWeight.w600, color: Colors.yellow)),
+        const Spacer(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: isDarkMode ? Colors.yellow.withValues(alpha: 0.1) : Colors.yellow,
+                borderRadius: BorderRadius.circular(3),
+              ),
+              child: Center(
+                child: FaIcon(
+                  FontAwesomeIcons.plus,
+                  color: Colors.yellow,
+                  size: 20,
+                ),
+              ),
+            )
+          ],
+        ),
+      ]),
+    );
   }
 }
 

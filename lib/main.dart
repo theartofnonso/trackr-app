@@ -41,6 +41,7 @@ import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
 import 'package:tracker_app/screens/onboarding/onboarding_intro_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/templates/routine_template_screen.dart';
+import 'package:tracker_app/screens/templates/routine_templates_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/date_utils.dart';
 import 'package:tracker_app/utils/theme/theme.dart';
@@ -228,6 +229,24 @@ final _router = GoRouter(
         final args = state.extra as DateTime;
         return CustomTransitionPage(
             child: RoutineLogsScreen(dateTime: args),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              const begin = Offset(0.0, 1.0);
+              const end = Offset.zero;
+              const curve = Curves.ease;
+              final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+              final offsetAnimation = animation.drive(tween);
+              return SlideTransition(
+                position: offsetAnimation,
+                child: child,
+              );
+            });
+      },
+    ),
+    GoRoute(
+      path: RoutineTemplatesScreen.routeName,
+      pageBuilder: (context, state) {
+        return CustomTransitionPage(
+            child: RoutineTemplatesScreen(),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               const begin = Offset(0.0, 1.0);
               const end = Offset.zero;

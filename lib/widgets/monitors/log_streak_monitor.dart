@@ -61,6 +61,7 @@ class LogStreakMonitor extends StatelessWidget {
         ),
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
+        spacing: 20,
         children: [
           SizedBox(
             width: 80,
@@ -72,7 +73,6 @@ class LogStreakMonitor extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 forceDarkMode: isDarkMode),
           ),
-          const SizedBox(width: 20),
           GestureDetector(
             child: Stack(alignment: Alignment.center, children: [
               LogStreakWidget(value: monthlyProgress, width: 100, height: 100, strokeWidth: 6),
@@ -87,7 +87,6 @@ class LogStreakMonitor extends StatelessWidget {
               )
             ]),
           ),
-          const SizedBox(width: 20),
           SizedBox(
             width: 80,
             child: _MonitorScore(

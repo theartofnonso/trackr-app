@@ -51,6 +51,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
         length: 2,
         child: Scaffold(
           body: SafeArea(
+            bottom: false,
             child: Column(
               children: [
                 Table(

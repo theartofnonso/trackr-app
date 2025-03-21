@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
@@ -14,8 +13,6 @@ import 'package:tracker_app/models/Exercise.dart';
 import 'package:tracker_app/models/RoutineUser.dart';
 import 'package:tracker_app/screens/home_tab_screen.dart';
 import 'package:tracker_app/screens/onboarding/onboarding_screen.dart';
-import 'package:tracker_app/screens/preferences/settings_screen.dart';
-import 'package:tracker_app/screens/templates/routine_templates_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import '../controllers/activity_log_controller.dart';
@@ -26,7 +23,6 @@ import '../enums/routine_editor_type_enums.dart';
 import '../models/RoutineLog.dart';
 import '../models/RoutineTemplate.dart';
 import '../utils/navigation_utils.dart';
-import 'milestones/milestones_home_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home_screen';
@@ -39,8 +35,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final ScrollController _scrollController = ScrollController();
-
-  int _currentScreenIndex = 0;
 
   StreamSubscription<QuerySnapshot<RoutineUser>>? _routineUserStream;
   StreamSubscription<QuerySnapshot<RoutineLog>>? _routineLogStream;
@@ -60,71 +54,8 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     }
 
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
-    final screens = [
-      HomeTabScreen(
-        scrollController: _scrollController,
-      ),
-      const RoutineTemplatesScreen(),
-      const MilestonesHomeScreen(),
-      const SettingsScreen()
-    ];
-
-    return Scaffold(
-      body: screens[_currentScreenIndex],
-      bottomNavigationBar: NavigationBar(
-        labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-        height: 60,
-        destinations: [
-          NavigationDestination(
-            icon: FaIcon(FontAwesomeIcons.house, color: Colors.grey),
-            selectedIcon: FaIcon(FontAwesomeIcons.house, color: isDarkMode ? Colors.white : Colors.black),
-            label: 'Home',
-          ),
-          NavigationDestination(
-            icon: Image.asset(
-              'icons/dumbbells.png',
-              fit: BoxFit.contain,
-              color: Colors.grey,
-              height: 34, // Adjust the height as needed
-            ),
-            selectedIcon: Image.asset(
-              'icons/dumbbells.png',
-              fit: BoxFit.contain,
-              height: 34, // Adjust the height as needed
-              color: isDarkMode ? Colors.white : Colors.black,
-            ),
-            label: 'Workouts',
-          ),
-          NavigationDestination(
-            icon: FaIcon(FontAwesomeIcons.trophy, color: Colors.grey),
-            selectedIcon: FaIcon(FontAwesomeIcons.trophy, color: isDarkMode ? Colors.white : Colors.black),
-            label: 'Milestones',
-          ),
-          NavigationDestination(
-            icon: FaIcon(FontAwesomeIcons.gear, color: Colors.grey),
-            selectedIcon: FaIcon(FontAwesomeIcons.gear, color: isDarkMode ? Colors.white : Colors.black),
-            label: 'Milestones',
-          ),
-        ],
-        onDestinationSelected: (int index) {
-          setState(() {
-            _currentScreenIndex = index;
-          });
-          _scrollToTop(index);
-        },
-        selectedIndex: _currentScreenIndex,
-      ),
-    );
-  }
-
-  void _scrollToTop(int index) {
-    _scrollController.animateTo(
-      0,
-      duration: const Duration(milliseconds: 1500),
-      curve: Curves.easeInOut,
+    return HomeTabScreen(
+      scrollController: _scrollController,
     );
   }
 
@@ -225,7 +156,8 @@ class _HomeScreenState extends State<HomeScreen> {
     _loadAppData();
     Posthog().identify(userId: SharedPrefs().userId);
     if (Platform.isIOS) {
-      FlutterLocalNotificationsPlugin().cancelAll(); // Cancel all notifications including pending workout sessions and regular training reminders
+      FlutterLocalNotificationsPlugin()
+          .cancelAll(); // Cancel all notifications including pending workout sessions and regular training reminders
     }
     _loadCachedLog();
   }
