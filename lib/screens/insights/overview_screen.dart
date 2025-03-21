@@ -567,13 +567,13 @@ class _ScheduledTitle extends StatelessWidget {
                     height: 25,
                     padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
-                      color: vibrantGreen.withValues(alpha: 0.1),
+                      color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.4),
                       borderRadius: BorderRadius.circular(3),
                     ),
                     child: Center(
                       child: FaIcon(
                         FontAwesomeIcons.calendarDay,
-                        color: vibrantGreen,
+                        color: isDarkMode ? vibrantGreen : Colors.white,
                         size: 14,
                       ),
                     ),
@@ -598,8 +598,8 @@ class _TemplatesTile extends StatelessWidget {
       decoration: BoxDecoration(
           color: isDarkMode ? vibrantBlue.withValues(alpha: 0.1) : vibrantBlue, borderRadius: BorderRadius.circular(5)),
       child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-        Text("Manage your workout templates.",
-            style: GoogleFonts.ubuntu(fontSize: 20, height: 1.5, fontWeight: FontWeight.w600, color: vibrantBlue)),
+        Text("Manage your workout templates",
+            style: GoogleFonts.ubuntu(fontSize: 20, height: 1.5, fontWeight: FontWeight.w600)),
         const Spacer(),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -609,14 +609,14 @@ class _TemplatesTile extends StatelessWidget {
               height: 25,
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
-                color: isDarkMode ? vibrantBlue.withValues(alpha: 0.1) : vibrantBlue,
+                color: isDarkMode ? vibrantBlue.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.4),
                 borderRadius: BorderRadius.circular(3),
               ),
               child: Image.asset(
                 'icons/dumbbells.png',
                 fit: BoxFit.contain,
                 height: 14,
-                color: vibrantBlue, // Adjust the height as needed
+                color: isDarkMode ? vibrantBlue : Colors.white, // Adjust the height as needed
               ),
             ),
           ],
@@ -637,11 +637,10 @@ class _SettingsTile extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
-          color: isDarkMode ? vibrantBlue.withValues(alpha: 0.1) : vibrantGreen,
-          borderRadius: BorderRadius.circular(5)),
+          color: isDarkMode ? vibrantBlue.withValues(alpha: 0.1) : vibrantBlue, borderRadius: BorderRadius.circular(5)),
       child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
         Text("Manage your preferences",
-            style: GoogleFonts.ubuntu(fontSize: 20, height: 1.5, fontWeight: FontWeight.w600, color: vibrantBlue)),
+            style: GoogleFonts.ubuntu(fontSize: 20, height: 1.5, fontWeight: FontWeight.w600)),
         const Spacer(),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -651,13 +650,13 @@ class _SettingsTile extends StatelessWidget {
               height: 40,
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
-                color: isDarkMode ? vibrantBlue.withValues(alpha: 0.1) : vibrantBlue,
+                color: isDarkMode ? vibrantBlue.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.4),
                 borderRadius: BorderRadius.circular(3),
               ),
               child: Center(
                 child: FaIcon(
                   FontAwesomeIcons.gear,
-                  color: vibrantBlue,
+                  color: isDarkMode ? vibrantBlue : Colors.white,
                   size: 20,
                 ),
               ),
@@ -684,7 +683,7 @@ class _AddTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(5)),
       child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
         Text("Start a fresh session",
-            style: GoogleFonts.ubuntu(fontSize: 20, height: 1.5, fontWeight: FontWeight.w600, color: Colors.yellow)),
+            style: GoogleFonts.ubuntu(fontSize: 20, height: 1.5, fontWeight: FontWeight.w600)),
         const Spacer(),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -694,13 +693,13 @@ class _AddTile extends StatelessWidget {
               height: 40,
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
-                color: isDarkMode ? Colors.yellow.withValues(alpha: 0.1) : Colors.yellow,
+                color: isDarkMode ? Colors.yellow.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.4),
                 borderRadius: BorderRadius.circular(3),
               ),
               child: Center(
                 child: FaIcon(
                   FontAwesomeIcons.plus,
-                  color: Colors.yellow,
+                  color: isDarkMode ? Colors.yellow : Colors.white,
                   size: 20,
                 ),
               ),
