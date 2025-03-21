@@ -436,7 +436,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     } else {
       if (typicalRepRange?.minReps == typicalRepRange?.maxReps) {
         noRepRangeMessage =
-            "${typicalRepRange?.minReps} is your max reps. Consider increasing your ${withWeightsOnly(type: exerciseType) ? "weights" : "reps"} to challenge your strength and promote progression.";
+            "${typicalRepRange?.minReps} is your max reps.";
       }
     }
 
