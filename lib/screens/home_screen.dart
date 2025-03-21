@@ -198,7 +198,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final authUser = await Amplify.Auth.getCurrentUser();
     final signInDetails = authUser.signInDetails.toJson();
     SharedPrefs().userId = authUser.userId;
-    SharedPrefs().userEmail = signInDetails["username"] as String;
+    SharedPrefs().userEmail = (signInDetails["username"]?.toString() ?? '');
   }
 
   void _loadCachedLog() {
