@@ -601,7 +601,7 @@ class _LogsListView extends StatelessWidget {
     }).toList();
 
     return Column(crossAxisAlignment: CrossAxisAlignment.center, spacing: 16, children: [
-      Text("Training".toUpperCase(),
+      Text("Training Logs".toUpperCase(),
           style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
       ...children
     ]);
