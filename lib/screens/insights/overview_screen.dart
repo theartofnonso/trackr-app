@@ -6,17 +6,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
-import 'package:tracker_app/dtos/appsync/activity_log_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
-import 'package:tracker_app/screens/editors/activity_editor_screen.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 
-import '../../controllers/activity_log_controller.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
-import '../../dtos/abstract_class/log_class.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
@@ -31,7 +27,6 @@ import '../../widgets/dividers/label_divider.dart';
 import '../../widgets/monitors/log_streak_monitor.dart';
 import '../../widgets/monthly_insights/log_streak_chart.dart';
 import '../../widgets/monthly_insights/volume_chart.dart';
-import '../../widgets/routine/preview/activity_log_widget.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
 import '../AI/trkr_coach_chat_screen.dart';
 
@@ -112,7 +107,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     /// Be notified of changes
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
-    Provider.of<ActivityLogController>(context, listen: true);
 
     final templates = exerciseAndRoutineController.templates;
 
@@ -255,9 +249,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 
   void _showNewBottomSheet() {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
     displayBottomSheet(
         context: context,
         child: SafeArea(
@@ -298,32 +289,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           updatedAt: datetimeRange.end);
                       navigateWithSlideTransition(context: context, child: PastRoutineLogEditorScreen(log: log));
                     });
-              },
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            LabelDivider(
-              label: "Log an activity",
-              labelColor: isDarkMode ? Colors.white70 : Colors.black,
-              dividerColor: sapphireLighter,
-            ),
-            const SizedBox(
-              height: 6,
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(
-                FontAwesomeIcons.circlePlus,
-                size: 18,
-                color: Colors.greenAccent,
-              ),
-              horizontalTitleGap: 6,
-              title: Text("Log Activity",
-                  style: GoogleFonts.ubuntu(color: Colors.greenAccent, fontWeight: FontWeight.w500, fontSize: 16)),
-              onTap: () {
-                Navigator.of(context).pop();
-                navigateWithSlideTransition(context: context, child: ActivityEditorScreen());
               },
             ),
           ]),
@@ -624,32 +589,11 @@ class _LogsListView extends StatelessWidget {
     final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
     final routineLogsForCurrentDate = routineLogController.whereLogsIsSameDay(dateTime: dateTime).toList();
 
-    /// Activity Logs
-    final activityLogController = Provider.of<ActivityLogController>(context, listen: true);
-    final activityLogsForCurrentDate = activityLogController.whereLogsIsSameDay(dateTime: dateTime).toList();
-
-    /// Aggregates
-    final allLogsForCurrentDate = [...routineLogsForCurrentDate, ...activityLogsForCurrentDate]
-        .sorted((a, b) => b.createdAt.compareTo(a.createdAt))
-        .toList();
-
-    final children = allLogsForCurrentDate.map((log) {
+    final children = routineLogsForCurrentDate.map((log) {
       Widget widget;
 
-      if (log.logType == LogType.routine) {
-        final routineLog = log as RoutineLogDto;
-        widget = RoutineLogWidget(log: routineLog, trailing: routineLog.duration().hmsAnalog());
-      } else {
-        final activityLog = log as ActivityLogDto;
-        widget = ActivityLogWidget(
-          activity: activityLog,
-          trailing: activityLog.duration().hmsAnalog(),
-          onTap: () {
-            showActivityBottomSheet(context: context, activity: activityLog);
-          },
-          color: sapphireDark80,
-        );
-      }
+      widget = RoutineLogWidget(log: log, trailing: log.duration().hmsAnalog());
+
       return Padding(
         padding: const EdgeInsets.only(bottom: 8.0),
         child: widget,
@@ -657,7 +601,7 @@ class _LogsListView extends StatelessWidget {
     }).toList();
 
     return Column(crossAxisAlignment: CrossAxisAlignment.center, spacing: 16, children: [
-      Text("Training and Activities".toUpperCase(),
+      Text("Training".toUpperCase(),
           style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
       ...children
     ]);

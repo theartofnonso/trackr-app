@@ -12,7 +12,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
-import 'package:tracker_app/controllers/activity_log_controller.dart';
 import 'package:tracker_app/graphQL/queries.dart';
 import 'package:tracker_app/screens/preferences/user_profile_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -267,7 +266,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     await FlutterLocalNotificationsPlugin().cancelAll();
     if (mounted) {
       Provider.of<ExerciseAndRoutineController>(context, listen: false).clear();
-      Provider.of<ActivityLogController>(context, listen: false).clear();
       Provider.of<RoutineUserController>(context, listen: false).clear();
     }
   }

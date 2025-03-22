@@ -7,14 +7,12 @@ import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.da
 import 'package:tracker_app/screens/onboarding/onboarding_checklist_notifications_screen.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 
-import '../controllers/activity_log_controller.dart';
 import '../controllers/exercise_and_routine_controller.dart';
 import '../controllers/routine_user_controller.dart';
 import '../utils/date_utils.dart';
 import '../widgets/calendar/calendar_navigator.dart';
 
 class HomeTabScreen extends StatefulWidget {
-
   const HomeTabScreen({super.key});
 
   @override
@@ -32,8 +30,6 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
   Widget build(BuildContext context) {
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
-    final activityLogController = Provider.of<ActivityLogController>(context, listen: true);
-
     final routineUserController = Provider.of<RoutineUserController>(context, listen: true);
 
     final user = routineUserController.user;
@@ -42,9 +38,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
 
     final routineTemplates = exerciseAndRoutineController.templates;
 
-    final activityLogs = activityLogController.logs;
-
-    final hasPendingActions = routineTemplates.isEmpty || routineLogs.isEmpty || activityLogs.isEmpty || user == null;
+    final hasPendingActions = routineTemplates.isEmpty || routineLogs.isEmpty || user == null;
 
     return DefaultTabController(
         length: 2,
@@ -107,8 +101,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
                   child: TabBarView(
                     controller: _tabController,
                     children: [
-                      OverviewScreen(
-                        dateTimeRange: _monthDateTimeRange),
+                      OverviewScreen(dateTimeRange: _monthDateTimeRange),
                       SetsAndRepsVolumeInsightsScreen(
                         canPop: false,
                       ),
@@ -126,7 +119,6 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
   }
 
   void _onMonthChange(DateTimeRange range) {
-
     setState(() {
       _monthDateTimeRange = range;
     });

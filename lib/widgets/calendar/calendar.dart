@@ -6,25 +6,18 @@ import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
-import '../../controllers/activity_log_controller.dart';
-
 GlobalKey calendarKey = GlobalKey();
 
 class _DateViewModel {
   final DateTime dateTime;
   final DateTime selectedDateTime;
   final bool hasRoutineLog;
-  final bool hasActivityLog;
 
-  _DateViewModel(
-      {required this.dateTime,
-      required this.selectedDateTime,
-      this.hasRoutineLog = false,
-      this.hasActivityLog = false});
+  _DateViewModel({required this.dateTime, required this.selectedDateTime, this.hasRoutineLog = false});
 
   @override
   String toString() {
-    return '_DateViewModel{dateTime: $dateTime, selectedDateTime: $selectedDateTime, hasLog: $hasRoutineLog, hasActivityLog: $hasActivityLog}';
+    return '_DateViewModel{dateTime: $dateTime, selectedDateTime: $selectedDateTime, hasLog: $hasRoutineLog}';
   }
 }
 
@@ -33,11 +26,7 @@ class Calendar extends StatefulWidget {
   final DateTime dateTime;
   final bool forceDarkMode;
 
-  const Calendar(
-      {super.key,
-      this.onSelectDate,
-      required this.dateTime,
-      this.forceDarkMode = false});
+  const Calendar({super.key, this.onSelectDate, required this.dateTime, this.forceDarkMode = false});
 
   @override
   State<Calendar> createState() => _CalendarState();
@@ -77,13 +66,8 @@ class _CalendarState extends State<Calendar> {
     }
 
     final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-    final activityLogController = Provider.of<ActivityLogController>(context, listen: false);
 
     final monthlyRoutineLogs = (routineLogController.logs
-            .where((log) => log.createdAt.isBetweenInclusive(from: firstDayOfMonth, to: lastDayOfMonth)))
-        .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day));
-
-    final monthlyActivityLogs = (activityLogController.logs
             .where((log) => log.createdAt.isBetweenInclusive(from: firstDayOfMonth, to: lastDayOfMonth)))
         .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day));
 
@@ -91,12 +75,8 @@ class _CalendarState extends State<Calendar> {
     for (int day = 1; day <= daysInMonth; day++) {
       final date = DateTime(year, month, day);
       final hasRoutineLog = monthlyRoutineLogs.contains(date);
-      final hasActivityLog = monthlyActivityLogs.contains(date);
-      datesInMonths.add(_DateViewModel(
-          dateTime: date,
-          selectedDateTime: _currentDate.withoutTime(),
-          hasRoutineLog: hasRoutineLog,
-          hasActivityLog: hasActivityLog));
+      datesInMonths.add(
+          _DateViewModel(dateTime: date, selectedDateTime: _currentDate.withoutTime(), hasRoutineLog: hasRoutineLog));
     }
 
     // Add padding to end of month
@@ -184,7 +164,6 @@ class _Month extends StatelessWidget {
           selected: date.dateTime.isSameDayMonthYear(selectedDateTime),
           currentDate: date.dateTime.isSameDayMonthAndYear(DateTime.now()),
           hasRoutineLog: date.hasRoutineLog,
-          hasActivityLog: date.hasActivityLog,
           isDarkMode: isDarkMode,
         );
       }
@@ -213,7 +192,6 @@ class _Day extends StatelessWidget {
   final DateTime dateTime;
   final bool selected;
   final bool hasRoutineLog;
-  final bool hasActivityLog;
   final bool currentDate;
   final void Function(DateTime dateTime) onTap;
   final bool isDarkMode;
@@ -224,31 +202,20 @@ class _Day extends StatelessWidget {
       required this.currentDate,
       required this.onTap,
       this.hasRoutineLog = false,
-      this.hasActivityLog = false,
       required this.isDarkMode});
 
   Color _getBackgroundColor({required bool isDarkMode}) {
     if (hasRoutineLog) {
       return isDarkMode && SharedPrefs().showCalendarDates ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen;
     }
-    if (hasActivityLog) {
-      return isDarkMode && SharedPrefs().showCalendarDates
-          ? Colors.greenAccent.withValues(alpha: 0.1)
-          : Colors.greenAccent;
-    } else {
-      return isDarkMode ? sapphireDark80.withValues(alpha: 0.5) : Colors.grey.shade200;
-    }
+    return isDarkMode ? sapphireDark80.withValues(alpha: 0.5) : Colors.grey.shade200;
   }
 
   Color _getTextColor({required bool isDarkMode}) {
     if (hasRoutineLog) {
       return isDarkMode ? vibrantGreen : Colors.black;
     }
-    if (hasActivityLog) {
-      return isDarkMode ? Colors.greenAccent : Colors.black;
-    } else {
-      return isDarkMode ? Colors.white : Colors.black;
-    }
+    return isDarkMode ? Colors.white : Colors.black;
   }
 
   Border? _dateBorder() {

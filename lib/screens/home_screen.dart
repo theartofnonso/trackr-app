@@ -15,7 +15,6 @@ import 'package:tracker_app/screens/home_tab_screen.dart';
 import 'package:tracker_app/screens/onboarding/onboarding_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
-import '../controllers/activity_log_controller.dart';
 import '../controllers/routine_user_controller.dart';
 import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
@@ -34,7 +33,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   StreamSubscription<QuerySnapshot<RoutineUser>>? _routineUserStream;
   StreamSubscription<QuerySnapshot<RoutineLog>>? _routineLogStream;
   StreamSubscription<QuerySnapshot<RoutineTemplate>>? _routineTemplateStream;
@@ -61,7 +59,6 @@ class _HomeScreenState extends State<HomeScreen> {
     _observeExerciseQuery();
     _observeRoutineLogQuery();
     _observeRoutineTemplateQuery();
-    _observeActivityLogQuery();
   }
 
   void _observeRoutineUserQuery() {
@@ -106,17 +103,6 @@ class _HomeScreenState extends State<HomeScreen> {
     ).listen((QuerySnapshot<RoutineLog> snapshot) {
       if (mounted) {
         Provider.of<ExerciseAndRoutineController>(context, listen: false).streamLogs(logs: snapshot.items);
-      }
-    });
-  }
-
-  void _observeActivityLogQuery() {
-    _activityLogStream = Amplify.DataStore.observeQuery(
-      ActivityLog.classType,
-      sortBy: [ActivityLog.CREATEDAT.ascending()],
-    ).listen((QuerySnapshot<ActivityLog> snapshot) {
-      if (mounted) {
-        Provider.of<ActivityLogController>(context, listen: false).streamLogs(logs: snapshot.items);
       }
     });
   }

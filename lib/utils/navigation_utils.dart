@@ -15,7 +15,6 @@ import '../dtos/viewmodels/routine_template_arguments.dart';
 import '../screens/editors/past_routine_log_editor_screen.dart';
 import '../screens/editors/routine_log_editor_screen.dart';
 import '../screens/editors/routine_template_editor_screen.dart';
-import '../screens/logs/activity_logs_screen.dart';
 import '../screens/logs/routine_logs_screen.dart';
 import '../screens/logs/routine_log_screen.dart';
 import '../screens/templates/routine_template_screen.dart';
@@ -77,10 +76,6 @@ void navigateToRoutineLogs({required BuildContext context, required DateTime dat
 
 void navigateToRoutineTemplates({required BuildContext context}) {
   context.push(RoutineTemplatesScreen.routeName);
-}
-
-void navigateToActivityLogs({required BuildContext context, required DateTime dateTime}) {
-  context.push(ActivityLogsScreen.routeName, extra: dateTime);
 }
 
 Future<void> navigateToSettings({required BuildContext context}) async {

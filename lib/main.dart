@@ -20,7 +20,6 @@ import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/dtos/appsync/routine_template_dto.dart';
 import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
 import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
-import 'package:tracker_app/repositories/amplify/amplify_activity_log_repository.dart';
 import 'package:tracker_app/repositories/amplify/amplify_exercise_repository.dart';
 import 'package:tracker_app/repositories/amplify/amplify_routine_log_repository.dart';
 import 'package:tracker_app/repositories/amplify/amplify_routine_template_repository.dart';
@@ -34,7 +33,6 @@ import 'package:tracker_app/screens/editors/routine_template_editor_screen.dart'
 import 'package:tracker_app/screens/exercise/history/exercise_home_screen.dart';
 import 'package:tracker_app/screens/home_screen.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
-import 'package:tracker_app/screens/logs/activity_logs_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
@@ -47,7 +45,6 @@ import 'package:tracker_app/utils/date_utils.dart';
 import 'package:tracker_app/utils/theme/theme.dart';
 
 import 'amplifyconfiguration.dart';
-import 'controllers/activity_log_controller.dart';
 import 'controllers/routine_user_controller.dart';
 import 'dtos/appsync/exercise_dto.dart';
 import 'dtos/open_ai_response_schema_dtos/exercise_performance_report.dart';
@@ -152,9 +149,6 @@ void main() async {
             amplifyTemplateRepository: AmplifyRoutineTemplateRepository(),
             amplifyLogRepository: AmplifyRoutineLogRepository()),
       ),
-      ChangeNotifierProvider<ActivityLogController>(
-        create: (BuildContext context) => ActivityLogController(AmplifyActivityLogRepository()),
-      ),
       ChangeNotifierProvider<ExerciseLogController>(
           create: (BuildContext context) => ExerciseLogController(ExerciseLogRepository())),
     ], child: const MyApp())),
@@ -247,25 +241,6 @@ final _router = GoRouter(
       pageBuilder: (context, state) {
         return CustomTransitionPage(
             child: RoutineTemplatesScreen(),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              const begin = Offset(0.0, 1.0);
-              const end = Offset.zero;
-              const curve = Curves.ease;
-              final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-              final offsetAnimation = animation.drive(tween);
-              return SlideTransition(
-                position: offsetAnimation,
-                child: child,
-              );
-            });
-      },
-    ),
-    GoRoute(
-      path: ActivityLogsScreen.routeName,
-      pageBuilder: (context, state) {
-        final args = state.extra as DateTime;
-        return CustomTransitionPage(
-            child: ActivityLogsScreen(dateTime: args),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               const begin = Offset(0.0, 1.0);
               const end = Offset.zero;
@@ -375,8 +350,6 @@ class _MyAppState extends State<MyApp> {
       final apiPluginOptions = APIPluginOptions(modelProvider: ModelProvider.instance);
       await Amplify.addPlugin(AmplifyAPI(options: apiPluginOptions));
       final datastorePluginOptions = DataStorePluginOptions(syncExpressions: [
-        DataStoreSyncExpression(
-            ActivityLog.classType, () => ActivityLog.CREATEDAT.between(startOfCurrentYear, endOfCurrentYear)),
         DataStoreSyncExpression(
             RoutineLog.classType, () => RoutineLog.CREATEDAT.between(startOfCurrentYear, endOfCurrentYear)),
       ]);
