@@ -249,6 +249,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 
   void _showNewBottomSheet() {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     displayBottomSheet(
         context: context,
         child: SafeArea(
@@ -261,7 +265,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               title: Text("Log new session", style: Theme.of(context).textTheme.bodyLarge),
               onTap: () {
                 Navigator.of(context).pop();
-                _showLogNewSessionBottomSheet();
+                logEmptyRoutine(context: context);
               },
             ),
             ListTile(
@@ -291,37 +295,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
                     });
               },
             ),
-          ]),
-        ));
-  }
-
-  void _showLogsBottomSheet({required DateTime dateTime}) {
-    displayBottomSheet(
-        isScrollControlled: true,
-        context: context,
-        child: SafeArea(
-          child: _LogsListView(dateTime: dateTime),
-        ));
-  }
-
-  void _showLogNewSessionBottomSheet() {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
-    displayBottomSheet(
-        context: context,
-        child: SafeArea(
-          child: Column(children: [
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(FontAwesomeIcons.play, size: 18),
-              horizontalTitleGap: 6,
-              title: Text("Log new session", style: Theme.of(context).textTheme.bodyLarge),
-              onTap: () {
-                Navigator.of(context).pop();
-                logEmptyRoutine(context: context);
-              },
-            ),
             const SizedBox(
               height: 10,
             ),
@@ -345,6 +318,15 @@ class _OverviewScreenState extends State<OverviewScreen> {
               },
             ),
           ]),
+        ));
+  }
+
+  void _showLogsBottomSheet({required DateTime dateTime}) {
+    displayBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        child: SafeArea(
+          child: _LogsListView(dateTime: dateTime),
         ));
   }
 
