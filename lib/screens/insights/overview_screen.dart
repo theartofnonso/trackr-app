@@ -188,7 +188,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                                     },
                                     const Spacer(),
                                     CupertinoSlidingSegmentedControl<TrainingAndVolume>(
-                                      backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade200,
+                                      backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade400,
                                       thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
                                       groupValue: _trainingAndVolume,
                                       children: {
