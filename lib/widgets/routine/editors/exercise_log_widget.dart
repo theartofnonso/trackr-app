@@ -1,8 +1,10 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
@@ -15,7 +17,6 @@ import 'package:tracker_app/utils/progressive_overload_utils.dart';
 import 'package:tracker_app/utils/sets_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
-import 'package:tracker_app/widgets/information_containers/information_container_lite.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/weight_and_reps_set_header.dart';
@@ -589,33 +590,70 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                       }
                     : SetsListview(type: exerciseType, sets: sets),
                 if (sets.isNotEmpty && widget.editorType == RoutineEditorMode.log && !isEmptySets)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 10,
-                    children: [
-                      if (withReps(type: exerciseType))
-                        InformationContainerLite(
-                          content: "$rpeTrendSummary$progressionSummary",
-                          color: progressionColor,
-                          icon: FaIcon(
-                            FontAwesomeIcons.boltLightning,
-                            size: 18,
-                          ),
+                  StaggeredGrid.count(crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10, children: [
+                    if (withReps(type: exerciseType))
+                      StaggeredGridTile.count(
+                        crossAxisCellCount: 2,
+                        mainAxisCellCount: 1,
+                        child: Container(
+                          padding: EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                              color: isDarkMode ? progressionColor.withValues(alpha: 0.1) : progressionColor,
+                              borderRadius: BorderRadius.circular(5)),
+                          child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+                            Text("$rpeTrendSummary$progressionSummary",
+                                style: GoogleFonts.ubuntu(fontSize: 16, height: 1.5, fontWeight: FontWeight.w600)),
+                            const Spacer(),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Container(
+                                    width: 25,
+                                    height: 25,
+                                    padding: const EdgeInsets.all(4),
+                                    decoration: BoxDecoration(
+                                      color: isDarkMode
+                                          ? progressionColor.withValues(alpha: 0.1)
+                                          : Colors.black.withValues(alpha: 0.4),
+                                      borderRadius: BorderRadius.circular(3),
+                                    ),
+                                    child: Center(
+                                      child: FaIcon(
+                                        FontAwesomeIcons.boltLightning,
+                                        color: isDarkMode ? progressionColor : Colors.white,
+                                        size: 14,
+                                      ),
+                                    ))
+                              ],
+                            ),
+                          ]),
                         ),
+                      ),
 
-                      /// Only show for exercises that measure Weights, Reps and Duration
-                      if (workingSet != null)
-                        GestureDetector(
+                    /// Only show for exercises that measure Weights, Reps and Duration
+                    if (workingSet != null)
+                      StaggeredGridTile.count(
+                        crossAxisCellCount: 1,
+                        mainAxisCellCount: 1,
+                        child: GestureDetector(
                           onTap: () => showBottomSheetWithNoAction(
                               context: context,
                               title: "Working Sets",
                               description:
                                   "Working sets are the primary, challenging sets performed after any warm-up sets. They provide the main training stimulus needed for muscle growth, strength gains, or endurance improvements."),
-                          child: InformationContainerLite(
-                              richText: RichText(
+                          child: Container(
+                            padding: EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                                color: isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.grey.shade200,
+                                borderRadius: BorderRadius.circular(5)),
+                            child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+                              RichText(
                                 text: TextSpan(
                                   text: workingSet.summary(),
-                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w700),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
+                                      ?.copyWith(fontWeight: FontWeight.w700, fontSize: 14, height: 1.5),
                                   children: [
                                     TextSpan(
                                       text: " ",
@@ -625,97 +663,110 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                                           "is your most challenging set, driving you toward your training goals. Tap for more info.",
                                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                           fontWeight: FontWeight.w700,
+                                          fontSize: 14,
+                                          height: 1.5,
                                           color: isDarkMode ? Colors.white70 : Colors.black54),
                                     )
                                   ],
                                 ),
                               ),
-                              content: "",
-                              color: Colors.grey.shade400,
-                              icon: Container(
-                                  width: 18,
-                                  height: 18,
-                                  padding: const EdgeInsets.all(4),
-                                  decoration: BoxDecoration(
-                                    color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
-                                    borderRadius: BorderRadius.circular(3),
-                                  ),
-                                  child: Center(
-                                    child: FaIcon(
-                                      FontAwesomeIcons.w,
-                                      color: isDarkMode ? vibrantGreen : Colors.black,
-                                      size: 8,
-                                    ),
-                                  ))),
+                              const Spacer(),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Container(
+                                      width: 25,
+                                      height: 25,
+                                      padding: const EdgeInsets.all(4),
+                                      decoration: BoxDecoration(
+                                        color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
+                                        borderRadius: BorderRadius.circular(3),
+                                      ),
+                                      child: Center(
+                                        child: FaIcon(
+                                          FontAwesomeIcons.w,
+                                          color: isDarkMode ? vibrantGreen : Colors.black,
+                                          size: 12,
+                                        ),
+                                      ))
+                                ],
+                              ),
+                            ]),
+                          ),
                         ),
+                      ),
 
-                      /// Only show for exercises that measure Reps
-                      if (typicalRepRange != null && withReps(type: exerciseType))
-                        GestureDetector(
+                    /// Only show for exercises that measure Reps
+                    if (typicalRepRange != null && withReps(type: exerciseType))
+                      StaggeredGridTile.count(
+                        crossAxisCellCount: 1,
+                        mainAxisCellCount: 1,
+                        child: GestureDetector(
                           onTap: () => showBottomSheetWithNoAction(
                               context: context,
                               title: "Rep Range",
                               description:
                                   "Rep ranges acts as a guideline for adjusting weights. If you consistently hit the high end of your range with good form, it’s a signal to increase the load. Conversely, if you struggle to reach the low end, reduce the weight slightly until you can complete the set effectively."),
-                          child: noRepRangeMessage != null
-                              ? InformationContainerLite(
-                                  content: noRepRangeMessage,
-                                  color: Colors.grey.shade400,
-                                  icon: Container(
-                                      width: 18,
-                                      height: 18,
-                                      padding: const EdgeInsets.all(4),
-                                      decoration: BoxDecoration(
-                                        color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
-                                        borderRadius: BorderRadius.circular(3),
+                          child: Container(
+                            padding: EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                                color: isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.grey.shade200,
+                                borderRadius: BorderRadius.circular(5)),
+                            child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+                              noRepRangeMessage != null
+                                  ? Text(noRepRangeMessage,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(fontWeight: FontWeight.w700, height: 1.5))
+                                  : RichText(
+                                      text: TextSpan(
+                                        text: "${typicalRepRange.minReps} - ${typicalRepRange.maxReps}",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(fontWeight: FontWeight.w700, height: 1.5),
+                                        children: [
+                                          TextSpan(
+                                            text: " ",
+                                          ),
+                                          TextSpan(
+                                            text:
+                                                "is your typical rep range. if you comfortably hit ${typicalRepRange.maxReps}, increase the weight; if you struggle to reach ${typicalRepRange.minReps}, reduce it; otherwise, maintain. Tap for more info.",
+                                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                                fontWeight: FontWeight.w700,
+                                                color: isDarkMode ? Colors.white70 : Colors.black54,
+                                                height: 1.5),
+                                          )
+                                        ],
                                       ),
-                                      child: Center(
-                                        child: FaIcon(
-                                          FontAwesomeIcons.r,
-                                          color: isDarkMode ? vibrantGreen : Colors.black,
-                                          size: 8,
-                                        ),
-                                      )))
-                              : InformationContainerLite(
-                                  richText: RichText(
-                                    text: TextSpan(
-                                      text: "${typicalRepRange.minReps} - ${typicalRepRange.maxReps}",
-                                      style:
-                                          Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w700),
-                                      children: [
-                                        TextSpan(
-                                          text: " ",
-                                        ),
-                                        TextSpan(
-                                          text:
-                                              "is your typical rep range. if you comfortably hit ${typicalRepRange.maxReps}, increase the weight; if you struggle to reach ${typicalRepRange.minReps}, reduce it; otherwise, maintain. Tap for more info.",
-                                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                              fontWeight: FontWeight.w700,
-                                              color: isDarkMode ? Colors.white70 : Colors.black54),
-                                        )
-                                      ],
                                     ),
-                                  ),
-                                  content: "",
-                                  color: Colors.grey.shade400,
-                                  icon: Container(
-                                      width: 18,
-                                      height: 18,
+                              const Spacer(),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Container(
+                                      width: 25,
+                                      height: 25,
                                       padding: const EdgeInsets.all(4),
                                       decoration: BoxDecoration(
-                                        color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
+                                        color: Colors.black.withValues(alpha: 0.4),
                                         borderRadius: BorderRadius.circular(3),
                                       ),
                                       child: Center(
                                         child: FaIcon(
                                           FontAwesomeIcons.r,
-                                          color: isDarkMode ? vibrantGreen : Colors.black,
-                                          size: 8,
+                                          color: Colors.white,
+                                          size: 12,
                                         ),
-                                      ))),
+                                      ))
+                                ],
+                              ),
+                            ]),
+                          ),
                         ),
-                    ],
-                  ),
+                      ),
+                  ]),
               ],
             ),
           ),
