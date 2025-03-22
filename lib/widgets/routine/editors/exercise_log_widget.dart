@@ -591,7 +591,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                     : SetsListview(type: exerciseType, sets: sets),
                 if (sets.isNotEmpty && widget.editorType == RoutineEditorMode.log && !isEmptySets)
                   StaggeredGrid.count(crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10, children: [
-                    if (withReps(type: exerciseType))
+                    if (withReps(type: exerciseType) && trainingProgression != null)
                       StaggeredGridTile.count(
                         crossAxisCellCount: 2,
                         mainAxisCellCount: 1,
