@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/screens/AI/trkr_coach_chat_screen.dart';
 import 'package:tracker_app/utils/string_utils.dart';
-import 'package:tracker_app/widgets/ai_widgets/trkr_coach_button.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
@@ -16,7 +15,6 @@ import '../../widgets/empty_states/no_list_empty_state.dart';
 import '../../widgets/information_containers/information_container_with_background_image.dart';
 
 class RoutineTemplatesScreen extends StatelessWidget {
-
   static const routeName = '/routine_templates_screen';
 
   const RoutineTemplatesScreen({super.key});
@@ -29,12 +27,12 @@ class RoutineTemplatesScreen extends StatelessWidget {
       final children = templates.map((template) => _RoutineWidget(template: template)).toList();
 
       return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
-            onPressed: context.pop,
+          appBar: AppBar(
+            leading: IconButton(
+              icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
+              onPressed: context.pop,
+            ),
           ),
-        ),
           floatingActionButton: FloatingActionButton(
             heroTag: "fab_routines_screen",
             onPressed: () => navigateToRoutineTemplateEditor(context: context),
@@ -47,15 +45,14 @@ class RoutineTemplatesScreen extends StatelessWidget {
             child: SafeArea(
                 bottom: false,
                 minimum: const EdgeInsets.all(10.0),
-                child: Column(
-                    spacing: 16,
-                    crossAxisAlignment: CrossAxisAlignment.start, children: [
+                child: Column(spacing: 16, crossAxisAlignment: CrossAxisAlignment.start, children: [
                   GestureDetector(
                     onTap: () => _switchToAIContext(context: context),
                     child: BackgroundInformationContainer(
                         image: 'images/lace.jpg',
                         containerColor: Colors.blue.shade900,
-                        content: "A structured plan is essential for achieving your fitness goals. Tap to describe a workout.",
+                        content:
+                            "A structured plan is essential for achieving your fitness goals. Tap to describe a workout.",
                         textStyle: GoogleFonts.ubuntu(
                           fontSize: 16,
                           fontWeight: FontWeight.w400,

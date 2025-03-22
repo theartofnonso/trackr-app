@@ -14,9 +14,8 @@ import '../utils/date_utils.dart';
 import '../widgets/calendar/calendar_navigator.dart';
 
 class HomeTabScreen extends StatefulWidget {
-  final ScrollController scrollController;
 
-  const HomeTabScreen({super.key, required this.scrollController});
+  const HomeTabScreen({super.key});
 
   @override
   State<HomeTabScreen> createState() => _HomeTabScreenState();
@@ -109,9 +108,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
                     controller: _tabController,
                     children: [
                       OverviewScreen(
-                        dateTimeRange: _monthDateTimeRange,
-                        scrollController: widget.scrollController,
-                      ),
+                        dateTimeRange: _monthDateTimeRange),
                       SetsAndRepsVolumeInsightsScreen(
                         canPop: false,
                       ),

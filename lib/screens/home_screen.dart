@@ -34,7 +34,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final ScrollController _scrollController = ScrollController();
 
   StreamSubscription<QuerySnapshot<RoutineUser>>? _routineUserStream;
   StreamSubscription<QuerySnapshot<RoutineLog>>? _routineLogStream;
@@ -54,9 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     }
 
-    return HomeTabScreen(
-      scrollController: _scrollController,
-    );
+    return HomeTabScreen();
   }
 
   void _loadAppData() {
