@@ -8,7 +8,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
-import 'package:tracker_app/models/ActivityLog.dart';
 import 'package:tracker_app/models/Exercise.dart';
 import 'package:tracker_app/models/RoutineUser.dart';
 import 'package:tracker_app/screens/home_tab_screen.dart';
@@ -36,7 +35,6 @@ class _HomeScreenState extends State<HomeScreen> {
   StreamSubscription<QuerySnapshot<RoutineUser>>? _routineUserStream;
   StreamSubscription<QuerySnapshot<RoutineLog>>? _routineLogStream;
   StreamSubscription<QuerySnapshot<RoutineTemplate>>? _routineTemplateStream;
-  StreamSubscription<QuerySnapshot<ActivityLog>>? _activityLogStream;
   StreamSubscription<QuerySnapshot<Exercise>>? _exerciseStream;
 
   @override
@@ -150,7 +148,6 @@ class _HomeScreenState extends State<HomeScreen> {
     _exerciseStream?.cancel();
     _routineTemplateStream?.cancel();
     _routineLogStream?.cancel();
-    _activityLogStream?.cancel();
     _routineUserStream?.cancel();
     super.dispose();
   }
