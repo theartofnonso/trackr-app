@@ -166,9 +166,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
                             StaggeredGridTile.count(
                               crossAxisCellCount: 4,
                               mainAxisCellCount: 2,
-                              child: Calendar(
-                                onSelectDate: _onSelectCalendarDateTime,
-                                dateTime: widget.dateTimeRange.start,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 12.0),
+                                child: Calendar(
+                                  onSelectDate: _onSelectCalendarDateTime,
+                                  dateTime: widget.dateTimeRange.start,
+                                ),
                               ),
                             ),
                             StaggeredGridTile.count(

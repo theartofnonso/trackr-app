@@ -15,6 +15,7 @@ import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/utils/routine_editors_utils.dart';
 import 'package:tracker_app/widgets/routine/editors/exercise_log_widget_lite.dart';
+import 'package:tracker_app/widgets/timers/stopwatch_timer.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
@@ -30,7 +31,6 @@ import '../../utils/routine_log_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
-import '../../widgets/timers/stopwatch_timer.dart';
 
 class RoutineLogEditorScreen extends StatefulWidget {
   static const routeName = '/routine-log-editor';
@@ -272,20 +272,39 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
               child: SafeArea(
                 minimum: EdgeInsets.all(10),
                 child: Column(
-                  spacing: 8,
+                  spacing: 12,
                   children: [
                     if (widget.mode == RoutineEditorMode.log)
                       Consumer<ExerciseLogController>(
                           builder: (BuildContext context, ExerciseLogController provider, Widget? child) {
-                        return _RoutineLogOverview(
-                          exercisesSummary:
-                              "${provider.completedExerciseLog().length} of ${provider.exerciseLogs.length}",
-                          setsSummary:
-                              "${provider.completedSets().length} of ${provider.exerciseLogs.expand((exerciseLog) => exerciseLog.sets).length}",
-                          timer: StopwatchTimer(
-                            startTime: widget.log.startTime,
-                          ),
-                        );
+                        return GridView(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(), // to disable GridView's scrolling
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              childAspectRatio: 1.5, // for square shape
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10,
+                            ),
+                            children: [
+                              _StatisticWidget(
+                                  title: Text(
+                                      "${provider.completedExerciseLog().length} of ${provider.exerciseLogs.length}",
+                                      style: Theme.of(context).textTheme.titleLarge),
+                                  subtitle: "Exercises"),
+                              _StatisticWidget(
+                                  title: Text(
+                                      "${provider.completedSets().length} of ${provider.exerciseLogs.expand((exerciseLog) => exerciseLog.sets).length}",
+                                      style: Theme.of(context).textTheme.titleLarge),
+                                  subtitle: "Sets"),
+                              _StatisticWidget(
+                                  title: StopwatchTimer(
+                                    digital: true,
+                                    startTime: widget.log.startTime,
+                                    textStyle: Theme.of(context).textTheme.titleLarge,
+                                  ),
+                                  subtitle: "Duration")
+                            ]);
                       }),
                     if (exerciseLogs.isNotEmpty)
                       Expanded(
@@ -425,41 +444,29 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   }
 }
 
-class _RoutineLogOverview extends StatelessWidget {
-  final String exercisesSummary;
-  final String setsSummary;
-  final Widget timer;
+class _StatisticWidget extends StatelessWidget {
+  final Widget title;
+  final String subtitle;
 
-  const _RoutineLogOverview({required this.exercisesSummary, required this.setsSummary, required this.timer});
+  const _StatisticWidget({required this.title, required this.subtitle});
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     return Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5), // rounded border
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, // Background color of the container
+        borderRadius: BorderRadius.circular(5), // Border radius for rounded corners
+      ),
+      child: Stack(children: [
+        title,
+        Positioned.fill(
+          child: Align(alignment: Alignment.bottomRight, child: Text(subtitle)),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
-        child: Table(
-          // border: TableBorder(
-          //     verticalInside: BorderSide(color: isDarkMode ? Colors.white70 : Colors.grey.shade200, width: 0.5)),
-          columnWidths: const <int, TableColumnWidth>{
-            0: FlexColumnWidth(1),
-            1: FlexColumnWidth(1),
-            2: FlexColumnWidth(1),
-          },
-          children: [
-            TableRow(children: [
-              Text("Exercises", textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall),
-              Text("Sets", textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall),
-              Text("Duration", textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall),
-            ]),
-            const TableRow(children: [SizedBox(height: 4), SizedBox(height: 4), SizedBox(height: 4)]),
-            TableRow(children: [
-              Text(exercisesSummary, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
-              Text(setsSummary, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
-              Center(child: timer)
-            ])
-          ],
-        ));
+      ]),
+    );
   }
 }
