@@ -458,13 +458,13 @@ class _StatisticWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, // Background color of the container
+        color: isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.grey.shade200, // Background color of the container
         borderRadius: BorderRadius.circular(5), // Border radius for rounded corners
       ),
       child: Stack(children: [
         title,
         Positioned.fill(
-          child: Align(alignment: Alignment.bottomRight, child: Text(subtitle)),
+          child: Align(alignment: Alignment.bottomRight, child: Text(subtitle, style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 12))),
         ),
       ]),
     );
