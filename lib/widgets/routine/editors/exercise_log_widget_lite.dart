@@ -10,7 +10,6 @@ import '../editors/exercise_log_widget.dart';
 
 class ExerciseLogLiteWidget extends StatelessWidget {
   final RoutineEditorMode editorType;
-
   final ExerciseLogDto exerciseLogDto;
   final ExerciseLogDto? superSet;
 
@@ -40,7 +39,11 @@ class ExerciseLogLiteWidget extends StatelessWidget {
     final checkChildren = exerciseLogDto.sets
         .map((setDto) => FaIcon(
               setDto.checked ? FontAwesomeIcons.solidSquareCheck : FontAwesomeIcons.solidSquareCheck,
-              color: setDto.checked ? vibrantGreen : Colors.grey.shade500,
+              color: setDto.isNotEmpty()
+                  ? vibrantGreen
+                  : setDto.checked
+                      ? vibrantGreen
+                      : Colors.grey.shade500,
             ))
         .toList();
 
