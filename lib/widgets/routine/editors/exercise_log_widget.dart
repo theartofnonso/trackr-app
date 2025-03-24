@@ -403,9 +403,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     /// Generate weight or reps progression summary
     progressionSummary = switch (trainingProgression) {
       TrainingProgression.increase =>
-        ", time to take it up a notch, increase the $weightsRepsDurationLabel of ${workingSet?.summary()}.",
+        ", time to take it up a notch, consider increasing the $weightsRepsDurationLabel of ${workingSet?.summary()}.",
       TrainingProgression.decrease =>
-        ", dial it back a bit, reduce the $weightsRepsDurationLabel of ${workingSet?.summary()} for now.",
+        ", dial it back a bit, consider reducing the $weightsRepsDurationLabel of ${workingSet?.summary()} for now.",
       TrainingProgression.maintain =>
         ", right on track, stick with your current $weightsRepsDurationLabel of ${workingSet?.summary()}.",
       null => "",

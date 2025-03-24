@@ -75,7 +75,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
           gradient: themeGradient(context: context),
         ),
         child: SafeArea(
-          bottom: false,
           minimum: EdgeInsets.all(10),
           child: SingleChildScrollView(
             child: Column(
