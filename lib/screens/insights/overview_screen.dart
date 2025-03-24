@@ -380,13 +380,14 @@ class _NoScheduledTitle extends StatelessWidget {
               height: 25,
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
-                color: isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.grey.shade200,
+                color: isDarkMode ? Colors.black.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.4),
                 borderRadius: BorderRadius.circular(3),
               ),
               child: Center(
                 child: FaIcon(
                   FontAwesomeIcons.calendarDay,
                   size: 14,
+                  color: Colors.white,
                 ),
               ),
             )
