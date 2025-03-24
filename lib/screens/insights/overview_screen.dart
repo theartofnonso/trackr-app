@@ -149,12 +149,13 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           mainAxisSpacing: 10,
                           crossAxisSpacing: 10,
                           children: [
-                            if(predictedTemplate != null)
-                              StaggeredGridTile.count(
+                            StaggeredGridTile.count(
                               crossAxisCellCount: 1,
                               mainAxisCellCount: 1,
-                              child: _ScheduledTitle(
-                                  scheduledToday: predictedTemplate, isLogged: hasTodayScheduleBeenLogged),
+                              child: predictedTemplate != null
+                                  ? _ScheduledTitle(
+                                      scheduledToday: predictedTemplate, isLogged: hasTodayScheduleBeenLogged)
+                                  : const _NoScheduledTitle(),
                             ),
                             StaggeredGridTile.count(
                               crossAxisCellCount: 1,
@@ -250,7 +251,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 
   void _showNewBottomSheet() {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -355,6 +355,48 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 }
 
+class _NoScheduledTitle extends StatelessWidget {
+  const _NoScheduledTitle();
+
+  @override
+  Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
+    return Container(
+      padding: EdgeInsets.all(12),
+      decoration: BoxDecoration(
+          color: isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.grey.shade200,
+          borderRadius: BorderRadius.circular(5)),
+      child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+        Text("Keep training to see future workout schedules",
+            style: GoogleFonts.ubuntu(fontSize: 18, height: 1.5, fontWeight: FontWeight.w600)),
+        const Spacer(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Container(
+              width: 25,
+              height: 25,
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.grey.shade200,
+                borderRadius: BorderRadius.circular(3),
+              ),
+              child: Center(
+                child: FaIcon(
+                  FontAwesomeIcons.calendarDay,
+                  size: 14,
+                ),
+              ),
+            )
+          ],
+        ),
+      ]),
+    );
+  }
+}
+
 class _ScheduledTitle extends StatelessWidget {
   const _ScheduledTitle({required this.scheduledToday, required this.isLogged});
 
@@ -374,7 +416,7 @@ class _ScheduledTitle extends StatelessWidget {
                 color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
                 borderRadius: BorderRadius.circular(5)),
             child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-              Text("${substringByLength(text: scheduledToday?.name ?? "", length: 10)} has been completed. Great jon!",
+              Text("${substringByLength(text: scheduledToday?.name ?? "", length: 10)} has been completed. Great job!",
                   style: GoogleFonts.ubuntu(fontSize: 18, height: 1.5, fontWeight: FontWeight.w600)),
               const Spacer(),
               Row(
