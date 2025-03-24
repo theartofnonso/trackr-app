@@ -215,7 +215,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                   child: Row(children: [
                     OpacityButtonWidget(
                         onPressed: _toggleOwnerExercises,
-                        buttonColor: _shouldShowOwnerExercises ? vibrantGreen : vibrantBlue,
+                        buttonColor: _shouldShowOwnerExercises ? vibrantGreen : null,
                         label: "Your Exercises".toUpperCase()),
                     const SizedBox(width: 6),
                     ...muscleGroups.sublist(0, muscleGroupScrollViewHalf),
