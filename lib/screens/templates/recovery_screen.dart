@@ -4,6 +4,10 @@ import 'package:flutter/services.dart';
 import '../../colors.dart';
 import '../../utils/general_utils.dart';
 
+enum IntensityScale {
+  lowToHigh, highToLow
+}
+
 class RecoveryScreen extends StatefulWidget {
   static const routeName = '/recovery_screen';
 
@@ -41,6 +45,7 @@ class _RecoveryScreenState extends State<RecoveryScreen> {
             ),
             _MetricRatingSlider(
               ratings: _energyLevelsScale,
+              intensityScale: IntensityScale.lowToHigh,
               onSelectRating: (int rating) {},
             )
           ])),
@@ -51,10 +56,11 @@ class _RecoveryScreenState extends State<RecoveryScreen> {
 }
 
 class _MetricRatingSlider extends StatefulWidget {
+  final IntensityScale intensityScale;
   final Map<int, String> ratings;
   final void Function(int rating) onSelectRating;
 
-  const _MetricRatingSlider({required this.ratings, required this.onSelectRating});
+  const _MetricRatingSlider({this.intensityScale = IntensityScale.highToLow, required this.ratings, required this.onSelectRating});
 
   @override
   State<_MetricRatingSlider> createState() => _MetricRatingSliderState();
@@ -68,23 +74,33 @@ class _MetricRatingSliderState extends State<_MetricRatingSlider> {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text("Rate this set on a scale of 1 - 10, 1 being barely any effort and 10 being max effort",
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
-        const SizedBox(height: 12),
-        Text(
-          _ratingDescription(_rating),
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700, fontSize: 18),
-        ),
-        const SizedBox(height: 12),
-        Slider(
-            value: _rating, onChanged: onChanged, min: 1, max: 10, divisions: 9, thumbColor: vibrantGreen),
-      ],
+    final color = switch(widget.intensityScale) {
+      IntensityScale.lowToHigh => lowToHighIntensityColor(_rating/10),
+      IntensityScale.highToLow => highToLowIntensityColor(_rating/10),
+    };
+    return Container(
+      padding: EdgeInsets.all(12),
+      decoration: BoxDecoration(
+          color: isDarkMode ? color.withValues(alpha: 0.1) : color,
+          borderRadius: BorderRadius.circular(5)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Rate this set on a scale of 1 - 10, 1 being barely any effort and 10 being max effort",
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+          const SizedBox(height: 12),
+          Text(
+            _ratingDescription(_rating),
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700, fontSize: 18),
+          ),
+          const SizedBox(height: 12),
+          Slider(
+              value: _rating, onChanged: onChanged, min: 1, max: 10, divisions: 9, thumbColor: vibrantGreen),
+        ],
+      ),
     );
   }
 

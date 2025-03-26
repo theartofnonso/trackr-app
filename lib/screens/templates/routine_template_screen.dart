@@ -174,7 +174,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       final recovery = muscleAndRecovery.recoveryPercentage;
 
       return Badge(
-        backgroundColor: recoveryColor(recovery),
+        backgroundColor: lowToHighIntensityColor(recovery),
         alignment: Alignment.topRight,
         smallSize: 12,
         isLabelVisible: muscleGroup == selectedMuscleAndRecovery?.muscleGroup,
@@ -195,7 +195,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                   strokeWidth: 6,
                   backgroundColor: isDarkMode ? Colors.black12 : Colors.grey.shade200,
                   strokeCap: StrokeCap.butt,
-                  valueColor: AlwaysStoppedAnimation<Color>(recoveryColor(recovery)),
+                  valueColor: AlwaysStoppedAnimation<Color>(lowToHighIntensityColor(recovery)),
                 ),
               ),
             ),

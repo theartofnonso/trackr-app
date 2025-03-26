@@ -120,21 +120,34 @@ Color logStreakColor(num value) {
   }
 }
 
-Color recoveryColor(double recoveryPercentage) {
+/// Higher values now get a "better" color (green)
+Color lowToHighIntensityColor(double recoveryPercentage) {
   if (recoveryPercentage < 0.3) {
     // Severe DOMS (0–29%)
     return Colors.red;
   } else if (recoveryPercentage < 0.5) {
-    // High soreness (30–49%)
     return Colors.yellow;
   } else if (recoveryPercentage < 0.8) {
-    // Moderate soreness (50–79%)
     return vibrantBlue;
   } else {
-    // Mild or no soreness (80–100%)
     return vibrantGreen;
   }
 }
+
+/// Lower values now get a "better" color (green)
+Color highToLowIntensityColor(double recoveryPercentage) {
+  if (recoveryPercentage < 0.3) {
+    return vibrantGreen;
+  } else if (recoveryPercentage < 0.5) {
+    return vibrantBlue;
+  } else if (recoveryPercentage < 0.8) {
+    return Colors.yellow;
+  } else {
+    // Higher recovery values now get a "worse" color (red)
+    return Colors.red;
+  }
+}
+
 
 String recoveryMuscleIllustration({required double recoveryPercentage, required MuscleGroup muscleGroup}) {
   if (recoveryPercentage < 0.3) {
