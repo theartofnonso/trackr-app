@@ -38,6 +38,7 @@ import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
 import 'package:tracker_app/screens/onboarding/onboarding_intro_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
+import 'package:tracker_app/screens/templates/recovery_screen.dart';
 import 'package:tracker_app/screens/templates/routine_template_screen.dart';
 import 'package:tracker_app/screens/templates/routine_templates_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -156,7 +157,7 @@ void main() async {
 }
 
 final _router = GoRouter(
-  initialLocation: "/",
+  initialLocation: "/recovery_screen",
   navigatorKey: navigatorKey,
   routes: [
     GoRoute(
@@ -291,6 +292,10 @@ final _router = GoRouter(
     GoRoute(
       path: HomeScreen.routeName,
       builder: (context, state) => const HomeScreen(),
+    ),
+    GoRoute(
+      path: RecoveryScreen.routeName,
+      builder: (context, state) => const RecoveryScreen(),
     ),
     GoRoute(
       path: SetsAndRepsVolumeInsightsScreen.routeName,

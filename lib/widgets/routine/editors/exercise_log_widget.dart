@@ -32,7 +32,6 @@ import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/one_rep_max_calculator.dart';
-import '../../dividers/label_divider.dart';
 import '../../empty_states/no_list_empty_state.dart';
 import '../../weight_plate_calculator.dart';
 import '../preview/set_headers/double_set_header.dart';
@@ -990,107 +989,6 @@ class _OneRepMaxSliderState extends State<_OneRepMaxSlider> {
   void initState() {
     super.initState();
     _weight = _weightForPercentage(reps: 10);
-  }
-}
-
-class _RepRangeSlider extends StatefulWidget {
-  final String exercise;
-  final int min;
-  final int max;
-  final void Function(RangeValues values) onSelectRange;
-
-  const _RepRangeSlider({required this.exercise, required this.min, required this.max, required this.onSelectRange});
-
-  @override
-  State<_RepRangeSlider> createState() => _RepRangeSliderState();
-}
-
-class _RepRangeSliderState extends State<_RepRangeSlider> {
-  int _min = 0;
-  int _max = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        LabelDivider(
-          label: "Select a rep range".toUpperCase(),
-          labelColor: isDarkMode ? Colors.white : Colors.black,
-          dividerColor: Colors.transparent,
-          fontSize: 14,
-        ),
-        const SizedBox(height: 8),
-        Text(
-            "Setting rep ranges for each exercise helps you target specific fitness goals: low reps build strength, moderate reps grow muscle, and high reps improve endurance.",
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
-        const SizedBox(height: 8),
-        Text(
-            "Work towards the top of your rep range. If you’re consistently hitting it, increase the weight. If you’re stuck at the bottom, lower the weight.",
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
-        const SizedBox(height: 12),
-        Row(
-          spacing: 8,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              "$_min ${pluralize(word: "rep", count: _min)}",
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
-            ),
-            FaIcon(
-              FontAwesomeIcons.arrowRight,
-              size: 20,
-            ),
-            Text("$_max ${pluralize(word: "rep", count: _max)}",
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700))
-          ],
-        ),
-        const SizedBox(height: 10),
-        RangeSlider(
-          values: RangeValues(_min.toDouble(), _max.toDouble()),
-          onChanged: onChanged,
-          min: 1,
-          max: 20,
-          activeColor: vibrantGreen,
-          divisions: 19,
-        ),
-        const SizedBox(height: 10),
-        SizedBox(
-            width: double.infinity,
-            height: 45,
-            child: OpacityButtonWidget(label: "Select range", buttonColor: vibrantGreen, onPressed: onSelectRepRange))
-      ],
-    );
-  }
-
-  void onChanged(RangeValues values) {
-    HapticFeedback.heavyImpact();
-    setState(() {
-      _min = values.start.toInt();
-      _max = values.end.toInt();
-    });
-  }
-
-  void onSelectRepRange() {
-    Navigator.of(context).pop();
-    widget.onSelectRange(RangeValues(_min.toDouble(), _max.toDouble()));
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _min = widget.min;
-    _max = widget.max;
   }
 }
 
