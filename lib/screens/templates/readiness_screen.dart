@@ -147,7 +147,7 @@ class _MetricRatingSlider extends StatefulWidget {
 }
 
 class _MetricRatingSliderState extends State<_MetricRatingSlider> {
-  double _rating = 1;
+  double _rating = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -182,7 +182,7 @@ class _MetricRatingSliderState extends State<_MetricRatingSlider> {
                 color: isDarkMode ? Colors.black12 : Colors.white38,
                 borderRadius: BorderRadius.circular(5),
               ),
-              child: Slider(value: _rating, onChanged: onChanged, min: 1, max: 10, divisions: 9, thumbColor: color)),
+              child: Slider(value: _rating, onChanged: onChanged, min: 0, max: 9, divisions: 9, thumbColor: color)),
         ],
       ),
     );
@@ -208,44 +208,44 @@ class _MetricRatingSliderState extends State<_MetricRatingSlider> {
 
 /// Pain or Injury
 Map<int, String> _painOrInjuryScale = {
-  1: "😌 No pain or discomfort",
-  2: "🙂 Slight twinge, easily ignored",
-  3: "😊 Minor ache, not impacting movement",
-  4: "😐 Noticeable pain, proceed with caution",
-  5: "😕 Moderate pain, consider modifications",
-  6: "😟 Significant pain, limit intensity",
-  7: "😣 Severe pain, training at risk",
-  8: "😫 Very severe pain, high injury risk",
-  9: "🤕 Extreme pain, likely skip session",
-  10: "🚑 Excruciating pain, stop immediately"
+  0: "😌 No pain or discomfort",
+  1: "🙂 Slight twinge, easily ignored",
+  2: "😊 Minor ache, not impacting movement",
+  3: "😐 Noticeable pain, proceed with caution",
+  4: "😕 Moderate pain, consider modifications",
+  5: "😟 Significant pain, limit intensity",
+  6: "😣 Severe pain, training at risk",
+  7: "😫 Very severe pain, high injury risk",
+  8: "🤕 Extreme pain, likely skip session",
+  9: "🚑 Excruciating pain, stop immediately"
 };
 
 /// Perceived Fatigue
 Map<int, String> _perceivedFatigueScale = {
-  1: "😌 Fully refreshed, no fatigue",
-  2: "🙂 Slight tiredness, not an issue",
-  3: "😊 Mild fatigue, still performing well",
-  4: "😐 Noticeable tiredness, but manageable",
-  5: "😶 Moderate fatigue, may need breaks",
-  6: "😑 Feeling worn, pace is harder to sustain",
-  7: "😴 Very tired, performance dropping quickly",
-  8: "🥱 Struggling to keep going",
-  9: "😫 Exhausted, near physical/mental limit",
-  10: "💤 Completely drained, no capacity left"
+  0: "😌 Fully refreshed, no fatigue",
+  1: "🙂 Slight tiredness, not an issue",
+  2: "😊 Mild fatigue, still performing well",
+  3: "😐 Noticeable tiredness, but manageable",
+  4: "😶 Moderate fatigue, may need breaks",
+  5: "😑 Feeling worn, pace is harder to sustain",
+  6: "😴 Very tired, performance dropping quickly",
+  7: "🥱 Struggling to keep going",
+  8: "😫 Exhausted, near physical/mental limit",
+  9: "💤 Completely drained, no capacity left"
 };
 
 /// Muscle Soreness (DOMS)
 Map<int, String> _muscleSorenessScale = {
-  1: "😌 No soreness, muscles feel fresh",
-  2: "🙂 Slight tenderness, barely noticeable",
-  3: "😊 Mild tightness, easy to move through",
-  4: "😐 Some soreness, but not limiting",
-  5: "😶 Moderate soreness, performance impacted",
-  6: "😑 Achy muscles, need extended warm-up",
-  7: "😬 High soreness, range of motion reduced",
-  8: "😣 Very sore, significantly limiting",
-  9: "🥵 Intense DOMS, serious hindrance",
-  10: "💀 Severe soreness, movement is very painful"
+  0: "😌 No soreness, muscles feel fresh",
+  1: "🙂 Slight tenderness, barely noticeable",
+  2: "😊 Mild tightness, easy to move through",
+  3: "😐 Some soreness, but not limiting",
+  4: "😶 Moderate soreness, performance impacted",
+  5: "😑 Achy muscles, need extended warm-up",
+  6: "😬 High soreness, range of motion reduced",
+  7: "😣 Very sore, significantly limiting",
+  8: "🥵 Intense DOMS, serious hindrance",
+  9: "💀 Severe soreness, movement is very painful"
 };
 
 class ReadinessMonitor extends StatelessWidget {
