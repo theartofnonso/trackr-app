@@ -4,28 +4,42 @@
 /// reduce the final score, while higher energy increases it.
 ///
 /// Returns a [int] between 0 and 100.
-int calculateReadinessScore({required int pain, required int fatigue, required int soreness}) {
-  // Optional: Validate inputs or clamp
-  if (pain < 0 || pain > 10 || fatigue < 0 || fatigue > 10 || soreness < 0 || soreness > 10) {
-    throw ArgumentError('All input values must be between 0 and 10.');
+int calculateReadinessScore({
+  required int pain,
+  required int fatigue,
+  required int soreness,
+}) {
+  // Validate inputs
+  // (Allows only 1–10; throw an error if outside this range)
+  if (pain < 1 || pain > 10 || fatigue < 1 || fatigue > 10 || soreness < 1 || soreness > 10) {
+    throw ArgumentError('All input values must be between 1 and 10.');
   }
 
-  // Define weights
+  // Define weights (must sum to 1.0 for a proper 0–100 score)
   const double kPainWeight = 0.50;
   const double kFatigueWeight = 0.25;
   const double kSorenessWeight = 0.25;
 
-  // Calculate subscores
-  final double painSubscore = (10 - pain) / 10 * 100; // Negative metric
-  final double fatigueSubscore = (10 - fatigue) / 10 * 100; // Negative metric
-  final double sorenessSubscore = (10 - soreness) / 10 * 100; // Negative metric
+  // Convert each metric to a 0–1 "subscore"
+  // For "negative" metrics (like pain):
+  // - 1 represents minimal issue (max readiness).
+  // - 10 represents worst issue (min readiness).
+  // Using (10 - metric) / 9 normalizes 1–10 into 1.0–0.0.
+  final double painRatio = (10 - pain) / 9; // Range: 1 => 1.0, 10 => 0.0
+  final double fatigueRatio = (10 - fatigue) / 9; // Range: 1 => 1.0, 10 => 0.0
+  final double sorenessRatio = (10 - soreness) / 9; // Range: 1 => 1.0, 10 => 0.0
 
-  // Weighted sum
-  final double totalScore =
-      (painSubscore * kPainWeight) + (fatigueSubscore * kFatigueWeight) + (sorenessSubscore * kSorenessWeight);
+  // Weighted sum of subscores (0–1)
+  final double weightedSum =
+      (painRatio * kPainWeight) + (fatigueRatio * kFatigueWeight) + (sorenessRatio * kSorenessWeight);
 
-  // Clamp to [0, 100]
-  return totalScore.clamp(0.0, 100.0).toInt();
+  // Convert from 0–1 to 0–100 scale
+  double totalScore = weightedSum * 100;
+
+  // Clamp to [0, 100] just to be safe
+  totalScore = totalScore.clamp(0, 100);
+
+  return totalScore.toInt();
 }
 
 String getTrainingGuidance({required int readinessScore}) {

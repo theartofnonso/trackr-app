@@ -277,9 +277,9 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                 gradient: themeGradient(context: context),
               ),
               child: SafeArea(
-                minimum: EdgeInsets.all(10),
+                minimum: EdgeInsets.symmetric(vertical: 10),
                 child: Column(
-                  spacing: 12,
+                  spacing: 20,
                   children: [
                     if (widget.mode == RoutineEditorMode.log)
                       Consumer<ExerciseLogController>(
@@ -288,6 +288,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                           height: 80,
                           child: GridView(
                               scrollDirection: Axis.horizontal,
+                              padding: EdgeInsets.symmetric(horizontal: 10),
                               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 1,
                                 childAspectRatio: 0.5, // for square shape
@@ -323,7 +324,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                         );
                       }),
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       child: Text(getTrainingGuidance(readinessScore: log.readiness),
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.grey.shade200)),
                     ),
@@ -332,19 +333,22 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                         child: ListView.separated(
                           itemBuilder: (BuildContext context, int index) {
                             final exerciseLog = exerciseLogs[index];
-                            return ExerciseLogLiteWidget(
-                              editorType: widget.mode,
-                              exerciseLogDto: exerciseLog,
-                              superSet:
-                                  whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs),
-                              onRemoveSuperSet: (String superSetId) {
-                                exerciseLogController.removeSuperSet(superSetId: exerciseLog.superSetId);
-                              },
-                              onRemoveLog: () {
-                                exerciseLogController.removeExerciseLog(logId: exerciseLog.id);
-                              },
-                              onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
-                              onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                              child: ExerciseLogLiteWidget(
+                                editorType: widget.mode,
+                                exerciseLogDto: exerciseLog,
+                                superSet:
+                                whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs),
+                                onRemoveSuperSet: (String superSetId) {
+                                  exerciseLogController.removeSuperSet(superSetId: exerciseLog.superSetId);
+                                },
+                                onRemoveLog: () {
+                                  exerciseLogController.removeExerciseLog(logId: exerciseLog.id);
+                                },
+                                onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
+                                onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
+                              ),
                             );
                           },
                           separatorBuilder: (BuildContext context, int index) {
@@ -355,7 +359,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                       ),
                     if (exerciseLogs.isNotEmpty)
                       SafeArea(
-                        minimum: EdgeInsets.all(10),
+                        minimum: EdgeInsets.all(20),
                         child: SizedBox(
                             width: double.infinity,
                             child: OpacityButtonWidget(
