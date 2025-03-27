@@ -253,6 +253,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     final log = widget.log;
 
+    print(log.readiness);
+
     return PopScope(
         canPop: false,
         child: Scaffold(
@@ -300,7 +302,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                         style: Theme.of(context)
                                             .textTheme
                                             .titleLarge
-                                            ?.copyWith(color: highToLowIntensityColor(log.readiness / 100))),
+                                            ?.copyWith(color: lowToHighIntensityColor(log.readiness / 100))),
                                     subtitle: "Readiness"),
                                 _StatisticWidget(
                                     title: Text(
