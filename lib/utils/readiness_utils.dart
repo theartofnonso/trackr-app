@@ -13,7 +13,7 @@ int calculateReadinessScore({required int pain, required int fatigue, required i
   }
 
   // Define weights
-  const double kPainWeight = 0.30;
+  const double kPainWeight = 0.50;
   const double kFatigueWeight = 0.25;
   const double kSorenessWeight = 0.25;
 
@@ -38,19 +38,19 @@ String getTrainingGuidance({required int readinessScore}) {
   if (readinessScore > 100) readinessScore = 100;
 
   if (readinessScore <= 29) {
-    return "Severe (0–29): Very poor readiness. High pain, fatigue, or soreness likely. "
+    return "Very poor readiness. High pain, fatigue, or soreness likely. "
         "Consider rest, gentle mobility work, or seek medical advice.";
   } else if (readinessScore <= 49) {
-    return "Poor (30–49): Low readiness. Notable issues like pain, fatigue, or heavy DOMS. "
+    return "Low readiness. Notable issues like pain, fatigue, or heavy DOMS. "
         "Reduce intensity and focus on recovery activities.";
   } else if (readinessScore <= 69) {
-    return "Moderate (50–69): Mixed readiness. Some fatigue or soreness is present. "
+    return "Mixed readiness. Some fatigue or soreness is present. "
         "Train at a moderate pace with extra focus on technique and form.";
   } else if (readinessScore <= 84) {
-    return "Good (70–84): Generally solid readiness. Minor aches or tiredness possible. "
+    return "Generally solid readiness. Minor aches or tiredness possible. "
         "Proceed with your planned workout but remain mindful of any overstress.";
   } else {
-    return "Excellent (85–100): Optimal readiness. Minimal pain or fatigue. "
+    return "Optimal readiness. Minimal pain or fatigue. "
         "Suitable for higher intensity or advanced training, if desired.";
   }
 }

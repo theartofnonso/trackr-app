@@ -246,13 +246,15 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     final exerciseLogs = context.select((ExerciseLogController controller) => controller.exerciseLogs);
 
+    final log = widget.log;
+
     return PopScope(
         canPop: false,
         child: Scaffold(
             appBar: AppBar(
               leading: IconButton(icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28), onPressed: _discardLog),
               title: Text(
-                widget.log.name,
+                log.name,
               ),
               actions: [
                 IconButton(
@@ -277,34 +279,43 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                     if (widget.mode == RoutineEditorMode.log)
                       Consumer<ExerciseLogController>(
                           builder: (BuildContext context, ExerciseLogController provider, Widget? child) {
-                        return GridView(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(), // to disable GridView's scrolling
-                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
-                              childAspectRatio: 1.5, // for square shape
-                              crossAxisSpacing: 10,
-                              mainAxisSpacing: 10,
-                            ),
-                            children: [
-                              _StatisticWidget(
-                                  title: Text(
-                                      "${provider.completedExerciseLog().length} of ${provider.exerciseLogs.length}",
-                                      style: Theme.of(context).textTheme.titleLarge),
-                                  subtitle: "Exercises"),
-                              _StatisticWidget(
-                                  title: Text(
-                                      "${provider.completedSets().length} of ${provider.exerciseLogs.expand((exerciseLog) => exerciseLog.sets).length}",
-                                      style: Theme.of(context).textTheme.titleLarge),
-                                  subtitle: "Sets"),
-                              _StatisticWidget(
-                                  title: StopwatchTimer(
-                                    digital: true,
-                                    startTime: widget.log.startTime,
-                                    textStyle: Theme.of(context).textTheme.titleLarge,
-                                  ),
-                                  subtitle: "Duration")
-                            ]);
+                        return SizedBox(
+                          height: 80,
+                          child: GridView(
+                              scrollDirection: Axis.horizontal,
+                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 1,
+                                childAspectRatio: 0.5, // for square shape
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 10,
+                              ),
+                              children: [
+                                _StatisticWidget(
+                                    title: Text("${log.readiness}%",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleLarge
+                                            ?.copyWith(color: highToLowIntensityColor(log.readiness / 100))),
+                                    subtitle: "Readiness"),
+                                _StatisticWidget(
+                                    title: Text(
+                                        "${provider.completedExerciseLog().length} of ${provider.exerciseLogs.length}",
+                                        style: Theme.of(context).textTheme.titleLarge),
+                                    subtitle: "Exercises"),
+                                _StatisticWidget(
+                                    title: Text(
+                                        "${provider.completedSets().length} of ${provider.exerciseLogs.expand((exerciseLog) => exerciseLog.sets).length}",
+                                        style: Theme.of(context).textTheme.titleLarge),
+                                    subtitle: "Sets"),
+                                _StatisticWidget(
+                                    title: StopwatchTimer(
+                                      digital: true,
+                                      startTime: widget.log.startTime,
+                                      textStyle: Theme.of(context).textTheme.titleLarge,
+                                    ),
+                                    subtitle: "Duration")
+                              ]),
+                        );
                       }),
                     if (exerciseLogs.isNotEmpty)
                       Expanded(
@@ -458,13 +469,16 @@ class _StatisticWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.grey.shade200, // Background color of the container
+        color: isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.grey.shade200,
+        // Background color of the container
         borderRadius: BorderRadius.circular(5), // Border radius for rounded corners
       ),
       child: Stack(children: [
         title,
         Positioned.fill(
-          child: Align(alignment: Alignment.bottomRight, child: Text(subtitle, style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 12))),
+          child: Align(
+              alignment: Alignment.bottomRight,
+              child: Text(subtitle, style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 12))),
         ),
       ]),
     );

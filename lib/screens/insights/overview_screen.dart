@@ -29,6 +29,7 @@ import '../../widgets/monthly_insights/log_streak_chart.dart';
 import '../../widgets/monthly_insights/volume_chart.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
 import '../AI/trkr_coach_chat_screen.dart';
+import '../templates/readiness_screen.dart';
 
 enum TrainingAndVolume {
   training,
@@ -335,8 +336,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
     final result =
         await navigateWithSlideTransition(context: context, child: const TRKRCoachChatScreen()) as RoutineTemplateDto?;
     if (result != null) {
-      if (context.mounted) {
-        final arguments = RoutineLogArguments(log: result.toLog(), editorMode: RoutineEditorMode.log);
+      if (mounted) {
+        final readinessScore = await navigateWithSlideTransition(context: context, child: ReadinessScreen()) as int;
+        final log = result.toLog();
+        final logWithReadinessScore = log.copyWith(readiness: readinessScore);
+        final arguments = RoutineLogArguments(log: logWithReadinessScore, editorMode: RoutineEditorMode.log);
         if (mounted) {
           navigateToRoutineLogEditor(context: context, arguments: arguments);
         }

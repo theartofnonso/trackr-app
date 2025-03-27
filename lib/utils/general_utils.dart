@@ -5,7 +5,6 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 import 'package:health/health.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
@@ -13,9 +12,9 @@ import 'package:tracker_app/screens/preferences/settings_screen.dart';
 
 import '../colors.dart';
 import '../dtos/appsync/routine_log_dto.dart';
+import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../enums/routine_editor_type_enums.dart';
-import '../screens/editors/routine_log_editor_screen.dart';
-import '../screens/logs/routine_log_screen.dart';
+import '../screens/templates/readiness_screen.dart';
 import '../shared_prefs.dart';
 import 'data_trend_utils.dart';
 import 'navigation_utils.dart';
@@ -148,7 +147,6 @@ Color highToLowIntensityColor(double recoveryPercentage) {
   }
 }
 
-
 String recoveryMuscleIllustration({required double recoveryPercentage, required MuscleGroup muscleGroup}) {
   if (recoveryPercentage < 0.3) {
     // Severe DOMS (0–29%)
@@ -264,6 +262,8 @@ Widget getTrendIcon({required Trend trend}) {
 }
 
 void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) async {
+  final readinessScore = await navigateWithSlideTransition(context: context, child: ReadinessScreen()) as int;
+
   final log = RoutineLogDto(
       id: "",
       templateId: "",
@@ -273,17 +273,12 @@ void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) a
       startTime: DateTime.now(),
       endTime: DateTime.now(),
       owner: "",
+      readiness: readinessScore,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now());
-  final recentLog = await navigateWithSlideTransition(
-      context: context,
-      child: RoutineLogEditorScreen(
-        log: log,
-        mode: RoutineEditorMode.log,
-      ));
-  if (recentLog != null) {
-    if (context.mounted) {
-      context.push(RoutineLogScreen.routeName, extra: {"log": recentLog, "showSummary": true, "isEditable": true});
-    }
+
+  if (context.mounted) {
+    final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log);
+    navigateToRoutineLogEditor(context: context, arguments: arguments);
   }
 }

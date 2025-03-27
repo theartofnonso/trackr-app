@@ -33,6 +33,8 @@ class RoutineLogDto extends Log {
 
   final String owner;
 
+  final int readiness;
+
   @override
   final DateTime createdAt;
 
@@ -49,6 +51,7 @@ class RoutineLogDto extends Log {
     required this.startTime,
     required this.endTime,
     required this.owner,
+    this.readiness = 0,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -67,6 +70,7 @@ class RoutineLogDto extends Log {
       'startTime': startTime.toIso8601String(),
       'endTime': endTime.toIso8601String(),
       'exercises': exerciseLogs.map((exercise) => exercise.toJson()).toList(),
+      'readiness': readiness
     };
   }
 
@@ -83,6 +87,7 @@ class RoutineLogDto extends Log {
     final startTime = DateTime.parse(json["startTime"]);
     final endTime = DateTime.parse(json["endTime"]);
     final exerciseLogsInJson = json["exercises"] as List<dynamic>;
+    final readiness = json["readiness"] ?? 0;
     List<ExerciseLogDto> exerciseLogs = [];
     if (exerciseLogsInJson.isNotEmpty && exerciseLogsInJson.first is String) {
       exerciseLogs = exerciseLogsInJson
@@ -106,6 +111,7 @@ class RoutineLogDto extends Log {
       startTime: startTime,
       endTime: endTime,
       owner: log.owner ?? "",
+      readiness: readiness,
       createdAt: log.createdAt.getDateTimeInUtc(),
       updatedAt: log.updatedAt.getDateTimeInUtc(),
     );
@@ -116,6 +122,7 @@ class RoutineLogDto extends Log {
     final name = json["name"] ?? "";
     final notes = json["notes"] ?? "";
     final summary = json["summary"];
+    final readiness = json["readiness"] ?? 0;
     final startTime = DateTime.parse(json["startTime"]);
     final endTime = DateTime.parse(json["endTime"]);
     final exerciseLogJsons = json["exercises"] as List<dynamic>;
@@ -132,6 +139,7 @@ class RoutineLogDto extends Log {
       startTime: startTime,
       endTime: endTime,
       owner: "",
+      readiness: readiness,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );
@@ -148,6 +156,7 @@ class RoutineLogDto extends Log {
     DateTime? endTime,
     List<ExerciseLogDto>? exerciseLogs,
     String? owner,
+    int? readiness,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -157,6 +166,7 @@ class RoutineLogDto extends Log {
       name: name ?? this.name,
       notes: notes ?? this.notes,
       summary: summary ?? this.summary,
+      readiness: readiness ?? this.readiness,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
       // Deep copy the list. For any new list passed in, we clone its items;
@@ -172,7 +182,7 @@ class RoutineLogDto extends Log {
 
   @override
   String toString() {
-    return 'RoutineLogDto{id: $id, templateId: $templateId, name: $name, notes: $notes, summary: $summary, startTime: $startTime, endTime: $endTime, exerciseLogs: $exerciseLogs, owner: $owner, createdAt: $createdAt, updatedAt: $updatedAt}';
+    return 'RoutineLogDto{id: $id, templateId: $templateId, name: $name, notes: $notes, summary: $summary, readiness: $readiness, startTime: $startTime, endTime: $endTime, exerciseLogs: $exerciseLogs, owner: $owner, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
 
   @override

@@ -11,6 +11,7 @@ import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
+import 'package:tracker_app/screens/templates/readiness_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import '../../colors.dart';
@@ -576,11 +577,16 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     }
   }
 
-  void _launchRoutineLogEditor() {
+  void _launchRoutineLogEditor() async {
     final template = _template;
     if (template != null) {
-      final arguments = RoutineLogArguments(log: template.toLog(), editorMode: RoutineEditorMode.log);
-      navigateToRoutineLogEditor(context: context, arguments: arguments);
+      final readinessScore = await navigateWithSlideTransition(context: context, child: ReadinessScreen()) as int;
+      final log = template.toLog();
+      final logWithReadiness = log.copyWith(readiness: readinessScore);
+      final arguments = RoutineLogArguments(log: logWithReadiness, editorMode: RoutineEditorMode.log);
+      if(mounted) {
+        navigateToRoutineLogEditor(context: context, arguments: arguments);
+      }
     }
   }
 

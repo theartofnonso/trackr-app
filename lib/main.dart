@@ -157,7 +157,7 @@ void main() async {
 }
 
 final _router = GoRouter(
-  initialLocation: "/recovery_screen",
+  initialLocation: "/",
   navigatorKey: navigatorKey,
   routes: [
     GoRoute(

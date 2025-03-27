@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../utils/general_utils.dart';
 import '../../utils/readiness_utils.dart';
+import '../../widgets/buttons/opacity_button_widget.dart';
 
 enum IntensityScale { lowToHigh, highToLow }
 
@@ -22,58 +25,105 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
 
-    final readinessScore = calculateReadinessScore(
-        pain: _painRating, fatigue: _fatigueRating, soreness: _sorenessRating);
+    final readinessScore =
+        calculateReadinessScore(pain: _painRating, fatigue: _fatigueRating, soreness: _sorenessRating);
 
     final readinessDescription = getTrainingGuidance(readinessScore: readinessScore);
 
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
+          onPressed: context.pop,
+        ),
+        title: Text("Readiness Check"),
+      ),
       body: Container(
         height: double.infinity,
         decoration: BoxDecoration(gradient: themeGradient(context: context)),
         child: SafeArea(
           minimum: EdgeInsets.all(10),
           bottom: false,
-          child: SingleChildScrollView(
-              padding: EdgeInsets.only(bottom: 100),
-              child: Column(spacing: 20, children: [
-                _MetricRatingSlider(
-                  title: "Pain or Injury",
-                  description:
-                      "Acute pain or injury risk is a critical safety concern; if present, training may need to be skipped or heavily modified.",
-                  ratings: _painOrInjuryScale,
-                  onSelectRating: (int rating) {
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: 20, children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                spacing: 20,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Stack(alignment: Alignment.center, children: [
+                    ReadinessMonitor(value: readinessScore, width: 100, height: 100, strokeWidth: 6),
+                    Text("$readinessScore",
+                        style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                              fontWeight: FontWeight.w900,
+                            ))
+                  ]),
+                  Expanded(
+                    child: Text(readinessDescription,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w400)),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.only(bottom: 100),
+                children: [
+                  _MetricRatingSlider(
+                    title: "Pain or Injury",
+                    description:
+                        "Acute pain or injury risk is a critical safety concern; if present, training may need to be skipped or heavily modified.",
+                    ratings: _painOrInjuryScale,
+                    onSelectRating: (int rating) {
                       setState(() {
                         _painRating = rating;
                       });
-                  },
-                ),
-                _MetricRatingSlider(
-                  title: "Muscle Soreness",
-                  description:
-                      "Excessive soreness can limit range of motion and performance. It may signal the need for active recovery or a lighter session.",
-                  ratings: _muscleSorenessScale,
-                  onSelectRating: (int rating) {
-                    setState(() {
-                      _sorenessRating = rating;
-                    });
-                  },
-                ),
-                _MetricRatingSlider(
-                  title: "Perceived Fatigue",
-                  description:
-                      "Excessive soreness can limit range of motion and performance. It may signal the need for active recovery or a lighter session.",
-                  ratings: _perceivedFatigueScale,
-                  onSelectRating: (int rating) {
-                    setState(() {
-                      _fatigueRating = rating;
-                    });
-                  },
-                )
-              ])),
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  _MetricRatingSlider(
+                    title: "Muscle Soreness",
+                    description:
+                        "Excessive soreness can limit range of motion and performance. It may signal the need for active recovery or a lighter session.",
+                    ratings: _muscleSorenessScale,
+                    onSelectRating: (int rating) {
+                      setState(() {
+                        _sorenessRating = rating;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  _MetricRatingSlider(
+                    title: "Perceived Fatigue",
+                    description:
+                        "Feeling exhausted (physically or mentally) can affect form, increase injury risk, and reduce workout effectiveness.",
+                    ratings: _perceivedFatigueScale,
+                    onSelectRating: (int rating) {
+                      setState(() {
+                        _fatigueRating = rating;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  SafeArea(
+                    minimum: EdgeInsets.all(10),
+                    child: SizedBox(
+                        width: double.infinity,
+                        child: OpacityButtonWidget(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          buttonColor: lowToHighIntensityColor(readinessScore / 100),
+                          label: "Start Training",
+                          onPressed: () {
+                            context.pop(readinessScore);
+                          },
+                        )),
+                  ),
+                ],
+              ),
+            )
+          ]),
         ),
       ),
     );
@@ -81,15 +131,13 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
 }
 
 class _MetricRatingSlider extends StatefulWidget {
-  final IntensityScale intensityScale;
   final Map<int, String> ratings;
   final void Function(int rating) onSelectRating;
   final String title;
   final String description;
 
   const _MetricRatingSlider(
-      {this.intensityScale = IntensityScale.highToLow,
-      required this.ratings,
+      {required this.ratings,
       required this.onSelectRating,
       required this.title,
       required this.description});
@@ -106,10 +154,8 @@ class _MetricRatingSliderState extends State<_MetricRatingSlider> {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final color = switch (widget.intensityScale) {
-      IntensityScale.lowToHigh => lowToHighIntensityColor(_rating / 10),
-      IntensityScale.highToLow => highToLowIntensityColor(_rating / 10),
-    };
+    final color = highToLowIntensityColor(_rating / 10);
+
     return Container(
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -201,3 +247,35 @@ Map<int, String> _muscleSorenessScale = {
   9: "🥵 Intense DOMS, serious hindrance",
   10: "💀 Severe soreness, movement is very painful"
 };
+
+class ReadinessMonitor extends StatelessWidget {
+  final int value;
+  final double width;
+  final double height;
+  final double strokeWidth;
+
+  const ReadinessMonitor({super.key,
+    this.value = 0,
+    required this.width,
+    required this.height,
+    required this.strokeWidth,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
+    return SizedBox(
+      width: height,
+      height: width,
+      child: CircularProgressIndicator(
+        value: value / 100,
+        strokeWidth: strokeWidth,
+        backgroundColor: isDarkMode ? Colors.black12 : Colors.grey.shade200,
+        strokeCap: StrokeCap.butt,
+        valueColor: AlwaysStoppedAnimation<Color>(lowToHighIntensityColor(value / 100)),
+      ),
+    );
+  }
+}
