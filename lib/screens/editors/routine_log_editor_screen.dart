@@ -326,7 +326,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       child: Text(getTrainingGuidance(readinessScore: log.readiness),
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.grey.shade200)),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.grey.shade800)),
                     ),
                     if (exerciseLogs.isNotEmpty)
                       Expanded(
