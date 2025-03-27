@@ -43,7 +43,8 @@ enum StrengthStatus {
     description: "🤔 We don't have enough data yet to analyze your progress. "
         "Keep logging sessions, and we'll give you tailored feedback as you go!",
   ),
-  insufficient(description: "You’ve logged only one training. Great job! Log more sessions to identify trends over time.");
+  insufficient(
+      description: "You’ve logged only one training. Great job! Log more sessions to identify trends over time.");
 
   const StrengthStatus({required this.description});
 
@@ -130,9 +131,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         final rpeRatings = log.sets.map((set) => set.rpeRating);
         return rpeRatings.average.ceil();
       }).toList();
-
-      rpeChartPoints = averageRpeRatings.mapIndexed((index, rpeRating) => ChartPointDto(index, rpeRating)).toList();
-      rpeColors = averageRpeRatings.map((rpeRating) => rpeIntensityToColor[rpeRating]!).toList();
 
       if (exerciseType == ExerciseType.weights) {
         final totalVolumes = validLogs.map((log) {
@@ -300,7 +298,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       return StrengthStatus.none;
     }
 
-    if (volumes.length == 1) {return StrengthStatus.insufficient;}
+    if (volumes.length == 1) {
+      return StrengthStatus.insufficient;
+    }
 
     final volumeTrend = detectTrend(volumes);
     final rpeTrend = detectTrend(rpes); // example threshold

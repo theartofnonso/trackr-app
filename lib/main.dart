@@ -38,7 +38,7 @@ import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
 import 'package:tracker_app/screens/onboarding/onboarding_intro_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
-import 'package:tracker_app/screens/templates/recovery_screen.dart';
+import 'package:tracker_app/screens/templates/readiness_screen.dart';
 import 'package:tracker_app/screens/templates/routine_template_screen.dart';
 import 'package:tracker_app/screens/templates/routine_templates_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -294,8 +294,8 @@ final _router = GoRouter(
       builder: (context, state) => const HomeScreen(),
     ),
     GoRoute(
-      path: RecoveryScreen.routeName,
-      builder: (context, state) => const RecoveryScreen(),
+      path: ReadinessScreen.routeName,
+      builder: (context, state) => const ReadinessScreen(),
     ),
     GoRoute(
       path: SetsAndRepsVolumeInsightsScreen.routeName,
