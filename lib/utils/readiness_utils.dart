@@ -1,14 +1,12 @@
 /// Calculates the overall recovery score based on four metrics.
-/// 
+///
 /// Each metric should be in the range 0–10. Higher pain, fatigue, and soreness
 /// reduce the final score, while higher energy increases it.
-/// 
+///
 /// Returns a [int] between 0 and 100.
 int calculateReadinessScore({required int pain, required int fatigue, required int soreness}) {
   // Optional: Validate inputs or clamp
-  if (pain < 0 || pain > 10 ||
-      fatigue < 0 || fatigue > 10 ||
-      soreness < 0 || soreness > 10) {
+  if (pain < 0 || pain > 10 || fatigue < 0 || fatigue > 10 || soreness < 0 || soreness > 10) {
     throw ArgumentError('All input values must be between 0 and 10.');
   }
 
@@ -18,15 +16,13 @@ int calculateReadinessScore({required int pain, required int fatigue, required i
   const double kSorenessWeight = 0.25;
 
   // Calculate subscores
-  final double painSubscore     = (10 - pain) / 10 * 100;  // Negative metric
-  final double fatigueSubscore  = (10 - fatigue) / 10 * 100;  // Negative metric
+  final double painSubscore = (10 - pain) / 10 * 100; // Negative metric
+  final double fatigueSubscore = (10 - fatigue) / 10 * 100; // Negative metric
   final double sorenessSubscore = (10 - soreness) / 10 * 100; // Negative metric
 
   // Weighted sum
   final double totalScore =
-      (painSubscore     * kPainWeight) +
-          (fatigueSubscore  * kFatigueWeight) +
-          (sorenessSubscore * kSorenessWeight);
+      (painSubscore * kPainWeight) + (fatigueSubscore * kFatigueWeight) + (sorenessSubscore * kSorenessWeight);
 
   // Clamp to [0, 100]
   return totalScore.clamp(0.0, 100.0).toInt();
@@ -38,19 +34,19 @@ String getTrainingGuidance({required int readinessScore}) {
   if (readinessScore > 100) readinessScore = 100;
 
   if (readinessScore <= 29) {
-    return "Very poor readiness. High pain, fatigue, or soreness likely. "
+    return "🛑 Very poor readiness. High pain, fatigue, or soreness likely. "
         "Consider rest, gentle mobility work, or seek medical advice.";
   } else if (readinessScore <= 49) {
-    return "Low readiness. Notable issues like pain, fatigue, or heavy DOMS. "
+    return "⚠️ Low readiness. Notable issues like pain, fatigue, or heavy DOMS. "
         "Reduce intensity and focus on recovery activities.";
   } else if (readinessScore <= 69) {
-    return "Mixed readiness. Some fatigue or soreness is present. "
+    return "🤔 Mixed readiness. Some fatigue or soreness is present. "
         "Train at a moderate pace with extra focus on technique and form.";
   } else if (readinessScore <= 84) {
-    return "Generally solid readiness. Minor aches or tiredness possible. "
+    return "👍 Generally solid readiness. Minor aches or tiredness possible. "
         "Proceed with your planned workout but remain mindful of any overstress.";
   } else {
-    return "Optimal readiness. Minimal pain or fatigue. "
+    return "💯 Optimal readiness. Minimal pain or fatigue. "
         "Suitable for higher intensity or advanced training, if desired.";
   }
 }
