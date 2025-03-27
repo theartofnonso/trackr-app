@@ -154,7 +154,7 @@ class _MetricRatingSliderState extends State<_MetricRatingSlider> {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final color = lowToHighIntensityColor(_rating / 10);
+    final color = highToLowIntensityColor(_rating / 10);
 
     return Container(
       padding: EdgeInsets.all(12),

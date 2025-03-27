@@ -253,8 +253,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     final log = widget.log;
 
-    print(log.readiness);
-
     return PopScope(
         canPop: false,
         child: Scaffold(
