@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tracker_app/enums/muscle_group_enums.dart';
+import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../utils/general_utils.dart';
 import '../../utils/readiness_utils.dart';
@@ -12,24 +14,28 @@ enum IntensityScale { lowToHigh, highToLow }
 class ReadinessScreen extends StatefulWidget {
   static const routeName = '/recovery_screen';
 
-  const ReadinessScreen({super.key});
+  final List<MuscleGroup> muscleGroups;
+  const ReadinessScreen({super.key, this.muscleGroups  = const []});
 
   @override
   State<ReadinessScreen> createState() => _ReadinessScreenState();
 }
 
 class _ReadinessScreenState extends State<ReadinessScreen> {
-  int _painRating = 0;
-  int _sorenessRating = 0;
-  int _fatigueRating = 0;
+  int _sorenessRating = 1;
+  int _fatigueRating = 1;
 
   @override
   Widget build(BuildContext context) {
 
     final readinessScore =
-        calculateReadinessScore(pain: _painRating, fatigue: _fatigueRating, soreness: _sorenessRating);
+        calculateReadinessScore(fatigue: _fatigueRating, soreness: _sorenessRating);
 
     final readinessDescription = getTrainingGuidance(readinessScore: readinessScore);
+
+    final muscleGroups = widget.muscleGroups.map((muscleGroup) => muscleGroup.displayName.toLowerCase()).toList();
+
+    final muscleGroupNames = joinWithAnd(items: muscleGroups);
 
     return Scaffold(
       appBar: AppBar(
@@ -72,21 +78,9 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
                 padding: EdgeInsets.only(bottom: 100),
                 children: [
                   _MetricRatingSlider(
-                    title: "Pain or Injury",
-                    description:
-                        "Acute pain or injury risk is a critical safety concern; if present, training may need to be skipped or heavily modified.",
-                    ratings: _painOrInjuryScale,
-                    onSelectRating: (int rating) {
-                      setState(() {
-                        _painRating = rating;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  _MetricRatingSlider(
                     title: "Muscle Soreness",
                     description:
-                        "Excessive soreness can limit range of motion and performance. It may signal the need for active recovery or a lighter session.",
+                        "Excessive soreness${muscleGroupNames.isNotEmpty ? " in your $muscleGroupNames " : ""}can limit range of motion and performance. It may signal the need for active recovery or a lighter session.",
                     ratings: _muscleSorenessScale,
                     onSelectRating: (int rating) {
                       setState(() {
@@ -147,19 +141,19 @@ class _MetricRatingSlider extends StatefulWidget {
 }
 
 class _MetricRatingSliderState extends State<_MetricRatingSlider> {
-  double _rating = 0;
+  double _rating = 1;
 
   @override
   Widget build(BuildContext context) {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final color = highToLowIntensityColor(_rating / 10);
+    final color = highToLowIntensityColor(_rating / 5);
 
     return Container(
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
-          color: isDarkMode ? color.withValues(alpha: 0.1) : color, borderRadius: BorderRadius.circular(5)),
+          color: isDarkMode ? color.withValues(alpha: 0.08) : color, borderRadius: BorderRadius.circular(5)),
       child: Column(
         spacing: 12,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -182,7 +176,7 @@ class _MetricRatingSliderState extends State<_MetricRatingSlider> {
                 color: isDarkMode ? Colors.black12 : Colors.white38,
                 borderRadius: BorderRadius.circular(5),
               ),
-              child: Slider(value: _rating, onChanged: onChanged, min: 0, max: 9, divisions: 9, thumbColor: color)),
+              child: Slider(value: _rating, onChanged: onChanged, min: 1, max: 5, divisions: 4, thumbColor: color)),
         ],
       ),
     );
@@ -206,46 +200,22 @@ class _MetricRatingSliderState extends State<_MetricRatingSlider> {
   }
 }
 
-/// Pain or Injury
-Map<int, String> _painOrInjuryScale = {
-  1: "😌 No pain or discomfort",
-  2: "🙂 Slight twinge, easily ignored",
-  3: "😊 Minor ache, not impacting movement",
-  4: "😐 Noticeable pain, proceed with caution",
-  5: "😕 Moderate pain, consider modifications",
-  6: "😟 Significant pain, limit intensity",
-  7: "😣 Severe pain, training at risk",
-  8: "😫 Very severe pain, high injury risk",
-  9: "🤕 Extreme pain, likely skip session",
-  10: "🚑 Excruciating pain, stop immediately"
-};
-
-/// Perceived Fatigue
+/// Perceived Fatigue (1–5)
 Map<int, String> _perceivedFatigueScale = {
-  1: "😌 Fully refreshed, no fatigue",
-  2: "🙂 Slight tiredness, not an issue",
-  3: "😊 Mild fatigue, still performing well",
-  4: "😐 Noticeable tiredness, but manageable",
-  5: "😶 Moderate fatigue, may need breaks",
-  6: "😑 Feeling worn, pace is harder to sustain",
-  7: "😴 Very tired, performance dropping quickly",
-  8: "🥱 Struggling to keep going",
-  9: "😫 Exhausted, near physical/mental limit",
-  10: "💤 Completely drained, no capacity left"
+  1: "😌 Fresh and alert, no fatigue",
+  2: "🙂 Slight tiredness, hardly noticeable",
+  3: "😐 Noticeable fatigue, but manageable",
+  4: "😫 Quite tired, training will be challenging",
+  5: "💤 Completely drained, training not recommended"
 };
 
-/// Muscle Soreness (DOMS)
+/// Muscle Soreness (1–5)
 Map<int, String> _muscleSorenessScale = {
-  1: "😌 No soreness, muscles feel fresh",
-  2: "🙂 Slight tenderness, barely noticeable",
-  3: "😊 Mild tightness, easy to move through",
-  4: "😐 Some soreness, but not limiting",
-  5: "😶 Moderate soreness, performance impacted",
-  6: "😑 Achy muscles, need extended warm-up",
-  7: "😬 High soreness, range of motion reduced",
-  8: "😣 Very sore, significantly limiting",
-  9: "🥵 Intense DOMS, serious hindrance",
-  10: "💀 Severe soreness, movement is very painful"
+  1: "😌 No soreness, muscles feel and pain-free",
+  2: "🙂 Slight tightness or tenderness",
+  3: "😐 Noticeable soreness, but still manageable",
+  4: "😣 Significant soreness, movement is somewhat restricted",
+  5: "💀 Severe soreness, training will be uncomfortable or painful"
 };
 
 class ReadinessMonitor extends StatelessWidget {
@@ -255,7 +225,7 @@ class ReadinessMonitor extends StatelessWidget {
   final double strokeWidth;
 
   const ReadinessMonitor({super.key,
-    this.value = 0,
+    this.value = 1,
     required this.width,
     required this.height,
     required this.strokeWidth,

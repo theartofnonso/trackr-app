@@ -147,10 +147,12 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
     final trendSummary = _analyzeWeeklyTrends(volumes: allLoggedVolumesForTemplate);
 
-    final listOfMuscleAndRecovery = template.exerciseTemplates
+    final muscleGroups = template.exerciseTemplates
         .map((exerciseTemplate) => exerciseTemplate.exercise.primaryMuscleGroup)
         .toSet()
-        .map((muscleGroup) {
+        .map((muscleGroup) => muscleGroup).toList();
+
+    final listOfMuscleAndRecovery =  muscleGroups.map((muscleGroup) {
       final pastExerciseLogs =
           (Provider.of<ExerciseAndRoutineController>(context, listen: false).exerciseLogsByMuscleGroup[muscleGroup] ??
               []);
@@ -260,7 +262,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
             heroTag: UniqueKey,
-            onPressed: template.owner == SharedPrefs().userId ? _launchRoutineLogEditor : _createTemplate,
+            onPressed: () => template.owner == SharedPrefs().userId ? _launchRoutineLogEditor(muscleGroups: muscleGroups) : _createTemplate(),
             child: template.owner == SharedPrefs().userId
                 ? const FaIcon(FontAwesomeIcons.play, size: 24)
                 : const FaIcon(FontAwesomeIcons.download)),
@@ -577,10 +579,10 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     }
   }
 
-  void _launchRoutineLogEditor() async {
+  void _launchRoutineLogEditor({required List<MuscleGroup> muscleGroups}) async {
     final template = _template;
     if (template != null) {
-      final readinessScore = await navigateWithSlideTransition(context: context, child: ReadinessScreen()) as int;
+      final readinessScore = await navigateWithSlideTransition(context: context, child: ReadinessScreen(muscleGroups: muscleGroups)) as int;
       final log = template.toLog();
       final logWithReadiness = log.copyWith(readiness: readinessScore);
       final arguments = RoutineLogArguments(log: logWithReadiness, editorMode: RoutineEditorMode.log);

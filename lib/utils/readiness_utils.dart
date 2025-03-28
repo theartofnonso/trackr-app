@@ -1,37 +1,28 @@
-/// Calculates the overall recovery score based on four metrics.
-///
-/// Each metric should be in the range 0–10. Higher pain, fatigue, and soreness
-/// reduce the final score, while higher energy increases it.
-///
-/// Returns a [int] between 0 and 100.
 int calculateReadinessScore({
-  required int pain,
   required int fatigue,
   required int soreness,
 }) {
-  // Validate inputs
-  // (Allows only 1–10; throw an error if outside this range)
-  if (pain < 1 || pain > 10 || fatigue < 1 || fatigue > 10 || soreness < 1 || soreness > 10) {
-    throw ArgumentError('All input values must be between 1 and 10.');
+  // Validate inputs (1–5 only).
+  if (fatigue < 1 || fatigue > 5 ||
+      soreness < 1 || soreness > 5) {
+    throw ArgumentError('Fatigue and soreness must be between 1 and 5.');
   }
 
-  // Define weights (must sum to 1.0 for a proper 0–100 score)
-  const double kPainWeight = 0.50;
-  const double kFatigueWeight = 0.25;
-  const double kSorenessWeight = 0.25;
+  // Define new weights (they must sum to 1.0)
+  const double kFatigueWeight = 0.60;
+  const double kSorenessWeight = 0.40;
 
-  // Convert each metric to a 0–1 "subscore"
-  // For "negative" metrics (like pain):
-  // - 1 represents minimal issue (max readiness).
-  // - 10 represents worst issue (min readiness).
-  // Using (10 - metric) / 9 normalizes 1–10 into 1.0–0.0.
-  final double painRatio = (10 - pain) / 9; // Range: 1 => 1.0, 10 => 0.0
-  final double fatigueRatio = (10 - fatigue) / 9; // Range: 1 => 1.0, 10 => 0.0
-  final double sorenessRatio = (10 - soreness) / 9; // Range: 1 => 1.0, 10 => 0.0
+  // Normalize each metric to a 0–1 "subscore" for negative metrics:
+  //  - 1 represents minimal issue (best readiness).
+  //  - 5 represents worst issue (lowest readiness).
+  // Using (5 - metric) / 4 maps 1 → 1.0, 5 → 0.0.
+  final double fatigueRatio = (5 - fatigue) / 4;
+  final double sorenessRatio = (5 - soreness) / 4;
 
-  // Weighted sum of subscores (0–1)
+  // Weighted sum of subscores (range: 0–1)
   final double weightedSum =
-      (painRatio * kPainWeight) + (fatigueRatio * kFatigueWeight) + (sorenessRatio * kSorenessWeight);
+      (fatigueRatio * kFatigueWeight) +
+          (sorenessRatio * kSorenessWeight);
 
   // Convert from 0–1 to 0–100 scale
   double totalScore = weightedSum * 100;
