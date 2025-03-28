@@ -150,9 +150,10 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     final muscleGroups = template.exerciseTemplates
         .map((exerciseTemplate) => exerciseTemplate.exercise.primaryMuscleGroup)
         .toSet()
-        .map((muscleGroup) => muscleGroup).toList();
+        .map((muscleGroup) => muscleGroup)
+        .toList();
 
-    final listOfMuscleAndRecovery =  muscleGroups.map((muscleGroup) {
+    final listOfMuscleAndRecovery = muscleGroups.map((muscleGroup) {
       final pastExerciseLogs =
           (Provider.of<ExerciseAndRoutineController>(context, listen: false).exerciseLogsByMuscleGroup[muscleGroup] ??
               []);
@@ -262,7 +263,9 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
             heroTag: UniqueKey,
-            onPressed: () => template.owner == SharedPrefs().userId ? _launchRoutineLogEditor(muscleGroups: muscleGroups) : _createTemplate(),
+            onPressed: () => template.owner == SharedPrefs().userId
+                ? _launchRoutineLogEditor(muscleGroups: muscleGroups)
+                : _createTemplate(),
             child: template.owner == SharedPrefs().userId
                 ? const FaIcon(FontAwesomeIcons.play, size: 24)
                 : const FaIcon(FontAwesomeIcons.download)),
@@ -582,11 +585,13 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   void _launchRoutineLogEditor({required List<MuscleGroup> muscleGroups}) async {
     final template = _template;
     if (template != null) {
-      final readinessScore = await navigateWithSlideTransition(context: context, child: ReadinessScreen(muscleGroups: muscleGroups)) as int;
+      final readinessScores = await navigateWithSlideTransition(context: context, child: ReadinessScreen()) as List;
+      final fatigue = readinessScores[0];
+      final soreness = readinessScores[1];
       final log = template.toLog();
-      final logWithReadiness = log.copyWith(readiness: readinessScore);
+      final logWithReadiness = log.copyWith(fatigueLevel: fatigue, sorenessLevel: soreness);
       final arguments = RoutineLogArguments(log: logWithReadiness, editorMode: RoutineEditorMode.log);
-      if(mounted) {
+      if (mounted) {
         navigateToRoutineLogEditor(context: context, arguments: arguments);
       }
     }

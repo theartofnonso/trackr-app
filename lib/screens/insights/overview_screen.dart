@@ -337,9 +337,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
         await navigateWithSlideTransition(context: context, child: const TRKRCoachChatScreen()) as RoutineTemplateDto?;
     if (result != null) {
       if (mounted) {
-        final readinessScore = await navigateWithSlideTransition(context: context, child: ReadinessScreen()) as int;
+        final readinessScores = await navigateWithSlideTransition(context: context, child: ReadinessScreen()) as List;
+        final fatigue = readinessScores[0];
+        final soreness = readinessScores[1];
         final log = result.toLog();
-        final logWithReadinessScore = log.copyWith(readiness: readinessScore);
+        final logWithReadinessScore = log.copyWith(fatigueLevel: fatigue, sorenessLevel: soreness);
         final arguments = RoutineLogArguments(log: logWithReadinessScore, editorMode: RoutineEditorMode.log);
         if (mounted) {
           navigateToRoutineLogEditor(context: context, arguments: arguments);

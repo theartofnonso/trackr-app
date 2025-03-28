@@ -55,3 +55,21 @@ String getTrainingGuidance({required int readinessScore}) {
         "Suitable for higher intensity or advanced training, if desired.";
   }
 }
+
+/// Perceived Fatigue (1–5)
+Map<int, String> perceivedFatigueScale = {
+  1: "😌 Fresh and alert, no fatigue",
+  2: "🙂 Slight tiredness, hardly noticeable",
+  3: "😐 Noticeable fatigue, but manageable",
+  4: "😫 Quite tired, training will be challenging",
+  5: "💤 Completely drained, training not recommended"
+};
+
+/// Muscle Soreness (1–5)
+Map<int, String> muscleSorenessScale = {
+  1: "😌 No soreness, muscles feel and pain-free",
+  2: "🙂 Slight tightness or tenderness",
+  3: "😐 Noticeable soreness, but still manageable",
+  4: "😣 Significant soreness, movement is somewhat restricted",
+  5: "💀 Severe soreness, training will be uncomfortable or painful"
+};

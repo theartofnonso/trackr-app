@@ -195,6 +195,19 @@ Color repsTrendColor({required int reps}) {
   }
 }
 
+final Map<int, Color> rpeIntensityToColor = {
+  1: vibrantGreen, // Bright green - very light
+  2: Color(0xFF66FF66), // Light green
+  3: Color(0xFF99FF99), // Soft green
+  4: Color(0xFFFFFF66), // Yellow-green transition
+  5: Color(0xFFFFFF33), // Yellow - moderate intensity
+  6: Color(0xFFFFCC33), // Amber - challenging intensity
+  7: Color(0xFFFF9933), // Orange - very hard
+  8: Color(0xFFFF6633), // Deep orange - near maximal
+  9: Color(0xFFFF3333), // Bright red - maximal effort
+  10: Color(0xFFFF0000), // Red - absolute limit
+};
+
 LinearGradient themeGradient({required BuildContext context}) {
   Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
   final isDarkMode = systemBrightness == Brightness.dark;
@@ -262,8 +275,9 @@ Widget getTrendIcon({required Trend trend}) {
 }
 
 void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) async {
-  final readinessScore = await navigateWithSlideTransition(context: context, child: ReadinessScreen()) as int;
-
+  final readinessScores = await navigateWithSlideTransition(context: context, child: ReadinessScreen()) as List;
+  final fatigue = readinessScores[0];
+  final soreness = readinessScores[1];
   final log = RoutineLogDto(
       id: "",
       templateId: "",
@@ -273,7 +287,8 @@ void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) a
       startTime: DateTime.now(),
       endTime: DateTime.now(),
       owner: "",
-      readiness: readinessScore,
+      fatigueLevel: fatigue,
+      sorenessLevel: soreness,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now());
 

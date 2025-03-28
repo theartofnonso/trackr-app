@@ -81,7 +81,7 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
                     title: "Muscle Soreness",
                     description:
                         "Excessive soreness${muscleGroupNames.isNotEmpty ? " in your $muscleGroupNames " : ""}can limit range of motion and performance. It may signal the need for active recovery or a lighter session.",
-                    ratings: _muscleSorenessScale,
+                    ratings: muscleSorenessScale,
                     onSelectRating: (int rating) {
                       setState(() {
                         _sorenessRating = rating;
@@ -93,7 +93,7 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
                     title: "Perceived Fatigue",
                     description:
                         "Feeling exhausted (physically or mentally) can affect form, increase injury risk, and reduce workout effectiveness.",
-                    ratings: _perceivedFatigueScale,
+                    ratings: perceivedFatigueScale,
                     onSelectRating: (int rating) {
                       setState(() {
                         _fatigueRating = rating;
@@ -110,7 +110,7 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
                           buttonColor: lowToHighIntensityColor(readinessScore / 100),
                           label: "Start Training",
                           onPressed: () {
-                            context.pop(readinessScore);
+                            context.pop([_fatigueRating, _sorenessRating]);
                           },
                         )),
                   ),
@@ -199,24 +199,6 @@ class _MetricRatingSliderState extends State<_MetricRatingSlider> {
     return widget.ratings[absoluteRating]!;
   }
 }
-
-/// Perceived Fatigue (1–5)
-Map<int, String> _perceivedFatigueScale = {
-  1: "😌 Fresh and alert, no fatigue",
-  2: "🙂 Slight tiredness, hardly noticeable",
-  3: "😐 Noticeable fatigue, but manageable",
-  4: "😫 Quite tired, training will be challenging",
-  5: "💤 Completely drained, training not recommended"
-};
-
-/// Muscle Soreness (1–5)
-Map<int, String> _muscleSorenessScale = {
-  1: "😌 No soreness, muscles feel and pain-free",
-  2: "🙂 Slight tightness or tenderness",
-  3: "😐 Noticeable soreness, but still manageable",
-  4: "😣 Significant soreness, movement is somewhat restricted",
-  5: "💀 Severe soreness, training will be uncomfortable or painful"
-};
 
 class ReadinessMonitor extends StatelessWidget {
   final int value;

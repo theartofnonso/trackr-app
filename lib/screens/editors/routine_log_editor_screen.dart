@@ -253,6 +253,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     final log = widget.log;
 
+    final readiness = calculateReadinessScore(fatigue: log.fatigueLevel, soreness: log.sorenessLevel);
+
     return PopScope(
         canPop: false,
         child: Scaffold(
@@ -297,11 +299,11 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                               ),
                               children: [
                                 _StatisticWidget(
-                                    title: Text("${log.readiness}%",
+                                    title: Text("$readiness%",
                                         style: Theme.of(context)
                                             .textTheme
                                             .titleLarge
-                                            ?.copyWith(color: lowToHighIntensityColor(log.readiness / 100))),
+                                            ?.copyWith(color: lowToHighIntensityColor(readiness / 100))),
                                     subtitle: "Readiness"),
                                 _StatisticWidget(
                                     title: Text(
@@ -325,7 +327,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                       }),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: Text(getTrainingGuidance(readinessScore: log.readiness),
+                      child: Text(getTrainingGuidance(readinessScore: readiness),
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.grey.shade800)),
                     ),
                     if (exerciseLogs.isNotEmpty)

@@ -132,6 +132,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         return rpeRatings.average.ceil();
       }).toList();
 
+      rpeChartPoints = averageRpeRatings.mapIndexed((index, rpeRating) => ChartPointDto(index, rpeRating)).toList();
+      rpeColors = averageRpeRatings.map((rpeRating) => rpeIntensityToColor[rpeRating]!).toList();
+
       if (exerciseType == ExerciseType.weights) {
         final totalVolumes = validLogs.map((log) {
           final volumes = log.sets.map((set) => (set as WeightAndRepsSetDto).volume());
