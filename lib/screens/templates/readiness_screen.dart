@@ -80,7 +80,7 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
                   _MetricRatingSlider(
                     title: "Muscle Soreness",
                     description:
-                        "Excessive soreness${muscleGroupNames.isNotEmpty ? " in your $muscleGroupNames " : ""}can limit range of motion and performance. It may signal the need for active recovery or a lighter session.",
+                        "Excessive soreness${muscleGroupNames.isNotEmpty ? " in your $muscleGroupNames " : ""} can limit range of motion and performance. It may signal the need for active recovery or a lighter session.",
                     ratings: muscleSorenessScale,
                     onSelectRating: (int rating) {
                       setState(() {

@@ -585,7 +585,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   void _launchRoutineLogEditor({required List<MuscleGroup> muscleGroups}) async {
     final template = _template;
     if (template != null) {
-      final readinessScores = await navigateWithSlideTransition(context: context, child: ReadinessScreen()) as List;
+      final readinessScores = await navigateWithSlideTransition(context: context, child: ReadinessScreen(muscleGroups: muscleGroups)) as List;
       final fatigue = readinessScores[0];
       final soreness = readinessScores[1];
       final log = template.toLog();
