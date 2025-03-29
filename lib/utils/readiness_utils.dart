@@ -73,3 +73,12 @@ Map<int, String> muscleSorenessScale = {
   4: "😣 Significant soreness, movement is somewhat restricted",
   5: "💀 Severe soreness, training will be uncomfortable or painful"
 };
+
+/// Sleep Duration (1–5)
+Map<int, String> sleepDurationScale = {
+  1: "😴 Severely lacking (<5 hours)",
+  2: "😕 Under recommended (5–6 hours)",
+  3: "😐 Slightly under recommended (6–7 hours)",
+  4: "🙂 Good rest (7–8 hours)",
+  5: "💤 Excellent (8+ hours)"
+};

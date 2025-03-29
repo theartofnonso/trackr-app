@@ -12,6 +12,7 @@ import 'package:tracker_app/screens/preferences/settings_screen.dart';
 
 import '../colors.dart';
 import '../dtos/appsync/routine_log_dto.dart';
+import '../dtos/daily_readiness.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../enums/routine_editor_type_enums.dart';
 import '../screens/templates/readiness_screen.dart';
@@ -275,9 +276,10 @@ Widget getTrendIcon({required Trend trend}) {
 }
 
 void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) async {
-  final readinessScores = await navigateWithSlideTransition(context: context, child: ReadinessScreen()) as List;
-  final fatigue = readinessScores[0];
-  final soreness = readinessScores[1];
+  final readiness = await navigateWithSlideTransition(context: context, child: ReadinessScreen()) as DailyReadiness;
+  final fatigue = readiness.perceivedFatigue;
+  final soreness = readiness.muscleSoreness;
+  final sleep = readiness.sleepDuration;
   final log = RoutineLogDto(
       id: "",
       templateId: "",
@@ -289,6 +291,7 @@ void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) a
       owner: "",
       fatigueLevel: fatigue,
       sorenessLevel: soreness,
+      sleepLevel: sleep,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now());
 
@@ -296,4 +299,19 @@ void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) a
     final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log);
     navigateToRoutineLogEditor(context: context, arguments: arguments);
   }
+}
+
+bool isProbablyOutOfRange(List<double> numbers, double newNumber) {
+  if (numbers.isEmpty) return false;
+
+  double currentMax = numbers.reduce((a, b) => a > b ? a : b);
+  double currentMin = numbers.reduce((a, b) => a < b ? a : b);
+
+  // Check if new number is 10x higher than current max
+  bool isUpperOutlier = newNumber >= 10 * currentMax;
+
+  // Check if new number is 10x lower than current min (only if min is positive)
+  bool isLowerOutlier = currentMin > 0 && newNumber <= currentMin / 10;
+
+  return isUpperOutlier || isLowerOutlier;
 }

@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
+import 'package:tracker_app/dtos/daily_readiness.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
@@ -337,11 +338,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
         await navigateWithSlideTransition(context: context, child: const TRKRCoachChatScreen()) as RoutineTemplateDto?;
     if (result != null) {
       if (mounted) {
-        final readinessScores = await navigateWithSlideTransition(context: context, child: ReadinessScreen()) as List;
-        final fatigue = readinessScores[0];
-        final soreness = readinessScores[1];
+        final readiness = await navigateWithSlideTransition(context: context, child: ReadinessScreen()) as DailyReadiness;
+        final fatigue = readiness.perceivedFatigue;
+        final soreness = readiness.muscleSoreness;
+        final sleep = readiness.sleepDuration;
         final log = result.toLog();
-        final logWithReadinessScore = log.copyWith(fatigueLevel: fatigue, sorenessLevel: soreness);
+        final logWithReadinessScore = log.copyWith(fatigueLevel: fatigue, sorenessLevel: soreness, sleepLevel: sleep);
         final arguments = RoutineLogArguments(log: logWithReadinessScore, editorMode: RoutineEditorMode.log);
         if (mounted) {
           navigateToRoutineLogEditor(context: context, arguments: arguments);

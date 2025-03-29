@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tracker_app/dtos/daily_readiness.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../utils/general_utils.dart';
 import '../../utils/readiness_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
-
-enum IntensityScale { lowToHigh, highToLow }
 
 class ReadinessScreen extends StatefulWidget {
   static const routeName = '/recovery_screen';
@@ -22,8 +21,9 @@ class ReadinessScreen extends StatefulWidget {
 }
 
 class _ReadinessScreenState extends State<ReadinessScreen> {
-  int _sorenessRating = 1;
-  int _fatigueRating = 1;
+  int _sorenessRating = ReadinessEnum.minPositive.value;
+  int _fatigueRating = ReadinessEnum.minPositive.value;
+  int _sleepRating = ReadinessEnum.maxPositive.value;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +36,8 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
     final muscleGroups = widget.muscleGroups.map((muscleGroup) => muscleGroup.displayName.toLowerCase()).toList();
 
     final muscleGroupNames = joinWithAnd(items: muscleGroups);
+
+    final dailyReadiness = DailyReadiness(perceivedFatigue: _fatigueRating, muscleSoreness: _sorenessRating, sleepDuration: _sleepRating);
 
     return Scaffold(
       appBar: AppBar(
@@ -87,6 +89,7 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
                         _sorenessRating = rating;
                       });
                     },
+                    defaultRating: _sorenessRating,
                   ),
                   const SizedBox(height: 20),
                   _MetricRatingSlider(
@@ -99,6 +102,21 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
                         _fatigueRating = rating;
                       });
                     },
+                    defaultRating: _fatigueRating,
+                  ),
+                  const SizedBox(height: 20),
+                  _MetricRatingSlider(
+                    title: "Sleep Duration",
+                    description:
+                    "Inadequate sleep limits muscle recovery, reduces mental focus, and can elevate injury risk—ultimately undermining performance and progress.",
+                    ratings: sleepDurationScale,
+                    highToLowIntensity: false,
+                    onSelectRating: (int rating) {
+                      setState(() {
+                        _sleepRating = rating;
+                      });
+                    },
+                    defaultRating: _sleepRating,
                   ),
                   const SizedBox(height: 20),
                   SafeArea(
@@ -110,7 +128,7 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
                           buttonColor: lowToHighIntensityColor(readinessScore / 100),
                           label: "Start Training",
                           onPressed: () {
-                            context.pop([_fatigueRating, _sorenessRating]);
+                            context.pop(dailyReadiness);
                           },
                         )),
                   ),
@@ -129,12 +147,14 @@ class _MetricRatingSlider extends StatefulWidget {
   final void Function(int rating) onSelectRating;
   final String title;
   final String description;
+  final bool highToLowIntensity;
+  final int defaultRating;
 
   const _MetricRatingSlider(
       {required this.ratings,
       required this.onSelectRating,
       required this.title,
-      required this.description});
+      required this.description, this.highToLowIntensity = true, required this.defaultRating});
 
   @override
   State<_MetricRatingSlider> createState() => _MetricRatingSliderState();
@@ -148,7 +168,7 @@ class _MetricRatingSliderState extends State<_MetricRatingSlider> {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final color = highToLowIntensityColor(_rating / 5);
+    final color = widget.highToLowIntensity ? highToLowIntensityColor(_rating / 5) : lowToHighIntensityColor(_rating / 5);
 
     return Container(
       padding: EdgeInsets.all(12),
@@ -182,6 +202,12 @@ class _MetricRatingSliderState extends State<_MetricRatingSlider> {
     );
   }
 
+  @override
+  void initState() {
+    super.initState();
+    _rating = widget.defaultRating.toDouble();
+  }
+
   void onChanged(double value) {
     HapticFeedback.heavyImpact();
 
@@ -207,7 +233,7 @@ class ReadinessMonitor extends StatelessWidget {
   final double strokeWidth;
 
   const ReadinessMonitor({super.key,
-    this.value = 1,
+    this.value = 100,
     required this.width,
     required this.height,
     required this.strokeWidth,

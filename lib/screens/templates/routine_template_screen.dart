@@ -17,6 +17,7 @@ import 'package:tracker_app/shared_prefs.dart';
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
+import '../../dtos/daily_readiness.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../dtos/viewmodels/routine_template_arguments.dart';
 import '../../enums/chart_unit_enum.dart';
@@ -585,11 +586,12 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   void _launchRoutineLogEditor({required List<MuscleGroup> muscleGroups}) async {
     final template = _template;
     if (template != null) {
-      final readinessScores = await navigateWithSlideTransition(context: context, child: ReadinessScreen(muscleGroups: muscleGroups)) as List;
-      final fatigue = readinessScores[0];
-      final soreness = readinessScores[1];
+      final readiness = await navigateWithSlideTransition(context: context, child: ReadinessScreen()) as DailyReadiness;
+      final fatigue = readiness.perceivedFatigue;
+      final soreness = readiness.muscleSoreness;
+      final sleep = readiness.sleepDuration;
       final log = template.toLog();
-      final logWithReadiness = log.copyWith(fatigueLevel: fatigue, sorenessLevel: soreness);
+      final logWithReadiness = log.copyWith(fatigueLevel: fatigue, sorenessLevel: soreness, sleepLevel: sleep);
       final arguments = RoutineLogArguments(log: logWithReadiness, editorMode: RoutineEditorMode.log);
       if (mounted) {
         navigateToRoutineLogEditor(context: context, arguments: arguments);
