@@ -31,7 +31,7 @@ class InformationContainerLite extends StatelessWidget {
                       color: isDarkMode ? color : Colors.black,
                       fontWeight: FontWeight.w600))),
           if(onTap != null)
-            GestureDetector(onTap: onTap, child: FaIcon(FontAwesomeIcons.solidCircleXmark, color: isDarkMode ? color : Colors.white70,))
+            GestureDetector(onTap: onTap, child: FaIcon(FontAwesomeIcons.solidCircleXmark, color: isDarkMode ? color : Colors.black,))
         ],
       ),
     );
