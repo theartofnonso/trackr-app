@@ -622,7 +622,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                       }
                     : SetsListview(type: exerciseType, sets: sets),
                 if(_isOutOfRangeMessage.isNotEmpty)
-                  InformationContainerLite(content: _isOutOfRangeMessage, color: Colors.yellow, icon: FaIcon(FontAwesomeIcons.solidLightbulb, size: 14), onTap: () {
+                  InformationContainerLite(content: _isOutOfRangeMessage, color: Colors.yellow, onTap: () {
                     setState(() {
                       _isOutOfRangeMessage = "";
                     });
