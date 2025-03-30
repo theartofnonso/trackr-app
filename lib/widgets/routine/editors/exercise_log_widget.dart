@@ -173,9 +173,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final previousSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
         .wherePrevSetsForExercise(exercise: _exerciseLog.exercise);
 
-    final previousWeights = previousSets.map((set) => (set as WeightAndRepsSetDto).weight).toList();
+    final previousReps = previousSets.map((set) => switch(_exerciseLog.exercise.type) {
+      ExerciseType.weights => (set as WeightAndRepsSetDto).reps,
+      ExerciseType.bodyWeight => (set as RepsSetDto).reps,
+      ExerciseType.duration => throw UnimplementedError(),
+    }).toList();
 
-    final isOutSideOfRange = isOutsideReasonableRange(previousWeights, reps);
+    final isOutSideOfRange = isOutsideReasonableRange(previousReps, reps);
     if(isOutSideOfRange) {
       _isOutOfRangeMessage = "Hmm, $reps reps looks a bit off. Mind checking the value just to be sure?";
     } else {
@@ -618,7 +622,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                       }
                     : SetsListview(type: exerciseType, sets: sets),
                 if(_isOutOfRangeMessage.isNotEmpty)
-                  InformationContainerLite(content: _isOutOfRangeMessage, color: Colors.yellow, icon: FaIcon(FontAwesomeIcons.solidLightbulb, size: 14), onTap: () {
+                  InformationContainerLite(content: _isOutOfRangeMessage, color: Colors.yellow, onTap: () {
                     setState(() {
                       _isOutOfRangeMessage = "";
                     });

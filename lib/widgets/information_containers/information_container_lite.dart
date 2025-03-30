@@ -3,13 +3,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class InformationContainerLite extends StatelessWidget {
-  final Widget? icon;
   final String content;
   final Color? color;
   final RichText? richText;
   final void Function()? onTap;
 
-  const InformationContainerLite({super.key, this.icon, required this.content, required this.color, this.richText, this.onTap});
+  const InformationContainerLite({super.key, required this.content, required this.color, this.richText, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +20,7 @@ class InformationContainerLite extends StatelessWidget {
           color: isDarkMode ? color?.withValues(alpha: 0.1) : color, borderRadius: BorderRadius.circular(5)),
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
       child: Row(
-        spacing: 10,
+        spacing: 20,
         children: [
           Expanded(
               child: richText ?? Text(content,
@@ -31,7 +30,7 @@ class InformationContainerLite extends StatelessWidget {
                       color: isDarkMode ? color : Colors.black,
                       fontWeight: FontWeight.w600))),
           if(onTap != null)
-            GestureDetector(onTap: onTap, child: FaIcon(FontAwesomeIcons.solidCircleXmark, color: isDarkMode ? color : Colors.white70,))
+            GestureDetector(onTap: onTap, child: FaIcon(FontAwesomeIcons.squareXmark, color: isDarkMode ? color : Colors.black,))
         ],
       ),
     );
