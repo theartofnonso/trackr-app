@@ -301,19 +301,35 @@ void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) a
   }
 }
 
-bool isProbablyOutOfRangeDouble(List<double> numbers, double newNumber) {
+bool isOutsideReasonableRange(List<num> numbers, num newNumber,
+    {double magnitudeThreshold = 10, double iqrFactor = 1.5}) {
   if (numbers.isEmpty) return false;
 
-  double currentMax = numbers.reduce((a, b) => a > b ? a : b);
-  double currentMin = numbers.reduce((a, b) => a < b ? a : b);
+  final sorted = [...numbers]..sort();
 
-  // Check if new number is 10x higher than current max
-  bool isUpperOutlier = newNumber >= 2 * currentMax;
+  // Basic range check
+  final currentMin = sorted.first;
+  final currentMax = sorted.last;
 
-  // Check if new number is 10x lower than current min (only if min is positive)
-  bool isLowerOutlier = currentMin > 0 && newNumber <= currentMin / 2;
+  // Magnitude jump check (for decimal errors)
+  final isMagnitudeJump =
+      newNumber >= currentMax * magnitudeThreshold || (currentMin > 0 && newNumber <= currentMin / magnitudeThreshold);
 
-  return isUpperOutlier || isLowerOutlier;
+  // IQR-based outlier check
+  final q1 = _quantile(sorted, 0.25);
+  final q3 = _quantile(sorted, 0.75);
+  final iqr = q3 - q1;
+  final lowerBound = q1 - iqrFactor * iqr;
+  final upperBound = q3 + iqrFactor * iqr;
+
+  return isMagnitudeJump || newNumber < lowerBound || newNumber > upperBound;
+}
+
+double _quantile(List<num> sorted, double p) {
+  final index = p * (sorted.length - 1);
+  final lower = sorted[index.floor()];
+  final upper = sorted[index.ceil()];
+  return lower + (upper - lower) * (index - index.floor());
 }
 
 bool isProbablyOutOfRangeInt(List<int> numbers, int newNumber) {

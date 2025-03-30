@@ -17,6 +17,7 @@ import 'package:tracker_app/utils/progressive_overload_utils.dart';
 import 'package:tracker_app/utils/sets_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
+import 'package:tracker_app/widgets/information_containers/information_container_lite.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/weight_and_reps_set_header.dart';
@@ -61,6 +62,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   bool _showPreviousSets = false;
 
   SetDto? _selectedSetDto;
+
+  String _isOutOfRangeMessage = "";
 
   void _show1RMRecommendations() {
     final pastExerciseLogs =
@@ -147,12 +150,38 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _updateWeight({required int index, required double weight, required SetDto setDto}) {
+
+    final previousSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
+        .wherePrevSetsForExercise(exercise: _exerciseLog.exercise);
+
+    final previousWeights = previousSets.map((set) => (set as WeightAndRepsSetDto).weight).toList();
+
+    final isOutSideOfRange = isOutsideReasonableRange(previousWeights, weight);
+    if(isOutSideOfRange) {
+      _isOutOfRangeMessage = "Hmm, $weight${weightLabel()} looks a bit off. Mind checking the value just to be sure?";
+    } else {
+      _isOutOfRangeMessage = "";
+    }
+
     final updatedSet = (setDto as WeightAndRepsSetDto).copyWith(weight: weight);
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateWeight(exerciseLogId: _exerciseLog.id, index: index, setDto: updatedSet);
   }
 
   void _updateReps({required int index, required int reps, required SetDto setDto}) {
+
+    final previousSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
+        .wherePrevSetsForExercise(exercise: _exerciseLog.exercise);
+
+    final previousWeights = previousSets.map((set) => (set as WeightAndRepsSetDto).weight).toList();
+
+    final isOutSideOfRange = isOutsideReasonableRange(previousWeights, reps);
+    if(isOutSideOfRange) {
+      _isOutOfRangeMessage = "Hmm, $reps reps looks a bit off. Mind checking the value just to be sure?";
+    } else {
+      _isOutOfRangeMessage = "";
+    }
+
     final updatedSet =
         setDto is WeightAndRepsSetDto ? setDto.copyWith(reps: reps) : (setDto as RepsSetDto).copyWith(reps: reps);
     Provider.of<ExerciseLogController>(context, listen: false)
@@ -588,6 +617,12 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                           ),
                       }
                     : SetsListview(type: exerciseType, sets: sets),
+                if(_isOutOfRangeMessage.isNotEmpty)
+                  InformationContainerLite(content: _isOutOfRangeMessage, color: Colors.yellow, icon: FaIcon(FontAwesomeIcons.solidLightbulb, size: 14), onTap: () {
+                    setState(() {
+                      _isOutOfRangeMessage = "";
+                    });
+                  }),
                 if (sets.isNotEmpty && widget.editorType == RoutineEditorMode.log && !isEmptySets)
                   StaggeredGrid.count(crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10, children: [
                     if (withReps(type: exerciseType) && trainingProgression != null)
