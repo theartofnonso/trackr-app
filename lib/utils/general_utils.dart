@@ -301,17 +301,32 @@ void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) a
   }
 }
 
-bool isProbablyOutOfRange(List<double> numbers, double newNumber) {
+bool isProbablyOutOfRangeDouble(List<double> numbers, double newNumber) {
   if (numbers.isEmpty) return false;
 
   double currentMax = numbers.reduce((a, b) => a > b ? a : b);
   double currentMin = numbers.reduce((a, b) => a < b ? a : b);
 
   // Check if new number is 10x higher than current max
-  bool isUpperOutlier = newNumber >= 10 * currentMax;
+  bool isUpperOutlier = newNumber >= 2 * currentMax;
 
   // Check if new number is 10x lower than current min (only if min is positive)
-  bool isLowerOutlier = currentMin > 0 && newNumber <= currentMin / 10;
+  bool isLowerOutlier = currentMin > 0 && newNumber <= currentMin / 2;
+
+  return isUpperOutlier || isLowerOutlier;
+}
+
+bool isProbablyOutOfRangeInt(List<int> numbers, int newNumber) {
+  if (numbers.isEmpty) return false;
+
+  int currentMax = numbers.reduce((a, b) => a > b ? a : b);
+  int currentMin = numbers.reduce((a, b) => a < b ? a : b);
+
+  // Check if new number is 10x higher than current max
+  bool isUpperOutlier = newNumber >= 2 * currentMax;
+
+  // Check if new number is 10x lower than current min (only if min is positive)
+  bool isLowerOutlier = currentMin > 0 && newNumber <= currentMin / 2;
 
   return isUpperOutlier || isLowerOutlier;
 }

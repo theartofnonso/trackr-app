@@ -14,7 +14,8 @@ class ReadinessScreen extends StatefulWidget {
   static const routeName = '/recovery_screen';
 
   final List<MuscleGroup> muscleGroups;
-  const ReadinessScreen({super.key, this.muscleGroups  = const []});
+
+  const ReadinessScreen({super.key, this.muscleGroups = const []});
 
   @override
   State<ReadinessScreen> createState() => _ReadinessScreenState();
@@ -27,17 +28,14 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    final readinessScore =
-        calculateReadinessScore(fatigue: _fatigueRating, soreness: _sorenessRating);
-
-    final readinessDescription = getTrainingGuidance(readinessScore: readinessScore);
+    final readinessScore = calculateReadinessScore(fatigue: _fatigueRating, soreness: _sorenessRating);
 
     final muscleGroups = widget.muscleGroups.map((muscleGroup) => muscleGroup.displayName.toLowerCase()).toList();
 
     final muscleGroupNames = joinWithAnd(items: muscleGroups);
 
-    final dailyReadiness = DailyReadiness(perceivedFatigue: _fatigueRating, muscleSoreness: _sorenessRating, sleepDuration: _sleepRating);
+    final dailyReadiness =
+        DailyReadiness(perceivedFatigue: _fatigueRating, muscleSoreness: _sorenessRating, sleepDuration: _sleepRating);
 
     return Scaffold(
       appBar: AppBar(
@@ -54,27 +52,6 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
           minimum: EdgeInsets.all(10),
           bottom: false,
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: 20, children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                spacing: 20,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Stack(alignment: Alignment.center, children: [
-                    ReadinessMonitor(value: readinessScore, width: 100, height: 100, strokeWidth: 6),
-                    Text("$readinessScore",
-                        style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                              fontWeight: FontWeight.w900,
-                            ))
-                  ]),
-                  Expanded(
-                    child: Text(readinessDescription,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w400)),
-                  ),
-                ],
-              ),
-            ),
             Expanded(
               child: ListView(
                 padding: EdgeInsets.only(bottom: 100),
@@ -108,7 +85,7 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
                   _MetricRatingSlider(
                     title: "Sleep Duration",
                     description:
-                    "Inadequate sleep limits muscle recovery, reduces mental focus, and can elevate injury risk—ultimately undermining performance and progress.",
+                        "Inadequate sleep limits muscle recovery, reduces mental focus, and can elevate injury risk—ultimately undermining performance and progress.",
                     ratings: sleepDurationScale,
                     highToLowIntensity: false,
                     onSelectRating: (int rating) {
@@ -154,7 +131,9 @@ class _MetricRatingSlider extends StatefulWidget {
       {required this.ratings,
       required this.onSelectRating,
       required this.title,
-      required this.description, this.highToLowIntensity = true, required this.defaultRating});
+      required this.description,
+      this.highToLowIntensity = true,
+      required this.defaultRating});
 
   @override
   State<_MetricRatingSlider> createState() => _MetricRatingSliderState();
@@ -168,7 +147,8 @@ class _MetricRatingSliderState extends State<_MetricRatingSlider> {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final color = widget.highToLowIntensity ? highToLowIntensityColor(_rating / 5) : lowToHighIntensityColor(_rating / 5);
+    final color =
+        widget.highToLowIntensity ? highToLowIntensityColor(_rating / 5) : lowToHighIntensityColor(_rating / 5);
 
     return Container(
       padding: EdgeInsets.all(12),
@@ -232,7 +212,8 @@ class ReadinessMonitor extends StatelessWidget {
   final double height;
   final double strokeWidth;
 
-  const ReadinessMonitor({super.key,
+  const ReadinessMonitor({
+    super.key,
     this.value = 100,
     required this.width,
     required this.height,
