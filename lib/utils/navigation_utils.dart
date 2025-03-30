@@ -15,17 +15,19 @@ import '../dtos/viewmodels/routine_template_arguments.dart';
 import '../screens/editors/past_routine_log_editor_screen.dart';
 import '../screens/editors/routine_log_editor_screen.dart';
 import '../screens/editors/routine_template_editor_screen.dart';
-import '../screens/logs/activity_logs_screen.dart';
-import '../screens/logs/routine_logs_screen.dart';
 import '../screens/logs/routine_log_screen.dart';
+import '../screens/logs/routine_logs_screen.dart';
 import '../screens/templates/routine_template_screen.dart';
+import '../screens/templates/routine_templates_screen.dart';
 
-Future<ExerciseDto?> navigateToExerciseEditor({required BuildContext context, ExerciseEditorArguments? arguments}) async {
+Future<ExerciseDto?> navigateToExerciseEditor(
+    {required BuildContext context, ExerciseEditorArguments? arguments}) async {
   final exercise = await context.push(ExerciseEditorScreen.routeName, extra: arguments) as ExerciseDto?;
   return exercise;
 }
 
-Future<RoutineTemplateDto?> navigateToRoutineTemplateEditor({required BuildContext context, RoutineTemplateArguments? arguments}) async {
+Future<RoutineTemplateDto?> navigateToRoutineTemplateEditor(
+    {required BuildContext context, RoutineTemplateArguments? arguments}) async {
   final template = await context.push(RoutineTemplateEditorScreen.routeName, extra: arguments) as RoutineTemplateDto?;
   return template;
 }
@@ -74,8 +76,8 @@ void navigateToRoutineLogs({required BuildContext context, required DateTime dat
   context.push(RoutineLogsScreen.routeName, extra: dateTime);
 }
 
-void navigateToActivityLogs({required BuildContext context, required DateTime dateTime}) {
-  context.push(ActivityLogsScreen.routeName, extra: dateTime);
+void navigateToRoutineTemplates({required BuildContext context}) {
+  context.push(RoutineTemplatesScreen.routeName);
 }
 
 Future<void> navigateToSettings({required BuildContext context}) async {

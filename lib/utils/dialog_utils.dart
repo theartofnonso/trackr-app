@@ -1,23 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
-import 'package:tracker_app/enums/activity_type_enums.dart';
-import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
-import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
-import 'package:tracker_app/utils/navigation_utils.dart';
-import 'package:tracker_app/widgets/dividers/label_divider.dart';
 import 'package:tracker_app/widgets/forms/create_routine_user_profile_widget.dart';
 import 'package:tracker_app/widgets/timers/datetime_picker.dart';
 import 'package:tracker_app/widgets/timers/datetime_range_picker.dart';
 
 import '../colors.dart';
-import '../controllers/activity_log_controller.dart';
-import '../dtos/appsync/activity_log_dto.dart';
-import '../screens/editors/activity_editor_screen.dart';
 import '../widgets/buttons/opacity_button_widget.dart';
 import '../widgets/timers/hour_timer_picker.dart';
 import '../widgets/timers/time_picker.dart';
@@ -127,109 +115,6 @@ void showDatetimeRangePicker(
         onSelectRange: onChangedDateTimeRange,
       ),
       isScrollControlled: true);
-}
-
-void showActivityBottomSheet({required BuildContext context, required ActivityLogDto activity}) {
-  Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-  final isDarkMode = systemBrightness == Brightness.dark;
-
-  final activityType = ActivityType.fromJson(activity.name);
-
-  final image = activityType.image;
-
-  displayBottomSheet(
-      context: context,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(
-          children: [
-            image != null
-                ? Image.asset(
-                    'icons/$image.png',
-                    fit: BoxFit.contain,
-                    height: 24,
-                    color: isDarkMode ? Colors.white : Colors.black, // Adjust the height as needed
-                  )
-                : FaIcon(
-                    activityType.icon,
-                  ),
-            const SizedBox(
-              width: 8,
-            ),
-            Text(activity.nameOrSummary.toUpperCase(), style: Theme.of(context).textTheme.titleMedium),
-          ],
-        ),
-        const SizedBox(
-          height: 12,
-        ),
-        Text("You completed ${activity.duration().hmsAnalog()} of ${activity.nameOrSummary}",
-            style: Theme.of(context).textTheme.bodyMedium),
-        const SizedBox(
-          height: 6,
-        ),
-        Wrap(
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            const FaIcon(
-              FontAwesomeIcons.calendarDay,
-              size: 12,
-            ),
-            const SizedBox(width: 4),
-            Text(activity.createdAt.formattedDayMonthTime(),
-                style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.start),
-            const SizedBox(width: 12),
-            const FaIcon(
-              FontAwesomeIcons.fire,
-              size: 12,
-            ),
-          ],
-        ),
-        const SizedBox(
-          height: 16,
-        ),
-        LabelDivider(
-            label: "Want to change activity?".toUpperCase(),
-            labelColor: isDarkMode ? Colors.white70 : Colors.black,
-            dividerColor: sapphireLighter),
-        const SizedBox(
-          height: 4,
-        ),
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          leading: const FaIcon(FontAwesomeIcons.penToSquare, size: 18),
-          horizontalTitleGap: 6,
-          title: Text("Edit"),
-          onTap: () {
-            Navigator.of(context).pop();
-            navigateWithSlideTransition(context: context, child: ActivityEditorScreen(activityLogDto: activity));
-          },
-        ),
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          leading: const FaIcon(
-            FontAwesomeIcons.trash,
-            size: 18,
-            color: Colors.red,
-          ),
-          horizontalTitleGap: 6,
-          title:
-              Text("Delete", style: GoogleFonts.ubuntu(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
-          onTap: () {
-            Navigator.of(context).pop(); // Close the previous BottomSheet
-            showBottomSheetWithMultiActions(
-                context: context,
-                title: "Delete activity?",
-                description: "Are you sure you want to delete this activity?",
-                leftAction: context.pop,
-                rightAction: () {
-                  Navigator.pop(context); // Close current BottomSheet
-                  Provider.of<ActivityLogController>(context, listen: false).removeLog(log: activity);
-                },
-                leftActionLabel: 'Cancel',
-                rightActionLabel: 'Delete',
-                isRightActionDestructive: true);
-          },
-        ),
-      ]));
 }
 
 void showCreateProfileBottomSheet({required BuildContext context}) {

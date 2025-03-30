@@ -11,11 +11,13 @@ import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
+import 'package:tracker_app/screens/templates/readiness_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
+import '../../dtos/daily_readiness.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../dtos/viewmodels/routine_template_arguments.dart';
 import '../../enums/chart_unit_enum.dart';
@@ -146,10 +148,13 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
     final trendSummary = _analyzeWeeklyTrends(volumes: allLoggedVolumesForTemplate);
 
-    final listOfMuscleAndRecovery = template.exerciseTemplates
+    final muscleGroups = template.exerciseTemplates
         .map((exerciseTemplate) => exerciseTemplate.exercise.primaryMuscleGroup)
         .toSet()
-        .map((muscleGroup) {
+        .map((muscleGroup) => muscleGroup)
+        .toList();
+
+    final listOfMuscleAndRecovery = muscleGroups.map((muscleGroup) {
       final pastExerciseLogs =
           (Provider.of<ExerciseAndRoutineController>(context, listen: false).exerciseLogsByMuscleGroup[muscleGroup] ??
               []);
@@ -174,7 +179,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       final recovery = muscleAndRecovery.recoveryPercentage;
 
       return Badge(
-        backgroundColor: recoveryColor(recovery),
+        backgroundColor: lowToHighIntensityColor(recovery),
         alignment: Alignment.topRight,
         smallSize: 12,
         isLabelVisible: muscleGroup == selectedMuscleAndRecovery?.muscleGroup,
@@ -195,7 +200,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                   strokeWidth: 6,
                   backgroundColor: isDarkMode ? Colors.black12 : Colors.grey.shade200,
                   strokeCap: StrokeCap.butt,
-                  valueColor: AlwaysStoppedAnimation<Color>(recoveryColor(recovery)),
+                  valueColor: AlwaysStoppedAnimation<Color>(lowToHighIntensityColor(recovery)),
                 ),
               ),
             ),
@@ -259,7 +264,9 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
             heroTag: UniqueKey,
-            onPressed: template.owner == SharedPrefs().userId ? _launchRoutineLogEditor : _createTemplate,
+            onPressed: () => template.owner == SharedPrefs().userId
+                ? _launchRoutineLogEditor(muscleGroups: muscleGroups)
+                : _createTemplate(),
             child: template.owner == SharedPrefs().userId
                 ? const FaIcon(FontAwesomeIcons.play, size: 24)
                 : const FaIcon(FontAwesomeIcons.download)),
@@ -576,11 +583,19 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     }
   }
 
-  void _launchRoutineLogEditor() {
+  void _launchRoutineLogEditor({required List<MuscleGroup> muscleGroups}) async {
     final template = _template;
     if (template != null) {
-      final arguments = RoutineLogArguments(log: template.toLog(), editorMode: RoutineEditorMode.log);
-      navigateToRoutineLogEditor(context: context, arguments: arguments);
+      final readiness = await navigateWithSlideTransition(context: context, child: ReadinessScreen()) as DailyReadiness;
+      final fatigue = readiness.perceivedFatigue;
+      final soreness = readiness.muscleSoreness;
+      final sleep = readiness.sleepDuration;
+      final log = template.toLog();
+      final logWithReadiness = log.copyWith(fatigueLevel: fatigue, sorenessLevel: soreness, sleepLevel: sleep);
+      final arguments = RoutineLogArguments(log: logWithReadiness, editorMode: RoutineEditorMode.log);
+      if (mounted) {
+        navigateToRoutineLogEditor(context: context, arguments: arguments);
+      }
     }
   }
 

@@ -15,6 +15,7 @@ import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/utils/routine_editors_utils.dart';
 import 'package:tracker_app/widgets/routine/editors/exercise_log_widget_lite.dart';
+import 'package:tracker_app/widgets/timers/stopwatch_timer.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
@@ -26,11 +27,11 @@ import '../../openAI/open_ai_response_format.dart';
 import '../../strings/ai_prompts.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/notifications_utils.dart';
+import '../../utils/readiness_utils.dart';
 import '../../utils/routine_log_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
-import '../../widgets/timers/stopwatch_timer.dart';
 
 class RoutineLogEditorScreen extends StatefulWidget {
   static const routeName = '/routine-log-editor';
@@ -231,6 +232,10 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final routineLogEditorController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
     if (routineLogEditorController.errorMessage.isNotEmpty) {
@@ -246,13 +251,17 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     final exerciseLogs = context.select((ExerciseLogController controller) => controller.exerciseLogs);
 
+    final log = widget.log;
+
+    final readiness = calculateReadinessScore(fatigue: log.fatigueLevel, soreness: log.sorenessLevel);
+
     return PopScope(
         canPop: false,
         child: Scaffold(
             appBar: AppBar(
               leading: IconButton(icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28), onPressed: _discardLog),
               title: Text(
-                widget.log.name,
+                log.name,
               ),
               actions: [
                 IconButton(
@@ -270,41 +279,78 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                 gradient: themeGradient(context: context),
               ),
               child: SafeArea(
-                minimum: EdgeInsets.all(10),
+                minimum: EdgeInsets.symmetric(vertical: 10),
                 child: Column(
-                  spacing: 8,
+                  spacing: 20,
                   children: [
                     if (widget.mode == RoutineEditorMode.log)
                       Consumer<ExerciseLogController>(
                           builder: (BuildContext context, ExerciseLogController provider, Widget? child) {
-                        return _RoutineLogOverview(
-                          exercisesSummary:
-                              "${provider.completedExerciseLog().length} of ${provider.exerciseLogs.length}",
-                          setsSummary:
-                              "${provider.completedSets().length} of ${provider.exerciseLogs.expand((exerciseLog) => exerciseLog.sets).length}",
-                          timer: StopwatchTimer(
-                            startTime: widget.log.startTime,
-                          ),
+                        return SizedBox(
+                          height: 80,
+                          child: GridView(
+                              scrollDirection: Axis.horizontal,
+                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 1,
+                                childAspectRatio: 0.5, // for square shape
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 10,
+                              ),
+                              children: [
+                                _StatisticWidget(
+                                    title: Text("$readiness%",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleLarge
+                                            ?.copyWith(color: lowToHighIntensityColor(readiness / 100))),
+                                    subtitle: "Readiness"),
+                                _StatisticWidget(
+                                    title: Text(
+                                        "${provider.completedExerciseLog().length} of ${provider.exerciseLogs.length}",
+                                        style: Theme.of(context).textTheme.titleLarge),
+                                    subtitle: "Exercises"),
+                                _StatisticWidget(
+                                    title: Text(
+                                        "${provider.completedSets().length} of ${provider.exerciseLogs.expand((exerciseLog) => exerciseLog.sets).length}",
+                                        style: Theme.of(context).textTheme.titleLarge),
+                                    subtitle: "Sets"),
+                                _StatisticWidget(
+                                    title: StopwatchTimer(
+                                      digital: true,
+                                      startTime: widget.log.startTime,
+                                      textStyle: Theme.of(context).textTheme.titleLarge,
+                                    ),
+                                    subtitle: "Duration")
+                              ]),
                         );
                       }),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: Text(getTrainingGuidance(readinessScore: readiness),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.grey.shade800)),
+                    ),
                     if (exerciseLogs.isNotEmpty)
                       Expanded(
                         child: ListView.separated(
                           itemBuilder: (BuildContext context, int index) {
                             final exerciseLog = exerciseLogs[index];
-                            return ExerciseLogLiteWidget(
-                              editorType: widget.mode,
-                              exerciseLogDto: exerciseLog,
-                              superSet:
-                                  whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs),
-                              onRemoveSuperSet: (String superSetId) {
-                                exerciseLogController.removeSuperSet(superSetId: exerciseLog.superSetId);
-                              },
-                              onRemoveLog: () {
-                                exerciseLogController.removeExerciseLog(logId: exerciseLog.id);
-                              },
-                              onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
-                              onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                              child: ExerciseLogLiteWidget(
+                                editorType: widget.mode,
+                                exerciseLogDto: exerciseLog,
+                                superSet:
+                                whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs),
+                                onRemoveSuperSet: (String superSetId) {
+                                  exerciseLogController.removeSuperSet(superSetId: exerciseLog.superSetId);
+                                },
+                                onRemoveLog: () {
+                                  exerciseLogController.removeExerciseLog(logId: exerciseLog.id);
+                                },
+                                onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
+                                onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
+                              ),
                             );
                           },
                           separatorBuilder: (BuildContext context, int index) {
@@ -315,7 +361,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                       ),
                     if (exerciseLogs.isNotEmpty)
                       SafeArea(
-                        minimum: EdgeInsets.all(10),
+                        minimum: EdgeInsets.all(20),
                         child: SizedBox(
                             width: double.infinity,
                             child: OpacityButtonWidget(
@@ -425,41 +471,32 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   }
 }
 
-class _RoutineLogOverview extends StatelessWidget {
-  final String exercisesSummary;
-  final String setsSummary;
-  final Widget timer;
+class _StatisticWidget extends StatelessWidget {
+  final Widget title;
+  final String subtitle;
 
-  const _RoutineLogOverview({required this.exercisesSummary, required this.setsSummary, required this.timer});
+  const _StatisticWidget({required this.title, required this.subtitle});
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     return Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5), // rounded border
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.grey.shade200,
+        // Background color of the container
+        borderRadius: BorderRadius.circular(5), // Border radius for rounded corners
+      ),
+      child: Stack(children: [
+        title,
+        Positioned.fill(
+          child: Align(
+              alignment: Alignment.bottomRight,
+              child: Text(subtitle, style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 12))),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
-        child: Table(
-          // border: TableBorder(
-          //     verticalInside: BorderSide(color: isDarkMode ? Colors.white70 : Colors.grey.shade200, width: 0.5)),
-          columnWidths: const <int, TableColumnWidth>{
-            0: FlexColumnWidth(1),
-            1: FlexColumnWidth(1),
-            2: FlexColumnWidth(1),
-          },
-          children: [
-            TableRow(children: [
-              Text("Exercises", textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall),
-              Text("Sets", textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall),
-              Text("Duration", textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall),
-            ]),
-            const TableRow(children: [SizedBox(height: 4), SizedBox(height: 4), SizedBox(height: 4)]),
-            TableRow(children: [
-              Text(exercisesSummary, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
-              Text(setsSummary, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
-              Center(child: timer)
-            ])
-          ],
-        ));
+      ]),
+    );
   }
 }

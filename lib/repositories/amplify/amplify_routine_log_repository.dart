@@ -17,11 +17,6 @@ import 'package:tracker_app/utils/routine_utils.dart';
 
 import '../../dtos/appsync/exercise_dto.dart';
 import '../../dtos/exercise_log_dto.dart';
-import '../../dtos/milestones/days_milestone_dto.dart';
-import '../../dtos/milestones/hours_milestone_dto.dart';
-import '../../dtos/milestones/milestone_dto.dart';
-import '../../dtos/milestones/reps_milestone.dart';
-import '../../dtos/milestones/weekly_milestone_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
 import '../../enums/posthog_analytics_event.dart';
 import '../../logger.dart';
@@ -35,14 +30,6 @@ class AmplifyRoutineLogRepository {
   List<RoutineLogDto> _logs = [];
 
   UnmodifiableListView<RoutineLogDto> get logs => UnmodifiableListView(_logs);
-
-  List<Milestone> _milestones = [];
-
-  UnmodifiableListView<Milestone> get milestones => UnmodifiableListView(_milestones);
-
-  List<Milestone> _newMilestones = [];
-
-  UnmodifiableListView<Milestone> get newMilestones => UnmodifiableListView(_newMilestones);
 
   Map<String, List<ExerciseLogDto>> _exerciseLogsByExerciseId = {};
 
@@ -67,7 +54,6 @@ class AmplifyRoutineLogRepository {
     _syncTrainingReminders();
     _groupExerciseLogsById();
     _groupExerciseLogsByMuscleGroup();
-    _calculateMilestones();
   }
 
   /// Everytime we sync logs, we refresh the training reminders
@@ -105,8 +91,6 @@ class AmplifyRoutineLogRepository {
   }
 
   Future<RoutineLogDto> saveLog({required RoutineLogDto logDto, TemporalDateTime? datetime}) async {
-    // Capture current list of completed milestones
-    final previousMilestones = completedMilestones().toSet();
 
     final now = datetime ?? TemporalDateTime.now();
 
@@ -123,15 +107,6 @@ class AmplifyRoutineLogRepository {
     final updatedRoutineWithExerciseIds = updatedRoutineLogWithId.copyWith(
         exerciseLogs:
             updatedRoutineLogWithId.exerciseLogs.map((log) => log.copyWith(routineLogId: logToCreate.id)).toList());
-
-    // Capture recent list of milestones
-    _calculateMilestones();
-
-    // Capture recent list of completed milestones
-    final updatedMilestones = completedMilestones().toSet();
-
-    // Get newly achieved milestone
-    _newMilestones = updatedMilestones.difference(previousMilestones).toList();
 
     // Write workout data to Apple Health
 
@@ -172,39 +147,6 @@ class AmplifyRoutineLogRepository {
       await Amplify.DataStore.delete<RoutineLog>(oldTemplate);
       logger.i("remove log: ${log.name}");
     }
-  }
-
-  void _calculateMilestones() {
-    List<Milestone> milestones = [];
-
-    final now = DateTime.now().withoutTime();
-
-    final dateRange = yearToDateTimeRange(datetime: now);
-
-    final weeksInYear = generateWeeksInRange(range: dateRange);
-
-    final logsForTheYear = whereLogsIsSameYear(dateTime: now);
-
-    /// Add Weekly Challenges
-    final weeklyMilestones = WeeklyMilestone.loadMilestones(
-        logs: logsForTheYear, weeksInYear: weeksInYear, datetime: DateTime.now().withoutTime());
-    milestones.addAll(weeklyMilestones);
-
-    /// Add Days Challenges
-    final daysMilestones = DaysMilestone.loadMilestones(logs: logsForTheYear);
-    milestones.addAll(daysMilestones);
-
-    /// Add Reps Milestones
-    final repsMilestones = RepsMilestone.loadMilestones(logs: logsForTheYear);
-    milestones.addAll(repsMilestones);
-
-    /// Add Hours Milestones
-    final hoursMilestones = HoursMilestone.loadMilestones(logs: logsForTheYear);
-    milestones.addAll(hoursMilestones);
-
-    milestones.sort((a, b) => a.name.compareTo(b.name));
-
-    _milestones = milestones;
   }
 
   /// Helper methods
@@ -288,17 +230,8 @@ class AmplifyRoutineLogRepository {
     return _logs.where((log) => log.templateId == templateId && log.createdAt.isBefore(date)).toList();
   }
 
-  /// Milestones
-  UnmodifiableListView<Milestone> pendingMilestones() =>
-      UnmodifiableListView(_milestones.where((milestone) => milestone.progress.$1 < 1));
-
-  UnmodifiableListView<Milestone> completedMilestones() =>
-      UnmodifiableListView(milestones.where((milestone) => milestone.progress.$1 == 1));
-
   void clear() {
     _logs.clear();
     _exerciseLogsByExerciseId.clear();
-    _milestones.clear();
-    _newMilestones.clear();
   }
 }

@@ -326,6 +326,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                           ),
                         if (updatedLog.owner == SharedPrefs().userId && widget.isEditable)
                           TRKRInformationContainer(
+                            color: vibrantGreen,
                               ctaLabel: "Ask for feedback",
                               description:
                                   "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",

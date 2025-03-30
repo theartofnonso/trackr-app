@@ -95,6 +95,7 @@ class LineChartWidget extends StatelessWidget {
                             spots: chartPoints.map((point) {
                               return FlSpot(point.x.toDouble(), point.y.toDouble());
                             }).toList(),
+                            dotData: FlDotData(show: false),
                             color: isDarkMode ? Colors.white70 : Colors.grey.shade600,
                             gradient: colors.length >= 2 ? LinearGradient(colors: colors) : null,
                             belowBarData: BarAreaData(

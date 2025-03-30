@@ -7,8 +7,9 @@ class InformationContainerLite extends StatelessWidget {
   final String content;
   final Color? color;
   final RichText? richText;
+  final void Function()? onTap;
 
-  const InformationContainerLite({super.key, this.icon, required this.content, required this.color, this.richText});
+  const InformationContainerLite({super.key, this.icon, required this.content, required this.color, this.richText, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -18,16 +19,10 @@ class InformationContainerLite extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
           color: isDarkMode ? color?.withValues(alpha: 0.1) : color, borderRadius: BorderRadius.circular(5)),
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
       child: Row(
+        spacing: 10,
         children: [
-          icon ??
-              FaIcon(
-                FontAwesomeIcons.exclamation,
-                color: color,
-                size: 16,
-              ),
-          const SizedBox(width: 14),
           Expanded(
               child: richText ?? Text(content,
                   style: GoogleFonts.ubuntu(
@@ -35,6 +30,8 @@ class InformationContainerLite extends StatelessWidget {
                       height: 1.4,
                       color: isDarkMode ? color : Colors.black,
                       fontWeight: FontWeight.w600))),
+          if(onTap != null)
+            GestureDetector(onTap: onTap, child: FaIcon(FontAwesomeIcons.solidCircleXmark, color: isDarkMode ? color : Colors.white70,))
         ],
       ),
     );

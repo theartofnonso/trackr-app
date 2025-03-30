@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
+import 'package:tracker_app/utils/readiness_utils.dart';
 import 'package:tracker_app/utils/sets_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 
@@ -57,6 +58,16 @@ String prepareLogInstruction({required BuildContext context, required RoutineLog
 
     buffer.writeln("Rep range for ${currentExerciseLog.exercise.name}: $typicalRepRange");
   }
+
+  buffer.writeln();
+
+  final fatigue = perceivedFatigueScale[routineLog.fatigueLevel];
+
+  final soreness = muscleSorenessScale[routineLog.sorenessLevel];
+
+  buffer.writeln("My fatigue levels is reported as $fatigue");
+
+  buffer.writeln("My muscle soreness is reported as $soreness");
 
   buffer.writeln();
 

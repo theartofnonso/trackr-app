@@ -3,7 +3,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/widgets/empty_states/no_list_empty_state.dart';
 
-import '../../controllers/activity_log_controller.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../controllers/routine_user_controller.dart';
 import '../../utils/general_utils.dart';
@@ -21,8 +20,6 @@ class OnboardingChecklistNotificationsScreenScreen extends StatelessWidget {
 
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
-    final activityLogController = Provider.of<ActivityLogController>(context, listen: true);
-
     final routineUserController = Provider.of<RoutineUserController>(context, listen: true);
 
     final user = routineUserController.user;
@@ -31,9 +28,7 @@ class OnboardingChecklistNotificationsScreenScreen extends StatelessWidget {
 
     final routineTemplates = exerciseAndRoutineController.templates;
 
-    final activityLogs = activityLogController.logs;
-
-    final hasPendingActions = routineTemplates.isEmpty || routineLogs.isEmpty || activityLogs.isEmpty || user == null;
+    final hasPendingActions = routineTemplates.isEmpty || routineLogs.isEmpty || user == null;
 
     return Scaffold(
       appBar: AppBar(
@@ -81,18 +76,6 @@ class OnboardingChecklistNotificationsScreenScreen extends StatelessWidget {
                             height: 24, // Adjust the height as needed
                           ),
                           subtitle: Text("Start your fitness journey with a session"),
-                          trailing: FaIcon(
-                            FontAwesomeIcons.solidBell,
-                            size: 18,
-                          ),
-                        ),
-                      ),
-                    if (activityLogs.isEmpty)
-                      ThemeListTile(
-                        child: ListTile(
-                          title: Text("Log An Activity"),
-                          leading: FaIcon(FontAwesomeIcons.personWalking),
-                          subtitle: Text("Diversify your fitness journey"),
                           trailing: FaIcon(
                             FontAwesomeIcons.solidBell,
                             size: 18,
