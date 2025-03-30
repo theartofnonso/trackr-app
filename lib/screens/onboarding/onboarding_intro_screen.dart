@@ -7,13 +7,11 @@ import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/widgets/monitors/log_streak_monitor.dart';
 
 import '../../colors.dart';
-import '../../dtos/milestones/reps_milestone.dart';
 import '../../utils/theme/theme.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/calendar/calendar.dart';
 import '../../widgets/custom_drawings/streak_face.dart';
 import '../../widgets/dividers/label_divider.dart';
-import '../../widgets/milestones/milestone_grid_item.dart';
 
 class OnboardingIntroScreen extends StatefulWidget {
   static const routeName = "/intro_screen";
@@ -38,7 +36,6 @@ class _OnboardingIntroScreenState extends State<OnboardingIntroScreen> {
       _CalenderOnboardingScreen(isDarkMode: isDarkMode),
       _LogStreakMonitorOnboardingScreen(isDarkMode: isDarkMode),
       _TRKRCoachOnboardingScreen(isDarkMode: isDarkMode),
-      _MilestonesOnboardingScreen(isDarkMode: isDarkMode),
       if (SharedPrefs().firstLaunch) _EndOnboardingScreen(onPress: widget.onComplete ?? () {})
     ];
 
@@ -210,50 +207,6 @@ class _LogStreakMonitorOnboardingScreen extends StatelessWidget {
         Text(
             "Your goal is to keep those months consistently green. Just 12 sessions per month are all you need to close the ring and maintain your momentum. Make it a habit, keep pushing, and enjoy watching your streaks grow!",
             style: Theme.of(context).textTheme.bodyLarge),
-      ],
-    );
-  }
-}
-
-class _MilestonesOnboardingScreen extends StatelessWidget {
-  final bool isDarkMode;
-
-  const _MilestonesOnboardingScreen({required this.isDarkMode});
-
-  @override
-  Widget build(BuildContext context) {
-    final milestonesChildren = RepsMilestone.loadMilestones(logs: [])
-        .map((milestone) => MilestoneGridItem(
-              milestone: milestone,
-              enabled: false,
-            ))
-        .toList();
-
-    return Column(
-      children: [
-        LabelDivider(
-          label: "Milestones".toUpperCase(),
-          labelColor: isDarkMode ? Colors.white70 : Colors.black,
-          dividerColor: sapphireLighter,
-          fontSize: 14,
-        ),
-        const SizedBox(
-          height: 12,
-        ),
-        Text(
-            "Finally, to keep you motivated, we’ve added challenges and milestones to mark your achievements. Push yourself, set new goals, and try to unlock as many challenges as possible throughout the year!",
-            style: Theme.of(context).textTheme.bodyLarge),
-        const SizedBox(
-          height: 14,
-        ),
-        Expanded(
-          child: GridView.count(
-              crossAxisCount: 2,
-              childAspectRatio: 0.8,
-              mainAxisSpacing: 10.0,
-              crossAxisSpacing: 10.0,
-              children: milestonesChildren),
-        ),
       ],
     );
   }

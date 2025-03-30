@@ -292,6 +292,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
                           itemBuilder: (BuildContext context, int index) {
                             final exerciseLog = exerciseLogs[index];
                             return ExerciseLogLiteWidget(
+                              isPastRoutine: true,
                               editorType: RoutineEditorMode.edit,
                               exerciseLogDto: exerciseLog,
                               superSet:

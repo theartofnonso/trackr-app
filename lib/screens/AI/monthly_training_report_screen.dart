@@ -4,7 +4,6 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/dtos/appsync/activity_log_dto.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
@@ -12,7 +11,6 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/open_ai_response_schema_dtos/monthly_training_report.dart';
-import '../../enums/activity_type_enums.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_widget.dart';
@@ -24,28 +22,14 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
   final DateTime dateTime;
   final MonthlyTrainingReport monthlyTrainingReport;
   final List<RoutineLogDto> routineLogs;
-  final List<ActivityLogDto> activityLogs;
 
   const MonthlyTrainingReportScreen(
-      {super.key,
-      required this.dateTime,
-      required this.monthlyTrainingReport,
-      required this.routineLogs,
-      required this.activityLogs});
+      {super.key, required this.dateTime, required this.monthlyTrainingReport, required this.routineLogs});
 
   @override
   Widget build(BuildContext context) {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
-
-    final activitiesChildren =
-        activityLogs.map((activityLog) => activityLog.nameOrSummary).toSet().mapIndexed((index, activity) {
-      final activityType = ActivityType.fromJson(activity);
-
-      final image = activityType.image;
-
-      return _ActivityChip(image: image, activityType: activityType, nameOrSummary: activity);
-    }).toList();
 
     final exercises = routineLogs
         .map((routineLog) => loggedExercises(exerciseLogs: routineLog.exerciseLogs))
@@ -221,27 +205,6 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16),
-                        child: LabelContainerDivider(
-                          labelAlignment: LabelAlignment.left,
-                          label: "Other Activities".toUpperCase(),
-                          description: monthlyTrainingReport.activitiesSummary,
-                          labelStyle: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700),
-                          descriptionStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(height: 2),
-                          dividerColor: sapphireLighter,
-                          child: activitiesChildren.isNotEmpty
-                              ? Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                  child: Wrap(
-                                    spacing: 6,
-                                    runSpacing: 6,
-                                    children: activitiesChildren,
-                                  ),
-                                )
-                              : null,
-                        ),
-                      ),
-                      Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -280,53 +243,6 @@ class MonthlyTrainingReportScreen extends StatelessWidget {
 
   Color _getSubTitleColour({required bool isDarkMode}) {
     return isDarkMode ? Colors.white70 : Colors.grey.shade600;
-  }
-}
-
-class _ActivityChip extends StatelessWidget {
-  const _ActivityChip({
-    required this.image,
-    required this.activityType,
-    required this.nameOrSummary,
-  });
-
-  final String? image;
-  final ActivityType activityType;
-  final String nameOrSummary;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10.0),
-        decoration: BoxDecoration(
-          color: Colors.greenAccent, // Dark background color
-          borderRadius: BorderRadius.circular(5.0), // Rounded corners
-        ),
-        child: Wrap(
-          crossAxisAlignment: WrapCrossAlignment.center,
-          alignment: WrapAlignment.start,
-          children: [
-            image != null
-                ? Image.asset(
-                    'icons/$image.png',
-                    fit: BoxFit.contain,
-                    height: 12,
-                    color: Colors.black, // Adjust the height as needed
-                  )
-                : FaIcon(
-                    activityType.icon,
-                    color: Colors.black,
-                    size: 12,
-                  ),
-            const SizedBox(
-              width: 4,
-            ),
-            Text(
-              nameOrSummary.toUpperCase(),
-              style: GoogleFonts.ubuntu(fontWeight: FontWeight.w500, color: Colors.black, fontSize: 12),
-            )
-          ],
-        ));
   }
 }
 

@@ -5,7 +5,6 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 import 'package:health/health.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
@@ -13,9 +12,10 @@ import 'package:tracker_app/screens/preferences/settings_screen.dart';
 
 import '../colors.dart';
 import '../dtos/appsync/routine_log_dto.dart';
+import '../dtos/daily_readiness.dart';
+import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../enums/routine_editor_type_enums.dart';
-import '../screens/editors/routine_log_editor_screen.dart';
-import '../screens/logs/routine_log_screen.dart';
+import '../screens/templates/readiness_screen.dart';
 import '../shared_prefs.dart';
 import 'data_trend_utils.dart';
 import 'navigation_utils.dart';
@@ -120,19 +120,31 @@ Color logStreakColor(num value) {
   }
 }
 
-Color recoveryColor(double recoveryPercentage) {
+/// Higher values now get a "better" color (green)
+Color lowToHighIntensityColor(double recoveryPercentage) {
   if (recoveryPercentage < 0.3) {
     // Severe DOMS (0–29%)
     return Colors.red;
   } else if (recoveryPercentage < 0.5) {
-    // High soreness (30–49%)
     return Colors.yellow;
   } else if (recoveryPercentage < 0.8) {
-    // Moderate soreness (50–79%)
     return vibrantBlue;
   } else {
-    // Mild or no soreness (80–100%)
     return vibrantGreen;
+  }
+}
+
+/// Lower values now get a "better" color (green)
+Color highToLowIntensityColor(double recoveryPercentage) {
+  if (recoveryPercentage < 0.3) {
+    return vibrantGreen;
+  } else if (recoveryPercentage < 0.5) {
+    return vibrantBlue;
+  } else if (recoveryPercentage < 0.8) {
+    return Colors.yellow;
+  } else {
+    // Higher recovery values now get a "worse" color (red)
+    return Colors.red;
   }
 }
 
@@ -184,6 +196,19 @@ Color repsTrendColor({required int reps}) {
   }
 }
 
+final Map<int, Color> rpeIntensityToColor = {
+  1: vibrantGreen, // Bright green - very light
+  2: Color(0xFF66FF66), // Light green
+  3: Color(0xFF99FF99), // Soft green
+  4: Color(0xFFFFFF66), // Yellow-green transition
+  5: Color(0xFFFFFF33), // Yellow - moderate intensity
+  6: Color(0xFFFFCC33), // Amber - challenging intensity
+  7: Color(0xFFFF9933), // Orange - very hard
+  8: Color(0xFFFF6633), // Deep orange - near maximal
+  9: Color(0xFFFF3333), // Bright red - maximal effort
+  10: Color(0xFFFF0000), // Red - absolute limit
+};
+
 LinearGradient themeGradient({required BuildContext context}) {
   Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
   final isDarkMode = systemBrightness == Brightness.dark;
@@ -218,30 +243,6 @@ Future<bool> requestAppleHealth() async {
   return hasPermissions;
 }
 
-Color getImprovementColor({required bool improved, required num difference}) {
-  Color color = vibrantBlue;
-
-  if (improved && difference > 0) {
-    color = vibrantGreen;
-  } else if (!improved && difference > 0) {
-    color = Colors.deepOrange;
-  }
-  return color;
-}
-
-final Map<int, Color> rpeIntensityToColor = {
-  1: vibrantGreen, // Bright green - very light
-  2: Color(0xFF66FF66), // Light green
-  3: Color(0xFF99FF99), // Soft green
-  4: Color(0xFFFFFF66), // Yellow-green transition
-  5: Color(0xFFFFFF33), // Yellow - moderate intensity
-  6: Color(0xFFFFCC33), // Amber - challenging intensity
-  7: Color(0xFFFF9933), // Orange - very hard
-  8: Color(0xFFFF6633), // Deep orange - near maximal
-  9: Color(0xFFFF3333), // Bright red - maximal effort
-  10: Color(0xFFFF0000), // Red - absolute limit
-};
-
 Widget getTrendIcon({required Trend trend}) {
   return switch (trend) {
     Trend.up => FaIcon(
@@ -275,6 +276,10 @@ Widget getTrendIcon({required Trend trend}) {
 }
 
 void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) async {
+  final readiness = await navigateWithSlideTransition(context: context, child: ReadinessScreen()) as DailyReadiness;
+  final fatigue = readiness.perceivedFatigue;
+  final soreness = readiness.muscleSoreness;
+  final sleep = readiness.sleepDuration;
   final log = RoutineLogDto(
       id: "",
       templateId: "",
@@ -284,17 +289,60 @@ void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) a
       startTime: DateTime.now(),
       endTime: DateTime.now(),
       owner: "",
+      fatigueLevel: fatigue,
+      sorenessLevel: soreness,
+      sleepLevel: sleep,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now());
-  final recentLog = await navigateWithSlideTransition(
-      context: context,
-      child: RoutineLogEditorScreen(
-        log: log,
-        mode: RoutineEditorMode.log,
-      ));
-  if (recentLog != null) {
-    if (context.mounted) {
-      context.push(RoutineLogScreen.routeName, extra: {"log": recentLog, "showSummary": true, "isEditable": true});
-    }
+
+  if (context.mounted) {
+    final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log);
+    navigateToRoutineLogEditor(context: context, arguments: arguments);
   }
+}
+
+bool isOutsideReasonableRange(List<num> numbers, num newNumber,
+    {double magnitudeThreshold = 10, double iqrFactor = 1.5}) {
+  if (numbers.isEmpty) return false;
+
+  final sorted = [...numbers]..sort();
+
+  // Basic range check
+  final currentMin = sorted.first;
+  final currentMax = sorted.last;
+
+  // Magnitude jump check (for decimal errors)
+  final isMagnitudeJump =
+      newNumber >= currentMax * magnitudeThreshold || (currentMin > 0 && newNumber <= currentMin / magnitudeThreshold);
+
+  // IQR-based outlier check
+  final q1 = _quantile(sorted, 0.25);
+  final q3 = _quantile(sorted, 0.75);
+  final iqr = q3 - q1;
+  final lowerBound = q1 - iqrFactor * iqr;
+  final upperBound = q3 + iqrFactor * iqr;
+
+  return isMagnitudeJump || newNumber < lowerBound || newNumber > upperBound;
+}
+
+double _quantile(List<num> sorted, double p) {
+  final index = p * (sorted.length - 1);
+  final lower = sorted[index.floor()];
+  final upper = sorted[index.ceil()];
+  return lower + (upper - lower) * (index - index.floor());
+}
+
+bool isProbablyOutOfRangeInt(List<int> numbers, int newNumber) {
+  if (numbers.isEmpty) return false;
+
+  int currentMax = numbers.reduce((a, b) => a > b ? a : b);
+  int currentMin = numbers.reduce((a, b) => a < b ? a : b);
+
+  // Check if new number is 10x higher than current max
+  bool isUpperOutlier = newNumber >= 2 * currentMax;
+
+  // Check if new number is 10x lower than current min (only if min is positive)
+  bool isLowerOutlier = currentMin > 0 && newNumber <= currentMin / 2;
+
+  return isUpperOutlier || isLowerOutlier;
 }

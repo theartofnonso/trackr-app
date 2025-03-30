@@ -13,7 +13,6 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
-import 'package:tracker_app/widgets/shareables/milestone_shareable.dart';
 import 'package:tracker_app/widgets/shareables/pbs_shareable.dart';
 import 'package:tracker_app/widgets/shareables/routine_log_shareable_lite.dart';
 import 'package:tracker_app/widgets/shareables/session_milestone_shareable.dart';
@@ -63,19 +62,8 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
     List<RoutineLogDto> routineLogsForTheYear =
         exerciseAndRoutineController.whereLogsIsSameYear(dateTime: DateTime.now().withoutTime());
 
-    final newMilestones = exerciseAndRoutineController.newMilestones;
-
     final muscleGroupFamilyFrequencyData =
         muscleGroupFrequency(exerciseLogs: updatedLog.exerciseLogs);
-
-    List<Widget> milestoneShareAssets = [];
-    final milestoneShareAssetsKeys = [];
-    for (final milestone in newMilestones) {
-      final key = GlobalKey();
-      final shareable = MilestoneShareable(globalKey: key, milestone: milestone, image: _image);
-      milestoneShareAssets.add(shareable);
-      milestoneShareAssetsKeys.add(key);
-    }
 
     List<Widget> pbShareAssets = [];
     final pbShareAssetsKeys = [];
@@ -98,7 +86,6 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
     }
 
     final pages = [
-     ...milestoneShareAssets,
       if (isMultipleOfFive(routineLogsForTheYear.length))
         SessionMilestoneShareable(label: "${routineLogsForTheYear.length}th", image: _image),
       ...pbShareAssets,
@@ -107,7 +94,6 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
     ];
 
     final pagesKeys = [
-      ...milestoneShareAssetsKeys,
       if (isMultipleOfFive(routineLogsForTheYear.length)) sessionMilestoneGlobalKey,
       ...pbShareAssetsKeys,
       routineLogGlobalKey,

@@ -17,8 +17,6 @@ class LogStreakChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
 
     final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
@@ -79,10 +77,7 @@ class LogStreakChart extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         Text(trendSummary.summary,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w400)),
         const SizedBox(height: 30),
         LineChartWidget(
           chartPoints: chartPoints,
@@ -160,7 +155,8 @@ class LogStreakChart extends StatelessWidget {
         return TrendSummary(
           trend: Trend.up,
           average: averageOfPrevious,
-          summary: "🌟🌟 You're training $diffAbs more ${pluralize(word: 'day', count: diffAbs)} than your weekly average!"
+          summary:
+              "🌟🌟 You're training $diffAbs more ${pluralize(word: 'day', count: diffAbs)} than your weekly average!"
               " Keep it going—you’re building solid habits!",
         );
 
@@ -168,7 +164,8 @@ class LogStreakChart extends StatelessWidget {
         return TrendSummary(
           trend: Trend.down,
           average: averageOfPrevious,
-          summary: "📉 You're training $diffAbs ${pluralize(word: 'day', count: diffAbs)} lesser than your weekly average."
+          summary:
+              "📉 You're training $diffAbs ${pluralize(word: 'day', count: diffAbs)} lesser than your weekly average."
               " Consider your schedule, rest, or motivation to stay on track.",
         );
 

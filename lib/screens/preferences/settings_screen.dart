@@ -4,6 +4,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:health/health.dart';
 import 'package:in_app_review/in_app_review.dart';
@@ -11,7 +12,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
-import 'package:tracker_app/controllers/activity_log_controller.dart';
 import 'package:tracker_app/graphQL/queries.dart';
 import 'package:tracker_app/screens/preferences/user_profile_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -64,12 +64,17 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     final userEmail = SharedPrefs().userEmail.isNotEmpty ? SharedPrefs().userEmail : "Apple Sign in";
 
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
+          onPressed: context.pop,
+        ),
+      ),
       body: Container(
         decoration: BoxDecoration(
           gradient: themeGradient(context: context),
         ),
         child: SafeArea(
-          bottom: false,
           minimum: EdgeInsets.all(10),
           child: SingleChildScrollView(
             child: Column(
@@ -260,7 +265,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     await FlutterLocalNotificationsPlugin().cancelAll();
     if (mounted) {
       Provider.of<ExerciseAndRoutineController>(context, listen: false).clear();
-      Provider.of<ActivityLogController>(context, listen: false).clear();
       Provider.of<RoutineUserController>(context, listen: false).clear();
     }
   }

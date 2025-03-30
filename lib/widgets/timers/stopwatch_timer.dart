@@ -7,10 +7,11 @@ class StopwatchTimer extends StatefulWidget {
   final DateTime startTime;
   final bool digital;
   final void Function(Duration duration)? onChangedDuration;
+  final TextStyle? textStyle;
   final bool forceLightMode;
 
   const StopwatchTimer(
-      {super.key, required this.startTime, this.digital = false, this.onChangedDuration, this.forceLightMode = false});
+      {super.key, required this.startTime, this.digital = false, this.onChangedDuration, this.forceLightMode = false, this.textStyle});
 
   @override
   State<StopwatchTimer> createState() => _StopwatchTimerState();
@@ -23,7 +24,7 @@ class _StopwatchTimerState extends State<StopwatchTimer> {
   @override
   Widget build(BuildContext context) {
     return Text(widget.digital ? _elapsedDuration.hmsDigital() : _elapsedDuration.hmsAnalog(),
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: widget.forceLightMode ? Colors.white : null));
+        style: widget.textStyle ?? Theme.of(context).textTheme.bodyMedium?.copyWith(color: widget.forceLightMode ? Colors.white : null));
   }
 
   @override

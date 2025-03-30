@@ -8,21 +8,23 @@ class TRKRInformationContainer extends StatelessWidget {
   final String ctaLabel;
   final String description;
   final VoidCallback? onTap;
+  final Color color;
   final Widget? icon;
 
-  const TRKRInformationContainer({super.key, required this.ctaLabel, required this.description, required this.onTap, this.icon});
+  const TRKRInformationContainer({super.key, required this.ctaLabel, required this.description, required this.onTap, this.icon, required this.color});
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
+          color: isDarkMode ? color.withValues(alpha: 0.1) : color,
           shape: BoxShape.rectangle, // Use BoxShape.circle for circular borders
-          gradient:  LinearGradient(
-            colors: [Colors.blue.shade700, Colors.green.shade700], // Gradient colors
-          ),
           borderRadius: BorderRadius.circular(5),
         ),
         child: Padding(
@@ -37,7 +39,7 @@ class TRKRInformationContainer extends StatelessWidget {
                     child: Text(
                         description,
                         textAlign: TextAlign.left,
-                        style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, color: Colors.white, fontSize: 14)),
+                        style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, fontSize: 14)),
                   ),
                   const SizedBox(width: 22),
                   icon ?? FaIcon(FontAwesomeIcons.solidLightbulb, color: Colors.white,)
@@ -46,7 +48,7 @@ class TRKRInformationContainer extends StatelessWidget {
               Text(
                   ctaLabel,
                   textAlign: TextAlign.left,
-                  style: GoogleFonts.ubuntu(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 14))
+                  style: GoogleFonts.ubuntu(fontWeight: FontWeight.w900, fontSize: 14))
             ],
           ),
         ),
