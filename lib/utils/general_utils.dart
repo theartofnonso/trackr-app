@@ -276,7 +276,7 @@ Widget getTrendIcon({required Trend trend}) {
 }
 
 void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) async {
-  final readiness = await navigateWithSlideTransition(context: context, child: ReadinessScreen()) as DailyReadiness;
+  final readiness = await navigateWithSlideTransition(context: context, child: ReadinessScreen()) as DailyReadiness? ?? DailyReadiness.empty();
   final fatigue = readiness.perceivedFatigue;
   final soreness = readiness.muscleSoreness;
   final sleep = readiness.sleepDuration;

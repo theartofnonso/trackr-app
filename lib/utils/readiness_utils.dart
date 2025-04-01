@@ -5,7 +5,7 @@ int calculateReadinessScore({
   // Validate inputs (1–5 only).
   if (fatigue < 1 || fatigue > 5 ||
       soreness < 1 || soreness > 5) {
-    throw ArgumentError('Fatigue and soreness must be between 1 and 5.');
+    return -1;
   }
 
   // Define new weights (they must sum to 1.0)

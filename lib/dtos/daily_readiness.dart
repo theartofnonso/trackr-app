@@ -2,7 +2,8 @@ import '../utils/readiness_utils.dart';
 
 enum ReadinessEnum {
   maxPositive(5),
-  minPositive(1);
+  minPositive(1),
+  none(0);
 
   const ReadinessEnum(this.value);
 
@@ -19,6 +20,8 @@ class DailyReadiness {
     required this.muscleSoreness,
     required this.sleepDuration,
   });
+
+  DailyReadiness.empty({this.perceivedFatigue = 0, this.muscleSoreness = 0, this.sleepDuration = 0});
 
   /// Returns the description for the given perceived fatigue rating.
   String get perceivedFatigueDescription =>

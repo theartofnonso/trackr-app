@@ -232,7 +232,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -298,13 +297,14 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                 mainAxisSpacing: 10,
                               ),
                               children: [
-                                _StatisticWidget(
-                                    title: Text("$readiness%",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleLarge
-                                            ?.copyWith(color: lowToHighIntensityColor(readiness / 100))),
-                                    subtitle: "Readiness"),
+                                if (readiness > 0)
+                                  _StatisticWidget(
+                                      title: Text("$readiness%",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleLarge
+                                              ?.copyWith(color: lowToHighIntensityColor(readiness / 100))),
+                                      subtitle: "Readiness"),
                                 _StatisticWidget(
                                     title: Text(
                                         "${provider.completedExerciseLog().length} of ${provider.exerciseLogs.length}",
@@ -325,11 +325,14 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                               ]),
                         );
                       }),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: Text(getTrainingGuidance(readinessScore: readiness),
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.grey.shade800)),
-                    ),
+                    if (readiness > 0)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Text(getTrainingGuidance(readinessScore: readiness),
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.w400,
+                                color: isDarkMode ? Colors.white70 : Colors.grey.shade800)),
+                      ),
                     if (exerciseLogs.isNotEmpty)
                       Expanded(
                         child: ListView.separated(
@@ -341,7 +344,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                 editorType: widget.mode,
                                 exerciseLogDto: exerciseLog,
                                 superSet:
-                                whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs),
+                                    whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs),
                                 onRemoveSuperSet: (String superSetId) {
                                   exerciseLogController.removeSuperSet(superSetId: exerciseLog.superSetId);
                                 },

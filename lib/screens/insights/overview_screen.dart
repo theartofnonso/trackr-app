@@ -338,7 +338,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
         await navigateWithSlideTransition(context: context, child: const TRKRCoachChatScreen()) as RoutineTemplateDto?;
     if (result != null) {
       if (mounted) {
-        final readiness = await navigateWithSlideTransition(context: context, child: ReadinessScreen()) as DailyReadiness;
+        final readiness = await navigateWithSlideTransition(context: context, child: ReadinessScreen()) as DailyReadiness? ?? DailyReadiness.empty();
         final fatigue = readiness.perceivedFatigue;
         final soreness = readiness.muscleSoreness;
         final sleep = readiness.sleepDuration;
