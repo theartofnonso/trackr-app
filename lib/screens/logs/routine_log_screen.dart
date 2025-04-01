@@ -34,6 +34,7 @@ import '../../utils/data_trend_utils.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
+import '../../utils/readiness_utils.dart';
 import '../../utils/routine_log_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../utils/string_utils.dart';
@@ -120,6 +121,8 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     final avgVolume = allLoggedVolumesForTemplate.isNotEmpty ? allLoggedVolumesForTemplate.average : 0.0;
 
     final trendSummary = _analyzeWeeklyTrends(volumes: allLoggedVolumesForTemplate);
+
+    final readiness = calculateReadinessScore(fatigue: log.fatigueLevel, soreness: log.sorenessLevel);
 
     return Scaffold(
         appBar: AppBar(
@@ -265,6 +268,16 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                               title: "Personal Bests",
                               description:
                                   "Your highest achievement in an exercise, like the heaviest weight lifted, most reps performed, or highest training volume."),
+                        ),
+                        if (readiness > 0)
+                          _StatisticWidget(
+                          title: "$readiness%",
+                          subtitle: "Readiness",
+                          icon: FontAwesomeIcons.boltLightning,
+                          information: _StatisticsInformation(
+                              title: "Readiness",
+                              description:
+                              "A readiness check helps you assess how prepared you are for training intensity—helping you train smarter, avoid overtraining, and reduce the risk of injury."),
                         ),
                       ],
                     ),

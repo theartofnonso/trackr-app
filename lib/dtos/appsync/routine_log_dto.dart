@@ -7,7 +7,6 @@ import 'package:tracker_app/enums/exercise_type_enums.dart';
 import '../../enums/activity_type_enums.dart';
 import '../../models/RoutineLog.dart';
 import '../abstract_class/log_class.dart';
-import '../daily_readiness.dart';
 import '../exercise_log_dto.dart';
 
 class RoutineLogDto extends Log {
@@ -56,9 +55,9 @@ class RoutineLogDto extends Log {
     required this.startTime,
     required this.endTime,
     required this.owner,
-    this.fatigueLevel = 1,
-    this.sorenessLevel = 1,
-    this.sleepLevel = 5,
+    this.fatigueLevel = 0,
+    this.sorenessLevel = 0,
+    this.sleepLevel = 0,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -96,9 +95,9 @@ class RoutineLogDto extends Log {
     final startTime = DateTime.parse(json["startTime"]);
     final endTime = DateTime.parse(json["endTime"]);
     final exerciseLogsInJson = json["exercises"] as List<dynamic>;
-    final fatigueLevel = json["fatigueLevel"] ?? ReadinessEnum.minPositive.value;
-    final sorenessLevel = json["sorenessLevel"] ?? ReadinessEnum.minPositive.value;
-    final sleepLevel = json["sleepLevel"] ?? ReadinessEnum.maxPositive.value;
+    final fatigueLevel = json["fatigueLevel"] ?? 0;
+    final sorenessLevel = json["sorenessLevel"] ?? 0;
+    final sleepLevel = json["sleepLevel"] ?? 0;
     List<ExerciseLogDto> exerciseLogs = [];
     if (exerciseLogsInJson.isNotEmpty && exerciseLogsInJson.first is String) {
       exerciseLogs = exerciseLogsInJson
@@ -135,9 +134,9 @@ class RoutineLogDto extends Log {
     final name = json["name"] ?? "";
     final notes = json["notes"] ?? "";
     final summary = json["summary"];
-    final fatigueLevel = json["fatigueLevel"] ?? ReadinessEnum.minPositive.value;
-    final sorenessLevel = json["sorenessLevel"] ?? ReadinessEnum.minPositive.value;
-    final sleepLevel = json["sleepLevel"] ?? ReadinessEnum.maxPositive.value;
+    final fatigueLevel = json["fatigueLevel"] ?? 0;
+    final sorenessLevel = json["sorenessLevel"] ?? 0;
+    final sleepLevel = json["sleepLevel"] ?? 0;
     final startTime = DateTime.parse(json["startTime"]);
     final endTime = DateTime.parse(json["endTime"]);
     final exerciseLogJsons = json["exercises"] as List<dynamic>;

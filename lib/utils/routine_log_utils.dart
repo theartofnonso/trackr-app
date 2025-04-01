@@ -61,13 +61,17 @@ String prepareLogInstruction({required BuildContext context, required RoutineLog
 
   buffer.writeln();
 
-  final fatigue = perceivedFatigueScale[routineLog.fatigueLevel];
+  String fatigue = perceivedFatigueScale[routineLog.fatigueLevel] ?? "";
 
-  final soreness = muscleSorenessScale[routineLog.sorenessLevel];
+  String soreness = muscleSorenessScale[routineLog.sorenessLevel] ?? "";
 
-  buffer.writeln("My fatigue levels is reported as $fatigue");
+  if (fatigue.isNotEmpty) {
+    buffer.writeln("My fatigue levels is reported as $fatigue");
+  }
 
-  buffer.writeln("My muscle soreness is reported as $soreness");
+  if (soreness.isNotEmpty) {
+    buffer.writeln("My muscle soreness is reported as $soreness");
+  }
 
   buffer.writeln();
 
@@ -86,7 +90,7 @@ String generateTrainingPrompt({required List<MuscleGroup> muscleGroups}) {
   return """
           Analyse my training ${pluralize(word: "log", count: muscleGroups.length)} for ${joinWithAnd(items: muscleGroups.map((muscleGroup) => muscleGroup.name).toList())}.
 
-          Considering my rep ranges and RPE, do I need to increase or decrease my working weights or reps?
+          Considering my rep ranges and RPE, do I need to increase or decrease my working weights?
 
           Please make your feedback personal, explanatory, and motivating.
 
