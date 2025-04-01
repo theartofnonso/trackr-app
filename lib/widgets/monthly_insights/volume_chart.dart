@@ -142,9 +142,9 @@ class VolumeChart extends StatelessWidget {
     final averageOfPrevious = (previousVolumes.reduce((a, b) => a + b) / previousVolumes.length).round();
 
     // 4. Identify the most recent volume
-    final lastWeekVolume = volumes.last;
+    final recentWeekVolume = volumes.last;
 
-    if (lastWeekVolume == 0) {
+    if (recentWeekVolume == 0) {
       return TrendSummary(
         trend: Trend.none,
         average: averageOfPrevious,
@@ -154,7 +154,7 @@ class VolumeChart extends StatelessWidget {
     }
 
     // 5. Compare last week's volume to the average of previous volumes
-    final difference = lastWeekVolume - averageOfPrevious;
+    final difference = recentWeekVolume - averageOfPrevious;
     final differenceIsZero = difference == 0;
 
     // If the average is zero, treat it as a special case for percentage change

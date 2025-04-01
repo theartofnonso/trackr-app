@@ -144,6 +144,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _removeSet({required int index}) {
+    _isOutOfRangeMessage = "";
     Provider.of<ExerciseLogController>(context, listen: false)
         .removeSetForExerciseLog(exerciseLogId: _exerciseLog.id, index: index);
     _loadControllers();
@@ -181,7 +182,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final isOutSideOfRange = isOutsideReasonableRange(previousReps, reps);
     if(isOutSideOfRange) {
-      _isOutOfRangeMessage = "Hmm, $reps reps looks a bit off. Mind checking the value just to be sure?";
+      _isOutOfRangeMessage = "Hmm, $reps ${pluralize(word: "reps", count: reps)} looks a bit off. Mind checking the value just to be sure?";
     } else {
       _isOutOfRangeMessage = "";
     }

@@ -21,31 +21,30 @@ DateTimeRange theLastYearDateTimeRange() {
 List<DateTimeRange> generateWeeksInRange({required DateTimeRange range}) {
   List<DateTimeRange> weeks = [];
 
-  // Ensure that the startDate is not after the endDate
   if (range.start.isAfter(range.end)) {
-    return weeks; // Return empty list if dates are invalid
+    return weeks;
   }
 
-  // Align currentStartDate to the beginning of the week containing range.start.
-  // Assuming weeks start on Monday. In Dart, Monday is weekday = 1.
-  // This shifts the start date back to Monday of that week.
-  final weekDayIndex = (range.start.weekday - 1) % 7;
-  DateTime currentStartDate = DateTime(range.start.year, range.start.month, range.start.day - weekDayIndex);
+  // Adjust a date to the previous Monday (or same day if it's Monday)
+  DateTime getMonday(DateTime date) {
+    return date.subtract(Duration(days: date.weekday - 1));
+  }
 
-  while (!currentStartDate.isAfter(range.end)) {
-    // Calculate the end date for the current week (6 days after the start)
-    DateTime currentEndDate = currentStartDate.add(const Duration(days: 6));
+  // Adjust a date to the next Sunday (or same day if it's Sunday)
+  DateTime getSunday(DateTime date) {
+    return date.add(Duration(days: DateTime.daysPerWeek - date.weekday));
+  }
 
-    // If the calculated end date is after the overall end date, adjust it
-    if (currentEndDate.isAfter(range.end)) {
-      currentEndDate = range.end;
-    }
+  // Calculate the first Monday (start of the first week)
+  DateTime firstMonday = getMonday(range.start);
+  // Calculate the last Sunday (end of the last week)
+  DateTime lastSunday = getSunday(range.end);
 
-    weeks.add(DateTimeRange(start: currentStartDate, end: currentEndDate));
-
-    // Move to the next week (the day after the current week's end)
-    currentStartDate = currentEndDate.add(const Duration(days: 1));
-
+  DateTime currentMonday = firstMonday;
+  while (currentMonday.isBefore(lastSunday) || currentMonday == lastSunday) {
+    DateTime currentSunday = currentMonday.add(const Duration(days: 6));
+    weeks.add(DateTimeRange(start: currentMonday, end: currentSunday));
+    currentMonday = currentMonday.add(const Duration(days: 7));
   }
 
   return weeks;

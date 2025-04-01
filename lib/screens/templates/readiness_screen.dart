@@ -28,6 +28,10 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final readinessScore = calculateReadinessScore(fatigue: _fatigueRating, soreness: _sorenessRating);
 
     final muscleGroups = widget.muscleGroups.map((muscleGroup) => muscleGroup.displayName.toLowerCase()).toList();
@@ -56,6 +60,11 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
               child: ListView(
                 padding: EdgeInsets.only(bottom: 100),
                 children: [
+                  Text(
+                      "A readiness check helps you assess how prepared you are for today’s training session. Based on how you rate yourself, we’ll generate a score that guides you in adjusting your training intensity—helping you train smarter, avoid overtraining, and reduce the risk of injury.",
+                      style:
+                          Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w700, fontSize: 14, height: 1.5, color: isDarkMode ? Colors.white70 : Colors.black)),
+                  const SizedBox(height: 20),
                   _MetricRatingSlider(
                     title: "Muscle Soreness",
                     description:

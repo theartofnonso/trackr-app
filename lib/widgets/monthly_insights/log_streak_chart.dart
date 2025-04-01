@@ -92,6 +92,7 @@ class LogStreakChart extends StatelessWidget {
   }
 
   TrendSummary _analyzeWeeklyTrends({required List<int> daysTrained}) {
+
     // 1. If there's no data, return immediately
     if (daysTrained.isEmpty) {
       return TrendSummary(
@@ -114,13 +115,13 @@ class LogStreakChart extends StatelessWidget {
     }
 
     // 3. Now we can safely do sublist & reduce because we have at least 2 entries
-    final previousVolumes = daysTrained.sublist(0, daysTrained.length - 1);
-    final averageOfPrevious = (previousVolumes.reduce((a, b) => a + b) / previousVolumes.length).round();
+    final previousDays = daysTrained.sublist(0, daysTrained.length - 1);
+    final averageOfPrevious = (previousDays.reduce((a, b) => a + b) / previousDays.length).round();
 
     // 4. Identify the last week's days trained
-    final lastWeekVolume = daysTrained.last;
+    final recentWeekDays = daysTrained.last;
 
-    if (lastWeekVolume == 0) {
+    if (recentWeekDays == 0) {
       return TrendSummary(
         trend: Trend.none,
         average: averageOfPrevious,
@@ -130,7 +131,7 @@ class LogStreakChart extends StatelessWidget {
     }
 
     // 5. Compare the last week's volume to the average of previous weeks
-    final difference = lastWeekVolume - averageOfPrevious;
+    final difference = recentWeekDays - averageOfPrevious;
     final differenceIsZero = (difference == 0);
 
     final bool averageIsZero = (averageOfPrevious == 0);
