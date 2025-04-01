@@ -63,7 +63,7 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
                   Text(
                       "A readiness check helps you assess how prepared you are for today’s training session. Based on how you rate yourself, we’ll generate a score that guides you in adjusting your training intensity—helping you train smarter, avoid overtraining, and reduce the risk of injury.",
                       style:
-                          Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w700, fontSize: 14, height: 1.5, color: isDarkMode ? Colors.white70 : Colors.black)),
+                      Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.grey.shade800)),
                   const SizedBox(height: 20),
                   _MetricRatingSlider(
                     title: "Muscle Soreness",
