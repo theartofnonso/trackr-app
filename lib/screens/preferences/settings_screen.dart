@@ -1,12 +1,9 @@
-import 'dart:io';
-
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:health/health.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
@@ -23,7 +20,6 @@ import '../../utils/dialog_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/uri_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
-import '../../widgets/icons/apple_health_icon.dart';
 import '../../widgets/information_containers/information_container_with_background_image.dart';
 import '../exercise/library/exercise_library_screen.dart';
 
@@ -45,12 +41,10 @@ class SettingsScreen extends StatefulWidget {
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObserver {
+class _SettingsScreenState extends State<SettingsScreen> {
   bool _loading = false;
 
   late WeightUnit _weightUnitType;
-
-  bool _appleHealthEnabled = false;
 
   String _appVersion = "";
 
@@ -135,18 +129,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     },
                   ),
                 ),
-                SwitchListTile(
-                  tileColor: Colors.transparent,
-                  activeColor: vibrantGreen,
-                  title: Text('Show calendar dates', style: Theme.of(context).textTheme.titleMedium),
-                  value: SharedPrefs().showCalendarDates,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                  onChanged: (bool value) {
-                    setState(() {
-                      SharedPrefs().showCalendarDates = value;
-                    });
-                  },
-                ),
                 ListTile(
                     onTap: _navigateToUserProfile,
                     leading:
@@ -164,13 +146,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   title: Text("Exercises", style: Theme.of(context).textTheme.titleMedium),
                   subtitle: Text("manage exercises"),
                 ),
-                if (Platform.isIOS)
-                  ListTile(
-                    onTap: _connectAppleHealth,
-                    leading: AppleHealthIcon(isDarkMode: isDarkMode, height: 24),
-                    title: Text("Apple Health", style: Theme.of(context).textTheme.titleMedium),
-                    subtitle: Text(_appleHealthEnabled ? "connected" : "tap to connect"),
-                  ),
                 ListTile(
                     onTap: _sendFeedback,
                     leading:
@@ -249,13 +224,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
 
   void _navigateToExerciseLibrary() {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ExerciseLibraryScreen(readOnly: true)));
-  }
-
-  void _connectAppleHealth() async {
-    final hasPermission = await requestAppleHealth();
-    setState(() {
-      _appleHealthEnabled = hasPermission;
-    });
   }
 
   void _clearAppData() async {
@@ -368,18 +336,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         isRightActionDestructive: true);
   }
 
-  void _checkAppleHealthPermission() async {
-    await Health().configure();
-
-    final types = [HealthDataType.SLEEP_ASLEEP, HealthDataType.WORKOUT];
-
-    final hasPermissions = await Health().hasPermissions(types) ?? false;
-
-    setState(() {
-      _appleHealthEnabled = hasPermissions;
-    });
-  }
-
   void _getAppVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     final version = packageInfo.version;
@@ -392,25 +348,12 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
     _weightUnitType = WeightUnit.fromString(SharedPrefs().weightUnit);
-    _checkAppleHealthPermission();
     _getAppVersion();
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    /// Uncomment this to enable notifications
-    if (state == AppLifecycleState.resumed) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _checkAppleHealthPermission();
-      });
-    }
   }
 }

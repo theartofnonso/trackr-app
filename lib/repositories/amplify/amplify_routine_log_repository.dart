@@ -6,7 +6,6 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:health/health.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
@@ -91,7 +90,6 @@ class AmplifyRoutineLogRepository {
   }
 
   Future<RoutineLogDto> saveLog({required RoutineLogDto logDto, TemporalDateTime? datetime}) async {
-
     final now = datetime ?? TemporalDateTime.now();
 
     final logToCreate =
@@ -107,15 +105,6 @@ class AmplifyRoutineLogRepository {
     final updatedRoutineWithExerciseIds = updatedRoutineLogWithId.copyWith(
         exerciseLogs:
             updatedRoutineLogWithId.exerciseLogs.map((log) => log.copyWith(routineLogId: logToCreate.id)).toList());
-
-    // Write workout data to Apple Health
-
-    await Health().configure();
-    await Health().writeWorkoutData(
-        title: logDto.name,
-        activityType: HealthWorkoutActivityType.TRADITIONAL_STRENGTH_TRAINING,
-        start: logDto.startTime,
-        end: logDto.endTime);
 
     return updatedRoutineWithExerciseIds;
   }

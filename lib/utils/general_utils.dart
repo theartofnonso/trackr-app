@@ -5,7 +5,6 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:health/health.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
@@ -223,26 +222,6 @@ LinearGradient themeGradient({required BuildContext context}) {
   );
 }
 
-Future<bool> requestAppleHealth() async {
-  await Health().configure();
-
-  // define the types to get
-  final types = [HealthDataType.SLEEP_ASLEEP, HealthDataType.WORKOUT];
-
-  final permissions = [HealthDataAccess.READ, HealthDataAccess.WRITE];
-
-  bool hasPermissions = await Health().hasPermissions(types, permissions: permissions) ?? false;
-
-  if (!hasPermissions) {
-    // requesting access to the data types before reading them
-    hasPermissions = await Health().requestAuthorization(types, permissions: permissions);
-  } else {
-    hasPermissions = true;
-  }
-
-  return hasPermissions;
-}
-
 Widget getTrendIcon({required Trend trend}) {
   return switch (trend) {
     Trend.up => FaIcon(
@@ -276,7 +255,8 @@ Widget getTrendIcon({required Trend trend}) {
 }
 
 void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) async {
-  final readiness = await navigateWithSlideTransition(context: context, child: ReadinessScreen()) as DailyReadiness? ?? DailyReadiness.empty();
+  final readiness = await navigateWithSlideTransition(context: context, child: ReadinessScreen()) as DailyReadiness? ??
+      DailyReadiness.empty();
   final fatigue = readiness.perceivedFatigue;
   final soreness = readiness.muscleSoreness;
   final sleep = readiness.sleepDuration;
