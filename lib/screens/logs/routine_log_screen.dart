@@ -45,13 +45,6 @@ import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dar
 import '../../widgets/routine/preview/exercise_log_listview.dart';
 import '../AI/routine_log_report_screen.dart';
 
-class _StatisticsInformation {
-  final String title;
-  final String description;
-
-  _StatisticsInformation({required this.title, required this.description});
-}
-
 class RoutineLogScreen extends StatefulWidget {
   static const routeName = '/routine_log_screen';
 
@@ -704,6 +697,13 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         );
     }
   }
+}
+
+class _StatisticsInformation {
+  final String title;
+  final String description;
+
+  _StatisticsInformation({required this.title, required this.description});
 }
 
 class _StatisticWidget extends StatelessWidget {

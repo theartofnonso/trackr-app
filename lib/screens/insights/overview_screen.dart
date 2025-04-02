@@ -583,7 +583,7 @@ class _ProfileTile extends StatelessWidget {
           color: isDarkMode ? Colors.red.withValues(alpha: 0.1) : Colors.red,
           borderRadius: BorderRadius.circular(5)),
       child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-        Text("Manage your profile",
+        Text("Personalise\nyour fitness profile",
             style: GoogleFonts.ubuntu(fontSize: 20, height: 1.5, fontWeight: FontWeight.w600)),
         const Spacer(),
         Row(
