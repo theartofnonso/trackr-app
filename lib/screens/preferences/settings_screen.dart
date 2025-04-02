@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -10,7 +12,6 @@ import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/graphQL/queries.dart';
-import 'package:tracker_app/screens/preferences/user_profile_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/urls.dart';
 
@@ -20,6 +21,7 @@ import '../../utils/dialog_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/uri_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
+import '../../widgets/dividers/label_divider.dart';
 import '../../widgets/information_containers/information_container_with_background_image.dart';
 import '../exercise/library/exercise_library_screen.dart';
 
@@ -41,12 +43,14 @@ class SettingsScreen extends StatefulWidget {
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObserver {
   bool _loading = false;
 
   late WeightUnit _weightUnitType;
 
   String _appVersion = "";
+
+  bool _notificationEnabled = false;
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +76,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           minimum: EdgeInsets.all(10),
           child: SingleChildScrollView(
             child: Column(
-              spacing: 8,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 GestureDetector(
@@ -86,6 +89,40 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         fontWeight: FontWeight.w400,
                         color: Colors.white.withValues(alpha: 0.9),
                       )),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                if (Platform.isIOS)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      LabelDivider(
+                        label: "notifications".toUpperCase(),
+                        labelColor: isDarkMode ? Colors.white : Colors.black,
+                        dividerColor: sapphireLighter,
+                        fontSize: 14,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                          "Allow us to remind you about long-running workouts if you’ve become distracted. We’ll also send reminders on your training days.",
+                          textAlign: TextAlign.start,
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                    ]),
+                  ),
+                ListTile(
+                  onTap: _turnOnNotification,
+                  dense: true,
+                  horizontalTitleGap: 0,
+                  leading: Text(_notificationEnabled ? "Notification is on" : "Turn on notifications",
+                      textAlign: TextAlign.start,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontWeight: FontWeight.w600, fontSize: 14, color: isDarkMode ? Colors.white : Colors.black)),
+                  trailing: FaIcon(
+                    FontAwesomeIcons.solidBell,
+                    size: 14,
+                  ),
                 ),
                 ListTile(
                   tileColor: Colors.transparent,
@@ -130,12 +167,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
                 ListTile(
-                    onTap: _navigateToUserProfile,
-                    leading:
-                        FaIcon(FontAwesomeIcons.personWalking, color: isDarkMode ? Colors.white70 : Colors.black38),
-                    title: Text("Profile", style: Theme.of(context).textTheme.titleMedium),
-                    subtitle: Text("manage profile")),
-                ListTile(
                   onTap: _navigateToExerciseLibrary,
                   leading: Image.asset(
                     'icons/dumbbells.png',
@@ -168,7 +199,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     leading: FaIcon(FontAwesomeIcons.xmark, color: isDarkMode ? Colors.white70 : Colors.black38),
                     title: Text("Delete Account", style: Theme.of(context).textTheme.titleMedium),
                     subtitle: Text(userEmail)),
-                const SizedBox(height: 10),
                 Center(
                   child: Text(_appVersion, style: Theme.of(context).textTheme.bodySmall),
                 ),
@@ -178,16 +208,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
       ),
     );
-  }
-
-  void _navigateToUserProfile() {
-    final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
-    final user = routineUserController.user;
-    if (user != null) {
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const UserProfileScreen()));
-    } else {
-      showCreateProfileBottomSheet(context: context);
-    }
   }
 
   void _showLoadingScreen() {
@@ -276,6 +296,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ));
   }
 
+  void _turnOnNotification() async {
+    if (!_notificationEnabled) {
+      final isEnabled = await requestNotificationPermission();
+      setState(() {
+        _notificationEnabled = isEnabled;
+      });
+    }
+  }
+
+  void _checkNotificationPermission() async {
+    final result = await checkIosNotificationPermission();
+    setState(() {
+      _notificationEnabled = result.isEnabled;
+    });
+  }
+
   void _logout() async {
     showBottomSheetWithMultiActions(
         context: context,
@@ -350,10 +386,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
     super.initState();
     _weightUnitType = WeightUnit.fromString(SharedPrefs().weightUnit);
     _getAppVersion();
+    _checkNotificationPermission();
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    /// Uncomment this to enable notifications
+    if (state == AppLifecycleState.resumed) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _checkNotificationPermission();
+      });
+    }
   }
 }

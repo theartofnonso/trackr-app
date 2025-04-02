@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:tracker_app/widgets/dividers/label_divider.dart';
 import 'package:tracker_app/widgets/icons/user_icon_widget.dart';
-import 'package:tracker_app/widgets/list_tile.dart';
 
 import '../../colors.dart';
 import '../../controllers/routine_user_controller.dart';
@@ -28,8 +27,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
   RoutineUserDto? _user;
 
   double _weight = 0;
-
-  bool _notificationEnabled = false;
 
   @override
   Widget build(BuildContext context) {
@@ -80,39 +77,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
                         ),
                       ],
                     ),
-                    if (Platform.isIOS)
-                      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        LabelDivider(
-                          label: "notifications".toUpperCase(),
-                          labelColor: isDarkMode ? Colors.white : Colors.black,
-                          dividerColor: sapphireLighter,
-                          fontSize: 14,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                            "Allow us to remind you about long-running workouts if you’ve become distracted. We’ll also send reminders on your training days.",
-                            textAlign: TextAlign.start,
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
-                        const SizedBox(height: 8),
-                        ThemeListTile(
-                          child: ListTile(
-                            onTap: _turnOnNotification,
-                            dense: true,
-                            horizontalTitleGap: 0,
-                            leading: Text(_notificationEnabled ? "Notification is on" : "Turn on notifications",
-                                textAlign: TextAlign.start,
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                    color: isDarkMode ? Colors.white : Colors.black)),
-                            trailing: FaIcon(
-                              FontAwesomeIcons.solidBell,
-                              size: 14,
-                            ),
-                          ),
-                        )
-                      ])
                   ]),
                 ),
               ),
@@ -146,43 +110,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
     }
   }
 
-  void _turnOnNotification() async {
-    if (!_notificationEnabled) {
-      final isEnabled = await requestNotificationPermission();
-      setState(() {
-        _notificationEnabled = isEnabled;
-      });
-    }
-  }
-
-  void _checkNotificationPermission() async {
-    final result = await checkIosNotificationPermission();
-    setState(() {
-      _notificationEnabled = result.isEnabled;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
     _user = Provider.of<RoutineUserController>(context, listen: false).user;
     _weight = _user?.weight.toDouble() ?? 0.0;
-    _checkNotificationPermission();
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    /// Uncomment this to enable notifications
-    if (state == AppLifecycleState.resumed) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _checkNotificationPermission();
-      });
-    }
   }
 }
