@@ -48,7 +48,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
           gradient: themeGradient(context: context),
         ),
         child: SafeArea(
-          minimum: const EdgeInsets.only(right: 10, left: 10, bottom: 20),
+          minimum: const EdgeInsets.only(bottom: 20),
           child: Column(
             spacing: 16,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,18 +89,18 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
                           "The total number of different exercises you completed in a workout session."),
                     ),
                     _StatisticWidget(
-                      title: "85${weightLabel()}",
+                      title: "$_weight${weightLabel()}",
                       subtitle: "Weight",
-                      icon: FontAwesomeIcons.hashtag,
+                      icon: FontAwesomeIcons.personWalking,
                       information: _StatisticsInformation(
                           title: "Sets",
                           description:
                           "The number of rounds you performed for each exercise. A “set” consists of a group of repetitions (reps)."),
                     ),
                     _StatisticWidget(
-                      title: "5.9",
+                      title: "5.9in",
                       subtitle: "Height",
-                      icon: FontAwesomeIcons.weightHanging,
+                      icon: FontAwesomeIcons.personWalking,
                       information: _StatisticsInformation(
                           title: "Volume",
                           description:
@@ -109,7 +109,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
                     _StatisticWidget(
                       title: "Male",
                       subtitle: "Gender",
-                      icon: FontAwesomeIcons.solidClock,
+                      icon: FontAwesomeIcons.personWalking,
                       information: _StatisticsInformation(
                           title: "Duration",
                           description: "The total time you spent on your workout session, from start to finish."),
@@ -234,7 +234,6 @@ class _StatisticWidget extends StatelessWidget {
       onTap: () =>
           showBottomSheetWithNoAction(context: context, title: information.title, description: information.description),
       child: Container(
-        width: 120,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, // Background color of the container
@@ -258,13 +257,7 @@ class _StatisticWidget extends StatelessWidget {
                 height: 6,
               ),
               Text(title, style: Theme.of(context).textTheme.titleLarge),
-              const SizedBox(
-                height: 16,
-              ),
             ],
-          ),
-          Positioned.fill(
-            child: const Align(alignment: Alignment.bottomRight, child: FaIcon(FontAwesomeIcons.penToSquare, size: 10)),
           ),
         ]),
       ),
