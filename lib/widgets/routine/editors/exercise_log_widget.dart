@@ -393,9 +393,16 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         .where((set) => set.isWorkingSet)
         .toList();
 
+    bool isAllSameWeight = false;
+
+    if(exerciseType == ExerciseType.weights) {
+      final weights = workingSets.map((set) => (set as WeightAndRepsSetDto).weight).toList();
+      isAllSameWeight = allNumbersAreSame(numbers: weights);
+    }
+
     /// Determine working set for weight
     final workingSet = switch (exerciseType) {
-      ExerciseType.weights => getHighestWeight(workingSets),
+      ExerciseType.weights => isAllSameWeight ? getHeaviestVolume(workingSets) : getHighestWeight(workingSets),
       ExerciseType.bodyWeight => getHighestReps(workingSets),
       ExerciseType.duration => getLongestDuration(workingSets),
     };

@@ -326,3 +326,10 @@ bool isProbablyOutOfRangeInt(List<int> numbers, int newNumber) {
 
   return isUpperOutlier || isLowerOutlier;
 }
+
+bool allNumbersAreSame({required List<num> numbers}) {
+  if (numbers.isEmpty) return true; // or false, depending on your use case
+
+  final first = numbers.first;
+  return numbers.every((n) => n == first);
+}
