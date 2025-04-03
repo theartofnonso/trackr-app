@@ -12,6 +12,7 @@ import '../../controllers/routine_user_controller.dart';
 import '../../dtos/appsync/routine_user_dto.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/general_utils.dart';
+import '../../utils/navigation_utils.dart';
 import '../../widgets/empty_states/not_found.dart';
 
 class UserProfileScreen extends StatefulWidget {
@@ -41,6 +42,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
           icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
           onPressed: context.pop,
         ),
+          actions: [
+          IconButton(
+              onPressed: () => navigateToUserEditor(context: context, user: user),
+              icon: const FaIcon(FontAwesomeIcons.penToSquare, size: 18)),
+          ]
       ),
       body: Container(
         height: double.infinity,

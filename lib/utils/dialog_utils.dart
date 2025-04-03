@@ -98,9 +98,9 @@ void showHourTimerPicker(
           }));
 }
 
-void showDateTimePicker({required BuildContext context, required void Function(DateTime datetime) onChangedDateTime}) {
+void showDateTimePicker({required BuildContext context, required void Function(DateTime datetime) onChangedDateTime, CupertinoDatePickerMode? mode}) {
   FocusScope.of(context).unfocus();
-  displayBottomSheet(height: 240, context: context, child: DatetimePicker(onSelect: onChangedDateTime));
+  displayBottomSheet(height: 240, context: context, child: DatetimePicker(onSelect: onChangedDateTime, mode: mode));
 }
 
 void showDatetimeRangePicker(

@@ -5,8 +5,9 @@ import '../buttons/opacity_button_widget.dart';
 
 class DatetimePicker extends StatefulWidget {
   final void Function(DateTime datetime) onSelect;
+  final CupertinoDatePickerMode? mode;
 
-  const DatetimePicker({super.key, required this.onSelect});
+  const DatetimePicker({super.key, required this.onSelect, required this.mode});
 
   @override
   State<DatetimePicker> createState() => _DatetimePickerState();
@@ -22,7 +23,9 @@ class _DatetimePickerState extends State<DatetimePicker> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Expanded(
-          child: CupertinoDatePicker(use24hFormat: true, onDateTimeChanged: (DateTime value) {
+          child: CupertinoDatePicker(
+              mode: widget.mode ?? CupertinoDatePickerMode.dateAndTime,
+              use24hFormat: true, onDateTimeChanged: (DateTime value) {
             _dateTime = value;
           }),
         ),

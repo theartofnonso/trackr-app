@@ -5,9 +5,10 @@ class DoubleTextField extends StatelessWidget {
   final TextEditingController controller;
   final void Function(double value) onChanged;
   final void Function()? onTap;
+  final TextAlign? textAlign;
 
   const DoubleTextField(
-      {super.key, required this.value, required this.controller, required this.onChanged, this.onTap});
+      {super.key, required this.value, required this.controller, required this.onChanged, this.onTap, this.textAlign});
 
   double _parseDoubleOrDefault({required String value}) {
     return double.tryParse(value) ?? 0;
@@ -32,7 +33,7 @@ class DoubleTextField extends StatelessWidget {
           hintText: "${value > 0 ? value : '-'}"),
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       maxLines: 1,
-      textAlign: TextAlign.center,
+      textAlign: textAlign ?? TextAlign.center,
     );
   }
 }

@@ -98,7 +98,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       LabelDivider(
-                        label: "notifications".toUpperCase(),
+                        label: "Notifications",
                         labelColor: isDarkMode ? Colors.white : Colors.black,
                         dividerColor: sapphireLighter,
                         fontSize: 14,
