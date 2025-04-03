@@ -42,7 +42,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
           actions: [
           IconButton(
               onPressed: () => navigateToUserEditor(context: context, user: user),
-              icon: const FaIcon(FontAwesomeIcons.penToSquare, size: 18)),
+              icon: const FaIcon(FontAwesomeIcons.solidPenToSquare, size: 18)),
           ]
       ),
       body: Container(

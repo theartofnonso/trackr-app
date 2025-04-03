@@ -14,6 +14,7 @@ import 'package:tracker_app/widgets/list_tile.dart';
 import '../../colors.dart';
 import '../../enums/gender_enums.dart';
 import '../../logger.dart';
+import '../../shared_prefs.dart';
 import '../../utils/general_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/dividers/label_divider.dart';
@@ -41,6 +42,8 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
   WeightUnit _weightUnit = WeightUnit.kg;
 
   HeightUnit _heightUnit = HeightUnit.ft;
+
+  bool _hasRegexError = false;
 
   num _weight = 0.0;
 
@@ -114,7 +117,7 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(children: [
-                       const Spacer(),
+                        const Spacer(),
                         CupertinoSlidingSegmentedControl<WeightUnit>(
                           backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade400,
                           thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
@@ -123,13 +126,11 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                             WeightUnit.kg: SizedBox(
                                 width: 30,
                                 child: Text(WeightUnit.kg.display,
-                                    style: Theme.of(context).textTheme.bodySmall,
-                                    textAlign: TextAlign.center)),
+                                    style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center)),
                             WeightUnit.lbs: SizedBox(
                                 width: 30,
                                 child: Text(WeightUnit.lbs.display,
-                                    style: Theme.of(context).textTheme.bodySmall,
-                                    textAlign: TextAlign.center)),
+                                    style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center)),
                           },
                           onValueChanged: (WeightUnit? value) {
                             if (value != null) {
@@ -148,12 +149,11 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                           fontSize: 14,
                         ),
                         const SizedBox(height: 4),
-                        Text("Establishes a baseline for tracking progress, estimating calorie needs, and personalizing your fitness plan.",
+                        Text(
+                            "Establishes a baseline for tracking progress, estimating calorie needs, and personalizing your fitness plan.",
                             textAlign: TextAlign.start,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
                         const SizedBox(height: 10),
                         ThemeListTile(
                           child: ListTile(
@@ -187,13 +187,11 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                             HeightUnit.ft: SizedBox(
                                 width: 30,
                                 child: Text("Kg",
-                                    style: Theme.of(context).textTheme.bodySmall,
-                                    textAlign: TextAlign.center)),
+                                    style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center)),
                             HeightUnit.cm: SizedBox(
                                 width: 30,
                                 child: Text("Lbs",
-                                    style: Theme.of(context).textTheme.bodySmall,
-                                    textAlign: TextAlign.center)),
+                                    style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center)),
                           },
                           onValueChanged: (HeightUnit? value) {
                             if (value != null) {
@@ -212,12 +210,11 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                           fontSize: 14,
                         ),
                         const SizedBox(height: 4),
-                        Text("Establishes a baseline for tracking progress, estimating calorie needs, and personalizing your fitness plan.",
+                        Text(
+                            "Establishes a baseline for tracking progress, estimating calorie needs, and personalizing your fitness plan.",
                             textAlign: TextAlign.start,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
                         const SizedBox(height: 10),
                         ThemeListTile(
                           child: ListTile(
@@ -246,7 +243,8 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                       fontSize: 14,
                     ),
                     const SizedBox(height: 4),
-                    Text("Helps tailor workout intensity and recovery guidance, as biological differences can affect training responses.",
+                    Text(
+                        "Helps tailor workout intensity and recovery guidance, as biological differences can affect training responses.",
                         textAlign: TextAlign.start,
                         style: Theme.of(context)
                             .textTheme
@@ -278,7 +276,8 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                       fontSize: 14,
                     ),
                     const SizedBox(height: 4),
-                    Text("Influences metabolism, recovery speed, and risk factors, so we can customize your program safely.",
+                    Text(
+                        "Influences metabolism, recovery speed, and risk factors, so we can customize your program safely.",
                         textAlign: TextAlign.start,
                         style: Theme.of(context)
                             .textTheme
@@ -301,17 +300,17 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                       ),
                     )
                   ]),
-                    SafeArea(
-                      minimum: EdgeInsets.all(10),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: OpacityButtonWidget(
-                            onPressed: _updateUser,
-                            label: user != null ? "Update Profile" : "Create Profile",
-                            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-                            buttonColor: vibrantGreen),
-                      ),
+                  SafeArea(
+                    minimum: EdgeInsets.all(10),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: OpacityButtonWidget(
+                          onPressed: user != null ? _updateUser : _createUser,
+                          label: user != null ? "Update Profile" : "Create Profile",
+                          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                          buttonColor: vibrantGreen),
                     ),
+                  ),
                 ]),
               ),
             ),
@@ -336,12 +335,12 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
   }
 
   void _selectWeight() {
-    final values = switch(_weightUnit) {
+    final values = switch (_weightUnit) {
       WeightUnit.kg => generateNumbers(start: 23, end: 204),
       WeightUnit.lbs => generateNumbers(start: 51, end: 450),
     };
 
-    final unitLabel = switch(_weightUnit) {
+    final unitLabel = switch (_weightUnit) {
       WeightUnit.kg => WeightUnit.kg.display,
       WeightUnit.lbs => WeightUnit.lbs.display,
     };
@@ -363,12 +362,12 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
   }
 
   void _selectHeight() {
-    final values = switch(_weightUnit) {
+    final values = switch (_weightUnit) {
       WeightUnit.kg => generateNumbers(start: 23, end: 204),
       WeightUnit.lbs => generateNumbers(start: 51, end: 450),
     };
 
-    final unitLabel = switch(_weightUnit) {
+    final unitLabel = switch (_weightUnit) {
       WeightUnit.kg => "kg",
       WeightUnit.lbs => "lbs",
     };
@@ -406,16 +405,83 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
         ));
   }
 
+  void _dismissKeyboard() {
+    FocusScope.of(context).unfocus();
+  }
+
+  bool _passedSanityChecks() {
+    _dismissKeyboard();
+
+    final name = _nameController.text.trim().toLowerCase();
+
+    /// Check that name is not empty
+    if (name.isEmpty) {
+      showSnackbar(
+        context: context,
+        icon: const FaIcon(FontAwesomeIcons.triangleExclamation),
+        message: "name must not be empty",
+      );
+      return false;
+    }
+
+    /// Check if username is valid
+    final RegExp regex = RegExp(r'^[a-zA-Z0-9]+$');
+    if (!regex.hasMatch(name)) {
+      showSnackbar(
+        context: context,
+        icon: const FaIcon(FontAwesomeIcons.triangleExclamation),
+        message: "$name must not contain symbols or spaces",
+      );
+      return false;
+    }
+
+    return true;
+  }
+
   void _updateUser() async {
+    final passed = _passedSanityChecks();
+
+    if (!passed) {
+      return;
+    }
+
     final user = _user;
     if (user != null) {
-      final userToUpdate =
-          user.copyWith(weight: _weight, height: _height, name: _nameController.text, dateOfBirth: _dateOfBirth, gender: _gender);
+      final userToUpdate = user.copyWith(
+          weight: _weight, height: _height, name: _nameController.text, dateOfBirth: _dateOfBirth, gender: _gender);
       await Provider.of<RoutineUserController>(context, listen: false).updateUser(userDto: userToUpdate);
       if (mounted) {
-        Navigator.of(context).pop();
+        context.pop();
       }
     }
+  }
+
+  void _createUser() async {
+    final passed = _passedSanityChecks();
+
+    if (!passed) {
+      return;
+    }
+
+    final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
+    final newUser = RoutineUserDto(
+      id: "",
+      name: _nameController.text,
+      cognitoUserId: SharedPrefs().userId,
+      email: SharedPrefs().userEmail,
+      weight: 0.0,
+      owner: "",
+      height: 0.0,
+      dateOfBirth: DateTime.now(),
+      gender: Gender.other,
+    );
+
+    await routineUserController.saveUser(userDto: newUser);
+
+    if (!mounted) return;
+
+    // Navigate back and show the result
+    context.pop();
   }
 
   @override
