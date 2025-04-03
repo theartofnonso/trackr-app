@@ -142,10 +142,10 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                       ]),
                       Column(children: [
                         LabelDivider(
-                          label: "Weight",
+                          label: "Weight".toUpperCase(),
                           labelColor: isDarkMode ? Colors.white : Colors.black,
                           dividerColor: sapphireLighter,
-                          fontSize: 16,
+                          fontSize: 14,
                         ),
                         const SizedBox(height: 4),
                         Text("Establishes a baseline for tracking progress, estimating calorie needs, and personalizing your fitness plan.",
@@ -206,10 +206,10 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                       ]),
                       Column(children: [
                         LabelDivider(
-                          label: "Height",
+                          label: "Height".toUpperCase(),
                           labelColor: isDarkMode ? Colors.white : Colors.black,
                           dividerColor: sapphireLighter,
-                          fontSize: 16,
+                          fontSize: 14,
                         ),
                         const SizedBox(height: 4),
                         Text("Establishes a baseline for tracking progress, estimating calorie needs, and personalizing your fitness plan.",
@@ -240,10 +240,10 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                   Divider(color: isDarkMode ? Colors.white70.withValues(alpha: 0.1) : Colors.grey.shade200),
                   Column(children: [
                     LabelDivider(
-                      label: "Gender",
+                      label: "Gender".toUpperCase(),
                       labelColor: isDarkMode ? Colors.white : Colors.black,
                       dividerColor: sapphireLighter,
-                      fontSize: 16,
+                      fontSize: 14,
                     ),
                     const SizedBox(height: 4),
                     Text("Helps tailor workout intensity and recovery guidance, as biological differences can affect training responses.",
@@ -272,10 +272,10 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                   Divider(color: isDarkMode ? Colors.white70.withValues(alpha: 0.1) : Colors.grey.shade200),
                   Column(children: [
                     LabelDivider(
-                      label: "Age",
+                      label: "Age".toUpperCase(),
                       labelColor: isDarkMode ? Colors.white : Colors.black,
                       dividerColor: sapphireLighter,
-                      fontSize: 16,
+                      fontSize: 14,
                     ),
                     const SizedBox(height: 4),
                     Text("Influences metabolism, recovery speed, and risk factors, so we can customize your program safely.",
