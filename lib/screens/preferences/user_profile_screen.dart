@@ -25,16 +25,11 @@ class UserProfileScreen extends StatefulWidget {
 }
 
 class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindingObserver {
-  RoutineUserDto? _user;
-
-  double _weight = 0;
 
   @override
   Widget build(BuildContext context) {
 
-    final user = _user;
-
-    if (user == null) return const NotFound();
+    final user = Provider.of<RoutineUserController>(context, listen: true).user;
 
     return Scaffold(
       appBar: AppBar(
@@ -123,18 +118,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
                   ],
                 ),
               ),
-              SafeArea(
-                minimum: EdgeInsets.all(10),
-                child: SizedBox(
-                    width: double.infinity,
-                    height: 45,
-                    child: OpacityButtonWidget(
-                      onPressed: _updateUser,
-                      label: "Save Profile",
-                      buttonColor: vibrantGreen,
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                    )),
-              ),
             ],
           ),
         ),
@@ -142,23 +125,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
     );
   }
 
-  void _updateUser() async {
-    final user = _user;
-    if (user != null) {
-      final userToUpdate = user.copyWith(weight: _weight);
-      await Provider.of<RoutineUserController>(context, listen: false).updateUser(userDto: userToUpdate);
-      if (mounted) {
-        Navigator.of(context).pop();
-      }
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _user = Provider.of<RoutineUserController>(context, listen: false).user;
-    _weight = _user?.weight.toDouble() ?? 0.0;
-  }
 }
 
 class _AddTile extends StatelessWidget {

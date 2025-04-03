@@ -75,6 +75,7 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
           ),
           body: Container(
             width: double.infinity,
+            height: double.infinity,
             decoration: BoxDecoration(
               gradient: themeGradient(context: context),
             ),
