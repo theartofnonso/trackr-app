@@ -84,6 +84,7 @@ class _GenericPickerState<T> extends State<GenericPicker<T>> {
         OpacityButtonWidget(
           onPressed: () => widget.onItemSelected(_selectedItem),
           buttonColor: vibrantGreen,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           label: "Select ${widget.labelBuilder(_selectedItem)}",
         ),
       ],

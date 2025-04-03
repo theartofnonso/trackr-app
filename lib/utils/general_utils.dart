@@ -25,12 +25,26 @@ bool isDefaultWeightUnit() {
   return weightUnit == WeightUnit.kg;
 }
 
+bool isDefaultHeightUnit() {
+  final heightString = SharedPrefs().heightUnit;
+  final heightUnit = HeightUnit.fromString(heightString);
+  return heightUnit == HeightUnit.cm;
+}
+
 double weightWithConversion({required num value}) {
   return isDefaultWeightUnit() ? value.toDouble() : toLbs(value.toDouble());
 }
 
-String weightLabel() {
+String heightWithConversion({HeightUnit? unit, required num value}) {
+  return unit == HeightUnit.cm || isDefaultHeightUnit() ? "$value cm" : toFtInString(value.toDouble());
+}
+
+String weightUnit() {
   return SharedPrefs().weightUnit;
+}
+
+String heightUnit() {
+  return SharedPrefs().heightUnit;
 }
 
 double toKg(double value) {
@@ -43,8 +57,39 @@ double toLbs(double value) {
   return double.parse(conversion.toStringAsFixed(2));
 }
 
+String toFtInString(double value) {
+  // 1 inch = 2.54 cm, 1 foot = 12 inches
+  final double totalInches = value / 2.54;
+  final int feet = totalInches ~/ 12;         // integer division to get whole feet
+  final double remainderInches = totalInches % 12;
+  // Round inches to 2 decimals if desired:
+  return '$feet ft, ${remainderInches.round()} in';
+}
+
+Map<String, num> toFtIn(double value) {
+  // 1 inch = 2.54 cm, 1 foot = 12 inches
+  final double totalInches = value / 2.54;
+  final int feet = totalInches ~/ 12;         // integer division to get whole feet
+  final double remainderInches = totalInches % 12;
+  // Round inches to 2 decimals if desired:
+  return {
+    'feet': feet,
+    'inches': remainderInches.round()
+  };
+}
+
+int toCm({required int feet, required int inches}) {
+  // 1 foot = 30.48 cm, 1 inch = 2.54 cm
+  final double conversion = (feet * 30.48) + (inches * 2.54);
+  return conversion.round();
+}
+
 void toggleWeightUnit({required WeightUnit unit}) {
   SharedPrefs().weightUnit = unit.name;
+}
+
+void toggleHeightUnit({required HeightUnit unit}) {
+  SharedPrefs().heightUnit = unit.name;
 }
 
 String timeOfDay({DateTime? datetime}) {

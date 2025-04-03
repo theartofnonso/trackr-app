@@ -35,8 +35,9 @@ class RoutineUserDto {
     final name = json["name"] ?? "";
     final email = json["email"] ?? "";
     final weight = (json["weight"]) ?? 0.0;
-    final height = (json["height"]) ?? 0.0;
-    final dateOrBirth = (json["dob"]) ?? DateTime.now();
+    final height = (json["height"]) ?? 0;
+    final dateOfBirthMillisecondsSinceEpoch = (json["dob"]) as int? ?? DateTime.now().millisecondsSinceEpoch;
+    final dateOfBirth = DateTime.fromMillisecondsSinceEpoch(dateOfBirthMillisecondsSinceEpoch);
     final genderString = json["gender"] ?? "";
     final gender = TRKRGender.fromString(genderString);
 
@@ -48,7 +49,7 @@ class RoutineUserDto {
         weight: weight,
         height: height,
         owner: user.owner ?? "",
-        dateOfBirth: dateOrBirth,
+        dateOfBirth: dateOfBirth,
         gender: gender);
   }
 
@@ -60,8 +61,8 @@ class RoutineUserDto {
       'email': email,
       'weight': weight,
       'height': height,
-      'dob': dateOfBirth,
-      'gender': gender,
+      'dob': dateOfBirth.millisecondsSinceEpoch,
+      'gender': gender.display,
     };
   }
 

@@ -42,7 +42,7 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
 
   WeightUnit _weightUnit = WeightUnit.kg;
 
-  HeightUnit _heightUnit = HeightUnit.ftIn;
+  HeightUnit _heightUnit = HeightUnit.cm;
 
   num _weight = 0.0;
 
@@ -66,6 +66,8 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
     }
 
     final user = _user;
+
+    final heightConversion = heightWithConversion(unit: _heightUnit ,value: _height);
 
     return PopScope(
         canPop: false,
@@ -183,13 +185,13 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                           thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
                           groupValue: _heightUnit,
                           children: {
-                            HeightUnit.ftIn: SizedBox(
-                                width: 60,
-                                child: Text(HeightUnit.ftIn.display,
-                                    style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center)),
                             HeightUnit.cm: SizedBox(
                                 width: 30,
                                 child: Text(HeightUnit.cm.display,
+                                    style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center)),
+                            HeightUnit.ftIn: SizedBox(
+                                width: 30,
+                                child: Text(HeightUnit.ftIn.display,
                                     style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center)),
                           },
                           onValueChanged: (HeightUnit? value) {
@@ -197,6 +199,7 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                               setState(() {
                                 _heightUnit = value;
                               });
+                              toggleHeightUnit(unit: value);
                             }
                           },
                         ),
@@ -218,7 +221,7 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                         ThemeListTile(
                           child: ListTile(
                             onTap: _selectHeight,
-                            leading: Text("$_height ${_heightUnit.display}",
+                            leading: Text(heightConversion,
                                 textAlign: TextAlign.start,
                                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                     fontWeight: FontWeight.w600,
@@ -324,6 +327,7 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
   void _selectDate() {
     showDateTimePicker(
         context: context,
+        initialDateTime: _dateOfBirth,
         onChangedDateTime: (DateTime datetime) {
           Navigator.of(context).pop();
           setState(() {
@@ -350,6 +354,7 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
         context: context,
         child: GenericPicker(
           items: values,
+          initialValue: _weight,
           labelBuilder: (value) => "$value $unitLabel",
           onItemSelected: (value) {
             Navigator.of(context).pop();
@@ -361,13 +366,16 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
   }
 
   void _selectHeight() {
-
     FocusScope.of(context).unfocus();
 
-    if(_heightUnit == HeightUnit.ftIn) {
-
+    if (_heightUnit == HeightUnit.ftIn) {
       final fts = generateNumbers(start: 3, end: 8);
       final inches = generateNumbers(start: 0, end: 11);
+
+      final initialHeightInFtIn = toFtIn(_height.toDouble());
+
+      final initialFeet = initialHeightInFtIn["feet"];
+      final initialInches = initialHeightInFtIn["inches"];
 
       displayBottomSheet(
           height: 240,
@@ -377,13 +385,15 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
             secondItems: inches,
             firstLabelBuilder: (value) => "$value ft",
             secondLabelBuilder: (value) => "$value in",
+            firstInitialValue: initialFeet,
+            secondInitialValue: initialInches ,
             onItemSelected: (value) {
               Navigator.of(context).pop();
               setState(() {
                 final valueMap = value as Map;
-                final feet = valueMap["first"];
-                final inches = valueMap["second"];
-                _height = feet * 30.48 + inches * 2.54;
+                final feet = valueMap["first"] as int;
+                final inches = valueMap["second"] as int;
+                _height = toCm(feet: feet, inches: inches);
               });
             },
           ));
@@ -394,6 +404,7 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
           context: context,
           child: GenericPicker(
             items: values,
+            initialValue: _height,
             labelBuilder: (value) => "$value ${HeightUnit.cm.display}",
             onItemSelected: (value) {
               Navigator.of(context).pop();
@@ -411,6 +422,7 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
         height: 240,
         context: context,
         child: GenericPicker(
+          initialValue: _gender,
           items: TRKRGender.values,
           labelBuilder: (gender) => gender.display,
           onItemSelected: (value) {
@@ -488,10 +500,12 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
       email: SharedPrefs().userEmail,
       weight: 0.0,
       owner: "",
-      height: 0.0,
+      height: 0,
       dateOfBirth: DateTime.now(),
       gender: TRKRGender.other,
     );
+
+
 
     await routineUserController.saveUser(userDto: newUser);
 
@@ -506,6 +520,10 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
     super.initState();
     _user = Provider.of<RoutineUserController>(context, listen: false).user;
     _nameController = TextEditingController(text: _user?.name);
+    _weight = _user?.weight ?? 0.0;
+    _height = _user?.height ?? 0;
+    _gender = _user?.gender ?? TRKRGender.other;
+    _dateOfBirth = _user?.dateOfBirth ?? DateTime.now();
   }
 
   @override

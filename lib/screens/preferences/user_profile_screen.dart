@@ -1,4 +1,3 @@
-
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -9,7 +8,6 @@ import 'package:tracker_app/widgets/icons/user_icon_widget.dart';
 
 import '../../colors.dart';
 import '../../controllers/routine_user_controller.dart';
-import '../../utils/dialog_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 
@@ -23,14 +21,13 @@ class UserProfileScreen extends StatefulWidget {
 }
 
 class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindingObserver {
-
   @override
   Widget build(BuildContext context) {
-
     final user = Provider.of<RoutineUserController>(context, listen: true).user;
 
     final weight = user?.weight ?? 0.0;
     final height = user?.height ?? 0.0;
+    final heightConversion = heightWithConversion(value: height);
 
     final dob = user?.dateOfBirth ?? DateTime.now();
     final age = _calculateAge(birthDate: dob);
@@ -39,16 +36,15 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
-          onPressed: context.pop,
-        ),
+          leading: IconButton(
+            icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
+            onPressed: context.pop,
+          ),
           actions: [
-          IconButton(
-              onPressed: () => navigateToUserEditor(context: context, user: user),
-              icon: const FaIcon(FontAwesomeIcons.solidPenToSquare, size: 18)),
-          ]
-      ),
+            IconButton(
+                onPressed: () => navigateToUserEditor(context: context, user: user),
+                icon: const FaIcon(FontAwesomeIcons.solidPenToSquare, size: 24)),
+          ]),
       body: Container(
         height: double.infinity,
         decoration: BoxDecoration(
@@ -89,37 +85,18 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
                     _StatisticWidget(
                       title: "$age",
                       subtitle: "Age",
-                      icon: FontAwesomeIcons.personWalking,
-                      information: _StatisticsInformation(
-                          title: "Exercises",
-                          description:
-                          "The total number of different exercises you completed in a workout session."),
                     ),
                     _StatisticWidget(
-                      title: "$weight ${weightLabel()}",
+                      title: "$weight ${weightUnit()}",
                       subtitle: "Weight",
-                      icon: FontAwesomeIcons.personWalking,
-                      information: _StatisticsInformation(
-                          title: "Sets",
-                          description:
-                          "The number of rounds you performed for each exercise. A “set” consists of a group of repetitions (reps)."),
                     ),
                     _StatisticWidget(
-                      title: "$height",
+                      title: heightConversion,
                       subtitle: "Height",
-                      icon: FontAwesomeIcons.personWalking,
-                      information: _StatisticsInformation(
-                          title: "Volume",
-                          description:
-                          "The total amount of work performed during a workout, typically calculated as: Volume = Sets × Reps × Weight."),
                     ),
                     _StatisticWidget(
                       title: gender.name,
                       subtitle: "Gender",
-                      icon: FontAwesomeIcons.personWalking,
-                      information: _StatisticsInformation(
-                          title: "Duration",
-                          description: "The total time you spent on your workout session, from start to finish."),
                     ),
                   ],
                 ),
@@ -137,14 +114,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
     int age = today.year - birthDate.year;
 
     // Adjust if birthday hasn't occurred yet this year
-    if (today.month < birthDate.month ||
-        (today.month == birthDate.month && today.day < birthDate.day)) {
+    if (today.month < birthDate.month || (today.month == birthDate.month && today.day < birthDate.day)) {
       age--;
     }
 
     return age;
   }
-
 }
 
 class _AddTile extends StatelessWidget {
@@ -161,8 +136,7 @@ class _AddTile extends StatelessWidget {
           color: isDarkMode ? Colors.yellow.withValues(alpha: 0.1) : Colors.yellow,
           borderRadius: BorderRadius.circular(5)),
       child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-        Text("25",
-            style: GoogleFonts.ubuntu(fontSize: 20, height: 1.5, fontWeight: FontWeight.w600)),
+        Text("25", style: GoogleFonts.ubuntu(fontSize: 20, height: 1.5, fontWeight: FontWeight.w600)),
         const Spacer(),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -198,61 +172,34 @@ class _StatisticsInformation {
 }
 
 class _StatisticWidget extends StatelessWidget {
-  final IconData? icon;
-  final String? image;
   final String title;
   final String subtitle;
-  final _StatisticsInformation information;
 
-  const _StatisticWidget(
-      {this.icon, this.image, required this.title, required this.subtitle, required this.information});
+  const _StatisticWidget({required this.title, required this.subtitle});
 
   @override
   Widget build(BuildContext context) {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final leading = image != null
-        ? Image.asset(
-      'icons/$image.png',
-      fit: BoxFit.contain,
-      color: isDarkMode ? Colors.white : Colors.black,
-      height: 14, // Adjust the height as needed
-    )
-        : FaIcon(icon, size: 14);
-
-    return GestureDetector(
-      onTap: () =>
-          showBottomSheetWithNoAction(context: context, title: information.title, description: information.description),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, // Background color of the container
-          borderRadius: BorderRadius.circular(5), // Border radius for rounded corners
-        ),
-        child: Stack(children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Wrap(
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
-                  leading,
-                  const SizedBox(
-                    width: 6,
-                  ),
-                  Text(subtitle.toUpperCase(), style: Theme.of(context).textTheme.bodySmall)
-                ],
-              ),
-              const SizedBox(
-                height: 6,
-              ),
-              Text(title, style: Theme.of(context).textTheme.titleLarge),
-            ],
-          ),
-        ]),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      decoration: BoxDecoration(
+        color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, // Background color of the container
+        borderRadius: BorderRadius.circular(5), // Border radius for rounded corners
       ),
+      child: Stack(children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(subtitle.toUpperCase(), style: Theme.of(context).textTheme.bodySmall),
+            const SizedBox(
+              height: 6,
+            ),
+            Text(title, style: Theme.of(context).textTheme.titleLarge),
+          ],
+        ),
+      ]),
     );
   }
 }
-

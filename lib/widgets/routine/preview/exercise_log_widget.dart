@@ -267,7 +267,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             ),
           ),
           switch (exerciseType) {
-            ExerciseType.weights => DoubleSetHeader(firstLabel: weightLabel().toUpperCase(), secondLabel: 'REPS'),
+            ExerciseType.weights => DoubleSetHeader(firstLabel: weightUnit().toUpperCase(), secondLabel: 'REPS'),
             ExerciseType.bodyWeight => SingleSetHeader(label: 'REPS'),
             ExerciseType.duration => SingleSetHeader(label: 'TIME'),
           },

@@ -135,6 +135,7 @@ class _DoubleGenericPickerState<T> extends State<DoubleGenericPicker<T>> {
             widget.onItemSelected(selectedItem);
           },
           buttonColor: vibrantGreen,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           label: "Select ${widget.firstLabelBuilder(_firstSelectedItem)} ${widget.secondLabelBuilder(_secondSelectedItem)}",
         ),
       ],

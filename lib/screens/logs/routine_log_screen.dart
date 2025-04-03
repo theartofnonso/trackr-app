@@ -311,7 +311,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                                               text: " ",
                                             ),
                                             TextSpan(
-                                              text: weightLabel().toUpperCase(),
+                                              text: weightUnit().toUpperCase(),
                                               style: Theme.of(context).textTheme.bodyMedium,
                                             ),
                                           ],

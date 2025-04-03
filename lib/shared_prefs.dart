@@ -33,6 +33,15 @@ class SharedPrefs {
     _sharedPrefs?.setString(_weightUnitKey, value);
   }
 
+  /// Height Unit Type
+  final String _heightUnitKey = "height_unit_type_key";
+
+  String get heightUnit => _sharedPrefs?.getString(_heightUnitKey) ?? HeightUnit.cm.name;
+
+  set heightUnit(String value) {
+    _sharedPrefs?.setString(_heightUnitKey, value);
+  }
+
   /// First launch flag
   final String _firstLaunchKey = "first_launch_key";
 

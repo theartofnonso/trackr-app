@@ -434,7 +434,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                                               text: " ",
                                             ),
                                             TextSpan(
-                                              text: weightLabel().toUpperCase(),
+                                              text: weightUnit().toUpperCase(),
                                               style: Theme.of(context).textTheme.bodyMedium,
                                             ),
                                           ],

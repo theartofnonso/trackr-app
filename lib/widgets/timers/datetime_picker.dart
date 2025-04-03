@@ -35,7 +35,7 @@ class _DatetimePickerState extends State<DatetimePicker> {
             onPressed: () => widget.onSelect(_dateTime),
             label: "Select date",
             buttonColor: vibrantGreen,
-            padding: const EdgeInsets.all(10.0))
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12)),
       ],
     );
   }
