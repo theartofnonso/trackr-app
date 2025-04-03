@@ -1,4 +1,5 @@
 
+import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -29,9 +30,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
     final user = Provider.of<RoutineUserController>(context, listen: true).user;
 
     final weight = user?.weight ?? 0.0;
+    final height = user?.height ?? 0.0;
 
     final dob = user?.dateOfBirth ?? DateTime.now();
     final age = _calculateAge(birthDate: dob);
+
+    final gender = user?.gender ?? Gender.other;
 
     return Scaffold(
       appBar: AppBar(
@@ -92,7 +96,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
                           "The total number of different exercises you completed in a workout session."),
                     ),
                     _StatisticWidget(
-                      title: "$weight${weightLabel()}",
+                      title: "$weight ${weightLabel()}",
                       subtitle: "Weight",
                       icon: FontAwesomeIcons.personWalking,
                       information: _StatisticsInformation(
@@ -101,7 +105,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
                           "The number of rounds you performed for each exercise. A “set” consists of a group of repetitions (reps)."),
                     ),
                     _StatisticWidget(
-                      title: "5.9in",
+                      title: "$height",
                       subtitle: "Height",
                       icon: FontAwesomeIcons.personWalking,
                       information: _StatisticsInformation(
@@ -110,7 +114,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
                           "The total amount of work performed during a workout, typically calculated as: Volume = Sets × Reps × Weight."),
                     ),
                     _StatisticWidget(
-                      title: "Male",
+                      title: gender.name,
                       subtitle: "Gender",
                       icon: FontAwesomeIcons.personWalking,
                       information: _StatisticsInformation(

@@ -18,6 +18,7 @@ import '../../shared_prefs.dart';
 import '../../utils/general_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/dividers/label_divider.dart';
+import '../../widgets/double_picker.dart';
 import '../../widgets/picker.dart';
 import '../preferences/settings_screen.dart';
 
@@ -41,15 +42,13 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
 
   WeightUnit _weightUnit = WeightUnit.kg;
 
-  HeightUnit _heightUnit = HeightUnit.ft;
-
-  bool _hasRegexError = false;
+  HeightUnit _heightUnit = HeightUnit.ftIn;
 
   num _weight = 0.0;
 
   num _height = 0.0;
 
-  Gender _gender = Gender.other;
+  TRKRGender _gender = TRKRGender.other;
 
   DateTime _dateOfBirth = DateTime.now();
 
@@ -184,13 +183,13 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                           thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
                           groupValue: _heightUnit,
                           children: {
-                            HeightUnit.ft: SizedBox(
-                                width: 30,
-                                child: Text("Kg",
+                            HeightUnit.ftIn: SizedBox(
+                                width: 60,
+                                child: Text(HeightUnit.ftIn.display,
                                     style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center)),
                             HeightUnit.cm: SizedBox(
                                 width: 30,
-                                child: Text("Lbs",
+                                child: Text(HeightUnit.cm.display,
                                     style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center)),
                           },
                           onValueChanged: (HeightUnit? value) {
@@ -218,8 +217,8 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                         const SizedBox(height: 10),
                         ThemeListTile(
                           child: ListTile(
-                            onTap: _selectGender,
-                            leading: Text("$_weight${weightLabel()}",
+                            onTap: _selectHeight,
+                            leading: Text("$_height ${_heightUnit.display}",
                                 textAlign: TextAlign.start,
                                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                     fontWeight: FontWeight.w600,
@@ -254,7 +253,7 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                     ThemeListTile(
                       child: ListTile(
                         onTap: _selectGender,
-                        leading: Text(_gender.name,
+                        leading: Text(_gender.display,
                             textAlign: TextAlign.start,
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                 fontWeight: FontWeight.w600,
@@ -362,30 +361,48 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
   }
 
   void _selectHeight() {
-    final values = switch (_weightUnit) {
-      WeightUnit.kg => generateNumbers(start: 23, end: 204),
-      WeightUnit.lbs => generateNumbers(start: 51, end: 450),
-    };
-
-    final unitLabel = switch (_weightUnit) {
-      WeightUnit.kg => "kg",
-      WeightUnit.lbs => "lbs",
-    };
 
     FocusScope.of(context).unfocus();
-    displayBottomSheet(
-        height: 240,
-        context: context,
-        child: GenericPicker(
-          items: values,
-          labelBuilder: (value) => "$value $unitLabel",
-          onItemSelected: (value) {
-            Navigator.of(context).pop();
-            setState(() {
-              _weight = value;
-            });
-          },
-        ));
+
+    if(_heightUnit == HeightUnit.ftIn) {
+
+      final fts = generateNumbers(start: 3, end: 8);
+      final inches = generateNumbers(start: 0, end: 11);
+
+      displayBottomSheet(
+          height: 240,
+          context: context,
+          child: DoubleGenericPicker(
+            firstItems: fts,
+            secondItems: inches,
+            firstLabelBuilder: (value) => "$value ft",
+            secondLabelBuilder: (value) => "$value in",
+            onItemSelected: (value) {
+              Navigator.of(context).pop();
+              setState(() {
+                final valueMap = value as Map;
+                final feet = valueMap["first"];
+                final inches = valueMap["second"];
+                _height = feet * 30.48 + inches * 2.54;
+              });
+            },
+          ));
+    } else {
+      final values = generateNumbers(start: 91, end: 272);
+      displayBottomSheet(
+          height: 240,
+          context: context,
+          child: GenericPicker(
+            items: values,
+            labelBuilder: (value) => "$value ${HeightUnit.cm.display}",
+            onItemSelected: (value) {
+              Navigator.of(context).pop();
+              setState(() {
+                _height = value;
+              });
+            },
+          ));
+    }
   }
 
   void _selectGender() {
@@ -394,8 +411,8 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
         height: 240,
         context: context,
         child: GenericPicker(
-          items: Gender.values,
-          labelBuilder: (gender) => gender.name,
+          items: TRKRGender.values,
+          labelBuilder: (gender) => gender.display,
           onItemSelected: (value) {
             Navigator.of(context).pop();
             setState(() {
@@ -473,7 +490,7 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
       owner: "",
       height: 0.0,
       dateOfBirth: DateTime.now(),
-      gender: Gender.other,
+      gender: TRKRGender.other,
     );
 
     await routineUserController.saveUser(userDto: newUser);

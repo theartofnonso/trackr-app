@@ -1,20 +1,16 @@
-enum Gender {
+enum TRKRGender {
   male("Male"),
   female("Female"),
-  nonBinary("Non-binary"),
-  transgenderMale("Transgender Male"),
-  transgenderFemale("Transgender Female"),
-  preferNotToSay("Prefer not to say"),
   other("Other");
 
-  const Gender(this.name);
+  const TRKRGender(this.display);
 
-  final String name;
+  final String display;
 
-  static Gender fromString(String string) {
+  static TRKRGender fromString(String string) {
     return values.firstWhere(
-          (group) => group.name.toLowerCase() == string.toLowerCase(),
-      orElse: () => Gender.other,
+          (group) => group.display.toLowerCase() == string.toLowerCase(),
+      orElse: () => TRKRGender.other,
     );
   }
 }

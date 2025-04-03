@@ -27,8 +27,8 @@ import '../../widgets/information_containers/information_container_with_backgrou
 import '../exercise/library/exercise_library_screen.dart';
 
 enum WeightUnit {
-  kg("Kg"),
-  lbs("Lbs");
+  kg("kg"),
+  lbs("lbs");
 
   const WeightUnit(this.display);
 
@@ -40,8 +40,8 @@ enum WeightUnit {
 }
 
 enum HeightUnit {
-  ft("Ft"),
-  cm("CM");
+  ftIn("ft"),
+  cm("cm");
 
   const HeightUnit(this.display);
 

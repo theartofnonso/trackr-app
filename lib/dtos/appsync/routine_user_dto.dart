@@ -11,7 +11,7 @@ class RoutineUserDto {
   final num weight;
   final num height;
   final DateTime dateOfBirth;
-  final Gender gender;
+  final TRKRGender gender;
   final String owner;
 
   RoutineUserDto(
@@ -38,7 +38,7 @@ class RoutineUserDto {
     final height = (json["height"]) ?? 0.0;
     final dateOrBirth = (json["dob"]) ?? DateTime.now();
     final genderString = json["gender"] ?? "";
-    final gender = Gender.fromString(genderString);
+    final gender = TRKRGender.fromString(genderString);
 
     return RoutineUserDto(
         id: user.id,
@@ -74,7 +74,7 @@ class RoutineUserDto {
     num? height,
     String? owner,
     DateTime? dateOfBirth,
-    Gender? gender,
+    TRKRGender? gender,
   }) {
     return RoutineUserDto(
         id: id ?? this.id,
@@ -90,6 +90,6 @@ class RoutineUserDto {
 
   @override
   String toString() {
-    return 'RoutineUserDto{id: $id, cognitoUserId: $cognitoUserId, name: $name, email: $email, weight: $weight, height: $height, dateOfBirth: $dateOfBirth, gender: $gender,  owner: $owner}';
+    return 'RoutineUserDto{id: $id, cognitoUserId: $cognitoUserId, name: $name, email: $email, weight: $weight, height: $height dateOfBirth: $dateOfBirth, gender: $gender,  owner: $owner}';
   }
 }
