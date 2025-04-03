@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import '../../enums/gender_enums.dart';
 import '../../models/RoutineUser.dart';
 
 class RoutineUserDto {
@@ -8,6 +9,8 @@ class RoutineUserDto {
   final String name;
   final String email;
   final num weight;
+  final DateTime dateOfBirth;
+  final Gender gender;
   final String owner;
 
   RoutineUserDto(
@@ -16,7 +19,9 @@ class RoutineUserDto {
       required this.cognitoUserId,
       required this.email,
       required this.weight,
-      required this.owner});
+      required this.owner,
+      required this.dateOfBirth,
+      required this.gender});
 
   factory RoutineUserDto.toDto(RoutineUser user) {
     return RoutineUserDto.fromJson(user);
@@ -28,9 +33,19 @@ class RoutineUserDto {
     final name = json["name"] ?? "";
     final email = json["email"] ?? "";
     final weight = (json["weight"]) ?? 0.0;
+    final dateOrBirth = (json["dob"]) ?? DateTime.now();
+    final genderString = json["gender"] ?? "";
+    final gender = Gender.fromString(genderString);
 
     return RoutineUserDto(
-        id: user.id, name: name, cognitoUserId: cognitoUserId, email: email, weight: weight, owner: user.owner ?? "");
+        id: user.id,
+        name: name,
+        cognitoUserId: cognitoUserId,
+        email: email,
+        weight: weight,
+        owner: user.owner ?? "",
+        dateOfBirth: dateOrBirth,
+        gender: gender);
   }
 
   Map<String, Object> toJson() {
@@ -40,6 +55,8 @@ class RoutineUserDto {
       'name': name,
       'email': email,
       'weight': weight,
+      'dob': dateOfBirth,
+      'gender': gender,
     };
   }
 
@@ -50,6 +67,8 @@ class RoutineUserDto {
     String? email,
     double? weight,
     String? owner,
+    DateTime? dateOfBirth,
+    Gender? gender,
   }) {
     return RoutineUserDto(
         id: id ?? this.id,
@@ -57,11 +76,13 @@ class RoutineUserDto {
         cognitoUserId: cognitoUserId ?? this.cognitoUserId,
         email: email ?? this.email,
         weight: weight ?? this.weight,
-        owner: owner ?? this.owner);
+        owner: owner ?? this.owner,
+        gender: gender ?? this.gender,
+        dateOfBirth: dateOfBirth ?? this.dateOfBirth);
   }
 
   @override
   String toString() {
-    return 'RoutineUserDto{id: $id, cognitoUserId: $cognitoUserId, name: $name, email: $email, weight: $weight, owner: $owner}';
+    return 'RoutineUserDto{id: $id, cognitoUserId: $cognitoUserId, name: $name, email: $email, weight: $weight, dateOfBirth: $dateOfBirth, gender: $gender,  owner: $owner}';
   }
 }

@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/routine_user_controller.dart';
 import 'package:tracker_app/dtos/appsync/routine_user_dto.dart';
+import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/list_tile.dart';
 
@@ -16,14 +17,13 @@ import '../../logger.dart';
 import '../../utils/general_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/dividers/label_divider.dart';
+import '../../widgets/picker.dart';
 import '../../widgets/routine/editors/textfields/double_textfield.dart';
 
 class UserEditorScreen extends StatefulWidget {
   static const routeName = '/user-editor';
 
-  final RoutineUserDto? user;
-
-  const UserEditorScreen({super.key, this.user});
+  const UserEditorScreen({super.key});
 
   @override
   State<UserEditorScreen> createState() => _UserEditorScreenState();
@@ -42,7 +42,7 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
 
   Gender _gender = Gender.other;
 
-  DateTime? _dateOfBirth;
+  DateTime _dateOfBirth = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +57,7 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
       });
     }
 
-    final user = widget.user;
+    final user = _user;
 
     return PopScope(
         canPop: false,
@@ -80,24 +80,12 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
             ),
             child: SafeArea(
               minimum: const EdgeInsets.all(10),
+              bottom: false,
               child: SingleChildScrollView(
                 child: Column(spacing: 20, crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      LabelDivider(
-                        label: "Username",
-                        labelColor: isDarkMode ? Colors.white : Colors.black,
-                        dividerColor: sapphireLighter,
-                        fontSize: 16,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                          "Allow us to remind you about long-running workouts if you’ve become distracted. We’ll also send reminders on your training days.",
-                          textAlign: TextAlign.start,
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
-                      const SizedBox(height: 10),
                       TextField(
                         controller: _nameController,
                         maxLength: 15,
@@ -121,7 +109,7 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                       fontSize: 16,
                     ),
                     const SizedBox(height: 4),
-                    Text("We estimate the amount of calories burned using your weight.",
+                    Text("Establishes a baseline for tracking progress, estimating calorie needs, and personalizing your fitness plan.",
                         textAlign: TextAlign.start,
                         style: Theme.of(context)
                             .textTheme
@@ -146,7 +134,7 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                       fontSize: 16,
                     ),
                     const SizedBox(height: 4),
-                    Text("We estimate the amount of calories burned using your weight.",
+                    Text("Helps tailor workout intensity and recovery guidance, as biological differences can affect training responses.",
                         textAlign: TextAlign.start,
                         style: Theme.of(context)
                             .textTheme
@@ -155,8 +143,7 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                     const SizedBox(height: 10),
                     ThemeListTile(
                       child: ListTile(
-                        onTap: () {},
-                        dense: true,
+                        onTap: _selectGender,
                         horizontalTitleGap: 0,
                         leading: Text(_gender.name,
                             textAlign: TextAlign.start,
@@ -179,7 +166,7 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                       fontSize: 16,
                     ),
                     const SizedBox(height: 4),
-                    Text("We estimate the amount of calories burned using your weight.",
+                    Text("Influences metabolism, recovery speed, and risk factors, so we can customize your program safely.",
                         textAlign: TextAlign.start,
                         style: Theme.of(context)
                             .textTheme
@@ -189,9 +176,8 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                     ThemeListTile(
                       child: ListTile(
                         onTap: _selectDate,
-                        dense: true,
                         horizontalTitleGap: 0,
-                        leading: Text(_gender.name,
+                        leading: Text(_dateOfBirth.formattedDayAndMonthAndYear(),
                             textAlign: TextAlign.start,
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                 fontWeight: FontWeight.w600,
@@ -210,7 +196,7 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                       child: SizedBox(
                         width: double.infinity,
                         child: OpacityButtonWidget(
-                            onPressed: () {},
+                            onPressed: _updateUser,
                             label: "Update Profile",
                             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
                             buttonColor: vibrantGreen),
@@ -228,11 +214,42 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
   }
 
   void _selectDate() {
-    showDateTimePicker(context: context, onChangedDateTime: (DateTime datetime) {
-      setState(() {
-        _dateOfBirth = datetime;
-      });
-    }, mode: CupertinoDatePickerMode.date);
+    showDateTimePicker(
+        context: context,
+        onChangedDateTime: (DateTime datetime) {
+          setState(() {
+            _dateOfBirth = datetime;
+          });
+        },
+        mode: CupertinoDatePickerMode.date);
+  }
+
+  void _selectGender() {
+    FocusScope.of(context).unfocus();
+    displayBottomSheet(
+        height: 240,
+        context: context,
+        child: GenericPicker(
+          items: Gender.values,
+          labelBuilder: (gender) => gender.name,
+          onItemSelected: (value) {
+            setState(() {
+              _gender = value;
+            });
+          },
+        ));
+  }
+
+  void _updateUser() async {
+    final user = _user;
+    if (user != null) {
+      final userToUpdate =
+          user.copyWith(weight: _weight, name: _nameController.text, dateOfBirth: _dateOfBirth, gender: _gender);
+      await Provider.of<RoutineUserController>(context, listen: false).updateUser(userDto: userToUpdate);
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+    }
   }
 
   @override
@@ -248,6 +265,4 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
     _weightController.dispose();
     super.dispose();
   }
-
-
 }

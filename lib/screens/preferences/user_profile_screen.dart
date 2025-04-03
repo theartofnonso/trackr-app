@@ -178,7 +178,6 @@ class _AddTile extends StatelessWidget {
         Text("25",
             style: GoogleFonts.ubuntu(fontSize: 20, height: 1.5, fontWeight: FontWeight.w600)),
         const Spacer(),
-
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
