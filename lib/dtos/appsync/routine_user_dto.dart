@@ -9,6 +9,7 @@ class RoutineUserDto {
   final String name;
   final String email;
   final num weight;
+  final num height;
   final DateTime dateOfBirth;
   final Gender gender;
   final String owner;
@@ -19,6 +20,7 @@ class RoutineUserDto {
       required this.cognitoUserId,
       required this.email,
       required this.weight,
+        required this.height,
       required this.owner,
       required this.dateOfBirth,
       required this.gender});
@@ -33,6 +35,7 @@ class RoutineUserDto {
     final name = json["name"] ?? "";
     final email = json["email"] ?? "";
     final weight = (json["weight"]) ?? 0.0;
+    final height = (json["height"]) ?? 0.0;
     final dateOrBirth = (json["dob"]) ?? DateTime.now();
     final genderString = json["gender"] ?? "";
     final gender = Gender.fromString(genderString);
@@ -43,6 +46,7 @@ class RoutineUserDto {
         cognitoUserId: cognitoUserId,
         email: email,
         weight: weight,
+        height: height,
         owner: user.owner ?? "",
         dateOfBirth: dateOrBirth,
         gender: gender);
@@ -55,6 +59,7 @@ class RoutineUserDto {
       'name': name,
       'email': email,
       'weight': weight,
+      'height': height,
       'dob': dateOfBirth,
       'gender': gender,
     };
@@ -65,7 +70,8 @@ class RoutineUserDto {
     String? name,
     String? cognitoUserId,
     String? email,
-    double? weight,
+    num? weight,
+    num? height,
     String? owner,
     DateTime? dateOfBirth,
     Gender? gender,
@@ -76,6 +82,7 @@ class RoutineUserDto {
         cognitoUserId: cognitoUserId ?? this.cognitoUserId,
         email: email ?? this.email,
         weight: weight ?? this.weight,
+        height: height ?? this.height,
         owner: owner ?? this.owner,
         gender: gender ?? this.gender,
         dateOfBirth: dateOfBirth ?? this.dateOfBirth);
@@ -83,6 +90,6 @@ class RoutineUserDto {
 
   @override
   String toString() {
-    return 'RoutineUserDto{id: $id, cognitoUserId: $cognitoUserId, name: $name, email: $email, weight: $weight, dateOfBirth: $dateOfBirth, gender: $gender,  owner: $owner}';
+    return 'RoutineUserDto{id: $id, cognitoUserId: $cognitoUserId, name: $name, email: $email, weight: $weight, height: $height, dateOfBirth: $dateOfBirth, gender: $gender,  owner: $owner}';
   }
 }

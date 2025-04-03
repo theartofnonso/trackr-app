@@ -4,16 +4,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:tracker_app/widgets/icons/user_icon_widget.dart';
 
 import '../../colors.dart';
 import '../../controllers/routine_user_controller.dart';
-import '../../dtos/appsync/routine_user_dto.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
-import '../../widgets/empty_states/not_found.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({
@@ -31,10 +28,15 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
 
     final user = Provider.of<RoutineUserController>(context, listen: true).user;
 
+    final weight = user?.weight ?? 0.0;
+
+    final dob = user?.dateOfBirth ?? DateTime.now();
+    final age = _calculateAge(birthDate: dob);
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
+          icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
           onPressed: context.pop,
         ),
           actions: [
@@ -68,7 +70,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
                       height: 20,
                     ),
                     Center(
-                      child: Text(user.name.toUpperCase(),
+                      child: Text(user!.name.toUpperCase(),
                           style: Theme.of(context).textTheme.titleSmall, textAlign: TextAlign.center),
                     ),
                   ],
@@ -81,7 +83,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
                   spacing: 10,
                   children: [
                     _StatisticWidget(
-                      title: "29",
+                      title: "$age",
                       subtitle: "Age",
                       icon: FontAwesomeIcons.personWalking,
                       information: _StatisticsInformation(
@@ -90,7 +92,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
                           "The total number of different exercises you completed in a workout session."),
                     ),
                     _StatisticWidget(
-                      title: "$_weight${weightLabel()}",
+                      title: "$weight${weightLabel()}",
                       subtitle: "Weight",
                       icon: FontAwesomeIcons.personWalking,
                       information: _StatisticsInformation(
@@ -123,6 +125,20 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
         ),
       ),
     );
+  }
+
+  int _calculateAge({required DateTime birthDate}) {
+    final today = DateTime.now();
+
+    int age = today.year - birthDate.year;
+
+    // Adjust if birthday hasn't occurred yet this year
+    if (today.month < birthDate.month ||
+        (today.month == birthDate.month && today.day < birthDate.day)) {
+      age--;
+    }
+
+    return age;
   }
 
 }

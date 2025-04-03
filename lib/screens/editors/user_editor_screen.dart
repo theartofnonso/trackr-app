@@ -18,7 +18,24 @@ import '../../utils/general_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/dividers/label_divider.dart';
 import '../../widgets/picker.dart';
-import '../../widgets/routine/editors/textfields/double_textfield.dart';
+
+enum _WeightUnit {
+  kg("Kg"),
+  lbs("Lbs");
+
+  const _WeightUnit(this.display);
+
+  final String display;
+}
+
+enum _HeightUnit {
+  ft("Ft"),
+  cm("CM");
+
+  const _HeightUnit(this.display);
+
+  final String display;
+}
 
 class UserEditorScreen extends StatefulWidget {
   static const routeName = '/user-editor';
@@ -38,7 +55,13 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
 
   RoutineUserDto? _user;
 
-  double _weight = 0;
+  _WeightUnit _weightUnit = _WeightUnit.kg;
+
+  _HeightUnit _heightUnit = _HeightUnit.ft;
+
+  num _weight = 0.0;
+
+  num _height = 0.0;
 
   Gender _gender = Gender.other;
 
@@ -83,7 +106,7 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
               minimum: const EdgeInsets.all(10),
               bottom: false,
               child: SingleChildScrollView(
-                child: Column(spacing: 20, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                child: Column(spacing: 26, crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -102,31 +125,132 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                       ),
                     ],
                   ),
-                  Column(children: [
-                    LabelDivider(
-                      label: "Weight",
-                      labelColor: isDarkMode ? Colors.white : Colors.black,
-                      dividerColor: sapphireLighter,
-                      fontSize: 16,
-                    ),
-                    const SizedBox(height: 4),
-                    Text("Establishes a baseline for tracking progress, estimating calorie needs, and personalizing your fitness plan.",
-                        textAlign: TextAlign.start,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
-                    const SizedBox(height: 10),
-                    DoubleTextField(
-                        value: _user?.weight ?? 0,
-                        controller: _weightController,
-                        textAlign: TextAlign.start,
-                        onChanged: (value) {
-                          setState(() {
-                            _weight = value;
-                          });
-                        })
-                  ]),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(children: [
+                       const Spacer(),
+                        CupertinoSlidingSegmentedControl<_WeightUnit>(
+                          backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade400,
+                          thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
+                          groupValue: _weightUnit,
+                          children: {
+                            _WeightUnit.kg: SizedBox(
+                                width: 30,
+                                child: Text(_weightUnit.display,
+                                    style: Theme.of(context).textTheme.bodySmall,
+                                    textAlign: TextAlign.center)),
+                            _WeightUnit.lbs: SizedBox(
+                                width: 30,
+                                child: Text(_weightUnit.display,
+                                    style: Theme.of(context).textTheme.bodySmall,
+                                    textAlign: TextAlign.center)),
+                          },
+                          onValueChanged: (_WeightUnit? value) {
+                            if (value != null) {
+                              setState(() {
+                                _weightUnit = value;
+                              });
+                            }
+                          },
+                        ),
+                      ]),
+                      Column(children: [
+                        LabelDivider(
+                          label: "Weight",
+                          labelColor: isDarkMode ? Colors.white : Colors.black,
+                          dividerColor: sapphireLighter,
+                          fontSize: 16,
+                        ),
+                        const SizedBox(height: 4),
+                        Text("Establishes a baseline for tracking progress, estimating calorie needs, and personalizing your fitness plan.",
+                            textAlign: TextAlign.start,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                        const SizedBox(height: 10),
+                        ThemeListTile(
+                          child: ListTile(
+                            onTap: _selectWeight,
+                            leading: Text("$_weight${weightLabel()}",
+                                textAlign: TextAlign.start,
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                    color: isDarkMode ? Colors.white : Colors.black)),
+                            trailing: FaIcon(
+                              FontAwesomeIcons.arrowRightLong,
+                              size: 14,
+                            ),
+                          ),
+                        )
+                      ]),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(children: [
+                        const Spacer(),
+                        CupertinoSlidingSegmentedControl<_HeightUnit>(
+                          backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade400,
+                          thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
+                          groupValue: _heightUnit,
+                          children: {
+                            _HeightUnit.ft: SizedBox(
+                                width: 30,
+                                child: Text("Kg",
+                                    style: Theme.of(context).textTheme.bodySmall,
+                                    textAlign: TextAlign.center)),
+                            _HeightUnit.cm: SizedBox(
+                                width: 30,
+                                child: Text("Lbs",
+                                    style: Theme.of(context).textTheme.bodySmall,
+                                    textAlign: TextAlign.center)),
+                          },
+                          onValueChanged: (_HeightUnit? value) {
+                            if (value != null) {
+                              setState(() {
+                                _heightUnit = value;
+                              });
+                            }
+                          },
+                        ),
+                      ]),
+                      Column(children: [
+                        LabelDivider(
+                          label: "Height",
+                          labelColor: isDarkMode ? Colors.white : Colors.black,
+                          dividerColor: sapphireLighter,
+                          fontSize: 16,
+                        ),
+                        const SizedBox(height: 4),
+                        Text("Establishes a baseline for tracking progress, estimating calorie needs, and personalizing your fitness plan.",
+                            textAlign: TextAlign.start,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                        const SizedBox(height: 10),
+                        ThemeListTile(
+                          child: ListTile(
+                            onTap: _selectGender,
+                            leading: Text("$_weight${weightLabel()}",
+                                textAlign: TextAlign.start,
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                    color: isDarkMode ? Colors.white : Colors.black)),
+                            trailing: FaIcon(
+                              FontAwesomeIcons.arrowRightLong,
+                              size: 14,
+                            ),
+                          ),
+                        )
+                      ]),
+                    ],
+                  ),
                   Column(children: [
                     LabelDivider(
                       label: "Gender",
@@ -145,7 +269,6 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                     ThemeListTile(
                       child: ListTile(
                         onTap: _selectGender,
-                        horizontalTitleGap: 0,
                         leading: Text(_gender.name,
                             textAlign: TextAlign.start,
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -177,7 +300,6 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                     ThemeListTile(
                       child: ListTile(
                         onTap: _selectDate,
-                        horizontalTitleGap: 0,
                         leading: Text(_dateOfBirth.formattedDayAndMonthAndYear(),
                             textAlign: TextAlign.start,
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -218,11 +340,66 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
     showDateTimePicker(
         context: context,
         onChangedDateTime: (DateTime datetime) {
+          Navigator.of(context).pop();
           setState(() {
             _dateOfBirth = datetime;
           });
         },
         mode: CupertinoDatePickerMode.date);
+  }
+
+  void _selectWeight() {
+    final values = switch(_weightUnit) {
+      _WeightUnit.kg => generateNumbers(start: 23, end: 204),
+      _WeightUnit.lbs => generateNumbers(start: 51, end: 450),
+    };
+
+    final unitLabel = switch(_weightUnit) {
+      _WeightUnit.kg => _WeightUnit.kg.display,
+      _WeightUnit.lbs => _WeightUnit.lbs.display,
+    };
+
+    FocusScope.of(context).unfocus();
+    displayBottomSheet(
+        height: 240,
+        context: context,
+        child: GenericPicker(
+          items: values,
+          labelBuilder: (value) => "$value $unitLabel",
+          onItemSelected: (value) {
+            Navigator.of(context).pop();
+            setState(() {
+              _weight = value;
+            });
+          },
+        ));
+  }
+
+  void _selectHeight() {
+    final values = switch(_weightUnit) {
+      _WeightUnit.kg => generateNumbers(start: 23, end: 204),
+      _WeightUnit.lbs => generateNumbers(start: 51, end: 450),
+    };
+
+    final unitLabel = switch(_weightUnit) {
+      _WeightUnit.kg => "kg",
+      _WeightUnit.lbs => "lbs",
+    };
+
+    FocusScope.of(context).unfocus();
+    displayBottomSheet(
+        height: 240,
+        context: context,
+        child: GenericPicker(
+          items: values,
+          labelBuilder: (value) => "$value $unitLabel",
+          onItemSelected: (value) {
+            Navigator.of(context).pop();
+            setState(() {
+              _weight = value;
+            });
+          },
+        ));
   }
 
   void _selectGender() {
@@ -234,6 +411,7 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
           items: Gender.values,
           labelBuilder: (gender) => gender.name,
           onItemSelected: (value) {
+            Navigator.of(context).pop();
             setState(() {
               _gender = value;
             });
@@ -245,7 +423,7 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
     final user = _user;
     if (user != null) {
       final userToUpdate =
-          user.copyWith(weight: _weight, name: _nameController.text, dateOfBirth: _dateOfBirth, gender: _gender);
+          user.copyWith(weight: _weight, height: _height, name: _nameController.text, dateOfBirth: _dateOfBirth, gender: _gender);
       await Provider.of<RoutineUserController>(context, listen: false).updateUser(userDto: userToUpdate);
       if (mounted) {
         Navigator.of(context).pop();

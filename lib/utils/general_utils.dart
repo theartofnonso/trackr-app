@@ -333,3 +333,13 @@ bool allNumbersAreSame({required List<num> numbers}) {
   final first = numbers.first;
   return numbers.every((n) => n == first);
 }
+
+List<int> generateNumbers({required int start, required int end}) {
+  // Create a list to hold the numbers
+  List<int> numbers = [];
+  // Loop from start to end and add each number to the list
+  for (int i = start; i <= end; i++) {
+    numbers.add(i);
+  }
+  return numbers;
+}
