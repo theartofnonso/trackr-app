@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -26,12 +27,25 @@ import '../../widgets/information_containers/information_container_with_backgrou
 import '../exercise/library/exercise_library_screen.dart';
 
 enum WeightUnit {
-  kg,
-  lbs;
+  kg("Kg"),
+  lbs("Lbs");
+
+  const WeightUnit(this.display);
+
+  final String display;
 
   static WeightUnit fromString(String string) {
     return WeightUnit.values.firstWhere((value) => value.name == string);
   }
+}
+
+enum HeightUnit {
+  ft("Ft"),
+  cm("CM");
+
+  const HeightUnit(this.display);
+
+  final String display;
 }
 
 class SettingsScreen extends StatefulWidget {
@@ -46,7 +60,7 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObserver {
   bool _loading = false;
 
-  late WeightUnit _weightUnitType;
+  late WeightUnit _weightUnit;
 
   String _appVersion = "";
 
@@ -128,41 +142,29 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   tileColor: Colors.transparent,
                   title: Text("Weight", style: Theme.of(context).textTheme.titleMedium),
                   subtitle: Text("Choose kg or lbs"),
-                  trailing: SegmentedButton(
-                    showSelectedIcon: false,
-                    style: ButtonStyle(
-                      visualDensity: const VisualDensity(
-                          horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity),
-                      shape: WidgetStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                      )),
-                      backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                        (Set<WidgetState> states) {
-                          if (states.contains(WidgetState.selected)) {
-                            return isDarkMode ? Colors.white : Colors.black;
-                          }
-                          return isDarkMode ? Colors.black : Colors.white;
-                        },
-                      ),
-                      foregroundColor: WidgetStateProperty.resolveWith<Color>(
-                        (Set<WidgetState> states) {
-                          if (states.contains(WidgetState.selected)) {
-                            return isDarkMode ? Colors.black : Colors.white;
-                          }
-                          return isDarkMode ? Colors.white : Colors.black;
-                        },
-                      ),
-                    ),
-                    segments: [
-                      ButtonSegment<WeightUnit>(value: WeightUnit.kg, label: Text(WeightUnit.kg.name)),
-                      ButtonSegment<WeightUnit>(value: WeightUnit.lbs, label: Text(WeightUnit.lbs.name)),
-                    ],
-                    selected: <WeightUnit>{_weightUnitType},
-                    onSelectionChanged: (Set<WeightUnit> unitType) {
-                      setState(() {
-                        _weightUnitType = unitType.first;
-                      });
-                      toggleWeightUnit(unit: _weightUnitType);
+                  trailing: CupertinoSlidingSegmentedControl<WeightUnit>(
+                    backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade400,
+                    thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
+                    groupValue: _weightUnit,
+                    children: {
+                      WeightUnit.kg: SizedBox(
+                          width: 30,
+                          child: Text(WeightUnit.kg.display,
+                              style: Theme.of(context).textTheme.bodySmall,
+                              textAlign: TextAlign.center)),
+                      WeightUnit.lbs: SizedBox(
+                          width: 30,
+                          child: Text(WeightUnit.lbs.display,
+                              style: Theme.of(context).textTheme.bodySmall,
+                              textAlign: TextAlign.center)),
+                    },
+                    onValueChanged: (WeightUnit? value) {
+                      if (value != null) {
+                        setState(() {
+                          _weightUnit = value;
+                        });
+                        toggleWeightUnit(unit: value);
+                      }
                     },
                   ),
                 ),
@@ -384,7 +386,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   @override
   void initState() {
     super.initState();
-    _weightUnitType = WeightUnit.fromString(SharedPrefs().weightUnit);
+    _weightUnit = WeightUnit.fromString(SharedPrefs().weightUnit);
     _getAppVersion();
     _checkNotificationPermission();
   }

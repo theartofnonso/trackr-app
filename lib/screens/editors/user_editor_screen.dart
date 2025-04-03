@@ -18,24 +18,7 @@ import '../../utils/general_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/dividers/label_divider.dart';
 import '../../widgets/picker.dart';
-
-enum _WeightUnit {
-  kg("Kg"),
-  lbs("Lbs");
-
-  const _WeightUnit(this.display);
-
-  final String display;
-}
-
-enum _HeightUnit {
-  ft("Ft"),
-  cm("CM");
-
-  const _HeightUnit(this.display);
-
-  final String display;
-}
+import '../preferences/settings_screen.dart';
 
 class UserEditorScreen extends StatefulWidget {
   static const routeName = '/user-editor';
@@ -55,9 +38,9 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
 
   RoutineUserDto? _user;
 
-  _WeightUnit _weightUnit = _WeightUnit.kg;
+  WeightUnit _weightUnit = WeightUnit.kg;
 
-  _HeightUnit _heightUnit = _HeightUnit.ft;
+  HeightUnit _heightUnit = HeightUnit.ft;
 
   num _weight = 0.0;
 
@@ -106,7 +89,8 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
               minimum: const EdgeInsets.all(10),
               bottom: false,
               child: SingleChildScrollView(
-                child: Column(spacing: 26, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                child: Column(spacing: 10, crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -125,28 +109,29 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                       ),
                     ],
                   ),
+                  Divider(color: isDarkMode ? Colors.white70.withValues(alpha: 0.1) : Colors.grey.shade200),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(children: [
                        const Spacer(),
-                        CupertinoSlidingSegmentedControl<_WeightUnit>(
+                        CupertinoSlidingSegmentedControl<WeightUnit>(
                           backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade400,
                           thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
                           groupValue: _weightUnit,
                           children: {
-                            _WeightUnit.kg: SizedBox(
+                            WeightUnit.kg: SizedBox(
                                 width: 30,
-                                child: Text(_weightUnit.display,
+                                child: Text(WeightUnit.kg.display,
                                     style: Theme.of(context).textTheme.bodySmall,
                                     textAlign: TextAlign.center)),
-                            _WeightUnit.lbs: SizedBox(
+                            WeightUnit.lbs: SizedBox(
                                 width: 30,
-                                child: Text(_weightUnit.display,
+                                child: Text(WeightUnit.lbs.display,
                                     style: Theme.of(context).textTheme.bodySmall,
                                     textAlign: TextAlign.center)),
                           },
-                          onValueChanged: (_WeightUnit? value) {
+                          onValueChanged: (WeightUnit? value) {
                             if (value != null) {
                               setState(() {
                                 _weightUnit = value;
@@ -173,7 +158,7 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                         ThemeListTile(
                           child: ListTile(
                             onTap: _selectWeight,
-                            leading: Text("$_weight${weightLabel()}",
+                            leading: Text("$_weight ${_weightUnit.display}",
                                 textAlign: TextAlign.start,
                                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                     fontWeight: FontWeight.w600,
@@ -188,28 +173,29 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                       ]),
                     ],
                   ),
+                  Divider(color: isDarkMode ? Colors.white70.withValues(alpha: 0.1) : Colors.grey.shade200),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(children: [
                         const Spacer(),
-                        CupertinoSlidingSegmentedControl<_HeightUnit>(
+                        CupertinoSlidingSegmentedControl<HeightUnit>(
                           backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade400,
                           thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
                           groupValue: _heightUnit,
                           children: {
-                            _HeightUnit.ft: SizedBox(
+                            HeightUnit.ft: SizedBox(
                                 width: 30,
                                 child: Text("Kg",
                                     style: Theme.of(context).textTheme.bodySmall,
                                     textAlign: TextAlign.center)),
-                            _HeightUnit.cm: SizedBox(
+                            HeightUnit.cm: SizedBox(
                                 width: 30,
                                 child: Text("Lbs",
                                     style: Theme.of(context).textTheme.bodySmall,
                                     textAlign: TextAlign.center)),
                           },
-                          onValueChanged: (_HeightUnit? value) {
+                          onValueChanged: (HeightUnit? value) {
                             if (value != null) {
                               setState(() {
                                 _heightUnit = value;
@@ -251,6 +237,7 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                       ]),
                     ],
                   ),
+                  Divider(color: isDarkMode ? Colors.white70.withValues(alpha: 0.1) : Colors.grey.shade200),
                   Column(children: [
                     LabelDivider(
                       label: "Gender",
@@ -282,6 +269,7 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                       ),
                     )
                   ]),
+                  Divider(color: isDarkMode ? Colors.white70.withValues(alpha: 0.1) : Colors.grey.shade200),
                   Column(children: [
                     LabelDivider(
                       label: "Age",
@@ -313,14 +301,13 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                       ),
                     )
                   ]),
-                  if (user != null)
                     SafeArea(
                       minimum: EdgeInsets.all(10),
                       child: SizedBox(
                         width: double.infinity,
                         child: OpacityButtonWidget(
                             onPressed: _updateUser,
-                            label: "Update Profile",
+                            label: user != null ? "Update Profile" : "Create Profile",
                             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
                             buttonColor: vibrantGreen),
                       ),
@@ -350,13 +337,13 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
 
   void _selectWeight() {
     final values = switch(_weightUnit) {
-      _WeightUnit.kg => generateNumbers(start: 23, end: 204),
-      _WeightUnit.lbs => generateNumbers(start: 51, end: 450),
+      WeightUnit.kg => generateNumbers(start: 23, end: 204),
+      WeightUnit.lbs => generateNumbers(start: 51, end: 450),
     };
 
     final unitLabel = switch(_weightUnit) {
-      _WeightUnit.kg => _WeightUnit.kg.display,
-      _WeightUnit.lbs => _WeightUnit.lbs.display,
+      WeightUnit.kg => WeightUnit.kg.display,
+      WeightUnit.lbs => WeightUnit.lbs.display,
     };
 
     FocusScope.of(context).unfocus();
@@ -377,13 +364,13 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
 
   void _selectHeight() {
     final values = switch(_weightUnit) {
-      _WeightUnit.kg => generateNumbers(start: 23, end: 204),
-      _WeightUnit.lbs => generateNumbers(start: 51, end: 450),
+      WeightUnit.kg => generateNumbers(start: 23, end: 204),
+      WeightUnit.lbs => generateNumbers(start: 51, end: 450),
     };
 
     final unitLabel = switch(_weightUnit) {
-      _WeightUnit.kg => "kg",
-      _WeightUnit.lbs => "lbs",
+      WeightUnit.kg => "kg",
+      WeightUnit.lbs => "lbs",
     };
 
     FocusScope.of(context).unfocus();
