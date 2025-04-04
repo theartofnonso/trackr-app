@@ -36,6 +36,8 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
 
   late TextEditingController _nameController;
 
+  late TextEditingController _notesController;
+
   final TextEditingController _weightController = TextEditingController();
 
   RoutineUserDto? _user;
@@ -96,6 +98,7 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                 keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                 child: Column(spacing: 10, crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Column(
+                    spacing: 12,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TextField(
@@ -110,6 +113,21 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                         textCapitalization: TextCapitalization.none,
                         style: GoogleFonts.ubuntu(
                             fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white : Colors.black, fontSize: 14),
+                      ),
+                      TextField(
+                        controller: _notesController,
+                        cursorColor: isDarkMode ? Colors.white : Colors.black,
+                        decoration: InputDecoration(
+                          hintText: "Tell us about your fitness journey. This helps us tailor recommendations to match your experience level.",
+                        ),
+                        maxLines: null,
+                        maxLength: 240,
+                        keyboardType: TextInputType.text,
+                        textCapitalization: TextCapitalization.sentences,
+                        style: GoogleFonts.ubuntu(
+                            fontWeight: FontWeight.w400,
+                            color: isDarkMode ? Colors.white : Colors.black,
+                            fontSize: 14),
                       ),
                     ],
                   ),
@@ -520,6 +538,7 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
     super.initState();
     _user = Provider.of<RoutineUserController>(context, listen: false).user;
     _nameController = TextEditingController(text: _user?.name);
+    _notesController = TextEditingController();
     _weight = _user?.weight ?? 0.0;
     _height = _user?.height ?? 0;
     _gender = _user?.gender ?? TRKRGender.other;
