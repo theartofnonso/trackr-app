@@ -111,7 +111,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                 const SizedBox(height: 2),
                 ThemeListTile(
                   child: ListTile(
-                    onTap: _selectPrimaryMuscle,
+                    onTap: _selectPrimaryMuscleGroup,
                     leading: Text(_primaryMuscleGroup.name,
                         textAlign: TextAlign.start,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -167,13 +167,13 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: message);
   }
 
-  void _selectPrimaryMuscle() {
+  void _selectPrimaryMuscleGroup() {
     FocusScope.of(context).unfocus();
     displayBottomSheet(
         height: 240,
         context: context,
         child: GenericPicker(
-          items: MuscleGroup.values,
+          items: MuscleGroup.sortedValues,
           labelBuilder: (muscle) => muscle.name,
           onItemSelected: (value) {
             Navigator.of(context).pop();
