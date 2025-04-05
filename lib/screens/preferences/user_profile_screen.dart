@@ -8,15 +8,16 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
-import 'package:tracker_app/widgets/empty_states/no_list_empty_state.dart';
 import 'package:tracker_app/widgets/icons/user_icon_widget.dart';
 
+import '../../colors.dart';
 import '../../controllers/routine_user_controller.dart';
 import '../../utils/date_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../utils/readiness_utils.dart';
 import '../../utils/workout_split_utils.dart';
+import '../../widgets/buttons/opacity_button_widget.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({
@@ -32,6 +33,31 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
   Widget build(BuildContext context) {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
+
+    final user = Provider.of<RoutineUserController>(context, listen: true).user;
+
+    if (user == null) {
+      return Scaffold(
+          appBar: AppBar(
+              leading: IconButton(
+            icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
+            onPressed: context.pop,
+          )),
+          body: _EmptyState());
+    }
+
+    final weight = user.weight;
+    final height = user.height;
+    final heightConversion = heightWithConversion(value: height);
+
+    final dob = user.dateOfBirth;
+    final age = _calculateAge(birthDate: dob);
+
+    final gender = user.gender;
+
+    final trainingHistory = user.trainingHistory.isNotEmpty
+        ? user.trainingHistory
+        : "Tell us about your fitness journey. This helps us tailor recommendations to match your experience level.";
 
     final dateRange = theLastYearDateTimeRange();
 
@@ -62,50 +88,29 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
 
     final averageSleep = sleepLevels.isNotEmpty ? sleepLevels.average : 0.0;
 
-    final recoveryScores = logsByWeek.map((log) {
+    final readinessScores = logsByWeek.map((log) {
       final sorenessLevel = log.sorenessLevel;
       final fatigueLevel = log.fatigueLevel;
       return calculateReadinessScore(fatigue: fatigueLevel, soreness: sorenessLevel);
     }).where((score) => score >= 1);
 
-    final averageRecovery = recoveryScores.isNotEmpty ? recoveryScores.average : 0.0;
-
-    final user = Provider.of<RoutineUserController>(context, listen: true).user;
-
-    if (user == null) {
-      return NoListEmptyState(message: "message");
-    }
-
-    final weight = user.weight;
-    final height = user.height;
-    final heightConversion = heightWithConversion(value: height);
-
-    final dob = user.dateOfBirth;
-    final age = _calculateAge(birthDate: dob);
-
-    final gender = user.gender;
-
-    final trainingHistory = user.trainingHistory.isNotEmpty
-        ? user.trainingHistory
-        : "Tell us about your fitness journey. This helps us tailor recommendations to match your experience level.";
+    final averageReadiness = readinessScores.isNotEmpty ? readinessScores.average : 0.0;
 
     final trainingFrequency = _generateTrainingFrequencySummary(avgFrequency: averageOfPrevious);
 
     final sleepPattern = _generateSleepSummary(averageSleepScore: averageSleep.toInt());
 
-    final recoveryPattern = getTrainingGuidance(readinessScore: averageRecovery.toInt());
+    final recoveryPattern = getTrainingGuidance(readinessScore: averageReadiness.toInt());
 
     final trainingSplits = logsByWeek.map((log) {
-      final muscleGroups =  log.exerciseLogs.map((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup).toSet();
+      final muscleGroups = log.exerciseLogs.map((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup).toSet();
       final trainingSplit = determineTrainingSplit(muscleGroups: muscleGroups);
       return trainingSplit;
     }).toList();
 
-    print(trainingSplits);
-
     // Count occurrences
     final Map<TrainingSplit, int> frequencyMap = {};
-    for (var split in trainingSplits) {
+    for (final split in trainingSplits) {
       frequencyMap[split] = (frequencyMap[split] ?? 0) + 1;
     }
 
@@ -229,7 +234,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
                         child: _Tile(
                           title: "Recovery",
                           subTitle: recoveryPattern,
-                          color: lowToHighIntensityColor(averageRecovery / 100),
+                          color: lowToHighIntensityColor(averageReadiness / 100),
                         ),
                       ),
                       StaggeredGridTile.count(
@@ -267,7 +272,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
   String _generateSleepSummary({required int averageSleepScore}) {
     // Fallback in case someone provides a value out of range
     if (averageSleepScore < 1 || averageSleepScore > 5) {
-      return "No summary available. Please provide a sleep score between 1 and 5.";
+      return "Tracking how much you sleep allows us to gauge recovery and adjust workouts so you stay energized and avoid burnout.";
     }
 
     // Build a longer explanation based on the score
@@ -310,7 +315,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
 
   String _generateTrainingFrequencySummary({required int avgFrequency}) {
     if (avgFrequency < 0) {
-      return "Keep logging your training sessions consistently to see insights";
+      return "Knowing how often you train helps us tailor workout plans and rest days to fit your schedule and maximize your results.";
     } else if (avgFrequency == 0) {
       return "Keep logging your training sessions consistently to see insights";
     } else if (avgFrequency < 1) {
@@ -378,6 +383,48 @@ class _StatisticWidget extends StatelessWidget {
           ],
         ),
       ]),
+    );
+  }
+}
+
+class _EmptyState extends StatelessWidget {
+  const _EmptyState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 36),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          FaIcon(
+            FontAwesomeIcons.personWalking,
+            size: 50,
+          ),
+          const SizedBox(height: 50),
+          Text(
+            "Fitness Profiles",
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            "Your profile helps us personalize your plan, predict progress, and guide recovery—so you get better results, faster.",
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+          const SizedBox(height: 50),
+          SizedBox(
+              height: 45,
+              width: double.infinity,
+              child: OpacityButtonWidget(
+                label: "Create Profile",
+                buttonColor: vibrantGreen,
+                onPressed: () => navigateToUserEditor(context: context),
+              )),
+        ],
+      ),
     );
   }
 }
