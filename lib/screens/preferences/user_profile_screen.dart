@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
+import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/widgets/empty_states/no_list_empty_state.dart';
 import 'package:tracker_app/widgets/icons/user_icon_widget.dart';
@@ -15,6 +16,7 @@ import '../../utils/date_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../utils/readiness_utils.dart';
+import '../../utils/workout_split_utils.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({
@@ -41,6 +43,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
 
     List<String> months = [];
     List<int> days = [];
+    List<RoutineLogDto> logsByWeek = [];
     for (final week in weeksInLastYear) {
       final startOfWeek = week.start;
       final endOfWeek = week.end;
@@ -48,17 +51,18 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
       final routineLogsByDay = groupBy(logsForTheWeek, (log) => log.createdAt.withoutTime().day);
       days.add(routineLogsByDay.length);
       months.add(startOfWeek.abbreviatedMonth());
+      logsByWeek.addAll(logsForTheWeek);
     }
 
     // 3. Now we can safely do sublist & reduce because we have at least 2 entries
     final previousDays = days.sublist(0, days.length - 1);
     final averageOfPrevious = (previousDays.reduce((a, b) => a + b) / previousDays.length).round();
 
-    final sleepLevels = logs.map((log) => log.sleepLevel).where((score) => score >= 1);
+    final sleepLevels = logsByWeek.map((log) => log.sleepLevel).where((score) => score >= 1);
 
     final averageSleep = sleepLevels.isNotEmpty ? sleepLevels.average : 0.0;
 
-    final recoveryScores = logs.map((log) {
+    final recoveryScores = logsByWeek.map((log) {
       final sorenessLevel = log.sorenessLevel;
       final fatigueLevel = log.fatigueLevel;
       return calculateReadinessScore(fatigue: fatigueLevel, soreness: sorenessLevel);
@@ -87,9 +91,35 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
 
     final trainingFrequency = _generateTrainingFrequencySummary(avgFrequency: averageOfPrevious);
 
-    final sleepPattern = _generateSleepSummary(averageSleepScore: 4);
+    final sleepPattern = _generateSleepSummary(averageSleepScore: averageSleep.toInt());
 
-    final recoveryPattern = getTrainingGuidance(readinessScore: 45);
+    final recoveryPattern = getTrainingGuidance(readinessScore: averageRecovery.toInt());
+
+    final trainingSplits = logsByWeek.map((log) {
+      final muscleGroups =  log.exerciseLogs.map((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup).toSet();
+      final trainingSplit = determineTrainingSplit(muscleGroups: muscleGroups);
+      return trainingSplit;
+    }).toList();
+
+    print(trainingSplits);
+
+    // Count occurrences
+    final Map<TrainingSplit, int> frequencyMap = {};
+    for (var split in trainingSplits) {
+      frequencyMap[split] = (frequencyMap[split] ?? 0) + 1;
+    }
+
+    // Find the most frequent split
+    TrainingSplit mostFrequent = TrainingSplit.unknown;
+    int maxCount = 0;
+    frequencyMap.forEach((split, count) {
+      if (count > maxCount) {
+        maxCount = count;
+        mostFrequent = split;
+      }
+    });
+
+    final trainingSplitSummary = getTrainingSplitSummary(split: mostFrequent);
 
     return Scaffold(
       appBar: AppBar(
@@ -203,11 +233,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
                         ),
                       ),
                       StaggeredGridTile.count(
-                        crossAxisCellCount: 1,
+                        crossAxisCellCount: 2,
                         mainAxisCellCount: 1,
                         child: _Tile(
                             title: "Training Split",
-                            subTitle: "Dolor sapien aliquet faucibus bibendum quam.",
+                            subTitle: trainingSplitSummary,
                             color: isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.grey.shade200),
                       ),
                     ],
