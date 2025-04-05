@@ -111,6 +111,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
           minimum: const EdgeInsets.only(bottom: 20),
           bottom: false,
           child: SingleChildScrollView(
+            padding: EdgeInsets.only(bottom: 100),
             child: Column(
               spacing: 10,
               crossAxisAlignment: CrossAxisAlignment.start,

@@ -234,16 +234,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                               hasRightAxisTitles: true)
                         ]),
                       ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 0.0),
-                  child: Text(_metric == WeightAndRPE.weight ? _metric.description : strengthStatus.description,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 12,
-                          height: 1.8,
-                          color: isDarkMode ? Colors.white70 : Colors.black)),
-                ),
+                Text(_metric == WeightAndRPE.weight ? _metric.description : strengthStatus.description,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 12,
+                        height: 1.8,
+                        color: isDarkMode ? Colors.white70 : Colors.black)),
                 CupertinoSlidingSegmentedControl<WeightAndRPE>(
                   backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade200,
                   thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
@@ -271,7 +268,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             ExerciseType.bodyWeight => SingleSetHeader(label: 'REPS'),
             ExerciseType.duration => SingleSetHeader(label: 'TIME'),
           },
-          SetsListview(type: exerciseType, sets: widget.exerciseLog.sets, pbs: pbs)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: SetsListview(type: exerciseType, sets: widget.exerciseLog.sets, pbs: pbs),
+          )
         ],
       ),
     );
