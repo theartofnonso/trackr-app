@@ -165,13 +165,13 @@ Color logStreakColor(num value) {
 }
 
 /// Higher values now get a "better" color (green)
-Color lowToHighIntensityColor(double recoveryPercentage) {
-  if (recoveryPercentage < 0.3) {
+Color lowToHighIntensityColor(double score) {
+  if (score < 0.3) {
     // Severe DOMS (0–29%)
     return Colors.red;
-  } else if (recoveryPercentage < 0.5) {
+  } else if (score < 0.5) {
     return Colors.yellow;
-  } else if (recoveryPercentage < 0.8) {
+  } else if (score < 0.8) {
     return vibrantBlue;
   } else {
     return vibrantGreen;
@@ -179,12 +179,12 @@ Color lowToHighIntensityColor(double recoveryPercentage) {
 }
 
 /// Lower values now get a "better" color (green)
-Color highToLowIntensityColor(double recoveryPercentage) {
-  if (recoveryPercentage < 0.3) {
+Color highToLowIntensityColor(double score) {
+  if (score < 0.3) {
     return vibrantGreen;
-  } else if (recoveryPercentage < 0.5) {
+  } else if (score < 0.5) {
     return vibrantBlue;
-  } else if (recoveryPercentage < 0.8) {
+  } else if (score < 0.8) {
     return Colors.yellow;
   } else {
     // Higher recovery values now get a "worse" color (red)

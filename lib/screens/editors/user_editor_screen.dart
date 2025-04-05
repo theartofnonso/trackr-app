@@ -520,7 +520,7 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
       owner: "",
       height: 0,
       dateOfBirth: DateTime.now(),
-      gender: TRKRGender.other,
+      gender: TRKRGender.other, trainingHistory: "",
     );
 
 
