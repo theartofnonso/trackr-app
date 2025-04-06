@@ -118,7 +118,7 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                         controller: _notesController,
                         cursorColor: isDarkMode ? Colors.white : Colors.black,
                         decoration: InputDecoration(
-                          hintText: "Tell us about your fitness journey. This helps us tailor recommendations to match your experience level.",
+                          hintText: "Tell us about your fitness journey and training goals. This helps us tailor recommendations to match your experience level.",
                         ),
                         maxLines: null,
                         maxLength: 240,
@@ -495,7 +495,7 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
     final user = _user;
     if (user != null) {
       final userToUpdate = user.copyWith(
-          weight: _weight, height: _height, name: _nameController.text, dateOfBirth: _dateOfBirth, gender: _gender);
+          weight: _weight, height: _height, name: _nameController.text.trim(), trainingHistory: _notesController.text.trim(), dateOfBirth: _dateOfBirth, gender: _gender);
       await Provider.of<RoutineUserController>(context, listen: false).updateUser(userDto: userToUpdate);
       if (mounted) {
         context.pop();
@@ -513,17 +513,15 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
     final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
     final newUser = RoutineUserDto(
       id: "",
-      name: _nameController.text,
+      name: _nameController.text.trim(),
       cognitoUserId: SharedPrefs().userId,
       email: SharedPrefs().userEmail,
-      weight: 0.0,
+      weight: _weight,
       owner: "",
-      height: 0,
-      dateOfBirth: DateTime.now(),
-      gender: TRKRGender.other, trainingHistory: "",
+      height: _height,
+      dateOfBirth: _dateOfBirth,
+      gender: _gender, trainingHistory: _notesController.text.trim(),
     );
-
-
 
     await routineUserController.saveUser(userDto: newUser);
 
@@ -538,7 +536,7 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
     super.initState();
     _user = Provider.of<RoutineUserController>(context, listen: false).user;
     _nameController = TextEditingController(text: _user?.name);
-    _notesController = TextEditingController();
+    _notesController = TextEditingController(text: _user?.trainingHistory);
     _weight = _user?.weight ?? 0.0;
     _height = _user?.height ?? 0;
     _gender = _user?.gender ?? TRKRGender.other;

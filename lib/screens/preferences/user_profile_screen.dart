@@ -57,7 +57,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
 
     final trainingHistory = user.trainingHistory.isNotEmpty
         ? user.trainingHistory
-        : "Tell us about your fitness journey. This helps us tailor recommendations to match your experience level.";
+        : "Tell us about your fitness journey and training goals. This helps us tailor recommendations to match your experience level.";
 
     final dateRange = theLastYearDateTimeRange();
 
@@ -86,7 +86,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
 
     final sleepLevels = logsByWeek.map((log) => log.sleepLevel).where((score) => score >= 1);
 
-    final averageSleep = sleepLevels.isNotEmpty ? sleepLevels.average : 0.0;
+    final averageSleep = sleepLevels.isNotEmpty ? sleepLevels.average : 0;
 
     final readinessScores = logsByWeek.map((log) {
       final sorenessLevel = log.sorenessLevel;
@@ -94,13 +94,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
       return calculateReadinessScore(fatigue: fatigueLevel, soreness: sorenessLevel);
     }).where((score) => score >= 1);
 
-    final averageReadiness = readinessScores.isNotEmpty ? readinessScores.average : 0.0;
+    final averageReadiness = readinessScores.isNotEmpty ? readinessScores.average : -1;
 
     final trainingFrequency = _generateTrainingFrequencySummary(avgFrequency: averageOfPrevious);
 
     final sleepPattern = _generateSleepSummary(averageSleepScore: averageSleep.toInt());
 
-    final recoveryPattern = getTrainingGuidance(readinessScore: averageReadiness.toInt());
+    final readinessPattern = getTrainingGuidance(readinessScore: averageReadiness.toInt());
 
     final trainingSplits = logsByWeek.map((log) {
       final muscleGroups = log.exerciseLogs.map((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup).toSet();
@@ -124,7 +124,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
       }
     });
 
-    final trainingSplitSummary = getTrainingSplitSummary(split: mostFrequent);
+    final trainingSplitSummary = trainingSplits.isNotEmpty ? getTrainingSplitSummary(split: mostFrequent) : "We use your workout split to customize exercise recommendations and ensure every muscle group gets the attention it needs.";
 
     return Scaffold(
       appBar: AppBar(
@@ -225,7 +225,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
                         child: _Tile(
                           title: "Sleep Pattern",
                           subTitle: sleepPattern,
-                          color: lowToHighIntensityColor(averageSleep / 5),
+                          color: averageSleep.toInt() <= 0 ? isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.grey.shade200 : lowToHighIntensityColor(averageSleep / 5),
                         ),
                       ),
                       StaggeredGridTile.count(
@@ -233,8 +233,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
                         mainAxisCellCount: 1,
                         child: _Tile(
                           title: "Recovery",
-                          subTitle: recoveryPattern,
-                          color: lowToHighIntensityColor(averageReadiness / 100),
+                          subTitle: readinessPattern,
+                          color: averageReadiness.toInt() <= 0 ?  isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.grey.shade200: lowToHighIntensityColor(averageReadiness / 100),
                         ),
                       ),
                       StaggeredGridTile.count(
