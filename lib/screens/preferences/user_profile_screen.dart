@@ -233,7 +233,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
                         crossAxisCellCount: 1,
                         mainAxisCellCount: 1,
                         child: _Tile(
-                          title: "Recovery",
+                          title: "Readiness",
                           subTitle: readinessPattern,
                           color: averageReadiness.toInt() <= 0 ?  isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.grey.shade200: lowToHighIntensityColor(averageReadiness / 100),
                         ),
