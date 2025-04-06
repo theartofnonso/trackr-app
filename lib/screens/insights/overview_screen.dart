@@ -137,6 +137,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
         ),
         child: SafeArea(
             minimum: const EdgeInsets.all(10),
+            bottom: false,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [

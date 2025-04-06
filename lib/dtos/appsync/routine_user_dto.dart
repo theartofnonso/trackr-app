@@ -37,7 +37,6 @@ class RoutineUserDto {
     final name = json["name"] ?? "";
     final email = json["email"] ?? "";
     final trainingHistory = json["trainingHistory"] ?? "";
-    print(user);
     final weight = (json["weight"]) ?? 0.0;
     final height = (json["height"]) ?? 0;
     final dateOfBirthMillisecondsSinceEpoch = (json["dob"]) as int? ?? DateTime.now().millisecondsSinceEpoch;
