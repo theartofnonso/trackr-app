@@ -110,7 +110,7 @@ void main() async {
 
   logger.i("Application starting...");
 
-  WidgetsFlutterBinding.ensureInitialized();
+  SentryWidgetsFlutterBinding.ensureInitialized();
 
   await SharedPrefs().init();
 
