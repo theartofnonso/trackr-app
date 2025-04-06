@@ -46,7 +46,7 @@ class WeightAndRepsSetDto extends SetDto {
 
   @override
   String summary() {
-    return "$weight${weightLabel()} x $reps";
+    return "$weight${weightUnit()} x $reps";
   }
 
   @override

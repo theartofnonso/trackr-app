@@ -1,19 +1,18 @@
 import 'dart:io';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:health/health.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/graphQL/queries.dart';
-import 'package:tracker_app/screens/preferences/user_profile_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/urls.dart';
 
@@ -23,16 +22,33 @@ import '../../utils/dialog_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/uri_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
-import '../../widgets/icons/apple_health_icon.dart';
+import '../../widgets/dividers/label_divider.dart';
 import '../../widgets/information_containers/information_container_with_background_image.dart';
 import '../exercise/library/exercise_library_screen.dart';
 
 enum WeightUnit {
-  kg,
-  lbs;
+  kg("kg"),
+  lbs("lbs");
+
+  const WeightUnit(this.display);
+
+  final String display;
 
   static WeightUnit fromString(String string) {
     return WeightUnit.values.firstWhere((value) => value.name == string);
+  }
+}
+
+enum HeightUnit {
+  ftIn("ft"),
+  cm("cm");
+
+  const HeightUnit(this.display);
+
+  final String display;
+
+  static HeightUnit fromString(String string) {
+    return HeightUnit.values.firstWhere((value) => value.name == string);
   }
 }
 
@@ -48,11 +64,11 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObserver {
   bool _loading = false;
 
-  late WeightUnit _weightUnitType;
-
-  bool _appleHealthEnabled = false;
+  late WeightUnit _weightUnit;
 
   String _appVersion = "";
+
+  bool _notificationEnabled = false;
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +94,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
           minimum: EdgeInsets.all(10),
           child: SingleChildScrollView(
             child: Column(
-              spacing: 8,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 GestureDetector(
@@ -93,66 +108,70 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         color: Colors.white.withValues(alpha: 0.9),
                       )),
                 ),
+                const SizedBox(
+                  height: 20,
+                ),
+                if (Platform.isIOS)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      LabelDivider(
+                        label: "Notifications",
+                        labelColor: isDarkMode ? Colors.white : Colors.black,
+                        dividerColor: sapphireLighter,
+                        fontSize: 14,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                          "Allow us to remind you about long-running workouts if you’ve become distracted. We’ll also send reminders on your training days.",
+                          textAlign: TextAlign.start,
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                    ]),
+                  ),
+                ListTile(
+                  onTap: _turnOnNotification,
+                  dense: true,
+                  horizontalTitleGap: 0,
+                  leading: Text(_notificationEnabled ? "Notification is on" : "Turn on notifications",
+                      textAlign: TextAlign.start,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontWeight: FontWeight.w600, fontSize: 14, color: isDarkMode ? Colors.white : Colors.black)),
+                  trailing: FaIcon(
+                    FontAwesomeIcons.solidBell,
+                    size: 14,
+                  ),
+                ),
                 ListTile(
                   tileColor: Colors.transparent,
                   title: Text("Weight", style: Theme.of(context).textTheme.titleMedium),
                   subtitle: Text("Choose kg or lbs"),
-                  trailing: SegmentedButton(
-                    showSelectedIcon: false,
-                    style: ButtonStyle(
-                      visualDensity: const VisualDensity(
-                          horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity),
-                      shape: WidgetStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                      )),
-                      backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                        (Set<WidgetState> states) {
-                          if (states.contains(WidgetState.selected)) {
-                            return isDarkMode ? Colors.white : Colors.black;
-                          }
-                          return isDarkMode ? Colors.black : Colors.white;
-                        },
-                      ),
-                      foregroundColor: WidgetStateProperty.resolveWith<Color>(
-                        (Set<WidgetState> states) {
-                          if (states.contains(WidgetState.selected)) {
-                            return isDarkMode ? Colors.black : Colors.white;
-                          }
-                          return isDarkMode ? Colors.white : Colors.black;
-                        },
-                      ),
-                    ),
-                    segments: [
-                      ButtonSegment<WeightUnit>(value: WeightUnit.kg, label: Text(WeightUnit.kg.name)),
-                      ButtonSegment<WeightUnit>(value: WeightUnit.lbs, label: Text(WeightUnit.lbs.name)),
-                    ],
-                    selected: <WeightUnit>{_weightUnitType},
-                    onSelectionChanged: (Set<WeightUnit> unitType) {
-                      setState(() {
-                        _weightUnitType = unitType.first;
-                      });
-                      toggleWeightUnit(unit: _weightUnitType);
+                  trailing: CupertinoSlidingSegmentedControl<WeightUnit>(
+                    backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade400,
+                    thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
+                    groupValue: _weightUnit,
+                    children: {
+                      WeightUnit.kg: SizedBox(
+                          width: 30,
+                          child: Text(WeightUnit.kg.display,
+                              style: Theme.of(context).textTheme.bodySmall,
+                              textAlign: TextAlign.center)),
+                      WeightUnit.lbs: SizedBox(
+                          width: 30,
+                          child: Text(WeightUnit.lbs.display,
+                              style: Theme.of(context).textTheme.bodySmall,
+                              textAlign: TextAlign.center)),
+                    },
+                    onValueChanged: (WeightUnit? value) {
+                      if (value != null) {
+                        setState(() {
+                          _weightUnit = value;
+                        });
+                        toggleWeightUnit(unit: value);
+                      }
                     },
                   ),
                 ),
-                SwitchListTile(
-                  tileColor: Colors.transparent,
-                  activeColor: vibrantGreen,
-                  title: Text('Show calendar dates', style: Theme.of(context).textTheme.titleMedium),
-                  value: SharedPrefs().showCalendarDates,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                  onChanged: (bool value) {
-                    setState(() {
-                      SharedPrefs().showCalendarDates = value;
-                    });
-                  },
-                ),
-                ListTile(
-                    onTap: _navigateToUserProfile,
-                    leading:
-                        FaIcon(FontAwesomeIcons.personWalking, color: isDarkMode ? Colors.white70 : Colors.black38),
-                    title: Text("Profile", style: Theme.of(context).textTheme.titleMedium),
-                    subtitle: Text("manage profile")),
                 ListTile(
                   onTap: _navigateToExerciseLibrary,
                   leading: Image.asset(
@@ -164,13 +183,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   title: Text("Exercises", style: Theme.of(context).textTheme.titleMedium),
                   subtitle: Text("manage exercises"),
                 ),
-                if (Platform.isIOS)
-                  ListTile(
-                    onTap: _connectAppleHealth,
-                    leading: AppleHealthIcon(isDarkMode: isDarkMode, height: 24),
-                    title: Text("Apple Health", style: Theme.of(context).textTheme.titleMedium),
-                    subtitle: Text(_appleHealthEnabled ? "connected" : "tap to connect"),
-                  ),
                 ListTile(
                     onTap: _sendFeedback,
                     leading:
@@ -193,7 +205,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     leading: FaIcon(FontAwesomeIcons.xmark, color: isDarkMode ? Colors.white70 : Colors.black38),
                     title: Text("Delete Account", style: Theme.of(context).textTheme.titleMedium),
                     subtitle: Text(userEmail)),
-                const SizedBox(height: 10),
                 Center(
                   child: Text(_appVersion, style: Theme.of(context).textTheme.bodySmall),
                 ),
@@ -203,16 +214,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         ),
       ),
     );
-  }
-
-  void _navigateToUserProfile() {
-    final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
-    final user = routineUserController.user;
-    if (user != null) {
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const UserProfileScreen()));
-    } else {
-      showCreateProfileBottomSheet(context: context);
-    }
   }
 
   void _showLoadingScreen() {
@@ -249,13 +250,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
 
   void _navigateToExerciseLibrary() {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ExerciseLibraryScreen(readOnly: true)));
-  }
-
-  void _connectAppleHealth() async {
-    final hasPermission = await requestAppleHealth();
-    setState(() {
-      _appleHealthEnabled = hasPermission;
-    });
   }
 
   void _clearAppData() async {
@@ -306,6 +300,22 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
             )
           ]),
         ));
+  }
+
+  void _turnOnNotification() async {
+    if (!_notificationEnabled) {
+      final isEnabled = await requestNotificationPermission();
+      setState(() {
+        _notificationEnabled = isEnabled;
+      });
+    }
+  }
+
+  void _checkNotificationPermission() async {
+    final result = await checkIosNotificationPermission();
+    setState(() {
+      _notificationEnabled = result.isEnabled;
+    });
   }
 
   void _logout() async {
@@ -368,18 +378,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         isRightActionDestructive: true);
   }
 
-  void _checkAppleHealthPermission() async {
-    await Health().configure();
-
-    final types = [HealthDataType.SLEEP_ASLEEP, HealthDataType.WORKOUT];
-
-    final hasPermissions = await Health().hasPermissions(types) ?? false;
-
-    setState(() {
-      _appleHealthEnabled = hasPermissions;
-    });
-  }
-
   void _getAppVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     final version = packageInfo.version;
@@ -392,10 +390,9 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    _weightUnitType = WeightUnit.fromString(SharedPrefs().weightUnit);
-    _checkAppleHealthPermission();
+    _weightUnit = WeightUnit.fromString(SharedPrefs().weightUnit);
     _getAppVersion();
+    _checkNotificationPermission();
   }
 
   @override
@@ -409,7 +406,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     /// Uncomment this to enable notifications
     if (state == AppLifecycleState.resumed) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _checkAppleHealthPermission();
+        _checkNotificationPermission();
       });
     }
   }

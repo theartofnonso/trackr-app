@@ -94,7 +94,7 @@ String generateTrainingPrompt({required List<MuscleGroup> muscleGroups}) {
 
           Please make your feedback personal, explanatory, and motivating.
 
-          Note: All weights are measured in ${weightLabel()}.
+          Note: All weights are measured in ${weightUnit()}.
 
         """;
 }

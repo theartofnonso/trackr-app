@@ -159,7 +159,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final isOutSideOfRange = isOutsideReasonableRange(previousWeights, weight);
     if(isOutSideOfRange) {
-      _isOutOfRangeMessage = "Hmm, $weight${weightLabel()} looks a bit off. Mind checking the value just to be sure?";
+      _isOutOfRangeMessage = "Hmm, $weight${weightUnit()} looks a bit off. Mind checking the value just to be sure?";
     } else {
       _isOutOfRangeMessage = "";
     }
@@ -393,9 +393,16 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         .where((set) => set.isWorkingSet)
         .toList();
 
+    bool isAllSameWeight = false;
+
+    if(exerciseType == ExerciseType.weights) {
+      final weights = workingSets.map((set) => (set as WeightAndRepsSetDto).weight).toList();
+      isAllSameWeight = allNumbersAreSame(numbers: weights);
+    }
+
     /// Determine working set for weight
     final workingSet = switch (exerciseType) {
-      ExerciseType.weights => getHighestWeight(workingSets),
+      ExerciseType.weights => isAllSameWeight ? getHeaviestVolume(workingSets) : getHighestWeight(workingSets),
       ExerciseType.bodyWeight => getHighestReps(workingSets),
       ExerciseType.duration => getLongestDuration(workingSets),
     };
@@ -563,7 +570,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 _showPreviousSets
                     ? switch (exerciseType) {
                         ExerciseType.weights => DoubleSetHeader(
-                            firstLabel: "PREVIOUS ${weightLabel().toUpperCase()}".toUpperCase(),
+                            firstLabel: "PREVIOUS ${weightUnit().toUpperCase()}".toUpperCase(),
                             secondLabel: 'PREVIOUS REPS'.toUpperCase(),
                           ),
                         ExerciseType.bodyWeight => SingleSetHeader(label: 'PREVIOUS REPS'.toUpperCase()),
@@ -572,7 +579,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                     : switch (exerciseType) {
                         ExerciseType.weights => WeightAndRepsSetHeader(
                             editorType: widget.editorType,
-                            firstLabel: weightLabel().toUpperCase(),
+                            firstLabel: weightUnit().toUpperCase(),
                             secondLabel: 'REPS',
                           ),
                         ExerciseType.bodyWeight => RepsSetHeader(
@@ -961,7 +968,7 @@ class _OneRepMaxSliderState extends State<_OneRepMaxSlider> {
                 text: "\n",
               ),
               TextSpan(
-                text: "$_weight${weightLabel()}",
+                text: "$_weight${weightUnit()}",
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
               ),
               TextSpan(

@@ -57,7 +57,12 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
                     TableRow(children: [
                       TableCell(
                         verticalAlignment: TableCellVerticalAlignment.middle,
-                        child: SizedBox(),
+                        child: Center(
+                          child: IconButton(
+                            onPressed: () => navigateToSettings(context: context),
+                            icon: FaIcon(FontAwesomeIcons.gear, size: 20),
+                          ),
+                        ),
                       ),
                       TableCell(
                         verticalAlignment: TableCellVerticalAlignment.middle,

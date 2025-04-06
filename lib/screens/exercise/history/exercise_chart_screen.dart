@@ -180,7 +180,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final weightUnitLabel = weightLabel();
+    final weightUnitLabel = weightUnit();
 
     final muscleGroupsIllustrations = [widget.exercise.primaryMuscleGroup, ...widget.exercise.secondaryMuscleGroups]
         .where((muscleGroup) => muscleGroup != MuscleGroup.fullBody)

@@ -10,6 +10,7 @@ import 'package:tracker_app/dtos/daily_readiness.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
+import 'package:tracker_app/screens/preferences/user_profile_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 
@@ -136,16 +137,17 @@ class _OverviewScreenState extends State<OverviewScreen> {
         ),
         child: SafeArea(
             minimum: const EdgeInsets.all(10),
+            bottom: false,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 10),
                 Expanded(
                   child: SingleChildScrollView(
                       padding: const EdgeInsets.only(top: 3, bottom: 150),
-                      child: Column(children: [
+                      child: Column(
+                          spacing: 12,
+                          children: [
                         LogStreakMonitor(dateTime: widget.dateTimeRange.start),
-                        const SizedBox(height: 24),
                         StaggeredGrid.count(
                           crossAxisCount: 2,
                           mainAxisSpacing: 10,
@@ -165,14 +167,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
                               child: GestureDetector(
                                 onTap: () => navigateToRoutineTemplates(context: context),
                                 child: _TemplatesTile(),
-                              ),
-                            ),
-                            StaggeredGridTile.count(
-                              crossAxisCellCount: 4,
-                              mainAxisCellCount: 2,
-                              child: Calendar(
-                                onSelectDate: _onSelectCalendarDateTime,
-                                dateTime: widget.dateTimeRange.start,
                               ),
                             ),
                             StaggeredGridTile.count(
@@ -231,10 +225,16 @@ class _OverviewScreenState extends State<OverviewScreen> {
                               crossAxisCellCount: 1,
                               mainAxisCellCount: 1,
                               child: GestureDetector(
-                                  onTap: () => navigateToSettings(context: context), child: _SettingsTile()),
+                                onTap: () => navigateWithSlideTransition(context: context, child: UserProfileScreen()),
+                                child: _ProfileTile(),
+                              ),
                             ),
                           ],
                         ),
+                        Calendar(
+                          onSelectDate: _onSelectCalendarDateTime,
+                          dateTime: widget.dateTimeRange.start,
+                        )
                       ])),
                 )
                 // Add more widgets here for exercise insights
@@ -570,8 +570,8 @@ class _AddTile extends StatelessWidget {
   }
 }
 
-class _SettingsTile extends StatelessWidget {
-  const _SettingsTile();
+class _ProfileTile extends StatelessWidget {
+  const _ProfileTile();
 
   @override
   Widget build(BuildContext context) {
@@ -581,9 +581,10 @@ class _SettingsTile extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
-          color: isDarkMode ? vibrantBlue.withValues(alpha: 0.1) : vibrantBlue, borderRadius: BorderRadius.circular(5)),
+          color: isDarkMode ? Colors.red.withValues(alpha: 0.1) : Colors.red,
+          borderRadius: BorderRadius.circular(5)),
       child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-        Text("Manage your preferences",
+        Text("Personalise\nyour fitness profile",
             style: GoogleFonts.ubuntu(fontSize: 20, height: 1.5, fontWeight: FontWeight.w600)),
         const Spacer(),
         Row(
@@ -594,13 +595,13 @@ class _SettingsTile extends StatelessWidget {
               height: 40,
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
-                color: isDarkMode ? vibrantBlue.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.4),
+                color: isDarkMode ? Colors.red.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.4),
                 borderRadius: BorderRadius.circular(3),
               ),
               child: Center(
                 child: FaIcon(
-                  FontAwesomeIcons.gear,
-                  color: isDarkMode ? vibrantBlue : Colors.white,
+                  FontAwesomeIcons.personWalking,
+                  color: isDarkMode ? Colors.red : Colors.white,
                   size: 20,
                 ),
               ),

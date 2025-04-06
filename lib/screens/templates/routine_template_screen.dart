@@ -434,7 +434,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                                               text: " ",
                                             ),
                                             TextSpan(
-                                              text: weightLabel().toUpperCase(),
+                                              text: weightUnit().toUpperCase(),
                                               style: Theme.of(context).textTheme.bodyMedium,
                                             ),
                                           ],
@@ -586,7 +586,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   void _launchRoutineLogEditor({required List<MuscleGroup> muscleGroups}) async {
     final template = _template;
     if (template != null) {
-      final readiness = await navigateWithSlideTransition(context: context, child: ReadinessScreen(muscleGroups: muscleGroups,)) as DailyReadiness? ?? DailyReadiness.empty();
+      final readiness = await navigateWithSlideTransition(context: context, child: ReadinessScreen(muscleGroups: muscleGroups)) as DailyReadiness? ?? DailyReadiness.empty();
       final fatigue = readiness.perceivedFatigue;
       final soreness = readiness.muscleSoreness;
       final sleep = readiness.sleepDuration;

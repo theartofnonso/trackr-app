@@ -61,7 +61,7 @@ class _WeightCalculatorState extends State<WeightPlateCalculator> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text("${weightWithConversion(value: widget.target)}${weightLabel()}".toUpperCase(),
+          Text("${weightWithConversion(value: widget.target)}${weightUnit()}".toUpperCase(),
               textAlign: TextAlign.center, style: Theme.of(context).textTheme.headlineLarge),
           const SizedBox(
             height: 2,
@@ -79,14 +79,14 @@ class _WeightCalculatorState extends State<WeightPlateCalculator> {
             Padding(
               padding: const EdgeInsets.only(top: 14, bottom: 2),
               child: Text(
-                  "Closest estimate is ${weightWithConversion(value: weightEstimate)}${weightLabel()}".toUpperCase(),
+                  "Closest estimate is ${weightWithConversion(value: weightEstimate)}${weightUnit()}".toUpperCase(),
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyMedium),
             ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16),
             child: LabelDivider(
-                label: "Available Weights (${weightLabel()})".toUpperCase(),
+                label: "Available Weights (${weightUnit()})".toUpperCase(),
                 labelColor: isDarkMode ? Colors.white70 : Colors.black,
                 dividerColor: sapphireLighter),
           ),
@@ -99,7 +99,7 @@ class _WeightCalculatorState extends State<WeightPlateCalculator> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16),
             child: LabelDivider(
-              label: "Available Bar (${weightLabel()})".toUpperCase(),
+              label: "Available Bar (${weightUnit()})".toUpperCase(),
               labelColor: isDarkMode ? Colors.white70 : Colors.black,
               dividerColor: sapphireLighter,
               leftToRight: true,

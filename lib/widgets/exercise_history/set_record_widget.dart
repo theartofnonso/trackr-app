@@ -24,7 +24,7 @@ class SetRecordWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        DoubleSetHeader(firstLabel: "Reps", secondLabel: 'Personal Best (${weightLabel().toUpperCase()})'),
+        DoubleSetHeader(firstLabel: "Reps", secondLabel: 'Personal Best (${weightUnit().toUpperCase()})'),
         const SizedBox(height: 8),
         ...personaBestSets.map((set) {
           final firstLabel = (set as WeightAndRepsSetDto).reps;

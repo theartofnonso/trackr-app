@@ -30,10 +30,10 @@ class PBsShareable extends StatelessWidget {
       value = (set as DurationSetDto).duration.hmsAnalog();
     } else if (withWeightsOnly(type: pbDto.exercise.type)) {
       if (pbDto.pb == PBType.weight) {
-        value = "${(set as WeightAndRepsSetDto).weight}${weightLabel().toUpperCase()}";
+        value = "${(set as WeightAndRepsSetDto).weight}${weightUnit().toUpperCase()}";
       } else {
         final weightAndRepsSet = (set as WeightAndRepsSetDto);
-        value = "${weightAndRepsSet.weight}${weightLabel().toUpperCase()} x ${weightAndRepsSet.reps}";
+        value = "${weightAndRepsSet.weight}${weightUnit().toUpperCase()} x ${weightAndRepsSet.reps}";
       }
     }
 

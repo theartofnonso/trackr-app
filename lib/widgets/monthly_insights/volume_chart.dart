@@ -80,7 +80,7 @@ class VolumeChart extends StatelessWidget {
                         text: " ",
                       ),
                       TextSpan(
-                        text: weightLabel().toUpperCase(),
+                        text: weightUnit().toUpperCase(),
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
