@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
+import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/widgets/icons/user_icon_widget.dart';
 
 import '../../colors.dart';
@@ -48,7 +49,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
 
     final weight = user.weight;
     final height = user.height;
-    final heightConversion = heightWithConversion(value: height);
+    final heightConversion = heightWithConversion(value: height, unit: HeightUnit.ftIn);
 
     final dob = user.dateOfBirth;
     final age = _calculateAge(birthDate: dob);

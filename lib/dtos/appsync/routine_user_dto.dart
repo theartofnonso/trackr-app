@@ -37,6 +37,7 @@ class RoutineUserDto {
     final name = json["name"] ?? "";
     final email = json["email"] ?? "";
     final trainingHistory = json["trainingHistory"] ?? "";
+    print(user);
     final weight = (json["weight"]) ?? 0.0;
     final height = (json["height"]) ?? 0;
     final dateOfBirthMillisecondsSinceEpoch = (json["dob"]) as int? ?? DateTime.now().millisecondsSinceEpoch;
@@ -98,6 +99,6 @@ class RoutineUserDto {
 
   @override
   String toString() {
-    return 'RoutineUserDto{id: $id, cognitoUserId: $cognitoUserId, name: $name, trainingHistory: $trainingHistory, email: $email, weight: $weight, height: $height dateOfBirth: $dateOfBirth, gender: $gender,  owner: $owner}';
+    return 'RoutineUserDto{id: $id, cognitoUserId: $cognitoUserId, name: $name, trainingHistory: $trainingHistory, email: $email, weight: $weight, height: $height dateOfBirth: $dateOfBirth, gender: $gender, owner: $owner}';
   }
 }

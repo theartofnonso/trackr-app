@@ -50,14 +50,14 @@ Future<void> displayBottomSheet(
       backgroundColor: Colors.transparent,
       context: context,
       builder: (BuildContext context) => SafeArea(
-        minimum: EdgeInsets.all(10),
+        minimum: EdgeInsets.all(20),
         child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
                   height: height,
                   width: double.infinity,
-                  padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  padding: padding ?? const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                       color: isDarkMode ? sapphireDark80 : Colors.grey.shade100,
                       borderRadius: const BorderRadius.all(Radius.circular(20),

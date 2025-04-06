@@ -217,7 +217,6 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
                               setState(() {
                                 _heightUnit = value;
                               });
-                              toggleHeightUnit(unit: value);
                             }
                           },
                         ),

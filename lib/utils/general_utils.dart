@@ -36,7 +36,7 @@ double weightWithConversion({required num value}) {
 }
 
 String heightWithConversion({HeightUnit? unit, required num value}) {
-  return unit == HeightUnit.cm || isDefaultHeightUnit() ? "$value cm" : toFtInString(value.toDouble());
+  return unit == HeightUnit.cm ? "$value cm" : toFtInString(value.toDouble());
 }
 
 String weightUnit() {
@@ -63,7 +63,7 @@ String toFtInString(double value) {
   final int feet = totalInches ~/ 12;         // integer division to get whole feet
   final double remainderInches = totalInches % 12;
   // Round inches to 2 decimals if desired:
-  return '$feet ft, ${remainderInches.round()} in';
+  return '$feet ft ${remainderInches.round()} in';
 }
 
 Map<String, num> toFtIn(double value) {
