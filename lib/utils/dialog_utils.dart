@@ -49,24 +49,25 @@ Future<void> displayBottomSheet(
       enableDrag: enabledDrag,
       backgroundColor: Colors.transparent,
       context: context,
-      builder: (BuildContext context) => Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                height: height,
-                width: double.infinity,
-                padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                decoration: BoxDecoration(
-                    color: isDarkMode ? sapphireDark80 : Colors.grey.shade100,
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                    ),
-                    gradient: isDarkMode ? themeGradient(context: context) : null),
-                child: SafeArea(child: child),
-              ),
-            ],
-          ));
+      builder: (BuildContext context) => SafeArea(
+        minimum: EdgeInsets.all(10),
+        child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  height: height,
+                  width: double.infinity,
+                  padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  decoration: BoxDecoration(
+                      color: isDarkMode ? sapphireDark80 : Colors.grey.shade100,
+                      borderRadius: const BorderRadius.all(Radius.circular(20),
+                      ),
+                      gradient: isDarkMode ? themeGradient(context: context) : null),
+                  child: SafeArea(child: child),
+                ),
+              ],
+            ),
+      ));
 }
 
 void displayTimePicker(
