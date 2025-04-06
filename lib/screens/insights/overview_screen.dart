@@ -506,8 +506,8 @@ class _TemplatesTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Container(
-              width: 25,
-              height: 25,
+              width: 40,
+              height: 40,
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
                 color: isDarkMode ? vibrantBlue.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.4),
@@ -516,7 +516,7 @@ class _TemplatesTile extends StatelessWidget {
               child: Image.asset(
                 'icons/dumbbells.png',
                 fit: BoxFit.contain,
-                height: 14,
+                height: 20,
                 color: isDarkMode ? vibrantBlue : Colors.white, // Adjust the height as needed
               ),
             ),
