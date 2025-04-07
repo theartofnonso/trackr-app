@@ -1,4 +1,4 @@
-String capitalizeFirstLetter(String text) {
+String capitalizeFirstLetter({required String text}) {
   return text
       .split(' ')
       .map((word) => word.isNotEmpty ? '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}' : word)
