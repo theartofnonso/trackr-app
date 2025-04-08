@@ -309,7 +309,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   String _repsErrorMessage({required int reps}) =>
-      "Hmm, $reps ${pluralize(word: "reps", count: reps)} looks a bit off your usual range. Mind checking the value just to be sure?";
+      "Hmm, $reps ${pluralize(word: "rep", count: reps)} looks a bit off your usual range. Mind checking the value just to be sure?";
 
   String _getWeightErrorMessage({required double weight}) =>
       "Hmm, $weight${weightUnit()} looks a bit off your usual range. Mind checking the value just to be sure?";
