@@ -197,6 +197,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       _errorMessages.removeWhere((errorToBeRemoved) => errorToBeRemoved.index == index);
     }
 
+    _checkRepsRange(reps: reps, index: index);
+
     final updatedSet =
         setDto is WeightAndRepsSetDto ? setDto.copyWith(reps: reps) : (setDto as RepsSetDto).copyWith(reps: reps);
     Provider.of<ExerciseLogController>(context, listen: false)
@@ -234,6 +236,27 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     }
   }
 
+  void _checkWeightRange({required double weight, required int index}) {
+    if (isDefaultWeightUnit()) {
+      if (weight < 0.5 || weight > 500) {
+        final message = 'Weight must be between 0.5 and 500 kg';
+        _errorMessages.add(_ErrorMessage(index: index, message: message));
+      }
+    } else {
+      if (weight < 1 || weight > 1100) {
+        final message = 'Weight must be between 1 and 1100 lbs';
+        _errorMessages.add(_ErrorMessage(index: index, message: message));
+      }
+    }
+  }
+
+  void _checkRepsRange({required int reps, required int index}) {
+      if (reps < 0) {
+        final message = 'Reps must be at least 1';
+        _errorMessages.add(_ErrorMessage(index: index, message: message));
+      }
+  }
+
   void _loadWeightAndRepsControllers({required List<SetDto> sets}) {
     final previousSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
         .wherePrevSetsForExercise(exercise: _exerciseLog.exercise);
@@ -261,20 +284,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     });
   }
 
-  void _checkWeightRange({required double weight, required int index}) {
-    if (isDefaultWeightUnit()) {
-      if (weight < 0.5 || weight > 500) {
-        final message = 'Weight must be between 0.5 and 500 kg';
-        _errorMessages.add(_ErrorMessage(index: index, message: message));
-      }
-    } else {
-      if (weight < 1 || weight > 1100) {
-        final message = 'Weight must be between 1 and 1100 lbs';
-        _errorMessages.add(_ErrorMessage(index: index, message: message));
-      }
-    }
-  }
-
   void _loadRepsControllers({required List<SetDto> sets}) {
     final previousSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
         .wherePrevSetsForExercise(exercise: _exerciseLog.exercise);
@@ -300,6 +309,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         _errorMessages.add(_ErrorMessage(index: index, message: message));
       }
 
+      _checkRepsRange(reps: reps, index: index);
+      
       final repsController = TextEditingController(text: (set as RepsSetDto).reps.toString());
       controllers.add(repsController);
     }
