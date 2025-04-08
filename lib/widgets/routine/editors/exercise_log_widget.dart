@@ -251,7 +251,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _checkRepsRange({required int reps, required int index}) {
-      if (reps < 0) {
+      if (reps <= 0) {
         final message = 'Reps must be at least 1';
         _errorMessages.add(_ErrorMessage(index: index, message: message));
       }
@@ -310,7 +310,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       }
 
       _checkRepsRange(reps: reps, index: index);
-      
+
       final repsController = TextEditingController(text: (set as RepsSetDto).reps.toString());
       controllers.add(repsController);
     }
