@@ -266,6 +266,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     List<(TextEditingController, TextEditingController)> controllers = [];
     for (final (index, set) in sets.indexed) {
       final weight = (set as WeightAndRepsSetDto).weight;
+      final reps = set.reps;
 
       final isOutSideOfRange = isOutsideReasonableRange(previousWeights, weight);
       if (isOutSideOfRange) {
@@ -274,6 +275,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       }
 
       _checkWeightRange(weight: weight, index: index);
+
+      _checkRepsRange(reps: reps, index: index);
 
       final weightController = TextEditingController(text: (set).weight.toString());
       final repsController = TextEditingController(text: set.reps.toString());
