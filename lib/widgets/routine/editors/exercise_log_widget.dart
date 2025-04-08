@@ -39,6 +39,13 @@ import '../preview/set_headers/double_set_header.dart';
 import '../preview/set_headers/single_set_header.dart';
 import '../preview/sets_listview.dart';
 
+class _ErrorMessage {
+  final int index;
+  final String message;
+
+  _ErrorMessage({required this.index, required this.message});
+}
+
 class ExerciseLogWidget extends StatefulWidget {
   final RoutineEditorMode editorType;
 
@@ -63,7 +70,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   SetDto? _selectedSetDto;
 
-  String _isOutOfRangeMessage = "";
+  final List<_ErrorMessage> _errorMessages = [];
 
   void _show1RMRecommendations() {
     final pastExerciseLogs =
@@ -144,25 +151,26 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _removeSet({required int index}) {
-    _isOutOfRangeMessage = "";
     Provider.of<ExerciseLogController>(context, listen: false)
         .removeSetForExerciseLog(exerciseLogId: _exerciseLog.id, index: index);
     _loadControllers();
   }
 
   void _updateWeight({required int index, required double weight, required SetDto setDto}) {
-
     final previousSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
         .wherePrevSetsForExercise(exercise: _exerciseLog.exercise);
 
     final previousWeights = previousSets.map((set) => (set as WeightAndRepsSetDto).weight).toList();
 
     final isOutSideOfRange = isOutsideReasonableRange(previousWeights, weight);
-    if(isOutSideOfRange) {
-      _isOutOfRangeMessage = "Hmm, $weight${weightUnit()} looks a bit off. Mind checking the value just to be sure?";
+    if (isOutSideOfRange) {
+      final message = _getWeightErrorMessage(weight: weight);
+      _errorMessages.add(_ErrorMessage(index: index, message: message));
     } else {
-      _isOutOfRangeMessage = "";
+      _errorMessages.removeWhere((errorToBeRemoved) => errorToBeRemoved.index == index);
     }
+
+    _checkWeightRange(weight: weight, index: index);
 
     final updatedSet = (setDto as WeightAndRepsSetDto).copyWith(weight: weight);
     Provider.of<ExerciseLogController>(context, listen: false)
@@ -170,21 +178,23 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _updateReps({required int index, required int reps, required SetDto setDto}) {
-
     final previousSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
         .wherePrevSetsForExercise(exercise: _exerciseLog.exercise);
 
-    final previousReps = previousSets.map((set) => switch(_exerciseLog.exercise.type) {
-      ExerciseType.weights => (set as WeightAndRepsSetDto).reps,
-      ExerciseType.bodyWeight => (set as RepsSetDto).reps,
-      ExerciseType.duration => throw UnimplementedError(),
-    }).toList();
+    final previousReps = previousSets
+        .map((set) => switch (_exerciseLog.exercise.type) {
+              ExerciseType.weights => (set as WeightAndRepsSetDto).reps,
+              ExerciseType.bodyWeight => (set as RepsSetDto).reps,
+              ExerciseType.duration => throw UnimplementedError(),
+            })
+        .toList();
 
     final isOutSideOfRange = isOutsideReasonableRange(previousReps, reps);
-    if(isOutSideOfRange) {
-      _isOutOfRangeMessage = "Hmm, $reps ${pluralize(word: "reps", count: reps)} looks a bit off. Mind checking the value just to be sure?";
+    if (isOutSideOfRange) {
+      final message = _repsErrorMessage(reps: reps);
+      _errorMessages.add(_ErrorMessage(index: index, message: message));
     } else {
-      _isOutOfRangeMessage = "";
+      _errorMessages.removeWhere((errorToBeRemoved) => errorToBeRemoved.index == index);
     }
 
     final updatedSet =
@@ -225,9 +235,24 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _loadWeightAndRepsControllers({required List<SetDto> sets}) {
+    final previousSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
+        .wherePrevSetsForExercise(exercise: _exerciseLog.exercise);
+
+    final previousWeights = previousSets.map((set) => (set as WeightAndRepsSetDto).weight).toList();
+
     List<(TextEditingController, TextEditingController)> controllers = [];
-    for (final set in sets) {
-      final weightController = TextEditingController(text: (set as WeightAndRepsSetDto).weight.toString());
+    for (final (index, set) in sets.indexed) {
+      final weight = (set as WeightAndRepsSetDto).weight;
+
+      final isOutSideOfRange = isOutsideReasonableRange(previousWeights, weight);
+      if (isOutSideOfRange) {
+        final message = _getWeightErrorMessage(weight: weight);
+        _errorMessages.add(_ErrorMessage(index: index, message: message));
+      }
+
+      _checkWeightRange(weight: weight, index: index);
+
+      final weightController = TextEditingController(text: (set).weight.toString());
       final repsController = TextEditingController(text: set.reps.toString());
       controllers.add((weightController, repsController));
     }
@@ -236,9 +261,45 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     });
   }
 
+  void _checkWeightRange({required double weight, required int index}) {
+    if (isDefaultWeightUnit()) {
+      if (weight < 0.5 || weight > 500) {
+        final message = 'Weight must be between 0.5 and 500 kg';
+        _errorMessages.add(_ErrorMessage(index: index, message: message));
+      }
+    } else {
+      if (weight < 1 || weight > 1100) {
+        final message = 'Weight must be between 1 and 1100 lbs';
+        _errorMessages.add(_ErrorMessage(index: index, message: message));
+      }
+    }
+  }
+
   void _loadRepsControllers({required List<SetDto> sets}) {
+    final previousSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
+        .wherePrevSetsForExercise(exercise: _exerciseLog.exercise);
+
+    final previousReps = previousSets
+        .map((set) => switch (_exerciseLog.exercise.type) {
+              ExerciseType.weights => (set as WeightAndRepsSetDto).reps,
+              ExerciseType.bodyWeight => (set as RepsSetDto).reps,
+              ExerciseType.duration => throw UnimplementedError(),
+            })
+        .toList();
+
     List<TextEditingController> controllers = [];
-    for (final set in sets) {
+    for (final (index, set) in sets.indexed) {
+      final reps = switch (_exerciseLog.exercise.type) {
+        ExerciseType.weights => (set as WeightAndRepsSetDto).reps,
+        ExerciseType.bodyWeight => (set as RepsSetDto).reps,
+        ExerciseType.duration => throw UnimplementedError(),
+      };
+      final isOutSideOfRange = isOutsideReasonableRange(previousReps, reps);
+      if (isOutSideOfRange) {
+        final message = _repsErrorMessage(reps: reps);
+        _errorMessages.add(_ErrorMessage(index: index, message: message));
+      }
+
       final repsController = TextEditingController(text: (set as RepsSetDto).reps.toString());
       controllers.add(repsController);
     }
@@ -246,6 +307,12 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       _repsControllers = controllers;
     });
   }
+
+  String _repsErrorMessage({required int reps}) =>
+      "Hmm, $reps ${pluralize(word: "reps", count: reps)} looks a bit off your usual range. Mind checking the value just to be sure?";
+
+  String _getWeightErrorMessage({required double weight}) =>
+      "Hmm, $weight${weightUnit()} looks a bit off your usual range. Mind checking the value just to be sure?";
 
   void _loadDurationControllers({required List<SetDto> sets}) {
     List<DateTime> controllers = [];
@@ -395,7 +462,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     bool isAllSameWeight = false;
 
-    if(exerciseType == ExerciseType.weights) {
+    if (exerciseType == ExerciseType.weights) {
       final weights = workingSets.map((set) => (set as WeightAndRepsSetDto).weight).toList();
       isAllSameWeight = allNumbersAreSame(numbers: weights);
     }
@@ -480,6 +547,18 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             "${typicalRepRange?.minReps} is your max reps. if you comfortably hit ${typicalRepRange?.maxReps}, increase the weight; if you struggle to reach ${typicalRepRange?.maxReps}, reduce it; otherwise, maintain. Tap for more info.";
       }
     }
+
+    final errorWidgets = _errorMessages
+        .mapIndexed((index, error) => InformationContainerLite(
+            content: error.message,
+            color: Colors.yellow,
+            forceDarkMode: false,
+            onTap: () {
+              setState(() {
+                _errorMessages.removeWhere((errorToBeRemoved) => errorToBeRemoved.index == error.index);
+              });
+            }))
+        .toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -629,12 +708,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                           ),
                       }
                     : SetsListview(type: exerciseType, sets: sets),
-                if(_isOutOfRangeMessage.isNotEmpty)
-                  InformationContainerLite(content: _isOutOfRangeMessage, color: Colors.yellow, onTap: () {
-                    setState(() {
-                      _isOutOfRangeMessage = "";
-                    });
-                  }),
+                if (_errorMessages.isNotEmpty) Stack(children: errorWidgets),
                 if (sets.isNotEmpty && widget.editorType == RoutineEditorMode.log && !isEmptySets)
                   StaggeredGrid.count(crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10, children: [
                     if (withReps(type: exerciseType) && trainingProgression != null)

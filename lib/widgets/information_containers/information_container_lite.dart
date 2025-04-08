@@ -7,13 +7,14 @@ class InformationContainerLite extends StatelessWidget {
   final Color? color;
   final RichText? richText;
   final void Function()? onTap;
+  final bool forceDarkMode;
 
-  const InformationContainerLite({super.key, required this.content, required this.color, this.richText, this.onTap});
+  const InformationContainerLite({super.key, required this.content, required this.color, this.richText, this.onTap, this.forceDarkMode = false});
 
   @override
   Widget build(BuildContext context) {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
+    final isDarkMode = forceDarkMode && systemBrightness == Brightness.dark;
 
     return Container(
       decoration: BoxDecoration(
