@@ -252,7 +252,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _checkRepsRange({required int reps, required int index}) {
       if (reps <= 0) {
-        final message = 'You need to complete at least 1 rep.';
+        final message = 'You need to complete at least 1 repetition.';
         _errorMessages.add(_ErrorMessage(index: index, message: message));
       }
   }
