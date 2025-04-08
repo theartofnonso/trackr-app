@@ -74,6 +74,7 @@ class WeightsAndRepsSetRow extends StatelessWidget {
               onChanged: onChangedReps,
               onTap: onTapRepsEditor,
               controller: controllers.$2,
+              maxLength: 2,
             ),
           ),
           if (editorType == RoutineEditorMode.log)

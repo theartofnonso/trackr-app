@@ -5,7 +5,6 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:health/health.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
@@ -26,12 +25,26 @@ bool isDefaultWeightUnit() {
   return weightUnit == WeightUnit.kg;
 }
 
+bool isDefaultHeightUnit() {
+  final heightString = SharedPrefs().heightUnit;
+  final heightUnit = HeightUnit.fromString(heightString);
+  return heightUnit == HeightUnit.cm;
+}
+
 double weightWithConversion({required num value}) {
   return isDefaultWeightUnit() ? value.toDouble() : toLbs(value.toDouble());
 }
 
-String weightLabel() {
+String heightWithConversion({HeightUnit? unit, required num value}) {
+  return unit == HeightUnit.cm ? "$value cm" : toFtInString(value.toDouble());
+}
+
+String weightUnit() {
   return SharedPrefs().weightUnit;
+}
+
+String heightUnit() {
+  return SharedPrefs().heightUnit;
 }
 
 double toKg(double value) {
@@ -44,8 +57,39 @@ double toLbs(double value) {
   return double.parse(conversion.toStringAsFixed(2));
 }
 
+String toFtInString(double value) {
+  // 1 inch = 2.54 cm, 1 foot = 12 inches
+  final double totalInches = value / 2.54;
+  final int feet = totalInches ~/ 12;         // integer division to get whole feet
+  final double remainderInches = totalInches % 12;
+  // Round inches to 2 decimals if desired:
+  return '$feet ft ${remainderInches.round()} in';
+}
+
+Map<String, num> toFtIn(double value) {
+  // 1 inch = 2.54 cm, 1 foot = 12 inches
+  final double totalInches = value / 2.54;
+  final int feet = totalInches ~/ 12;         // integer division to get whole feet
+  final double remainderInches = totalInches % 12;
+  // Round inches to 2 decimals if desired:
+  return {
+    'feet': feet,
+    'inches': remainderInches.round()
+  };
+}
+
+int toCm({required int feet, required int inches}) {
+  // 1 foot = 30.48 cm, 1 inch = 2.54 cm
+  final double conversion = (feet * 30.48) + (inches * 2.54);
+  return conversion.round();
+}
+
 void toggleWeightUnit({required WeightUnit unit}) {
   SharedPrefs().weightUnit = unit.name;
+}
+
+void toggleHeightUnit({required HeightUnit unit}) {
+  SharedPrefs().heightUnit = unit.name;
 }
 
 String timeOfDay({DateTime? datetime}) {
@@ -121,13 +165,13 @@ Color logStreakColor(num value) {
 }
 
 /// Higher values now get a "better" color (green)
-Color lowToHighIntensityColor(double recoveryPercentage) {
-  if (recoveryPercentage < 0.3) {
+Color lowToHighIntensityColor(double score) {
+  if (score < 0.3) {
     // Severe DOMS (0–29%)
     return Colors.red;
-  } else if (recoveryPercentage < 0.5) {
+  } else if (score < 0.5) {
     return Colors.yellow;
-  } else if (recoveryPercentage < 0.8) {
+  } else if (score < 0.8) {
     return vibrantBlue;
   } else {
     return vibrantGreen;
@@ -135,12 +179,12 @@ Color lowToHighIntensityColor(double recoveryPercentage) {
 }
 
 /// Lower values now get a "better" color (green)
-Color highToLowIntensityColor(double recoveryPercentage) {
-  if (recoveryPercentage < 0.3) {
+Color highToLowIntensityColor(double score) {
+  if (score < 0.3) {
     return vibrantGreen;
-  } else if (recoveryPercentage < 0.5) {
+  } else if (score < 0.5) {
     return vibrantBlue;
-  } else if (recoveryPercentage < 0.8) {
+  } else if (score < 0.8) {
     return Colors.yellow;
   } else {
     // Higher recovery values now get a "worse" color (red)
@@ -223,26 +267,6 @@ LinearGradient themeGradient({required BuildContext context}) {
   );
 }
 
-Future<bool> requestAppleHealth() async {
-  await Health().configure();
-
-  // define the types to get
-  final types = [HealthDataType.SLEEP_ASLEEP, HealthDataType.WORKOUT];
-
-  final permissions = [HealthDataAccess.READ, HealthDataAccess.WRITE];
-
-  bool hasPermissions = await Health().hasPermissions(types, permissions: permissions) ?? false;
-
-  if (!hasPermissions) {
-    // requesting access to the data types before reading them
-    hasPermissions = await Health().requestAuthorization(types, permissions: permissions);
-  } else {
-    hasPermissions = true;
-  }
-
-  return hasPermissions;
-}
-
 Widget getTrendIcon({required Trend trend}) {
   return switch (trend) {
     Trend.up => FaIcon(
@@ -276,7 +300,8 @@ Widget getTrendIcon({required Trend trend}) {
 }
 
 void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) async {
-  final readiness = await navigateWithSlideTransition(context: context, child: ReadinessScreen()) as DailyReadiness? ?? DailyReadiness.empty();
+  final readiness = await navigateWithSlideTransition(context: context, child: ReadinessScreen()) as DailyReadiness? ??
+      DailyReadiness.empty();
   final fatigue = readiness.perceivedFatigue;
   final soreness = readiness.muscleSoreness;
   final sleep = readiness.sleepDuration;
@@ -345,4 +370,21 @@ bool isProbablyOutOfRangeInt(List<int> numbers, int newNumber) {
   bool isLowerOutlier = currentMin > 0 && newNumber <= currentMin / 2;
 
   return isUpperOutlier || isLowerOutlier;
+}
+
+bool allNumbersAreSame({required List<num> numbers}) {
+  if (numbers.isEmpty) return true; // or false, depending on your use case
+
+  final first = numbers.first;
+  return numbers.every((n) => n == first);
+}
+
+List<int> generateNumbers({required int start, required int end}) {
+  // Create a list to hold the numbers
+  List<int> numbers = [];
+  // Loop from start to end and add each number to the list
+  for (int i = start; i <= end; i++) {
+    numbers.add(i);
+  }
+  return numbers;
 }

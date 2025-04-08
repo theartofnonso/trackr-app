@@ -163,8 +163,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final muscleGroups = MuscleGroup.values
-        .sorted((a, b) => a.name.compareTo(b.name))
+    final muscleGroups = MuscleGroup.sortedValues
         .map((muscleGroup) => Padding(
               padding: const EdgeInsets.only(right: 6.0),
               child: OpacityButtonWidget(

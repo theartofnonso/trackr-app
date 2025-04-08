@@ -537,7 +537,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     final unit = _chartUnit();
     return switch (unit) {
       ChartUnit.number || ChartUnit.numberBig => _metric.name,
-      ChartUnit.weight => weightLabel(),
+      ChartUnit.weight => weightUnit(),
       ChartUnit.duration => "",
     };
   }
@@ -546,7 +546,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     return switch (_metric) {
       TrainingMetric.sets => pluralize(word: "set", count: length),
       TrainingMetric.reps => pluralize(word: "rep", count: length),
-      TrainingMetric.volume => weightLabel().toUpperCase()
+      TrainingMetric.volume => weightUnit().toUpperCase()
     };
   }
 

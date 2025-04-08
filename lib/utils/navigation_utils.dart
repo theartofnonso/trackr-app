@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tracker_app/dtos/appsync/routine_user_dto.dart';
 import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
 import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
@@ -15,10 +16,17 @@ import '../dtos/viewmodels/routine_template_arguments.dart';
 import '../screens/editors/past_routine_log_editor_screen.dart';
 import '../screens/editors/routine_log_editor_screen.dart';
 import '../screens/editors/routine_template_editor_screen.dart';
+import '../screens/editors/user_editor_screen.dart';
 import '../screens/logs/routine_log_screen.dart';
 import '../screens/logs/routine_logs_screen.dart';
 import '../screens/templates/routine_template_screen.dart';
 import '../screens/templates/routine_templates_screen.dart';
+
+Future<RoutineUserDto?> navigateToUserEditor(
+    {required BuildContext context, RoutineUserDto? user}) async {
+  final updatedUser = await context.push(UserEditorScreen.routeName, extra: user) as RoutineUserDto?;
+  return updatedUser;
+}
 
 Future<ExerciseDto?> navigateToExerciseEditor(
     {required BuildContext context, ExerciseEditorArguments? arguments}) async {

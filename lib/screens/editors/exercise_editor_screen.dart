@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
-import 'package:tracker_app/screens/exercise/muscle_groups_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 
 import '../../colors.dart';
@@ -16,6 +15,8 @@ import '../../logger.dart';
 import '../../utils/general_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/dividers/label_divider.dart';
+import '../../widgets/list_tile.dart';
+import '../../widgets/picker.dart';
 import '../exercise/exercise_type_screen.dart';
 
 class ExerciseEditorScreen extends StatefulWidget {
@@ -108,7 +109,21 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                         .bodyMedium
                         ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
                 const SizedBox(height: 2),
-                OpacityButtonWidget(label: _primaryMuscleGroup.name, onPressed: _navigateToMuscleGroupsScreen),
+                ThemeListTile(
+                  child: ListTile(
+                    onTap: _selectPrimaryMuscleGroup,
+                    leading: Text(_primaryMuscleGroup.name,
+                        textAlign: TextAlign.start,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                            color: isDarkMode ? Colors.white : Colors.black)),
+                    trailing: FaIcon(
+                      FontAwesomeIcons.arrowRightLong,
+                      size: 14,
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 4),
                 if (exercise == null)
                   Column(
@@ -152,16 +167,21 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: message);
   }
 
-  void _navigateToMuscleGroupsScreen() async {
-    final muscleGroup = await Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => MuscleGroupsScreen(previousMuscleGroup: _primaryMuscleGroup)))
-        as MuscleGroup?;
-
-    if (muscleGroup != null) {
-      setState(() {
-        _primaryMuscleGroup = muscleGroup;
-      });
-    }
+  void _selectPrimaryMuscleGroup() {
+    FocusScope.of(context).unfocus();
+    displayBottomSheet(
+        height: 240,
+        context: context,
+        child: GenericPicker(
+          items: MuscleGroup.sortedValues,
+          labelBuilder: (muscle) => muscle.name,
+          onItemSelected: (value) {
+            Navigator.of(context).pop();
+            setState(() {
+              _primaryMuscleGroup = value;
+            });
+          },
+        ));
   }
 
   void _navigateToExerciseTypeScreen() async {

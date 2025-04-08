@@ -33,13 +33,13 @@ class SharedPrefs {
     _sharedPrefs?.setString(_weightUnitKey, value);
   }
 
-  /// Show calendar dates
-  final String _showCalendarDatesKey = "show_calendar_dates_key";
+  /// Height Unit Type
+  final String _heightUnitKey = "height_unit_type_key";
 
-  bool get showCalendarDates => _sharedPrefs?.getBool(_showCalendarDatesKey) ?? true;
+  String get heightUnit => _sharedPrefs?.getString(_heightUnitKey) ?? HeightUnit.cm.name;
 
-  set showCalendarDates(bool value) {
-    _sharedPrefs?.setBool(_showCalendarDatesKey, value);
+  set heightUnit(String value) {
+    _sharedPrefs?.setString(_heightUnitKey, value);
   }
 
   /// First launch flag

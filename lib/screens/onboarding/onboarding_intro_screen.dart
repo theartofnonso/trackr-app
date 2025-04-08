@@ -274,40 +274,34 @@ class _EndOnboardingScreen extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        RichText(
-            textAlign: TextAlign.center,
-            text: TextSpan(
-                text: "Ready to get started? Here’s to",
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
-                      height: 1.5,
-                    ),
-                children: [
-                  TextSpan(
-                      text: " smarter training, ",
-                      style:
-                          Theme.of(context).textTheme.titleSmall?.copyWith(fontSize: 20, fontWeight: FontWeight.w600)),
-                  TextSpan(
-                      text: "meaningful insights",
-                      style:
-                          Theme.of(context).textTheme.titleSmall?.copyWith(fontSize: 20, fontWeight: FontWeight.w600)),
-                  const TextSpan(
-                    text: ", and your brightest fitness future.",
-                  ),
-                ])),
+        FaIcon(
+          FontAwesomeIcons.personWalking,
+          size: 50,
+        ),
+        const SizedBox(height: 50),
+        Text(
+          "Start Training Better",
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700),
+        ),
         const SizedBox(height: 20),
+        Text(
+          "Ready to get started? Here's to smarter training, meaning insights, and your strongest self.",
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+        const SizedBox(height: 50),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 26.0),
           child: SizedBox(
+              height: 45,
               width: double.infinity,
               child: OpacityButtonWidget(
-                padding: const EdgeInsets.all(16),
+                label: "Create Profile",
                 buttonColor: vibrantGreen,
-                label: "Tap to start training",
                 onPressed: onPress,
               )),
-        )
+        ),
       ],
     );
   }

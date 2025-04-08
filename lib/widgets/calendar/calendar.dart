@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
-import 'package:tracker_app/shared_prefs.dart';
 
 GlobalKey calendarKey = GlobalKey();
 
@@ -100,14 +99,12 @@ class _CalendarState extends State<Calendar> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SharedPrefs().showCalendarDates
-            ? Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: _CalendarHeader(
-                  isDarkMode: isDarkMode,
-                ),
-              )
-            : const SizedBox(height: 8),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: _CalendarHeader(
+            isDarkMode: isDarkMode,
+          ),
+        ),
         _Month(dates: dates, selectedDateTime: _currentDate.withoutTime(), onTap: _selectDate, isDarkMode: isDarkMode),
       ],
     );
@@ -206,7 +203,7 @@ class _Day extends StatelessWidget {
 
   Color _getBackgroundColor({required bool isDarkMode}) {
     if (hasRoutineLog) {
-      return isDarkMode && SharedPrefs().showCalendarDates ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen;
+      return isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen;
     }
     return isDarkMode ? sapphireDark80.withValues(alpha: 0.5) : Colors.grey.shade200;
   }
@@ -238,19 +235,16 @@ class _Day extends StatelessWidget {
           borderRadius: BorderRadius.circular(2),
         ),
         child: Container(
-          margin: const EdgeInsets.all(2),
-          decoration: BoxDecoration(
-            color: _getBackgroundColor(isDarkMode: isDarkMode),
-            borderRadius: BorderRadius.circular(2),
-          ),
-          child: SharedPrefs().showCalendarDates
-              ? Center(
-                  child: Text("${dateTime.day}",
-                      style: GoogleFonts.ubuntu(
-                          fontSize: 16, fontWeight: FontWeight.bold, color: _getTextColor(isDarkMode: isDarkMode))),
-                )
-              : SizedBox.shrink(),
-        ),
+            margin: const EdgeInsets.all(2),
+            decoration: BoxDecoration(
+              color: _getBackgroundColor(isDarkMode: isDarkMode),
+              borderRadius: BorderRadius.circular(2),
+            ),
+            child: Center(
+              child: Text("${dateTime.day}",
+                  style: GoogleFonts.ubuntu(
+                      fontSize: 16, fontWeight: FontWeight.bold, color: _getTextColor(isDarkMode: isDarkMode))),
+            )),
       ),
     );
   }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
-import '../../widgets/icons/apple_health_icon.dart';
 import 'onboarding_step_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -30,38 +29,25 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
 
     final List<OnboardingStepData> steps = [
       OnboardingStepData(
           title: 'Stay on Track',
-          description: 'Allow us to remind you about long-running workouts if you’ve become distracted. We’ll also send reminders on your training days.',
+          description:
+              'Allow us to remind you about long-running workouts if you’ve become distracted. We’ll also send reminders on your training days.',
           image: FaIcon(
             FontAwesomeIcons.solidBell,
             size: 50,
           ),
           positiveAction: () async {
             await requestNotificationPermission();
-            _onNextPressed(steps: 2);
+            widget.onComplete();
           },
           negativeAction: () {
-            _onNextPressed(steps: 2);
+            widget.onComplete();
           },
           positiveActionLabel: 'Turn on notifications',
           negativeActionLabel: 'Skip notifications'),
-      OnboardingStepData(
-          title: 'Apple Health',
-          description: 'Seamlessly sync your health data and unlock personalized insights for optimal training.',
-          image: AppleHealthIcon(isDarkMode: isDarkMode, height: 50),
-          positiveAction: () async {
-            await requestAppleHealth();
-
-            widget.onComplete();
-          },
-          negativeAction: widget.onComplete,
-          positiveActionLabel: "Connect to Apple Health",
-          negativeActionLabel: 'Skip connecting to Apple Health'),
     ];
 
     return Scaffold(

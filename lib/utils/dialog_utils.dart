@@ -1,13 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/utils/general_utils.dart';
-import 'package:tracker_app/widgets/forms/create_routine_user_profile_widget.dart';
 import 'package:tracker_app/widgets/timers/datetime_picker.dart';
 import 'package:tracker_app/widgets/timers/datetime_range_picker.dart';
 
 import '../colors.dart';
 import '../widgets/buttons/opacity_button_widget.dart';
-import '../widgets/timers/hour_timer_picker.dart';
 import '../widgets/timers/time_picker.dart';
 
 void showSnackbar({required BuildContext context, required Widget icon, required String message}) {
@@ -51,24 +49,25 @@ Future<void> displayBottomSheet(
       enableDrag: enabledDrag,
       backgroundColor: Colors.transparent,
       context: context,
-      builder: (BuildContext context) => Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                height: height,
-                width: double.infinity,
-                padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                decoration: BoxDecoration(
-                    color: isDarkMode ? sapphireDark80 : Colors.grey.shade100,
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                    ),
-                    gradient: isDarkMode ? themeGradient(context: context) : null),
-                child: SafeArea(child: child),
-              ),
-            ],
-          ));
+      builder: (BuildContext context) => SafeArea(
+        minimum: EdgeInsets.all(10),
+        child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  height: height,
+                  width: double.infinity,
+                  padding: padding ?? const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                      color: isDarkMode ? sapphireDark80 : Colors.grey.shade100,
+                      borderRadius: const BorderRadius.all(Radius.circular(20),
+                      ),
+                      gradient: isDarkMode ? themeGradient(context: context) : null),
+                  child: SafeArea(child: child),
+                ),
+              ],
+            ),
+      ));
 }
 
 void displayTimePicker(
@@ -83,24 +82,16 @@ void displayTimePicker(
       child: TimePicker(mode: mode, initialDuration: initialDuration, onDurationChanged: onChangedDuration));
 }
 
-void showHourTimerPicker(
+void showDateTimePicker(
     {required BuildContext context,
-    required Duration initialDuration,
-    required void Function(Duration duration) onChangedDuration}) {
+    DateTime? initialDateTime,
+    required void Function(DateTime datetime) onChangedDateTime,
+    CupertinoDatePickerMode? mode}) {
   FocusScope.of(context).unfocus();
   displayBottomSheet(
       height: 240,
       context: context,
-      child: HourTimerPicker(
-          initialDuration: initialDuration,
-          onSelect: (Duration duration) {
-            onChangedDuration(duration);
-          }));
-}
-
-void showDateTimePicker({required BuildContext context, required void Function(DateTime datetime) onChangedDateTime}) {
-  FocusScope.of(context).unfocus();
-  displayBottomSheet(height: 240, context: context, child: DatetimePicker(onSelect: onChangedDateTime));
+      child: DatetimePicker(onSelect: onChangedDateTime, initialDateTime: initialDateTime, mode: mode));
 }
 
 void showDatetimeRangePicker(
@@ -115,22 +106,6 @@ void showDatetimeRangePicker(
         onSelectRange: onChangedDateTimeRange,
       ),
       isScrollControlled: true);
-}
-
-void showCreateProfileBottomSheet({required BuildContext context}) {
-  showModalBottomSheet(
-      isScrollControlled: true,
-      isDismissible: true,
-      useSafeArea: true,
-      context: context,
-      builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: const CreateRoutineUserProfileWidget(),
-        );
-      });
 }
 
 void showBottomSheetWithNoAction({required BuildContext context, required String title, required String description}) {

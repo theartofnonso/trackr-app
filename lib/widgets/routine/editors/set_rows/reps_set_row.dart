@@ -52,6 +52,7 @@ class RepsSetRow extends StatelessWidget {
               onChanged: onChangedReps,
               onTap: onTapRepsEditor,
               controller: controller,
+              maxLength: 2,
             ),
           ),
           if (editorType == RoutineEditorMode.log)

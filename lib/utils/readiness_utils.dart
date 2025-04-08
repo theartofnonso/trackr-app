@@ -35,7 +35,10 @@ int calculateReadinessScore({
 
 String getTrainingGuidance({required int readinessScore}) {
   // Ensure the score is within 0–100.
-  if (readinessScore < 0) readinessScore = 0;
+  if (readinessScore < 0) {
+    return "Your daily readiness score gives us insight into how rested you feel, so we can suggest workouts that match your energy levels.";
+  }
+
   if (readinessScore > 100) readinessScore = 100;
 
   if (readinessScore <= 29) {
