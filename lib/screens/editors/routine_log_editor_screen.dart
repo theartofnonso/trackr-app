@@ -488,7 +488,7 @@ class _StatisticWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.grey.shade200,
+        color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, // Set the background color
         // Background color of the container
         borderRadius: BorderRadius.circular(5), // Border radius for rounded corners
       ),
