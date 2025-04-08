@@ -239,12 +239,12 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   void _checkWeightRange({required double weight, required int index}) {
     if (isDefaultWeightUnit()) {
       if (weight < 0.5 || weight > 500) {
-        final message = 'Weight must be between 0.5 and 500 kg';
+        final message = 'Weight must be between 0.5 and 500 kg.';
         _errorMessages.add(_ErrorMessage(index: index, message: message));
       }
     } else {
       if (weight < 1 || weight > 1100) {
-        final message = 'Weight must be between 1 and 1100 lbs';
+        final message = 'Weight must be between 1 and 1100 lbs.';
         _errorMessages.add(_ErrorMessage(index: index, message: message));
       }
     }
@@ -252,7 +252,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _checkRepsRange({required int reps, required int index}) {
       if (reps <= 0) {
-        final message = 'Reps must be at least 1';
+        final message = 'You need to complete at least 1 rep.';
         _errorMessages.add(_ErrorMessage(index: index, message: message));
       }
   }
@@ -323,10 +323,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   String _repsErrorMessage({required int reps}) =>
-      "Hmm, $reps ${pluralize(word: "rep", count: reps)} looks a bit off your usual range. Mind checking the value just to be sure?";
+      "Hmm, $reps ${pluralize(word: "rep", count: reps)} looks a bit off your usual range. Mind checking the value just to be sure?.";
 
   String _getWeightErrorMessage({required double weight}) =>
-      "Hmm, $weight${weightUnit()} looks a bit off your usual range. Mind checking the value just to be sure?";
+      "Hmm, $weight${weightUnit()} looks a bit off your usual range. Mind checking the value just to be sure?.";
 
   void _loadDurationControllers({required List<SetDto> sets}) {
     List<DateTime> controllers = [];
