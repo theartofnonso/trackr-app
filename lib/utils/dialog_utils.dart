@@ -50,7 +50,7 @@ Future<void> displayBottomSheet(
       backgroundColor: Colors.transparent,
       context: context,
       builder: (BuildContext context) => SafeArea(
-        minimum: EdgeInsets.all(10),
+        minimum: const EdgeInsets.all(10),
         child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [

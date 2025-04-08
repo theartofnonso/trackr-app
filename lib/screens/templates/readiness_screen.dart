@@ -53,7 +53,7 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
         height: double.infinity,
         decoration: BoxDecoration(gradient: themeGradient(context: context)),
         child: SafeArea(
-          minimum: EdgeInsets.all(10),
+          minimum: const EdgeInsets.only(top: 10, right: 10, left: 10),
           bottom: false,
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: 20, children: [
             Expanded(

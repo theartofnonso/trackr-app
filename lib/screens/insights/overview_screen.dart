@@ -136,7 +136,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           gradient: themeGradient(context: context),
         ),
         child: SafeArea(
-            minimum: const EdgeInsets.all(10),
+            minimum: const EdgeInsets.only(top: 10, right: 10, left: 10),
             bottom: false,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,

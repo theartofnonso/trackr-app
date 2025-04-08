@@ -43,8 +43,8 @@ class RoutineTemplatesScreen extends StatelessWidget {
               gradient: themeGradient(context: context),
             ),
             child: SafeArea(
+                minimum: const EdgeInsets.only(top: 10, right: 10, left: 10),
                 bottom: false,
-                minimum: const EdgeInsets.all(10.0),
                 child: Column(spacing: 16, crossAxisAlignment: CrossAxisAlignment.start, children: [
                   GestureDetector(
                     onTap: () => _switchToAIContext(context: context),

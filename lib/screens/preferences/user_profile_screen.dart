@@ -145,7 +145,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
           gradient: themeGradient(context: context),
         ),
         child: SafeArea(
-          minimum: const EdgeInsets.only(bottom: 20),
+          minimum: const EdgeInsets.only(top: 10),
           bottom: false,
           child: SingleChildScrollView(
             padding: EdgeInsets.only(bottom: 100),
