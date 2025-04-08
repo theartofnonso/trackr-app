@@ -212,7 +212,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                   child: Column(spacing: 20, crossAxisAlignment: CrossAxisAlignment.start, children: [
                     if (selectedMuscleGroup != null)
                       TRKRInformationContainer(
-                        color: vibrantGreen,
+                        color: isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.grey.shade200,
                         ctaLabel: "Review your ${selectedMuscleGroup.name} training",
                         description: selectedMuscleGroup.description,
                         onTap: () => _generateReport(exerciseLogs: exerciseLogsForSelectedMuscleGroup),
