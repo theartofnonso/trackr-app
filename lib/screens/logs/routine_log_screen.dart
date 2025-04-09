@@ -175,7 +175,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                             width: 6,
                           ),
                           Text(
-                            updatedLog.createdAt.formattedDayMonthTime(),
+                            updatedLog.endTime.formattedDayMonthTime(),
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         ],
