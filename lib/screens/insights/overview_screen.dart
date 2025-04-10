@@ -506,8 +506,8 @@ class _TemplatesTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Container(
-              width: 26,
-              height: 26,
+              width: 25,
+              height: 25,
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
                 color: isDarkMode ? vibrantBlue.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.4),

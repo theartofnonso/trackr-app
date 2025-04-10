@@ -332,7 +332,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                                     Container(
                                       width: 30,
                                       height: 30,
-                                      padding: const EdgeInsets.all(4),
+                                      padding: const EdgeInsets.all(6),
                                       decoration: BoxDecoration(
                                         color: vibrantGreen.withValues(alpha: 0.1),
                                         borderRadius: BorderRadius.circular(3),
