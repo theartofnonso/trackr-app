@@ -68,7 +68,7 @@ String prepareLogInstruction({required BuildContext context, required RoutineLog
   String soreness = muscleSorenessScale[routineLog.sorenessLevel] ?? "";
 
   if (fatigue.isNotEmpty) {
-    buffer.writeln("My fatigue levels is reported as $fatigue");
+    buffer.writeln("My fatigue level is reported as $fatigue");
   }
 
   if (soreness.isNotEmpty) {
