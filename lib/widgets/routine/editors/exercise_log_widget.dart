@@ -1207,8 +1207,8 @@ class _RPERatingSliderState extends State<_RPERatingSlider> {
 
 Map<int, String> _repToRPE = {
   1: "😌 Effortless — pure warm-up",
-  2: "🙂 Very easy — could do more",
-  3: "😊 Easy — lots left in the tank",
+  2: "🙂 Very easy — lots left in the tank",
+  3: "😊 Easy — could do more",
   4: "😅 Comfortable — moving well",
   5: "😮‍💨 Moderate — starting to work",
   6: "🔥 Challenging — working hard",
