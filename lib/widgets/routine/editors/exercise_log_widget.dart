@@ -222,10 +222,17 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     _loadControllers();
 
+    final maxReps = switch (setDto.type) {
+      ExerciseType.weights => (setDto as WeightAndRepsSetDto).reps,
+      ExerciseType.bodyWeight => (setDto as RepsSetDto).reps,
+      ExerciseType.duration => 0,
+    };
+
     if (checked) {
       displayBottomSheet(
           context: context,
           child: _RPERatingSlider(
+            maxReps: maxReps,
             rpeRating: setDto.rpeRating.toDouble(),
             onSelectRating: (int rpeRating) {
               final updatedSetWithRpeRating = updatedSet.copyWith(rpeRating: rpeRating);
@@ -251,10 +258,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _checkRepsRange({required int reps, required int index}) {
-      if (reps <= 0) {
-        final message = 'You need to complete at least 1 repetition.';
-        _errorMessages.add(_ErrorMessage(index: index, message: message));
-      }
+    if (reps <= 0) {
+      final message = 'You need to complete at least 1 repetition.';
+      _errorMessages.add(_ErrorMessage(index: index, message: message));
+    }
   }
 
   void _loadWeightAndRepsControllers({required List<SetDto> sets}) {
@@ -1130,8 +1137,9 @@ class _OneRepMaxSliderState extends State<_OneRepMaxSlider> {
 class _RPERatingSlider extends StatefulWidget {
   final double? rpeRating;
   final void Function(int rpeRating) onSelectRating;
+  final int maxReps;
 
-  const _RPERatingSlider({this.rpeRating = 5, required this.onSelectRating});
+  const _RPERatingSlider({this.rpeRating = 5, required this.onSelectRating, required this.maxReps});
 
   @override
   State<_RPERatingSlider> createState() => _RPERatingSliderState();
@@ -1148,7 +1156,7 @@ class _RPERatingSliderState extends State<_RPERatingSlider> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Rate this set on a scale of 1 - 10, 1 being barely any effort and 10 being max effort",
+        Text("How hard was it to complete those ${widget.maxReps} reps?",
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium

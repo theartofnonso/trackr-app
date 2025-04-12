@@ -144,9 +144,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                 Expanded(
                   child: SingleChildScrollView(
                       padding: const EdgeInsets.only(top: 3, bottom: 150),
-                      child: Column(
-                          spacing: 12,
-                          children: [
+                      child: Column(spacing: 12, children: [
                         LogStreakMonitor(dateTime: widget.dateTimeRange.start),
                         StaggeredGrid.count(
                           crossAxisCount: 2,
@@ -157,8 +155,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                               crossAxisCellCount: 1,
                               mainAxisCellCount: 1,
                               child: predictedTemplate != null
-                                  ? _ScheduledTitle(
-                                      scheduledToday: predictedTemplate, isLogged: hasTodayScheduleBeenLogged)
+                                  ? _ScheduledTitle(schedule: predictedTemplate, isLogged: hasTodayScheduleBeenLogged)
                                   : const _NoScheduledTitle(),
                             ),
                             StaggeredGridTile.count(
@@ -338,7 +335,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
         await navigateWithSlideTransition(context: context, child: const TRKRCoachChatScreen()) as RoutineTemplateDto?;
     if (result != null) {
       if (mounted) {
-        final readiness = await navigateWithSlideTransition(context: context, child: ReadinessScreen()) as DailyReadiness? ?? DailyReadiness.empty();
+        final readiness =
+            await navigateWithSlideTransition(context: context, child: ReadinessScreen()) as DailyReadiness? ??
+                DailyReadiness.empty();
         final fatigue = readiness.perceivedFatigue;
         final soreness = readiness.muscleSoreness;
         final sleep = readiness.sleepDuration;
@@ -407,9 +406,9 @@ class _NoScheduledTitle extends StatelessWidget {
 }
 
 class _ScheduledTitle extends StatelessWidget {
-  const _ScheduledTitle({required this.scheduledToday, required this.isLogged});
+  const _ScheduledTitle({required this.schedule, required this.isLogged});
 
-  final RoutineTemplateDto? scheduledToday;
+  final RoutineTemplateDto schedule;
 
   final bool isLogged;
 
@@ -418,71 +417,74 @@ class _ScheduledTitle extends StatelessWidget {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    return isLogged
-        ? Container(
-            padding: EdgeInsets.all(12),
-            decoration: BoxDecoration(
-                color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
-                borderRadius: BorderRadius.circular(5)),
-            child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-              Text("${substringByLength(text: scheduledToday?.name ?? "", length: 10)} has been completed. Great job!",
-                  style: GoogleFonts.ubuntu(fontSize: 18, height: 1.5, fontWeight: FontWeight.w600)),
-              const Spacer(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Container(
-                    width: 25,
-                    height: 25,
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: vibrantGreen.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(3),
-                    ),
-                    child: Center(
-                      child: FaIcon(
-                        FontAwesomeIcons.check,
-                        color: vibrantGreen,
-                        size: 14,
+    return GestureDetector(
+      onTap: () => navigateToRoutineTemplatePreview(context: context, template: schedule),
+      child: isLogged
+          ? Container(
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                  color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
+                  borderRadius: BorderRadius.circular(5)),
+              child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+                Text("${substringByLength(text: schedule.name, length: 10)} has been completed. Great job!",
+                    style: GoogleFonts.ubuntu(fontSize: 18, height: 1.5, fontWeight: FontWeight.w600)),
+                const Spacer(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      width: 25,
+                      height: 25,
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: vibrantGreen.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(3),
                       ),
-                    ),
-                  )
-                ],
-              ),
-            ]),
-          )
-        : Container(
-            padding: EdgeInsets.all(12),
-            decoration: BoxDecoration(
-                color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
-                borderRadius: BorderRadius.circular(5)),
-            child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-              Text("${scheduledToday?.name} is scheduled today. Time to get moving!",
-                  style: GoogleFonts.ubuntu(fontSize: 18, height: 1.5, fontWeight: FontWeight.w600)),
-              const Spacer(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Container(
-                    width: 25,
-                    height: 25,
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.4),
-                      borderRadius: BorderRadius.circular(3),
-                    ),
-                    child: Center(
-                      child: FaIcon(
-                        FontAwesomeIcons.calendarDay,
-                        color: isDarkMode ? vibrantGreen : Colors.white,
-                        size: 14,
+                      child: Center(
+                        child: FaIcon(
+                          FontAwesomeIcons.check,
+                          color: vibrantGreen,
+                          size: 14,
+                        ),
                       ),
-                    ),
-                  )
-                ],
-              ),
-            ]),
-          );
+                    )
+                  ],
+                ),
+              ]),
+            )
+          : Container(
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                  color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
+                  borderRadius: BorderRadius.circular(5)),
+              child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+                Text("${schedule.name} is scheduled today. Time to get moving!",
+                    style: GoogleFonts.ubuntu(fontSize: 18, height: 1.5, fontWeight: FontWeight.w600)),
+                const Spacer(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      width: 25,
+                      height: 25,
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.4),
+                        borderRadius: BorderRadius.circular(3),
+                      ),
+                      child: Center(
+                        child: FaIcon(
+                          FontAwesomeIcons.calendarDay,
+                          color: isDarkMode ? vibrantGreen : Colors.white,
+                          size: 14,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ]),
+            ),
+    );
   }
 }
 
@@ -580,8 +582,7 @@ class _ProfileTile extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
-          color: isDarkMode ? Colors.red.withValues(alpha: 0.1) : Colors.red,
-          borderRadius: BorderRadius.circular(5)),
+          color: isDarkMode ? Colors.red.withValues(alpha: 0.1) : Colors.red, borderRadius: BorderRadius.circular(5)),
       child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
         Text("Personalise\nyour fitness profile",
             style: GoogleFonts.ubuntu(fontSize: 20, height: 1.5, fontWeight: FontWeight.w600)),
