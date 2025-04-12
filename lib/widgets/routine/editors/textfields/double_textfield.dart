@@ -6,10 +6,10 @@ class DoubleTextField extends StatelessWidget {
   final void Function(double value) onChanged;
   final void Function()? onTap;
   final TextAlign? textAlign;
-  final int maxLength;
+  final int? maxLength;
 
   const DoubleTextField(
-      {super.key, required this.value, required this.controller, required this.onChanged, this.onTap, this.textAlign, required this.maxLength});
+      {super.key, required this.value, required this.controller, required this.onChanged, this.onTap, this.textAlign, this.maxLength});
 
   double _parseDoubleOrDefault({required String value}) {
     return double.tryParse(value) ?? 0;

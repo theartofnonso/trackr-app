@@ -66,7 +66,6 @@ class WeightsAndRepsSetRow extends StatelessWidget {
               onChanged: onChangedWeight,
               onTap: onTapWeightEditor,
               controller: controllers.$1,
-              maxLength: isDefaultWeightUnit() ? 3 : 4,
             ),
           ),
           TableCell(
