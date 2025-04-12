@@ -1195,7 +1195,7 @@ class _RPERatingSliderState extends State<_RPERatingSlider> {
   String _ratingDescription(double rating) {
     final absoluteRating = rating.floor();
 
-    return _repToPercentage[absoluteRating] ?? "😅 Moderate (challenging but manageable)";
+    return _repToRPE[absoluteRating] ?? "😅 Moderate (challenging but manageable)";
   }
 
   @override
@@ -1205,15 +1205,15 @@ class _RPERatingSliderState extends State<_RPERatingSlider> {
   }
 }
 
-Map<int, String> _repToPercentage = {
-  1: "😌 Barely any effort (warm-up weight)",
-  2: "🙂 Very light (can do many more reps)",
-  3: "😊 Light (feels comfortable)",
-  4: "😅 Moderate (challenging but manageable)",
-  5: "😮‍💨 Tough (working hard, not near failure)",
-  6: "🔥 Hard (around 3 reps left in the tank)",
-  7: "😣 Very hard (about 2 reps left)",
-  8: "🥵 Near max (1–2 reps left)",
-  9: "🤯 Maximal (maybe 1 rep left)",
-  10: "💀 Absolute limit (no reps left)",
+Map<int, String> _repToRPE = {
+  1: "😌 Effortless — pure warm-up",
+  2: "🙂 Very easy — could do more",
+  3: "😊 Easy — lots left in the tank",
+  4: "😅 Comfortable — moving well",
+  5: "😮‍💨 Moderate — starting to work",
+  6: "🔥 Challenging — working hard",
+  7: "😣 Hard — pushing myself",
+  8: "🥵 Very hard — pushing myself harder",
+  9: "🤯 Near max — serious effort",
+  10: "💀 All out — absolute limit",
 };
