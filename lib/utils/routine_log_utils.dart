@@ -29,6 +29,8 @@ String prepareLogInstruction({required BuildContext context, required RoutineLog
     buffer.writeln(
         "Current Sets for ${currentExerciseLog.exercise.name} logged on ${currentExerciseLog.createdAt.withoutTime().formattedDayAndMonthAndYear()}: $currentSetSummaries");
 
+    buffer.writeln("Notes for ${currentExerciseLog.exercise.name}: ${currentExerciseLog.notes}");
+
     final pastExerciseLogs = exerciseAndRoutineLogController
         .whereExerciseLogsBefore(
             exercise: currentExerciseLog.exercise, date: currentExerciseLog.createdAt.withoutTime())
@@ -66,7 +68,7 @@ String prepareLogInstruction({required BuildContext context, required RoutineLog
   String soreness = muscleSorenessScale[routineLog.sorenessLevel] ?? "";
 
   if (fatigue.isNotEmpty) {
-    buffer.writeln("My fatigue levels is reported as $fatigue");
+    buffer.writeln("My fatigue level is reported as $fatigue");
   }
 
   if (soreness.isNotEmpty) {

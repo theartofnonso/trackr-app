@@ -209,7 +209,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
                         crossAxisCellCount: 2,
                         mainAxisCellCount: 1,
                         child: _Tile(
-                            title: "Training History",
+                            title: "Training History & Goals",
                             subTitle: trainingHistory,
                             color: isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.grey.shade200),
                       ),

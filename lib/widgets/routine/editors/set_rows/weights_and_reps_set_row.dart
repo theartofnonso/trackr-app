@@ -4,7 +4,6 @@ import 'package:tracker_app/widgets/routine/editors/textfields/double_textfield.
 import 'package:tracker_app/widgets/routine/editors/textfields/int_textfield.dart';
 
 import '../../../../enums/routine_editor_type_enums.dart';
-import '../../../../utils/general_utils.dart';
 import '../set_check_button.dart';
 import '../set_delete_button.dart';
 
@@ -66,7 +65,6 @@ class WeightsAndRepsSetRow extends StatelessWidget {
               onChanged: onChangedWeight,
               onTap: onTapWeightEditor,
               controller: controllers.$1,
-              maxLength: isDefaultWeightUnit() ? 3 : 4,
             ),
           ),
           TableCell(

@@ -68,36 +68,39 @@ class _WeightCalculatorState extends State<WeightPlateCalculator> {
           ),
           Text("Target Weight".toUpperCase(),
               textAlign: TextAlign.start, style: Theme.of(context).textTheme.bodyMedium),
-          const SizedBox(
-            height: 18,
-          ),
-          _Bar(
-            bar: _selectedBar,
-            plates: plateSuggestions.sorted((a, b) => b.weight.compareTo(a.weight)),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            child: _Bar(
+              bar: _selectedBar,
+              plates: plateSuggestions.sorted((a, b) => b.weight.compareTo(a.weight)),
+            ),
           ),
           if (_selectedPlates.isNotEmpty && !isExact)
             Padding(
-              padding: const EdgeInsets.only(top: 14, bottom: 2),
+              padding: const EdgeInsets.only(bottom: 14),
               child: Text(
                   "Closest estimate is ${weightWithConversion(value: weightEstimate)}${weightUnit()}".toUpperCase(),
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyMedium),
             ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: LabelDivider(
                 label: "Available Weights (${weightUnit()})".toUpperCase(),
                 labelColor: isDarkMode ? Colors.white70 : Colors.black,
                 dividerColor: sapphireLighter),
           ),
+          const SizedBox(height: 10),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
+            padding: EdgeInsets.symmetric(horizontal: 16),
             child: Row(
-              children: [SizedBox(width: 16), ...plates, SizedBox(width: 16)],
+              children: plates,
             ),
           ),
+          const SizedBox(height: 20),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: LabelDivider(
               label: "Available Bar (${weightUnit()})".toUpperCase(),
               labelColor: isDarkMode ? Colors.white70 : Colors.black,
@@ -105,9 +108,11 @@ class _WeightCalculatorState extends State<WeightPlateCalculator> {
               leftToRight: true,
             ),
           ),
+          const SizedBox(height: 6),
           SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: Row(children: [SizedBox(width: 16), ...bars, SizedBox(width: 16)])),
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Row(children: bars)),
         ],
       ),
     );
@@ -254,8 +259,7 @@ enum _BarsEnum {
   fifteen(weight: 15),
   ten(weight: 10),
   five(weight: 5),
-  sevenFive(weight: 7.5),
-  zero(weight: 0.0);
+  sevenFive(weight: 7.5);
 
   final double weight;
 

@@ -222,10 +222,17 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     _loadControllers();
 
+    final maxReps = switch (setDto.type) {
+      ExerciseType.weights => (setDto as WeightAndRepsSetDto).reps,
+      ExerciseType.bodyWeight => (setDto as RepsSetDto).reps,
+      ExerciseType.duration => 0,
+    };
+
     if (checked) {
       displayBottomSheet(
           context: context,
           child: _RPERatingSlider(
+            maxReps: maxReps,
             rpeRating: setDto.rpeRating.toDouble(),
             onSelectRating: (int rpeRating) {
               final updatedSetWithRpeRating = updatedSet.copyWith(rpeRating: rpeRating);
@@ -251,10 +258,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _checkRepsRange({required int reps, required int index}) {
-      if (reps <= 0) {
-        final message = 'You need to complete at least 1 repetition.';
-        _errorMessages.add(_ErrorMessage(index: index, message: message));
-      }
+    if (reps <= 0) {
+      final message = 'You need to complete at least 1 repetition.';
+      _errorMessages.add(_ErrorMessage(index: index, message: message));
+    }
   }
 
   void _loadWeightAndRepsControllers({required List<SetDto> sets}) {
@@ -1130,8 +1137,9 @@ class _OneRepMaxSliderState extends State<_OneRepMaxSlider> {
 class _RPERatingSlider extends StatefulWidget {
   final double? rpeRating;
   final void Function(int rpeRating) onSelectRating;
+  final int maxReps;
 
-  const _RPERatingSlider({this.rpeRating = 5, required this.onSelectRating});
+  const _RPERatingSlider({this.rpeRating = 5, required this.onSelectRating, required this.maxReps});
 
   @override
   State<_RPERatingSlider> createState() => _RPERatingSliderState();
@@ -1148,7 +1156,7 @@ class _RPERatingSliderState extends State<_RPERatingSlider> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Rate this set on a scale of 1 - 10, 1 being barely any effort and 10 being max effort",
+        Text("How hard was it to complete those ${widget.maxReps} reps?",
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium
@@ -1187,7 +1195,7 @@ class _RPERatingSliderState extends State<_RPERatingSlider> {
   String _ratingDescription(double rating) {
     final absoluteRating = rating.floor();
 
-    return _repToPercentage[absoluteRating] ?? "😅 Moderate (challenging but manageable)";
+    return _repToRPE[absoluteRating] ?? "😅 Moderate (challenging but manageable)";
   }
 
   @override
@@ -1197,15 +1205,15 @@ class _RPERatingSliderState extends State<_RPERatingSlider> {
   }
 }
 
-Map<int, String> _repToPercentage = {
-  1: "😌 Barely any effort (warm-up weight)",
-  2: "🙂 Very light (can do many more reps)",
-  3: "😊 Light (feels comfortable)",
-  4: "😅 Moderate (challenging but manageable)",
-  5: "😮‍💨 Tough (working hard, not near failure)",
-  6: "🔥 Hard (around 3 reps left in the tank)",
-  7: "😣 Very hard (about 2 reps left)",
-  8: "🥵 Near max (1–2 reps left)",
-  9: "🤯 Maximal (maybe 1 rep left)",
-  10: "💀 Absolute limit (no reps left)",
+Map<int, String> _repToRPE = {
+  1: "😌 Effortless — pure warm-up",
+  2: "🙂 Very easy — lots left in the tank",
+  3: "😊 Easy — could do more",
+  4: "😅 Comfortable — moving well",
+  5: "😮‍💨 Moderate — starting to work",
+  6: "🔥 Challenging — working hard",
+  7: "😣 Hard — pushing myself",
+  8: "🥵 Very hard — pushing myself harder",
+  9: "🤯 Near max — serious effort",
+  10: "💀 All out — absolute limit",
 };
