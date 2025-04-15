@@ -120,7 +120,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
                       ),
                 const SizedBox(height: 10),
                 SafeArea(
-                  minimum: EdgeInsets.all(10),
+                  minimum: EdgeInsets.all(5),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
