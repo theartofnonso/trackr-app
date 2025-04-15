@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
@@ -42,7 +44,6 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -92,7 +93,33 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
                             const SizedBox(
                               height: 12,
                             ),
-                            _HeroWidget(),
+                            StaggeredGrid.count(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 10,
+                              crossAxisSpacing: 10,
+                              children: [
+                                StaggeredGridTile.count(
+                                  crossAxisCellCount: 1,
+                                  mainAxisCellCount: 1,
+                                  child: _Tile(title: "Show me chest, leg exercises with or without equipment"),
+                                ),
+                                StaggeredGridTile.count(
+                                  crossAxisCellCount: 1,
+                                  mainAxisCellCount: 1,
+                                  child: _Tile(title: "What exercises should I do for chest, legs, or full body?"),
+                                ),
+                                StaggeredGridTile.count(
+                                  crossAxisCellCount: 1,
+                                  mainAxisCellCount: 1,
+                                  child: _Tile(title: "I need a quick workout — what can I do?"),
+                                ),
+                                StaggeredGridTile.count(
+                                    crossAxisCellCount: 1,
+                                    mainAxisCellCount: 1,
+                                    child: _Tile(title: "I need a Push, Pull or Legs workout"),
+                                ),
+                              ],
+                            ),
                             const Spacer()
                           ],
                         ),
@@ -337,6 +364,26 @@ class _HeroWidget extends StatelessWidget {
           ]),
         )
       ]),
+    );
+  }
+}
+
+class _Tile extends StatelessWidget {
+  final String title;
+
+  const _Tile({required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
+    return Container(
+      padding: EdgeInsets.all(12),
+      decoration: BoxDecoration(
+          color: isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.grey.shade200,
+          borderRadius: BorderRadius.circular(5)),
+      child: Text(title, style: GoogleFonts.ubuntu(fontSize: 18, height: 1.5, fontWeight: FontWeight.w400)),
     );
   }
 }
