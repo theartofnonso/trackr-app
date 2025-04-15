@@ -297,7 +297,7 @@ class _EndOnboardingScreen extends StatelessWidget {
               height: 45,
               width: double.infinity,
               child: OpacityButtonWidget(
-                label: "Create Profile",
+                  label: "Start training better",
                 buttonColor: vibrantGreen,
                 onPressed: onPress,
               )),

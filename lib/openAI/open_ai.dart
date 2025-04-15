@@ -20,7 +20,7 @@ Future<dynamic> runMessageWithAudio(
     {required String system,
       required String user,
       required responseFormat,
-      OpenAIModel model = OpenAIModel.fourO}) async {
+      OpenAIModel model = OpenAIModel.fourOneNano}) async {
   dynamic message;
 
   final body = jsonEncode({
@@ -55,7 +55,7 @@ Future<dynamic> runMessage(
     {required String system,
     required String user,
     required responseFormat,
-    OpenAIModel model = OpenAIModel.fourO}) async {
+    OpenAIModel model = OpenAIModel.fourOneNano}) async {
   dynamic message;
 
   final body = jsonEncode({
@@ -88,7 +88,7 @@ Future<dynamic> runMessage(
 Future<Map<String, dynamic>?> runMessageWithTools(
     {required String systemInstruction,
     required String userInstruction,
-    OpenAIModel model = OpenAIModel.fourO}) async {
+    OpenAIModel model = OpenAIModel.fourOneNano}) async {
   Map<String, dynamic>? tools;
 
   final body = jsonEncode({
@@ -131,7 +131,7 @@ Map<String, dynamic> createFunctionCallPayload(
     required Map<String, Object> responseFormat,
     required String functionName,
     required String extra,
-    OpenAIModel model = OpenAIModel.fourO}) {
+    OpenAIModel model = OpenAIModel.fourOneNano}) {
   final functionCallMessage = {
     "role": "assistant",
     "tool_calls": [

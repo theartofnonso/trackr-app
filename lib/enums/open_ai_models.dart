@@ -1,5 +1,5 @@
 enum OpenAIModel {
-  fourO(name: "gpt-4o"), fourOMini(name: "gpt-4o-mini"), whisper(name: "whisper-1");
+  fourOneNano(name: "gpt-4.1-nano");
 
   final String name;
 
