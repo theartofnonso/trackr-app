@@ -143,7 +143,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               children: [
                 Expanded(
                   child: SingleChildScrollView(
-                      padding: const EdgeInsets.only(top: 3, bottom: 150),
+                      padding: const EdgeInsets.only(top: 3),
                       child: Column(spacing: 12, children: [
                         LogStreakMonitor(dateTime: widget.dateTimeRange.start),
                         StaggeredGrid.count(
