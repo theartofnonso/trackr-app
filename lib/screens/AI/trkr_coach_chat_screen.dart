@@ -88,43 +88,37 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
                         ),
                       )
                     : Expanded(
-                        child: Column(
-                          children: [
-                            const SizedBox(
-                              height: 12,
-                            ),
-                            StaggeredGrid.count(
-                              crossAxisCount: 2,
-                              mainAxisSpacing: 10,
-                              crossAxisSpacing: 10,
-                              children: [
-                                StaggeredGridTile.count(
-                                  crossAxisCellCount: 1,
-                                  mainAxisCellCount: 1,
-                                  child: _Tile(title: "Show me chest, leg exercises with or without equipment"),
-                                ),
-                                StaggeredGridTile.count(
-                                  crossAxisCellCount: 1,
-                                  mainAxisCellCount: 1,
-                                  child: _Tile(title: "What exercises should I do for chest, legs, or full body?"),
-                                ),
-                                StaggeredGridTile.count(
-                                  crossAxisCellCount: 1,
-                                  mainAxisCellCount: 1,
-                                  child: _Tile(title: "I need a quick workout — what can I do?"),
-                                ),
-                                StaggeredGridTile.count(
-                                    crossAxisCellCount: 1,
-                                    mainAxisCellCount: 1,
-                                    child: _Tile(title: "I need a Push, Pull or Legs workout"),
-                                ),
-                              ],
-                            ),
-                            const Spacer()
-                          ],
+                        child: SingleChildScrollView(
+                          child: StaggeredGrid.count(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 10,
+                            crossAxisSpacing: 10,
+                            children: [
+                              StaggeredGridTile.count(
+                                crossAxisCellCount: 1,
+                                mainAxisCellCount: 1,
+                                child: _Tile(title: "Show me chest, leg exercises with or without equipment"),
+                              ),
+                              StaggeredGridTile.count(
+                                crossAxisCellCount: 1,
+                                mainAxisCellCount: 1,
+                                child: _Tile(title: "What exercises should I do for chest, legs, or full body?"),
+                              ),
+                              StaggeredGridTile.count(
+                                crossAxisCellCount: 1,
+                                mainAxisCellCount: 1,
+                                child: _Tile(title: "I need a quick workout — what can I do?"),
+                              ),
+                              StaggeredGridTile.count(
+                                crossAxisCellCount: 1,
+                                mainAxisCellCount: 1,
+                                child: _Tile(title: "I need a Push, Pull or Legs workout"),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 10),
                 SafeArea(
                   minimum: EdgeInsets.all(10),
                   child: Row(
@@ -330,41 +324,6 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
 
   void _navigateBack() {
     context.pop(_routineTemplate);
-  }
-}
-
-class _HeroWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        const TRKRCoachWidget(),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            RichText(
-              text: TextSpan(
-                text: "Hey there!",
-                style: Theme.of(context).textTheme.bodyLarge,
-                children: <TextSpan>[
-                  TextSpan(text: " ", style: Theme.of(context).textTheme.bodyLarge),
-                  TextSpan(text: "TRKR Coach", style: Theme.of(context).textTheme.bodyLarge),
-                  TextSpan(text: " ", style: Theme.of(context).textTheme.bodyLarge),
-                  TextSpan(text: "can help you create awesome workouts", style: Theme.of(context).textTheme.bodyLarge),
-                  TextSpan(text: ".", style: Theme.of(context).textTheme.bodyLarge),
-                  TextSpan(text: " ", style: Theme.of(context).textTheme.bodyLarge),
-                  TextSpan(text: "Try saying", style: Theme.of(context).textTheme.bodyLarge),
-                  TextSpan(text: " ", style: Theme.of(context).textTheme.bodyLarge),
-                  TextSpan(
-                      text: 'I want to train "mention muscle group(s)"', style: Theme.of(context).textTheme.bodyLarge),
-                ],
-              ),
-            )
-          ]),
-        )
-      ]),
-    );
   }
 }
 
