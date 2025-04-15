@@ -97,7 +97,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
                               StaggeredGridTile.count(
                                 crossAxisCellCount: 1,
                                 mainAxisCellCount: 1,
-                                child: _Tile(title: "Show me chest, leg exercises with or without equipment"),
+                                child: _Tile(title: "Show me a chest, leg exercises with or without equipment"),
                               ),
                               StaggeredGridTile.count(
                                 crossAxisCellCount: 1,
