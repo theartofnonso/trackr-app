@@ -14,7 +14,6 @@ import '../../strings/strings.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/shareables_utils.dart';
 import '../calendar/calendar.dart';
-import '../custom_drawings/streak_face.dart';
 
 GlobalKey monitorKey = GlobalKey();
 
@@ -73,20 +72,15 @@ class LogStreakMonitor extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 forceDarkMode: isDarkMode),
           ),
-          GestureDetector(
-            child: Stack(alignment: Alignment.center, children: [
-              LogStreakWidget(value: monthlyProgress, width: 100, height: 100, strokeWidth: 6),
-              ClipOval(
-                child: SizedBox(
-                  width: 75,
-                  height: 75,
-                  child: CustomPaint(
-                    painter: StreakFace(color: logStreakColor(monthlyProgress), result: monthlyProgress / 12),
-                  ),
-                ),
-              )
-            ]),
-          ),
+          Stack(alignment: Alignment.center, children: [
+            LogStreakWidget(value: monthlyProgress, width: 80, height: 80, strokeWidth: 6),
+            Image.asset(
+              'images/trkr.png',
+              fit: BoxFit.contain,
+              color: isDarkMode ? Colors.white70 : Colors.black,
+              height: 8, // Adjust the height as needed
+            )
+          ]),
           SizedBox(
             width: 80,
             child: _MonitorScore(
@@ -230,13 +224,18 @@ class LogStreakWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     return SizedBox(
       width: height,
       height: width,
       child: CircularProgressIndicator(
         value: value / 12,
         strokeWidth: strokeWidth,
-        strokeCap: StrokeCap.round,
+        strokeCap: StrokeCap.butt,
+        backgroundColor: isDarkMode ? Colors.white70.withValues(alpha: 0.1) : Colors.grey.shade200,
         valueColor: AlwaysStoppedAnimation<Color>(logStreakColor(value)),
       ),
     );
