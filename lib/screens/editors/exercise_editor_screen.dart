@@ -83,7 +83,9 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
             ),
             child: SafeArea(
               minimum: const EdgeInsets.all(10),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              child: Column(
+                  spacing: 20,
+                  crossAxisAlignment: CrossAxisAlignment.start, children: [
                 TextField(
                   controller: _exerciseNameController,
                   decoration: InputDecoration(
@@ -95,53 +97,68 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                   style: GoogleFonts.ubuntu(
                       fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white : Colors.black, fontSize: 14),
                 ),
-                const SizedBox(height: 20),
-                LabelDivider(
-                  label: "Select muscle group to train".toUpperCase(),
-                  labelColor: isDarkMode ? Colors.white : Colors.black,
-                  dividerColor: sapphireLighter,
-                  fontSize: 14,
-                ),
-                const SizedBox(height: 8),
-                Text("Choose from a list of muscle groups to train for this custom exercise.",
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
-                const SizedBox(height: 2),
-                ThemeListTile(
-                  child: ListTile(
-                    onTap: _selectPrimaryMuscleGroup,
-                    leading: Text(_primaryMuscleGroup.name,
-                        textAlign: TextAlign.start,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 14,
-                            color: isDarkMode ? Colors.white : Colors.black)),
-                    trailing: FaIcon(
-                      FontAwesomeIcons.arrowRightLong,
-                      size: 14,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 8,
+                  children: [
+                    LabelDivider(
+                      label: "Select muscle group to train".toUpperCase(),
+                      labelColor: isDarkMode ? Colors.white : Colors.black,
+                      dividerColor: sapphireLighter,
+                      fontSize: 14,
                     ),
-                  ),
+                    Text("Choose from a list of muscle groups to train for this custom exercise.",
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                    ThemeListTile(
+                      child: ListTile(
+                        onTap: _selectPrimaryMuscleGroup,
+                        leading: Text(_primaryMuscleGroup.name,
+                            textAlign: TextAlign.start,
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
+                                color: isDarkMode ? Colors.white : Colors.black)),
+                        trailing: FaIcon(
+                          FontAwesomeIcons.arrowRightLong,
+                          size: 14,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 4),
+
                 if (exercise == null)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 8,
                     children: [
-                      const SizedBox(height: 20),
                       LabelDivider(
                         label: "Choose how to log this exercise".toUpperCase(),
                         labelColor: isDarkMode ? Colors.white : Colors.black,
                         dividerColor: sapphireLighter,
                         fontSize: 14,
                       ),
-                      const SizedBox(height: 8),
                       Text("You can log this exercise using reps only, reps and weights or duration.",
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
-                      const SizedBox(height: 2),
-                      OpacityButtonWidget(label: _exerciseType.name, onPressed: _navigateToExerciseTypeScreen),
+                      ThemeListTile(
+                        child: ListTile(
+                          onTap: _navigateToExerciseTypeScreen,
+                          leading: Text(_exerciseType.name,
+                              textAlign: TextAlign.start,
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                  color: isDarkMode ? Colors.white : Colors.black)),
+                          trailing: FaIcon(
+                            FontAwesomeIcons.arrowRightLong,
+                            size: 14,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 const Spacer(),
