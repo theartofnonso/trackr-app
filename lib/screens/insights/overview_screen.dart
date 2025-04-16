@@ -146,6 +146,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       padding: const EdgeInsets.only(top: 3),
                       child: Column(spacing: 12, children: [
                         LogStreakMonitor(dateTime: widget.dateTimeRange.start),
+                        const SizedBox(height: 2),
                         StaggeredGrid.count(
                           crossAxisCount: 2,
                           mainAxisSpacing: 10,
