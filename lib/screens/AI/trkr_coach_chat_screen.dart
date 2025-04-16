@@ -191,7 +191,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
 
     buffer.writeln();
 
-    buffer.writeln("Note: Suggest a balanced combination of exercises engaging all muscle groups.");
+    buffer.writeln(createRoutinePrompt);
 
     final completeSystemInstructions = buffer.toString();
 
