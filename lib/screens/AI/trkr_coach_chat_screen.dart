@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/dtos/open_ai_response_schema_dtos/new_routine_dto.dart';
@@ -120,9 +121,9 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
                       ),
                 const SizedBox(height: 10),
                 SafeArea(
-                  minimum: EdgeInsets.all(5),
+                  minimum: EdgeInsets.symmetric(horizontal: 5),
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Expanded(
                         child: TextField(
@@ -137,7 +138,21 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
                       ),
                       IconButton(
                         onPressed: _runMessage,
-                        icon: const FaIcon(FontAwesomeIcons.paperPlane),
+                        icon: Container(
+                          width: 50,
+                          height: 50,
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen.withValues(alpha: 0.4),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Center(
+                            child: FaIcon(
+                              FontAwesomeIcons.rocket,
+                              size: 20,
+                            ),
+                          ),
+                        ),
                       )
                     ],
                   ),
