@@ -70,7 +70,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   SetDto? _selectedSetDto;
 
-  final List<_ErrorMessage> _errorMessages = [];
+  List<_ErrorMessage> _errorMessages = [];
 
   void _show1RMRecommendations() {
     final pastExerciseLogs =
@@ -123,6 +123,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     if (withRepsOnly(type: _exerciseLog.exercise.type)) {
       _repsControllers = [];
     }
+
+    _errorMessages = [];
   }
 
   void _disposeControllers() {
@@ -279,6 +281,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       if (isOutSideOfRange) {
         final message = _getWeightErrorMessage(weight: weight);
         _errorMessages.add(_ErrorMessage(index: index, message: message));
+      } else {
+        _errorMessages.removeWhere((errorToBeRemoved) => errorToBeRemoved.index == index);
       }
 
       _checkWeightRange(weight: weight, index: index);
@@ -317,6 +321,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       if (isOutSideOfRange) {
         final message = _repsErrorMessage(reps: reps);
         _errorMessages.add(_ErrorMessage(index: index, message: message));
+      } else {
+        _errorMessages.removeWhere((errorToBeRemoved) => errorToBeRemoved.index == index);
       }
 
       _checkRepsRange(reps: reps, index: index);
@@ -468,6 +474,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final sets = _showPreviousSets ? recentSets : currentSets;
 
     String progressionSummary = "";
+    String rpeTrendSummary = "";
     Color progressionColor = isDarkMode ? Colors.white70 : Colors.black54;
     TrainingProgression? trainingProgression;
     RepRange? typicalRepRange;
@@ -560,7 +567,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final rpeRatings = sets.mapIndexed((index, set) => set.rpeRating).toList();
 
-    final rpeTrendSummary = _getRpeTrendSummary(ratings: rpeRatings);
+    if (previousSets.isNotEmpty) {
+      rpeTrendSummary = _getRpeTrendSummary(ratings: rpeRatings);
+    }
 
     String? noRepRangeMessage;
 
@@ -736,7 +745,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 if (_errorMessages.isNotEmpty) Stack(children: errorWidgets),
                 if (sets.isNotEmpty && widget.editorType == RoutineEditorMode.log && !isEmptySets)
                   StaggeredGrid.count(crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10, children: [
-                    if (withReps(type: exerciseType) && trainingProgression != null)
+                    if (withReps(type: exerciseType) && trainingProgression != null && rpeTrendSummary.isNotEmpty && progressionSummary.isNotEmpty)
                       StaggeredGridTile.count(
                         crossAxisCellCount: 2,
                         mainAxisCellCount: 1,
@@ -746,34 +755,35 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                               color: isDarkMode ? progressionColor.withValues(alpha: 0.1) : progressionColor,
                               borderRadius: BorderRadius.circular(5)),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start, children: [
-                            Text("$rpeTrendSummary$progressionSummary",
-                                style: GoogleFonts.ubuntu(fontSize: 16, height: 1.5, fontWeight: FontWeight.w600)),
-                            const Spacer(),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Container(
-                                    width: 25,
-                                    height: 25,
-                                    padding: const EdgeInsets.all(4),
-                                    decoration: BoxDecoration(
-                                      color: isDarkMode
-                                          ? progressionColor.withValues(alpha: 0.1)
-                                          : Colors.black.withValues(alpha: 0.4),
-                                      borderRadius: BorderRadius.circular(3),
-                                    ),
-                                    child: Center(
-                                      child: FaIcon(
-                                        FontAwesomeIcons.boltLightning,
-                                        color: isDarkMode ? progressionColor : Colors.white,
-                                        size: 14,
-                                      ),
-                                    ))
-                              ],
-                            ),
-                          ]),
+                                Text("$rpeTrendSummary$progressionSummary",
+                                    style: GoogleFonts.ubuntu(fontSize: 16, height: 1.5, fontWeight: FontWeight.w600)),
+                                const Spacer(),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Container(
+                                        width: 25,
+                                        height: 25,
+                                        padding: const EdgeInsets.all(4),
+                                        decoration: BoxDecoration(
+                                          color: isDarkMode
+                                              ? progressionColor.withValues(alpha: 0.1)
+                                              : Colors.black.withValues(alpha: 0.4),
+                                          borderRadius: BorderRadius.circular(3),
+                                        ),
+                                        child: Center(
+                                          child: FaIcon(
+                                            FontAwesomeIcons.boltLightning,
+                                            color: isDarkMode ? progressionColor : Colors.white,
+                                            size: 14,
+                                          ),
+                                        ))
+                                  ],
+                                ),
+                              ]),
                         ),
                       ),
 
