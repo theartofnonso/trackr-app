@@ -28,9 +28,6 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
   @override
   Widget build(BuildContext context) {
 
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
     final errorMessage = _validateDate();
 
     return SingleChildScrollView(
@@ -98,7 +95,7 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
                 child: errorMessage != null
                     ? Padding(
                         padding: const EdgeInsets.all(10.0),
-                        child: InformationContainerLite(content: errorMessage, color: Colors.orange),
+                        child: InformationContainerLite(content: errorMessage, color: Colors.orange, forceDarkMode: true,),
                       )
                     : SizedBox(
                         width: double.infinity,
