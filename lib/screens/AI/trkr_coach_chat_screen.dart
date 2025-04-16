@@ -355,7 +355,7 @@ class _Tile extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
-          color: isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.grey.shade200,
+          color: isDarkMode ? Colors.white70.withValues(alpha: 0.1) : Colors.grey.shade200,
           borderRadius: BorderRadius.circular(5)),
       child: Text(title, style: GoogleFonts.ubuntu(fontSize: 18, height: 1.5, fontWeight: FontWeight.w400)),
     );

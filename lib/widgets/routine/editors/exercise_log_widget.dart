@@ -467,8 +467,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final sets = _showPreviousSets ? recentSets : currentSets;
 
-    String progressionSummary;
-    Color progressionColor = vibrantBlue;
+    String progressionSummary = "";
+    Color progressionColor = isDarkMode ? Colors.white70 : Colors.black54;
     TrainingProgression? trainingProgression;
     RepRange? typicalRepRange;
 
@@ -529,23 +529,27 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     };
 
     /// Generate weight or reps progression summary
-    progressionSummary = switch (trainingProgression) {
-      TrainingProgression.increase =>
-        ", time to take it up a notch, consider increasing the $weightsRepsDurationLabel of ${workingSet?.summary()}.",
-      TrainingProgression.decrease =>
-        ", dial it back a bit, consider reducing the $weightsRepsDurationLabel of ${workingSet?.summary()} for now.",
-      TrainingProgression.maintain =>
-        ", right on track, stick with your current $weightsRepsDurationLabel of ${workingSet?.summary()}.",
-      null => "",
-    };
+    if (previousSets.isNotEmpty) {
+      progressionSummary = switch (trainingProgression) {
+        TrainingProgression.increase =>
+          ", time to take it up a notch, consider increasing the $weightsRepsDurationLabel of ${workingSet?.summary()}.",
+        TrainingProgression.decrease =>
+          ", dial it back a bit, consider reducing the $weightsRepsDurationLabel of ${workingSet?.summary()} for now.",
+        TrainingProgression.maintain =>
+          ", right on track, stick with your current $weightsRepsDurationLabel of ${workingSet?.summary()}.",
+        null => "",
+      };
+    }
 
     /// Generate weight or reps progression color
-    progressionColor = switch (trainingProgression) {
-      TrainingProgression.increase => vibrantGreen,
-      TrainingProgression.decrease => Colors.deepOrange,
-      TrainingProgression.maintain => vibrantBlue,
-      null => Colors.transparent,
-    };
+    if (previousSets.isNotEmpty) {
+      progressionColor = switch (trainingProgression) {
+        TrainingProgression.increase => vibrantGreen,
+        TrainingProgression.decrease => Colors.deepOrange,
+        TrainingProgression.maintain => vibrantBlue,
+        null => Colors.transparent,
+      };
+    }
 
     final isEmptySets = hasEmptyValues(sets: sets, exerciseType: exerciseType);
 
@@ -741,7 +745,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                           decoration: BoxDecoration(
                               color: isDarkMode ? progressionColor.withValues(alpha: 0.1) : progressionColor,
                               borderRadius: BorderRadius.circular(5)),
-                          child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start, children: [
                             Text("$rpeTrendSummary$progressionSummary",
                                 style: GoogleFonts.ubuntu(fontSize: 16, height: 1.5, fontWeight: FontWeight.w600)),
                             const Spacer(),
