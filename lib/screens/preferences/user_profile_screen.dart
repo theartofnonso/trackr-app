@@ -21,16 +21,14 @@ import '../../utils/readiness_utils.dart';
 import '../../utils/workout_split_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 
-class UserProfileScreen extends StatefulWidget {
+class UserProfileScreen extends StatelessWidget {
+
+  static const routeName = '/user-profile-screen';
+
   const UserProfileScreen({
     super.key,
   });
 
-  @override
-  State<UserProfileScreen> createState() => _UserProfileScreenState();
-}
-
-class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
@@ -42,7 +40,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
       return Scaffold(
           appBar: AppBar(
               leading: IconButton(
-            icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
+            icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
             onPressed: context.pop,
           )),
           body: _EmptyState());
@@ -131,7 +129,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> with WidgetsBindi
     return Scaffold(
       appBar: AppBar(
           leading: IconButton(
-            icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
+            icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
             onPressed: context.pop,
           ),
           actions: [

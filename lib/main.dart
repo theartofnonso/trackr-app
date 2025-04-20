@@ -36,13 +36,12 @@ import 'package:tracker_app/screens/home_screen.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
-import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
 import 'package:tracker_app/screens/onboarding/onboarding_intro_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
+import 'package:tracker_app/screens/preferences/user_profile_screen.dart';
 import 'package:tracker_app/screens/templates/readiness_screen.dart';
 import 'package:tracker_app/screens/templates/routine_template_screen.dart';
 import 'package:tracker_app/screens/templates/routine_templates_home.dart';
-import 'package:tracker_app/screens/templates/routine_templates_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/date_utils.dart';
 import 'package:tracker_app/utils/theme/theme.dart';
@@ -227,58 +226,9 @@ final _router = GoRouter(
       },
     ),
     GoRoute(
-      path: RoutineLogsScreen.routeName,
-      pageBuilder: (context, state) {
-        final args = state.extra as DateTime;
-        return CustomTransitionPage(
-            child: RoutineLogsScreen(dateTime: args),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              const begin = Offset(0.0, 1.0);
-              const end = Offset.zero;
-              const curve = Curves.ease;
-              final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-              final offsetAnimation = animation.drive(tween);
-              return SlideTransition(
-                position: offsetAnimation,
-                child: child,
-              );
-            });
-      },
-    ),
-    GoRoute(
-      path: RoutineTemplatesScreen.routeName,
-      pageBuilder: (context, state) {
-        return CustomTransitionPage(
-            child: RoutineTemplatesScreen(),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              const begin = Offset(0.0, 1.0);
-              const end = Offset.zero;
-              const curve = Curves.ease;
-              final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-              final offsetAnimation = animation.drive(tween);
-              return SlideTransition(
-                position: offsetAnimation,
-                child: child,
-              );
-            });
-      },
-    ),
-    GoRoute(
       path: RoutineTemplatesHomeScreen.routeName,
-      pageBuilder: (context, state) {
-        return CustomTransitionPage(
-            child: RoutineTemplatesHomeScreen(),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              const begin = Offset(0.0, 1.0);
-              const end = Offset.zero;
-              const curve = Curves.ease;
-              final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-              final offsetAnimation = animation.drive(tween);
-              return SlideTransition(
-                position: offsetAnimation,
-                child: child,
-              );
-            });
+      builder: (context, state) {
+        return RoutineTemplatesHomeScreen();
       },
     ),
     GoRoute(
@@ -314,6 +264,10 @@ final _router = GoRouter(
     GoRoute(
       path: SettingsScreen.routeName,
       builder: (context, state) => const SettingsScreen(),
+    ),
+    GoRoute(
+      path: UserProfileScreen.routeName,
+      builder: (context, state) => const UserProfileScreen(),
     ),
     GoRoute(
       path: HomeScreen.routeName,

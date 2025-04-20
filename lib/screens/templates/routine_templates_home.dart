@@ -23,7 +23,7 @@ class _RoutineTemplatesHomeScreenState extends State<RoutineTemplatesHomeScreen>
         child: Scaffold(
           appBar: AppBar(
             leading: IconButton(
-              icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
+              icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
               onPressed: context.pop,
             ),
           ),

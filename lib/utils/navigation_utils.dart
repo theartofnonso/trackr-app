@@ -7,6 +7,7 @@ import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_home_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
+import 'package:tracker_app/screens/preferences/user_profile_screen.dart';
 
 import '../dtos/appsync/exercise_dto.dart';
 import '../dtos/appsync/routine_log_dto.dart';
@@ -95,6 +96,10 @@ void navigateToRoutineHomeTemplates({required BuildContext context}) {
 
 Future<void> navigateToSettings({required BuildContext context}) async {
   await context.push(SettingsScreen.routeName);
+}
+
+Future<void> navigateToProfile({required BuildContext context}) async {
+  await context.push(UserProfileScreen.routeName);
 }
 
 /// Create a screen on demand

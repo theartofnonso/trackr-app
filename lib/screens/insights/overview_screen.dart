@@ -10,7 +10,6 @@ import 'package:tracker_app/dtos/daily_readiness.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
-import 'package:tracker_app/screens/preferences/user_profile_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 
@@ -203,7 +202,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
             crossAxisCellCount: 1,
             mainAxisCellCount: 1,
             child: GestureDetector(
-              onTap: () => navigateWithSlideTransition(context: context, child: UserProfileScreen()),
+              onTap: () => navigateToProfile(context: context),
               child: _ProfileTile(),
             ),
           ),
