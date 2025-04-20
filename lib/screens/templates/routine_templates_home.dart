@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tracker_app/screens/templates/routine_templates_screen.dart';
 
 class RoutineTemplatesHomeScreen extends StatefulWidget {
@@ -19,6 +21,12 @@ class _RoutineTemplatesHomeScreenState extends State<RoutineTemplatesHomeScreen>
     return DefaultTabController(
         length: 2,
         child: Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
+              onPressed: context.pop,
+            ),
+          ),
           body: SafeArea(
             bottom: false,
             child: Column(
