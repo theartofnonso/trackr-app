@@ -20,6 +20,7 @@ import '../screens/editors/user_editor_screen.dart';
 import '../screens/logs/routine_log_screen.dart';
 import '../screens/logs/routine_logs_screen.dart';
 import '../screens/templates/routine_template_screen.dart';
+import '../screens/templates/routine_templates_home.dart';
 import '../screens/templates/routine_templates_screen.dart';
 
 Future<RoutineUserDto?> navigateToUserEditor(
@@ -86,6 +87,10 @@ void navigateToRoutineLogs({required BuildContext context, required DateTime dat
 
 void navigateToRoutineTemplates({required BuildContext context}) {
   context.push(RoutineTemplatesScreen.routeName);
+}
+
+void navigateToRoutineHomeTemplates({required BuildContext context}) {
+  context.push(RoutineTemplatesHomeScreen.routeName);
 }
 
 Future<void> navigateToSettings({required BuildContext context}) async {

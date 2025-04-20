@@ -47,8 +47,8 @@ class SolidButtonWidget extends StatelessWidget {
               Text(loading ? loadingLabel : label,
                   textAlign: TextAlign.start,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
                       color: textColor ?? (isDarkMode ? Colors.white : Colors.black))),
               loading
                   ? const Padding(

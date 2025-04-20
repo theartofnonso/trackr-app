@@ -1,0 +1,64 @@
+import 'package:flutter/material.dart';
+import 'package:tracker_app/screens/templates/routine_templates_screen.dart';
+
+class RoutineTemplatesHomeScreen extends StatefulWidget {
+
+  static const routeName = '/routine_templates_home_screen';
+
+  const RoutineTemplatesHomeScreen({super.key});
+
+  @override
+  State<RoutineTemplatesHomeScreen> createState() => _RoutineTemplatesHomeScreenState();
+}
+
+class _RoutineTemplatesHomeScreenState extends State<RoutineTemplatesHomeScreen> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          body: SafeArea(
+            bottom: false,
+            child: Column(
+              children: [
+                TabBar(
+                  controller: _tabController,
+                  dividerColor: Colors.transparent,
+                  tabs: [
+                    Tab(
+                        child: Text("Workout Templates".toUpperCase(),
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600))),
+                    Tab(
+                        child: Text("Workout Plans".toUpperCase(),
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600))),
+                  ],
+                ),
+                Expanded(
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: [
+                      RoutineTemplatesScreen(),
+                      RoutineTemplatesScreen()
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+}

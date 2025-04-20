@@ -101,12 +101,12 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   child: BackgroundInformationContainer(
                       image: 'images/boy_and_girl.jpg',
                       containerColor: sapphireDark,
-                      content: "Loving TRKR? Tap to share the love! Your feedback helps us grow and improve.",
+                      content: "Loving TRKR? Your feedback helps us grow and improve.",
                       textStyle: GoogleFonts.ubuntu(
                         fontSize: 16,
                         fontWeight: FontWeight.w400,
                         color: Colors.white.withValues(alpha: 0.9),
-                      )),
+                      ), ctaContent: 'Tap to share the love!'),
                 ),
                 const SizedBox(
                   height: 20,

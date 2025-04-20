@@ -145,7 +145,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
             crossAxisCellCount: 1,
             mainAxisCellCount: 1,
             child: GestureDetector(
-              onTap: () => navigateToRoutineTemplates(context: context),
+              onTap: () => navigateToRoutineHomeTemplates(context: context),
               child: _TemplatesTile(),
             ),
           ),
