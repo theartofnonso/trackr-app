@@ -3,13 +3,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/screens/insights/overview_screen.dart';
-import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
 import 'package:tracker_app/screens/onboarding/onboarding_checklist_notifications_screen.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../controllers/exercise_and_routine_controller.dart';
 import '../controllers/routine_user_controller.dart';
 import '../utils/date_utils.dart';
+import '../utils/general_utils.dart';
 import '../widgets/calendar/calendar_navigator.dart';
 
 class HomeTabScreen extends StatefulWidget {
@@ -21,10 +21,6 @@ class HomeTabScreen extends StatefulWidget {
 
 class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProviderStateMixin {
   late DateTimeRange _monthDateTimeRange;
-
-  late TabController _tabController;
-
-  int _tabIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -40,83 +36,37 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
 
     final hasPendingActions = routineTemplates.isEmpty || routineLogs.isEmpty || user == null;
 
-    return DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          body: SafeArea(
-            bottom: false,
-            child: Column(
-              children: [
-                Table(
-                  columnWidths: const <int, TableColumnWidth>{
-                    0: FixedColumnWidth(50),
-                    1: FlexColumnWidth(),
-                    2: FixedColumnWidth(50),
-                  },
-                  children: [
-                    TableRow(children: [
-                      TableCell(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                        child: Center(
-                          child: IconButton(
-                            onPressed: () => navigateToSettings(context: context),
-                            icon: FaIcon(FontAwesomeIcons.gear, size: 20),
-                          ),
-                        ),
-                      ),
-                      TableCell(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                        child: Center(
-                          child: _tabIndex == 0
-                              ? CalendarNavigator(onMonthChange: _onMonthChange)
-                              : Text(
-                                  _getTabLabel().toUpperCase(),
-                                  style: Theme.of(context).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.bold),
-                                ),
-                        ),
-                      ),
-                      TableCell(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                        child: Center(
-                          child: IconButton(
-                            onPressed: _navigateToNotificationHome,
-                            icon: Badge(
-                                smallSize: 8,
-                                backgroundColor: hasPendingActions ? vibrantGreen : Colors.transparent,
-                                child: FaIcon(FontAwesomeIcons.solidBell, size: 20)),
-                          ),
-                        ),
-                      ),
-                    ]),
-                  ],
-                ),
-                TabBar(
-                  controller: _tabController,
-                  dividerColor: Colors.transparent,
-                  tabs: [
-                    Tab(
-                        child: Text("Overview".toUpperCase(),
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600))),
-                    Tab(
-                        child: Text("Muscle Trends".toUpperCase(),
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600))),
-                  ],
-                ),
-                Expanded(
-                  child: TabBarView(
-                    controller: _tabController,
-                    children: [
-                      OverviewScreen(dateTimeRange: _monthDateTimeRange),
-                      SetsAndRepsVolumeInsightsScreen(
-                        canPop: false,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+    return Scaffold(
+      appBar: AppBar(
+          leading: IconButton(
+            onPressed: () => navigateToSettings(context: context),
+            icon: FaIcon(FontAwesomeIcons.gear, size: 20),
           ),
-        ));
+          title: CalendarNavigator(onMonthChange: _onMonthChange),
+          actions: [
+            IconButton(
+              onPressed: _navigateToNotificationHome,
+              icon: Badge(
+                  smallSize: 8,
+                  backgroundColor: hasPendingActions ? vibrantGreen : Colors.transparent,
+                  child: FaIcon(FontAwesomeIcons.solidBell, size: 20)),
+            )
+          ]),
+      backgroundColor: Colors.transparent,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: themeGradient(context: context),
+        ),
+        child: SafeArea(
+            minimum: const EdgeInsets.only(top: 10, right: 10, left: 10),
+            bottom: false,
+            child: SingleChildScrollView(
+              child: Column(children: [
+                OverviewScreen(dateTimeRange: _monthDateTimeRange),
+              ]),
+            )),
+      ),
+    );
   }
 
   void _navigateToNotificationHome() {
@@ -129,28 +79,9 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
     });
   }
 
-  String _getTabLabel() {
-    if (_tabIndex == 1) {
-      return "Trends for the past year";
-    }
-    return "Muscle Recovery";
-  }
-
   @override
   void initState() {
     super.initState();
     _monthDateTimeRange = thisMonthDateRange();
-    _tabController = TabController(length: 2, vsync: this);
-    _tabController.addListener(() {
-      setState(() {
-        _tabIndex = _tabController.index;
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
   }
 }

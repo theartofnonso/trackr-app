@@ -150,15 +150,6 @@ class _LogStreakMonitorOnboardingScreen extends StatelessWidget {
                 alignment: Alignment.center,
                 children: [
                   LogStreakWidget(value: 4, width: 120, height: 120, strokeWidth: 8),
-                  ClipOval(
-                    child: SizedBox(
-                      width: 90,
-                      height: 90,
-                      child: CustomPaint(
-                        painter: StreakFace(color: logStreakColor(4), result: 0.4),
-                      ),
-                    ),
-                  )
                 ],
               ),
               Stack(
