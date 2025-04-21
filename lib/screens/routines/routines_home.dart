@@ -8,7 +8,6 @@ import '../../utils/dialog_utils.dart';
 import '../../utils/navigation_utils.dart';
 
 class RoutinesHomeScreen extends StatefulWidget {
-
   static const routeName = '/routines_home_screen';
 
   const RoutinesHomeScreen({super.key});
@@ -51,10 +50,7 @@ class _RoutinesHomeScreenState extends State<RoutinesHomeScreen> with SingleTick
                 Expanded(
                   child: TabBarView(
                     controller: _tabController,
-                    children: [
-                      RoutineTemplatesScreen(),
-                      RoutinePlansScreen()
-                    ],
+                    children: [RoutineTemplatesScreen(), RoutinePlansScreen()],
                   ),
                 ),
               ],
@@ -76,9 +72,7 @@ class _RoutinesHomeScreenState extends State<RoutinesHomeScreen> with SingleTick
                 size: 18,
               ),
               horizontalTitleGap: 6,
-              title: Text("Create new workout template",
-                  style: Theme.of(context).textTheme.bodyLarge
-              ),
+              title: Text("Create new workout template", style: Theme.of(context).textTheme.bodyLarge),
               onTap: () {
                 Navigator.of(context).pop();
                 navigateToRoutineTemplateEditor(context: context);
