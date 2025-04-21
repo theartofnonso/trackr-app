@@ -36,7 +36,7 @@ class RoutineTemplateGridItemWidget extends StatelessWidget {
             Text(
                 template.notes,
                 overflow: TextOverflow.ellipsis,
-                maxLines: 3,
+                maxLines: 2,
                 style: GoogleFonts.ubuntu(
                     fontSize: 12,
                     color: isDarkMode ? Colors.white70 : Colors.black,

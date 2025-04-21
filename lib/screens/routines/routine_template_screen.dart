@@ -3,11 +3,9 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
@@ -16,16 +14,14 @@ import 'package:tracker_app/shared_prefs.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
+import '../../dtos/appsync/routine_plan_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/daily_readiness.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../dtos/viewmodels/routine_template_arguments.dart';
 import '../../enums/chart_unit_enum.dart';
-import '../../enums/posthog_analytics_event.dart';
 import '../../enums/routine_editor_type_enums.dart';
-import '../../enums/routine_preview_type_enum.dart';
 import '../../models/RoutineTemplate.dart';
-import '../../urls.dart';
 import '../../utils/data_trend_utils.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
@@ -95,6 +91,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     final template = _template;
 
     if (template == null) return const NotFound();
+
+    final plan = exerciseAndRoutineController.planWhere(id: template.planId);
 
     final numberOfSets = template.exerciseTemplates.expand((exerciseTemplate) => exerciseTemplate.sets);
     final setsSummary = "${numberOfSets.length} ${pluralize(word: "Set", count: numberOfSets.length)}";
@@ -181,48 +179,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       );
     }).toList();
 
-    final menuActions = [
-      MenuItemButton(
-          onPressed: _navigateToRoutineTemplateEditor,
-          leadingIcon: FaIcon(FontAwesomeIcons.solidPenToSquare, size: 16),
-          child: Text("Edit", style: GoogleFonts.ubuntu())),
-      MenuItemButton(
-          onPressed: () => _createTemplate(copy: true),
-          leadingIcon: FaIcon(Icons.copy, size: 16),
-          child: Text("Copy", style: GoogleFonts.ubuntu())),
-      MenuItemButton(
-          leadingIcon: FaIcon(FontAwesomeIcons.plus, size: 16),
-          onPressed: _showPlanPicker,
-          child: Text("Add to plan", style: GoogleFonts.ubuntu())),
-      MenuItemButton(
-          leadingIcon: FaIcon(FontAwesomeIcons.arrowUpFromBracket, size: 16),
-          onPressed: _showShareBottomSheet,
-          child: Text("Share", style: GoogleFonts.ubuntu())),
-      MenuItemButton(
-        onPressed: () {
-          showBottomSheetWithMultiActions(
-              context: context,
-              title: "Delete workout?",
-              description: "Are you sure you want to delete this workout?",
-              leftAction: Navigator.of(context).pop,
-              rightAction: () {
-                context.pop();
-                _toggleLoadingState();
-                _deleteRoutine(template: template);
-              },
-              leftActionLabel: 'Cancel',
-              rightActionLabel: 'Delete',
-              isRightActionDestructive: true);
-        },
-        leadingIcon: FaIcon(
-          FontAwesomeIcons.trash,
-          size: 16,
-          color: Colors.redAccent,
-        ),
-        child: Text("Delete", style: GoogleFonts.ubuntu(color: Colors.redAccent)),
-      )
-    ];
-
     final exerciseTemplates = _originalNewValues == _OriginalNewValues.newValues
         ? template.exerciseTemplates.map((exerciseTemplate) {
             final pastSets =
@@ -248,25 +204,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           ),
           actions: [
             template.owner == SharedPrefs().userId
-                ? MenuAnchor(
-                    builder: (BuildContext context, MenuController controller, Widget? child) {
-                      return IconButton(
-                        onPressed: () {
-                          if (controller.isOpen) {
-                            controller.close();
-                          } else {
-                            controller.open();
-                          }
-                        },
-                        icon: const Icon(
-                          Icons.more_vert_rounded,
-                          size: 24,
-                        ),
-                        tooltip: 'Show menu',
-                      );
-                    },
-                    menuChildren: menuActions,
-                  )
+                ? IconButton(
+                    onPressed: () => _showMenuBottomSheet(planDto: plan), icon: FaIcon(Icons.more_vert_rounded))
                 : const SizedBox.shrink()
           ],
         ),
@@ -288,8 +227,22 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                       spacing: 20,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(template.name,
-                            style: GoogleFonts.ubuntu(fontSize: 20, height: 1.5, fontWeight: FontWeight.w900)),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: 2,
+                          children: [
+                            Text(template.name,
+                                style: GoogleFonts.ubuntu(fontSize: 20, height: 1.5, fontWeight: FontWeight.w900)),
+                            if (plan != null)
+                              Text(
+                                "In ${plan.name}",
+                                style: GoogleFonts.ubuntu(
+                                    fontSize: 14,
+                                    color: isDarkMode ? Colors.white70 : Colors.black,
+                                    fontWeight: FontWeight.w400),
+                              )
+                          ],
+                        ),
                         Column(
                           spacing: 12,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -633,79 +586,101 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     }
   }
 
-  void _showShareBottomSheet() {
-    final template = _template;
-
-    if (template != null) {
-      final workoutLink = "$shareableRoutineUrl/${template.id}";
-      final workoutText = copyRoutineAsText(
-          routineType: RoutinePreviewType.template,
-          name: template.name,
-          notes: template.notes,
-          exerciseLogs: template.exerciseTemplates);
-
-      displayBottomSheet(
-          context: context,
-          isScrollControlled: true,
-          child: SafeArea(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const FaIcon(
-                  FontAwesomeIcons.link,
-                  size: 18,
-                ),
-                horizontalTitleGap: 10,
-                title: Text(
-                  "Copy as Link",
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                  maxLines: 1,
-                ),
-                subtitle: Text(workoutLink),
-                onTap: () {
-                  Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineTemplateAsLink.displayName);
-                  HapticFeedback.heavyImpact();
-                  final data = ClipboardData(text: workoutLink);
-                  Clipboard.setData(data).then((_) {
-                    if (mounted) {
-                      Navigator.of(context).pop();
-                      showSnackbar(
-                          context: context,
-                          icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
-                          message: "Workout link copied");
-                    }
-                  });
-                },
+  void _showMenuBottomSheet({required RoutinePlanDto? planDto}) {
+    displayBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        child: SafeArea(
+          child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(
+                FontAwesomeIcons.penToSquare,
+                size: 18,
               ),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const FaIcon(
-                  FontAwesomeIcons.copy,
-                  size: 18,
-                ),
-                horizontalTitleGap: 6,
-                title: Text("Copy as Text", style: Theme.of(context).textTheme.titleMedium),
-                subtitle: Text("${template.name}..."),
-                onTap: () {
-                  Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineTemplateAsText.displayName);
-                  HapticFeedback.heavyImpact();
-                  final data = ClipboardData(text: workoutText);
-                  Clipboard.setData(data).then((_) {
-                    if (mounted) {
-                      Navigator.of(context).pop();
-                      showSnackbar(
-                          context: context,
-                          icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
-                          message: "Workout copied");
-                    }
-                  });
-                },
+              horizontalTitleGap: 10,
+              title: Text(
+                "Edit",
+                style: Theme.of(context).textTheme.bodyLarge
               ),
-            ]),
-          ));
-    }
+              onTap: _navigateToRoutineTemplateEditor,
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(
+                FontAwesomeIcons.copy,
+                size: 18,
+              ),
+              horizontalTitleGap: 6,
+              title: Text("Copy", style: Theme.of(context).textTheme.bodyLarge),
+              onTap: () => _createTemplate(copy: true),
+            ),
+            planDto != null
+                ? ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: const FaIcon(
+                      FontAwesomeIcons.minus,
+                      size: 18,
+                      color: Colors.red,
+                    ),
+                    horizontalTitleGap: 6,
+                    title: Text("Remove from plan", style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.red)),
+                    onTap: () {
+                      showBottomSheetWithMultiActions(
+                          context: context,
+                          title: "Remove from plan?",
+                          description: "Are you sure you want to remove this workout from ${planDto.name}?",
+                          leftAction: Navigator.of(context).pop,
+                          rightAction: () {
+                            context.pop();
+                            _removeFromPlan();
+                          },
+                          leftActionLabel: 'Cancel',
+                          rightActionLabel: 'Remove',
+                          isRightActionDestructive: true);
+                    },
+                  )
+                : ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: const FaIcon(
+                      FontAwesomeIcons.plus,
+                      size: 18,
+                    ),
+                    horizontalTitleGap: 6,
+                    title: Text("Add to plan", style: Theme.of(context).textTheme.bodyLarge),
+                    onTap: _showPlanPicker,
+                  ),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(
+                FontAwesomeIcons.trash,
+                size: 16,
+                color: Colors.redAccent,
+              ),
+              horizontalTitleGap: 6,
+              title: Text("Delete", style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.red)),
+              onTap: () {
+                final template = _template;
+
+                if (template != null) {
+                  showBottomSheetWithMultiActions(
+                      context: context,
+                      title: "Delete workout?",
+                      description: "Are you sure you want to delete this workout?",
+                      leftAction: Navigator.of(context).pop,
+                      rightAction: () {
+                        context.pop();
+                        _toggleLoadingState();
+                        _deleteRoutine(template: template);
+                      },
+                      leftActionLabel: 'Cancel',
+                      rightActionLabel: 'Delete',
+                      isRightActionDestructive: true);
+                }
+              },
+            )
+          ]),
+        ));
   }
 
   void _showPlanPicker() {
@@ -738,6 +713,18 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           },
         ),
       );
+    }
+  }
+
+  void _removeFromPlan() async {
+    final template = _template;
+
+    if (template != null) {
+      final templateProvider = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+
+      final updatedRoutineTemplate = template.copyWith(planId: "");
+
+      await templateProvider.updateTemplate(template: updatedRoutineTemplate);
     }
   }
 
