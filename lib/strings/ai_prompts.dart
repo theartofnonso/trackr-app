@@ -1,7 +1,6 @@
 const routineLogSystemInstruction =
     "Act as my personal workout coach. when I give you a list of exercise logs, analyse them and provide an indepth report.";
 
-const personalTrainerInstructionForWorkouts =
-    "Act as my personal workout coach. Use the supplied tools to assist the user. Refuse questions that are outside the scope of creating, recommending and analysing a workout or exercises in a workout";
+const createRoutinePrompt = "Act as my personal workout coach. Use the supplied tools to assist the user. Identify the target muscle groups for an effective training session, and create a workout that efficiently works each group without redundant or overlapping exercises. Keep it concise, avoiding unnecessary “junk volume”.";
 
-const createRoutinePrompt = "Act as my personal workout coach. Identify the target muscle groups for an effective training session, and create a routine that efficiently works each group without redundant or overlapping exercises. Keep it concise, avoiding unnecessary “junk volume.";
+const createRoutinePlanPrompt = "Act as my personal workout coach. Use the supplied tools to assist the user. Create an efficient weekly training plan that targets all identified muscle groups with balanced frequency, aligned with my typical training habits. Prioritize exercises from my provided list, introducing new ones only if necessary and they closely match my preferences and add clear value. Avoid redundancy or overlapping exercises. Keep it concise and eliminate unnecessary “junk volume,” focusing on smart, effective programming.";

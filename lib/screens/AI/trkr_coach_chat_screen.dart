@@ -200,21 +200,12 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
   }
 
   Future<void> _runFunctionMessage({required String userInstruction}) async {
-    final StringBuffer buffer = StringBuffer();
-
-    buffer.writeln(userInstruction);
-
-    buffer.writeln();
-
-    buffer.writeln(createRoutinePrompt);
-
-    final completeSystemInstructions = buffer.toString();
 
     _showLoadingScreen();
 
     try {
       final json = await runMessageWithTools(
-        systemInstruction: personalTrainerInstructionForWorkouts,
+        systemInstruction: createRoutinePrompt,
         userInstruction: userInstruction,
       );
 
@@ -235,7 +226,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
 
         await _recommendExercises(
             tool: tool,
-            systemInstruction: completeSystemInstructions,
+            systemInstruction: createRoutinePrompt,
             userInstruction: userInstruction,
             exercises: exercises);
       }

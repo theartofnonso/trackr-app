@@ -18,7 +18,6 @@ import '../../utils/date_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../utils/readiness_utils.dart';
-import '../../utils/workout_split_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 
 class UserProfileScreen extends StatelessWidget {
@@ -80,10 +79,6 @@ class UserProfileScreen extends StatelessWidget {
       logsByWeek.addAll(logsForTheWeek);
     }
 
-    // 3. Now we can safely do sublist & reduce because we have at least 2 entries
-    final previousDays = days.sublist(0, days.length - 1);
-    final averageOfPrevious = (previousDays.reduce((a, b) => a + b) / previousDays.length).round();
-
     final sleepLevels = logsByWeek.map((log) => log.sleepLevel).where((score) => score >= 1);
 
     final averageSleep = sleepLevels.isNotEmpty ? sleepLevels.average : 0;
@@ -96,35 +91,9 @@ class UserProfileScreen extends StatelessWidget {
 
     final averageReadiness = readinessScores.isNotEmpty ? readinessScores.average : -1;
 
-    final trainingFrequency = _generateTrainingFrequencySummary(avgFrequency: averageOfPrevious);
-
     final sleepPattern = _generateSleepSummary(averageSleepScore: averageSleep.toInt());
 
     final readinessPattern = getTrainingGuidance(readinessScore: averageReadiness.toInt());
-
-    final trainingSplits = logsByWeek.map((log) {
-      final muscleGroups = log.exerciseLogs.map((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup).toSet();
-      final trainingSplit = determineTrainingSplit(muscleGroups: muscleGroups);
-      return trainingSplit;
-    }).toList();
-
-    // Count occurrences
-    final Map<TrainingSplit, int> frequencyMap = {};
-    for (final split in trainingSplits) {
-      frequencyMap[split] = (frequencyMap[split] ?? 0) + 1;
-    }
-
-    // Find the most frequent split
-    TrainingSplit mostFrequent = TrainingSplit.unknown;
-    int maxCount = 0;
-    frequencyMap.forEach((split, count) {
-      if (count > maxCount) {
-        maxCount = count;
-        mostFrequent = split;
-      }
-    });
-
-    final trainingSplitSummary = trainingSplits.isNotEmpty ? getTrainingSplitSummary(split: mostFrequent) : "We use your workout split to customize exercise recommendations and ensure every muscle group gets the attention it needs.";
 
     return Scaffold(
       appBar: AppBar(
@@ -213,14 +182,6 @@ class UserProfileScreen extends StatelessWidget {
                       ),
                       StaggeredGridTile.count(
                         crossAxisCellCount: 1,
-                        mainAxisCellCount: 1,
-                        child: _Tile(
-                            title: "Training Frequency",
-                            subTitle: trainingFrequency,
-                            color: isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.grey.shade200),
-                      ),
-                      StaggeredGridTile.count(
-                        crossAxisCellCount: 1,
                         mainAxisCellCount: 2,
                         child: _Tile(
                           title: "Sleep Pattern",
@@ -236,14 +197,6 @@ class UserProfileScreen extends StatelessWidget {
                           subTitle: readinessPattern,
                           color: averageReadiness.toInt() <= 0 ?  isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.grey.shade200: lowToHighIntensityColor(averageReadiness / 100),
                         ),
-                      ),
-                      StaggeredGridTile.count(
-                        crossAxisCellCount: 2,
-                        mainAxisCellCount: 1,
-                        child: _Tile(
-                            title: "Training Split",
-                            subTitle: trainingSplitSummary,
-                            color: isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.grey.shade200),
                       ),
                     ],
                   ),
@@ -311,26 +264,6 @@ class UserProfileScreen extends StatelessWidget {
         break;
     }
     return detailedExplanation;
-  }
-
-  String _generateTrainingFrequencySummary({required int avgFrequency}) {
-    if (avgFrequency < 0) {
-      return "Knowing how often you train helps us tailor workout plans and rest days to fit your schedule and maximize your results.";
-    } else if (avgFrequency == 0) {
-      return "Keep logging your training sessions consistently to see insights";
-    } else if (avgFrequency < 1) {
-      return "You train occasionally, averaging less than one workout per week.";
-    } else if (avgFrequency < 2) {
-      return "You train about once a week. A consistent schedule could help you progress faster.";
-    } else if (avgFrequency < 3) {
-      return "You train around twice a week, which is a decent frequency for steady improvement.";
-    } else if (avgFrequency < 5) {
-      return "You train three to four times a week. This is a well-balanced approach for most goals.";
-    } else if (avgFrequency < 7) {
-      return "You train five to six times a week, reflecting a high commitment to your fitness routine.";
-    } else {
-      return "You train seven or more times a week. Be mindful of rest and recovery!";
-    }
   }
 }
 
