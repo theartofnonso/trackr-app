@@ -22,12 +22,10 @@ class Calendar extends StatefulWidget {
     super.key,
     this.onSelectDate,
     required this.dateTime,
-    this.forceDarkMode = false,
   });
 
   final void Function(DateTime dateTime)? onSelectDate;
   final DateTime dateTime;
-  final bool forceDarkMode;
 
   @override
   State<Calendar> createState() => _CalendarState();
@@ -70,7 +68,7 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    final isDark = widget.forceDarkMode || MediaQuery.platformBrightnessOf(context) == Brightness.dark;
+    final isDark = MediaQuery.platformBrightnessOf(context) == Brightness.dark;
 
     return Column(
       children: [
