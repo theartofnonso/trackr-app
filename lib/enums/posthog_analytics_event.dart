@@ -24,6 +24,9 @@ enum PostHogAnalyticsEvent {
   shareRoutineTemplateAsLink(displayName: "routine_template:routine_template_link_copy"),
   shareRoutineTemplateAsText(displayName: "routine_template:routine_template_text_copy"),
 
+  shareRoutinePlanAsLink(displayName: "routine_plan:routine_plan_link_copy"),
+  shareRoutinePlanAsText(displayName: "routine_plan:routine_plan_text_copy"),
+
   shareCalendar(displayName: "app:calender_share"),
   shareMonitor(displayName: "app:monitor_share");
 

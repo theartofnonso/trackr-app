@@ -14,6 +14,9 @@ const routineLogs = '/routine-logs';
 /// Share Routine
 const shareableRoutineUrl = "https://TRKR.FIT/shared-workout";
 
+/// Share Routine Plan
+const shareableRoutinePlanUrl = "https://TRKR.FIT/shared-workout-plan";
+
 /// Share Routine Log
 const shareableRoutineLogUrl = "https://TRKR.FIT/shared-workout-log";
 

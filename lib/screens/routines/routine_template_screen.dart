@@ -73,41 +73,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   _OriginalNewValues _originalNewValues = _OriginalNewValues.newValues;
 
-  void _deleteRoutine({required RoutineTemplateDto template}) async {
-    try {
-      await Provider.of<ExerciseAndRoutineController>(context, listen: false).removeTemplate(template: template);
-      if (mounted) {
-        context.pop();
-      }
-    } catch (e) {
-      if (mounted) {
-        showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Unable to remove workout");
-      }
-    } finally {
-      _toggleLoadingState();
-    }
-  }
-
-  void _toggleLoadingState() {
-    setState(() {
-      _loading = !_loading;
-    });
-  }
-
-  void _navigateToRoutineTemplateEditor() async {
-    final template = _template;
-    if (template != null) {
-      final copyOfTemplate = template.copyWith();
-      final arguments = RoutineTemplateArguments(template: copyOfTemplate);
-      final updatedTemplate = await navigateToRoutineTemplateEditor(context: context, arguments: arguments);
-      if (updatedTemplate != null) {
-        setState(() {
-          _template = updatedTemplate;
-        });
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
@@ -544,6 +509,41 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     }
   }
 
+  void _deleteRoutine({required RoutineTemplateDto template}) async {
+    try {
+      await Provider.of<ExerciseAndRoutineController>(context, listen: false).removeTemplate(template: template);
+      if (mounted) {
+        context.pop();
+      }
+    } catch (e) {
+      if (mounted) {
+        showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Unable to remove workout");
+      }
+    } finally {
+      _toggleLoadingState();
+    }
+  }
+
+  void _toggleLoadingState() {
+    setState(() {
+      _loading = !_loading;
+    });
+  }
+
+  void _navigateToRoutineTemplateEditor() async {
+    final template = _template;
+    if (template != null) {
+      final copyOfTemplate = template.copyWith();
+      final arguments = RoutineTemplateArguments(template: copyOfTemplate);
+      final updatedTemplate = await navigateToRoutineTemplateEditor(context: context, arguments: arguments);
+      if (updatedTemplate != null) {
+        setState(() {
+          _template = updatedTemplate;
+        });
+      }
+    }
+  }
+
   void _launchRoutineLogEditor({required List<MuscleGroup> muscleGroups}) async {
     final template = _template;
     if (template != null) {
@@ -573,7 +573,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           final uncheckedSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
           return exerciseLog.copyWith(sets: uncheckedSets);
         }).toList();
-        final templateToCreate = RoutineTemplateDto(
+        final templateToBeCreated = RoutineTemplateDto(
             id: "",
             name: copy ? "Copy of ${template.name}" : template.name,
             notes: template.notes,
@@ -583,7 +583,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
             updatedAt: DateTime.now());
 
         final createdTemplate = await Provider.of<ExerciseAndRoutineController>(context, listen: false)
-            .saveTemplate(templateDto: templateToCreate);
+            .saveTemplate(templateDto: templateToBeCreated);
         if (mounted) {
           if (createdTemplate != null) {
             navigateToRoutineTemplatePreview(context: context, template: createdTemplate);
@@ -594,7 +594,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           showSnackbar(
               context: context,
               icon: const Icon(Icons.info_outline),
-              message: "Oops, we are unable to create template");
+              message: "Oops, we are unable to create your template");
         }
       } finally {
         _hideLoadingScreen();
@@ -634,7 +634,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     if (template != null) {
       final workoutLink = "$shareableRoutineUrl/${template.id}";
       final workoutText = copyRoutineAsText(
-          routineType: RoutinePreviewType.log,
+          routineType: RoutinePreviewType.template,
           name: template.name,
           notes: template.notes,
           exerciseLogs: template.exerciseTemplates);
