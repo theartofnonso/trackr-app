@@ -83,9 +83,19 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
         AnimatedSize(
           duration: const Duration(milliseconds: 250),
           alignment: Alignment.topCenter,
-          child: SizedBox(
-            height: _expanded ? 280 : 60, // tweak month/week heights
-            child: _expanded ? _buildMonthPager(isDark) : _buildWeekPager(isDark),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final double rowHeight = 54.0; // estimated row height
+              final int rowCount = _expanded ? 6 : 1;
+              final double height = rowHeight * rowCount;
+
+              return SizedBox(
+                height: height,
+                child: _expanded
+                    ? _buildMonthPager(isDark)
+                    : _buildWeekPager(isDark),
+              );
+            },
           ),
         ),
       ],
