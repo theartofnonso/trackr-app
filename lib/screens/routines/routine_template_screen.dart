@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
@@ -20,8 +22,11 @@ import '../../dtos/daily_readiness.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../dtos/viewmodels/routine_template_arguments.dart';
 import '../../enums/chart_unit_enum.dart';
+import '../../enums/posthog_analytics_event.dart';
 import '../../enums/routine_editor_type_enums.dart';
+import '../../enums/routine_preview_type_enum.dart';
 import '../../models/RoutineTemplate.dart';
+import '../../urls.dart';
 import '../../utils/data_trend_utils.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
@@ -586,6 +591,81 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     }
   }
 
+  void _showShareBottomSheet() {
+    final template = _template;
+
+    if (template != null) {
+      final workoutLink = "$shareableRoutineUrl/${template.id}";
+      final workoutText = copyRoutineAsText(
+          routineType: RoutinePreviewType.template,
+          name: template.name,
+          notes: template.notes,
+          exerciseLogs: template.exerciseTemplates);
+
+      displayBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          child: SafeArea(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const FaIcon(
+                  FontAwesomeIcons.link,
+                  size: 18,
+                ),
+                horizontalTitleGap: 10,
+                title: Text(
+                  "Copy as Link",
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  maxLines: 1,
+                ),
+                subtitle: Text(workoutLink),
+                onTap: () {
+                  Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineTemplateAsLink.displayName);
+                  HapticFeedback.heavyImpact();
+                  final data = ClipboardData(text: workoutLink);
+                  Clipboard.setData(data).then((_) {
+                    if (mounted) {
+                      Navigator.of(context).pop();
+                      showSnackbar(
+                          context: context,
+                          icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
+                          message: "Workout link copied");
+                    }
+                  });
+                },
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const FaIcon(
+                  FontAwesomeIcons.copy,
+                  size: 18,
+                ),
+                horizontalTitleGap: 6,
+                title: Text("Copy as Text", style: Theme.of(context).textTheme.titleMedium),
+                subtitle: Text("${template.name}..."),
+                onTap: () {
+                  Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineTemplateAsText.displayName);
+                  HapticFeedback.heavyImpact();
+                  final data = ClipboardData(text: workoutText);
+                  Clipboard.setData(data).then((_) {
+                    if (mounted) {
+                      Navigator.of(context).pop();
+                      showSnackbar(
+                          context: context,
+                          icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
+                          message: "Workout copied");
+                    }
+                  });
+                },
+              ),
+            ]),
+          ));
+    }
+  }
+
   void _showMenuBottomSheet({required RoutinePlanDto? planDto}) {
     displayBottomSheet(
         context: context,
@@ -614,6 +694,16 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
               horizontalTitleGap: 6,
               title: Text("Copy", style: Theme.of(context).textTheme.bodyLarge),
               onTap: () => _createTemplate(copy: true),
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(
+                FontAwesomeIcons.share,
+                size: 18,
+              ),
+              horizontalTitleGap: 6,
+              title: Text("Share", style: Theme.of(context).textTheme.bodyLarge),
+              onTap: _showShareBottomSheet,
             ),
             planDto != null
                 ? ListTile(
