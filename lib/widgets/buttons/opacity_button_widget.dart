@@ -10,6 +10,7 @@ class OpacityButtonWidget extends StatelessWidget {
   final EdgeInsets? padding;
   final TextStyle? textStyle;
   final VisualDensity? visualDensity;
+  final Widget? trailing;
 
   const OpacityButtonWidget(
       {super.key,
@@ -21,7 +22,7 @@ class OpacityButtonWidget extends StatelessWidget {
       this.buttonColor,
       this.textStyle,
       this.padding,
-      this.visualDensity = VisualDensity.compact});
+      this.visualDensity = VisualDensity.compact, this.trailing});
 
   Color? _themeForegroundColor({required bool isDarkMode}) {
     return isDarkMode ? buttonColor : Colors.black;
@@ -58,6 +59,7 @@ class OpacityButtonWidget extends StatelessWidget {
           padding: padding,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(loading ? loadingLabel : label,
@@ -72,7 +74,11 @@ class OpacityButtonWidget extends StatelessWidget {
                       padding: EdgeInsets.only(left: 6.0),
                       child: SizedBox(height: 10, width: 10, child: CircularProgressIndicator(strokeWidth: 2)),
                     )
-                  : const SizedBox.shrink()
+                  : const SizedBox.shrink(),
+                trailing != null ? Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: trailing!,
+                ) : const SizedBox.shrink()
             ],
           ),
         ));

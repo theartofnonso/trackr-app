@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tracker_app/screens/templates/routine_plans.dart';
 import 'package:tracker_app/screens/templates/routine_templates_screen.dart';
 
 class RoutineTemplatesHomeScreen extends StatefulWidget {
@@ -36,10 +37,10 @@ class _RoutineTemplatesHomeScreenState extends State<RoutineTemplatesHomeScreen>
                   dividerColor: Colors.transparent,
                   tabs: [
                     Tab(
-                        child: Text("Workout Templates".toUpperCase(),
+                        child: Text("Templates".toUpperCase(),
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600))),
                     Tab(
-                        child: Text("Workout Plans".toUpperCase(),
+                        child: Text("Pathways".toUpperCase(),
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600))),
                   ],
                 ),
@@ -48,7 +49,7 @@ class _RoutineTemplatesHomeScreenState extends State<RoutineTemplatesHomeScreen>
                     controller: _tabController,
                     children: [
                       RoutineTemplatesScreen(),
-                      RoutineTemplatesScreen()
+                      RoutinePlansScreen()
                     ],
                   ),
                 ),

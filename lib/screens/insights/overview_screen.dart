@@ -475,7 +475,7 @@ class _TemplatesTile extends StatelessWidget {
       decoration: BoxDecoration(
           color: isDarkMode ? vibrantBlue.withValues(alpha: 0.1) : vibrantBlue, borderRadius: BorderRadius.circular(5)),
       child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-        Text("Manage your workout templates",
+        Text("Manage your training experience",
             style: GoogleFonts.ubuntu(fontSize: 20, height: 1.5, fontWeight: FontWeight.w600)),
         const Spacer(),
         Row(

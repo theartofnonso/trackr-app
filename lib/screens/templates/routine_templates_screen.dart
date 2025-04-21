@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/screens/AI/trkr_coach_chat_screen.dart';
-import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
@@ -12,6 +10,7 @@ import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
 import '../../widgets/information_containers/information_container_with_background_image.dart';
+import '../../widgets/routine/preview/routine_template_grid_item.dart';
 
 class RoutineTemplatesScreen extends StatelessWidget {
   static const routeName = '/routine_templates_screen';
@@ -23,7 +22,7 @@ class RoutineTemplatesScreen extends StatelessWidget {
     return Consumer<ExerciseAndRoutineController>(builder: (_, provider, __) {
       final templates = List<RoutineTemplateDto>.from(provider.templates);
 
-      final children = templates.map((template) => _RoutineWidget(template: template)).toList();
+      final children = templates.map((template) => RoutineTemplateGridItemWidget(template: template)).toList();
 
       return Scaffold(
           floatingActionButton: FloatingActionButton(
@@ -51,7 +50,7 @@ class RoutineTemplatesScreen extends StatelessWidget {
                       fontWeight: FontWeight.w400,
                       color: Colors.white.withValues(alpha: 0.9),
                     ),
-                    ctaContent: 'Tap to describe a workout',
+                    ctaContent: 'Describe a workout',
                   ),
                 ),
                 templates.isNotEmpty
@@ -91,100 +90,5 @@ class RoutineTemplatesScreen extends StatelessWidget {
     final routineTemplate = template;
     final templateController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
     await templateController.saveTemplate(templateDto: routineTemplate);
-  }
-}
-
-class _RoutineWidget extends StatelessWidget {
-  final RoutineTemplateDto template;
-
-  const _RoutineWidget({required this.template});
-
-  @override
-  Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
-    final exercises = template.exerciseTemplates;
-    final sets = template.exerciseTemplates.expand((exercise) => exercise.sets);
-    return GestureDetector(
-      onTap: () => navigateToRoutineTemplatePreview(context: context, template: template),
-      child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-              color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, borderRadius: BorderRadius.circular(5)),
-          child: Column(spacing: 6, crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(
-              template.name,
-              style: Theme.of(context).textTheme.titleMedium,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
-            ),
-            const Spacer(),
-            Column(
-              spacing: 6,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Wrap(
-                  children: [
-                    Container(
-                      width: 20,
-                      height: 20,
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: vibrantGreen.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(3),
-                      ),
-                      child: Image.asset(
-                        'icons/dumbbells.png',
-                        fit: BoxFit.contain,
-                        height: 14,
-                        color: vibrantGreen, // Adjust the height as needed
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 6,
-                    ),
-                    Text(
-                      "${exercises.length} ${pluralize(word: "Exercise", count: exercises.length)}",
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                    ),
-                  ],
-                ),
-                Wrap(
-                  children: [
-                    Container(
-                      width: 20,
-                      height: 20,
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: vibrantBlue.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(3),
-                      ),
-                      child: Center(
-                        child: FaIcon(
-                          FontAwesomeIcons.hashtag,
-                          color: vibrantBlue,
-                          size: 11,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 6,
-                    ),
-                    Text(
-                      "${sets.length} ${pluralize(word: "Set", count: sets.length)}",
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                    ),
-                  ],
-                ),
-              ],
-            )
-          ])),
-    );
   }
 }

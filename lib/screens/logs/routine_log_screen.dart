@@ -152,8 +152,8 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: Column(spacing: 6, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.center,
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Container(
                             width: 30,

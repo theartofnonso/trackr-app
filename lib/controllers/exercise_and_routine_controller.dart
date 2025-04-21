@@ -10,12 +10,15 @@ import 'package:tracker_app/repositories/amplify/amplify_routine_log_repository.
 
 import '../dtos/appsync/exercise_dto.dart';
 import '../dtos/appsync/routine_log_dto.dart';
+import '../dtos/appsync/routine_plan_dto.dart';
 import '../dtos/appsync/routine_template_dto.dart';
 import '../dtos/set_dtos/set_dto.dart';
 import '../logger.dart';
 import '../models/Exercise.dart';
+import '../models/RoutinePlan.dart';
 import '../models/RoutineTemplate.dart';
 import '../repositories/amplify/amplify_exercise_repository.dart';
+import '../repositories/amplify/amplify_routine_plan_repository.dart';
 import '../repositories/amplify/amplify_routine_template_repository.dart';
 
 class ExerciseAndRoutineController extends ChangeNotifier {
@@ -26,20 +29,25 @@ class ExerciseAndRoutineController extends ChangeNotifier {
 
   late AmplifyExerciseRepository _amplifyExerciseRepository;
   late AmplifyRoutineTemplateRepository _amplifyTemplateRepository;
+  late AmplifyRoutinePlanRepository _amplifyPlanRepository;
   late AmplifyRoutineLogRepository _amplifyLogRepository;
 
   ExerciseAndRoutineController(
       {required AmplifyExerciseRepository amplifyExerciseRepository,
       required AmplifyRoutineTemplateRepository amplifyTemplateRepository,
+      required AmplifyRoutinePlanRepository amplifyPlanRepository,
       required AmplifyRoutineLogRepository amplifyLogRepository}) {
     _amplifyExerciseRepository = amplifyExerciseRepository;
     _amplifyTemplateRepository = amplifyTemplateRepository;
+    _amplifyPlanRepository = amplifyPlanRepository;
     _amplifyLogRepository = amplifyLogRepository;
   }
 
   UnmodifiableListView<ExerciseDto> get exercises => _amplifyExerciseRepository.exercises;
 
   UnmodifiableListView<RoutineTemplateDto> get templates => _amplifyTemplateRepository.templates;
+
+  UnmodifiableListView<RoutinePlanDto> get plans => _amplifyPlanRepository.plans;
 
   UnmodifiableListView<RoutineLogDto> get logs => _amplifyLogRepository.logs;
 
@@ -94,6 +102,57 @@ class ExerciseAndRoutineController extends ChangeNotifier {
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
       logger.e("Error removing exercise", error: e);
+    } finally {
+      isLoading = false;
+      errorMessage = "";
+      notifyListeners();
+    }
+  }
+
+  /// Plans
+
+  void streamPlans({required List<RoutinePlan> plans}) {
+    _amplifyPlanRepository.loadPlansStream(plans: plans);
+    notifyListeners();
+  }
+
+  Future<RoutinePlanDto?> savePlan({required RoutinePlanDto planDto}) async {
+    RoutinePlanDto? savedPlan;
+    isLoading = true;
+    try {
+      savedPlan = await _amplifyPlanRepository.savePlan(planDto: planDto);
+    } catch (e) {
+      errorMessage = "Oops! Something went wrong. Please try again later.";
+      logger.e("Error saving exercise template", error: e);
+    } finally {
+      isLoading = false;
+      errorMessage = "";
+      notifyListeners();
+    }
+    return savedPlan;
+  }
+
+  Future<void> updatePlan({required RoutinePlanDto planDto}) async {
+    isLoading = true;
+    try {
+      await _amplifyPlanRepository.updatePlan(plan: planDto);
+    } catch (e) {
+      errorMessage = "Oops! Something went wrong. Please try again later.";
+      logger.e("Error updating exercise template", error: e);
+    } finally {
+      isLoading = false;
+      errorMessage = "";
+      notifyListeners();
+    }
+  }
+
+  Future<void> removePlan({required RoutinePlanDto planDto}) async {
+    isLoading = true;
+    try {
+      await _amplifyPlanRepository.removePlan(plan: planDto);
+    } catch (e) {
+      errorMessage = "Oops! Something went wrong. Please try again later.";
+      logger.e("Error removing exercise template", error: e);
     } finally {
       isLoading = false;
       errorMessage = "";

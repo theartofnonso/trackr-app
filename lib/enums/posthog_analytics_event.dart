@@ -8,6 +8,7 @@ enum PostHogAnalyticsEvent {
   /// Creating
   createRoutineTemplate(displayName: "routine_template_editor:routine_template_create"),
   createExercise(displayName: "exercise_editor:exercise_create"),
+  createRoutinePlan(displayName: "routine_plan_editor:routine_plan_create"),
 
   /// Reports
   generateRoutineLogReport(displayName: "report:routine_log_session_generate"),

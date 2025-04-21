@@ -19,6 +19,7 @@ import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../enums/routine_editor_type_enums.dart';
 import '../models/RoutineLog.dart';
+import '../models/RoutinePlan.dart';
 import '../models/RoutineTemplate.dart';
 import '../utils/navigation_utils.dart';
 
@@ -35,6 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
   StreamSubscription<QuerySnapshot<RoutineUser>>? _routineUserStream;
   StreamSubscription<QuerySnapshot<RoutineLog>>? _routineLogStream;
   StreamSubscription<QuerySnapshot<RoutineTemplate>>? _routineTemplateStream;
+  StreamSubscription<QuerySnapshot<RoutinePlan>>? _routinePlanStream;
   StreamSubscription<QuerySnapshot<Exercise>>? _exerciseStream;
 
   @override
@@ -57,6 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _observeExerciseQuery();
     _observeRoutineLogQuery();
     _observeRoutineTemplateQuery();
+    _observeRoutinePlanQuery();
   }
 
   void _observeRoutineUserQuery() {
@@ -90,6 +93,17 @@ class _HomeScreenState extends State<HomeScreen> {
     ).listen((QuerySnapshot<RoutineTemplate> snapshot) {
       if (mounted) {
         Provider.of<ExerciseAndRoutineController>(context, listen: false).streamTemplates(templates: snapshot.items);
+      }
+    });
+  }
+
+  void _observeRoutinePlanQuery() {
+    _routinePlanStream = Amplify.DataStore.observeQuery(
+      RoutinePlan.classType,
+      sortBy: [RoutinePlan.CREATEDAT.descending()],
+    ).listen((QuerySnapshot<RoutinePlan> snapshot) {
+      if (mounted) {
+        Provider.of<ExerciseAndRoutineController>(context, listen: false).streamPlans(plans: snapshot.items);
       }
     });
   }
@@ -147,6 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void dispose() {
     _exerciseStream?.cancel();
     _routineTemplateStream?.cancel();
+    _routinePlanStream?.cancel();
     _routineLogStream?.cancel();
     _routineUserStream?.cancel();
     super.dispose();

@@ -22,6 +22,7 @@ import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
 import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/repositories/amplify/amplify_exercise_repository.dart';
 import 'package:tracker_app/repositories/amplify/amplify_routine_log_repository.dart';
+import 'package:tracker_app/repositories/amplify/amplify_routine_plan_repository.dart';
 import 'package:tracker_app/repositories/amplify/amplify_routine_template_repository.dart';
 import 'package:tracker_app/repositories/amplify/amplify_routine_user_repository.dart';
 import 'package:tracker_app/repositories/exercise_log_repository.dart';
@@ -149,6 +150,7 @@ void main() async {
         create: (BuildContext context) => ExerciseAndRoutineController(
             amplifyExerciseRepository: AmplifyExerciseRepository(),
             amplifyTemplateRepository: AmplifyRoutineTemplateRepository(),
+            amplifyPlanRepository: AmplifyRoutinePlanRepository(),
             amplifyLogRepository: AmplifyRoutineLogRepository()),
       ),
       ChangeNotifierProvider<ExerciseLogController>(
