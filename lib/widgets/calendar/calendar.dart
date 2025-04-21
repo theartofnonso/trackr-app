@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -230,9 +231,8 @@ class _CalendarTitleHeader extends StatelessWidget {
             ),
           ),
           const Spacer(),
-          Icon(
-            isExpanded ? Icons.expand_less : Icons.expand_more,
-            color: isDarkMode ? Colors.white : Colors.black,
+          FaIcon(
+            isExpanded ? Icons.expand_less: Icons.expand_more,
           ),
         ],
       ),
