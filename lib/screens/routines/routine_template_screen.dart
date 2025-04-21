@@ -190,6 +190,10 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           leadingIcon: FaIcon(Icons.copy, size: 16),
           child: Text("Copy", style: GoogleFonts.ubuntu())),
       MenuItemButton(
+          leadingIcon: FaIcon(FontAwesomeIcons.plus, size: 16),
+          onPressed: _showShareBottomSheet,
+          child: Text("Add to plan", style: GoogleFonts.ubuntu())),
+      MenuItemButton(
           leadingIcon: FaIcon(FontAwesomeIcons.arrowUpFromBracket, size: 16),
           onPressed: _showShareBottomSheet,
           child: Text("Share", style: GoogleFonts.ubuntu())),
