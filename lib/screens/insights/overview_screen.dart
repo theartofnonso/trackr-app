@@ -132,7 +132,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     return Column(spacing: 12, children: [
       Calendar(
         onSelectDate: _onSelectCalendarDateTime,
-        dateTime: _monthDateTimeRange.start,
+        dateTime: DateTime.now(),
       ),
       StaggeredGrid.count(
         crossAxisCount: 2,

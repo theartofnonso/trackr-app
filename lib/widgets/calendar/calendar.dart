@@ -6,8 +6,6 @@ import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
-GlobalKey calendarKey = GlobalKey();
-
 class _DateViewModel {
   final DateTime dateTime;
   final DateTime selectedDateTime;
@@ -75,7 +73,6 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
     final isDark = widget.forceDarkMode || MediaQuery.platformBrightnessOf(context) == Brightness.dark;
 
     return Column(
-      key: calendarKey,
       children: [
         _CalendarTitleHeader(
           date: _focused,

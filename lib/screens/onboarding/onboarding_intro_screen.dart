@@ -9,7 +9,6 @@ import 'package:tracker_app/widgets/monitors/log_streak_monitor.dart';
 import '../../colors.dart';
 import '../../utils/theme/theme.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
-import '../../widgets/calendar/calendar.dart';
 import '../../widgets/custom_drawings/streak_face.dart';
 import '../../widgets/dividers/label_divider.dart';
 
@@ -33,7 +32,6 @@ class _OnboardingIntroScreenState extends State<OnboardingIntroScreen> {
     final isDarkMode = systemBrightness == Brightness.dark;
 
     final pages = [
-      _CalenderOnboardingScreen(isDarkMode: isDarkMode),
       _LogStreakMonitorOnboardingScreen(isDarkMode: isDarkMode),
       _TRKRCoachOnboardingScreen(isDarkMode: isDarkMode),
       if (SharedPrefs().firstLaunch) _EndOnboardingScreen(onPress: widget.onComplete ?? () {})
@@ -79,38 +77,6 @@ class _OnboardingIntroScreenState extends State<OnboardingIntroScreen> {
                   ],
                 ),
               ))),
-    );
-  }
-}
-
-class _CalenderOnboardingScreen extends StatelessWidget {
-  final bool isDarkMode;
-
-  const _CalenderOnboardingScreen({required this.isDarkMode});
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          LabelDivider(
-            label: "Log Calendar".toUpperCase(),
-            labelColor: isDarkMode ? Colors.white70 : Colors.black,
-            dividerColor: sapphireLighter,
-            fontSize: 14,
-          ),
-          SizedBox(
-            height: 12,
-          ),
-          Text(
-              "Today marks the beginning of your lifelong commitment to self-improvement. The app might look empty now, but as you log each workout, you’ll start seeing vibrant green squares filling up your calendar—visual proof of your dedication and progress.",
-              style: Theme.of(context).textTheme.bodyLarge),
-          SizedBox(
-            height: 20,
-          ),
-          Calendar(dateTime: DateTime.now()),
-        ],
-      ),
     );
   }
 }
