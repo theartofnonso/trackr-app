@@ -53,9 +53,11 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
 
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
-    final templates = exerciseAndRoutineController.templates.sublist(0, 4);
+    final plans = exerciseAndRoutineController.plans;
 
-    final children = templates
+    final plan = plans[0];
+
+    final children = plan.routineTemplates
         .mapIndexed(
           (index, template) => RoutineTemplateGridItemWidget(
               template: template.copyWith(
@@ -63,6 +65,8 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
                       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.")),
         )
         .toList();
+
+    final exercises = plan.routineTemplates.expand((routineTemplate) => routineTemplate.exerciseTemplates);
 
     return Scaffold(
         body: Container(
@@ -89,12 +93,12 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
                 ctaContent: 'Generate training pathways',
               ),
             ),
-            Text("Functional Fitness Pathway",
-                style: GoogleFonts.ubuntu(fontSize: 26, height: 1.5, fontWeight: FontWeight.w900)),
+            Text(plan.name,
+                style: GoogleFonts.ubuntu(fontSize: 20, height: 1.5, fontWeight: FontWeight.w900)),
             SingleChildScrollView(
               child: Row(spacing: 12, children: [
                 _Chip(
-                    label: '6 Weeks',
+                    label: '${plan.length} ${pluralize(word: "Week", count: plan.length)}',
                     color: Colors.yellow,
                     child: FaIcon(
                       FontAwesomeIcons.calendarWeek,
@@ -102,7 +106,7 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
                       size: 14,
                     )),
                 _Chip(
-                    label: '4 Sessions',
+                    label: '${plan.routineTemplates.length} ${pluralize(word: "Session", count: plan.routineTemplates.length)}',
                     color: Colors.deepOrange,
                     child: FaIcon(
                       FontAwesomeIcons.calendarDay,
@@ -110,7 +114,7 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
                       size: 14,
                     )),
                 _Chip(
-                  label: '4 Exercises',
+                  label: '${exercises.length} ${pluralize(word: "Exercise", count: exercises.length)}',
                   color: vibrantGreen,
                   child: Image.asset(
                     'icons/dumbbells.png',
@@ -122,11 +126,11 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
               ]),
             ),
             Text(
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+                plan.notes,
                 style: GoogleFonts.ubuntu(
-                    fontSize: 12,
+                    fontSize: 14,
                     color: isDarkMode ? Colors.white70 : Colors.black,
-                    height: 1.5,
+                    height: 1.8,
                     fontWeight: FontWeight.w400)),
             SingleChildScrollView(
               child: Row(
@@ -324,9 +328,9 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
         updatedAt: DateTime.now(),
       );
 
-      // if(mounted) {
-      //   _savePlan(context: context, plan: newPlan);
-      // }
+      if(mounted) {
+        _savePlan(context: context, plan: newPlan);
+      }
 
       _hideLoadingScreen();
     } catch (e) {

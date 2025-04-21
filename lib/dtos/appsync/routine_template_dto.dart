@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
+import 'package:tracker_app/models/ModelProvider.dart';
 
 import '../../models/RoutineTemplate.dart';
 import '../exercise_log_dto.dart';
@@ -63,6 +64,35 @@ class RoutineTemplateDto {
       owner: template.owner ?? "",
       createdAt: template.createdAt.getDateTimeInUtc(),
       updatedAt: template.updatedAt.getDateTimeInUtc(),
+    );
+  }
+
+  factory RoutineTemplateDto.fromDto({required RoutinePlan plan, required dynamic json}) {
+    final id = plan.id;
+    final name = json["name"] ?? "";
+    final notes = json["notes"] ?? "";
+    final exerciseTemplatesInJson = json["exercises"] as List<dynamic>;
+    List<ExerciseLogDto> exerciseTemplates = [];
+    if (exerciseTemplatesInJson.isNotEmpty && exerciseTemplatesInJson.first is String) {
+      exerciseTemplates = exerciseTemplatesInJson
+          .map((json) => ExerciseLogDto.fromJson(
+          routineLogId: id, json: jsonDecode(json), createdAt: plan.createdAt.getDateTimeInUtc()))
+          .toList();
+    } else {
+      exerciseTemplates = exerciseTemplatesInJson
+          .map((json) => ExerciseLogDto.fromJson(
+          routineLogId: id, createdAt: plan.createdAt.getDateTimeInUtc(), json: json))
+          .toList();
+    }
+
+    return RoutineTemplateDto(
+      id: id,
+      name: name,
+      exerciseTemplates: exerciseTemplates,
+      notes: notes,
+      owner: plan.owner ?? "",
+      createdAt: plan.createdAt.getDateTimeInUtc(),
+      updatedAt: plan.updatedAt.getDateTimeInUtc(),
     );
   }
 

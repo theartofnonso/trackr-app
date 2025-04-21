@@ -56,8 +56,9 @@ class RoutineTemplateScreen extends StatefulWidget {
   static const routeName = '/routine_template_screen';
 
   final String id;
+  final RoutineTemplateDto? templateDto;
 
-  const RoutineTemplateScreen({super.key, required this.id});
+  const RoutineTemplateScreen({super.key, required this.id, this.templateDto});
 
   @override
   State<RoutineTemplateScreen> createState() => _RoutineTemplateScreenState();
@@ -640,7 +641,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   void _loadData() {
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-    _template = exerciseAndRoutineController.templateWhere(id: widget.id);
+    _template = exerciseAndRoutineController.templateWhere(id: widget.id) ?? widget.templateDto;
     if (_template == null) {
       _loading = true;
       getAPI(endpoint: "/routine-templates/${widget.id}").then((data) {

@@ -237,7 +237,7 @@ final _router = GoRouter(
       path: RoutineTemplateScreen.routeName,
       builder: (context, state) {
         final template = state.extra as RoutineTemplateDto?;
-        return RoutineTemplateScreen(id: template?.id ?? "");
+        return RoutineTemplateScreen(id: template?.id ?? "", templateDto: template,);
       },
     ),
     GoRoute(

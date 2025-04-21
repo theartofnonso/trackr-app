@@ -47,8 +47,7 @@ class RoutinePlanDto {
     final length = json["length"] ?? "";
     final routineTemplatesInJson = json["templates"] as List<dynamic>;
     List<RoutineTemplateDto> routineTemplates = routineTemplatesInJson.map((json) {
-      final template = RoutineTemplate.fromJson(json);
-      return RoutineTemplateDto.fromTemplate(template: template);
+      return RoutineTemplateDto.fromDto(plan: plan, json: json,);
     }).toList();
 
     return RoutinePlanDto(
