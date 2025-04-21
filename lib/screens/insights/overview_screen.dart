@@ -18,7 +18,6 @@ import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/routine_editor_type_enums.dart';
-import '../../utils/date_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../utils/string_utils.dart';
@@ -47,12 +46,7 @@ class OverviewScreen extends StatefulWidget {
 }
 
 class _OverviewScreenState extends State<OverviewScreen> {
-
-  late DateTimeRange _monthDateTimeRange;
-
   bool _loading = false;
-
-  TextEditingController? _textEditingController;
 
   TrainingAndVolume _trainingAndVolume = TrainingAndVolume.training;
 
@@ -329,18 +323,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   void _onSelectCalendarDateTime(DateTime date) {
     _showLogsBottomSheet(dateTime: date);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _monthDateTimeRange = thisMonthDateRange();
-  }
-
-  @override
-  void dispose() {
-    _textEditingController?.dispose();
-    super.dispose();
   }
 }
 
