@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 import '../../../colors.dart';
+import '../../../controllers/exercise_and_routine_controller.dart';
 import '../../../dtos/appsync/routine_template_dto.dart';
 import '../../../utils/navigation_utils.dart';
 import '../../../utils/string_utils.dart';
@@ -17,6 +19,9 @@ class RoutineTemplateGridItemWidget extends StatelessWidget {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+    final plan = exerciseAndRoutineController.planWhere(id: template.planId);
+
     final exercises = template.exerciseTemplates;
     final sets = template.exerciseTemplates.expand((exercise) => exercise.sets);
     return GestureDetector(
@@ -27,21 +32,28 @@ class RoutineTemplateGridItemWidget extends StatelessWidget {
           decoration: BoxDecoration(
               color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, borderRadius: BorderRadius.circular(5)),
           child: Column(spacing: 8, crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(
-              template.name,
-              style: Theme.of(context).textTheme.titleMedium,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 2,
+              children: [
+                Text(
+                  template.name,
+                  style: Theme.of(context).textTheme.titleMedium,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+                if(plan != null)
+                  Text(
+                    "In ${plan.name}",
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                    style: GoogleFonts.ubuntu(
+                        fontSize: 12,
+                        color: isDarkMode ? Colors.white70 : Colors.black,
+                        height: 1.5,
+                        fontWeight: FontWeight.w400)),
+              ],
             ),
-            Text(
-                template.notes,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
-                style: GoogleFonts.ubuntu(
-                    fontSize: 12,
-                    color: isDarkMode ? Colors.white70 : Colors.black,
-                    height: 1.5,
-                    fontWeight: FontWeight.w400)),
             const Spacer(),
             Column(
               spacing: 6,
