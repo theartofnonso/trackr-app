@@ -34,7 +34,7 @@ class RoutineTemplateGridItemWidget extends StatelessWidget {
           child: Column(spacing: 8, crossAxisAlignment: CrossAxisAlignment.start, children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 2,
+              spacing: 6,
               children: [
                 Text(
                   template.name,
