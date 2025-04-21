@@ -41,6 +41,7 @@ import '../../widgets/empty_states/not_found.dart';
 import '../../widgets/information_containers/information_container.dart';
 import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
+import '../../widgets/routine/preview/plan_picker.dart';
 
 enum _OriginalNewValues {
   originalValues(
@@ -191,7 +192,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           child: Text("Copy", style: GoogleFonts.ubuntu())),
       MenuItemButton(
           leadingIcon: FaIcon(FontAwesomeIcons.plus, size: 16),
-          onPressed: _showShareBottomSheet,
+          onPressed: _showPlanPicker,
           child: Text("Add to plan", style: GoogleFonts.ubuntu())),
       MenuItemButton(
           leadingIcon: FaIcon(FontAwesomeIcons.arrowUpFromBracket, size: 16),
@@ -704,6 +705,39 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
               ),
             ]),
           ));
+    }
+  }
+
+  void _showPlanPicker() {
+    final template = _template;
+
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+    final plans = exerciseAndRoutineController.plans;
+
+    if (template != null) {
+      displayBottomSheet(
+        context: context,
+        child: PlanPicker(
+          title: "Add ${template.name} to . . .",
+          plans: plans,
+          onSelect: (selectedPlan) async {
+            Navigator.of(context).pop();
+
+            final templateProvider = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+
+            final updatedRoutineTemplate = template.copyWith(planId: selectedPlan.id);
+
+            await templateProvider.updateTemplate(template: updatedRoutineTemplate);
+
+            if (mounted) {
+              showSnackbar(
+                  context: context,
+                  icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
+                  message: "Add ${template.name} to ${selectedPlan.name}");
+            }
+          },
+        ),
+      );
     }
   }
 

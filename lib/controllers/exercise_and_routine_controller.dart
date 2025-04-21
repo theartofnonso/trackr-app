@@ -319,6 +319,10 @@ class ExerciseAndRoutineController extends ChangeNotifier {
     return _amplifyTemplateRepository.templateWhere(id: id);
   }
 
+  RoutineTemplateDto? templateWherePlanId({required String id}) {
+    return _amplifyTemplateRepository.templateWherePlanId(id: id);
+  }
+
   /// Plan Helpers methods
   RoutinePlanDto? planWhere({required String id}) {
     return _amplifyPlanRepository.planWhere(id: id);

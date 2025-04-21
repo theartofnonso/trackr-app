@@ -7,7 +7,6 @@ import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
-import '../../dtos/appsync/exercise_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../enums/posthog_analytics_event.dart';
 import '../../logger.dart';
@@ -68,23 +67,14 @@ class AmplifyRoutineTemplateRepository {
     }
   }
 
-  void syncTemplatesWithExercisesFromLibrary({required List<ExerciseDto> exercises}) {
-    final updatedTemplates = _templates.map((template) {
-      final updatedExerciseTemplates = template.exerciseTemplates.map((exerciseTemplate) {
-        final foundExercise = exercises.firstWhere(
-            (exerciseInLibrary) => exerciseInLibrary.id == exerciseTemplate.exercise.id,
-            orElse: () => exerciseTemplate.exercise);
-        return exerciseTemplate.copyWith(exercise: foundExercise);
-      }).toList();
-      return template.copyWith(exerciseTemplates: updatedExerciseTemplates);
-    }).toList();
-    _templates = updatedTemplates;
-  }
-
   /// Helper methods
 
   RoutineTemplateDto? templateWhere({required String id}) {
     return _templates.firstWhereOrNull((dto) => dto.id == id);
+  }
+
+  RoutineTemplateDto? templateWherePlanId({required String id}) {
+    return _templates.firstWhereOrNull((dto) => dto.planId == id);
   }
 
   void clear() {

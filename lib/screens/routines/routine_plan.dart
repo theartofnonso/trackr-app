@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
@@ -10,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
+import 'package:tracker_app/dtos/appsync/routine_template_dto.dart';
 import 'package:tracker_app/urls.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
@@ -23,7 +23,6 @@ import '../../shared_prefs.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/https_utils.dart';
-import '../../utils/navigation_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/calendar/calendar.dart';
@@ -43,7 +42,6 @@ class RoutinePlanScreen extends StatefulWidget {
 }
 
 class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
-
   RoutinePlanDto? _plan;
 
   bool _loading = false;
@@ -70,15 +68,16 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
 
     if (plan == null) return const NotFound();
 
-    final children = plan.routineTemplates
+    final routineTemplates =
+        exerciseAndRoutineController.templates.where((template) => template.planId == plan.id).toList();
+
+    final children = routineTemplates
         .mapIndexed(
-          (index, template) => RoutineTemplateGridItemWidget(
-              template: template.copyWith(
-                  notes: template.notes)),
+          (index, template) => RoutineTemplateGridItemWidget(template: template.copyWith(notes: template.notes)),
         )
         .toList();
 
-    final exercises = plan.routineTemplates.expand((routineTemplate) => routineTemplate.exerciseTemplates);
+    final exercises = routineTemplates.expand((routineTemplate) => routineTemplate.exerciseTemplates);
 
     final menuActions = [
       MenuItemButton(
@@ -86,12 +85,8 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
           leadingIcon: FaIcon(FontAwesomeIcons.solidPenToSquare, size: 16),
           child: Text("Edit", style: GoogleFonts.ubuntu())),
       MenuItemButton(
-          onPressed: () => _createPlan(copy: true),
-          leadingIcon: FaIcon(Icons.copy, size: 16),
-          child: Text("Copy", style: GoogleFonts.ubuntu())),
-      MenuItemButton(
           leadingIcon: FaIcon(FontAwesomeIcons.arrowUpFromBracket, size: 16),
-          onPressed: _showShareBottomSheet,
+          onPressed: () => _showShareBottomSheet(templates: routineTemplates),
           child: Text("Share", style: GoogleFonts.ubuntu())),
       MenuItemButton(
         onPressed: () {
@@ -127,24 +122,24 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
           actions: [
             plan.owner == SharedPrefs().userId
                 ? MenuAnchor(
-              builder: (BuildContext context, MenuController controller, Widget? child) {
-                return IconButton(
-                  onPressed: () {
-                    if (controller.isOpen) {
-                      controller.close();
-                    } else {
-                      controller.open();
-                    }
-                  },
-                  icon: const Icon(
-                    Icons.more_vert_rounded,
-                    size: 24,
-                  ),
-                  tooltip: 'Show menu',
-                );
-              },
-              menuChildren: menuActions,
-            )
+                    builder: (BuildContext context, MenuController controller, Widget? child) {
+                      return IconButton(
+                        onPressed: () {
+                          if (controller.isOpen) {
+                            controller.close();
+                          } else {
+                            controller.open();
+                          }
+                        },
+                        icon: const Icon(
+                          Icons.more_vert_rounded,
+                          size: 24,
+                        ),
+                        tooltip: 'Show menu',
+                      );
+                    },
+                    menuChildren: menuActions,
+                  )
                 : const SizedBox.shrink()
           ],
         ),
@@ -173,7 +168,7 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
                     ),
                     ChipOne(
                         label:
-                        '${plan.routineTemplates.length} ${pluralize(word: "Session", count: plan.routineTemplates.length)}',
+                            '${routineTemplates.length} ${pluralize(word: "Session", count: routineTemplates.length)}',
                         color: vibrantBlue,
                         child: FaIcon(
                           FontAwesomeIcons.hashtag,
@@ -231,12 +226,6 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
         ));
   }
 
-  void _showLoadingScreen() {
-    setState(() {
-      _loading = true;
-    });
-  }
-
   void _hideLoadingScreen() {
     if (mounted) {
       setState(() {
@@ -266,7 +255,7 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
     });
   }
 
-  void _showShareBottomSheet() {
+  void _showShareBottomSheet({required List<RoutineTemplateDto> templates}) {
     final plan = _plan;
 
     if (plan != null) {
@@ -280,8 +269,7 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
         routinePlanText.writeln("\n Notes: ${plan.notes}");
       }
 
-     for (final routineTemplate in plan.routineTemplates) {
-
+      for (final routineTemplate in templates) {
         final routineTemplateText = copyRoutineAsText(
             routineType: RoutinePreviewType.template,
             name: routineTemplate.name,
@@ -306,8 +294,8 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
                 title: Text(
                   "Copy as Link",
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                   maxLines: 1,
                 ),
                 subtitle: Text(workoutPlanLink),
@@ -352,40 +340,6 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
               ),
             ]),
           ));
-    }
-  }
-
-  void _createPlan({bool copy = false}) async {
-    final plan = _plan;
-    if (plan != null) {
-      _showLoadingScreen();
-
-      try {
-        final planToBeCreated = RoutinePlanDto(
-            id: "",
-            name: copy ? "Copy of ${plan.name}" : plan.name,
-            notes: plan.notes,
-            owner: "",
-            createdAt: DateTime.now(),
-            updatedAt: DateTime.now(), routineTemplates: plan.routineTemplates);
-
-        final createdPlan = await Provider.of<ExerciseAndRoutineController>(context, listen: false)
-            .savePlan(planDto: planToBeCreated);
-        if (mounted) {
-          if (createdPlan != null) {
-            navigateToRoutinePlanPreview(context: context, plan: createdPlan);
-          }
-        }
-      } catch (_) {
-        if (mounted) {
-          showSnackbar(
-              context: context,
-              icon: const Icon(Icons.info_outline),
-              message: "Oops, we are unable to create your plan");
-        }
-      } finally {
-        _hideLoadingScreen();
-      }
     }
   }
 

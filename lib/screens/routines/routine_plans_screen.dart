@@ -255,7 +255,6 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
       final newPlan = RoutinePlanDto(
         id: "",
         name: newRoutinePlanDto.planName,
-        routineTemplates: routineTemplates,
         notes: newRoutinePlanDto.planDescription,
         owner: SharedPrefs().userId,
         createdAt: DateTime.now(),
@@ -263,7 +262,15 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
       );
 
       if (mounted) {
-        _savePlan(context: context, plan: newPlan);
+        final createdPlan = await _savePlan(context: context, plan: newPlan);
+        if (mounted) {
+          if (createdPlan != null) {
+            for (final template in routineTemplates) {
+              final templateWithPlanId = template.copyWith(planId: createdPlan.id);
+              _saveTemplate(context: context, template: templateWithPlanId);
+            }
+          }
+        }
       }
 
       _hideLoadingScreen();
@@ -272,9 +279,15 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
     }
   }
 
-  void _savePlan({required BuildContext context, required RoutinePlanDto plan}) async {
+  Future<RoutinePlanDto?> _savePlan({required BuildContext context, required RoutinePlanDto plan}) async {
     final planController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-    await planController.savePlan(planDto: plan);
+    final createdPlan = await planController.savePlan(planDto: plan);
+    return createdPlan;
+  }
+
+  void _saveTemplate({required BuildContext context, required RoutineTemplateDto template}) async {
+    final templateController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+    await templateController.saveTemplate(templateDto: template);
   }
 
   List<ExerciseLogDto> _createExerciseTemplates(List<String> exerciseIds, List<ExerciseDto> exercises) {

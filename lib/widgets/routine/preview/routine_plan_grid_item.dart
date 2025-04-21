@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 import '../../../colors.dart';
+import '../../../controllers/exercise_and_routine_controller.dart';
 import '../../../dtos/appsync/routine_plan_dto.dart';
 import '../../../utils/navigation_utils.dart';
 import '../../../utils/string_utils.dart';
@@ -17,7 +19,11 @@ class RoutinePlanGridItemWidget extends StatelessWidget {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final routineTemplates = plan.routineTemplates;
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+
+    final routineTemplates =
+    exerciseAndRoutineController.templates.where((template) => template.planId == plan.id).toList();
+
     final exerciseTemplates = routineTemplates.expand((routineTemplate) => routineTemplate.exerciseTemplates);
     return GestureDetector(
       onTap: () => navigateToRoutinePlanPreview(context: context, plan: plan),
