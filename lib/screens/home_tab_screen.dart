@@ -50,17 +50,14 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
           ]),
       backgroundColor: Colors.transparent,
       body: Container(
+        height: double.infinity,
         decoration: BoxDecoration(
           gradient: themeGradient(context: context),
         ),
         child: SafeArea(
-            minimum: const EdgeInsets.only(top: 10, right: 10, left: 10),
+            minimum: const EdgeInsets.all(10),
             bottom: false,
-            child: SingleChildScrollView(
-              child: Column(children: [
-                OverviewScreen(),
-              ]),
-            )),
+            child: OverviewScreen(),),
       ),
     );
   }

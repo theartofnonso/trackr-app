@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
@@ -23,7 +22,6 @@ import '../../strings/ai_prompts.dart';
 import '../../utils/date_utils.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/general_utils.dart';
-import '../../utils/navigation_utils.dart';
 import '../../utils/string_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
@@ -53,54 +51,49 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
       final children = plans.map((plan) => RoutinePlanGridItemWidget(plan: plan)).toList();
 
       return Scaffold(
-          floatingActionButton: FloatingActionButton(
-            heroTag: "fab_routines_screen",
-            onPressed: () => navigateToRoutineTemplateEditor(context: context),
-            child: const FaIcon(FontAwesomeIcons.plus, size: 28),
-          ),
           body: Container(
-            height: double.infinity,
-            decoration: BoxDecoration(
-              gradient: themeGradient(context: context),
-            ),
-            child: SafeArea(
-              minimum: const EdgeInsets.only(top: 10, right: 10, left: 10),
-              bottom: false,
-              child: Column(spacing: 16, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                GestureDetector(
-                  onTap: _runMessage,
-                  child: BackgroundInformationContainer(
-                    image: 'images/lace.jpg',
-                    containerColor: Colors.green.shade800,
-                    content: "Plans are workouts curated to guide you toward a fitness goal.",
-                    textStyle: GoogleFonts.ubuntu(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.white.withValues(alpha: 0.9),
-                    ),
-                    ctaContent: 'Get a personalised plan',
-                  ),
+        height: double.infinity,
+        decoration: BoxDecoration(
+          gradient: themeGradient(context: context),
+        ),
+        child: SafeArea(
+          minimum: const EdgeInsets.only(top: 10, right: 10, left: 10),
+          bottom: false,
+          child: Column(spacing: 16, crossAxisAlignment: CrossAxisAlignment.start, children: [
+            GestureDetector(
+              onTap: _runMessage,
+              child: BackgroundInformationContainer(
+                image: 'images/lace.jpg',
+                containerColor: Colors.green.shade800,
+                content: "Plans are workouts curated to guide you toward a fitness goal.",
+                textStyle: GoogleFonts.ubuntu(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.white.withValues(alpha: 0.9),
                 ),
-                plans.isNotEmpty
-                    ? Expanded(
-                        child: GridView.count(
-                            crossAxisCount: 2,
-                            childAspectRatio: 1,
-                            mainAxisSpacing: 10.0,
-                            crossAxisSpacing: 10.0,
-                            children: children),
-                      )
-                    : Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: const NoListEmptyState(
-                              message:
-                                  "It might feel quiet now, but tap the + button to create a workout or ask TRKR coach for help."),
-                        ),
-                      ),
-              ]),
+                ctaContent: 'Get a personalised plan',
+              ),
             ),
-          ));
+            plans.isNotEmpty
+                ? Expanded(
+                    child: GridView.count(
+                        crossAxisCount: 2,
+                        childAspectRatio: 1,
+                        mainAxisSpacing: 10.0,
+                        crossAxisSpacing: 10.0,
+                        children: children),
+                  )
+                : Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: const NoListEmptyState(
+                          message:
+                              "It might feel quiet now, but tap the + button to create a workout or ask TRKR coach for help."),
+                    ),
+                  ),
+          ]),
+        ),
+      ));
     });
   }
 
