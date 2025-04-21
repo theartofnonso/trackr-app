@@ -202,6 +202,7 @@ class _CalendarTitleHeader extends StatelessWidget {
               fontSize: 16,
             ),
           ),
+          const Spacer(),
           Icon(
             isExpanded ? Icons.expand_less : Icons.expand_more,
             color: isDarkMode ? Colors.white : Colors.black,
