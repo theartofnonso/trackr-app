@@ -20,7 +20,6 @@ class HomeTabScreen extends StatefulWidget {
 }
 
 class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProviderStateMixin {
-  late DateTimeRange _monthDateTimeRange;
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +41,6 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
             onPressed: () => navigateToSettings(context: context),
             icon: FaIcon(FontAwesomeIcons.gear, size: 20),
           ),
-          title: CalendarNavigator(onMonthChange: _onMonthChange),
           actions: [
             IconButton(
               onPressed: _navigateToNotificationHome,
@@ -62,7 +60,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
             bottom: false,
             child: SingleChildScrollView(
               child: Column(children: [
-                OverviewScreen(dateTimeRange: _monthDateTimeRange),
+                OverviewScreen(),
               ]),
             )),
       ),
@@ -73,15 +71,4 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
     navigateWithSlideTransition(context: context, child: OnboardingChecklistNotificationsScreenScreen());
   }
 
-  void _onMonthChange(DateTimeRange range) {
-    setState(() {
-      _monthDateTimeRange = range;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _monthDateTimeRange = thisMonthDateRange();
-  }
 }

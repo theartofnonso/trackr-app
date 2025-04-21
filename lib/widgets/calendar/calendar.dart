@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
@@ -13,131 +14,236 @@ class _DateViewModel {
   final bool hasRoutineLog;
 
   _DateViewModel({required this.dateTime, required this.selectedDateTime, this.hasRoutineLog = false});
-
-  @override
-  String toString() {
-    return '_DateViewModel{dateTime: $dateTime, selectedDateTime: $selectedDateTime, hasLog: $hasRoutineLog}';
-  }
 }
 
+const int _kWeekOrigin = 1000; // middle of the pager
+const int _kMonthOrigin = 1000;
+
 class Calendar extends StatefulWidget {
+  const Calendar({
+    super.key,
+    this.onSelectDate,
+    required this.dateTime,
+    this.forceDarkMode = false,
+  });
+
   final void Function(DateTime dateTime)? onSelectDate;
   final DateTime dateTime;
   final bool forceDarkMode;
-
-  const Calendar({super.key, this.onSelectDate, required this.dateTime, this.forceDarkMode = false});
 
   @override
   State<Calendar> createState() => _CalendarState();
 }
 
-class _CalendarState extends State<Calendar> {
-  DateTime _currentDate = DateTime.now();
+class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin {
+  late DateTime _selected;
+  late DateTime _focused;
+  late final PageController _weekCtl;
+  late final PageController _monthCtl;
+  bool _expanded = false;
 
-  void _selectDate(DateTime dateTime) {
-    final onSelectDate = widget.onSelectDate;
-    if (onSelectDate != null) {
-      onSelectDate(dateTime);
-    }
-    setState(() {
-      _currentDate = dateTime;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _selected = widget.dateTime.withoutTime();
+    _focused = _selected;
+    _weekCtl = PageController(initialPage: _kWeekOrigin);
+    _monthCtl = PageController(initialPage: _kMonthOrigin);
   }
 
-  List<_DateViewModel?> _generateDates() {
-    final startDate = widget.dateTime;
+  // ───────────────────────────  Helpers  ────────────────────────────
 
-    int year = startDate.year;
-    int month = startDate.month;
-    int daysInMonth = DateTime(year, month + 1, 0).day;
+  DateTime _mondayOf(DateTime d) => d.subtract(Duration(days: d.weekday - 1));
 
-    DateTime firstDayOfMonth = DateTime(year, month, 1);
-    DateTime lastDayOfMonth = DateTime(year, month + 1, 0);
+  DateTime _weekByIndex(int pageIndex) =>
+      _mondayOf(widget.dateTime).add(Duration(days: (pageIndex - _kWeekOrigin) * 7));
 
-    List<_DateViewModel?> datesInMonths = [];
+  DateTime _monthByIndex(int pageIndex) =>
+      DateTime(widget.dateTime.year, widget.dateTime.month + (pageIndex - _kMonthOrigin), 1);
 
-    // Add padding to start of month
-    final isFirstDayNotMonday = firstDayOfMonth.weekday > 1;
-    if (isFirstDayNotMonday) {
-      final precedingDays = firstDayOfMonth.weekday - 1;
-      final emptyDated = List.filled(precedingDays, null);
-      datesInMonths.addAll(emptyDated);
-    }
-
-    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-
-    final monthlyRoutineLogs = (routineLogController.logs
-            .where((log) => log.createdAt.isBetweenInclusive(from: firstDayOfMonth, to: lastDayOfMonth)))
-        .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day));
-
-    // Add remainder dates
-    for (int day = 1; day <= daysInMonth; day++) {
-      final date = DateTime(year, month, day);
-      final hasRoutineLog = monthlyRoutineLogs.contains(date);
-      datesInMonths.add(
-          _DateViewModel(dateTime: date, selectedDateTime: _currentDate.withoutTime(), hasRoutineLog: hasRoutineLog));
-    }
-
-    // Add padding to end of month
-    final isLastDayNotSunday = lastDayOfMonth.weekday < 7;
-    if (isLastDayNotSunday) {
-      final succeedingDays = 7 - lastDayOfMonth.weekday;
-      final emptyDated = List.filled(succeedingDays, null);
-      datesInMonths.addAll(emptyDated);
-    }
-
-    return datesInMonths;
+  void _onDateTap(DateTime d) {
+    setState(() => _selected = d);
+    widget.onSelectDate?.call(d);
   }
+
+  void _toggleView() => setState(() => _expanded = !_expanded);
+
+  // ───────────────────────────  Build  ──────────────────────────────
 
   @override
   Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark || widget.forceDarkMode;
-
-    final dates = _generateDates();
+    final isDark = widget.forceDarkMode || MediaQuery.platformBrightnessOf(context) == Brightness.dark;
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      key: calendarKey,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: _CalendarHeader(
-            isDarkMode: isDarkMode,
+        _CalendarTitleHeader(
+          date: _focused,
+          isExpanded: _expanded,
+          onToggle: _toggleView,
+          isDarkMode: isDark,
+        ),
+        const SizedBox(height: 10),
+        const _CalendarHeader(),
+        AnimatedSize(
+          duration: const Duration(milliseconds: 250),
+          alignment: Alignment.topCenter,
+          child: SizedBox(
+            height: _expanded ? 280 : 60, // tweak month/week heights
+            child: _expanded ? _buildMonthPager(isDark) : _buildWeekPager(isDark),
           ),
         ),
-        _Month(dates: dates, selectedDateTime: _currentDate.withoutTime(), onTap: _selectDate, isDarkMode: isDarkMode),
       ],
+    );
+  }
+
+  // Week pager  ──────────────────────────────────────────────────────
+
+  Widget _buildWeekPager(bool isDark) {
+    return PageView.builder(
+      controller: _weekCtl,
+      onPageChanged: (page) => setState(() => _focused = _weekByIndex(page)),
+      itemBuilder: (_, page) {
+        final monday = _weekByIndex(page);
+        final days = List.generate(7, (i) => monday.add(Duration(days: i)));
+        final logs = context.read<ExerciseAndRoutineController>().logs;
+
+        return GridView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 7,
+            mainAxisSpacing: 4,
+            crossAxisSpacing: 4,
+            childAspectRatio: 1,
+          ),
+          itemCount: 7,
+          itemBuilder: (_, i) {
+            final d = days[i];
+            final has = logs.any((l) => l.createdAt.isSameDayMonthYear(d));
+            return _Day(
+              dateTime: d,
+              selected: d.isSameDayMonthYear(_selected),
+              currentDate: d.isSameDayMonthYear(DateTime.now()),
+              hasRoutineLog: has,
+              onTap: _onDateTap,
+              isDarkMode: isDark,
+            );
+          },
+        );
+      },
+    );
+  }
+
+  // Month pager  ─────────────────────────────────────────────────────
+
+  Widget _buildMonthPager(bool isDark) {
+    return PageView.builder(
+      controller: _monthCtl,
+      onPageChanged: (page) => setState(() => _focused = _monthByIndex(page)),
+      itemBuilder: (_, page) {
+        final monthStart = _monthByIndex(page);
+        final grid = _generateMonthDates(monthStart);
+        return _Month(
+          dates: grid,
+          selectedDateTime: _selected,
+          onTap: _onDateTap,
+          isDarkMode: isDark,
+        );
+      },
+    );
+  }
+
+  // Utilities to build month grid  ───────────────────────────────────
+
+  List<_DateViewModel?> _generateMonthDates(DateTime monthStart) {
+    final first = DateTime(monthStart.year, monthStart.month, 1);
+    final last = DateTime(monthStart.year, monthStart.month + 1, 0);
+    final logs = context
+        .read<ExerciseAndRoutineController>()
+        .logs
+        .where((l) => l.createdAt.isBetweenInclusive(from: first, to: last));
+
+    final List<_DateViewModel?> out = [];
+    for (int i = 1; i < first.weekday; i++) {
+      out.add(null);
+    }
+    for (int d = 1; d <= last.day; d++) {
+      final date = DateTime(monthStart.year, monthStart.month, d);
+      final has = logs.any((l) => l.createdAt.isSameDayMonthYear(date));
+      out.add(_DateViewModel(dateTime: date, selectedDateTime: _selected, hasRoutineLog: has));
+    }
+    while (out.length % 7 != 0) {
+      out.add(null);
+    }
+    return out;
+  }
+}
+
+class _CalendarTitleHeader extends StatelessWidget {
+  final DateTime date;
+  final bool isExpanded;
+  final VoidCallback onToggle;
+  final bool isDarkMode;
+
+  const _CalendarTitleHeader({
+    required this.date,
+    required this.isExpanded,
+    required this.onToggle,
+    required this.isDarkMode,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onToggle,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Text(
+            DateFormat('MMMM yyyy').format(date),
+            style: GoogleFonts.ubuntu(
+              color: isDarkMode ? Colors.white : Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
+          Icon(
+            isExpanded ? Icons.expand_less : Icons.expand_more,
+            color: isDarkMode ? Colors.white : Colors.black,
+          ),
+        ],
+      ),
     );
   }
 }
 
 class _CalendarHeader extends StatelessWidget {
-  final bool isDarkMode;
-
-  const _CalendarHeader({required this.isDarkMode});
+  const _CalendarHeader();
 
   @override
   Widget build(BuildContext context) {
-    final List<String> daysOfWeek = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
 
     return SizedBox(
-        height: 25,
-        child: GridView.builder(
-          physics: const NeverScrollableScrollPhysics(), // to disable GridView's scrolling
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 7,
-            childAspectRatio: 1, // for square shape
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-          ),
-          itemCount: daysOfWeek.length, // Just an example to vary the number of squares
-          itemBuilder: (context, index) {
-            return Text(daysOfWeek[index],
-                style:
-                    Theme.of(context).textTheme.bodyMedium?.copyWith(color: isDarkMode ? Colors.white : Colors.black),
-                textAlign: TextAlign.center);
-          },
-        ));
+      height: 25,
+      child: GridView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 7,
+          childAspectRatio: 1,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+        ),
+        itemCount: 7,
+        itemBuilder: (_, index) => Text(
+          ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][index],
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: isDarkMode ? Colors.white70 : Colors.black54),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
   }
 }
 
@@ -151,36 +257,25 @@ class _Month extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final datesWidgets = dates.map((date) {
-      if (date == null) {
-        return const SizedBox();
-      } else {
-        return _Day(
-          dateTime: date.dateTime,
-          onTap: onTap,
-          selected: date.dateTime.isSameDayMonthYear(selectedDateTime),
-          currentDate: date.dateTime.isSameDayMonthAndYear(DateTime.now()),
-          hasRoutineLog: date.hasRoutineLog,
-          isDarkMode: isDarkMode,
-        );
-      }
-    }).toList();
-
     return GridView.builder(
-      shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      // to disable GridView's scrolling
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 7,
-        childAspectRatio: 1, // for square shape
+        childAspectRatio: 1,
         crossAxisSpacing: 4.0,
         mainAxisSpacing: 4.0,
       ),
-      itemCount: datesWidgets.length,
-      // Just an example to vary the number of squares
-      itemBuilder: (context, index) {
-        return datesWidgets[index];
-      },
+      itemCount: dates.length,
+      itemBuilder: (_, index) => dates[index] == null
+          ? const SizedBox()
+          : _Day(
+              dateTime: dates[index]!.dateTime,
+              selected: dates[index]!.dateTime.isSameDayMonthYear(selectedDateTime),
+              currentDate: dates[index]!.dateTime.isSameDayMonthAndYear(DateTime.now()),
+              hasRoutineLog: dates[index]!.hasRoutineLog,
+              onTap: onTap,
+              isDarkMode: isDarkMode,
+            ),
     );
   }
 }
@@ -193,34 +288,25 @@ class _Day extends StatelessWidget {
   final void Function(DateTime dateTime) onTap;
   final bool isDarkMode;
 
-  const _Day(
-      {required this.dateTime,
-      required this.selected,
-      required this.currentDate,
-      required this.onTap,
-      this.hasRoutineLog = false,
-      required this.isDarkMode});
+  const _Day({
+    required this.dateTime,
+    required this.selected,
+    required this.currentDate,
+    required this.onTap,
+    this.hasRoutineLog = false,
+    required this.isDarkMode,
+  });
 
-  Color _getBackgroundColor({required bool isDarkMode}) {
-    if (hasRoutineLog) {
-      return isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen;
-    }
-    return isDarkMode ? sapphireDark80.withValues(alpha: 0.5) : Colors.grey.shade200;
-  }
+  Color _getBackgroundColor() => hasRoutineLog
+      ? (isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen)
+      : (isDarkMode ? sapphireDark80.withValues(alpha: 0.5) : Colors.grey.shade200);
 
-  Color _getTextColor({required bool isDarkMode}) {
-    if (hasRoutineLog) {
-      return isDarkMode ? vibrantGreen : Colors.black;
-    }
-    return isDarkMode ? Colors.white : Colors.black;
-  }
+  Color _getTextColor() =>
+      hasRoutineLog ? (isDarkMode ? vibrantGreen : Colors.black) : (isDarkMode ? Colors.white : Colors.black);
 
   Border? _dateBorder() {
-    if (selected) {
-      return Border.all(color: Colors.blueGrey, width: 2.0);
-    } else if (currentDate) {
-      return Border.all(color: Colors.grey, width: 2.0);
-    }
+    if (selected) return Border.all(color: Colors.blueGrey, width: 2);
+    if (currentDate) return Border.all(color: Colors.grey, width: 2);
     return null;
   }
 
@@ -230,21 +316,17 @@ class _Day extends StatelessWidget {
       onTap: () => onTap(dateTime),
       child: Container(
         padding: selected ? const EdgeInsets.all(2) : null,
-        decoration: BoxDecoration(
-          border: _dateBorder(),
-          borderRadius: BorderRadius.circular(2),
-        ),
+        decoration: BoxDecoration(border: _dateBorder(), borderRadius: BorderRadius.circular(2)),
         child: Container(
-            margin: const EdgeInsets.all(2),
-            decoration: BoxDecoration(
-              color: _getBackgroundColor(isDarkMode: isDarkMode),
-              borderRadius: BorderRadius.circular(2),
+          margin: const EdgeInsets.all(2),
+          decoration: BoxDecoration(color: _getBackgroundColor(), borderRadius: BorderRadius.circular(2)),
+          child: Center(
+            child: Text(
+              "${dateTime.day}",
+              style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.bold, color: _getTextColor()),
             ),
-            child: Center(
-              child: Text("${dateTime.day}",
-                  style: GoogleFonts.ubuntu(
-                      fontSize: 16, fontWeight: FontWeight.bold, color: _getTextColor(isDarkMode: isDarkMode))),
-            )),
+          ),
+        ),
       ),
     );
   }
