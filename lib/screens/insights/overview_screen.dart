@@ -29,7 +29,7 @@ import '../../widgets/monthly_insights/log_streak_chart.dart';
 import '../../widgets/monthly_insights/volume_chart.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
 import '../AI/trkr_coach_chat_screen.dart';
-import '../templates/readiness_screen.dart';
+import '../routines/readiness_screen.dart';
 
 enum TrainingAndVolume {
   training,
@@ -144,7 +144,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
             crossAxisCellCount: 1,
             mainAxisCellCount: 1,
             child: GestureDetector(
-              onTap: () => navigateToRoutineHomeTemplates(context: context),
+              onTap: () => navigateToRoutineHome(context: context),
               child: _TemplatesTile(),
             ),
           ),

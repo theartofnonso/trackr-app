@@ -14,7 +14,7 @@ import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/daily_readiness.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../enums/routine_editor_type_enums.dart';
-import '../screens/templates/readiness_screen.dart';
+import '../screens/routines/readiness_screen.dart';
 import '../shared_prefs.dart';
 import 'data_trend_utils.dart';
 import 'navigation_utils.dart';

@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tracker_app/screens/templates/routine_plans.dart';
-import 'package:tracker_app/screens/templates/routine_templates_screen.dart';
+import 'package:tracker_app/screens/routines/routine_plans_screen.dart';
+import 'package:tracker_app/screens/routines/routine_templates_screen.dart';
 
-class RoutineTemplatesHomeScreen extends StatefulWidget {
+class RoutinesHomeScreen extends StatefulWidget {
 
-  static const routeName = '/routine_templates_home_screen';
+  static const routeName = '/routines_home_screen';
 
-  const RoutineTemplatesHomeScreen({super.key});
+  const RoutinesHomeScreen({super.key});
 
   @override
-  State<RoutineTemplatesHomeScreen> createState() => _RoutineTemplatesHomeScreenState();
+  State<RoutinesHomeScreen> createState() => _RoutinesHomeScreenState();
 }
 
-class _RoutineTemplatesHomeScreenState extends State<RoutineTemplatesHomeScreen> with SingleTickerProviderStateMixin {
+class _RoutinesHomeScreenState extends State<RoutinesHomeScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -40,7 +40,7 @@ class _RoutineTemplatesHomeScreenState extends State<RoutineTemplatesHomeScreen>
                         child: Text("Templates".toUpperCase(),
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600))),
                     Tab(
-                        child: Text("Pathways".toUpperCase(),
+                        child: Text("Plans".toUpperCase(),
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600))),
                   ],
                 ),

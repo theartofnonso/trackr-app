@@ -11,6 +11,7 @@ import 'package:tracker_app/screens/preferences/user_profile_screen.dart';
 
 import '../dtos/appsync/exercise_dto.dart';
 import '../dtos/appsync/routine_log_dto.dart';
+import '../dtos/appsync/routine_plan_dto.dart';
 import '../dtos/appsync/routine_template_dto.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../dtos/viewmodels/routine_template_arguments.dart';
@@ -19,10 +20,9 @@ import '../screens/editors/routine_log_editor_screen.dart';
 import '../screens/editors/routine_template_editor_screen.dart';
 import '../screens/editors/user_editor_screen.dart';
 import '../screens/logs/routine_log_screen.dart';
-import '../screens/logs/routine_logs_screen.dart';
-import '../screens/templates/routine_template_screen.dart';
-import '../screens/templates/routine_templates_home.dart';
-import '../screens/templates/routine_templates_screen.dart';
+import '../screens/routines/routine_plan.dart';
+import '../screens/routines/routine_template_screen.dart';
+import '../screens/routines/routines_home.dart';
 
 Future<RoutineUserDto?> navigateToUserEditor(
     {required BuildContext context, RoutineUserDto? user}) async {
@@ -70,6 +70,10 @@ void navigateToRoutineTemplatePreview({required BuildContext context, required R
   context.push(RoutineTemplateScreen.routeName, extra: template);
 }
 
+void navigateToRoutinePlanPreview({required BuildContext context, required RoutinePlanDto plan}) {
+  context.push(RoutinePlanScreen.routeName, extra: plan);
+}
+
 void navigateToRoutineLogPreview({required BuildContext context, required RoutineLogDto log, bool isEditable = true}) {
   context.push(RoutineLogScreen.routeName, extra: {"log": log, "showSummary": false, "isEditable": isEditable});
 }
@@ -82,16 +86,8 @@ void navigateToShareableScreen({required BuildContext context, required RoutineL
   context.push(RoutineLogSummaryScreen.routeName, extra: log);
 }
 
-void navigateToRoutineLogs({required BuildContext context, required DateTime dateTime}) {
-  context.push(RoutineLogsScreen.routeName, extra: dateTime);
-}
-
-void navigateToRoutineTemplates({required BuildContext context}) {
-  context.push(RoutineTemplatesScreen.routeName);
-}
-
-void navigateToRoutineHomeTemplates({required BuildContext context}) {
-  context.push(RoutineTemplatesHomeScreen.routeName);
+void navigateToRoutineHome({required BuildContext context}) {
+  context.push(RoutinesHomeScreen.routeName);
 }
 
 Future<void> navigateToSettings({required BuildContext context}) async {

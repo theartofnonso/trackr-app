@@ -40,9 +40,10 @@ import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/screens/onboarding/onboarding_intro_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/preferences/user_profile_screen.dart';
-import 'package:tracker_app/screens/templates/readiness_screen.dart';
-import 'package:tracker_app/screens/templates/routine_template_screen.dart';
-import 'package:tracker_app/screens/templates/routine_templates_home.dart';
+import 'package:tracker_app/screens/routines/readiness_screen.dart';
+import 'package:tracker_app/screens/routines/routine_plan.dart';
+import 'package:tracker_app/screens/routines/routine_template_screen.dart';
+import 'package:tracker_app/screens/routines/routines_home.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/date_utils.dart';
 import 'package:tracker_app/utils/theme/theme.dart';
@@ -50,6 +51,7 @@ import 'package:tracker_app/utils/theme/theme.dart';
 import 'amplifyconfiguration.dart';
 import 'controllers/routine_user_controller.dart';
 import 'dtos/appsync/exercise_dto.dart';
+import 'dtos/appsync/routine_plan_dto.dart';
 import 'dtos/open_ai_response_schema_dtos/exercise_performance_report.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
 import 'dtos/viewmodels/routine_template_arguments.dart';
@@ -228,16 +230,23 @@ final _router = GoRouter(
       },
     ),
     GoRoute(
-      path: RoutineTemplatesHomeScreen.routeName,
+      path: RoutinesHomeScreen.routeName,
       builder: (context, state) {
-        return RoutineTemplatesHomeScreen();
+        return RoutinesHomeScreen();
       },
     ),
     GoRoute(
       path: RoutineTemplateScreen.routeName,
       builder: (context, state) {
         final template = state.extra as RoutineTemplateDto?;
-        return RoutineTemplateScreen(id: template?.id ?? "", templateDto: template,);
+        return RoutineTemplateScreen(id: template?.id ?? "");
+      },
+    ),
+    GoRoute(
+      path: RoutinePlanScreen.routeName,
+      builder: (context, state) {
+        final plan = state.extra as RoutinePlanDto?;
+        return RoutinePlanScreen(id: plan?.id ?? "");
       },
     ),
     GoRoute(

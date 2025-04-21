@@ -3,13 +3,11 @@ import 'dart:convert';
 import 'package:tracker_app/dtos/appsync/routine_template_dto.dart';
 
 import '../../models/RoutinePlan.dart';
-import '../../models/RoutineTemplate.dart';
 
 class RoutinePlanDto {
   final String id;
   final String name;
   final String notes;
-  final int length;
   final List<RoutineTemplateDto> routineTemplates;
   final String owner;
   final DateTime createdAt;
@@ -20,7 +18,6 @@ class RoutinePlanDto {
     required this.name,
     required this.routineTemplates,
     required this.notes,
-    required this.length,
     required this.createdAt,
     required this.updatedAt,
     required this.owner,
@@ -31,7 +28,6 @@ class RoutinePlanDto {
       "id": id,
       'name': name,
       'notes': notes,
-      'length': length,
       'templates': routineTemplates.map((exercise) => exercise.toJson()).toList(),
     };
   }
@@ -44,7 +40,6 @@ class RoutinePlanDto {
     final json = jsonDecode(plan.data);
     final name = json["name"] ?? "";
     final notes = json["notes"] ?? "";
-    final length = json["length"] ?? "";
     final routineTemplatesInJson = json["templates"] as List<dynamic>;
     List<RoutineTemplateDto> routineTemplates = routineTemplatesInJson.map((json) {
       return RoutineTemplateDto.fromDto(plan: plan, json: json,);
@@ -55,7 +50,6 @@ class RoutinePlanDto {
       name: name,
       routineTemplates: routineTemplates,
       notes: notes,
-      length: length,
       owner: plan.owner ?? "",
       createdAt: plan.createdAt.getDateTimeInUtc(),
       updatedAt: plan.updatedAt.getDateTimeInUtc(),
@@ -66,7 +60,6 @@ class RoutinePlanDto {
     String? id,
     String? name,
     String? notes,
-    int? length,
     List<RoutineTemplateDto>? routineTemplates,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -76,7 +69,6 @@ class RoutinePlanDto {
       id: id ?? this.id,
       name: name ?? this.name,
       notes: notes ?? this.notes,
-      length: length ?? this.length,
       // Deep copy each ExerciseLogDto.
       routineTemplates: routineTemplates != null
           ? routineTemplates.map((e) => e.copyWith()).toList()
@@ -89,6 +81,6 @@ class RoutinePlanDto {
 
   @override
   String toString() {
-    return 'RoutinePlanDto{id: $id, name: $name, notes: $notes, length: $length, routineTemplates: $routineTemplates, owner: $owner, createdAt: $createdAt, updatedAt: $updatedAt}';
+    return 'RoutinePlanDto{id: $id, name: $name, notes: $notes, routineTemplates: $routineTemplates, owner: $owner, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
 }

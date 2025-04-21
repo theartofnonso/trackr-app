@@ -11,7 +11,7 @@ import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
-import 'package:tracker_app/screens/templates/readiness_screen.dart';
+import 'package:tracker_app/screens/routines/readiness_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import '../../colors.dart';
@@ -36,6 +36,7 @@ import '../../utils/routine_utils.dart';
 import '../../utils/string_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/chart/line_chart_widget.dart';
+import '../../widgets/chip_one.dart';
 import '../../widgets/empty_states/not_found.dart';
 import '../../widgets/information_containers/information_container.dart';
 import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
@@ -56,9 +57,8 @@ class RoutineTemplateScreen extends StatefulWidget {
   static const routeName = '/routine_template_screen';
 
   final String id;
-  final RoutineTemplateDto? templateDto;
 
-  const RoutineTemplateScreen({super.key, required this.id, this.templateDto});
+  const RoutineTemplateScreen({super.key, required this.id});
 
   @override
   State<RoutineTemplateScreen> createState() => _RoutineTemplateScreenState();
@@ -276,8 +276,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
             icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
             onPressed: context.pop,
           ),
-          centerTitle: true,
-          title: Text(template.name),
           actions: [
             template.owner == SharedPrefs().userId
                 ? MenuAnchor(
@@ -318,82 +316,44 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: Column(
                       spacing: 20,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Text(template.name,
+                            style: GoogleFonts.ubuntu(fontSize: 20, height: 1.5, fontWeight: FontWeight.w900)),
                         Column(
                           spacing: 12,
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
                               spacing: 10,
-                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Wrap(
-                                  crossAxisAlignment: WrapCrossAlignment.center,
-                                  children: [
-                                    Container(
-                                      width: 30,
-                                      height: 30,
-                                      padding: const EdgeInsets.all(6),
-                                      decoration: BoxDecoration(
-                                        color: vibrantGreen.withValues(alpha: 0.1),
-                                        borderRadius: BorderRadius.circular(3),
-                                      ),
-                                      child: Image.asset(
-                                        'icons/dumbbells.png',
-                                        fit: BoxFit.contain,
-                                        color: vibrantGreen, // Adjust the height as needed
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 6,
-                                    ),
-                                    Text(
-                                      "${template.exerciseTemplates.length} ${pluralize(word: "Exercise", count: template.exerciseTemplates.length)}",
-                                      style: Theme.of(context).textTheme.bodyMedium,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 2,
-                                    )
-                                  ],
-                                ),
-                                Wrap(
-                                  crossAxisAlignment: WrapCrossAlignment.center,
-                                  children: [
-                                    Container(
-                                      width: 30,
-                                      height: 30,
-                                      padding: const EdgeInsets.all(4),
-                                      decoration: BoxDecoration(
-                                        color: vibrantBlue.withValues(alpha: 0.1),
-                                        borderRadius: BorderRadius.circular(3),
-                                      ),
-                                      child: Center(
-                                        child: FaIcon(
-                                          FontAwesomeIcons.hashtag,
-                                          color: vibrantBlue,
-                                          size: 14,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 6,
-                                    ),
-                                    Text(
-                                      setsSummary,
-                                      style: Theme.of(context).textTheme.bodyMedium,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 2,
-                                    )
-                                  ],
-                                ),
+                                ChipOne(
+                                    label:
+                                        "${template.exerciseTemplates.length} ${pluralize(word: "Exercise", count: template.exerciseTemplates.length)}",
+                                    color: vibrantGreen,
+                                    child: Image.asset(
+                                      'icons/dumbbells.png',
+                                      fit: BoxFit.contain,
+                                      color: vibrantGreen, // Adjust the height as needed
+                                    )),
+                                ChipOne(
+                                    label: setsSummary,
+                                    color: vibrantBlue,
+                                    child: FaIcon(
+                                      FontAwesomeIcons.hashtag,
+                                      color: vibrantBlue,
+                                      size: 14,
+                                    )),
                               ],
                             ),
                             Text(
-                              '"${template.notes.isNotEmpty ? "${template.notes}." : "No notes"}"',
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                    fontStyle: FontStyle.italic,
-                                    fontSize: 12,
-                                  ),
+                              template.notes.isNotEmpty ? "${template.notes}." : "No notes",
+                              style: GoogleFonts.ubuntu(
+                                  fontSize: 14,
+                                  color: isDarkMode ? Colors.white70 : Colors.black,
+                                  height: 1.8,
+                                  fontWeight: FontWeight.w400),
                             )
                           ],
                         ),
@@ -587,7 +547,10 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   void _launchRoutineLogEditor({required List<MuscleGroup> muscleGroups}) async {
     final template = _template;
     if (template != null) {
-      final readiness = await navigateWithSlideTransition(context: context, child: ReadinessScreen(muscleGroups: muscleGroups)) as DailyReadiness? ?? DailyReadiness.empty();
+      final readiness =
+          await navigateWithSlideTransition(context: context, child: ReadinessScreen(muscleGroups: muscleGroups))
+                  as DailyReadiness? ??
+              DailyReadiness.empty();
       final fatigue = readiness.perceivedFatigue;
       final soreness = readiness.muscleSoreness;
       final sleep = readiness.sleepDuration;
@@ -641,7 +604,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   void _loadData() {
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-    _template = exerciseAndRoutineController.templateWhere(id: widget.id) ?? widget.templateDto;
+    _template = exerciseAndRoutineController.templateWhere(id: widget.id);
     if (_template == null) {
       _loading = true;
       getAPI(endpoint: "/routine-templates/${widget.id}").then((data) {

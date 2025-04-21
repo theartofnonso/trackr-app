@@ -5,11 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
-import 'package:tracker_app/openAI/open_ai_response_format.dart';
-import 'package:tracker_app/utils/string_utils.dart';
-import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/exercise_dto.dart';
@@ -21,16 +17,19 @@ import '../../dtos/open_ai_response_schema_dtos/new_routine_plan_dto.dart';
 import '../../dtos/open_ai_response_schema_dtos/tool_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
 import '../../openAI/open_ai.dart';
+import '../../openAI/open_ai_response_format.dart';
 import '../../shared_prefs.dart';
 import '../../strings/ai_prompts.dart';
 import '../../utils/date_utils.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/general_utils.dart';
+import '../../utils/navigation_utils.dart';
+import '../../utils/string_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
-import '../../widgets/calendar/calendar.dart';
+import '../../widgets/empty_states/no_list_empty_state.dart';
 import '../../widgets/information_containers/information_container_with_background_image.dart';
-import '../../widgets/routine/preview/routine_template_grid_item.dart';
+import '../../widgets/routine/preview/routine_plan_grid_item.dart';
 
 class RoutinePlansScreen extends StatefulWidget {
   static const routeName = '/routine_plans_screen';
@@ -48,131 +47,61 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
   Widget build(BuildContext context) {
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
+    return Consumer<ExerciseAndRoutineController>(builder: (_, provider, __) {
+      final plans = List<RoutinePlanDto>.from(provider.plans);
 
-    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+      final children = plans.map((plan) => RoutinePlanGridItemWidget(plan: plan)).toList();
 
-    final plans = exerciseAndRoutineController.plans;
-
-    final plan = plans[0];
-
-    final children = plan.routineTemplates
-        .mapIndexed(
-          (index, template) => RoutineTemplateGridItemWidget(
-              template: template.copyWith(
-                  notes:
-                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.")),
-        )
-        .toList();
-
-    final exercises = plan.routineTemplates.expand((routineTemplate) => routineTemplate.exerciseTemplates);
-
-    return Scaffold(
-        body: Container(
-      height: double.infinity,
-      decoration: BoxDecoration(
-        gradient: themeGradient(context: context),
-      ),
-      child: SafeArea(
-        minimum: const EdgeInsets.only(top: 10, right: 10, left: 10),
-        bottom: false,
-        child: SingleChildScrollView(
-          child: Column(spacing: 16, crossAxisAlignment: CrossAxisAlignment.start, children: [
-            GestureDetector(
-              onTap: _runMessage,
-              child: BackgroundInformationContainer(
-                image: 'images/lace.jpg',
-                containerColor: Colors.green.shade800,
-                content: "Pathways are journeys designed to guide you toward a fitness goal.",
-                textStyle: GoogleFonts.ubuntu(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.white.withValues(alpha: 0.9),
-                ),
-                ctaContent: 'Generate training pathways',
-              ),
+      return Scaffold(
+          floatingActionButton: FloatingActionButton(
+            heroTag: "fab_routines_screen",
+            onPressed: () => navigateToRoutineTemplateEditor(context: context),
+            child: const FaIcon(FontAwesomeIcons.plus, size: 28),
+          ),
+          body: Container(
+            height: double.infinity,
+            decoration: BoxDecoration(
+              gradient: themeGradient(context: context),
             ),
-            Text(plan.name,
-                style: GoogleFonts.ubuntu(fontSize: 20, height: 1.5, fontWeight: FontWeight.w900)),
-            SingleChildScrollView(
-              child: Row(spacing: 12, children: [
-                _Chip(
-                    label: '${plan.length} ${pluralize(word: "Week", count: plan.length)}',
-                    color: Colors.yellow,
-                    child: FaIcon(
-                      FontAwesomeIcons.calendarWeek,
-                      color: Colors.yellow,
-                      size: 14,
-                    )),
-                _Chip(
-                    label: '${plan.routineTemplates.length} ${pluralize(word: "Session", count: plan.routineTemplates.length)}',
-                    color: Colors.deepOrange,
-                    child: FaIcon(
-                      FontAwesomeIcons.calendarDay,
-                      color: Colors.deepOrange,
-                      size: 14,
-                    )),
-                _Chip(
-                  label: '${exercises.length} ${pluralize(word: "Exercise", count: exercises.length)}',
-                  color: vibrantGreen,
-                  child: Image.asset(
-                    'icons/dumbbells.png',
-                    fit: BoxFit.contain,
-                    height: 16,
-                    color: vibrantGreen, // Adjust the height as needed
+            child: SafeArea(
+              minimum: const EdgeInsets.only(top: 10, right: 10, left: 10),
+              bottom: false,
+              child: Column(spacing: 16, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                GestureDetector(
+                  onTap: _runMessage,
+                  child: BackgroundInformationContainer(
+                    image: 'images/lace.jpg',
+                    containerColor: Colors.green.shade800,
+                    content: "Pathways are journeys designed to guide you toward a fitness goal.",
+                    textStyle: GoogleFonts.ubuntu(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white.withValues(alpha: 0.9),
+                    ),
+                    ctaContent: 'Generate training pathways',
                   ),
-                )
+                ),
+                plans.isNotEmpty
+                    ? Expanded(
+                        child: GridView.count(
+                            crossAxisCount: 2,
+                            childAspectRatio: 1,
+                            mainAxisSpacing: 10.0,
+                            crossAxisSpacing: 10.0,
+                            children: children),
+                      )
+                    : Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: const NoListEmptyState(
+                              message:
+                                  "It might feel quiet now, but tap the + button to create a workout or ask TRKR coach for help."),
+                        ),
+                      ),
               ]),
             ),
-            Text(
-                plan.notes,
-                style: GoogleFonts.ubuntu(
-                    fontSize: 14,
-                    color: isDarkMode ? Colors.white70 : Colors.black,
-                    height: 1.8,
-                    fontWeight: FontWeight.w400)),
-            SingleChildScrollView(
-              child: Row(
-                spacing: 8,
-                children: [
-                  OpacityButtonWidget(
-                      label: "Week 1",
-                      trailing: FaIcon(
-                        FontAwesomeIcons.solidSquareCheck,
-                        size: 14,
-                      )),
-                  OpacityButtonWidget(
-                      label: "Week 2",
-                      trailing: FaIcon(
-                        FontAwesomeIcons.solidSquareCheck,
-                        size: 14,
-                      )),
-                  OpacityButtonWidget(
-                      label: "Week 3",
-                      trailing: FaIcon(
-                        FontAwesomeIcons.solidSquareCheck,
-                        size: 14,
-                      )),
-                ],
-              ),
-            ),
-            Calendar(
-              onSelectDate: (_) {},
-              dateTime: DateTime.now(),
-            ),
-            GridView.count(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                crossAxisCount: 1,
-                childAspectRatio: 2,
-                mainAxisSpacing: 10.0,
-                crossAxisSpacing: 10.0,
-                children: children),
-          ]),
-        ),
-      ),
-    ));
+          ));
+    });
   }
 
   void _showLoadingScreen() {
@@ -198,7 +127,6 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
   }
 
   Future<void> _runFunctionMessage() async {
-
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
     final dateRange = theLastYearDateTimeRange();
@@ -223,9 +151,13 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
     final previousDays = days.sublist(0, days.length - 1);
     final averageOfPrevious = (previousDays.reduce((a, b) => a + b) / previousDays.length).round();
 
-    final exercises = logs.expand((log) => log.exerciseLogs).map((exerciseLog) => "id: ${exerciseLog.exercise.id} name: ${exerciseLog.exercise.name}").toList();
+    final exercises = logs
+        .expand((log) => log.exerciseLogs)
+        .map((exerciseLog) => "id: ${exerciseLog.exercise.id} name: ${exerciseLog.exercise.name}")
+        .toList();
 
-    final userInstruction = "I need a workout plan. I typically train $averageOfPrevious ${pluralize(word: 'time', count: averageOfPrevious)} per week. The exercises I enjoy most include ${joinWithAnd(items: exercises)}";
+    final userInstruction =
+        "I need a workout plan. I typically train $averageOfPrevious ${pluralize(word: 'time', count: averageOfPrevious)} per week. The exercises I enjoy most include ${joinWithAnd(items: exercises)}";
 
     _showLoadingScreen();
 
@@ -251,7 +183,10 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
         ).exercises;
 
         await _recommendExercises(
-            tool: tool, systemInstruction: createRoutinePlanPrompt, userInstruction: userInstruction, exercises: exercises);
+            tool: tool,
+            systemInstruction: createRoutinePlanPrompt,
+            userInstruction: userInstruction,
+            exercises: exercises);
       }
     } catch (e) {
       _handleError();
@@ -322,13 +257,12 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
         name: newRoutinePlanDto.planName,
         routineTemplates: routineTemplates,
         notes: newRoutinePlanDto.planDescription,
-        length: newRoutinePlanDto.planDurationWeeks,
         owner: SharedPrefs().userId,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );
 
-      if(mounted) {
+      if (mounted) {
         _savePlan(context: context, plan: newPlan);
       }
 
@@ -359,41 +293,5 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
         })
         .whereType<ExerciseLogDto>()
         .toList();
-  }
-}
-
-class _Chip extends StatelessWidget {
-  final String label;
-  final Widget child;
-  final Color color;
-
-  const _Chip({required this.label, required this.child, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          width: 30,
-          height: 30,
-          padding: const EdgeInsets.all(4),
-          decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(3),
-          ),
-          child: Center(
-            child: child,
-          ),
-        ),
-        const SizedBox(
-          width: 6,
-        ),
-        Text(
-          label,
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-      ],
-    );
   }
 }

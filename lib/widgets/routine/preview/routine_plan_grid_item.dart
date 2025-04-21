@@ -3,24 +3,24 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../colors.dart';
-import '../../../dtos/appsync/routine_template_dto.dart';
+import '../../../dtos/appsync/routine_plan_dto.dart';
 import '../../../utils/navigation_utils.dart';
 import '../../../utils/string_utils.dart';
 
-class RoutineTemplateGridItemWidget extends StatelessWidget {
-  final RoutineTemplateDto template;
+class RoutinePlanGridItemWidget extends StatelessWidget {
+  final RoutinePlanDto plan;
 
-  const RoutineTemplateGridItemWidget({super.key, required this.template});
+  const RoutinePlanGridItemWidget({super.key, required this.plan});
 
   @override
   Widget build(BuildContext context) {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final exercises = template.exerciseTemplates;
-    final sets = template.exerciseTemplates.expand((exercise) => exercise.sets);
+    final routineTemplates = plan.routineTemplates;
+    final exerciseTemplates = routineTemplates.expand((routineTemplate) => routineTemplate.exerciseTemplates);
     return GestureDetector(
-      onTap: () => navigateToRoutineTemplatePreview(context: context, template: template),
+      onTap: () => navigateToRoutinePlanPreview(context: context, plan: plan),
       child: Container(
           width: double.infinity,
           padding: const EdgeInsets.all(16),
@@ -28,13 +28,12 @@ class RoutineTemplateGridItemWidget extends StatelessWidget {
               color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, borderRadius: BorderRadius.circular(5)),
           child: Column(spacing: 8, crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(
-              template.name,
+              plan.name,
               style: Theme.of(context).textTheme.titleMedium,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
             ),
-            Text(
-                template.notes,
+            Text(plan.notes,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 3,
                 style: GoogleFonts.ubuntu(
@@ -68,7 +67,7 @@ class RoutineTemplateGridItemWidget extends StatelessWidget {
                       width: 6,
                     ),
                     Text(
-                      "${exercises.length} ${pluralize(word: "Exercise", count: exercises.length)}",
+                      "${exerciseTemplates.length} ${pluralize(word: "Exercise", count: exerciseTemplates.length)}",
                       style: Theme.of(context).textTheme.bodyMedium,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
@@ -97,7 +96,7 @@ class RoutineTemplateGridItemWidget extends StatelessWidget {
                       width: 6,
                     ),
                     Text(
-                      "${sets.length} ${pluralize(word: "Set", count: sets.length)}",
+                      "${routineTemplates.length} ${pluralize(word: "Session", count: routineTemplates.length)}",
                       style: Theme.of(context).textTheme.bodyMedium,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,

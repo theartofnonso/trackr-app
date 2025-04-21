@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 
-import '../../models/RoutineTemplate.dart';
 import '../exercise_log_dto.dart';
 
 class RoutineTemplateDto {
