@@ -38,6 +38,8 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
   late final PageController _monthCtl;
   bool _expanded = false;
 
+  late int _currentMonthWeeks;
+
   @override
   void initState() {
     super.initState();
@@ -45,9 +47,18 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
     _focused = _selected;
     _weekCtl = PageController(initialPage: _kWeekOrigin);
     _monthCtl = PageController(initialPage: _kMonthOrigin);
+    _currentMonthWeeks = _calculateWeeksInMonth(_focused);
   }
 
   // ───────────────────────────  Helpers  ────────────────────────────
+
+  int _calculateWeeksInMonth(DateTime month) {
+    final firstDay = DateTime(month.year, month.month, 1);
+    final lastDay = DateTime(month.year, month.month + 1, 0);
+    final leadingNulls = firstDay.weekday - 1; // Monday-based week
+    final totalDays = leadingNulls + lastDay.day;
+    return (totalDays / 7).ceil();
+  }
 
   DateTime _mondayOf(DateTime d) => d.subtract(Duration(days: d.weekday - 1));
 
@@ -85,8 +96,8 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
           alignment: Alignment.topCenter,
           child: LayoutBuilder(
             builder: (context, constraints) {
-              final double rowHeight = 54.0; // estimated row height
-              final int rowCount = _expanded ? 6 : 1;
+              const double rowHeight = 54.0; // Adjust based on your item height + spacing
+              final int rowCount = _expanded ? _currentMonthWeeks : 1;
               final double height = rowHeight * rowCount;
 
               return SizedBox(
@@ -97,7 +108,7 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
               );
             },
           ),
-        ),
+        )
       ],
     );
   }
@@ -144,7 +155,13 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
   Widget _buildMonthPager(bool isDark) {
     return PageView.builder(
       controller: _monthCtl,
-      onPageChanged: (page) => setState(() => _focused = _monthByIndex(page)),
+      onPageChanged: (page) {
+        final newMonth = _monthByIndex(page);
+        setState(() {
+          _focused = newMonth;
+          _currentMonthWeeks = _calculateWeeksInMonth(newMonth);
+        });
+      },
       itemBuilder: (_, page) {
         final monthStart = _monthByIndex(page);
         final grid = _generateMonthDates(monthStart);
