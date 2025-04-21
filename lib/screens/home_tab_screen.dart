@@ -8,9 +8,7 @@ import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../controllers/exercise_and_routine_controller.dart';
 import '../controllers/routine_user_controller.dart';
-import '../utils/date_utils.dart';
 import '../utils/general_utils.dart';
-import '../widgets/calendar/calendar_navigator.dart';
 
 class HomeTabScreen extends StatefulWidget {
   const HomeTabScreen({super.key});
