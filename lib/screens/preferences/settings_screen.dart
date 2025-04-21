@@ -82,7 +82,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
+          icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
           onPressed: context.pop,
         ),
       ),
