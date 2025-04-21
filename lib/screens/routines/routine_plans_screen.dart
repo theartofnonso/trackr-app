@@ -72,13 +72,13 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
                   child: BackgroundInformationContainer(
                     image: 'images/lace.jpg',
                     containerColor: Colors.green.shade800,
-                    content: "Pathways are journeys designed to guide you toward a fitness goal.",
+                    content: "Plans are workouts curated to guide you toward a fitness goal.",
                     textStyle: GoogleFonts.ubuntu(
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
                       color: Colors.white.withValues(alpha: 0.9),
                     ),
-                    ctaContent: 'Generate training pathways',
+                    ctaContent: 'Get a personalised plan',
                   ),
                 ),
                 plans.isNotEmpty
