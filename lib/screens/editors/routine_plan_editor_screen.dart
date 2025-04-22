@@ -197,7 +197,6 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
                       Expanded(
                         child: GridView.count(
                             shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
                             crossAxisCount: 2,
                             childAspectRatio: 1,
                             mainAxisSpacing: 10.0,
