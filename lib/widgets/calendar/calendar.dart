@@ -74,7 +74,25 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
     widget.onSelectDate?.call(d);
   }
 
-  void _toggleView() => setState(() => _expanded = !_expanded);
+  void _toggleView() {
+    final wasExpanded = _expanded;
+    setState(() => _expanded = !_expanded);
+
+    if (wasExpanded) {
+      // Schedule this after the frame where we switch to week view
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        // Only jump if controller is attached
+        if (_weekCtl.hasClients) {
+          final currentMonday = _mondayOf(DateTime.now().withoutTime());
+          final initialMonday = _mondayOf(_anchor);
+          final deltaDays = currentMonday.difference(initialMonday).inDays;
+          final pageDelta = deltaDays ~/ 7;
+          final newPage = _kWeekOrigin + pageDelta;
+          _weekCtl.jumpToPage(newPage);
+        }
+      });
+    }
+  }
 
   // ───────────────────────────  Build  ──────────────────────────────
 
