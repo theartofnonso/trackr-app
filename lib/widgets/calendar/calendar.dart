@@ -15,7 +15,6 @@ class _DateViewModel {
   _DateViewModel({required this.dateTime, required this.selectedDateTime, this.hasRoutineLog = false});
 }
 
-const int _kWeekOrigin = 1000; // middle of the pager
 const int _kMonthOrigin = 1000;
 
 /// A plug‑and‑play calendar widget that shows the current week by default and toggles
@@ -34,7 +33,6 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
   late final DateTime _anchor; // today without the time component – used as the origin for paging maths
   late DateTime _selected;
   late DateTime _focused;
-  late final PageController _weekCtl;
   late final PageController _monthCtl;
   bool _expanded = false;
 
@@ -48,7 +46,6 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
     _anchor = DateTime.now().withoutTime();
     _selected = _anchor;
     _focused = _selected;
-    _weekCtl = PageController(initialPage: _kWeekOrigin);
     _monthCtl = PageController(initialPage: _kMonthOrigin);
     _currentMonthWeeks = _calculateWeeksInMonth(_focused);
   }
@@ -65,8 +62,6 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
 
   DateTime _mondayOf(DateTime d) => d.subtract(Duration(days: d.weekday - 1));
 
-  DateTime _weekByIndex(int pageIndex) => _mondayOf(_anchor).add(Duration(days: (pageIndex - _kWeekOrigin) * 7));
-
   DateTime _monthByIndex(int pageIndex) => DateTime(_anchor.year, _anchor.month + (pageIndex - _kMonthOrigin), 1);
 
   void _onDateTap(DateTime d) {
@@ -74,25 +69,12 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
     widget.onSelectDate?.call(d);
   }
 
-  void _toggleView() {
-    final wasExpanded = _expanded;
-    setState(() => _expanded = !_expanded);
-
-    if (wasExpanded) {
-      // Schedule this after the frame where we switch to week view
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        // Only jump if controller is attached
-        if (_weekCtl.hasClients) {
-          final currentMonday = _mondayOf(DateTime.now().withoutTime());
-          final initialMonday = _mondayOf(_anchor);
-          final deltaDays = currentMonday.difference(initialMonday).inDays;
-          final pageDelta = deltaDays ~/ 7;
-          final newPage = _kWeekOrigin + pageDelta;
-          _weekCtl.jumpToPage(newPage);
+  void _toggleView() => setState(() {
+        _expanded = !_expanded;
+        if (!_expanded) {
+          _focused = _anchor; // header shows the current month
         }
       });
-    }
-  }
 
   // ───────────────────────────  Build  ──────────────────────────────
 
@@ -121,7 +103,7 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
 
               return SizedBox(
                 height: height,
-                child: _expanded ? _buildMonthPager(isDark) : _buildWeekPager(isDark),
+                child: _expanded ? _buildMonthPager(isDark) : _buildWeekGrid(isDark),
               );
             },
           ),
@@ -132,37 +114,31 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
 
   // Week pager  ──────────────────────────────────────────────────────
 
-  Widget _buildWeekPager(bool isDark) {
-    return PageView.builder(
-      controller: _weekCtl,
-      physics: const NeverScrollableScrollPhysics(), // Disable scrolling
-      onPageChanged: (page) => setState(() => _focused = _weekByIndex(page)),
-      itemBuilder: (_, page) {
-        final monday = _weekByIndex(page);
-        final days = List.generate(7, (i) => monday.add(Duration(days: i)));
-        final logs = context.read<ExerciseAndRoutineController>().logs;
+// ─── ❸: new helper – a fixed grid for the current week ──────────────
+  Widget _buildWeekGrid(bool isDark) {
+    final monday = _mondayOf(_anchor); // always anchor‑week
+    final days = List.generate(7, (i) => monday.add(Duration(days: i)));
+    final logs = context.read<ExerciseAndRoutineController>().logs;
 
-        return GridView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 7,
-            mainAxisSpacing: 4,
-            crossAxisSpacing: 4,
-            childAspectRatio: 1,
-          ),
-          itemCount: 7,
-          itemBuilder: (_, i) {
-            final d = days[i];
-            final has = logs.any((l) => l.createdAt.isSameDayMonthYear(d));
-            return _Day(
-              dateTime: d,
-              selected: d.isSameDayMonthYear(_selected),
-              currentDate: d.isSameDayMonthYear(DateTime.now()),
-              hasRoutineLog: has,
-              onTap: _onDateTap,
-              isDarkMode: isDark,
-            );
-          },
+    return GridView.builder(
+      physics: const NeverScrollableScrollPhysics(), // <— not scrollable
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 7,
+        mainAxisSpacing: 4,
+        crossAxisSpacing: 4,
+        childAspectRatio: 1,
+      ),
+      itemCount: 7,
+      itemBuilder: (_, i) {
+        final d = days[i];
+        final has = logs.any((l) => l.createdAt.isSameDayMonthYear(d));
+        return _Day(
+          dateTime: d,
+          selected: d.isSameDayMonthYear(_selected),
+          currentDate: d.isSameDayMonthYear(DateTime.now()),
+          hasRoutineLog: has,
+          onTap: _onDateTap,
+          isDarkMode: isDark,
         );
       },
     );
@@ -308,13 +284,13 @@ class _Month extends StatelessWidget {
       itemBuilder: (_, index) => dates[index] == null
           ? const SizedBox()
           : _Day(
-        dateTime: dates[index]!.dateTime,
-        selected: dates[index]!.dateTime.isSameDayMonthYear(selectedDateTime),
-        currentDate: dates[index]!.dateTime.isSameDayMonthYear(DateTime.now()),
-        hasRoutineLog: dates[index]!.hasRoutineLog,
-        onTap: onTap,
-        isDarkMode: isDarkMode,
-      ),
+              dateTime: dates[index]!.dateTime,
+              selected: dates[index]!.dateTime.isSameDayMonthYear(selectedDateTime),
+              currentDate: dates[index]!.dateTime.isSameDayMonthYear(DateTime.now()),
+              hasRoutineLog: dates[index]!.hasRoutineLog,
+              onTap: onTap,
+              isDarkMode: isDarkMode,
+            ),
     );
   }
 }
