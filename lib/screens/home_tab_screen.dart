@@ -37,7 +37,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
       appBar: AppBar(
           leading: IconButton(
             onPressed: () => navigateToSettings(context: context),
-            icon: FaIcon(FontAwesomeIcons.gear, size: 20),
+            icon: FaIcon(FontAwesomeIcons.gear),
           ),
           actions: [
             IconButton(
@@ -45,7 +45,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
               icon: Badge(
                   smallSize: 8,
                   backgroundColor: hasPendingActions ? vibrantGreen : Colors.transparent,
-                  child: FaIcon(FontAwesomeIcons.solidBell, size: 20)),
+                  child: FaIcon(FontAwesomeIcons.solidBell)),
             )
           ]),
       backgroundColor: Colors.transparent,

@@ -143,7 +143,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
       canPop: false,
       child: Scaffold(
           appBar: AppBar(
-              leading: IconButton(icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28), onPressed: context.pop),
+              leading: IconButton(icon: const FaIcon(FontAwesomeIcons.arrowLeftLong), onPressed: context.pop),
               actions: [
                 IconButton(onPressed: () {}, icon: const FaIcon(FontAwesomeIcons.solidSquarePlus)),
                 if (routineTemplates.length > 1)

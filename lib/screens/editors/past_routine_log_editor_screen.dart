@@ -205,7 +205,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
       child: Scaffold(
           appBar: AppBar(
             leading: IconButton(
-                icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28), onPressed: _checkForUnsavedChanges),
+                icon: const FaIcon(FontAwesomeIcons.arrowLeftLong), onPressed: _checkForUnsavedChanges),
             actions: [
               IconButton(onPressed: _selectExercisesInLibrary, icon: const FaIcon(FontAwesomeIcons.solidSquarePlus)),
               if (exerciseLogs.length > 1)

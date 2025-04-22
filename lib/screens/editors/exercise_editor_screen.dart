@@ -60,7 +60,6 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
             leading: IconButton(
               icon: const FaIcon(
                 FontAwesomeIcons.squareXmark,
-                size: 28,
               ),
               onPressed: context.pop,
             ),
@@ -69,7 +68,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
             actions: [
               exercise != null
                   ? IconButton(
-                      icon: const FaIcon(FontAwesomeIcons.solidSquareCheck, size: 28),
+                      icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
                       onPressed: _updateExercise,
                     )
                   : const SizedBox.shrink(),

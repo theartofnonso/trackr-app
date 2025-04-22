@@ -258,7 +258,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         canPop: false,
         child: Scaffold(
             appBar: AppBar(
-              leading: IconButton(icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28), onPressed: _discardLog),
+              leading: IconButton(icon: const FaIcon(FontAwesomeIcons.arrowLeftLong), onPressed: _discardLog),
               title: Text(
                 log.name,
               ),
