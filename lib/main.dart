@@ -30,6 +30,7 @@ import 'package:tracker_app/screens/AI/routine_log_report_screen.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_log_editor_screen.dart';
+import 'package:tracker_app/screens/editors/routine_plan_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_template_editor_screen.dart';
 import 'package:tracker_app/screens/editors/user_editor_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_home_screen.dart';
@@ -54,6 +55,7 @@ import 'dtos/appsync/exercise_dto.dart';
 import 'dtos/appsync/routine_plan_dto.dart';
 import 'dtos/open_ai_response_schema_dtos/exercise_performance_report.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
+import 'dtos/viewmodels/routine_plan_arguments.dart';
 import 'dtos/viewmodels/routine_template_arguments.dart';
 import 'logger.dart';
 import 'models/ModelProvider.dart';
@@ -200,6 +202,13 @@ final _router = GoRouter(
       builder: (context, state) {
         final args = state.extra as RoutineTemplateArguments?;
         return RoutineTemplateEditorScreen(template: args?.template);
+      },
+    ),
+    GoRoute(
+      path: RoutinePlanEditorScreen.routeName,
+      builder: (context, state) {
+        final args = state.extra as RoutinePlanArguments?;
+        return RoutinePlanEditorScreen(plan: args?.plan);
       },
     ),
     GoRoute(

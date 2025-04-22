@@ -88,7 +88,7 @@ class _RoutinesHomeScreenState extends State<RoutinesHomeScreen> with SingleTick
               title: Text("Create new workout plan", style: Theme.of(context).textTheme.bodyLarge),
               onTap: () {
                 Navigator.of(context).pop();
-                navigateToRoutineTemplateEditor(context: context);
+                navigateToRoutinePlanEditor(context: context);
               },
             ),
           ]),

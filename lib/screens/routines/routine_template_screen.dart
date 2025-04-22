@@ -683,7 +683,10 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                 "Edit",
                 style: Theme.of(context).textTheme.bodyLarge
               ),
-              onTap: _navigateToRoutineTemplateEditor,
+              onTap: () {
+                Navigator.of(context).pop();
+                _navigateToRoutineTemplateEditor();
+              },
             ),
             ListTile(
               contentPadding: EdgeInsets.zero,
@@ -693,7 +696,9 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
               ),
               horizontalTitleGap: 6,
               title: Text("Copy", style: Theme.of(context).textTheme.bodyLarge),
-              onTap: () => _createTemplate(copy: true),
+              onTap: () {
+                Navigator.of(context).pop();
+                _createTemplate(copy: true);},
             ),
             ListTile(
               contentPadding: EdgeInsets.zero,
@@ -703,7 +708,10 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
               ),
               horizontalTitleGap: 6,
               title: Text("Share", style: Theme.of(context).textTheme.bodyLarge),
-              onTap: _showShareBottomSheet,
+              onTap: () {
+                Navigator.of(context).pop();
+                _showShareBottomSheet();
+              },
             ),
             planDto != null
                 ? ListTile(
@@ -716,6 +724,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                     horizontalTitleGap: 6,
                     title: Text("Remove from plan", style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.red)),
                     onTap: () {
+                      Navigator.of(context).pop();
                       showBottomSheetWithMultiActions(
                           context: context,
                           title: "Remove from plan?",
@@ -738,7 +747,10 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                     ),
                     horizontalTitleGap: 6,
                     title: Text("Add to plan", style: Theme.of(context).textTheme.bodyLarge),
-                    onTap: _showPlanPicker,
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      _showPlanPicker();
+                    },
                   ),
             ListTile(
               contentPadding: EdgeInsets.zero,
@@ -750,6 +762,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
               horizontalTitleGap: 6,
               title: Text("Delete", style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.red)),
               onTap: () {
+                Navigator.of(context).pop();
+
                 final template = _template;
 
                 if (template != null) {

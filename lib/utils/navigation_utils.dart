@@ -14,9 +14,11 @@ import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/appsync/routine_plan_dto.dart';
 import '../dtos/appsync/routine_template_dto.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
+import '../dtos/viewmodels/routine_plan_arguments.dart';
 import '../dtos/viewmodels/routine_template_arguments.dart';
 import '../screens/editors/past_routine_log_editor_screen.dart';
 import '../screens/editors/routine_log_editor_screen.dart';
+import '../screens/editors/routine_plan_editor_screen.dart';
 import '../screens/editors/routine_template_editor_screen.dart';
 import '../screens/editors/user_editor_screen.dart';
 import '../screens/logs/routine_log_screen.dart';
@@ -40,6 +42,12 @@ Future<RoutineTemplateDto?> navigateToRoutineTemplateEditor(
     {required BuildContext context, RoutineTemplateArguments? arguments}) async {
   final template = await context.push(RoutineTemplateEditorScreen.routeName, extra: arguments) as RoutineTemplateDto?;
   return template;
+}
+
+Future<RoutinePlanDto?> navigateToRoutinePlanEditor(
+    {required BuildContext context, RoutinePlanArguments? arguments}) async {
+  final plan = await context.push(RoutinePlanEditorScreen.routeName, extra: arguments) as RoutinePlanDto?;
+  return plan;
 }
 
 void navigateToPastRoutineLogEditor({required BuildContext context, required PastRoutineLogArguments arguments}) async {
