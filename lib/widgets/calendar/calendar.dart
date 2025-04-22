@@ -117,6 +117,7 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
   Widget _buildWeekPager(bool isDark) {
     return PageView.builder(
       controller: _weekCtl,
+      physics: const NeverScrollableScrollPhysics(), // Disable scrolling
       onPageChanged: (page) => setState(() => _focused = _weekByIndex(page)),
       itemBuilder: (_, page) {
         final monday = _weekByIndex(page);
