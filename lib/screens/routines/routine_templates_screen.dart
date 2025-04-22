@@ -38,13 +38,13 @@ class RoutineTemplatesScreen extends StatelessWidget {
               child: BackgroundInformationContainer(
                 image: 'images/lace.jpg',
                 containerColor: Colors.blue.shade900,
-                content: "A structured plan is essential for achieving your fitness goals.",
+                content: "Need a head start on what to train? We’ve got you covered.",
                 textStyle: GoogleFonts.ubuntu(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
                   color: Colors.white.withValues(alpha: 0.9),
                 ),
-                ctaContent: 'Describe a workout',
+                ctaContent: 'Describe your workout',
               ),
             ),
             templates.isNotEmpty

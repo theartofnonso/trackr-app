@@ -64,12 +64,12 @@ class UserProfileScreen extends StatelessWidget {
 
     final logs = exerciseAndRoutineController.whereLogsIsWithinRange(range: dateRange).toList();
 
-    final weeksInLastYear = generateWeeksInRange(range: dateRange).reversed.take(13).toList().reversed;
+    final weeksInLastQuarter = generateWeeksInRange(range: dateRange).reversed.take(13).toList().reversed;
 
     List<String> months = [];
     List<int> days = [];
     List<RoutineLogDto> logsByWeek = [];
-    for (final week in weeksInLastYear) {
+    for (final week in weeksInLastQuarter) {
       final startOfWeek = week.start;
       final endOfWeek = week.end;
       final logsForTheWeek = logs.where((log) => log.createdAt.isBetweenInclusive(from: startOfWeek, to: endOfWeek));

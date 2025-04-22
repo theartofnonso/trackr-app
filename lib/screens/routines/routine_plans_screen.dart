@@ -64,8 +64,9 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
               onTap: _runMessage,
               child: BackgroundInformationContainer(
                 image: 'images/lace.jpg',
+                height: 140,
                 containerColor: Colors.green.shade800,
-                content: "Plans are workouts curated to guide you toward a fitness goal.",
+                content: "We analyze your training history to recommend plans tailored to your style and progress.",
                 textStyle: GoogleFonts.ubuntu(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
@@ -88,7 +89,7 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: const NoListEmptyState(
                           message:
-                              "It might feel quiet now, but tap the + button to create a workout or ask TRKR coach for help."),
+                              "It might feel quiet now, but tap the + button to create a plan or ask TRKR coach for help."),
                     ),
                   ),
           ]),
@@ -126,31 +127,35 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
 
     final logs = exerciseAndRoutineController.whereLogsIsWithinRange(range: dateRange).toList();
 
-    final weeksInLastYear = generateWeeksInRange(range: dateRange).reversed.take(13).toList().reversed;
+    final weeksInLastQuarter = generateWeeksInRange(range: dateRange).reversed.take(13).toList().reversed;
 
-    List<String> months = [];
-    List<int> days = [];
-    List<RoutineLogDto> logsByWeek = [];
-    for (final week in weeksInLastYear) {
+    final stringBuffer = StringBuffer();
+
+    for (final week in weeksInLastQuarter) {
       final startOfWeek = week.start;
       final endOfWeek = week.end;
       final logsForTheWeek = logs.where((log) => log.createdAt.isBetweenInclusive(from: startOfWeek, to: endOfWeek));
-      final routineLogsByDay = groupBy(logsForTheWeek, (log) => log.createdAt.withoutTime().day);
-      days.add(routineLogsByDay.length);
-      months.add(startOfWeek.abbreviatedMonth());
-      logsByWeek.addAll(logsForTheWeek);
+
+      stringBuffer.writeln("For the week starting ${startOfWeek.withoutTime()} to ${endOfWeek.withoutTime()}");
+
+      stringBuffer.writeln();
+
+      for (final (index, log) in logsForTheWeek.indexed) {
+
+        stringBuffer.writeln("Session ${index + 1} (${log.name}):");
+
+        stringBuffer.writeln("I did with the following exercises:");
+
+        for (final exerciseLog in log.exerciseLogs) {
+          stringBuffer.writeln("${exerciseLog.exercise.name} [${exerciseLog.exercise.id}]");
+        }
+
+        stringBuffer.writeln();
+      }
+
     }
 
-    final previousDays = days.sublist(0, days.length - 1);
-    final averageOfPrevious = (previousDays.reduce((a, b) => a + b) / previousDays.length).round();
-
-    final exercises = logs
-        .expand((log) => log.exerciseLogs)
-        .map((exerciseLog) => "id: ${exerciseLog.exercise.id} name: ${exerciseLog.exercise.name}")
-        .toList();
-
-    final userInstruction =
-        "I need a workout plan. I typically train $averageOfPrevious ${pluralize(word: 'time', count: averageOfPrevious)} per week. The exercises I enjoy most include ${joinWithAnd(items: exercises)}";
+    final userInstruction = stringBuffer.toString();
 
     _showLoadingScreen();
 
@@ -189,7 +194,7 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
   void _handleError() {
     _hideLoadingScreen();
     _showSnackbar(
-      "Oops, I can only assist you with workouts.",
+      "Oops, I can only assist you with workout plans.",
       icon: TRKRCoachWidget(),
     );
   }

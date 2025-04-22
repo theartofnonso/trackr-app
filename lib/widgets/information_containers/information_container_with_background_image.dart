@@ -10,9 +10,10 @@ class BackgroundInformationContainer extends StatelessWidget {
   final TextStyle? textStyle;
   final String image;
   final String ctaContent;
+  final double? height;
 
   const BackgroundInformationContainer(
-      {super.key, required this.content, this.containerColor, this.textStyle, required this.image, required this.ctaContent});
+      {super.key, required this.content, this.containerColor, this.textStyle, required this.image, required this.ctaContent, this.height = 120});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class BackgroundInformationContainer extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(5),
       child: SizedBox(
-        height: 120,
+        height: height,
         child: Stack(children: [
           Image.asset(
             image,
