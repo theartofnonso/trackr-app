@@ -8,7 +8,6 @@ import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/exercise_dto.dart';
-import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/appsync/routine_plan_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/exercise_log_dto.dart';
@@ -22,7 +21,6 @@ import '../../strings/ai_prompts.dart';
 import '../../utils/date_utils.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/general_utils.dart';
-import '../../utils/string_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
@@ -64,9 +62,8 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
               onTap: _runMessage,
               child: BackgroundInformationContainer(
                 image: 'images/lace.jpg',
-                height: 140,
                 containerColor: Colors.green.shade800,
-                content: "We analyze your training history to recommend plans tailored to your style and progress.",
+                content: "We analyze your training history to recommend plans tailored to your style.",
                 textStyle: GoogleFonts.ubuntu(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
@@ -141,7 +138,6 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
       stringBuffer.writeln();
 
       for (final (index, log) in logsForTheWeek.indexed) {
-
         stringBuffer.writeln("Session ${index + 1} (${log.name}):");
 
         stringBuffer.writeln("I did with the following exercises:");
@@ -152,7 +148,6 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
 
         stringBuffer.writeln();
       }
-
     }
 
     final userInstruction = stringBuffer.toString();

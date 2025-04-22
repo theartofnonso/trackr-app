@@ -1,5 +1,5 @@
 enum OpenAIModel {
-  fourOne(name: "gpt-4o-mini");
+  fourOne(name: "gpt-4.1");
 
   final String name;
 

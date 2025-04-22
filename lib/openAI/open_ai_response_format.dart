@@ -30,10 +30,6 @@ const newRoutinePlanResponseFormat = {
           "type": "string",
           "description": "The name of the workout plan"
         },
-        "plan_duration_weeks": {
-          "type": "integer",
-          "description": "The number of weeks the plan will run for"
-        },
         "plan_description": {
           "type": "string",
           "description": "A brief description of the plan including its purpose and goals"
@@ -65,7 +61,7 @@ const newRoutinePlanResponseFormat = {
           }
         }
       },
-      "required": ["plan_name", "plan_duration_weeks", "plan_description", "workouts"],
+      "required": ["plan_name", "plan_description", "workouts"],
       "additionalProperties": false
     },
     "strict": true
