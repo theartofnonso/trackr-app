@@ -18,21 +18,20 @@ class _DateViewModel {
 const int _kWeekOrigin = 1000; // middle of the pager
 const int _kMonthOrigin = 1000;
 
+/// A plug‑and‑play calendar widget that shows the current week by default and toggles
+/// to a month grid on tap of the header. No external [DateTime] dependency required.
 class Calendar extends StatefulWidget {
-  const Calendar({
-    super.key,
-    this.onSelectDate,
-    required this.dateTime,
-  });
+  const Calendar({super.key, this.onSelectDate});
 
+  /// Fired whenever the user selects a day.
   final void Function(DateTime dateTime)? onSelectDate;
-  final DateTime dateTime;
 
   @override
   State<Calendar> createState() => _CalendarState();
 }
 
 class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin {
+  late final DateTime _anchor; // today without the time component – used as the origin for paging maths
   late DateTime _selected;
   late DateTime _focused;
   late final PageController _weekCtl;
@@ -41,10 +40,13 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
 
   late int _currentMonthWeeks;
 
+  // ───────────────────────────  Lifecycle  ────────────────────────────
+
   @override
   void initState() {
     super.initState();
-    _selected = widget.dateTime.withoutTime();
+    _anchor = DateTime.now().withoutTime();
+    _selected = _anchor;
     _focused = _selected;
     _weekCtl = PageController(initialPage: _kWeekOrigin);
     _monthCtl = PageController(initialPage: _kMonthOrigin);
@@ -56,18 +58,16 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
   int _calculateWeeksInMonth(DateTime month) {
     final firstDay = DateTime(month.year, month.month, 1);
     final lastDay = DateTime(month.year, month.month + 1, 0);
-    final leadingNulls = firstDay.weekday - 1; // Monday-based week
+    final leadingNulls = firstDay.weekday - 1; // Monday‑based week
     final totalDays = leadingNulls + lastDay.day;
     return (totalDays / 7).ceil();
   }
 
   DateTime _mondayOf(DateTime d) => d.subtract(Duration(days: d.weekday - 1));
 
-  DateTime _weekByIndex(int pageIndex) =>
-      _mondayOf(widget.dateTime).add(Duration(days: (pageIndex - _kWeekOrigin) * 7));
+  DateTime _weekByIndex(int pageIndex) => _mondayOf(_anchor).add(Duration(days: (pageIndex - _kWeekOrigin) * 7));
 
-  DateTime _monthByIndex(int pageIndex) =>
-      DateTime(widget.dateTime.year, widget.dateTime.month + (pageIndex - _kMonthOrigin), 1);
+  DateTime _monthByIndex(int pageIndex) => DateTime(_anchor.year, _anchor.month + (pageIndex - _kMonthOrigin), 1);
 
   void _onDateTap(DateTime d) {
     setState(() => _selected = d);
@@ -103,9 +103,7 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
 
               return SizedBox(
                 height: height,
-                child: _expanded
-                    ? _buildMonthPager(isDark)
-                    : _buildWeekPager(isDark),
+                child: _expanded ? _buildMonthPager(isDark) : _buildWeekPager(isDark),
               );
             },
           ),
@@ -232,7 +230,7 @@ class _CalendarTitleHeader extends StatelessWidget {
           ),
           const Spacer(),
           FaIcon(
-            isExpanded ? Icons.expand_less: Icons.expand_more,
+            isExpanded ? Icons.expand_less : Icons.expand_more,
           ),
         ],
       ),
@@ -291,13 +289,13 @@ class _Month extends StatelessWidget {
       itemBuilder: (_, index) => dates[index] == null
           ? const SizedBox()
           : _Day(
-              dateTime: dates[index]!.dateTime,
-              selected: dates[index]!.dateTime.isSameDayMonthYear(selectedDateTime),
-              currentDate: dates[index]!.dateTime.isSameDayMonthAndYear(DateTime.now()),
-              hasRoutineLog: dates[index]!.hasRoutineLog,
-              onTap: onTap,
-              isDarkMode: isDarkMode,
-            ),
+        dateTime: dates[index]!.dateTime,
+        selected: dates[index]!.dateTime.isSameDayMonthYear(selectedDateTime),
+        currentDate: dates[index]!.dateTime.isSameDayMonthYear(DateTime.now()),
+        hasRoutineLog: dates[index]!.hasRoutineLog,
+        onTap: onTap,
+        isDarkMode: isDarkMode,
+      ),
     );
   }
 }

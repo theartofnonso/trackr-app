@@ -126,9 +126,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     return SingleChildScrollView(
       child: Column(spacing: 12, children: [
         Calendar(
-          onSelectDate: _onSelectCalendarDateTime,
-          dateTime: DateTime.now(),
-        ),
+          onSelectDate: _onSelectCalendarDateTime),
         StaggeredGrid.count(
           crossAxisCount: 2,
           mainAxisSpacing: 10,

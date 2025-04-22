@@ -153,7 +153,6 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
                 ),
                 Calendar(
                   onSelectDate: (_) {},
-                  dateTime: DateTime.now(),
                 ),
                 GridView.count(
                     shrinkWrap: true,
